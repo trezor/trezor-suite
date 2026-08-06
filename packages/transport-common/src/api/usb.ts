@@ -20,8 +20,15 @@ import type {
     UsbInTransferResultLike,
     UsbInterfaceApi,
 } from '../types/usbInterface';
-import { getUSBDescriptorModel } from '../utils/descriptor';
+import { DescriptorModel, getUSBDescriptorModel } from '../utils/descriptor';
 import { error, success } from '../utils/result';
+
+// usb 3.x cancels transfers after a 1s default timeout, breaking slow flows (PIN, passphrase, THP).
+// Pass an effectively-infinite timeout; cancellation stays with our own AbortSignal. Ignored by navigator.usb.
+const TRANSFER_TIMEOUT_MS = 0x7fffffff;
+
+// prefix of the positional path assigned to serial-less (bootloader) devices: 'bootloader1', ...
+const BOOTLOADER_PATH = 'bootloader';
 
 interface ConstructorParams extends Omit<AbstractApiConstructorParams, 'type'> {
     usbInterface: UsbInterfaceApi;
@@ -51,6 +58,12 @@ export class UsbApi extends AbstractApi {
     private synchronizeResetDevice = getSynchronize();
     private deviceResetMap: Record<string, boolean> = {};
     private devicePendingTransferIn = new Map<UsbDeviceLike, Promise<UsbInTransferResultLike>>();
+    /**
+     * paths currently inside device.open(). usb 3.x reports opened===false until open() resolves,
+     * so reconcileDevices must also preserve a device that is mid-open, otherwise a concurrent
+     * enumerate would swap its object for a fresh unopened one and orphan the session.
+     */
+    private devicesOpening = new Set<string>();
 
     constructor({ usbInterface, logger, forceReadSerialOnConnect, debugLink }: ConstructorParams) {
         super({ logger, type: 'usb' });
@@ -73,7 +86,31 @@ export class UsbApi extends AbstractApi {
 
             return this.createDevices([event.device], this.abortController.signal)
                 .then(newDevices => {
-                    this.devices = [...this.devices, ...newDevices];
+                    // usb 3.x (node-usb-rs) hands us a brand-new, unopened device object on every
+                    // enumeration/connect. Never let such a fresh object shadow an already-tracked
+                    // device that is currently in use (opened) - that would orphan its live handle.
+                    newDevices.forEach(newDevice => {
+                        const existing = this.devices.find(d => d.path === newDevice.path);
+                        // A positional bootloader path that maps to a DIFFERENT physical device must
+                        // be tracked alongside, not replace, the existing entry; a same-device
+                        // bootloader (a duplicate connect event) falls through to the in-use check.
+                        const foreignBootloader =
+                            !!existing &&
+                            newDevice.path.startsWith(BOOTLOADER_PATH) &&
+                            !this.isSameDevice(existing.device, newDevice.device);
+                        if (!existing || foreignBootloader) {
+                            this.devices.push(newDevice);
+                        } else if (
+                            !existing.device.opened &&
+                            !this.devicesOpening.has(newDevice.path)
+                        ) {
+                            // replace only a stale, not-in-use entry (e.g. a reconnected device);
+                            // never swap a device that is opened or mid-open() - that would orphan
+                            // the handle openInternal already captured
+                            this.devices[this.devices.indexOf(existing)] = newDevice;
+                        }
+                        // else: keep the existing in-use object
+                    });
                     this.emit('transport-interface-change', this.devicesToDescriptors());
                 })
                 .catch(err => {
@@ -84,9 +121,21 @@ export class UsbApi extends AbstractApi {
 
         this.usbInterface.ondisconnect = event => {
             const { device } = event;
-            if (!device.serialNumber) {
+            // In usb 3.x serialNumber (and productName/manufacturerName) are fallible getters: when
+            // the descriptor was not cached they open the device on access, which throws on a
+            // just-unplugged device. Reading it here must never throw - an uncaught listener error
+            // can terminate the bridge worker - so treat any failure as "no serial" and fall back
+            // to a full re-enumeration, which reconciles the tracked list safely.
+            let serialNumber: string | null | undefined;
+            try {
+                serialNumber = device.serialNumber;
+            } catch {
+                serialNumber = undefined;
+            }
+
+            if (!serialNumber) {
                 this.logger?.debug(
-                    `usb: ondisconnect: device without serial number:, ${device.productName}, ${device.manufacturerName}`,
+                    'usb: ondisconnect: device without serial number, re-enumerating',
                 );
 
                 // trezor devices have serial number 468E58AE386B5D2EA8C572A2 or 000000000000000000000000 (for bootloader devices)
@@ -95,9 +144,12 @@ export class UsbApi extends AbstractApi {
                 });
             }
 
-            const index = this.devices.findIndex(d => d.path === device.serialNumber);
+            const index = this.devices.findIndex(d => d.path === serialNumber);
             if (index > -1) {
-                this.devices.splice(index, 1);
+                const [removed] = this.devices.splice(index, 1);
+                if (removed) {
+                    this.devicePendingTransferIn.delete(removed.device);
+                }
                 this.emit('transport-interface-change', this.devicesToDescriptors());
             } else {
                 this.logger?.error('usb: device that should be removed does not exist in state');
@@ -106,10 +158,23 @@ export class UsbApi extends AbstractApi {
     }
 
     private formatDeviceForLog(device: UsbDeviceLike) {
+        // usb 3.x exposes productName/manufacturerName/serialNumber as fallible getters that open
+        // the device on access and can throw (uncached descriptor / gone device). This helper is
+        // called from many fire-and-forget logging sites (e.g. the first statement of onconnect),
+        // so it must never throw - a throw here would become an unhandled rejection in the bridge
+        // worker. Read each fallible getter defensively.
+        const safeRead = (read: () => unknown) => {
+            try {
+                return read();
+            } catch {
+                return undefined;
+            }
+        };
+
         return JSON.stringify({
-            productName: device.productName,
-            manufacturerName: device.manufacturerName,
-            serialNumber: device.serialNumber,
+            productName: safeRead(() => device.productName),
+            manufacturerName: safeRead(() => device.manufacturerName),
+            serialNumber: safeRead(() => device.serialNumber),
             vendorId: device.vendorId,
             productId: device.productId,
             deviceVersionMajor: device.deviceVersionMajor,
@@ -137,15 +202,28 @@ export class UsbApi extends AbstractApi {
         }
     }
 
+    // getUSBDescriptorModel reads the fallible 3.x productName getter (opens device / throws);
+    // descriptors are built on the emit path, so a throw must not escape - fall back to UNKNOWN.
+    private safeDescriptorModel(device: UsbDeviceLike) {
+        try {
+            return getUSBDescriptorModel(device);
+        } catch {
+            return DescriptorModel.UNKNOWN;
+        }
+    }
+
     private devicesToDescriptors(): DescriptorApiLevel[] {
         return this.devices.map(d => ({
             path: PathInternal(d.path),
             type: this.matchDeviceType(d.device),
             product: d.device.productId,
             vendor: d.device.vendorId,
-            id: d.device.serialNumber,
+            // the resolved serial is already the tracked path (for non-bootloader devices), so use
+            // it instead of re-reading the fallible serialNumber getter, which in usb 3.x opens the
+            // device / throws for an uncached or just-unplugged device on the emit path.
+            id: d.path.startsWith(BOOTLOADER_PATH) ? null : d.path,
             apiType: this.type,
-            model: getUSBDescriptorModel(d.device),
+            model: this.safeDescriptorModel(d.device),
         }));
     }
 
@@ -203,7 +281,8 @@ export class UsbApi extends AbstractApi {
                 { signal },
             );
 
-            this.devices = await this.createDevices(devices, signal);
+            const nextDevices = await this.createDevices(devices, signal);
+            this.devices = this.reconcileDevices(nextDevices);
 
             return success(this.devicesToDescriptors());
         } catch (err) {
@@ -212,11 +291,74 @@ export class UsbApi extends AbstractApi {
         }
     }
 
+    /**
+     * Merge a freshly enumerated device list into the tracked one, preserving the object
+     * identity of devices that are currently in use.
+     *
+     * usb 2.x reused a stable device object per physical device (it kept its open handle and
+     * claimed interface across enumerations). usb 3.x (node-usb-rs) returns a brand-new,
+     * UNOPENED object on every getDevices() call. Because read/write/openDevice resolve the
+     * device object by path at call time, blindly replacing the tracked list would swap an
+     * in-use device's live object for a fresh unopened one, so its next transfer would hit an
+     * unopened/unclaimed device ("endpoint not found" / "invalid state") and the session would
+     * collapse - even when the enumeration was triggered by an unrelated device. Keeping the
+     * existing opened object restores the usb 2.x behaviour where re-enumerating mid-session is
+     * harmless.
+     */
+    private reconcileDevices(nextDevices: TransportInterfaceDevice[]) {
+        const nextPaths = new Set(nextDevices.map(d => d.path));
+        // drop pending reads for devices that are no longer present
+        this.devices.forEach(prev => {
+            if (!nextPaths.has(prev.path)) {
+                this.devicePendingTransferIn.delete(prev.device);
+            }
+        });
+
+        return nextDevices.map(next => {
+            const existing = this.devices.find(prev => prev.path === next.path);
+            if (!existing) {
+                return next;
+            }
+            // Reuse the tracked object only while it is in use - opened, or currently inside
+            // device.open() (opened is still false during the open() await). A closed/idle entry is
+            // safely refreshed with the fresh object (e.g. a reconnected device gets a new handle).
+            const inUse = existing.device.opened || this.devicesOpening.has(next.path);
+            // A stable serial path always identifies the same physical device. A positional
+            // bootloader path (bootloader1, ...) can map to a DIFFERENT device after another
+            // bootloader (un)plugs, so for those only preserve when the fresh object is provably the
+            // same physical device (node-usb-rs handle); otherwise adopt the fresh object. This
+            // keeps an active serial-less bootloader alive (e.g. mid firmware update) without
+            // resurrecting a disconnected device's handle on positional renumbering.
+            const samePhysicalDevice =
+                !next.path.startsWith(BOOTLOADER_PATH) ||
+                this.isSameDevice(existing.device, next.device);
+            if (inUse && samePhysicalDevice) {
+                return existing;
+            }
+
+            return next;
+        });
+    }
+
+    /**
+     * usb 3.x hands out a fresh UsbDevice object on every getDevices(), so object identity is not a
+     * reliable "same physical device" test. node-usb-rs exposes a stable per-physical-device handle
+     * we can compare instead; when it is unavailable (navigator.usb / react-native-usb) we fall
+     * back to object identity, which IS stable on those interfaces.
+     */
+    private isSameDevice(a: UsbDeviceLike, b: UsbDeviceLike) {
+        return a.handle != null && b.handle != null ? a.handle === b.handle : a === b;
+    }
+
     private getTransferIn(device: UsbDeviceLike) {
         let pending = this.devicePendingTransferIn.get(device);
         if (!pending) {
             pending = device
-                .transferIn(this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID, this.chunkSize)
+                .transferIn(
+                    this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
+                    this.chunkSize,
+                    TRANSFER_TIMEOUT_MS,
+                )
                 .finally(() => this.devicePendingTransferIn.delete(device));
             this.devicePendingTransferIn.set(device, pending);
         }
@@ -283,6 +425,7 @@ export class UsbApi extends AbstractApi {
                     device.transferOut(
                         this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
                         newArray,
+                        TRANSFER_TIMEOUT_MS,
                     ),
                 { signal: options?.signal, onAbort: () => this.resetDevice(path) },
             );
@@ -329,11 +472,24 @@ export class UsbApi extends AbstractApi {
 
         try {
             this.logger?.debug(`usb: device.open`);
-            await this.abortableMethod(() => device.open(), { signal });
+            // mark the path as opening so a concurrent enumerate/reconcile keeps this object
+            // (device.opened stays false until open() resolves)
+            this.devicesOpening.add(path);
+            try {
+                await this.abortableMethod(() => device.open(), { signal });
+            } finally {
+                this.devicesOpening.delete(path);
+            }
             this.logger?.debug(`usb: device.open done. device: ${this.formatDeviceForLog(device)}`);
         } catch (err) {
             this.logger?.error(`usb: device.open error ${err}`);
-            if (err.message.includes('LIBUSB_ERROR_ACCESS')) {
+            // usb 3.x (nusb) reports EACCES/EPERM as "open error: permission denied (...)" instead
+            // of a libusb code; map it to the same access error so DeviceUnreadable keeps showing
+            // the Linux udev-rules installation tip.
+            if (
+                err.message.includes('LIBUSB_ERROR_ACCESS') ||
+                err.message.toLowerCase().includes('permission denied')
+            ) {
                 return error({ code: ERRORS.LIBUSB_ERROR_ACCESS });
             }
 
@@ -343,7 +499,7 @@ export class UsbApi extends AbstractApi {
             });
         }
 
-        if (device.configuration?.configurationValue !== CONFIGURATION_ID) {
+        if (this.readConfiguration(device)?.configurationValue !== CONFIGURATION_ID) {
             try {
                 this.logger?.debug(`usb: device.selectConfiguration ${CONFIGURATION_ID}`);
                 await this.abortableMethod(() => device.selectConfiguration(CONFIGURATION_ID), {
@@ -462,8 +618,8 @@ export class UsbApi extends AbstractApi {
                 // more bootloaders => number them, hope for the best
                 const { serialNumber } = device;
                 let path =
-                    serialNumber == null || serialNumber === '' ? 'bootloader' : serialNumber;
-                if (path === 'bootloader') {
+                    serialNumber == null || serialNumber === '' ? BOOTLOADER_PATH : serialNumber;
+                if (path === BOOTLOADER_PATH) {
                     this.logger?.debug('usb: device without serial number!');
                     bootloaderId++;
                     path += bootloaderId;
@@ -512,15 +668,11 @@ export class UsbApi extends AbstractApi {
         try {
             this.logger?.debug(`usb: loadSerialNumber`);
 
+            // usb 3.x (node-usb-rs) exposes serialNumber as a standard WebUSB getter, so
+            // opening the device is enough to make it readable on drivers that withhold it
+            // until the device is opened. The former low-level getStringDescriptor read
+            // (device.device.deviceDescriptor.iSerialNumber) no longer exists in the WebUSB API.
             await this.abortableMethod(() => device.open(), { signal });
-            // load serial number.
-            await this.abortableMethod(
-                () =>
-                    device
-                        // @ts-expect-error:  this is not part of common types between webusb and usb.
-                        .getStringDescriptor(device.device.deviceDescriptor.iSerialNumber),
-                { signal },
-            );
             this.logger?.debug(`usb: loadSerialNumber done, serialNumber: ${device.serialNumber}`);
             await this.abortableMethod(() => device.close(), { signal });
         } catch (err) {
@@ -571,20 +723,38 @@ export class UsbApi extends AbstractApi {
         return [hidDevices, nonHidDevices];
     }
 
+    // usb 3.x exposes `configuration` as a fallible getter that performs control-transfer I/O and
+    // can throw ("configuration error: ..."); in 2.x it was a cached non-throwing property. Reading
+    // it must never throw out of openDevice/closeDevice - their callers (bridge core/http) treat
+    // those as non-throwing and a raw throw would leak the session lock / crash the worker.
+    private readConfiguration(device: UsbDeviceLike) {
+        try {
+            return device.configuration;
+        } catch {
+            return undefined;
+        }
+    }
+
     private isInterfaceClaimed(device: UsbDeviceLike, interfaceId: number) {
-        return device.configuration?.interfaces.find(i => i.interfaceNumber === interfaceId)
-            ?.claimed;
+        return this.readConfiguration(device)?.interfaces.find(
+            i => i.interfaceNumber === interfaceId,
+        )?.claimed;
     }
     // https://github.com/trezor/trezord-go/blob/db03d99230f5b609a354e3586f1dfc0ad6da16f7/usb/libusb.go#L545
     private handleReadWriteError(err: Error) {
         if (
             [
-                // node usb
-                'LIBUSB_TRANSFER_ERROR',
-                'LIBUSB_ERROR_PIPE',
-                'LIBUSB_ERROR_IO',
-                'LIBUSB_ERROR_NO_DEVICE',
-                'LIBUSB_ERROR_OTHER',
+                // node usb: usb 3.x is nusb-based and formats transfer errors with Rust's Debug
+                // ({:?}), so they arrive as the bare nusb TransferError variant name, e.g.
+                // "transferOut error: Disconnected". These mirror the libusb errors the 2.x
+                // transport treated as a disconnect-during-action (NO_DEVICE/PIPE/IO/OTHER). We
+                // deliberately exclude Cancelled (our own AbortSignal/OS abort), InvalidArgument
+                // (a programming error) and "endpoint not found" (an unclaimed interface), which
+                // must stay UNEXPECTED_ERROR.
+                'Disconnected', // device gone (~LIBUSB_ERROR_NO_DEVICE)
+                'Stall', // endpoint stalled (~LIBUSB_ERROR_PIPE; Windows ERROR_GEN_FAILURE)
+                'Fault', // I/O or protocol fault (~LIBUSB_ERROR_IO)
+                'Unknown', // OS-specific transfer failure (~LIBUSB_ERROR_OTHER)
                 // web usb
                 ERRORS.INTERFACE_DATA_TRANSFER,
                 'The device was disconnected.',

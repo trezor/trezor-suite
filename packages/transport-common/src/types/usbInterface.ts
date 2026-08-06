@@ -42,6 +42,13 @@ export interface UsbDeviceLike {
     productName?: string | null;
     manufacturerName?: string | null;
     serialNumber?: string | null;
+    /**
+     * node-usb 3.x (node-usb-rs) only: a stable per-physical-device id (device_info.id()) that
+     * survives the fresh-object-per-getDevices() churn and changes on replug. Absent on
+     * navigator.usb and react-native-usb, so it is optional; consumers must fall back to object
+     * identity when it is missing.
+     */
+    handle?: string;
     vendorId: number;
     productId: number;
     deviceVersionMajor: number;
@@ -55,10 +62,16 @@ export interface UsbDeviceLike {
     claimInterface(interfaceNumber: number): Promise<void>;
     releaseInterface(interfaceNumber: number): Promise<void>;
     reset(): Promise<void>;
-    transferIn(endpointNumber: number, length: number): Promise<UsbInTransferResultLike>;
+    transferIn(
+        endpointNumber: number,
+        length: number,
+        // usb 3.x accepts a per-transfer timeout (ms); the browser navigator.usb ignores it.
+        timeout?: number,
+    ): Promise<UsbInTransferResultLike>;
     transferOut(
         endpointNumber: number,
         data: UsbTransferOutData,
+        timeout?: number,
     ): Promise<UsbOutTransferResultLike>;
 }
 
