@@ -133,7 +133,7 @@
         "@solana/rpc@npm:6.9.0": "patch:@solana/rpc@npm%3A6.9.0#~/.yarn/patches/@solana-rpc-npm-6.9.0-ba7976484d.patch"
     },
     "devDependencies": {
-        "@arethetypeswrong/cli": "^0.18.2",
+        "@arethetypeswrong/cli": "^0.18.5",
         "@babel/cli": "7.29.7",
         "@babel/core": "7.29.7",
         "@babel/node": "^7.29.7",
