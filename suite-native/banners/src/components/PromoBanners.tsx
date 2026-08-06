@@ -7,7 +7,6 @@ import { type VisiblePromoBannerKey, selectVisiblePromoBanners } from '../select
 import { DefiYieldPromoBanner } from './DefiYieldPromoBanner';
 import { EthVaultPromoBanner } from './EthVaultPromoBanner';
 import { PromoBannerCarousel } from './PromoBannerCarousel';
-import { StablecoinYieldPromoBanner } from './StablecoinYieldPromoBanner';
 import { TrezorSafe7PromoBanner } from './TrezorSafe7PromoBanner';
 
 //  This is needed to compensate the vertical margin of the parent component.
@@ -17,7 +16,6 @@ const carouselWrapperStyle = prepareNativeStyle(utils => ({
 
 const BANNER_COMPONENTS: Record<VisiblePromoBannerKey, React.ReactElement> = {
     ts7: <TrezorSafe7PromoBanner />,
-    'stablecoin-yield': <StablecoinYieldPromoBanner />,
     'defi-yield': <DefiYieldPromoBanner />,
     'eth-vault': <EthVaultPromoBanner />,
 };
