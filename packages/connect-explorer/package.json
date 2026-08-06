@@ -29,7 +29,7 @@
         "@trezor/theme": "workspace:^",
         "@trezor/urls": "workspace:^",
         "@trezor/utils": "workspace:^",
-        "@uiw/react-codemirror": "^4.25.9",
+        "@uiw/react-codemirror": "^4.25.11",
         "codemirror-json-schema": "^0.8.1",
         "codemirror-json5": "^1.0.3",
         "json5": "^2.2.3",
