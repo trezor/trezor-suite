@@ -51,7 +51,7 @@
         "@noble/curves": "^2.0.1",
         "@noble/hashes": "^2.0.1",
         "@scure/base": "^2.2.0",
-        "@sinclair/typebox": "^0.34.49",
+        "@sinclair/typebox": "^0.34.52",
         "@trezor/utils": "workspace:*",
         "cashaddrjs": "0.4.4",
         "varuint-bitcoin": "2.0.0",
