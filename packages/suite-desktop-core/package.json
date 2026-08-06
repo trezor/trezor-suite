@@ -47,7 +47,7 @@
         "electron-updater": "6.8.9",
         "node-loader": "^2.1.0",
         "openpgp": "^6.3.1",
-        "ws": "^8.20.0"
+        "ws": "^8.21.1"
     },
     "devDependencies": {
         "@electron/fuses": "^2.1.2",

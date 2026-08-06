@@ -10403,7 +10403,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    ws: "npm:^8.20.0"
+    ws: "npm:^8.21.1"
   languageName: unknown
   linkType: soft
 
@@ -16247,7 +16247,7 @@ __metadata:
     n64: "npm:^0.2.10"
     node-fetch: "npm:^3.3.2"
     socks-proxy-agent: "npm:8.0.5"
-    ws: "npm:^8.20.0"
+    ws: "npm:^8.21.1"
   languageName: unknown
   linkType: soft
 
@@ -16574,7 +16574,7 @@ __metadata:
     vite-plugin-wasm: "npm:^3.6.0"
     vitest: "npm:^4.1.10"
     vm-browserify: "npm:^1.1.2"
-    ws: "npm:^8.20.0"
+    ws: "npm:^8.21.1"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -16634,7 +16634,7 @@ __metadata:
     dotenv: "npm:17.2.3"
     express: "npm:^5.2.1"
     tsx: "npm:^4.21.0"
-    ws: "npm:^8.20.0"
+    ws: "npm:^8.21.1"
     zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
@@ -16975,7 +16975,7 @@ __metadata:
     node-fetch: "npm:^3.3.2"
     socks-proxy-agent: "npm:8.0.5"
     tsx: "npm:^4.21.0"
-    ws: "npm:^8.20.0"
+    ws: "npm:^8.21.1"
   languageName: unknown
   linkType: soft
 
@@ -17183,7 +17183,7 @@ __metadata:
     openpgp: "npm:^6.3.1"
     rimraf: "npm:^6.1.2"
     webpack: "npm:5.108.1"
-    ws: "npm:^8.20.0"
+    ws: "npm:^8.21.1"
   languageName: unknown
   linkType: soft
 
@@ -17766,7 +17766,7 @@ __metadata:
     "@types/node": "npm:22.13.10"
     "@types/web": "npm:^0.0.353"
     "@types/ws": "npm:^8.5.13"
-    ws: "npm:^8.20.0"
+    ws: "npm:^8.21.1"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -47662,7 +47662,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.21.0, ws@npm:^8.11.0, ws@npm:^8.12.1, ws@npm:^8.13.0, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.20.0, ws@npm:^8.21.0":
+"ws@npm:8.21.0":
   version: 8.21.0
   resolution: "ws@npm:8.21.0"
   peerDependencies:
@@ -47698,6 +47698,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10/486141e4a01bb75883f9ba39317309c2427e24db1cb75e340fad6e5886b65c03d994a34209f0e4ba06dd6cb9ec95dd1b6a09c52c05eed9a34d6376f4fbbf617c
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.11.0, ws@npm:^8.12.1, ws@npm:^8.13.0, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.21.0, ws@npm:^8.21.1":
+  version: 8.21.1
+  resolution: "ws@npm:8.21.1"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10/8493bc543072763d7bacffb2282c9d7954dc5c599c9df4c2d15f91c217f63e293a33ffc70756e3f2bf8c5d85bc6069ad7d9983c382d4713c807b083ffb1b1719
   languageName: node
   linkType: hard
 
