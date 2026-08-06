@@ -58,9 +58,6 @@ test.describe(
 
             await test.step('Fill in a Send form', async () => {
                 await walletPage.openSendFormButton.click();
-                // Race condition 1:5, if input is filled before form completely loads then
-                // input will be cleared and test will fail. As a workaround we wait for fees to be loaded.
-                await tradingPage.fees.expectEthereumFeeCalculated();
                 await tradingPage.sendAddressInput.fill(sendAddress);
                 await tradingPage.sendAmountInput.fill(sendAmount);
                 await tradingPage.fees.setEthereumCustomFees({
@@ -147,9 +144,6 @@ test.describe(
         }) => {
             await test.step('Fill in a Send form', async () => {
                 await walletPage.openSendFormButton.click();
-                // Race condition 1:5, if input is filled before form completely loads then
-                // input will be cleared and test will fail. As a workaround we wait for fees to be loaded.
-                await tradingPage.fees.expectEthereumFeeCalculated();
                 await tradingPage.sendAddressInput.fill(sendAddress);
                 await tradingPage.sendAmountInput.fill(sendAmount);
             });
