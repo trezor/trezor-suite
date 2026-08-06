@@ -18189,7 +18189,7 @@ __metadata:
   dependencies:
     "@trezor/eslint": "workspace:*"
     "@trezor/transport-common": "workspace:*"
-    "@types/sharedworker": "npm:^0.0.223"
+    "@types/sharedworker": "npm:^0.0.229"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -19267,10 +19267,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sharedworker@npm:^0.0.223":
-  version: 0.0.223
-  resolution: "@types/sharedworker@npm:0.0.223"
-  checksum: 10/0005bb5f985ea596985278022d8a005de9175668ea05bd99d7f57dbfa39fbacaed732687acd9930fe22f5b0817f42be1cdfd2882c9492736217225c45961ae7a
+"@types/sharedworker@npm:^0.0.229":
+  version: 0.0.229
+  resolution: "@types/sharedworker@npm:0.0.229"
+  checksum: 10/fa0bf3164763484c9dd7300a7f6afdd0a2b8ff585558f961aac76c8fd43293a7c9b838d5a661ae6723a4d9cb7dafe1999e775c109dddfefca02b3f3595b18cb3
   languageName: node
   linkType: hard
 
