@@ -84,12 +84,12 @@ function main(): void {
         process.exit(1);
     }
 
-    if (agentResult.subtype === 'error_max_structured_output_retries') {
+    if (agentResult.subtype !== 'success') {
         // Persist the raw CLI envelope for troubleshooting
         const envelopePath = join(reportDir, 'analyze-envelope.json');
         writeFileSync(envelopePath, claudeOutput);
         error(
-            `Analysis agent could not produce schema-conformant output after retries. Raw envelope saved to ${envelopePath}.`,
+            `Analysis agent did not finish: ${agentResult.subtype ?? 'no subtype'}. No report produced; raw envelope saved to ${envelopePath}.`,
         );
         process.exit(1);
     }

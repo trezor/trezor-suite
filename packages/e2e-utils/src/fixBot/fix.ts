@@ -9,6 +9,7 @@ import { AnalysisReportSchema, FixResultJsonSchema, FixResultSchema } from './sc
 
 const MAX_BUDGET_USD = '10';
 const TIMEOUT_MS = 3 * 60 * 60 * 1000; // 3 hours
+const ENVELOPE_TAIL_CHARS = 20000;
 
 function main(): void {
     const reportPath = process.env.REPORT_PATH;
@@ -82,9 +83,9 @@ function main(): void {
         process.exit(1);
     }
 
-    if (agentResult.subtype === 'error_max_structured_output_retries') {
+    if (agentResult.subtype !== 'success') {
         error(
-            `Fix agent could not produce schema-conformant output after retries. Raw envelope:\n${output}`,
+            `Fix agent did not finish: ${agentResult.subtype ?? 'no subtype'}. No result produced. Last ${ENVELOPE_TAIL_CHARS} chars of the envelope:\n${output.slice(-ENVELOPE_TAIL_CHARS)}`,
         );
         process.exit(1);
     }
