@@ -202,7 +202,7 @@ export const PassphraseInputCard = ({
                             isLoading={isLoading}
                             size="large"
                         >
-                            Confirm
+                            <Translation id="TR_CONFIRM" />
                         </Button>
                     </Tooltip>
                 </Column>
