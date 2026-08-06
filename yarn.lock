@@ -16211,7 +16211,7 @@ __metadata:
     "@trezor/websocket-client": "workspace:*"
     "@types/jest": "npm:30.0.0"
     "@types/node": "npm:22.13.10"
-    "@types/web": "npm:^0.0.345"
+    "@types/web": "npm:^0.0.353"
     html-webpack-plugin: "npm:5.6.7"
     socks-proxy-agent: "npm:8.0.5"
     tiny-worker: "npm:^2.3.0"
@@ -16428,7 +16428,7 @@ __metadata:
     "@types/chrome": "npm:^0.1.40"
     "@types/node": "npm:22.13.10"
     "@types/redux-logger": "npm:^3.0.13"
-    "@types/web": "npm:^0.0.345"
+    "@types/web": "npm:^0.0.353"
     "@uiw/react-codemirror": "npm:^4.25.9"
     babel-plugin-styled-components: "npm:^2.1.4"
     codemirror-json-schema: "npm:^0.8.1"
@@ -16503,7 +16503,7 @@ __metadata:
     "@types/chrome": "npm:^0.1.40"
     "@types/jest": "npm:30.0.0"
     "@types/w3c-web-usb": "npm:^1.0.14"
-    "@types/web": "npm:^0.0.345"
+    "@types/web": "npm:^0.0.353"
     xvfb-maybe: "npm:^0.2.1"
   peerDependencies:
     tslib: ^2.6.2
@@ -17764,7 +17764,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/jest": "npm:30.0.0"
     "@types/node": "npm:22.13.10"
-    "@types/web": "npm:^0.0.345"
+    "@types/web": "npm:^0.0.353"
     "@types/ws": "npm:^8.5.13"
     ws: "npm:^8.20.0"
   peerDependencies:
@@ -18826,10 +18826,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/web@npm:^0.0.345":
-  version: 0.0.345
-  resolution: "@types/web@npm:0.0.345"
-  checksum: 10/c0a023c90970242501c43157d98ed2210f03542bf97945637b252d7181827fd7b15d930d327a0727a3e05a2dc8ffa82e9d894b1ac2dc32c4a58f7dd947bfbe96
+"@types/web@npm:^0.0.353":
+  version: 0.0.353
+  resolution: "@types/web@npm:0.0.353"
+  checksum: 10/76cfa56414f414b39a9e2c90d80923f37940f777f01ee0d49afad5c75781e7de77d4b3cb5398bf7cf1d4de6c0778b87c50053c6c625b1c1d82e09e577832de32
   languageName: node
   linkType: hard
 
