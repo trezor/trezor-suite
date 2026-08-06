@@ -165,7 +165,7 @@ export const messages = {
             },
             onboardingFeedbackBanner: {
                 title: 'Help us improve',
-                subtitle: 'Share onboarding feedback, get a 50 USD e-shop voucher',
+                subtitle: 'Share onboarding feedback and get a 50 USD e-shop voucher',
                 button: 'Give feedback',
             },
         },
@@ -1069,8 +1069,8 @@ export const messages = {
             subtitle:
                 'Secure your crypto offline and unlock its full potential with Trezor hardware wallets.',
             bullets: {
-                security: 'Advanced open-source security',
-                app: 'Powerful crypto app for mobile & desktop',
+                security: '100% open-source code & design',
+                app: 'Secure crypto app for mobile & desktop',
                 setup: 'Easy to set up & simple to recover',
             },
             button: 'Get Trezor',
@@ -1355,9 +1355,9 @@ export const messages = {
                     hint: 'Format: {example}',
                 },
                 connectButton: 'Connect',
-                invalidFormat: "Server address format isn't valid.",
+                invalidFormat: 'Invalid server address format.',
                 unableToConnect: {
-                    clearnet: 'Unable to connect to the server. Check the address and connection.',
+                    clearnet: "Can't connect to the server. Check the address and connection.",
                     tor: 'Can’t connect to the server. Check the address and make sure Orbot is running.',
                 },
             },
@@ -2831,6 +2831,8 @@ export const messages = {
                 tooManyDecimals: 'Too many decimal places.',
             },
             estimatedRewardsPlaceholder: 'Enter amount to see rewards',
+            withdrawalFeesBanner:
+                "We've left {amount} {displaySymbol} in your account so you can pay withdrawal fees.",
         },
         unstakeFormScreen: {
             validation: {
@@ -3171,7 +3173,7 @@ export const messages = {
                 reviewMismatch: {
                     title: "Claim couldn't be verified",
                     description:
-                        "The rewards to claim didn't match the transaction details, so nothing was signed and no funds moved. Tap Continue to try again with refreshed data. If the issue persists, contact Trezor Support.",
+                        "Reward details didn't match the transaction, so nothing was signed and no funds were moved. Tap Continue to retry with updated info. If the issue persists, contact Trezor Support.",
                 },
             },
         },
