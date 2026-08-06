@@ -39,7 +39,6 @@ import { CoinPriceCard } from './CoinPriceCard';
 import { StablecoinYieldTokenOverview } from './StablecoinYieldTokenOverview';
 import { StellarTokenActions } from './StellarTokenActions';
 import { TronResources } from './TronResources';
-import { WrapNativeTokenButton } from './WrapNativeTokenButton';
 
 type TransactionListHeaderProps = {
     accountKey: AccountKey;
@@ -230,7 +229,6 @@ export const TransactionListHeader = memo(
                             tokenContract={tokenContract}
                         />
                     )}
-                    {!tokenContract && <WrapNativeTokenButton accountKey={accountKey} />}
                     {isStellarAccount && <StellarLimitedHistoryBanner />}
                     {account.networkType === 'solana' && <SolanaLimitedHistoryBanner />}
                     {account.networkType === 'tron' && !tokenContract && hasAccountTransactions && (

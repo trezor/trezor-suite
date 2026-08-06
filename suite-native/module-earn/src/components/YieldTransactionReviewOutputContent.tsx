@@ -1,5 +1,8 @@
 import { type ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
+import { getNetworkDisplaySymbol, getWrappedNativeSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, toTokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
@@ -68,6 +71,11 @@ const yieldActionOutputMessages = {
     },
 } satisfies Record<YieldActionReviewEvmTransactionPurpose, YieldActionOutputMessages>;
 
+const wrappedNativeIntentMessages = {
+    wrap: 'earn.yieldReview.outputs.wrapIntent',
+    unwrap: 'earn.yieldReview.outputs.unwrapIntent',
+} satisfies Record<'wrap' | 'unwrap', TxKeyPath>;
+
 export const getYieldTransactionReviewOutputTitle = ({
     evmTransactionPurpose,
     reviewOutput,
@@ -99,6 +107,10 @@ export const getYieldTransactionReviewOutputTitle = ({
             return <Translation id={messages.addressTitle} />;
         case 'amount':
             return <Translation id="transactionManagement.review.outputs.amountLabel" />;
+        case 'recipient_name':
+            return <Translation id="earn.yieldReview.outputs.providerTitle" />;
+        case 'contract_intent':
+            return <Translation id="earn.yieldReview.outputs.intentTitle" />;
         default:
             return exhaustive(type);
     }
@@ -109,6 +121,10 @@ export const YieldTransactionReviewOutputContent = ({
     evmTransactionPurpose,
     reviewOutput,
 }: YieldTransactionReviewOutputContentProps) => {
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+
     switch (reviewOutput.type) {
         case 'data':
             if (evmTransactionPurpose === 'claim') {
@@ -123,8 +139,29 @@ export const YieldTransactionReviewOutputContent = ({
                 </Text>
             );
         case 'address':
+        case 'recipient_name':
         case 'regular_legacy':
             return <Text variant="body-sm">{reviewOutput.value}</Text>;
+        case 'contract_intent': {
+            if (
+                !account ||
+                (evmTransactionPurpose !== 'wrap' && evmTransactionPurpose !== 'unwrap')
+            ) {
+                return null;
+            }
+
+            return (
+                <Text variant="body-sm">
+                    <Translation
+                        id={wrappedNativeIntentMessages[evmTransactionPurpose]}
+                        values={{
+                            nativeSymbol: getNetworkDisplaySymbol(account.symbol),
+                            tokenSymbol: getWrappedNativeSymbol(account.symbol) ?? '',
+                        }}
+                    />
+                </Text>
+            );
+        }
         case 'contract':
             return <AddressFormatter value={reviewOutput.value} format="full" variant="body-sm" />;
         case 'amount': {

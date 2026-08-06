@@ -48,7 +48,9 @@ type YieldTransactionReviewOutputType =
     | 'address'
     | 'amount'
     | 'contract'
+    | 'contract_intent'
     | 'data'
+    | 'recipient_name'
     | 'regular_legacy'
     | 'rewards';
 type YieldTransactionReviewValueOutput = Extract<ReviewOutput, { value: string }> & {
@@ -134,7 +136,9 @@ const yieldTransactionReviewOutputTypes = [
     'address',
     'amount',
     'contract',
+    'contract_intent',
     'data',
+    'recipient_name',
     'regular_legacy',
     'rewards',
 ] satisfies YieldTransactionReviewOutputType[];
@@ -180,9 +184,6 @@ const buildYieldReviewPreviewResult = ({
     precomposedTransaction,
     vaultName,
 }: BuildYieldReviewPreviewBaseParams): YieldReviewPreview => {
-    // The wrap purpose cannot be derived from calldata alone — WETH deposit() is a generic
-    // selector that only means "wrap" together with the wrapped-native target — so the caller
-    // provides it explicitly.
     const evmTransactionPurpose =
         evmTransactionPurposeOverride ?? getYieldReviewEvmTransactionPurpose(formState);
     const outputs = constructTransactionReviewOutputs({

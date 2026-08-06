@@ -42,10 +42,6 @@ type NavigationProps = StackNavigationProps<
     | WrappedNativeTokenStackRoutes.UnwrapNativeTokenReview
 >;
 
-/**
- * Session-less analogue of `useYieldDepositReview` — the signed transaction lives in local state
- * instead of the yield-session txReview store, because there is no vault behind the flow.
- */
 export const useWrappedNativeTokenReview = ({
     account,
     flowType,
