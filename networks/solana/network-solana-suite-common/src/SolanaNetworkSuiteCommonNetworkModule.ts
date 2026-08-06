@@ -6,7 +6,7 @@ import {
 } from '@trezor/network-solana/constants';
 
 import { solanaValidator } from './addressValidator/solanaAddressValidator';
-import { getNetworkConfig } from './networkConfig';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 export type SolanaNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<SolanaNetworkSymbol>;
 
@@ -15,4 +15,5 @@ export const createSolanaSuiteCommonNetworkModule = (): SolanaNetworkSuiteCommon
     getSupportedNetworks: () => supportedSolanaNetworks,
     isSupportedNetwork: isSupportedSolanaNetwork,
     getNetworkConfig,
+    getAccountSyncInterval,
 });

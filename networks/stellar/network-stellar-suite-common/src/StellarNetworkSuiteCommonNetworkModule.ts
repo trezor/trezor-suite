@@ -6,7 +6,7 @@ import {
 } from '@trezor/network-stellar/constants';
 
 import { stellarValidator } from './addressValidator/stellarAddressValidator';
-import { getNetworkConfig } from './networkConfig';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 export type StellarNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<StellarNetworkSymbol>;
 
@@ -16,4 +16,5 @@ export const createStellarSuiteCommonNetworkModule =
         getSupportedNetworks: () => supportedStellarNetworks,
         isSupportedNetwork: isSupportedStellarNetwork,
         getNetworkConfig,
+        getAccountSyncInterval,
     });
