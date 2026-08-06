@@ -4,10 +4,10 @@ import { join } from 'node:path';
 import { prettifyError } from 'zod';
 
 import { error, log } from '../logger';
-import { loadLedger, processAgentOutput, runClaude } from './common';
+import { loadLedger, processAgentOutput, runAgent } from './common';
 import { AnalysisReportJsonSchema, AnalysisReportSchema } from './schemas';
 
-const MAX_BUDGET_USD = '10';
+const MAX_BUDGET_USD = '20';
 const TIMEOUT_MS = 45 * 60 * 1000;
 
 function buildLedgerPromptSection(ledgerPath: string): string {
@@ -41,17 +41,13 @@ function main(): void {
 
     log('Starting nightly test failure analysis...');
 
-    const {
-        output: claudeOutput,
-        status,
-        spawnError,
-    } = runClaude({
+    const { transcript, exitCode, timedOut, spawnError } = runAgent({
         root,
         args: [
             '--print',
             '--verbose',
             '--output-format',
-            'json',
+            'stream-json',
             '--json-schema',
             JSON.stringify(AnalysisReportJsonSchema),
             '--settings',
@@ -62,34 +58,36 @@ function main(): void {
             '--max-budget-usd',
             MAX_BUDGET_USD,
         ],
-        input: analysisPromptWithLedger,
+        prompt: analysisPromptWithLedger,
         tmpPrefix: 'claude-analyze',
         timeoutMs: TIMEOUT_MS,
     });
 
-    const agentResult = processAgentOutput(claudeOutput, 'nightlyAnalyzer');
-
-    if (spawnError) {
-        const timedOut = (spawnError as NodeJS.ErrnoException).code === 'ETIMEDOUT';
+    if (timedOut) {
         error(
-            timedOut
-                ? `Analysis agent exceeded the ${TIMEOUT_MS / 60000}-minute timeout and was killed; no report produced.`
-                : `Failed to run claude: ${spawnError.message}`,
+            `Analysis agent exceeded the ${TIMEOUT_MS / 60000}-minute timeout and was killed; no report produced.`,
         );
         process.exit(1);
     }
+
+    if (spawnError) {
+        error(`Failed to run claude: ${spawnError.message}`);
+        process.exit(1);
+    }
+
+    const agentResult = processAgentOutput(transcript, 'nightlyAnalyzer');
 
     if (!agentResult) {
         error('Could not parse Claude result envelope from analysis agent output.');
         process.exit(1);
     }
 
-    if (agentResult.subtype === 'error_max_structured_output_retries') {
-        // Persist the raw CLI envelope for troubleshooting
-        const envelopePath = join(reportDir, 'analyze-envelope.json');
-        writeFileSync(envelopePath, claudeOutput);
+    if (agentResult.subtype !== 'success') {
+        // Persist the raw transcript for troubleshooting
+        const transcriptPath = join(reportDir, 'analyze-transcript.ndjson');
+        writeFileSync(transcriptPath, transcript);
         error(
-            `Analysis agent could not produce schema-conformant output after retries. Raw envelope saved to ${envelopePath}.`,
+            `Analysis agent did not finish: ${agentResult.subtype ?? 'no subtype'}. No report produced; raw envelope saved to ${transcriptPath}.`,
         );
         process.exit(1);
     }
@@ -110,7 +108,7 @@ function main(): void {
 
     log('Agent done.');
 
-    process.exit(status ?? 1);
+    process.exit(exitCode ?? 1);
 }
 
 main();

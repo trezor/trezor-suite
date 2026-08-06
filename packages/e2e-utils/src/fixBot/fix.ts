@@ -4,11 +4,12 @@ import { join } from 'node:path';
 import { prettifyError } from 'zod';
 
 import { error, log } from '../logger';
-import { processAgentOutput, runClaude } from './common';
+import { processAgentOutput, runAgent } from './common';
 import { AnalysisReportSchema, FixResultJsonSchema, FixResultSchema } from './schemas';
 
 const MAX_BUDGET_USD = '10';
 const TIMEOUT_MS = 3 * 60 * 60 * 1000; // 3 hours
+const ENVELOPE_TAIL_CHARS = 20000;
 
 function main(): void {
     const reportPath = process.env.REPORT_PATH;
@@ -46,13 +47,13 @@ function main(): void {
 
     const prompt = `${readFileSync(join(fixAgentDir, 'FIX_AGENT.md'), 'utf-8')}\n\n---\n\n## Fix Task\n\n\`\`\`json\n${JSON.stringify(task, null, 2)}\n\`\`\`\n`;
 
-    const { output, status, spawnError } = runClaude({
+    const { transcript, exitCode, timedOut, spawnError } = runAgent({
         root,
         args: [
             '--print',
             '--verbose',
             '--output-format',
-            'json',
+            'stream-json',
             '--json-schema',
             JSON.stringify(FixResultJsonSchema),
             '--settings',
@@ -60,31 +61,33 @@ function main(): void {
             '--max-budget-usd',
             MAX_BUDGET_USD,
         ],
-        input: prompt,
+        prompt,
         tmpPrefix: `claude-fix-${task.id}`,
         timeoutMs: TIMEOUT_MS,
     });
 
-    const agentResult = processAgentOutput(output, 'nightlyFixer');
-
-    if (spawnError) {
-        const timedOut = (spawnError as NodeJS.ErrnoException).code === 'ETIMEDOUT';
+    if (timedOut) {
         error(
-            timedOut
-                ? `Fix agent exceeded the ${TIMEOUT_MS / 60000}-minute timeout and was killed; no result produced.`
-                : `Failed to run claude: ${spawnError.message}`,
+            `Fix agent exceeded the ${TIMEOUT_MS / 60000}-minute timeout and was killed; no result produced.`,
         );
         process.exit(1);
     }
+
+    if (spawnError) {
+        error(`Failed to run claude: ${spawnError.message}`);
+        process.exit(1);
+    }
+
+    const agentResult = processAgentOutput(transcript, 'nightlyFixer');
 
     if (!agentResult) {
         error('Could not parse Claude result envelope from fix agent output.');
         process.exit(1);
     }
 
-    if (agentResult.subtype === 'error_max_structured_output_retries') {
+    if (agentResult.subtype !== 'success') {
         error(
-            `Fix agent could not produce schema-conformant output after retries. Raw envelope:\n${output}`,
+            `Fix agent did not finish: ${agentResult.subtype ?? 'no subtype'}. No result produced. Last ${ENVELOPE_TAIL_CHARS} chars of the envelope:\n${transcript.slice(-ENVELOPE_TAIL_CHARS)}`,
         );
         process.exit(1);
     }
@@ -107,7 +110,7 @@ function main(): void {
     }
 
     log('Agent done.');
-    process.exit(status ?? 1);
+    process.exit(exitCode ?? 1);
 }
 
 main();

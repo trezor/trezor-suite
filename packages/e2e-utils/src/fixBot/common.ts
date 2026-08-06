@@ -1,13 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import {
-    closeSync,
-    existsSync,
-    openSync,
-    readFileSync,
-    readdirSync,
-    unlinkSync,
-    writeFileSync,
-} from 'node:fs';
+import { existsSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -63,54 +55,77 @@ export function readSummaries(summariesDir: string | undefined): SlackFixSummary
     return parsedSummaries;
 }
 
-export interface ClaudeRunResult {
-    output: string;
-    status: number | null;
-    signal: NodeJS.Signals | null;
+export interface AgentRunResult {
+    transcript: string;
+    exitCode: number | null;
+    timedOut: boolean;
     spawnError: Error | undefined;
 }
 
-export function runClaude(opts: {
+export interface RunAgentOptions {
     root: string;
     args: string[];
-    input: string;
+    prompt: string;
     tmpPrefix: string;
-    timeoutMs?: number;
-}): ClaudeRunResult {
-    const { root, args, input, tmpPrefix, timeoutMs } = opts;
+    timeoutMs: number;
+}
 
+// `--output-format stream-json` emits one JSON envelope per line as the agent
+// works, where `json` buffers a single array until the run ends and so shows
+// nothing while it runs. `jq` renders those lines for the terminal (and the CI
+// log) as they arrive; `tee` keeps them for the result envelope and the cost
+// breakdown. pipefail makes `timeout`'s exit code the pipeline's own.
+const AGENT_PIPELINE = `
+set -o pipefail
+timeout "$AGENT_TIMEOUT_S" "$AGENT_CLAUDE_BIN" "$@" \\
+  | tee "$AGENT_TRANSCRIPT" \\
+  | jq -r -f "$AGENT_LOG_FILTER"
+`;
+
+const TIMEOUT_EXIT_CODE = 124;
+
+export function runAgent({
+    root,
+    args,
+    prompt,
+    tmpPrefix,
+    timeoutMs,
+}: RunAgentOptions): AgentRunResult {
     const env = { ...process.env };
     // Prevents an internal Claude Code setting from accidentally being inherited
     delete env['MCP_CONNECTION_NONBLOCKING'];
 
-    const tmpFile = join(tmpdir(), `${tmpPrefix}-${Date.now()}.json`);
-    const stdoutFd = openSync(tmpFile, 'w');
+    const transcriptPath = join(tmpdir(), `${tmpPrefix}-${Date.now()}.ndjson`);
 
-    const result = spawnSync(join(root, 'node_modules/.bin/claude'), args, {
-        input,
+    const result = spawnSync('bash', ['-c', AGENT_PIPELINE, 'agent-pipeline', ...args], {
+        input: prompt,
         cwd: root,
-        env,
-        stdio: ['pipe', stdoutFd, 'inherit'],
-        timeout: timeoutMs,
-        killSignal: 'SIGTERM',
+        env: {
+            ...env,
+            AGENT_CLAUDE_BIN: join(root, 'node_modules/.bin/claude'),
+            AGENT_TRANSCRIPT: transcriptPath,
+            AGENT_LOG_FILTER: join(__dirname, 'streamFormat.jq'),
+            AGENT_TIMEOUT_S: String(Math.ceil(timeoutMs / 1000)),
+        },
+        stdio: ['pipe', 'inherit', 'inherit'],
     });
 
-    closeSync(stdoutFd);
-    const output = readFileSync(tmpFile, 'utf-8');
-    unlinkSync(tmpFile);
+    const transcript = readFileSync(transcriptPath, 'utf-8');
+    unlinkSync(transcriptPath);
 
-    return { output, status: result.status, signal: result.signal, spawnError: result.error };
+    return {
+        transcript,
+        exitCode: result.status,
+        timedOut: result.status === TIMEOUT_EXIT_CODE,
+        spawnError: result.error,
+    };
 }
 
-function parseEnvelopeEntries(rawOutput: string): unknown[] | null {
-    try {
-        const parsed: unknown = JSON.parse(rawOutput.trim());
-
-        return Array.isArray(parsed) ? parsed : [parsed];
-    } catch {
-        return null;
-    }
-}
+const parseEnvelopes = (transcript: string): unknown[] =>
+    transcript
+        .trim()
+        .split('\n')
+        .map(line => JSON.parse(line) as unknown);
 
 function findResultEntry(entries: unknown[]): ClaudeResult | null {
     const resultEntry = entries
@@ -118,15 +133,6 @@ function findResultEntry(entries: unknown[]): ClaudeResult | null {
         .find(parsed => parsed.success && parsed.data.type === 'result');
 
     return resultEntry?.success ? resultEntry.data : null;
-}
-
-function logResultToTerminal(agentName: AgentName, claudeResult: ClaudeResult): void {
-    const RESULT_PREVIEW_LIMIT = 800;
-    log(`[${agentName}] subtype=${claudeResult.subtype ?? 'N/A'}`);
-
-    if (claudeResult.result) {
-        log(`${claudeResult.result.slice(0, RESULT_PREVIEW_LIMIT)}`);
-    }
 }
 
 function writeCostFile(totalCostUsd: number | undefined): void {
@@ -142,22 +148,15 @@ function writeCostFile(totalCostUsd: number | undefined): void {
     }
 }
 
-export function processAgentOutput(rawOutput: string, agent: AgentName): ClaudeResult | null {
-    const entries = parseEnvelopeEntries(rawOutput);
-    if (!entries) {
-        warn(`[${agent}] agent output unparsable (${rawOutput.length} bytes)`);
-
-        return null;
-    }
-
+export function processAgentOutput(transcript: string, agent: AgentName): ClaudeResult | null {
+    const entries = parseEnvelopes(transcript);
     const result = findResultEntry(entries);
+
     if (!result) {
         warn(`[${agent}] no result entry found in agent output`);
 
         return null;
     }
-
-    logResultToTerminal(agent, result);
 
     writeCostFile(result.total_cost_usd);
 
