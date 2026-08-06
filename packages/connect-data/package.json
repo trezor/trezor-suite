@@ -50,6 +50,6 @@
     "devDependencies": {
         "@types/chrome": "^0.1.40",
         "@types/jest": "30.0.0",
-        "@types/node": "22.13.10"
+        "@types/node": "26.1.1"
     }
 }

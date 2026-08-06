@@ -127,7 +127,7 @@ describe('TorSimulator', () => {
                 // request with CMD=0x03 (UDP ASSOCIATE), ATYP=IPv4, 0.0.0.0:80
                 socket.write(Buffer.from([0x05, 0x03, 0x00, 0x01, 0, 0, 0, 0, 0, 0x50]));
             });
-            socket.on('data', chunk => chunks.push(chunk));
+            socket.on('data', (chunk: Buffer) => chunks.push(chunk));
             socket.on('end', () => resolve(Buffer.concat(chunks)));
             socket.on('error', reject);
         });
@@ -148,7 +148,7 @@ describe('TorSimulator', () => {
                 socket.write(Buffer.from([0x05, 0x01, 0x00, 0x00, 0x00, 0x00, 0x50]));
             });
             // the simulator ends the socket after the error reply, so collect until close
-            socket.on('data', chunk => chunks.push(chunk));
+            socket.on('data', (chunk: Buffer) => chunks.push(chunk));
             socket.on('end', () => resolve(Buffer.concat(chunks)));
             socket.on('error', reject);
         });

@@ -69,7 +69,7 @@
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@types/jest": "30.0.0",
-        "@types/node": "22.13.10",
+        "@types/node": "26.1.1",
         "html-webpack-plugin": "5.6.7",
         "tiny-worker": "^2.3.0",
         "webpack": "5.108.1"

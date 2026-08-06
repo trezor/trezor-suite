@@ -10,8 +10,15 @@ import { type AlgorithmName, fixSignature } from './x509certificate';
 // use native SubtleCrypto api.
 // Unfortunately `crypto-browserify`.subtle polyfill is missing so needs to be referenced directly from window object (if exists)
 // https://github.com/browserify/crypto-browserify/issues/221
-const getSubtleCrypto = () => {
-    const subtleCrypto = typeof window !== 'undefined' ? window.crypto.subtle : crypto.subtle;
+const getSubtleCrypto = (): SubtleCrypto => {
+    // The browser (`window.crypto.subtle`) and Node.js (`crypto.subtle`) declare separate
+    // `SubtleCrypto` types. Since @types/node 26 their `importKey` overload sets diverged, so a
+    // union of the two is no longer callable (TS2349). We only use the standard WebCrypto surface,
+    // so collapse both branches onto the DOM `SubtleCrypto` type.
+    const subtleCrypto: SubtleCrypto | undefined =
+        typeof window !== 'undefined'
+            ? window.crypto.subtle
+            : (crypto.subtle as unknown as SubtleCrypto);
     if (!subtleCrypto) {
         throw new Error('SubtleCrypto not supported');
     }

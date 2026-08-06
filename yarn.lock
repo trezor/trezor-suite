@@ -11669,7 +11669,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/lodash": "npm:^4.17.16"
     "@types/minimist": "npm:^1.2.5"
-    "@types/node": "npm:22.13.10"
+    "@types/node": "npm:26.1.1"
     "@types/xml2js": "npm:^0.4.14"
     "@walletconnect/react-native-compat": "npm:^2.23.10"
     "@whatwg-node/events": "npm:0.1.2"
@@ -16196,7 +16196,7 @@ __metadata:
     "@trezor/utxo-lib": "workspace:*"
     "@trezor/websocket-client": "workspace:*"
     "@types/jest": "npm:30.0.0"
-    "@types/node": "npm:22.13.10"
+    "@types/node": "npm:26.1.1"
     "@types/web": "npm:^0.0.353"
     html-webpack-plugin: "npm:5.6.7"
     socks-proxy-agent: "npm:8.0.5"
@@ -16317,7 +16317,7 @@ __metadata:
     "@trezor/utxo-lib": "workspace:*"
     "@types/chrome": "npm:^0.1.40"
     "@types/jest": "npm:30.0.0"
-    "@types/node": "npm:22.13.10"
+    "@types/node": "npm:26.1.1"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -16329,7 +16329,7 @@ __metadata:
   dependencies:
     "@types/chrome": "npm:^0.1.40"
     "@types/jest": "npm:30.0.0"
-    "@types/node": "npm:22.13.10"
+    "@types/node": "npm:26.1.1"
   peerDependencies:
     "@trezor/device-utils": "workspace:*"
     tslib: ^2.6.2
@@ -16412,7 +16412,7 @@ __metadata:
     "@trezor/urls": "workspace:^"
     "@trezor/utils": "workspace:^"
     "@types/chrome": "npm:^0.1.40"
-    "@types/node": "npm:22.13.10"
+    "@types/node": "npm:26.1.1"
     "@types/redux-logger": "npm:^3.0.13"
     "@types/web": "npm:^0.0.353"
     "@uiw/react-codemirror": "npm:^4.25.11"
@@ -16545,7 +16545,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     "@types/jws": "npm:^3.2.11"
-    "@types/node": "npm:22.13.10"
+    "@types/node": "npm:26.1.1"
     "@types/w3c-web-usb": "npm:^1.0.14"
     "@vitest/browser-playwright": "npm:^4.1.10"
     cross-fetch: "npm:^4.1.0"
@@ -17177,7 +17177,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-native@workspace:packages/suite-desktop-native"
   dependencies:
-    "@types/node": "npm:22.13.10"
+    "@types/node": "npm:26.1.1"
     node-addon-api: "npm:8.5.0"
     node-gyp: "npm:12.2.0"
   languageName: unknown
@@ -17551,7 +17551,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/websocket-client": "workspace:*"
     "@types/jest": "npm:30.0.0"
-    "@types/node": "npm:22.13.10"
+    "@types/node": "npm:26.1.1"
     html-webpack-plugin: "npm:5.6.7"
     react: "npm:19.2.3"
     react-dom: "npm:19.2.3"
@@ -17598,7 +17598,7 @@ __metadata:
     "@trezor/protocol": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/node": "npm:22.13.10"
+    "@types/node": "npm:26.1.1"
     cross-fetch: "npm:^4.1.0"
     fast-check: "npm:3.23.2"
     jest: "npm:29.7.0"
@@ -17669,7 +17669,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/bytebuffer": "npm:^5.0.49"
-    "@types/node": "npm:22.13.10"
+    "@types/node": "npm:26.1.1"
     jest: "npm:29.7.0"
     usb: "npm:^2.17.0"
   peerDependencies:
@@ -17749,7 +17749,7 @@ __metadata:
   dependencies:
     "@trezor/utils": "workspace:*"
     "@types/jest": "npm:30.0.0"
-    "@types/node": "npm:22.13.10"
+    "@types/node": "npm:26.1.1"
     "@types/web": "npm:^0.0.353"
     "@types/ws": "npm:^8.5.13"
     ws: "npm:^8.21.1"
@@ -18541,12 +18541,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:22.13.10":
-  version: 22.13.10
-  resolution: "@types/node@npm:22.13.10"
+"@types/node@npm:26.1.1":
+  version: 26.1.1
+  resolution: "@types/node@npm:26.1.1"
   dependencies:
-    undici-types: "npm:~6.20.0"
-  checksum: 10/57dc6a5e0110ca9edea8d7047082e649fa7fa813f79e4a901653b9174141c622f4336435648baced5b38d9f39843f404fa2d8d7a10981610da26066bc8caab48
+    undici-types: "npm:~8.3.0"
+  checksum: 10/df6555a94c6b4cf74e6238373e2881e72dc91058cf2ba173be77ea3974aaa8f459c2f10fbb7eb644fb1e5189dd8407097f5d39506fad39c89bde18acb3b90316
   languageName: node
   linkType: hard
 
@@ -44965,7 +44965,7 @@ __metadata:
     "@swc/jest": "npm:^0.2.39"
     "@trezor/eslint": "workspace:*"
     "@types/jest": "npm:30.0.0"
-    "@types/node": "npm:22.13.10"
+    "@types/node": "npm:26.1.1"
     babel-jest: "npm:30.0.0"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.39.4"
@@ -45659,17 +45659,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:^8.2.0":
+"undici-types@npm:^8.2.0, undici-types@npm:~8.3.0":
   version: 8.3.0
   resolution: "undici-types@npm:8.3.0"
   checksum: 10/6681d2837ac75a75ac1cc46090aa2b8ddc7c6b8ecc295a6cdb06838752a730da3d8afeecf05e5ab7903160eafad3a8b6ffa1927e5ded260590f4d4fef18646d5
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~6.20.0":
-  version: 6.20.0
-  resolution: "undici-types@npm:6.20.0"
-  checksum: 10/583ac7bbf4ff69931d3985f4762cde2690bb607844c16a5e2fbb92ed312fe4fa1b365e953032d469fa28ba8b224e88a595f0b10a449332f83fa77c695e567dbe
   languageName: node
   linkType: hard
 

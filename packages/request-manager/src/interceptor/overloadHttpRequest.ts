@@ -6,8 +6,15 @@ import { type InterceptorContext } from './interceptorTypes';
 
 const PROXY_AUTH_KEY = 'proxy-authorization';
 
-const getHeaderValue = (headers: http.OutgoingHttpHeaders | undefined, name: string) => {
-    if (!headers) return;
+// Since @types/node 24 `RequestOptions.headers` is widened to also allow the raw
+// `OutgoingHttpHeader[]` array form. This interceptor only ever handles the object form, so this
+// guard narrows to it (`Array.isArray` alone does not narrow away the `readonly` array member).
+export const isHeaderObject = (
+    headers: http.RequestOptions['headers'],
+): headers is http.OutgoingHttpHeaders => !!headers && !Array.isArray(headers);
+
+const getHeaderValue = (headers: http.RequestOptions['headers'], name: string) => {
+    if (!isHeaderObject(headers)) return;
 
     const normalizedName = name.toLowerCase();
     const key = Object.keys(headers).find(k => k.toLowerCase() === normalizedName);
@@ -37,7 +44,7 @@ const getIdentityForAgent = (options?: Readonly<http.RequestOptions>) => {
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Proxy-Authorization
         return getIdentityName(proxyAuthorization);
     }
-    if (options?.headers?.Upgrade === 'websocket') {
+    if (options && isHeaderObject(options.headers) && options.headers.Upgrade === 'websocket') {
         // Create random identity for each websocket connection
         return `WebSocket/${options.host}/${getWeakRandomId(16)}`;
     }
@@ -195,7 +202,7 @@ export const overloadHttpRequest = ({
     const target = requestUrl ?? `${requestOptions.host ?? ''}${requestOptions.path ?? ''}`;
     reportInterceptedRequest(context, `${target} with agent ${!!requestOptions.agent}`);
 
-    if (requestOptions.headers) {
+    if (isHeaderObject(requestOptions.headers)) {
         const proxyAuthKey = getHeaderValue(requestOptions.headers, PROXY_AUTH_KEY)?.key;
         if (proxyAuthKey) {
             delete requestOptions.headers[proxyAuthKey];

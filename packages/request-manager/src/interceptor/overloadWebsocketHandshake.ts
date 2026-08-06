@@ -3,7 +3,7 @@ import type http from 'http';
 import { isWhitelistedHost } from '@trezor/utils';
 
 import { type InterceptorContext } from './interceptorTypes';
-import { overloadHttpRequest } from './overloadHttpRequest';
+import { isHeaderObject, overloadHttpRequest } from './overloadHttpRequest';
 
 type OverloadWebsocketHandshakeParams = {
     context: InterceptorContext;
@@ -37,7 +37,8 @@ export const overloadWebsocketHandshake = ({
         typeof url === 'object' &&
         !isWhitelistedHost(url.host, context.notRequiredTorDomainsList) && // difference between overloadHttpRequest
         'headers' in url &&
-        url.headers?.Upgrade === 'websocket'
+        isHeaderObject(url.headers) && // since @types/node 24 headers may also be a raw array form
+        url.headers.Upgrade === 'websocket'
     ) {
         return overloadHttpRequest({ context, protocol, url, options, callback, validateRequest });
     }
