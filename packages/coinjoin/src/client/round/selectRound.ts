@@ -206,6 +206,8 @@ export const getAccountCandidates = ({
                     key: account.accountKey,
                     reason: SessionPhase.CriticalError,
                 });
+
+                return [];
             }
 
             logger.info(`Found account candidate ~~${accountKey}~~ with ${utxos.length} inputs`);
