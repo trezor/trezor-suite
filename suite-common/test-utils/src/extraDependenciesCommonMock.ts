@@ -12,10 +12,7 @@ import {
     type PlatformEncryption,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
-import {
-    type ConnectInitSettings,
-    type ExtraDependencies,
-} from '@suite-common/redux-extra-dependencies';
+import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import {
     notImplementedAction,
     notImplementedActionType,
@@ -78,7 +75,7 @@ const networkModuleRepositoryMock: NetworkModuleRepository = {
     isSupportedNetwork: (_symbol: string): _symbol is NetworkSymbol => false,
 };
 
-const connectInitSettings: ConnectInitSettings = {
+const connectInitSettings: ExtraDependencies['services']['connectInitSettings'] = {
     debug: false,
     manifest: {
         email: 'info@trezor.io',

@@ -47,8 +47,8 @@ import { getSynchronize, isArrayMember } from '@trezor/utils';
 import { blacklist } from './blacklist';
 import {
     type ConnectInitSettingsDep,
-    type CreateTransportsDep,
     type GetDebugSettingsDep,
+    type TransportsDep,
 } from './connectInitTypes';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
@@ -62,13 +62,13 @@ type ConnectInitThunkDeps = {
         ConnectInitHooksDeps &
         ConnectInitSettingsDep &
         CreateLoggerDep &
-        CreateTransportsDep &
         GetAllowPrereleaseDep &
         GetDebugSettingsDep &
         GetDesktopBinDirDep &
         GetThpSettingsDep &
         GetTradedAccountKeysDep &
-        ThpHostNameDep;
+        ThpHostNameDep &
+        TransportsDep;
     thunks: FetchAndSaveMetadataDep;
 };
 

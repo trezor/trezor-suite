@@ -1,5 +1,5 @@
+import { type TransportName, type TransportsDep } from '@suite-common/connect-init';
 import { useServices } from '@suite-common/dependency-injection';
-import { type TransportName, type TransportsDep } from '@suite-common/redux-extra-dependencies';
 import TrezorConnect from '@trezor/connect';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';

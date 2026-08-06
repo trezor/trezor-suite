@@ -8,6 +8,7 @@ import {
 import type { AddressValidatorDep } from '@suite-common/address';
 import type { AnalyticsDep } from '@suite-common/analytics';
 import { type Bip329Dep } from '@suite-common/bip329-types';
+import type { ConnectInitSettingsDep, TransportsDep } from '@suite-common/connect-init';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { type Getter } from '@suite-common/dependency-injection';
 import {
@@ -32,21 +33,14 @@ import {
     type ReloadAppDep,
     type ReportSecurityCheckDep,
 } from '@suite-common/suite-types';
+import type { ThpHostNameDep } from '@suite-common/thp';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type GetTradedAccountKeysDep,
     type SelectedAccountStatus,
 } from '@suite-common/wallet-types';
-import {
-    type BluetoothDeviceId,
-    type ConnectSettings,
-    type CreateLogger,
-    type CreateLoggerDep,
-    type Manifest,
-    type ThpSettings,
-} from '@trezor/connect';
-import type { Transport } from '@trezor/transport-common';
+import { type BluetoothDeviceId, type CreateLoggerDep, type ThpSettings } from '@trezor/connect';
 import { type KeyedThrottle } from '@trezor/utils';
 
 interface AnyAction extends Action {
@@ -65,33 +59,6 @@ type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload: any }) => void;
 
-export type ConnectInitSettings = {
-    manifest: Manifest;
-} & Partial<ConnectSettings>;
-
-export type ThpHostNameDep = { thpHostName?: string };
-
-export type TransportName =
-    | 'BridgeTransport'
-    | 'NodeUsbTransport'
-    | 'UdpTransport'
-    | 'WebUsbTransport';
-
-// Web/native yield a constructed Transport instance. The desktop renderer can't build node-only
-// transports (`usb`/`dgram`), so it yields the identifier string — the main process maps it to an
-// instance below the IPC boundary (see suite-desktop-core/src/modules/trezor-connect.ts).
-export type TransportFactory = (logger?: CreateLogger) => Transport | TransportName;
-
-export type GetTransportsFactories = () => Partial<Record<TransportName, TransportFactory>>;
-
-export type GetTransportsFactoriesDep = {
-    getTransportsFactories: GetTransportsFactories;
-};
-
-export type CreateTransports = (transports: TransportName[]) => ConnectSettings['transports'];
-
-export type TransportsDep = { createTransports: CreateTransports };
-
 export type CommonServices = SuiteSyncDep &
     AddressValidatorDep &
     GetNetworkConfigDep &
@@ -101,13 +68,13 @@ export type CommonServices = SuiteSyncDep &
     EnsureDelegatedIdentityKeyDep &
     PlatformEncryptionDep &
     AnalyticsDep &
+    ConnectInitSettingsDep &
     ConnectInitHooksDeps &
     GetAllowPrereleaseDep &
     GetIsWindowVisibleDep &
     GetLanguageDep &
     GetTradedAccountKeysDep & {
         saveAs: (data: Blob, fileName: string) => void;
-        connectInitSettings: ConnectInitSettings;
         accountRefreshThrottle: KeyedThrottle<Account['key']>;
         // Getters, so a component cannot read them during render and miss later state changes.
         // See `toGetter`/`useGetter` in @suite-common/dependency-injection.

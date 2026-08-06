@@ -29,6 +29,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/transport-common": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*"
     }

@@ -1,0 +1,4 @@
+{
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": ["@suite-common/connect-init", "@suite-common/thp"]
+}
