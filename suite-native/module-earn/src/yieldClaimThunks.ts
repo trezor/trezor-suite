@@ -11,12 +11,11 @@ import {
     stablecoinYieldActions,
     synchronizeSentTransactionThunk,
 } from '@suite-common/wallet-core';
-import { type Account, AddressDisplayOptions, type FormState } from '@suite-common/wallet-types';
-import { getAccountIdentity } from '@suite-common/wallet-utils';
+import { type Account, type FormState } from '@suite-common/wallet-types';
 import { type UpdateSelectedFeeLevelThunkParams } from '@suite-native/transaction-management';
-import TrezorConnect from '@trezor/connect';
 
 import { EARN_MODULE_PREFIX } from './constants';
+import { pushYieldTransaction, signYieldTransactionOnDevice } from './utils/deviceTransactionUtils';
 import { getSelectedFeeFromUnsignedClaimTransaction } from './utils/yieldClaimFeeUtils';
 import { buildYieldClaimRewards } from './utils/yieldClaimReviewUtils';
 import { getPushErrorType } from './yieldTransactionThunks';
@@ -131,16 +130,11 @@ export const signYieldClaimReviewThunk = createThunk<
             }),
         );
 
-        const signingResponse = await TrezorConnect.ethereumSignTransaction({
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: device.state,
-                useEmptyPassphrase: device.useEmptyPassphrase,
-            },
+        const signingResponse = await signYieldTransactionOnDevice({
+            device,
             path: account.path,
             transaction: transactionForSigning,
-            chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
+            addressDisplayType,
         });
 
         if (!signingResponse.success) {
@@ -212,10 +206,9 @@ export const pushYieldClaimReviewThunk = createThunk<
             });
         }
 
-        const pushResponse = await TrezorConnect.pushTransaction({
+        const pushResponse = await pushYieldTransaction({
             tx: serializedTx.tx,
-            coin: serializedTx.symbol,
-            identity: getAccountIdentity(account),
+            account,
         });
 
         dispatch(stablecoinYieldActions.discardTransaction());

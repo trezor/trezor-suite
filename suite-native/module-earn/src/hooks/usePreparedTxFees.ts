@@ -73,7 +73,7 @@ type UsePreparedTxFeesParams<TComposed extends ComposedTxBase> = {
     symbol: NetworkSymbol | undefined;
 };
 
-export const getFeeInfoRevision = (feeInfo: FeeInfo | null | undefined) =>
+const getFeeInfoRevision = (feeInfo: FeeInfo | null | undefined) =>
     feeInfo?.levels
         .map(({ baseFeePerGas, blocks, feePerUnit, label, maxFeePerGas, maxPriorityFeePerGas }) =>
             [label, feePerUnit, blocks, maxFeePerGas, maxPriorityFeePerGas, baseFeePerGas].join(

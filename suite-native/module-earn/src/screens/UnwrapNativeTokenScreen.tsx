@@ -1,26 +1,18 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { selectIsDeviceConnected } from '@suite-common/device';
 import { WRAPPED_NATIVE, getNetwork } from '@suite-common/wallet-config';
-import {
-    type AccountsRootState,
-    type YieldPendingTransactionState,
-    selectAccountByKey,
-    useWrappedNativePendingTx,
-} from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
-import { Box, Button, FullAlertBox, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { Box, Button, FullAlertBox, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
     ScreenHeader,
-    type StackNavigationProps,
     type WrappedNativeTokenStackParamList,
-    WrappedNativeTokenStackRoutes,
+    type WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
 
@@ -30,45 +22,23 @@ import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationEr
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
 import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
+import { useStandaloneWrappedNativeFlow } from '../hooks/useStandaloneWrappedNativeFlow';
 import { useWrappedNativeTokenFees } from '../hooks/useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from '../hooks/useWrappedNativeTokenForm';
-import { useYieldPendingTransaction } from '../hooks/useYieldPendingTransaction';
 import { getAccountTokenByContract } from '../utils/contractTokenBalanceUtils';
 
 type RouteProps = RouteProp<
     WrappedNativeTokenStackParamList,
     WrappedNativeTokenStackRoutes.UnwrapNativeToken
 >;
-type NavigationProps = StackNavigationProps<
-    WrappedNativeTokenStackParamList,
-    WrappedNativeTokenStackRoutes.UnwrapNativeToken
->;
-
-type PreparedUnwrap = {
-    amount: string;
-    unsignedTransaction: string;
-};
 
 export const UnwrapNativeTokenScreen = () => {
     const route = useRoute<RouteProps>();
-    const navigation = useNavigation<NavigationProps>();
-    const isFocused = useIsFocused();
-    const { accountKey, pendingTransaction: pendingParam } = route.params;
-
-    const [isDeviceNotConnectedVisible, setIsDeviceNotConnectedVisible] = useState(false);
-    const [hasUnwrapFailed, setHasUnwrapFailed] = useState(false);
-    const [preparedUnwrap, setPreparedUnwrap] = useState<PreparedUnwrap | null>(null);
-
-    const {
-        bottomSheetRef: simulationBottomSheetRef,
-        closeModal: closeSimulationBottomSheet,
-        openModal: openSimulationBottomSheet,
-    } = useBottomSheetModal();
+    const { accountKey, pendingTransaction } = route.params;
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
     const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
     const wrappedBalance =
@@ -92,8 +62,8 @@ export const UnwrapNativeTokenScreen = () => {
         formState: { isValid },
     } = form.form;
 
-    const isUnwrapPending = !!pendingParam;
     const isUnwrapAmountReady = isValid && !!amountValue;
+    const isUnwrapPending = !!pendingTransaction;
 
     const unwrapFee = useWrappedNativeTokenFees({
         account: account ?? null,
@@ -102,88 +72,14 @@ export const UnwrapNativeTokenScreen = () => {
         isEnabled: isUnwrapAmountReady && !isUnwrapPending,
     });
 
-    const pendingStatus = useWrappedNativePendingTx(
-        account ?? null,
-        pendingParam?.txid ?? null,
-        'unwrap',
-    );
-    const pendingTransaction: YieldPendingTransactionState | null = useMemo(
-        () =>
-            pendingParam
-                ? {
-                      type: 'unwrap',
-                      txid: pendingParam.txid,
-                      amount: pendingParam.amount,
-                      fee: pendingParam.fee,
-                      submittedAt: pendingParam.submittedAt,
-                  }
-                : null,
-        [pendingParam],
-    );
-    const { pendingBottomSheetRef, pendingModalProps } = useYieldPendingTransaction({
+    const flow = useStandaloneWrappedNativeFlow({
+        account: account ?? null,
         accountKey,
-        isFocused,
-        pendingTransaction,
-        transactionType: 'unwrap',
+        amountValue,
+        flowType: 'unwrap',
+        pendingParam: pendingTransaction,
+        preparedAction: unwrapFee.preparedAction,
     });
-
-    useEffect(() => {
-        if (!pendingParam) {
-            return;
-        }
-
-        if (pendingStatus === 'confirmed') {
-            navigation.replace(WrappedNativeTokenStackRoutes.UnwrapNativeTokenComplete, {
-                accountKey,
-                amount: pendingParam.amount,
-                txid: pendingParam.txid,
-            });
-
-            return;
-        }
-
-        if (pendingStatus === 'failed') {
-            setHasUnwrapFailed(true);
-            navigation.setParams({ pendingTransaction: undefined });
-        }
-    }, [accountKey, navigation, pendingStatus, pendingParam]);
-
-    const handleSubmit = useCallback(() => {
-        const { preparedAction } = unwrapFee;
-
-        if (preparedAction?.amount !== amountValue) {
-            return;
-        }
-
-        setHasUnwrapFailed(false);
-        setPreparedUnwrap(preparedAction);
-        requestAnimationFrame(openSimulationBottomSheet);
-    }, [amountValue, openSimulationBottomSheet, unwrapFee]);
-
-    const handleConfirmSimulation = useCallback(() => {
-        closeSimulationBottomSheet();
-
-        if (!preparedUnwrap) {
-            return;
-        }
-
-        if (!isDeviceConnected) {
-            setIsDeviceNotConnectedVisible(true);
-
-            return;
-        }
-
-        setIsDeviceNotConnectedVisible(false);
-        navigation.navigate(WrappedNativeTokenStackRoutes.UnwrapNativeTokenReview, {
-            accountKey,
-            amount: preparedUnwrap.amount,
-            unsignedTransaction: preparedUnwrap.unsignedTransaction,
-        });
-    }, [accountKey, closeSimulationBottomSheet, isDeviceConnected, navigation, preparedUnwrap]);
-
-    const handleCancelSimulation = useCallback(() => {
-        closeSimulationBottomSheet();
-    }, [closeSimulationBottomSheet]);
 
     if (!account || !wrappedNative || account.networkType !== 'ethereum') {
         return null;
@@ -237,7 +133,7 @@ export const UnwrapNativeTokenScreen = () => {
                                 formDraftKey={unwrapFee.formDraftKey}
                             />
                         ))}
-                    {isDeviceNotConnectedVisible && (
+                    {flow.isDeviceNotConnectedVisible && (
                         <FullAlertBox
                             intent="critical"
                             title={
@@ -245,7 +141,7 @@ export const UnwrapNativeTokenScreen = () => {
                             }
                         />
                     )}
-                    {hasUnwrapFailed && (
+                    {flow.hasFlowFailed && (
                         <FullAlertBox
                             intent="critical"
                             title={<Translation id="earn.unwrapNativeToken.complete.failedTitle" />}
@@ -256,36 +152,36 @@ export const UnwrapNativeTokenScreen = () => {
                     )}
                     <Button
                         isDisabled={isSubmitDisabled}
-                        onPress={handleSubmit}
+                        onPress={flow.handleSubmit}
                         testID="@unwrap-native-token/submit-button"
                     >
                         <Translation id="earn.unwrapNativeToken.submitButton" />
                     </Button>
                 </VStack>
             </Box>
-            {preparedUnwrap && (
+            {flow.preparedTx && (
                 <YieldTxSimulationBottomSheet
-                    ref={simulationBottomSheetRef}
+                    ref={flow.simulationBottomSheetRef}
                     account={account}
                     flow="unwrap"
-                    onCancel={handleCancelSimulation}
-                    onConfirm={handleConfirmSimulation}
-                    unsignedTx={preparedUnwrap.unsignedTransaction}
+                    onCancel={flow.handleCancelSimulation}
+                    onConfirm={flow.handleConfirmSimulation}
+                    unsignedTx={flow.preparedTx.unsignedTransaction}
                 />
             )}
-            {pendingParam && pendingModalProps && (
+            {pendingTransaction && flow.pendingModalProps && (
                 <YieldPendingTransactionModal
-                    ref={pendingBottomSheetRef}
+                    ref={flow.pendingBottomSheetRef}
                     accountLabel={accountLabel}
                     accountSymbol={account.symbol}
-                    amount={pendingParam.amount}
+                    amount={pendingTransaction.amount}
                     amountLabel={<Translation id="earn.unwrapNativeToken.amountToUnwrap" />}
                     amountTokenContract={toTokenAddress(wrappedNative.address)}
                     amountTokenSymbol={wrappedTokenSymbol}
-                    fee={pendingModalProps.fee}
-                    isExploreDisabled={pendingModalProps.isExploreDisabled}
-                    onExplorePress={pendingModalProps.onExplorePress}
-                    submittedAt={pendingModalProps.submittedAt}
+                    fee={flow.pendingModalProps.fee}
+                    isExploreDisabled={flow.pendingModalProps.isExploreDisabled}
+                    onExplorePress={flow.pendingModalProps.onExplorePress}
+                    submittedAt={flow.pendingModalProps.submittedAt}
                     title={<Translation id="earn.unwrapNativeToken.pendingTransactionTitle" />}
                 />
             )}

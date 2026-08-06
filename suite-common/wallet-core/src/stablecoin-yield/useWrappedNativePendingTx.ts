@@ -5,6 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 import {
     type WrappedNativePendingTxStatus,
     findTrackedWrappedNativeTransaction,
+    getPollIntervalMs,
     getWrappedNativePendingTxStatus,
 } from '@suite-common/wallet-utils';
 
@@ -13,10 +14,6 @@ import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
 import { type FeesRootState, selectConvertedNetworkFeeInfo } from '../fees/feesReducer';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import { selectAccountTransactions } from '../transactions/transactionsSelectors';
-
-const DEFAULT_POLL_INTERVAL_MS = 3_000;
-const MIN_POLL_INTERVAL_MS = 2_000;
-const BLOCK_TIME_TO_POLL_INTERVAL_RATIO = 2;
 
 export type { WrappedNativePendingTxStatus };
 
@@ -61,12 +58,7 @@ export const useWrappedNativePendingTx = (
         );
     }, [originalNonce, txid]);
 
-    const pollIntervalMs = feeInfo?.blockTime
-        ? Math.max(
-              (feeInfo.blockTime / BLOCK_TIME_TO_POLL_INTERVAL_RATIO) * 1000,
-              MIN_POLL_INTERVAL_MS,
-          )
-        : DEFAULT_POLL_INTERVAL_MS;
+    const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
 
     const status = account
         ? getWrappedNativePendingTxStatus({ txid, trackedTransaction, flowType })

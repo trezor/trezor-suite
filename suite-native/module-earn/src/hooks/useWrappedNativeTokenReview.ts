@@ -8,7 +8,7 @@ import { type Account } from '@suite-common/wallet-types';
 import {
     type StackNavigationProps,
     type WrappedNativeTokenStackParamList,
-    WrappedNativeTokenStackRoutes,
+    type WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
 
 import { type YieldReviewSigningResult, type YieldReviewStatus } from '../types';
@@ -18,6 +18,7 @@ import {
     signWrappedNativeTokenThunk,
 } from '../wrappedNativeTokenThunks';
 import { useEarnTransactionReview } from './useEarnTransactionReview';
+import { wrappedNativeTokenFlowRoutes } from '../utils/wrappedNativeTokenFlowRoutes';
 
 type UseWrappedNativeTokenReviewParams = {
     account: Account;
@@ -76,20 +77,15 @@ export const useWrappedNativeTokenReview = ({
                 return;
             }
 
-            navigation.popTo(
-                flowType === 'wrap'
-                    ? WrappedNativeTokenStackRoutes.WrapNativeToken
-                    : WrappedNativeTokenStackRoutes.UnwrapNativeToken,
-                {
-                    accountKey: account.key,
-                    pendingTransaction: {
-                        amount,
-                        fee: signedTransaction.precomposedTransaction.fee,
-                        submittedAt: Date.now(),
-                        txid,
-                    },
+            navigation.popTo(wrappedNativeTokenFlowRoutes[flowType].form, {
+                accountKey: account.key,
+                pendingTransaction: {
+                    amount,
+                    fee: signedTransaction.precomposedTransaction.fee,
+                    submittedAt: Date.now(),
+                    txid,
                 },
-            );
+            });
         },
         [account, amount, flowType, navigation, signedTransaction],
     );

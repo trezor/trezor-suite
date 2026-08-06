@@ -12,11 +12,10 @@ import {
     stablecoinYieldActions,
     synchronizeSentTransactionThunk,
 } from '@suite-common/wallet-core';
-import { AddressDisplayOptions, type EvmSelectedFee } from '@suite-common/wallet-types';
-import { getAccountIdentity } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
+import { type EvmSelectedFee } from '@suite-common/wallet-types';
 
 import { EARN_MODULE_PREFIX } from './constants';
+import { pushYieldTransaction, signYieldTransactionOnDevice } from './utils/deviceTransactionUtils';
 
 const YIELD_TRANSACTION_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/yield-transaction`;
 
@@ -107,16 +106,11 @@ export const signYieldActionReviewThunk = createThunk<
             }),
         );
 
-        const signingResponse = await TrezorConnect.ethereumSignTransaction({
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: device.state,
-                useEmptyPassphrase: device.useEmptyPassphrase,
-            },
+        const signingResponse = await signYieldTransactionOnDevice({
+            device,
             path: flowData.account.path,
             transaction: transactionForSigning,
-            chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
+            addressDisplayType,
         });
 
         if (!signingResponse.success) {
@@ -188,10 +182,9 @@ export const pushYieldActionReviewThunk = createThunk<
             });
         }
 
-        const pushResponse = await TrezorConnect.pushTransaction({
+        const pushResponse = await pushYieldTransaction({
             tx: serializedTx.tx,
-            coin: serializedTx.symbol,
-            identity: getAccountIdentity(flowData.account),
+            account: flowData.account,
         });
 
         dispatch(stablecoinYieldActions.discardTransaction());
