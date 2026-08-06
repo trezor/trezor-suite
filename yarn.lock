@@ -16366,7 +16366,7 @@ __metadata:
     focus-visible: "npm:^5.2.1"
     git-url-parse: "npm:^16.1.0"
     intersection-observer: "npm:^0.12.2"
-    match-sorter: "npm:^6.3.1"
+    match-sorter: "npm:^8.3.0"
     next: "npm:15.5.21"
     next-seo: "npm:^6.6.0"
     next-themes: "npm:^0.4.6"
@@ -34390,6 +34390,16 @@ __metadata:
     "@babel/runtime": "npm:^7.23.8"
     remove-accents: "npm:0.5.0"
   checksum: 10/80b6cb04415b68b32cc7ec1242cc125f95ca6a8739a787dbc5e8058a120aaf5cb4ff8f8467b6f9949a8d8a6430a44d64659894d26138a03a8c0dd6ba239d5519
+  languageName: node
+  linkType: hard
+
+"match-sorter@npm:^8.3.0":
+  version: 8.3.0
+  resolution: "match-sorter@npm:8.3.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.23.8"
+    remove-accents: "npm:0.5.0"
+  checksum: 10/bf3f36a0844270dcc87edd639ef06534b07be2061e5dd0dc35b1168f8e16cab4897a0b471f0762e44102c95b80ff1392147f6ee96ac6fc28ef76652ea48c1f82
   languageName: node
   linkType: hard
 
