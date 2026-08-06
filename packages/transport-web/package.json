@@ -41,7 +41,7 @@
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
-        "@types/sharedworker": "^0.0.223"
+        "@types/sharedworker": "^0.0.229"
     },
     "dependencies": {
         "@trezor/transport-common": "workspace:*"
