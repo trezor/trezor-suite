@@ -11,7 +11,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsState,
     type BlockchainState,
-    DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    DEFAULT_NETWORK_SYNC_INTERVAL,
     type TransactionsState,
     blockchainActions,
     feesReducer,
@@ -173,7 +173,7 @@ describe('Blockchain Actions', () => {
                     // The armed timer must actually continue the chain, not just exist: firing
                     // it has to run syncAccountsWithBlockchainThunk, which re-arms via a second
                     // synced action.
-                    await jest.advanceTimersByTimeAsync(DEFAULT_ACCOUNT_SYNC_INTERVAL);
+                    await jest.advanceTimersByTimeAsync(DEFAULT_NETWORK_SYNC_INTERVAL);
                     const syncedActions = store
                         .getActions()
                         .filter(

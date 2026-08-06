@@ -7,7 +7,6 @@ import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { prepareTokenDefinitionsMiddleware } from '@suite-common/token-definitions';
 import {
-    type AccountRefreshThrottleDep,
     prepareAccountsMiddleware,
     prepareBlockchainMiddleware,
     prepareFiatRatesMiddleware,
@@ -25,7 +24,7 @@ import { tradingMiddleware } from './tradingMiddleware';
 import walletMiddleware from './walletMiddleware';
 
 export type GetWalletMiddlewaresDeps = WalletConnectMiddlewareDeps & {
-    services: AccountRefreshThrottleDep & SuiteSyncDep;
+    services: SuiteSyncDep;
 };
 
 export const getWalletMiddlewares = (
