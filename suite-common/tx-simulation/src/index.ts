@@ -16,7 +16,7 @@ export {
 } from './hooks/useNetworkTxSimulation';
 export { useTxSimulation } from './hooks/useTxSimulation';
 
-export type { AccountSummary, TransactionSimulation } from '@blockaid/client/resources/evm';
+export type { AccountSummary, TransactionSimulation } from './blockaidTypes';
 export { TX_METHODS_WITH_FEES } from './config';
 export {
     computeGasFeeInWei,
