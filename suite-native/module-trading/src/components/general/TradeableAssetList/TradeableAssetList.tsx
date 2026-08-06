@@ -4,13 +4,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Box, EdgeFades, SearchInput, VStack } from '@suite-native/atoms';
+import { Box, EdgeFades, HStack, SearchInput, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { FOCUS_ANIMATION_DURATION } from '@suite-native/trading-atoms';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { useNativeStyles } from '@trezor/styles-native';
 
-import { TradeableAssetFilterTabs } from './TradeableAssetFilterTabs';
+import { NetworkPicker } from './NetworkPicker';
 import { TradeableAssetListEmptyComponent } from './TradeableAssetListEmptyComponent';
 import { TradeableAssetListItem } from './TradeableAssetListItem';
 
@@ -19,6 +18,7 @@ export type TradeableAssetListProps = {
     onAssetSelect: (asset: TradeableAsset) => void;
     onFilterChange: (value: string) => void;
     onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
+    selectedNetworkFilter: NetworkSymbol | undefined;
     scrollResetKey: string;
     testID?: string;
 };
@@ -30,6 +30,7 @@ export const TradeableAssetList = ({
     onAssetSelect,
     onFilterChange,
     onSelectedNetworkFilter,
+    selectedNetworkFilter,
     scrollResetKey,
     testID,
 }: TradeableAssetListProps) => {
@@ -44,17 +45,24 @@ export const TradeableAssetList = ({
 
     return (
         <VStack flex={1} spacing="sp16" testID={testID}>
-            <SearchInput
-                onChange={onFilterChange}
-                placeholder={translate('moduleTrading.tradeableAssetsSheet.searchInputPlaceholder')}
-                autoCorrect={false}
-                testId={testID ? `${testID}/search-input` : undefined}
-            />
-            <TradeableAssetFilterTabs
-                isVisible
-                animationDuration={FOCUS_ANIMATION_DURATION}
-                onSelectedNetworkFilter={onSelectedNetworkFilter}
-            />
+            <HStack spacing="sp12" paddingHorizontal="sp16">
+                <Box flex={1}>
+                    <SearchInput
+                        onChange={onFilterChange}
+                        placeholder={translate(
+                            'moduleTrading.tradeableAssetsSheet.searchInputPlaceholderText',
+                        )}
+                        autoCorrect={false}
+                        size="large"
+                        testId={testID ? `${testID}/search-input` : undefined}
+                    />
+                </Box>
+                <NetworkPicker
+                    selectedNetwork={selectedNetworkFilter}
+                    onSelectNetwork={onSelectedNetworkFilter}
+                    testID={testID ? `${testID}/network-picker` : undefined}
+                />
+            </HStack>
             <Box flex={1}>
                 <FlashList
                     ref={flashListRef}

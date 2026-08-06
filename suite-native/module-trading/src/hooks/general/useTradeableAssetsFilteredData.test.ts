@@ -84,6 +84,7 @@ describe('useTradeableAssetsFilteredData', () => {
             result.current.setFilterSymbol('btc' as NetworkSymbol);
         });
 
+        expect(result.current.filterSymbol).toBe('btc');
         expect(result.current.filteredData).toHaveLength(1);
         expect(result.current.filteredData[0]?.networkId).toBe('bitcoin');
     });
