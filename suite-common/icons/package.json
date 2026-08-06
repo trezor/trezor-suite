@@ -18,7 +18,7 @@
         "@suite-common/wallet-config": "workspace:^",
         "chalk": "^5.6.2",
         "fantasticon": "4.1.0",
-        "prettier": "^3.8.4",
+        "prettier": "^3.9.6",
         "sharp": "^0.34.2",
         "svgo": "^4.0.1"
     },
