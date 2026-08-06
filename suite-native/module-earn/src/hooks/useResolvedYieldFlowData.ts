@@ -144,7 +144,7 @@ export const resolveYieldFlowData = ({
         apy,
         bonusRewardTokenSymbol: protocolIncentiveRewardToken?.symbol ?? null,
         providerName,
-        tokenSymbol: toTokenSymbol(vault.token.symbol.toUpperCase()),
+        tokenSymbol: toTokenSymbol(vault.token.symbol),
         vault,
         vaultTokenName,
         vaultTokenSymbol,

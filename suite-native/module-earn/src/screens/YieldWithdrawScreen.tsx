@@ -495,10 +495,10 @@ export const YieldWithdrawScreen = () => {
         return null;
     }
 
-    const underlyingTokenSymbol = toTokenSymbol(flowData.token.symbol.toUpperCase());
-    const vaultTokenSymbol = toTokenSymbol(flowData.receiptToken.symbol.toUpperCase());
+    const underlyingTokenSymbol = toTokenSymbol(flowData.token.symbol);
+    const vaultTokenSymbol = toTokenSymbol(flowData.receiptToken.symbol);
 
-    const activeUnitSymbol = toTokenSymbol(activeInputToken.symbol.toUpperCase());
+    const activeUnitSymbol = toTokenSymbol(activeInputToken.symbol);
     const activeUnitTokenContract = activeInputToken.contractAddress
         ? toTokenAddress(activeInputToken.contractAddress)
         : undefined;

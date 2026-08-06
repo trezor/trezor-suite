@@ -96,7 +96,7 @@ export const useStablecoinYieldListData = () => {
                 continue;
             }
 
-            const stablecoinSymbol = toTokenSymbol(vault.token.symbol.toUpperCase());
+            const stablecoinSymbol = toTokenSymbol(vault.token.symbol);
 
             const apy = vault.rewardRate.total
                 ? Number((vault.rewardRate.total * 100).toFixed(2))

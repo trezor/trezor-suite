@@ -208,7 +208,7 @@ export const StablecoinYieldTokenOverview = ({
                   }),
                   contractAddress: toTokenAddress(vault.token.address),
                   symbol: account.symbol,
-                  tokenSymbol: toTokenSymbol(vault.token.symbol.toUpperCase()),
+                  tokenSymbol: toTokenSymbol(vault.token.symbol),
               }
             : null;
     const hasApyBreakdown = vault.rewardRate.components.length > 0;
