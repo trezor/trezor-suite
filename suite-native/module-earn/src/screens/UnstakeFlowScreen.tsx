@@ -6,7 +6,6 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountDetailsCard } from '@suite-native/accounts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     type ActiveView,
@@ -26,6 +25,7 @@ import {
 import { FeeSelector } from '@suite-native/transaction-management';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 
+import { EarnAmountCard } from '../components/EarnAmountCard';
 import { EarnOutputFields } from '../components/EarnOutputFields';
 import { SolanaUnstakeAmountBoundsAlert } from '../components/SolanaUnstakeAmountBoundsAlert';
 import { UnstakeCanClaimAlert } from '../components/UnstakeCanClaimAlert';
@@ -124,10 +124,9 @@ export const UnstakeFlowScreen = () => {
                 </>
             }
         >
-            <AccountDetailsCard
+            <EarnAmountCard
                 accountKey={accountKey}
-                isStakeVariant
-                titleLabel={<Translation id="earn.earnFormScreen.staked" />}
+                label={<Translation id="earn.earnFormScreen.staked" />}
                 cryptoAmount={stakedBalance ?? undefined}
             />
 
