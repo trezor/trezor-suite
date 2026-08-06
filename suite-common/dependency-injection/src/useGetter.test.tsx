@@ -35,8 +35,12 @@ const createTestStore = () => configureStore({ reducer: testSlice.reducer });
 type RelayUrlDep = { getRelayUrl: Getter<[], string> };
 type TorDep = { getIsTorEnabled: Getter<[], boolean> };
 type SelectedWalletDep = { getIsSelectedWallet: Getter<[walletDescriptor: string], boolean> };
+type ConnectionDep = { getConnection: Getter<[], { relayUrl: string; isTorEnabled: boolean }> };
 
 const selectRelayUrlDep = (services: any): RelayUrlDep => ({ getRelayUrl: services.getRelayUrl });
+const selectConnectionDep = (services: any): ConnectionDep => ({
+    getConnection: services.getConnection,
+});
 const selectSelectedWalletDep = (services: any): SelectedWalletDep => ({
     getIsSelectedWallet: services.getIsSelectedWallet,
 });
@@ -59,6 +63,12 @@ const renderUseGetter = <TResult, TProps>(
             (state: TestState, walletDescriptor: string) =>
                 state.selectedWalletDescriptor === walletDescriptor,
         ),
+        // Built on a plain, non-memoizing selector, so every call returns a new object reference
+        // holding the same values.
+        getConnection: toGetter(store.getState, (state: TestState) => ({
+            relayUrl: state.relayUrl,
+            isTorEnabled: state.isTorEnabled,
+        })),
     };
 
     const wrapper = ({ children }: PropsWithChildren) => (
@@ -105,6 +115,27 @@ describe(useGetter.name, () => {
         });
 
         expect(renderSpy.mock.calls.length).toBe(rendersBefore);
+    });
+
+    it('does not re-render when a getter returns a shallowly equal object', () => {
+        const { store, renderSpy } = renderUseGetter(() => useGetter(selectConnectionDep));
+        const rendersBefore = renderSpy.mock.calls.length;
+
+        act(() => {
+            store.dispatch(setTestState({ selectedWalletDescriptor: 'wallet-2' }));
+        });
+
+        expect(renderSpy.mock.calls.length).toBe(rendersBefore);
+    });
+
+    it('re-renders when a field of the returned object changes', () => {
+        const { store, result } = renderUseGetter(() => useGetter(selectConnectionDep));
+
+        act(() => {
+            store.dispatch(setTestState({ isTorEnabled: true }));
+        });
+
+        expect(result.current).toEqual({ relayUrl: 'wss://relay.example.com', isTorEnabled: true });
     });
 
     it('forwards params to the getter', () => {
