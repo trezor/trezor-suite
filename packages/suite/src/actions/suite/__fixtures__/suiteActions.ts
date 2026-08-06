@@ -1,4 +1,5 @@
 import { deviceActions } from '@suite-common/device';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectNewlyConnectedDeviceThunk } from '@suite-common/wallet-core';
@@ -14,6 +15,7 @@ const SUITE_DEVICE_UNACQUIRED = mockSuiteDevice({
     type: 'unacquired',
     path: '2',
 });
+const SUITE_DEVICE_CONNECTED = mockSuiteDevice({ path: '1', connected: true });
 const SUITE_DEVICE_REMEMBERED = mockSuiteDevice({ connected: false });
 const CONNECT_DEVICE = mockConnectDevice({ path: '1' });
 
@@ -212,7 +214,18 @@ const selectDevice = [
     },
 ];
 
-const selectNewlyConnectedDevice = [
+type SelectNewlyConnectedDeviceFixture = {
+    description: string;
+    state: {
+        device: Partial<AppState['device']>;
+        firmware?: Partial<AppState['firmware']>;
+        suite?: Partial<AppState['suite']>;
+    };
+    newlyConnectedDevice: Device | TrezorDevice;
+    expectedNextActionType: string;
+};
+
+const selectNewlyConnectedDevice: SelectNewlyConnectedDeviceFixture[] = [
     {
         description: `select a new device`,
         state: {
@@ -234,7 +247,29 @@ const selectNewlyConnectedDevice = [
     {
         description: `doesn't select a newly connected device if it is already selected`,
         state: {
-            device: { devices: [SUITE_DEVICE], selectedDevice: SUITE_DEVICE },
+            device: {
+                devices: [SUITE_DEVICE_CONNECTED],
+                selectedDevice: SUITE_DEVICE_CONNECTED,
+            },
+            suite: {},
+        },
+        newlyConnectedDevice: SUITE_DEVICE_UNACQUIRED,
+        expectedNextActionType: selectNewlyConnectedDeviceThunk.rejected.type,
+    },
+    {
+        description: `selects a newly connected device when the selected wallet has no device connected`,
+        state: {
+            device: { devices: [SUITE_DEVICE_REMEMBERED], selectedDevice: SUITE_DEVICE_REMEMBERED },
+            suite: {},
+        },
+        newlyConnectedDevice: SUITE_DEVICE_UNACQUIRED,
+        expectedNextActionType: selectNewlyConnectedDeviceThunk.fulfilled.type,
+    },
+    {
+        description: `doesn't select a newly connected device during a firmware installation`,
+        state: {
+            device: { devices: [SUITE_DEVICE_REMEMBERED], selectedDevice: SUITE_DEVICE_REMEMBERED },
+            firmware: { status: 'started' },
             suite: {},
         },
         newlyConnectedDevice: SUITE_DEVICE_UNACQUIRED,
