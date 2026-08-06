@@ -12,6 +12,7 @@ export type FeedbackCategory =
     | 'trade'
     | 'experimental'
     | 'feature'
+    | 'yield'
     | 'other';
 
 type FeedbackExtras = Record<string, any>;

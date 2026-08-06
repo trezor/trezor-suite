@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
 import {
@@ -12,6 +12,7 @@ import {
     TitleHeader,
     VStack,
 } from '@suite-native/atoms';
+import { FeedbackForm, type FeedbackFormState } from '@suite-native/feature-feedback';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -37,6 +38,7 @@ type YieldCompleteScreenContentProps = {
     rows: YieldCompleteSummaryRow[];
     subtitle: ReactNode;
     title: ReactNode;
+    feedbackForm?: FeedbackFormState;
 };
 
 const contentStyle = prepareNativeStyle(utils => ({
@@ -62,6 +64,7 @@ const footerStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
     paddingBottom: utils.spacings.sp16,
     backgroundColor: utils.colors.surfaceFillPage,
+    marginTop: utils.spacings.sp36,
 }));
 
 export const YieldCompleteScreenContent = ({
@@ -70,6 +73,7 @@ export const YieldCompleteScreenContent = ({
     rows,
     subtitle,
     title,
+    feedbackForm,
 }: YieldCompleteScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -140,6 +144,8 @@ export const YieldCompleteScreenContent = ({
                         );
                     })}
                 </Card>
+
+                {!!feedbackForm && <FeedbackForm {...feedbackForm} />}
             </VStack>
         </Screen>
     );
