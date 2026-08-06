@@ -1,17 +1,31 @@
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { selectHasUnseenNotifications } from '@suite-common/toast-notifications';
+import {
+    notificationsActions,
+    selectHasUnseenTransactionNotifications,
+} from '@suite-common/toast-notifications';
 import { NotificationDot } from '@suite-native/activity-center';
-import { type SubTabItem, SubTabs, Text, VStack } from '@suite-native/atoms';
+import { Box, type SubTabItem, SubTabs, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+
+import { ActivityCenterTabContent } from '../components/ActivityCenterTabContent';
 
 type ActivityCenterTab = 'notifications' | 'system' | 'releaseNotes';
 
 export const ActivityCenterScreen = () => {
-    const hasUnseenNotifications = useSelector(selectHasUnseenNotifications);
+    const dispatch = useDispatch();
+    const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
     const [activeTab, setActiveTab] = useState<ActivityCenterTab>('notifications');
+
+    useEffect(
+        () => () => {
+            // Mark all the notifications as seen on leaving the activity center.
+            dispatch(notificationsActions.resetUnseen());
+        },
+        [dispatch],
+    );
 
     const tabs: SubTabItem<ActivityCenterTab>[] = [
         {
@@ -35,9 +49,13 @@ export const ActivityCenterScreen = () => {
                 />
             }
         >
-            <VStack>
-                <SubTabs items={tabs} value={activeTab} onChange={setActiveTab} />
-                <Text>WIP: content of the tabs will be implemented in the followup.</Text>
+            <VStack flex={1}>
+                <Box>
+                    <SubTabs items={tabs} value={activeTab} onChange={setActiveTab} />
+                </Box>
+                <Box flex={1}>
+                    <ActivityCenterTabContent activeTab={activeTab} />
+                </Box>
             </VStack>
         </Screen>
     );
