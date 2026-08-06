@@ -1,5 +1,7 @@
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+
 import { getTranslation } from '@suite-native/intl';
-import { fireEvent, renderWithBasicProvider, screen } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithBasicProvider, screen } from '@suite-native/test-utils';
 
 import { FeedbackCard } from './FeedbackCard';
 
@@ -8,9 +10,19 @@ const DESCRIPTION = getTranslation('feedbackForm.description');
 const SUBMIT_LABEL = getTranslation('feedbackForm.submitButton');
 const SUCCESS_HEADING = getTranslation('feedbackForm.successTitle');
 const SUCCESS_DESCRIPTION = getTranslation('feedbackForm.successDescription');
+const CLOSE_LABEL = getTranslation('generic.buttons.close');
+
+const expectSheetRatingSelection = (rating: string, isSelected: boolean) => {
+    expect(screen.getByTestId(`@feedback-form/sheet/rating/${rating}`)).toHaveProp(
+        'accessibilityState',
+        expect.objectContaining({ selected: isSelected }),
+    );
+};
 
 describe('FeedbackCard', () => {
     const onSubmit = jest.fn();
+    const presentSpy = jest.spyOn(BottomSheetModal.prototype, 'present');
+    const dismissSpy = jest.spyOn(BottomSheetModal.prototype, 'dismiss');
 
     const renderFeedbackCard = (props?: Partial<Parameters<typeof FeedbackCard>[0]>) =>
         renderWithBasicProvider(
@@ -20,43 +32,56 @@ describe('FeedbackCard', () => {
                 submitLabel={SUBMIT_LABEL}
                 successHeading={SUCCESS_HEADING}
                 successDescription={SUCCESS_DESCRIPTION}
+                closeLabel={CLOSE_LABEL}
                 onSubmit={onSubmit}
                 {...props}
             />,
         );
 
+    const dismissSheet = () => {
+        const sheetInstance = presentSpy.mock.contexts[0];
+        act(() => {
+            sheetInstance.dismiss();
+        });
+    };
+
     beforeEach(() => {
-        onSubmit.mockClear();
+        jest.clearAllMocks();
     });
 
-    it('initially shows only the heading and the five rating buttons', () => {
+    it('shows the heading and the five rating buttons in the card', () => {
         renderFeedbackCard();
 
         expect(screen.getByText(HEADING)).toBeOnTheScreen();
         ['1', '2', '3', '4', '5'].forEach(rating => {
             expect(screen.getByTestId(`@feedback-form/rating/${rating}`)).toBeOnTheScreen();
         });
-
-        // Everything below the rating row stays hidden until a rating is picked.
-        expect(screen.queryByText(DESCRIPTION)).not.toBeOnTheScreen();
-        expect(screen.queryByTestId('@feedback-form/description-input')).not.toBeOnTheScreen();
-        expect(screen.queryByTestId('@feedback-form/submit-button')).not.toBeOnTheScreen();
     });
 
-    it('reveals the description, input and submit button once a rating is selected', () => {
+    it('opens the feedback sheet with the pressed rating preselected', () => {
         renderFeedbackCard();
 
         fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
 
-        expect(screen.getByText(DESCRIPTION)).toBeOnTheScreen();
-        expect(screen.getByTestId('@feedback-form/description-input')).toBeOnTheScreen();
-        expect(screen.getByText(SUBMIT_LABEL)).toBeOnTheScreen();
+        expect(presentSpy).toHaveBeenCalledTimes(1);
+        expectSheetRatingSelection('4', true);
+        expectSheetRatingSelection('3', false);
+    });
+
+    it('allows changing the rating inside the sheet', () => {
+        renderFeedbackCard();
+
+        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+        fireEvent.press(screen.getByTestId('@feedback-form/sheet/rating/2'));
+
+        expectSheetRatingSelection('2', true);
+        expectSheetRatingSelection('4', false);
+        // Changing the rating inside the sheet must not present the sheet again.
+        expect(presentSpy).toHaveBeenCalledTimes(1);
     });
 
     it('does not render the description row when no description is provided', () => {
         renderFeedbackCard({ description: undefined });
-
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
 
         expect(screen.queryByText(DESCRIPTION)).not.toBeOnTheScreen();
         expect(screen.getByTestId('@feedback-form/description-input')).toBeOnTheScreen();
@@ -72,7 +97,7 @@ describe('FeedbackCard', () => {
         expect(onSubmit).not.toHaveBeenCalled();
     });
 
-    it('submits the rating and feedback, then switches to the success view', () => {
+    it('submits the rating and feedback, then shows the success view without closing the sheet', () => {
         renderFeedbackCard();
 
         fireEvent.press(screen.getByTestId('@feedback-form/rating/5'));
@@ -83,31 +108,50 @@ describe('FeedbackCard', () => {
         fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
 
         expect(onSubmit).toHaveBeenCalledWith('5', 'Smooth and fast');
-        expect(screen.getByText(SUCCESS_HEADING)).toBeOnTheScreen();
-        expect(screen.getByText(SUCCESS_DESCRIPTION)).toBeOnTheScreen();
-        // Form controls are gone in the success view.
-        expect(screen.queryByTestId('@feedback-form/submit-button')).not.toBeOnTheScreen();
+        // Both the sheet and the card behind it switch to the success view.
+        expect(screen.getAllByText(SUCCESS_HEADING)).toHaveLength(2);
+        expect(screen.getAllByText(SUCCESS_DESCRIPTION)).toHaveLength(2);
+        expect(screen.getByTestId('@feedback-form/close-button')).toBeOnTheScreen();
+        // The card form is gone in the success view.
+        expect(screen.queryByText(HEADING)).not.toBeOnTheScreen();
+        // The sheet stays open until the user closes it.
+        expect(dismissSpy).not.toHaveBeenCalled();
+    });
+
+    it('closes the sheet when the close button is pressed after submitting', () => {
+        renderFeedbackCard();
+
+        fireEvent.press(screen.getByTestId('@feedback-form/rating/5'));
+        fireEvent.changeText(
+            screen.getByTestId('@feedback-form/description-input'),
+            'Smooth and fast',
+        );
+        fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
+        fireEvent.press(screen.getByTestId('@feedback-form/close-button'));
+
+        expect(dismissSpy).toHaveBeenCalledTimes(1);
+        // The card keeps the success view after the sheet is closed.
+        expect(screen.getAllByText(SUCCESS_HEADING).length).toBeGreaterThan(0);
+    });
+
+    it('resets the form when the sheet is dismissed without submitting', () => {
+        renderFeedbackCard();
+
+        fireEvent.press(screen.getByTestId('@feedback-form/rating/3'));
+        fireEvent.changeText(screen.getByTestId('@feedback-form/description-input'), 'Draft text');
+
+        dismissSheet();
+
+        expectSheetRatingSelection('3', false);
+        expect(screen.getByTestId('@feedback-form/description-input')).toHaveProp('value', '');
+        // The card stays in the form view.
+        expect(screen.getByText(HEADING)).toBeOnTheScreen();
     });
 
     it('renders the success view directly when defaultView is "success"', () => {
         renderFeedbackCard({ defaultView: 'success' });
 
-        expect(screen.getByText(SUCCESS_HEADING)).toBeOnTheScreen();
+        expect(screen.getAllByText(SUCCESS_HEADING).length).toBeGreaterThan(0);
         expect(screen.queryByText(HEADING)).not.toBeOnTheScreen();
-    });
-
-    it('scrolls the provided list to the bottom after a rating is selected', () => {
-        jest.useFakeTimers();
-        const scrollToEnd = jest.fn();
-        const scrollViewRef = { current: { scrollToEnd } } as unknown as Parameters<
-            typeof FeedbackCard
-        >[0]['scrollViewRef'];
-
-        renderFeedbackCard({ scrollViewRef });
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/3'));
-        jest.runAllTimers();
-
-        expect(scrollToEnd).toHaveBeenCalledWith({ animated: true });
-        jest.useRealTimers();
     });
 });
