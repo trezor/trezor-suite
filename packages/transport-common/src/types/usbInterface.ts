@@ -55,10 +55,16 @@ export interface UsbDeviceLike {
     claimInterface(interfaceNumber: number): Promise<void>;
     releaseInterface(interfaceNumber: number): Promise<void>;
     reset(): Promise<void>;
-    transferIn(endpointNumber: number, length: number): Promise<UsbInTransferResultLike>;
+    transferIn(
+        endpointNumber: number,
+        length: number,
+        // usb 3.x accepts a per-transfer timeout (ms); the browser navigator.usb ignores it.
+        timeout?: number,
+    ): Promise<UsbInTransferResultLike>;
     transferOut(
         endpointNumber: number,
         data: UsbTransferOutData,
+        timeout?: number,
     ): Promise<UsbOutTransferResultLike>;
 }
 

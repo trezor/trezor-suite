@@ -1,4 +1,4 @@
-import { WebUSB, usb } from 'usb';
+import { WebUSB } from 'usb';
 
 import {
     type TransportProtocol,
@@ -38,11 +38,6 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
     const sessionsBackground = new SessionsBackground();
     const sessionsClient = new SessionsClient(sessionsBackground);
-
-    if (apiArg === 'usb' && logger?.enabled) {
-        // https://libusb.sourceforge.io/api-1.0/group__libusb__lib.html#ga2d6144203f0fc6d373677f6e2e89d2d2
-        usb.setDebugLevel(1); // Level 3 would probably be ok as well (doesn't seem too spammy). For full debugging use 4.
-    }
 
     if (typeof apiArg === 'string') {
         api =
