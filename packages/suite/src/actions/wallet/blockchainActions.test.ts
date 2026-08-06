@@ -1,9 +1,12 @@
 import { type TranslationKey } from '@suite/intl';
+import { deviceInitialState } from '@suite-common/device';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
     createNotificationsReducer,
     notificationsActions,
 } from '@suite-common/toast-notifications';
+import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsState,
@@ -11,6 +14,7 @@ import {
     type TransactionsState,
     feesReducer,
     initBlockchainThunk,
+    initialWalletSettingsState,
     onBlockMinedThunk,
     onBlockchainConnectThunk,
     onBlockchainDisconnectThunk,
@@ -67,12 +71,15 @@ const getInitialState = (
         },
         trading: tradingReducer(undefined, action),
         settings: {
+            ...initialWalletSettingsState,
             bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
         },
     },
     notifications: notificationsReducer([], action),
+    tokenDefinitions: tokenDefinitionsInitialState,
     device: {
-        devices: [{ state: { staticSessionId: '1stTestnetAddress@device_id:0' } }], // device is needed for notification/event
+        ...deviceInitialState,
+        devices: [mockSuiteDevice({ state: { staticSessionId: '1stTestnetAddress@device_id:0' } })], // device is needed for notification/event
     },
     suite: {
         device: { state: { staticSessionId: '1stTestnetAddress@device_id:0' } }, // device is needed for notification/event

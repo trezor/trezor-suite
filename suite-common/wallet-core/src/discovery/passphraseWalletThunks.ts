@@ -1,20 +1,43 @@
+import { type AnalyticsDep } from '@suite-common/analytics';
+import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
-import { type TrezorDevice } from '@suite-common/suite-types';
+import { type ConnectInitHooksDeps, type TrezorDevice } from '@suite-common/suite-types';
+import { type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import TrezorConnect, { UI_EVENT, UI_REQUEST } from '@trezor/connect';
 import { type PopupEventMessage, type UiEventMessage } from '@trezor/connect-common';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
-import { runDiscoveryThunk, startDiscoveryThunk } from './discoveryThunks';
+import {
+    type RunDiscoveryThunkState,
+    runDiscoveryThunk,
+    startDiscoveryThunk,
+} from './discoveryThunks';
 import { defaultTrezorUIEventHandlerThunk } from '../uiEvent/defaultTrezorUIEventHandlerThunk';
 import { registerScopedCallId, unregisterScopedCallId } from '../uiEvent/scopedCallIdRegistry';
+
+type RunPassphraseWalletAddingDiscoveryThunkDeps = {
+    services: AnalyticsDep & ConnectInitHooksDeps & GetTradedAccountKeysDep;
+    thunks: FetchAndSaveMetadataDep;
+};
+type RunPassphraseWalletAddingDiscoveryThunkState = RunDiscoveryThunkState;
+type RunPassphraseWalletAddingDiscoveryThunkParams = {
+    device: TrezorDevice;
+};
 
 // The "run" step. Exported because for a *new* hidden wallet the run is deferred from
 // start — called from PassphraseWalletIsNotExistFlow's "Next" once the user confirms
 // best practices (and reused internally for the existing-wallet flow below).
-export const runPassphraseWalletAddingDiscoveryThunk = createThunk(
+export const runPassphraseWalletAddingDiscoveryThunk = createThunk<
+    void,
+    RunPassphraseWalletAddingDiscoveryThunkParams,
+    {
+        state: RunPassphraseWalletAddingDiscoveryThunkState;
+        extra: RunPassphraseWalletAddingDiscoveryThunkDeps;
+    }
+>(
     `${DISCOVERY_MODULE_PREFIX}/runPassphraseWalletAddingDiscovery`,
-    async ({ device }: { device: TrezorDevice }, { dispatch }) => {
+    async ({ device }, { dispatch }) => {
         const callId = crypto.randomUUID();
         const onUiEvent = (message: UiEventMessage | PopupEventMessage) => {
             const { event: _, ...action } = message;
@@ -38,20 +61,27 @@ export const runPassphraseWalletAddingDiscoveryThunk = createThunk(
 
 // Internal: for an *existing* hidden wallet, starts and runs immediately (no
 // best-practices step to wait for). Only called by startAddWalletDiscoveryThunk.
-const startDiscoveryOfExistingPassphraseWalletThunk = createThunk(
+type StartDiscoveryOfExistingPassphraseWalletThunkPayload = {
+    device: TrezorDevice;
+    isAddingHiddenWallet?: boolean;
+    useScopedCallIds?: boolean;
+};
+type StartDiscoveryOfExistingPassphraseWalletThunkState = RunDiscoveryThunkState;
+type StartDiscoveryOfExistingPassphraseWalletThunkDeps = {
+    services: AnalyticsDep & ConnectInitHooksDeps & GetTradedAccountKeysDep;
+    thunks: FetchAndSaveMetadataDep;
+};
+
+const startDiscoveryOfExistingPassphraseWalletThunk = createThunk<
+    void,
+    StartDiscoveryOfExistingPassphraseWalletThunkPayload,
+    {
+        state: StartDiscoveryOfExistingPassphraseWalletThunkState;
+        extra: StartDiscoveryOfExistingPassphraseWalletThunkDeps;
+    }
+>(
     `${DISCOVERY_MODULE_PREFIX}/startDiscoveryOfExistingPassphraseWallet`,
-    (
-        {
-            device,
-            isAddingHiddenWallet,
-            useScopedCallIds,
-        }: {
-            device: TrezorDevice;
-            isAddingHiddenWallet?: boolean;
-            useScopedCallIds?: boolean;
-        },
-        { dispatch, getState },
-    ): void => {
+    ({ device, isAddingHiddenWallet, useScopedCallIds }, { dispatch, getState }): void => {
         const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
 
         if (isDiscoveryInProgress(currentDiscovery)) {

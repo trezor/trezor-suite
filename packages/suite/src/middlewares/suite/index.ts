@@ -4,7 +4,7 @@ import { metadataMiddleware } from '@suite/metadata';
 import { routerMiddleware } from '@suite/router';
 import { tradingMiddleware } from '@suite/trading';
 import { logsMiddleware } from '@suite-common/logger';
-import type { ExtraDependencies } from '@suite-common/redux-utils';
+import type { ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import { preparePushNotificationMiddleware } from '@suite-common/wallet-core';
 
 import analytics from './analyticsMiddleware';

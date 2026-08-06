@@ -16,8 +16,10 @@ import {
     buildYieldUnwrapTransactionData,
     buildYieldWrapTransactionData,
 } from './stablecoinYieldUtils';
-import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
+import { type AccountsRootState } from '../accounts/accountsReducer';
+import { type FeesRootState, selectRawNetworkFeeInfo } from '../fees/feesReducer';
 import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
+import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 
 const YIELD_WRAP_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
 
@@ -49,6 +51,9 @@ type ComposeYieldUnwrapTransactionPayload = {
     token: Pick<YieldFlowDisplayToken, 'contractAddress' | 'decimals'>;
     unwrapAmount: string;
 };
+type ComposeYieldWrapTransactionThunkState = AccountsRootState &
+    FeesRootState &
+    TransactionsRootState;
 
 /**
  * Composes an unsigned WETH `deposit()` (wrap) transaction that carries `wrapAmount` in its value.
@@ -58,7 +63,9 @@ type ComposeYieldUnwrapTransactionPayload = {
 export const composeYieldWrapTransactionThunk = createThunk<
     ComposeYieldWrapResult,
     ComposeYieldWrapTransactionPayload,
-    void
+    {
+        state: ComposeYieldWrapTransactionThunkState;
+    }
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeWrapTransaction`,
     async ({ account, token, wrapAmount }, { dispatch, getState }) => {
@@ -134,6 +141,10 @@ export const composeYieldWrapTransactionThunk = createThunk<
     },
 );
 
+type ComposeYieldUnwrapTransactionThunkState = AccountsRootState &
+    FeesRootState &
+    TransactionsRootState;
+
 /**
  * Composes an unsigned WETH `withdraw(uint256)` (unwrap) transaction — the standalone WETH→ETH
  * action for the wrapped-native token.
@@ -141,7 +152,9 @@ export const composeYieldWrapTransactionThunk = createThunk<
 export const composeYieldUnwrapTransactionThunk = createThunk<
     ComposeYieldWrapResult,
     ComposeYieldUnwrapTransactionPayload,
-    void
+    {
+        state: ComposeYieldUnwrapTransactionThunkState;
+    }
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeUnwrapTransaction`,
     async ({ account, token, unwrapAmount }, { dispatch, getState }) => {

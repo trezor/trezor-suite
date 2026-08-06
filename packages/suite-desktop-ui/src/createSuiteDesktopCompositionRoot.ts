@@ -1,10 +1,15 @@
 import { createMemoryHistory } from 'history';
 
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
+import { toGetter } from '@suite-common/dependency-injection';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { initStore } from 'src/reducers/store';
+import { type AppState, initStore } from 'src/reducers/store';
+import { type CreateGetBinFilesBaseUrl } from 'src/support/createGetBinFilesBaseUrl';
 import { type PreloadStoreAction } from 'src/support/suite/preloadStore';
+
+const createGetBinFilesBaseUrl: CreateGetBinFilesBaseUrl<AppState> = ({ getState }) =>
+    toGetter(getState, state => state.desktop?.paths?.binDir);
 
 export const createSuiteDesktopCompositionRoot = (
     preloadStoreAction?: PreloadStoreAction,
@@ -29,6 +34,7 @@ export const createSuiteDesktopCompositionRoot = (
             history,
             platformEncryption,
             createConnectLoggerFactory: undefined,
+            createGetBinFilesBaseUrl,
             reloadApp,
             thpHostName: undefined,
             getTransportsFactories,

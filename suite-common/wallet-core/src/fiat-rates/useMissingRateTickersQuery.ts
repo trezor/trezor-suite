@@ -1,10 +1,12 @@
 import { useDispatch } from 'react-redux';
 
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 import { type TickerId, type Timestamp } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { updateFiatRatesThunk } from './fiatRatesThunks';
+import { type UpdateFiatRatesThunkState, updateFiatRatesThunk } from './fiatRatesThunks';
 
 type UseMissingRateTickersQueryProps = {
     missingRateTickers: TickerId[];
@@ -15,7 +17,10 @@ export const useMissingRateTickersQuery = ({
     missingRateTickers,
     baseCurrencyCode,
 }: UseMissingRateTickersQueryProps) => {
-    const dispatch = useDispatch();
+    const dispatch =
+        useDispatch<
+            ThunkDispatch<UpdateFiatRatesThunkState, Record<never, never>, UnknownAction>
+        >();
 
     // eslint-disable-next-line @tanstack/query/exhaustive-deps -- dispatch from useDispatch() is referentially stable and is not part of the query identity (missingRateTickers + baseCurrencyCode)
     return useQuery({

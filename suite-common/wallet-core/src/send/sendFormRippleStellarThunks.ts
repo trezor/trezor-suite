@@ -30,7 +30,10 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
+import {
+    type WalletSettingsRootState,
+    selectAddressDisplayType,
+} from '../settings/walletSettingsReducer';
 
 const calculate = (
     availableBalance: string,
@@ -108,11 +111,15 @@ const calculate = (
 
     return payloadData;
 };
+type ComposeRippleStellarTransactionFeeLevelsThunkState = void;
 
 export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
+    {
+        rejectValue: ComposeFeeLevelsError;
+        state: ComposeRippleStellarTransactionFeeLevelsThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/composeRippleStellarTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { rejectWithValue }) => {
@@ -232,10 +239,15 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
     },
 );
 
+type SignRippleStellarSendFormTransactionThunkState = WalletSettingsRootState;
+
 export const signRippleStellarSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError }
+    {
+        rejectValue: SignTransactionError;
+        state: SignRippleStellarSendFormTransactionThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/signRippleStellarSendFormTransactionThunk`,
     async (

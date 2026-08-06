@@ -18,7 +18,6 @@
         "@suite-common/thp": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0"

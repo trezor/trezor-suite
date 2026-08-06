@@ -35,8 +35,14 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
-import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
+import {
+    type BlockchainRootState,
+    selectBlockchainBlockInfoBySymbol,
+} from '../blockchain/blockchainReducer';
+import {
+    type WalletSettingsRootState,
+    selectAddressDisplayType,
+} from '../settings/walletSettingsReducer';
 
 const calculate = (
     availableBalance: string,
@@ -161,11 +167,12 @@ function assertIsSolanaAccount(
     if (account.networkType !== 'solana')
         throw new Error(`Invalid network type. ${account.networkType}`);
 }
+type ComposeSolanaTransactionFeeLevelsThunkState = BlockchainRootState;
 
 export const composeSolanaTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
+    { rejectValue: ComposeFeeLevelsError; state: ComposeSolanaTransactionFeeLevelsThunkState }
 >(
     `${SEND_MODULE_PREFIX}/composeSolanaTransactionFeeLevelsThunk`,
     async (
@@ -326,10 +333,15 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
     },
 );
 
+type SignSolanaSendFormTransactionThunkState = WalletSettingsRootState;
+
 export const signSolanaSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError }
+    {
+        rejectValue: SignTransactionError;
+        state: SignSolanaSendFormTransactionThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,
     async (

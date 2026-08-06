@@ -5,8 +5,8 @@ import {
     selectAutoConnectPolicy,
     selectKnownDevices,
 } from '@suite-common/bluetooth';
-import { selectDevices } from '@suite-common/device';
-import { selectFirmware } from '@suite-common/firmware';
+import { type DeviceRootState, selectDevices } from '@suite-common/device';
+import { type FirmwareRootState, selectFirmware } from '@suite-common/firmware';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
@@ -21,12 +21,15 @@ import {
 } from './DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 import { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
+import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 import { selectConnectingDevices } from './desktopBluetoothSelectors';
 import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
 import { isBluetoothDeviceReachable } from './isBluetoothDeviceReachable';
 import { remapKnownDevicesForLinuxAndWindows } from './remapKnownDevicesForLinuxAndWindows';
 
-export const initBluetoothThunk = createThunk<void, void, void>(
+type InitBluetoothThunkState = DeviceRootState & FirmwareRootState & WithBluetoothRootState;
+
+export const initBluetoothThunk = createThunk<void, void, { state: InitBluetoothThunkState }>(
     `${BLUETOOTH_PREFIX}/initBluetoothThunk`,
     async (_, { getState, dispatch }) => {
         const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());

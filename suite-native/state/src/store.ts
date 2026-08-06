@@ -12,6 +12,8 @@ import { logsMiddleware } from '@suite-common/logger';
 import {
     type ExtraDependencies,
     type ExtraDependenciesStatic,
+} from '@suite-common/redux-extra-dependencies';
+import {
     type ReducerState,
     castExtraStore,
     createStoreWithExtraStoreMiddleware,

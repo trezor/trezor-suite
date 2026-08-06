@@ -30,6 +30,7 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
+        "@suite-common/suite-types": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@types/react": "19.2.14"
     }

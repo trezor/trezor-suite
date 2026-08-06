@@ -1,4 +1,4 @@
-import type { ExtraDependencies } from '@suite-common/redux-utils';
+import type { ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import {
     tradingBuyActions,
     tradingExchangeActions,

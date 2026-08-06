@@ -1,15 +1,21 @@
 import { createBrowserHistory } from 'history';
 
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
+import { asGetter } from '@suite-common/dependency-injection';
 import type { CreateLogger } from '@trezor/connect-common';
+import { resolveConnectPath } from '@trezor/env-utils';
 import { BridgeTransport } from '@trezor/transport-common';
 import { WebUsbTransport } from '@trezor/transport-web';
 
 import { initStore } from 'src/reducers/store';
 import { createConnectLoggerFactory } from 'src/support/createConnectLoggerFactory';
+import { type CreateGetBinFilesBaseUrl } from 'src/support/createGetBinFilesBaseUrl';
 import { type PreloadStoreAction } from 'src/support/suite/preloadStore';
 
 import { getWebThpHostName } from './support/getWebThpHostName';
+
+const createGetBinFilesBaseUrl: CreateGetBinFilesBaseUrl<unknown> = () =>
+    asGetter(() => resolveConnectPath('data'));
 
 export const createSuiteWebCompositionRoot = (preloadStoreAction?: PreloadStoreAction) => {
     const history = createBrowserHistory();
@@ -41,6 +47,7 @@ export const createSuiteWebCompositionRoot = (preloadStoreAction?: PreloadStoreA
             history,
             platformEncryption,
             createConnectLoggerFactory,
+            createGetBinFilesBaseUrl,
             reloadApp,
             thpHostName: getWebThpHostName(),
             getTransportsFactories,

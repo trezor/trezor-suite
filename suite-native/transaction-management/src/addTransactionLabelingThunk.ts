@@ -19,11 +19,7 @@ type AddTransactionLabelingThunkParams = {
 // Todo: This code below is kinda copy-paste from `applySendFormMetadataLabelsThunk` in Desktop.
 //       However, desktop code is polluted by Legacy Labeling (Metadata) so it cannot be easily reused.
 //       After we get rid of old Labeling, this shall be unified and move to the wallet-core.
-export const addTransactionLabelingThunk = createThunk<
-    void,
-    AddTransactionLabelingThunkParams,
-    void
->(
+export const addTransactionLabelingThunk = createThunk<void, AddTransactionLabelingThunkParams>(
     `${TRANSACTION_MANAGEMENT_PREFIX}/sendTransactionThunk`,
     ({ selectedAccount, txId }, { dispatch, getState, extra }) => {
         const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(getState());

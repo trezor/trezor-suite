@@ -1,6 +1,8 @@
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     type ButtonRequest,
@@ -25,7 +27,12 @@ import { isArrayMember } from '@trezor/utils';
 
 import { firmwareActions } from '../firmwareActions';
 import { selectFirmware, selectSwitchFirmwareType } from '../firmwareReducer';
-import { type FirmwareUpdateProps, firmwareUpdate as firmwareUpdateThunk } from '../firmwareThunks';
+import {
+    type FirmwareUpdateProps,
+    type FirmwareUpdateThunkDeps,
+    type FirmwareUpdateThunkState,
+    firmwareUpdate as firmwareUpdateThunk,
+} from '../firmwareThunks';
 
 /*
 There are three firmware update flows, depending on current firmware version:
@@ -112,7 +119,10 @@ const shouldShowReconnectPrompt = ({
 };
 
 export const useFirmwareInstallation = () => {
-    const dispatch = useDispatch();
+    const dispatch =
+        useDispatch<
+            ThunkDispatch<FirmwareUpdateThunkState, FirmwareUpdateThunkDeps, UnknownAction>
+        >();
     const firmware = useSelector(selectFirmware);
     const device = useSelector(selectSelectedDevice);
     const thpStep = useSelector(selectThpStep);

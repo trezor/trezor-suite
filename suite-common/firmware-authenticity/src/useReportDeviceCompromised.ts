@@ -8,7 +8,7 @@ import {
     getIsDeviceIdValid,
     selectPersistentDeviceDataById,
 } from '@suite-common/device';
-import { selectIsProductionFirmwareChannel } from '@suite-common/firmware';
+import { type FirmwareRootState, selectIsProductionFirmwareChannel } from '@suite-common/firmware';
 import { type TrezorDevice, selectGetAllowPrereleaseDep } from '@suite-common/suite-types';
 import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
@@ -37,7 +37,9 @@ const useCommonData = ({ device }: DeviceProps) => {
 const useIsProductionFirmwareChannel = () => {
     const allowPrerelease = useGetter(selectGetAllowPrereleaseDep);
 
-    return useSelector(selectIsProductionFirmwareChannel(allowPrerelease));
+    return useSelector((state: FirmwareRootState) =>
+        selectIsProductionFirmwareChannel(state, allowPrerelease),
+    );
 };
 
 const useReportRevisionCheck = ({ device }: DeviceProps) => {

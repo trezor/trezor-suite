@@ -1,6 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { deviceInitialState } from '@suite-common/device';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { accountsInitialState } from '@suite-common/wallet-core';
 import * as walletUtils from '@suite-common/wallet-utils';
 
 import { connectPopupActions } from './connectPopupActions';
@@ -26,17 +29,17 @@ const createDeferred = <T>() => {
     return { promise, resolve };
 };
 
-const fakeDevice = {
+const fakeDevice = mockSuiteDevice({
     connected: true,
     path: '1',
     instance: 0,
     state: undefined,
     useEmptyPassphrase: true,
-};
+});
 
 // A UTXO `addressSelection: 'manual'` picker sitting in the address phase, with an empty candidate
 // list (the cold-cache drill-in). A *custom* account-type tab (no `accountType`) keeps the thunk on
-// a path that does not read Redux discovery, so the store needs no wallet/accounts slice.
+// a path that does not read Redux discovery, so the store only needs an empty wallet/accounts slice.
 const selectAccountState = {
     method: 'selectAccount',
     state: 'select-account',
@@ -66,11 +69,13 @@ const initStore = () =>
         extra: extraDependenciesCommonMock,
         reducer: combineReducers({
             connectPopup: connectPopupReducer,
-            device: (state = { selectedDevice: fakeDevice }) => state,
+            device: (state = { ...deviceInitialState, selectedDevice: fakeDevice }) => state,
+            wallet: (state = { accounts: accountsInitialState }) => state,
         }),
         preloadedState: {
             connectPopup: { activeCall: selectAccountState, permissions: [] },
-            device: { selectedDevice: fakeDevice },
+            device: { ...deviceInitialState, selectedDevice: fakeDevice },
+            wallet: { accounts: accountsInitialState },
         },
     });
 

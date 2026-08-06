@@ -1,6 +1,9 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type FindNetworkSymbolForProtocol } from '@suite-common/networks';
+import { createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+
+import type { AppState } from 'src/types/suite';
 
 import * as protocolConstants from './constants/protocolConstants';
 import * as protocolActions from './protocolActions';
@@ -10,7 +13,7 @@ const findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol = protocol =>
     protocol === 'bitcoin' ? asNetworkSymbol('btc') : null;
 
 const createHandleProtocolRequestDeps = () => {
-    const dispatch = jest.fn();
+    const getState = () => ({}) as AppState;
     const extra: HandleProtocolRequestDeps = {
         services: {
             analytics: mockDesktopAnalytics(),
@@ -23,28 +26,23 @@ const createHandleProtocolRequestDeps = () => {
         },
     };
 
-    // Execute nested thunks so the handler can be tested without creating a Redux store.
-    dispatch.mockImplementation((action: unknown) => {
-        if (typeof action === 'function') {
-            action(dispatch, () => ({}), extra);
-        }
-    });
+    const { actions, dispatch } = createMockDispatch({ getState, extra });
 
-    return { dispatch, extra };
+    return { actions, dispatch, getState, extra };
 };
 
 describe('Protocol actions', () => {
     it('saves address and amount from Bitcoin URI protocol', () => {
-        const { dispatch, extra } = createHandleProtocolRequestDeps();
+        const { actions, dispatch, getState, extra } = createHandleProtocolRequestDeps();
 
         protocolActions.handleProtocolRequest('bitcoin:12345abcde?amount=1.02')(
             dispatch,
-            () => ({}),
+            getState,
             extra,
         );
 
-        expect(dispatch).toHaveBeenCalledTimes(3);
-        expect(dispatch).toHaveBeenCalledWith(
+        expect(actions).toHaveLength(2);
+        expect(actions).toContainEqual(
             expect.objectContaining({
                 type: protocolConstants.SAVE_COIN_PROTOCOL,
                 payload: expect.objectContaining({
@@ -57,12 +55,12 @@ describe('Protocol actions', () => {
     });
 
     it('saves address from Bitcoin URI protocol', () => {
-        const { dispatch, extra } = createHandleProtocolRequestDeps();
+        const { actions, dispatch, getState, extra } = createHandleProtocolRequestDeps();
 
-        protocolActions.handleProtocolRequest('bitcoin:12345abcde')(dispatch, () => ({}), extra);
+        protocolActions.handleProtocolRequest('bitcoin:12345abcde')(dispatch, getState, extra);
 
-        expect(dispatch).toHaveBeenCalledTimes(3);
-        expect(dispatch).toHaveBeenCalledWith(
+        expect(actions).toHaveLength(2);
+        expect(actions).toContainEqual(
             expect.objectContaining({
                 type: protocolConstants.SAVE_COIN_PROTOCOL,
                 payload: expect.objectContaining({

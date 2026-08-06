@@ -2,7 +2,7 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { openModal, preserveModal } from '@suite/modal';
 import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
-import { type ConnectInitHooks } from '@suite-common/redux-utils';
+import { type ConnectInitHooks } from '@suite-common/suite-types';
 import { DEVICE, UI_REQUEST } from '@trezor/connect';
 
 import { bluetoothOnDeviceConnectedThunk } from '../actions/bluetooth/bluetoothOnDeviceConnectedThunk';

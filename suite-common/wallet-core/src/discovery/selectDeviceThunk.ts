@@ -1,5 +1,6 @@
 import {
     DEVICE_MODULE_PREFIX,
+    type DeviceRootState,
     deviceActions,
     selectDevices,
     selectIsSameOrNewDevice,
@@ -13,6 +14,7 @@ import { isNative } from '@trezor/env-utils';
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
 };
+type SelectDeviceThunkState = DeviceRootState;
 
 /**
  * Called from:
@@ -22,7 +24,7 @@ type SelectDeviceThunkParams = {
 export const selectDeviceThunk = createThunk<
     { device: TrezorDevice | undefined },
     SelectDeviceThunkParams,
-    void
+    { state: SelectDeviceThunkState }
 >(
     `${DEVICE_MODULE_PREFIX}/selectDevice`,
     ({ device }, { dispatch, getState, fulfillWithValue }) => {
@@ -49,7 +51,13 @@ export const selectDeviceThunk = createThunk<
     },
 );
 
-export const selectNewlyConnectedDeviceThunk = createThunk<void, SelectDeviceThunkParams, void>(
+type SelectNewlyConnectedDeviceThunkState = DeviceRootState;
+
+export const selectNewlyConnectedDeviceThunk = createThunk<
+    void,
+    SelectDeviceThunkParams,
+    { state: SelectNewlyConnectedDeviceThunkState }
+>(
     `${DEVICE_MODULE_PREFIX}/selectNewlyConnectedDevice`,
     ({ device }, { dispatch, getState, rejectWithValue }) => {
         if (!isNative() && !selectIsSameOrNewDevice(getState(), device)) {

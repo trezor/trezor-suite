@@ -29,10 +29,12 @@ import { estimateContractCallFeeLevel } from './feeLevel';
 import { isNewTronAccount } from './isNewTronAccount';
 import { resolveCalldata } from './resolveCalldata';
 
+type ComposeTronTransactionFeeLevelsThunkState = void;
+
 export const composeTronTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
+    { rejectValue: ComposeFeeLevelsError; state: ComposeTronTransactionFeeLevelsThunkState }
 >(
     `${SEND_MODULE_PREFIX}/composeTronTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
@@ -198,10 +200,12 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
     },
 );
 
+type SignTronSendFormTransactionThunkState = void;
+
 export const signTronSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError }
+    { rejectValue: SignTransactionError; state: SignTronSendFormTransactionThunkState }
 >(
     `${SEND_MODULE_PREFIX}/signTronSendFormTransactionThunk`,
     async ({ formState, precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {

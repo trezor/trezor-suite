@@ -5,7 +5,12 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TimerId } from '@trezor/type-utils';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
-import { type DefinitionType, TokenStructureType } from './tokenDefinitionsTypes';
+import {
+    type DefinitionType,
+    type GetTokenDefinitionsEnabledNetworksDep,
+    type TokenDefinitionsRootState,
+    TokenStructureType,
+} from './tokenDefinitionsTypes';
 import { fetchTokenDefinitions, getSupportedDefinitionTypes } from './tokenDefinitionsUtils';
 
 const TOKEN_DEFINITIONS_MODULE = '@common/wallet-core/token-definitions';
@@ -15,7 +20,8 @@ export const getTokenDefinitionThunk = createThunk<
     {
         symbol: NetworkSymbol;
         type: DefinitionType;
-    }
+    },
+    void
 >(
     `${TOKEN_DEFINITIONS_MODULE}/getTokenDefinitionsThunk`,
     async (params, { fulfillWithValue, rejectWithValue }) => {
@@ -33,42 +39,48 @@ export const getTokenDefinitionThunk = createThunk<
     },
 );
 
-export const initTokenDefinitionsThunk = createThunk(
-    `${TOKEN_DEFINITIONS_MODULE}/initTokenDefinitionsThunk`,
-    (_, { getState, dispatch, extra }) => {
-        const enabledNetworks = extra.services.getTokenDefinitionsEnabledNetworks();
+type InitTokenDefinitionsThunkDeps = {
+    services: GetTokenDefinitionsEnabledNetworksDep;
+};
+type InitTokenDefinitionsThunkState = TokenDefinitionsRootState;
 
-        const promises = enabledNetworks
-            .map(symbol => {
-                let definitionTypes = getSupportedDefinitionTypes(symbol);
+export const initTokenDefinitionsThunk = createThunk<
+    unknown[],
+    void,
+    { state: InitTokenDefinitionsThunkState; extra: InitTokenDefinitionsThunkDeps }
+>(`${TOKEN_DEFINITIONS_MODULE}/initTokenDefinitionsThunk`, (_, { getState, dispatch, extra }) => {
+    const enabledNetworks = extra.services.getTokenDefinitionsEnabledNetworks();
 
-                const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
+    const promises = enabledNetworks
+        .map(symbol => {
+            let definitionTypes = getSupportedDefinitionTypes(symbol);
 
-                if (tokenDefinitions) {
-                    // Filter out definition types that have data or are in a loading state
-                    definitionTypes = definitionTypes.filter(type => {
-                        const definition = tokenDefinitions[type];
+            const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 
-                        return !(definition && (definition.data || definition.isLoading));
-                    });
-                }
+            if (tokenDefinitions) {
+                // Filter out definition types that have data or are in a loading state
+                definitionTypes = definitionTypes.filter(type => {
+                    const definition = tokenDefinitions[type];
 
-                if (D.isEmpty(definitionTypes)) return [];
+                    return !(definition && (definition.data || definition.isLoading));
+                });
+            }
 
-                return definitionTypes.map(type =>
-                    dispatch(
-                        getTokenDefinitionThunk({
-                            symbol,
-                            type,
-                        }),
-                    ),
-                );
-            })
-            .flat();
+            if (D.isEmpty(definitionTypes)) return [];
 
-        return Promise.all(promises);
-    },
-);
+            return definitionTypes.map(type =>
+                dispatch(
+                    getTokenDefinitionThunk({
+                        symbol,
+                        type,
+                    }),
+                ),
+            );
+        })
+        .flat();
+
+    return Promise.all(promises);
+});
 
 let tokenDefinitionsTimeout: TimerId | null = null;
 
