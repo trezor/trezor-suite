@@ -12,7 +12,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@scure/base": "^2.0.0",
+        "@scure/base": "^2.2.0",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-solana": "workspace:*"
     }

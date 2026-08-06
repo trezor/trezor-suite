@@ -13,7 +13,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@scure/base": "^2.0.0",
+        "@scure/base": "^2.2.0",
         "@suite-common/address": "workspace:*",
         "@suite-common/calldata": "workspace:*",
         "@suite-common/earn-staking-api": "workspace:*",
