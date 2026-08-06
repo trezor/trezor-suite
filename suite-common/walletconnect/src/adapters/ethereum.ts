@@ -19,6 +19,7 @@ import TrezorConnect, {
     type EthereumSignTypedData,
     type EthereumSignTypedDataTypes,
 } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { isAscii, isHex, throwError } from '@trezor/utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
@@ -142,7 +143,7 @@ const ethereumRequestThunk = createThunk<
             ) {
                 // Fee not provided, estimate it
                 const feeLevels = await TrezorConnect.blockchainEstimateFee({
-                    coin: account.symbol,
+                    coin: asCoinSymbol(account.symbol),
                     identity: getAccountIdentity(account),
                     request: {
                         blocks: [2],
@@ -211,7 +212,7 @@ const ethereumRequestThunk = createThunk<
 
             const pushResponse = await TrezorConnect.pushTransaction({
                 tx: txData,
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
             });
             if (!pushResponse.success) {

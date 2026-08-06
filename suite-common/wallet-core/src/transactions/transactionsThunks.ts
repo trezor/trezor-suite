@@ -35,6 +35,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- temporary diagnostic
 import { __btcUnknownTxDebug__ } from '@trezor/connect/src/utils/pathUtils';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import {
@@ -572,7 +573,7 @@ export const fetchTransactionsPageThunk = createThunk(
 
         const { marker, stellarCursor } = account;
         const result = await TrezorConnect.getAccountInfo({
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'txs',
@@ -642,7 +643,7 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk(
         }
 
         const result = await TrezorConnect.blockchainGetTransactions({
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             txs: account.utxo.map(utxo => utxo.txid),
             descriptor: account.descriptor,
         });

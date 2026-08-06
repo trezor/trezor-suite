@@ -46,6 +46,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
 import { reportEthereumFeeEstimationFailed } from './reportEthereumFeeEstimationError';
@@ -322,7 +323,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         // gasLimit calculation based on address, amount and data size
         // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: getAccountIdentity(account),
             request: {
                 blocks: [2],
@@ -493,7 +494,7 @@ export const resolveEthereumNonce = async ({
         // and fall back to local derivation below.
         try {
             const accountInfoResponse = await TrezorConnect.getAccountInfo({
-                coin: selectedAccount.symbol,
+                coin: asCoinSymbol(selectedAccount.symbol),
                 descriptor: selectedAccount.descriptor,
                 identity: tryGetAccountIdentity(selectedAccount),
                 details: 'basic',

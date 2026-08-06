@@ -19,6 +19,7 @@ import {
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type AccountInfo, type TokenInfo } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { reportWalletBalanceDebounced } from './accountBalanceAnalytics';
 import { accountsActions } from './accountsActions';
@@ -60,7 +61,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
 
     const promises = customTokens.map(t =>
         TrezorConnect.getAccountInfo({
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'tokenBalances',
@@ -142,7 +143,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 : undefined;
 
         const basic = await TrezorConnect.getAccountInfo({
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: account.networkType === 'solana' ? 'txids' : 'basic',
@@ -175,7 +176,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 : getTxsPerPage(account.networkType);
 
         const response = await TrezorConnect.getAccountInfo({
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'txs',

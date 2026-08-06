@@ -30,6 +30,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { CheckIcon, InfoIcon, QrCodeIcon, WarningCircleIcon, XIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 import { type TimerId } from '@trezor/type-utils';
@@ -378,7 +379,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
                 const result = await TrezorConnect.getAccountInfo({
                     descriptor: checkedAddress,
-                    coin: symbol,
+                    coin: asCoinSymbol(symbol),
                 });
 
                 if (!result.success) {
@@ -416,7 +417,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
                     const result = await TrezorConnect.getAccountInfo({
                         descriptor: value,
-                        coin: symbol,
+                        coin: asCoinSymbol(symbol),
                         details: 'basic',
                     });
 

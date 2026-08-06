@@ -26,6 +26,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { type TimerId, exhaustive } from '@trezor/type-utils';
 import { BigNumber, isNotUndefined, typedObjectKeys } from '@trezor/utils';
 
@@ -45,7 +46,7 @@ interface FetchErc4626DataProps {
 
 const fetchErc4626Data = async ({ coin, contract }: FetchErc4626DataProps) => {
     const response = await TrezorConnect.blockchainGetContractInfo({
-        coin,
+        coin: asCoinSymbol(coin),
         contract,
         protocols: ['erc4626'],
     });

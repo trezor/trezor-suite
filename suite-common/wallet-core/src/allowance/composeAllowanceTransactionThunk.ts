@@ -9,6 +9,7 @@ import {
 } from '@suite-common/wallet-types';
 import { findToken, getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber, typedObjectFromEntries } from '@trezor/utils';
 
 import { ALLOWANCE_MODULE_PREFIX } from './allowanceConstants';
@@ -47,7 +48,7 @@ export const composeAllowanceTransactionThunk = createThunk<
         }
 
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: getAccountIdentity(account),
             request: {
                 blocks: [2],

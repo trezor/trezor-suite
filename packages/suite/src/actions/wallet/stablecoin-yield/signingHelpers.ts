@@ -17,6 +17,7 @@ import {
 } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import type { AppState, Dispatch } from 'src/types/suite';
 
@@ -157,7 +158,7 @@ export const sendYieldTransaction = async ({
                 signingResponse.payload.serializedTx,
                 isMevProtectionEnabled && isMevProtectionFeatureEnabled,
             ),
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: getAccountIdentity(account),
         });
 

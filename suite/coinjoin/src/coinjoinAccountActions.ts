@@ -20,6 +20,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { type BroadcastedTransactionDetails, type ScanAccountProgress } from '@trezor/coinjoin';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { promiseAllSequence } from '@trezor/utils';
 
 import * as coinjoinClientActions from './coinjoinClientActions';
@@ -597,7 +598,7 @@ export const createCoinjoinAccount =
             path,
             unlockPath: unlockPath.payload,
             device,
-            coin: network.symbol,
+            coin: asCoinSymbol(network.symbol),
             suppressBackupWarning: true,
         });
         if (!publicKey.success) {
@@ -699,7 +700,7 @@ const authorizeCoinjoin =
         const auth = await TrezorConnect.authorizeCoinjoin({
             device,
             path: account.path,
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             coordinator,
             maxCoordinatorFeeRate: params.maxCoordinatorFeeRate * COORDINATOR_FEE_RATE_MULTIPLIER,
             maxFeePerKvbyte: params.maxFeePerKvbyte,
@@ -810,7 +811,7 @@ export const restoreCoinjoinSession =
         const auth = await TrezorConnect.authorizeCoinjoin({
             device,
             path: account.path,
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             preauthorized: true, // this parameter will check if device is already authorized
             // reuse session params
             coordinator: client.settings.coordinatorName,

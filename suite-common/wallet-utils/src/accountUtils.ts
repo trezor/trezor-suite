@@ -38,6 +38,7 @@ import TrezorConnect, {
     type StaticSessionId,
     type TokenInfo,
 } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path, Bip43PathTemplate } from '@trezor/crypto-utils';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
@@ -1160,7 +1161,7 @@ export const prepareNewAccountPayload = async ({
 
     const res = await TrezorConnect.getAccountInfo({
         path: newPath,
-        coin: networkSymbol,
+        coin: asCoinSymbol(networkSymbol),
         device: {
             path: device.path,
             instance: device.instance,

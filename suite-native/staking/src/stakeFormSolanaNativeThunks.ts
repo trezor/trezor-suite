@@ -23,6 +23,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { getSuiteVersion } from '@trezor/env-utils';
 import solana from '@trezor/network-solana/runtime';
 import type { Fee } from '@trezor/network-solana/types';
@@ -74,7 +75,7 @@ const resolveSolanaBlockchainUrl = async (
     const connectedUrl = selectNetworkBlockchainInfo(state, symbol)?.url;
     if (connectedUrl) return connectedUrl;
 
-    const info = await TrezorConnect.blockchainGetInfo({ coin: symbol });
+    const info = await TrezorConnect.blockchainGetInfo({ coin: asCoinSymbol(symbol) });
 
     return info.success ? info.payload.url : undefined;
 };

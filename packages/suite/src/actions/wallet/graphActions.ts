@@ -4,6 +4,7 @@ import { selectBaseCurrency, selectIsElectrumBackendSelected } from '@suite-comm
 import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { type Dispatch, type GetState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
@@ -99,7 +100,7 @@ export const fetchAccountGraphData =
         const lastCachedPoint = cachedData && cachedData.length > 2 ? cachedData.at(-1) : undefined;
 
         const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             from: lastCachedPoint ? lastCachedPoint.time - DAY_IN_SECONDS : undefined,

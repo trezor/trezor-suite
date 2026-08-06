@@ -25,6 +25,7 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI_EVENT,
 } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { isDesktop } from '@trezor/env-utils';
 import { DATA_URL } from '@trezor/urls';
 import { getSynchronize, isArrayMember } from '@trezor/utils';
@@ -162,7 +163,9 @@ export const connectInitThunk = createThunk<void, void, void>(
                 firmwareChannel: getEffectiveFirmwareChannel(getState()),
                 definitionsChannel,
                 // Suite's enabled coins, declared to Connect one-way (Suite is the source of truth).
-                enabledNetworks: selectEnabledNetworks(getState()).map(coin => ({ coin })),
+                enabledNetworks: selectEnabledNetworks(getState()).map(coin => ({
+                    coin: asCoinSymbol(coin),
+                })),
             });
         } catch (error) {
             let formattedError: string;

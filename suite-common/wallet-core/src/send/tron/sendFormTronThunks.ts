@@ -12,6 +12,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import * as tronUtils from '@trezor/network-tron/utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -212,7 +213,7 @@ export const signTronSendFormTransactionThunk = createThunk<
         }
 
         const blockchainInfo = await TrezorConnect.blockchainGetInfo({
-            coin: selectedAccount.symbol,
+            coin: asCoinSymbol(selectedAccount.symbol),
             identity: getAccountIdentity(selectedAccount),
         });
         if (!blockchainInfo.success) {

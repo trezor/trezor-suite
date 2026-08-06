@@ -10,6 +10,9 @@
         { "path": "../test-utils" },
         { "path": "../wallet-core" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }
