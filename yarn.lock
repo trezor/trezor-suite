@@ -10423,7 +10423,7 @@ __metadata:
     "@trezor/react-utils": "workspace:^"
     "@trezor/utils": "workspace:^"
     react: "npm:19.2.3"
-    zod: "npm:4.3.6"
+    zod: "npm:4.4.3"
   languageName: unknown
   linkType: soft
 
@@ -10433,7 +10433,7 @@ __metadata:
   dependencies:
     orval: "npm:8.19.0"
     prettier: "npm:^3.8.4"
-    zod: "npm:4.3.6"
+    zod: "npm:4.4.3"
   languageName: unknown
   linkType: soft
 
@@ -10450,7 +10450,7 @@ __metadata:
     "@trezor/connect-common": "workspace:^"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
-    zod: "npm:4.3.6"
+    zod: "npm:4.4.3"
   languageName: unknown
   linkType: soft
 
@@ -10465,7 +10465,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     orval: "npm:8.19.0"
     prettier: "npm:^3.8.4"
-    zod: "npm:4.3.6"
+    zod: "npm:4.4.3"
   languageName: unknown
   linkType: soft
 
@@ -10603,7 +10603,7 @@ __metadata:
   resolution: "@suite-common/http-client@workspace:suite-common/http-client"
   dependencies:
     up-fetch: "npm:2.6.0"
-    zod: "npm:4.3.6"
+    zod: "npm:4.4.3"
   languageName: unknown
   linkType: soft
 
@@ -10618,7 +10618,7 @@ __metadata:
     prettier: "npm:^3.8.4"
     sharp: "npm:^0.34.2"
     svgo: "npm:^4.0.1"
-    zod: "npm:4.3.6"
+    zod: "npm:4.4.3"
   languageName: unknown
   linkType: soft
 
@@ -10812,7 +10812,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/schemas@workspace:suite-common/schemas"
   dependencies:
-    zod: "npm:4.3.6"
+    zod: "npm:4.4.3"
   languageName: unknown
   linkType: soft
 
@@ -15163,7 +15163,7 @@ __metadata:
     redux: "npm:^5.0.1"
     redux-thunk: "npm:^3.1.0"
     styled-components: "npm:^6.3.9"
-    zod: "npm:4.3.6"
+    zod: "npm:4.4.3"
   languageName: unknown
   linkType: soft
 
@@ -16394,7 +16394,7 @@ __metadata:
     scroll-into-view-if-needed: "npm:^3.1.0"
     styled-components: "npm:^6.3.9"
     tailwindcss: "npm:^3.4.10"
-    zod: "npm:4.3.6"
+    zod: "npm:4.4.3"
   peerDependencies:
     next: ">=15.0.0"
     nextra: ^2.13.4
@@ -16635,7 +16635,7 @@ __metadata:
     express: "npm:^5.2.1"
     tsx: "npm:^4.21.0"
     ws: "npm:^8.21.1"
-    zod: "npm:4.3.6"
+    zod: "npm:4.4.3"
   languageName: unknown
   linkType: soft
 
@@ -48108,10 +48108,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:4.3.6, zod@npm:^3.25 || ^4.0, zod@npm:^3.25.0 || ^4.0.0, zod@npm:^4.3.5":
-  version: 4.3.6
-  resolution: "zod@npm:4.3.6"
-  checksum: 10/25fc0f62e01b557b4644bf0b393bbaf47542ab30877c37837ea8caf314a8713d220c7d7fe51f68ffa72f0e1018ddfa34d96f1973d23033f5a2a5a9b6b9d9da01
+"zod@npm:4.4.3, zod@npm:^3.25 || ^4.0, zod@npm:^3.25.0 || ^4.0.0, zod@npm:^4.3.5":
+  version: 4.4.3
+  resolution: "zod@npm:4.4.3"
+  checksum: 10/804b9a42aa8f35f2b3c5a8dff906291cb749115f83ee2afe3576d70b5b5c53c965365c7f4967690647a9c54af9838ff232a85ff9577a0a36c44b68bc6cdefe36
   languageName: node
   linkType: hard
 

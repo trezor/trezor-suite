@@ -49,7 +49,7 @@
         "redux": "^5.0.1",
         "redux-thunk": "^3.1.0",
         "styled-components": "^6.3.9",
-        "zod": "4.3.6"
+        "zod": "4.4.3"
     },
     "devDependencies": {
         "@trezor/requirements": "workspace:*"
