@@ -4,6 +4,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     isDiscoveryInProgress,
     selectAccountsByDeviceState,
+    selectDeviceSupportedNetworks,
     selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
 import { type Account, type DiscoveryStatus } from '@suite-common/wallet-types';
@@ -16,6 +17,7 @@ type GetDiscoveryStatusParams = {
     device: TrezorDevice | undefined;
     discovery: DiscoveryStatus | undefined;
     accounts: Account[] | undefined;
+    deviceSupportedNetworks: NetworkSymbol[];
     walletSettings: {
         enabledNetworks: NetworkSymbol[];
     };
@@ -25,6 +27,7 @@ const getDiscoveryStatus = ({
     device,
     discovery,
     accounts,
+    deviceSupportedNetworks,
     walletSettings,
 }: GetDiscoveryStatusParams): DiscoveryStatusType | undefined => {
     if (!device) {
@@ -34,7 +37,11 @@ const getDiscoveryStatus = ({
         };
     }
 
-    if (walletSettings.enabledNetworks.length === 0) {
+    const hasEnabledSupportedNetwork = walletSettings.enabledNetworks.some(networkSymbol =>
+        deviceSupportedNetworks.includes(networkSymbol),
+    );
+
+    if (!hasEnabledSupportedNetwork) {
         return {
             status: 'exception',
             type: 'discovery-empty',
@@ -83,9 +90,16 @@ const getDiscoveryStatus = ({
 // TODO move this selector somewhere more sensible
 export const selectDiscoveryOverallStatus = (state: AppState) => {
     const device = selectSelectedDevice(state);
+    const deviceSupportedNetworks = selectDeviceSupportedNetworks(state);
     const accounts = device?.state && selectAccountsByDeviceState(state, device.state);
     const discovery = selectDiscoveryByDevicePath(state, device?.path);
     const walletSettings = state.wallet.settings;
 
-    return getDiscoveryStatus({ device, discovery, accounts, walletSettings });
+    return getDiscoveryStatus({
+        device,
+        discovery,
+        accounts,
+        deviceSupportedNetworks,
+        walletSettings,
+    });
 };
