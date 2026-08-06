@@ -3741,10 +3741,16 @@ export const messages = {
             allTitle: 'All assets',
             favouritesAdd: 'Add to favorites',
             favouritesRemove: 'Remove from favorites',
-            emptyTitle: 'Coin not found',
-            emptyDescription: 'Check the spelling or browse the list to select an option.',
-            searchInputPlaceholder: 'Search tokens or address',
+            emptyTitleText: 'No coin or token found',
+            emptyDescriptionText: 'Check the spelling or browse the list to select an asset.',
+            searchInputPlaceholderText: 'Search',
             allFilterTabTitle: 'All',
+            networkPickerLabel: 'Network',
+            networksSheet: {
+                title: 'Show assets on',
+                allNetworks: 'All networks',
+                clearFilter: 'Clear filter',
+            },
         },
         accountScreen: {
             accountEmpty: {

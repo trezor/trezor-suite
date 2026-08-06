@@ -16,6 +16,7 @@ describe('TradeableAssetList', () => {
                 onAssetSelect={jest.fn()}
                 onFilterChange={jest.fn()}
                 onSelectedNetworkFilter={jest.fn()}
+                selectedNetworkFilter={undefined}
                 scrollResetKey="test-key"
                 {...props}
             />,
@@ -27,9 +28,9 @@ describe('TradeableAssetList', () => {
 
     it('selects a pressed asset', () => {
         const onAssetSelect = jest.fn();
-        const { getByLabelText } = renderTradeableAssetList({ onAssetSelect });
+        const { getByText } = renderTradeableAssetList({ onAssetSelect });
 
-        fireEvent.press(getByLabelText('Bitcoin'));
+        fireEvent.press(getByText('BTC'));
 
         expect(onAssetSelect).toHaveBeenCalledWith(btcAsset);
     });
@@ -38,10 +39,10 @@ describe('TradeableAssetList', () => {
         const { getByText } = renderTradeableAssetList({ assets: [] });
 
         expect(
-            getByText(getTranslation('moduleTrading.tradeableAssetsSheet.emptyTitle')),
+            getByText(getTranslation('moduleTrading.tradeableAssetsSheet.emptyTitleText')),
         ).toBeTruthy();
         expect(
-            getByText(getTranslation('moduleTrading.tradeableAssetsSheet.emptyDescription')),
+            getByText(getTranslation('moduleTrading.tradeableAssetsSheet.emptyDescriptionText')),
         ).toBeTruthy();
     });
 });

@@ -170,11 +170,15 @@ export abstract class TradingFormActions extends TradingActions {
         await searchReceiveCryptoInput.replaceText(searchForStr);
 
         if (network) {
-            const networkFilterTab = element(
-                by.text(network).withAncestor(by.id(this.getTestId('receive-asset-screen'))),
+            const networkPicker = this.getElementById('receive-asset-screen/network-picker');
+            await networkPicker.tap();
+
+            const networksSheet = by.id(
+                this.getTestId('receive-asset-screen/network-picker/networks-sheet'),
             );
-            await waitForVisible(networkFilterTab);
-            await networkFilterTab.tap();
+            const networkOption = element(by.text(network).withAncestor(networksSheet));
+            await waitForVisible(networkOption);
+            await networkOption.tap();
         }
 
         await waitForVisible(by.text(asset));

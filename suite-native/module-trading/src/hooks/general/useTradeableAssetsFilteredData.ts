@@ -127,5 +127,11 @@ export const useTradeableAssetsFilteredData = ({ assets }: { assets: TradeableAs
 
     const filterValueWithNetwork = `Network:${filterSymbol ? filterSymbol : 'all'};Search:${filterValue}`;
 
-    return { setFilterSymbol, setFilterValue, filteredData, filterValue: filterValueWithNetwork };
+    return {
+        filterSymbol,
+        setFilterSymbol,
+        setFilterValue,
+        filteredData,
+        filterValue: filterValueWithNetwork,
+    };
 };

@@ -59,17 +59,19 @@ describe('TradingTradeableAssetScreen', () => {
     });
 
     it.each([
-        ['buy', 'Bitcoin', btcAsset.cryptoId],
+        ['buy', 'BTC', btcAsset.cryptoId],
         ['exchange', 'USDC', usdcAsset.cryptoId],
-    ] as const)('renders and selects the %s asset data', (tradingType, assetName, cryptoId) => {
-        const { getByLabelText } = renderWithTradingProvider(
+    ] as const)('renders and selects the %s asset data', (tradingType, assetSymbol, cryptoId) => {
+        const { getByLabelText, getByText } = renderWithTradingProvider(
             <TradingTradeableAssetScreen
                 navigation={navigation}
                 route={createRoute(tradingType)}
             />,
         );
 
-        fireEvent.press(getByLabelText(assetName));
+        const assetElement =
+            tradingType === 'buy' ? getByText(assetSymbol) : getByLabelText(assetSymbol);
+        fireEvent.press(assetElement);
 
         expect(navigation.popTo).toHaveBeenCalledWith(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.TradeStack,

@@ -26,7 +26,7 @@ type TradeableAssetScreenListProps = {
 };
 
 const BuyTradeableAssetList = ({ onAssetSelect }: TradeableAssetScreenListProps) => {
-    const { filteredData, filterValue, setFilterValue, setFilterSymbol } =
+    const { filteredData, filterSymbol, filterValue, setFilterValue, setFilterSymbol } =
         useBuyTradeableAssetsFilteredData();
 
     return (
@@ -35,6 +35,7 @@ const BuyTradeableAssetList = ({ onAssetSelect }: TradeableAssetScreenListProps)
             onAssetSelect={onAssetSelect}
             onFilterChange={setFilterValue}
             onSelectedNetworkFilter={setFilterSymbol}
+            selectedNetworkFilter={filterSymbol}
             scrollResetKey={filterValue}
             testID="@trading/buy/receive-asset-screen"
         />
@@ -42,7 +43,7 @@ const BuyTradeableAssetList = ({ onAssetSelect }: TradeableAssetScreenListProps)
 };
 
 const ExchangeTradeableAssetList = ({ onAssetSelect }: TradeableAssetScreenListProps) => {
-    const { filteredData, filterValue, setFilterValue, setFilterSymbol } =
+    const { filteredData, filterSymbol, filterValue, setFilterValue, setFilterSymbol } =
         useExchangeBuyTradeableAssetsFilteredData();
 
     return (
@@ -51,6 +52,7 @@ const ExchangeTradeableAssetList = ({ onAssetSelect }: TradeableAssetScreenListP
             onAssetSelect={onAssetSelect}
             onFilterChange={setFilterValue}
             onSelectedNetworkFilter={setFilterSymbol}
+            selectedNetworkFilter={filterSymbol}
             scrollResetKey={filterValue}
             testID="@trading/exchange/receive-asset-screen"
         />

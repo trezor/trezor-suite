@@ -1,9 +1,11 @@
-import { type ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
     BottomSheetBackdrop,
+    BottomSheetFooter,
+    type BottomSheetFooterProps,
     type BottomSheetHandleProps,
     BottomSheetModal,
     useBottomSheetScrollableCreator,
@@ -11,6 +13,9 @@ import {
 import { FlashList, type FlashListProps, type FlashListRef } from '@shopify/flash-list';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { Box } from '../Box';
+import { EdgeFades } from '../EdgeFades';
 
 type FlashListRenderItem<TItem> = NonNullable<FlashListProps<TItem>['renderItem']>;
 type FlashListRenderItemInfo<TItem> = Parameters<FlashListRenderItem<TItem>>[0];
@@ -24,6 +29,7 @@ export type BottomSheetFlashListHandleProps = BottomSheetHandleProps & {
 };
 
 export type BottomSheetFlashListProps<TItem> = {
+    footer?: ReactNode;
     isVisible: boolean;
     onClose: (shouldHideKeyboard?: boolean) => void;
     title?: ReactNode;
@@ -55,6 +61,10 @@ const handleStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.borderNeutral,
 }));
 
+const footerStyle = prepareNativeStyle(({ colors }) => ({
+    backgroundColor: colors.surfaceFillPage,
+}));
+
 const WindowOverlay = ({ children }: { children: ReactNode }) => (
     <View style={StyleSheet.absoluteFill}>{children}</View>
 );
@@ -66,6 +76,7 @@ export const BottomSheetFlashList = <TItem,>({
     subtitle,
     estimatedListHeight = 0,
     handleComponent,
+    footer,
     scrollResetKey,
     renderItem,
     ...flashListProps
@@ -75,6 +86,7 @@ export const BottomSheetFlashList = <TItem,>({
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
     const flashListRef = useRef<FlashListRef<TItem>>(null);
+    const [footerHeight, setFooterHeight] = useState(0);
 
     // Imperative scroll reset.
     useEffect(() => {
@@ -105,6 +117,22 @@ export const BottomSheetFlashList = <TItem,>({
         [renderItem, dismissSheet],
     );
 
+    const renderFooter = useCallback(
+        ({ animatedFooterPosition }: BottomSheetFooterProps) => (
+            <>
+                <BottomSheetFooter
+                    animatedFooterPosition={animatedFooterPosition}
+                    bottomInset={insetBottom}
+                    style={applyStyle(footerStyle)}
+                >
+                    <Box onLayout={e => setFooterHeight(e.nativeEvent.layout.height)}>{footer}</Box>
+                </BottomSheetFooter>
+                <EdgeFades direction="vertical" startSize={0} endSize={220} />
+            </>
+        ),
+        [applyStyle, footer, insetBottom],
+    );
+
     const maxHeight = Dimensions.get('window').height * 0.9;
     const minHeight = Math.max(Dimensions.get('window').height * 0.4, estimatedListHeight);
     // minHeight can be higher than maxHeight because of estimatedListHeight, but it must be capped by maxHeight
@@ -126,6 +154,7 @@ export const BottomSheetFlashList = <TItem,>({
             snapPoints={snapPoints}
             maxDynamicContentSize={maxHeight}
             enableDynamicSizing={false}
+            footerComponent={footer ? renderFooter : undefined}
             onDismiss={handleDismiss}
             backdropComponent={props => (
                 <BottomSheetBackdrop
@@ -149,7 +178,7 @@ export const BottomSheetFlashList = <TItem,>({
                 renderScrollComponent={BottomSheetListScrollComponent}
                 renderItem={renderFlashListItem}
                 contentContainerStyle={applyStyle(sheetContentContainerStyle, {
-                    insetBottom,
+                    insetBottom: footer ? footerHeight + insetBottom : insetBottom,
                 })}
                 {...flashListProps}
             />
