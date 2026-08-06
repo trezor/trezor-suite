@@ -23,7 +23,7 @@ import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsConnectedApps } from 'src/views/settings/SettingsConnectedApps/SettingsConnectedApps';
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
-import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGeneral';
+import { DesktopSettingsGeneral } from 'src/views/settings/SettingsGeneral/DesktopSettingsGeneral';
 import Notification from 'src/views/suite/notifications';
 import WalletAnonymize from 'src/views/wallet/anonymize';
 import WalletDetails from 'src/views/wallet/details';
@@ -97,7 +97,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
 
     'password-manager-index': PasswordManagerView,
 
-    'settings-index': SettingsGeneral,
+    'settings-index': DesktopSettingsGeneral,
     'settings-coins': SettingsCoins,
     'settings-debug': SettingsDebug,
     'settings-device': SettingsDevice,

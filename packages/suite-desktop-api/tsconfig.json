@@ -9,7 +9,7 @@
         {
             "path": "../../suite-common/platform-encryption"
         },
-        { "path": "../../suite/tor" },
+        { "path": "../../suite/tor-types" },
         { "path": "../type-utils" }
     ]
 }

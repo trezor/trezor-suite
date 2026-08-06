@@ -2,7 +2,7 @@ import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/acc
 import { type LocksRootState, selectIsDeviceOrUiLocked } from '@suite/locks';
 import { type ModalRootState } from '@suite/modal';
 import { type RouterRootState } from '@suite/router';
-import { type TorRootState, selectTorState } from '@suite/tor';
+import { type TorRootState, selectIsTorEnabled } from '@suite/tor';
 import { type DeviceRootState, selectDeviceStatus } from '@suite-common/device';
 import {
     Feature,
@@ -398,7 +398,7 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     if (selectIsNothingToAnonymizeByAccountKey(state, accountKey)) {
         return 'NOTHING_TO_ANONYMIZE';
     }
-    if (!selectTorState(state).isTorEnabled) {
+    if (!selectIsTorEnabled(state)) {
         return 'TOR_DISABLED';
     }
     if (!['connected', 'firmware-recommended'].includes(selectDeviceStatus(state) ?? '')) {

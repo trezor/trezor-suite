@@ -1,4 +1,4 @@
-import { type TorStatus } from '@suite/tor';
+import { type TorStatus } from '@suite/tor-types';
 
 import { type ExtractUndefined } from './methods';
 

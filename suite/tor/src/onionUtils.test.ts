@@ -1,8 +1,8 @@
 import { TOR_URLS } from '@trezor/urls';
 
-import { getIsTorDomain, isOnionUrl } from './torUtils';
+import { getIsTorDomain, isOnionUrl } from './onionUtils';
 
-describe('torUtils', () => {
+describe('onionUtils', () => {
     describe(getIsTorDomain.name, () => {
         const fixtures = [
             {

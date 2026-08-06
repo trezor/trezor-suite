@@ -1,6 +1,5 @@
+import { TorLoader } from '@suite/tor-desktop';
 import { type UserContextPayload } from '@suite-common/suite-types';
-
-import { TorLoader } from 'src/components/suite/TorLoader/TorLoader';
 
 type TorLoadingModalProps = Omit<Extract<UserContextPayload, { type: 'tor-loading' }>, 'type'> & {
     onCancel: () => void;
