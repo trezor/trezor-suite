@@ -76,7 +76,7 @@
         "@trezor/network-cardano": "workspace:*",
         "@trezor/transport-common": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
-        "@types/chrome": "^0.1.40",
+        "@types/chrome": "^0.2.2",
         "@types/jest": "30.0.0",
         "@types/node": "22.13.10"
     }

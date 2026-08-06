@@ -53,7 +53,7 @@
         "@playwright/test": "1.62.1",
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@types/chrome": "^0.1.40",
+        "@types/chrome": "^0.2.2",
         "@types/jest": "30.0.0",
         "@types/w3c-web-usb": "^1.0.14",
         "@types/web": "^0.0.345",
