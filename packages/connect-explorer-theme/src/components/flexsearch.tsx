@@ -2,8 +2,7 @@ import type { ReactElement, ReactNode } from 'react';
 import { useCallback, useState } from 'react';
 
 import cn from 'clsx';
-// flexsearch types are incorrect, they were overwritten in tsconfig.json
-import FlexSearch from 'flexsearch';
+import FlexSearch, { type Document } from 'flexsearch';
 import { useRouter } from 'next/router';
 import type { SearchData } from 'nextra/types';
 
@@ -12,26 +11,20 @@ import type { SearchResult } from '../types';
 import { HighlightMatches } from './highlight-matches';
 import { Search } from './search';
 
-type SectionIndex = FlexSearch.Document<
-    {
-        id: string;
-        url: string;
-        title: string;
-        pageId: string;
-        content: string;
-        display?: string;
-    },
-    ['title', 'content', 'url', 'display']
->;
+type SectionIndex = Document<{
+    id: string;
+    url: string;
+    title: string;
+    pageId: string;
+    content: string;
+    display?: string;
+}>;
 
-type PageIndex = FlexSearch.Document<
-    {
-        id: number;
-        title: string;
-        content: string;
-    },
-    ['title']
->;
+type PageIndex = Document<{
+    id: number;
+    title: string;
+    content: string;
+}>;
 
 type Result = {
     _page_rk: number;
@@ -173,7 +166,7 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
                 sectionIndex.search<true>(searchString, 5, {
                     enrich: true,
                     suggest: true,
-                    tag: `page_${result.id}`,
+                    tag: { pageId: `page_${result.id}` },
                 })[0]?.result || [];
 
             let isFirstItemOfPage = true;
@@ -183,6 +176,7 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
                 // @ts-expect-error: indexing with noUncheckedIndexedAccess
                 const sectionResult: (typeof sectionResults)[number] = sectionResults[j];
                 const { doc } = sectionResult;
+                if (!doc) continue;
                 const isMatchingTitle = doc.display !== undefined;
                 if (isMatchingTitle) {
                     pageTitleMatches[i] = (pageTitleMatches[i] ?? 0) + 1;
@@ -202,7 +196,7 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
                                 'contrast-more:nx-border-gray-600 contrast-more:nx-text-gray-900 contrast-more:dark:nx-border-gray-50 contrast-more:dark:nx-text-gray-50',
                             )}
                         >
-                            {result.doc.title}
+                            {result.doc?.title}
                         </div>
                     ),
                     children: (
