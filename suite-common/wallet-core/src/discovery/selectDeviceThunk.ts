@@ -1,10 +1,14 @@
 import {
     DEVICE_MODULE_PREFIX,
     type DeviceRootState,
+    type KeepSelectionReason,
     deviceActions,
+    getShouldSelectConnectedDevice,
     selectDevices,
-    selectIsSameOrNewDevice,
+    selectPhysicalDeviceWallets,
+    selectSelectedDevice,
 } from '@suite-common/device';
+import { type FirmwareRootState, selectFirmware } from '@suite-common/firmware';
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getSelectedDevice, sortByTimestamp } from '@suite-common/suite-utils';
@@ -51,19 +55,26 @@ export const selectDeviceThunk = createThunk<
     },
 );
 
-type SelectNewlyConnectedDeviceThunkState = DeviceRootState;
+type SelectNewlyConnectedDeviceThunkState = DeviceRootState & FirmwareRootState;
 
 export const selectNewlyConnectedDeviceThunk = createThunk<
     void,
     SelectDeviceThunkParams,
-    { state: SelectNewlyConnectedDeviceThunkState }
+    { state: SelectNewlyConnectedDeviceThunkState; rejectValue: KeepSelectionReason }
 >(
     `${DEVICE_MODULE_PREFIX}/selectNewlyConnectedDevice`,
     ({ device }, { dispatch, getState, rejectWithValue }) => {
-        if (!isNative() && !selectIsSameOrNewDevice(getState(), device)) {
-            // Select automatically when it is the first known device (none selected),
-            // or when we connected physical device corresponding to a selected remembered wallet.
-            return rejectWithValue('no-need-to-select');
+        const { shouldSelect, reason } = getShouldSelectConnectedDevice({
+            connectedDevice: device,
+            selectedDevice: selectSelectedDevice(getState()),
+            physicalDeviceWallets: selectPhysicalDeviceWallets(getState()),
+            firmware: selectFirmware(getState()),
+        });
+
+        // Mobile has a single device at a time, so it always follows the one that connected.
+        if (!isNative() && !shouldSelect) {
+            // Rejected with the reason, so that it is visible in the action and in the logs.
+            return rejectWithValue(reason);
         }
 
         dispatch(selectDeviceThunk({ device }));

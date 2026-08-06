@@ -115,7 +115,7 @@ describe('Suite Actions', () => {
 
     fixtures.selectNewlyConnectedDevice.forEach(f => {
         it(`selectNewlyConnectedDevice: ${f.description}`, async () => {
-            const state = getInitialState({}, f.state.device, undefined);
+            const state = getInitialState({}, f.state.device, undefined, f.state.firmware);
             const store = mockStore(state);
 
             const device = f.newlyConnectedDevice;
