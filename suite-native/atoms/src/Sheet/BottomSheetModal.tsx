@@ -8,7 +8,6 @@ import {
     type BottomSheetFooterProps,
     BottomSheetModal as BottomSheetModalBase,
     type BottomSheetModalProps as BottomSheetModalBaseProps,
-    type BottomSheetScrollViewMethods,
 } from '@gorhom/bottom-sheet';
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
@@ -19,8 +18,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { Box, type BoxProps } from '../Box';
 import { BottomSheetHeader } from './BottomSheetHeader';
 import { BottomSheetModalContent } from './BottomSheetModalContent';
-
-export type { BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 
 const TOP_OFFSET = 72; // corresponds to screen header size
 const MAX_MODAL_HEIGHT = getScreenHeight() - TOP_OFFSET;
@@ -36,8 +33,6 @@ export type BottomSheetModalProps = {
     onClose?: () => void;
     // triggered Always when the modal is dismissed
     onDismiss?: () => void;
-    // ref to the internal scroll view
-    scrollViewRef?: Ref<BottomSheetScrollViewMethods>;
 } & BoxProps;
 
 const backgroundStyle = prepareNativeStyle(({ colors }) => ({
@@ -66,7 +61,6 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
             onDismiss,
             bottomSheetCustomProps = {},
             onClose,
-            scrollViewRef,
             ...rest
         },
         ref,
@@ -133,7 +127,6 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
                 <BottomSheetModalContent
                     handleScroll={handleScroll}
                     bottomInset={bottom + footerHeight}
-                    scrollViewRef={scrollViewRef}
                     {...rest}
                 >
                     {children}

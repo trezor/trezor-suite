@@ -4,8 +4,9 @@ import { Button } from '@suite-native/atoms';
 type EmojiRatingButtonProps = {
     rating: Rating;
     emoji: string;
-    isSelected: boolean;
     onPress: (rating: Rating) => void;
+    isSelected?: boolean;
+    testID?: string;
 };
 
 export const EmojiRatingButton = ({
@@ -13,11 +14,12 @@ export const EmojiRatingButton = ({
     emoji,
     isSelected,
     onPress,
+    testID = `@feedback-form/rating/${rating}`,
 }: EmojiRatingButtonProps) => (
     <Button
         onPress={() => onPress(rating)}
         accessibilityState={{ selected: isSelected }}
-        testID={`@feedback-form/rating/${rating}`}
+        testID={testID}
         intent="neutral"
         priority={isSelected ? 'primary' : 'secondary'}
         size="medium"

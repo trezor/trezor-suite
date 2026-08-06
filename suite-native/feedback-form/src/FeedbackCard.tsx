@@ -1,23 +1,12 @@
 import { type ReactNode, useState } from 'react';
-import { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import { LinearTransition } from 'react-native-reanimated';
 
 import { type Rating, ratingOptions } from '@suite-common/feedback';
-import {
-    AnimatedBox,
-    Box,
-    Button,
-    Card,
-    HStack,
-    Input,
-    RoundedIcon,
-    Text,
-    VStack,
-} from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { AnimatedBox, Card, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 
 import { EmojiRatingButton } from './EmojiRatingButton';
-
-const MAX_DESCRIPTION_LENGTH = 1000;
+import { FeedbackFormSheet } from './FeedbackFormSheet';
+import { FeedbackSuccessMessage } from './FeedbackSuccessMessage';
 
 type FeedbackCardView = 'form' | 'success';
 
@@ -27,14 +16,10 @@ export type FeedbackCardProps = {
     submitLabel: ReactNode;
     successHeading: ReactNode;
     successDescription: ReactNode;
+    closeLabel: ReactNode;
     onSubmit: (rating: Rating, description: string) => void;
     defaultView?: FeedbackCardView;
-    asBottomSheetInput?: boolean;
 };
-
-const descriptionInputStyle = prepareNativeStyle(() => ({
-    minHeight: 80,
-}));
 
 export const FeedbackCard = ({
     heading,
@@ -42,17 +27,21 @@ export const FeedbackCard = ({
     submitLabel,
     successHeading,
     successDescription,
+    closeLabel,
     onSubmit,
     defaultView = 'form',
-    asBottomSheetInput = false,
 }: FeedbackCardProps) => {
-    const { applyStyle, utils } = useNativeStyles();
     const [rating, setRating] = useState<Rating | undefined>();
     const [feedbackText, setFeedbackText] = useState('');
     const [view, setView] = useState<FeedbackCardView>(defaultView);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal({ isNestedSheet: true });
 
-    const isRatingSelected = rating !== undefined;
-    const isFormValid = isRatingSelected && feedbackText.trim().length > 0;
+    const handleSelectRating = (selectedRating: Rating) => {
+        setRating(selectedRating);
+        openModal();
+    };
+
+    const isFormValid = rating !== undefined && feedbackText.trim().length > 0;
 
     const handleSubmit = () => {
         if (!isFormValid) {
@@ -61,6 +50,9 @@ export const FeedbackCard = ({
 
         onSubmit(rating, feedbackText);
         setView('success');
+    };
+
+    const handleDismiss = () => {
         setRating(undefined);
         setFeedbackText('');
     };
@@ -69,15 +61,10 @@ export const FeedbackCard = ({
         <Card>
             <AnimatedBox layout={LinearTransition}>
                 {view === 'success' ? (
-                    <HStack spacing="sp20" alignItems="center">
-                        <RoundedIcon name="check" intent="brand" size={40} />
-                        <VStack spacing="sp8" flex={1}>
-                            <Text variant="headline-sm">{successHeading}</Text>
-                            <Text variant="body-sm" color="contentSecondary">
-                                {successDescription}
-                            </Text>
-                        </VStack>
-                    </HStack>
+                    <FeedbackSuccessMessage
+                        heading={successHeading}
+                        description={successDescription}
+                    />
                 ) : (
                     <VStack spacing="sp16">
                         <Text variant="headline-sm">{heading}</Text>
@@ -87,54 +74,30 @@ export const FeedbackCard = ({
                                     key={id}
                                     rating={id}
                                     emoji={emoji}
-                                    isSelected={rating === id}
-                                    onPress={setRating}
+                                    onPress={handleSelectRating}
                                 />
                             ))}
                         </HStack>
-                        {isRatingSelected && (
-                            <AnimatedBox
-                                entering={FadeIn}
-                                exiting={FadeOut}
-                                layout={LinearTransition}
-                            >
-                                <VStack spacing="sp16">
-                                    {!!description && (
-                                        <Text variant="body-sm" color="contentSecondary">
-                                            {description}
-                                        </Text>
-                                    )}
-                                    <VStack spacing="sp4">
-                                        <Input
-                                            style={applyStyle(descriptionInputStyle)}
-                                            placeholderTextColor={utils.colors.contentSecondary}
-                                            asBottomSheetInput={asBottomSheetInput}
-                                            multiline
-                                            numberOfLines={3}
-                                            value={feedbackText}
-                                            onChangeText={setFeedbackText}
-                                            maxLength={MAX_DESCRIPTION_LENGTH}
-                                            testID="@feedback-form/description-input"
-                                        />
-                                        <Box alignItems="flex-end">
-                                            <Text variant="body-xs" color="contentSecondary">
-                                                {feedbackText.length}/{MAX_DESCRIPTION_LENGTH}
-                                            </Text>
-                                        </Box>
-                                    </VStack>
-                                    <Button
-                                        isDisabled={!isFormValid}
-                                        onPress={handleSubmit}
-                                        testID="@feedback-form/submit-button"
-                                    >
-                                        {submitLabel}
-                                    </Button>
-                                </VStack>
-                            </AnimatedBox>
-                        )}
                     </VStack>
                 )}
             </AnimatedBox>
+            <FeedbackFormSheet
+                ref={bottomSheetRef}
+                title={heading}
+                description={description}
+                submitLabel={submitLabel}
+                successHeading={successHeading}
+                successDescription={successDescription}
+                closeLabel={closeLabel}
+                isSuccessDisplayed={view === 'success'}
+                rating={rating}
+                feedbackText={feedbackText}
+                onRatingSelect={setRating}
+                onFeedbackTextChange={setFeedbackText}
+                onSubmit={handleSubmit}
+                onClose={closeModal}
+                onDismiss={handleDismiss}
+            />
         </Card>
     );
 };

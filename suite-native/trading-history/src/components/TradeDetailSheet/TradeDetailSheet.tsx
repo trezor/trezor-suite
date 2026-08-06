@@ -1,12 +1,8 @@
-import { memo, useEffect, useRef } from 'react';
+import { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
-import {
-    BottomSheetModal,
-    type BottomSheetScrollViewMethods,
-    useBottomSheetModal,
-} from '@suite-native/atoms';
+import { BottomSheetModal, useBottomSheetModal } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { Footer } from '@suite-native/trading-provider-utils';
 import { getTradeOperationData, getTradeTitle } from '@suite-native/trading-quote-utils';
@@ -40,7 +36,6 @@ export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDe
     const countryOfResidence = useSelector(selectTradingResidenceCountry);
 
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const scrollViewRef = useRef<BottomSheetScrollViewMethods>(null);
 
     useEffect(() => {
         if (isVisible) {
@@ -56,7 +51,6 @@ export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDe
         closeModal();
     };
 
-
     const tradeTitle = getTradeTitle(trade, translate);
 
     const { fromCurrency, toCurrency } = getTradeOperationData(trade.data);
@@ -68,7 +62,6 @@ export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDe
             style={applyStyle(bottomSheetStyle)}
             title={tradeTitle}
             isCloseDisplayed
-            scrollViewRef={scrollViewRef}
         >
             <TradeDetailHeader orderId={orderId} onOpenedBrowser={onOpenedBrowser} />
             <TradeDetailProviderCard orderId={orderId} />
@@ -79,11 +72,10 @@ export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDe
                 type={trade.tradeType}
                 status={trade.data.status}
                 provider={trade.data.exchange}
-                id={orderId}
+                id={trade.data.id}
                 sendCurrency={fromCurrency}
                 receiveCurrency={toCurrency}
                 country={countryOfResidence}
-                scrollViewRef={scrollViewRef}
             />
             <Footer />
         </BottomSheetModal>

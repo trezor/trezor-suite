@@ -15,10 +15,10 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@gorhom/bottom-sheet": "5.2.9",
         "@suite-common/feedback": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@trezor/styles-native": "workspace:*",
-        "@trezor/utils": "workspace:*",
         "react": "19.2.3",
         "react-native": "0.85.3",
         "react-native-reanimated": "4.3.1"
