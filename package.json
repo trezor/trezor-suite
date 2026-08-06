@@ -109,7 +109,7 @@
         "react-native": "0.85.3",
         "type-fest": "5.5.0",
         "bcrypto": "5.4.0",
-        "electron": "42.5.0",
+        "electron": "43.2.0",
         "react": "19.2.3",
         "@types/node": "22.13.10",
         "bn.js": "5.2.3",
