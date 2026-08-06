@@ -19,5 +19,4 @@ export const updateBreakpoints = createAction(
 );
 
 export type WindowAction =
-    | ReturnType<typeof updateWindowVisibility>
-    | ReturnType<typeof updateBreakpoints>;
+    ReturnType<typeof updateWindowVisibility> | ReturnType<typeof updateBreakpoints>;

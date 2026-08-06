@@ -66,7 +66,4 @@ type SelectedAccountNone = {
 };
 
 export type SelectedAccountStatus =
-    | SelectedAccountLoaded
-    | SelectedAccountLoading
-    | SelectedAccountException
-    | SelectedAccountNone;
+    SelectedAccountLoaded | SelectedAccountLoading | SelectedAccountException | SelectedAccountNone;

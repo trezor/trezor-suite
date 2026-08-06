@@ -38,20 +38,24 @@ const Container = styled.div<{
     ${({ $isDisabled, theme, $isChecked }) =>
         $isDisabled
             ? css`
-                  background: ${$isChecked
-                      ? theme.elementFillFieldSelectedDisabled
-                      : theme.elementFillBoldDisabled};
+                  background: ${
+                      $isChecked
+                          ? theme.elementFillFieldSelectedDisabled
+                          : theme.elementFillBoldDisabled
+                  };
               `
             : css`
-                  background: ${$isChecked
-                      ? theme.elementFillFieldSelected
-                      : theme.elementFillNeutralBold};
+                  background: ${
+                      $isChecked ? theme.elementFillFieldSelected : theme.elementFillNeutralBold
+                  };
 
                   :focus-within:has(:focus-visible),
                   &:hover {
-                      background: ${$isChecked
-                          ? theme.elementFillFieldSelectedHovered
-                          : theme.elementFillNeutralBoldHovered};
+                      background: ${
+                          $isChecked
+                              ? theme.elementFillFieldSelectedHovered
+                              : theme.elementFillNeutralBoldHovered
+                      };
                   }
 
                   &:focus-within:has(:focus-visible) {

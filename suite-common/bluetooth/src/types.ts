@@ -20,8 +20,7 @@ export type BluetoothFilterPolicy = {
 };
 
 export type BluetoothAutoConnectPolicy =
-    | { type: 'recently-disconnected'; timestamp: number }
-    | { type: 'autoconnect-disabled' };
+    { type: 'recently-disconnected'; timestamp: number } | { type: 'autoconnect-disabled' };
 
 export type BluetoothManufacturerData = {
     deviceModel: DeviceModelInternal;

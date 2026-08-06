@@ -14,9 +14,9 @@ export const useOpenSuiteDesktop = () => {
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const activeTransports = useSelector(selectActiveTransports);
     const windowFocused = useWindowFocus();
-    const { createTransports } = useServices(
-        (services): TransportsDep => ({ createTransports: services.createTransports }),
-    );
+    const { createTransports } = useServices((services): TransportsDep => ({
+        createTransports: services.createTransports,
+    }));
 
     const handleOpenSuite = () => {
         const iframe = document.createElement('iframe');

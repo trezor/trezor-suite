@@ -27,25 +27,7 @@ export type NegativeSpacingValue =
 export type SignedSpacingValue = SpacingValue | NegativeSpacingValue;
 
 type NativeSpacingValue =
-    | 1
-    | 2
-    | 4
-    | 6
-    | 8
-    | 10
-    | 12
-    | 16
-    | 18
-    | 20
-    | 24
-    | 32
-    | 36
-    | 40
-    | 48
-    | 44
-    | 52
-    | 56
-    | 64;
+    1 | 2 | 4 | 6 | 8 | 10 | 12 | 16 | 18 | 20 | 24 | 32 | 36 | 40 | 48 | 44 | 52 | 56 | 64;
 
 export const nativeSpacings = {
     sp1: 1,

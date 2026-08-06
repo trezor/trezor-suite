@@ -30,5 +30,4 @@ export type NativeStyle<TProps extends object = object> = (
 ) => NativeStyleObject;
 export type NativeStyles<TProps extends object> = Array<NativeStyle<TProps> | null | undefined>;
 export type NativeStyleOrStylesParam<TProps extends object> =
-    | NativeStyle<TProps>
-    | NativeStyles<TProps>;
+    NativeStyle<TProps> | NativeStyles<TProps>;

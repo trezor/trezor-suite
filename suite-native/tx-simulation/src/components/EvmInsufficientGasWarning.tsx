@@ -9,8 +9,7 @@ export type EvmInsufficientGasWarningProps = {
     gasLimit: string;
     networkSymbol: NetworkSymbol;
     transaction:
-        | TxSimulationMethod<'ethereumSignTransaction'>['payload']['transaction']
-        | undefined;
+        TxSimulationMethod<'ethereumSignTransaction'>['payload']['transaction'] | undefined;
 };
 
 export function EvmInsufficientGasWarning({

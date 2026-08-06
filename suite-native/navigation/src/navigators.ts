@@ -391,12 +391,10 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DevicePassphraseStack]: undefined;
     [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
     [DeviceSettingsStackRoutes.DeviceAuthenticityStack]:
-        | NavigatorScreenParams<DeviceAuthenticityStackParamList>
-        | undefined;
+        NavigatorScreenParams<DeviceAuthenticityStackParamList> | undefined;
     [DeviceSettingsStackRoutes.WipeDevice]: undefined;
     [DeviceSettingsStackRoutes.WipeDeviceStack]:
-        | NavigatorScreenParams<WipeDeviceStackParamList>
-        | undefined;
+        NavigatorScreenParams<WipeDeviceStackParamList> | undefined;
 };
 
 export type DeviceNameStackParamList = {
@@ -470,8 +468,7 @@ export type DeviceAuthenticityStackParamList = {
 
 export type AuthorizeDeviceStackParamList = {
     [AuthorizeDeviceStackRoutes.DeviceConnectionGuard]:
-        | { onCancelNavigationTarget: NavigateParameters<RootStackParamList> }
-        | undefined;
+        { onCancelNavigationTarget: NavigateParameters<RootStackParamList> } | undefined;
     [AuthorizeDeviceStackRoutes.ConnectDeviceCrossroads]: undefined;
     [AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice]: undefined;
     [AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice]: undefined;

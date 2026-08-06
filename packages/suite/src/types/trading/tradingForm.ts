@@ -66,9 +66,7 @@ export interface TradingBuyFormDefaultValuesProps {
 export type TradingBuySellFormProps = TradingBuyFormProps | TradingSellFormProps;
 export type TradingSellExchangeFormProps = TradingSellFormProps | TradingExchangeFormProps;
 export type TradingAllFormProps =
-    | TradingBuyFormProps
-    | TradingSellFormProps
-    | TradingExchangeFormProps;
+    TradingBuyFormProps | TradingSellFormProps | TradingExchangeFormProps;
 
 export interface TradingSellFormDefaultValuesProps {
     defaultValues: TradingSellFormProps;

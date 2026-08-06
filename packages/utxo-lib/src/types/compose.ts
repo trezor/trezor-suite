@@ -56,9 +56,7 @@ export interface ComposeOutputChange {
 }
 
 export type ComposeFinalOutput =
-    | ComposeOutputPayment
-    | ComposeOutputSendMax
-    | ComposeOutputOpreturn;
+    ComposeOutputPayment | ComposeOutputSendMax | ComposeOutputOpreturn;
 
 export type ComposeNotFinalOutput = ComposeOutputPaymentNoAddress | ComposeOutputSendMaxNoAddress;
 

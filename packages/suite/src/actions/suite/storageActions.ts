@@ -164,21 +164,19 @@ export const saveKnownDevices = createThunk<void, void, { state: SaveKnownDevice
         await db.addItem(
             'bluetooth',
             {
-                knownDevices: knownDevices.map(
-                    (it): DesktopBluetoothDevice => ({
-                        id: it.id,
-                        name: it.name,
-                        macAddress: it.macAddress,
-                        manufacturerData: it.manufacturerData,
-                        lastUpdatedTimestamp: it.lastUpdatedTimestamp,
-                        paired: it.paired,
-                        rssi: it.rssi,
-                        deviceId: it.deviceId,
+                knownDevices: knownDevices.map((it): DesktopBluetoothDevice => ({
+                    id: it.id,
+                    name: it.name,
+                    macAddress: it.macAddress,
+                    manufacturerData: it.manufacturerData,
+                    lastUpdatedTimestamp: it.lastUpdatedTimestamp,
+                    paired: it.paired,
+                    rssi: it.rssi,
+                    deviceId: it.deviceId,
 
-                        // Those fields are reset to prevent some state-inconsistency and UI flickering
-                        connectionStatus: { type: 'disconnected' },
-                    }),
-                ),
+                    // Those fields are reset to prevent some state-inconsistency and UI flickering
+                    connectionStatus: { type: 'disconnected' },
+                })),
             },
             'value',
             true,
@@ -512,11 +510,7 @@ export const saveAnalytics = () => (_dispatch: Dispatch, getState: GetState) => 
 };
 
 type MetadataPersistentKeys =
-    | 'providers'
-    | 'enabled'
-    | 'selectedProvider'
-    | 'error'
-    | 'hasLegacyLabelsMigrated';
+    'providers' | 'enabled' | 'selectedProvider' | 'error' | 'hasLegacyLabelsMigrated';
 
 const saveMetadata = async (metadata: Partial<Pick<MetadataState, MetadataPersistentKeys>>) => {
     if (!db.isAccessible()) return;

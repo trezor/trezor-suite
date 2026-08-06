@@ -7,11 +7,7 @@ import { type IconName } from '@suite-native/icons';
 import { type NativeSpacing } from '@trezor/theme';
 
 export type AlertType =
-    | 'autoEject'
-    | 'bluetoothAdapter'
-    | 'bluetoothPairing'
-    | 'connectDevice'
-    | 'deviceError';
+    'autoEject' | 'bluetoothAdapter' | 'bluetoothPairing' | 'connectDevice' | 'deviceError';
 
 export type Alert = {
     title?: ReactNode;

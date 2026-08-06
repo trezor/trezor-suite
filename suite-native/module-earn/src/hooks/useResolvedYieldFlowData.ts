@@ -27,11 +27,7 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 import { getAccountTokenByContract } from '../utils/contractTokenBalanceUtils';
 
 export type YieldFlowResolutionStatus =
-    | 'resolved'
-    | 'missing-vault'
-    | 'missing-network'
-    | 'missing-account'
-    | 'missing-token';
+    'resolved' | 'missing-vault' | 'missing-network' | 'missing-account' | 'missing-token';
 
 type UnresolvedYieldFlowData = {
     account: Account | null;

@@ -16,8 +16,7 @@ type RequestPushTransactionPayload = {
 };
 
 export type VotingDelegationOption =
-    | { type: 'everstake' }
-    | { type: 'another_drep'; drepId: string };
+    { type: 'everstake' } | { type: 'another_drep'; drepId: string };
 
 const setVotingDelegationOption = createAction(
     `${STAKE_MODULE_PREFIX}/setVotingDelegationOption`,

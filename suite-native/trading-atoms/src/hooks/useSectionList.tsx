@@ -73,8 +73,7 @@ type RenderInternalItemProps<T, U> = {
         sheetControls: BottomSheetFlashListControls,
     ) => ReactElement;
     renderSectionHeader:
-        | ((label: ReactNode, config: SectionHeaderRenderConfig<U>) => ReactElement)
-        | undefined;
+        ((label: ReactNode, config: SectionHeaderRenderConfig<U>) => ReactElement) | undefined;
     SectionEmptyComponent: ReactElement | undefined;
     applyStyle: ReturnType<typeof useNativeStyles>['applyStyle'];
     itemStyle?: ReturnType<typeof prepareNativeStyle<ItemRenderConfig<unknown>>>;
@@ -118,18 +117,16 @@ const transformToInternalFlatListData = <T, U = undefined>({
 }: TransformToInternalFlatListDataProps<T, U>): ListInternalItemShape<T, U>[] =>
     inputData.reduce(
         (acc, { key, label, data, sectionData }) => {
-            const itemsData = data.map(
-                (item, index): ListInternalItemShape<T, U> => ({
-                    type: 'item',
-                    item,
-                    config: {
-                        isFirst: index === 0,
-                        isLast: index === data.length - 1 && isLastItemRounded,
-                        sectionData,
-                        isEnabled: item.isEnabled !== undefined ? item.isEnabled : true,
-                    },
-                }),
-            );
+            const itemsData = data.map((item, index): ListInternalItemShape<T, U> => ({
+                type: 'item',
+                item,
+                config: {
+                    isFirst: index === 0,
+                    isLast: index === data.length - 1 && isLastItemRounded,
+                    sectionData,
+                    isEnabled: item.isEnabled !== undefined ? item.isEnabled : true,
+                },
+            }));
 
             if (!noSingletonSectionHeader || inputData.length > 1) {
                 acc.push({

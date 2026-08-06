@@ -8,8 +8,7 @@ export const getPreferredCountryOption = () => {
     const preferredCountryCode = getLocales()
         .map(({ regionCode }) => regionCode)
         .find(regionCode => countriesOptionsMap.has(regionCode as TradingCountryCode)) as
-        | TradingCountryCode
-        | undefined;
+        TradingCountryCode | undefined;
 
     return countriesOptionsMap.get(preferredCountryCode ?? 'unknown')!;
 };

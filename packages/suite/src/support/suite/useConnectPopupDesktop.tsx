@@ -119,8 +119,7 @@ export const useConnectPopupDesktop = () => {
                                   manifest: params.manifest,
                                   // Cast across the IPC boundary, same as `params.method` above.
                                   requestedPermissions: params.requestedPermissions as
-                                      | PermissionRequest[]
-                                      | undefined,
+                                      PermissionRequest[] | undefined,
                               },
                     }),
                 );

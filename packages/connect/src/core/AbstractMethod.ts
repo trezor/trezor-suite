@@ -31,9 +31,7 @@ export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;
 
 export type DeviceMode =
-    | typeof UI_REQUEST.SEEDLESS
-    | typeof UI_REQUEST.BOOTLOADER
-    | typeof UI_REQUEST.INITIALIZE;
+    typeof UI_REQUEST.SEEDLESS | typeof UI_REQUEST.BOOTLOADER | typeof UI_REQUEST.INITIALIZE;
 
 export type MethodContext = {
     sendCoreMessage: (message: CoreEventMessage) => void;

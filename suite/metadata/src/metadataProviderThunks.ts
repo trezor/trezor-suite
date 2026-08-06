@@ -28,10 +28,7 @@ import { GoogleProvider } from './providers/GoogleProvider';
 import { InMemoryTestProvider } from './providers/InMemoryTestProvider';
 
 type ProviderInstance =
-    | DropboxProvider
-    | GoogleProvider
-    | FileSystemProvider
-    | InMemoryTestProvider;
+    DropboxProvider | GoogleProvider | FileSystemProvider | InMemoryTestProvider;
 
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
 export const providerInstance: Record<DataType, ProviderInstance | undefined> = {

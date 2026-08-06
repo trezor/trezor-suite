@@ -131,14 +131,14 @@ const StyledText = styled.span<StyledTextProps>`
             letter-spacing: 0 !important;
         `}
         ${({ $isHighlighted }) =>
-        $isHighlighted &&
-        css`
-            display: inline;
-            padding: 0 4px;
-            border-radius: 4px;
-            background-color: ${({ theme }) => theme.elementFillNeutralSoft};
-            box-decoration-break: clone;
-        `}
+            $isHighlighted &&
+            css`
+                display: inline;
+                padding: 0 4px;
+                border-radius: 4px;
+                background-color: ${({ theme }) => theme.elementFillNeutralSoft};
+                box-decoration-break: clone;
+            `}
     
     ${withTextProps};
     ${withFrameProps};

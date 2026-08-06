@@ -17,10 +17,7 @@ import {
 import { firmwareActions } from './firmwareActions';
 
 type FirmwareUpdateUiEvent =
-    | DeviceButtonRequest
-    | FirmwareProgress
-    | FirmwareReconnect
-    | FirmwareProgressUnexpectedDelay;
+    DeviceButtonRequest | FirmwareProgress | FirmwareReconnect | FirmwareProgressUnexpectedDelay;
 
 type FirmwareUpdateCommon = {
     // Device before installation begun. Used to display the original firmware type and version during the installation.

@@ -109,8 +109,7 @@ export const prepareYieldAllowanceReviewTransactionThunk = createThunk(
 
         const formDraftKey = getYieldAllowanceFormDraftKey(flowKey, transactionType);
         const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
-            | FormState
-            | undefined;
+            FormState | undefined;
         const { approval } = selectStablecoinYieldSession(getState(), 'deposit', flowKey);
 
         const { modalState } = approval;
@@ -179,8 +178,7 @@ export const updateYieldAllowanceSelectedFeeLevelThunk = createThunk(
         if (!formDraftKey) return;
 
         const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
-            | FormState
-            | undefined;
+            FormState | undefined;
 
         if (!formDraft) return;
 

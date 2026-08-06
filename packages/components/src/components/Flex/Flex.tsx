@@ -61,20 +61,24 @@ export const withDivider = ({
         display: block;
         position: absolute;
 
-        ${$direction === 'column' &&
-        `
+        ${
+            $direction === 'column' &&
+            `
         top: -${$rowGap / 2}px;
         height: 1px;
         width: 100%;
         left: 0;
-        border-top: 1px solid ${$dividerColor ? theme[$dividerColor] : theme.borderNeutral};`}
-        ${$direction === 'row' &&
-        `
+        border-top: 1px solid ${$dividerColor ? theme[$dividerColor] : theme.borderNeutral};`
+        }
+        ${
+            $direction === 'row' &&
+            `
         top: 0;
         height: 100%;
         width: 1px;
         left: -${$columnGap / 2}px;
-        border-left: 1px solid ${$dividerColor ? theme[$dividerColor] : theme.borderNeutral};`}
+        border-left: 1px solid ${$dividerColor ? theme[$dividerColor] : theme.borderNeutral};`
+        }
     }
 `;
 

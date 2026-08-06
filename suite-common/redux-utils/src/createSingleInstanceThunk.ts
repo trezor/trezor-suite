@@ -61,7 +61,9 @@ type ResolveSingleInstanceThunkAPIRaw<TThunkAPI> = [TThunkAPI] extends [void]
  * no JavaScript at runtime.
  */
 type ResolveSingleInstanceThunkAPI<TThunkAPI> = {
-    [TKey in keyof ResolveSingleInstanceThunkAPIRaw<TThunkAPI>]: ResolveSingleInstanceThunkAPIRaw<TThunkAPI>[TKey];
+    [
+        TKey in keyof ResolveSingleInstanceThunkAPIRaw<TThunkAPI>
+    ]: ResolveSingleInstanceThunkAPIRaw<TThunkAPI>[TKey];
 };
 
 /**

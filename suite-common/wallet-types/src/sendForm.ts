@@ -58,9 +58,7 @@ export type FormStateTradingExchange = {
 } & FormStateTradingCommon;
 
 export type FormStateTrading =
-    | FormStateTradingSell
-    | FormStateTradingExchange
-    | FormStateTradingDefault;
+    FormStateTradingSell | FormStateTradingExchange | FormStateTradingDefault;
 
 export interface FormState {
     outputs: Output[]; // output arrays, each element is corresponding with single Output item

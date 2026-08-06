@@ -41,9 +41,7 @@ export const locksSlice = createSlice({
 export const { lockUI, lockDevice, lockRouter } = locksSlice.actions;
 
 export type LockAction =
-    | ReturnType<typeof lockUI>
-    | ReturnType<typeof lockDevice>
-    | ReturnType<typeof lockRouter>;
+    ReturnType<typeof lockUI> | ReturnType<typeof lockDevice> | ReturnType<typeof lockRouter>;
 
 export const locksReducer = locksSlice.reducer;
 
