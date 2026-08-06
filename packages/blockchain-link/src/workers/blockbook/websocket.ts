@@ -9,10 +9,10 @@ import type {
     BlockbookFilterRequestParams as FilterRequestParams,
     BlockbookMempoolTransactionNotification as MempoolTransactionNotification,
     MessageTypes,
+    BlockbookPush as Push,
     RpcCallParams,
     BlockbookSend as Send,
 } from '@trezor/blockchain-link-types';
-import { type Push } from '@trezor/blockchain-link-types/src/blockbook';
 import { type GetContractInfo } from '@trezor/blockchain-link-types/src/messages';
 import { getSuiteVersion } from '@trezor/env-utils';
 
@@ -27,10 +27,12 @@ type GetFiatRatesTickersList = MessageTypes.GetFiatRatesTickersList;
  * the socket and rejects the push, so the user is told the send failed — but blockbook may well have
  * broadcast it, and re-sending then signs the *next* nonce and pays the recipient twice.
  *
- * The default 20s message deadline is shorter than blockbook's own budget for the call: EVM coins
- * routed through a private/MEV relay allow `rpc_timeout` (25s) per relay URL for the broadcast
- * itself, so a single slow relay outlasts the client and the answer arrives after we stopped
- * listening. Wait long enough for blockbook to give up and answer instead.
+ * The default 20s message deadline is shorter than blockbook's own budget for the call. On a
+ * relay-backed EVM coin the broadcast fans out to every relay URL concurrently and is bounded by one
+ * `rpc_timeout` (25s) — already past 20s — and when no relay accepts (or none is configured), the
+ * answer can additionally wait for the primary send plus the lookups that make an own send visible,
+ * up to 3–4 × `rpc_timeout` (see blockbook's docs/evm-send.md). Wait long enough for blockbook to
+ * give up and answer instead.
  *
  * 60s is the largest deadline that is actually the push's own: the keep-alive ping fires after 50s of
  * silence and carries the default 20s deadline, and any expiry rejects every in-flight request and
