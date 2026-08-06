@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@noble/hashes": "^2.0.1",
-        "@trezor/network-module-suite-common-types": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/network-ethereum": "workspace:*",
+        "@trezor/network-module-suite-common-types": "workspace:*"
     }
 }

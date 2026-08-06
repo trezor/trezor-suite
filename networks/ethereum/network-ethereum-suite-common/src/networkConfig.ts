@@ -1,9 +1,8 @@
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
 import {
     type SuiteCommonNetworkConfig,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
-
-import type { EthereumNetworkSymbol } from './supportedNetworks';
 
 const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonNetworkConfig>> = {
     eth: { color: '#454a75', protocols: [asProtocol('ethereum'), asProtocol('eth')] },

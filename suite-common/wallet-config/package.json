@@ -11,9 +11,6 @@
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
-    "devDependencies": {
-        "viem": "^2.54.1"
-    },
     "dependencies": {
         "@suite-common/earn-stablecoin-defs": "workspace:*",
         "@suite-common/networks": "workspace:*",
@@ -21,6 +18,7 @@
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/network-cardano": "workspace:*",
+        "@trezor/network-ethereum": "workspace:*",
         "@trezor/network-ripple": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
