@@ -5,7 +5,7 @@ import { getTorUrlIfAvailable } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type Route, goto } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
-import { selectTorState } from '@suite/tor';
+import { selectIsTorEnabled } from '@suite/tor';
 import {
     type ContextDomain,
     messageSystemActions,
@@ -25,7 +25,7 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
     const message = useSelector((state: MessageSystemSuiteWithTorRootState) =>
         selectContextMessageContent(state, context, language),
     );
-    const { isTorEnabled } = useSelector(selectTorState);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
     const torOnionLinks = useSelector(selectTorOnionLinks);
     const dispatch = useDispatch();
 

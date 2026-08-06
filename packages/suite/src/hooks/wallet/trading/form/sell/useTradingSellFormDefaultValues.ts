@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
-import { selectTorState } from '@suite/tor';
+import { selectIsTorEnabled } from '@suite/tor';
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingCountryCode,
@@ -29,7 +29,7 @@ export const useTradingSellFormDefaultValues = (
     sellInfoCountry: TradingCountryCode | undefined,
     sellInfoCountrySubdivision?: string,
 ): TradingSellFormDefaultValuesProps => {
-    const { isTorEnabled } = useSelector(selectTorState);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
 
     const { account, defaultAsset } = useTradingDefaultSellAsset({
         accountKey,

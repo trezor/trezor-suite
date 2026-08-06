@@ -1,17 +1,12 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
-import { openDeferredModal } from '@suite/modal';
-import { selectRouterUrl } from '@suite/router';
 import { suiteSettingsActions } from '@suite/settings';
-import { type TorBootstrap, TorStatus, isOnionUrl, selectTorState, torActions } from '@suite/tor';
 import { type deviceActions } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getCustomBackends } from '@suite-common/wallet-utils';
-import { type HandshakeElectron, desktopApi } from '@trezor/suite-desktop-api';
+import { type HandshakeElectron } from '@trezor/suite-desktop-api';
 
 import { type EvmSettings } from 'src/reducers/suite/suiteReducer';
-import type { Dispatch, GetState } from 'src/types/suite';
+import { type Dispatch } from 'src/types/suite';
 
 import { SUITE } from './constants';
 
@@ -84,102 +79,6 @@ export const updateOnlineStatus = (payload: boolean): SuiteAction => ({
     type: SUITE.ONLINE_STATUS,
     payload,
 });
-
-export const updateTorStatus = (payload: TorStatus) => torActions.setTorStatus(payload);
-
-type ToggleTorDeps = { services: DesktopAnalyticsDep };
-
-export const toggleTor =
-    (shouldEnable: boolean, modal: string | undefined) =>
-    async (dispatch: Dispatch, getState: GetState, extra: ToggleTorDeps) => {
-        const { torBootstrap } = selectTorState(getState());
-
-        const backends = getCustomBackends(getState().wallet.blockchain);
-        // Is there any network with only onion custom backends?
-        const hasOnlyOnionBackends = backends.some(
-            ({ urls }) => urls.length && urls.every(isOnionUrl),
-        );
-
-        if (!shouldEnable && hasOnlyOnionBackends) {
-            const res = await dispatch(openDeferredModal({ type: 'disable-tor' }));
-            if (!res) return;
-        }
-
-        if (shouldEnable && torBootstrap) {
-            // Reset Tor Bootstrap before starting it.
-            dispatch(torActions.setTorBootstrap(null));
-        }
-
-        if (shouldEnable) {
-            // Updating here TorStatus to Enabling so user gets faster feedback that something is happening
-            // instead of wait for the event coming from request-manager in useTor.
-            dispatch(updateTorStatus(TorStatus.Enabling));
-        }
-
-        const ipcResponse = await desktopApi.toggleTor(shouldEnable);
-
-        if (ipcResponse.success) {
-            extra.services.analytics.report({
-                type: events.settingsTorEvent.name,
-                payload: {
-                    value: shouldEnable,
-                    location: selectRouterUrl(getState()),
-                    modal,
-                },
-            });
-        }
-
-        if (!ipcResponse.success && ipcResponse.error) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'tor-toggle-error',
-                    error: ipcResponse.error,
-                }),
-            );
-
-            return Promise.reject();
-        }
-    };
-
-export const setTorBootstrap =
-    (torBootstrap: TorBootstrap) => (dispatch: Dispatch, getState: GetState) => {
-        const { torBootstrap: previousTorBootstrap } = selectTorState(getState());
-
-        const payload: TorBootstrap = {
-            current: torBootstrap.current,
-            total: torBootstrap.total,
-            isSlow: previousTorBootstrap ? previousTorBootstrap.isSlow : false,
-        };
-
-        dispatch(torActions.setTorBootstrap(payload));
-    };
-
-export const setTorBootstrapSlow =
-    (isSlow: boolean) => (dispatch: Dispatch, getState: GetState) => {
-        const { torBootstrap: previousTorBootstrap } = selectTorState(getState());
-
-        if (!previousTorBootstrap) {
-            // Does not make sense to set bootstrap to slow when there is no bootstrap happening.
-            return;
-        }
-
-        if (isSlow && !previousTorBootstrap?.isSlow) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'tor-is-slow',
-                    autoClose: false,
-                }),
-            );
-        }
-
-        const payload: TorBootstrap = {
-            current: previousTorBootstrap.current,
-            total: previousTorBootstrap.total,
-            isSlow,
-        };
-
-        dispatch(torActions.setTorBootstrap(payload));
-    };
 
 export const hideCoinjoinReceiveWarning = () => (dispatch: Dispatch) =>
     dispatch(suiteSettingsActions.setCoinjoinReceiveWarningHidden(true));

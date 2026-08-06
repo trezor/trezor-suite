@@ -13,7 +13,7 @@ import {
     selectTheme,
 } from '@suite/settings';
 import { type DesktopSuiteSyncRootState } from '@suite/suite-sync';
-import { type TorRootState, getIsTorEnabled } from '@suite/tor';
+import { type TorRootState, selectIsTorEnabled } from '@suite/tor';
 import { type AnalyticsRootState } from '@suite-common/analytics-redux';
 import {
     selectRememberedHiddenWalletsCount,
@@ -105,7 +105,7 @@ export const getSuiteReadyPayload = async (
         screenWidth: getScreenWidth(),
         screenHeight: getScreenHeight(),
         platformLanguages: getPlatformLanguages().join(','),
-        tor: getIsTorEnabled(state.tor.torStatus),
+        tor: selectIsTorEnabled(state),
         labeling: resolveLabelingType(state),
         rememberedStandardWallets: selectRememberedStandardWalletsCount(state),
         rememberedHiddenWallets: selectRememberedHiddenWalletsCount(state),

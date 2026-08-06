@@ -200,8 +200,8 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     // settings
     'settings-index': lazy(() =>
         import(
-            /* webpackChunkName: "settings" */ 'src/views/settings/SettingsGeneral/SettingsGeneral'
-        ).then(({ SettingsGeneral }) => ({ default: SettingsGeneral })),
+            /* webpackChunkName: "settings" */ 'src/views/settings/SettingsGeneral/WebSettingsGeneral'
+        ).then(({ WebSettingsGeneral }) => ({ default: WebSettingsGeneral })),
     ),
     'settings-coins': lazy(() =>
         import(

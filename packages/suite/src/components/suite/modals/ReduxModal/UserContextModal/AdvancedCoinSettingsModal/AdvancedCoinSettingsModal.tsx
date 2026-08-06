@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { selectModalType } from '@suite/modal';
 import { selectHasExperimentalFeature } from '@suite/settings';
-import { selectTorState } from '@suite/tor';
+import { selectIsTorEnabled } from '@suite/tor';
+import { TorModal, type TorResult, toggleTor } from '@suite/tor-desktop';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     Badge,
@@ -18,7 +18,6 @@ import {
     Text,
 } from '@trezor/components';
 
-import { toggleTor } from 'src/actions/suite/suiteActions';
 import { useBackendsForm } from 'src/hooks/settings/backends';
 import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
 import { useGapLimitForm } from 'src/hooks/settings/useGapLimitForm';
@@ -27,7 +26,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { BackendUrls } from './BackendUrls/BackendUrls';
 import { BackendTypeSelect } from './CustomBackends/BackendTypeSelect';
 import ConnectionInfo from './CustomBackends/ConnectionInfo';
-import { TorModal, type TorResult } from './CustomBackends/TorModal';
 import { ExplorerConfigForm } from './ExplorerConfigForm';
 
 type AdvancedCoinSettingsModalProps = {
@@ -42,8 +40,7 @@ export const AdvancedCoinSettingsModal = ({
     onBackClick,
 }: AdvancedCoinSettingsModalProps) => {
     const network = getNetwork(symbol);
-    const { isTorEnabled } = useSelector(selectTorState);
-    const modalType = useSelector(selectModalType);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
     const dispatch = useDispatch();
     const [torModalOpen, setTorModalOpen] = useState(false);
 
@@ -78,7 +75,7 @@ export const AdvancedCoinSettingsModal = ({
     const onTorResult = async (result: TorResult) => {
         switch (result) {
             case 'enable-tor':
-                await dispatch(toggleTor(true, modalType));
+                await dispatch(toggleTor(true));
 
                 setTorModalOpen(false);
                 backendsForm.save().then(success => {

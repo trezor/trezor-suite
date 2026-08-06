@@ -1,23 +1,21 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { TorStatus } from '@suite/tor-types';
 
-import { type TorRootState, TorStatus } from './torSlice';
-import { getIsTorEnabled, getIsTorLoading } from './torUtils';
-
-const createMemoizedSelector = createWeakMapSelector.withTypes<TorRootState>();
+import { type TorRootState } from './torSlice';
 
 export const selectIsTorEnabled = (state: TorRootState) =>
     state.tor.torStatus === TorStatus.Enabled || state.tor.torStatus === TorStatus.Slow;
 
-export const selectTorState = createMemoizedSelector(
-    [(state: TorRootState) => state.tor],
-    ({ torStatus, torBootstrap }) => ({
-        torStatus,
-        torBootstrap,
-        isTorEnabled: getIsTorEnabled(torStatus),
-        isTorLoading: getIsTorLoading(torStatus),
-        isTorError: torStatus === TorStatus.Error,
-        isTorDisabling: torStatus === TorStatus.Disabling,
-        isTorDisabled: torStatus === TorStatus.Disabled,
-        isTorEnabling: torStatus === TorStatus.Enabling,
-    }),
-);
+export const selectIsTorLoading = (state: TorRootState) =>
+    state.tor.torStatus === TorStatus.Enabling || state.tor.torStatus === TorStatus.Disabling;
+
+export const selectIsTorEnabling = (state: TorRootState) =>
+    state.tor.torStatus === TorStatus.Enabling;
+
+export const selectIsTorDisabled = (state: TorRootState) =>
+    state.tor.torStatus === TorStatus.Disabled;
+
+export const selectIsTorError = (state: TorRootState) => state.tor.torStatus === TorStatus.Error;
+
+export const selectTorStatus = (state: TorRootState) => state.tor.torStatus;
+
+export const selectTorBootstrap = (state: TorRootState) => state.tor.torBootstrap;

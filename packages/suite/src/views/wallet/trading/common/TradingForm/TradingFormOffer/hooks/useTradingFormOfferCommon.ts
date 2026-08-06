@@ -1,5 +1,5 @@
 import { type TranslationKey } from '@suite/intl';
-import { selectTorState } from '@suite/tor';
+import { selectIsTorEnabled } from '@suite/tor';
 import {
     type TradingType,
     selectTradingProviderCompanyName,
@@ -34,7 +34,7 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
 
     const { amountInCrypto } = watch();
 
-    const { isTorEnabled } = useSelector(selectTorState);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
     const areFeesLoading = useSelector(suiteState =>
         selectAreFeesLoading(suiteState, account?.symbol),
     );

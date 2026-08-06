@@ -3,7 +3,7 @@ import type { AnyAction, Dispatch, MiddlewareAPI } from 'redux';
 
 import { lockDevice, selectIsDeviceOrUiLocked } from '@suite/locks';
 import { routerLocationChange, selectRouteName, selectSettingsBackRoute } from '@suite/router';
-import { selectTorState, torActions } from '@suite/tor';
+import { selectIsTorEnabled, torActions } from '@suite/tor';
 import {
     Feature,
     messageSystemActions,
@@ -126,7 +126,7 @@ export const coinjoinMiddleware =
 
         if (action.type === SUITE.READY) {
             const state = api.getState();
-            const isCoinjoinBlockedByTor = !selectTorState(state).isTorEnabled;
+            const isCoinjoinBlockedByTor = !selectIsTorEnabled(state);
             if (!isCoinjoinBlockedByTor) {
                 api.dispatch(coinjoinAccountActions.restoreCoinjoinAccounts());
             }
@@ -139,7 +139,7 @@ export const coinjoinMiddleware =
                 action.type === discoveryActions.startDiscovery.type
                     ? undefined
                     : action.payload.symbol;
-            const isCoinjoinBlockedByTor = !selectTorState(state).isTorEnabled;
+            const isCoinjoinBlockedByTor = !selectIsTorEnabled(state);
             if (!isCoinjoinBlockedByTor) {
                 // find all coinjoin accounts (for specific network when initiating action is network-specific)
                 const coinjoinAccounts = state.wallet.accounts.filter(

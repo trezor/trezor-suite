@@ -131,6 +131,8 @@
         "@suite/suite-sync": "workspace:*",
         "@suite/thp": "workspace:*",
         "@suite/tor": "workspace:*",
+        "@suite/tor-desktop": "workspace:*",
+        "@suite/tor-web": "workspace:*",
         "@suite/trading": "workspace:*",
         "@suite/transfer-uri": "workspace:*",
         "@suite/tx-simulation": "workspace:^",

@@ -7,7 +7,7 @@ import {
 import { session } from 'electron';
 
 import { SENTRY_CONFIG } from '@suite/sentry';
-import { TorStatus } from '@suite/tor';
+import { TorStatus } from '@suite/tor-types';
 
 import type { Store } from './store';
 import type { MainThreadEmitter } from '../modules';
