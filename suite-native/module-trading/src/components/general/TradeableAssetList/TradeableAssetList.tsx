@@ -44,8 +44,8 @@ export const TradeableAssetList = ({
     }, [scrollResetKey]);
 
     return (
-        <VStack flex={1} spacing="sp16" testID={testID}>
-            <HStack spacing="sp12" paddingHorizontal="sp16">
+        <VStack flex={1} spacing="sp10" testID={testID}>
+            <HStack spacing="sp12" paddingHorizontal="sp16" alignItems="center">
                 <Box flex={1}>
                     <SearchInput
                         onChange={onFilterChange}
@@ -75,6 +75,7 @@ export const TradeableAssetList = ({
                     ListEmptyComponent={<TradeableAssetListEmptyComponent />}
                     keyboardShouldPersistTaps="handled"
                     contentContainerStyle={{
+                        paddingTop: utils.spacings.sp6,
                         paddingBottom: bottom,
                         paddingHorizontal: utils.spacings.sp8,
                     }}

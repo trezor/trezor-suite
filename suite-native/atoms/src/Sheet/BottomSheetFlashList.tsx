@@ -28,7 +28,11 @@ export type BottomSheetFlashListHandleProps = BottomSheetHandleProps & {
     closeSheet: BottomSheetFlashListControls['closeSheet'];
 };
 
+const EDGE_FADE_START_SIZE = 20;
+const EDGE_FADE_END_SIZE = 220;
+
 export type BottomSheetFlashListProps<TItem> = {
+    showEdgeFades?: boolean;
     footer?: ReactNode;
     isVisible: boolean;
     onClose: (shouldHideKeyboard?: boolean) => void;
@@ -79,6 +83,8 @@ export const BottomSheetFlashList = <TItem,>({
     footer,
     scrollResetKey,
     renderItem,
+    contentContainerStyle,
+    showEdgeFades,
     ...flashListProps
 }: BottomSheetFlashListProps<TItem>) => {
     const { applyStyle } = useNativeStyles();
@@ -119,16 +125,13 @@ export const BottomSheetFlashList = <TItem,>({
 
     const renderFooter = useCallback(
         ({ animatedFooterPosition }: BottomSheetFooterProps) => (
-            <>
-                <BottomSheetFooter
-                    animatedFooterPosition={animatedFooterPosition}
-                    bottomInset={insetBottom}
-                    style={applyStyle(footerStyle)}
-                >
-                    <Box onLayout={e => setFooterHeight(e.nativeEvent.layout.height)}>{footer}</Box>
-                </BottomSheetFooter>
-                <EdgeFades direction="vertical" startSize={0} endSize={220} />
-            </>
+            <BottomSheetFooter
+                animatedFooterPosition={animatedFooterPosition}
+                bottomInset={insetBottom}
+                style={applyStyle(footerStyle)}
+            >
+                <Box onLayout={e => setFooterHeight(e.nativeEvent.layout.height)}>{footer}</Box>
+            </BottomSheetFooter>
         ),
         [applyStyle, footer, insetBottom],
     );
@@ -177,11 +180,21 @@ export const BottomSheetFlashList = <TItem,>({
                 maintainVisibleContentPosition={{ disabled: true }}
                 renderScrollComponent={BottomSheetListScrollComponent}
                 renderItem={renderFlashListItem}
-                contentContainerStyle={applyStyle(sheetContentContainerStyle, {
-                    insetBottom: footer ? footerHeight + insetBottom : insetBottom,
-                })}
+                contentContainerStyle={[
+                    contentContainerStyle,
+                    applyStyle(sheetContentContainerStyle, {
+                        insetBottom: footer ? footerHeight + insetBottom : insetBottom,
+                    }),
+                ]}
                 {...flashListProps}
             />
+            {showEdgeFades && (
+                <EdgeFades
+                    direction="vertical"
+                    startSize={EDGE_FADE_START_SIZE}
+                    endSize={EDGE_FADE_END_SIZE}
+                />
+            )}
         </BottomSheetModal>
     );
 };
