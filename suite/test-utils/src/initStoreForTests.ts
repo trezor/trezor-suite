@@ -1,6 +1,7 @@
 import { type MemoryHistory, createMemoryHistory } from 'history';
 
 import { type SuiteRouterHistory, createSuiteRouterHistory } from '@suite/router';
+import { asGetter } from '@suite-common/dependency-injection';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import {
     type EncryptableBranded,
@@ -43,6 +44,7 @@ export const initStoreForTests = (preloadedState: PreloadedState = {}): InitStor
             platformEncryption: testPlatformEncryption,
             reloadApp: () => {},
             getTransportsFactories: () => ({}),
+            createGetBinFilesBaseUrl: () => asGetter(() => '/bin'),
         },
         undefined,
         { statePatch: preloadedState },

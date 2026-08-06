@@ -28,6 +28,12 @@ import {
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createAddressValidator } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
+import {
+    type ConnectInitSettings,
+    type CreateTransports,
+    type GetTransportsFactoriesDep,
+    type TransportsDep,
+} from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
 import { type DeviceReducerState, selectDeviceByStaticSessionId } from '@suite-common/device';
@@ -42,13 +48,8 @@ import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type ReceiveState } from '@suite-common/receive';
 import {
     type CommonServices,
-    type ConnectInitSettings,
-    type CreateTransports,
     type ExtraDependenciesStatic,
-    type GetTransportsFactoriesDep,
-    type ThpHostNameDep,
-    type TransportsDep,
-} from '@suite-common/redux-utils';
+} from '@suite-common/redux-extra-dependencies';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     createSuiteSyncWriteLabels,
@@ -56,7 +57,8 @@ import {
     selectIsSuiteSyncEnabled,
     selectSuiteSyncWalletLabel,
 } from '@suite-common/suite-sync';
-import { type ReloadAppDep } from '@suite-common/suite-types';
+import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
+import { type ThpHostNameDep } from '@suite-common/thp';
 import {
     type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -109,6 +111,7 @@ export type SuiteAppDeps = StoreAPIDep &
     HistoryDep &
     PlatformEncryptionDep &
     CreateLoggerDep &
+    GetBinFilesBaseUrlDep &
     ReloadAppDep &
     ThpHostNameDep &
     GetTransportsFactoriesDep;
@@ -227,11 +230,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         ),
         // TODO: Coinjoin has not been moved to @suite-common yet, so its debug settings type is not available here.
         getDebugSettings: toGetter(deps.getState, selectDebugSettings),
-        // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
-        getDesktopBinDir: toGetter(
-            deps.getState,
-            (state: AppState) => state.desktop?.paths?.binDir,
-        ),
+        getBinFilesBaseUrl: deps.getBinFilesBaseUrl,
         getLanguage: toGetter(deps.getState, selectLanguage),
         getSelectedAccount: toGetter(
             deps.getState,

@@ -6,7 +6,7 @@ import {
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
-import { type ExtraDependenciesStatic } from '@suite-common/redux-utils';
+import { type ExtraDependenciesStatic } from '@suite-common/redux-extra-dependencies';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { ok } from '@trezor/type-utils';
 

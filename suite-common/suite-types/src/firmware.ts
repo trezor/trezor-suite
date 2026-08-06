@@ -31,6 +31,12 @@ export type ReportSecurityCheckDep = {
     reportSecurityCheck: ReportSecurityCheck;
 };
 
+export type GetBinFilesBaseUrl = Getter<[], string | undefined>;
+
+export type GetBinFilesBaseUrlDep = {
+    getBinFilesBaseUrl: GetBinFilesBaseUrl;
+};
+
 // A getter: called directly from non-React code, and subscribed to in components with
 // `useGetter(selectGetAllowPrereleaseDep)`.
 export type GetAllowPrerelease = Getter<[], boolean>;

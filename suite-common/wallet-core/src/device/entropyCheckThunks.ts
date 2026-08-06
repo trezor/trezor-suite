@@ -4,7 +4,7 @@ import {
     getIsIgnoredEntropyCheckError,
 } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import type { AcquiredDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice, type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type TrezorConnect from '@trezor/connect';
 import type { SerializedError } from '@trezor/connect-common/src/constants/errors';
@@ -15,27 +15,30 @@ type FailEntropyCheckParams = {
     error: SerializedError;
 };
 
-const failEntropyCheckThunk = createThunk(
-    `${DEVICE_MODULE_PREFIX}/failEntropyCheckThunk`,
-    ({ device, error }: FailEntropyCheckParams, { dispatch, extra }) => {
-        const contextData = {
-            model: device?.features?.internal_model,
-            revision: device?.features?.revision,
-            version: getFirmwareVersion(device),
-            vendor: device?.features?.fw_vendor,
-        };
-        extra.services.reportSecurityCheck({
-            level: 'error',
-            checkType: 'Entropy',
-            contextData,
-            payload: error,
-        });
+type FailEntropyCheckThunkDeps = { services: ReportSecurityCheckDep };
 
-        if (!getIsIgnoredEntropyCheckError(error.message)) {
-            dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: false }));
-        }
-    },
-);
+const failEntropyCheckThunk = createThunk<
+    void,
+    FailEntropyCheckParams,
+    { extra: FailEntropyCheckThunkDeps }
+>(`${DEVICE_MODULE_PREFIX}/failEntropyCheckThunk`, ({ device, error }, { dispatch, extra }) => {
+    const contextData = {
+        model: device?.features?.internal_model,
+        revision: device?.features?.revision,
+        version: getFirmwareVersion(device),
+        vendor: device?.features?.fw_vendor,
+    };
+    extra.services.reportSecurityCheck({
+        level: 'error',
+        checkType: 'Entropy',
+        contextData,
+        payload: error,
+    });
+
+    if (!getIsIgnoredEntropyCheckError(error.message)) {
+        dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: false }));
+    }
+});
 
 type ProcessEntropyCheckResultThunkParams = {
     device: AcquiredDevice;

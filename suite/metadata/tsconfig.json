@@ -18,6 +18,9 @@
             "path": "../../suite-common/metadata-types"
         },
         {
+            "path": "../../suite-common/redux-extra-dependencies"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         {

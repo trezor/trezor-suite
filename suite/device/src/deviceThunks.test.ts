@@ -3,7 +3,7 @@ import { withExtraArgument } from 'redux-thunk';
 
 import { type RouterState, routerReducer } from '@suite/router';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
-import type { ExtraDependencies } from '@suite-common/redux-utils';
+import type { ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import { extraDependenciesCommonMock, filterThunkActionTypes } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 

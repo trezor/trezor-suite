@@ -34,6 +34,9 @@
         },
         { "path": "../../suite-common/receive" },
         {
+            "path": "../../suite-common/redux-extra-dependencies"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         {
@@ -85,6 +88,7 @@
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/env-utils" },
         {
             "path": "../../packages/transport-common"
         },

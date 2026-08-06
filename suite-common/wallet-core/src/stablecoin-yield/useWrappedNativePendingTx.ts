@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+
 import { type Account } from '@suite-common/wallet-types';
 import {
     type WrappedNativePendingTxStatus,
@@ -10,7 +12,11 @@ import {
 } from '@suite-common/wallet-utils';
 
 import { type WrappedNativeFlowType } from './stablecoinYieldTypes';
-import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
+import {
+    type FetchAndUpdateAccountThunkDeps,
+    type FetchAndUpdateAccountThunkState,
+    fetchAndUpdateAccountThunk,
+} from '../accounts/accountsThunks';
 import { type FeesRootState, selectConvertedNetworkFeeInfo } from '../fees/feesReducer';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import { selectAccountTransactions } from '../transactions/transactionsSelectors';
@@ -26,7 +32,14 @@ export const useWrappedNativePendingTx = (
     txid: string | null,
     flowType: WrappedNativeFlowType,
 ): WrappedNativePendingTxStatus | null => {
-    const dispatch = useDispatch();
+    const dispatch =
+        useDispatch<
+            ThunkDispatch<
+                FetchAndUpdateAccountThunkState,
+                FetchAndUpdateAccountThunkDeps,
+                UnknownAction
+            >
+        >();
     const transactions = useSelector((state: TransactionsRootState) =>
         selectAccountTransactions(state, account?.key ?? null),
     );

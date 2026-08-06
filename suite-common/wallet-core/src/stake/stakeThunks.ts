@@ -6,7 +6,10 @@ import { type TimerId } from '@trezor/type-utils';
 import { stakeDataActions } from './stakeDataSlice';
 import { type StakeRootState } from './stakeReducerTypes';
 import { selectStake } from './stakeSelectors';
-import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
+import {
+    type WalletSettingsRootState,
+    selectEnabledNetworks,
+} from '../settings/walletSettingsReducer';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
 
@@ -21,8 +24,9 @@ function stakingDataNeedsRefetch(data: StakeRootState['wallet']['stake']['data']
 
     return shouldRefetch;
 }
+type InitStakeDataThunkState = StakeRootState & WalletSettingsRootState;
 
-export const initStakeDataThunk = createThunk(
+export const initStakeDataThunk = createThunk<void, void, { state: InitStakeDataThunkState }>(
     `${STAKE_MODULE}/initStakeDataThunk`,
     async (_, { getState, dispatch }) => {
         const enabledNetworks = selectEnabledNetworks(getState());

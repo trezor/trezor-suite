@@ -42,6 +42,7 @@
         "react-native": "0.85.3"
     },
     "devDependencies": {
+        "@suite-common/redux-extra-dependencies": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
         "@suite-native/trading-types": "workspace:*",

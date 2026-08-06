@@ -20,6 +20,7 @@ import {
     selectMessageSystemCurrentSequence,
     selectMessageSystemTimestamp,
 } from './messageSystemSelectors';
+import { type MessageSystemRootState } from './messageSystemTypes';
 import { jws as configJwsLocal } from '../files/config.v1';
 
 const messageSystemPolling = new PollingController();
@@ -69,8 +70,9 @@ const shouldFetchConfig = (isLocal: boolean, lastTimestamp: number) => {
 
     return now >= lastTimestamp + interval;
 };
+type FetchConfigThunkState = MessageSystemRootState;
 
-export const fetchConfigThunk = createThunk(
+export const fetchConfigThunk = createThunk<void, void, { state: FetchConfigThunkState }>(
     `${ACTION_PREFIX}/fetchConfig`,
     async (_, { dispatch, getState }) => {
         const timestamp = selectMessageSystemTimestamp(getState());

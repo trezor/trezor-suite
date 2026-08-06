@@ -18,7 +18,7 @@
         "@suite-common/formatters": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/react-query": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/redux-extra-dependencies": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/intl": "workspace:*",

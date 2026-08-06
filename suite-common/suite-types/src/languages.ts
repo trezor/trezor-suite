@@ -1,3 +1,5 @@
+import { type Getter } from '@suite-common/dependency-injection';
+
 export type LocaleInfo = {
     icon: string;
     name: string;
@@ -39,3 +41,7 @@ export const LANGUAGES = {
 } as const satisfies Record<string, LocaleInfo>;
 
 export type Locale = keyof typeof LANGUAGES;
+
+export type GetLanguageDep = {
+    getLanguage: Getter<[], string>;
+};

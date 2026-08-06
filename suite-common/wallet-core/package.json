@@ -23,6 +23,7 @@
         "@suite-common/earn-staking-api": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/firmware": "workspace:*",
+        "@suite-common/metadata-types": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/schemas": "workspace:*",
@@ -58,5 +59,8 @@
         "react": "19.2.3",
         "react-hook-form": "^7.77.0",
         "react-redux": "9.3.0"
+    },
+    "devDependencies": {
+        "@suite-common/redux-extra-dependencies": "workspace:*"
     }
 }

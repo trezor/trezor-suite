@@ -1,23 +1,31 @@
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { type FeeInfo, type FeesState } from '@suite-common/wallet-types';
+import { type FeeInfo } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { isNotUndefined, resolveAfter, typedObjectFromEntries } from '@trezor/utils';
 
 import { FEES_MODULE_PREFIX, feesActions } from './feesActions';
 import { DEFAULT_FEE_INFO } from './feesConstants';
+import { type FeesRootState, selectRawNetworkFeeInfo } from './feesSelectors';
 import { getNewFeeInfo, sortLevels } from './feesUtils';
-import { selectNetworkBlockchainInfo } from '../blockchain/blockchainReducer';
-import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
+import {
+    type BlockchainRootState,
+    selectNetworkBlockchainInfo,
+} from '../blockchain/blockchainReducer';
+import {
+    type WalletSettingsRootState,
+    selectEnabledNetworks,
+} from '../settings/walletSettingsReducer';
+type PreloadFeeInfoThunkState = WalletSettingsRootState;
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event
 // checks if there are discovery processes loaded from LocalStorage
 // if so starts subscription to proper networks
 
-export const preloadFeeInfoThunk = createThunk(
+export const preloadFeeInfoThunk = createThunk<void, void, { state: PreloadFeeInfoThunkState }>(
     `${FEES_MODULE_PREFIX}/preloadFeeInfoThunk`,
     async (_, { dispatch, getState }) => {
         const enabledNetworks = selectEnabledNetworks(getState());
@@ -67,6 +75,7 @@ type UpdateFeeInfoThunkProps = {
     networkSymbol: NetworkSymbol;
     artificialDelay?: number;
 };
+export type UpdateFeeInfoThunkState = BlockchainRootState & DeviceRootState & FeesRootState;
 
 /**
  * Fetches feeInfo for a given network from backend.
@@ -76,7 +85,10 @@ type UpdateFeeInfoThunkProps = {
 export const updateFeeInfoThunk = createThunk<
     FeeInfo,
     UpdateFeeInfoThunkProps,
-    { rejectValue: undefined }
+    {
+        rejectValue: undefined;
+        state: UpdateFeeInfoThunkState;
+    }
 >(
     `${FEES_MODULE_PREFIX}/updateFeeInfoThunk`,
     async ({ networkSymbol, artificialDelay }, { getState, fulfillWithValue, rejectWithValue }) => {
@@ -87,9 +99,7 @@ export const updateFeeInfoThunk = createThunk<
         // Tron fees are derived per transaction from bandwidth/energy, there is no
         // network-level fee estimate to fetch. Keep the current (preloaded) data.
         if (network.networkType === 'tron') {
-            const currentFeeInfo = (getState() as { wallet: { fees: FeesState } }).wallet.fees[
-                symbol
-            ]?.data;
+            const currentFeeInfo = selectRawNetworkFeeInfo(getState(), symbol);
 
             return fulfillWithValue(
                 currentFeeInfo ?? { ...DEFAULT_FEE_INFO, blockHeight: blockchainInfo.blockHeight },

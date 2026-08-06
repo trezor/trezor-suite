@@ -2,8 +2,6 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { asGetter } from '@suite-common/dependency-injection';
 
-import { createThunk } from './createThunk';
-
 const mockedConsoleAlreadyPrinted: string[] = [];
 
 const mockedConsoleLog = (...args: any) => {
@@ -24,12 +22,11 @@ export const notImplementedAction = (type: string): any =>
         return { payload };
     });
 
-export const notImplementedThunk = (type: string) =>
-    createThunk(`notImplemented/${type}`, (thunkPayload: any) => {
-        mockedConsoleLog(`Calling not implemented thunk: ${type} and payload: `, thunkPayload);
+export const notImplementedThunk = (type: string) => (thunkPayload: any) => () => {
+    mockedConsoleLog(`Calling not implemented thunk: ${type} and payload: `, thunkPayload);
 
-        return thunkPayload;
-    });
+    return thunkPayload;
+};
 
 export const notImplementedGetter = <TReturn>(
     name: string,

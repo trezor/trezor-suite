@@ -6,7 +6,7 @@ import * as Device from 'expo-device';
 import { createAddressValidator } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
-import { toGetter } from '@suite-common/dependency-injection';
+import { asGetter, toGetter } from '@suite-common/dependency-injection';
 import {
     createFindNetworkSymbolForProtocol,
     createGetNetworkConfig,
@@ -21,7 +21,7 @@ import {
     notImplementedGetter,
     notImplementedReducer,
     notImplementedThunk,
-} from '@suite-common/redux-utils';
+} from '@suite-common/redux-extra-dependencies';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { createAccountRefreshThrottle } from '@suite-common/wallet-core';
@@ -35,6 +35,7 @@ import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/stora
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-state';
 import TrezorConnect, { type ConnectSettings, initLog } from '@trezor/connect';
+import { resolveConnectPath } from '@trezor/env-utils';
 import { BridgeTransport } from '@trezor/transport-common';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
@@ -168,9 +169,9 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
             knownCredentials: state.thp?.credentials,
         })),
         getAllowPrerelease: toGetter(deps.getState, () => false),
+        getBinFilesBaseUrl: asGetter(() => resolveConnectPath('data')),
 
         // Not implemented. We assume those are NEVER called on Native.
-        getDesktopBinDir: notImplementedGetter('getDesktopBinDir', '/bin'),
         getSelectedAccountStatus: notImplementedGetter('getSelectedAccountStatus', 'loaded'),
         getIsWindowVisible: notImplementedGetter('getIsWindowVisible', true),
         getIsViewOnlyByDefaultEnabled: notImplementedGetter('getIsViewOnlyByDefaultEnabled', true),

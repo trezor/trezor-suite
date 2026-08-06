@@ -5,7 +5,7 @@ import {
 } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type AdaPools } from '@suite-common/earn-staking-api';
-import { type ExtraDependencies } from '@suite-common/redux-utils';
+import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import {
     calculate,
     composeStakingTransaction,

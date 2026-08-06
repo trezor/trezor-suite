@@ -1,4 +1,4 @@
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -40,10 +40,12 @@ import {
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import {
+    type WalletSettingsRootState,
     selectAddressDisplayType,
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
 } from '../settings/walletSettingsReducer';
+import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import { selectTransactions } from '../transactions/transactionsSelectors';
 
 type GetSequenceParams = { account: Account; formValues: FormState };
@@ -59,11 +61,15 @@ const getSequence = ({ account, formValues }: GetSequenceParams) => {
 
     return undefined; // Must be undefined for final (non-RBF) transaction with no locktime
 };
+type ComposeBitcoinTransactionFeeLevelsThunkState = DeviceRootState & WalletSettingsRootState;
 
 export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError }
+    {
+        rejectValue: ComposeFeeLevelsError;
+        state: ComposeBitcoinTransactionFeeLevelsThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/composeBitcoinTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { dispatch, getState, rejectWithValue }) => {
@@ -251,10 +257,15 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     },
 );
 
+type SignBitcoinSendFormTransactionThunkState = TransactionsRootState & WalletSettingsRootState;
+
 export const signBitcoinSendFormTransactionThunk = createThunk<
     SignedTransaction,
     SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError }
+    {
+        rejectValue: SignTransactionError;
+        state: SignBitcoinSendFormTransactionThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,
     async (

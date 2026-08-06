@@ -1,6 +1,10 @@
 import { openModal } from '@suite/modal';
 import { selectIsEntropyCheckEnabled } from '@suite/settings';
-import { selectSelectedDevice, selectSimulatedEntropyCheckFail } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    selectSelectedDevice,
+    selectSimulatedEntropyCheckFail,
+} from '@suite-common/device';
 import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
@@ -175,39 +179,42 @@ export const resetDevice =
         return result;
     };
 
-export const changeLanguage = createThunk(
-    `${FIRMWARE_MODULE_PREFIX}/update-firmware-language`,
-    async (params: Parameters<typeof TrezorConnect.changeLanguage>[0], { dispatch, getState }) => {
-        const device = selectSelectedDevice(getState());
+type ChangeLanguageThunkState = DeviceRootState;
 
-        if (!device) return;
+export const changeLanguage = createThunk<
+    Awaited<ReturnType<typeof TrezorConnect.changeLanguage>> | undefined,
+    Parameters<typeof TrezorConnect.changeLanguage>[0],
+    { state: ChangeLanguageThunkState }
+>(`${FIRMWARE_MODULE_PREFIX}/update-firmware-language`, async (params, { dispatch, getState }) => {
+    const device = selectSelectedDevice(getState());
 
-        const result = await TrezorConnect.changeLanguage({
-            device: {
-                path: device.path,
-            },
-            ...params,
-        });
+    if (!device) return;
 
-        if (result.success) {
-            dispatch(notificationsActions.addToast({ type: 'firmware-language-changed' }));
+    const result = await TrezorConnect.changeLanguage({
+        device: {
+            path: device.path,
+        },
+        ...params,
+    });
+
+    if (result.success) {
+        dispatch(notificationsActions.addToast({ type: 'firmware-language-changed' }));
+    } else {
+        // Different errors for desktop/Chrome/Firefox
+        const isFetchError =
+            result.error.code === ('ENOTFOUND' as ERRORS.ErrorCode) ||
+            ['Failed to fetch', 'NetworkError when attempting to fetch resource.'].includes(
+                result.error.message,
+            );
+        if (isFetchError) {
+            dispatch(notificationsActions.addToast({ type: 'firmware-language-fetch-error' }));
         } else {
-            // Different errors for desktop/Chrome/Firefox
-            const isFetchError =
-                result.error.code === ('ENOTFOUND' as ERRORS.ErrorCode) ||
-                ['Failed to fetch', 'NetworkError when attempting to fetch resource.'].includes(
-                    result.error.message,
-                );
-            if (isFetchError) {
-                dispatch(notificationsActions.addToast({ type: 'firmware-language-fetch-error' }));
-            } else {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'error',
-                        error: result.error.message,
-                    }),
-                );
-            }
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: result.error.message,
+                }),
+            );
         }
-    },
-);
+    }
+});

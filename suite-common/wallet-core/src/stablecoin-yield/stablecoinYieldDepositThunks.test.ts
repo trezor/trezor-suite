@@ -9,9 +9,11 @@ import { BigNumber } from '@trezor/utils';
 import { composeYieldDepositTransactionThunk } from './stablecoinYieldDepositThunks';
 import { estimateYieldFeeLevel } from './stablecoinYieldFeeEstimation';
 import { type YieldFlowResolvedData } from './stablecoinYieldTypes';
+import { accountsInitialState } from '../accounts/accountsReducer';
 import { fetchAllowance } from '../allowance/fetchAllowance';
 import { feesReducer } from '../fees/feesReducer';
 import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
+import { transactionsInitialState } from '../transactions/transactionsReducer';
 
 jest.mock('../allowance/fetchAllowance', () => ({
     fetchAllowance: jest.fn(),
@@ -70,10 +72,18 @@ const ethFeeInfo: FeeInfo = {
 const initStore = () =>
     configureMockStore({
         reducer: combineReducers({
-            wallet: combineReducers({ fees: feesReducer }),
+            wallet: combineReducers({
+                accounts: () => accountsInitialState,
+                fees: feesReducer,
+                transactions: () => transactionsInitialState,
+            }),
         }),
         preloadedState: {
-            wallet: { fees: { eth: { status: 'loaded', data: ethFeeInfo } } },
+            wallet: {
+                accounts: accountsInitialState,
+                fees: { eth: { status: 'loaded', data: ethFeeInfo } },
+                transactions: transactionsInitialState,
+            },
         },
     });
 

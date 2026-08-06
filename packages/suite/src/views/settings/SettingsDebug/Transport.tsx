@@ -5,8 +5,8 @@ import {
     selectDebugTransports,
     suiteSettingsActions,
 } from '@suite/settings';
+import { type TransportsDep } from '@suite-common/connect-init';
 import { useServices } from '@suite-common/dependency-injection';
-import { type TransportsDep } from '@suite-common/redux-utils';
 import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';

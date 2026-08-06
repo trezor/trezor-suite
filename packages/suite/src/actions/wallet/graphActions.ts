@@ -1,11 +1,17 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { resetTime } from '@suite-common/suite-utils';
-import { selectBaseCurrency, selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
+import {
+    type BlockchainRootState,
+    type FiatRatesRootState,
+    selectBaseCurrency,
+    selectIsElectrumBackendSelected,
+} from '@suite-common/wallet-core';
 import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
+import { type GraphState } from 'src/reducers/wallet/graphReducer';
 import { type Dispatch, type GetState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 import {
@@ -174,83 +180,74 @@ export const fetchAccountGraphData =
         }
     };
 
+type UpdateGraphDataThunkState = BlockchainRootState &
+    FiatRatesRootState & { wallet: { graph: GraphState } };
+
 export const updateGraphData = createThunk<
     void,
     { accounts: Account[]; abortSignal?: AbortSignal },
-    void
->(
-    'wallet/updateGraphData',
-    async (
-        { accounts, abortSignal },
-        {
-            dispatch,
-            getState,
-        }: {
-            dispatch: Dispatch;
-            getState: GetState;
-        },
-    ) => {
-        const { graph } = getState().wallet;
+    { state: UpdateGraphDataThunkState }
+>('wallet/updateGraphData', async ({ accounts, abortSignal }, { dispatch, getState }) => {
+    const { graph } = getState().wallet;
 
-        const supportedAccounts = accounts.filter(
-            a =>
-                isTrezorConnectBackendType(a.backendType) &&
-                isNetworkWithGraphFeature(a.symbol, a.backendType),
-        );
+    const supportedAccounts = accounts.filter(
+        a =>
+            isTrezorConnectBackendType(a.backendType) &&
+            isNetworkWithGraphFeature(a.symbol, a.backendType),
+    );
 
-        const graphDataPointsByAccount = new Map<AccountKey, AccountHistoryWithBalance[]>(
-            graph.data.map(({ account, data }) => [
-                createAccountKey({
-                    accountDescriptor: account.descriptor,
-                    networkSymbol: account.symbol,
-                    deviceStaticSessionId: account.deviceState,
-                }),
-                data,
-            ]),
-        );
-
-        const graphTxCountByAccount = new Map<AccountKey, number>(
-            Array.from(graphDataPointsByAccount.entries()).map(([key, data]) => {
-                const txCount = data.reduce((acc, point) => acc + point.txs, 0);
-
-                return [key, txCount];
+    const graphDataPointsByAccount = new Map<AccountKey, AccountHistoryWithBalance[]>(
+        graph.data.map(({ account, data }) => [
+            createAccountKey({
+                accountDescriptor: account.descriptor,
+                networkSymbol: account.symbol,
+                deviceStaticSessionId: account.deviceState,
             }),
-        );
+            data,
+        ]),
+    );
 
-        const accountsToFetch = supportedAccounts.filter(account => {
-            const txCount = graphTxCountByAccount.get(account.key) ?? 0;
+    const graphTxCountByAccount = new Map<AccountKey, number>(
+        Array.from(graphDataPointsByAccount.entries()).map(([key, data]) => {
+            const txCount = data.reduce((acc, point) => acc + point.txs, 0);
 
-            return txCount !== account.history.total;
+            return [key, txCount];
+        }),
+    );
+
+    const accountsToFetch = supportedAccounts.filter(account => {
+        const txCount = graphTxCountByAccount.get(account.key) ?? 0;
+
+        return txCount !== account.history.total;
+    });
+
+    if (accountsToFetch.length === 0) {
+        return;
+    }
+
+    try {
+        dispatch({
+            type: AGGREGATED_GRAPH_START,
         });
+        const promises = accountsToFetch.map(a =>
+            dispatch(
+                fetchAccountGraphData(a, {
+                    abortSignal,
+                }),
+            ),
+        );
+        await Promise.all(promises);
 
-        if (accountsToFetch.length === 0) {
-            return;
-        }
+        abortSignal?.throwIfAborted();
 
-        try {
-            dispatch({
-                type: AGGREGATED_GRAPH_START,
-            });
-            const promises = accountsToFetch.map(a =>
-                dispatch(
-                    fetchAccountGraphData(a, {
-                        abortSignal,
-                    }),
-                ),
-            );
-            await Promise.all(promises);
-
-            abortSignal?.throwIfAborted();
-
+        dispatch({
+            type: AGGREGATED_GRAPH_SUCCESS,
+        });
+    } catch (error) {
+        if (error.name === 'AbortError') {
             dispatch({
                 type: AGGREGATED_GRAPH_SUCCESS,
             });
-        } catch (error) {
-            if (error.name === 'AbortError') {
-                dispatch({
-                    type: AGGREGATED_GRAPH_SUCCESS,
-                });
-            }
         }
-    },
-);
+    }
+});

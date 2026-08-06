@@ -1,10 +1,15 @@
 import { goto } from '@suite/router';
 import { createThunk } from '@suite-common/redux-utils';
+import { type ReloadAppDep } from '@suite-common/suite-types';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { removeDatabase } from './storageActions';
 
-export const resetSuiteAppThunk = createThunk(
+type ResetSuiteAppThunkDeps = {
+    services: ReloadAppDep;
+};
+
+export const resetSuiteAppThunk = createThunk<void, void, { extra: ResetSuiteAppThunkDeps }>(
     '@suite/reset-app',
     async (_, { dispatch, extra }) => {
         localStorage.clear();

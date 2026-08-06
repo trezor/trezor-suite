@@ -4,7 +4,9 @@ import {
     createAsyncThunk as createAsyncThunkReduxToolkit,
 } from '@reduxjs/toolkit';
 
-import { type CustomThunkAPI } from './extraDependenciesType'; // Adjust the import path according to your project structure
+// TODO: This dependency on the global ExtraDependencies type is bad, temporary, terrible, and
+// disastrous. Remove it in follow-ups tracked by https://github.com/trezor/trezor-suite/issues/30770.
+import { type CustomThunkAPI } from '@suite-common/redux-extra-dependencies';
 
 /**
  * @description This function will ensure that there is only one ongoing promise for a given function with given arguments.

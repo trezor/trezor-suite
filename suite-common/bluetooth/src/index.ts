@@ -4,6 +4,7 @@ export type {
     BluetoothFilterPolicy,
     BluetoothAutoConnectPolicy,
     DeviceBluetoothConnectionStatusType,
+    ForgetBluetoothDeviceDep,
     ForgetBluetoothDeviceThunkParams,
     BluetoothDeviceCommon,
 } from './types';
