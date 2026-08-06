@@ -62,9 +62,9 @@ const config = {
                 // TODO: unstable_enablePackageExports: true
                 // See: https://github.com/trezor/trezor-suite/issues/20733
                 // modules exports defined in the package `exports` map.
-                '@bufbuild/protobuf/codegenv2': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/cjs/codegenv2/index.js`,
-                '@bufbuild/protobuf/wire': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/cjs/wire/index.js`,
-                '@bufbuild/protobuf/wkt': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/cjs/wkt/index.js`,
+                '@bufbuild/protobuf/codegenv2': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/commonjs/codegenv2/index.js`,
+                '@bufbuild/protobuf/wire': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/commonjs/wire/index.js`,
+                '@bufbuild/protobuf/wkt': `${rootNodeModulesPath}/@bufbuild/protobuf/dist/commonjs/wkt/index.js`,
                 '@evolu/react-native': `${rootNodeModulesPath}/@evolu/react-native/dist/src/index.js`,
                 '@evolu/react-native/expo-sqlite': `${rootNodeModulesPath}/@evolu/react-native/dist/src/exports/expo-sqlite.js`,
                 '@evolu/common': `${rootNodeModulesPath}/@evolu/common/dist/src/index.js`,

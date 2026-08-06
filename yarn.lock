@@ -1943,10 +1943,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bufbuild/protobuf@npm:2.11.0, @bufbuild/protobuf@npm:^2.11.0":
+"@bufbuild/protobuf@npm:2.11.0":
   version: 2.11.0
   resolution: "@bufbuild/protobuf@npm:2.11.0"
   checksum: 10/dddab84c2dc92f15b467449dc9d951b9aef6ea335dba448f8d4028f9b52fdb790d3b856a1dceb4dbcfe7f182072f0d1cd6ce05b2a95ff40132eea6a428e84883
+  languageName: node
+  linkType: hard
+
+"@bufbuild/protobuf@npm:^2.13.0":
+  version: 2.13.0
+  resolution: "@bufbuild/protobuf@npm:2.13.0"
+  checksum: 10/e9585e15422eb92a1d394408b330647543d256c27152e71cde1de14ccb3ec268a809ddb017e7347a97850e400351c3d37e28ea3887a4148b985a3bba347fbd57
   languageName: node
   linkType: hard
 
@@ -16519,7 +16526,7 @@ __metadata:
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
     "@babel/preset-typescript": "npm:^7.29.7"
-    "@bufbuild/protobuf": "npm:^2.11.0"
+    "@bufbuild/protobuf": "npm:^2.13.0"
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@scure/bip39": "npm:^1.5.1"
@@ -16906,7 +16913,7 @@ __metadata:
   resolution: "@trezor/protobuf@workspace:packages/protobuf"
   dependencies:
     "@bufbuild/buf": "npm:^1.67.0"
-    "@bufbuild/protobuf": "npm:^2.11.0"
+    "@bufbuild/protobuf": "npm:^2.13.0"
     "@bufbuild/protoc-gen-es": "npm:2.11.0"
     "@bufbuild/protoplugin": "npm:2.11.0"
     "@trezor/eslint": "workspace:*"
