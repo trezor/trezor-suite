@@ -281,8 +281,7 @@ type EventNotification = { context: 'event' } & CommonNotificationPayload &
     NotificationEventPayload;
 
 export type NotificationEntry<TranslationKey extends string = UnknownTranslationKey> =
-    | ToastNotification<TranslationKey>
-    | EventNotification;
+    ToastNotification<TranslationKey> | EventNotification;
 
 export type AddNotificationAction<TranslationKey extends string = UnknownTranslationKey> = {
     payload: NotificationEntry<TranslationKey>;
@@ -296,8 +295,7 @@ export type NotificationsRootState<TranslationKey extends string = UnknownTransl
 };
 
 export type TransactionNotification = (
-    | SentTransactionNotification
-    | ReceivedTransactionNotification
+    SentTransactionNotification | ReceivedTransactionNotification
 ) &
     CommonNotificationPayload;
 

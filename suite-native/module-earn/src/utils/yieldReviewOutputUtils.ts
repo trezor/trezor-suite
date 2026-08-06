@@ -59,8 +59,7 @@ type YieldTransactionReviewValueOutput = Extract<ReviewOutput, { value: string }
 type YieldTransactionReviewRewardsOutput = Extract<ReviewOutput, { type: 'rewards' }>;
 
 export type YieldTransactionReviewOutput =
-    | YieldTransactionReviewRewardsOutput
-    | YieldTransactionReviewValueOutput;
+    YieldTransactionReviewRewardsOutput | YieldTransactionReviewValueOutput;
 
 type BuildYieldReviewPreviewBaseParams = {
     account: Account;

@@ -76,8 +76,7 @@ type ProtoWithoutAddressN<T, A> = Exclude<T, { address_n: A }>;
 
 // replace address_n: number[] with address_n: DerivationPath
 export type ProtoWithDerivationPath<T> =
-    | ProtoWithoutAddressN<T, number[]>
-    | ProtoWithExtendedAddressN<T, number[], DerivationPath>;
+    ProtoWithoutAddressN<T, number[]> | ProtoWithExtendedAddressN<T, number[], DerivationPath>;
 
 // Common fields for all *.getAddress methods
 export type GetAddress = Static<typeof GetAddress>;

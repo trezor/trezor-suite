@@ -65,8 +65,7 @@ type TypedTokenTransferWithTx = TypedTokenTransfer & {
 };
 
 type TransactionListItem =
-    | (TypedTokenTransferWithTx | MonthKey)
-    | (WalletAccountTransaction | MonthKey);
+    (TypedTokenTransferWithTx | MonthKey) | (WalletAccountTransaction | MonthKey);
 
 const sectionListContainerStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,

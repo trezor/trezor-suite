@@ -1,10 +1,7 @@
 import { type Route } from './route';
 
 export type AnchorSettingSection =
-    | 'general-settings'
-    | 'device-settings'
-    | 'coin-settings'
-    | 'earn';
+    'general-settings' | 'device-settings' | 'coin-settings' | 'earn';
 
 type Anchor = `@${AnchorSettingSection}/${string}`;
 

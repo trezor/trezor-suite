@@ -7,10 +7,7 @@ import {
 import { type FormState } from '@suite-common/wallet-types';
 
 export type TxInfoState =
-    | SendState
-    | StakeState
-    | StablecoinYieldTxReviewState
-    | TronStakeTxReviewState;
+    SendState | StakeState | StablecoinYieldTxReviewState | TronStakeTxReviewState;
 
 export const isStakeState = (state: TxInfoState): state is StakeState => 'data' in state;
 

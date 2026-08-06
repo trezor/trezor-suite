@@ -3,10 +3,7 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import { EventType } from '../constants';
 
 export type DemoAccountQuestionnaireLinkKey =
-    | 'hardwareWallet'
-    | 'trezorSecurity'
-    | 'TS7'
-    | 'dashboard';
+    'hardwareWallet' | 'trezorSecurity' | 'TS7' | 'dashboard';
 
 type Attributes = {
     option: AttributeDef<DemoAccountQuestionnaireLinkKey>;

@@ -16,10 +16,7 @@ import { SIDEBAR_WIDTH_NUMERIC } from './suiteConstants';
  * String identifiers used by the debug transport switcher UI.
  */
 export type DebugTransport =
-    | 'BridgeTransport'
-    | 'NodeUsbTransport'
-    | 'UdpTransport'
-    | 'WebUsbTransport';
+    'BridgeTransport' | 'NodeUsbTransport' | 'UdpTransport' | 'WebUsbTransport';
 
 export interface DebugModeOptions {
     tradeServerEnvironment?: TradeServerEnvironment;

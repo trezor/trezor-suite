@@ -47,11 +47,7 @@ export const TradingRedirect = () => {
         const indexParam: string = params[3];
         const redirectCommonParams = {
             routeType: params[0] as
-                | 'detail'
-                | 'offers'
-                | 'sell-detail'
-                | 'sell-offers'
-                | 'exchange-offers',
+                'detail' | 'offers' | 'sell-detail' | 'sell-offers' | 'exchange-offers',
             symbol: params[1] as Account['symbol'],
             accountType: params[2] as Account['accountType'],
             index: parseInt(indexParam, 10),

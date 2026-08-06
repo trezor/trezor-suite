@@ -161,8 +161,7 @@ export type EthereumStakingLiveStateReason =
     | { code: 'UNSUPPORTED_STAKE_TYPE'; stakeType: string };
 
 export type EthereumStakingLiveStateValidation =
-    | { isValid: true }
-    | { isValid: false; reason: EthereumStakingLiveStateReason };
+    { isValid: true } | { isValid: false; reason: EthereumStakingLiveStateReason };
 
 const VALID_LIVE_STATE: EthereumStakingLiveStateValidation = { isValid: true };
 

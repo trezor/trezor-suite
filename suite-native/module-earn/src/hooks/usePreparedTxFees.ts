@@ -40,8 +40,7 @@ export type ComposedTxBase = {
 };
 
 export type ComposeTxResult<TComposed extends ComposedTxBase> =
-    | { type: 'ready'; transaction: TComposed }
-    | { type: 'error'; isFeeEstimationError: boolean };
+    { type: 'ready'; transaction: TComposed } | { type: 'error'; isFeeEstimationError: boolean };
 
 export type PreparedTx<TComposed extends ComposedTxBase> = {
     amount: string;

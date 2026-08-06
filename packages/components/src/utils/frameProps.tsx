@@ -150,110 +150,154 @@ export const withFrameProps = ({
     $objectPosition,
     $display,
 }: TransientFrameProps) => css`
-    ${$margin &&
-    (typeof $margin === 'object'
-        ? css`
-              margin: ${getValueWithUnit($margin?.top ?? $margin.vertical ?? 0)}
-                  ${getValueWithUnit($margin?.right ?? $margin.horizontal ?? 0)}
-                  ${getValueWithUnit($margin?.bottom ?? $margin.vertical ?? 0)}
-                  ${getValueWithUnit($margin?.left ?? $margin.horizontal ?? 0)};
-          `
-        : css`
-              margin: ${getValueWithUnit($margin)};
-          `)}
-    ${$padding &&
-    (typeof $padding === 'object'
-        ? css`
-              padding: ${getValueWithUnit($padding?.top ?? $padding.vertical ?? 0)}
-                  ${getValueWithUnit($padding?.right ?? $padding.horizontal ?? 0)}
-                  ${getValueWithUnit($padding?.bottom ?? $padding.vertical ?? 0)}
-                  ${getValueWithUnit($padding?.left ?? $padding.horizontal ?? 0)};
-          `
-        : css`
-              padding: ${getValueWithUnit($padding)};
-          `)}
-    ${typeof $minWidth !== 'undefined' &&
-    css`
-        min-width: ${getValueWithUnit($minWidth)};
-    `};
-    ${typeof $maxWidth !== 'undefined' &&
-    css`
-        max-width: ${getValueWithUnit($maxWidth)};
-    `};
-    ${typeof $minHeight !== 'undefined' &&
-    css`
-        min-height: ${getValueWithUnit($minHeight)};
-    `};
-    ${typeof $maxHeight !== 'undefined' &&
-    css`
-        max-height: ${getValueWithUnit($maxHeight)};
-    `};
-    ${typeof $width !== 'undefined' &&
-    css`
-        width: ${getValueWithUnit($width)};
-    `};
-    ${typeof $height !== 'undefined' &&
-    css`
-        height: ${getValueWithUnit($height)};
-    `};
-    ${$overflow &&
-    css`
-        overflow: ${$overflow};
-    `};
-    ${typeof $borderRadius !== 'undefined' &&
-    css`
-        border-radius: ${getBorderRadiusCssValue($borderRadius)};
-    `};
-    ${$pointerEvents &&
-    css`
-        pointer-events: ${$pointerEvents};
-    `};
-    ${$flex &&
-    css`
-        flex: ${$flex};
-    `};
-    ${$position &&
-    css`
-        position: ${$position.type};
-        ${typeof $position.inset !== 'undefined' && `inset: ${getValueWithUnit($position.inset)};`}
-        ${typeof $position.top !== 'undefined' && `top: ${getValueWithUnit($position.top)};`}
+    ${
+        $margin &&
+        (typeof $margin === 'object'
+            ? css`
+                  margin: ${getValueWithUnit($margin?.top ?? $margin.vertical ?? 0)}
+                      ${getValueWithUnit($margin?.right ?? $margin.horizontal ?? 0)}
+                      ${getValueWithUnit($margin?.bottom ?? $margin.vertical ?? 0)}
+                      ${getValueWithUnit($margin?.left ?? $margin.horizontal ?? 0)};
+              `
+            : css`
+                  margin: ${getValueWithUnit($margin)};
+              `)
+    }
+    ${
+        $padding &&
+        (typeof $padding === 'object'
+            ? css`
+                  padding: ${getValueWithUnit($padding?.top ?? $padding.vertical ?? 0)}
+                      ${getValueWithUnit($padding?.right ?? $padding.horizontal ?? 0)}
+                      ${getValueWithUnit($padding?.bottom ?? $padding.vertical ?? 0)}
+                      ${getValueWithUnit($padding?.left ?? $padding.horizontal ?? 0)};
+              `
+            : css`
+                  padding: ${getValueWithUnit($padding)};
+              `)
+    }
+    ${
+        typeof $minWidth !== 'undefined' &&
+        css`
+            min-width: ${getValueWithUnit($minWidth)};
+        `
+    };
+    ${
+        typeof $maxWidth !== 'undefined' &&
+        css`
+            max-width: ${getValueWithUnit($maxWidth)};
+        `
+    };
+    ${
+        typeof $minHeight !== 'undefined' &&
+        css`
+            min-height: ${getValueWithUnit($minHeight)};
+        `
+    };
+    ${
+        typeof $maxHeight !== 'undefined' &&
+        css`
+            max-height: ${getValueWithUnit($maxHeight)};
+        `
+    };
+    ${
+        typeof $width !== 'undefined' &&
+        css`
+            width: ${getValueWithUnit($width)};
+        `
+    };
+    ${
+        typeof $height !== 'undefined' &&
+        css`
+            height: ${getValueWithUnit($height)};
+        `
+    };
+    ${
+        $overflow &&
+        css`
+            overflow: ${$overflow};
+        `
+    };
+    ${
+        typeof $borderRadius !== 'undefined' &&
+        css`
+            border-radius: ${getBorderRadiusCssValue($borderRadius)};
+        `
+    };
+    ${
+        $pointerEvents &&
+        css`
+            pointer-events: ${$pointerEvents};
+        `
+    };
+    ${
+        $flex &&
+        css`
+            flex: ${$flex};
+        `
+    };
+    ${
+        $position &&
+        css`
+            position: ${$position.type};
+            ${typeof $position.inset !== 'undefined' && `inset: ${getValueWithUnit($position.inset)};`}
+            ${typeof $position.top !== 'undefined' && `top: ${getValueWithUnit($position.top)};`}
         ${typeof $position.right !== 'undefined' && `right: ${getValueWithUnit($position.right)};`}
-            ${typeof $position.bottom !== 'undefined' &&
-        `bottom: ${getValueWithUnit($position.bottom)};`}
+            ${
+                typeof $position.bottom !== 'undefined' &&
+                `bottom: ${getValueWithUnit($position.bottom)};`
+            }
             ${typeof $position.left !== 'undefined' && `left: ${getValueWithUnit($position.left)};`}
-    `};
-    ${$cursor &&
-    css`
-        cursor: ${$cursor};
-    `};
-    ${typeof $zIndex !== 'undefined' &&
-    css`
-        z-index: ${$zIndex};
-    `};
-    ${typeof $aspectRatio !== 'undefined' &&
-    css`
-        aspect-ratio: ${$aspectRatio};
-    `};
-    ${typeof $opacity !== 'undefined' &&
-    css`
-        opacity: ${$opacity};
-    `};
-    ${$userSelect &&
-    css`
-        user-select: ${$userSelect};
-    `};
-    ${$objectFit &&
-    css`
-        object-fit: ${$objectFit};
-    `};
-    ${$objectPosition &&
-    css`
-        object-position: ${$objectPosition};
-    `};
-    ${$display &&
-    css`
-        display: ${$display};
-    `};
+        `
+    };
+    ${
+        $cursor &&
+        css`
+            cursor: ${$cursor};
+        `
+    };
+    ${
+        typeof $zIndex !== 'undefined' &&
+        css`
+            z-index: ${$zIndex};
+        `
+    };
+    ${
+        typeof $aspectRatio !== 'undefined' &&
+        css`
+            aspect-ratio: ${$aspectRatio};
+        `
+    };
+    ${
+        typeof $opacity !== 'undefined' &&
+        css`
+            opacity: ${$opacity};
+        `
+    };
+    ${
+        $userSelect &&
+        css`
+            user-select: ${$userSelect};
+        `
+    };
+    ${
+        $objectFit &&
+        css`
+            object-fit: ${$objectFit};
+        `
+    };
+    ${
+        $objectPosition &&
+        css`
+            object-position: ${$objectPosition};
+        `
+    };
+    ${
+        $display &&
+        css`
+            display: ${$display};
+        `
+    };
 `;
 
 const getStorybookType = (key: FramePropsKeys) => {

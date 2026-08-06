@@ -110,12 +110,7 @@ export const getStatusMessage = (status: ExchangeTradeStatus) => {
 };
 
 export type ApprovalStatus =
-    | 'approved'
-    | 'needs_approval'
-    | 'needs_increase'
-    | 'needs_revoke'
-    | 'not_needed'
-    | null;
+    'approved' | 'needs_approval' | 'needs_increase' | 'needs_revoke' | 'not_needed' | null;
 
 export const hasEip712SignDataType = (quote?: ExchangeTrade): boolean =>
     quote?.signData?.type === 'eip712-typed-data';

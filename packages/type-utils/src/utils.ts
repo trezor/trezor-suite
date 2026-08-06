@@ -93,10 +93,7 @@ export type ConstWithOptionalFields<
 > = {
     [Key in keyof Const]: {
         [FieldKey in Fields]: Const[Key][FieldKey] extends
-            | string
-            | number
-            | { [key: string]: any }
-            | boolean
+            string | number | { [key: string]: any } | boolean
             ? Const[Key][FieldKey]
             : undefined;
     };

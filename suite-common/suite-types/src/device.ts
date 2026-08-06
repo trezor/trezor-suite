@@ -126,8 +126,7 @@ type ConnectAuthenticateDeviceResultPayload = AuthenticateDeviceResult | { error
  *    (e.g. optiga & tropic) and it is up to Suite to decide which results to use.
  */
 export type StoredAuthenticateDeviceResult =
-    | (ConnectAuthenticateDeviceResultPayload & { valid: boolean })
-    | undefined;
+    (ConnectAuthenticateDeviceResultPayload & { valid: boolean }) | undefined;
 
 /**
  * This whole file is intended as a helper for wrapping connect errors to abstract them for use

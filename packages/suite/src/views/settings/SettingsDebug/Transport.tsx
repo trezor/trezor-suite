@@ -56,9 +56,9 @@ export const Transport = () => {
     const dispatch = useDispatch();
     const transports = isDesktop() ? TRANSPORTS_DESKTOP : TRANSPORTS_WEB;
     const items = useTransportItems(transports);
-    const { createTransports } = useServices(
-        (services): TransportsDep => ({ createTransports: services.createTransports }),
-    );
+    const { createTransports } = useServices((services): TransportsDep => ({
+        createTransports: services.createTransports,
+    }));
 
     return (
         <>

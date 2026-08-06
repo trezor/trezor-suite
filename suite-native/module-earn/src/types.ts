@@ -24,11 +24,7 @@ export type YieldReviewStatus = YieldReviewActionStatus | 'signed';
 export type YieldDepositReviewStatus = YieldReviewStatus;
 
 export type YieldReviewSigningResult =
-    | 'signed'
-    | 'cancelled'
-    | 'failed'
-    | 'not-ready'
-    | 'already-running';
+    'signed' | 'cancelled' | 'failed' | 'not-ready' | 'already-running';
 
 export type YieldBroadcastTransaction = {
     txid: string;

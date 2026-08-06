@@ -60,9 +60,7 @@ export type PrecomposeResultFinal = Omit<ComposeResultFinal, 'inputs' | 'outputs
 };
 
 export type PrecomposedResult =
-    | PrecomposeResultError
-    | PrecomposeResultNonFinal
-    | PrecomposeResultFinal;
+    PrecomposeResultError | PrecomposeResultNonFinal | PrecomposeResultFinal;
 
 export declare function composeTransaction(
     params: Params<PrecomposeParams>,

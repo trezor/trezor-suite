@@ -56,12 +56,12 @@ export const Row = styled.tr<{
         `}
 
         ${({ onClick }) =>
-        onClick &&
-        css`
-            &:hover {
-                cursor: pointer;
-            }
-        `}
+            onClick &&
+            css`
+                &:hover {
+                    cursor: pointer;
+                }
+            `}
 `;
 
 export interface TableRowProps {

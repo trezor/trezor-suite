@@ -50,8 +50,7 @@ export const updateYieldClaimSelectedFeeLevelThunk = createThunk(
         if (!formDraftKey) return;
 
         const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
-            | FormState
-            | undefined;
+            FormState | undefined;
 
         if (!formDraft) return;
 

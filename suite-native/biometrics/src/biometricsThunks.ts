@@ -29,8 +29,7 @@ export type BiometricsToggleFulfilledResult = Extract<
 >;
 
 type BiometricsToggleRejectReason =
-    | BiometricsToggleResult.BiometricsNotAvailable
-    | AuthenticateError;
+    BiometricsToggleResult.BiometricsNotAvailable | AuthenticateError;
 
 export type BiometricsAppStateChangePayload = {
     isUserAuthenticated?: boolean;

@@ -4,14 +4,7 @@ import { type TradingType } from '@suite-common/trading';
 import { EventType } from '../constants';
 
 type TradingStatusValue =
-    | 'waiting'
-    | 'processing'
-    | 'pending'
-    | 'converting'
-    | 'sending'
-    | 'kyc'
-    | 'success'
-    | 'error';
+    'waiting' | 'processing' | 'pending' | 'converting' | 'sending' | 'kyc' | 'success' | 'error';
 
 type Attributes = {
     type: AttributeDef<TradingType>;

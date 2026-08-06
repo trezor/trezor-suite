@@ -10,8 +10,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { hexToRgba } from '@trezor/utils';
 
 type StakingPromoRingIconProps = { networkColor?: NetworkColor } & (
-    | { iconName: IconName; children?: never }
-    | { iconName?: never; children: ReactNode }
+    { iconName: IconName; children?: never } | { iconName?: never; children: ReactNode }
 );
 
 const iconInnerContainerStyle = prepareNativeStyle(

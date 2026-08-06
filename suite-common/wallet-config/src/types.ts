@@ -14,13 +14,7 @@ export const asNetworkSymbol = (symbol: string): NetworkSymbol => symbol as Netw
 export type NetworkSymbolExtended = NetworkSymbol | (string & {});
 
 export type NetworkType =
-    | 'bitcoin'
-    | 'ethereum'
-    | 'ripple'
-    | 'cardano'
-    | 'solana'
-    | 'stellar'
-    | 'tron';
+    'bitcoin' | 'ethereum' | 'ripple' | 'cardano' | 'solana' | 'stellar' | 'tron';
 
 type UtilityAccountType = 'normal' | 'imported' | 'placeholder'; // reserved accountTypes to stand in for a real accountType
 type RealAccountType = 'legacy' | 'segwit' | 'coinjoin' | 'taproot' | 'ledger';

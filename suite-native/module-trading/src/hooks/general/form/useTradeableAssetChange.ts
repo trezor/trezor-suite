@@ -97,8 +97,7 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
 
             const counterpartAsset = collision
                 ? (getValues(collision.counterpartAssetField as Path<TFieldValues>) as
-                      | TradeableAsset
-                      | undefined)
+                      TradeableAsset | undefined)
                 : undefined;
 
             if (collision && asset.cryptoId === counterpartAsset?.cryptoId) {

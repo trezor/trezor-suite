@@ -29,9 +29,7 @@ export interface IPCErrorResponse {
 }
 
 export type IPCResponse =
-    | IPCISHelloAvailableSuccessResponse
-    | IPCRequestHelloSuccessResponse
-    | IPCErrorResponse;
+    IPCISHelloAvailableSuccessResponse | IPCRequestHelloSuccessResponse | IPCErrorResponse;
 
 export interface IPCReadyMessage {
     ready: true;

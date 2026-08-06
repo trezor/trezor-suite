@@ -70,8 +70,7 @@ describe('useMissingRateTickersQuery', () => {
         });
 
         const queryParams = mockUseQuery.mock.calls[mockUseQuery.mock.calls.length - 1]?.[0] as
-            | { queryFn: () => Promise<unknown> }
-            | undefined;
+            { queryFn: () => Promise<unknown> } | undefined;
 
         expect(mockUseQuery).toHaveBeenCalledWith(expect.objectContaining({ enabled: true }));
         await queryParams?.queryFn();

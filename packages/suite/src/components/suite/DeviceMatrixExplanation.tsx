@@ -20,7 +20,7 @@ const Wrapper = styled.div<{ $isGuideOpen?: boolean }>`
     border-radius: 4px;
 
     @media only screen and (max-width: ${props =>
-            props.$isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+        props.$isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         display: none;
     }
 `;

@@ -210,9 +210,7 @@ export type PrecomposedTransactionFinal =
     | PrecomposedTransactionFinalCancelRbf;
 
 export type PrecomposedTransaction =
-    | PrecomposedTransactionError
-    | PrecomposedTransactionNonFinal
-    | PrecomposedTransactionFinal;
+    PrecomposedTransactionError | PrecomposedTransactionNonFinal | PrecomposedTransactionFinal;
 
 export type PrecomposedTransactionCardano =
     | PrecomposedTransactionCardanoError

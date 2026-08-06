@@ -42,16 +42,10 @@ export const isUserCancelledSignError = (
     (!!payload?.errorCode && USER_CANCELLED_ERROR_CODES.some(code => code === payload.errorCode));
 
 export type EarnReviewErrorPayload =
-    | { error?: string; errorCode?: string; message?: string }
-    | undefined;
+    { error?: string; errorCode?: string; message?: string } | undefined;
 
 export type EarnReviewErrorReaction =
-    | 'none'
-    | 'popScreen'
-    | 'pendingConflict'
-    | 'pushFailed'
-    | 'signFailed'
-    | 'deviceDisconnected';
+    'none' | 'popScreen' | 'pendingConflict' | 'pushFailed' | 'signFailed' | 'deviceDisconnected';
 
 export const getEarnReviewErrorReaction = (
     payload: EarnReviewErrorPayload,

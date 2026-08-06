@@ -5,8 +5,7 @@ import TrezorConnect from '@trezor/connect';
 import { getYieldErrorTranslationKey } from 'src/actions/wallet/stablecoin-yield/signingHelpers';
 
 export type EnsureDeviceSessionResult =
-    | { success: true }
-    | { success: false; error?: StablecoinYieldTranslationKey };
+    { success: true } | { success: false; error?: StablecoinYieldTranslationKey };
 
 export const ensureDeviceSession = async (
     device: TrezorDevice | undefined,

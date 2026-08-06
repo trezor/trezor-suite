@@ -24,12 +24,7 @@ export type EventPayload<T extends SuiteDesktopAnalyticsEventsForE2e> = T extend
     : undefined;
 
 export type PaymentMethods =
-    | 'googlePay'
-    | 'applePay'
-    | 'creditCard'
-    | 'paypal'
-    | 'bankTransfer'
-    | 'revolutPay';
+    'googlePay' | 'applePay' | 'creditCard' | 'paypal' | 'bankTransfer' | 'revolutPay';
 
 export type PercentageOfBalanceParams = {
     percentage: number;

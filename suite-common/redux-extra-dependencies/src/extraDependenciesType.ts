@@ -60,8 +60,7 @@ type OriginalReduxThunk<TPayload, TReturn = void> = (
 // TODO: Replace with a generic shared `Thunk` type from @suite-common/redux-utils after
 // https://github.com/trezor/trezor-suite/issues/30770 is completed.
 type SuiteCompatibleThunk<TPayload, TReturn = void> =
-    | AsyncThunk<TReturn, TPayload, Record<never, never>>
-    | OriginalReduxThunk<TPayload, TReturn>;
+    AsyncThunk<TReturn, TPayload, Record<never, never>> | OriginalReduxThunk<TPayload, TReturn>;
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;

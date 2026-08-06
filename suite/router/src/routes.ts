@@ -28,10 +28,9 @@ export type ModalAppParams = {
 };
 
 export type RouteParams = {
-    [K in keyof (CommonWalletParams &
-        EarnParams &
-        ModalAppParams &
-        DashboardParams)]?: (CommonWalletParams & EarnParams & ModalAppParams & DashboardParams)[K];
+    [
+        K in keyof (CommonWalletParams & EarnParams & ModalAppParams & DashboardParams)
+    ]?: (CommonWalletParams & EarnParams & ModalAppParams & DashboardParams)[K];
 };
 
 type AppWithParams<T extends { [key: string]: any }> = {

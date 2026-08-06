@@ -43,21 +43,19 @@ export function devices(res: UnknownPayload) {
     }
 
     return success(
-        res.map(
-            (o: any): Descriptor => ({
-                path: o.path,
-                session: o.session,
-                sessionOwner: o.sessionOwner,
-                product: o.product,
-                type: o.type,
-                vendor: o.vendor,
-                debug: o.debug,
-                debugSession: o.debugSession,
-                id: o.id,
-                apiType: o.apiType || 'usb', // no other option is implemented at this moment
-                model: o.model,
-            }),
-        ),
+        res.map((o: any): Descriptor => ({
+            path: o.path,
+            session: o.session,
+            sessionOwner: o.sessionOwner,
+            product: o.product,
+            type: o.type,
+            vendor: o.vendor,
+            debug: o.debug,
+            debugSession: o.debugSession,
+            id: o.id,
+            apiType: o.apiType || 'usb', // no other option is implemented at this moment
+            model: o.model,
+        })),
     );
 }
 

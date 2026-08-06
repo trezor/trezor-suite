@@ -90,10 +90,7 @@ export type FirmwareReleaseConfigInfo = {
  *      Case: fresh device with no FW (most usual case).
  */
 export type FirmwareUpdateFlowType =
-    | 'reboot_and_wait'
-    | 'reboot_and_upgrade'
-    | 'manual'
-    | 'unknown_flow';
+    'reboot_and_wait' | 'reboot_and_upgrade' | 'manual' | 'unknown_flow';
 
 export type FirmwareChannel =
     | 'production'

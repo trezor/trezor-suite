@@ -72,8 +72,7 @@ export const TradingFormInputPaymentMethod = ({
     const options = useSelector(state => selectTradingPaymentMethodsByType(state, type));
 
     const paymentMethod = useWatch({ name: TRADING_FORM_PAYMENT_METHOD_SELECT }) as
-        | TradingPaymentMethodListProps
-        | undefined;
+        TradingPaymentMethodListProps | undefined;
     const hasPaymentMethods = options.length > 0;
 
     const selectedOption = useSelector(state =>

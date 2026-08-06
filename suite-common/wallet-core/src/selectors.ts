@@ -110,9 +110,10 @@ const getAccountChainsPerAccountType = (accounts: Account[]) =>
             // accounts when a known-accounts refresh fails for some of them (e.g. flaky backend)
             firstFailedAccount: accs
                 .filter(isAccountFailed)
-                .reduce<
-                    Account | undefined
-                >((first, current) => (!first || current.index < first.index ? current : first), undefined),
+                .reduce<Account | undefined>(
+                    (first, current) => (!first || current.index < first.index ? current : first),
+                    undefined,
+                ),
         }),
     );
 

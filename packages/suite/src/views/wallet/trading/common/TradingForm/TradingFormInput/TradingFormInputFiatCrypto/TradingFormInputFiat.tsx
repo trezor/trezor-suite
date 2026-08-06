@@ -89,8 +89,7 @@ const TradingFormInputFiatContent = ({
         : undefined;
 
     const tokenAddress = (sendCryptoSelect?.contractAddress ?? undefined) as
-        | TokenAddress
-        | undefined;
+        TokenAddress | undefined;
     const balance = tokenAddress
         ? findToken(asset.tokens, tokenAddress)?.balance
         : asset.formattedBalance;

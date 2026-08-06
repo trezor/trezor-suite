@@ -79,8 +79,7 @@ export const createResponseMessage = (
     success: boolean,
     payload: any,
     deviceIdentity:
-        | { path: DeviceUniquePath; state?: DeviceState; instance: number }
-        | undefined = undefined,
+        { path: DeviceUniquePath; state?: DeviceState; instance: number } | undefined = undefined,
 ): MethodResponseMessage => {
     if (success)
         return {

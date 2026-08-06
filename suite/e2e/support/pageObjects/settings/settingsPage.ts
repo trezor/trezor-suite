@@ -38,8 +38,7 @@ const backgroundImageButton = {
 };
 
 export type NetworkToEnable =
-    | NetworkSymbol
-    | { symbol: NetworkSymbol; backend: { type: BackendType; url: string } };
+    NetworkSymbol | { symbol: NetworkSymbol; backend: { type: BackendType; url: string } };
 
 export class SettingsPage {
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
