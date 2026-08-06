@@ -5,6 +5,8 @@ import { type CryptoId } from 'invity-api';
 import { normalizeForSearch } from '@suite-common/suite-utils';
 import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
+import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type TradeableAssetBalances } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 type AssetSearchFields = {
@@ -13,7 +15,21 @@ type AssetSearchFields = {
     networkName: string;
     networkSymbol: string;
     contractAddress: string;
+    cryptoId: CryptoId;
 };
+
+const FEATURED_ASSET_CRYPTO_IDS = [
+    'bitcoin',
+    'ethereum',
+    'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7',
+    'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    'solana',
+] as CryptoId[];
+
+const FEATURED_ASSET_RANKS = new Map(
+    FEATURED_ASSET_CRYPTO_IDS.map((cryptoId, index) => [cryptoId, index]),
+);
+const EMPTY_ASSET_BALANCES: TradeableAssetBalances = new Map();
 
 const getAssetSearchFields = (asset: TradeableAsset): AssetSearchFields => {
     const network = getNetworkByCoingeckoId(asset.networkId);
@@ -21,6 +37,7 @@ const getAssetSearchFields = (asset: TradeableAsset): AssetSearchFields => {
     return {
         name: normalizeForSearch(asset.name),
         symbol: normalizeForSearch(asset.symbol),
+        cryptoId: asset.cryptoId,
         networkName: network ? normalizeForSearch(network.name) : '',
         networkSymbol: network ? normalizeForSearch(network.symbol) : '',
         contractAddress: asset.contractAddress ? normalizeForSearch(asset.contractAddress) : '',
@@ -80,7 +97,15 @@ const getAssetWeight = (searchFields: AssetSearchFields, query: string): number 
     return 13;
 };
 
-export const useTradeableAssetsFilteredData = ({ assets }: { assets: TradeableAsset[] }) => {
+export const useTradeableAssetsFilteredData = ({
+    assets,
+    assetBalances = EMPTY_ASSET_BALANCES,
+    preferredCurrencyUsdThreshold = null,
+}: {
+    assets: TradeableAsset[];
+    assetBalances?: TradeableAssetBalances;
+    preferredCurrencyUsdThreshold?: BaseCurrencyAmount | null;
+}) => {
     const [filterSymbol, setFilterSymbol] = useState<NetworkSymbol | undefined>(undefined);
     const [filterValue, setFilterValue] = useState('');
 
@@ -89,13 +114,59 @@ export const useTradeableAssetsFilteredData = ({ assets }: { assets: TradeableAs
         [assets],
     );
 
+    const orderedAssets = useMemo(() => {
+        const featuredAssets = new Array<TradeableAsset | undefined>(
+            FEATURED_ASSET_CRYPTO_IDS.length,
+        );
+        const ownedAssets: TradeableAsset[] = [];
+        const remainingAssets: TradeableAsset[] = [];
+
+        assets.forEach(asset => {
+            const featuredRank = FEATURED_ASSET_RANKS.get(asset.cryptoId);
+            if (featuredRank !== undefined) {
+                featuredAssets[featuredRank] = asset;
+
+                return;
+            }
+
+            const fiatAmount = assetBalances.get(asset.cryptoId)?.fiatAmount;
+            if (
+                fiatAmount &&
+                preferredCurrencyUsdThreshold &&
+                fiatAmount.gt(preferredCurrencyUsdThreshold)
+            ) {
+                ownedAssets.push(asset);
+
+                return;
+            }
+
+            remainingAssets.push(asset);
+        });
+
+        ownedAssets.sort((assetA, assetB) => {
+            const fiatAmountA = assetBalances.get(assetA.cryptoId)?.fiatAmount;
+            const fiatAmountB = assetBalances.get(assetB.cryptoId)?.fiatAmount;
+
+            return fiatAmountB?.comparedTo(fiatAmountA ?? 0) ?? 0;
+        });
+
+        return [
+            ...featuredAssets.filter((asset): asset is TradeableAsset => asset !== undefined),
+            ...ownedAssets,
+            ...remainingAssets,
+        ];
+    }, [assets, assetBalances, preferredCurrencyUsdThreshold]);
+
     const assetsFilteredByNetwork = useMemo(() => {
         if (!filterSymbol) {
-            return assets;
+            return orderedAssets;
         }
 
-        return assets.filter(a => filterSymbol === cryptoIdToNetworkSymbol(a.cryptoId));
-    }, [assets, filterSymbol]);
+        return orderedAssets.filter(
+            asset =>
+                filterSymbol === cryptoIdToNetworkSymbol(searchFieldsByAsset.get(asset)?.cryptoId),
+        );
+    }, [filterSymbol, orderedAssets, searchFieldsByAsset]);
 
     const filteredData = useMemo(() => {
         const query = normalizeForSearch(filterValue);

@@ -18,6 +18,7 @@ describe('TradeableAssetList', () => {
                 onSelectedNetworkFilter={jest.fn()}
                 selectedNetworkFilter={undefined}
                 scrollResetKey="test-key"
+                assetBalances={new Map()}
                 {...props}
             />,
         );

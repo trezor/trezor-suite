@@ -10,11 +10,14 @@ import {
     type StackProps,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import {
+    selectBuyTradeableAssets,
+    selectExchangeBuyTradeableAssets,
+} from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { TradeableAssetList } from '../components/general/TradeableAssetList/TradeableAssetList';
-import { useBuyTradeableAssetsFilteredData } from '../hooks/buy/useBuyTradeableAssetsFilteredData';
-import { useExchangeBuyTradeableAssetsFilteredData } from '../hooks/exchange/useExchangeBuyTradeableAssetsFilteredData';
+import { useTradingTradeableAssetsFilteredData } from '../hooks/general/useTradingTradeableAssetsFilteredData';
 
 export type TradingTradeableAssetScreenProps = StackProps<
     RootStackParamList,
@@ -26,8 +29,14 @@ type TradeableAssetScreenListProps = {
 };
 
 const BuyTradeableAssetList = ({ onAssetSelect }: TradeableAssetScreenListProps) => {
-    const { filteredData, filterSymbol, filterValue, setFilterValue, setFilterSymbol } =
-        useBuyTradeableAssetsFilteredData();
+    const {
+        filteredData,
+        filterSymbol,
+        filterValue,
+        setFilterValue,
+        setFilterSymbol,
+        assetBalances,
+    } = useTradingTradeableAssetsFilteredData(selectBuyTradeableAssets);
 
     return (
         <TradeableAssetList
@@ -37,14 +46,21 @@ const BuyTradeableAssetList = ({ onAssetSelect }: TradeableAssetScreenListProps)
             onSelectedNetworkFilter={setFilterSymbol}
             selectedNetworkFilter={filterSymbol}
             scrollResetKey={filterValue}
+            assetBalances={assetBalances}
             testID="@trading/buy/receive-asset-screen"
         />
     );
 };
 
 const ExchangeTradeableAssetList = ({ onAssetSelect }: TradeableAssetScreenListProps) => {
-    const { filteredData, filterSymbol, filterValue, setFilterValue, setFilterSymbol } =
-        useExchangeBuyTradeableAssetsFilteredData();
+    const {
+        filteredData,
+        filterSymbol,
+        filterValue,
+        setFilterValue,
+        setFilterSymbol,
+        assetBalances,
+    } = useTradingTradeableAssetsFilteredData(selectExchangeBuyTradeableAssets);
 
     return (
         <TradeableAssetList
@@ -54,6 +70,7 @@ const ExchangeTradeableAssetList = ({ onAssetSelect }: TradeableAssetScreenListP
             onSelectedNetworkFilter={setFilterSymbol}
             selectedNetworkFilter={filterSymbol}
             scrollResetKey={filterValue}
+            assetBalances={assetBalances}
             testID="@trading/exchange/receive-asset-screen"
         />
     );

@@ -8,6 +8,10 @@ import {
 } from '@suite-native/navigation';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
+import {
+    selectBuyTradeableAssets,
+    selectExchangeBuyTradeableAssets,
+} from '@suite-native/trading-state';
 
 import {
     TradingTradeableAssetScreen,
@@ -20,25 +24,25 @@ const mockBuyFilteredData = {
     filterValue: '',
     setFilterValue: jest.fn(),
     setFilterSymbol: jest.fn(),
+    assetBalances: new Map(),
 };
 const mockExchangeFilteredData = {
     filteredData: [usdcAsset],
     filterValue: '',
     setFilterValue: jest.fn(),
     setFilterSymbol: jest.fn(),
+    assetBalances: new Map(),
 };
+const mockUseTradingTradeableAssetsFilteredData = jest.fn();
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () => ({ name: RootStackRoutes.TradingTradeableAsset }),
 }));
 
-jest.mock('../hooks/buy/useBuyTradeableAssetsFilteredData', () => ({
-    useBuyTradeableAssetsFilteredData: () => mockBuyFilteredData,
-}));
-
-jest.mock('../hooks/exchange/useExchangeBuyTradeableAssetsFilteredData', () => ({
-    useExchangeBuyTradeableAssetsFilteredData: () => mockExchangeFilteredData,
+jest.mock('../hooks/general/useTradingTradeableAssetsFilteredData', () => ({
+    useTradingTradeableAssetsFilteredData: (...args: unknown[]) =>
+        mockUseTradingTradeableAssetsFilteredData(...args),
 }));
 
 const createRoute = (
@@ -62,6 +66,10 @@ describe('TradingTradeableAssetScreen', () => {
         ['buy', 'BTC', btcAsset.cryptoId],
         ['exchange', 'USDC', usdcAsset.cryptoId],
     ] as const)('renders and selects the %s asset data', (tradingType, assetSymbol, cryptoId) => {
+        mockUseTradingTradeableAssetsFilteredData.mockReturnValue(
+            tradingType === 'buy' ? mockBuyFilteredData : mockExchangeFilteredData,
+        );
+
         const { getByLabelText, getByText } = renderWithTradingProvider(
             <TradingTradeableAssetScreen
                 navigation={navigation}
@@ -72,6 +80,10 @@ describe('TradingTradeableAssetScreen', () => {
         const assetElement =
             tradingType === 'buy' ? getByText(assetSymbol) : getByLabelText(assetSymbol);
         fireEvent.press(assetElement);
+
+        expect(mockUseTradingTradeableAssetsFilteredData).toHaveBeenCalledWith(
+            tradingType === 'buy' ? selectBuyTradeableAssets : selectExchangeBuyTradeableAssets,
+        );
 
         expect(navigation.popTo).toHaveBeenCalledWith(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.TradeStack,
