@@ -1,7 +1,5 @@
-import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { type SuiteSyncAccount, createSuiteSyncAccountId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
@@ -9,16 +7,9 @@ import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 
 import {
     type NativeAccountsRootState,
-    selectFilteredDeviceAccountTypesByNetworkSymbol,
-    selectFilteredDeviceAccountsByNetworkSymbolAndAccountType,
-    selectFilteredDeviceNetworkSymbols,
+    selectFilteredDeviceAccountListRows,
     selectNetworkFilterOptions,
 } from './selectors';
-
-const btcSymbol = asNetworkSymbol('btc');
-const ethSymbol = asNetworkSymbol('eth');
-const adaSymbol = asNetworkSymbol('ada');
-const ltcSymbol = asNetworkSymbol('ltc');
 
 const SELECTED_WALLET_DESCRIPTOR = asWalletDescriptor('selectedWallet');
 const SELECTED_DEVICE_STATIC_SESSION_ID: StaticSessionId = 'selectedWallet@deviceId:0';
@@ -34,7 +25,7 @@ const selectedDevice = mockSuiteDevice({
 });
 
 const btcDefaultAccount = mockWalletAccount({
-    symbol: btcSymbol,
+    symbol: 'btc',
     descriptor: asAccountDescriptor('btcdefault'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -43,7 +34,7 @@ const btcDefaultAccount = mockWalletAccount({
 });
 
 const btcTaprootAccount = mockWalletAccount({
-    symbol: btcSymbol,
+    symbol: 'btc',
     descriptor: asAccountDescriptor('btctaproot'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'taproot',
@@ -51,8 +42,17 @@ const btcTaprootAccount = mockWalletAccount({
     availableBalance: '5',
 });
 
+const btcSecondDefaultAccount = mockWalletAccount({
+    symbol: 'btc',
+    descriptor: asAccountDescriptor('btcseconddefault'),
+    deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
+    accountType: 'normal',
+    index: 2,
+    availableBalance: '3',
+});
+
 const ethAccount = mockWalletAccount({
-    symbol: ethSymbol,
+    symbol: 'eth',
     descriptor: asAccountDescriptor('ethdefault'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -62,7 +62,7 @@ const ethAccount = mockWalletAccount({
 
 const adaAccount = mockWalletAccount(
     {
-        symbol: adaSymbol,
+        symbol: 'ada',
         descriptor: asAccountDescriptor('adadefault'),
         deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
         accountType: 'normal',
@@ -73,7 +73,7 @@ const adaAccount = mockWalletAccount(
 );
 
 const hiddenLtcAccount = mockWalletAccount({
-    symbol: ltcSymbol,
+    symbol: 'ltc',
     descriptor: asAccountDescriptor('ltchidden'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -83,7 +83,7 @@ const hiddenLtcAccount = mockWalletAccount({
 });
 
 const otherDeviceBtcAccount = mockWalletAccount({
-    symbol: btcSymbol,
+    symbol: 'btc',
     descriptor: asAccountDescriptor('btcotherdevice'),
     deviceState: OTHER_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -105,11 +105,6 @@ const createSuiteSyncAccountsRecord = (accounts: SuiteSyncAccount[]) =>
         return acc;
     }, {});
 
-const withLabel = (account: Account, label: string | null): AccountWithSuiteSyncLabel => ({
-    ...account,
-    label,
-});
-
 const createState = (accounts: Account[]): NativeAccountsRootState => ({
     device: {
         devices: [selectedDevice],
@@ -120,7 +115,7 @@ const createState = (accounts: Account[]): NativeAccountsRootState => ({
         accounts,
         settings: {
             ...initialWalletSettingsState,
-            enabledNetworks: [btcSymbol, ethSymbol, adaSymbol, ltcSymbol],
+            enabledNetworks: ['btc', 'eth', 'ada', 'ltc'],
         },
         fiat: {
             current: {},
@@ -174,154 +169,75 @@ const stateAccounts = [
 
 const state = createState(stateAccounts);
 
-describe('selectFilteredDeviceNetworkSymbols', () => {
-    it('returns network symbols of visible accounts for the selected device sorted by network order', () => {
-        expect(selectFilteredDeviceNetworkSymbols(state, '', false, [])).toEqual([
-            'btc',
-            'eth',
-            'ada',
+describe('selectFilteredDeviceAccountListRows', () => {
+    it('returns visible account keys in network and account-type order with group boundaries', () => {
+        expect(selectFilteredDeviceAccountListRows(state, '', false, [])).toEqual([
+            { accountKey: btcDefaultAccount.key, isFirst: true, isLast: true },
+            { accountKey: btcTaprootAccount.key, isFirst: true, isLast: true },
+            { accountKey: ethAccount.key, isFirst: true, isLast: true },
+            { accountKey: adaAccount.key, isFirst: true, isLast: true },
+        ]);
+    });
+
+    it('marks the boundaries of an account-type group containing multiple accounts', () => {
+        const stateWithSecondDefaultAccount = createState([
+            ...stateAccounts,
+            btcSecondDefaultAccount,
+        ]);
+
+        expect(
+            selectFilteredDeviceAccountListRows(stateWithSecondDefaultAccount, '', false, []),
+        ).toEqual([
+            { accountKey: btcDefaultAccount.key, isFirst: true, isLast: false },
+            { accountKey: btcSecondDefaultAccount.key, isFirst: false, isLast: true },
+            { accountKey: btcTaprootAccount.key, isFirst: true, isLast: true },
+            { accountKey: ethAccount.key, isFirst: true, isLast: true },
+            { accountKey: adaAccount.key, isFirst: true, isLast: true },
         ]);
     });
 
     it('filters using suite sync labels and network names', () => {
-        expect(selectFilteredDeviceNetworkSymbols(state, 'daily', false, [])).toEqual(['btc']);
-        expect(selectFilteredDeviceNetworkSymbols(state, 'ETHEREUM', false, [])).toEqual(['eth']);
-    });
-
-    it('keeps only networks with send-available accounts when the send filter is enabled', () => {
-        expect(selectFilteredDeviceNetworkSymbols(state, '', true, [])).toEqual(['btc', 'eth']);
-    });
-
-    it('filters by network symbols', () => {
-        expect(selectFilteredDeviceNetworkSymbols(state, '', false, [btcSymbol])).toEqual(['btc']);
-        expect(
-            selectFilteredDeviceNetworkSymbols(state, '', false, [ethSymbol, adaSymbol]),
-        ).toEqual(['eth', 'ada']);
-    });
-
-    it('combines network symbol filter with text search', () => {
-        expect(selectFilteredDeviceNetworkSymbols(state, 'daily', false, [btcSymbol])).toEqual([
-            'btc',
+        expect(selectFilteredDeviceAccountListRows(state, 'daily', false, [])).toEqual([
+            { accountKey: btcDefaultAccount.key, isFirst: true, isLast: true },
         ]);
-        expect(selectFilteredDeviceNetworkSymbols(state, 'daily', false, [ethSymbol])).toEqual([]);
+        expect(selectFilteredDeviceAccountListRows(state, 'ETHEREUM', false, [])).toEqual([
+            { accountKey: ethAccount.key, isFirst: true, isLast: true },
+        ]);
     });
 
-    it('returns a referentially stable result when unrelated state changes', () => {
-        const recreatedState = createState(stateAccounts);
-
-        expect(selectFilteredDeviceNetworkSymbols(recreatedState, '', false, [])).toBe(
-            selectFilteredDeviceNetworkSymbols(state, '', false, []),
-        );
-    });
-});
-
-describe('selectFilteredDeviceAccountTypesByNetworkSymbol', () => {
-    it('returns account types of visible network accounts sorted by account type order', () => {
-        expect(
-            selectFilteredDeviceAccountTypesByNetworkSymbol(state, '', false, btcSymbol),
-        ).toEqual(['normal', 'taproot']);
-        expect(
-            selectFilteredDeviceAccountTypesByNetworkSymbol(state, '', false, ethSymbol),
-        ).toEqual(['normal']);
+    it('keeps only send-available accounts when the send filter is enabled', () => {
+        expect(selectFilteredDeviceAccountListRows(state, '', true, [])).toEqual([
+            { accountKey: btcTaprootAccount.key, isFirst: true, isLast: true },
+            { accountKey: ethAccount.key, isFirst: true, isLast: true },
+        ]);
     });
 
-    it('keeps only account types with send-available accounts when the send filter is enabled', () => {
-        expect(selectFilteredDeviceAccountTypesByNetworkSymbol(state, '', true, btcSymbol)).toEqual(
-            ['taproot'],
-        );
-    });
-
-    it('returns an empty array for a network without visible accounts', () => {
-        expect(
-            selectFilteredDeviceAccountTypesByNetworkSymbol(state, '', false, ltcSymbol),
-        ).toEqual([]);
-    });
-
-    it('returns a referentially stable result when unrelated state changes', () => {
-        const recreatedState = createState(stateAccounts);
-
-        expect(
-            selectFilteredDeviceAccountTypesByNetworkSymbol(recreatedState, '', false, btcSymbol),
-        ).toBe(selectFilteredDeviceAccountTypesByNetworkSymbol(state, '', false, btcSymbol));
-    });
-});
-
-describe('selectFilteredDeviceAccountsByNetworkSymbolAndAccountType', () => {
-    it('returns visible accounts of the selected device with suite sync labels', () => {
-        expect(
-            selectFilteredDeviceAccountsByNetworkSymbolAndAccountType(
-                state,
-                '',
-                false,
-                btcSymbol,
-                'normal',
-            ),
-        ).toEqual([withLabel(btcDefaultAccount, 'Daily spending')]);
-
-        expect(
-            selectFilteredDeviceAccountsByNetworkSymbolAndAccountType(
-                state,
-                '',
-                false,
-                btcSymbol,
-                'taproot',
-            ),
-        ).toEqual([withLabel(btcTaprootAccount, null)]);
-    });
-
-    it('filters using suite sync labels', () => {
-        expect(
-            selectFilteredDeviceAccountsByNetworkSymbolAndAccountType(
-                state,
-                'daily',
-                false,
-                btcSymbol,
-                'normal',
-            ),
-        ).toEqual([withLabel(btcDefaultAccount, 'Daily spending')]);
-
-        expect(
-            selectFilteredDeviceAccountsByNetworkSymbolAndAccountType(
-                state,
-                'daily',
-                false,
-                btcSymbol,
-                'taproot',
-            ),
-        ).toEqual([]);
+    it('combines network symbol filtering with text search', () => {
+        expect(selectFilteredDeviceAccountListRows(state, 'daily', false, ['btc'])).toEqual([
+            { accountKey: btcDefaultAccount.key, isFirst: true, isLast: true },
+        ]);
+        expect(selectFilteredDeviceAccountListRows(state, 'daily', false, ['eth'])).toEqual([]);
     });
 
     it('excludes hidden accounts and accounts of other devices', () => {
-        expect(
-            selectFilteredDeviceAccountsByNetworkSymbolAndAccountType(
-                state,
-                '',
-                false,
-                ltcSymbol,
-                'normal',
-            ),
-        ).toEqual([]);
+        expect(selectFilteredDeviceAccountListRows(state, '', false, ['ltc'])).toEqual([]);
     });
 
-    it('returns a referentially stable result when unrelated state changes', () => {
-        const recreatedState = createState(stateAccounts);
+    it('keeps the complete data array stable when account content changes without structural changes', () => {
+        const updatedState = createState(
+            stateAccounts.map(account =>
+                account.key === ethAccount.key ? { ...account, formattedBalance: '42' } : account,
+            ),
+        );
 
-        expect(
-            selectFilteredDeviceAccountsByNetworkSymbolAndAccountType(
-                recreatedState,
-                '',
-                false,
-                btcSymbol,
-                'normal',
-            ),
-        ).toBe(
-            selectFilteredDeviceAccountsByNetworkSymbolAndAccountType(
-                state,
-                '',
-                false,
-                btcSymbol,
-                'normal',
-            ),
+        expect(selectFilteredDeviceAccountListRows(updatedState, '', false, [])).toBe(
+            selectFilteredDeviceAccountListRows(state, '', false, []),
+        );
+    });
+
+    it('returns a stable empty array', () => {
+        expect(selectFilteredDeviceAccountListRows(state, 'missing', false, [])).toBe(
+            selectFilteredDeviceAccountListRows(state, 'still missing', false, []),
         );
     });
 });

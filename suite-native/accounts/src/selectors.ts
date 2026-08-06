@@ -23,7 +23,7 @@ import {
     isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -145,7 +145,28 @@ const selectFilteredDeviceAccounts = createMemoizedSelector(
 
 const createStableArray = weakMapMemoize(<T>(...items: T[]) => items);
 
-export const selectFilteredDeviceNetworkSymbols = createMemoizedSelector(
+export type FilteredDeviceAccountListRow = {
+    accountKey: AccountKey;
+    isFirst: boolean;
+    isLast: boolean;
+};
+
+const isSameAccountGroup = (
+    firstAccount: Account | undefined,
+    secondAccount: Account | undefined,
+) =>
+    firstAccount?.symbol === secondAccount?.symbol &&
+    firstAccount?.accountType === secondAccount?.accountType;
+
+const createFilteredDeviceAccountListRow = weakMapMemoize(
+    (accountKey: AccountKey, isFirst: boolean, isLast: boolean): FilteredDeviceAccountListRow => ({
+        accountKey,
+        isFirst,
+        isLast,
+    }),
+);
+
+export const selectFilteredDeviceAccountListRows = createMemoizedSelector(
     [
         selectFilteredDeviceAccounts,
         (
@@ -156,62 +177,20 @@ export const selectFilteredDeviceNetworkSymbols = createMemoizedSelector(
         ) => networkSymbols,
     ],
     (accounts, networkSymbols) => {
-        const networkFilteredAccounts = filterAccountsByNetworkSymbols(accounts, networkSymbols);
+        const filteredAccounts = filterAccountsByNetworkSymbols(accounts, networkSymbols);
 
         return returnStableArrayIfEmpty(
-            createStableArray(...A.uniq(networkFilteredAccounts.map(account => account.symbol))),
+            createStableArray(
+                ...filteredAccounts.map((account, index) =>
+                    createFilteredDeviceAccountListRow(
+                        account.key,
+                        !isSameAccountGroup(filteredAccounts[index - 1], account),
+                        !isSameAccountGroup(account, filteredAccounts[index + 1]),
+                    ),
+                ),
+            ),
         );
     },
-);
-
-export const selectFilteredDeviceAccountTypesByNetworkSymbol = createMemoizedSelector(
-    [
-        selectFilteredDeviceAccounts,
-        (
-            _state: NativeAccountsRootState,
-            _filterValue: string,
-            _isSendFlow: boolean = false,
-            networkSymbol: NetworkSymbol,
-        ) => networkSymbol,
-    ],
-    (accounts, networkSymbol) =>
-        returnStableArrayIfEmpty(
-            createStableArray(
-                ...A.uniq(
-                    accounts
-                        .filter(account => account.symbol === networkSymbol)
-                        .map(account => account.accountType),
-                ),
-            ),
-        ),
-);
-
-export const selectFilteredDeviceAccountsByNetworkSymbolAndAccountType = createMemoizedSelector(
-    [
-        selectFilteredDeviceAccounts,
-        (
-            _state: NativeAccountsRootState,
-            _filterValue: string,
-            _isSendFlow: boolean = false,
-            networkSymbol: NetworkSymbol,
-        ) => networkSymbol,
-        (
-            _state: NativeAccountsRootState,
-            _filterValue: string,
-            _isSendFlow: boolean = false,
-            _networkSymbol: NetworkSymbol,
-            accountType: AccountType,
-        ) => accountType,
-    ],
-    (accounts, networkSymbol, accountType) =>
-        returnStableArrayIfEmpty(
-            createStableArray(
-                ...accounts.filter(
-                    account =>
-                        account.symbol === networkSymbol && account.accountType === accountType,
-                ),
-            ),
-        ),
 );
 
 export type NetworkFilterOption = {

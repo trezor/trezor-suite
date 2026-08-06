@@ -5,8 +5,6 @@ import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescrip
 import { useNavigation } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Box, Button, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
 import { type AddCoinFlowType, type CloseActionType } from '@suite-native/navigation';
 
 import {
@@ -15,8 +13,9 @@ import {
 } from '../selectors';
 import { type OnSelectAccount } from '../types';
 import { AccountsList } from './AccountsList/AccountsList';
+import { AccountsListFooter } from './AccountsListFooter';
+import { AccountsListHeader } from './AccountsListHeader';
 import { NetworkFilterBottomSheet } from './NetworkFilterBottomSheet';
-import { SearchableAccountsListHeader } from './SearchableAccountsListHeader';
 
 const EMPTY_NETWORKS_FILTER: NetworkSymbol[] = [];
 
@@ -29,6 +28,7 @@ type AccountsListWithFilterProps = {
     closeAction?: () => void;
     onAddAccount?: () => void;
     isSendFlow?: boolean;
+    isScrollDividerEnabled?: boolean;
     children?: ReactNode;
 };
 
@@ -41,6 +41,7 @@ export const AccountsListWithFilter = ({
     closeAction,
     onAddAccount,
     isSendFlow,
+    isScrollDividerEnabled,
     children,
 }: AccountsListWithFilterProps) => {
     const [searchValue, setSearchValue] = useState('');
@@ -99,39 +100,36 @@ export const AccountsListWithFilter = ({
 
     return (
         <>
-            <SearchableAccountsListHeader
-                title={title}
-                onSearchInputChange={setSearchValue}
-                isSearchActive={isSearchActive}
-                onSearchActiveChange={setIsSearchActive}
-                flowType={flowType}
-                closeActionType={closeActionType}
-                closeAction={closeAction}
-                onAddAccount={onAddAccount}
-                onFilterPress={isNetworkFilterVisible ? handleFilterPress : undefined}
-                activeFilterCount={filteredNetworks.length}
+            <AccountsList
+                onSelectAccount={handleSelectAccount}
+                searchValue={searchValue}
+                networkFilter={filteredNetworks}
+                isSendFlow={isSendFlow}
+                ListHeaderComponent={
+                    <AccountsListHeader
+                        title={title}
+                        onSearchInputChange={setSearchValue}
+                        isSearchActive={isSearchActive}
+                        onSearchActiveChange={setIsSearchActive}
+                        flowType={flowType}
+                        closeActionType={closeActionType}
+                        closeAction={closeAction}
+                        onAddAccount={onAddAccount}
+                        onFilterPress={isNetworkFilterVisible ? handleFilterPress : undefined}
+                        activeFilterCount={filteredNetworks.length}
+                    >
+                        {children}
+                    </AccountsListHeader>
+                }
+                ListFooterComponent={
+                    <AccountsListFooter
+                        isSendFlow={isSendFlow}
+                        activeFilterCount={filteredNetworks.length}
+                        onClearFilters={handleClearFilters}
+                    />
+                }
+                isScrollDividerEnabled={isScrollDividerEnabled}
             />
-            {children}
-            <VStack spacing="sp16">
-                <AccountsList
-                    onSelectAccount={handleSelectAccount}
-                    searchValue={searchValue}
-                    networkFilter={filteredNetworks}
-                    isSendFlow={isSendFlow}
-                />
-                {isNetworkFilterVisible && filteredNetworks.length > 0 && (
-                    <Box alignItems="center">
-                        <Button
-                            size="medium"
-                            intent="neutral"
-                            priority="secondary"
-                            onPress={handleClearFilters}
-                        >
-                            <Translation id="moduleAccountManagement.accountsScreen.networkFilter.showAllButton" />
-                        </Button>
-                    </Box>
-                )}
-            </VStack>
             <NetworkFilterBottomSheet
                 ref={filterBottomSheetRef}
                 selectedNetworks={filteredNetworks}
