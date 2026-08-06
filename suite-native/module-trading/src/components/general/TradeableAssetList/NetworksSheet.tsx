@@ -98,6 +98,7 @@ export const NetworksSheet = ({
     onSelectNetwork,
     testID,
 }: NetworksSheetProps) => {
+    const { utils } = useNativeStyles();
     const { translate } = useTranslate();
     const networkOptions = useMemo<NetworkOption[]>(
         () => [
@@ -149,6 +150,8 @@ export const NetworksSheet = ({
             handleComponent={renderHandle}
             extraData={selectedNetwork}
             testID={testID}
+            contentContainerStyle={{ paddingTop: utils.spacings.sp10 }}
+            showEdgeFades
             renderItem={({ item, index }, { closeSheet }) => (
                 <NetworkRow
                     name={item.name}
