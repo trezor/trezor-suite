@@ -7,7 +7,11 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getNetwork,
+    getNetworkDisplaySymbol,
+} from '@suite-common/wallet-config';
 import { Button, Card, Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -37,7 +41,7 @@ const confirmButtonStyle = prepareNativeStyle(() => ({ flex: 1 }));
 
 type EarnConsentsDelegatingCardProps = {
     isExpanded: boolean;
-    symbol?: NetworkSymbol;
+    symbol: NetworkSymbol;
     onConfirm: () => void;
 };
 
@@ -49,7 +53,17 @@ export const EarnConsentsDelegatingCard = ({
     const { applyStyle } = useNativeStyles();
     const measuredHeight = useSharedValue(-1);
     const expandableHeight = useSharedValue(0);
-    const displaySymbol = symbol ? getNetworkDisplaySymbol(symbol) : undefined;
+    const displaySymbol = getNetworkDisplaySymbol(symbol);
+    const isSolana = getNetwork(symbol).networkType === 'solana';
+    const firstItemTranslationId = isSolana
+        ? 'earn.earnConsentsScreen.delegatingCard.sol.firstItem'
+        : 'earn.earnConsentsScreen.delegatingCard.eth.firstItem';
+    const secondItemTranslationId = isSolana
+        ? 'earn.earnConsentsScreen.delegatingCard.sol.secondItem'
+        : 'earn.earnConsentsScreen.delegatingCard.eth.secondItem';
+    const translationValues = {
+        displaySymbol,
+    };
 
     const handleLayout = (event: LayoutChangeEvent) => {
         if (measuredHeight.value === -1) {
@@ -99,17 +113,10 @@ export const EarnConsentsDelegatingCard = ({
                 <Divider />
                 <VStack spacing="sp16" style={applyStyle(itemsSectionStyle)}>
                     <EarnConsentsItem iconName="everstakeLogo" color="contentPrimary">
-                        <Translation
-                            id="earn.earnConsentsScreen.delegatingCard.firstItem"
-                            values={{
-                                displaySymbol: displaySymbol ?? (
-                                    <Translation id="earn.notAvailableShort" />
-                                ),
-                            }}
-                        />
+                        <Translation id={firstItemTranslationId} values={translationValues} />
                     </EarnConsentsItem>
                     <EarnConsentsItem iconName="lock" color="contentPrimary">
-                        <Translation id="earn.earnConsentsScreen.delegatingCard.secondItem" />
+                        <Translation id={secondItemTranslationId} values={translationValues} />
                     </EarnConsentsItem>
                 </VStack>
                 <HStack style={applyStyle(buttonsRowStyle)}>
