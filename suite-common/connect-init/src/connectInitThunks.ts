@@ -41,7 +41,6 @@ export const connectInitThunk = createThunk<void, void, void>(
     `${CONNECT_INIT_MODULE}/initThunk`,
     async (_, { dispatch, getState, extra }) => {
         const {
-            selectors: { selectDebugSettings, selectThpSettings },
             actions: { lockDevice },
             services: {
                 connectInitSettings,
@@ -50,12 +49,14 @@ export const connectInitThunk = createThunk<void, void, void>(
                 createLogger,
                 thpHostName,
                 createTransports,
+                getAllowPrerelease,
+                getDebugSettings,
+                getDesktopBinDir,
+                getThpSettings,
             },
         } = extra;
 
-        const getEffectiveFirmwareChannel = selectEffectiveFirmwareChannel(
-            extra.selectors.selectAllowPrerelease,
-        );
+        const getEffectiveFirmwareChannel = selectEffectiveFirmwareChannel(getAllowPrerelease());
 
         // set event listeners and dispatch as
         TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...eventData }) => {
@@ -127,9 +128,7 @@ export const connectInitThunk = createThunk<void, void, void>(
             return result;
         };
 
-        const binFilesBaseUrl = isDesktop()
-            ? extra.selectors.selectDesktopBinDir(getState())
-            : DATA_URL;
+        const binFilesBaseUrl = isDesktop() ? getDesktopBinDir() : DATA_URL;
 
         const firmwareHashCheckTimeoutsOverride = parseTimeoutThresholdsPerModel(
             selectFeatureConfig(getState(), Feature.firmwareHashCheckTimeout),
@@ -143,8 +142,8 @@ export const connectInitThunk = createThunk<void, void, void>(
             transports: debugTransports,
             showConnectLogs,
             definitionsChannel,
-        } = selectDebugSettings(getState());
-        const thp = selectThpSettings(getState());
+        } = getDebugSettings();
+        const thp = getThpSettings();
         // desktop thp appName/hostName enhanced in ./packages/suite-desktop-core/src/modules/trezor-connect.ts
         if (thpHostName !== undefined) {
             thp.hostName = thpHostName;

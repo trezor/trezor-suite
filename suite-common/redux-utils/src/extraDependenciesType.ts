@@ -8,6 +8,7 @@ import type { AddressValidatorDep } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329Dep } from '@suite-common/bip329-types';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { type Getter } from '@suite-common/dependency-injection';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import type {
     FindNetworkSymbolForProtocolDep,
@@ -18,6 +19,7 @@ import { type PlatformEncryptionDep } from '@suite-common/platform-encryption'; 
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
+    type GetAllowPrereleaseDep,
     type ReloadAppDep,
     type ReportSecurityCheckDep,
     type UserContextPayload,
@@ -42,7 +44,7 @@ import type { Transport } from '@trezor/transport-common';
 import { type KeyedThrottle } from '@trezor/utils';
 
 import { type ConnectInitHooks } from './connectInitHooksType';
-import { type ActionType, type SuiteCompatibleSelector, type SuiteCompatibleThunk } from './types';
+import { type ActionType, type SuiteCompatibleThunk } from './types';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
@@ -82,12 +84,29 @@ export type CommonServices = SuiteSyncDep &
     NetworkModuleRepositoryDep &
     Bip329Dep &
     EnsureDelegatedIdentityKeyDep &
-    PlatformEncryptionDep & {
+    PlatformEncryptionDep &
+    GetAllowPrereleaseDep & {
         analytics: Analytics<AnalyticsSharedEvents>;
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
         connectInitHooks: ConnectInitHooks;
         accountRefreshThrottle: KeyedThrottle<Account['key']>;
+        // Getters, so a component cannot read them during render and miss later state changes.
+        // See `toGetter`/`useGetter` in @suite-common/dependency-injection.
+        getTokenDefinitionsEnabledNetworks: Getter<[], NetworkSymbol[]>;
+        getDebugSettings: Getter<[], any>;
+        getDesktopBinDir: Getter<[], string | undefined>;
+        getLanguage: Getter<[], string>;
+        getIsWindowVisible: Getter<[], boolean>;
+        getSelectedAccount: Getter<[], SelectedAccountStatus>;
+        getSelectedAccountStatus: Getter<[], SelectedAccountStatus['status']>;
+        getTradingEnvironment: Getter<
+            [],
+            'production' | 'staging' | 'dev' | 'localhost' | undefined
+        >;
+        getTradedAccountKeys: Getter<[], AccountKey[]>;
+        getIsViewOnlyByDefaultEnabled: Getter<[], boolean>;
+        getThpSettings: Getter<[], ThpSettings>;
     } & ReportSecurityCheckDep &
     ReloadAppDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
@@ -109,26 +128,6 @@ export type ExtraDependenciesStatic = {
             isOsUnpairingFinished?: boolean;
             skipDisconnect?: boolean;
         }>;
-    };
-    selectors: {
-        // TODO when tokens are implemented 1:1 in both apps, delete from extras
-        // wallet-core selector is used in desktop, but suite-native has its own implementation
-        selectTokenDefinitionsEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
-        // todo: we do not want to, so far, transfer coinjoin to @suite-common
-        // but this is exactly what I need to get DebugModeOptions type instead of any
-        selectDebugSettings: SuiteCompatibleSelector<any>;
-        selectDesktopBinDir: SuiteCompatibleSelector<string | undefined>;
-        selectLanguage: SuiteCompatibleSelector<string>;
-        selectIsWindowVisible: SuiteCompatibleSelector<boolean>;
-        selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;
-        selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
-        selectTradingEnvironment: SuiteCompatibleSelector<
-            'production' | 'staging' | 'dev' | 'localhost' | undefined
-        >;
-        selectTradedAccountKeys: SuiteCompatibleSelector<AccountKey[]>;
-        selectIsViewOnlyByDefaultEnabled: SuiteCompatibleSelector<boolean>;
-        selectThpSettings: SuiteCompatibleSelector<ThpSettings>;
-        selectAllowPrerelease: SuiteCompatibleSelector<boolean>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,

@@ -317,6 +317,7 @@ const initStore = (state: State) => {
             services: {
                 ...extraDependenciesDesktopMock.services,
                 suiteRouterHistory,
+                getTokenDefinitionsEnabledNetworks: () => state.wallet.settings.enabledNetworks,
             },
         },
         middleware: [

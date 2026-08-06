@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/suite-config": "workspace:*",

@@ -17,8 +17,6 @@ export type SuiteCompatibleThunk<TPayload, TReturn = void> =
     | AsyncThunk<TReturn, TPayload, Record<never, never>>
     | OriginalReduxThunk<TPayload, TReturn>;
 
-export type SuiteCompatibleSelector<TReturn> = (state: any) => TReturn;
-
 export type ActionType = string;
 
 interface TypeGuard<T> {

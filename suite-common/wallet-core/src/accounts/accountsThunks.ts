@@ -106,7 +106,7 @@ export const reportAccountInfoThunk = createThunk(
         );
         if (requiresTokenDefinitions && !tokenDefinitions?.data) return;
 
-        const hasTraded = extra.selectors.selectTradedAccountKeys(getState()).includes(account.key);
+        const hasTraded = extra.services.getTradedAccountKeys().includes(account.key);
 
         extra.services.analytics.report({
             type: events.accountsInfoEvent.name,

@@ -59,9 +59,8 @@ const initStore = (
 ) =>
     configureMockStore({
         extra: {
-            selectors: {
-                ...extraDependenciesCommonMock.selectors,
-                selectSelectedAccount: () => selectedAccount as any,
+            services: {
+                getSelectedAccount: () => selectedAccount as any,
             },
         },
         reducer: combineReducers({

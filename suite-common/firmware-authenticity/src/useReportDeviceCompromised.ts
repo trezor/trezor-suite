@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useGetter } from '@suite-common/dependency-injection';
 import {
     type DeviceRootState,
     deviceInvariabilityCheck,
@@ -8,8 +9,7 @@ import {
     selectPersistentDeviceDataById,
 } from '@suite-common/device';
 import { selectIsProductionFirmwareChannel } from '@suite-common/firmware';
-import { type SuiteCompatibleSelector } from '@suite-common/redux-utils';
-import { type TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice, selectGetAllowPrereleaseDep } from '@suite-common/suite-types';
 import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -18,13 +18,11 @@ import { isArrayMember } from '@trezor/utils';
 import { reportSecurityCheckThunk } from './reportSecurityCheckThunk';
 import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from './scenariosConfig';
 
-// to avoid unnecessary wallet-core import
-type CommonProps = {
+type DeviceProps = {
     device: TrezorDevice | undefined;
-    selectAllowPrerelease: SuiteCompatibleSelector<boolean>;
 };
 
-const useCommonData = ({ device }: Pick<CommonProps, 'device'>) => {
+const useCommonData = ({ device }: DeviceProps) => {
     const model = device?.features?.internal_model;
     const revision = device?.features?.revision;
     const version = getFirmwareVersion(device);
@@ -36,12 +34,16 @@ const useCommonData = ({ device }: Pick<CommonProps, 'device'>) => {
     );
 };
 
-const useReportRevisionCheck = ({ device, selectAllowPrerelease }: CommonProps) => {
+const useIsProductionFirmwareChannel = () => {
+    const allowPrerelease = useGetter(selectGetAllowPrereleaseDep);
+
+    return useSelector(selectIsProductionFirmwareChannel(allowPrerelease));
+};
+
+const useReportRevisionCheck = ({ device }: DeviceProps) => {
     const dispatch = useDispatch();
     const commonData = useCommonData({ device });
-    const isProductionFirmwareChannel = useSelector(
-        selectIsProductionFirmwareChannel(selectAllowPrerelease),
-    );
+    const isProductionFirmwareChannel = useIsProductionFirmwareChannel();
 
     const revisionCheck = isDeviceAcquired(device)
         ? device.authenticityChecks.firmwareRevision
@@ -70,12 +72,10 @@ const useReportRevisionCheck = ({ device, selectAllowPrerelease }: CommonProps) 
     }, [dispatch, commonData, errorType, errorPayload, shouldReport]);
 };
 
-const useReportHashCheck = ({ device, selectAllowPrerelease }: CommonProps) => {
+const useReportHashCheck = ({ device }: DeviceProps) => {
     const dispatch = useDispatch();
     const commonData = useCommonData({ device });
-    const isProductionFirmwareChannel = useSelector(
-        selectIsProductionFirmwareChannel(selectAllowPrerelease),
-    );
+    const isProductionFirmwareChannel = useIsProductionFirmwareChannel();
 
     const hashCheck = isDeviceAcquired(device) ? device.authenticityChecks.firmwareHash : null;
     const isError = hashCheck && !hashCheck.success;
@@ -125,7 +125,7 @@ const useReportHashCheck = ({ device, selectAllowPrerelease }: CommonProps) => {
 };
 
 // Report meta check results (Id check & device invariability checks ) to Sentry
-const useReportDeviceMetaChecks = ({ device }: CommonProps) => {
+const useReportDeviceMetaChecks = ({ device }: DeviceProps) => {
     const dispatch = useDispatch();
     const commonData = useCommonData({ device });
     const previousData = useSelector((state: DeviceRootState) =>
@@ -192,8 +192,8 @@ const useReportDeviceMetaChecks = ({ device }: CommonProps) => {
  * Optionally report both FW authenticity checks (revision and hash) to Sentry and/or show toast notifications,
  * based on behavior scenarios definitions. This may happen even when no UI is displayed for the checks.
  */
-export const useReportDeviceCompromised = ({ device, selectAllowPrerelease }: CommonProps) => {
-    useReportRevisionCheck({ device, selectAllowPrerelease });
-    useReportHashCheck({ device, selectAllowPrerelease });
-    useReportDeviceMetaChecks({ device, selectAllowPrerelease });
+export const useReportDeviceCompromised = ({ device }: DeviceProps) => {
+    useReportRevisionCheck({ device });
+    useReportHashCheck({ device });
+    useReportDeviceMetaChecks({ device });
 };

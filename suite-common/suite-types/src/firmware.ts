@@ -1,3 +1,5 @@
+import { type Getter } from '@suite-common/dependency-injection';
+
 export type FirmwareStatus =
     | 'initial' // initial state
     | 'started' // progress - firmware update has started, waiting for events from trezor-connect
@@ -28,3 +30,15 @@ export type ReportSecurityCheck = (params: ReportSecurityCheckParams) => void;
 export type ReportSecurityCheckDep = {
     reportSecurityCheck: ReportSecurityCheck;
 };
+
+// A getter: called directly from non-React code, and subscribed to in components with
+// `useGetter(selectGetAllowPrereleaseDep)`.
+export type GetAllowPrerelease = Getter<[], boolean>;
+
+export type GetAllowPrereleaseDep = {
+    getAllowPrerelease: GetAllowPrerelease;
+};
+
+export const selectGetAllowPrereleaseDep = (services: any): GetAllowPrereleaseDep => ({
+    getAllowPrerelease: services.getAllowPrerelease,
+});

@@ -1,4 +1,4 @@
-import { toGetter } from './toGetter';
+import { type Getter, asGetter, toGetter } from './toGetter';
 
 type TestState = {
     relayUrl: string;
@@ -42,5 +42,27 @@ describe(toGetter.name, () => {
         );
 
         expect(getRelayLabel('relay', 2)).toBe('relay:wss://relay.example.com:2');
+    });
+
+    it('reads the state at call time, not at creation time', () => {
+        let currentRelayUrl = 'wss://relay.example.com';
+        const getRelayUrl = toGetter(
+            () => ({ relayUrl: currentRelayUrl }),
+            currentState => currentState.relayUrl,
+        );
+
+        expect(getRelayUrl()).toBe('wss://relay.example.com');
+
+        currentRelayUrl = 'wss://other.example.com';
+
+        expect(getRelayUrl()).toBe('wss://other.example.com');
+    });
+});
+
+describe(asGetter.name, () => {
+    it('brands a function that does not come from a selector', () => {
+        const getRelayUrl: Getter<[], string> = asGetter(() => state.relayUrl);
+
+        expect(getRelayUrl()).toBe('wss://relay.example.com');
     });
 });

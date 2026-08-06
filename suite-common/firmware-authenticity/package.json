@@ -12,9 +12,11 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
@@ -23,7 +25,6 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
-        "@suite-common/suite-types": "workspace:*",
         "@trezor/type-utils": "workspace:*"
     }
 }
