@@ -10,7 +10,7 @@ import {
 import { type Route, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { selectHasUnseenNotifications } from '@suite-common/toast-notifications';
+import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
 import { BellIcon, GearSixIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
 
@@ -43,7 +43,7 @@ export const Navigation = ({ children }: NavigationProps) => {
 
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
 
-    const hasUnseenNotifications = useSelector(selectHasUnseenNotifications);
+    const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
     const isActivityNewContentIndicatorVisible = useSelector(
         selectIsNewContentIndicatorVisible(NewContentIndicatorId.Activity26_8),
     );

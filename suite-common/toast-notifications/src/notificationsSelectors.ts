@@ -7,7 +7,7 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<NotificationsRoot
 
 export const selectNotifications = (state: NotificationsRootState) => state.notifications;
 
-export const selectHasUnseenNotifications = (state: NotificationsRootState): boolean =>
+export const selectHasUnseenTransactionNotifications = (state: NotificationsRootState): boolean =>
     state.notifications?.some(n => !n.seen && isTransactionNotification(n)) ?? false;
 
 export const selectVisibleNotificationsByType = createMemoizedSelector(
