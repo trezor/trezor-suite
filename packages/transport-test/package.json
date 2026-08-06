@@ -23,6 +23,8 @@
         "@trezor/transport-bridge": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:^",
         "@trezor/utils": "workspace:*",
+        "@types/node": "22.13.10",
+        "@types/w3c-web-usb": "^1.0.14",
         "buffer": "^6.0.3",
         "esbuild": "^0.28.0",
         "http-server": "^14.1.1",
@@ -30,7 +32,7 @@
         "jest-extended": "^4.0.2",
         "ts-node": "^10.9.2",
         "tsx": "^4.21.0",
-        "usb": "^2.17.0"
+        "usb": "^3.0.1"
     },
     "dependencies": {
         "@trezor/transport-common": "workspace:*"
