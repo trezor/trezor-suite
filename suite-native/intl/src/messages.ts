@@ -2685,10 +2685,18 @@ export const messages = {
             },
             delegatingCard: {
                 title: 'Delegate to Everstake',
-                firstItem:
-                    'Everstake maintains and protects your staked {displaySymbol} with their smart contracts, infrastructure, and technology.',
-                secondItem:
-                    "When you stake, the responsibility for your funds' security transitions from your Trezor to Everstake.",
+                eth: {
+                    firstItem:
+                        'Everstake maintains and protects your staked {displaySymbol} with their smart contracts, infrastructure, and technology.',
+                    secondItem:
+                        "When you stake, the responsibility for your funds' security transitions from your Trezor to Everstake.",
+                },
+                sol: {
+                    firstItem:
+                        "Stake your {displaySymbol} to receive rewards and help enhance the network's security and stability.",
+                    secondItem:
+                        'With Trezor Suite, easily and securely delegate your {displaySymbol} voting rights to the Everstake validator node. Enjoy competitive rewards, rely on a trusted validator, and retain full ownership of your assets.',
+                },
             },
         },
         earnTransactionDataReviewScreen: {
