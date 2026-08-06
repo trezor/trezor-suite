@@ -118,11 +118,8 @@ export const TransactionReviewModalBottomContent = ({
         });
 
     const handleSend = () => {
-        // Every network: the push can take tens of seconds (a private/MEV relay send waits for the
-        // relay), and without this the button stays enabled and the cancel "X" stays live on a modal
-        // that looks idle - so the user can dismiss a broadcast that is already on its way, or click
-        // Send again. isSending is reset if the push fails (see TransactionReviewModalBody), and the
-        // modal is closed by pushSendFormTransactionThunk either way.
+        // Every network: a push can take tens of seconds, and an idle-looking modal lets the user
+        // dismiss or re-send a broadcast already in flight. Reset on failure in TransactionReviewModalBody.
         onSend(true);
 
         if (decision) {

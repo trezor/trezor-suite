@@ -23,21 +23,12 @@ type GetFiatRatesForTimestamps = MessageTypes.GetFiatRatesForTimestamps;
 type GetFiatRatesTickersList = MessageTypes.GetFiatRatesTickersList;
 
 /**
- * Broadcasting a transaction is the one request whose loss cannot be shrugged off: a timeout closes
- * the socket and rejects the push, so the user is told the send failed — but blockbook may well have
- * broadcast it, and re-sending then signs the *next* nonce and pays the recipient twice.
- *
- * The default 20s message deadline is shorter than blockbook's own budget for the call. On a
- * relay-backed EVM coin the broadcast fans out to every relay URL concurrently and is bounded by one
- * `rpc_timeout` (25s) — already past 20s — and when no relay accepts (or none is configured), the
- * answer can additionally wait for the primary send plus the lookups that make an own send visible,
- * up to 3–4 × `rpc_timeout` (see blockbook's docs/evm-send.md). Wait long enough for blockbook to
- * give up and answer instead.
- *
- * 60s is the largest deadline that is actually the push's own: the keep-alive ping fires after 50s of
- * silence and carries the default 20s deadline, and any expiry rejects every in-flight request and
- * closes the socket — so past ~70s the push would be killed by the ping rather than by its own
- * deadline. It also means a genuinely dead socket is still detected on the ping, not held for 60s.
+ * A push rejected by the default 20s deadline closes the socket and reports "send failed" while
+ * blockbook may still broadcast the transaction — a retry then pays the recipient twice. Blockbook's
+ * own budget for the call is longer (one 25s rpc_timeout for the relay broadcast, 3–4x that without
+ * a relay acceptance; see its docs/evm-send.md), so wait for its answer instead. 60s is the most a
+ * request can own: after 50s of silence the keep-alive ping fires with the 20s default, and any
+ * expiry tears the socket down.
  */
 const PUSH_TRANSACTION_TIMEOUT = 60 * 1000;
 
@@ -138,8 +129,7 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
     }
 
     pushTransaction(hex: string, disableAlternativeRPC?: boolean) {
-        // sendMessage instead of send: only it takes a per-request timeout (see
-        // PUSH_TRANSACTION_TIMEOUT), which send's overloaded signature has no room for
+        // Only sendMessage takes a per-request timeout; the send overloads have no room for one.
         return this.sendMessage(
             { method: 'sendTransaction', params: { hex, disableAlternativeRPC } },
             { timeout: PUSH_TRANSACTION_TIMEOUT },

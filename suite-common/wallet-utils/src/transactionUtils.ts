@@ -980,8 +980,8 @@ const getEthereumRbfParams = (
     let output;
     switch (txSignature) {
         case 'transfer': {
-            // A `transfer` call whose token transfer blockbook could not decode (it needs the exact
-            // calldata length) leaves tokens empty, and there is nothing to bump without it.
+            // A `transfer` whose token transfer blockbook did not decode leaves `tokens` empty, and
+            // there is nothing to bump without it.
             const token = tx.tokens?.[0];
             if (!token) {
                 return;

@@ -17,9 +17,8 @@ export const blacklist: (typeof connectCallableMethods)[number][] = [
     'blockchainUnsubscribeFiatRates',
     'requestLogin',
     'getCoinInfo',
-    // the tx is already signed here, so this only talks to the backend (PushTransaction sets
-    // useDevice: false) - locking the device for the whole broadcast queues every other connect
-    // method behind it and greys out unrelated UI, which the push's own longer deadline made worse
+    // Backend-only (PushTransaction sets useDevice: false); locking the device for the whole
+    // broadcast queues every other connect method behind it.
     'pushTransaction',
     // this API may use device or not, depending on parameters. The flow that doesn't use device is called very often,
     // so locking device must be avoided (blocks a lot of Suite features needlessly)

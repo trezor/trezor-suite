@@ -865,9 +865,7 @@ export const getRbfParams = [
         },
     },
     {
-        // A contract creation has no recipient and blockbook serialises vout[0].addresses as null;
-        // there is nothing to bump or cancel towards, and indexing into it used to throw and take
-        // the account's whole addTransaction batch down with it.
+        // A contract creation has no recipient (vout addresses null); indexing into it used to throw.
         description: 'ethereum contract creation (no recipient) is not replaceable',
         account: {
             networkType: 'ethereum',
@@ -893,8 +891,7 @@ export const getRbfParams = [
         result: undefined,
     },
     {
-        // An ERC-20 `transfer` whose token transfer blockbook did not decode leaves `tokens`
-        // empty; there is nothing to bump without it, and indexing tokens[0] used to throw.
+        // A decoded `transfer` with an empty `tokens` array; indexing tokens[0] used to throw.
         description: 'ethereum transfer with undecoded token transfer is not replaceable',
         account: {
             networkType: 'ethereum',
