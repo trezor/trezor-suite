@@ -14,6 +14,22 @@ export class WebPopup extends Popup {
     private iframe = getIframeInstance();
     private channelId = getWeakRandomId(16);
 
+    /**
+     * Rebuild the reusable per-session state after a failed open() so the retry
+     * starts as clean as a fresh page load. A transient failure that happens
+     * *after* the hidden iframe has loaded (e.g. the bootstrap handshake times
+     * out — `connect-popup-err=handshake-timeout`) otherwise leaves the same
+     * iframe (with a resolved `initPromise` and stale bootstrap/storage-access
+     * state) and the same `channelId` in place, and every subsequent call reuses
+     * them and fails again until the page is reloaded. Reloading the page is the
+     * only thing that currently recovers, and it recreates exactly these two
+     * things, so we do the same here.
+     */
+    private resetForRetry(): void {
+        this.iframe.destroy();
+        this.channelId = getWeakRandomId(16);
+    }
+
     protected createChannel(): AbstractMessageChannel<CoreEventMessage> {
         return new WindowWindowChannel<CoreEventMessage>({
             windowHere: window,
@@ -47,6 +63,7 @@ export class WebPopup extends Popup {
         } catch (error) {
             windowResult.close();
             this.handleOpenFailure(error.message);
+            this.resetForRetry();
 
             return Promise.reject(error);
         }
@@ -94,6 +111,11 @@ export class WebPopup extends Popup {
         } catch (error) {
             this.handleOpenFailure(error.message);
             iframeWindowChannel.disconnect();
+            // Leave `windowResult` open: on this path the popup has navigated
+            // itself to the error page (`connect-popup-err=...`) to show the
+            // user the failure. But rebuild the iframe + channelId so the next
+            // call doesn't reuse the poisoned bootstrap state.
+            this.resetForRetry();
 
             const isBootstrapError = Object.values(BootstrapError).includes(error.message);
             if (isBootstrapError) {
