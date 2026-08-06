@@ -10,7 +10,6 @@
 @testing-library/user-event
 @types/jest
 @types/redux-logger
-@types/redux-mock-store
 cashaddrjs
 expo-media-library
 golomb
@@ -26,7 +25,6 @@ react-refresh
 react-use
 redux
 redux-logger
-redux-mock-store
 redux-persist
 redux-thunk
 reselect

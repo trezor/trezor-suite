@@ -5,11 +5,10 @@ import type { Device } from '@trezor/connect';
 const SUITE_DEVICE = mockSuiteDevice({ path: '1' });
 const CONNECT_DEVICE = mockConnectDevice({ path: '1' });
 
-type Fixture = {
+type HandleDeviceDisconnectFixture = {
     description: string;
     state: {
         device?: Record<string, unknown>;
-        router?: Record<string, unknown>;
     };
     device: Device;
     result?: {
@@ -18,7 +17,7 @@ type Fixture = {
     };
 };
 
-const disconnectDeviceThunkFixture: Fixture[] = [
+export const handleDeviceDisconnectFixture: HandleDeviceDisconnectFixture[] = [
     {
         description: 'no selected device in reducer',
         state: {},
@@ -34,23 +33,7 @@ const disconnectDeviceThunkFixture: Fixture[] = [
         device: mockConnectDevice({ path: '2' }),
     },
     {
-        description: 'disconnected selected device during onboarding',
-        state: {
-            device: {
-                selectedDevice: SUITE_DEVICE,
-                devices: [SUITE_DEVICE],
-            },
-            router: {
-                app: 'onboarding',
-            },
-        },
-        device: CONNECT_DEVICE,
-        result: {
-            payload: undefined,
-        },
-    },
-    {
-        description: 'disconnected selected device on standard route',
+        description: 'disconnected selected device without alternatives',
         state: {
             device: {
                 selectedDevice: SUITE_DEVICE,
@@ -246,5 +229,3 @@ const disconnectDeviceThunkFixture: Fixture[] = [
         },
     },
 ];
-
-export default disconnectDeviceThunkFixture;
