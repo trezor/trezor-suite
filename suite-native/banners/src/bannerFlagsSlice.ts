@@ -9,7 +9,8 @@ export interface BannerFlagsState {
     isGetTrezorBannerClosed: boolean; // promo banner on Home dashboard nudging users without a device to the eShop
     areGetTrezorPromoBannersDisabled: boolean; // permanently disabled once a physical device has ever been connected
     isOnboardingFeedbackBannerEnabled: boolean; // feedback banner on Home dashboard shown after completing device onboarding
-    isStablecoinYieldPromoBannerClosed: boolean; // promo banner on Home dashboard nudging users to earn yield on their stablecoins
+    isDefiYieldPromoBannerClosed: boolean; // promo banner on Home dashboard nudging users to earn yield on their assets
+    isEthVaultPromoBannerClosed: boolean; // promo banner on Home dashboard nudging users to earn with ETH
     isTs7PromoBannerClosed: boolean; // promo banner on Home dashboard nudging users to buy Trezor Safe 7
 }
 
@@ -23,7 +24,8 @@ export const bannerFlagsInitialState: BannerFlagsState = {
     isGetTrezorBannerClosed: false,
     areGetTrezorPromoBannersDisabled: false,
     isOnboardingFeedbackBannerEnabled: false,
-    isStablecoinYieldPromoBannerClosed: false,
+    isDefiYieldPromoBannerClosed: false,
+    isEthVaultPromoBannerClosed: false,
     isTs7PromoBannerClosed: false,
 };
 
@@ -43,8 +45,11 @@ export const bannerFlagsSlice = createSlice({
         setIsOnboardingFeedbackBannerEnabled: (state, action: PayloadAction<boolean>) => {
             state.isOnboardingFeedbackBannerEnabled = action.payload;
         },
-        setIsStablecoinYieldPromoBannerClosed: state => {
-            state.isStablecoinYieldPromoBannerClosed = true;
+        setIsDefiYieldPromoBannerClosed: state => {
+            state.isDefiYieldPromoBannerClosed = true;
+        },
+        setIsEthVaultPromoBannerClosed: state => {
+            state.isEthVaultPromoBannerClosed = true;
         },
         setIsTs7PromoBannerClosed: state => {
             state.isTs7PromoBannerClosed = true;
@@ -73,7 +78,8 @@ export const bannerFlagsPersistWhitelist: Array<keyof BannerFlagsState> = [
     'isGetTrezorBannerClosed',
     'areGetTrezorPromoBannersDisabled',
     'isOnboardingFeedbackBannerEnabled',
-    'isStablecoinYieldPromoBannerClosed',
+    'isDefiYieldPromoBannerClosed',
+    'isEthVaultPromoBannerClosed',
     'isTs7PromoBannerClosed',
 ];
 
@@ -92,8 +98,11 @@ export const selectAreGetTrezorPromoBannersDisabled = (state: BannerFlagsSliceRo
 export const selectIsOnboardingFeedbackBannerEnabled = (state: BannerFlagsSliceRootState) =>
     state.bannerFlags.isOnboardingFeedbackBannerEnabled;
 
-export const selectIsStablecoinYieldPromoBannerClosed = (state: BannerFlagsSliceRootState) =>
-    state.bannerFlags.isStablecoinYieldPromoBannerClosed;
+export const selectIsDefiYieldPromoBannerClosed = (state: BannerFlagsSliceRootState) =>
+    state.bannerFlags.isDefiYieldPromoBannerClosed;
+
+export const selectIsEthVaultPromoBannerClosed = (state: BannerFlagsSliceRootState) =>
+    state.bannerFlags.isEthVaultPromoBannerClosed;
 
 export const selectIsTs7PromoBannerClosed = (state: BannerFlagsSliceRootState) =>
     state.bannerFlags.isTs7PromoBannerClosed;
@@ -103,7 +112,8 @@ export const {
     setIsSolanaLimitedHistoryBannerClosed,
     setIsGetTrezorBannerClosed,
     setIsOnboardingFeedbackBannerEnabled,
-    setIsStablecoinYieldPromoBannerClosed,
+    setIsDefiYieldPromoBannerClosed,
+    setIsEthVaultPromoBannerClosed,
     setIsTs7PromoBannerClosed,
 } = bannerFlagsSlice.actions;
 

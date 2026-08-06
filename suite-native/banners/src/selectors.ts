@@ -13,13 +13,14 @@ import {
 
 import {
     type BannerFlagsSliceRootState,
-    selectIsStablecoinYieldPromoBannerClosed,
+    selectIsDefiYieldPromoBannerClosed,
+    selectIsEthVaultPromoBannerClosed,
     selectIsTs7PromoBannerClosed,
 } from './bannerFlagsSlice';
 
 type PromoBannersRootState = MessageSystemRootState & BannerFlagsSliceRootState & DeviceRootState;
 
-export type VisiblePromoBannerKey = 'ts7' | 'stablecoin-yield';
+export type VisiblePromoBannerKey = 'ts7' | 'defi-yield' | 'eth-vault';
 
 const selectPromoBannerMessages = (state: PromoBannersRootState) =>
     selectFeaturesConfig(state, Feature.banners.dashboard.promo);
@@ -40,26 +41,49 @@ export const selectIsTs7PromoBannerDisplayed = createSelector(
     (bannerMessages, isClosed) => isPromoBannerFeatureEnabled(bannerMessages, 'ts7') && !isClosed,
 );
 
-export const selectIsStablecoinYieldPromoBannerDisplayed = createSelector(
+export const selectIsDefiYieldPromoBannerDisplayed = createSelector(
     [
         selectPromoBannerMessages,
-        selectIsStablecoinYieldPromoBannerClosed,
+        selectIsDefiYieldPromoBannerClosed,
         selectHasBitcoinOnlyFirmware,
         selectHasOnlyPortfolioDevice,
     ],
     (bannerMessages, isClosed, hasBitcoinOnlyFirmware, hasOnlyPortfolioDevice) =>
-        isPromoBannerFeatureEnabled(bannerMessages, 'stablecoin-yield') &&
+        isPromoBannerFeatureEnabled(bannerMessages, 'defi-yield') &&
+        !isClosed &&
+        !hasBitcoinOnlyFirmware &&
+        !hasOnlyPortfolioDevice,
+);
+
+export const selectIsEthVaultPromoBannerDisplayed = createSelector(
+    [
+        selectPromoBannerMessages,
+        selectIsEthVaultPromoBannerClosed,
+        selectHasBitcoinOnlyFirmware,
+        selectHasOnlyPortfolioDevice,
+    ],
+    (bannerMessages, isClosed, hasBitcoinOnlyFirmware, hasOnlyPortfolioDevice) =>
+        isPromoBannerFeatureEnabled(bannerMessages, 'eth-vault') &&
         !isClosed &&
         !hasBitcoinOnlyFirmware &&
         !hasOnlyPortfolioDevice,
 );
 
 export const selectVisiblePromoBanners = createSelector(
-    [selectIsTs7PromoBannerDisplayed, selectIsStablecoinYieldPromoBannerDisplayed],
-    (isTs7PromoBannerDisplayed, isStablecoinYieldPromoBannerDisplayed): VisiblePromoBannerKey[] => {
+    [
+        selectIsTs7PromoBannerDisplayed,
+        selectIsDefiYieldPromoBannerDisplayed,
+        selectIsEthVaultPromoBannerDisplayed,
+    ],
+    (
+        isTs7PromoBannerDisplayed,
+        isDefiYieldPromoBannerDisplayed,
+        isEthVaultPromoBannerDisplayed,
+    ): VisiblePromoBannerKey[] => {
         const visibleBanners: VisiblePromoBannerKey[] = [];
         if (isTs7PromoBannerDisplayed) visibleBanners.push('ts7');
-        if (isStablecoinYieldPromoBannerDisplayed) visibleBanners.push('stablecoin-yield');
+        if (isDefiYieldPromoBannerDisplayed) visibleBanners.push('defi-yield');
+        if (isEthVaultPromoBannerDisplayed) visibleBanners.push('eth-vault');
 
         return visibleBanners;
     },
