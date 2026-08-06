@@ -61,6 +61,17 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      # usb 3.x ships its native binary as per-platform optional packages (@node-usb/usb-*)
+      # guarded by os/cpu; electron-builder bundles it into the packaged app with no target-arch
+      # rebuild, and this workflow cross-builds every platform/arch on the host runner, so all
+      # target-arch binaries must be installed. Keep in sync with build-desktop-apps.yml.
+      - name: Configure yarn to fetch all target-arch native binaries
+        if: matrix.platform != 'win'
+        run: yarn config set supportedArchitectures --json "{\"os\":[\"current\",\"${{ matrix.platform == 'mac' && 'darwin' || 'linux' }}\"],\"cpu\":[\"current\",\"x64\",\"arm64\"],\"libc\":[\"current\",\"glibc\"]}"
+      - name: Configure yarn to fetch the win32 native binary
+        if: matrix.platform == 'win'
+        run: yarn config set supportedArchitectures --json '{"os":["current","win32"],"cpu":["current","x64"]}'
+
       # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
       - name: Install deps and build libs
         run: |
@@ -238,6 +249,17 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
+
+      # usb 3.x ships its native binary as per-platform optional packages (@node-usb/usb-*)
+      # guarded by os/cpu; electron-builder bundles it into the packaged app with no target-arch
+      # rebuild, and this workflow cross-builds every platform/arch on the host runner, so all
+      # target-arch binaries must be installed. Keep in sync with build-desktop-apps.yml.
+      - name: Configure yarn to fetch all target-arch native binaries
+        if: matrix.platform != 'win'
+        run: yarn config set supportedArchitectures --json "{\"os\":[\"current\",\"${{ matrix.platform == 'mac' && 'darwin' || 'linux' }}\"],\"cpu\":[\"current\",\"x64\",\"arm64\"],\"libc\":[\"current\",\"glibc\"]}"
+      - name: Configure yarn to fetch the win32 native binary
+        if: matrix.platform == 'win'
+        run: yarn config set supportedArchitectures --json '{"os":["current","win32"],"cpu":["current","x64"]}'
 
       # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
       - name: Install deps and build libs

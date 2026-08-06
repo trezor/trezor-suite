@@ -29,7 +29,8 @@ module.exports = {
         '!**/*.{md,js.map}', // exclude files unnecessary for runtime
         'build/release-notes.md', // this one is dynamically loaded in runtime
         '!build/static/**/{favicon,icons,bin,browsers}', // copied as extraResources instead, some are platform-specific
-        '!node_modules/usb/**/{libusb,libusb_config,src}', // exclude files unnecessary for runtime
+        // usb-legacy is usb@2.17.0, which ships the whole libusb source tree next to its prebuilds.
+        '!node_modules/usb-legacy/**/{libusb,libusb_config,src}', // exclude files unnecessary for runtime
         '!node_modules/@trezor/**', // no @trezor package is a runtime dependency of this app; webpack bundles them.
     ],
     extraResources: [
