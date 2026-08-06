@@ -16,6 +16,30 @@ const cases: { description: string; uri: string; expected: Result<unknown, unkno
         }),
     },
     {
+        description: 'normalizes an uppercase Bitcoin Bech32 address',
+        uri: 'BITCOIN:BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4?amount=0.1&message=hello',
+        expected: ok({
+            format: 'bip321',
+            scheme: 'bitcoin',
+            address: 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4',
+            amount: '0.1',
+            label: undefined,
+            message: 'hello',
+        }),
+    },
+    {
+        description: 'preserves case-sensitive Bitcoin Base58 addresses',
+        uri: 'bitcoin:1BoatSLRHtKNngkdXEeobR76b53LETtpyT',
+        expected: ok({
+            format: 'bip321',
+            scheme: 'bitcoin',
+            address: '1BoatSLRHtKNngkdXEeobR76b53LETtpyT',
+            amount: undefined,
+            label: undefined,
+            message: undefined,
+        }),
+    },
+    {
         description: 'parses amount, label and message (BIP-321 params)',
         uri: 'bitcoin:bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq?amount=0.0123&label=Alice&message=Donation%20for%20project',
         expected: ok({
