@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 
 import { type UnionToIntersection } from '@trezor/type-utils';
 import { typedObjectValues } from '@trezor/utils';
@@ -42,8 +42,9 @@ type GetterReturn<TSelected> =
  * const allowPrerelease = useGetter(selectGetAllowPrereleaseDep);
  * ```
  *
- * A getter returning a fresh object on every call re-renders on every action — such a getter has to
- * be built on a memoized selector.
+ * The value is compared shallowly, so a getter returning a fresh object holding the same values on
+ * every call does not re-render. Anything nested deeper still has to keep its identity stable, which
+ * usually means building the getter on a memoized selector.
  */
 export function useGetter<const TSelector extends ServiceSelector<any>>(
     selectGetterDep: TSelector,
@@ -67,5 +68,5 @@ export function useGetter(selectGetterDep: ServiceSelector<any>, ...params: unkn
         return onlyGetter;
     }, [services, selectGetterDep]);
 
-    return useSelector(() => getter(...params));
+    return useSelector(() => getter(...params), shallowEqual);
 }
