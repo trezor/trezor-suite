@@ -95,8 +95,8 @@ export const YieldWithdrawCompleteScreen = () => {
         }
 
         const { completedAmount } = session.result;
-        const underlyingSymbol = toTokenSymbol(vault.token.symbol.toUpperCase());
-        const vaultTokenSymbol = toTokenSymbol(vault.outputToken.symbol.toUpperCase());
+        const underlyingSymbol = toTokenSymbol(vault.token.symbol);
+        const vaultTokenSymbol = toTokenSymbol(vault.outputToken.symbol);
         const receivedUnderlyingAmount = isSharesInput
             ? getConvertedOutputTokenBalanceToInputTokenAmount({
                   networkSymbol: account.symbol,
