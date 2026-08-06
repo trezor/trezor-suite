@@ -112,6 +112,10 @@ export const messages = {
             quotaManagerCommunicationFailed: 'Quota Manager communication failed.',
         },
     },
+    feedbackForm: {
+        title: 'How was your experience?',
+        description: 'Your feedback helps us improve-tell us what you think.',
+    },
     moduleHome: {
         graphIgnoredNetworks:
             "{networksString} and all related tokens are included in your portfolio balance, but aren't currently supported in the graph.",
@@ -3172,6 +3176,7 @@ export const messages = {
             deposited: 'Deposited',
             withdrawalAmount: 'Withdrawal amount',
             backToOverview: 'Back to overview',
+            sendAndBackToOverview: 'Send & back to overview',
         },
         yieldReview: {
             outputs: {

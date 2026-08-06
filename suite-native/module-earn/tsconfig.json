@@ -20,6 +20,7 @@
         {
             "path": "../../suite-common/earn-staking-api"
         },
+        { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/formatters"
         },
@@ -68,6 +69,7 @@
         { "path": "../confirm-on-trezor" },
         { "path": "../device-manager" },
         { "path": "../device-mutex" },
+        { "path": "../feature-feedback" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../helpers" },

@@ -5,6 +5,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { useFormatters } from '@suite-common/formatters';
 import {
     type StablecoinYieldRootState,
@@ -14,6 +15,7 @@ import {
 } from '@suite-common/wallet-core';
 import { toTokenSymbol } from '@suite-common/wallet-types';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { useFeedbackForm } from '@suite-native/feature-feedback';
 import { Translation } from '@suite-native/intl';
 import {
     type StackNavigationProps,
@@ -46,6 +48,8 @@ export const YieldWithdrawCompleteScreen = () => {
     const isSharesInput = flowType === 'redeem';
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
+    const feedbackForm = useFeedbackForm();
+
     const handleExit = useCallback(() => {
         analytics.report({
             type: events.yieldNavigateEvent.name,
@@ -62,8 +66,28 @@ export const YieldWithdrawCompleteScreen = () => {
             dispatch(stablecoinYieldActions.disposeSession({ flowType, flowKey }));
         }
 
+        if (feedbackForm.isValid) {
+            const userData = buildUserFeedbackData();
+
+            const { rating, description } = feedbackForm;
+
+            dispatch(
+                sendFeedbackAction({
+                    type: 'SUGGESTION',
+                    payload: {
+                        category: 'yield',
+                        feature: 'withdraw',
+                        description,
+                        rating,
+                        ...userData,
+                    },
+                }),
+            );
+        }
+
         navigateToInitialScreen();
     }, [
+        feedbackForm,
         account?.symbol,
         analytics,
         dispatch,
@@ -140,11 +164,16 @@ export const YieldWithdrawCompleteScreen = () => {
 
     return (
         <YieldCompleteScreenContent
-            buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
+            buttonTranslationId={
+                feedbackForm.isValid
+                    ? 'earn.yieldCompleteScreen.sendAndBackToOverview'
+                    : 'earn.yieldCompleteScreen.backToOverview'
+            }
             onButtonPress={handleExit}
             rows={rows}
             title={<Translation id="earn.yieldWithdrawCompleteScreen.title" />}
             subtitle={<Translation id="earn.yieldWithdrawCompleteScreen.subtitle" />}
+            feedbackForm={feedbackForm}
         />
     );
 };
