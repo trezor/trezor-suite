@@ -26,6 +26,7 @@ import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import {
     PUSH_TRANSACTION_FAILED_CAUSE,
@@ -256,7 +257,7 @@ export const claimMerklRewardsThunk = createThunk(
                         signingResponse.payload.serializedTx,
                         isMevProtectionEnabled && isMevProtectionFeatureEnabled,
                     ),
-                    coin: account.symbol,
+                    coin: asCoinSymbol(account.symbol),
                     identity: getAccountIdentity(account),
                 });
 

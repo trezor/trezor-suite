@@ -9,6 +9,7 @@ import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect, { type CallMethodResponse, type ComposeOutput } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
@@ -91,7 +92,7 @@ const bitcoinRequestThunk = createThunk<
                     method: 'signMessage',
                     payload: {
                         path: addressInfo.path,
-                        coin: account.symbol,
+                        coin: asCoinSymbol(account.symbol),
                         message,
                         hex: true,
                         device,
@@ -136,7 +137,7 @@ const bitcoinRequestThunk = createThunk<
                 });
             }
             const feeLevels = await TrezorConnect.blockchainEstimateFee({
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
                 request: {
                     blocks: [1],
@@ -148,7 +149,7 @@ const bitcoinRequestThunk = createThunk<
             }
             const precomposedTransaction = await TrezorConnect.composeTransaction({
                 outputs,
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 account: {
                     path: account.path,
                     addresses: account.addresses!,
@@ -177,7 +178,7 @@ const bitcoinRequestThunk = createThunk<
                         account: {
                             addresses: account.addresses!,
                         },
-                        coin: account.symbol,
+                        coin: asCoinSymbol(account.symbol),
                         chunkify: true,
                         unlockPath: account.unlockPath,
                         version: 2,
@@ -193,7 +194,7 @@ const bitcoinRequestThunk = createThunk<
             const typedPayload = signResponse.payload as CallMethodResponse<'signTransaction'>;
 
             const pushResponse = await TrezorConnect.pushTransaction({
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
                 tx: typedPayload.serializedTx,
             });

@@ -43,6 +43,7 @@ import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: blocked on blockchain plugin modularisation; remove this exception once Solana helpers are exposed via a public API (see #27376 deferred work)
 import { getSolanaTokenDefinition } from '@trezor/connect/src/api/solana/solanaDefinitions';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 
@@ -323,7 +324,7 @@ export const synchronizeSentTransactionThunk = createThunk(
                 const { prevTxid } = precomposedTransaction;
                 void TrezorConnect.blockchainGetTransactions({
                     txs: [prevTxid],
-                    coin: selectedAccount.symbol,
+                    coin: asCoinSymbol(selectedAccount.symbol),
                 });
                 dispatch(
                     transactionsActions.removeTransaction({
@@ -379,7 +380,7 @@ export const pushSendFormTransactionThunk = createThunk<
 
         const pushTxResponse = await TrezorConnect.pushTransaction({
             tx: txData,
-            coin: serializedTx.symbol,
+            coin: asCoinSymbol(serializedTx.symbol),
             identity: tryGetAccountIdentity(selectedAccount),
         });
 
@@ -525,7 +526,7 @@ export const pushSendFormRawTransactionThunk = createThunk(
 
         const sentTx = await TrezorConnect.pushTransaction({
             tx: txData,
-            coin: payload.symbol,
+            coin: asCoinSymbol(payload.symbol),
             identity: payload.identity,
         });
 

@@ -12,6 +12,7 @@ import {
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -60,7 +61,7 @@ export const useEvmNonceInfo = (
             if (!account) throw new Error('useEvmNonceInfo: missing account');
 
             const response = await TrezorConnect.getAccountInfo({
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 descriptor: account.descriptor,
                 identity: tryGetAccountIdentity(account),
                 details: 'basic',

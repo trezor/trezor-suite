@@ -12,6 +12,7 @@ import {
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import {
     MIN_SOL_AMOUNT_FOR_STAKING,
     MIN_SOL_BALANCE_FOR_STAKING,
@@ -111,7 +112,7 @@ const estimateSolanaStakeFee = async (
     const createsStakeAccount = txData.solanaTxMeta.rentLamports !== '0';
 
     const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-        coin: symbol,
+        coin: asCoinSymbol(symbol),
         request: {
             specific: {
                 data: txData.txShim.serialize(),

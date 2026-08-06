@@ -34,6 +34,7 @@ import {
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
@@ -111,7 +112,7 @@ const pushTransaction =
 
         const sentTx = await TrezorConnect.pushTransaction({
             tx: txData,
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
         });
 

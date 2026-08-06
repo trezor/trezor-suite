@@ -3,6 +3,7 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { getNetwork } from '@suite-common/wallet-config';
 import { asAmountUnit, getAccountIdentity, unitsToSubunits } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
 import { type UnstakeThunkArguments, composeTronUnstakeFeeLevelsThunk } from './composeUnstake';
@@ -119,7 +120,7 @@ export const submitTronUnstakeThunk = createThunk<void, SubmitUnstakeThunkArgume
 
             const pushResult = await TrezorConnect.pushTransaction({
                 tx: signResult.serializedTx,
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
             });
 

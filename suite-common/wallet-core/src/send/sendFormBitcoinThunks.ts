@@ -29,6 +29,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- temporary diagnostic
 import { __btcUnknownTxDebug__ } from '@trezor/connect/src/utils/pathUtils';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
@@ -131,7 +132,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             sequence,
             outputs: composeOutputs,
             sortingStrategy: formState.rbfParams !== undefined ? 'none' : DEFAULT_SORTING_STRATEGY,
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
         };
 
         const response = await TrezorConnect.composeTransaction(params);
@@ -355,7 +356,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
                 addresses: selectedAccount.addresses!,
                 transactions: refTxs,
             },
-            coin: selectedAccount.symbol,
+            coin: asCoinSymbol(selectedAccount.symbol),
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
             ...signEnhancement,
             paymentRequests,

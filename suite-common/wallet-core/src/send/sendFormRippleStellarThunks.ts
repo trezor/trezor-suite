@@ -17,6 +17,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type RipplePayment, type TokenInfo } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { XRP_FLAG } from '@trezor/network-ripple/constants';
 import stellar from '@trezor/network-stellar/runtime';
 import { StellarAssetType } from '@trezor/protobuf/src/definitions';
@@ -146,7 +147,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
         if (address) {
             const accountResponse = await TrezorConnect.getAccountInfo({
                 descriptor: address,
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 suppressBackupWarning: true,
             });
             if (accountResponse.success && accountResponse.payload.empty) {
@@ -282,7 +283,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
         } else if (selectedAccount.networkType === 'stellar') {
             const destinationAccount = await TrezorConnect.getAccountInfo({
                 descriptor: firstSignOutput.address,
-                coin: selectedAccount.symbol,
+                coin: asCoinSymbol(selectedAccount.symbol),
                 suppressBackupWarning: true,
             });
 

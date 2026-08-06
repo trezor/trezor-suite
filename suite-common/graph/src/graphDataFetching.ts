@@ -11,6 +11,7 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type AccountInfo } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
@@ -82,7 +83,7 @@ const getLatestAccountInfo = async ({
     descriptor: string;
 }) => {
     const accountInfo = await TrezorConnect.getAccountInfo({
-        coin: symbol,
+        coin: asCoinSymbol(symbol),
         identity,
         descriptor,
         suppressBackupWarning: true,
@@ -192,7 +193,7 @@ const getAccountBalanceHistory = async ({
         }
 
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
-            coin: symbol,
+            coin: asCoinSymbol(symbol),
             identity,
             descriptor,
             from: startOfTimeFrameDateTimestamp ?? undefined,

@@ -24,6 +24,7 @@ import {
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { SOL_COMPUTE_UNIT_LIMIT } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils';
 
@@ -227,7 +228,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             blockHash,
             lastValidBlockHeight,
             memo: formState.destinationTag || undefined,
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             identity: getAccountIdentity(account),
             priorityFees: {
                 // dummy value so simulation always passes
@@ -245,7 +246,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
         }
 
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-            coin: account.symbol,
+            coin: asCoinSymbol(account.symbol),
             request: {
                 specific: {
                     data: transaction.payload.serializedTx,
@@ -349,7 +350,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
         const { token } = precomposedTransaction;
 
         const blockchainInfo = await TrezorConnect.blockchainGetInfo({
-            coin: selectedAccount.symbol,
+            coin: asCoinSymbol(selectedAccount.symbol),
             identity: getAccountIdentity(selectedAccount),
         });
         if (!blockchainInfo.success) {
@@ -388,7 +389,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                 computeUnitPrice: precomposedTransaction.feePerByte,
                 computeUnitLimit: precomposedTransaction.feeLimit,
             },
-            coin: selectedAccount.symbol,
+            coin: asCoinSymbol(selectedAccount.symbol),
             identity: getAccountIdentity(selectedAccount),
             serializedTx: formState.transactionData,
         });

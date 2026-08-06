@@ -2,6 +2,7 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { type BlockchainEstimatedFeeLevel } from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
 import { BigNumber } from '@trezor/utils';
 
@@ -45,7 +46,7 @@ export const getNewFeeInfo = async ({
 
     if (network.networkType === 'ethereum') {
         const result = await TrezorConnect.blockchainEstimateFee({
-            coin: symbol,
+            coin: asCoinSymbol(symbol),
             request: {
                 blocks: [2],
                 feeLevels: 'smart',
@@ -83,7 +84,7 @@ export const getNewFeeInfo = async ({
     }
 
     const result = await TrezorConnect.blockchainEstimateFee({
-        coin: symbol,
+        coin: asCoinSymbol(symbol),
         request: {
             feeLevels: 'smart',
         },

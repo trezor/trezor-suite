@@ -9,6 +9,7 @@ import {
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import stellar from '@trezor/network-stellar/runtime';
 import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 
@@ -112,7 +113,7 @@ const manageTrustline = async (
     // Submit transaction to the network
     const pushResponse = await TrezorConnect.pushTransaction({
         tx: serializedTx,
-        coin: account.symbol,
+        coin: asCoinSymbol(account.symbol),
         identity: tryGetAccountIdentity(account),
     });
 

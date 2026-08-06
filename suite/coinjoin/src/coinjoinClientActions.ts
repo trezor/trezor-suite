@@ -20,6 +20,7 @@ import {
     type SerializedCoinjoinRound,
 } from '@trezor/coinjoin';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { getOsName } from '@trezor/env-utils';
 import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 
@@ -509,7 +510,7 @@ const getOwnershipProof =
 
             const bundle = (groupUtxosByAccount[key] ?? []).map(utxo => ({
                 path: utxo.path,
-                coin: realAccount.symbol,
+                coin: asCoinSymbol(realAccount.symbol),
                 commitmentData: request.commitmentData,
                 userConfirmation: true,
                 preauthorized: true,
@@ -653,7 +654,7 @@ const signCoinjoinTx =
                             inputs: tx.inputs,
                             outputs: tx.outputs,
                             coinjoinRequest: tx.coinjoinRequest,
-                            coin: network,
+                            coin: asCoinSymbol(network),
                             preauthorized: true,
                             serialize: false,
                             unlockPath,

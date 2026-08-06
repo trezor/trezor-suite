@@ -2,6 +2,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { type VoteThunkArguments, composeTronVoteFeeLevelsThunk } from './composeVote';
 import { buildVoteContract, buildVoteReviewForm, getTotalVotes } from './voteContract';
@@ -150,7 +151,7 @@ export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
 
             const pushResult = await TrezorConnect.pushTransaction({
                 tx: signResult.serializedTx,
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
             });
 

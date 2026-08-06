@@ -7,6 +7,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
 import { type WithdrawThunkArguments, composeTronWithdrawFeeLevelsThunk } from './composeWithdraw';
@@ -118,7 +119,7 @@ export const submitTronWithdrawThunk = createThunk<void, SubmitWithdrawThunkArgu
 
             const pushResult = await TrezorConnect.pushTransaction({
                 tx: signResult.serializedTx,
-                coin: account.symbol,
+                coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
             });
 

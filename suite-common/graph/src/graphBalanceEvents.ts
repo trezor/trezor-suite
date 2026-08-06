@@ -8,6 +8,7 @@ import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-cor
 import type { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
 import { isIgnoredBalanceHistoryCoin, isLocalBalanceHistoryCoin } from './constants';
@@ -163,7 +164,7 @@ export const getAccountMovementEvents = async ({
             return movements.main;
         }
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
-            coin: symbol,
+            coin: asCoinSymbol(symbol),
             identity,
             descriptor,
             from: startOfTimeFrameDate ? getUnixTime(startOfTimeFrameDate) : undefined,

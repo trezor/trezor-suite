@@ -8,6 +8,7 @@ import { type Network, getNetwork, networksCollection } from '@suite-common/wall
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import loadStellar from '@trezor/network-stellar/runtime';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
@@ -159,7 +160,7 @@ const stellarRequestThunk = createThunk<
             ).unwrap();
 
             const pushResponse = await TrezorConnect.pushTransaction({
-                coin: context.symbol,
+                coin: asCoinSymbol(context.symbol),
                 tx: Buffer.from(result.signedXDR, 'base64').toString('hex'),
             });
             if (!pushResponse.success) {

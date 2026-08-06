@@ -3,6 +3,7 @@ import { type Dispatch } from '@reduxjs/toolkit';
 import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect, { PROTO } from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import { changeNetworks, setBitcoinAmountUnits } from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
@@ -35,7 +36,9 @@ export const changeCoinVisibility = createThunk<
         // propagated; Connect keeps deriving until the next init). Right after the Redux update (not
         // at the end) so it runs before any later state read.
         if (shouldBeVisible && !isAlreadyEnabled) {
-            await TrezorConnect.updateConnectSettings({ enabledNetworks: [{ coin: symbol }] });
+            await TrezorConnect.updateConnectSettings({
+                enabledNetworks: [{ coin: asCoinSymbol(symbol) }],
+            });
         }
 
         const accountsToRemove = selectAccountsToBeForgotten(getState());

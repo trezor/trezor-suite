@@ -13,7 +13,7 @@ import {
     getStakingPath,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { PROTO } from '@trezor/connect';
-import { getSerializedPath } from '@trezor/connect-common';
+import { asCoinSymbol, getSerializedPath } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Result } from '@trezor/type-utils';
 
@@ -56,7 +56,7 @@ const getStateParams = (account: Account, getState: GetState): Promise<StatePara
 const showAddressByNetwork =
     (_: Dispatch, address: string, path: string) =>
     ({ account, device, coin, chunkify }: StateParams) => {
-        const params = { device, address, path, coin, chunkify };
+        const params = { device, address, path, coin: asCoinSymbol(coin), chunkify };
 
         switch (account.networkType) {
             case 'bitcoin':
@@ -77,7 +77,14 @@ const signByNetwork =
         isCose: boolean,
     ) =>
     ({ account, device, coin }: StateParams) => {
-        const params = { device, path, coin, message, hex, no_script_type: isElectrum };
+        const params = {
+            device,
+            path,
+            coin: asCoinSymbol(coin),
+            message,
+            hex,
+            no_script_type: isElectrum,
+        };
 
         switch (account.networkType) {
             case 'bitcoin':
@@ -136,7 +143,7 @@ export const isVerifySupported = (account?: Account) => {
 const verifyByNetwork =
     (address: string, message: string, signature: string, hex: boolean) =>
     ({ account, device, coin }: StateParams) => {
-        const params = { device, address, coin, message, signature, hex };
+        const params = { device, address, coin: asCoinSymbol(coin), message, signature, hex };
 
         switch (account.networkType) {
             case 'bitcoin':
