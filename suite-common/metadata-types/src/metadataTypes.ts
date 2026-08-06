@@ -2,6 +2,8 @@ import { type AnyAction, type AsyncThunk, type ThunkAction } from '@reduxjs/tool
 
 import type { StaticSessionId, WalletDescriptor } from '@trezor/device-utils';
 
+// TODO: Replace with a generic shared `Thunk` type from @suite-common/redux-utils after
+// https://github.com/trezor/trezor-suite/issues/30770 is completed.
 type MetadataThunk<TPayload> =
     | AsyncThunk<void, TPayload, Record<never, never>>
     | ((payload: TPayload) => ThunkAction<void, any, any, AnyAction>);
