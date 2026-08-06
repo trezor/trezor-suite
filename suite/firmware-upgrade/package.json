@@ -26,7 +26,7 @@
         "react": "19.2.3",
         "react-redux": "9.3.0",
         "redux": "^5.0.1",
-        "semver": "^7.7.1",
+        "semver": "^7.8.5",
         "styled-components": "^6.3.9"
     },
     "devDependencies": {

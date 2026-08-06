@@ -34,7 +34,7 @@
         "json-schema-to-typescript": "^15.0.4",
         "react": "19.2.3",
         "react-redux": "9.3.0",
-        "semver": "^7.7.1"
+        "semver": "^7.8.5"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
