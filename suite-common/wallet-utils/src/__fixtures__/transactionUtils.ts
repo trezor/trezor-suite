@@ -865,6 +865,68 @@ export const getRbfParams = [
         },
     },
     {
+        // A contract creation has no recipient and blockbook serialises vout[0].addresses as null;
+        // there is nothing to bump or cancel towards, and indexing into it used to throw and take
+        // the account's whole addTransaction batch down with it.
+        description: 'ethereum contract creation (no recipient) is not replaceable',
+        account: {
+            networkType: 'ethereum',
+            symbol: 'eth',
+            descriptor: '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b',
+        },
+        tx: {
+            type: 'sent',
+            txid: '0xc0de',
+            rbf: true,
+            blockHeight: -1,
+            ethereumSpecific: {
+                nonce: 46,
+                gasLimit: 210000,
+                gasPrice: '1000000000',
+                data: '0x60806040',
+            },
+            details: {
+                vin: [{ addresses: ['0x37567e60ab231b7d7f26b5b34fdd719098e4ee1b'] }],
+                vout: [{ isAddress: false, addresses: null, value: '0' }],
+            },
+        },
+        result: undefined,
+    },
+    {
+        // An ERC-20 `transfer` whose token transfer blockbook did not decode leaves `tokens`
+        // empty; there is nothing to bump without it, and indexing tokens[0] used to throw.
+        description: 'ethereum transfer with undecoded token transfer is not replaceable',
+        account: {
+            networkType: 'ethereum',
+            symbol: 'eth',
+            descriptor: '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b',
+        },
+        tx: {
+            type: 'sent',
+            txid: '0xfeed',
+            rbf: true,
+            blockHeight: -1,
+            tokens: [],
+            ethereumSpecific: {
+                nonce: 47,
+                gasLimit: 65000,
+                gasPrice: '1000000000',
+                data: '0xa9059cbb000000000000000000000000faeeeb8fd7d41a6a8223dd36d347dbe56c13fe610000000000000000000000000000000000000000000000000000000000000001',
+            },
+            details: {
+                vin: [{ addresses: ['0x37567e60ab231b7d7f26b5b34fdd719098e4ee1b'] }],
+                vout: [
+                    {
+                        isAddress: true,
+                        addresses: ['0xdAC17F958D2ee523a2206206994597C13D831ec7'],
+                        value: '0',
+                    },
+                ],
+            },
+        },
+        result: undefined,
+    },
+    {
         description: 'invalid tx (rbf false)',
         account: { networkType: 'bitcoin' },
         tx: { type: 'sent', rbf: false },
