@@ -652,8 +652,13 @@ export const fetchTransactionsPageThunk = createThunk<
 type FetchUtxoTransactionsForAccountThunkParams = {
     accountKey: AccountKey;
 };
+type FetchUtxoTransactionsForAccountThunkState = AccountsRootState & TransactionsRootState;
 
-export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk(
+export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
+    FetchUtxoTransactionsForAccountThunkParams,
+    WalletAccountTransaction[],
+    { state: FetchUtxoTransactionsForAccountThunkState }
+>(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchUtxoTransactionsForAccountThunk`,
     async (
         { accountKey }: FetchUtxoTransactionsForAccountThunkParams,
@@ -700,7 +705,15 @@ type FetchAllTransactionsForAccountThunkParams = {
     accountKey: AccountKey;
     noLoading?: boolean;
 };
-export const fetchAllTransactionsForAccountThunk = createSingleInstanceThunk(
+type FetchAllTransactionsForAccountThunkState = AccountsRootState &
+    TransactionsRootState &
+    FetchTransactionsPageThunkState;
+
+export const fetchAllTransactionsForAccountThunk = createSingleInstanceThunk<
+    FetchAllTransactionsForAccountThunkParams,
+    WalletAccountTransaction[],
+    { state: FetchAllTransactionsForAccountThunkState }
+>(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchAllTransactionsForAccount`,
     async (
         { accountKey }: FetchAllTransactionsForAccountThunkParams,
@@ -775,12 +788,22 @@ export const fetchAllTransactionsForAccountThunk = createSingleInstanceThunk(
     },
 );
 
-export const fetchTransactionsFromNowUntilTimestamp = createSingleInstanceThunk(
+type FetchTransactionsFromNowUntilTimestampParams = {
+    accountKey: AccountKey;
+    timestamp: Timestamp | null;
+};
+type FetchTransactionsFromNowUntilTimestampState = AccountsRootState &
+    TransactionsRootState &
+    FetchAllTransactionsForAccountThunkState &
+    FetchTransactionsPageThunkState;
+
+export const fetchTransactionsFromNowUntilTimestamp = createSingleInstanceThunk<
+    FetchTransactionsFromNowUntilTimestampParams,
+    WalletAccountTransaction[],
+    { state: FetchTransactionsFromNowUntilTimestampState }
+>(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsForAccount`,
-    async (
-        { accountKey, timestamp }: { accountKey: AccountKey; timestamp: Timestamp | null },
-        { dispatch, getState },
-    ) => {
+    async ({ accountKey, timestamp }, { dispatch, getState }) => {
         if (!timestamp) {
             return dispatch(fetchAllTransactionsForAccountThunk({ accountKey })).unwrap();
         }

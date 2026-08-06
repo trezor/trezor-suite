@@ -28,7 +28,7 @@ describe('createSingleInstanceThunk', () => {
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
                 thunk: {
-                    extraArgument: {} as any,
+                    extraArgument: {},
                 },
                 serializableCheck: false,
                 immutableCheck: false,
