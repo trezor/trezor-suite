@@ -6,6 +6,7 @@ import { FlashList, type FlashListRef } from '@shopify/flash-list';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, EdgeFades, HStack, SearchInput, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { type TradeableAssetBalances } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { useNativeStyles } from '@trezor/styles-native';
 
@@ -20,6 +21,7 @@ export type TradeableAssetListProps = {
     onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
     selectedNetworkFilter: NetworkSymbol | undefined;
     scrollResetKey: string;
+    assetBalances: TradeableAssetBalances;
     testID?: string;
 };
 
@@ -32,6 +34,7 @@ export const TradeableAssetList = ({
     onSelectedNetworkFilter,
     selectedNetworkFilter,
     scrollResetKey,
+    assetBalances,
     testID,
 }: TradeableAssetListProps) => {
     const { translate } = useTranslate();
@@ -68,8 +71,13 @@ export const TradeableAssetList = ({
                     ref={flashListRef}
                     data={assets}
                     renderItem={({ item }) => (
-                        <TradeableAssetListItem asset={item} onPress={() => onAssetSelect(item)} />
+                        <TradeableAssetListItem
+                            asset={item}
+                            balance={assetBalances.get(item.cryptoId)}
+                            onPress={() => onAssetSelect(item)}
+                        />
                     )}
+                    extraData={assetBalances}
                     keyExtractor={keyExtractor}
                     ItemSeparatorComponent={() => <Box paddingVertical="sp4" />}
                     ListEmptyComponent={<TradeableAssetListEmptyComponent />}

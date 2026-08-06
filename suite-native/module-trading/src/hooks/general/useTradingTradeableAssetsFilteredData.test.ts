@@ -1,7 +1,8 @@
 import { act } from '@suite-native/test-utils-store';
 import { btcAsset, ethAsset, usdcAsset } from '@suite-native/trading-fixtures';
+import { selectExchangeBuyTradeableAssets } from '@suite-native/trading-state';
 
-import { useExchangeBuyTradeableAssetsFilteredData } from './useExchangeBuyTradeableAssetsFilteredData';
+import { useTradingTradeableAssetsFilteredData } from './useTradingTradeableAssetsFilteredData';
 import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 const mockUseWatch = jest.fn();
@@ -11,39 +12,40 @@ jest.mock('@suite-native/forms', () => ({
     useWatch: (...args: unknown[]) => mockUseWatch(...args),
 }));
 
-jest.mock('./useExchangeFormContext', () => ({
-    ...jest.requireActual('./useExchangeFormContext'),
+jest.mock('../exchange/useExchangeFormContext', () => ({
+    ...jest.requireActual('../exchange/useExchangeFormContext'),
     useExchangeFormContext: () => ({
         control: undefined,
     }),
 }));
 
-describe('useExchangeBuyTradeableAssetsFilteredData', () => {
-    const renderUseExchangeBuyTradeableAssetsFilteredData = () =>
-        renderHookWithTradingProvider(() => useExchangeBuyTradeableAssetsFilteredData(), {
-            tradeType: 'exchange',
-        });
+describe('useTradingTradeableAssetsFilteredData', () => {
+    const renderUseTradingTradeableAssetsFilteredData = () =>
+        renderHookWithTradingProvider(
+            () => useTradingTradeableAssetsFilteredData(selectExchangeBuyTradeableAssets),
+            { tradeType: 'exchange' },
+        );
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should return all available exchange buy assets when sendAsset is not selected', () => {
+    it('returns assets selected by the supplied selector', () => {
         mockUseWatch.mockReturnValue(undefined);
 
-        const { result } = renderUseExchangeBuyTradeableAssetsFilteredData();
+        const { result } = renderUseTradingTradeableAssetsFilteredData();
 
         expect(result.current.filteredData).toEqual([
-            expect.objectContaining({ cryptoId: usdcAsset.cryptoId }),
-            expect.objectContaining({ cryptoId: ethAsset.cryptoId }),
             expect.objectContaining({ cryptoId: btcAsset.cryptoId }),
+            expect.objectContaining({ cryptoId: ethAsset.cryptoId }),
+            expect.objectContaining({ cryptoId: usdcAsset.cryptoId }),
         ]);
     });
 
-    it('should filter assets by search text', () => {
+    it('filters the selected assets by search text', () => {
         mockUseWatch.mockReturnValue(undefined);
 
-        const { result } = renderUseExchangeBuyTradeableAssetsFilteredData();
+        const { result } = renderUseTradingTradeableAssetsFilteredData();
 
         act(() => {
             result.current.setFilterValue('usdc');

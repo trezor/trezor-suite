@@ -60,7 +60,7 @@ const vStackStyle = prepareNativeStyle(() => ({
 }));
 
 const rightContentStyle = prepareNativeStyle(() => ({
-    maxWidth: '40%',
+    maxWidth: '60%',
     justifyContent: 'center',
 }));
 
@@ -101,11 +101,9 @@ export const AssetListItem = ({
                     />
                 </Box>
                 <VStack style={applyStyle(vStackStyle)}>
-                    <HStack alignItems="center" justifyContent="space-between">
-                        <Text variant="body-md" color="contentPrimary">
-                            {name}
-                        </Text>
-                    </HStack>
+                    <Text variant="body-md" color="contentPrimary">
+                        {name}
+                    </Text>
                     <HStack spacing="sp4" alignItems="center" justifyContent="flex-start">
                         <NetworkSymbolExtendedFormatter symbol={symbol} />
                         <NetworkBadge symbol={networkSymbol} />

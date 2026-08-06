@@ -1,4 +1,7 @@
+import type { CryptoId } from 'invity-api';
+
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { act, renderHook } from '@suite-native/test-utils';
 import {
     btcAsset,
@@ -14,6 +17,7 @@ import {
     usdtOnBscAsset,
 } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
+import { BigNumber } from '@trezor/utils';
 
 import { useTradeableAssetsFilteredData } from './useTradeableAssetsFilteredData';
 
@@ -121,6 +125,66 @@ describe('useTradeableAssetsFilteredData', () => {
     });
 
     describe('sort order', () => {
+        it('puts the five featured assets first in their fixed order', () => {
+            const solAsset: TradeableAsset = {
+                ...unknownAsset,
+                cryptoId: 'solana' as CryptoId,
+                networkId: 'solana',
+                symbol: 'SOL',
+                name: 'Solana',
+            };
+            const assets = [usdcAsset, solAsset, ethAsset, usdtAsset, btcAsset];
+            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+
+            expect(result.current.filteredData).toEqual([
+                btcAsset,
+                ethAsset,
+                usdtAsset,
+                solAsset,
+                usdcAsset,
+            ]);
+        });
+
+        it('puts owned assets over the USD threshold next, ordered by fiat value', () => {
+            const assetBalances = new Map([
+                [
+                    jitoOnSolanaAsset.cryptoId,
+                    {
+                        cryptoAmount: '4',
+                        fiatAmount: asBaseCurrencyAmount(new BigNumber('0.2')),
+                    },
+                ],
+                [
+                    rethOnBaseAsset.cryptoId,
+                    {
+                        cryptoAmount: '2',
+                        fiatAmount: asBaseCurrencyAmount(new BigNumber('0.11')),
+                    },
+                ],
+                [
+                    jupOnSolanaAsset.cryptoId,
+                    {
+                        cryptoAmount: '3',
+                        fiatAmount: asBaseCurrencyAmount(new BigNumber('0.1')),
+                    },
+                ],
+            ]);
+            const assets = [rethOnBaseAsset, jitoOnSolanaAsset, jupOnSolanaAsset];
+            const { result } = renderHook(() =>
+                useTradeableAssetsFilteredData({
+                    assets,
+                    assetBalances,
+                    preferredCurrencyUsdThreshold: asBaseCurrencyAmount(new BigNumber('0.1')),
+                }),
+            );
+
+            expect(result.current.filteredData).toEqual([
+                jitoOnSolanaAsset,
+                rethOnBaseAsset,
+                jupOnSolanaAsset,
+            ]);
+        });
+
         it('should rank exact name match before name-startsWith', () => {
             // tronTetherAsset.name = 'Tether' (exact match), usdtAsset.name = 'Tether USDT' (startsWith)
             const assets = [usdtAsset, tronTetherAsset];
