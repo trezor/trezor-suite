@@ -1,6 +1,9 @@
+import { createAction } from '@reduxjs/toolkit';
+
 import type { AddressValidator } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329 } from '@suite-common/bip329-types';
+import { asGetter } from '@suite-common/dependency-injection';
 import type { NetworkModuleRepository, NetworkSymbol } from '@suite-common/networks';
 import {
     mockFindNetworkSymbolForProtocol,
@@ -12,14 +15,6 @@ import {
     type PlatformEncryption,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
-import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
-import {
-    notImplementedAction,
-    notImplementedActionType,
-    notImplementedGetter,
-    notImplementedReducer,
-    notImplementedThunk,
-} from '@suite-common/redux-utils';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
 import { type ReportSecurityCheckParams, asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { type SelectedAccountLoaded, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -27,6 +22,55 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { err, ok } from '@trezor/type-utils';
 import { createKeyedThrottle } from '@trezor/utils';
+
+import { type ExtraDependencies } from '../src/extraDependenciesType';
+
+const mockedConsoleAlreadyPrinted: string[] = [];
+
+const mockedConsoleLog = (...args: any) => {
+    if (process.env.NODE_ENV !== 'test' && !mockedConsoleAlreadyPrinted.includes(args[0])) {
+        // eslint-disable-next-line no-console
+        console.log(...args);
+        mockedConsoleAlreadyPrinted.push(args[0]);
+    }
+};
+
+const notImplementedAction = (type: string): any =>
+    createAction<any>(`notImplemented/${type}`, (payload: any) => {
+        mockedConsoleLog(`Calling not implemented action ${type} with payload: `, payload);
+
+        return { payload };
+    });
+
+const notImplementedThunk = (type: string) => (thunkPayload: any) => () => {
+    mockedConsoleLog(`Calling not implemented thunk: ${type} and payload: `, thunkPayload);
+
+    return thunkPayload;
+};
+
+const notImplementedGetter = <TReturn>(
+    name: string,
+    mockedReturnValue: TReturn,
+    getterArgs: any = {},
+) =>
+    asGetter(() => {
+        mockedConsoleLog(
+            `Calling not implemented getter "${name}" with mocked value: `,
+            mockedReturnValue,
+            ' and args: ',
+            getterArgs,
+        );
+
+        return mockedReturnValue;
+    });
+
+const notImplementedActionType = (type: string) => `actionType/notImplemented/${type}`;
+
+const notImplementedReducer = (name: string) => (state: any, action: any) => {
+    mockedConsoleLog(`Calling not implemented reducer "${name}" with action: `, action);
+
+    return state;
+};
 
 const suiteSyncMock: SuiteSync = {
     changeRelayUrl: () => Promise.resolve(),

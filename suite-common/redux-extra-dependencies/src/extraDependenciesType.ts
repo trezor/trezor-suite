@@ -49,10 +49,14 @@ interface AnyAction extends Action {
     [extraProps: string]: any;
 }
 
+// TODO: Replace with a generic shared `Thunk` type from @suite-common/redux-utils after
+// https://github.com/trezor/trezor-suite/issues/30770 is completed.
 type OriginalReduxThunk<TPayload, TReturn = void> = (
     payload: TPayload,
 ) => ThunkAction<TReturn, any, any, AnyAction>;
 
+// TODO: Replace with a generic shared `Thunk` type from @suite-common/redux-utils after
+// https://github.com/trezor/trezor-suite/issues/30770 is completed.
 type SuiteCompatibleThunk<TPayload, TReturn = void> =
     | AsyncThunk<TReturn, TPayload, Record<never, never>>
     | OriginalReduxThunk<TPayload, TReturn>;

@@ -9,10 +9,9 @@ import {
 import { type ThunkDispatch } from 'redux-thunk';
 
 import { type ExtraDependenciesPartial } from '@suite-common/redux-extra-dependencies';
+import { extraDependenciesCommonMock } from '@suite-common/redux-extra-dependencies/mocks';
 import { type AnyAction, createMiddleware } from '@suite-common/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
-
-import { extraDependenciesCommonMock } from './extraDependenciesCommonMock';
 
 /*
  * This function is useful, because a lot of test fixtures doesn't count with added thunk pending/fulfilled action that are now
