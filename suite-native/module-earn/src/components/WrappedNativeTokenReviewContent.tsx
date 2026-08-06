@@ -75,13 +75,13 @@ export const WrappedNativeTokenReviewContent = ({
             confirmOnTrezorRef={confirmOnTrezorRef}
             titleTranslationId={flowMessages[flowType].title}
             submittedCard={
-                isSigned ? (
+                isSigned && (
                     <EarnReviewSubmittedCard
                         buttonTranslationId={flowMessages[flowType].submitButton}
                         isButtonLoading={status === 'sending'}
                         onButtonPress={handleSubmitted}
                     />
-                ) : undefined
+                )
             }
         >
             <YieldTransactionReviewOutputList

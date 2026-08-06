@@ -29,10 +29,6 @@ type UseWrappedNativeTokenFeesParams = {
 const getWrappedNativeTokenFormDraftKey = (flowType: WrappedNativeFlowType, accountKey: string) =>
     `${EARN_MODULE_PREFIX}/${flowType === 'wrap' ? 'wrap-native' : 'unwrap-native'}/${accountKey}`;
 
-/**
- * Wrap/unwrap analogue of `useYieldDepositFees` — see `usePreparedTxFees` for the shared
- * machinery.
- */
 export const useWrappedNativeTokenFees = ({
     account,
     amount,

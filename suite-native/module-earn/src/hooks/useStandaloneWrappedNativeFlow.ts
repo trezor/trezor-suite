@@ -36,11 +36,6 @@ type NavigationProps = StackNavigationProps<
     WrappedNativeTokenStackRoutes.WrapNativeToken | WrappedNativeTokenStackRoutes.UnwrapNativeToken
 >;
 
-/**
- * State machine shared by the standalone wrap/unwrap form screens: prepared transaction,
- * simulation sheet, device-connected guard before review, and the pending-transaction lifecycle
- * (route param → tracking → complete/failed).
- */
 export const useStandaloneWrappedNativeFlow = ({
     account,
     accountKey,

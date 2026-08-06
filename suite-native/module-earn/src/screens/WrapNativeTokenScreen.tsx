@@ -6,7 +6,7 @@ import { WRAPPED_NATIVE, getNetwork, getNetworkDisplaySymbol } from '@suite-comm
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
     type AccountsRootState,
-    getWrappableNativeBalance,
+    getMaxWrapAmount,
     selectAccountByKey,
     shouldRecommendWrapReserve,
 } from '@suite-common/wallet-core';
@@ -16,16 +16,18 @@ import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
-    ScreenHeader,
     type WrappedNativeTokenStackParamList,
     type WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
 
+import { WrappedNativeTokenScreenHeader } from '../components/WrappedNativeTokenScreenHeader';
 import { YieldDepositAmountInputCard } from '../components/YieldDepositAmountInputCard';
+import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
+import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
 import { useStandaloneWrappedNativeFlow } from '../hooks/useStandaloneWrappedNativeFlow';
 import { useWrappedNativeTokenFees } from '../hooks/useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from '../hooks/useWrappedNativeTokenForm';
@@ -46,12 +48,16 @@ export const WrapNativeTokenScreen = () => {
     const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
     const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
 
+    const {
+        isDisabled: isWrapDisabled,
+        content: wrapDisabledContent,
+        variant: wrapDisabledVariant,
+    } = useMessageSystemWrappedNative('wrap');
+
     const form = useWrappedNativeTokenForm({
         availableBalance: account?.formattedBalance ?? '0',
         decimals: account ? getNetwork(account.symbol).decimals : 0,
-        // Max leaves the gas reserve aside; the field still accepts up to the full balance and
-        // eating into the reserve only triggers a non-blocking recommendation.
-        maxAmount: getWrappableNativeBalance(account?.formattedBalance ?? '0'),
+        maxAmount: getMaxWrapAmount(account?.formattedBalance ?? '0'),
         tokenSymbol: nativeSymbol,
     });
     const { amountValue, handleAmountChange, handleMaxChange, isMaxSelected } = form;
@@ -61,12 +67,13 @@ export const WrapNativeTokenScreen = () => {
 
     const isWrapAmountReady = isValid && !!amountValue;
     const isWrapPending = !!pendingTransaction;
+    const isFeeSectionDisplayed = isWrapAmountReady && !isWrapPending;
 
     const wrapFee = useWrappedNativeTokenFees({
         account: account ?? null,
         amount: amountValue,
         flowType: 'wrap',
-        isEnabled: isWrapAmountReady && !isWrapPending,
+        isEnabled: isFeeSectionDisplayed,
     });
 
     const flow = useStandaloneWrappedNativeFlow({
@@ -87,13 +94,14 @@ export const WrapNativeTokenScreen = () => {
         amountValue ?? '',
         account.formattedBalance,
     );
-    const isSubmitDisabled = !isWrapAmountReady || !wrapFee.isFeeReady || flow.isPending;
+    const isSubmitDisabled =
+        !isWrapAmountReady || !wrapFee.isFeeReady || isWrapPending || isWrapDisabled;
 
     return (
         <Screen
             header={
-                <ScreenHeader
-                    closeActionType="back"
+                <WrappedNativeTokenScreenHeader
+                    accountLabel={accountLabel}
                     title={
                         <Translation
                             id="earn.wrapNativeToken.title"
@@ -103,8 +111,15 @@ export const WrapNativeTokenScreen = () => {
                 />
             }
         >
-            <Box marginTop="sp16" pointerEvents={flow.isPending ? 'none' : 'auto'}>
+            <Box marginTop="sp16" pointerEvents={isWrapPending ? 'none' : 'auto'}>
                 <VStack spacing="sp16">
+                    {isWrapDisabled && (
+                        <YieldDisabledAlert
+                            type="wrap"
+                            content={wrapDisabledContent}
+                            variant={wrapDisabledVariant}
+                        />
+                    )}
                     <Form form={form.form}>
                         <YieldDepositAmountInputCard
                             amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
@@ -129,8 +144,7 @@ export const WrapNativeTokenScreen = () => {
                             }
                         />
                     )}
-                    {isWrapAmountReady &&
-                        !flow.isPending &&
+                    {isFeeSectionDisplayed &&
                         (wrapFee.hasFeeEstimationError ? (
                             <YieldFeeEstimationErrorAlert onRetry={wrapFee.retryFeeEstimation} />
                         ) : (

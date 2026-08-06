@@ -5,16 +5,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     DefinitionType,
     type TokenDefinitionsRootState,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { getDisplaySymbol, getNetwork, isWrappedNativeToken } from '@suite-common/wallet-config';
+import {
+    getDisplaySymbol,
+    getNetwork,
+    getWrappedNativeAddress,
+    isWrappedNativeToken,
+} from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TokensRootState,
+    isWrappedNativeFlowSupported,
     selectAccountByKey,
     selectAccountHiddenTokens,
     selectAccountNetworkSymbol,
@@ -31,6 +38,7 @@ import {
     TouchableSwitchRow,
     VStack,
 } from '@suite-native/atoms';
+import { isDevelopOrDebugEnv } from '@suite-native/config';
 import {
     AddressFormatter,
     CoinToFiatAmountFormatter,
@@ -39,6 +47,7 @@ import {
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { useStablecoinYieldFirmwareUpdateAlert } from '@suite-native/module-earn';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -117,6 +126,8 @@ export const TokenSettingsBottomSheet = forwardRef(
         const isUnrecognized = useSelector((state: TokenDefinitionsRootState & AccountsRootState) =>
             selectIsUnrecognizedToken(state, accountKey, tokenContract),
         );
+        const device = useSelector(selectSelectedDevice);
+        const { showFirmwareUpdateAlert } = useStablecoinYieldFirmwareUpdateAlert();
 
         if (!account || !symbol) return null;
 
@@ -145,11 +156,40 @@ export const TokenSettingsBottomSheet = forwardRef(
         const isUnwrapDisplayed =
             account.networkType === 'ethereum' &&
             isWrappedNativeToken(account.symbol, tokenContract);
+        const isWrapDisplayed =
+            isDevelopOrDebugEnv() &&
+            !tokenContract &&
+            account.networkType === 'ethereum' &&
+            !!getWrappedNativeAddress(account.symbol);
+
+        const isWrappedNativeFirmwareSupported = isWrappedNativeFlowSupported(device);
 
         const handleUnwrapPress = () => {
             onNavigateAway?.();
+
+            if (!isWrappedNativeFirmwareSupported) {
+                showFirmwareUpdateAlert();
+
+                return;
+            }
+
             navigation.navigate(RootStackRoutes.WrappedNativeTokenNavigator, {
                 screen: WrappedNativeTokenStackRoutes.UnwrapNativeToken,
+                params: { accountKey },
+            });
+        };
+
+        const handleWrapPress = () => {
+            onNavigateAway?.();
+
+            if (!isWrappedNativeFirmwareSupported) {
+                showFirmwareUpdateAlert();
+
+                return;
+            }
+
+            navigation.navigate(RootStackRoutes.WrappedNativeTokenNavigator, {
+                screen: WrappedNativeTokenStackRoutes.WrapNativeToken,
                 params: { accountKey },
             });
         };
@@ -248,6 +288,15 @@ export const TokenSettingsBottomSheet = forwardRef(
                             testID="@token-detail/unwrap-native-token-button"
                         >
                             <Translation id="earn.unwrapNativeToken.entryButton" />
+                        </Button>
+                    )}
+                    {isWrapDisplayed && (
+                        <Button
+                            intent="accentViolet"
+                            onPress={handleWrapPress}
+                            testID="@account-detail/wrap-native-token-button"
+                        >
+                            <Translation id="earn.wrapNativeToken.entryButton" />
                         </Button>
                     )}
                 </VStack>

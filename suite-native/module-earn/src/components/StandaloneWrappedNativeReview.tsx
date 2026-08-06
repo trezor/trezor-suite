@@ -35,7 +35,6 @@ export const StandaloneWrappedNativeReview = ({
 
     const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
 
-    // Token being spent — the native coin for a wrap, the wrapped token for an unwrap.
     const spentToken: YieldFlowDisplayToken | null = useMemo(() => {
         if (!account || !wrappedNative) {
             return null;

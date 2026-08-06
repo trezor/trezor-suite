@@ -10,12 +10,12 @@ import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
-    ScreenHeader,
     type WrappedNativeTokenStackParamList,
     type WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
 
+import { WrappedNativeTokenScreenHeader } from '../components/WrappedNativeTokenScreenHeader';
 import { YieldDepositAmountInputCard } from '../components/YieldDepositAmountInputCard';
 import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
@@ -64,12 +64,13 @@ export const UnwrapNativeTokenScreen = () => {
 
     const isUnwrapAmountReady = isValid && !!amountValue;
     const isUnwrapPending = !!pendingTransaction;
+    const isFeeSectionDisplayed = isUnwrapAmountReady && !isUnwrapPending;
 
     const unwrapFee = useWrappedNativeTokenFees({
         account: account ?? null,
         amount: amountValue,
         flowType: 'unwrap',
-        isEnabled: isUnwrapAmountReady && !isUnwrapPending,
+        isEnabled: isFeeSectionDisplayed,
     });
 
     const flow = useStandaloneWrappedNativeFlow({
@@ -93,8 +94,8 @@ export const UnwrapNativeTokenScreen = () => {
     return (
         <Screen
             header={
-                <ScreenHeader
-                    closeActionType="back"
+                <WrappedNativeTokenScreenHeader
+                    accountLabel={accountLabel}
                     title={<Translation id="earn.unwrapNativeToken.title" />}
                 />
             }
@@ -118,8 +119,7 @@ export const UnwrapNativeTokenScreen = () => {
                             tokenSymbol={wrappedTokenSymbol}
                         />
                     </Form>
-                    {isUnwrapAmountReady &&
-                        !isUnwrapPending &&
+                    {isFeeSectionDisplayed &&
                         (unwrapFee.hasFeeEstimationError ? (
                             <YieldFeeEstimationErrorAlert onRetry={unwrapFee.retryFeeEstimation} />
                         ) : (

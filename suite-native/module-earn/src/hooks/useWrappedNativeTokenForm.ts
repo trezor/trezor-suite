@@ -11,7 +11,6 @@ import {
 type UseWrappedNativeTokenFormParams = {
     availableBalance: string;
     decimals: number;
-    /** What the Max switch fills in; defaults to the full available balance. */
     maxAmount?: string;
     tokenSymbol: string;
 };

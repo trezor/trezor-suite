@@ -53,7 +53,7 @@ export const AccountDetailScreenHeader = ({ account }: AccountDetailScreenHeader
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
     const { closeActionType } = route.params;
 
-    const { bottomSheetRef, openModal } = useBottomSheetModal();
+    const { bottomSheetRef, closeModal, openModal } = useBottomSheetModal();
 
     const handleSettingsNavigation = () => {
         if (isNetworkWithTokens(account.symbol) || isStakingSymbol(account.symbol)) {
@@ -83,7 +83,11 @@ export const AccountDetailScreenHeader = ({ account }: AccountDetailScreenHeader
                 closeAction={navigateToInitialScreen}
             />
 
-            <TokenSettingsBottomSheet ref={bottomSheetRef} accountKey={account.key} />
+            <TokenSettingsBottomSheet
+                ref={bottomSheetRef}
+                accountKey={account.key}
+                onNavigateAway={closeModal}
+            />
         </>
     );
 };
