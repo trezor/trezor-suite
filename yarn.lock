@@ -16156,7 +16156,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    socks-proxy-agent: "npm:8.0.5"
+    socks-proxy-agent: "npm:10.1.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -16199,7 +16199,7 @@ __metadata:
     "@types/node": "npm:26.1.1"
     "@types/web": "npm:^0.0.353"
     html-webpack-plugin: "npm:5.6.7"
-    socks-proxy-agent: "npm:8.0.5"
+    socks-proxy-agent: "npm:10.1.0"
     tiny-worker: "npm:^2.3.0"
     viem: "npm:^2.54.1"
     webpack: "npm:5.108.1"
@@ -16232,7 +16232,7 @@ __metadata:
     golomb: "npm:1.2.0"
     n64: "npm:^0.2.10"
     node-fetch: "npm:^3.3.2"
-    socks-proxy-agent: "npm:8.0.5"
+    socks-proxy-agent: "npm:10.1.0"
     ws: "npm:^8.21.1"
   languageName: unknown
   linkType: soft
@@ -16959,7 +16959,7 @@ __metadata:
     "@trezor/node-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
     node-fetch: "npm:^3.3.2"
-    socks-proxy-agent: "npm:8.0.5"
+    socks-proxy-agent: "npm:10.1.0"
     tsx: "npm:^4.21.0"
     ws: "npm:^8.21.1"
   languageName: unknown
@@ -20210,6 +20210,13 @@ __metadata:
   dependencies:
     debug: "npm:4"
   checksum: 10/21fb903e0917e5cb16591b4d0ef6a028a54b83ac30cd1fca58dece3d4e0990512a8723f9f83130d88a41e2af8b1f7be1386fda3ea2d181bb1a62155e75e95e23
+  languageName: node
+  linkType: hard
+
+"agent-base@npm:9.0.0":
+  version: 9.0.0
+  resolution: "agent-base@npm:9.0.0"
+  checksum: 10/3a61414cd10dbb17fa8dae35124ffaa55fbb00f495004b2e7a8f4eca3a2b6ed9879474d4e2ebc27ee2f4207265652341525b4154e85c4d479be4854acd786bfb
   languageName: node
   linkType: hard
 
@@ -43241,7 +43248,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"socks-proxy-agent@npm:8.0.5, socks-proxy-agent@npm:^8.0.3":
+"socks-proxy-agent@npm:10.1.0":
+  version: 10.1.0
+  resolution: "socks-proxy-agent@npm:10.1.0"
+  dependencies:
+    agent-base: "npm:9.0.0"
+    debug: "npm:^4.3.4"
+    socks: "npm:^2.8.3"
+  checksum: 10/b7ca31a62e1164bdf8ade52a4c0d9b2701a7095fa52e7be047d61abf9ddf3e0820c3080373a59268b67d43901f16c51c780bb7ac925f17eb77171ed00071724a
+  languageName: node
+  linkType: hard
+
+"socks-proxy-agent@npm:^8.0.3":
   version: 8.0.5
   resolution: "socks-proxy-agent@npm:8.0.5"
   dependencies:

@@ -38,7 +38,7 @@
     "dependencies": {
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
-        "socks-proxy-agent": "8.0.5"
+        "socks-proxy-agent": "10.1.0"
     },
     "devDependencies": {
         "@trezor/type-utils": "workspace:*"

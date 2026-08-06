@@ -85,7 +85,7 @@
         "@trezor/utxo-lib": "workspace:*",
         "@trezor/websocket-client": "workspace:*",
         "@types/web": "^0.0.353",
-        "socks-proxy-agent": "8.0.5",
+        "socks-proxy-agent": "10.1.0",
         "viem": "^2.54.1"
     },
     "peerDependencies": {
