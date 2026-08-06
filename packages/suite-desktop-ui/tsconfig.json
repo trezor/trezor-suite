@@ -20,6 +20,7 @@
         },
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
+        { "path": "../../suite/tor-desktop" },
         { "path": "../components" },
         { "path": "../connect-electron" },
         { "path": "../icons" },

@@ -15505,12 +15505,58 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/tor-desktop@workspace:*, @suite/tor-desktop@workspace:suite/tor-desktop":
+  version: 0.0.0-use.local
+  resolution: "@suite/tor-desktop@workspace:suite/tor-desktop"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-config": "workspace:*"
+    "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite/analytics": "workspace:*"
+    "@suite/external-links": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@suite/modal": "workspace:*"
+    "@suite/router": "workspace:*"
+    "@suite/tor": "workspace:*"
+    "@suite/tor-types": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/product-components": "workspace:*"
+    "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    react: "npm:19.2.3"
+    react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite/tor-types@workspace:*, @suite/tor-types@workspace:suite/tor-types":
+  version: 0.0.0-use.local
+  resolution: "@suite/tor-types@workspace:suite/tor-types"
+  languageName: unknown
+  linkType: soft
+
+"@suite/tor-web@workspace:*, @suite/tor-web@workspace:suite/tor-web":
+  version: 0.0.0-use.local
+  resolution: "@suite/tor-web@workspace:suite/tor-web"
+  dependencies:
+    "@suite/tor": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    react: "npm:19.2.3"
+    react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/tor@workspace:*, @suite/tor@workspace:suite/tor":
   version: 0.0.0-use.local
   resolution: "@suite/tor@workspace:suite/tor"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
-    "@suite-common/redux-utils": "workspace:*"
+    "@suite/tor-types": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -17178,7 +17224,7 @@ __metadata:
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
     "@suite-common/platform-encryption": "workspace:*"
-    "@suite/tor": "workspace:*"
+    "@suite/tor-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     electron: "npm:42.5.0"
   languageName: unknown
@@ -17200,7 +17246,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/sentry": "workspace:*"
-    "@suite/tor": "workspace:*"
+    "@suite/tor-types": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
@@ -17262,6 +17308,7 @@ __metadata:
     "@suite/platform-encryption-electron": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/sentry": "workspace:*"
+    "@suite/tor-desktop": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect-electron": "workspace:*"
     "@trezor/icons": "workspace:*"
@@ -17517,6 +17564,8 @@ __metadata:
     "@suite/suite-sync": "workspace:*"
     "@suite/thp": "workspace:*"
     "@suite/tor": "workspace:*"
+    "@suite/tor-desktop": "workspace:*"
+    "@suite/tor-web": "workspace:*"
     "@suite/trading": "workspace:*"
     "@suite/transfer-uri": "workspace:*"
     "@suite/tx-simulation": "workspace:^"

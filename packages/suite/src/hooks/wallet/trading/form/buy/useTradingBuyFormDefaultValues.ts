@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
-import { selectTorState } from '@suite/tor';
+import { selectIsTorEnabled } from '@suite/tor';
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
@@ -24,7 +24,7 @@ export const useTradingBuyFormDefaultValues = (
     cryptoId: CryptoId | undefined,
     buyInfo: TradingBuyInfoSelector | undefined,
 ): TradingBuyFormDefaultValuesProps => {
-    const { isTorEnabled } = useSelector(selectTorState);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
     const { coins } = useSelector(selectTradingInfo);
     const { createAssetOptionFromCryptoId } = useTradingAssets();
 

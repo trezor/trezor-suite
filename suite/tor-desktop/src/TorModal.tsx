@@ -1,10 +1,10 @@
+import { useSelector } from 'react-redux';
+
 import { Translation } from '@suite/intl';
-import { getIsTorLoading } from '@suite/tor';
+import { selectIsTorLoading } from '@suite/tor';
 import { H3, Modal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { TorBrowserIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite/useSelector';
 
 export type TorResult = 'use-defaults' | 'enable-tor';
 
@@ -13,7 +13,7 @@ type TorModalProps = {
 };
 
 export const TorModal = ({ onResult }: TorModalProps) => {
-    const isTorLoading = useSelector(state => getIsTorLoading(state.tor.torStatus));
+    const isTorLoading = useSelector(selectIsTorLoading);
 
     return (
         <Modal

@@ -24,6 +24,7 @@
         "@suite/platform-encryption-electron": "workspace:*",
         "@suite/router": "workspace:*",
         "@suite/sentry": "workspace:*",
+        "@suite/tor-desktop": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect-electron": "workspace:*",
         "@trezor/icons": "workspace:*",

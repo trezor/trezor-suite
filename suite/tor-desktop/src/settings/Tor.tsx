@@ -1,25 +1,28 @@
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCoinjoinAccounts } from '@suite/coinjoin';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { openDeferredModal, selectModalType } from '@suite/modal';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { TorStatus, getIsTorEnabled, getIsTorLoading } from '@suite/tor';
+import { selectIsTorEnabled, selectIsTorEnabling, selectIsTorLoading } from '@suite/tor';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 
-import { toggleTor } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { type ToggleTorDispatch, toggleTor } from '../toggleTorThunk';
 
-export const Tor = () => {
+type TorProps = {
+    // Called before Tor is switched off. Resolve `true` to keep Tor running (abort the toggle) —
+    // e.g. when disabling would stop an active coinjoin and the user cancels. Resolve `false` to proceed.
+    onBeforeDisable?: () => Promise<boolean>;
+};
+
+export const Tor = ({ onBeforeDisable }: TorProps) => {
     const [hasTorError, setHasTorError] = useState(false);
-    const coinjoinAccounts = useSelector((state: any) => selectCoinjoinAccounts(state));
-    const isCoinjoinAccount = coinjoinAccounts.length > 0;
-    const torStatus = useSelector(state => state.tor.torStatus);
-    const modalType = useSelector(selectModalType);
-    const dispatch = useDispatch();
+    const isTorEnabled = useSelector(selectIsTorEnabled);
+    const isTorLoading = useSelector(selectIsTorLoading);
+    const isTorEnabling = useSelector(selectIsTorEnabling);
+    const dispatch = useDispatch<ToggleTorDispatch>();
 
     useEffect(() => {
         if (!hasTorError) {
@@ -31,24 +34,13 @@ export const Tor = () => {
         return () => clearTimeout(timeout);
     }, [hasTorError]);
 
-    const isTorEnabled = getIsTorEnabled(torStatus);
-    const isTorLoading = getIsTorLoading(torStatus);
-
     const handleTorSwitch = async () => {
-        if (isTorEnabled && isCoinjoinAccount) {
-            // Let the user know that stopping Tor will stop coinjoin.
-            const isKeepRunningTor = await dispatch(
-                openDeferredModal({
-                    type: 'disable-tor-stop-coinjoin',
-                }),
-            );
-            if (isKeepRunningTor) {
-                return;
-            }
+        if (isTorEnabled && (await onBeforeDisable?.())) {
+            return;
         }
         const shouldEnableTor = !isTorEnabled && !isTorLoading;
         try {
-            await dispatch(toggleTor(shouldEnableTor, modalType));
+            await dispatch(toggleTor(shouldEnableTor));
         } catch {
             setHasTorError(true);
         }
@@ -77,7 +69,7 @@ export const Tor = () => {
                     <ActionColumn>
                         <Switch
                             data-testid="@settings/general/tor-switch"
-                            isChecked={isTorEnabled || torStatus === TorStatus.Enabling}
+                            isChecked={isTorEnabled || isTorEnabling}
                             onChange={handleTorSwitch}
                         />
                     </ActionColumn>

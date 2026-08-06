@@ -5,7 +5,7 @@ import { captureException } from '@sentry/electron/main';
 import { session } from 'electron';
 import path from 'path';
 
-import { TorStatus } from '@suite/tor';
+import { TorStatus } from '@suite/tor-types';
 import TrezorConnect from '@trezor/connect';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';

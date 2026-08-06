@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { selectTorState } from '@suite/tor';
+import { selectIsTorEnabled } from '@suite/tor';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { type TorSettings, desktopApi } from '@trezor/suite-desktop-api';
-
-import { useSelector } from 'src/hooks/suite';
 
 const options = [
     {
@@ -20,7 +19,7 @@ const options = [
 ];
 
 export const TorExternal = () => {
-    const { isTorEnabled } = useSelector(selectTorState);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
 
     const [torSettings, setTorSettings] = useState<TorSettings | null>(null);
 
@@ -49,8 +48,8 @@ export const TorExternal = () => {
     useEffect(() => {
         if (!torSettings) return;
         const { externalPort } = torSettings;
-        const selectedOption = options.find(o => o.value === externalPort);
-        setSelectedOption(selectedOption);
+        const matchedOption = options.find(o => o.value === externalPort);
+        setSelectedOption(matchedOption);
     }, [torSettings]);
 
     const onChange = async ({ value }: { value: number }) => {

@@ -1,10 +1,11 @@
+import { type ReactNode } from 'react';
+
 import { selectIsSettingsDesktopAppPromoBannerShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { LabelingSettings } from '@suite/labeling';
 import { ContextMessage } from '@suite/message-system';
 import { selectIsLegacyLabelingVisible, selectSelectedProviderForLabels } from '@suite/metadata';
 import { selectHasExperimentalFeature } from '@suite/settings';
-import { TorStatus, selectTorState } from '@suite/tor';
 import { Context } from '@suite-common/message-system';
 import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -55,18 +56,18 @@ import { ShowApplicationLog } from './ShowApplicationLog';
 import { ShowOnTray } from './ShowOnTray';
 import { TestnetNetworks } from './TestnetNetworks';
 import { Theme } from './Theme';
-import { Tor } from './Tor';
-import { TorExternal } from './TorExternal';
 import { TorOnionLinks } from './TorOnionLinks';
 import { VersionWithUpdate } from './VersionWithUpdate';
 
-export const SettingsGeneral = () => {
+type SettingsGeneralProps = {
+    torSettings?: ReactNode;
+};
+
+export const SettingsGeneral = ({ torSettings }: SettingsGeneralProps) => {
     const shouldShowSettingsDesktopAppPromoBanner = useSelector(
         selectIsSettingsDesktopAppPromoBannerShown,
     );
 
-    const { isTorEnabled } = useSelector(selectTorState);
-    const torStatus = useSelector(state => state.tor.torStatus);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
@@ -79,9 +80,6 @@ export const SettingsGeneral = () => {
         return networkFeatures.includes('amount-unit');
     });
 
-    const torExternalExperimentalFeature = useSelector(
-        selectHasExperimentalFeature('tor-external'),
-    );
     const mcpServerEnabled = useSelector(selectHasExperimentalFeature('mcp-server'));
 
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
@@ -104,15 +102,8 @@ export const SettingsGeneral = () => {
                 >
                     <AutoEject />
                     {isDesktop() && !isLinux() && <BioAuthSettings />}
-                    {(isDesktop() || (isWeb() && isTorEnabled)) && (
-                        <>
-                            {isDesktop() && <Tor />}
-                            {(isTorEnabled || torStatus === TorStatus.Enabling) && (
-                                <TorOnionLinks />
-                            )}
-                            {torExternalExperimentalFeature && <TorExternal />}
-                        </>
-                    )}
+                    {torSettings}
+                    <TorOnionLinks />
                 </SettingsSection>
             </div>
 
