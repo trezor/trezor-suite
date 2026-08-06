@@ -1,6 +1,5 @@
 import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { disconnectDeviceThunk } from '@suite/device';
 import { type FlagsRootState } from '@suite/flags';
 import { METADATA } from '@suite/metadata';
 import { type ModalRootState } from '@suite/modal';
@@ -118,12 +117,13 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
         if (deviceActions.forgetDevice.match(action)) {
             const { device } = action.payload;
 
-            dispatch(disconnectDeviceThunk(device));
             if (isTrezorDeviceWithState(device)) {
                 extra.services.suiteSync.turnOffSuiteSyncForWallet({
                     deviceStaticSessionId: device.state.staticSessionId,
                 });
             }
+
+            dispatch(handleDeviceDisconnect(device));
         }
 
         if (desktopHandshake.match(action)) {
