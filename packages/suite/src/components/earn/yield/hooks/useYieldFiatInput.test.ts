@@ -3,11 +3,13 @@ import { useForm } from 'react-hook-form';
 import { act, renderHook } from '@testing-library/react';
 
 import { events } from '@suite-common/analytics';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowFormValues } from '@suite-common/wallet-core';
 
 import { useYieldFiatInput } from './useYieldFiatInput';
 
 const ETH_RATE = 3333.35;
+const ethSymbol = asNetworkSymbol('eth');
 
 const mockState = {
     wallet: {
@@ -39,7 +41,7 @@ const renderYieldFiatInput = (vaultId?: string) =>
 
         return {
             methods,
-            fiat: useYieldFiatInput({ methods, symbol: 'eth', decimals: 18, vaultId }),
+            fiat: useYieldFiatInput({ methods, symbol: ethSymbol, decimals: 18, vaultId }),
         };
     });
 

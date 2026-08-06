@@ -1,4 +1,5 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
@@ -15,10 +16,11 @@ import {
 } from './ethereumStakingSelectors';
 
 const staticStateString: StaticSessionId = 'device@state:1';
+const ethSymbol = asNetworkSymbol('eth');
 
-const eth1Key = mockAccountKey({ symbol: 'eth', descriptor: 'eth1' });
-const eth2Key = mockAccountKey({ symbol: 'eth', descriptor: 'eth2' });
-const eth3Key = mockAccountKey({ symbol: 'eth', descriptor: 'eth3' });
+const eth1Key = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth1' });
+const eth2Key = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth2' });
+const eth3Key = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth3' });
 const nonExistentKey = mockAccountKey({ descriptor: 'nonExistent' });
 
 const ethAccountWithStaking: Account = {

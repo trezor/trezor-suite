@@ -19,6 +19,7 @@ import { setSuiteSyncOwner } from '@suite-common/suite-sync';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks, wireEnabledNetworksMock } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     changeCoinVisibility,
     prepareDiscoveryReducer,
@@ -43,6 +44,9 @@ import { preloadStore } from 'src/support/suite/preloadStore';
 import { type AcquiredDevice, type AppState } from 'src/types/suite';
 
 import * as storageActions from './storageActions';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ltcSymbol = asNetworkSymbol('ltc');
 
 const { getWalletTransaction } = testMocks;
 
@@ -79,12 +83,12 @@ const dev2Instance1 = mockSuiteDevice({
 
 const acc1 = mockWalletAccount({
     deviceState: dev1.state?.staticSessionId,
-    symbol: 'btc',
+    symbol: btcSymbol,
     descriptor: asAccountDescriptor('desc1'),
 });
 const acc2 = mockWalletAccount({
     deviceState: dev2.state?.staticSessionId,
-    symbol: 'btc',
+    symbol: btcSymbol,
     descriptor: asAccountDescriptor('desc2'),
 });
 
@@ -92,13 +96,13 @@ const tx1 = getWalletTransaction({
     deviceState: dev1.state?.staticSessionId,
     txid: 'txid1',
     descriptor: asAccountDescriptor('desc1'),
-    symbol: 'btc',
+    symbol: btcSymbol,
 });
 const tx2 = getWalletTransaction({
     deviceState: dev2.state?.staticSessionId,
     txid: 'txid2',
     descriptor: asAccountDescriptor('desc2'),
-    symbol: 'btc',
+    symbol: btcSymbol,
 });
 
 type PartialState = Pick<
@@ -442,7 +446,7 @@ describe('Storage actions', () => {
     it('should store graph data with the device and remove it on ACCOUNT.REMOVE (triggered by disabling the coin)', async () => {
         const accLtc = mockWalletAccount({
             deviceState: dev1.state!.staticSessionId!,
-            symbol: 'ltc',
+            symbol: asNetworkSymbol('ltc'),
             descriptor: asAccountDescriptor('desc2'),
         });
 
@@ -488,8 +492,8 @@ describe('Storage actions', () => {
         // changeCoinVisibility awaits updateConnectSettings; mock it as a no-op success.
         wireEnabledNetworksMock();
         // disable btc network, enable ltc, triggering ACCOUNT.REMOVE
-        await store.dispatch(changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: true }));
-        await store.dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: false }));
+        await store.dispatch(changeCoinVisibility({ symbol: ltcSymbol, shouldBeVisible: true }));
+        await store.dispatch(changeCoinVisibility({ symbol: btcSymbol, shouldBeVisible: false }));
 
         // verify that graph data for acc1 were removed
         store.dispatch((await preloadStore())!);

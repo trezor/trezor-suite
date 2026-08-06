@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type { FormState, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
@@ -9,6 +10,8 @@ import {
     stablecoinYieldReducer,
 } from './stablecoinYieldReducer';
 import type { YieldFlowType, YieldPendingTransactionState } from './stablecoinYieldTypes';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 const FLOW_KEY = 'account-key:yield-id:0xtoken';
 
@@ -379,13 +382,13 @@ describe('stablecoinYieldReducer', () => {
 
     describe('txReview', () => {
         const ACCOUNT_KEY = mockAccountKey({
-            symbol: 'eth',
+            symbol: ethSymbol,
             descriptor: '0xfffffffffffffffffffffffffffffffffffffffe',
             deviceStaticSessionId: '1stTestnetAddress@device_id:0',
         });
         const precomposedForm = { selectedFee: 'custom' } as unknown as FormState;
         const precomposedTx = { type: 'final', fee: '1' } as unknown as PrecomposedTransactionFinal;
-        const serializedTx = { tx: '0xsignedtx', symbol: 'eth' } as const;
+        const serializedTx = { tx: '0xsignedtx', symbol: ethSymbol } as const;
 
         const storePrecomposed = (state: StablecoinYieldState) =>
             stablecoinYieldReducer(

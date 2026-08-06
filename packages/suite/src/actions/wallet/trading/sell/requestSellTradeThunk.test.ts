@@ -2,6 +2,7 @@ import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
 import { configureMockStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
@@ -50,7 +51,7 @@ jest.mock('../tradingCommonActions', () => ({
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
 const ACCOUNT: Account = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcAccount'),
     balance: '100000000',
 });

@@ -1,11 +1,12 @@
 import { configureMockStore } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
 import { synchronizeSentTransactionThunk } from './sendFormThunks';
 import { transactionsActions } from '../transactions/transactionsActions';
 
-const ethAccount = mockWalletAccount({ symbol: 'eth' });
+const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 
 const precomposed = (extra?: Record<string, unknown>) =>
     ({ type: 'final', totalSpent: '0', fee: '0', outputs: [], inputs: [], ...extra }) as any;

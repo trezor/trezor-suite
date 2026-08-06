@@ -1,7 +1,10 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
 
 import { getStellarInactiveTokens } from './stellarTokens';
+
+const xlmSymbol = asNetworkSymbol('xlm');
 
 jest.mock('@trezor/blockchain-link-utils/src/stellar', () => ({
     STELLAR_DECIMALS: 7,
@@ -16,14 +19,14 @@ describe(getStellarInactiveTokens.name, () => {
     });
 
     it('returns empty array for non-Stellar accounts', async () => {
-        const account = mockWalletAccount({ symbol: 'btc' });
+        const account = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 
         await expect(getStellarInactiveTokens(account)).resolves.toEqual([]);
         expect(mockedGetTokenMetadata).not.toHaveBeenCalled();
     });
 
     it('returns all tokens when account has no active Stellar tokens', async () => {
-        const account = mockWalletAccount({ symbol: 'xlm', tokens: undefined });
+        const account = mockWalletAccount({ symbol: xlmSymbol, tokens: undefined });
 
         mockedGetTokenMetadata.mockResolvedValue({
             'USDC-GA123': { name: 'USD Coin', symbol: 'USDC', home_domain: 'centre.io', rating: 5 },
@@ -56,7 +59,7 @@ describe(getStellarInactiveTokens.name, () => {
 
     it('filters out active Stellar tokens', async () => {
         const account = mockWalletAccount({
-            symbol: 'xlm',
+            symbol: xlmSymbol,
             tokens: [{ contract: 'YBX-GC789' }] as never,
         });
 
@@ -73,7 +76,7 @@ describe(getStellarInactiveTokens.name, () => {
     });
 
     it('sorts tokens by rating in descending order and keeps unrated tokens last', async () => {
-        const account = mockWalletAccount({ symbol: 'xlm' });
+        const account = mockWalletAccount({ symbol: xlmSymbol });
 
         mockedGetTokenMetadata.mockResolvedValue({
             'LOW-GA111': { name: 'Low', symbol: 'LOW', home_domain: 'low.org', rating: 1 },

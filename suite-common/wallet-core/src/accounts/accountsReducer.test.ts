@@ -2,6 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { type ExtraDependenciesPartial } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
@@ -9,6 +10,8 @@ import { accountsActions } from './accountsActions';
 import { type AccountsRootState, prepareAccountsReducer } from './accountsReducer';
 
 const accountsReducer = prepareAccountsReducer(extraDependenciesCommonMock);
+const btcSymbol = asNetworkSymbol('btc');
+const ltcSymbol = asNetworkSymbol('ltc');
 
 interface InitStoreArgs {
     extra?: ExtraDependenciesPartial;
@@ -26,7 +29,7 @@ const initStore = ({ extra = {}, preloadedState }: InitStoreArgs = {}) => {
 };
 const getAccount = (a?: Partial<Account>) => ({
     descriptor: 'xpubDeFauLT1',
-    symbol: 'btc',
+    symbol: btcSymbol,
     history: {},
     ...a,
 });
@@ -44,7 +47,7 @@ describe('Account Reducer', () => {
                 index: 0,
                 path: testBip43Path,
                 accountType: 'normal',
-                symbol: 'btc',
+                symbol: btcSymbol,
                 accountInfo: {
                     descriptor: 'XPUB',
                     path: testBip43Path,
@@ -92,10 +95,10 @@ describe('Account Reducer', () => {
             visible: true,
         });
 
-        store.dispatch(accountsActions.createAccount(createAccountPayload('ltc', 'normal', 0)));
-        store.dispatch(accountsActions.createAccount(createAccountPayload('btc', 'legacy', 0)));
-        store.dispatch(accountsActions.createAccount(createAccountPayload('btc', 'normal', 1)));
-        store.dispatch(accountsActions.createAccount(createAccountPayload('btc', 'normal', 0)));
+        store.dispatch(accountsActions.createAccount(createAccountPayload(ltcSymbol, 'normal', 0)));
+        store.dispatch(accountsActions.createAccount(createAccountPayload(btcSymbol, 'legacy', 0)));
+        store.dispatch(accountsActions.createAccount(createAccountPayload(btcSymbol, 'normal', 1)));
+        store.dispatch(accountsActions.createAccount(createAccountPayload(btcSymbol, 'normal', 0)));
 
         expect(
             store.getState().wallet.accounts.map(a => `${a.symbol}/${a.accountType}/${a.index}`),
@@ -108,7 +111,7 @@ describe('Account Reducer', () => {
                 wallet: {
                     accounts: [
                         getAccount({
-                            symbol: 'ltc',
+                            symbol: ltcSymbol,
                             path: testBip43Path,
                             visible: false,
                         }) as Account,
@@ -120,14 +123,14 @@ describe('Account Reducer', () => {
         store.dispatch(
             accountsActions.changeAccountVisibility(
                 getAccount({
-                    symbol: 'ltc',
+                    symbol: ltcSymbol,
                     path: testBip43Path,
                     visible: false,
                 }) as Account,
             ),
         );
         expect(store.getState().wallet.accounts[0]).toEqual(
-            getAccount({ symbol: 'ltc', path: testBip43Path, visible: true }),
+            getAccount({ symbol: ltcSymbol, path: testBip43Path, visible: true }),
         );
     });
 
@@ -137,7 +140,7 @@ describe('Account Reducer', () => {
         store.dispatch(
             accountsActions.changeAccountVisibility(
                 getAccount({
-                    symbol: 'ltc',
+                    symbol: ltcSymbol,
                     path: testBip43Path,
                     visible: false,
                 }) as Account,

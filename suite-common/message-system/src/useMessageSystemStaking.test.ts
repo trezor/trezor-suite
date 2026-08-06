@@ -5,10 +5,14 @@ import {
     extraDependenciesCommonMock,
     renderHookWithStoreProvider,
 } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
 import { type MessageSystemState } from './messageSystemTypes';
 import { useMessageSystemStaking } from './useMessageSystemStaking';
+
+const ethSymbol = asNetworkSymbol('eth');
+const adaSymbol = asNetworkSymbol('ada');
 
 const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
 
@@ -80,7 +84,7 @@ const renderHook = (
 
 describe('useMessageSystemStaking', () => {
     it('returns disabled states and messages when features are disabled', () => {
-        const { result } = renderHook('eth');
+        const { result } = renderHook(ethSymbol);
 
         expect(result.current).toMatchObject({
             isStakingDisabled: true,
@@ -93,7 +97,7 @@ describe('useMessageSystemStaking', () => {
     });
 
     it('returns disabled state and message for ada change-delegate (vote) feature', () => {
-        const { result } = renderHook('ada');
+        const { result } = renderHook(adaSymbol);
 
         expect(result.current).toMatchObject({
             isVotingDisabled: true,
@@ -102,19 +106,19 @@ describe('useMessageSystemStaking', () => {
     });
 
     it('returns undefined voting state for networks without a vote feature key', () => {
-        const { result } = renderHook('eth');
+        const { result } = renderHook(ethSymbol);
 
         expect(result.current.isVotingDisabled).toBeUndefined();
         expect(result.current.votingMessageContent).toBeUndefined();
     });
 
     it('returns localized message content', () => {
-        const { result } = renderHook('eth', 'cs');
+        const { result } = renderHook(ethSymbol, 'cs');
 
         expect(result.current.stakingMessageContent).toBe('Staking vypnutý');
     });
 
-    it.each([undefined, null, 'btc' as const])(
+    it.each([undefined, null, asNetworkSymbol('btc')])(
         'returns undefined for unsupported networkSymbol: %s',
         networkSymbol => {
             const { result } = renderHook(networkSymbol);
@@ -128,7 +132,11 @@ describe('useMessageSystemStaking', () => {
     it('returns not disabled when no feature messages configured', () => {
         const store = createStore(messageSystemInitialState);
         const { result } = renderHookWithStoreProvider(
-            () => useMessageSystemStaking({ networkSymbol: 'eth', locale: 'en' }),
+            () =>
+                useMessageSystemStaking({
+                    networkSymbol: ethSymbol,
+                    locale: 'en',
+                }),
             { store },
         );
 

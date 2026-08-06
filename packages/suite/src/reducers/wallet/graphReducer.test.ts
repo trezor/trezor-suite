@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 
@@ -9,7 +10,7 @@ import graphReducer from './graphReducer';
 const account: AccountIdentifier = {
     deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@ABC123:1' as StaticSessionId,
     descriptor: asAccountDescriptor('xpub123'),
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
 };
 
 const dataPoint: AccountHistoryWithBalance = {

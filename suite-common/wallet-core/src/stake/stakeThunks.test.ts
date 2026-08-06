@@ -4,7 +4,7 @@ import {
     getStakingBatch,
 } from '@suite-common/earn-staking-api';
 import { configureMockStore } from '@suite-common/test-utils';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { stakeDataActions, stakeDataInitialState } from './stakeDataSlice';
 import { stakeInitialState } from './stakeReducer';
@@ -16,6 +16,11 @@ jest.mock('@suite-common/earn-staking-api', () => ({
 }));
 
 const getStakingBatchMock = jest.mocked(getStakingBatch);
+
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
+const adaSymbol = asNetworkSymbol('ada');
+const trxSymbol = asNetworkSymbol('trx');
 
 const ethSection = {
     symbol: 'eth',
@@ -49,7 +54,7 @@ const validationError = {
 } satisfies StakingBatchErrorsItem;
 
 const initStore = ({
-    enabledNetworks = ['eth', 'sol', 'ada', 'trx'],
+    enabledNetworks = [ethSymbol, solSymbol, adaSymbol, trxSymbol],
     stake = stakeInitialState,
 }: {
     enabledNetworks?: NetworkSymbol[];
@@ -172,7 +177,7 @@ describe('initStakeDataThunk', () => {
     });
 
     it('skips fetching when bitcoin is the only enabled network', async () => {
-        const store = initStore({ enabledNetworks: ['btc'] });
+        const store = initStore({ enabledNetworks: [asNetworkSymbol('btc')] });
 
         await store.dispatch(initStakeDataThunk());
 

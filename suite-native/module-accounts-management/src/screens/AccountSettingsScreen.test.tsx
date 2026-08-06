@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -20,8 +21,8 @@ const navigationMock = {} as StackProps<
     RootStackRoutes.AccountSettings
 >['navigation'];
 
-const btcAccount = mockWalletAccount({ symbol: 'btc' });
-const ethAccount = mockWalletAccount({ symbol: 'eth' });
+const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
+const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 
 const buildRoute = (accountKey: string) =>
     ({

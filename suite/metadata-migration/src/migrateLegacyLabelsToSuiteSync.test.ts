@@ -13,7 +13,7 @@ import type {
 } from '@suite-common/suite-sync-storage';
 import type { TrezorDeviceWithState } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
@@ -83,12 +83,13 @@ const createCurrentAccountLabels = (
 });
 
 const getCurrentAccountLabels: GetCurrentAccountLabels = () => createCurrentAccountLabels();
+const btcSymbol = asNetworkSymbol('btc');
 
 const createSuiteSyncAddressLabel = (
     address: string,
     label: string,
     accountDescriptor = asAccountDescriptor('descriptor1'),
-    networkSymbol: NetworkSymbol = 'btc',
+    networkSymbol: NetworkSymbol = btcSymbol,
 ): SuiteSyncAddress => ({
     id: createSuiteSyncAddressId(address, networkSymbol),
     address,
@@ -102,7 +103,7 @@ const createSuiteSyncOutputLabel = (
     txTargetId: string,
     label: string,
     accountDescriptor = asAccountDescriptor('descriptor1'),
-    networkSymbol: NetworkSymbol = 'btc',
+    networkSymbol: NetworkSymbol = btcSymbol,
 ): SuiteSyncOutput => {
     const targetId = asTxTargetId(txTargetId);
 
@@ -176,7 +177,7 @@ describe(createMigrateLegacyLabelsToSuiteSync.name, () => {
             getAccountsByDeviceState: () => [
                 createAccount({
                     descriptor: 'descriptor1',
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                     deviceState: 'device@wallet:1',
                 }),
             ],
@@ -207,7 +208,7 @@ describe(createMigrateLegacyLabelsToSuiteSync.name, () => {
             getAccountsByDeviceState: () => [
                 createAccount({
                     descriptor: 'descriptor1',
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                     deviceState: 'device@wallet:1',
                 }),
             ],

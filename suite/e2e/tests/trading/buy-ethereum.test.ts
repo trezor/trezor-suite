@@ -1,4 +1,5 @@
 import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
@@ -32,7 +33,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             await tradingPage.assetPicker.selectBuyAsset({
                 searchFilter: 'Ethereum',
                 networkFilter: 'eth',
-                assetCryptoId: getCryptoId('eth'),
+                assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
             });
             await tradingPage.fillBuyForm({
                 amount: fiatAmount,

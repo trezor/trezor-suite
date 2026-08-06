@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
 
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TickerId, toTokenAddress } from '@suite-common/wallet-types';
 
 import { updateFiatRatesThunk } from './fiatRatesThunks';
@@ -35,7 +36,7 @@ const mockUpdateFiatRatesThunk = jest.mocked(updateFiatRatesThunk);
 
 const missingRateTickers: TickerId[] = [
     {
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
         tokenAddress: toTokenAddress('0x0000000000000000000000000000000000000001'),
     },
 ];

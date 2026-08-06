@@ -1,4 +1,5 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
@@ -8,9 +9,10 @@ import { createSuiteSyncStorageMock } from '../../../../mocks/mockCreateSuiteSyn
 import { SuiteSyncUnavailableOnDeviceError } from '../../../createEnsureSuiteSyncKeys';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
+const btcSymbol = asNetworkSymbol('btc');
 const accountKey = createAccountKey({
     accountDescriptor: asAccountDescriptor('accountDescriptor'),
-    networkSymbol: 'btc',
+    networkSymbol: btcSymbol,
     deviceStaticSessionId,
 });
 

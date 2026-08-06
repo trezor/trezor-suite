@@ -1,9 +1,11 @@
 import { testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { type SearchAccountLabels } from './searchLabels';
 import { simpleSearchTransactions } from './simpleSearchTransactions';
 
 const { getWalletTransaction } = testMocks;
+const ethSymbol = asNetworkSymbol('eth');
 
 const emptyLabels: SearchAccountLabels = {
     outputLabels: new Map(),
@@ -22,7 +24,7 @@ describe(simpleSearchTransactions.name, () => {
 
     it('does not match token-only transactions by native display symbol', () => {
         const transaction = getWalletTransaction({
-            symbol: 'eth',
+            symbol: ethSymbol,
             txid: 'aaa2',
             amount: '0',
             tokens: [
@@ -45,7 +47,7 @@ describe(simpleSearchTransactions.name, () => {
 
     it('does not match token-only transactions by native display symbol even when token symbol or name contain it', () => {
         const transaction = getWalletTransaction({
-            symbol: 'eth',
+            symbol: ethSymbol,
             txid: 'aaa6',
             type: 'contract',
             amount: '0',
@@ -80,7 +82,7 @@ describe(simpleSearchTransactions.name, () => {
 
     it('matches contract transactions with native amount by native display symbol', () => {
         const transaction = getWalletTransaction({
-            symbol: 'eth',
+            symbol: ethSymbol,
             txid: 'aaa7',
             type: 'contract',
             amount: '1.5',
@@ -97,7 +99,7 @@ describe(simpleSearchTransactions.name, () => {
 
     it('matches transactions with native internal transfers by native display symbol', () => {
         const transaction = getWalletTransaction({
-            symbol: 'eth',
+            symbol: ethSymbol,
             txid: 'aaa4',
             amount: '0',
             internalTransfers: [{ type: 'recv', from: '0x1', to: '0x2', amount: '5' }],
@@ -110,7 +112,7 @@ describe(simpleSearchTransactions.name, () => {
 
     it('still finds token transactions by token symbol', () => {
         const transaction = getWalletTransaction({
-            symbol: 'eth',
+            symbol: ethSymbol,
             txid: 'aaa5',
             amount: '0',
             tokens: [

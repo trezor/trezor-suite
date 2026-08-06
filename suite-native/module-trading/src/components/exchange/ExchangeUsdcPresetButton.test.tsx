@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type TestStore, fireEvent, screen } from '@suite-native/test-utils-store';
@@ -17,7 +18,7 @@ jest.mock('../../hooks/exchange/useExchangeFormContext', () => ({
 }));
 
 const ethAccountWithUsdc = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     accountType: 'normal',
     descriptor: asAccountDescriptor('ethusdc'),
     tokens: [

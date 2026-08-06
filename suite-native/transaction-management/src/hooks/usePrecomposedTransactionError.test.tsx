@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
 
@@ -9,6 +9,9 @@ import {
     usePrecomposedTransactionError,
 } from './usePrecomposedTransactionError';
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
 const ErrorText = (props: UsePrecomposedTransactionErrorProps) => {
     const msg = usePrecomposedTransactionError(props);
 
@@ -16,7 +19,7 @@ const ErrorText = (props: UsePrecomposedTransactionErrorProps) => {
 };
 
 describe('usePrecomposedTransactionError', () => {
-    const networkSymbol = 'btc' as NetworkSymbol;
+    const networkSymbol = btcSymbol;
     const networkDisplaySymbol = 'BTC';
 
     beforeEach(() => {
@@ -111,7 +114,7 @@ describe('usePrecomposedTransactionError', () => {
 
     it('should handle different network symbols', () => {
         const { getByText } = renderWithBasicProvider(
-            <ErrorText error="AMOUNT_NOT_ENOUGH_CURRENCY_FEE" networkSymbol="eth" />,
+            <ErrorText error="AMOUNT_NOT_ENOUGH_CURRENCY_FEE" networkSymbol={ethSymbol} />,
         );
 
         expect(

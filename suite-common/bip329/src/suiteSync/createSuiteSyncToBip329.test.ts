@@ -2,13 +2,16 @@ import {
     createSuiteSyncAddressId,
     createSuiteSyncOutputId,
 } from '@suite-common/suite-sync-storage';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asTxTargetId } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { createSuiteSyncToBip329 } from './createSuiteSyncToBip329';
 
+const btcSymbol = asNetworkSymbol('btc');
+
 const account = mockWalletAccount({
-    symbol: 'btc',
+    symbol: btcSymbol,
     deviceState: 'walletDescriptor@deviceId:1',
 });
 const address = 'bc1qq46pg2kafgjvsh7me3puv0jujdl77a5829xlrs';
@@ -19,11 +22,11 @@ describe(createSuiteSyncToBip329.name, () => {
             accountLabel: 'Account Label',
             addressLabels: [
                 {
-                    id: createSuiteSyncAddressId(address, 'btc'),
+                    id: createSuiteSyncAddressId(address, btcSymbol),
                     address,
                     label: 'Address label',
                     accountDescriptor: account.descriptor,
-                    networkSymbol: 'btc',
+                    networkSymbol: btcSymbol,
                 },
             ],
             outputLabels: [
@@ -33,7 +36,7 @@ describe(createSuiteSyncToBip329.name, () => {
                     txTargetId: asTxTargetId('1'),
                     label: 'Output label',
                     accountDescriptor: account.descriptor,
-                    networkSymbol: 'btc',
+                    networkSymbol: btcSymbol,
                 },
             ],
         };

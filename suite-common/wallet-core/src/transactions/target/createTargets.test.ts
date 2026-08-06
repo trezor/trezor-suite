@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import {
     type Target as BlockchainTarget,
@@ -38,7 +39,7 @@ const makeInternalTransfer = (overrides: Partial<InternalTransfer> = {}): Intern
 
 const account: Pick<Account, 'descriptor' | 'symbol'> = {
     descriptor: asAccountDescriptor('0xMyAddress'),
-    symbol: 'eth' as const,
+    symbol: asNetworkSymbol('eth'),
 };
 
 describe(createTargets.name, () => {

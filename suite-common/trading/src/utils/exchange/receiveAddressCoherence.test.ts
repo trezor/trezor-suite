@@ -1,6 +1,7 @@
 import { type CryptoId } from 'invity-api';
 
 import { type AddressValidator } from '@suite-common/address';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { isReceiveAddressCoherent, isReceiveAddressValid } from './receiveAddressCoherence';
 
@@ -9,6 +10,8 @@ const VALID_ETH_ADDRESS = '0xab5801a7d398351b8be11c439e05c5b3259aec9b';
 
 const ETH_CRYPTO_ID = 'ethereum' as CryptoId;
 const BTC_CRYPTO_ID = 'bitcoin' as CryptoId;
+const ethSymbol = asNetworkSymbol('eth');
+const btcSymbol = asNetworkSymbol('btc');
 
 const isAddressValid = jest.fn(
     (address: string, symbol: string) => address === VALID_ETH_ADDRESS && symbol === 'eth',
@@ -24,7 +27,7 @@ describe('isReceiveAddressValid', () => {
             throw new Error('validator blew up');
         });
 
-        expect(isReceiveAddressValid(addressValidator, VALID_ETH_ADDRESS, 'eth')).toBe(false);
+        expect(isReceiveAddressValid(addressValidator, VALID_ETH_ADDRESS, ethSymbol)).toBe(false);
     });
 });
 
@@ -36,7 +39,7 @@ describe('isReceiveAddressCoherent', () => {
                 receiveAddress: undefined,
                 receiveCryptoId: BTC_CRYPTO_ID,
                 receiveAccountKey: 'account-1',
-                receiveAccountSymbol: 'eth',
+                receiveAccountSymbol: ethSymbol,
             }),
         ).toBe(true);
     });
@@ -84,7 +87,7 @@ describe('isReceiveAddressCoherent', () => {
                 receiveAddress: VALID_ETH_ADDRESS,
                 receiveCryptoId: ETH_CRYPTO_ID,
                 receiveAccountKey: 'account-1',
-                receiveAccountSymbol: 'eth',
+                receiveAccountSymbol: ethSymbol,
             }),
         ).toBe(true);
     });
@@ -96,7 +99,7 @@ describe('isReceiveAddressCoherent', () => {
                 receiveAddress: VALID_ETH_ADDRESS,
                 receiveCryptoId: ETH_CRYPTO_ID,
                 receiveAccountKey: 'account-1',
-                receiveAccountSymbol: 'btc',
+                receiveAccountSymbol: btcSymbol,
             }),
         ).toBe(false);
     });

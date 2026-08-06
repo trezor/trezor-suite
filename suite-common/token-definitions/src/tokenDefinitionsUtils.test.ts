@@ -1,3 +1,5 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+
 import {
     buildTokenDefinitionsFromStorageFixtures,
     getSupportedDefinitionTypesFixtures,
@@ -13,9 +15,13 @@ describe('isTokenDefinitionKnown', () => {
     isTokenDefinitionKnownFixtures.forEach(
         ({ testName, tokenDefinitions, symbol, contractAddress, result }) => {
             test(testName, () => {
-                expect(isTokenDefinitionKnown(tokenDefinitions, symbol, contractAddress)).toBe(
-                    result,
-                );
+                expect(
+                    isTokenDefinitionKnown(
+                        tokenDefinitions,
+                        asNetworkSymbol(symbol),
+                        contractAddress,
+                    ),
+                ).toBe(result);
             });
         },
     );
@@ -24,7 +30,7 @@ describe('isTokenDefinitionKnown', () => {
 describe('getSupportedDefinitionTypes', () => {
     getSupportedDefinitionTypesFixtures.forEach(({ testName, symbol, result }) => {
         test(testName, () => {
-            expect(getSupportedDefinitionTypes(symbol)).toEqual(result);
+            expect(getSupportedDefinitionTypes(asNetworkSymbol(symbol))).toEqual(result);
         });
     });
 });

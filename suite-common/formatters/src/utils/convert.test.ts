@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils';
 
 import { convertCryptoToFiatAmount } from './convert';
@@ -23,7 +24,7 @@ describe('convertCryptoToFiatAmount', () => {
         expect(
             convertCryptoToFiatAmount({
                 amount,
-                symbol: 'btc',
+                symbol: asNetworkSymbol('btc'),
                 isAmountInSats,
                 rate: 22666,
             }),

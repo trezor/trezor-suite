@@ -1,5 +1,5 @@
 import { getCryptoId } from '@suite-common/trading';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 
 import dump from '../../fixtures/remembered-wallet-db-lite.json';
 import { expect, test } from '../../support/fixtures';
@@ -23,7 +23,7 @@ const buyAssets: {
 }[] = [
     {
         label: 'ETH@ETH',
-        buy: { searchFilter: 'Ethereum', assetCryptoId: getCryptoId('eth') },
+        buy: { searchFilter: 'Ethereum', assetCryptoId: getCryptoId(asNetworkSymbol('eth')) },
         receiveNetwork: 'eth',
         accountIndex: 0,
     },
@@ -32,7 +32,10 @@ const buyAssets: {
         buy: {
             searchFilter: 'USDC',
             networkFilter: 'sol',
-            assetCryptoId: getCryptoId('sol', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'),
+            assetCryptoId: getCryptoId(
+                asNetworkSymbol('sol'),
+                'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            ),
         },
         receiveNetwork: 'sol',
         accountIndex: 1,
@@ -42,7 +45,10 @@ const buyAssets: {
         buy: {
             searchFilter: 'USDT',
             networkFilter: 'eth',
-            assetCryptoId: getCryptoId('eth', '0xdac17f958d2ee523a2206206994597c13d831ec7'),
+            assetCryptoId: getCryptoId(
+                asNetworkSymbol('eth'),
+                '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            ),
         },
         receiveNetwork: 'eth',
         accountIndex: 0,
@@ -52,7 +58,7 @@ const buyAssets: {
         buy: {
             searchFilter: 'ETH',
             networkFilter: 'eth',
-            assetCryptoId: getCryptoId('eth'),
+            assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
         },
         receiveNetwork: 'eth',
         accountIndex: 0,

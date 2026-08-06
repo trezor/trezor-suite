@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Text as MockText } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
@@ -8,6 +9,9 @@ import {
     type ReviewOutputSummaryItemProps,
 } from './ReviewOutputSummaryItem';
 import { ETH_ACCOUNT_KEY } from '../../__fixtures__/walletState';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 const mockSelectIsClearSignedTradingSwap = jest.fn();
 jest.mock('../../selectors', () => ({
@@ -35,7 +39,7 @@ describe('ReviewOutputSummaryItem', () => {
         renderWithStoreProvider(
             <ReviewOutputSummaryItem
                 accountKey={ETH_ACCOUNT_KEY}
-                symbol="btc"
+                symbol={btcSymbol}
                 onLayout={jest.fn()}
                 prefix="trading-buy"
                 {...props}
@@ -86,7 +90,7 @@ describe('ReviewOutputSummaryItem', () => {
                 fee: '10',
                 state: 'active',
             },
-            symbol: 'eth',
+            symbol: ethSymbol,
         });
 
         expect(
@@ -117,7 +121,7 @@ describe('ReviewOutputSummaryItem', () => {
                 fee: '10',
                 state: 'active',
             },
-            symbol: 'eth',
+            symbol: ethSymbol,
             flowType,
         });
 
@@ -140,7 +144,7 @@ describe('ReviewOutputSummaryItem', () => {
                 fee: '10',
                 state: 'active',
             },
-            symbol: 'eth',
+            symbol: ethSymbol,
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
         });
 
@@ -170,7 +174,7 @@ describe('ReviewOutputSummaryItem', () => {
                 fee: '10',
                 state: 'active',
             },
-            symbol: 'eth',
+            symbol: ethSymbol,
         });
 
         expect(

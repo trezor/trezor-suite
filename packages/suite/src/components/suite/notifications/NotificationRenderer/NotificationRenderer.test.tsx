@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { configureMockStore, fireEvent, screen } from '@suite-common/test-utils';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
@@ -14,6 +15,8 @@ import { type NotificationViewProps } from '../Notifications/NotificationGroup/N
 
 type TradingErrorNotification = Extract<NotificationEntry, { type: 'trading-error' }>;
 type WrapNotification = Extract<NotificationEntry, { type: 'tx-wrap' | 'tx-unwrap' }>;
+
+const ethSymbol = asNetworkSymbol('eth');
 
 const mockReport = jest.fn();
 
@@ -63,15 +66,15 @@ const renderWrapToast = (payload: Omit<WrapNotification, 'context' | 'id'>) => {
 };
 
 const wrapMetadata = {
-    send: { symbol: 'eth', displaySymbol: 'ETH', amount: '1' },
-    receive: { symbol: 'eth', displaySymbol: 'WETH', amount: '1' },
+    send: { symbol: ethSymbol, displaySymbol: 'ETH', amount: '1' },
+    receive: { symbol: ethSymbol, displaySymbol: 'WETH', amount: '1' },
 } as const;
 
 const wrapToastPayload = {
     type: 'tx-wrap',
     metadata: wrapMetadata,
     descriptor: '0xdescriptor',
-    symbol: 'eth',
+    symbol: ethSymbol,
     txid: '0xwrap',
     formattedAmount: '1',
 } as const;

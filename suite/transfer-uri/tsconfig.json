@@ -12,6 +12,9 @@
         { "path": "../analytics" },
         {
             "path": "../../networks/network-module/network-module-suite-common-types"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
         }
     ]
 }

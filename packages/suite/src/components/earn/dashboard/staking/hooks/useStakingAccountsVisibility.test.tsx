@@ -1,10 +1,14 @@
 import { act, renderHook } from '@testing-library/react';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useStakingAccountsVisibility } from './useStakingAccountsVisibility';
 
 const mockGetAccountTotalStakingBalance = jest.fn<string | null, [Account]>();
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
+const adaSymbol = asNetworkSymbol('ada');
 
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),
@@ -16,7 +20,7 @@ const createMockAccount = (overrides: Partial<Account>): Account =>
     ({
         key: 'default-key',
         index: 0,
-        symbol: 'eth',
+        symbol: ethSymbol,
         networkType: 'ethereum',
         accountType: 'normal',
         formattedBalance: '0',
@@ -59,12 +63,12 @@ describe('useStakingAccountsVisibility', () => {
                     stakingAccounts: [
                         createMockAccount({
                             key: 'eth-0' as Account['key'],
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             formattedBalance: '0.005',
                         }),
                         createMockAccount({
                             key: 'sol-0' as Account['key'],
-                            symbol: 'sol',
+                            symbol: solSymbol,
                             networkType: 'solana',
                             formattedBalance: '0.001',
                         }),
@@ -84,12 +88,12 @@ describe('useStakingAccountsVisibility', () => {
                     stakingAccounts: [
                         createMockAccount({
                             key: 'eth-0' as Account['key'],
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             formattedBalance: '0.01',
                         }),
                         createMockAccount({
                             key: 'eth-1' as Account['key'],
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             formattedBalance: '1.0',
                         }),
                     ],
@@ -108,7 +112,7 @@ describe('useStakingAccountsVisibility', () => {
                     stakingAccounts: [
                         createMockAccount({
                             key: 'eth-0' as Account['key'],
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             formattedBalance: '0',
                         }),
                     ],
@@ -129,32 +133,32 @@ describe('useStakingAccountsVisibility', () => {
                     stakingAccounts: [
                         createMockAccount({
                             key: 'eth-2' as Account['key'],
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             index: 2,
                             formattedBalance: '0',
                         }),
                         createMockAccount({
                             key: 'eth-1' as Account['key'],
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             index: 1,
                             formattedBalance: '0',
                         }),
                         createMockAccount({
                             key: 'eth-0' as Account['key'],
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             index: 0,
                             formattedBalance: '0',
                         }),
                         createMockAccount({
                             key: 'sol-3' as Account['key'],
-                            symbol: 'sol',
+                            symbol: solSymbol,
                             networkType: 'solana',
                             index: 3,
                             formattedBalance: '0',
                         }),
                         createMockAccount({
                             key: 'sol-0' as Account['key'],
-                            symbol: 'sol',
+                            symbol: solSymbol,
                             networkType: 'solana',
                             index: 0,
                             formattedBalance: '0',
@@ -183,14 +187,14 @@ describe('useStakingAccountsVisibility', () => {
                     stakingAccounts: [
                         createMockAccount({
                             key: 'ada-5' as Account['key'],
-                            symbol: 'ada',
+                            symbol: adaSymbol,
                             networkType: 'cardano',
                             index: 5,
                             formattedBalance: '0',
                         }),
                         createMockAccount({
                             key: 'ada-1' as Account['key'],
-                            symbol: 'ada',
+                            symbol: adaSymbol,
                             networkType: 'cardano',
                             index: 1,
                             formattedBalance: '0',
@@ -215,19 +219,19 @@ describe('useStakingAccountsVisibility', () => {
                     stakingAccounts: [
                         createMockAccount({
                             key: 'eth-2' as Account['key'],
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             index: 2,
                             formattedBalance: '0.005',
                         }),
                         createMockAccount({
                             key: 'eth-1' as Account['key'],
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             index: 1,
                             formattedBalance: '0.005',
                         }),
                         createMockAccount({
                             key: 'eth-0' as Account['key'],
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             index: 0,
                             formattedBalance: '0.005',
                         }),
@@ -252,7 +256,7 @@ describe('useStakingAccountsVisibility', () => {
                     stakingAccounts: [
                         createMockAccount({
                             key: 'ada-legacy-0' as Account['key'],
-                            symbol: 'ada',
+                            symbol: adaSymbol,
                             networkType: 'cardano',
                             accountType: 'legacy',
                             index: 0,
@@ -260,7 +264,7 @@ describe('useStakingAccountsVisibility', () => {
                         }),
                         createMockAccount({
                             key: 'ada-normal-3' as Account['key'],
-                            symbol: 'ada',
+                            symbol: adaSymbol,
                             networkType: 'cardano',
                             accountType: 'normal',
                             index: 3,
@@ -268,7 +272,7 @@ describe('useStakingAccountsVisibility', () => {
                         }),
                         createMockAccount({
                             key: 'ada-ledger-1' as Account['key'],
-                            symbol: 'ada',
+                            symbol: adaSymbol,
                             networkType: 'cardano',
                             accountType: 'ledger',
                             index: 1,
@@ -294,32 +298,32 @@ describe('useStakingAccountsVisibility', () => {
                     stakingAccounts: [
                         createMockAccount({
                             key: 'eth-8' as Account['key'],
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             index: 8,
                             formattedBalance: '0',
                         }),
                         createMockAccount({
                             key: 'eth-7' as Account['key'],
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             index: 7,
                             formattedBalance: '0',
                         }),
                         createMockAccount({
                             key: 'sol-1' as Account['key'],
-                            symbol: 'sol',
+                            symbol: solSymbol,
                             networkType: 'solana',
                             index: 1,
                             formattedBalance: '0',
                         }),
                         createMockAccount({
                             key: 'eth-9' as Account['key'],
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                             index: 9,
                             formattedBalance: '0',
                         }),
                         createMockAccount({
                             key: 'ada-0' as Account['key'],
-                            symbol: 'ada',
+                            symbol: adaSymbol,
                             networkType: 'cardano',
                             index: 0,
                             formattedBalance: '0',
@@ -346,7 +350,7 @@ describe('useStakingAccountsVisibility', () => {
                     stakingAccounts: [
                         createMockAccount({
                             key: 'ada-ledger-0' as Account['key'],
-                            symbol: 'ada',
+                            symbol: adaSymbol,
                             networkType: 'cardano',
                             accountType: 'ledger',
                             index: 0,
@@ -354,7 +358,7 @@ describe('useStakingAccountsVisibility', () => {
                         }),
                         createMockAccount({
                             key: 'ada-legacy-0' as Account['key'],
-                            symbol: 'ada',
+                            symbol: adaSymbol,
                             networkType: 'cardano',
                             accountType: 'legacy',
                             index: 0,
@@ -362,7 +366,7 @@ describe('useStakingAccountsVisibility', () => {
                         }),
                         createMockAccount({
                             key: 'ada-normal-5' as Account['key'],
-                            symbol: 'ada',
+                            symbol: adaSymbol,
                             networkType: 'cardano',
                             accountType: 'normal',
                             index: 5,

@@ -9,6 +9,7 @@ import {
     testMocks,
     waitFor,
 } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type WalletAccountTransaction,
     asAccountDescriptor,
@@ -19,7 +20,7 @@ import { useTransactionGraphUpdater } from './useTransactionGraphUpdater';
 
 const ACCOUNT_KEY = createAccountKey({
     accountDescriptor: asAccountDescriptor('descriptor'),
-    networkSymbol: 'btc',
+    networkSymbol: asNetworkSymbol('btc'),
     deviceStaticSessionId: 'wallet@device:0',
 });
 

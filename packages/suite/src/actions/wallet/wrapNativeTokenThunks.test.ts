@@ -1,6 +1,6 @@
 import { events } from '@suite-common/analytics';
 import { configureMockStore } from '@suite-common/test-utils';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
     accountsActions,
@@ -12,6 +12,8 @@ import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { PUSH_TRANSACTION_FAILED_CAUSE } from './stablecoin-yield/signingHelpers';
 import { submitWrapNativeTokenThunk } from './wrapNativeTokenThunks';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 const mockComposeYieldWrapTransactionThunk = jest.fn();
 const mockOpenDeferredModal = jest.fn();
@@ -33,10 +35,10 @@ jest.mock('./stablecoin-yield/signingHelpers', () => ({
     getYieldSubmitErrorAnalyticsMessage: jest.fn(() => 'submit-failed'),
 }));
 
-const account = mockWalletAccount({ symbol: 'eth' }) as Account;
+const account = mockWalletAccount({ symbol: ethSymbol }) as Account;
 
 const token: YieldFlowDisplayToken & { contractAddress: string } = {
-    networkSymbol: 'eth',
+    networkSymbol: ethSymbol,
     symbol: 'WETH',
     decimals: 18,
     contractAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
@@ -179,7 +181,7 @@ describe('submitWrapNativeTokenThunk', () => {
     it('does not track the wrapped native token when it is already tracked', async () => {
         acceptModalAndSucceed();
         const accountWithTrackedToken = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             tokens: [
                 {
                     standard: 'ERC20',

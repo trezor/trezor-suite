@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeLevelLabel, type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 import { isClearSignedEvmTradingSwapTransaction } from '@suite-common/wallet-utils';
 
@@ -12,6 +13,8 @@ import {
     selectIsTransactionAlreadySigned,
 } from './selectors';
 import { type NativeSendRootState } from './sendFormSlice';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),
@@ -171,7 +174,9 @@ describe('transaction-management selectors', () => {
         });
 
         it('should be true when wallet.send.serializedTx is defined', () => {
-            const state = createMockState({ serializedTx: { tx: 'tx_data', symbol: 'btc' } });
+            const state = createMockState({
+                serializedTx: { tx: 'tx_data', symbol: btcSymbol },
+            });
 
             expect(selectIsTransactionAlreadySigned(state)).toBe(true);
         });

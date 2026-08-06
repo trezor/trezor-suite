@@ -1,7 +1,7 @@
 import type { DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { networks } from '@suite-common/wallet-config';
+import { asNetworkSymbol, networks } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
@@ -18,6 +18,9 @@ const BTC_DEVICE = mockSuiteDevice({ state: { staticSessionId: BTC_DEVICE_SSID }
 
 const ETH_DEVICE_SSID: `${string}@${string}:${number}` = '1stTestnetAddress@device_id:0';
 const ETH_DEVICE = mockSuiteDevice({ state: { staticSessionId: ETH_DEVICE_SSID } });
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
 
 const mockState: AccountsRootState & DeviceRootState = {
     wallet: {
@@ -31,7 +34,7 @@ const mockState: AccountsRootState & DeviceRootState = {
                 stellarCursor: undefined,
                 key: mockAccountKey({
                     descriptor: '1BitcoinAddress',
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                     deviceStaticSessionId: BTC_DEVICE_SSID,
                 }),
                 accountType: 'normal',
@@ -41,7 +44,7 @@ const mockState: AccountsRootState & DeviceRootState = {
                 availableBalance: '0',
                 formattedBalance: '0',
                 tokens: [],
-                symbol: 'btc',
+                symbol: btcSymbol,
                 path: "m/84'/0'/0'",
                 descriptor: asAccountDescriptor('1BitcoinAddress'),
                 addresses: {
@@ -85,13 +88,13 @@ const mockState: AccountsRootState & DeviceRootState = {
                 page: { index: 1, size: 25, total: 1 },
             },
             {
-                symbol: 'eth',
+                symbol: ethSymbol,
                 networkType: 'ethereum',
                 descriptor: asAccountDescriptor('0xEthereumAddress'),
                 deviceState: ETH_DEVICE_SSID,
                 key: mockAccountKey({
                     descriptor: '0xEthereumAddress',
-                    symbol: 'eth',
+                    symbol: ethSymbol,
                     deviceStaticSessionId: ETH_DEVICE_SSID,
                 }),
                 accountType: 'normal',
@@ -234,14 +237,14 @@ describe('accountsSelectors', () => {
     describe('selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex', () => {
         const mockSolAccount = (override: Partial<Account>): Account =>
             ({
-                symbol: 'sol',
+                symbol: solSymbol,
                 accountType: 'normal',
                 index: 0,
                 deviceState: BTC_DEVICE_SSID,
                 visible: true,
                 key: mockAccountKey({
                     descriptor: `descriptor${override.index ?? 0}`,
-                    symbol: 'sol',
+                    symbol: solSymbol,
                     deviceStaticSessionId: BTC_DEVICE_SSID,
                 }),
                 ...override,
@@ -263,7 +266,7 @@ describe('accountsSelectors', () => {
             expect(
                 selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex(
                     state,
-                    'sol',
+                    solSymbol,
                     'normal',
                     2,
                 ),
@@ -274,7 +277,7 @@ describe('accountsSelectors', () => {
             const failedAccount = mockSolAccount({
                 key: mockAccountKey({
                     descriptor: 'failed:0:sol:normal',
-                    symbol: 'sol',
+                    symbol: solSymbol,
                     deviceStaticSessionId: BTC_DEVICE_SSID,
                 }),
                 failed: true,
@@ -284,7 +287,7 @@ describe('accountsSelectors', () => {
             expect(
                 selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex(
                     createState([failedAccount]),
-                    'sol',
+                    solSymbol,
                     'normal',
                     0,
                 ),
@@ -292,7 +295,7 @@ describe('accountsSelectors', () => {
             expect(
                 selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex(
                     createState([replacementAccount]),
-                    'sol',
+                    solSymbol,
                     'normal',
                     0,
                 ),
@@ -304,7 +307,7 @@ describe('accountsSelectors', () => {
                 deviceState: ETH_DEVICE_SSID,
                 key: mockAccountKey({
                     descriptor: 'descriptor0',
-                    symbol: 'sol',
+                    symbol: solSymbol,
                     deviceStaticSessionId: ETH_DEVICE_SSID,
                 }),
             });
@@ -312,7 +315,7 @@ describe('accountsSelectors', () => {
             expect(
                 selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex(
                     createState([otherDeviceAccount]),
-                    'sol',
+                    solSymbol,
                     'normal',
                     0,
                 ),
@@ -325,7 +328,7 @@ describe('accountsSelectors', () => {
             expect(
                 selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex(
                     createState([legacyAccount]),
-                    'sol',
+                    solSymbol,
                     'normal',
                     0,
                 ),

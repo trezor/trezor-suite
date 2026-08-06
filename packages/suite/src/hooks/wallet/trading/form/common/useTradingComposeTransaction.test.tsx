@@ -4,7 +4,7 @@ import { act, waitFor } from '@testing-library/react';
 
 import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingSellFormProps } from '@suite-common/trading';
-import { networks } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -43,8 +43,8 @@ jest.mock('src/utils/wallet/trading/tradingUtils', () => ({
 
 const mockGetComposeAddressPlaceholder = getComposeAddressPlaceholder as jest.Mock;
 
-const BTC_ACCOUNT = mockWalletAccount({ symbol: 'btc', formattedBalance: '2' });
-const SOL_ACCOUNT = mockWalletAccount({ symbol: 'sol', formattedBalance: '0.4' });
+const BTC_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc'), formattedBalance: '2' });
+const SOL_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('sol'), formattedBalance: '0.4' });
 
 const feeData = (blockTime: number) => ({
     blockHeight: 0,
@@ -101,7 +101,7 @@ const renderComposeTransaction = () => {
             const compose = useTradingComposeTransaction({
                 type: 'sell',
                 account,
-                network: networks[account.symbol],
+                network: getNetwork(account.symbol),
                 methods,
                 setShowReserveBanner: jest.fn(),
             });

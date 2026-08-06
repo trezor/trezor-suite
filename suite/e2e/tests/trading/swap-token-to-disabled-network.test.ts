@@ -1,4 +1,5 @@
 import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { swapQuotesTetherStellar, tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
@@ -42,7 +43,7 @@ test.describe(
                     buyAsset: {
                         searchFilter: 'XLM',
                         networkFilter: 'xlm',
-                        assetCryptoId: getCryptoId('xlm'),
+                        assetCryptoId: getCryptoId(asNetworkSymbol('xlm')),
                     },
                 });
             });

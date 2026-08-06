@@ -10,6 +10,7 @@ import {
     createSuiteSyncOutputId,
 } from '@suite-common/suite-sync-storage';
 import { type SuiteSyncListener } from '@suite-common/suite-sync-types';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { asWalletDescriptor } from '@trezor/device-utils';
@@ -25,6 +26,7 @@ import { createStorageIdFromDeviceStaticSessionId } from '../storage/createStora
 import { createSubscriptionStorage } from '../storage/createSubscriptionStorage';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
+const btcSymbol = asNetworkSymbol('btc');
 
 const createListenerMock = (): SuiteSyncListener => ({
     onUnsubscribe: jest.fn(),
@@ -194,10 +196,10 @@ describe(createEnsureSubscribedStorage.name, () => {
         storageEmitters.accounts.forEach(it =>
             it.onChange([
                 {
-                    id: createSuiteSyncAccountId(asAccountDescriptor('account-1'), 'btc'),
+                    id: createSuiteSyncAccountId(asAccountDescriptor('account-1'), btcSymbol),
                     accountDescriptor: asAccountDescriptor('account-1'),
                     label: 'Account for Drugs',
-                    networkSymbol: 'btc',
+                    networkSymbol: btcSymbol,
                 },
             ]),
         );
@@ -208,7 +210,7 @@ describe(createEnsureSubscribedStorage.name, () => {
                     id: 'account-1-btc',
                     accountDescriptor: 'account-1',
                     label: 'Account for Drugs',
-                    networkSymbol: 'btc',
+                    networkSymbol: btcSymbol,
                 },
             ],
         );
@@ -216,8 +218,8 @@ describe(createEnsureSubscribedStorage.name, () => {
         storageEmitters.addresses.forEach(it =>
             it.onChange([
                 {
-                    id: createSuiteSyncAddressId('address', 'btc'),
-                    networkSymbol: 'btc',
+                    id: createSuiteSyncAddressId('address', btcSymbol),
+                    networkSymbol: btcSymbol,
                     accountDescriptor: asAccountDescriptor('account-1'),
                     address: 'address',
                     label: 'Address for drugs',
@@ -232,7 +234,7 @@ describe(createEnsureSubscribedStorage.name, () => {
                     accountDescriptor: 'account-1',
                     address: 'address',
                     label: 'Address for drugs',
-                    networkSymbol: 'btc',
+                    networkSymbol: btcSymbol,
                 },
             ],
         );
@@ -241,7 +243,7 @@ describe(createEnsureSubscribedStorage.name, () => {
             it.onChange([
                 {
                     id: createSuiteSyncOutputId('transaction-id', '0'),
-                    networkSymbol: 'btc',
+                    networkSymbol: btcSymbol,
                     accountDescriptor: asAccountDescriptor('account-1'),
                     txId: 'transaction-id',
                     txTargetId: '0',

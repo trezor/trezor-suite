@@ -1,12 +1,13 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import type { FindNetworkSymbolForProtocol } from '@suite-common/networks';
+import { type FindNetworkSymbolForProtocol } from '@suite-common/networks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import * as protocolConstants from './constants/protocolConstants';
 import * as protocolActions from './protocolActions';
 import { type HandleProtocolRequestDeps } from './protocolActions';
 
 const findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol = protocol =>
-    protocol === 'bitcoin' ? 'btc' : null;
+    protocol === 'bitcoin' ? asNetworkSymbol('btc') : null;
 
 const createHandleProtocolRequestDeps = () => {
     const dispatch = jest.fn();

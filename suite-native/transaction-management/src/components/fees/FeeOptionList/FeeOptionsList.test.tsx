@@ -1,6 +1,6 @@
 import { type StateFromReducersMapObject, combineReducers } from '@reduxjs/toolkit';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
@@ -33,6 +33,9 @@ const mockSelectConvertedNetworkFeeLevelFeePerUnit = jest.requireMock(
     '@suite-common/wallet-core',
 ).selectConvertedNetworkFeeLevelFeePerUnit;
 
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+
 describe('FeeOptionsList', () => {
     const createMockFeeLevels = () =>
         createFeeLevels({
@@ -43,7 +46,7 @@ describe('FeeOptionsList', () => {
 
     const defaultProps = {
         feeLevels: createMockFeeLevels(),
-        symbol: 'eth' as NetworkSymbol,
+        symbol: ethSymbol,
         isLoading: false,
         onSelectedFeeLevel: jest.fn(),
     };
@@ -146,7 +149,7 @@ describe('FeeOptionsList', () => {
             };
 
             const { getByText, queryByText } = renderFeeOptionsList({
-                props: { feeLevels, symbol: 'btc' },
+                props: { feeLevels, symbol: btcSymbol },
             });
 
             expect(getByText(/Low/)).toBeTruthy();

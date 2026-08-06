@@ -1,5 +1,6 @@
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { UINT256_MAX } from '@suite-common/suite-constants';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -17,6 +18,8 @@ import {
     sanitizeHex,
     strip,
 } from './ethUtils';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 const VALID_CLAIM_ADDRESS = asEvmAddress('0x1111111111111111111111111111111111111111');
 
@@ -199,16 +202,28 @@ describe('eth utils', () => {
 
         it('classifies WETH calldata as wrap/unwrap when the target is the wrapped-native contract', () => {
             expect(
-                getEvmTransactionPurpose({ networkSymbol: 'eth', to: WETH, data: WRAP_DATA }),
+                getEvmTransactionPurpose({
+                    networkSymbol: ethSymbol,
+                    to: WETH,
+                    data: WRAP_DATA,
+                }),
             ).toBe('wrap');
             expect(
-                getEvmTransactionPurpose({ networkSymbol: 'eth', to: WETH, data: UNWRAP_DATA }),
+                getEvmTransactionPurpose({
+                    networkSymbol: ethSymbol,
+                    to: WETH,
+                    data: UNWRAP_DATA,
+                }),
             ).toBe('unwrap');
         });
 
         it('keeps WETH calldata "unknown" for a non-wrapped-native target', () => {
             expect(
-                getEvmTransactionPurpose({ networkSymbol: 'eth', to: OTHER, data: WRAP_DATA }),
+                getEvmTransactionPurpose({
+                    networkSymbol: ethSymbol,
+                    to: OTHER,
+                    data: WRAP_DATA,
+                }),
             ).toBe('unknown');
         });
 
@@ -219,7 +234,11 @@ describe('eth utils', () => {
                 '0000000000000000000000000000000000000000000000000de0b6b3a7640000';
 
             expect(
-                getEvmTransactionPurpose({ networkSymbol: 'eth', to: OTHER, data: approveData }),
+                getEvmTransactionPurpose({
+                    networkSymbol: ethSymbol,
+                    to: OTHER,
+                    data: approveData,
+                }),
             ).toBe('approve');
         });
 
@@ -240,9 +259,9 @@ describe('eth utils', () => {
             '0000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae3';
 
         const wrap = (to: string | null, data: string | null) =>
-            isWrapNativeTx({ networkSymbol: 'eth', to, data });
+            isWrapNativeTx({ networkSymbol: ethSymbol, to, data });
         const unwrap = (to: string | null, data: string | null) =>
-            isUnwrapNativeTx({ networkSymbol: 'eth', to, data });
+            isUnwrapNativeTx({ networkSymbol: ethSymbol, to, data });
 
         it('isWrapNativeTx detects deposit() to the wrapped-native contract', () => {
             expect(wrap(WETH, DEPOSIT)).toBe(true);

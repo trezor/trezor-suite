@@ -6,7 +6,11 @@ import {
     type TradingAssetOption,
     type TradingAssetOptionWithContractAddress,
 } from '@suite-common/trading';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    asNetworkSymbol,
+    toNetworkSymbolNonTestnet,
+} from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils';
 
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
@@ -24,6 +28,9 @@ jest.mock('@suite-common/trading', () => ({
         buildAssetOptions: jest.fn(() => ({ assets: [] })),
     }),
 }));
+
+const ethSymbol = toNetworkSymbolNonTestnet('eth');
+const polSymbol = asNetworkSymbol('pol');
 
 const createAccount = (symbol: NetworkSymbol): AccountWithSuiteSyncLabel =>
     ({
@@ -55,14 +62,14 @@ const createAsset = (
         displaySymbol: 'ASSET',
         contractAddress: '0x1',
         networkName: 'Ethereum',
-        networkSymbol: 'eth',
+        networkSymbol: ethSymbol,
         ...assetOverrides,
     };
 };
 
 describe('useAccountsWithTokenDisplayNames', () => {
-    const ethereumAccount = createAccount('eth');
-    const polygonAccount = createAccount('pol');
+    const ethereumAccount = createAccount(ethSymbol);
+    const polygonAccount = createAccount(polSymbol);
 
     const accountOption: AccountWithTokensOption = {
         type: 'account',

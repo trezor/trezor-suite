@@ -1,4 +1,5 @@
 import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import {
@@ -54,7 +55,7 @@ test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T
                 buyAsset: {
                     searchFilter: 'Bitcoin',
                     networkFilter: 'btc',
-                    assetCryptoId: getCryptoId('btc'),
+                    assetCryptoId: getCryptoId(asNetworkSymbol('btc')),
                 },
                 selectReceiveAddress: async () => {
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');

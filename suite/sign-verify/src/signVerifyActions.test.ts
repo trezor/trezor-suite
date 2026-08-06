@@ -1,5 +1,6 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { showAddress, sign, verify } from './signVerifyActions';
@@ -8,7 +9,7 @@ const PATH = 'PATH';
 const ADDRESS = 'ADDRESS';
 const MESSAGE = 'MESSAGE';
 const SIGNATURE = 'SIGNATURE';
-const ACCOUNT = mockWalletAccount({ symbol: 'btc' });
+const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 
 describe('Sign/Verify actions', () => {
     let store: any;

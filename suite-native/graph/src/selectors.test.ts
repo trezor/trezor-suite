@@ -1,6 +1,6 @@
 import type { DeviceRootState } from '@suite-common/device';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type DiscoveryRootState,
@@ -147,7 +147,7 @@ describe('selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning', () => {
 
     it('should return portfolio graph account items when discovery is not running', () => {
         const account = mockWalletAccount({
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             descriptor: asAccountDescriptor('descriptor1'),
         });
 

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
@@ -5,6 +6,8 @@ import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { ReviewOutputItemList, type ReviewOutputItemListProps } from './ReviewOutputItemList';
 import { ETH_ACCOUNT_KEY, SOL_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
 import { type ReviewSummaryOutput, type StatefulReviewOutput } from '../../types';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 let mockSelectTransactionReviewOutputsFromDraftReturnValue: StatefulReviewOutput[] | null;
 let mockSelectIsTransactionAlreadySignedValue: boolean;
@@ -52,7 +55,7 @@ describe('ReviewOutputItemList', () => {
 
     it('should render Error when account is not found', () => {
         const { getByText } = renderReviewOutputItemList({
-            accountKey: mockAccountKey({ symbol: 'btc', descriptor: 'btcAccount3' }),
+            accountKey: mockAccountKey({ symbol: btcSymbol, descriptor: 'btcAccount3' }),
         });
 
         expect(

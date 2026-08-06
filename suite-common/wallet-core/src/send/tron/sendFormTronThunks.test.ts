@@ -1,5 +1,5 @@
 import { configureMockStore } from '@suite-common/test-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
@@ -7,11 +7,12 @@ import { composeTronTransactionFeeLevelsThunk } from './sendFormTronThunks';
 
 const OWNER = 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9';
 const COLD_RECIPIENT = 'TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr';
+const trxSymbol = asNetworkSymbol('trx');
 
-const network = getNetwork('trx');
+const network = getNetwork(trxSymbol);
 
 const account = {
-    symbol: 'trx',
+    symbol: trxSymbol,
     networkType: 'tron',
     accountType: 'normal',
     index: 0,

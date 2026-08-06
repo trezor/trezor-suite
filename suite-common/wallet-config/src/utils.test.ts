@@ -1,5 +1,5 @@
 import { networks } from './networksConfig';
-import { type NetworkSymbol } from './types';
+import { asNetworkSymbol } from './types';
 import {
     filterNetworksByName,
     getMainnets,
@@ -84,41 +84,30 @@ describe(isAccountOfNetwork.name, () => {
 });
 
 describe('isAccountBasedNetwork', () => {
-    it.each<NetworkSymbol>(['btc', 'ada'])('returns false for %s', symbol => {
-        expect(isAccountBasedNetwork(symbol)).toBe(false);
+    it.each(['btc', 'ada'])('returns false for %s', symbol => {
+        expect(isAccountBasedNetwork(asNetworkSymbol(symbol))).toBe(false);
     });
 
-    it.each<NetworkSymbol>(['eth', 'sol', 'hype'])('returns true for %s', symbol => {
-        expect(isAccountBasedNetwork(symbol)).toBe(true);
+    it.each(['eth', 'sol', 'hype'])('returns true for %s', symbol => {
+        expect(isAccountBasedNetwork(asNetworkSymbol(symbol))).toBe(true);
     });
 
     it('returns throw for unknown network type', () => {
-        expect(() => isAccountBasedNetwork('unknown' as NetworkSymbol)).toThrow();
+        expect(() => isAccountBasedNetwork(asNetworkSymbol('unknown'))).toThrow();
     });
 });
 
 describe(isNetworkUsingExternalBackend.name, () => {
-    it.each<NetworkSymbol>([
-        'bsc',
-        'pol',
-        'op',
-        'arb',
-        'base',
-        'rhc',
-        'hype',
-        'avax',
-        'sol',
-        'dsol',
-    ])('returns true for %s', symbol => {
-        expect(isNetworkUsingExternalBackend(symbol)).toBe(true);
-    });
-
-    it.each<NetworkSymbol>(['btc', 'eth', 'trx', 'xlm', 'xrp', 'ada'])(
-        'returns false for %s',
+    it.each(['bsc', 'pol', 'op', 'arb', 'base', 'rhc', 'hype', 'avax', 'sol', 'dsol'])(
+        'returns true for %s',
         symbol => {
-            expect(isNetworkUsingExternalBackend(symbol)).toBe(false);
+            expect(isNetworkUsingExternalBackend(asNetworkSymbol(symbol))).toBe(true);
         },
     );
+
+    it.each(['btc', 'eth', 'trx', 'xlm', 'xrp', 'ada'])('returns false for %s', symbol => {
+        expect(isNetworkUsingExternalBackend(asNetworkSymbol(symbol))).toBe(false);
+    });
 });
 
 describe(getNetworksWithMevProtection.name, () => {

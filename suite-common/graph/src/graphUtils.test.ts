@@ -1,5 +1,7 @@
 import { fromUnixTime } from 'date-fns';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+
 import {
     findOldestBalanceMovementTimestamp,
     getDataStepInMinutes,
@@ -12,6 +14,9 @@ import type {
     FiatGraphPointWithCryptoBalance,
     FiatRatesItem,
 } from './types';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 describe(getDataStepInMinutes.name, () => {
     it('gets the 1m step size for 1 hour interval (60 points)', () => {
@@ -351,7 +356,7 @@ describe(findOldestBalanceMovementTimestamp.name, () => {
     it('finds the oldest balance movement', () => {
         const balanceHistory: AccountWithBalanceHistory[] = [
             {
-                symbol: 'btc',
+                symbol: btcSymbol,
                 descriptor: 'awdawd',
                 balanceHistory: [
                     {
@@ -365,7 +370,7 @@ describe(findOldestBalanceMovementTimestamp.name, () => {
                 ],
             },
             {
-                symbol: 'eth',
+                symbol: ethSymbol,
                 descriptor: 'awdawd',
                 balanceHistory: [
                     {
@@ -387,8 +392,8 @@ describe(findOldestBalanceMovementTimestamp.name, () => {
         // Math.min of an empty list is Infinity; callers must guard for it (fromUnixTime(Infinity)
         // is an Invalid Date) rather than assume a real timestamp is returned.
         const noMovements: AccountWithBalanceHistory[] = [
-            { symbol: 'btc', descriptor: 'awdawd', balanceHistory: [] },
-            { symbol: 'eth', descriptor: 'awdawd', balanceHistory: [] },
+            { symbol: btcSymbol, descriptor: 'awdawd', balanceHistory: [] },
+            { symbol: ethSymbol, descriptor: 'awdawd', balanceHistory: [] },
         ];
 
         expect(Number.isFinite(findOldestBalanceMovementTimestamp(noMovements))).toBe(false);

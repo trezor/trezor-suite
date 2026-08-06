@@ -1,10 +1,13 @@
 import { configureMockStore } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { notificationsActions } from './notificationsActions';
 import { createNotificationsReducer } from './notificationsReducer';
 import { selectNotifications } from './notificationsSelectors';
 import { removeAccountEventsThunk } from './notificationsThunks';
 import { type NotificationsRootState, type NotificationsState } from './types';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const { reducer: notificationsReducer } = createNotificationsReducer();
 
@@ -44,7 +47,7 @@ const mockedNotifications: NotificationsState = [
         type: 'tx-sent',
         formattedAmount: '0',
         descriptor: 'xpub',
-        symbol: 'btc',
+        symbol: btcSymbol,
         txid: 'abcd',
     },
 ];
@@ -57,7 +60,7 @@ describe('Notifications Actions', () => {
                 type: 'tx-sent',
                 formattedAmount: '0',
                 descriptor: 'xpub',
-                symbol: 'btc',
+                symbol: btcSymbol,
                 txid: 'abcd',
             }),
         );
@@ -146,7 +149,7 @@ describe('Notifications Actions', () => {
                         type: 'tx-sent',
                         formattedAmount: '0',
                         descriptor: 'xpub',
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         txid: '1',
                     },
                     {
@@ -155,7 +158,7 @@ describe('Notifications Actions', () => {
                         type: 'tx-confirmed',
                         formattedAmount: '0',
                         descriptor: 'xpub',
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         txid: '2',
                     },
                     {
@@ -164,7 +167,7 @@ describe('Notifications Actions', () => {
                         type: 'tx-received',
                         formattedAmount: '0',
                         descriptor: 'xpub',
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         txid: '3',
                     },
                     {

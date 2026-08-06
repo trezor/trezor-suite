@@ -4,6 +4,7 @@ import { screen } from '@testing-library/react';
 
 import { configureMockStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
@@ -50,7 +51,10 @@ jest.mock(
 
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
-const account = mockWalletAccount({ symbol: 'eth', balance: '1000000000000000000' });
+const account = mockWalletAccount({
+    symbol: asNetworkSymbol('eth'),
+    balance: '1000000000000000000',
+});
 
 const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
     const store = configureMockStore({

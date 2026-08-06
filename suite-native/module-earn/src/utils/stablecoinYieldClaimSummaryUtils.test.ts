@@ -1,4 +1,5 @@
 import { type ChainRewardsWithFiat } from '@suite-common/earn-stablecoin-api';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     asAccountDescriptor,
@@ -15,10 +16,12 @@ import {
     getTotalFiatClaimableAmount,
 } from './stablecoinYieldClaimSummaryUtils';
 
+const ethSymbol = asNetworkSymbol('eth');
+
 const receiptTokenContract = toTokenAddress('0x0000000000000000000000000000000000000002');
 
 const ethereumAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: ethSymbol,
     descriptor: asAccountDescriptor('0xff6845f200000000000000000000000013fb4863'),
     accountLabel: 'Ethereum #1',
     tokens: [
@@ -32,7 +35,7 @@ const ethereumAccount = mockWalletAccount({
 });
 
 const anotherEthereumAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: ethSymbol,
     descriptor: asAccountDescriptor('0xaa6845f200000000000000000000000013fb4863'),
     accountLabel: 'Ethereum #2',
     tokens: [
@@ -46,7 +49,7 @@ const anotherEthereumAccount = mockWalletAccount({
 });
 
 const exitedEthereumAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: ethSymbol,
     descriptor: asAccountDescriptor('0xbb6845f200000000000000000000000013fb4863'),
     accountLabel: 'Ethereum #3',
     tokens: [],

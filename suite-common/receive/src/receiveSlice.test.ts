@@ -1,4 +1,5 @@
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -15,8 +16,11 @@ import {
     selectTouchedAddresses,
 } from './receiveSlice';
 
-const bitcoinAccount = mockWalletAccount({ symbol: 'btc' });
-const ethereumAccount = mockWalletAccount({ symbol: 'eth' }, networkSpecificDefaultEthereum);
+const bitcoinAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
+const ethereumAccount = mockWalletAccount(
+    { symbol: asNetworkSymbol('eth') },
+    networkSpecificDefaultEthereum,
+);
 const extraDependencies = {
     ...extraDependenciesCommonMock,
     reducers: {

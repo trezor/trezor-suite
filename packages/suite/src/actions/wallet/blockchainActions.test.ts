@@ -4,6 +4,7 @@ import {
     createNotificationsReducer,
     notificationsActions,
 } from '@suite-common/toast-notifications';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsState,
     type BlockchainState,
@@ -31,6 +32,7 @@ import {
 import * as fixtures from './__fixtures__/blockchainActions';
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
+const btcSymbol = asNetworkSymbol('btc');
 
 const { reducer: notificationsReducer } = createNotificationsReducer<TranslationKey>();
 
@@ -212,7 +214,7 @@ describe('Blockchain Actions', () => {
     fixtures.customBackend.forEach(f => {
         it(`customBackend: ${f.description}`, async () => {
             const store = mockStore(getInitialState(f.initialState as any));
-            await store.dispatch(setCustomBackendThunk(f.symbol));
+            await store.dispatch(setCustomBackendThunk(asNetworkSymbol(f.symbol)));
             expect(TrezorConnect.blockchainSetCustomBackend).toHaveBeenCalledTimes(
                 f.blockchainSetCustomBackend,
             );
@@ -227,7 +229,7 @@ describe('Blockchain Actions', () => {
                     btc: { blockHeight: 109 },
                 },
                 fees: {
-                    btc: {
+                    [btcSymbol]: {
                         status: 'loaded',
                         data: {
                             minPriorityFee: 0,

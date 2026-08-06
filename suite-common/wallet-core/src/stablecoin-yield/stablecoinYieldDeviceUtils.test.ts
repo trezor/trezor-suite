@@ -1,5 +1,6 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Features } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -16,13 +17,15 @@ const createDevice = (features: Partial<Features>): TrezorDevice =>
 const createDeviceWithFirmware = ([major, minor, patch]: [number, number, number]): TrezorDevice =>
     createDevice({ major_version: major, minor_version: minor, patch_version: patch });
 
+const ethSymbol = asNetworkSymbol('eth');
+
 const wethVaultToken = {
-    networkSymbol: 'eth',
+    networkSymbol: ethSymbol,
     contractAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
 } as const;
 
 const usdcVaultToken = {
-    networkSymbol: 'eth',
+    networkSymbol: ethSymbol,
     contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
 } as const;
 

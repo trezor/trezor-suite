@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 import { initialTronStakeTxReview, tronStakeActions, tronStakeReducer } from './tronStakeReducer';
@@ -213,7 +214,7 @@ describe('tronStakeReducer', () => {
         const signed = tronStakeReducer(
             stored,
             tronStakeActions.storeSignedTransaction({
-                serializedTx: { tx: '0xdead', symbol: 'trx' },
+                serializedTx: { tx: '0xdead', symbol: asNetworkSymbol('trx') },
             }),
         );
 

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getYieldFlowStepSequence } from '@suite-common/wallet-core';
 
 import {
@@ -13,7 +14,8 @@ import {
 // Checksummed WETH address; the helper lower-cases it for the (evm) rate key.
 const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const WETH_LOWER = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
-const ethToken = { networkSymbol: 'eth', contractAddress: WETH } as const;
+const ethSymbol = asNetworkSymbol('eth');
+const ethToken = { networkSymbol: ethSymbol, contractAddress: WETH } as const;
 
 const depositSequence = getYieldFlowStepSequence({ flowType: 'deposit' });
 const depositWithWrapSequence = getYieldFlowStepSequence({
@@ -52,14 +54,14 @@ const baseUnwrapParams: Parameters<typeof getYieldUnwrapDefaultAmount>[0] = {
     flowType: 'withdraw',
     withdrawnAmount: '0.5',
     token: {
-        networkSymbol: 'eth',
+        networkSymbol: ethSymbol,
         symbol: 'WETH',
         decimals: 18,
         contractAddress: WETH_ADDRESS,
         balance: '5',
     },
     receiptToken: {
-        networkSymbol: 'eth',
+        networkSymbol: ethSymbol,
         symbol: 'trSHETHp',
         decimals: 18,
         contractAddress: VAULT_ADDRESS,
@@ -207,7 +209,7 @@ describe('yieldFlowUtils', () => {
                 getYieldFiatRateToken({
                     step: 'wrap',
                     flowType: 'deposit',
-                    accountSymbol: 'eth',
+                    accountSymbol: ethSymbol,
                     token: ethToken,
                 }),
             ).toEqual({ symbol: 'eth' });
@@ -216,7 +218,7 @@ describe('yieldFlowUtils', () => {
                 getYieldFiatRateToken({
                     step: 'unwrap',
                     flowType: 'withdraw',
-                    accountSymbol: 'eth',
+                    accountSymbol: ethSymbol,
                     token: ethToken,
                 }),
             ).toEqual({ symbol: 'eth' });
@@ -227,7 +229,7 @@ describe('yieldFlowUtils', () => {
                 getYieldFiatRateToken({
                     step: 'action',
                     flowType: 'deposit',
-                    accountSymbol: 'eth',
+                    accountSymbol: ethSymbol,
                     token: ethToken,
                 }),
             ).toEqual({ symbol: 'eth', tokenAddress: WETH_LOWER });
@@ -238,7 +240,7 @@ describe('yieldFlowUtils', () => {
                 getYieldFiatRateToken({
                     step: 'action',
                     flowType: 'withdraw',
-                    accountSymbol: 'eth',
+                    accountSymbol: ethSymbol,
                     token: ethToken,
                 }),
             ).toBeNull();
@@ -247,7 +249,7 @@ describe('yieldFlowUtils', () => {
                 getYieldFiatRateToken({
                     step: 'action',
                     flowType: 'redeem',
-                    accountSymbol: 'eth',
+                    accountSymbol: ethSymbol,
                     token: ethToken,
                 }),
             ).toBeNull();
@@ -256,7 +258,7 @@ describe('yieldFlowUtils', () => {
                 getYieldFiatRateToken({
                     step: 'action',
                     flowType: 'deposit',
-                    accountSymbol: 'eth',
+                    accountSymbol: ethSymbol,
                     token: null,
                 }),
             ).toBeNull();
@@ -265,8 +267,8 @@ describe('yieldFlowUtils', () => {
                 getYieldFiatRateToken({
                     step: 'action',
                     flowType: 'deposit',
-                    accountSymbol: 'eth',
-                    token: { networkSymbol: 'eth', contractAddress: null },
+                    accountSymbol: ethSymbol,
+                    token: { networkSymbol: ethSymbol, contractAddress: null },
                 }),
             ).toBeNull();
         });

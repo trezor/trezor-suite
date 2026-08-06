@@ -2,6 +2,7 @@ import { type CryptoId, type ExchangeTrade, type ExchangeTradeQuoteRequest } fro
 
 import { configureMockStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
@@ -31,7 +32,7 @@ jest.mock('@suite-common/trading', () => ({
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
 const ACCOUNT: Account = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('0xAccount'),
 });
 

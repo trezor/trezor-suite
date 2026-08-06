@@ -1,4 +1,4 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
@@ -11,14 +11,16 @@ jest.mock('@trezor/connect', () => ({
 
 const DEVICE_STATE = 'device-a' as Account['deviceState'];
 const DERIVED_ADDRESS = 'TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr';
-const network = getNetwork('trx');
+const trxSymbol = asNetworkSymbol('trx');
+const ethSymbol = asNetworkSymbol('eth');
+const network = getNetwork(trxSymbol);
 const device = { state: DEVICE_STATE } as unknown as Parameters<
     typeof deriveTronColdRecipient
 >[0]['device'];
 
 const buildAccount = (overrides?: Partial<Account>): Account =>
     ({
-        symbol: 'trx',
+        symbol: trxSymbol,
         networkType: 'tron',
         accountType: 'normal',
         deviceState: DEVICE_STATE,
@@ -178,7 +180,7 @@ describe('deriveTronColdRecipient', () => {
     });
 
     it('returns undefined for a non-tron account without touching the device', async () => {
-        const account = buildAccount({ networkType: 'ethereum', symbol: 'eth' });
+        const account = buildAccount({ networkType: 'ethereum', symbol: ethSymbol });
 
         const result = await deriveTronColdRecipient({
             account,

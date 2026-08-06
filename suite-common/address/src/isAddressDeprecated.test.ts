@@ -2,9 +2,13 @@ import {
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { createAddressValidator } from './AddressValidator';
 import { isAddressDeprecated } from './isAddressDeprecated';
+
+const ltcSymbol = asNetworkSymbol('ltc');
+const bchSymbol = asNetworkSymbol('bch');
 
 // https://litecoin-project.github.io/p2sh-convert/
 // https://cashaddr.bitcoincash.org/
@@ -16,9 +20,13 @@ describe('isAddressDeprecated', () => {
     });
 
     it('returns undefined for non-deprecated LTC address', () => {
-        expect(isAddressDeprecated({ addressValidator, address: '3notValid', symbol: 'ltc' })).toBe(
-            undefined,
-        );
+        expect(
+            isAddressDeprecated({
+                addressValidator,
+                address: '3notValid',
+                symbol: ltcSymbol,
+            }),
+        ).toBe(undefined);
     });
 
     it('detects deprecated LTC address starting with "3"', () => {
@@ -26,15 +34,19 @@ describe('isAddressDeprecated', () => {
             isAddressDeprecated({
                 addressValidator,
                 address: '3NP9U8dbNzBcwhChpX8nk4F3Bf2oSucXj1',
-                symbol: 'ltc',
+                symbol: ltcSymbol,
             }),
         ).toBe('LTC_ADDRESS_INFO_URL');
     });
 
     it('returns undefined for non-deprecated BCH address', () => {
-        expect(isAddressDeprecated({ addressValidator, address: '1notValid', symbol: 'bch' })).toBe(
-            undefined,
-        );
+        expect(
+            isAddressDeprecated({
+                addressValidator,
+                address: '1notValid',
+                symbol: bchSymbol,
+            }),
+        ).toBe(undefined);
     });
 
     it('detects deprecated BCH address starting with "1"', () => {
@@ -42,7 +54,7 @@ describe('isAddressDeprecated', () => {
             isAddressDeprecated({
                 addressValidator,
                 address: '12QeMLzSrB8XH8FvEzPMVoRxVAzTr5XM2y',
-                symbol: 'bch',
+                symbol: bchSymbol,
             }),
         ).toBe('HELP_CENTER_CASHADDR_URL');
     });

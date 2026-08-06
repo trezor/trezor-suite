@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { getCoingeckoId } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { act, fireEvent, renderWithBasicProvider, waitFor } from '@suite-native/test-utils';
@@ -19,10 +19,13 @@ const networkIconHint = 'Network Icon';
 
 const contractA = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 const contractB = '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
+const opSymbol = asNetworkSymbol('op');
 
 const getTokenIconUrl = (contractAddress: string, size = 32) =>
     getAssetLogoUrl({
-        coingeckoId: getCoingeckoId('eth')!,
+        coingeckoId: getCoingeckoId(ethSymbol)!,
         contractAddress,
         density: 2,
         size,
@@ -33,16 +36,18 @@ describe('TokenIcon', () => {
         renderWithBasicProvider(<TokenIcon {...props} />);
 
     it('shows a placeholder immediately and the correct icon after resolving when a recycled instance receives new props', async () => {
-        const fresh = renderTokenIcon({ symbol: 'eth' });
+        const fresh = renderTokenIcon({ symbol: ethSymbol });
         await act(async () => {});
         const ethSource = fresh.getByHintText(tokenIconHint).props.source;
         fresh.unmount();
 
-        const { getByHintText, queryByHintText, rerender } = renderTokenIcon({ symbol: 'btc' });
+        const { getByHintText, queryByHintText, rerender } = renderTokenIcon({
+            symbol: btcSymbol,
+        });
         await act(async () => {});
 
         // simulates FlashList cell recycling: same mounted instance, new asset props
-        rerender(<TokenIcon symbol="eth" />);
+        rerender(<TokenIcon symbol={ethSymbol} />);
 
         expect(queryByHintText(tokenIconHint)).toBeNull();
 
@@ -58,11 +63,11 @@ describe('TokenIcon', () => {
         );
 
         const { getByHintText, rerender } = renderTokenIcon({
-            symbol: 'eth',
+            symbol: ethSymbol,
             contractAddress: contractA,
         });
 
-        rerender(<TokenIcon symbol="eth" contractAddress={contractB} />);
+        rerender(<TokenIcon symbol={ethSymbol} contractAddress={contractB} />);
 
         await waitFor(() => {
             expect(JSON.stringify(getByHintText(tokenIconHint).props.source)).toContain(
@@ -81,7 +86,10 @@ describe('TokenIcon', () => {
     it('shows a text placeholder when the url resolution rejects', async () => {
         (getAssetLogoContractAddresses as jest.Mock).mockRejectedValue(new Error('failed'));
 
-        const { queryByHintText } = renderTokenIcon({ symbol: 'eth', contractAddress: contractA });
+        const { queryByHintText } = renderTokenIcon({
+            symbol: ethSymbol,
+            contractAddress: contractA,
+        });
 
         await act(async () => {});
 
@@ -94,7 +102,7 @@ describe('TokenIcon', () => {
         );
 
         const { getByHintText, queryByHintText, rerender } = renderTokenIcon({
-            symbol: 'eth',
+            symbol: ethSymbol,
             contractAddress: contractA,
             size: 32,
         });
@@ -104,7 +112,7 @@ describe('TokenIcon', () => {
         fireEvent(getByHintText(tokenIconHint), 'error', { nativeEvent: {} });
         expect(queryByHintText(tokenIconHint)).toBeNull();
 
-        rerender(<TokenIcon symbol="eth" contractAddress={contractA} size={64} />);
+        rerender(<TokenIcon symbol={ethSymbol} contractAddress={contractA} size={64} />);
         await act(async () => {});
 
         expect(JSON.stringify(getByHintText(tokenIconHint).props.source)).toContain(
@@ -114,7 +122,7 @@ describe('TokenIcon', () => {
 
     it('should render without network icon for networks that are not l2 networks = op, arb, base', async () => {
         const { getByHintText, getByLabelText, queryByHintText } = renderTokenIcon({
-            symbol: 'btc',
+            symbol: btcSymbol,
             showNetworkIcon: true,
         });
 
@@ -129,7 +137,7 @@ describe('TokenIcon', () => {
 
     it('should render network with network icon for l2 networks = op, arb, base and ETH as icon', async () => {
         const { getByHintText, getByLabelText, queryByHintText } = renderTokenIcon({
-            symbol: 'op',
+            symbol: opSymbol,
             showNetworkIcon: true,
         });
 
@@ -144,7 +152,7 @@ describe('TokenIcon', () => {
     it('should render with network icon for contracts', async () => {
         const contract = '2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo' as TokenAddress;
         const { getByHintText, getByLabelText } = renderTokenIcon({
-            symbol: 'op',
+            symbol: opSymbol,
             contractAddress: contract,
             showNetworkIcon: true,
         });
@@ -162,7 +170,7 @@ describe('TokenIcon', () => {
 
         it('renders the native icon with a network badge for a wrapped-native token when set to network', async () => {
             const { getByHintText, getByLabelText } = renderTokenIcon({
-                symbol: 'eth',
+                symbol: ethSymbol,
                 contractAddress: wethContract,
                 showNetworkIcon: true,
                 wrappedTokenIcon: 'network',
@@ -181,7 +189,7 @@ describe('TokenIcon', () => {
             );
 
             const { getByHintText, getByLabelText } = renderTokenIcon({
-                symbol: 'eth',
+                symbol: ethSymbol,
                 contractAddress: wethContract,
                 showNetworkIcon: true,
             });
@@ -200,7 +208,7 @@ describe('TokenIcon', () => {
             );
 
             const { getByLabelText } = renderTokenIcon({
-                symbol: 'eth',
+                symbol: ethSymbol,
                 contractAddress: contractA,
                 showNetworkIcon: true,
                 wrappedTokenIcon: 'network',

@@ -1,5 +1,5 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { type NetworkFeature } from '@suite-common/wallet-config';
+import { type NetworkFeature, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -26,6 +26,11 @@ import {
     formatNetworkAmount,
     networkAmountToSmallestUnit,
 } from './amountUtils';
+
+const btcSymbol = asNetworkSymbol('btc');
+const xrpSymbol = asNetworkSymbol('xrp');
+const ethSymbol = asNetworkSymbol('eth');
+const ltcSymbol = asNetworkSymbol('ltc');
 
 describe('account utils', () => {
     fixtures.getUtxoFromSignedTransaction.forEach(f => {
@@ -64,23 +69,23 @@ describe('account utils', () => {
     });
 
     it('format network amount', () => {
-        expect(formatNetworkAmount('1', 'btc')).toEqual('0.00000001');
-        expect(formatNetworkAmount('1', 'xrp')).toEqual('0.000001');
-        expect(formatNetworkAmount('1', 'xrp', true)).toEqual('0.000001 XRP');
-        expect(formatNetworkAmount('1', 'eth')).toEqual('0.000000000000000001');
-        expect(formatNetworkAmount('1', 'btc', true)).toEqual('0.00000001 BTC');
-        expect(formatNetworkAmount('1', 'btc', true, true)).toEqual('1 sat BTC');
-        expect(formatNetworkAmount('', 'btc')).toEqual('0');
-        expect(formatNetworkAmount('', 'btc', true)).toEqual('0 BTC');
-        expect(formatNetworkAmount('', 'btc', true, true)).toEqual('0 sat BTC');
-        expect(() => formatNetworkAmount('aaa', 'eth')).toThrow();
+        expect(formatNetworkAmount('1', btcSymbol)).toEqual('0.00000001');
+        expect(formatNetworkAmount('1', xrpSymbol)).toEqual('0.000001');
+        expect(formatNetworkAmount('1', xrpSymbol, true)).toEqual('0.000001 XRP');
+        expect(formatNetworkAmount('1', ethSymbol)).toEqual('0.000000000000000001');
+        expect(formatNetworkAmount('1', btcSymbol, true)).toEqual('0.00000001 BTC');
+        expect(formatNetworkAmount('1', btcSymbol, true, true)).toEqual('1 sat BTC');
+        expect(formatNetworkAmount('', btcSymbol)).toEqual('0');
+        expect(formatNetworkAmount('', btcSymbol, true)).toEqual('0 BTC');
+        expect(formatNetworkAmount('', btcSymbol, true, true)).toEqual('0 sat BTC');
+        expect(() => formatNetworkAmount('aaa', ethSymbol)).toThrow();
     });
 
     it('format amount to satoshi', () => {
-        expect(networkAmountToSmallestUnit('0.00000001', 'btc')).toEqual('1');
-        expect(networkAmountToSmallestUnit('0.000001', 'xrp')).toEqual('1');
-        expect(networkAmountToSmallestUnit('0.000000000000000001', 'eth')).toEqual('1');
-        expect(networkAmountToSmallestUnit('aaa', 'eth')).toEqual('-1');
+        expect(networkAmountToSmallestUnit('0.00000001', btcSymbol)).toEqual('1');
+        expect(networkAmountToSmallestUnit('0.000001', xrpSymbol)).toEqual('1');
+        expect(networkAmountToSmallestUnit('0.000000000000000001', ethSymbol)).toEqual('1');
+        expect(networkAmountToSmallestUnit('aaa', ethSymbol)).toEqual('-1');
     });
 
     it('findAccountDevice', () => {
@@ -91,7 +96,7 @@ describe('account utils', () => {
                     descriptor: asAccountDescriptor(
                         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                     ),
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                 }),
                 [
                     mockSuiteDevice({
@@ -113,19 +118,19 @@ describe('account utils', () => {
         // Ethereum-style accounts have no `addresses` (used/unused/change) list,
         // so matching must fall back to comparing the address against the descriptor.
         const account = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             descriptor: asAccountDescriptor('0xAccountAddress'),
         });
 
-        expect(findAccountsByAddress('eth', '0xAccountAddress', [account])).toEqual([account]);
-        expect(findAccountsByAddress('eth', '0xOtherAddress', [account])).toEqual([]);
+        expect(findAccountsByAddress(ethSymbol, '0xAccountAddress', [account])).toEqual([account]);
+        expect(findAccountsByAddress(ethSymbol, '0xOtherAddress', [account])).toEqual([]);
     });
 
     it('getAccountKey', () => {
         expect(
             createAccountKey({
                 accountDescriptor: asAccountDescriptor('descriptor'),
-                networkSymbol: 'btc',
+                networkSymbol: btcSymbol,
                 deviceStaticSessionId: '1stTestnetAddress@device_id:0',
             }),
         ).toEqual('descriptor-btc-1stTestnetAddress@device_id:0');
@@ -135,7 +140,7 @@ describe('account utils', () => {
         expect(() =>
             createAccountKey({
                 accountDescriptor: asAccountDescriptor('btc-with-hyphen'),
-                networkSymbol: 'btc',
+                networkSymbol: btcSymbol,
                 deviceStaticSessionId: '1stTestnetAddress@device_id:0',
             }),
         ).toThrow(/accountDescriptor must not contain '-'/);
@@ -145,7 +150,7 @@ describe('account utils', () => {
         expect(() =>
             createAccountKey({
                 accountDescriptor: asAccountDescriptor('descriptor'),
-                networkSymbol: 'btc-bogus' as 'btc',
+                networkSymbol: asNetworkSymbol('btc-bogus'),
                 deviceStaticSessionId: '1stTestnetAddress@device_id:0',
             }),
         ).toThrow(/networkSymbol must not contain '-'/);
@@ -155,21 +160,21 @@ describe('account utils', () => {
         expect(() =>
             createAccountKey({
                 accountDescriptor: asAccountDescriptor('descriptor'),
-                networkSymbol: 'btc',
+                networkSymbol: btcSymbol,
                 deviceStaticSessionId: 'session-with-hyphen@device:0',
             }),
         ).toThrow(/deviceStaticSessionId must not contain '-'/);
     });
 
     it('isTestnet', () => {
-        expect(isTestnet('test')).toEqual(true);
-        expect(isTestnet('tsep')).toEqual(true);
-        expect(isTestnet('thod')).toEqual(true);
-        expect(isTestnet('txrp')).toEqual(true);
-        expect(isTestnet('txlm')).toEqual(true);
-        expect(isTestnet('btc')).toEqual(false);
-        expect(isTestnet('ltc')).toEqual(false);
-        expect(isTestnet('xlm')).toEqual(false);
+        expect(isTestnet(asNetworkSymbol('test'))).toEqual(true);
+        expect(isTestnet(asNetworkSymbol('tsep'))).toEqual(true);
+        expect(isTestnet(asNetworkSymbol('thod'))).toEqual(true);
+        expect(isTestnet(asNetworkSymbol('txrp'))).toEqual(true);
+        expect(isTestnet(asNetworkSymbol('txlm'))).toEqual(true);
+        expect(isTestnet(btcSymbol)).toEqual(false);
+        expect(isTestnet(ltcSymbol)).toEqual(false);
+        expect(isTestnet(asNetworkSymbol('xlm'))).toEqual(false);
     });
 
     it('getAccountIdentifier', () => {
@@ -180,7 +185,7 @@ describe('account utils', () => {
                     descriptor: asAccountDescriptor(
                         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                     ),
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                 }),
             ),
         ).toEqual({
@@ -197,7 +202,7 @@ describe('account utils', () => {
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: btcSymbol,
             accountType: 'legacy',
             metadata: {
                 key: 'xpub-foo-bar',
@@ -209,15 +214,25 @@ describe('account utils', () => {
         });
 
         expect(accountSearchFn(btcAcc, 'btc', { accountLabel: '' })).toBe(true);
-        expect(accountSearchFn(btcAcc, '', { coinsFilter: 'btc', accountLabel: '' })).toBe(true);
+        expect(
+            accountSearchFn(btcAcc, '', {
+                coinsFilter: btcSymbol,
+                accountLabel: '',
+            }),
+        ).toBe(true);
         expect(
             accountSearchFn(
                 btcAcc,
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-                { coinsFilter: 'btc', accountLabel: '' },
+                { coinsFilter: btcSymbol, accountLabel: '' },
             ),
         ).toBe(true);
-        expect(accountSearchFn(btcAcc, '', { coinsFilter: 'ltc', accountLabel: '' })).toBe(false);
+        expect(
+            accountSearchFn(btcAcc, '', {
+                coinsFilter: ltcSymbol,
+                accountLabel: '',
+            }),
+        ).toBe(false);
         expect(accountSearchFn(btcAcc, 'bitcoin', { accountLabel: '' })).toBe(true);
         expect(accountSearchFn(btcAcc, 'legacy', { accountLabel: '' })).toBe(true);
         expect(accountSearchFn(btcAcc, 'bitco', { accountLabel: '' })).toBe(true);
@@ -245,7 +260,7 @@ describe('account utils', () => {
 
     it('accountSearchFn matches displayed account type name', () => {
         const segwitAcc = mockWalletAccount({
-            symbol: 'btc',
+            symbol: btcSymbol,
             accountType: 'segwit',
         });
 
@@ -279,7 +294,7 @@ describe('account utils', () => {
 
     it('accountSearchFn empty tokens', () => {
         const ethAcc = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             tokens: [
                 mockAccountToken({ balance: '0.000069', name: 'test' }),
                 mockAccountToken({ balance: '0.0', name: 'test2' }),
@@ -292,7 +307,7 @@ describe('account utils', () => {
 
     it('accountSearchFn empty tokens pepe-like', () => {
         const ethAcc = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             tokens: [
                 mockAccountToken({ balance: '0.000069', name: 'test' }),
                 mockAccountToken({ balance: '0.0', name: 'pepe' }),
@@ -307,7 +322,7 @@ describe('account utils', () => {
         const shownToken = mockAccountToken({ balance: '0.000069', name: 'shown' });
         const hiddenToken = mockAccountToken({ balance: '1.0', name: 'hidden-spam' });
         const ethAcc = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             tokens: [shownToken, hiddenToken],
         });
 
@@ -327,11 +342,20 @@ describe('account utils', () => {
     });
 
     it('getNetworkAccountFeatures', () => {
-        const btcAcc = mockWalletAccount({ symbol: 'btc' });
-        const btcTaprootAcc = mockWalletAccount({ symbol: 'btc', accountType: 'taproot' });
-        const btcLegacy = mockWalletAccount({ symbol: 'btc', accountType: 'legacy' });
-        const ethAcc = mockWalletAccount({ symbol: 'eth' });
-        const coinjoinAcc = mockWalletAccount({ symbol: 'regtest', accountType: 'coinjoin' });
+        const btcAcc = mockWalletAccount({ symbol: btcSymbol });
+        const btcTaprootAcc = mockWalletAccount({
+            symbol: btcSymbol,
+            accountType: 'taproot',
+        });
+        const btcLegacy = mockWalletAccount({
+            symbol: btcSymbol,
+            accountType: 'legacy',
+        });
+        const ethAcc = mockWalletAccount({ symbol: ethSymbol });
+        const coinjoinAcc = mockWalletAccount({
+            symbol: asNetworkSymbol('regtest'),
+            accountType: 'coinjoin',
+        });
 
         expect(getNetworkAccountFeatures(btcAcc)).toEqual([
             'rbf',
@@ -359,9 +383,9 @@ describe('account utils', () => {
     });
 
     it('hasNetworkFeatures', () => {
-        const btcAcc = mockWalletAccount({ symbol: 'btc' });
+        const btcAcc = mockWalletAccount({ symbol: btcSymbol });
 
-        const ethAcc = mockWalletAccount({ symbol: 'eth' });
+        const ethAcc = mockWalletAccount({ symbol: ethSymbol });
 
         expect(hasNetworkFeatures(btcAcc, 'amount-unit')).toEqual(true);
         expect(hasNetworkFeatures(btcAcc, ['amount-unit', 'sign-verify'])).toEqual(true);

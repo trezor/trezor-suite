@@ -1,15 +1,19 @@
 import { renderHook } from '@testing-library/react';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useYieldAccountsVisibility } from './useYieldAccountsVisibility';
 import { type YieldAccountOpportunity } from '../types';
 
+const ethSymbol = asNetworkSymbol('eth');
+const baseSymbol = asNetworkSymbol('base');
+
 const createMockAccount = (overrides: Partial<Account>): Account =>
     ({
         key: 'default-key',
         index: 0,
-        symbol: 'eth',
+        symbol: ethSymbol,
         networkType: 'ethereum',
         accountType: 'normal',
         formattedBalance: '0',
@@ -142,14 +146,14 @@ describe('useYieldAccountsVisibility', () => {
         it('should prefer normal accountType over ledger when balances are equal but non-zero', () => {
             const baseLedger0 = createMockAccount({
                 key: 'base-ledger-0' as Account['key'],
-                symbol: 'base',
+                symbol: baseSymbol,
                 networkType: 'ethereum',
                 accountType: 'ledger',
                 index: 0,
             });
             const baseNormal3 = createMockAccount({
                 key: 'base-normal-3' as Account['key'],
-                symbol: 'base',
+                symbol: baseSymbol,
                 networkType: 'ethereum',
                 accountType: 'normal',
                 index: 3,
@@ -180,14 +184,14 @@ describe('useYieldAccountsVisibility', () => {
         it('should prefer normal accountType over ledger even when index is higher', () => {
             const baseLedger0 = createMockAccount({
                 key: 'base-ledger-0' as Account['key'],
-                symbol: 'base',
+                symbol: baseSymbol,
                 networkType: 'ethereum',
                 accountType: 'ledger',
                 index: 0,
             });
             const baseNormal5 = createMockAccount({
                 key: 'base-normal-5' as Account['key'],
-                symbol: 'base',
+                symbol: baseSymbol,
                 networkType: 'ethereum',
                 accountType: 'normal',
                 index: 5,

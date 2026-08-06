@@ -1,10 +1,11 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { err, ok } from '@trezor/type-utils';
 
 import { createBip329ToSuiteSync } from './createBip329ToSuiteSync';
 
 const account = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     deviceState: '1@2:3',
 });
 

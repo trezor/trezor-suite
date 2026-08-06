@@ -1,6 +1,7 @@
 import type { BankAccount, CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
 import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -87,7 +88,7 @@ jest.mock('@suite-common/trading', () => {
     };
 });
 
-const ACCOUNT = mockWalletAccount({ symbol: 'btc' });
+const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 const EURO_FIAT_CURRENCY = 'EUR' as FiatCurrencyCode;
 

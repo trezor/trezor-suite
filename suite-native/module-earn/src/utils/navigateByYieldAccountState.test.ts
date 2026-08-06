@@ -1,9 +1,12 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { toTokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { RootStackRoutes, YieldStackRoutes } from '@suite-native/navigation';
 
 import { type StablecoinYieldNavigationItem } from '../types';
 import { navigateByYieldAccountState } from './navigateByYieldAccountState';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 const WETH_ADDRESS = toTokenAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
 const USDC_ADDRESS = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
@@ -41,7 +44,7 @@ describe(navigateByYieldAccountState.name, () => {
 
     it('navigates to the account detail when the account holds the receipt token', () => {
         const account = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             tokens: [mockAccountToken({ contract: RECEIPT_ADDRESS, balance: '1' })],
         });
 
@@ -55,7 +58,7 @@ describe(navigateByYieldAccountState.name, () => {
 
     it('prefers the account detail over the deposit flow when the account holds both a receipt position and a depositable balance', () => {
         const account = mockWalletAccount({
-            symbol: 'eth',
+            symbol: ethSymbol,
             formattedBalance: '1',
             tokens: [mockAccountToken({ contract: RECEIPT_ADDRESS, balance: '1' })],
         });
@@ -64,7 +67,10 @@ describe(navigateByYieldAccountState.name, () => {
     });
 
     it('routes a native-only account into the deposit flow for a wrapped-native vault', () => {
-        const account = mockWalletAccount({ symbol: 'eth', formattedBalance: '1' });
+        const account = mockWalletAccount({
+            symbol: ethSymbol,
+            formattedBalance: '1',
+        });
 
         expect(navigate(account)).toBe('deposit-in-a-nutshell-modal');
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.YieldNavigator, {
@@ -78,13 +84,19 @@ describe(navigateByYieldAccountState.name, () => {
     });
 
     it('counts a small native balance as fully depositable (no gas reserve deducted)', () => {
-        const account = mockWalletAccount({ symbol: 'eth', formattedBalance: '0.003' });
+        const account = mockWalletAccount({
+            symbol: ethSymbol,
+            formattedBalance: '0.003',
+        });
 
         expect(navigate(account)).toBe('deposit-in-a-nutshell-modal');
     });
 
     it('routes to the insufficient-balance screen when the account is empty', () => {
-        const account = mockWalletAccount({ symbol: 'eth', formattedBalance: '0' });
+        const account = mockWalletAccount({
+            symbol: ethSymbol,
+            formattedBalance: '0',
+        });
 
         expect(navigate(account)).toBe('insufficient-balance-screen');
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.YieldInsufficientBalance, {
@@ -95,14 +107,20 @@ describe(navigateByYieldAccountState.name, () => {
     });
 
     it('does not count the native balance for a non-wrapped-native vault', () => {
-        const account = mockWalletAccount({ symbol: 'eth', formattedBalance: '5' });
+        const account = mockWalletAccount({
+            symbol: ethSymbol,
+            formattedBalance: '5',
+        });
 
         expect(navigate(account, createMockItem(USDC_ADDRESS))).toBe('insufficient-balance-screen');
     });
 
     it('shows the firmware update alert for a depositable account with unsupported firmware', () => {
         isFirmwareSupported.mockReturnValue(false);
-        const account = mockWalletAccount({ symbol: 'eth', formattedBalance: '1' });
+        const account = mockWalletAccount({
+            symbol: ethSymbol,
+            formattedBalance: '1',
+        });
 
         expect(navigate(account)).toBe('firmware-update-alert');
         expect(showFirmwareUpdateAlert).toHaveBeenCalled();
