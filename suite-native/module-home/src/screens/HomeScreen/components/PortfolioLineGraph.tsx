@@ -1,8 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useAtomValue } from 'jotai';
-
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 import {
@@ -12,6 +10,7 @@ import {
     selectHasDeviceHistoryEnabledAccounts,
     selectPortfolioGraphError,
     selectPortfolioGraphIsLoading,
+    selectPortfolioGraphPoints,
     useGraphGestureHandlers,
 } from '@suite-native/graph';
 
@@ -24,7 +23,7 @@ export const PortfolioLineGraph = ({ refetchGraph }: PortfolioLineGraphProps) =>
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
 
-    const graphPoints = useAtomValue(portfolioGraphAtoms.graphPointsAtom);
+    const graphPoints = useSelector(selectPortfolioGraphPoints);
     const isLoading = useSelector(selectPortfolioGraphIsLoading);
     const error = useSelector(selectPortfolioGraphError);
 

@@ -2,7 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { useAtomValue } from 'jotai';
 
-import type { DeviceRootState } from '@suite-common/device';
+import { type DeviceRootState } from '@suite-common/device';
+import { type FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -36,6 +37,7 @@ type AccountBalanceProps = {
     accountKey: AccountKey;
     tokenAddress?: TokenAddress;
     totalFiatBalance: BaseCurrencyAmount;
+    graphPoints: FiatGraphPointWithCryptoBalance[];
 };
 
 const CryptoBalance = ({
@@ -61,6 +63,7 @@ export const AccountDetailHeader = ({
     accountKey,
     tokenAddress,
     totalFiatBalance,
+    graphPoints,
 }: AccountBalanceProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -100,10 +103,8 @@ export const AccountDetailHeader = ({
             )}
 
             <GraphBaseCurrencyBalance
-                selectedPointFiatValueAtom={accountDetailGraphAtoms.selectedPointFiatValueAtom}
-                selectedPointTimestampAtom={accountDetailGraphAtoms.selectedPointTimestampAtom}
-                referencePointAtom={accountDetailGraphAtoms.referencePointAtom}
-                percentageChangeAtom={accountDetailGraphAtoms.percentageChangeAtom}
+                points={graphPoints}
+                selectedPointAtom={accountDetailGraphAtoms.selectedPointAtom}
                 isGestureActiveAtom={accountDetailGraphAtoms.isGestureActiveAtom}
                 showChange={isHistoryEnabledAccount}
                 totalBaseCurrencyBalance={totalFiatBalance}

@@ -6,23 +6,40 @@ import { filterKeysByPartialMatch } from '@suite-native/storage';
 
 import {
     type GraphInstanceId,
+    type GraphInstanceStateKey,
     getAccountGraphInstanceId,
+    getGraphInstanceStateKey,
     getPortfolioGraphInstanceId,
+    isGraphInstanceId,
 } from './graphInstances';
 import { RefetchGraphThunkStatus } from './graphThunkTypes';
 import { refetchGraphThunk } from './graphThunks';
-import { type TimeframeHoursValue } from './types';
+import {
+    type StoredFiatGraphPoint,
+    type StoredGroupedBalanceMovementEvent,
+    type TimeframeHoursValue,
+} from './types';
 
 // Default is 720 hours (1 month).
 export const DEFAULT_GRAPH_TIMEFRAME_HOURS = 720;
+
+export const getGraphTimeframeOrDefault = (
+    timeframeHours: TimeframeHoursValue | undefined,
+): TimeframeHoursValue => {
+    if (timeframeHours === undefined) return DEFAULT_GRAPH_TIMEFRAME_HOURS;
+
+    return timeframeHours;
+};
 
 export type GraphInstanceState = {
     timeframeHours: TimeframeHoursValue;
     isLoading?: boolean;
     error?: string | null;
+    points?: StoredFiatGraphPoint[];
+    events?: StoredGroupedBalanceMovementEvent[];
 };
 
-type Graphs = Partial<Record<GraphInstanceId, GraphInstanceState>>;
+type Graphs = Partial<Record<GraphInstanceStateKey, GraphInstanceState>>;
 
 export type GraphState = {
     graphs: Graphs;
@@ -40,8 +57,13 @@ const getOrCreateGraphInstance = (
     state: GraphState,
     instanceId: GraphInstanceId,
 ): GraphInstanceState => {
-    const graph = state.graphs[instanceId] ?? getDefaultGraphInstanceState();
-    state.graphs[instanceId] = graph;
+    if (!isGraphInstanceId(instanceId)) {
+        throw new Error('Invalid graph instance ID.');
+    }
+
+    const stateKey = getGraphInstanceStateKey(instanceId);
+    const graph = state.graphs[stateKey] ?? getDefaultGraphInstanceState();
+    state.graphs[stateKey] = graph;
 
     return graph;
 };
@@ -86,7 +108,7 @@ const graphSlice = createSlice({
             state,
             { payload: { instanceId } }: PayloadAction<{ instanceId: GraphInstanceId }>,
         ) => {
-            const graph = state.graphs[instanceId];
+            const graph = state.graphs[getGraphInstanceStateKey(instanceId)];
 
             if (!graph) return;
 
@@ -118,15 +140,19 @@ const graphSlice = createSlice({
             .addCase(refetchGraphThunk.fulfilled, (state, action) => {
                 const graphInstance = getOrCreateGraphInstance(state, action.meta.arg.instanceId);
 
-                if (
-                    action.payload.status === RefetchGraphThunkStatus.WaitingForDiscovery ||
-                    action.payload.status === RefetchGraphThunkStatus.Interrupted
-                ) {
+                if (action.payload.status !== RefetchGraphThunkStatus.Fetched) {
                     return;
                 }
 
                 graphInstance.isLoading = false;
                 graphInstance.error = null;
+                graphInstance.points = action.payload.points;
+
+                if (action.payload.events) {
+                    graphInstance.events = action.payload.events;
+                } else {
+                    delete graphInstance.events;
+                }
             })
             .addCase(refetchGraphThunk.rejected, (state, action) => {
                 const graphInstance = getOrCreateGraphInstance(state, action.meta.arg.instanceId);

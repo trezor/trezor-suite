@@ -1,7 +1,11 @@
 import { type AccountItem, type FetchGraphDataParams } from '@suite-common/graph';
 
 import { type GraphInstanceId } from './graphInstances';
-import { type TimeframeHoursValue } from './types';
+import {
+    type StoredFiatGraphPoint,
+    type StoredGroupedBalanceMovementEvent,
+    type TimeframeHoursValue,
+} from './types';
 
 export enum RefetchGraphThunkStatus {
     Fetched = 'fetched',
@@ -9,9 +13,15 @@ export enum RefetchGraphThunkStatus {
     WaitingForDiscovery = 'waitingForDiscovery',
 }
 
-export type RefetchGraphThunkResult = {
-    status: RefetchGraphThunkStatus;
-};
+export type RefetchGraphThunkResult =
+    | {
+          status: RefetchGraphThunkStatus.Fetched;
+          points: StoredFiatGraphPoint[];
+          events?: StoredGroupedBalanceMovementEvent[];
+      }
+    | {
+          status: RefetchGraphThunkStatus.Interrupted | RefetchGraphThunkStatus.WaitingForDiscovery;
+      };
 
 export type RefetchGraphThunkParams = {
     instanceId: GraphInstanceId;
