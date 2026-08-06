@@ -15,6 +15,6 @@
         "@noble/hashes": "^2.0.1",
         "@scure/base": "^2.0.0",
         "@trezor/network-module-suite-common-types": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/network-tron": "workspace:*"
     }
 }

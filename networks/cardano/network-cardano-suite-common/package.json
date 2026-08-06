@@ -13,8 +13,8 @@
     },
     "dependencies": {
         "@scure/base": "^2.0.0",
+        "@trezor/network-cardano": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
-        "@trezor/utils": "workspace:*",
         "cbor": "^10.0.12",
         "crc": "^4.3.2"
     }

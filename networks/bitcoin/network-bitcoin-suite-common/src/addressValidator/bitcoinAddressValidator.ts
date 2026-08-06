@@ -5,12 +5,12 @@ import { keccak_256 } from '@noble/hashes/sha3.js';
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
 import { base58 } from '@scure/base';
 
+import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin/constants';
 import { type AddressValidator, addressType } from '@trezor/network-module-suite-common-types';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { bchValidator } from './bchAddressValidator';
 import * as bech32 from './bech32';
-import type { BitcoinNetworkSymbol } from '../supportedNetworks';
 
 type NetworkEnvironment = 'prod' | 'testnet' | 'regtest' | 'stake';
 type HashFunction = 'sha256' | 'blake256' | 'blake256keccak256' | 'keccak256';
