@@ -49,6 +49,7 @@
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../navigation" },
+        { "path": "../scrollview" },
         { "path": "../search" },
         { "path": "../staking" },
         { "path": "../tokens" },

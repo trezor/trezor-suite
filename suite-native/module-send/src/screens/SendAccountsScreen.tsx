@@ -54,7 +54,7 @@ export const SendAccountsScreen = () => {
     };
 
     return (
-        <Screen>
+        <Screen isScrollable={false}>
             <AccountsListWithFilter
                 title={<Translation id="moduleSend.accountsList.title" />}
                 onSelectAccount={handleSelectAccount}
