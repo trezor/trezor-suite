@@ -1,7 +1,7 @@
-import { asTypedDesktopAnalytics } from '@suite/analytics';
+import { type DesktopAnalyticsDep, asTypedDesktopAnalytics } from '@suite/analytics';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import {
     type StablecoinYieldTxSimulationParams,
     buildClaimCalldata,
@@ -9,12 +9,17 @@ import {
     buildUnsignedClaimTransaction,
 } from '@suite-common/earn-stablecoin';
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
 import {
+    type EthereumGetCurrentNonceThunkState,
     STABLECOIN_YIELD_PREFIX,
+    type SynchronizeSentTransactionThunkDeps,
+    type SynchronizeSentTransactionThunkState,
+    type WalletSettingsRootState,
     type YieldEstimatedFeeLevel,
     estimateYieldFeeLevel,
     selectAddressDisplayType,
@@ -61,13 +66,22 @@ type ClaimMerklRewardsParams = {
     flowKey: string;
     rewards: ClaimMerklReward[];
 };
+type ClaimMerklRewardsThunkState = DeviceRootState &
+    EthereumGetCurrentNonceThunkState &
+    MessageSystemRootState &
+    SynchronizeSentTransactionThunkState &
+    WalletSettingsRootState;
+type ClaimMerklRewardsThunkDeps = SynchronizeSentTransactionThunkDeps & {
+    services: DesktopAnalyticsDep;
+};
 
-export const claimMerklRewardsThunk = createThunk(
+export const claimMerklRewardsThunk = createThunk<
+    { txid: string } | null | undefined,
+    ClaimMerklRewardsParams,
+    { state: ClaimMerklRewardsThunkState; extra: ClaimMerklRewardsThunkDeps }
+>(
     `${STABLECOIN_YIELD_PREFIX}/thunk/claimMerklRewards`,
-    async (
-        { account, flowKey, rewards }: ClaimMerklRewardsParams,
-        { dispatch, getState, extra },
-    ) => {
+    async ({ account, flowKey, rewards }, { dispatch, getState, extra }) => {
         const device = selectSelectedDevice(getState());
         const addressDisplayType = selectAddressDisplayType(getState());
 
