@@ -346,6 +346,12 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 }, 0);
             }
 
+            if (protocol.sendForm.label) {
+                setValue(`outputs.${outputIndex}.label`, protocol.sendForm.label, {
+                    shouldDirty: true,
+                });
+            }
+
             dispatch(fillSendForm(false));
             dispatch(resetProtocol());
             composeRequest();

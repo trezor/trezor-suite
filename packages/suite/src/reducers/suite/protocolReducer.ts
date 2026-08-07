@@ -9,6 +9,7 @@ export interface SendFormState {
     scheme: Protocol;
     address: string;
     amount?: string;
+    label?: string;
     token?: string; // ERC-681: token contract address
     tokenAmount?: string; // ERC-681: amount in token's smallest unit (uint256)
 }
@@ -35,6 +36,7 @@ const protocolReducer = (state: ProtocolState = initialState, action: Action): P
                 draft.sendForm.address = action.payload.address;
                 draft.sendForm.scheme = action.payload.scheme;
                 draft.sendForm.amount = action.payload.amount;
+                draft.sendForm.label = action.payload.label;
                 draft.sendForm.token = action.payload.token;
                 draft.sendForm.tokenAmount = action.payload.tokenAmount;
                 draft.sendForm.shouldFill = false;

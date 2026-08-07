@@ -1,6 +1,6 @@
 import { asProtocol } from '@trezor/network-module-suite-common-types';
 
-import { fillSendForm } from 'src/actions/suite/protocolActions';
+import { PROTOCOL } from 'src/actions/suite/constants';
 import type { Action } from 'src/types/suite';
 
 import fixtures from './__fixtures__/protocolReducer';
@@ -11,13 +11,19 @@ type FillSendFormCase = {
     sendForm: ProtocolState['sendForm'];
 };
 
+const fillSendForm = (shouldFill: boolean): Action => ({
+    type: PROTOCOL.FILL_SEND_FORM,
+    payload: shouldFill,
+});
+
 const fillSendFormCases: FillSendFormCase[] = [
     {
-        description: 'address and amount',
+        description: 'address, amount and label',
         sendForm: {
             scheme: asProtocol('bitcoin'),
             address: '12345abcde',
             amount: '1.02',
+            label: 'Alice',
             shouldFill: false,
         },
     },
