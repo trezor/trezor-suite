@@ -16,6 +16,9 @@
         { "path": "../theme" },
         { "path": "../../packages/asset-utils" },
         { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
         { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"

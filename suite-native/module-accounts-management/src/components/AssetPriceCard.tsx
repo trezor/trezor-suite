@@ -1,11 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    getNetworkDisplaySymbol,
-    getNetworkDisplaySymbolName,
-    isWrappedNativeToken,
-} from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
@@ -14,6 +10,7 @@ import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useDayCoinPriceChange } from '../hooks/useDayCoinPriceChange';

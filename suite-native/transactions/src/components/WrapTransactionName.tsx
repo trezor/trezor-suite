@@ -1,10 +1,11 @@
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbol, getWrappedNativeSymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getUnwrapAmountByEthereumDataHex } from '@suite-common/wallet-utils';
 import { Text, type TextProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 
 type WrapTransactionNameProps = TextProps & {
     transaction: WalletAccountTransaction;

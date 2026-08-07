@@ -12,12 +12,9 @@ import {
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    getApyPercent,
-    isStakingNetworkType,
-    isWrappedNativeToken,
-} from '@suite-common/wallet-utils';
+import { getApyPercent, isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';
 import {

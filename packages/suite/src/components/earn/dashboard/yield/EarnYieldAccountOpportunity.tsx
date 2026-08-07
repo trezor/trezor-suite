@@ -17,12 +17,10 @@ import {
     getYieldVaultContractAddress,
     isStablecoinYieldSupported,
 } from '@suite-common/wallet-core';
-import {
-    getContractAddressForNetworkSymbol,
-    isWrappedNativeToken,
-} from '@suite-common/wallet-utils';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Row, Table } from '@trezor/components';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';

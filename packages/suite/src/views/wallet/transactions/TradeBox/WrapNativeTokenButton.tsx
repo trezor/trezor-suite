@@ -8,13 +8,13 @@ import { goto } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import {
-    getNetworkType,
-    getWrappedNativeAddress,
-    getWrappedNativeSymbol,
-} from '@suite-common/wallet-config';
+import { getNetworkType } from '@suite-common/wallet-config';
 import { isWrappedNativeFlowSupported } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
+import {
+    getWrappedNativeAddress,
+    getWrappedNativeSymbol,
+} from '@trezor/network-ethereum-suite-common';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';

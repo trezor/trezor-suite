@@ -21,9 +21,9 @@ import {
     getNativeWrapTxKind,
     getWrappedNativeTxTarget,
     isPending,
-    isWrappedNativeToken,
 } from '@suite-common/wallet-utils';
 import { type Analytics } from '@trezor/analytics-uploader';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';

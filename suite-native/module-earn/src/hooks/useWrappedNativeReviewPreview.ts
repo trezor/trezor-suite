@@ -2,9 +2,10 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { WRAPPED_NATIVE, getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type WrappedNativeFlowType, type YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { buildYieldReviewPreview } from '../utils/yieldReviewOutputUtils';
 
@@ -22,7 +23,7 @@ export const useWrappedNativeReviewPreview = ({
     unsignedTransaction,
 }: UseWrappedNativeReviewPreviewParams) => {
     const device = useSelector(selectSelectedDevice);
-    const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
+    const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
 
     const spentToken: YieldFlowDisplayToken | null = useMemo(() => {
         if (!account || !wrappedNative) {

@@ -4,12 +4,8 @@ import { join } from 'path';
 import { z } from 'zod';
 
 import { createHttpClient, isResponseError } from '@suite-common/http-client';
-import {
-    type Network,
-    getNetwork,
-    getNetworkByCoingeckoId,
-    isWrappedNativeToken,
-} from '@suite-common/wallet-config';
+import { type Network, getNetwork, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { rasterizeSvg } from './images';
 import {

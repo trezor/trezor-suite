@@ -8,10 +8,10 @@ import {
     fromGwei,
     fromIntegerString,
     getContractAddressForNetworkSymbol,
-    isWrappedNativeToken,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { YIELD_FLOW_AVAILABLE_STEPS } from '../stablecoinYieldConstants';

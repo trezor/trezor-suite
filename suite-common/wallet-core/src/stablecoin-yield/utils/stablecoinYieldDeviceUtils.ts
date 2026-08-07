@@ -1,7 +1,7 @@
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { WRAPPED_NATIVE_MIN_FIRMWARE } from '@suite-common/wallet-constants';
-import { isWrappedNativeToken } from '@suite-common/wallet-utils';
 import { DeviceModelInternal, getFirmwareVersionArray } from '@trezor/device-utils';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { type VersionArray, versionUtils } from '@trezor/utils';
 
 import type { YieldFlowDisplayToken, YieldFlowType } from '../stablecoinYieldTypes';

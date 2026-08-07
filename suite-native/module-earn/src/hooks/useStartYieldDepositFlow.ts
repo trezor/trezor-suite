@@ -4,7 +4,6 @@ import { useDispatch, useStore } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { isWrappedNativeToken } from '@suite-common/wallet-config';
 import {
     type StablecoinYieldRootState,
     type YIELD_FLOW_AVAILABLE_STEPS,
@@ -22,6 +21,7 @@ import {
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldConsents>;

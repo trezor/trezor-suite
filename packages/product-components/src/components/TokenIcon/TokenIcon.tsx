@@ -1,10 +1,6 @@
 import { isCryptoIconSymbol, isNetworkIconSymbol } from '@suite-common/icons';
-import {
-    getCoingeckoId,
-    getNetworkOptional,
-    isNetworkSymbol,
-    isWrappedNativeToken,
-} from '@suite-common/wallet-config';
+import { getCoingeckoId, getNetworkOptional, isNetworkSymbol } from '@suite-common/wallet-config';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { NativeTokenIcon } from './NativeTokenIcon';
 import { NonNativeTokenIcon } from './NonNativeTokenIcon';

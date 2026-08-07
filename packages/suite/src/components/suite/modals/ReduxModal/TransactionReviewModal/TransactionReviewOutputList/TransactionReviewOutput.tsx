@@ -9,11 +9,7 @@ import {
 import { selectLanguage } from '@suite/settings';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { type Locale, type TrezorDevice } from '@suite-common/suite-types';
-import {
-    type NetworkType,
-    getNetworkDisplaySymbol,
-    getWrappedNativeSymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts } from '@suite-common/wallet-core';
 import {
@@ -32,6 +28,7 @@ import {
     localizeNumber,
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 

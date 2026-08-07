@@ -1,8 +1,8 @@
-import { getWrappedNativeAddress } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect, { type TokenInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { getWrappedNativeAddress } from '@trezor/network-ethereum-suite-common';
 
 const WRAPPED_NATIVE_TOKEN_FETCH_TIMEOUT_MS = 15_000;
 

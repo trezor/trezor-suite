@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { WRAPPED_NATIVE, getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type WrappedNativeFlowType,
     composeYieldUnwrapTransactionThunk,
@@ -9,6 +9,7 @@ import {
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { updateEarnSelectedFeeLevelThunk } from './useComposeEarnFees';
 import { type ComposeTxResult, type ComposedTxBase, usePreparedTxFees } from './usePreparedTxFees';
@@ -45,7 +46,7 @@ export const useWrappedNativeTokenFees = ({
 
     const composeTransaction = useCallback(
         async (composeAmount: string): Promise<ComposeTxResult<ComposedTxBase>> => {
-            const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
+            const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
 
             if (!account || !wrappedNative) {
                 return { type: 'error' };

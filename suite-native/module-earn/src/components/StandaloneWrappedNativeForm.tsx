@@ -4,7 +4,7 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { Context } from '@suite-common/message-system';
-import { WRAPPED_NATIVE, getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
     type AccountsRootState,
@@ -23,6 +23,7 @@ import {
     type WrappedNativeTokenStackParamList,
     type WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { WrappedNativeTokenAmountInputCard } from './WrappedNativeTokenAmountInputCard';
 import { YieldDepositFlowScreenHeader } from './YieldDepositFlowScreenHeader';
@@ -57,7 +58,7 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
         selectAccountByKey(state, accountKey),
     );
 
-    const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
+    const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
     const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
     const wrappedBalance =
         account && wrappedNative
