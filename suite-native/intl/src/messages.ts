@@ -3004,7 +3004,7 @@ export const messages = {
                 },
                 third: {
                     title: 'Earn rewards as your assets grow in value',
-                    description: '~{apy}% APY',
+                    description: '~{apy}% Rate',
                 },
             },
             withdrawTimelineTitle: 'Withdraw',
