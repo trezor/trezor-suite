@@ -7,19 +7,19 @@ import { useDebounce } from '@trezor/react-utils';
 
 import { type YieldDepositFormValues } from '../yieldDepositFormSchema';
 
-type YieldDepositAmountInputProps = {
+type YieldAmountInputProps = {
     isDisabled?: boolean;
     onAmountChange: () => void;
     onPress?: TextInputProps['onPress'];
     tokenSymbol: string;
 };
 
-export const YieldDepositAmountInput = ({
+export const YieldAmountInput = ({
     isDisabled = false,
     onAmountChange,
     onPress,
     tokenSymbol,
-}: YieldDepositAmountInputProps) => {
+}: YieldAmountInputProps) => {
     const { trigger } = useFormContext<YieldDepositFormValues>();
     const debounce = useDebounce();
     const { hasError, onBlur, onChange, value } = useField({
