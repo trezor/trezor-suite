@@ -1,9 +1,10 @@
 import { type ExchangeTrade } from 'invity-api';
 
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { goto } from '@suite/router';
+import { type DesktopAnalyticsDep, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    type TradingRootState,
     cryptoIdToNetworkSymbolAndContractAddress,
     exchangeThunks,
     selectTradingCoinSymbolByCryptoId,
@@ -17,13 +18,16 @@ type SelectExchangeQuoteThunkProps = {
     rateType?: string;
     fractionButton?: number;
 };
+type SelectExchangeQuoteThunkState = GotoThunkState & TradingRootState;
+type SelectExchangeQuoteThunkDeps = GotoThunkDeps & { services: DesktopAnalyticsDep };
 
-export const selectExchangeQuoteThunk = createThunk(
+export const selectExchangeQuoteThunk = createThunk<
+    void,
+    SelectExchangeQuoteThunkProps,
+    { state: SelectExchangeQuoteThunkState; extra: SelectExchangeQuoteThunkDeps }
+>(
     'trading/exchange/selectQuoteWithAnalytics',
-    async (
-        { quote, exchangeType, rateType, fractionButton }: SelectExchangeQuoteThunkProps,
-        { dispatch, getState, extra },
-    ) => {
+    async ({ quote, exchangeType, rateType, fractionButton }, { dispatch, getState, extra }) => {
         const exchangeInfo = selectTradingExchangeInfo(getState());
         const quotesRequest = selectTradingExchangeQuotesRequest(getState());
 
