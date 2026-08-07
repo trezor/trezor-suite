@@ -24,6 +24,7 @@ import {
     getDecreaseOutputId,
     getStakeType,
     getTxValidityTimeoutInMs,
+    isDeviceReviewOnly,
     isEvmApprovalTx,
     isRbfBumpFeeTransaction,
     isRbfCancelTransaction,
@@ -189,6 +190,9 @@ export const TransactionReviewModalBodyInner = ({
         decision?.resolve(false);
     };
 
+    const isDeviceOnlyReview = isDeviceReviewOnly(precomposedTx);
+    const isAwaitingDeviceReview = isDeviceOnlyReview && !serializedTx;
+
     const isCancelRbfAction = isRbfCancelTransaction(precomposedTx);
     const isTronStakeFreeze =
         networkType === 'tron' &&
@@ -242,7 +246,9 @@ export const TransactionReviewModalBodyInner = ({
         <ConnectModalBackdrop canSwitchDevice>
             {!isRbfConfirmedError && (
                 <TransactionReviewModalConfirmOnDevice
-                    totalSteps={outputs.length + (showSummary ? 1 : 0)}
+                    totalSteps={
+                        isDeviceOnlyReview ? undefined : outputs.length + (showSummary ? 1 : 0)
+                    }
                     serializedTx={serializedTx}
                     isSending={isSending}
                     reviewStep={reviewStep}
@@ -282,7 +288,7 @@ export const TransactionReviewModalBodyInner = ({
                     )
                 }
                 bottomContent={
-                    areDetailsVisible ? null : (
+                    areDetailsVisible || isAwaitingDeviceReview ? null : (
                         <TransactionReviewModalBottomContent
                             decision={decision}
                             isSending={isSending}
@@ -300,7 +306,7 @@ export const TransactionReviewModalBodyInner = ({
                         />
                     )
                 }
-                width={600}
+                width={isDeviceOnlyReview ? 480 : 600}
             >
                 <TransactionReviewModalContent
                     account={account}
