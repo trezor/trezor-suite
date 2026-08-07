@@ -241,7 +241,7 @@ export const StablecoinYieldTokenOverview = ({
                     >
                         <HStack justifyContent="space-between" alignItems="center">
                             <Text variant="body-sm" color="contentSecondary">
-                                <Translation id="moduleAccounts.accountDetail.stablecoinYield.apy" />
+                                <Translation id="earn.rate" />
                             </Text>
                             <Text variant="body-sm" color={apyColor} style={applyStyle(abbrStyle)}>
                                 {apyValue}

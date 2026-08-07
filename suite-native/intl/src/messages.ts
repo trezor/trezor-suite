@@ -2038,7 +2038,6 @@ export const messages = {
                 defiYieldInfoText:
                     'This token represents your deposit and all rewards in DeFi Yield.',
                 vault: 'Vault',
-                apy: 'Annual Percentage Yield',
                 deposited: 'Deposited',
                 depositMore: 'Deposit more',
                 withdraw: 'Withdraw',
@@ -3394,6 +3393,7 @@ export const messages = {
         fullBalance: 'Full balance',
         rewards: 'Rewards',
         rewardsPerEpoch: 'Next estimated reward',
+        rate: 'Rate',
         apy: 'Annual Percentage Yield',
         apr: 'Annual Percentage Return',
         apyAbbr: 'APY',
@@ -3429,6 +3429,7 @@ export const messages = {
         apyNotAvailable: 'APY not available',
         apyPercentage: '~{apy}% APY',
         aprPercentage: '~{apy}% APR',
+        ratePercentage: '~{apy}% Rate',
         notAvailableShort: 'N/A',
         messageSystem: {
             depositDisabled: 'Deposits currently disabled.',
