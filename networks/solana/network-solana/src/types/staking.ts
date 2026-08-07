@@ -32,6 +32,7 @@ export type SolanaTxMeta = {
     feeLamports: string;
     rentLamports: string;
     feeIncludingRentLamports: string;
+    hasSplitInstruction: boolean;
 };
 
 export type Fee = {
