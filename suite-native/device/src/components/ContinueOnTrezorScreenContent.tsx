@@ -2,10 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { type RequireAllOrNone } from 'type-fest';
 
-import { selectDeviceModel } from '@suite-common/device';
+import { selectDeviceModelWithFlagshipFallback } from '@suite-common/device';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -40,7 +39,7 @@ export const ContinueOnTrezorScreenContent = ({
 }: ContinueOnTrezorScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const deviceModel = useSelector(selectDeviceModel);
+    const deviceModel = useSelector(selectDeviceModelWithFlagshipFallback);
 
     return (
         <VStack testID="@continue-on-trezor" flex={1} spacing="sp24">
@@ -60,7 +59,7 @@ export const ContinueOnTrezorScreenContent = ({
             )}
             <Box flex={1} alignItems="center" justifyContent="flex-end">
                 <DeviceImage
-                    deviceModel={deviceModel || DeviceModelInternal.T3W1}
+                    deviceModel={deviceModel}
                     size="large"
                     maxHeight={0.42 * SCREEN_HEIGHT}
                 />

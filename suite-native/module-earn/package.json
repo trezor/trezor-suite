@@ -75,7 +75,6 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/env-utils": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/react-utils": "workspace:*",

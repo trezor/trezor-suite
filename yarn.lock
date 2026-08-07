@@ -11226,6 +11226,7 @@ __metadata:
   resolution: "@suite-common/suite-utils@workspace:suite-common/suite-utils"
   dependencies:
     "@suite-common/suite-config": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -13391,7 +13392,6 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/env-utils": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/react-utils": "workspace:*"

@@ -8,6 +8,7 @@ import {
     ConfirmOnTrezorWrapper,
     useConfirmOnTrezorController,
 } from '@suite-native/confirm-on-trezor';
+import { FollowDeviceScreenContent } from '@suite-native/device';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {

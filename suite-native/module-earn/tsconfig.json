@@ -99,7 +99,6 @@
         },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/env-utils" },
         {
             "path": "../../networks/network-module/network-module-suite-common-types"
         },
