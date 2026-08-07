@@ -25,6 +25,12 @@ export const allowedDomains = [
     'sldev.cz', // Test environment, available only with VPN
     'invity.io',
     'api.github.com',
+    // Suite Dark flavour: the desktop auto-updater fetches its feed + installers from the
+    // flavour's own GitHub "continuous" release. github.com serves the feed/asset URLs, which
+    // 302-redirect to the release-assets.githubusercontent.com CDN — both must be allowlisted
+    // or request-filter cancels the update check (net::ERR_BLOCKED_BY_CLIENT).
+    'github.com',
+    'githubusercontent.com',
     'api.dropboxapi.com',
     'content.dropboxapi.com',
     'notify.dropboxapi.com',
