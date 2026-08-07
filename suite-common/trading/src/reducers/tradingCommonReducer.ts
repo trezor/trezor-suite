@@ -69,7 +69,6 @@ export interface TradingState {
     prefilledFromAccount: TradingPrefilledFromAccount;
     verifiedAddress: TradingVerifiedAddress;
     currentProviderMetadata?: ProviderMetadata;
-    favouriteAssets: Partial<Record<string, true>>;
     quoteRefetchingState: QuoteRefetchingState;
 }
 
@@ -99,7 +98,6 @@ export const initialState: TradingState = {
         key: undefined,
     },
     verifiedAddress: undefined,
-    favouriteAssets: {},
     quoteRefetchingState: {
         remainingRefetches: REFETCH_QUOTES_MAX_COUNT,
         lastFetchTimestamp: undefined,
@@ -111,23 +109,6 @@ const tradingCommonSlice = createSlice({
     name: TRADING_PREFIX,
     initialState,
     reducers: {
-        addTradeableAssetToFavourites: (
-            state: TradingState,
-            { payload }: PayloadAction<CryptoId>,
-        ) => {
-            if (!state.favouriteAssets) {
-                state.favouriteAssets = {};
-            }
-            state.favouriteAssets[payload] = true;
-        },
-        removeTradeableAssetFromFavourites: (
-            state: TradingState,
-            { payload }: PayloadAction<CryptoId>,
-        ) => {
-            if (state.favouriteAssets) {
-                delete state.favouriteAssets[payload];
-            }
-        },
         saveInfo(state: TradingState, action: PayloadAction<InfoResponse>) {
             state.info.coins = action.payload.coins;
             state.info.platforms = action.payload.platforms;
