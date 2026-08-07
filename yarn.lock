@@ -10318,7 +10318,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/dependency-injection@workspace:*, @suite-common/dependency-injection@workspace:suite-common/dependency-injection":
+"@suite-common/dependency-injection@workspace:*, @suite-common/dependency-injection@workspace:^, @suite-common/dependency-injection@workspace:suite-common/dependency-injection":
   version: 0.0.0-use.local
   resolution: "@suite-common/dependency-injection@workspace:suite-common/dependency-injection"
   dependencies:
@@ -10397,8 +10397,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-stablecoin-api@workspace:suite-common/earn-stablecoin-api"
   dependencies:
+    "@suite-common/dependency-injection": "workspace:^"
     "@suite-common/earn-stablecoin-defs": "workspace:^"
     "@suite-common/http-client": "workspace:^"
+    "@suite-common/networks": "workspace:^"
     "@suite-common/react-query": "workspace:^"
     "@suite-common/schemas": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
@@ -10472,6 +10474,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/fiat-services@workspace:suite-common/fiat-services"
   dependencies:
+    "@suite-common/networks": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
@@ -10537,7 +10540,9 @@ __metadata:
   dependencies:
     "@formatjs/intl": "npm:4.1.2"
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/discreet-mode": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -10598,6 +10603,7 @@ __metadata:
   resolution: "@suite-common/icons@workspace:suite-common/icons"
   dependencies:
     "@suite-common/http-client": "workspace:^"
+    "@suite-common/networks": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
     "@trezor/network-ethereum-suite-common": "workspace:*"
     chalk: "npm:^5.6.2"
@@ -10706,7 +10712,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/networks@workspace:*, @suite-common/networks@workspace:suite-common/networks":
+"@suite-common/networks@workspace:*, @suite-common/networks@workspace:^, @suite-common/networks@workspace:suite-common/networks":
   version: 0.0.0-use.local
   resolution: "@suite-common/networks@workspace:suite-common/networks"
   dependencies:
@@ -10817,6 +10823,7 @@ __metadata:
   dependencies:
     "@suite-common/calldata": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11103,6 +11110,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11163,8 +11171,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/transaction-search@workspace:suite-common/transaction-search"
   dependencies:
+    "@suite-common/networks": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
-    "@suite-common/wallet-config": "workspace:^"
+    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
@@ -11191,6 +11200,8 @@ __metadata:
   resolution: "@suite-common/tx-simulation@workspace:suite-common/tx-simulation"
   dependencies:
     "@blockaid/client": "npm:0.65.0"
+    "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/react-query": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
     "@suite-common/wallet-constants": "workspace:*"
@@ -11206,6 +11217,7 @@ __metadata:
   resolution: "@suite-common/validators@workspace:suite-common/validators"
   dependencies:
     "@suite-common/address": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/network-solana": "workspace:*"
@@ -11246,11 +11258,13 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/calldata": "workspace:*"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/schemas": "workspace:*"
@@ -11317,6 +11331,7 @@ __metadata:
     "@suite-common/calldata": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -16884,9 +16899,11 @@ __metadata:
     "@storybook/addon-links": "npm:^10.3.4"
     "@storybook/react": "npm:^10.3.4"
     "@storybook/react-webpack5": "npm:^10.3.4"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/jsonl": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"

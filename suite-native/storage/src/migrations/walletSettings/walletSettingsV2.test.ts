@@ -1,5 +1,7 @@
 import { type getStoredState } from 'redux-persist';
 
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
+
 import { migrateAutoEjectToWalletSettings } from './v2';
 import { createMMKVStorageMock } from '../../mmkvStorage.mock';
 
@@ -23,6 +25,7 @@ describe(migrateAutoEjectToWalletSettings.name, () => {
         };
 
         const migrated = await migrateAutoEjectToWalletSettings({
+            ...mockNetworkConfigDeps,
             getStoredState: mockGetStoredState,
             mmkvStorage: createMMKVStorageMock(),
         })(oldWalletSettings);
@@ -41,6 +44,7 @@ describe(migrateAutoEjectToWalletSettings.name, () => {
         };
 
         const migrated = await migrateAutoEjectToWalletSettings({
+            ...mockNetworkConfigDeps,
             getStoredState: mockGetStoredState,
             mmkvStorage: createMMKVStorageMock(),
         })(oldWalletSettings);

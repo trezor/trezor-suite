@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { convertCryptoToFiatAmount } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
     selectBaseCurrency,
@@ -31,6 +32,7 @@ export const useFiatFromCryptoValue = ({
     isBalance = false,
     tokenDecimals = 0,
 }: useFiatFromCryptoValueParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode, tokenAddress);
     const currentRate = useSelector((state: FiatRatesRootState) =>
@@ -39,7 +41,7 @@ export const useFiatFromCryptoValue = ({
 
     const rate = useHistoricRate ? historicRate : currentRate?.rate;
 
-    const isTestnetCoin = isTestnet(symbol);
+    const isTestnetCoin = isTestnet(networkConfigDeps, symbol);
 
     if (!cryptoValue || isTestnetCoin) return null;
 
@@ -56,6 +58,7 @@ export const useFiatFromCryptoValue = ({
     if (!rate || currentRate?.error) return null;
 
     return convertCryptoToFiatAmount({
+        ...networkConfigDeps,
         amount: cryptoValue,
         symbol,
         isAmountInSats: !isBalance,

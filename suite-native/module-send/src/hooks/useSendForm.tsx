@@ -13,8 +13,9 @@ import {
     selectDeviceUnavailableCapabilities,
     selectIsDeviceRemembered,
 } from '@suite-common/device';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
-import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -76,6 +77,7 @@ import { useRequestDelayedNavigationToOutputsReview } from './useRequestDelayedN
 import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
 import { useUtxoSelection } from './useUtxoSelection';
 
+
 const getDefaultValues = ({
     tokenContract,
     isDestinationTagEnabled,
@@ -113,6 +115,7 @@ type SendFormNavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const navigation = useNavigation<SendFormNavigationProp>();
@@ -157,7 +160,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     const deviceUnavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
 
-    const network = account ? getNetwork(account.symbol) : null;
+    const network = account ? getNetworkConfig(account.symbol) : null;
 
     const networkReserve = account
         ? getNetworkReserve({

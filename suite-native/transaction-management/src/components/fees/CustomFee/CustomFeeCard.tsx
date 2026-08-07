@@ -1,7 +1,8 @@
 import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { getNetworkType } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { getNetworkType, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { Box, Button, Card, HStack, VStack } from '@suite-native/atoms';
@@ -23,6 +24,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 }));
 
 export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { applyStyle } = useNativeStyles();
 
     const feeLevels = useSelector(selectFeeLevels);
@@ -37,7 +39,7 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
         return null;
     }
 
-    const networkType = getNetworkType(symbol);
+    const networkType = getNetworkType(networkConfigDeps, symbol);
 
     return (
         <Animated.View entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>

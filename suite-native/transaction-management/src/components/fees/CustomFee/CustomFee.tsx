@@ -1,7 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 
-import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    type NetworkSymbol,
+    type NetworkType,
+    getNetworkType,
+    selectNetworkConfigDeps,
+} from '@suite-common/wallet-config';
 import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import { Box, Button, useBottomSheetModal } from '@suite-native/atoms';
 import { useFormContext, useWatch } from '@suite-native/forms';
@@ -118,7 +124,8 @@ const CustomFeeContentWrapper = ({ accountKey, formDraft, onCustomFeeSet }: Cust
 const CUSTOM_FEE_UNSUPPORTED_NETWORK_TYPES: NetworkType[] = ['solana', 'tron'];
 
 export const CustomFee = ({ accountKey, symbol, formDraft, onCustomFeeSet }: CustomFeeProps) => {
-    const networkType = getNetworkType(symbol);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const networkType = getNetworkType(networkConfigDeps, symbol);
     if (CUSTOM_FEE_UNSUPPORTED_NETWORK_TYPES.includes(networkType)) {
         return null;
     }

@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { useAlert } from '@suite-native/alerts';
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -21,10 +22,11 @@ import { useNetworkExplorerForm } from '../hooks/useNetworkExplorerForm';
 export const NetworkBackendsScreen = ({
     route,
 }: StackProps<SettingsStackParamList, SettingsStackRoutes.SettingsNetworkBackends>) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { showAlert } = useAlert();
     const navigation = useNavigation();
 
-    const network = getNetwork(route.params.networkSymbol);
+    const network = getNetworkConfig(route.params.networkSymbol);
     const networkBackendForm = useNetworkBackendForm(network);
     const networkExplorerForm = useNetworkExplorerForm(network);
 

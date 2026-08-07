@@ -1,6 +1,7 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { invariant } from '@suite-common/suite-utils';
-import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
+import { cryptoIdToSymbol } from '@suite-common/trading';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
@@ -11,6 +12,7 @@ export type TradeableAssetNetworkInfoProps = {
 };
 
 export const TradeableAssetNetworkInfo = ({ asset }: TradeableAssetNetworkInfoProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { translate } = useTranslate();
 
     if (!asset) {
@@ -18,10 +20,10 @@ export const TradeableAssetNetworkInfo = ({ asset }: TradeableAssetNetworkInfoPr
     }
 
     const { cryptoId, contractAddress } = asset;
-    const symbol = cryptoIdToNetworkSymbol(cryptoId);
+    const symbol = cryptoIdToSymbol({ getNetworkConfig }, cryptoId);
     invariant(symbol, 'Symbol should be defined');
 
-    const { displaySymbol, name } = getNetwork(symbol);
+    const { displaySymbol, name } = getNetworkConfig(symbol);
     const showForNativeToken = displaySymbol === 'ETH' && symbol !== 'eth';
     const shouldShowNetwork = showForNativeToken || contractAddress;
 

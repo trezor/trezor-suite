@@ -1,7 +1,8 @@
 import { type LayoutChangeEvent, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkSymbol, selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type AccountKey,
     type FormDraftWithSendKeyPrefix,
@@ -100,6 +101,7 @@ export const ReviewOutputSummaryItem = ({
     flowType,
     prefix,
 }: ReviewOutputSummaryItemProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { translate } = useTranslate();
 
     const isClearSignedTradingSwap = useSelector((state: TransactionReviewOutputsState) =>
@@ -110,7 +112,7 @@ export const ReviewOutputSummaryItem = ({
         return null;
     }
     const { state, totalSpent, fee } = summaryOutput;
-    const isNetworkSupportingTokens = isNetworkWithTokens(symbol);
+    const isNetworkSupportingTokens = isNetworkWithTokens(networkConfigDeps, symbol);
 
     return (
         <View onLayout={onLayout}>

@@ -1,6 +1,11 @@
 import { D, pipe } from '@mobily/ts-belt';
 
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    type NetworkSymbol,
+    getNetworkType,
+    selectNetworkConfigDeps,
+} from '@suite-common/wallet-config';
 import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 
@@ -33,7 +38,8 @@ export const FeeOptionsList = ({
     isLoading,
     onSelectedFeeLevel,
 }: FeeOptionsListProps) => {
-    const isBtcNetworkType = getNetworkType(symbol) === 'bitcoin';
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const isBtcNetworkType = getNetworkType(networkConfigDeps, symbol) === 'bitcoin';
 
     const predefinedFeeLevels = pipe(
         feeLevels,

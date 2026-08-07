@@ -1,7 +1,8 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { InlineAlertBox, Text, VStack } from '@suite-native/atoms';
@@ -28,6 +29,7 @@ export const TokenOfNetworkAlertBody = ({
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
 }) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
@@ -37,7 +39,7 @@ export const TokenOfNetworkAlertBody = ({
 
     if (!tokenContract || !symbol) return null;
 
-    const networkName = getNetwork(symbol).name;
+    const networkName = getNetworkConfig(symbol).name;
 
     return (
         <VStack spacing="sp24">

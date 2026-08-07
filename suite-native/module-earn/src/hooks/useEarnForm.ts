@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { buildStakeData, getEthereumStakingAddressByType } from '@suite-common/staking';
-import { getNetwork } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -15,12 +16,13 @@ import { buildEarnComposeFormState } from '../utils';
 import { useComposeEarnFees } from './useComposeEarnFees';
 
 export const useEarnForm = (accountKey: AccountKey) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { translate } = useTranslate();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
 
-    const network = account ? getNetwork(account.symbol) : null;
+    const network = account ? getNetworkConfig(account.symbol) : null;
 
     const form = useForm<EarnFormValues>({
         validation: earnFormValidationSchema,

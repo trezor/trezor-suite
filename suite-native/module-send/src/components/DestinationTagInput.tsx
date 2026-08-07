@@ -1,7 +1,9 @@
 import { useRef, useState } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { type NetworkSymbol, getNetwork, getNetworkType } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     AnimatedVStack,
     HStack,
@@ -38,6 +40,7 @@ interface DestinationTagInputProps {
 }
 
 export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const inputRef = useRef<InputType | null>(null);
     const { applyStyle } = useNativeStyles();
 
@@ -126,7 +129,7 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
                         title={
                             <Translation
                                 id="moduleSend.outputs.recipients.destinationTag.warning"
-                                values={{ network: getNetwork(networkSymbol).name }}
+                                values={{ network: getNetworkConfig(networkSymbol).name }}
                             />
                         }
                     />

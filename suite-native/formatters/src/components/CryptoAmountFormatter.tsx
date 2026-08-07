@@ -2,8 +2,13 @@ import React from 'react';
 
 import { G } from '@mobily/ts-belt';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    isNetworkSymbol,
+    selectNetworkConfigDeps,
+} from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { getAccountDecimals } from '@suite-common/wallet-utils';
 import { type TextProps } from '@suite-native/atoms';
@@ -36,6 +41,7 @@ export const CryptoAmountFormatter = React.memo(
         decimals,
         ...otherProps
     }: CryptoToFiatAmountFormatterProps) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
         const { CryptoAmountFormatter: formatter } = useFormatters();
 
         if (value === null || isLoading) {
@@ -43,7 +49,10 @@ export const CryptoAmountFormatter = React.memo(
         }
 
         const maxDisplayedDecimals =
-            decimals ?? (isNetworkSymbol(symbol) ? getAccountDecimals(symbol) : undefined);
+            decimals ??
+            (isNetworkSymbol(networkConfigDeps, symbol)
+                ? getAccountDecimals(networkConfigDeps, symbol)
+                : undefined);
 
         const stringValue = G.isNumber(value) ? value.toString() : value;
 

@@ -2,7 +2,6 @@ import {
     type ChainRewardsWithFiat,
     type MerklRewardsParams,
 } from '@suite-common/earn-stablecoin-api';
-import { getNetwork } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -34,7 +33,7 @@ const getAccountChainAddressKey = (account: Account) => {
         return null;
     }
 
-    const network = getNetwork(account.symbol);
+    const network = getNetworkConfig(account.symbol);
 
     if (!network?.chainId) {
         return null;

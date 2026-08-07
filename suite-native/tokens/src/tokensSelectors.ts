@@ -3,7 +3,7 @@ import { A, pipe } from '@mobily/ts-belt';
 import type { DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkConfigDeps, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -136,8 +136,9 @@ export const selectAccountStakeTypeTransactionsWithTokenTransfers = createMemoiz
 export const selectHasDeviceAnyTokensForNetwork = (
     state: TokensRootState,
     symbol: NetworkSymbol,
+    deps: NetworkConfigDeps,
 ) => {
-    if (!isNetworkWithTokens(symbol)) {
+    if (!isNetworkWithTokens(deps, symbol)) {
         return false;
     }
 
@@ -147,10 +148,10 @@ export const selectHasDeviceAnyTokensForNetwork = (
 };
 
 export const selectNetworkSymbolsOfAccountsWithTokensAllowed = createMemoizedSelector(
-    [selectAccounts],
-    accounts =>
+    [selectAccounts, (_state, deps: NetworkConfigDeps) => deps],
+    (accounts, deps) =>
         accounts
-            .filter(a => isNetworkWithTokens(a.symbol))
+            .filter(a => isNetworkWithTokens(deps, a.symbol))
             .reduce((acc, account) => {
                 if (!acc.includes(account.symbol)) {
                     acc.push(account.symbol);

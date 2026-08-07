@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -33,6 +35,7 @@ export const useFeeCalculation = ({
     selectedFeePerUnit,
     selectedSetMaxOutputId,
 }: UseFeeCalculationParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -53,7 +56,12 @@ export const useFeeCalculation = ({
         : null;
 
     const feePerUnit = useSelector((state: FeesRootState) =>
-        selectConvertedNetworkFeeLevelFeePerUnit(state, symbol, selectedFeeLevel),
+        selectConvertedNetworkFeeLevelFeePerUnit(
+            state,
+            symbol,
+            selectedFeeLevel,
+            networkConfigDeps,
+        ),
     );
 
     const { areFeesLoading } = useFeesFetching({
