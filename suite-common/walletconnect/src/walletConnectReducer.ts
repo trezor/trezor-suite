@@ -1,6 +1,6 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { walletConnectActions } from './walletConnectActions';
 import { type PendingConnectionProposal, type WalletConnectSession } from './walletConnectTypes';
@@ -25,9 +25,11 @@ export const walletConnectInitialState: WalletConnectState = {
     pendingProposal: undefined,
 };
 
+type WalletConnectReducerDeps = ActionTypesDep<'storageLoad'>;
+
 export const prepareWalletConnectReducer = createReducerWithExtraDeps(
     walletConnectInitialState,
-    (builder, extra) => {
+    (builder, extra: WalletConnectReducerDeps) => {
         builder
             .addCase(
                 extra.actionTypes.storageLoad,

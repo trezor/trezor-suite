@@ -1,6 +1,6 @@
 import { type AnyAction } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { analyticsActions } from './analyticsActions';
 
@@ -25,9 +25,11 @@ export const analyticsInitialState: AnalyticsState = {
     loggerEnabled: undefined,
 };
 
+type AnalyticsReducerDeps = ActionTypesDep<'storageLoad'>;
+
 export const prepareAnalyticsReducer = createReducerWithExtraDeps(
     analyticsInitialState,
-    (builder, extra) => {
+    (builder, extra: AnalyticsReducerDeps) => {
         builder
             .addCase(analyticsActions.initAnalytics, (state, { payload }) => {
                 const { enabled, confirmed, instanceId, sessionId } = payload;

@@ -3,7 +3,11 @@ import { type PayloadAction } from '@reduxjs/toolkit';
 import type { ExperimentalFeature } from '@suite/experimental';
 import { type EarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-defs';
 import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createSliceWithExtraDeps,
+} from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import type { TradeServerEnvironment } from '@suite-common/trading';
 import type { DefinitionsChannel } from '@trezor/connect-common';
@@ -64,6 +68,9 @@ export interface SuiteSettingsState {
 export type SuiteSettingsRootState = {
     suiteSettings: SuiteSettingsState;
 };
+
+type SuiteSettingsSliceDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadSuiteSettings'>;
 
 export const suiteSettingsInitialState: SuiteSettingsState = {
     theme: {
@@ -190,7 +197,7 @@ const suiteSettingsSlice = createSliceWithExtraDeps({
             state.enabledSecurityChecks.deviceMeta = payload;
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: SuiteSettingsSliceDeps) => {
         builder.addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadSuiteSettings);
     },
 });
