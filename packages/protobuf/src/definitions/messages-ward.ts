@@ -3,6 +3,78 @@
 // DO NOT EDIT
 import { type Static, Type } from '@trezor/schema-utils';
 
+export type EncryptedLeaf = Static<typeof EncryptedLeaf>;
+export const EncryptedLeaf = Type.Object(
+    {
+        nonce: Type.Optional(Type.String()),
+        tag: Type.Optional(Type.String()),
+        ct: Type.Optional(Type.String()),
+    },
+    { $id: 'EncryptedLeaf' },
+);
+
+export type PlaintextLeaf = Static<typeof PlaintextLeaf>;
+export const PlaintextLeaf = Type.Object(
+    {
+        content: Type.Optional(Type.String()),
+    },
+    { $id: 'PlaintextLeaf' },
+);
+
+export type LeafContent = Static<typeof LeafContent>;
+export const LeafContent = Type.Object(
+    {
+        encoding: Type.Optional(Type.Number()),
+        encrypted: Type.Optional(EncryptedLeaf),
+        plaintext: Type.Optional(PlaintextLeaf),
+    },
+    { $id: 'LeafContent' },
+);
+
+export type WARDBatchLeaf = Static<typeof WARDBatchLeaf>;
+export const WARDBatchLeaf = Type.Object(
+    {
+        entry_key: Type.String(),
+        entry_type: Type.Optional(Type.String()),
+        content: Type.Optional(LeafContent),
+    },
+    { $id: 'WARDBatchLeaf' },
+);
+
+export type WARDChainLink = Static<typeof WARDChainLink>;
+export const WARDChainLink = Type.Object(
+    {
+        from_counter: Type.Number(),
+        from_root: Type.Optional(Type.String()),
+        to_counter: Type.Number(),
+        to_root: Type.Optional(Type.String()),
+        auth_commit: Type.String(),
+        sig_commit: Type.Optional(Type.String()),
+    },
+    { $id: 'WARDChainLink' },
+);
+
+export type WARDConfirmBatchByWM = Static<typeof WARDConfirmBatchByWM>;
+export const WARDConfirmBatchByWM = Type.Object(
+    {
+        counter: Type.Number(),
+        mac: Type.Optional(Type.String()),
+        wm_signature: Type.String(),
+    },
+    { $id: 'WARDConfirmBatchByWM' },
+);
+
+export type WARDConfirmBatchByWMAck = Static<typeof WARDConfirmBatchByWMAck>;
+export const WARDConfirmBatchByWMAck = Type.Object(
+    {
+        counter: Type.Number(),
+        new_root: Type.Optional(Type.String()),
+        ward_id: Type.Optional(Type.String()),
+        root_mac: Type.Optional(Type.String()),
+    },
+    { $id: 'WARDConfirmBatchByWMAck' },
+);
+
 export type WARDConfirmedByWM = Static<typeof WARDConfirmedByWM>;
 export const WARDConfirmedByWM = Type.Object(
     {
@@ -23,6 +95,27 @@ export const WARDConfirmedByWMAck = Type.Object(
         root_mac: Type.Optional(Type.String()),
     },
     { $id: 'WARDConfirmedByWMAck' },
+);
+
+export type WARDConfirmRevertByWM = Static<typeof WARDConfirmRevertByWM>;
+export const WARDConfirmRevertByWM = Type.Object(
+    {
+        counter: Type.Number(),
+        mac: Type.Optional(Type.String()),
+        wm_signature: Type.String(),
+    },
+    { $id: 'WARDConfirmRevertByWM' },
+);
+
+export type WARDConfirmRevertByWMAck = Static<typeof WARDConfirmRevertByWMAck>;
+export const WARDConfirmRevertByWMAck = Type.Object(
+    {
+        counter: Type.Number(),
+        new_root: Type.Optional(Type.String()),
+        ward_id: Type.Optional(Type.String()),
+        root_mac: Type.Optional(Type.String()),
+    },
+    { $id: 'WARDConfirmRevertByWMAck' },
 );
 
 export type WARDDebugSetRoot = Static<typeof WARDDebugSetRoot>;
@@ -125,9 +218,7 @@ export const WARDLookup = Type.Object(
         app_id: Type.Optional(Type.String()),
         key_type: Type.Optional(Type.String()),
         device_id: Type.Optional(Type.Number()),
-        nonce: Type.Optional(Type.String()),
-        tag: Type.Optional(Type.String()),
-        ct: Type.Optional(Type.String()),
+        content: Type.Optional(LeafContent),
     },
     { $id: 'WARDLookup' },
 );
@@ -142,6 +233,56 @@ export const WARDLookupAck = Type.Object(
         ward_id: Type.Optional(Type.String()),
     },
     { $id: 'WARDLookupAck' },
+);
+
+export type WARDPerformBatch = Static<typeof WARDPerformBatch>;
+export const WARDPerformBatch = Type.Object(
+    {
+        pending_ids: Type.Array(Type.Number()),
+    },
+    { $id: 'WARDPerformBatch' },
+);
+
+export type WARDPerformBatchAck = Static<typeof WARDPerformBatchAck>;
+export const WARDPerformBatchAck = Type.Object(
+    {
+        counter: Type.Number(),
+        from_root: Type.Optional(Type.String()),
+        new_root: Type.Optional(Type.String()),
+        mac: Type.Optional(Type.String()),
+        ward_id: Type.Optional(Type.String()),
+        head_mac: Type.String(),
+        auth_commit: Type.String(),
+        sig_commit: Type.Optional(Type.String()),
+        leaves: Type.Array(WARDBatchLeaf),
+    },
+    { $id: 'WARDPerformBatchAck' },
+);
+
+export type WARDPerformRevert = Static<typeof WARDPerformRevert>;
+export const WARDPerformRevert = Type.Object(
+    {
+        stuck_counter: Type.Number(),
+        stuck_root: Type.Optional(Type.String()),
+        prev_root: Type.Optional(Type.String()),
+        forward_auth_commit: Type.String(),
+    },
+    { $id: 'WARDPerformRevert' },
+);
+
+export type WARDPerformRevertAck = Static<typeof WARDPerformRevertAck>;
+export const WARDPerformRevertAck = Type.Object(
+    {
+        counter: Type.Number(),
+        from_root: Type.Optional(Type.String()),
+        new_root: Type.Optional(Type.String()),
+        mac: Type.Optional(Type.String()),
+        ward_id: Type.Optional(Type.String()),
+        head_mac: Type.String(),
+        auth_revert: Type.String(),
+        sig_commit: Type.Optional(Type.String()),
+    },
+    { $id: 'WARDPerformRevertAck' },
 );
 
 export type WARDPerformUpdate = Static<typeof WARDPerformUpdate>;
@@ -162,9 +303,7 @@ export const WARDPerformUpdateAck = Type.Object(
         ward_id: Type.Optional(Type.String()),
         entry_key: Type.Optional(Type.String()),
         entry_type: Type.Optional(Type.String()),
-        nonce: Type.Optional(Type.String()),
-        tag: Type.Optional(Type.String()),
-        ct: Type.Optional(Type.String()),
+        content: Type.Optional(LeafContent),
     },
     { $id: 'WARDPerformUpdateAck' },
 );
@@ -176,9 +315,7 @@ export const WARDProofAck = Type.Object(
         witness_entry_key: Type.Optional(Type.String()),
         witness_commit: Type.Optional(Type.String()),
         entry_type: Type.Optional(Type.String()),
-        nonce: Type.Optional(Type.String()),
-        tag: Type.Optional(Type.String()),
-        ct: Type.Optional(Type.String()),
+        content: Type.Optional(LeafContent),
     },
     { $id: 'WARDProofAck' },
 );
@@ -244,4 +381,23 @@ export const WARDSyncAck = Type.Object(
         ward_id: Type.Optional(Type.String()),
     },
     { $id: 'WARDSyncAck' },
+);
+
+export type WARDVerifyChain = Static<typeof WARDVerifyChain>;
+export const WARDVerifyChain = Type.Object(
+    {
+        links: Type.Array(WARDChainLink),
+    },
+    { $id: 'WARDVerifyChain' },
+);
+
+export type WARDVerifyChainAck = Static<typeof WARDVerifyChainAck>;
+export const WARDVerifyChainAck = Type.Object(
+    {
+        counter: Type.Number(),
+        new_root: Type.Optional(Type.String()),
+        ward_id: Type.Optional(Type.String()),
+        root_mac: Type.Optional(Type.String()),
+    },
+    { $id: 'WARDVerifyChainAck' },
 );

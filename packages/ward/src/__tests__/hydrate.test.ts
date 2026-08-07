@@ -4,7 +4,7 @@ import { computeRootFromBlobs } from '../proof';
 import { InMemoryWardDb } from '../storage';
 import type { WardTransition } from '../types';
 
-// Leaf blobs are opaque to the host — hydrate only re-derives commit/leaf hashes from
+// Leaf blobs are opaque to the host — reconstruction only re-derives commit/leaf hashes from
 // (entry_key, nonce, tag, ct), which is keyless. So fixtures can use arbitrary hex; they
 // need not be real ChaCha ciphertexts.
 const blob = (ek: string, ct: string): BlobRow => ({

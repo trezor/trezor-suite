@@ -202,10 +202,10 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
         }
 
         // §7 lineage: record the authenticated transition (prev→target root at this
-        // counter + the leaf blob it wrote) so a fresh/partial host can hydrate + VERIFY
+        // counter + the leaf blob it wrote) so a fresh/partial host can reconstruct + VERIFY
         // the MPT by backward-walk instead of trusting a flat rebuild (see @trezor/ward
-        // `hydrate`). All values are already in hand — no extra device round. Best-effort
-        // like commitLocal: a failure only degrades future hydration, not this write.
+        // `hydrate` reconstruction path). All values are already in hand — no extra device round. Best-effort
+        // like commitLocal: a failure only degrades future reconstruction, not this write.
         if (provider.appendTransition !== undefined && installed.root !== undefined) {
             try {
                 await provider.appendTransition(wardId, {
@@ -229,7 +229,7 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
                     `[wardUpdate] appendTransition FAILED (device committed counter ` +
                         `${installed.counter}) for wardId=${wardId}: ` +
                         `${err instanceof Error ? err.message : String(err)}. ` +
-                        'Lineage log is incomplete — hydration will reject until resynced.',
+                        'Lineage log is incomplete — reconstruction will reject until resynced.',
                 );
             }
         }

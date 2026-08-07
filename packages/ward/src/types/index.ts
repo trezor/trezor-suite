@@ -79,7 +79,7 @@ export type TreeState = {
  * batch of one. The transition-auth tokens (`authCommit`/`headMac`/`sigCommit?`) are
  * stored OPAQUELY — the host holds no keys, so it cannot recompute or verify them; it
  * forwards them to the WM / another device. The host's own check is the keyless
- * per-batch root replay (`hydrate`). `targetRootMac` is the device root MAC handed
+ * per-batch root replay (`hydrate` reconstruction). `targetRootMac` is the device root MAC handed
  * back at reconcile (likewise opaque to the host).
  */
 export type WardTransition = {

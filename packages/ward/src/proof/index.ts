@@ -98,9 +98,25 @@ const len32 = (n: number): Uint8Array => {
     return b;
 };
 
-// commit = SHA-256(0x02 || nonce || tag || len32(ct) || ct)  (keyless, §2.2)
+// Leaf-content mode (dev switch) — MUST mirror core service.py WARD_PLAINTEXT_LEAVES
+// and trezorlib ward_crypto.WARD_PLAINTEXT_LEAVES for host-computed roots/proofs to
+// match the device. A mutable holder (not a bare `const`) so tests can flip it. The
+// whole system picks one mode; a mismatch fails cleanly (roots won't match).
+export const wardLeafMode = { plaintext: false };
+
+// commit = SHA-256(domain || nonce || tag || len32(ct) || ct)  (keyless, §2.2).
+// Domain-separated by mode: encrypted 0x02 (nonce/tag/ct are the AEAD blob); plaintext
+// 0x04 (nonce/tag empty, ct == the packed content) so the two can never collide.
 export const commitOf = (nonce: Uint8Array, tag: Uint8Array, ct: Uint8Array): Uint8Array =>
-    sha256(concatBytes(new Uint8Array([0x02]), nonce, tag, len32(ct.length), ct));
+    sha256(
+        concatBytes(
+            new Uint8Array([wardLeafMode.plaintext ? 0x04 : 0x02]),
+            nonce,
+            tag,
+            len32(ct.length),
+            ct,
+        ),
+    );
 
 // leaf = SHA-256(0x00 || entry_key || commit)  (§2.2)
 export const leafFromCommit = (ek: Uint8Array, commit: Uint8Array): Uint8Array =>
@@ -129,9 +145,65 @@ const blobLeaf = (r: BlobRow): LeafInfo => {
     };
 };
 
-// internal_hash(left, right) = SHA-256(b"\x01" + left + right)  — positional, no sorting
-const internalHash = (left: Uint8Array, right: Uint8Array): Uint8Array =>
-    sha256(concatBytes(new Uint8Array([0x01]), left, right));
+// Path-compressed internal hash (anti-malleability) — mirrors authdb_tree._internal_hash /
+// firmware service.internal_hash:
+//   SHA-256(0x01 || u16be(split_bit) || u16be(skiplen) || left || right)
+// Binding split_bit + skiplen into every branch is what closes the non-membership malleability
+// (siblings can no longer be re-slotted at a different depth).
+const u16be = (n: number): Uint8Array => {
+    const b = new Uint8Array(2);
+    new DataView(b.buffer).setUint16(0, n, false);
+
+    return b;
+};
+
+const internalHash = (
+    splitBit: number,
+    skiplen: number,
+    left: Uint8Array,
+    right: Uint8Array,
+): Uint8Array =>
+    sha256(concatBytes(new Uint8Array([0x01]), u16be(splitBit), u16be(skiplen), left, right));
+
+// Proof element = u16be(split_bit) || u16be(skiplen) || sibling(32) = 36 bytes (72 hex chars).
+const proofElem = (splitBit: number, skiplen: number, sibling: Uint8Array): string =>
+    bytesToHex(u16be(splitBit)) + bytesToHex(u16be(skiplen)) + bytesToHex(sibling);
+
+const parseProofElem = (
+    elemHex: string,
+): { splitBit: number; skiplen: number; sibling: Uint8Array } => {
+    const elem = hexToBytes(elemHex);
+    if (elem.length !== 36) throw new Error('invalid proof element length');
+    const dv = new DataView(elem.buffer, elem.byteOffset, elem.byteLength);
+
+    return {
+        splitBit: dv.getUint16(0, false),
+        skiplen: dv.getUint16(2, false),
+        sibling: elem.slice(4),
+    };
+};
+
+// Validate a proof shape root→leaf: split_bit strictly increasing and skiplen == split_bit − start_bit
+// (mirrors authdb_tree._proof_steps_root_to_leaf). null on a malformed / malleable proof.
+const proofStepsRootToLeaf = (
+    proof: MerkleProof,
+): Array<{ splitBit: number; skiplen: number; sibling: Uint8Array }> | null => {
+    const steps: Array<{ splitBit: number; skiplen: number; sibling: Uint8Array }> = [];
+    let startBit = 0;
+    try {
+        for (let i = proof.length - 1; i >= 0; i--) {
+            const { splitBit, skiplen, sibling } = parseProofElem(proof[i]!);
+            if (splitBit >= 256) return null;
+            if (splitBit < startBit || skiplen !== splitBit - startBit) return null;
+            steps.push({ splitBit, skiplen, sibling });
+            startBit = splitBit + 1;
+        }
+    } catch {
+        return null;
+    }
+
+    return steps;
+};
 
 // Return the bit at position `bit` of `addrHash`, MSB first.
 // bit 0 = MSB of byte 0; bit 7 = LSB of byte 0; bit 8 = MSB of byte 1; …
@@ -142,65 +214,86 @@ const getBit = (addrHash: Uint8Array, bit: number): 0 | 1 =>
 // MPT (Merkle Patricia Trie) — path-compressed positional trie
 //
 // Nodes:
-//   Leaf  — a single entry; its hash is just the leaf hash.
-//   Branch — splits on bit `bit`; hash = SHA-256(0x01 || hash(left) || hash(right)).
+//   Leaf   — a single entry; its hash is the leaf hash.
+//   Branch — splits on bit `bit`; skiplen = bit − parent's start bit; hash binds both
+//            (see internalHash) so the tree is canonical and non-membership proofs are
+//            non-malleable.
 //
-// There are no extension nodes because the verifier only needs siblings at
-// branch points; skipped bits contribute nothing to the hash.
-//
-// Proof format (leaf→root order):
-//   proof[i] = <2 hex chars: bit position 0-255> + <64 hex chars: sibling subtree hash>
-//            = 66 hex chars total per element
-//
-// This is O(log N) elements for N entries, far below the firmware's buffer limit.
+// Proof format (leaf→root order): each element = u16be(split_bit) || u16be(skiplen) ||
+// 32-byte sibling = 36 bytes (72 hex chars). O(log N) elements. Mirrors trezorlib
+// authdb_tree.py and firmware service.py byte-for-byte.
 // ---------------------------------------------------------------------------
 
 type LeafInfo = { addrHash: Uint8Array; leafHash: Uint8Array };
 
 type LeafNode = { kind: 'leaf'; addrHash: Uint8Array; leafHash: Uint8Array };
-type BranchNode = { kind: 'branch'; bit: number; left: MptNode; right: MptNode };
+type BranchNode = { kind: 'branch'; bit: number; skiplen: number; left: MptNode; right: MptNode };
 type MptNode = LeafNode | BranchNode;
 
-// Graft-based INSERT matching firmware's insert_leaf algorithm.
-// When reaching a leaf, create a branch at the first bit where new and existing diverge.
-// This may produce branches with non-monotonically increasing bit positions, matching firmware.
-const graftInsert = (tree: MptNode | null, addrHash: Uint8Array, leafHash: Uint8Array): MptNode => {
-    if (tree === null) {
-        return { kind: 'leaf', addrHash, leafHash };
+// First bit (from startBit) where the leaves diverge — mirrors authdb_tree._find_split_bit.
+const findSplitBit = (leaves: LeafInfo[], startBit: number): number => {
+    for (let bit = startBit; bit < 256; bit++) {
+        const b0 = getBit(leaves[0]!.addrHash, bit);
+        if (leaves.some((l, i) => i > 0 && getBit(l.addrHash, bit) !== b0)) return bit;
     }
-    if (tree.kind === 'leaf') {
-        let bit = 0;
-        while (bit < 256 && getBit(tree.addrHash, bit) === getBit(addrHash, bit)) bit++;
-        const newLeaf: MptNode = { kind: 'leaf', addrHash, leafHash };
-
-        return getBit(addrHash, bit) === 0
-            ? { kind: 'branch', bit, left: newLeaf, right: tree }
-            : { kind: 'branch', bit, left: tree, right: newLeaf };
-    }
-    const b = getBit(addrHash, tree.bit);
-
-    return b === 0
-        ? { ...tree, left: graftInsert(tree.left, addrHash, leafHash) }
-        : { ...tree, right: graftInsert(tree.right, addrHash, leafHash) };
+    throw new Error('MPT: duplicate entry_key (HMAC-SHA256 collision)');
 };
 
-// Build MPT by replaying inserts in rowid order (matching firmware's sequential graft INSERTs).
-// rows must already be sorted by rowid (insertion order).
-const buildMpt = (leaves: LeafInfo[]): MptNode => {
-    let tree: MptNode | null = null;
-    for (const leaf of leaves) {
-        tree = graftInsert(tree, leaf.addrHash, leaf.leafHash);
-    }
-    if (tree === null) throw new Error('MPT: no leaves');
+// Batch, order-independent path-compressed build — mirrors authdb_tree._build_mpt. Split at the
+// first diverging bit, skiplen = split_bit − start_bit, recurse from split_bit + 1. Canonical:
+// the shape depends only on the entry_key set, not insertion order.
+const buildMpt = (leaves: LeafInfo[], startBit = 0): MptNode => {
+    if (leaves.length === 0) throw new Error('MPT: no leaves');
+    if (leaves.length === 1) return { kind: 'leaf', ...leaves[0]! };
+    const bit = findSplitBit(leaves, startBit);
+    const left = leaves.filter(l => getBit(l.addrHash, bit) === 0);
+    const right = leaves.filter(l => getBit(l.addrHash, bit) === 1);
 
-    return tree;
+    return {
+        kind: 'branch',
+        bit,
+        skiplen: bit - startBit,
+        left: buildMpt(left, bit + 1),
+        right: buildMpt(right, bit + 1),
+    };
 };
 
-// Hash a subtree recursively.
-const hashMpt = (node: MptNode): Uint8Array => {
-    if (node.kind === 'leaf') return node.leafHash;
+const hashMpt = (node: MptNode): Uint8Array =>
+    node.kind === 'leaf'
+        ? node.leafHash
+        : internalHash(node.bit, node.skiplen, hashMpt(node.left), hashMpt(node.right));
 
-    return internalHash(hashMpt(node.left), hashMpt(node.right));
+// Shared membership-proof walk (leaf→root order) — mirrors authdb_tree._walk_proof. Emits the
+// sibling elements toward `targetKey`; `onLeaf` captures the leaf reached (the witness, for the
+// non-membership callers).
+const walkProof = (
+    root: MptNode,
+    targetKey: Uint8Array,
+    onLeaf?: (n: LeafNode) => void,
+): MerkleProof => {
+    const proof: string[] = [];
+    const walk = (node: MptNode): Uint8Array => {
+        if (node.kind === 'leaf') {
+            onLeaf?.(node);
+
+            return node.leafHash;
+        }
+        if (getBit(targetKey, node.bit) === 0) {
+            const l = walk(node.left);
+            const r = hashMpt(node.right);
+            proof.push(proofElem(node.bit, node.skiplen, r));
+
+            return internalHash(node.bit, node.skiplen, l, r);
+        }
+        const l = hashMpt(node.left);
+        const r = walk(node.right);
+        proof.push(proofElem(node.bit, node.skiplen, l));
+
+        return internalHash(node.bit, node.skiplen, l, r);
+    };
+    walk(root);
+
+    return proof;
 };
 
 // addrHash holds the 32-byte entry_key (the trie path), keyed per row by its own
@@ -232,38 +325,7 @@ export const generateMerkleProof = (
     );
     if (!target) return [];
 
-    const leaves = rowsToLeaves(rows);
-    const targetAddrHash = entryKey(appId, address);
-    const mptRoot = buildMpt(leaves);
-
-    const proof: string[] = [];
-
-    // Walk the MPT toward the target leaf, collecting siblings at each branch.
-    // Proof elements are pushed as we unwind (leaf-to-root order).
-    const walk = (node: MptNode): Uint8Array => {
-        if (node.kind === 'leaf') return node.leafHash;
-
-        const targetBit = getBit(targetAddrHash, node.bit);
-        const bitHex = node.bit.toString(16).padStart(2, '0');
-
-        if (targetBit === 0) {
-            const leftHash = walk(node.left);
-            const rightHash = hashMpt(node.right);
-            proof.push(bitHex + bytesToHex(rightHash));
-
-            return internalHash(leftHash, rightHash);
-        } else {
-            const leftHash = hashMpt(node.left);
-            const rightHash = walk(node.right);
-            proof.push(bitHex + bytesToHex(leftHash));
-
-            return internalHash(leftHash, rightHash);
-        }
-    };
-
-    walk(mptRoot);
-
-    return proof;
+    return walkProof(buildMpt(rowsToLeaves(rows)), entryKey(appId, address));
 };
 
 /**
@@ -297,47 +359,16 @@ export const generateNonMembershipProof = (
         return { proof: [], witnessEntryKey: null, witnessValueHash: null };
     }
 
-    const targetAddrHash = entryKey(appId, address);
-    const leaves = rowsToLeaves(rows);
-    const mptRoot = buildMpt(leaves);
-
-    // Walk the MPT following the target entry_key path, collecting siblings.
-    // The leaf we land on is the witness.
-    let witnessLeaf: LeafInfo | null = null;
-    const proof: string[] = [];
-
-    const walk = (node: MptNode): Uint8Array => {
-        if (node.kind === 'leaf') {
-            witnessLeaf = node;
-
-            return node.leafHash;
-        }
-
-        const targetBit = getBit(targetAddrHash, node.bit);
-        const bitHex = node.bit.toString(16).padStart(2, '0');
-
-        if (targetBit === 0) {
-            const leftHash = walk(node.left);
-            const rightHash = hashMpt(node.right);
-            proof.push(bitHex + bytesToHex(rightHash));
-
-            return internalHash(leftHash, rightHash);
-        } else {
-            const leftHash = hashMpt(node.left);
-            const rightHash = walk(node.right);
-            proof.push(bitHex + bytesToHex(leftHash));
-
-            return internalHash(leftHash, rightHash);
-        }
-    };
-
-    walk(mptRoot);
-
+    // Walk the target entry_key path; the leaf reached is the witness.
+    let witnessLeaf: LeafNode | null = null;
+    const proof = walkProof(buildMpt(rowsToLeaves(rows)), entryKey(appId, address), n => {
+        witnessLeaf = n;
+    });
     if (!witnessLeaf) {
         return { proof: [], witnessEntryKey: null, witnessValueHash: null };
     }
 
-    const wl: LeafInfo = witnessLeaf;
+    const wl = witnessLeaf as LeafNode;
     const wr = rows.find(r => bytesToHex(entryKey(r.appId, r.address)) === bytesToHex(wl.addrHash));
     if (!wr) {
         return { proof: [], witnessEntryKey: null, witnessValueHash: null };
@@ -355,9 +386,11 @@ export const generateNonMembershipProof = (
 };
 
 /**
- * Verify a proof locally (mirrors firmware evaluate_proof in lookup.py).
- * proof[0] = sibling nearest leaf; proof[last] = sibling nearest root.
- * Each element is 66 hex chars: 2-char bit-position + 64-char sibling hash.
+ * Verify a membership proof locally and return the reconstructed root (mirrors firmware
+ * evaluate_proof / trezorlib verify_proof_by_key). proof[0] = sibling nearest the leaf;
+ * proof[last] = sibling nearest the root. Each element is 72 hex chars:
+ * u16be(split_bit) + u16be(skiplen) + 32-byte sibling. Throws on a malformed / malleable
+ * proof (split_bit not increasing, or skiplen ≠ split_bit − start_bit).
  */
 export const evaluateProof = (
     appId: string,
@@ -366,14 +399,18 @@ export const evaluateProof = (
     entry: WardEntry,
     proof: MerkleProof,
 ): string => {
+    if (proofStepsRootToLeaf(proof) === null) {
+        throw new Error('invalid proof (malformed or malleable proof element)');
+    }
     const addrHash = entryKey(appId, address);
     let current = computeLeafHash(appId, address, networkSymbol, entry);
 
     for (const elem of proof) {
-        const bit = parseInt(elem.slice(0, 2), 16);
-        const sibling = hexToBytes(elem.slice(2));
-        const targetBit = getBit(addrHash, bit);
-        current = targetBit === 0 ? internalHash(current, sibling) : internalHash(sibling, current);
+        const { splitBit, skiplen, sibling } = parseProofElem(elem);
+        current =
+            getBit(addrHash, splitBit) === 0
+                ? internalHash(splitBit, skiplen, current, sibling)
+                : internalHash(splitBit, skiplen, sibling, current);
     }
 
     return bytesToHex(current);
@@ -390,31 +427,8 @@ export const computeRootFromBlobs = (rows: BlobRow[]): string =>
     rows.length === 0 ? '' : bytesToHex(hashMpt(buildMpt(rows.map(blobLeaf))));
 
 /** Membership proof for `entryKeyHex` over stored blobs (leaf→root order). */
-export const proofByKey = (rows: BlobRow[], entryKeyHex: string): MerkleProof => {
-    if (rows.length === 0) return [];
-    const target = hexToBytes(entryKeyHex);
-    const root = buildMpt(rows.map(blobLeaf));
-    const proof: string[] = [];
-    const walk = (node: MptNode): Uint8Array => {
-        if (node.kind === 'leaf') return node.leafHash;
-        const bitHex = node.bit.toString(16).padStart(2, '0');
-        if (getBit(target, node.bit) === 0) {
-            const l = walk(node.left);
-            const r = hashMpt(node.right);
-            proof.push(bitHex + bytesToHex(r));
-
-            return internalHash(l, r);
-        }
-        const l = hashMpt(node.left);
-        const r = walk(node.right);
-        proof.push(bitHex + bytesToHex(l));
-
-        return internalHash(l, r);
-    };
-    walk(root);
-
-    return proof;
-};
+export const proofByKey = (rows: BlobRow[], entryKeyHex: string): MerkleProof =>
+    rows.length === 0 ? [] : walkProof(buildMpt(rows.map(blobLeaf)), hexToBytes(entryKeyHex));
 
 /** Non-membership proof for `entryKeyHex`: the witness leaf on its path, as two
  * hashes (witnessEntryKey, witnessCommit). Empty witnesses when the tree is empty. */
@@ -425,33 +439,12 @@ export const nonMembershipByKey = (
     if (rows.length === 0) {
         return { proof: [], witnessEntryKeyHex: null, witnessCommitHex: null };
     }
-    const target = hexToBytes(entryKeyHex);
-    const root = buildMpt(rows.map(blobLeaf));
-    let witness: LeafInfo | null = null;
-    const proof: string[] = [];
-    const walk = (node: MptNode): Uint8Array => {
-        if (node.kind === 'leaf') {
-            witness = node;
-
-            return node.leafHash;
-        }
-        const bitHex = node.bit.toString(16).padStart(2, '0');
-        if (getBit(target, node.bit) === 0) {
-            const l = walk(node.left);
-            const r = hashMpt(node.right);
-            proof.push(bitHex + bytesToHex(r));
-
-            return internalHash(l, r);
-        }
-        const l = hashMpt(node.left);
-        const r = walk(node.right);
-        proof.push(bitHex + bytesToHex(l));
-
-        return internalHash(l, r);
-    };
-    walk(root);
+    let witness: LeafNode | null = null;
+    const proof = walkProof(buildMpt(rows.map(blobLeaf)), hexToBytes(entryKeyHex), n => {
+        witness = n;
+    });
     if (!witness) return { proof: [], witnessEntryKeyHex: null, witnessCommitHex: null };
-    const wek = bytesToHex((witness as LeafInfo).addrHash);
+    const wek = bytesToHex((witness as LeafNode).addrHash);
     const wr = rows.find(r => r.entryKeyHex === wek);
     if (!wr) return { proof: [], witnessEntryKeyHex: null, witnessCommitHex: null };
 

@@ -17,10 +17,8 @@ export default createRawWardMethod({
         ...(payload.app_id !== undefined && { app_id: payload.app_id }),
         ...(payload.key_type !== undefined && { key_type: payload.key_type }),
         ...(payload.device_id !== undefined && { device_id: payload.device_id }),
-        // membership: encrypted leaf blob (nonce/tag/ct)
-        ...(payload.nonce !== undefined && { nonce: payload.nonce }),
-        ...(payload.tag !== undefined && { tag: payload.tag }),
-        ...(payload.ct !== undefined && { ct: payload.ct }),
+        // membership: self-describing leaf content (EncryptedLeaf | PlaintextLeaf)
+        ...(payload.content !== undefined && { content: payload.content }),
         // non-membership: witness as two hashes
         ...(payload.witness_entry_key !== undefined && {
             witness_entry_key: payload.witness_entry_key,

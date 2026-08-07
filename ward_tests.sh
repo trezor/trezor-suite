@@ -12,6 +12,7 @@ if true; then
 	rm ~/.trezor/auth_database_* #packages/connect-cli/src/bitcoin-addresses.db
 	( cd ~/GitHub/trezor-firmware && xtask build firmware --model t3w1 -e -d --pyopt false && timeout 30s ./core/emu.py -e )
 	( cd ~/GitHub/trezor-firmware && xtask build firmware --model t3w1 -e -d --pyopt false && ./core/emu.py ) &
+#	( cd ~/GitHub/trezor-firmware && sleep 5 && pytest tests/device_tests/misc/test_ward.py -k finalize_bad_signature_rejected -q 2>&1 | tee finalize_bad_signature_rejected.log )
 	sleep 5
 fi
 
@@ -129,3 +130,16 @@ if false; then
 
 	#ADD: reset_root -- this can mess up versioning -- > increase version
 fi
+
+
+
+
+
+( cd ~/GitHub/trezor-firmware && pytest tests/device_tests/misc/test_ward.py -q 2>&1 |tee pytest_ward.log )
+( cd ~/GitHub/trezor-firmware && pytest tests/device_tests/misc/test_ward_batch.py -q 2>&1 |tee pytest_ward_batch.log )
+( cd ~/GitHub/trezor-firmware && pytest tests/device_tests/misc/test_ward_sync.py -q 2>&1 |tee pytest_ward_sync.log )
+( cd ~/GitHub/trezor-firmware && pytest tests/device_tests/misc/test_display_address.py -q 2>&1 |tee display_address.log )
+
+( cd ~/GitHub/trezor-firmware && python3 -m pytest tests/device_tests/misc/test_ward_mpt.py -q -rxX )
+( cd ~/GitHub/trezor-firmware && python3 -m pytest python/tests/test_ward_crypto.py -q )
+

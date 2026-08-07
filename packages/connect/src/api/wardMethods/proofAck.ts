@@ -2,6 +2,8 @@ import type { MessagesSchema as Messages } from '@trezor/protobuf';
 import type { BlobRow } from '@trezor/ward';
 import { nonMembershipByKey, proofByKey } from '@trezor/ward';
 
+import { makeLeafContent } from './leafContent';
+
 /**
  * Build the WARDProofAck the device pulls on demand, serving purely BY the opaque
  * `entryKeyHex` in the WARDProofRequest against the host's stored device leaf blobs
@@ -23,9 +25,7 @@ export const buildAckByKey = (rows: BlobRow[], entryKeyHex: string): Messages.WA
         return {
             proof: proofByKey(rows, entryKeyHex),
             entry_type: membership.entryType ?? 'address',
-            nonce: membership.nonceHex,
-            tag: membership.tagHex,
-            ct: membership.ctHex,
+            content: makeLeafContent(membership.nonceHex, membership.tagHex, membership.ctHex),
         };
     }
 

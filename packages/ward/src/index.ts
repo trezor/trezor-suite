@@ -17,6 +17,8 @@ export {
     computeRootFromBlobs,
     proofByKey,
     nonMembershipByKey,
+    // leaf mode (encrypted 0x02 <-> plaintext 0x04) — mirrors firmware WARD_PLAINTEXT_LEAVES
+    wardLeafMode,
 } from './proof';
 export type { BlobRow } from './proof';
 

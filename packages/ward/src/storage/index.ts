@@ -45,7 +45,7 @@ export type WardProvider = {
     getTreeState(wardId: string): TreeState | null | Promise<TreeState | null>;
     setTreeState(wardId: string, state: TreeState): void | Promise<void>;
     /** Append the authenticated transition for a committed write (§7 lineage), and
-     * read them back (ascending `counter`) for backward-walk hydration. Optional so
+     * read them back (ascending `counter`) for backward-walk reconstruction. Optional so
      * existing/mock providers stay valid; the sqlite/in-memory ones implement them. */
     appendTransition?(wardId: string, transition: WardTransition): void | Promise<void>;
     getTransitions?(wardId: string): WardTransition[] | Promise<WardTransition[]>;

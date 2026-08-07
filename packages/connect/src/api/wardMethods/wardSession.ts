@@ -19,6 +19,7 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { MessagesSchema as Messages } from '@trezor/protobuf';
 
+import { readLeafContent } from './leafContent';
 import type { DeviceCommands } from '../../device/DeviceCommands';
 
 type Cmd = ReturnType<typeof DeviceCommands>;
@@ -161,12 +162,11 @@ export class WardSession {
                 mac: message.mac,
                 walletId: message.wallet_id,
                 wardId: message.ward_id,
-                // The device is the encryptor: store the leaf blob it returned.
+                // The device is the encryptor: store the leaf blob it returned. The wire
+                // carries it as a self-describing LeafContent; decode to the flat triple.
                 entryKey: message.entry_key,
                 entryType: message.entry_type,
-                nonce: message.nonce,
-                tag: message.tag,
-                ct: message.ct,
+                ...readLeafContent(message.content),
             };
         } finally {
             this.cmd.setWardProofCallback(undefined);

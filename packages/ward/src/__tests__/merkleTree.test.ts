@@ -9,8 +9,9 @@ import {
     generateNonMembershipProof,
 } from '../proof';
 
-// Golden vectors verified byte-for-byte against the Python reference tree
-// (trezorlib.authdb_tree) — the load-bearing cross-implementation invariant.
+// Golden vectors for the OFFLINE (host-only) leaf model below. Cross-implementation parity
+// with the device is covered by pathCompression.test.ts (the keyed device-blob path, checked
+// against trezorlib.authdb_tree). These lock the path-compressed trie/proof FORMAT.
 const rows = [
     {
         appId: 'bitcoin',
@@ -32,14 +33,16 @@ const rows = [
     },
 ];
 
-// Domain-separated, two-level leaf model:
+// Domain-separated, two-level leaf model (offline/host path):
 //   entry_key  = sha256(appId || 0x00 || "address" || 0x00 || address)
 //   value_hash = sha256(counter(4B BE) || value)
 //   leaf_hash  = sha256(0x00 || entry_key || value_hash)
-const EXPECTED_ROOT = '9c1d7de22dba0437d7e67dfa85f1379b6f0780e4b3888a9084c54f3f449117ba';
+//   internal   = sha256(0x01 || u16(split_bit) || u16(skiplen) || left || right)  (path-compressed)
+//   proof elem = u16(split_bit) || u16(skiplen) || sibling  (36 bytes / 72 hex)
+const EXPECTED_ROOT = '2068b00842afbb96a3de90c1628d73f282e97aed918c09fbf9ecc88980739f4f';
 const EXPECTED_PROOF = [
-    '00fe0acadea7a65bc7c61a0d4d339d0fbd9bb932de3cea9698bc35c87f341949a1',
-    '0154cc76b06f5fb19a9616c2ada74d3ec42fe4a74fad7ad6820670df51ae07bacd',
+    '0001000054cc76b06f5fb19a9616c2ada74d3ec42fe4a74fad7ad6820670df51ae07bacd',
+    '00000000fe0acadea7a65bc7c61a0d4d339d0fbd9bb932de3cea9698bc35c87f341949a1',
 ];
 
 describe('generateMerkleProof / computeMerkleRoot', () => {
