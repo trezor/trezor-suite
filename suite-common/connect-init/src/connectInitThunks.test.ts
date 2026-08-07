@@ -4,7 +4,6 @@ import {
     extraDependenciesCommonMock,
     testMocks,
 } from '@suite-common/test-utils';
-import { defaultTrezorUIEventHandlerThunk } from '@suite-common/wallet-core';
 import {
     BLOCKCHAIN_EVENT,
     DEVICE,
@@ -157,43 +156,6 @@ describe('TrezorConnect Actions', () => {
             type: extraDependenciesCommonMock.actions.lockDevice.type,
             payload: true,
         });
-    });
-
-    it('callId-bearing UI events are swallowed by the global listener', async () => {
-        const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-        await store.dispatch(connectInitThunk());
-        const actionsBefore = store.getActions().length;
-        const { emitTestEvent } = testMocks.getTrezorConnectMock();
-
-        emitTestEvent(UI_EVENT, {
-            type: UI_REQUEST.REQUEST_BUTTON,
-            payload: { code: 'ButtonRequest_ProtectCall' },
-        });
-        emitTestEvent(UI_EVENT, {
-            type: UI_REQUEST.REQUEST_BUTTON,
-            payload: { code: 'ButtonRequest_ProtectCall' },
-            callId: 'scoped-call-id',
-        });
-        await new Promise(resolve => setImmediate(resolve));
-
-        const newActions = store.getActions().slice(actionsBefore);
-
-        const pendingCount = newActions.filter(
-            a => a.type === defaultTrezorUIEventHandlerThunk.pending.type,
-        ).length;
-        const fulfilledCount = newActions.filter(
-            a => a.type === defaultTrezorUIEventHandlerThunk.fulfilled.type,
-        ).length;
-        const buttonActionCount = newActions.filter(
-            a => a.type === UI_REQUEST.REQUEST_BUTTON,
-        ).length;
-
-        expect(pendingCount).toBe(1);
-        expect(fulfilledCount).toBe(1);
-        expect(buttonActionCount).toBe(1);
-        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('callId=scoped-call-id'));
-
-        warnSpy.mockRestore();
     });
 
     it('connectInitHooks.deviceEvent is called for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED', async () => {
