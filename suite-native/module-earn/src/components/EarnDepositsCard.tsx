@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -26,6 +26,10 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { EarnActiveItemsBottomSheet } from './EarnActiveItemsBottomSheet';
+import { EarnDepositsCardRow } from './EarnDepositsCardRow';
+import { StablecoinYieldClaimRewardsBottomSheet } from './StablecoinYieldClaimRewardsBottomSheet';
+import { StablecoinYieldClaimRewardsCardSection } from './StablecoinYieldClaimRewardsCardSection';
 import { useEarnDepositsCardData } from '../hooks/useEarnDepositsCardData';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../hooks/useStablecoinYieldFirmwareUpdateAlert';
 import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
@@ -34,10 +38,10 @@ import {
     type StablecoinYieldEarnItem,
     type StakingEarnItem,
 } from '../types';
-import { EarnActiveItemsBottomSheet } from './EarnActiveItemsBottomSheet';
-import { EarnDepositsCardRow } from './EarnDepositsCardRow';
-import { StablecoinYieldClaimRewardsBottomSheet } from './StablecoinYieldClaimRewardsBottomSheet';
-import { StablecoinYieldClaimRewardsCardSection } from './StablecoinYieldClaimRewardsCardSection';
+import {
+    type StablecoinYieldClaimItem,
+    buildStablecoinYieldClaimItems,
+} from '../utils/stablecoinYieldClaimSummaryUtils';
 
 const cardHeaderStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
@@ -99,20 +103,29 @@ export const EarnDepositsCard = ({
 
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
+    const stablecoinYieldClaimItems = useMemo(
+        () =>
+            buildStablecoinYieldClaimItems({
+                stablecoinYieldClaimSummaries,
+                stablecoinYieldActiveItems,
+            }),
+        [stablecoinYieldActiveItems, stablecoinYieldClaimSummaries],
+    );
+
     const handleStablecoinYieldClaimRewardPress = useCallback(
-        ({ accountKey, networkSymbol }: StablecoinYieldClaimSummary) => {
+        ({ summary, vault }: StablecoinYieldClaimItem) => {
             analytics.report({
                 type: events.yieldNavigateEvent.name,
                 payload: {
                     action: 'continue',
                     from: 'earn-dashboard',
                     to: 'claim-form',
-                    networkSymbol,
+                    networkSymbol: summary.networkSymbol,
                 },
             });
             navigation.navigate(RootStackRoutes.YieldNavigator, {
                 screen: YieldStackRoutes.YieldClaim,
-                params: { accountKey },
+                params: { accountKey: summary.accountKey, vault: vault ?? undefined },
             });
         },
         [analytics, navigation],
@@ -125,11 +138,11 @@ export const EarnDepositsCard = ({
             return;
         }
 
-        if (stablecoinYieldClaimSummaries.length === 1) {
-            const claimReward = stablecoinYieldClaimSummaries[0];
+        if (stablecoinYieldClaimItems.length === 1) {
+            const claimItem = stablecoinYieldClaimItems[0];
 
-            if (claimReward) {
-                handleStablecoinYieldClaimRewardPress(claimReward);
+            if (claimItem) {
+                handleStablecoinYieldClaimRewardPress(claimItem);
             }
 
             return;
@@ -141,7 +154,7 @@ export const EarnDepositsCard = ({
         isFirmwareSupported,
         openStablecoinYieldClaimRewardsSheet,
         showFirmwareUpdateAlert,
-        stablecoinYieldClaimSummaries,
+        stablecoinYieldClaimItems,
     ]);
 
     return (
@@ -231,7 +244,7 @@ export const EarnDepositsCard = ({
 
             <StablecoinYieldClaimRewardsBottomSheet
                 ref={stablecoinYieldClaimRewardsSheetRef}
-                claimRewards={stablecoinYieldClaimSummaries}
+                claimItems={stablecoinYieldClaimItems}
                 onClaimRewardPress={handleStablecoinYieldClaimRewardPress}
                 onClose={closeStablecoinYieldClaimRewardsSheet}
             />

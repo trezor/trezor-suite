@@ -13,8 +13,9 @@ import {
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Box, FullAlertBox, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { Box, FullAlertBox, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { useFiatFromCryptoValue } from '@suite-native/formatters';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import {
@@ -49,7 +50,7 @@ type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoute
 export const YieldClaimScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { accountKey } = route.params;
+    const { accountKey, vault } = route.params;
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -236,6 +237,7 @@ export const YieldClaimScreen = () => {
     }
 
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const headerLabel = vault ? `${vault.name} · ${accountLabel}` : accountLabel;
 
     return (
         <Screen
@@ -247,14 +249,25 @@ export const YieldClaimScreen = () => {
                             <Text variant="body-md-strong">
                                 <Translation id="earn.yieldClaimFlowScreen.title" />
                             </Text>
-                            <Text
-                                variant="body-md"
-                                color="contentSecondary"
-                                numberOfLines={1}
-                                ellipsizeMode="tail"
-                            >
-                                {accountLabel}
-                            </Text>
+                            <HStack spacing="sp4" alignItems="center">
+                                {!!vault && (
+                                    <TokenIcon
+                                        symbol={account.symbol}
+                                        contractAddress={vault.tokenContract}
+                                        size="tiny"
+                                    />
+                                )}
+                                <Box flexShrink={1}>
+                                    <Text
+                                        variant="body-md"
+                                        color="contentSecondary"
+                                        numberOfLines={1}
+                                        ellipsizeMode="tail"
+                                    >
+                                        {headerLabel}
+                                    </Text>
+                                </Box>
+                            </HStack>
                         </VStack>
                     }
                 />
