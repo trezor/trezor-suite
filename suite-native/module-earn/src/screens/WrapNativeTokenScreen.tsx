@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { events } from '@suite-common/analytics';
 import { Context } from '@suite-common/message-system';
 import { WRAPPED_NATIVE, getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
@@ -29,6 +30,7 @@ import { YieldFeeSection } from '../components/YieldFeeSection';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
 import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
+import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useStandaloneWrappedNativeFlow } from '../hooks/useStandaloneWrappedNativeFlow';
 import { useWrappedNativeTokenFees } from '../hooks/useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from '../hooks/useWrappedNativeTokenForm';
@@ -86,6 +88,16 @@ export const WrapNativeTokenScreen = () => {
         preparedAction: wrapFee.preparedAction,
     });
 
+    useNavigateBackAnalytics({
+        type: events.yieldNavigateEvent.name,
+        payload: {
+            action: 'cancel',
+            from: 'wrap-form',
+            to: 'account-detail',
+            networkSymbol: account?.symbol,
+        },
+    });
+
     if (!account || !wrappedNative || account.networkType !== 'ethereum') {
         return null;
     }
@@ -129,6 +141,7 @@ export const WrapNativeTokenScreen = () => {
                             amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
                             balance={account.formattedBalance}
                             maxAmount={getMaxWrapAmount(account.formattedBalance)}
+                            onMaxPress={flow.reportMaxSelected}
                             symbol={account.symbol}
                             tokenSymbol={nativeSymbol}
                         />

@@ -1,6 +1,8 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { WRAPPED_NATIVE, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -8,6 +10,7 @@ import {
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation, type TxKeyPath, selectSupportedLanguageLocale } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 
@@ -41,6 +44,7 @@ export const WrappedNativeTokenCompleteContent = ({
 }: WrappedNativeTokenCompleteContentProps) => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const locale = useSelector(selectSupportedLanguageLocale);
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -51,9 +55,22 @@ export const WrappedNativeTokenCompleteContent = ({
     // The form replaced itself with this screen, so this stack holds it alone — any back
     // navigation leaves the whole flow, which is what closing should do. Intercepting it (as the
     // session-driven complete screens do) would only make the interceptor catch its own GO_BACK.
+    //
+    // useNavigateBackAnalytics is not used here for the same reason: useNavigateToInitialScreen
+    // ends in a goBack, which would make the interceptor catch its own dismissal and report a
+    // bogus cancel, so the intentional `continue` is reported explicitly instead.
     const handleClose = useCallback(() => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: flowType === 'wrap' ? 'wrap-form' : 'unwrap-form',
+                to: 'account-detail',
+                networkSymbol: account?.symbol,
+            },
+        });
         navigateToInitialScreen();
-    }, [navigateToInitialScreen]);
+    }, [account?.symbol, analytics, flowType, navigateToInitialScreen]);
 
     const rows = useMemo(() => {
         if (!account || !wrappedNative) {

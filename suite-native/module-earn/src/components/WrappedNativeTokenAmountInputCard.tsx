@@ -22,6 +22,7 @@ type WrappedNativeTokenAmountInputCardProps = {
     balance: string;
     defaultAmount?: string;
     maxAmount?: string;
+    onMaxPress?: () => void;
     symbol: NetworkSymbol;
     tokenContract?: TokenAddress;
     tokenDecimals?: number;
@@ -33,6 +34,7 @@ export const WrappedNativeTokenAmountInputCard = ({
     balance,
     defaultAmount,
     maxAmount,
+    onMaxPress,
     symbol,
     tokenContract,
     tokenDecimals,
@@ -78,6 +80,7 @@ export const WrappedNativeTokenAmountInputCard = ({
     }, [defaultAmount, setAmountWithFiat]);
 
     const handleMaxPress = () => {
+        onMaxPress?.();
         setAmountWithFiat(maxAmount ?? balance);
     };
 
