@@ -1,5 +1,5 @@
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import {
     MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
@@ -111,6 +111,11 @@ export const getSolStakingAccountTotalBalanceByStatus = (account: Account, statu
 
     return formatNetworkAmount(stakingBalance, account.symbol);
 };
+
+export const isDeviceReviewOnly = (transaction?: GeneralPrecomposedTransaction) =>
+    transaction !== undefined &&
+    'solanaTxMeta' in transaction &&
+    transaction.solanaTxMeta?.hasSplitInstruction === true;
 
 export type SolanaUnstakeAmountBounds = {
     closestLower?: string;

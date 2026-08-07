@@ -145,6 +145,7 @@ export type SolanaTxMeta = {
     feeLamports: string;
     rentLamports: string;
     feeIncludingRentLamports: string;
+    hasSplitInstruction: boolean;
 };
 
 type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectResponseNonFinal & {
