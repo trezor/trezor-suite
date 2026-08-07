@@ -27,17 +27,16 @@ import {
     YieldStackRoutes,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 import { BigNumber } from '@trezor/utils';
 
-import { YieldDepositAmountInputCard } from '../components/YieldDepositAmountInputCard';
+import { YieldAmountInputCard } from '../components/YieldAmountInputCard';
 import { YieldDepositApprovedAmountCard } from '../components/YieldDepositApprovedAmountCard';
 import { YieldDepositFlowFooter } from '../components/YieldDepositFlowFooter';
 import { YieldDepositFlowScreenHeader } from '../components/YieldDepositFlowScreenHeader';
 import { YieldDepositInfoBottomSheet } from '../components/YieldDepositInfoBottomSheet';
 import { YieldDepositStepCard } from '../components/YieldDepositStepCard';
 import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
-import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
+import { YieldFeeSection } from '../components/YieldFeeSection';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
@@ -411,7 +410,7 @@ export const YieldDepositScreen = () => {
                             />
                         </Box>
                     )}
-                    <YieldDepositStepCard currentStepIndex={1} />
+                    <YieldDepositStepCard currentStepId="deposit" />
 
                     <Box paddingHorizontal="sp16">
                         <YieldDepositApprovedAmountCard
@@ -426,9 +425,15 @@ export const YieldDepositScreen = () => {
 
                     <Box paddingHorizontal="sp16">
                         <Form form={form}>
-                            <YieldDepositAmountInputCard
+                            <YieldAmountInputCard
+                                amountLabel={
+                                    <Translation id="earn.yieldDepositFlowScreen.amountToDeposit" />
+                                }
                                 balance={token.balance}
                                 isMaxSelected={isMaxSelected}
+                                maxLabel={
+                                    <Translation id="earn.yieldDepositFlowScreen.depositMax" />
+                                }
                                 onAmountChange={handleAmountChange}
                                 onMaxChange={handleMaxChangeWithAnalytics}
                                 tokenSymbol={tokenSymbol}
@@ -453,21 +458,11 @@ export const YieldDepositScreen = () => {
 
                     {shouldShowDepositFee && (
                         <Box paddingHorizontal="sp16">
-                            {depositFee.hasFeeEstimationError ? (
-                                <YieldFeeEstimationErrorAlert
-                                    onRetry={depositFee.retryFeeEstimation}
-                                />
-                            ) : (
-                                <FeeSelector
-                                    accountKey={account.key}
-                                    tokenContract={route.params.tokenContract}
-                                    updateThunk={depositFee.updateFeeLevelThunk}
-                                    selectedFee={depositFee.selectedFee}
-                                    selectedFeePerUnit={depositFee.formDraft?.feePerUnit}
-                                    formDraft={depositFee.formDraft}
-                                    formDraftKey={depositFee.formDraftKey}
-                                />
-                            )}
+                            <YieldFeeSection
+                                accountKey={account.key}
+                                fees={depositFee}
+                                tokenContract={route.params.tokenContract}
+                            />
                         </Box>
                     )}
                 </VStack>

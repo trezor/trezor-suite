@@ -13,12 +13,11 @@ import {
     type WrappedNativeTokenStackParamList,
     type WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 
 import { WrappedNativeTokenAmountInputCard } from '../components/WrappedNativeTokenAmountInputCard';
 import { WrappedNativeTokenScreenHeader } from '../components/WrappedNativeTokenScreenHeader';
 import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
-import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
+import { YieldFeeSection } from '../components/YieldFeeSection';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
 import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
@@ -119,20 +118,13 @@ export const UnwrapNativeTokenScreen = () => {
                             tokenSymbol={wrappedTokenSymbol}
                         />
                     </Form>
-                    {isFeeSectionDisplayed &&
-                        (unwrapFee.hasFeeEstimationError ? (
-                            <YieldFeeEstimationErrorAlert onRetry={unwrapFee.retryFeeEstimation} />
-                        ) : (
-                            <FeeSelector
-                                accountKey={account.key}
-                                tokenContract={toTokenAddress(wrappedNative.address)}
-                                updateThunk={unwrapFee.updateFeeLevelThunk}
-                                selectedFee={unwrapFee.selectedFee}
-                                selectedFeePerUnit={unwrapFee.formDraft?.feePerUnit}
-                                formDraft={unwrapFee.formDraft}
-                                formDraftKey={unwrapFee.formDraftKey}
-                            />
-                        ))}
+                    {isFeeSectionDisplayed && (
+                        <YieldFeeSection
+                            accountKey={account.key}
+                            fees={unwrapFee}
+                            tokenContract={toTokenAddress(wrappedNative.address)}
+                        />
+                    )}
                     {flow.isDeviceNotConnectedVisible && (
                         <FullAlertBox
                             intent="critical"

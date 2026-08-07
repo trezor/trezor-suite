@@ -27,7 +27,7 @@ import {
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
 
-import { YieldDepositAmountInputCard } from '../components/YieldDepositAmountInputCard';
+import { YieldAmountInputCard } from '../components/YieldAmountInputCard';
 import { YieldDepositApprovalLimitBottomSheet } from '../components/YieldDepositApprovalLimitBottomSheet';
 import { YieldDepositApprovedAmountCard } from '../components/YieldDepositApprovedAmountCard';
 import { YieldDepositFlowFooter } from '../components/YieldDepositFlowFooter';
@@ -386,7 +386,7 @@ export const YieldDepositApprovalScreen = () => {
                                 />
                             </Box>
                         )}
-                        <YieldDepositStepCard currentStepIndex={0} />
+                        <YieldDepositStepCard currentStepId="approval" />
 
                         {shouldShowApprovedAmountCard && (
                             <Box paddingHorizontal="sp16">
@@ -402,11 +402,17 @@ export const YieldDepositApprovalScreen = () => {
                         )}
 
                         <Box paddingHorizontal="sp16">
-                            <YieldDepositAmountInputCard
+                            <YieldAmountInputCard
+                                amountLabel={
+                                    <Translation id="earn.yieldDepositFlowScreen.amountToDeposit" />
+                                }
                                 approvalLimitTitle={approvalLimitTitle}
                                 balance={token.balance}
                                 isApprovalLimitDisabled={isAllowanceAmountUnlimited}
                                 isMaxSelected={isMaxSelected}
+                                maxLabel={
+                                    <Translation id="earn.yieldDepositFlowScreen.depositMax" />
+                                }
                                 onAmountChange={handleAmountChange}
                                 onApprovalLimitPress={openApprovalLimitBottomSheet}
                                 onMaxChange={handleMaxChange}

@@ -5,7 +5,7 @@ import { FeesBottomSheet } from './FeesBottomSheet';
 import { TronFeeSummaryCard } from './TronFeeSummaryCard/TronFeeSummaryCard';
 import { type UseFeeSelectorParams, useFeeSelector } from '../../hooks/fees/useFeeSelector';
 
-type FeeSelectorProps = UseFeeSelectorParams;
+export type FeeSelectorProps = UseFeeSelectorParams;
 
 export const FeeSelector = (props: FeeSelectorProps) => {
     const {

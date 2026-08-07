@@ -19,12 +19,11 @@ import {
     type WrappedNativeTokenStackParamList,
     type WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 
 import { WrappedNativeTokenAmountInputCard } from '../components/WrappedNativeTokenAmountInputCard';
 import { WrappedNativeTokenScreenHeader } from '../components/WrappedNativeTokenScreenHeader';
 import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
-import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
+import { YieldFeeSection } from '../components/YieldFeeSection';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
 import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
@@ -142,19 +141,9 @@ export const WrapNativeTokenScreen = () => {
                             }
                         />
                     )}
-                    {isFeeSectionDisplayed &&
-                        (wrapFee.hasFeeEstimationError ? (
-                            <YieldFeeEstimationErrorAlert onRetry={wrapFee.retryFeeEstimation} />
-                        ) : (
-                            <FeeSelector
-                                accountKey={account.key}
-                                updateThunk={wrapFee.updateFeeLevelThunk}
-                                selectedFee={wrapFee.selectedFee}
-                                selectedFeePerUnit={wrapFee.formDraft?.feePerUnit}
-                                formDraft={wrapFee.formDraft}
-                                formDraftKey={wrapFee.formDraftKey}
-                            />
-                        ))}
+                    {isFeeSectionDisplayed && (
+                        <YieldFeeSection accountKey={account.key} fees={wrapFee} />
+                    )}
                     {flow.isDeviceNotConnectedVisible && (
                         <FullAlertBox
                             intent="critical"

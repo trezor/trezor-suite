@@ -16,29 +16,33 @@ import { useField } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
-import { YieldDepositAmountInput } from './YieldDepositAmountInput';
+import { YieldAmountInput } from './YieldAmountInput';
 
-type YieldDepositAmountInputCardProps = {
+type YieldAmountInputCardProps = {
+    amountLabel: ReactNode;
     isApprovalLimitDisabled?: boolean;
     approvalLimitTitle?: ReactNode;
     balance?: string;
     isMaxSelected: boolean;
+    maxLabel: ReactNode;
     onAmountChange: () => void;
     onApprovalLimitPress?: () => void;
     onMaxChange: (value: boolean) => void;
     tokenSymbol: TokenSymbol;
 };
 
-export const YieldDepositAmountInputCard = ({
+export const YieldAmountInputCard = ({
+    amountLabel,
     approvalLimitTitle,
     balance,
     isApprovalLimitDisabled = false,
     isMaxSelected,
+    maxLabel,
     onAmountChange,
     onApprovalLimitPress,
     onMaxChange,
     tokenSymbol,
-}: YieldDepositAmountInputCardProps) => {
+}: YieldAmountInputCardProps) => {
     const { errorMessage } = useField({ name: 'amount' });
     const hasBalance = balance !== undefined;
     const shouldShowApprovalLimit = !!approvalLimitTitle && !!onApprovalLimitPress;
@@ -65,17 +69,13 @@ export const YieldDepositAmountInputCard = ({
         <Card noPadding>
             <VStack spacing="sp12" padding="sp16">
                 <HStack justifyContent="space-between" alignItems="center">
-                    <Text variant="body-sm">
-                        <Translation id="earn.yieldDepositFlowScreen.amountToDeposit" />
-                    </Text>
+                    <Text variant="body-sm">{amountLabel}</Text>
                     <HStack spacing="sp8" alignItems="center">
-                        <Text variant="body-sm">
-                            <Translation id="earn.yieldDepositFlowScreen.depositMax" />
-                        </Text>
+                        <Text variant="body-sm">{maxLabel}</Text>
                         <Switch isChecked={isMaxSelected} onChange={onMaxChange} />
                     </HStack>
                 </HStack>
-                <YieldDepositAmountInput
+                <YieldAmountInput
                     isDisabled={isMaxSelected}
                     onAmountChange={onAmountChange}
                     tokenSymbol={tokenSymbol}
