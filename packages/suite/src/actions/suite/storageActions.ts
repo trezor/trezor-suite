@@ -1,13 +1,13 @@
 import { selectCoinjoinAccountByKey } from '@suite/coinjoin';
 import { selectSuiteSettings } from '@suite/settings';
-import { selectKnownDevices } from '@suite-common/bluetooth';
+import { type WithBluetoothState, selectKnownDevices } from '@suite-common/bluetooth';
 import { deviceActions, selectDevices, selectPersistentDeviceData } from '@suite-common/device';
 import { type MetadataState } from '@suite-common/metadata-types';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import { createThunk } from '@suite-common/redux-utils/';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { selectThp } from '@suite-common/thp';
+import { type ThpRootState, selectThp } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type DefinitionType, type TokenManagementAction } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
@@ -142,7 +142,9 @@ export const saveCoinjoinDebugSettings = () => (_dispatch: Dispatch, getState: G
     db.addItem('coinjoinDebugSettings', debug || {}, 'debug', true);
 };
 
-export const saveThpCredentials = createThunk(
+type SaveThpCredentialsThunkState = ThpRootState;
+
+export const saveThpCredentials = createThunk<void, void, { state: SaveThpCredentialsThunkState }>(
     `${STORAGE.MODULE_PREFIX}/saveThpCredentials`,
     async (_, { getState }) => {
         if (!db.isAccessible()) return;
@@ -151,7 +153,9 @@ export const saveThpCredentials = createThunk(
     },
 );
 
-export const saveKnownDevices = createThunk(
+type SaveKnownDevicesThunkState = WithBluetoothState<DesktopBluetoothDevice>;
+
+export const saveKnownDevices = createThunk<void, void, { state: SaveKnownDevicesThunkState }>(
     `${STORAGE.MODULE_PREFIX}/saveKnownDevices`,
     async (_, { getState }) => {
         if (!db.isAccessible()) return;
