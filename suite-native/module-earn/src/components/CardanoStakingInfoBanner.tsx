@@ -14,13 +14,19 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
-const bannerStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.elementFillWarningSofter,
-    borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.elementBorderWarningSofter,
-    borderRadius: utils.borders.radii.r12,
-    padding: utils.spacings.sp16,
-}));
+const bannerStyle = prepareNativeStyle<{ isFiveBinaries: boolean }>(
+    (utils, { isFiveBinaries }) => ({
+        backgroundColor: isFiveBinaries
+            ? utils.colors.elementFillInfoSofter
+            : utils.colors.elementFillWarningSofter,
+        borderWidth: utils.borders.widths.small,
+        borderColor: isFiveBinaries
+            ? utils.colors.elementBorderInfoSofter
+            : utils.colors.elementBorderWarningSofter,
+        borderRadius: utils.borders.radii.r12,
+        padding: utils.spacings.sp16,
+    }),
+);
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.sp12,
@@ -59,23 +65,28 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
     const apyValue = apy ?? <Translation id="earn.notAvailableShort" />;
     const displaySymbol = networkSymbol ? getNetworkDisplaySymbol(networkSymbol) : '';
 
-    // Staking with 5 Binaries earns almost nothing, so the heading urges migration. Staking with
-    // any other provider is fine, so it just promotes the new provider (matching desktop).
     const titleTranslationId = isStakedWithFiveBinaries
-        ? 'earn.infoBanner.updateProviderTitle'
+        ? 'earn.infoBanner.cardanoNoLongerEarningTitle'
         : 'earn.infoBanner.newProviderTitle';
     const descriptionTranslationId = isStakedWithFiveBinaries
-        ? 'earn.infoBanner.providerReducingRewards'
+        ? 'earn.infoBanner.cardanoNoLongerEarningDescription'
         : 'earn.infoBanner.updateToNewProvider';
+    const buttonLabelTranslationId = isStakedWithFiveBinaries
+        ? 'generic.buttons.learnMore'
+        : 'earn.infoBanner.updateProviderButton';
 
     const handleUpdateProviderPress = () => {
         openLink(`${HELP_CENTER_ADA_STAKING}#migrating-staking-pools`);
     };
 
     return (
-        <Box style={applyStyle(bannerStyle)}>
+        <Box style={applyStyle(bannerStyle, { isFiveBinaries: isStakedWithFiveBinaries })}>
             <HStack spacing="sp12" alignItems="flex-start">
-                <Icon name="warning" color="contentWarning" size="mediumLarge" />
+                <Icon
+                    name={isStakedWithFiveBinaries ? 'info' : 'warning'}
+                    color={isStakedWithFiveBinaries ? 'contentInfo' : 'contentWarning'}
+                    size="mediumLarge"
+                />
 
                 <VStack spacing="sp2" flex={1}>
                     <Text variant="body-md">
@@ -92,14 +103,21 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
 
             <Box style={applyStyle(buttonWrapperStyle)}>
                 <Button
-                    intent="warning"
+                    intent={isStakedWithFiveBinaries ? 'info' : 'warning'}
                     priority="primary"
                     onPress={handleUpdateProviderPress}
                     isFullWidth
                     size="medium"
                 >
-                    <Text variant="body-sm-strong" color="contentButtonWarningPrimary">
-                        <Translation id="earn.infoBanner.updateProviderButton" />
+                    <Text
+                        variant="body-sm-strong"
+                        color={
+                            isStakedWithFiveBinaries
+                                ? 'contentButtonInfoPrimary'
+                                : 'contentButtonWarningPrimary'
+                        }
+                    >
+                        <Translation id={buttonLabelTranslationId} />
                     </Text>
                 </Button>
             </Box>

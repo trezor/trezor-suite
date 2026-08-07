@@ -2,9 +2,10 @@ import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { StakingBadge } from '@suite-native/accounts';
+import { StakingBadge, ZeroApyBadge } from '@suite-native/accounts';
 import {
     type NativeStakingRootState,
+    selectFirstCardanoAccountStakedWithFiveBinaries,
     selectHasAnyDeviceAccountsWithStaking,
 } from '@suite-native/staking';
 
@@ -16,9 +17,16 @@ export const AssetItemStakingBadge = memo(({ symbol }: AssetItemStakingBadgeProp
     const hasAnyAccountsWithStaking = useSelector((state: NativeStakingRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, symbol),
     );
+    const stakedWithFiveBinariesAccount = useSelector((state: NativeStakingRootState) =>
+        selectFirstCardanoAccountStakedWithFiveBinaries(state),
+    );
 
     if (!hasAnyAccountsWithStaking) {
         return null;
+    }
+
+    if (symbol === 'ada' && stakedWithFiveBinariesAccount) {
+        return <ZeroApyBadge />;
     }
 
     return <StakingBadge networkSymbol={symbol} />;

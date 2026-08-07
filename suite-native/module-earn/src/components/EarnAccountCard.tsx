@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
@@ -8,6 +9,7 @@ import {
 } from '@suite-common/earn-staking-api';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { isApyAvailable, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import { ZeroApyBadge } from '@suite-native/accounts';
 import { Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
@@ -16,6 +18,7 @@ import {
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
     selectIsCardanoStakedOutsideEverstake,
+    selectIsCardanoStakedWithFiveBinaries,
     selectTronAvailableVotingPowerByAccountKey,
     selectTronVotesByAccountKey,
     useSelector as useStakingSelector,
@@ -75,6 +78,10 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
         selectIsCardanoStakedOutsideEverstake(state, item.accountKey),
     );
 
+    const isStakedWithFiveBinaries = useStakingSelector(state =>
+        selectIsCardanoStakedWithFiveBinaries(state, item.accountKey),
+    );
+
     const canClaim = useStakingSelector(state =>
         isSupportedStaking ? selectCanClaimByAccountKey(state, item.accountKey) : false,
     );
@@ -92,9 +99,25 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
         isStakingItem && item.symbol === 'trx' && availableTronVotingPower !== '0';
 
     const contractAddress = isDefiYieldItem ? item.tokenContractAddress : undefined;
+
+    let cardanoProviderLabel: ReactNode = null;
+    if (isStakingItem && symbol === 'ada') {
+        if (isStakedWithFiveBinaries) {
+            cardanoProviderLabel = (
+                <Translation id="earn.earnScreen.activeSheet.providerFiveBinaries" />
+            );
+        } else if (isAdaStakedOutsideEverstake) {
+            cardanoProviderLabel = <Translation id="earn.earnScreen.activeSheet.providerOutside" />;
+        } else {
+            cardanoProviderLabel = (
+                <Translation id="earn.earnScreen.activeSheet.providerEverstake" />
+            );
+        }
+    }
+
     const secondaryDescription = isDefiYieldItem
         ? item.accountLabel || getNetworkDisplaySymbolName(item.networkSymbol)
-        : null;
+        : cardanoProviderLabel;
 
     return (
         <EarnAccountCardLayout
@@ -118,7 +141,10 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
             }
             value={<Text variant="body-md">{formatEarnActiveItemBalance({ item, locale })}</Text>}
             valueDescription={
-                (isAdaStakedOutsideEverstake || apyValue != null) && (
+                (isAdaStakedOutsideEverstake || apyValue != null) &&
+                (isStakedWithFiveBinaries ? (
+                    <ZeroApyBadge />
+                ) : (
                     <Text variant="body-sm" color="contentSecondary">
                         {isAdaStakedOutsideEverstake || !isApyAvailable(apyValue) ? (
                             <Translation id="earn.notAvailableShort" />
@@ -142,7 +168,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                             </>
                         )}
                     </Text>
-                )
+                ))
             }
             alerts={
                 <>

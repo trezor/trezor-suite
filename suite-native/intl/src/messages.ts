@@ -204,7 +204,6 @@ export const messages = {
     accountList: {
         numberOfTokens: '+{numberOfTokens, plural, one{1 Token} other{# Tokens}}',
         staking: 'Staking',
-        rewardsReduced: 'Rewards reduced',
         stakingDisabled: 'Staking is currently unavailable.',
     },
     assets: {
@@ -2900,6 +2899,9 @@ export const messages = {
             activeSheet: {
                 stakingTitle: 'Your stakes',
                 stablecoinYieldTitle: 'Your yields',
+                providerOutside: 'Outside',
+                providerFiveBinaries: 'FiveBinaries',
+                providerEverstake: 'Everstake',
             },
             stablecoinYieldLoadError: {
                 title: 'Unable to load yield opportunities',
@@ -3491,14 +3493,13 @@ export const messages = {
         trezorDesktop: 'Trezor Suite desktop app.',
         adaStaysFullyAccessuble: 'Your ADA stays fully accessible while earning rewards.',
         infoBanner: {
-            updateProviderTitle: 'Save your ADA rewards by updating your staking provider',
             newProviderTitle: 'Earn ~{apy}% APY with our new provider',
             updateProviderButton: 'Update provider',
-            providerReducingRewards:
-                "You're earning nearly 0% in ADA rewards right now. Switch to Everstake to earn up to {apy}% APY. Your funds and past rewards are safe.",
             updateToNewProvider:
                 'Update to our new provider, Everstake, and earn ~{apy}% APY. Your {symbol} with our previous provider is safe, and your rewards stay intact, though rates aren’t guaranteed.',
-            rewardsReduced: 'Cardano staking rewards reduced',
+            cardanoNoLongerEarningTitle: 'Your Cardano is no longer earning',
+            cardanoNoLongerEarningDescription:
+                'Use Trezor Suite on desktop to switch your provider and start earning again.',
         },
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',
@@ -3514,6 +3515,7 @@ export const messages = {
             upToApr: 'up to {value}% APR',
             upToRate: 'up to {value}% Rate',
         },
+        zeroApyBadge: '0% APY',
         messageSystem: {
             depositDisabled: 'Deposits currently disabled.',
             withdrawDisabled: 'Withdrawals currently disabled.',
