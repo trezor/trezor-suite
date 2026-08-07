@@ -4,7 +4,7 @@ import {
     asBaseCurrencyAmount,
     toTokenSymbol,
 } from '@suite-common/wallet-types';
-import { HStack, Text } from '@suite-native/atoms';
+import { Box, HStack, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { BigNumber } from '@trezor/utils';
@@ -43,15 +43,17 @@ export const YieldClaimRewardRow = ({
                     contractAddress={tokenContractAddress}
                     size={20}
                 />
-                <CryptoAmountFormatter
-                    value={amount}
-                    symbol={toTokenSymbol(tokenSymbol)}
-                    decimals={tokenDecimals}
-                    variant="body-sm-strong"
-                    color="contentPrimary"
-                    isDiscreetText={false}
-                    numberOfLines={1}
-                />
+                <Box flexShrink={1}>
+                    <CryptoAmountFormatter
+                        value={amount}
+                        symbol={toTokenSymbol(tokenSymbol)}
+                        decimals={tokenDecimals}
+                        variant="body-sm-strong"
+                        color="contentPrimary"
+                        isDiscreetText={false}
+                        numberOfLines={2}
+                    />
+                </Box>
             </HStack>
             {isFiatAmountVisible && (
                 <HStack spacing="sp2" alignItems="center" justifyContent="flex-end">
