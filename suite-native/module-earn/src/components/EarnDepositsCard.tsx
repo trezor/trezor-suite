@@ -1,9 +1,11 @@
 import { useCallback, useMemo } from 'react';
+import { useStore } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
@@ -32,6 +34,8 @@ import { StablecoinYieldClaimRewardsBottomSheet } from './StablecoinYieldClaimRe
 import { StablecoinYieldClaimRewardsCardSection } from './StablecoinYieldClaimRewardsCardSection';
 import { useEarnDepositsCardData } from '../hooks/useEarnDepositsCardData';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../hooks/useStablecoinYieldFirmwareUpdateAlert';
+import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
+import { useStakingNavigateAnalytics } from '../hooks/useStakingNavigateAnalytics';
 import {
     type StablecoinYieldClaimSummary,
     type StablecoinYieldEarnItem,
@@ -79,6 +83,9 @@ export const EarnDepositsCard = ({
         stakingActiveItems,
         stablecoinYieldActiveItems,
     });
+    const reportStakingNavigate = useStakingNavigateAnalytics();
+    const store = useStore<AccountsRootState>();
+    const { navigateToStakingDetail } = useStakingDetailNavigation();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
     const {
@@ -131,6 +138,29 @@ export const EarnDepositsCard = ({
         },
         [analytics, navigation],
     );
+
+    const handleStakingRowPress = useCallback(() => {
+        const activeItems = stakingRow?.activeItems ?? [];
+
+        if (activeItems.length === 1) {
+            const onlyItem = activeItems[0];
+
+            if (onlyItem?.type === 'staking') {
+                const account = selectAccountByKey(store.getState(), onlyItem.accountKey);
+                if (account) {
+                    reportStakingNavigate(account);
+                }
+                navigateToStakingDetail({
+                    accountKey: onlyItem.accountKey,
+                    symbol: onlyItem.symbol,
+                });
+            }
+
+            return;
+        }
+
+        openStakingSheet();
+    }, [navigateToStakingDetail, openStakingSheet, reportStakingNavigate, stakingRow, store]);
 
     const handleStablecoinYieldClaimRewardsPress = useCallback(() => {
         if (!isFirmwareSupported('claim')) {
@@ -213,7 +243,7 @@ export const EarnDepositsCard = ({
                         <EarnDepositsCardRow
                             key={stakingRow.type}
                             row={stakingRow}
-                            onPress={openStakingSheet}
+                            onPress={handleStakingRowPress}
                         />
                     )}
 
