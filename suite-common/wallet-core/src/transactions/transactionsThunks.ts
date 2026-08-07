@@ -792,7 +792,7 @@ type FetchTransactionsFromNowUntilTimestampParams = {
     accountKey: AccountKey;
     timestamp: Timestamp | null;
 };
-type FetchTransactionsFromNowUntilTimestampState = AccountsRootState &
+export type FetchTransactionsFromNowUntilTimestampState = AccountsRootState &
     TransactionsRootState &
     FetchAllTransactionsForAccountThunkState &
     FetchTransactionsPageThunkState;

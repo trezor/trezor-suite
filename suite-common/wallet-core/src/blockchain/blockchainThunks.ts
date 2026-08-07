@@ -112,8 +112,10 @@ export const setCustomBackendThunk = createThunk<
     return setBackendsToConnect(backends);
 });
 
-type InitBlockchainThunkState = AccountsRootState & BlockchainRootState & WalletSettingsRootState;
-type InitBlockchainThunkDeps = {
+export type InitBlockchainThunkState = AccountsRootState &
+    BlockchainRootState &
+    WalletSettingsRootState;
+export type InitBlockchainThunkDeps = {
     services: AnalyticsDep;
 };
 
