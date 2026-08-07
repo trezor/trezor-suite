@@ -15,3 +15,7 @@ export const createAccountRefreshThrottle = (getState: () => AccountsRefreshTime
     createKeyedThrottle<Account['key']>(MIN_ACCOUNT_REFRESH_INTERVAL, accountKey =>
         selectAccountRefreshTime(getState(), accountKey),
     );
+
+export type AccountRefreshThrottleDep = {
+    accountRefreshThrottle: ReturnType<typeof createAccountRefreshThrottle>;
+};

@@ -24,7 +24,6 @@ import { type GeolocationState, geolocationReducer } from '@suite-common/geoloca
 import { addLog } from '@suite-common/logger';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type ReceiveState, prepareReceiveReducer } from '@suite-common/receive';
-import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import { castExtraStore, createStoreWithExtraStoreMiddleware } from '@suite-common/redux-utils';
 import { type SuiteSyncDataState, suiteSyncDataReducer } from '@suite-common/suite-sync';
 import { type SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
@@ -39,9 +38,9 @@ import { mergeDeepObject } from '@trezor/utils';
 
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
-import { getSuiteMiddleware } from 'src/middlewares/suite';
+import { type GetSuiteMiddlewareDeps, getSuiteMiddleware } from 'src/middlewares/suite';
 import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
-import { getWalletMiddlewares } from 'src/middlewares/wallet';
+import { type GetWalletMiddlewaresDeps, getWalletMiddlewares } from 'src/middlewares/wallet';
 import onboardingReducers from 'src/reducers/onboarding';
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { type SuiteReducersState, suiteReducers } from 'src/reducers/suite';
@@ -117,7 +116,9 @@ const rootReducer = combineReducers({
 
 const loggerExcludedActions = [addLog.type];
 
-const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
+type GetCustomMiddlewareDeps = GetSuiteMiddlewareDeps & GetWalletMiddlewaresDeps;
+
+const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | null) => {
     const middleware = [
         toastMiddleware,
         ...getSuiteMiddleware(getExtra),

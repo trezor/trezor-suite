@@ -1,6 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import {
     tradingBuyActions,
     tradingExchangeActions,
@@ -15,18 +15,22 @@ class TradingError extends Error {
     }
 }
 
-export const prepareTradingLastErrorSentryMiddleware = createMiddlewareWithExtraDeps(
-    (action, { next }) => {
-        const isLastErrorMessageAction = isAnyOf(
-            tradingBuyActions.setLastErrorMessage,
-            tradingExchangeActions.setLastErrorMessage,
-            tradingSellActions.setLastErrorMessage,
-        )(action);
+type TradingLastErrorSentryMiddlewareState = void;
 
-        if (isLastErrorMessageAction && !!action.payload) {
-            captureSentryException(new TradingError(action.payload));
-        }
+export const prepareTradingLastErrorSentryMiddleware = createMiddlewareWithExtraDeps<
+    void,
+    AnyAction,
+    TradingLastErrorSentryMiddlewareState
+>((action, { next }) => {
+    const isLastErrorMessageAction = isAnyOf(
+        tradingBuyActions.setLastErrorMessage,
+        tradingExchangeActions.setLastErrorMessage,
+        tradingSellActions.setLastErrorMessage,
+    )(action);
 
-        return next(action);
-    },
-);
+    if (isLastErrorMessageAction && !!action.payload) {
+        captureSentryException(new TradingError(action.payload));
+    }
+
+    return next(action);
+});

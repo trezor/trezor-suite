@@ -127,20 +127,36 @@ This function is similar to `createMiddleware`, but injects extra dependencies i
 API.
 
 ```typescript
-export const prepareSomeMiddleware = createMiddlewareWithExtraDeps(
-    (action, { getState, extra, next }) => {
-        const {
-            actions: { addTransaction },
-            services: { getTransactions },
-        } = extra;
+type SomeMiddlewareDeps = {
+    actions: AddTransactionDep;
+    services: GetTransactionsDep;
+};
 
-        switch (action.type) {
-            case addTransaction.type:
-            // do something
-        }
+export const prepareSomeMiddleware = createMiddlewareWithExtraDeps<
+    SomeMiddlewareDeps,
+    AnyAction,
+    SomeMiddlewareState
+>((action, { getState, extra, next }) => {
+    const {
+        actions: { addTransaction },
+        services: { getTransactions },
+    } = extra;
 
-        return next(action);
-    },
+    switch (action.type) {
+        case addTransaction.type:
+        // do something
+    }
+
+    return next(action);
+});
+```
+
+All three types are mandatory. Use `void` explicitly when a middleware has no dependencies or does
+not read state:
+
+```typescript
+export const prepareDependencyFreeMiddleware = createMiddlewareWithExtraDeps<void, AnyAction, void>(
+    (action, { next }) => next(action),
 );
 ```
 

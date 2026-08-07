@@ -1,5 +1,9 @@
 import type { SuiteReadyPayload } from '@suite/analytics';
-import { selectIsLegacyLabelingVisible } from '@suite/metadata';
+import { type DesktopUpdateRootState } from '@suite/desktop-update';
+import {
+    type LegacyLabelingVisibleRootState,
+    selectIsLegacyLabelingVisible,
+} from '@suite/metadata';
 import { AccountTransactionBaseAnchor, EarnAnchor, isEarnYieldRowAnchor } from '@suite/router';
 import {
     selectAutodetectLanguage,
@@ -8,11 +12,14 @@ import {
     selectLanguage,
     selectTheme,
 } from '@suite/settings';
-import { getIsTorEnabled } from '@suite/tor';
+import { type DesktopSuiteSyncRootState } from '@suite/suite-sync';
+import { type TorRootState, getIsTorEnabled } from '@suite/tor';
+import { type AnalyticsRootState } from '@suite-common/analytics-redux';
 import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/device';
+import { type DiscreetModeRootState } from '@suite-common/discreet-mode';
 import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
@@ -25,6 +32,7 @@ import {
     getCpuArch,
     getOsVersion,
 } from '@suite-common/suite-utils';
+import { type BlockchainRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
     getOsName,
@@ -35,10 +43,17 @@ import {
     getWindowWidth,
 } from '@trezor/env-utils';
 
-import { type AppState } from 'src/types/suite';
+export type GetSuiteReadyPayloadState = AnalyticsRootState &
+    BlockchainRootState &
+    DesktopUpdateRootState &
+    DesktopSuiteSyncRootState &
+    DiscreetModeRootState &
+    LegacyLabelingVisibleRootState &
+    TorRootState &
+    WalletSettingsRootState;
 
 const resolveLabelingType = (
-    state: AppState,
+    state: GetSuiteReadyPayloadState,
 ): MetadataProviderType | 'missing-provider' | 'suite-sync' | 'off' => {
     if (selectIsLegacyLabelingVisible(state)) {
         return (
@@ -72,7 +87,9 @@ export const redactAnchor = (anchor?: string) => {
 // 1. replace coinjoin by taproot
 export const redactRouterUrl = (url: string) => url.replace(/coinjoin/g, 'taproot');
 
-export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyPayload> => {
+export const getSuiteReadyPayload = async (
+    state: GetSuiteReadyPayloadState,
+): Promise<SuiteReadyPayload> => {
     const experimentVariants = selectActiveExperimentsWithVariants(state);
     const [osVersion, osCpuArch] = await Promise.all([getOsVersion(), getCpuArch()]);
 
