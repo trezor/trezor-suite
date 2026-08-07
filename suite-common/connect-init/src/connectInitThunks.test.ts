@@ -4,7 +4,7 @@ import { asGetter } from '@suite-common/dependency-injection';
 import { deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { createMockDispatch } from '@suite-common/redux-utils/mocks';
+import { type MockDispatch, createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import {
     defaultTrezorUIEventHandlerThunk,
@@ -30,7 +30,7 @@ import {
 
 type ConnectInitThunkTestDeps = {
     actions: unknown[];
-    waitForThunks: () => Promise<void>;
+    onDispatch: MockDispatch<ConnectInitThunkState, ConnectInitThunkDeps>['onDispatch'];
     dispatch: ConnectInitThunkDispatch;
     getState: () => ConnectInitThunkState;
     extra: ConnectInitThunkDeps;
@@ -74,11 +74,11 @@ const createThunkDeps = (
         },
     };
 
-    const { actions, dispatch, waitForThunks } = createMockDispatch({ getState, extra });
+    const { actions, dispatch, onDispatch } = createMockDispatch({ getState, extra });
 
     return {
         actions,
-        waitForThunks,
+        onDispatch,
         dispatch,
         getState,
         extra,
@@ -247,11 +247,26 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('only scoped callId-bearing UI events are swallowed by the global listener', async () => {
-        const { actions, waitForThunks, dispatch, getState, extra } = createThunkDeps();
+        const { actions, onDispatch, dispatch, getState, extra } = createThunkDeps();
         await connectInitThunk()(dispatch, getState, extra);
         actions.length = 0;
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
         const scopedCallId = 'scoped-call-id';
+
+        // Only the scoped event is swallowed, so the single handler thunk that runs is the one for
+        // the unscoped event. Asserting when that thunk reports itself finished is what makes the
+        // assertions deterministic, without waiting for anything unrelated.
+        const handlerFinished = onDispatch((action, resolve) => {
+            if (!defaultTrezorUIEventHandlerThunk.fulfilled.match(action)) return;
+
+            expect(actions).toEqual([
+                expect.objectContaining({ type: defaultTrezorUIEventHandlerThunk.pending.type }),
+                expect.objectContaining({ type: UI_REQUEST.REQUEST_BUTTON }),
+                expect.objectContaining({ type: '@suite/device/addButtonRequest' }),
+                expect.objectContaining({ type: defaultTrezorUIEventHandlerThunk.fulfilled.type }),
+            ]);
+            resolve();
+        });
 
         emitTestEvent(UI_EVENT, {
             type: UI_REQUEST.REQUEST_BUTTON,
@@ -267,18 +282,12 @@ describe('TrezorConnect Actions', () => {
                 callId: scopedCallId,
             });
 
-            await waitForThunks();
+            await handlerFinished;
         } finally {
             unregisterScopedCallId(scopedCallId);
         }
-
-        expect(actions).toEqual([
-            expect.objectContaining({ type: defaultTrezorUIEventHandlerThunk.pending.type }),
-            expect.objectContaining({ type: UI_REQUEST.REQUEST_BUTTON }),
-            expect.objectContaining({ type: '@suite/device/addButtonRequest' }),
-            expect.objectContaining({ type: defaultTrezorUIEventHandlerThunk.fulfilled.type }),
-        ]);
     });
+
     it('connectInitHooks.deviceEvent is called for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED', async () => {
         const onConnect = jest.fn();
         const onConnectUnacquired = jest.fn();
