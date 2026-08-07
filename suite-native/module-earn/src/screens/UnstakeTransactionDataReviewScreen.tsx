@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { isDeviceReviewOnly } from '@suite-common/wallet-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import {
@@ -12,6 +13,7 @@ import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
     type RootStackRoutes,
+    Screen,
     ScreenHeader,
     type StackProps,
 } from '@suite-native/navigation';
@@ -81,6 +83,9 @@ export const UnstakeTransactionDataReviewScreen = ({
 
     const isReadyToUnstake = isTransactionAlreadySigned && !!account;
 
+    const isFollowDeviceReview = isDeviceReviewOnly(precomposedTransaction);
+    const isFollowDeviceScreen = isFollowDeviceReview && !isTransactionAlreadySigned;
+
     useEarnReviewAutoStart({
         handleSign,
         isSigned: isTransactionAlreadySigned,
@@ -109,36 +114,59 @@ export const UnstakeTransactionDataReviewScreen = ({
         setIsPushing(false);
     }, [handlePush, trackPushedTransaction]);
 
+    const timer = showTimer ? (
+        <TxValidityTimer
+            secondsLeft={secondsLeft}
+            isPastDeadline={isPastDeadline}
+            isBroadcasting={isBroadcasting}
+            onRetry={onRetry}
+            isRetryDisabled={isRetryDisabled}
+            retryTestID={isFollowDeviceReview ? '@earn/follow-device-retry' : undefined}
+            isCompact={isFollowDeviceScreen}
+        />
+    ) : null;
+
+    const header = (
+        <ScreenHeader
+            customContent={
+                <Text variant="body-md-strong">
+                    <Translation id="earn.unstakeTransactionDataReviewScreen.title" />
+                </Text>
+            }
+            closeActionType="close"
+            closeAction={closeReview}
+        />
+    );
+
+    if (isFollowDeviceScreen) {
+        return (
+            <Screen
+                isScrollable={false}
+                header={
+                    <ScreenHeader
+                        closeActionType="back"
+                        closeAction={closeReview}
+                        rightIcon={timer}
+                    />
+                }
+            >
+                <FollowDeviceScreenContent titleTxKey="earn.unstakeTransactionDataReviewScreen.followDeviceInstructions" />
+            </Screen>
+        );
+    }
+
     return (
         <ConfirmOnTrezorWrapper
             isManualControlEnabled
             controlRef={confirmOnTrezorRef}
             closeActionType="close"
             closeAction={closeReview}
-            defaultHeader={
-                <ScreenHeader
-                    customContent={
-                        <Text variant="body-md-strong">
-                            <Translation id="earn.unstakeTransactionDataReviewScreen.title" />
-                        </Text>
-                    }
-                    closeActionType="close"
-                    closeAction={closeReview}
-                />
-            }
+            defaultHeader={header}
         >
             <VStack flex={1} justifyContent="space-between">
                 <VStack justifyContent="center" spacing="sp24">
-                    {showTimer && (
-                        <TxValidityTimer
-                            secondsLeft={secondsLeft}
-                            isPastDeadline={isPastDeadline}
-                            isBroadcasting={isBroadcasting}
-                            onRetry={onRetry}
-                            isRetryDisabled={isRetryDisabled}
-                        />
-                    )}
-                    <UnstakeTransactionDataReviewStepList />
+                    {timer}
+                    {!isFollowDeviceReview && <UnstakeTransactionDataReviewStepList />}
                 </VStack>
                 {isReadyToUnstake && (
                     <ScrollToEndOnMount>
