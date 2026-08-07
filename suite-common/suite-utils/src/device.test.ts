@@ -1,3 +1,4 @@
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -9,6 +10,7 @@ import {
     getCheckBackupUrl,
     getDeviceInstances,
     getDeviceInstancesGroupedByDeviceId,
+    getDeviceModelWithFlagshipFallback,
     getFirmwareDowngradeUrl,
     getFirstDeviceInstance,
     getIsDeviceConnectedViaBluetooth,
@@ -245,5 +247,23 @@ describe(getPhysicalDeviceCount.name, () => {
             mockSuiteDevice(undefined, { device_id: null }),
         ];
         expect(getPhysicalDeviceCount(devices)).toBe(2);
+    });
+});
+
+describe(getDeviceModelWithFlagshipFallback.name, () => {
+    it('returns the model reported by the device', () => {
+        const device = mockSuiteDevice({}, { internal_model: DeviceModelInternal.T3T1 });
+
+        expect(getDeviceModelWithFlagshipFallback(device)).toBe(DeviceModelInternal.T3T1);
+    });
+
+    it('returns the flagship model when the internal_model cannot be read', () => {
+        const device = mockSuiteDevice({}, { internal_model: DeviceModelInternal.UNKNOWN });
+
+        expect(getDeviceModelWithFlagshipFallback(device)).toBe(DEFAULT_FLAGSHIP_MODEL);
+    });
+
+    it('returns the flagship model when there is no device', () => {
+        expect(getDeviceModelWithFlagshipFallback(undefined)).toBe(DEFAULT_FLAGSHIP_MODEL);
     });
 });
