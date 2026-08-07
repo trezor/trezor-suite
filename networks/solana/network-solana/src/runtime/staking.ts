@@ -160,6 +160,7 @@ export const stake = async ({
             feeLamports: feeSummary.feeLamports,
             rentLamports: minimumRent.toString(),
             feeIncludingRentLamports,
+            hasSplitInstruction: false,
         };
 
         return {
@@ -330,6 +331,7 @@ export const unstake = async ({
             feeLamports: feeSummary.feeLamports,
             rentLamports: minimumRent.toString(),
             feeIncludingRentLamports,
+            hasSplitInstruction: accountsToSplit.length > 0,
         };
 
         return { unstakeTx: transactionMessage, unstakeAmount, txMeta };
@@ -393,6 +395,7 @@ export const claim = async ({
             feeLamports: feeSummary.feeLamports,
             rentLamports: '0',
             feeIncludingRentLamports: feeSummary.feeLamports,
+            hasSplitInstruction: false,
         };
 
         return {
