@@ -127,15 +127,36 @@ jobs:
         if: always()
         runs-on: ubuntu-latest
         steps:
-            - name: Rebuild SHA256SUMS from release assets
+            - name: Sign installers (PGP) and rebuild SHA256SUMS
               env:
                   GH_TOKEN: ${{ github.token }}
+                  APP_GPG_PRIVATE_KEY: ${{ secrets.APP_GPG_PRIVATE_KEY }}
+                  APP_GPG_PASSPHRASE: ${{ secrets.APP_GPG_PASSPHRASE }}
               run: |
+                  set -euo pipefail
                   mkdir sums && cd sums
                   for i in 1 2 3 4 5; do
-                      gh release download continuous -R "$GITHUB_REPOSITORY" -p 'SuiteDark-*' --clobber && break
+                      if gh release download continuous -R "$GITHUB_REPOSITORY" -p 'SuiteDark-*' --clobber; then break; fi
                       echo "download attempt $i failed; retrying in 15s"; sleep 15
                   done
+                  # SHA256SUMS over the downloaded installers (+ blockmaps), before signing.
                   sha256sum SuiteDark-* > SHA256SUMS
                   echo "== SHA256SUMS =="; cat SHA256SUMS
+                  # Detached PGP signatures so the desktop auto-updater can verify each installer
+                  # against the bundled public key (packages/suite-desktop-core/scripts/app-key.asc).
+                  # Without <installer>.asc the updater aborts with "Signature check ... failed".
+                  if [ -n "${APP_GPG_PRIVATE_KEY:-}" ]; then
+                      export GNUPGHOME="$(mktemp -d)"
+                      echo "$APP_GPG_PRIVATE_KEY" | gpg --batch --import
+                      KEYID="$(gpg --list-secret-keys --with-colons | awk -F: '/^sec:/{print $5; exit}')"
+                      for f in SuiteDark-*; do
+                          case "$f" in *.blockmap | *.asc | SHA256SUMS) continue ;; esac
+                          gpg --batch --yes --pinentry-mode loopback --passphrase "$APP_GPG_PASSPHRASE" \
+                              --local-user "$KEYID" --detach-sign --armor -o "$f.asc" "$f"
+                          echo "signed $f -> $f.asc"
+                      done
+                      gh release upload continuous -R "$GITHUB_REPOSITORY" ./*.asc --clobber
+                  else
+                      echo "APP_GPG_PRIVATE_KEY not set — skipping update signatures (auto-update signature check will fail)."
+                  fi
                   gh release upload continuous -R "$GITHUB_REPOSITORY" SHA256SUMS --clobber
