@@ -1,10 +1,25 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 
-import { calculateTronFeeBreakdown, computeBandwidthFeeLevel } from './tronUtils';
+import {
+    calculateTronFeeBreakdown as calculateTronFeeBreakdownBase,
+    computeBandwidthFeeLevel,
+} from './tronUtils';
 
-const trxSymbol = asNetworkSymbol('trx');
+const calculateTronFeeBreakdown = (
+    transaction: Parameters<typeof calculateTronFeeBreakdownBase>[1],
+    resources: Parameters<typeof calculateTronFeeBreakdownBase>[2],
+    symbol: Parameters<typeof calculateTronFeeBreakdownBase>[3],
+    isNewAccount?: Parameters<typeof calculateTronFeeBreakdownBase>[4],
+) =>
+    calculateTronFeeBreakdownBase(
+        mockNetworkConfigDeps,
+        transaction,
+        resources,
+        symbol,
+        isNewAccount,
+    );
 
 const makeTrc20Tx = (overrides: Record<string, unknown> = {}): GeneralPrecomposedTransaction =>
     ({
@@ -100,7 +115,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         // Tx: bandwidth: 300
         // Account: bandwidth: 300, energy: 0
         // Expected: trxBurned: 0 TRX, coveredBandwidth: 300
-        const result = calculateTronFeeBreakdown(makeNativeTrxTx(), makeTronResources(), trxSymbol);
+        const result = calculateTronFeeBreakdown(makeNativeTrxTx(), makeTronResources(), 'trx');
         expect(result?.trxBurned.toNumber()).toBe(0);
         expect(result?.coveredBandwidth.toNumber()).toBe(300);
     });
@@ -112,7 +127,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         const result = calculateTronFeeBreakdown(
             makeNativeTrxTx(),
             makeTronResources({ availableFreeBandwidth: 0 }),
-            trxSymbol,
+            'trx',
         );
         expect(result?.trxBurned.toString()).toBe('0.3');
         expect(result?.coveredBandwidth.toNumber()).toBe(0);
@@ -125,7 +140,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         const result = calculateTronFeeBreakdown(
             makeTrc20Tx(),
             makeTronResources({ availableEnergy: 1000 }),
-            trxSymbol,
+            'trx',
         );
         expect(result?.trxBurned.toNumber()).toBe(0);
         expect(result?.coveredBandwidth.toNumber()).toBe(300);
@@ -139,7 +154,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         const result = calculateTronFeeBreakdown(
             makeTrc20Tx(),
             makeTronResources({ availableEnergy: 400 }),
-            trxSymbol,
+            'trx',
         );
         expect(result?.trxBurned.toString()).toBe('0.06');
         expect(result?.coveredBandwidth.toNumber()).toBe(300);
@@ -153,7 +168,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         const result = calculateTronFeeBreakdown(
             makeTrc20Tx(),
             makeTronResources({ availableEnergy: 0 }),
-            trxSymbol,
+            'trx',
         );
         expect(result?.trxBurned.toString()).toBe('0.1');
         expect(result?.coveredBandwidth.toNumber()).toBe(300);
@@ -167,7 +182,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         const result = calculateTronFeeBreakdown(
             makeTrc20Tx(),
             makeTronResources({ availableEnergy: 1000, availableFreeBandwidth: 0 }),
-            trxSymbol,
+            'trx',
             '100000',
         );
         expect(result?.trxBurned.toString()).toBe('0.3');
@@ -182,7 +197,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         const result = calculateTronFeeBreakdown(
             makeTrc20Tx(),
             makeTronResources({ availableEnergy: 1000 }),
-            trxSymbol,
+            'trx',
             '110000',
         );
         expect(result?.trxBurned.toString()).toBe('0.01');
@@ -197,7 +212,7 @@ describe(calculateTronFeeBreakdown.name, () => {
             ...makeNativeTrxTx(),
             accountActivationFee: '1000000',
         } as GeneralPrecomposedTransaction;
-        const result = calculateTronFeeBreakdown(tx, makeTronResources(), trxSymbol);
+        const result = calculateTronFeeBreakdown(tx, makeTronResources(), 'trx');
         expect(result?.trxBurned.toString()).toBe('0.1');
         expect(result?.coveredBandwidth.toNumber()).toBe(0);
     });
@@ -213,7 +228,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         const result = calculateTronFeeBreakdown(
             tx,
             makeTronResources({ availableFreeBandwidth: 0, availableStakedBandwidth: 300 }),
-            trxSymbol,
+            'trx',
         );
         expect(result?.trxBurned.toNumber()).toBe(0);
         expect(result?.coveredBandwidth.toNumber()).toBe(300);
@@ -224,7 +239,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         // Account: bandwidth: 300
         // Expected: trxBurned: 1 TRX (memo only, bandwidth covered)
         const tx = { ...makeNativeTrxTx(), memoFee: '1000000' } as GeneralPrecomposedTransaction;
-        const result = calculateTronFeeBreakdown(tx, makeTronResources(), trxSymbol);
+        const result = calculateTronFeeBreakdown(tx, makeTronResources(), 'trx');
         expect(result?.trxBurned.toString()).toBe('1');
         expect(result?.coveredBandwidth.toNumber()).toBe(300);
     });
@@ -237,7 +252,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         const result = calculateTronFeeBreakdown(
             tx,
             makeTronResources({ availableEnergy: 1000 }),
-            trxSymbol,
+            'trx',
         );
         expect(result?.trxBurned.toString()).toBe('1');
         expect(result?.coveredBandwidth.toNumber()).toBe(300);

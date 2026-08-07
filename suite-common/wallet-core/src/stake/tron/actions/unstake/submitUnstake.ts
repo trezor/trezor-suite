@@ -1,6 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { getNetwork } from '@suite-common/wallet-config';
 import { asAmountUnit, getAccountIdentity, unitsToSubunits } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
@@ -25,7 +24,7 @@ export const submitTronUnstakeThunk = createThunk<void, SubmitUnstakeThunkArgume
     `${TRON_STAKE_MODULE}/submitTronUnstakeThunk`,
     async (
         { account, device, amount, resourceType, requestPushApproval, onSigningStart, onSettled },
-        { dispatch },
+        { dispatch, extra },
     ) => {
         const { key: accountKey } = account;
         const flow: TronFlow = 'unstake';
@@ -42,7 +41,7 @@ export const submitTronUnstakeThunk = createThunk<void, SubmitUnstakeThunkArgume
             return;
         }
 
-        const contract = buildUnstakeContract(account, amount, resourceType);
+        const contract = buildUnstakeContract(extra.services, account, amount, resourceType);
 
         if (!contract) {
             dispatch(
@@ -140,7 +139,7 @@ export const submitTronUnstakeThunk = createThunk<void, SubmitUnstakeThunkArgume
 
             const unstakeAmount = unitsToSubunits({
                 value: asAmountUnit(new BigNumber(amount)),
-                decimals: getNetwork(account.symbol).decimals,
+                decimals: extra.services.getNetworkConfig(account.symbol).decimals,
             }).toString();
 
             dispatch(

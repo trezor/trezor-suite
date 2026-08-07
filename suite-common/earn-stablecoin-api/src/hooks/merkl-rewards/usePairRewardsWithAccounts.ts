@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
 
-import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    findNetworkByEvmChainId,
+    getNetworks,
+    selectNetworkConfigDeps,
+} from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountWithNetworkType,
@@ -19,6 +24,8 @@ export function usePairRewardsWithAccounts({
     accounts,
     chainsRewardsWithFiat,
 }: UsePairRewardsWithAccountsProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     return useMemo(
         () =>
             chainsRewardsWithFiat
@@ -28,7 +35,10 @@ export function usePairRewardsWithAccounts({
                         new BigNumber(0),
                     );
 
-                    const network = getNetworkByEvmChainId(chainId);
+                    const network = findNetworkByEvmChainId(
+                        getNetworks(networkConfigDeps),
+                        chainId,
+                    );
                     const rewardAccount = accounts.find(
                         (account): account is AccountWithNetworkType<'ethereum'> =>
                             account.networkType === 'ethereum' &&
@@ -50,7 +60,7 @@ export function usePairRewardsWithAccounts({
                     (account): account is NonNullable<typeof account> =>
                         !!account && account.totalClaimableFiatAmount.gt(0),
                 ),
-        [chainsRewardsWithFiat, accounts],
+        [networkConfigDeps, chainsRewardsWithFiat, accounts],
     );
 }
 

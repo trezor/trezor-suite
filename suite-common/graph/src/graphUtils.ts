@@ -8,6 +8,7 @@ import {
     subHours,
 } from 'date-fns';
 
+import { type NetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     AMOUNT_UNIT_ZERO,
     asAmountUnit,
@@ -68,13 +69,15 @@ export const getTimestampsInTimeFrame = (
     return datesInRangeUnixTime as number[];
 };
 
-type MapCryptoBalanceMovementToFixedTimeFrameParams = {
+type MapCryptoBalanceMovementToFixedTimeFrameParams = NetworkConfigDeps & {
     balanceHistory: AccountHistoryBalancePoint[];
     fiatRates: FiatRatesItem[];
     baseCurrencyCode: BaseCurrencyCode;
 };
 
 export const mapCryptoBalanceMovementToFixedTimeFrame = ({
+    getNetworkConfig,
+    networkModuleRepository,
     balanceHistory,
     fiatRates,
     baseCurrencyCode,
@@ -111,6 +114,8 @@ export const mapCryptoBalanceMovementToFixedTimeFrame = ({
             });
 
             const baseCurrencyDecimal = getDecimalsForBaseCurrency({
+                getNetworkConfig,
+                networkModuleRepository,
                 code: baseCurrencyCode,
                 // Here, we NEVER use sats. The formatting to sats shall ALWAYS be a domain of the view-component.
                 isInSats: false,

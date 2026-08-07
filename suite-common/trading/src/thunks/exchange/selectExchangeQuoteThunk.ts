@@ -15,7 +15,7 @@ export type SelectExchangeQuoteThunkProps = {
 
 export const selectExchangeQuoteThunk = createThunk(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/selectQuote`,
-    ({ quote, nextStep }: SelectExchangeQuoteThunkProps, { dispatch, getState }) => {
+    ({ quote, nextStep }: SelectExchangeQuoteThunkProps, { dispatch, getState, extra }) => {
         const exchangeInfo = selectTradingExchangeInfo(getState());
         const provider =
             exchangeInfo?.providerInfos && quote.exchange
@@ -32,7 +32,7 @@ export const selectExchangeQuoteThunk = createThunk(
             !quote.isDex ||
             quote.status === 'CONFIRM' ||
             quote.status === 'SIGN_DATA' ||
-            !requiresTokenApproval(quote)
+            !requiresTokenApproval(extra.services, quote)
         ) {
             dispatch(tradingExchangeActions.saveSelectedQuote(quote));
         }

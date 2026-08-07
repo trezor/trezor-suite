@@ -1,5 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { type PrecomposedLevels } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 
@@ -18,7 +19,7 @@ const DAI_CRYPTO_ID = 'ethereum--0x6b175474e89094c44da98b954eedeac495271d0f' as 
 
 describe('requiresTokenApproval', () => {
     it('should return false when no quote is provided', () => {
-        const result = requiresTokenApproval(undefined);
+        const result = requiresTokenApproval(mockNetworkConfigDeps, undefined);
         expect(result).toBe(false);
     });
 
@@ -28,7 +29,7 @@ describe('requiresTokenApproval', () => {
             isDex: false,
             send: 'ethereum' as CryptoId,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(mockNetworkConfigDeps, quote);
         expect(result).toBe(false);
     });
 
@@ -38,7 +39,7 @@ describe('requiresTokenApproval', () => {
             isDex: true,
             send: 'ethereum' as CryptoId,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(mockNetworkConfigDeps, quote);
         expect(result).toBe(false);
     });
 
@@ -47,7 +48,7 @@ describe('requiresTokenApproval', () => {
             orderId: 'test-order',
             isDex: true,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(mockNetworkConfigDeps, quote);
         expect(result).toBe(false);
     });
 
@@ -57,7 +58,7 @@ describe('requiresTokenApproval', () => {
             isDex: true,
             send: USDT_CRYPTO_ID,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(mockNetworkConfigDeps, quote);
         expect(result).toBe(true);
     });
 
@@ -68,7 +69,7 @@ describe('requiresTokenApproval', () => {
             send: USDT_CRYPTO_ID,
             status: 'SIGN_DATA' as const,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(mockNetworkConfigDeps, quote);
         expect(result).toBe(true);
     });
 
@@ -83,7 +84,7 @@ describe('requiresTokenApproval', () => {
                 data: {},
             } as any,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(mockNetworkConfigDeps, quote);
         expect(result).toBe(true);
     });
 
@@ -98,14 +99,14 @@ describe('requiresTokenApproval', () => {
                 data: {},
             },
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(mockNetworkConfigDeps, quote);
         expect(result).toBe(false);
     });
 });
 
 describe('getApprovalStatus', () => {
     it('should return null when no quote is provided', () => {
-        const result = getApprovalStatus(undefined);
+        const result = getApprovalStatus(mockNetworkConfigDeps, undefined);
         expect(result).toBe(null);
     });
 
@@ -117,7 +118,7 @@ describe('getApprovalStatus', () => {
             send: DAI_CRYPTO_ID,
             status: 'CONFIRM' as const,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(mockNetworkConfigDeps, quote);
         expect(result).toBe('approved');
     });
 
@@ -128,7 +129,7 @@ describe('getApprovalStatus', () => {
             isDex: true,
             send: DAI_CRYPTO_ID,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(mockNetworkConfigDeps, quote);
         expect(result).toBe('approved');
     });
 
@@ -140,7 +141,7 @@ describe('getApprovalStatus', () => {
             send: DAI_CRYPTO_ID,
             status: 'APPROVAL_REQ' as const,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(mockNetworkConfigDeps, quote);
         expect(result).toBe('needs_increase');
     });
 
@@ -152,7 +153,7 @@ describe('getApprovalStatus', () => {
             send: USDT_CRYPTO_ID,
             status: 'APPROVAL_REQ' as const,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(mockNetworkConfigDeps, quote);
         expect(result).toBe('needs_revoke');
     });
 
@@ -163,7 +164,7 @@ describe('getApprovalStatus', () => {
             isDex: true,
             send: DAI_CRYPTO_ID,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(mockNetworkConfigDeps, quote);
         expect(result).toBe('needs_approval');
     });
 
@@ -174,7 +175,7 @@ describe('getApprovalStatus', () => {
             isDex: true,
             send: DAI_CRYPTO_ID,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(mockNetworkConfigDeps, quote);
         expect(result).toBe('needs_approval');
     });
 
@@ -184,7 +185,7 @@ describe('getApprovalStatus', () => {
             preapprovedStringAmount: undefined,
             isDex: false,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(mockNetworkConfigDeps, quote);
         expect(result).toBe('not_needed');
     });
 
@@ -199,7 +200,7 @@ describe('getApprovalStatus', () => {
                 data: {},
             },
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(mockNetworkConfigDeps, quote);
         expect(result).toBe('not_needed');
     });
 
@@ -214,7 +215,7 @@ describe('getApprovalStatus', () => {
                 data: {},
             } as any,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(mockNetworkConfigDeps, quote);
         expect(result).toBe('needs_approval');
     });
 
@@ -228,7 +229,7 @@ describe('getApprovalStatus', () => {
                 data: {},
             },
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(mockNetworkConfigDeps, quote);
         expect(result).toBe('needs_approval');
     });
 });
@@ -287,7 +288,7 @@ describe('getDexEstimationData', () => {
             dexTx: buildDexTx(approveData),
         };
 
-        const result = getDexEstimationData(quote);
+        const result = getDexEstimationData(mockNetworkConfigDeps, quote);
         expect(result).toBe(buildApprovalTransactionData({ spender, amount: '0' }));
         expect(result).not.toBe(approveData);
     });
@@ -302,7 +303,7 @@ describe('getDexEstimationData', () => {
             dexTx: buildDexTx(approveData),
         };
 
-        expect(getDexEstimationData(quote)).toBe(approveData);
+        expect(getDexEstimationData(mockNetworkConfigDeps, quote)).toBe(approveData);
     });
 
     it('returns undefined when the quote has no dexTx', () => {
@@ -312,7 +313,7 @@ describe('getDexEstimationData', () => {
             send: USDT_CRYPTO_ID,
         };
 
-        expect(getDexEstimationData(quote)).toBeUndefined();
+        expect(getDexEstimationData(mockNetworkConfigDeps, quote)).toBeUndefined();
     });
 });
 

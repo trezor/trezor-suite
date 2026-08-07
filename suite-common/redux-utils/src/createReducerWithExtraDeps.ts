@@ -11,20 +11,19 @@ type EnhancedStoreAction<TStore extends EnhancedStore<any, any>> =
     TStore extends EnhancedStore<any, infer TAction> ? TAction : never;
 
 export const createReducerWithExtraDeps =
-    <S extends NotFunction<any>>(
-        initialState: S | (() => S),
-        builderCallback: (
-            builder: ActionReducerMapBuilder<S>,
-            extra: ExtraDependenciesForReducer,
-        ) => void,
+    <
+        S extends NotFunction<any>,
+        ExtraDeps extends ExtraDependenciesForReducer = ExtraDependenciesForReducer,
+    >(
+        initialState: S | ((extra: ExtraDeps) => S),
+        builderCallback: (builder: ActionReducerMapBuilder<S>, extra: ExtraDeps) => void,
     ) =>
-    (extraDeps: ExtraDependenciesForReducer) =>
-        createReducer(initialState, builder =>
-            builderCallback(builder, {
-                actionTypes: extraDeps.actionTypes,
-                actions: extraDeps.actions,
-                reducers: extraDeps.reducers,
-            }),
+    (extraDeps: ExtraDeps) =>
+        createReducer(
+            typeof initialState === 'function'
+                ? () => (initialState as (extra: ExtraDeps) => S)(extraDeps)
+                : initialState,
+            builder => builderCallback(builder, extraDeps),
         );
 
 // Adds the thunk dispatch type that configureStore cannot infer through the extra middleware factory.

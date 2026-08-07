@@ -19,9 +19,11 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/icons": "workspace:*",
         "@suite-common/jsonl": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",

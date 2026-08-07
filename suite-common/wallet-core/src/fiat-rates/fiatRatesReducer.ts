@@ -1,4 +1,8 @@
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
+import {
+    type ExtraDependenciesForReducer,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
 import { type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKeyFromTicker, isTestnet } from '@suite-common/wallet-utils';
 
@@ -11,131 +15,131 @@ export const fiatRatesInitialState: FiatRatesState = {
     historic: {},
 };
 
-export const prepareFiatRatesReducer = createReducerWithExtraDeps(
-    fiatRatesInitialState,
-    (builder, extra) => {
-        builder
-            .addCase(updateFiatRatesThunk.pending, (state, action) => {
-                const { tickers, baseCurrencyCode, rateType } = action.meta.arg;
-                tickers.forEach(ticker => {
-                    const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
-                    let currentRate = state[rateType]?.[fiatRateKey];
+type FiatRatesReducerDeps = ExtraDependenciesForReducer & { services: GetNetworkConfigDep };
 
-                    if (isTestnet(ticker.symbol)) {
-                        return;
-                    }
+export const prepareFiatRatesReducer = createReducerWithExtraDeps<
+    FiatRatesState,
+    FiatRatesReducerDeps
+>(fiatRatesInitialState, (builder, extra) => {
+    builder
+        .addCase(updateFiatRatesThunk.pending, (state, action) => {
+            const { tickers, baseCurrencyCode, rateType } = action.meta.arg;
+            tickers.forEach(ticker => {
+                const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
+                let currentRate = state[rateType]?.[fiatRateKey];
 
-                    if (currentRate) {
-                        currentRate = {
-                            ...currentRate,
-                            isLoading: true,
-                            error: null,
-                        };
-                    } else {
-                        currentRate = {
-                            lastSuccessfulFetchTimestamp: 0 as Timestamp,
-                            lastTickerTimestamp: 0 as Timestamp,
-                            isLoading: true,
-                            error: null,
-                            ticker,
-                        };
-                    }
-                    state[rateType][fiatRateKey] = currentRate;
-                });
-            })
-            .addCase(updateFiatRatesThunk.fulfilled, (state, action) => {
-                if (!action.payload) return;
+                if (isTestnet(extra.services, ticker.symbol)) {
+                    return;
+                }
 
-                const { tickers, baseCurrencyCode, rateType, fetchAttemptTimestamp } =
-                    action.meta.arg;
-
-                // action.payload is iterator so we need for loop (nothing else works in Hermes (React Native))
-                let index = -1;
-                for (const result of action.payload) {
-                    index++;
-
-                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                    const ticker: (typeof tickers)[number] = tickers[index];
-
-                    if (isTestnet(ticker.symbol)) {
-                        continue;
-                    }
-
-                    if (result.status === 'rejected') {
-                        const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
-                        const currentRate = state[rateType]?.[fiatRateKey];
-
-                        // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
-                        if (!currentRate) {
-                            continue;
-                        }
-
-                        state[rateType][fiatRateKey] = {
-                            ...currentRate,
-                            isLoading: false,
-                            error:
-                                String(result.reason) ||
-                                `Failed to update ${ticker.symbol} fiat rate.`,
-                        };
-
-                        continue;
-                    }
-
-                    const rate = result.value;
-                    const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
-
-                    const currentRate = state[rateType]?.[fiatRateKey];
-
-                    const updatedRate = {
+                if (currentRate) {
+                    currentRate = {
                         ...currentRate,
-                        ...rate,
-                        rate: rate.rate,
-                        lastTickerTimestamp: (rate.lastTickerTimestamp * 1000) as Timestamp,
-                        lastSuccessfulFetchTimestamp: fetchAttemptTimestamp,
-                        isLoading: false,
+                        isLoading: true,
                         error: null,
                     };
-                    // @ts-expect-error: rate.rate / rate.ticker widened via noUncheckedIndexedAccess
-                    state[rateType][fiatRateKey] = updatedRate;
-                }
-            })
-            .addCase(updateFiatRatesThunk.rejected, (state, action) => {
-                // This case should ideally never happen, but in case something will seriously go wrong
-                // we want to have some error message in the state.
-                const { tickers, baseCurrencyCode, rateType } = action.meta.arg;
-
-                const errorMessage = `${action.error?.message}\n${action.error?.stack}`;
-
-                tickers.forEach(ticker => {
-                    const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
-                    const rates = state[rateType];
-                    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                    const rateEntry: (typeof rates)[string] = rates[fiatRateKey];
-                    rateEntry.error = errorMessage;
-                    rateEntry.isLoading = false;
-                });
-            })
-            .addCase(updateTxsFiatRatesThunk.fulfilled, (state, action) => {
-                if (!action.payload) return;
-
-                action.payload.rates.forEach(fiatRate => {
-                    const { tickerId, rates } = fiatRate;
-                    const { baseCurrencyCode } = action.meta.arg;
-                    const fiatRateKey = getFiatRateKeyFromTicker(tickerId, baseCurrencyCode);
-
-                    // combine new rates with existing historic rates
-                    state['historic'][fiatRateKey] = {
-                        ...state['historic'][fiatRateKey],
-                        ...rates.reduce(
-                            (acc, rate) => ({ ...acc, [rate.lastTickerTimestamp]: rate.rate }),
-                            {},
-                        ),
+                } else {
+                    currentRate = {
+                        lastSuccessfulFetchTimestamp: 0 as Timestamp,
+                        lastTickerTimestamp: 0 as Timestamp,
+                        isLoading: true,
+                        error: null,
+                        ticker,
                     };
-                });
-            })
-            .addMatcher(
-                action => action.type === extra.actionTypes.storageLoad,
-                extra.reducers.storageLoadHistoricRates,
-            );
-    },
-);
+                }
+                state[rateType][fiatRateKey] = currentRate;
+            });
+        })
+        .addCase(updateFiatRatesThunk.fulfilled, (state, action) => {
+            if (!action.payload) return;
+
+            const { tickers, baseCurrencyCode, rateType, fetchAttemptTimestamp } = action.meta.arg;
+
+            // action.payload is iterator so we need for loop (nothing else works in Hermes (React Native))
+            let index = -1;
+            for (const result of action.payload) {
+                index++;
+
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const ticker: (typeof tickers)[number] = tickers[index];
+
+                if (isTestnet(extra.services, ticker.symbol)) {
+                    continue;
+                }
+
+                if (result.status === 'rejected') {
+                    const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
+                    const currentRate = state[rateType]?.[fiatRateKey];
+
+                    // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
+                    if (!currentRate) {
+                        continue;
+                    }
+
+                    state[rateType][fiatRateKey] = {
+                        ...currentRate,
+                        isLoading: false,
+                        error:
+                            String(result.reason) || `Failed to update ${ticker.symbol} fiat rate.`,
+                    };
+
+                    continue;
+                }
+
+                const rate = result.value;
+                const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
+
+                const currentRate = state[rateType]?.[fiatRateKey];
+
+                const updatedRate = {
+                    ...currentRate,
+                    ...rate,
+                    rate: rate.rate,
+                    lastTickerTimestamp: (rate.lastTickerTimestamp * 1000) as Timestamp,
+                    lastSuccessfulFetchTimestamp: fetchAttemptTimestamp,
+                    isLoading: false,
+                    error: null,
+                };
+                // @ts-expect-error: rate.rate / rate.ticker widened via noUncheckedIndexedAccess
+                state[rateType][fiatRateKey] = updatedRate;
+            }
+        })
+        .addCase(updateFiatRatesThunk.rejected, (state, action) => {
+            // This case should ideally never happen, but in case something will seriously go wrong
+            // we want to have some error message in the state.
+            const { tickers, baseCurrencyCode, rateType } = action.meta.arg;
+
+            const errorMessage = `${action.error?.message}\n${action.error?.stack}`;
+
+            tickers.forEach(ticker => {
+                const fiatRateKey = getFiatRateKeyFromTicker(ticker, baseCurrencyCode);
+                const rates = state[rateType];
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const rateEntry: (typeof rates)[string] = rates[fiatRateKey];
+                rateEntry.error = errorMessage;
+                rateEntry.isLoading = false;
+            });
+        })
+        .addCase(updateTxsFiatRatesThunk.fulfilled, (state, action) => {
+            if (!action.payload) return;
+
+            action.payload.rates.forEach(fiatRate => {
+                const { tickerId, rates } = fiatRate;
+                const { baseCurrencyCode } = action.meta.arg;
+                const fiatRateKey = getFiatRateKeyFromTicker(tickerId, baseCurrencyCode);
+
+                // combine new rates with existing historic rates
+                state['historic'][fiatRateKey] = {
+                    ...state['historic'][fiatRateKey],
+                    ...rates.reduce(
+                        (acc, rate) => ({ ...acc, [rate.lastTickerTimestamp]: rate.rate }),
+                        {},
+                    ),
+                };
+            });
+        })
+        .addMatcher(
+            action => action.type === extra.actionTypes.storageLoad,
+            extra.reducers.storageLoadHistoricRates,
+        );
+});

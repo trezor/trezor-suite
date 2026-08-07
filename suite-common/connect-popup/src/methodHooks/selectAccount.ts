@@ -1,8 +1,7 @@
 import {
     type AccountType,
+    type NetworkConfigDeps,
     type NetworkSymbol,
-    getNetwork,
-    isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { getAvailableAccountTypes } from '@suite-common/wallet-utils';
 import { type CallMethodKeys } from '@trezor/connect';
@@ -21,8 +20,12 @@ import { type PostCallHookParams, type PreCallHookParams } from './types';
 // Resolves one of the network's built-in types (bypassing the "publicly available" filter that
 // getAvailableAccountTypes applies) — an app explicitly requesting a debug-only type, e.g.
 // 'ledger' on eth, should still get it.
-const resolveKnownAccountType = (symbol: NetworkSymbol, accountType: AccountType) => {
-    const network = getNetwork(symbol);
+const resolveKnownAccountType = (
+    deps: NetworkConfigDeps,
+    symbol: NetworkSymbol,
+    accountType: AccountType,
+) => {
+    const network = deps.getNetworkConfig(symbol);
     if (accountType === 'normal') return { accountType, bip43Path: network.bip43Path };
 
     return network.accountTypes[accountType];
@@ -32,11 +35,12 @@ const resolveKnownAccountType = (symbol: NetworkSymbol, accountType: AccountType
 // or a custom { bip43Path, label } descriptor; unknown/unsupported names are dropped. Falls back
 // to the network's full publicly available list when unrequested or nothing requested survives.
 const buildAccountTypeTabs = (
+    deps: NetworkConfigDeps,
     symbol: NetworkSymbol,
     requested: Array<AccountType | { bip43Path: string; label: string }> | undefined,
 ): SelectAccountTypeTab[] => {
     const defaultTabs = () =>
-        getAvailableAccountTypes(symbol).map(({ accountType, bip43Path }) => ({
+        getAvailableAccountTypes(deps, symbol).map(({ accountType, bip43Path }) => ({
             key: accountType,
             accountType,
             bip43Path,
@@ -47,7 +51,7 @@ const buildAccountTypeTabs = (
     const tabs = requested
         .map((entry, index): SelectAccountTypeTab | undefined => {
             if (typeof entry === 'string') {
-                const known = resolveKnownAccountType(symbol, entry);
+                const known = resolveKnownAccountType(deps, symbol, entry);
 
                 return (
                     known && {
@@ -79,12 +83,15 @@ const resolveSelectionType = (selectionType: SelectionType | undefined) => {
     };
 };
 
-const buildOptions = (payload: Record<string, any>): SelectAccountOptions => {
+const buildOptions = (
+    deps: NetworkConfigDeps,
+    payload: Record<string, any>,
+): SelectAccountOptions => {
     const symbol = String(payload.coin).toLowerCase() as NetworkSymbol;
     const { selectionType, minCount, maxCount } = resolveSelectionType(payload.selectionType);
     // Normalize the default so every downstream check compares against a concrete literal instead
     // of `undefined` — irrelevant (and left undefined) for account-based networks.
-    const addressSelection = isUtxoNetwork(symbol)
+    const addressSelection = isUtxoNetwork(deps, symbol)
         ? (payload.addressSelection ?? 'fullAccount')
         : undefined;
 
@@ -93,7 +100,7 @@ const buildOptions = (payload: Record<string, any>): SelectAccountOptions => {
         selectionType,
         minCount,
         maxCount,
-        accountTypeTabs: buildAccountTypeTabs(symbol, payload.accountType),
+        accountTypeTabs: buildAccountTypeTabs(deps, symbol, payload.accountType),
         mode: addressSelection === 'fullAccount' ? 'xpub' : 'address',
         addressSelection,
         requireOnDeviceVerification: payload.requireOnDeviceVerification ?? true,
@@ -105,13 +112,14 @@ const buildOptions = (payload: Record<string, any>): SelectAccountOptions => {
 // rejected unknown/typo'd coins with Method_UnknownCoin, so a non-network symbol here is a
 // Connect-valid coin this host cannot render — hence a distinct code the caller can act on.
 const validateHook = <M extends CallMethodKeys>({
+    services,
     method,
     payload,
-}: Pick<PreCallHookParams<M>, 'method' | 'payload'>) => {
+}: Pick<PreCallHookParams<M>, 'services' | 'method' | 'payload'>) => {
     if (method !== 'selectAccount') return;
 
     const symbol = String((payload as Record<string, any>).coin).toLowerCase();
-    if (!isNetworkSymbol(symbol)) {
+    if (!services.networkModuleRepository.isSupportedNetwork(symbol)) {
         throw TypedError('Method_UnsupportedCoinForHost');
     }
 };
@@ -126,10 +134,11 @@ async function postCallHook<M extends CallMethodKeys>({
     originalPayload,
     response,
     dispatch,
+    services,
 }: PostCallHookParams<M>) {
     if (method !== 'selectAccount' || !response.success) return false;
 
-    const options = buildOptions(originalPayload);
+    const options = buildOptions(services, originalPayload);
 
     dispatch(
         connectPopupActions.selectAccount({

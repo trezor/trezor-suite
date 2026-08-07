@@ -1,4 +1,5 @@
 import { fetchCurrentFiatRates, fetchLastWeekFiatRates } from '@suite-common/fiat-services';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
@@ -62,7 +63,7 @@ const fetchErc4626Data = async ({ coin, contract }: FetchErc4626DataProps) => {
     return response.payload.protocols.erc4626;
 };
 
-interface FetchErc4626FiatRateProps {
+interface FetchErc4626FiatRateProps extends GetNetworkConfigDep {
     ticker: TickerId;
     rateType: RateTypeWithoutHistoric;
     baseCurrencyCode: BaseCurrencyCode;
@@ -71,6 +72,7 @@ interface FetchErc4626FiatRateProps {
 }
 
 const fetchErc4626FiatRate = async ({
+    getNetworkConfig,
     ticker,
     rateType,
     baseCurrencyCode,
@@ -96,6 +98,7 @@ const fetchErc4626FiatRate = async ({
         rateType === 'current' ? fetchCurrentFiatRates : fetchLastWeekFiatRates;
 
     const underlyingAssetRate = await fetchFiatRatesFn({
+        getNetworkConfig,
         ticker: { symbol: ticker.symbol, tokenAddress: toTokenAddress(erc4626.asset.contract) },
         localCurrency: baseCurrencyCode,
         backendType,
@@ -127,9 +130,12 @@ type UpdateTxsFiatRatesThunkPayload = {
 // TODO: Refactor this to batch requests as much as possible
 export const updateTxsFiatRatesThunk = createThunk(
     `${FIAT_RATES_MODULE_PREFIX}/updateTxsRates`,
-    async ({ accountKey, txs, baseCurrencyCode }: UpdateTxsFiatRatesThunkPayload, { getState }) => {
+    async (
+        { accountKey, txs, baseCurrencyCode }: UpdateTxsFiatRatesThunkPayload,
+        { getState, extra },
+    ) => {
         const account = selectAccountByKey(getState(), accountKey);
-        if (!account || txs?.length === 0 || isTestnet(account.symbol))
+        if (!account || txs?.length === 0 || isTestnet(extra.services, account.symbol))
             return { account, rates: [] };
 
         const isElectrumBackend = selectIsElectrumBackendSelected(getState(), account.symbol);
@@ -141,6 +147,7 @@ export const updateTxsFiatRatesThunk = createThunk(
             .filter(isNotUndefined);
 
         await fetchTransactionsRates(
+            extra.services,
             { symbol: account.symbol },
             timestamps,
             baseCurrencyCode,
@@ -163,7 +170,7 @@ export const updateTxsFiatRatesThunk = createThunk(
                 continue;
             }
 
-            const hasCoinDefinitions = getNetworkFeatures(account.symbol).includes(
+            const hasCoinDefinitions = getNetworkFeatures(extra.services, account.symbol).includes(
                 'coin-definitions',
             );
 
@@ -172,6 +179,7 @@ export const updateTxsFiatRatesThunk = createThunk(
                     getState(),
                     account.symbol,
                     token,
+                    extra.services,
                 );
 
                 if (!isTokenKnown) {
@@ -180,6 +188,7 @@ export const updateTxsFiatRatesThunk = createThunk(
             }
 
             await fetchTransactionsRates(
+                extra.services,
                 {
                     symbol: account.symbol,
                     tokenAddress: toTokenAddress(token),
@@ -212,10 +221,10 @@ export const updateFiatRatesThunk = createThunk<
     `${FIAT_RATES_MODULE_PREFIX}/updateFiatRates`,
     async (
         { tickers, baseCurrencyCode, rateType, forceFetchToken, skipCache = false },
-        { getState },
+        { getState, extra },
     ) => {
         const fetchRate = async (ticker: TickerId) => {
-            if (isTestnet(ticker.symbol)) {
+            if (isTestnet(extra.services, ticker.symbol)) {
                 throw new Error('Testnet');
             }
 
@@ -227,6 +236,7 @@ export const updateFiatRatesThunk = createThunk<
                 (!backendType || backendType === 'blockbook')
             ) {
                 return fetchErc4626FiatRate({
+                    ...extra.services,
                     ticker,
                     rateType,
                     baseCurrencyCode,
@@ -235,7 +245,7 @@ export const updateFiatRatesThunk = createThunk<
                 });
             }
 
-            const hasCoinDefinitions = getNetworkFeatures(ticker.symbol).includes(
+            const hasCoinDefinitions = getNetworkFeatures(extra.services, ticker.symbol).includes(
                 'coin-definitions',
             );
             if (ticker.tokenAddress && hasCoinDefinitions && !forceFetchToken) {
@@ -243,6 +253,7 @@ export const updateFiatRatesThunk = createThunk<
                     getState(),
                     ticker.symbol,
                     ticker.tokenAddress,
+                    extra.services,
                 );
 
                 if (!isTokenKnown) {
@@ -254,6 +265,7 @@ export const updateFiatRatesThunk = createThunk<
                 switch (rateType) {
                     case 'current':
                         return fetchCurrentFiatRates({
+                            ...extra.services,
                             ticker,
                             localCurrency: baseCurrencyCode,
                             backendType,
@@ -261,6 +273,7 @@ export const updateFiatRatesThunk = createThunk<
                         });
                     case 'lastWeek':
                         return fetchLastWeekFiatRates({
+                            ...extra.services,
                             ticker,
                             localCurrency: baseCurrencyCode,
                             backendType,
@@ -324,10 +337,11 @@ type FetchFiatRatesThunkPayload = {
 
 export const fetchFiatRatesThunk = createThunk(
     `${FIAT_RATES_MODULE_PREFIX}/fetchFiatRates`,
-    ({ rateType, localCurrency }: FetchFiatRatesThunkPayload, { dispatch, getState }) => {
+    ({ rateType, localCurrency }: FetchFiatRatesThunkPayload, { dispatch, getState, extra }) => {
         const currentTimestamp = asTimestamp(Date.now());
         const tickers = selectTickersToBeUpdated(
             getState(),
+            extra.services,
             currentTimestamp,
             localCurrency,
             rateType,

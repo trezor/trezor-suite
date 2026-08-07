@@ -310,6 +310,7 @@ export const getAdjustedGasLimitConsumption = (estimatedFee: Ok<BlockchainEstima
         .toNumber();
 
 export const stake = async ({
+    getNetworkConfig,
     from,
     amount,
     symbol,
@@ -322,7 +323,10 @@ export const stake = async ({
 
     if (new BigNumber(amount).lt(MIN_ETH_AMOUNT_FOR_STAKING)) {
         throw new Error(
-            `Min amount ${MIN_ETH_AMOUNT_FOR_STAKING} ${getNetworkDisplaySymbol(symbol)}`,
+            `Min amount ${MIN_ETH_AMOUNT_FOR_STAKING} ${getNetworkDisplaySymbol(
+                { getNetworkConfig },
+                symbol,
+            )}`,
         );
     }
 
@@ -579,6 +583,7 @@ type PrepareStakeEthTxResponse =
       };
 
 export const prepareStakeEthTx = async ({
+    getNetworkConfig,
     symbol,
     from,
     amount,
@@ -592,6 +597,7 @@ export const prepareStakeEthTx = async ({
 }: PrepareStakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
         const tx = await stake({
+            getNetworkConfig,
             from,
             amount,
             symbol,
@@ -623,6 +629,7 @@ export const prepareStakeEthTx = async ({
 };
 
 export const prepareUnstakeEthTx = async ({
+    getNetworkConfig,
     symbol,
     from,
     amount,
@@ -637,6 +644,7 @@ export const prepareUnstakeEthTx = async ({
 }: PrepareUnstakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
         const tx = await unstake({
+            getNetworkConfig,
             from,
             amount,
             identity,
@@ -669,6 +677,7 @@ export const prepareUnstakeEthTx = async ({
 };
 
 export const prepareClaimEthTx = async ({
+    getNetworkConfig,
     symbol,
     identity,
     from,
@@ -680,7 +689,13 @@ export const prepareClaimEthTx = async ({
     maxPriorityFeePerGas,
 }: PrepareClaimEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
-        const tx = await claimWithdrawRequest({ from, symbol, identity, feeLimit });
+        const tx = await claimWithdrawRequest({
+            getNetworkConfig,
+            from,
+            symbol,
+            identity,
+            feeLimit,
+        });
         const transformedTx = transformTx(
             tx,
             nonce,
@@ -715,6 +730,7 @@ type GetStakeTxGasLimitResponse =
       };
 
 export const getStakeTxGasLimit = async ({
+    getNetworkConfig,
     stakeType,
     from,
     amount,
@@ -724,11 +740,12 @@ export const getStakeTxGasLimit = async ({
     try {
         let txData;
         if (stakeType === 'stake') {
-            txData = await stake({ from, amount, symbol, identity });
+            txData = await stake({ getNetworkConfig, from, amount, symbol, identity });
         }
         if (stakeType === 'unstake') {
             // Increase allowedInterchangeNum to enable instant unstaking.
             txData = await unstake({
+                getNetworkConfig,
                 from,
                 amount,
                 interchanges: UNSTAKE_INTERCHANGES,
@@ -737,7 +754,7 @@ export const getStakeTxGasLimit = async ({
             });
         }
         if (stakeType === 'claim') {
-            txData = await claimWithdrawRequest({ from, symbol, identity });
+            txData = await claimWithdrawRequest({ getNetworkConfig, from, symbol, identity });
         }
 
         if (!txData) {

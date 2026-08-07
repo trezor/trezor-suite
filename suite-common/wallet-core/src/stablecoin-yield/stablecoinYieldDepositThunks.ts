@@ -1,6 +1,5 @@
 import { asEvmAddress } from '@suite-common/calldata';
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     asAmountUnit,
     getAccountIdentity,
@@ -69,7 +68,7 @@ export const composeYieldDepositTransactionThunk = createThunk<
     void
 >(
     `${YIELD_DEPOSIT_THUNK_PREFIX}/composeDepositTransaction`,
-    async ({ flowData, amount }, { dispatch, getState }) => {
+    async ({ flowData, amount }, { dispatch, getState, extra }) => {
         const { account, token, vault } = flowData;
 
         if (account.networkType !== 'ethereum') {
@@ -77,6 +76,7 @@ export const composeYieldDepositTransactionThunk = createThunk<
         }
 
         const requestAmount = getApprovalRequestAmount({
+            ...extra.services,
             flowType: 'deposit',
             amount,
             flowData,
@@ -108,7 +108,7 @@ export const composeYieldDepositTransactionThunk = createThunk<
                 : { type: 'approval-required', spender };
         }
 
-        const network = getNetwork(account.symbol);
+        const network = extra.services.getNetworkConfig(account.symbol);
 
         if (!network.chainId || vault.chainId !== network.chainId) {
             return { type: 'error', reason: 'vault-chain-mismatch' } as const;
@@ -167,6 +167,7 @@ export const composeYieldDepositTransactionThunk = createThunk<
 
         const receiptAmount =
             getWithdrawRequestAmount({
+                ...extra.services,
                 networkSymbol: account.symbol,
                 amount,
                 token: flowData.token,

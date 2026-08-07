@@ -2,7 +2,7 @@ import { type WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 
 import { type SuiteCompatibleThunk } from '@suite-common/redux-utils';
-import { type Network } from '@suite-common/wallet-config';
+import { type Network, type NetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 export interface WalletConnectAdapter {
@@ -13,8 +13,12 @@ export interface WalletConnectAdapter {
         event: WalletKitTypes.SessionRequest;
     }>;
     getChainId: (network: Network) => string[];
-    getNamespace: (accounts: Account[]) => Record<string, WalletConnectNamespace>;
+    getNamespace: (
+        deps: NetworkConfigDeps,
+        accounts: Account[],
+    ) => Record<string, WalletConnectNamespace>;
     processNamespaces: (
+        deps: NetworkConfigDeps,
         accounts: Account[],
         networks: PendingConnectionProposalNetwork[],
         namespaces: ProposalTypes.RequiredNamespaces,

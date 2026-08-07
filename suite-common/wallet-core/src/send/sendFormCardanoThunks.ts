@@ -32,7 +32,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeCardanoTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
+    async ({ formState, composeContext }, { dispatch, rejectWithValue, extra }) => {
         const { account, feeInfo } = composeContext;
         const changeAddress = getUnusedChangeAddress(account);
         if (!changeAddress || !account.utxo || !account.addresses)
@@ -51,6 +51,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
         }
 
         const outputs = transformUserOutputs(
+            extra.services,
             formState.outputs,
             account.tokens,
             account.symbol,
@@ -68,7 +69,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
             },
             changeAddress,
             addressParameters,
-            testnet: isTestnet(account.symbol),
+            testnet: isTestnet(extra.services, account.symbol),
         });
 
         if (!response.success) {
@@ -94,6 +95,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
                 case 'final':
                     // convert from lovelace units to ADA
                     tx.max = formatMaxOutputAmount(
+                        extra.services,
                         tx.max,
                         outputs.find(o => o.setMax),
                         account,
@@ -102,6 +104,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
                 case 'nonfinal':
                     // convert lovelace to ADA (for ADA outputs only)
                     tx.max = formatMaxOutputAmount(
+                        extra.services,
                         tx.max,
                         outputs.find(o => o.setMax && o.assets.length === 0),
                         account,
@@ -153,7 +156,7 @@ export const signCardanoSendFormTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/signCardanoSendFormTransactionThunk`,
     async (
         { precomposedTransaction, selectedAccount, device, paymentRequests },
-        { getState, rejectWithValue },
+        { getState, rejectWithValue, extra },
     ) => {
         const { symbol, accountType } = selectedAccount;
 
@@ -179,7 +182,7 @@ export const signCardanoSendFormTransactionThunk = createThunk<
             outputs: precomposedTransaction.outputs,
             unsignedTx: precomposedTransaction.unsignedTx,
             tagCborSets: true,
-            testnet: isTestnet(symbol),
+            testnet: isTestnet(extra.services, symbol),
             protocolMagic: getProtocolMagic(symbol),
             networkId: getNetworkId(),
             fee: precomposedTransaction.fee,

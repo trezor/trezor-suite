@@ -1,6 +1,7 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type AccountType, type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
@@ -111,11 +112,11 @@ export const selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex = cre
 );
 
 export const selectDeviceMainnetAccounts = createMemoizedSelector(
-    [selectDeviceAccounts],
-    accounts =>
+    [selectDeviceAccounts, (_state, deps: GetNetworkConfigDep) => deps],
+    (accounts, deps) =>
         pipe(
             accounts,
-            A.filter(account => !isTestnet(account.symbol)),
+            A.filter(account => !isTestnet(deps, account.symbol)),
             returnStableArrayIfEmpty,
         ),
 );
@@ -254,8 +255,12 @@ export const selectIsAccountUtxoBased = createMemoizedSelector([selectAccountByK
     account ? isUtxoBased(account) : false,
 );
 
-export const selectIsTestnetAccount = createMemoizedSelector([selectAccountByKey], account =>
-    account ? isTestnet(account.symbol) : false,
+export const selectIsTestnetAccount = createMemoizedSelector(
+    [
+        selectAccountByKey,
+        (_state, _accountKey: AccountKey | null | undefined, deps: GetNetworkConfigDep) => deps,
+    ],
+    (account, deps) => (account ? isTestnet(deps, account.symbol) : false),
 );
 
 export const selectDeviceAccountByDescriptorAndNetworkSymbol = createMemoizedSelector(

@@ -4,9 +4,10 @@ import {
     getEvmClearSignedSwapCoverage,
     isEvmClearSigningTx,
 } from '@suite-common/calldata';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { EARN_YIELD_CLAIM_PROVIDER, networks } from '@suite-common/wallet-config';
+import { EARN_YIELD_CLAIM_PROVIDER } from '@suite-common/wallet-config';
 import { WRAPPED_NATIVE_MIN_FIRMWARE } from '@suite-common/wallet-constants';
 import {
     type Account,
@@ -116,7 +117,7 @@ const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
     }
 };
 
-type ConstructOutputsParams = {
+type ConstructOutputsParams = GetNetworkConfigDep & {
     precomposedTx: GeneralPrecomposedTransactionFinal;
     decreaseOutputId: number | undefined;
     account: Account;
@@ -128,7 +129,7 @@ type ConstructOutputsParams = {
     clearSignedSwapCoverage: ClearSigningCoverage | undefined;
 };
 
-type ClearSignedEvmTradingSwapParams = {
+type ClearSignedEvmTradingSwapParams = GetNetworkConfigDep & {
     account: Account;
     device: TrezorDevice;
     precomposedTx: GeneralPrecomposedTransactionFinal;
@@ -153,6 +154,7 @@ export const getClearSignedEvmTradingSwapCoverage = ({
     precomposedTx,
     transactionData,
     trading,
+    getNetworkConfig,
 }: ClearSignedEvmTradingSwapParams): ClearSigningCoverage | undefined => {
     if (
         !isExchangeTradingForm(trading) ||
@@ -163,7 +165,7 @@ export const getClearSignedEvmTradingSwapCoverage = ({
     ) {
         return undefined;
     }
-    const network = networks[account.symbol];
+    const network = getNetworkConfig(account.symbol);
     if (network.chainId === undefined) {
         return undefined;
     }
@@ -184,6 +186,7 @@ export const isClearSignedEvmTradingSwapTransaction = (
 ): boolean => getClearSignedEvmTradingSwapCoverage(params) !== undefined;
 
 type ClearSignedWrappedNativeParams = {
+    getNetworkConfig: GetNetworkConfigDep['getNetworkConfig'];
     account: Account;
     device: TrezorDevice;
     precomposedTx: GeneralPrecomposedTransactionFinal;
@@ -202,6 +205,7 @@ type ClearSignedWrappedNativeParams = {
  * modal/device mismatch this mirroring exists to remove, inverted.
  */
 export const isClearSignedWrappedNativeTransaction = ({
+    getNetworkConfig,
     account,
     device,
     precomposedTx,
@@ -219,7 +223,7 @@ export const isClearSignedWrappedNativeTransaction = ({
         return false;
     }
 
-    const network = networks[account.symbol];
+    const network = getNetworkConfig(account.symbol);
     if (network.chainId === undefined) {
         return false;
     }
@@ -401,6 +405,7 @@ const constructOldFlow = ({
 };
 
 const constructNewFlow = ({
+    getNetworkConfig,
     precomposedTx,
     decreaseOutputId,
     account,
@@ -507,7 +512,7 @@ const constructNewFlow = ({
                 outputs.push({
                     type: 'amount',
                     value: o.amount.toString(),
-                    value2: networks[symbol].name,
+                    value2: getNetworkConfig(symbol).name,
                     token: precomposedTx.token,
                 });
             }
@@ -736,7 +741,7 @@ const constructNewFlow = ({
             outputs.push({
                 type: 'approve_data',
                 value: evmApprovalTxData.amount.toString(),
-                value2: networks[symbol].name,
+                value2: getNetworkConfig(symbol).name,
                 token: precomposedTx.token,
             });
         }
@@ -789,12 +794,10 @@ const constructNewFlow = ({
     return outputs;
 };
 
-type ConstructTransactionReviewOutputsProps = Omit<
-    ConstructOutputsParams,
-    'clearSignedSwapCoverage'
-> & {
-    device: TrezorDevice;
-};
+type ConstructTransactionReviewOutputsProps = GetNetworkConfigDep &
+    Omit<ConstructOutputsParams, 'clearSignedSwapCoverage'> & {
+        device: TrezorDevice;
+    };
 
 export const constructTransactionReviewOutputs = ({
     device,
@@ -810,6 +813,7 @@ export const constructTransactionReviewOutputs = ({
         params.account.networkType,
     ); // > 2.9.0 && isStellar
     const clearSignedSwapCoverage = getClearSignedEvmTradingSwapCoverage({
+        getNetworkConfig: params.getNetworkConfig,
         account: params.account,
         device,
         precomposedTx: params.precomposedTx,
@@ -826,6 +830,7 @@ export const constructTransactionReviewOutputs = ({
         // Firmware that predates the updated send flow cannot clear-sign at all, so this is
         // resolved only for the new flow.
         isClearSignedWrapUnwrap: isClearSignedWrappedNativeTransaction({
+            getNetworkConfig: params.getNetworkConfig,
             account: params.account,
             device,
             precomposedTx: params.precomposedTx,
@@ -839,6 +844,7 @@ export const constructTransactionReviewOutputs = ({
 };
 
 export const constructTransactionReviewOutputsOptional = ({
+    getNetworkConfig,
     account,
     availableRewards,
     decreaseOutputId,
@@ -850,6 +856,7 @@ export const constructTransactionReviewOutputsOptional = ({
 }: Partial<ConstructTransactionReviewOutputsProps>): ReviewOutput[] => {
     if (
         account === undefined ||
+        getNetworkConfig === undefined ||
         device === undefined ||
         precomposedForm === undefined ||
         precomposedTx === undefined
@@ -858,6 +865,7 @@ export const constructTransactionReviewOutputsOptional = ({
     }
 
     return constructTransactionReviewOutputs({
+        getNetworkConfig,
         account,
         availableRewards,
         decreaseOutputId,

@@ -1,10 +1,14 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
 import {
+    type ExtraDependenciesForReducer,
+    createReducerWithExtraDeps,
+    createWeakMapSelector,
+} from '@suite-common/redux-utils';
+import {
+    type NetworkConfigDeps,
     type NetworkSymbol,
-    getNetworkOptional,
-    networksCollection,
+    getNetworks,
 } from '@suite-common/wallet-config';
 import { type Blockchain, type BlockchainNetworks } from '@suite-common/wallet-types';
 import { getCustomBackends } from '@suite-common/wallet-utils';
@@ -29,28 +33,29 @@ const initialStatePredefined: Partial<BlockchainState> = {};
 export type BlockchainRootState = { wallet: { blockchain: BlockchainState } };
 
 // fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
-export const blockchainInitialState: BlockchainNetworks = networksCollection.reduce(
-    (state, network) => {
-        state[network.symbol] = {
-            connected: false,
-            blockHash: '0',
-            blockHeight: 0,
-            version: '0',
-            backends:
-                network.symbol === 'regtest'
-                    ? {
-                          selected: 'blockbook',
-                          urls: {
-                              blockbook: ['http://localhost:19121'],
-                          },
-                      }
-                    : {},
-        };
+export const createBlockchainInitialState = (deps: NetworkConfigDeps): BlockchainNetworks =>
+    getNetworks(deps).reduce(
+        (state, network) => {
+            state[network.symbol] = {
+                connected: false,
+                blockHash: '0',
+                blockHeight: 0,
+                version: '0',
+                backends:
+                    network.symbol === 'regtest'
+                        ? {
+                              selected: 'blockbook',
+                              urls: {
+                                  blockbook: ['http://localhost:19121'],
+                              },
+                          }
+                        : {},
+            };
 
-        return state;
-    },
-    initialStatePredefined as BlockchainState,
-);
+            return state;
+        },
+        { ...initialStatePredefined } as BlockchainState,
+    );
 
 const writeIdentityConnection = (
     state: BlockchainState,
@@ -66,12 +71,12 @@ const writeIdentityConnection = (
     };
 };
 
-const connect = (draft: BlockchainState, info: BlockchainInfo) => {
-    const network = getNetworkOptional(info.coin.shortcut.toLowerCase());
-    if (!network) return;
+const connect = (deps: NetworkConfigDeps, draft: BlockchainState, info: BlockchainInfo) => {
+    const symbol = info.coin.shortcut.toLowerCase();
+    if (!deps.networkModuleRepository.isSupportedNetwork(symbol)) return;
 
     if (info.identity) {
-        writeIdentityConnection(draft, network.symbol, info.identity, {
+        writeIdentityConnection(draft, symbol, info.identity, {
             connected: true,
             error: undefined,
             reconnectionTime: undefined,
@@ -80,67 +85,76 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
         return;
     }
 
-    draft[network.symbol] = {
+    draft[symbol] = {
         url: info.url,
         connected: true,
         blockHash: info.blockHash,
         blockHeight: info.blockHeight,
         version: info.version,
-        backends: draft[network.symbol].backends,
-        identityConnections: draft[network.symbol].identityConnections,
+        backends: draft[symbol].backends,
+        identityConnections: draft[symbol].identityConnections,
     };
 };
 
-const error = (draft: BlockchainState, payload: BlockchainError) => {
+const error = (deps: NetworkConfigDeps, draft: BlockchainState, payload: BlockchainError) => {
     const {
         error,
         identity,
         coin: { shortcut: symbol },
     } = payload;
-    const network = getNetworkOptional(symbol.toLowerCase());
-    if (!network) return;
+    const networkSymbol = symbol.toLowerCase();
+    if (!deps.networkModuleRepository.isSupportedNetwork(networkSymbol)) return;
 
     if (identity) {
-        writeIdentityConnection(draft, network.symbol, identity, { connected: false, error });
+        writeIdentityConnection(draft, networkSymbol, identity, { connected: false, error });
     } else {
-        draft[network.symbol] = {
-            ...draft[network.symbol],
+        draft[networkSymbol] = {
+            ...draft[networkSymbol],
             connected: false,
             error,
         };
-        delete draft[network.symbol].url;
+        delete draft[networkSymbol].url;
     }
 };
 
-const update = (draft: BlockchainState, block: BlockchainBlock) => {
-    const network = getNetworkOptional(block.coin.shortcut.toLowerCase());
-    if (!network) return;
+const update = (deps: NetworkConfigDeps, draft: BlockchainState, block: BlockchainBlock) => {
+    const symbol = block.coin.shortcut.toLowerCase();
+    if (!deps.networkModuleRepository.isSupportedNetwork(symbol)) return;
 
-    draft[network.symbol] = {
-        ...draft[network.symbol],
+    draft[symbol] = {
+        ...draft[symbol],
         blockHash: block.blockHash,
         blockHeight: block.blockHeight,
     };
 };
 
-const reconnecting = (draft: BlockchainState, payload: BlockchainReconnecting) => {
-    const network = getNetworkOptional(payload.coin.shortcut.toLowerCase());
-    if (!network) return;
+const reconnecting = (
+    deps: NetworkConfigDeps,
+    draft: BlockchainState,
+    payload: BlockchainReconnecting,
+) => {
+    const symbol = payload.coin.shortcut.toLowerCase();
+    if (!deps.networkModuleRepository.isSupportedNetwork(symbol)) return;
 
     if (payload.identity) {
-        writeIdentityConnection(draft, network.symbol, payload.identity, {
+        writeIdentityConnection(draft, symbol, payload.identity, {
             reconnectionTime: payload.time,
         });
     } else {
-        draft[network.symbol] = {
-            ...draft[network.symbol],
+        draft[symbol] = {
+            ...draft[symbol],
             reconnectionTime: payload.time,
         };
     }
 };
 
-export const prepareBlockchainReducer = createReducerWithExtraDeps(
-    blockchainInitialState,
+type BlockchainReducerDeps = ExtraDependenciesForReducer & { services: NetworkConfigDeps };
+
+export const prepareBlockchainReducer = createReducerWithExtraDeps<
+    BlockchainState,
+    BlockchainReducerDeps
+>(
+    extra => createBlockchainInitialState(extra.services),
     (builder, extra) => {
         builder
             .addCase(blockchainActions.synced, (state, action) => {
@@ -173,25 +187,25 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
             .addMatcher(
                 action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT,
                 (state, { payload }: PayloadAction<BlockchainInfo>) => {
-                    connect(state, payload);
+                    connect(extra.services, state, payload);
                 },
             )
             .addMatcher(
                 action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR,
                 (state, { payload }: PayloadAction<BlockchainError>) => {
-                    error(state, payload);
+                    error(extra.services, state, payload);
                 },
             )
             .addMatcher(
                 action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.RECONNECTING,
                 (state, { payload }: PayloadAction<BlockchainReconnecting>) => {
-                    reconnecting(state, payload);
+                    reconnecting(extra.services, state, payload);
                 },
             )
             .addMatcher(
                 action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK,
                 (state, { payload }: PayloadAction<BlockchainBlock>) => {
-                    update(state, payload);
+                    update(extra.services, state, payload);
                 },
             );
     },

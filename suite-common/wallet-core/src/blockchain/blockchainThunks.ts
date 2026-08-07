@@ -3,7 +3,6 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type NetworkSymbol,
-    getNetworkOptional,
     isNetworkSymbol,
     isNetworkUsingExternalBackend,
 } from '@suite-common/wallet-config';
@@ -134,11 +133,11 @@ export const subscribeBlockchainThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/subscribeBlockchainThunk`,
     async (
         { symbol, onConnect }: { symbol: NetworkSymbol; fiatRates?: boolean; onConnect?: boolean },
-        { getState },
+        { getState, extra },
     ) => {
-        const useIdentities = shouldUseIdentities(symbol);
+        const useIdentities = shouldUseIdentities(extra.services, symbol);
         // Don't subscribe to blocks for Solana, this is too intensive
-        const blocks = shouldSubscribeBlocks(symbol);
+        const blocks = shouldSubscribeBlocks(extra.services, symbol);
 
         if (onConnect && useIdentities) {
             await TrezorConnect.blockchainSubscribe({ coin: asCoinSymbol(symbol), blocks });
@@ -170,7 +169,7 @@ export const subscribeBlockchainThunk = createThunk(
 // called from WalletMiddleware after ACCOUNT.REMOVE action
 export const unsubscribeBlockchainThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/unsubscribeBlockchainThunk`,
-    (removedAccounts: Account[], { getState }) => {
+    (removedAccounts: Account[], { getState, extra }) => {
         // collect unique symbols
         const symbols = removedAccounts.map(({ symbol }) => symbol).filter(arrayDistinct);
         const allAccounts = selectAccounts(getState());
@@ -184,7 +183,7 @@ export const unsubscribeBlockchainThunk = createThunk(
                 isAccountSubscribable,
             ); // do not unsubscribe accounts with unsupported backend type
 
-            if (shouldUseIdentities(symbol)) {
+            if (shouldUseIdentities(extra.services, symbol)) {
                 const accountIdentities = arrayToDictionary(
                     accountsToSubscribe,
                     getAccountIdentity,
@@ -273,25 +272,29 @@ export const syncAccountsWithBlockchainThunk = createThunk(
 
 export const onBlockchainConnectThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
-    async (symbol: string, { dispatch }) => {
-        const network = getNetworkOptional(symbol.toLowerCase());
-        if (!network) return;
+    async (symbol: string, { dispatch, extra }) => {
+        const normalizedSymbol = symbol.toLowerCase();
+        if (!isNetworkSymbol(extra.services, normalizedSymbol)) return;
 
         await dispatch(
-            subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true, onConnect: true }),
+            subscribeBlockchainThunk({
+                symbol: normalizedSymbol,
+                fiatRates: true,
+                onConnect: true,
+            }),
         );
         // update accounts for connected network
-        await dispatch(syncAccountsWithBlockchainThunk(network.symbol));
-        dispatch(blockchainActions.connected(network.symbol));
+        await dispatch(syncAccountsWithBlockchainThunk(normalizedSymbol));
+        dispatch(blockchainActions.connected(normalizedSymbol));
     },
 );
 
 export const onBlockMinedThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockMinedThunk`,
-    (block: BlockchainBlock, { dispatch, getState }) => {
+    (block: BlockchainBlock, { dispatch, getState, extra }) => {
         const symbol = block.coin.shortcut.toLowerCase();
 
-        if (!isNetworkSymbol(symbol)) {
+        if (!isNetworkSymbol(extra.services, symbol)) {
             return;
         }
 
@@ -300,7 +303,7 @@ export const onBlockMinedThunk = createThunk(
         // syncAccountsWithBlockchainThunk and account subscriptions keep them updated instead.
         // A custom backend is the user's own infrastructure, so the metered concern no longer applies.
         if (
-            isNetworkUsingExternalBackend(symbol) &&
+            isNetworkUsingExternalBackend(extra.services, symbol) &&
             !selectIsCustomBackendConfigured(getState(), symbol)
         ) {
             return;
@@ -315,7 +318,7 @@ export const onBlockchainNotificationThunk = createThunk(
     (payload: BlockchainNotification, { dispatch, getState, extra }) => {
         const { descriptor, tx } = payload.notification;
         const symbol = payload.coin.shortcut.toLowerCase();
-        if (!isNetworkSymbol(symbol)) {
+        if (!isNetworkSymbol(extra.services, symbol)) {
             return;
         }
 
@@ -335,13 +338,20 @@ export const onBlockchainNotificationThunk = createThunk(
 
             const token = tx.tokens?.[0];
             const areSatoshisUsed = getAreSatoshisUsed(
+                extra.services,
                 selectBitcoinAmountUnit(getState()),
                 account,
             );
 
             const formattedAmount = token
                 ? formatTokenAmount(token)
-                : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
+                : formatNetworkAmount(
+                      extra.services,
+                      tx.amount,
+                      account.symbol,
+                      true,
+                      areSatoshisUsed,
+                  );
 
             dispatch(
                 notificationsActions.addEvent({
@@ -378,12 +388,12 @@ export const onBlockchainNotificationThunk = createThunk(
 
 export const onBlockchainDisconnectThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainDisconnectThunk`,
-    (error: BlockchainError, { getState }) => {
-        const network = getNetworkOptional(error.coin.shortcut.toLowerCase());
-        if (!network) return;
+    (error: BlockchainError, { getState, extra }) => {
+        const symbol = error.coin.shortcut.toLowerCase();
+        if (!isNetworkSymbol(extra.services, symbol)) return;
 
         const blockchain = selectBlockchainState(getState());
-        const { syncTimeout } = blockchain[network.symbol];
+        const { syncTimeout } = blockchain[symbol];
         // reset previous timeout
         tryClearTimeout(syncTimeout);
     },

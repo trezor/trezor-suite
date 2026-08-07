@@ -50,7 +50,7 @@ export const sendTransactionThunk = createThunk<
             triggerAnalyticsTradeConfirmation,
             signAndPushSendFormTransaction,
         }: SendTransactionThunkProps,
-        { dispatch, getState, rejectWithValue },
+        { dispatch, getState, rejectWithValue, extra },
     ) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
@@ -90,7 +90,7 @@ export const sendTransactionThunk = createThunk<
             });
         }
 
-        const tradingFormState = getTradingFormState({
+        const tradingFormState = getTradingFormState(extra.services, {
             activeSection: 'exchange',
             providers,
             trade: selectedTrade,

@@ -2,7 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../dependency-injection" },
         { "path": "../discreet-mode" },
+        { "path": "../networks" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../wallet-config" },

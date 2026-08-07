@@ -1,6 +1,7 @@
 import { type ExchangeTrade } from 'invity-api';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
+import { toNetwork } from '@suite-common/wallet-config';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { fromEther } from '@suite-common/wallet-utils';
 import {
@@ -10,7 +11,7 @@ import {
 
 import { hasEip712SignData } from './exchangeUtils';
 
-type ComposeDexTxSimulationActionParams = {
+type ComposeDexTxSimulationActionParams = GetNetworkConfigDep & {
     quote: ExchangeTrade | undefined;
     account: Account | undefined;
     sourceOrigin: string;
@@ -20,12 +21,13 @@ export const composeDexTxSimulationAction = ({
     quote,
     account,
     sourceOrigin,
+    getNetworkConfig,
 }: ComposeDexTxSimulationActionParams): TxSimulationAction | null => {
     if (!quote?.isDex || !account) {
         return null;
     }
 
-    const network = getNetwork(account.symbol);
+    const network = toNetwork(account.symbol, getNetworkConfig(account.symbol));
 
     if (network.networkType !== 'ethereum' || network.chainId === undefined) {
         return null;

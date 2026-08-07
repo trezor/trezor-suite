@@ -1,5 +1,6 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     asAmountUnit,
@@ -54,9 +55,10 @@ type GetApprovalContractAddressParams = {
     flowData: YieldFlowResolvedData;
 };
 
-type GetApprovalRequestAmountParams = GetApprovalContractAddressParams & {
-    amount: string;
-};
+type GetApprovalRequestAmountParams = GetNetworkConfigDep &
+    GetApprovalContractAddressParams & {
+        amount: string;
+    };
 
 type OpenYieldApproveModalParams = YieldSessionDataPayload & {
     dispatch: Dispatch;
@@ -66,12 +68,13 @@ type OpenYieldApproveModalParams = YieldSessionDataPayload & {
     txType: 'approve' | 'revoke';
 };
 
-type OpenYieldRevokeModalParams = YieldSessionDataPayload & {
-    dispatch: Dispatch;
-    approveAmount: string;
-    allowanceAmount: string;
-    spender: string | null;
-};
+type OpenYieldRevokeModalParams = GetNetworkConfigDep &
+    YieldSessionDataPayload & {
+        dispatch: Dispatch;
+        approveAmount: string;
+        allowanceAmount: string;
+        spender: string | null;
+    };
 
 export const setYieldError = ({
     dispatch,
@@ -97,6 +100,7 @@ export const getApprovalContractAddress = ({
         : (flowData.receiptToken.contractAddress ?? undefined);
 
 export const getApprovalRequestAmount = ({
+    getNetworkConfig,
     flowType,
     amount,
     flowData,
@@ -106,6 +110,7 @@ export const getApprovalRequestAmount = ({
     }
 
     return getWithdrawRequestAmount({
+        getNetworkConfig,
         networkSymbol: flowData.account.symbol,
         amount,
         token: flowData.token,
@@ -115,11 +120,12 @@ export const getApprovalRequestAmount = ({
 };
 
 export const getRevokeModalAmount = ({
+    getNetworkConfig,
     flowType,
     amount,
     flowData,
 }: GetApprovalRequestAmountParams) =>
-    getApprovalRequestAmount({ flowType, amount, flowData }) ?? amount;
+    getApprovalRequestAmount({ getNetworkConfig, flowType, amount, flowData }) ?? amount;
 
 export const openYieldApproveModal = ({
     dispatch,
@@ -157,6 +163,7 @@ export const openYieldApproveModal = ({
 };
 
 export const openYieldRevokeModal = ({
+    getNetworkConfig,
     dispatch,
     flowKey,
     flowType,
@@ -176,7 +183,12 @@ export const openYieldRevokeModal = ({
         flowKey,
         flowType,
         flowData,
-        amount: getRevokeModalAmount({ flowType, amount: approveAmount, flowData }),
+        amount: getRevokeModalAmount({
+            getNetworkConfig,
+            flowType,
+            amount: approveAmount,
+            flowData,
+        }),
         spender,
         preapprovedAmount: allowanceAmount || undefined,
         txType: 'revoke',
@@ -302,7 +314,7 @@ export const submitYieldRevokeThunk = createThunk(
     `${YIELD_THUNK_PREFIX}/submitRevoke`,
     (
         { flowKey, flowType, flowData, amount }: YieldSessionDataAmountPayload,
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         const { approval } = selectStablecoinYieldSession(getState(), flowType, flowKey);
         const spender = getAllowanceSpender(flowData);
@@ -311,6 +323,7 @@ export const submitYieldRevokeThunk = createThunk(
         dispatch(stablecoinYieldActions.startSubmittingApproval({ flowType, flowKey }));
 
         openYieldRevokeModal({
+            ...extra.services,
             dispatch,
             flowKey,
             flowType,
@@ -326,8 +339,12 @@ export const submitYieldRevokeThunk = createThunk(
 
 export const submitYieldApproveThunk = createThunk(
     `${YIELD_THUNK_PREFIX}/submitApprove`,
-    async ({ flowKey, flowType, flowData, amount }: SubmitYieldApprovePayload, { dispatch }) => {
+    async (
+        { flowKey, flowType, flowData, amount }: SubmitYieldApprovePayload,
+        { dispatch, extra },
+    ) => {
         const requestAmount = getApprovalRequestAmount({
+            ...extra.services,
             flowType,
             amount,
             flowData,

@@ -1,8 +1,7 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import {
     type NetworkDisplaySymbol,
     type NetworkSymbol,
-    getNetworkDisplaySymbol,
-    networks,
 } from '@suite-common/wallet-config';
 import type { TokenTransfer } from '@trezor/connect';
 import { BigNumber, type BigNumberValue } from '@trezor/utils';
@@ -11,7 +10,8 @@ import { type AmountSubunit, type AmountUnit, asAmountSubunit, asAmountUnit } fr
 
 type FormattedNetworkDisplaySymbol = NetworkDisplaySymbol | `sat ${NetworkDisplaySymbol}`;
 
-export const getAccountDecimals = (symbol: NetworkSymbol) => networks[symbol]?.decimals;
+export const getAccountDecimals = (deps: GetNetworkConfigDep, symbol: NetworkSymbol) =>
+    deps.getNetworkConfig(symbol).decimals;
 
 type SubunitsToUnitsParams = { value: AmountSubunit } & SymbolOrDecimals;
 
@@ -19,14 +19,15 @@ type SubunitsToUnitsParams = { value: AmountSubunit } & SymbolOrDecimals;
  * Converts Sats to Bitcoin (and similarly for other coins)
  */
 export const subunitsToUnits = (params: SubunitsToUnitsParams): AmountUnit => {
-    const decimals = 'decimals' in params ? params.decimals : getAccountDecimals(params.symbol);
+    const decimals =
+        'decimals' in params ? params.decimals : getAccountDecimals(params, params.symbol);
 
     const factor = new BigNumber(10).exponentiatedBy(decimals);
 
     return asAmountUnit(params.value.div(factor));
 };
 
-type SymbolOrDecimals = { symbol: NetworkSymbol } | { decimals: number };
+type SymbolOrDecimals = ({ symbol: NetworkSymbol } & GetNetworkConfigDep) | { decimals: number };
 
 type UnitsToSubunitsParams = { value: AmountUnit } & SymbolOrDecimals;
 
@@ -34,7 +35,8 @@ type UnitsToSubunitsParams = { value: AmountUnit } & SymbolOrDecimals;
  * Converts Bitcoins to Sats (and similarly for other coins)
  */
 export const unitsToSubunits = (params: UnitsToSubunitsParams): AmountSubunit => {
-    const decimals = 'decimals' in params ? params.decimals : getAccountDecimals(params.symbol);
+    const decimals =
+        'decimals' in params ? params.decimals : getAccountDecimals(params, params.symbol);
 
     const factor = new BigNumber(10).exponentiatedBy(decimals);
 
@@ -98,10 +100,14 @@ export const satoshiAmountToBtc = (amount: BigNumberValue) => {
 /**
  * @deprecated Use `subunitsToUnits` instead!
  */
-export const networkAmountToSmallestUnit = (amount: string | null, symbol: NetworkSymbol) => {
+export const networkAmountToSmallestUnit = (
+    deps: GetNetworkConfigDep,
+    amount: string | null,
+    symbol: NetworkSymbol,
+) => {
     if (!amount) return '0';
 
-    const decimals = getAccountDecimals(symbol);
+    const decimals = getAccountDecimals(deps, symbol);
 
     if (!decimals) return amount;
 
@@ -112,23 +118,25 @@ export const networkAmountToSmallestUnit = (amount: string | null, symbol: Netwo
  * @deprecated use `subunitsToUnits` if you don't need formatting. If you need formating, use function that does ONLY formatting.
  */
 export const formatNetworkAmount = (
+    deps: GetNetworkConfigDep,
     amount: string,
     symbol: NetworkSymbol,
     withSymbol = false,
     isSatoshis?: boolean,
 ) => {
-    const decimals = getAccountDecimals(symbol);
+    const decimals = getAccountDecimals(deps, symbol);
 
     if (!decimals) return amount;
 
     let formattedAmount = convertAmountSubunitsToUnits(amount, decimals);
 
     if (withSymbol) {
-        let formattedSymbol: FormattedNetworkDisplaySymbol = getNetworkDisplaySymbol(symbol);
+        let formattedSymbol: FormattedNetworkDisplaySymbol =
+            deps.getNetworkConfig(symbol).displaySymbol;
 
         if (isSatoshis) {
             formattedAmount = amount || '0';
-            formattedSymbol = `sat ${getNetworkDisplaySymbol(symbol)}`;
+            formattedSymbol = `sat ${deps.getNetworkConfig(symbol).displaySymbol}`;
         }
 
         return `${formattedAmount} ${formattedSymbol}`;

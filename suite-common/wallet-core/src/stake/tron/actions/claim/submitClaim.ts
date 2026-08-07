@@ -27,7 +27,10 @@ interface SubmitClaimThunkArguments extends ClaimThunkArguments {
 
 export const submitTronClaimThunk = createThunk<void, SubmitClaimThunkArguments>(
     `${TRON_STAKE_MODULE}/submitTronClaimThunk`,
-    async ({ account, device, requestPushApproval, onSigningStart, onSettled }, { dispatch }) => {
+    async (
+        { account, device, requestPushApproval, onSigningStart, onSettled },
+        { dispatch, extra },
+    ) => {
         const { key: accountKey } = account;
         const flow: TronFlow = 'claim';
 
@@ -147,7 +150,10 @@ export const submitTronClaimThunk = createThunk<void, SubmitClaimThunkArguments>
                     target: {
                         addresses: [account.descriptor],
                         amount: unitsToSubunits({
-                            value: asAmountUnit(new BigNumber(getTronStakingRewards(account))),
+                            ...extra.services,
+                            value: asAmountUnit(
+                                new BigNumber(getTronStakingRewards(extra.services, account)),
+                            ),
                             symbol: account.symbol,
                         }).toString(),
                     },

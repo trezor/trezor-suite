@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
@@ -28,9 +29,10 @@ export const selectCoinDefinition = (
     state: TokenDefinitionsRootState,
     symbol: NetworkSymbol,
     contractAddress: TokenAddress,
+    deps: GetNetworkConfigDep,
 ) => {
     const coinDefinitions = state.tokenDefinitions?.[symbol]?.coin?.data;
-    const isKnown = isTokenDefinitionKnown(coinDefinitions, symbol, contractAddress);
+    const isKnown = isTokenDefinitionKnown(deps, coinDefinitions, symbol, contractAddress);
 
     return isKnown;
 };
@@ -39,13 +41,17 @@ export const selectIsSpecificCoinDefinitionKnown = (
     state: TokenDefinitionsRootState,
     symbol: NetworkSymbol,
     contractAddress: TokenAddress,
-) => !!selectCoinDefinition(state, symbol, contractAddress);
+    deps: GetNetworkConfigDep,
+) => !!selectCoinDefinition(state, symbol, contractAddress, deps);
 
 export const selectFilterKnownTokens = (
     state: TokenDefinitionsRootState,
     symbol: NetworkSymbol,
     tokens: TokenInfo[],
+    deps: GetNetworkConfigDep,
 ) =>
     returnStableArrayIfEmpty(
-        tokens.filter(token => selectCoinDefinition(state, symbol, token.contract as TokenAddress)),
+        tokens.filter(token =>
+            selectCoinDefinition(state, symbol, token.contract as TokenAddress, deps),
+        ),
     );

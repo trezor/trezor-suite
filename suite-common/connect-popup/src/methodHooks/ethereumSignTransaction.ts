@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
+import { findNetworkByEvmChainId, getNetworks } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
@@ -61,6 +61,7 @@ const preCallHook = async <M extends CallMethodKeys>({
     dispatch,
     txSigningPrecomposed,
     source,
+    services,
 }: PreCallHookParams<M>) => {
     try {
         // Parse common parameters (path, chainId) from payload
@@ -83,7 +84,7 @@ const preCallHook = async <M extends CallMethodKeys>({
         }
 
         // Prepare selected account
-        const network = getNetworkByEvmChainId(chainId) || {
+        const network = findNetworkByEvmChainId(getNetworks(services), chainId) || {
             // Placeholder for chains not supported in Suite
             networkType: 'ethereum',
             symbol: 'eth',
@@ -96,7 +97,9 @@ const preCallHook = async <M extends CallMethodKeys>({
             : null;
         if (!selectedAccount) {
             // Create a new placeholder account
-            const createdAccount = await dispatch(createPlaceholderAccount(network, path));
+            const createdAccount = await dispatch(
+                createPlaceholderAccount(services, network, path),
+            );
             temporaryAccounts.push(createdAccount.payload);
             selectedAccount = createdAccount.payload;
         }

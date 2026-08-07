@@ -1,5 +1,7 @@
 import { type CryptoId } from 'invity-api';
 
+import { type NetworkConfigDeps } from '@suite-common/wallet-config';
+
 import { type TradingRootState } from '../reducers/tradingCommonReducer';
 import {
     selectTradingCoinSymbolByCryptoId,
@@ -52,6 +54,7 @@ export type TradingHistoryCsvRow = Record<TradingHistoryCsvColumn, string>;
 
 type TradingHistoryCsvResolvers = {
     getCoinSymbol: (cryptoId: CryptoId) => string | undefined;
+    getNetworkName: (cryptoId: CryptoId) => string;
     getProviderName: (name: string | undefined, tradeType: TradingType) => string | undefined;
 };
 
@@ -60,7 +63,7 @@ export const getTradingHistoryCsvType = (tradeType: TradingType): string =>
 
 export const getTradingHistoryCsvRow = (
     trade: TradingTransaction,
-    { getCoinSymbol, getProviderName }: TradingHistoryCsvResolvers,
+    { getCoinSymbol, getNetworkName, getProviderName }: TradingHistoryCsvResolvers,
 ): TradingHistoryCsvRow => {
     const { tradeType, data } = trade;
     const { fromValue, fromCurrency, toValue, toCurrency, isFromCrypto, isToCrypto } =
@@ -80,7 +83,7 @@ export const getTradingHistoryCsvRow = (
     const resolveNetwork = (
         currency: string | CryptoId | undefined,
         isCrypto: boolean | undefined,
-    ) => (isCrypto && currency ? (cryptoIdToNetwork(currency as CryptoId)?.name ?? '') : '');
+    ) => (isCrypto && currency ? getNetworkName(currency as CryptoId) : '');
 
     const spendTransactionId = isSellFiatTrade(data) ? (data.txid ?? '') : '';
     const receiveTransactionId =
@@ -124,9 +127,10 @@ export const buildTradingHistoryCsv =
 
 export const prepareTradingHistoryCsv =
     (labels: TradingHistoryCsvColumnLabels) =>
-    (state: TradingRootState, trades: TradingTransaction[]): string =>
+    (deps: NetworkConfigDeps, state: TradingRootState, trades: TradingTransaction[]): string =>
         buildTradingHistoryCsv(labels)(trades, {
             getCoinSymbol: cryptoId => selectTradingCoinSymbolByCryptoId(state, cryptoId),
+            getNetworkName: cryptoId => cryptoIdToNetwork(deps, cryptoId)?.name ?? '',
             getProviderName: (name, tradeType) =>
                 selectTradingProviderCompanyName(state, name, tradeType),
         });

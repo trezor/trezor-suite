@@ -4,7 +4,12 @@ import { join } from 'path';
 import { z } from 'zod';
 
 import { createHttpClient, isResponseError } from '@suite-common/http-client';
-import { type Network, getNetwork, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkConfigDeps,
+    findNetworkByCoingeckoId,
+    getNetworks,
+} from '@suite-common/wallet-config';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { rasterizeSvg } from './images';
@@ -63,7 +68,11 @@ type VaultIconSource =
  * native coin is the settlement layer's, so ETH is resolved through `settlementLayer` rather than
  * from the L2 itself.
  */
-const resolveIconSource = (network: Network, vault: YieldVault): VaultIconSource | undefined => {
+const resolveIconSource = (
+    deps: NetworkConfigDeps,
+    network: Network,
+    vault: YieldVault,
+): VaultIconSource | undefined => {
     if (!isWrappedNativeToken(network.symbol, vault.underlyingToken)) {
         return { kind: 'published', coingeckoId: vault.coingeckoId };
     }
@@ -77,7 +86,7 @@ const resolveIconSource = (network: Network, vault: YieldVault): VaultIconSource
         return { kind: 'bundled', networkSymbol: nativeSymbol };
     }
 
-    const coingeckoId = getNetwork(nativeSymbol).tradeCryptoId;
+    const coingeckoId = deps.getNetworkConfig(nativeSymbol).tradeCryptoId;
 
     return coingeckoId ? { kind: 'published', coingeckoId } : undefined;
 };
@@ -132,8 +141,9 @@ const sourceIconKey = (source: VaultIconSource, size: CoinImageSize) =>
  * CoinGecko-driven pipeline never produces them — instead, write the icon of the asset the vault is
  * denominated in under each vault-address file name.
  */
-export const downloadVaultIcons = async (): Promise<void> => {
+export const downloadVaultIcons = async (deps: NetworkConfigDeps): Promise<void> => {
     const vaults = await fetchYieldVaults();
+    const networks = getNetworks(deps);
 
     // The same underlying backs vaults on several platforms, so load each source rendition once.
     const sourceIconCache = new Map<string, Buffer | undefined>();
@@ -144,7 +154,7 @@ export const downloadVaultIcons = async (): Promise<void> => {
             continue;
         }
 
-        const network = getNetworkByCoingeckoId(assetPlatformId);
+        const network = findNetworkByCoingeckoId(networks, assetPlatformId);
         if (!network) {
             console.error(
                 `Vault icons: no network known for CoinGecko asset platform "${assetPlatformId}", skipping its vaults:`,
@@ -154,7 +164,7 @@ export const downloadVaultIcons = async (): Promise<void> => {
         }
 
         for (const vault of platformVaults) {
-            const source = resolveIconSource(network, vault);
+            const source = resolveIconSource(deps, network, vault);
             if (!source) {
                 console.error(
                     `Vault icons: no source coin resolved for "${vault.yieldId}", skipping it:`,

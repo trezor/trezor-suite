@@ -6,11 +6,12 @@ import { getTargetAmounts } from './getTargetAmounts';
 import { type searchOperators } from './searchOperations';
 
 export const numberSearchFilter = (
+    deps: GetNetworkConfigDep,
     transaction: WalletAccountTransaction,
     amount: BigNumber,
     operator: (typeof searchOperators)[number],
 ) => {
-    const targetAmounts = getTargetAmounts(transaction);
+    const targetAmounts = getTargetAmounts(deps, transaction);
     const op = getTxOperation(transaction.type);
     if (!op) {
         return false;
@@ -38,3 +39,4 @@ export const numberSearchFilter = (
         }).length > 0
     );
 };
+import type { GetNetworkConfigDep } from '@suite-common/networks';

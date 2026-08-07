@@ -22,6 +22,7 @@ describe('composeStablecoinYieldTxSimulationAction', () => {
 
     it('keeps EIP-1559 fee fields for claim simulation transactions', () => {
         const result = composeStablecoinYieldTxSimulationAction(
+            mockNetworkConfigDeps,
             {
                 flow: 'claim',
                 account,
@@ -52,6 +53,7 @@ describe('composeStablecoinYieldTxSimulationAction', () => {
 
     it('keeps legacy gas price for claim simulation transactions', () => {
         const result = composeStablecoinYieldTxSimulationAction(
+            mockNetworkConfigDeps,
             {
                 flow: 'claim',
                 account,
@@ -81,6 +83,7 @@ describe('composeStablecoinYieldTxSimulationAction', () => {
     it('rejects mixed claim fee fields', () => {
         expect(
             composeStablecoinYieldTxSimulationAction(
+                mockNetworkConfigDeps,
                 {
                     flow: 'claim',
                     account,
@@ -103,6 +106,7 @@ describe('composeStablecoinYieldTxSimulationAction', () => {
     it('rejects incomplete claim fee fields', () => {
         expect(
             composeStablecoinYieldTxSimulationAction(
+                mockNetworkConfigDeps,
                 {
                     flow: 'claim',
                     account,
@@ -120,3 +124,4 @@ describe('composeStablecoinYieldTxSimulationAction', () => {
         ).toBeNull();
     });
 });
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';

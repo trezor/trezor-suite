@@ -1,8 +1,8 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import {
     type NetworkSymbol,
     type NetworkType,
-    STAKING_SYMBOLS,
-    STAKING_TYPES,
+    STAKING_NETWORK_TYPES,
     type StakingNetworkSymbol,
     type StakingNetworkType,
     getStakingProviderByCardanoPoolId,
@@ -81,21 +81,24 @@ import {
 export const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 
 export const isStakingNetworkType = (type: NetworkType): type is StakingNetworkType =>
-    (STAKING_TYPES as readonly string[]).includes(type);
+    (STAKING_NETWORK_TYPES as readonly string[]).includes(type);
 
 export const isStakingSymbol = (symbol: NetworkSymbol): symbol is StakingNetworkSymbol =>
-    (STAKING_SYMBOLS as readonly string[]).includes(symbol);
+    isSupportedStakingNetworkSymbol(symbol);
 
-const STAKING_BALANCE_BY_TYPE = {
-    ethereum: getEthAccountTotalStakingBalance,
+const STAKING_BALANCE_BY_TYPE: Record<
+    StakingNetworkType,
+    (deps: GetNetworkConfigDep, account: Account) => string | null
+> = {
+    ethereum: (_deps, account) => getEthAccountTotalStakingBalance(account),
     solana: getSolAccountTotalStakingBalance,
     cardano: getAdaAccountTotalStakingBalance,
     tron: getTronAccountTotalStakingBalance,
-} satisfies Record<StakingNetworkType, (a: Account) => string | null>;
+};
 
-export const getAccountTotalStakingBalance = (account: Account) =>
+export const getAccountTotalStakingBalance = (deps: GetNetworkConfigDep, account: Account) =>
     isStakingNetworkType(account.networkType)
-        ? STAKING_BALANCE_BY_TYPE[account.networkType]?.(account)
+        ? STAKING_BALANCE_BY_TYPE[account.networkType]?.(deps, account)
         : null;
 
 export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) =>
@@ -186,6 +189,7 @@ export const getMaxStakeAmount = ({ balance, symbol }: GetMaxStakeAmount): strin
 };
 
 export const getStakingDataForNetwork = (
+    deps: GetNetworkConfigDep,
     account?: Account,
 ): Omit<StakingPoolExtended, 'contract' | 'name'> | undefined => {
     if (!account || !isStakingNetworkType(account.networkType)) return;
@@ -200,7 +204,7 @@ export const getStakingDataForNetwork = (
                 solStakedBalance,
                 solPendingStakeBalance,
                 solPendingUnstakeBalance,
-            } = getSolStakingAccountsInfo(account);
+            } = getSolStakingAccountsInfo(deps, account);
 
             //@ts-expect-error: indexing with noUncheckedIndexedAccess
             const stakedBalance: string = solStakedBalance;
@@ -231,6 +235,7 @@ export const getStakingDataForNetwork = (
             const formattedRewards = subunitsToUnits({
                 value: asAmountSubunit(new BigNumber(rewards)),
                 symbol: account.symbol,
+                getNetworkConfig: deps.getNetworkConfig,
             }).toString();
 
             const hasRewards = new BigNumber(rewards).isGreaterThan(0);
@@ -250,7 +255,7 @@ export const getStakingDataForNetwork = (
         }
 
         case 'tron': {
-            const stakedBalance = getTronAccountTotalStakingBalance(account) ?? '';
+            const stakedBalance = getTronAccountTotalStakingBalance(deps, account) ?? '';
 
             return {
                 autocompoundBalance: stakedBalance,
@@ -259,8 +264,8 @@ export const getStakingDataForNetwork = (
                 pendingBalance: '',
                 pendingDepositedBalance: '',
                 totalPendingStakeBalance: '',
-                restakedReward: getTronStakingRewards(account),
-                withdrawTotalAmount: getTronUnstakingBalance(account),
+                restakedReward: getTronStakingRewards(deps, account),
+                withdrawTotalAmount: getTronUnstakingBalance(deps, account),
                 canClaim: false,
             };
         }
@@ -337,11 +342,14 @@ export const calculateRewards = (amount: string, apyPercent: number | null, days
     return currentRewards;
 };
 
-export const getStakingProvidersForAnalytics = (accounts: Account[]): string[] => {
+export const getStakingProvidersForAnalytics = (
+    deps: GetNetworkConfigDep,
+    accounts: Account[],
+): string[] => {
     const providers = new Set<string>();
 
     accounts.forEach(account => {
-        const stakingBalance = getAccountTotalStakingBalance(account);
+        const stakingBalance = getAccountTotalStakingBalance(deps, account);
         if (!stakingBalance || new BigNumber(stakingBalance).lte(0)) {
             return;
         }

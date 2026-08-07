@@ -4,6 +4,12 @@ import fs from 'fs/promises';
 import { join } from 'path';
 
 import {
+    createGetNetworkConfig,
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
+
+import {
     FILES_CRYPTOICONS_PATH,
     RATE_LIMIT_PER_MINUTE,
     RUN_LIMIT_SECONDS,
@@ -24,6 +30,10 @@ import {
 } from './utils/fetchCoins';
 import { resizeImage } from './utils/images';
 import { sleep } from './utils/sleep';
+
+const networkModules = createNetworksCompositionRoot();
+const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
 
 async function writeImage(fileName: string, imageBuffer: Buffer) {
     const destinationFile = join(FILES_CRYPTOICONS_PATH, fileName);
@@ -231,7 +241,7 @@ async function ensureDirectoryExists(path: string) {
     // see downloadVaultIcons. A failure there must not discard the CoinGecko icons already
     // produced by this run, so it only logs.
     try {
-        await downloadVaultIcons();
+        await downloadVaultIcons({ getNetworkConfig, networkModuleRepository });
     } catch (error) {
         console.error('Vault icons: 🔴 Error:', error);
     }

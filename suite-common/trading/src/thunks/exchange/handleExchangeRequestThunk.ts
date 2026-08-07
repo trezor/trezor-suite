@@ -1,7 +1,7 @@
 import { type ExchangeTrade, type ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { type Network } from '@suite-common/wallet-config';
+import { type Network, type NetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 
@@ -36,14 +36,13 @@ type GetQuoteRequestData = {
     shouldSendInSats: boolean | undefined;
 };
 
-export const getQuoteRequestData = ({
-    formValues,
-    network,
-    shouldSendInSats,
-}: GetQuoteRequestData): ExchangeTradeQuoteRequest | undefined => {
+export const getQuoteRequestData = (
+    deps: NetworkConfigDeps,
+    { formValues, network, shouldSendInSats }: GetQuoteRequestData,
+): ExchangeTradeQuoteRequest | undefined => {
     const { outputs, receiveCryptoSelect, sendCryptoSelect, receiveAddress, fromAddress } =
         formValues;
-    const decimals = getNetworkDecimalsWithFallback(network.symbol);
+    const decimals = getNetworkDecimalsWithFallback(deps, network.symbol);
 
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const firstOutput: (typeof outputs)[number] = outputs[0];
@@ -91,7 +90,7 @@ export const handleExchangeRequestThunk = createThunk<
         }: HandleExchangeRequestThunkProps,
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal, extra },
     ) => {
-        const requestData = getQuoteRequestData({
+        const requestData = getQuoteRequestData(extra.services, {
             formValues,
             network,
             shouldSendInSats,
@@ -110,6 +109,7 @@ export const handleExchangeRequestThunk = createThunk<
 
         if (
             !isReceiveAddressCoherent({
+                ...extra.services,
                 addressValidator: extra.services.addressValidator,
                 receiveAddress: requestData.receiveAddress,
                 receiveCryptoId: requestData.receive,

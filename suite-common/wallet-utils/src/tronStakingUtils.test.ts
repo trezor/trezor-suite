@@ -1,6 +1,6 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import {
     type TronAccountExtraData,
@@ -14,23 +14,35 @@ import {
     TRON_REWARD_CLAIM_COOLDOWN_SECONDS,
     calculateTronFreezeSuggestion,
     getResourceGain,
-    getTronAccountTotalStakingBalance,
+    getTronAccountTotalStakingBalance as getTronAccountTotalStakingBalanceBase,
     getTronAvailableVotingPower,
-    getTronCryptoBalanceWithStaking,
-    getTronPendingUnstakeBalance,
+    getTronCryptoBalanceWithStaking as getTronCryptoBalanceWithStakingBase,
+    getTronPendingUnstakeBalance as getTronPendingUnstakeBalanceBase,
     getTronResources,
     getTronRewardClaimCooldownEndsAt,
     getTronStakingInfo,
-    getTronStakingRewards,
+    getTronStakingRewards as getTronStakingRewardsBase,
     getTronTotalVotingPower,
-    getTronUnstakingBalance,
+    getTronUnstakingBalance as getTronUnstakingBalanceBase,
     getTronVotes,
-    getTronWithdrawableBalance,
+    getTronWithdrawableBalance as getTronWithdrawableBalanceBase,
     isSupportedTronStakingNetworkSymbol,
     isTronClaimSupported,
     isTronRewardClaimOnCooldown,
     isTronStakingActive,
 } from './tronStakingUtils';
+
+const withNetworkConfig =
+    <TResult>(fn: (deps: typeof mockNetworkConfigDeps, account: Account) => TResult) =>
+    (account: Account) =>
+        fn(mockNetworkConfigDeps, account);
+
+const getTronAccountTotalStakingBalance = withNetworkConfig(getTronAccountTotalStakingBalanceBase);
+const getTronCryptoBalanceWithStaking = withNetworkConfig(getTronCryptoBalanceWithStakingBase);
+const getTronPendingUnstakeBalance = withNetworkConfig(getTronPendingUnstakeBalanceBase);
+const getTronStakingRewards = withNetworkConfig(getTronStakingRewardsBase);
+const getTronUnstakingBalance = withNetworkConfig(getTronUnstakingBalanceBase);
+const getTronWithdrawableBalance = withNetworkConfig(getTronWithdrawableBalanceBase);
 
 const TRX = 1_000_000;
 const NOW_SECONDS = 1_700_000_000;
@@ -95,14 +107,14 @@ const buildNonTronAccount = (): Account =>
 
 describe('isSupportedTronStakingNetworkSymbol', () => {
     it('returns true for trx', () => {
-        expect(isSupportedTronStakingNetworkSymbol(asNetworkSymbol('trx'))).toBe(true);
+        expect(isSupportedTronStakingNetworkSymbol('trx')).toBe(true);
     });
 
     it('returns false for non-Tron symbols', () => {
-        expect(isSupportedTronStakingNetworkSymbol(asNetworkSymbol('btc'))).toBe(false);
-        expect(isSupportedTronStakingNetworkSymbol(asNetworkSymbol('eth'))).toBe(false);
+        expect(isSupportedTronStakingNetworkSymbol('btc')).toBe(false);
+        expect(isSupportedTronStakingNetworkSymbol('eth')).toBe(false);
         // testnet Tron is not in the supported list
-        expect(isSupportedTronStakingNetworkSymbol(asNetworkSymbol('ttrx'))).toBe(false);
+        expect(isSupportedTronStakingNetworkSymbol('ttrx')).toBe(false);
     });
 });
 

@@ -1,3 +1,4 @@
+import type { GetNetworkConfigDep, NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type AccountType,
@@ -7,9 +8,6 @@ import {
     type NetworkSymbolExtended,
     type NetworkType,
     type TrezorConnectBackendType,
-    getNetwork,
-    networkSymbolCollection,
-    networks,
 } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -68,8 +66,8 @@ export const isAccountDiscoverable = ({ accountType }: Account) =>
 export const shouldSkipFirstAccountIndex = (networkType: NetworkType, accountType: AccountType) =>
     (networkType === 'ethereum' || networkType === 'tron') && accountType === 'ledger';
 
-export const isEvmNetwork = (networkSymbol: NetworkSymbol): boolean =>
-    getNetwork(networkSymbol).networkType === 'ethereum';
+export const isEvmNetwork = (deps: GetNetworkConfigDep, networkSymbol: NetworkSymbol): boolean =>
+    deps.getNetworkConfig(networkSymbol).networkType === 'ethereum';
 
 const getAccountIndexOffset = (networkType: NetworkType, accountType: AccountType): number =>
     shouldSkipFirstAccountIndex(networkType, accountType) ? 1 : 0;
@@ -271,14 +269,19 @@ export const getAccountTypeUrl = (path: string) => {
  * - primary: by network `symbol`
  * - secondary: by `accountType`
  */
-export const compareAccountsByCoin = (a: Account, b: Account) => {
+export const compareAccountsByCoin = (
+    deps: GetNetworkConfigDep & NetworkModuleRepositoryDep,
+    a: Account,
+    b: Account,
+) => {
     // primary sorting: by order of network keys
-    const aSymbolIndex = networkSymbolCollection.indexOf(a.symbol);
-    const bSymbolIndex = networkSymbolCollection.indexOf(b.symbol);
+    const networkSymbols = deps.networkModuleRepository.getSupportedNetworks();
+    const aSymbolIndex = networkSymbols.indexOf(a.symbol);
+    const bSymbolIndex = networkSymbols.indexOf(b.symbol);
     if (aSymbolIndex !== bSymbolIndex) return aSymbolIndex - bSymbolIndex;
 
     // when it is sorted by network, sort by order of accountType keys within the same network
-    const network = networks[a.symbol];
+    const network = deps.getNetworkConfig(a.symbol);
     // `network` is a union over all networks (some declare `accountTypes: {}`), which would collapse
     // `keyof` to `never`; widening to the field's declared keyset yields `AccountType[]` soundly.
     const orderedAccountTypes = typedObjectKeys(
@@ -296,8 +299,13 @@ export const compareAccountsByCoin = (a: Account, b: Account) => {
 /**
  * Sort accounts with `compareAccountsByCoin`. Returns a new array, the input is not mutated.
  */
-export const sortByCoin = <T extends Account>(accounts: T[]) =>
-    accounts.toSorted(compareAccountsByCoin);
+export const sortByCoin = <T extends Account>(
+    deps: GetNetworkConfigDep & NetworkModuleRepositoryDep,
+    accounts: T[],
+) =>
+    accounts.toSorted((firstAccount, secondAccount) =>
+        compareAccountsByCoin(deps, firstAccount, secondAccount),
+    );
 
 export const findAccountsByNetwork = <T extends Account>(symbol: NetworkSymbol, accounts: T[]) =>
     accounts.filter(a => a.symbol === symbol);
@@ -532,13 +540,17 @@ export const getAccountTokensFiatBalance = (
         }, new BigNumber(0)),
     );
 
-const getStakingFiatBalance = (account: Account, rate: number | undefined) => {
-    const balance = getAccountTotalStakingBalance(account) ?? '0';
+const getStakingFiatBalance = (
+    deps: GetNetworkConfigDep,
+    account: Account,
+    rate: number | undefined,
+) => {
+    const balance = getAccountTotalStakingBalance(deps, account) ?? '0';
 
     return toFiatCurrency({ amount: balance, rate });
 };
 
-type GetAccountFiatBalanceParams = {
+type GetAccountFiatBalanceParams = GetNetworkConfigDep & {
     account: Account;
     baseCurrencyCode: BaseCurrencyCode;
     rates?: RatesByKey;
@@ -552,6 +564,7 @@ export const getAccountFiatBalance = ({
     rates,
     shouldIncludeTokens = true,
     shouldIncludeStaking = true,
+    getNetworkConfig,
 }: GetAccountFiatBalanceParams) => {
     const coinFiatRateKey = getFiatRateKey(account.symbol, baseCurrencyCode);
     const coinFiatRate = rates?.[coinFiatRateKey];
@@ -580,14 +593,18 @@ export const getAccountFiatBalance = ({
 
     // account staking balance, Cardano staking should never be included as it would double the total
     if (shouldIncludeStaking && account.networkType !== 'cardano') {
-        const stakingBalance = getStakingFiatBalance(account, coinFiatRate.rate);
+        const stakingBalance = getStakingFiatBalance(
+            { getNetworkConfig },
+            account,
+            coinFiatRate.rate,
+        );
         totalBalance = totalBalance.plus(stakingBalance ?? 0);
     }
 
     return asBaseCurrencyAmount(totalBalance);
 };
 
-type GetTotalFiatBalanceParams = {
+type GetTotalFiatBalanceParams = GetNetworkConfigDep & {
     deviceAccounts: Account[];
     baseCurrencyCode: BaseCurrencyCode;
     rates?: RatesByKey;
@@ -601,12 +618,14 @@ export const getTotalFiatBalance = ({
     rates,
     shouldIncludeTokens = true,
     shouldIncludeStaking = true,
+    getNetworkConfig,
 }: GetTotalFiatBalanceParams) => {
     let instanceBalance = new BigNumber(0);
 
     deviceAccounts.forEach(account => {
         const accountFiatBalance =
             getAccountFiatBalance({
+                getNetworkConfig,
                 account,
                 baseCurrencyCode,
                 rates,
@@ -619,7 +638,8 @@ export const getTotalFiatBalance = ({
     return instanceBalance;
 };
 
-export const isTestnet = (symbol: NetworkSymbol) => networks[symbol].testnet;
+export const isTestnet = (deps: GetNetworkConfigDep, symbol: NetworkSymbol) =>
+    deps.getNetworkConfig(symbol).testnet;
 
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     if (
@@ -791,7 +811,7 @@ export const getAccountIdentifier = (account: Account) => ({
     deviceState: account.deviceState,
 });
 
-export type AccountSearchParams = {
+export type AccountSearchParams = GetNetworkConfigDep & {
     coinsFilter?: NetworkSymbol[] | NetworkSymbol;
 
     /** Needs to be mandatory, so it is no forgotten. */
@@ -819,6 +839,7 @@ export const accountSearchFn = (
         tokensMatch = true,
         searchableTokens,
         accountTypeName,
+        getNetworkConfig,
     }: AccountSearchParams,
 ) => {
     let coinsFilterArray: NetworkSymbol[] = [];
@@ -839,7 +860,7 @@ export const accountSearchFn = (
     const searchString = rawSearchString?.trim().toLowerCase();
     if (!searchString) return true; // no search string
 
-    const network = networks[account.symbol];
+    const network = getNetworkConfig(account.symbol);
 
     // helper func for searching in account's addresses
     const matchAddressFn = (u: NonNullable<Account['addresses']>['used'][number]) =>
@@ -978,11 +999,12 @@ export const getAccountAddresses = (account: Account) =>
 // update account before BLOCKCHAIN.NOTIFICATION or BLOCKCHAIN.BLOCK events
 // solves race condition between pushing transaction and received notification
 export const getPendingAccount = ({
+    getNetworkConfig,
     account,
     receivingAccount,
     tx,
     txid,
-}: {
+}: GetNetworkConfigDep & {
     account: Account;
     receivingAccount?: boolean;
     tx: GeneralPrecomposedTransactionFinal;
@@ -1028,21 +1050,26 @@ export const getPendingAccount = ({
     return {
         ...account,
         availableBalance,
-        formattedBalance: formatNetworkAmount(availableBalance, account.symbol),
+        formattedBalance: formatNetworkAmount(
+            { getNetworkConfig },
+            availableBalance,
+            account.symbol,
+        ),
         utxo,
     };
 };
 
-export const getNetworkAccountFeatures = ({
-    symbol,
-    accountType,
-}: Pick<Account, 'symbol' | 'accountType'>): NetworkFeature[] => {
-    const matchedNetwork = getNetwork(symbol);
+export const getNetworkAccountFeatures = (
+    deps: GetNetworkConfigDep,
+    { symbol, accountType }: Pick<Account, 'symbol' | 'accountType'>,
+): readonly NetworkFeature[] => {
+    const matchedNetwork = deps.getNetworkConfig(symbol);
 
     return matchedNetwork.accountTypes[accountType]?.features ?? matchedNetwork.features;
 };
 
 export const hasNetworkFeatures = (
+    deps: GetNetworkConfigDep,
     account: Account | undefined,
     features: NetworkFeature | Array<NetworkFeature>,
 ) => {
@@ -1050,7 +1077,7 @@ export const hasNetworkFeatures = (
         return false;
     }
 
-    const networkFeatures = getNetworkAccountFeatures(account);
+    const networkFeatures = getNetworkAccountFeatures(deps, account);
 
     const areFeaturesPresent = ([] as NetworkFeature[])
         .concat(features)
@@ -1133,6 +1160,7 @@ export const parseAccountKey = (accountKey: AccountKey) => {
 export const getAccountKey = createAccountKey;
 
 export const prepareNewAccountPayload = async ({
+    getNetworkConfig,
     accountType,
     networkSymbol,
     index,
@@ -1140,7 +1168,7 @@ export const prepareNewAccountPayload = async ({
     selectedAccount,
     accountTypes,
     device,
-}: {
+}: GetNetworkConfigDep & {
     accountType: AccountType;
     networkSymbol: NetworkSymbol;
     index: number;
@@ -1149,7 +1177,7 @@ export const prepareNewAccountPayload = async ({
     accountTypes?: NetworkAccount[];
     device: TrezorDevice;
 }) => {
-    const network = getNetwork(networkSymbol);
+    const network = getNetworkConfig(networkSymbol);
     const networkAccount =
         selectedAccount ?? accountTypes?.find(v => v.accountType === accountType);
 
@@ -1211,6 +1239,7 @@ export const accumulateAccountCountBySymbolAndType = (
 };
 
 export const getAvailableAccountTypes = (
+    deps: GetNetworkConfigDep,
     networkSymbol: NetworkSymbol,
     options: {
         isCoinjoinVisible?: boolean;
@@ -1218,7 +1247,7 @@ export const getAvailableAccountTypes = (
     } = { isCoinjoinVisible: false, isDebug: false },
 ): NetworkAccount[] => {
     const { isCoinjoinVisible, isDebug } = options;
-    const network = getNetwork(networkSymbol);
+    const network = deps.getNetworkConfig(networkSymbol);
 
     const defaultAccount: NetworkAccount = {
         bip43Path: network.bip43Path,

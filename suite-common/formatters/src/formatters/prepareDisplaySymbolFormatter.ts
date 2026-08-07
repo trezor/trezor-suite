@@ -1,8 +1,8 @@
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import { type UNIT_ABBREVIATION, UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     type NetworkDisplaySymbol,
     type NetworkSymbol,
-    getNetwork,
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
 
@@ -16,15 +16,18 @@ type FormattedNetworkDisplaySymbol =
     | UNIT_ABBREVIATION
     | `${UNIT_ABBREVIATION} ${NetworkDisplaySymbol}`;
 
-export const prepareDisplaySymbolFormatter = (config: FormatterConfig) =>
+export const prepareDisplaySymbolFormatter = (deps: GetNetworkConfigDep, config: FormatterConfig) =>
     makeFormatter<NetworkSymbol, string, DisplaySymbolFormatterDataContext>(
         (symbol, dataContext) => {
             const { bitcoinAmountUnit } = config;
             const { areAmountUnitsEnabled = true } = dataContext;
 
-            const { features: networkFeatures, testnet: isTestnet } = getNetwork(symbol);
+            const { features: networkFeatures, testnet: isTestnet } = deps.getNetworkConfig(symbol);
             const areAmountUnitsSupported = !!networkFeatures?.includes('amount-unit');
-            let formattedSymbol: FormattedNetworkDisplaySymbol = getNetworkDisplaySymbol(symbol);
+            let formattedSymbol: FormattedNetworkDisplaySymbol = getNetworkDisplaySymbol(
+                deps,
+                symbol,
+            );
 
             // convert to different units if needed
             if (areAmountUnitsEnabled && areAmountUnitsSupported) {

@@ -58,7 +58,7 @@ describe('sendDexTransactionThunk', () => {
 
     const getMocks = (initialExchangeState?: Partial<TradingExchangeState>) => {
         const store = configureMockStore({
-            extra: {},
+            extra: extraDependenciesCommonMock,
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,

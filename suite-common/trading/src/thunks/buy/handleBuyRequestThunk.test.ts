@@ -2,7 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { toNetwork } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 
 import { ALTERNATIVE_QUOTES } from '../../__fixtures__/buyUtils';
 import {
@@ -22,7 +23,6 @@ import { MIN_MAX_QUOTES_OK } from '../../utils/buy/__fixtures__/buyUtils';
 
 import { buyThunks } from './index';
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
-const btcSymbol = toNetworkSymbolNonTestnet('btc');
 const createMockQuotes = () =>
     [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES].map(quote => ({ ...quote }));
 
@@ -41,7 +41,7 @@ describe('handleBuyRequestThunk', () => {
         coinsOverride?: NonNullable<typeof initialState.info.coins>,
     ) => {
         const store = configureMockStore({
-            extra: {},
+            extra: extraDependenciesCommonMock,
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -87,13 +87,13 @@ describe('handleBuyRequestThunk', () => {
                 id: 'bitcoin' as CryptoId,
                 isNativeToken: true,
                 name: 'Bitcoin',
-                symbol: btcSymbol,
+                symbol: 'btc',
                 coingeckoId: 'bitcoin',
                 displaySymbol: 'BTC',
                 displaySymbolName: 'Bitcoin',
                 contractAddress: null,
                 networkName: 'Bitcoin',
-                networkSymbol: btcSymbol,
+                networkSymbol: 'btc',
             } satisfies TradingAssetOption,
             countrySelect: {
                 value: 'CZ',
@@ -112,7 +112,7 @@ describe('handleBuyRequestThunk', () => {
         };
         const input: HandleBuyRequestThunkProps = {
             formValues,
-            network: getNetwork(btcSymbol),
+            network: toNetwork('btc', mockNetworkConfigDeps.getNetworkConfig('btc')),
             shouldSendInSats: false,
         };
 
