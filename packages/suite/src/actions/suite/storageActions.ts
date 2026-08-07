@@ -432,6 +432,13 @@ export const saveDiscreetMode = () => async (_dispatch: Dispatch, getState: GetS
     await db.addItem('discreetMode', getState().discreetMode, 'discreetMode', true);
 };
 
+export const saveReleaseNotes = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
+    const { releases, fetchedAt, generatedAt } = getState().releaseNotes;
+
+    await db.addItem('releaseNotes', { releases, fetchedAt, generatedAt }, 'releaseNotes', true);
+};
+
 export const saveBackend =
     (symbol: NetworkSymbol) => async (_dispatch: Dispatch, getState: GetState) => {
         if (!db.isAccessible()) return;

@@ -30,4 +30,5 @@ export const {
     getJWSPublicKey,
 } = envUtils;
 
+export { publicKey } from './jws';
 export { resolveStaticPath, resolveConnectPath } from './resolveStaticPath';

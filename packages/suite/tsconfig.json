@@ -91,6 +91,9 @@
         {
             "path": "../../suite-common/redux-utils"
         },
+        {
+            "path": "../../suite-common/release-notes"
+        },
         { "path": "../../suite-common/sentry" },
         { "path": "../../suite-common/staking" },
         {

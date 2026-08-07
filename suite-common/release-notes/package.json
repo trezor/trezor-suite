@@ -1,0 +1,28 @@
+{
+    "name": "@suite-common/release-notes",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "generate-manifests": "yarn tsx ./scripts/generate-manifests.ts",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "sign-manifests": "yarn tsx ./scripts/sign-manifests.ts",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "jws": "^4.0.1",
+        "@trezor/utils": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/test-utils": "workspace:*",
+        "tsx": "^4.21.0"
+    }
+}
