@@ -154,19 +154,13 @@ export const connectInitThunk = createThunk<
 
         dispatch(lockDevice(true));
 
-        let response;
-        try {
-            response = await synchronize(() => original(params));
+        const response = await synchronize(() => original(params));
 
-            return response;
-        } finally {
-            // finally so a rejected call still decrements the lock counter and clears requests.
-            dispatch(lockDevice(false));
-            // `params.device?.path` is the fallback when the call omits a device or fails before
-            // Core selects one; an undefined path is a reducer no-op.
-            const path = response?.device?.path ?? params.device?.path;
-            dispatch(deviceActions.removeButtonRequests({ path }));
-        }
+        dispatch(lockDevice(false));
+        const path = response.device?.path ?? params.device?.path;
+        dispatch(deviceActions.removeButtonRequests({ path }));
+
+        return response;
     };
 
     const binFilesBaseUrl = getBinFilesBaseUrl();

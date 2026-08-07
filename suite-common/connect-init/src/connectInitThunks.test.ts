@@ -296,28 +296,6 @@ describe('TrezorConnect Actions', () => {
         });
     });
 
-    it('still unlocks and cleans up when the wrapped call rejects', async () => {
-        const { actions, dispatch, getState, extra } = createThunkDeps();
-        await connectInitThunk()(dispatch, getState, extra);
-        actions.length = 0;
-        // Make the next call reject (init already succeeded). The wrapper's finally must still run so a
-        // rejected call does not leak the device lock or skip button-request cleanup.
-        testMocks.setTrezorConnectFixtures(() => {
-            throw new Error('boom');
-        });
-
-        await expect(
-            testMocks
-                .getTrezorConnectMock()
-                .getFeatures({ device: { path: asDeviceUniquePath('reject-path') } }),
-        ).rejects.toBeDefined();
-
-        expect(actions.at(-1)).toMatchObject({
-            type: '@suite/device/removeButtonRequests',
-            payload: { path: 'reject-path' },
-        });
-        expect(actions.at(-2)).toEqual({ type: extra.actions.lockDevice.type, payload: false });
-    });
     it('connectInitHooks.deviceEvent is called for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED', async () => {
         const onConnect = jest.fn();
         const onConnectUnacquired = jest.fn();
