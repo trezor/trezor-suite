@@ -34,7 +34,7 @@ export interface ComposeAllowanceTransactionThunkParams {
 export const composeAllowanceTransactionThunk = createThunk<
     PrecomposedLevels,
     ComposeAllowanceTransactionThunkParams,
-    { rejectValue: ComposeFeeLevelsError }
+    { rejectValue: ComposeFeeLevelsError; state: void }
 >(
     `${ALLOWANCE_MODULE_PREFIX}/composeAllowanceTransactionThunk`,
     async ({ feeInfo, account, contract, selectedFee, customFee, data }, { rejectWithValue }) => {
