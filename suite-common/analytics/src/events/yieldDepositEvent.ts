@@ -9,6 +9,7 @@ type Attributes = {
         | 'approve'
         | 'approve-modal'
         | 'approve-success'
+        | 'approve-skipped'
         | 'revoke'
         | 'revoke-modal'
         | 'revoke-success'
@@ -46,6 +47,8 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
             changelog: [{ version: '26.5.0', notes: 'added' }],
         },
         type: {
+            description:
+                '`approve-skipped` = user explicitly skipped the approval step because an existing allowance already covers the deposit — distinct from `type=approve` `action=cancel` (cancelled before submitting the allowance transaction) and `type=approve-modal` `action=cancel` (declined the allowance simulation modal)',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -53,6 +56,7 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
                     notes: 'added `approve-success`, `revoke-success`, `leftPending`, `tx-simulation-modal`, `firmware-upgrade-needed-modal` values',
                 },
                 { version: '26.8.0', notes: 'added `wrap` and `wrap-success` values' },
+                { version: '26.8.1', notes: 'added `approve-skipped` value (mobile)' },
             ],
         },
         networkSymbol: {
