@@ -1,5 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { deviceInitialState } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import {
@@ -54,7 +55,9 @@ describe('getPurchaseAddress thunk', () => {
         configureMockStore({
             extra: extraDependenciesCommonMock,
             reducer: combineReducers({
+                device: () => deviceInitialState,
                 wallet: combineReducers({
+                    accounts: () => accounts,
                     settings: walletSettingsReducer,
                     trading: tradingReducer,
                 }),
@@ -117,7 +120,9 @@ describe('getPurchaseAddress thunk', () => {
             const storeWithNonChunked = configureMockStore({
                 extra: extraDependenciesCommonMock,
                 reducer: combineReducers({
+                    device: () => deviceInitialState,
                     wallet: combineReducers({
+                        accounts: () => accounts,
                         settings: walletSettingsReducer,
                         trading: tradingReducer,
                     }),

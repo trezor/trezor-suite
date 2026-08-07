@@ -12,9 +12,13 @@ export type SetLastErrorMessageByTradingTypeProps = {
     errorMessage: string | undefined;
 };
 
-export const setLastErrorMessageByTradingType = createThunk(
+export const setLastErrorMessageByTradingType = createThunk<
+    void,
+    SetLastErrorMessageByTradingTypeProps,
+    void
+>(
     `${TRADING_THUNK_PREFIX}/setLastErrorMessageByTradingType`,
-    ({ tradingType, errorMessage }: SetLastErrorMessageByTradingTypeProps, { dispatch }) => {
+    ({ tradingType, errorMessage }, { dispatch }) => {
         switch (tradingType) {
             case 'buy':
                 dispatch(tradingBuyActions.setLastErrorMessage(errorMessage));

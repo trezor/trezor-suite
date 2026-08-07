@@ -1,14 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { selectSelectedDevice } from '@suite-common/device';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { deviceInitialState, selectSelectedDevice } from '@suite-common/device';
+import { configureMockStore } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { getNonce } from './getNonce';
-import { initialState } from '../../reducers/tradingCommonReducer';
-import { prepareTradingReducer } from '../../reducers/tradingReducer';
-
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
@@ -37,22 +33,12 @@ describe('getNonce thunk', () => {
         jest.clearAllMocks();
     });
 
-    const createMockStore = (preloadedState = {}) =>
+    const createMockStore = () =>
         configureMockStore({
-            extra: extraDependenciesCommonMock,
+            extra: {},
             reducer: combineReducers({
-                wallet: combineReducers({
-                    trading: tradingReducer,
-                }),
+                device: () => deviceInitialState,
             }),
-            preloadedState: {
-                wallet: {
-                    trading: {
-                        ...initialState,
-                        ...preloadedState,
-                    },
-                },
-            },
         });
 
     describe('successful nonce retrieval', () => {

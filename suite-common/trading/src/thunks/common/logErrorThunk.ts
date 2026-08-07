@@ -15,9 +15,9 @@ export type LogErrorThunkProps = {
     tradingType: TradingType;
 };
 
-export const logErrorThunk = createThunk(
+export const logErrorThunk = createThunk<void, LogErrorThunkProps, void>(
     `${TRADING_THUNK_PREFIX}/logError`,
-    ({ errorMessage, tradingType, toastType = 'error' }: LogErrorThunkProps, { dispatch }) => {
+    ({ errorMessage, tradingType, toastType = 'error' }, { dispatch }) => {
         if (isResolvedTradeError(errorMessage)) {
             dispatch(
                 notificationsActions.addToast({

@@ -6,7 +6,11 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
+import {
+    blockchainInitialState,
+    composeSendFormTransactionFeeLevelsThunk,
+    initialWalletSettingsState,
+} from '@suite-common/wallet-core';
 import { type Account, type FeesState } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 
@@ -133,8 +137,11 @@ describe('recomposeAndSignTxThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    trading: tradingReducer,
+                    accounts: () => [account],
+                    blockchain: () => blockchainInitialState,
                     fees: mockedSuiteReducer,
+                    settings: () => initialWalletSettingsState,
+                    trading: tradingReducer,
                 }),
                 device: deviceReducer,
             }),

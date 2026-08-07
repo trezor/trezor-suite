@@ -292,7 +292,7 @@ type ConfirmAddressOnDeviceThunk = {
     chunkify: boolean;
     showOnTrezor?: boolean;
 };
-type ConfirmAddressOnDeviceThunkState = AccountsRootState & DeviceRootState;
+export type ConfirmAddressOnDeviceThunkState = AccountsRootState & DeviceRootState;
 
 export const confirmAddressOnDeviceThunk = createThunk<
     ConnectResponse<Address | CardanoAddress>,

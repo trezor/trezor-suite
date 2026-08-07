@@ -151,6 +151,7 @@ export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange' | 'sell
 const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
 const createMemoizedSelectorWithAccounts =
     createWeakMapSelector.withTypes<TradingRootStateWithAccounts>();
+const createMemoizedDeviceSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 const createMemoizedSelectorWithDeviceAndAccounts =
     createWeakMapSelector.withTypes<TradingRootStateWithDeviceAndAccounts>();
 const createMemoizedFormAccountSelector =
@@ -786,18 +787,21 @@ export const selectIsTradingNetworkFeeMissing = (
 };
 
 export const selectTradingAccountAccordingActiveSection: (
-    state: TradingRootStateWithDeviceAndAccounts,
+    state: TradingRootStateWithAccounts,
     activeSection: TradingType,
     selectedAccount: SelectedAccountStatus,
-) => Account | undefined = createMemoizedSelectorWithDeviceAndAccounts(
+) => Account | undefined = createMemoizedSelectorWithAccounts(
     [
         selectTradingExchange,
         selectTradingSell,
         selectTradingBuy,
         ({ wallet }) => wallet.accounts,
-        (_: TradingRootState, activeSection: TradingType) => activeSection,
-        (_: TradingRootState, __: TradingType, selectedAccount: SelectedAccountStatus) =>
-            selectedAccount,
+        (_: TradingRootStateWithAccounts, activeSection: TradingType) => activeSection,
+        (
+            _: TradingRootStateWithAccounts,
+            __: TradingType,
+            selectedAccount: SelectedAccountStatus,
+        ) => selectedAccount,
     ],
     (tradingExchange, tradingSell, tradingBuy, accounts, activeSection, selectedAccount) => {
         const tradingSectionMap = {
@@ -1154,12 +1158,12 @@ export const selectTradingBuyTransactionId = (state: TradingRootState) =>
 export const selectTradingVerifiedAddress = (state: TradingRootState) =>
     state.wallet.trading.verifiedAddress;
 
-export const selectTradingIsSlip24Allowed = createMemoizedSelectorWithDeviceAndAccounts(
+export const selectTradingIsSlip24Allowed = createMemoizedDeviceSelector(
     [
         state => selectDeviceUnavailableCapabilities(state),
         state => selectDeviceFirmwareVersion(state),
-        (_: TradingRootState, account: Account | undefined | null) => account,
-        (_: TradingRootState, __: Account | undefined | null, isSlip24Active: boolean) =>
+        (_: DeviceRootState, account: Account | undefined | null) => account,
+        (_: DeviceRootState, __: Account | undefined | null, isSlip24Active: boolean) =>
             isSlip24Active,
     ],
     (unavailableCapabilities, firmwareVersion, account, isSlip24Active) => {

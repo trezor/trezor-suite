@@ -1,10 +1,16 @@
 import { isRejected } from '@reduxjs/toolkit';
 
-import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    isApprovalFlowSupported,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
+    type ComposeSendFormTransactionFeeLevelsThunkState,
+    type FeesRootState,
     composeSendFormTransactionFeeLevelsThunk,
     selectConvertedNetworkFeeInfo,
 } from '@suite-common/wallet-core';
@@ -22,8 +28,12 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { createPaymentRequestsThunk } from './createPaymentRequestsThunk';
+import {
+    type CreatePaymentRequestsThunkState,
+    createPaymentRequestsThunk,
+} from './createPaymentRequestsThunk';
 import { TRADING_THUNK_PREFIX } from '../../constants';
+import { type TradingRootState } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingComposedTransactionInfo,
     selectTradingIsSlip24Allowed,
@@ -68,11 +78,18 @@ export type RecomposeAndSignTxThunkProps = {
  * 3. Signs the transaction and pushes it to the blockchain.
  * 4. Handles errors gracefully and provides detailed error messages.
  */
+export type RecomposeAndSignTxThunkState = ComposeSendFormTransactionFeeLevelsThunkState &
+    CreatePaymentRequestsThunkState &
+    DeviceRootState &
+    FeesRootState &
+    TradingRootState;
+
 export const recomposeAndSignTxThunk = createThunk<
     TradingFulfillValue,
     RecomposeAndSignTxThunkProps,
     {
         rejectValue: TradingSendRejectedProps;
+        state: RecomposeAndSignTxThunkState;
     }
 >(
     `${TRADING_THUNK_PREFIX}/recomposeAndSignTx`,
@@ -89,7 +106,7 @@ export const recomposeAndSignTxThunk = createThunk<
             isSlip24Active = false,
             tradingFormState,
             signAndPushSendFormTransaction,
-        }: RecomposeAndSignTxThunkProps,
+        },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
         const { composed, selectedFee } = selectTradingComposedTransactionInfo(getState());
