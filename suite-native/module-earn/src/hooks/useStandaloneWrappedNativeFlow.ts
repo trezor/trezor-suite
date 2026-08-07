@@ -25,6 +25,7 @@ type UseStandaloneWrappedNativeFlowParams = {
     accountKey: AccountKey;
     amountValue: string | undefined;
     flowType: WrappedNativeFlowType;
+    isDisabled: boolean;
     pendingParam: WrappedNativeTokenPendingTxParams | undefined;
     preparedAction: PreparedWrappedNativeTokenAction | null;
 };
@@ -39,6 +40,7 @@ export const useStandaloneWrappedNativeFlow = ({
     accountKey,
     amountValue,
     flowType,
+    isDisabled,
     pendingParam,
     preparedAction,
 }: UseStandaloneWrappedNativeFlowParams) => {
@@ -106,6 +108,7 @@ export const useStandaloneWrappedNativeFlow = ({
 
     const simulation = useWrappedNativeTxSimulation({
         amountValue,
+        isDisabled,
         onConfirm: handleSimulationConfirmed,
         onSubmit: handleFlowRetry,
         preparedAction,

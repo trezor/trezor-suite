@@ -85,6 +85,15 @@ describe('Message system types', () => {
             });
         });
 
+        describe('getWrappedNative', () => {
+            it.each([
+                ['wrap', 'earn.wrappedNative.wrap'],
+                ['unwrap', 'earn.wrappedNative.unwrap'],
+            ] as const)('getWrappedNative(%s) → %s', (type, expected) => {
+                expect(Context.getWrappedNative(type)).toBe(expected);
+            });
+        });
+
         describe('getSettings', () => {
             it.each([
                 ['general', 'settings.general'],

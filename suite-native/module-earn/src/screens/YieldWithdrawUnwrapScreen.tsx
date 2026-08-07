@@ -261,6 +261,7 @@ export const YieldWithdrawUnwrapScreen = () => {
 
     const simulation = useWrappedNativeTxSimulation({
         amountValue,
+        isDisabled: isUnwrapDisabled,
         onConfirm: handleSimulationConfirmed,
         onSubmit: handleSubmitAnalytics,
         preparedAction: unwrapFee.preparedAction,

@@ -158,6 +158,9 @@ const getEarnDashboardContext = (type: EarnDashboardType) => `earn.dashboard.${t
 
 const getEarnYieldContext = (type: YieldFlowType) => `earn.yield.${type}` as const;
 
+const getWrappedNativeContext = (type: WrappedNativeFlowType) =>
+    `earn.wrappedNative.${type}` as const;
+
 export type SettingsCategory = 'general' | 'device' | 'networks' | 'debug';
 const getSettingsContext = (category: SettingsCategory) => `settings.${category}` as const;
 
@@ -179,6 +182,7 @@ const getLegalContext = (key: LegalContextKey) => `legal.${key}` as const;
  * - `getEarnDashboard('yield')` → 'earn.dashboard.yield'
  * - `getEarnYield('deposit')` → 'earn.yield.deposit'
  * - `getEarnYield('claim')` → 'earn.yield.claim'
+ * - `getWrappedNative('wrap')` → 'earn.wrappedNative.wrap'
  * - `getSettings('device')` → 'settings.device'
 
  */
@@ -189,6 +193,7 @@ export const Context = {
     getTrading: getTradingContext,
     getEarnDashboard: getEarnDashboardContext,
     getEarnYield: getEarnYieldContext,
+    getWrappedNative: getWrappedNativeContext,
     getSettings: getSettingsContext,
     getLegal: getLegalContext,
 } as const;
