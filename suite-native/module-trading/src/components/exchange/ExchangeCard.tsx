@@ -1,11 +1,13 @@
 import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
 
 import { ExchangeReceiveContent } from './receive/ExchangeReceiveContent';
 import { ExchangeSendAmountBadge } from './send/ExchangeSendAmountBadge';
 import { ExchangeSendContent } from './send/ExchangeSendContent';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
+import { useConvertFormValueToBaseUnit } from '../../hooks/general/useConvertFormValueToBaseUnit';
 import { TradingCard } from '../general/TradingCard';
 import { TradingCardSection } from '../general/TradingCardSection';
 
@@ -21,6 +23,11 @@ export const ExchangeCard = ({ isAmountInputActive }: ExchangeCardProps) => {
         name: ['receiveAsset', 'receiveCryptoAmount'],
         control,
     });
+    const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
+    const receiveSymbol = getSymbolFromTradeableAsset(receiveAsset);
+    const receiveCryptoAmountInBaseUnit = receiveSymbol
+        ? convertStrToBaseUnit(receiveCryptoAmount, receiveSymbol)
+        : receiveCryptoAmount;
 
     return (
         <TradingCard isAmountInputActive={isAmountInputActive}>
@@ -39,7 +46,7 @@ export const ExchangeCard = ({ isAmountInputActive }: ExchangeCardProps) => {
                 titleAction={
                     <CryptoToFiatValueBadge
                         cryptoId={receiveAsset?.cryptoId}
-                        amount={receiveCryptoAmount}
+                        amount={receiveCryptoAmountInBaseUnit}
                     />
                 }
             >
