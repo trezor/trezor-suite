@@ -76,8 +76,11 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
         },
         wrappedNative: {
             description:
-                'Whether the withdrawn vault token is the wrapped-native token of the network (e.g. WETH on Ethereum), meaning the withdraw involves a native unwrap step. Reported on `type=withdraw` (submit) and `type=success` (confirmed). Desktop only for now.',
-            changelog: [{ version: '26.8.0', notes: 'added' }],
+                'Whether the withdrawn vault token is the wrapped-native token of the network (e.g. WETH on Ethereum), meaning the withdraw involves a native unwrap step. Reported on `type=withdraw` (submit) and `type=success` (confirmed).',
+            changelog: [
+                { version: '26.8.0', notes: 'added' },
+                { version: '26.8.1', notes: 'reported from mobile as well' },
+            ],
         },
     },
 };

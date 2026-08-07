@@ -27,8 +27,11 @@ export const wrappedNativeFlowAttributes = {
     },
     type: {
         description:
-            '`submit` = user confirmed the wrap/unwrap form, `tx-simulation-modal` = simulation modal shown (with `action` continue/cancel), `sent` = transaction signed &amp; broadcast accepted — emitted with `action=continue` when the "transaction sent" toast is shown and again with `action=close` if the user dismisses that toast (letting it auto-close is not reported), `success` / `error` / `leftPending` = on-chain resolution of the broadcast transaction',
-        changelog: [{ version: '26.8.0', notes: 'added' }],
+            '`submit` = user confirmed the wrap/unwrap form, `tx-simulation-modal` = simulation modal shown (with `action` continue/cancel), `sent` = transaction signed &amp; broadcast accepted — emitted with `action=continue` when the "transaction sent" toast is shown and again with `action=close` if the user dismisses that toast (letting it auto-close is not reported), `success` / `error` / `leftPending` = on-chain resolution of the broadcast transaction. Mobile shows a pending-transaction sheet instead of a toast and only reports `sent` with `action=continue`.',
+        changelog: [
+            { version: '26.8.0', notes: 'added' },
+            { version: '26.8.1', notes: 'reported from mobile as well' },
+        ],
     },
     networkSymbol: {
         changelog: [{ version: '26.8.0', notes: 'added' }],
@@ -45,7 +48,10 @@ export const wrappedNativeFlowAttributes = {
     },
     errorMessage: {
         description:
-            'Classified failure reason. On compose failure, the specific compose reason (e.g. `unsupported-network`, `not-wrapped-native`, `missing-chain-id`, `missing-fee-level`, `fee-estimation-failed`). On submit failure, `submit-failed` (signing/review cancelled or failed) or `push-failed` (broadcast rejected by backend). On on-chain revert, `on-chain-failure`.',
-        changelog: [{ version: '26.8.0', notes: 'added' }],
+            'Classified failure reason. On compose failure, the specific compose reason (e.g. `unsupported-network`, `not-wrapped-native`, `missing-chain-id`, `missing-fee-level`, `fee-estimation-failed`). On submit failure, `submit-failed` (signing/review cancelled or failed) or `push-failed` (broadcast rejected by backend). On on-chain revert, `on-chain-failure`. Mobile reports only `submit-failed`, `push-failed` and `on-chain-failure` — the form composes continuously in the background, so compose failures are not surfaced as an event.',
+        changelog: [
+            { version: '26.8.0', notes: 'added' },
+            { version: '26.8.1', notes: 'reported from mobile as well' },
+        ],
     },
 } satisfies WrappedNativeFlowAttributes;
