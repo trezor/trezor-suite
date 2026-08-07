@@ -30,7 +30,7 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
         return (
             <BannerFull
                 testID="@staking/cardano-not-earning-banner"
-                intent="info"
+                intent="warning"
                 title={
                     <Translation id="earn.stakingManagementScreen.cardanoNotEarningBanner.title" />
                 }

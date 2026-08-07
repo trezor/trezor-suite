@@ -2,31 +2,24 @@ import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { type AccountsRootState } from '@suite-common/wallet-core';
-import { BannerInline } from '@suite-native/atoms';
+import { BannerFull } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useOpenLink } from '@suite-native/link';
 import { selectFirstCardanoAccountStakedWithFiveBinaries } from '@suite-native/staking';
-import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
 export const FiveBinariesHomeBanner = () => {
-    const openLink = useOpenLink();
-
     const account = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectFirstCardanoAccountStakedWithFiveBinaries(state),
     );
 
     if (!account) return null;
 
-    const handleButtonPress = () => {
-        openLink(`${HELP_CENTER_ADA_STAKING}#migrating-staking-pools`);
-    };
-
     return (
-        <BannerInline
+        <BannerFull
             intent="warning"
-            title={<Translation id="earn.infoBanner.rewardsReduced" />}
-            buttonLabel={<Translation id="generic.buttons.learnMore" />}
-            onButtonPress={handleButtonPress}
+            title={<Translation id="earn.stakingManagementScreen.cardanoNotEarningBanner.title" />}
+            description={
+                <Translation id="earn.stakingManagementScreen.cardanoNotEarningBanner.description" />
+            }
         />
     );
 };

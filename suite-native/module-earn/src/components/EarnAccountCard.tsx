@@ -8,6 +8,7 @@ import {
 } from '@suite-common/earn-staking-api';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { isApyAvailable, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import { ZeroApyBadge } from '@suite-native/accounts';
 import { Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
@@ -16,11 +17,13 @@ import {
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
     selectIsCardanoStakedOutsideEverstake,
+    selectIsCardanoStakedWithFiveBinaries,
     selectTronAvailableVotingPowerByAccountKey,
     selectTronVotesByAccountKey,
     useSelector as useStakingSelector,
 } from '@suite-native/staking';
 
+import { ApyValue } from './ApyValue';
 import { EarnAccountCardLayout } from './EarnAccountCardLayout';
 import { EarnClaimAlert } from './EarnClaimAlert';
 import { EarnTronVotingAlert } from './EarnTronVotingAlert';
@@ -75,6 +78,10 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
         selectIsCardanoStakedOutsideEverstake(state, item.accountKey),
     );
 
+    const isStakedWithFiveBinaries = useStakingSelector(state =>
+        selectIsCardanoStakedWithFiveBinaries(state, item.accountKey),
+    );
+
     const canClaim = useStakingSelector(state =>
         isSupportedStaking ? selectCanClaimByAccountKey(state, item.accountKey) : false,
     );
@@ -92,6 +99,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
         isStakingItem && item.symbol === 'trx' && availableTronVotingPower !== '0';
 
     const contractAddress = isDefiYieldItem ? item.tokenContractAddress : undefined;
+
     const secondaryDescription = isDefiYieldItem
         ? item.accountLabel || getNetworkDisplaySymbolName(item.networkSymbol)
         : null;
@@ -118,10 +126,13 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
             }
             value={<Text variant="body-md">{formatEarnActiveItemBalance({ item, locale })}</Text>}
             valueDescription={
-                (isAdaStakedOutsideEverstake || apyValue != null) && (
+                (isAdaStakedOutsideEverstake || apyValue != null) &&
+                (isStakedWithFiveBinaries ? (
+                    <ZeroApyBadge />
+                ) : (
                     <Text variant="body-sm" color="contentSecondary">
                         {isAdaStakedOutsideEverstake || !isApyAvailable(apyValue) ? (
-                            <Translation id="earn.notAvailableShort" />
+                            <ApyValue apy={null} withLabel />
                         ) : (
                             <>
                                 {item.type === 'staking' ? (
@@ -142,7 +153,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                             </>
                         )}
                     </Text>
-                )
+                ))
             }
             alerts={
                 <>

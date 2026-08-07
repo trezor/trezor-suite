@@ -13,11 +13,16 @@ import {
 } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { type NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
+import {
+    type NativeStakingRootState,
+    selectAccountHasStaking,
+    selectIsCardanoStakedWithFiveBinaries,
+} from '@suite-native/staking';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 import { StakingBadge } from './StakingBadge';
+import { ZeroApyBadge } from './ZeroApyBadge';
 import {
     type NativeAccountsRootState,
     selectAccountFiatBalance,
@@ -73,6 +78,10 @@ const AccountsListItemComponent = ({
         selectAccountHasStaking(state, account.key),
     );
 
+    const isStakedWithFiveBinaries = useSelector((state: AccountsRootState) =>
+        selectIsCardanoStakedWithFiveBinaries(state, account.key),
+    );
+
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
         selectAccountFiatBalance(state, account.key, accountHasStaking),
     );
@@ -88,6 +97,7 @@ const AccountsListItemComponent = ({
     const shouldShowAccountLabel = !isNetworkSupportingTokens || !isNativeCoinOnly;
     const shouldShowTokenBadge = accountHasKnownTokensWithBalance && !isNativeCoinOnly;
     const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
+    const shouldShowZeroApyBadge = isStakedWithFiveBinaries && !isNativeCoinOnly;
     const fiatBalanceValue =
         shouldShowTokenBadge && fiatBalance !== undefined ? (
             <BaseCurrencyAmountFormatter
@@ -127,8 +137,12 @@ const AccountsListItemComponent = ({
             }
             badges={
                 <>
-                    {shouldShowStakingBadge && (
-                        <StakingBadge networkSymbol={account.symbol} account={account} />
+                    {shouldShowZeroApyBadge ? (
+                        <ZeroApyBadge />
+                    ) : (
+                        shouldShowStakingBadge && (
+                            <StakingBadge networkSymbol={account.symbol} account={account} />
+                        )
                     )}
                     {shouldShowTokenBadge && <TokenBadge accountKey={account.key} />}
                     {badges}
