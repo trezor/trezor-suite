@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { WRAPPED_NATIVE, getNetwork } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { Box, Button, FullAlertBox, VStack } from '@suite-native/atoms';
@@ -14,6 +14,7 @@ import {
     type WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { WrappedNativeTokenScreenHeader } from '../components/WrappedNativeTokenScreenHeader';
 import { YieldDepositAmountInputCard } from '../components/YieldDepositAmountInputCard';
@@ -40,7 +41,7 @@ export const UnwrapNativeTokenScreen = () => {
         selectAccountByKey(state, accountKey),
     );
 
-    const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
+    const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
     const wrappedBalance =
         account && wrappedNative
             ? (getAccountTokenByContract(account, wrappedNative.address)?.balance ?? '0')

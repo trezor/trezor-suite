@@ -6,7 +6,6 @@ import {
     getContractAddressForNetworkSymbol,
     getErc4626Contracts,
     isTokenTransferMatchesSearch,
-    isWrappedNativeToken,
     sortTokensByName,
 } from './tokenUtils';
 
@@ -44,30 +43,6 @@ describe('getContractAddressForNetworkSymbol', () => {
             });
         },
     );
-});
-
-describe('isWrappedNativeToken', () => {
-    const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
-
-    it('matches the wrapped native token regardless of case', () => {
-        expect(isWrappedNativeToken('eth', WETH)).toBe(true);
-        expect(isWrappedNativeToken('eth', WETH.toLowerCase())).toBe(true);
-    });
-
-    it('does not match a different token', () => {
-        expect(isWrappedNativeToken('eth', '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')).toBe(
-            false,
-        );
-    });
-
-    it('does not match on a network without a wrapped native token', () => {
-        expect(isWrappedNativeToken('btc', WETH)).toBe(false);
-    });
-
-    it('returns false for a missing address', () => {
-        expect(isWrappedNativeToken('eth', null)).toBe(false);
-        expect(isWrappedNativeToken('eth', undefined)).toBe(false);
-    });
 });
 
 describe('getAssetLogoContractAddresses', () => {

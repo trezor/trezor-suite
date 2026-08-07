@@ -23,6 +23,7 @@
         "@suite-native/theme": "workspace:*",
         "@trezor/asset-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",

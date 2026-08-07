@@ -11,10 +11,8 @@ import {
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    getContractAddressForNetworkSymbol,
-    isWrappedNativeToken,
-} from '@suite-common/wallet-utils';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { MORPHO_DISCLAIMER_URL, TREZOR_SUITE_TOS_URL } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';

@@ -2,11 +2,8 @@ import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { WETH_DEPOSIT_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    getAccountIdentity,
-    getConvertedOrDefaultFeeInfo,
-    isWrappedNativeToken,
-} from '@suite-common/wallet-utils';
+import { getAccountIdentity, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
 import { estimateYieldFeeLevel } from './stablecoinYieldFeeEstimation';
