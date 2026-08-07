@@ -5,6 +5,7 @@ import {
     type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
     type YieldPositionFlowType,
+    isStablecoinYieldSupported,
     isYieldTxReviewForFlow,
     selectAddressDisplayType,
     selectStablecoinYieldSession,
@@ -70,6 +71,13 @@ export const signYieldActionReviewThunk = createThunk<
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Fee information is missing for the transaction.',
+            });
+        }
+
+        if (!isStablecoinYieldSupported(device, { flowType, vaultToken: flowData.token })) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Firmware does not support this yield action.',
             });
         }
 

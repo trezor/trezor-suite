@@ -1,9 +1,12 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { selectSelectedDevice } from '@suite-common/device';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
 import {
     type StablecoinYieldRootState,
     type YieldFlowResolvedData,
+    type YieldFlowToken,
     type YieldPositionFlowType,
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
@@ -20,17 +23,24 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { pushYieldActionReviewThunk } from './yieldTransactionThunks';
+import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from './yieldTransactionThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
     ...jest.requireActual('@trezor/connect'),
     default: {
+        ethereumSignTransaction: jest.fn(),
         pushTransaction: jest.fn().mockResolvedValue({
             success: true,
             payload: { txid: '0xpushedtxid' },
         }),
     },
+}));
+
+jest.mock('@suite-common/device', () => ({
+    __esModule: true,
+    ...jest.requireActual('@suite-common/device'),
+    selectSelectedDevice: jest.fn(),
 }));
 
 jest.mock('@suite-common/wallet-core', () => ({
@@ -67,8 +77,16 @@ const buildAccount = (descriptor: string) => {
 const account = buildAccount('0xfffffffffffffffffffffffffffffffffffffffe');
 const otherAccount = buildAccount('0xfffffffffffffffffffffffffffffffffffffffd');
 
-const buildFlowData = (flowAccount: Account) =>
-    ({ account: flowAccount }) as unknown as YieldFlowResolvedData;
+const wethVaultToken = {
+    networkSymbol: account.symbol,
+    symbol: 'weth',
+    decimals: 18,
+    contractAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    balance: '1',
+} satisfies YieldFlowToken;
+
+const buildFlowData = (flowAccount: Account, token?: YieldFlowToken) =>
+    ({ account: flowAccount, token }) as unknown as YieldFlowResolvedData;
 
 const precomposedForm = {
     outputs: [],
@@ -95,7 +113,9 @@ const precomposedTransaction = {
 } satisfies PrecomposedTransactionFinal;
 
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
+const ethereumSignTransactionMock = TrezorConnect.ethereumSignTransaction as jest.Mock;
 const synchronizeSentTransactionThunkMock = synchronizeSentTransactionThunk as unknown as jest.Mock;
+const selectSelectedDeviceMock = selectSelectedDevice as jest.Mock;
 
 const buildStore = () =>
     configureMockStore({
@@ -271,5 +291,35 @@ describe('pushYieldActionReviewThunk', () => {
             error: { error: 'push-transaction-failed', message: 'Transaction not found.' },
         });
         expect(pushTransactionMock).not.toHaveBeenCalled();
+    });
+});
+
+describe('signYieldActionReviewThunk', () => {
+    beforeEach(() => {
+        ethereumSignTransactionMock.mockClear();
+        selectSelectedDeviceMock.mockReset();
+    });
+
+    it('rejects a wrapped-native vault deposit on firmware below 2.12.4 without signing on the device', async () => {
+        const store = buildStore();
+        prepareActionReview({ store, flowType: 'deposit', flowKey: FLOW_KEY });
+        selectSelectedDeviceMock.mockReturnValue(
+            mockSuiteDevice({}, { major_version: 2, minor_version: 12, patch_version: 3 }),
+        );
+
+        const action = await store.dispatch(
+            signYieldActionReviewThunk({
+                flowData: buildFlowData(account, wethVaultToken),
+                flowKey: FLOW_KEY,
+                flowType: 'deposit',
+            }) as any,
+        );
+
+        expect(isRejected(action)).toBe(true);
+        expect(action.payload).toMatchObject({
+            error: 'sign-transaction-failed',
+            message: 'Firmware does not support this yield action.',
+        });
+        expect(ethereumSignTransactionMock).not.toHaveBeenCalled();
     });
 });

@@ -81,6 +81,10 @@ describe(navigateByYieldAccountState.name, () => {
                 yieldId: 'ethereum-vault',
             },
         });
+        expect(isFirmwareSupported).toHaveBeenCalledWith('deposit', {
+            networkSymbol: ethSymbol,
+            contractAddress: WETH_ADDRESS,
+        });
     });
 
     it('counts a small native balance as fully depositable (no gas reserve deducted)', () => {

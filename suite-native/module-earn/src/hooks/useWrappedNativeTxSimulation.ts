@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
+import { selectIsWrappedNativeFlowSupported } from '@suite-common/wallet-core';
 import { useBottomSheetModal } from '@suite-native/atoms';
 
 import { type PreparedWrappedNativeTokenAction } from './useWrappedNativeTokenFees';
@@ -16,7 +17,7 @@ type UseWrappedNativeTxSimulationParams = {
 
 /**
  * Steps between entering a wrap/unwrap amount and handing the transaction over to the review:
- * freezing the prepared transaction, the simulation sheet and the device-connected guard. What
+ * freezing the prepared transaction, the simulation sheet and the device guards. What
  * happens after the confirmation is injected, because the standalone and the in-deposit flows
  * store and navigate differently.
  */
@@ -27,6 +28,7 @@ export const useWrappedNativeTxSimulation = ({
     onConfirm,
 }: UseWrappedNativeTxSimulationParams) => {
     const [isDeviceNotConnectedVisible, setIsDeviceNotConnectedVisible] = useState(false);
+    const [isFirmwareOutdatedVisible, setIsFirmwareOutdatedVisible] = useState(false);
     const [preparedTx, setPreparedTx] = useState<PreparedWrappedNativeTokenAction | null>(null);
 
     const {
@@ -36,6 +38,7 @@ export const useWrappedNativeTxSimulation = ({
     } = useBottomSheetModal();
 
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const isFirmwareSupported = useSelector(selectIsWrappedNativeFlowSupported);
 
     const handleSubmit = useCallback(() => {
         if (preparedAction?.amount !== amountValue) {
@@ -54,15 +57,17 @@ export const useWrappedNativeTxSimulation = ({
             return;
         }
 
-        if (!isDeviceConnected) {
-            setIsDeviceNotConnectedVisible(true);
+        const isFirmwareOutdated = isDeviceConnected && !isFirmwareSupported;
 
+        setIsDeviceNotConnectedVisible(!isDeviceConnected);
+        setIsFirmwareOutdatedVisible(isFirmwareOutdated);
+
+        if (!isDeviceConnected || isFirmwareOutdated) {
             return;
         }
 
-        setIsDeviceNotConnectedVisible(false);
         onConfirm(preparedTx);
-    }, [closeSimulationBottomSheet, isDeviceConnected, onConfirm, preparedTx]);
+    }, [closeSimulationBottomSheet, isDeviceConnected, isFirmwareSupported, onConfirm, preparedTx]);
 
     const handleCancelSimulation = useCallback(() => {
         closeSimulationBottomSheet();
@@ -73,6 +78,7 @@ export const useWrappedNativeTxSimulation = ({
         handleConfirmSimulation,
         handleSubmit,
         isDeviceNotConnectedVisible,
+        isFirmwareOutdatedVisible,
         preparedTx,
         simulationBottomSheetRef,
     };

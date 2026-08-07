@@ -9,6 +9,7 @@ export { useStablecoinYieldFirmwareUpdateAlert } from './hooks/useStablecoinYiel
 export { useStakingDetailNavigation } from './hooks/useStakingDetailNavigation';
 export { useStakingNavigateAnalytics } from './hooks/useStakingNavigateAnalytics';
 export { useWorkInProgressAlert } from './hooks/useWorkInProgressAlert';
+export { useWrappedNativeFirmwareUpdateAlert } from './hooks/useWrappedNativeFirmwareUpdateAlert';
 export { EarnStackNavigator } from './navigation/EarnStackNavigator';
 export { WrappedNativeTokenStackNavigator } from './navigation/WrappedNativeTokenStackNavigator';
 export { YieldStackNavigator } from './navigation/YieldStackNavigator';

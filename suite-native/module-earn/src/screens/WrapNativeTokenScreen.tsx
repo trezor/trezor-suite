@@ -152,6 +152,12 @@ export const WrapNativeTokenScreen = () => {
                             }
                         />
                     )}
+                    {flow.isFirmwareOutdatedVisible && (
+                        <FullAlertBox
+                            intent="critical"
+                            title={<Translation id="earn.wrappedNativeToken.firmwareOutdated" />}
+                        />
+                    )}
                     {flow.hasFlowFailed && (
                         <FullAlertBox
                             intent="critical"

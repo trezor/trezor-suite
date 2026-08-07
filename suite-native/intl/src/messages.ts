@@ -2688,6 +2688,9 @@ export const messages = {
         },
         wrappedNativeToken: {
             maxButton: 'Max',
+            featureName: 'wrapping and unwrapping',
+            firmwareOutdated:
+                'Update the firmware on your Trezor to continue with this transaction.',
         },
         wrapNativeToken: {
             entryButton: 'Wrap',
