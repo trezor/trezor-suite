@@ -1,8 +1,16 @@
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { buildClaimTransactionReview } from '@suite-common/earn-stablecoin';
-import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import {
+    type MevProtectionRootState,
+    selectIsMevProtectionFeatureEnabled,
+} from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    type FormDraftRootState,
+    type StablecoinYieldRootState,
+    type SynchronizeSentTransactionThunkDeps,
+    type SynchronizeSentTransactionThunkState,
+    type WalletSettingsRootState,
     formDraftActions,
     isYieldTxReviewForFlow,
     selectAddressDisplayType,
@@ -36,17 +44,16 @@ type YieldClaimSignTransactionError = {
     message?: string;
 };
 
-export const updateYieldClaimSelectedFeeLevelThunk = createThunk(
+export type UpdateYieldClaimSelectedFeeLevelThunkState = FormDraftRootState;
+
+export const updateYieldClaimSelectedFeeLevelThunk = createThunk<
+    void,
+    UpdateSelectedFeeLevelThunkParams,
+    { state: UpdateYieldClaimSelectedFeeLevelThunkState }
+>(
     `${EARN_MODULE_PREFIX}/updateYieldClaimSelectedFeeLevelThunk`,
     (
-        {
-            feeLevelLabel,
-            feePerUnit,
-            feeLimit,
-            formDraftKey,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-        }: UpdateSelectedFeeLevelThunkParams,
+        { feeLevelLabel, feePerUnit, feeLimit, formDraftKey, maxFeePerGas, maxPriorityFeePerGas },
         { dispatch, getState },
     ) => {
         if (!formDraftKey) return;
@@ -78,10 +85,14 @@ export const updateYieldClaimSelectedFeeLevelThunk = createThunk(
     },
 );
 
+export type SignYieldClaimReviewThunkState = DeviceRootState &
+    StablecoinYieldRootState &
+    WalletSettingsRootState;
+
 export const signYieldClaimReviewThunk = createThunk<
     { serializedTx: string },
     SignYieldClaimReviewThunkPayload,
-    { rejectValue: YieldClaimSignTransactionError }
+    { rejectValue: YieldClaimSignTransactionError; state: SignYieldClaimReviewThunkState }
 >(
     `${EARN_MODULE_PREFIX}/signYieldClaimReviewThunk`,
     async ({ account, flowKey }, { dispatch, getState, rejectWithValue }) => {
@@ -176,10 +187,20 @@ export const signYieldClaimReviewThunk = createThunk<
     },
 );
 
+export type PushYieldClaimReviewThunkState = MevProtectionRootState &
+    StablecoinYieldRootState &
+    SynchronizeSentTransactionThunkState &
+    WalletSettingsRootState;
+export type PushYieldClaimReviewThunkDeps = SynchronizeSentTransactionThunkDeps;
+
 export const pushYieldClaimReviewThunk = createThunk<
     { txid: string },
     SignYieldClaimReviewThunkPayload,
-    { rejectValue: YieldPushTransactionError }
+    {
+        rejectValue: YieldPushTransactionError;
+        state: PushYieldClaimReviewThunkState;
+        extra: PushYieldClaimReviewThunkDeps;
+    }
 >(
     `${EARN_MODULE_PREFIX}/pushYieldClaimReviewThunk`,
     async ({ account, flowKey }, { dispatch, getState, rejectWithValue }) => {

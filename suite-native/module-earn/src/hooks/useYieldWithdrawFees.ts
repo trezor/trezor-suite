@@ -110,17 +110,17 @@ const getYieldWithdrawSelectedFeeFields = (
     maxPriorityFeePerGas: selectedFeeTransaction.maxPriorityFeePerGas,
 });
 
-export const updateYieldWithdrawSelectedFeeLevelThunk = createThunk(
+export type UpdateYieldWithdrawSelectedFeeLevelThunkState = FormDraftRootState &
+    NativeSendRootState;
+
+export const updateYieldWithdrawSelectedFeeLevelThunk = createThunk<
+    void,
+    UpdateSelectedFeeLevelThunkParams,
+    { state: UpdateYieldWithdrawSelectedFeeLevelThunkState }
+>(
     `${EARN_MODULE_PREFIX}/updateYieldWithdrawSelectedFeeLevelThunk`,
     (
-        {
-            feeLevelLabel,
-            feePerUnit,
-            feeLimit,
-            formDraftKey,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-        }: UpdateSelectedFeeLevelThunkParams,
+        { feeLevelLabel, feePerUnit, feeLimit, formDraftKey, maxFeePerGas, maxPriorityFeePerGas },
         { dispatch, getState },
     ) => {
         if (!formDraftKey) return;

@@ -7,6 +7,7 @@ import { geolocationInitialState } from '@suite-common/geolocation';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import {
     formDraftReducer,
     initialWalletSettingsState,
@@ -50,7 +51,7 @@ const createBaseTradingPreloadedState = (tradeType: TradingTestTradeType) => ({
     suiteSync: initialSuiteSyncState,
     suiteSyncData: initialSuiteSyncDataState,
     notifications: [],
-    tokenDefinitions: {},
+    tokenDefinitions: tokenDefinitionsInitialState,
     wallet: {
         ...getWalletState({ tradeType }),
         fees: {},

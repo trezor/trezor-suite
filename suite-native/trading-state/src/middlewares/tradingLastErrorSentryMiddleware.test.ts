@@ -1,4 +1,3 @@
-import type { ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import {
     tradingBuyActions,
     tradingExchangeActions,
@@ -14,9 +13,7 @@ jest.mock('@suite-native/sentry', () => ({
 }));
 
 describe('tradingLastErrorSentryMiddleware', () => {
-    const tradingLastErrorSentryMiddleware = prepareTradingLastErrorSentryMiddleware(
-        () => ({}) as ExtraDependencies,
-    );
+    const tradingLastErrorSentryMiddleware = prepareTradingLastErrorSentryMiddleware(() => ({}));
     const next = jest.fn(a => a);
     const dispatch = jest.fn();
     const getState = jest.fn();

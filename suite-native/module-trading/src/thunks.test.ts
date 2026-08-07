@@ -104,7 +104,7 @@ jest.mock('@suite-native/tokens', () => ({
 describe('thunks', () => {
     const dispatch = jest.fn();
     const getState = jest.fn();
-    const extra = {} as any;
+    const extra = {};
 
     beforeEach(() => {
         jest.clearAllMocks();

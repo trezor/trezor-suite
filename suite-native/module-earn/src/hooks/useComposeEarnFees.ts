@@ -9,6 +9,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,
+    type FormDraftRootState,
     composeSendFormTransactionFeeLevelsThunk,
     formDraftActions,
     selectAccountByKey,
@@ -35,17 +36,16 @@ import { useDebounce } from '@trezor/react-utils';
 import { EARN_MODULE_PREFIX } from '../constants';
 import { type EarnFormDraftPrefix } from '../types';
 
-export const updateEarnSelectedFeeLevelThunk = createThunk(
+export type UpdateEarnSelectedFeeLevelThunkState = FormDraftRootState;
+
+export const updateEarnSelectedFeeLevelThunk = createThunk<
+    void,
+    UpdateSelectedFeeLevelThunkParams,
+    { state: UpdateEarnSelectedFeeLevelThunkState }
+>(
     `${EARN_MODULE_PREFIX}/updateSelectedFeeLevelThunk`,
     (
-        {
-            feeLevelLabel,
-            feePerUnit,
-            feeLimit,
-            formDraftKey,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-        }: UpdateSelectedFeeLevelThunkParams,
+        { feeLevelLabel, feePerUnit, feeLimit, formDraftKey, maxFeePerGas, maxPriorityFeePerGas },
         { dispatch, getState },
     ) => {
         if (!formDraftKey) return;

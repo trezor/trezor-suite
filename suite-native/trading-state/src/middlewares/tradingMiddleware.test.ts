@@ -1,5 +1,4 @@
 import { deviceActions } from '@suite-common/device';
-import type { ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { formDraftActions } from '@suite-common/wallet-core';
 
@@ -8,7 +7,7 @@ import { getFormDraftKeyByTradeType } from '../utils';
 import { prepareTradingMiddleware } from './tradingMiddleware';
 
 describe('tradingMiddleware', () => {
-    const tradingMiddleware = prepareTradingMiddleware(() => ({}) as ExtraDependencies);
+    const tradingMiddleware = prepareTradingMiddleware(() => ({}));
     const next = jest.fn();
     const dispatch = jest.fn();
     const getState = jest.fn();
