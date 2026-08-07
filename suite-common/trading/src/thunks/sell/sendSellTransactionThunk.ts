@@ -6,7 +6,7 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { tradingSellActions } from '../../reducers/sellReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
@@ -28,7 +28,13 @@ export type SendSellTransactionThunkProps = {
     signAndPushSendFormTransaction: RecomposeAndSignTxThunkProps['signAndPushSendFormTransaction'];
 };
 
-export const sendSellTransactionThunk = createThunk(
+type SendSellTransactionThunkState = TradingRootState;
+
+export const sendSellTransactionThunk = createThunk<
+    undefined,
+    SendSellTransactionThunkProps,
+    { state: SendSellTransactionThunkState }
+>(
     `${TRADING_SELL_THUNK_PREFIX}/sendTransaction`,
     async (
         {
@@ -39,7 +45,7 @@ export const sendSellTransactionThunk = createThunk(
             isSlip24Active,
             nextStep,
             signAndPushSendFormTransaction,
-        }: SendSellTransactionThunkProps,
+        },
         { dispatch, getState, rejectWithValue },
     ) => {
         const selectedQuote = selectTradingSellSelectedQuote(getState());
