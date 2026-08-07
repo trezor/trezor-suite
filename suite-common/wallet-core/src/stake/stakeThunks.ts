@@ -80,17 +80,20 @@ export const initStakeDataThunk = createThunk<void, void, { state: InitStakeData
 
 let stakeDataTimeout: TimerId | null = null;
 
-export const periodicCheckStakeDataThunk = createThunk(
-    `${STAKE_MODULE}/periodicCheckStakeDataThunk`,
-    (_, { dispatch }) => {
-        if (stakeDataTimeout) {
-            clearTimeout(stakeDataTimeout);
-        }
+type PeriodicCheckStakeDataThunkState = InitStakeDataThunkState;
 
-        stakeDataTimeout = setTimeout(() => {
-            dispatch(periodicCheckStakeDataThunk());
-        }, 60_000);
+export const periodicCheckStakeDataThunk = createThunk<
+    unknown,
+    void,
+    { state: PeriodicCheckStakeDataThunkState }
+>(`${STAKE_MODULE}/periodicCheckStakeDataThunk`, (_, { dispatch }) => {
+    if (stakeDataTimeout) {
+        clearTimeout(stakeDataTimeout);
+    }
 
-        return dispatch(initStakeDataThunk());
-    },
-);
+    stakeDataTimeout = setTimeout(() => {
+        dispatch(periodicCheckStakeDataThunk());
+    }, 60_000);
+
+    return dispatch(initStakeDataThunk());
+});

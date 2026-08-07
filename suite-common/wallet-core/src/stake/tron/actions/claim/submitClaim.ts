@@ -12,7 +12,10 @@ import { BigNumber } from '@trezor/utils';
 
 import { buildClaimContract, buildClaimReviewForm } from './claimContract';
 import { type ClaimThunkArguments, composeTronClaimFeeLevelsThunk } from './composeClaim';
-import { addFakePendingTronTxThunk } from '../../../../transactions/transactionsThunks';
+import {
+    type AddFakePendingTronTxThunkState,
+    addFakePendingTronTxThunk,
+} from '../../../../transactions/transactionsThunks';
 import { TRON_STAKE_MODULE } from '../../shared/constants';
 import { signTronContract } from '../../shared/signTronContract';
 import { tronStakeActions } from '../../tronStakeReducer';
@@ -25,7 +28,13 @@ interface SubmitClaimThunkArguments extends ClaimThunkArguments {
     onSettled?: () => void;
 }
 
-export const submitTronClaimThunk = createThunk<void, SubmitClaimThunkArguments>(
+type SubmitTronClaimThunkState = AddFakePendingTronTxThunkState;
+
+export const submitTronClaimThunk = createThunk<
+    void,
+    SubmitClaimThunkArguments,
+    { state: SubmitTronClaimThunkState }
+>(
     `${TRON_STAKE_MODULE}/submitTronClaimThunk`,
     async ({ account, device, requestPushApproval, onSigningStart, onSettled }, { dispatch }) => {
         const { key: accountKey } = account;

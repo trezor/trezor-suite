@@ -498,7 +498,7 @@ interface AddFakePendingTronTxThunkParams {
     target?: { addresses: string[]; amount: string };
     tronSpecific?: WalletAccountTransaction['tronSpecific'];
 }
-type AddFakePendingTronTxThunkState = BlockchainRootState & FeesRootState;
+export type AddFakePendingTronTxThunkState = BlockchainRootState & FeesRootState;
 
 export const addFakePendingTronTxThunk = createThunk<
     void,

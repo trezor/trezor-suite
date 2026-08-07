@@ -219,9 +219,9 @@ export const handleYieldApproveSuccessTxidThunk = createThunk<
     },
 );
 
-export const handleYieldApproveCancelThunk = createThunk(
+export const handleYieldApproveCancelThunk = createThunk<void, YieldSessionPayload, void>(
     `${YIELD_THUNK_PREFIX}/handleApproveCancel`,
-    ({ flowKey, flowType }: YieldSessionPayload, { dispatch }) => {
+    ({ flowKey, flowType }, { dispatch }) => {
         dispatch(stablecoinYieldActions.closeApprovalModal({ flowType, flowKey }));
     },
 );
@@ -330,9 +330,9 @@ export const submitYieldRevokeThunk = createThunk<
     },
 );
 
-export const submitYieldApproveThunk = createThunk(
+export const submitYieldApproveThunk = createThunk<void, SubmitYieldApprovePayload, void>(
     `${YIELD_THUNK_PREFIX}/submitApprove`,
-    async ({ flowKey, flowType, flowData, amount }: SubmitYieldApprovePayload, { dispatch }) => {
+    async ({ flowKey, flowType, flowData, amount }, { dispatch }) => {
         const requestAmount = getApprovalRequestAmount({
             flowType,
             amount,
