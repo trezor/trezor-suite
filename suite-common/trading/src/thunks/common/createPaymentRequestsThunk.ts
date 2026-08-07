@@ -6,17 +6,18 @@ import {
 } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type PROTO } from '@trezor/connect';
 import { getSlip44ByPath, validatePath } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { getNonce } from './getNonce';
+import { type GetNonceThunkState, getNonce } from './getNonce';
 import { getPaymentRequestOutputs } from './getPaymentRequestOutputs';
-import { getPurchaseAddress } from './getPurchaseAddress';
-import { getRefundAddress } from './getRefundAddress';
+import { type GetPurchaseAddressThunkState, getPurchaseAddress } from './getPurchaseAddress';
+import { type GetRefundAddressThunkState, getRefundAddress } from './getRefundAddress';
 import { TRADING_THUNK_PREFIX } from '../../constants';
+import { type TradingRootState } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingCoinInfoByCryptoId,
     selectTradingCoinSymbolByCryptoId,
@@ -44,11 +45,18 @@ type CreateSignatureThunkProps = {
     destinationTag?: string;
 };
 
+export type CreatePaymentRequestsThunkState = AccountsRootState &
+    GetNonceThunkState &
+    GetPurchaseAddressThunkState &
+    GetRefundAddressThunkState &
+    TradingRootState;
+
 export const createPaymentRequestsThunk = createThunk<
     PROTO.PaymentRequest[],
     CreateSignatureThunkProps,
     {
         rejectValue: TradingSendRejectedProps;
+        state: CreatePaymentRequestsThunkState;
     }
 >(
     `${TRADING_THUNK_PREFIX}/createPaymentRequests`,

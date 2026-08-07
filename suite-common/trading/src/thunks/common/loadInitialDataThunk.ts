@@ -1,4 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import {
     TRADE_API_RELOAD_DATA_AFTER_MS,
@@ -10,6 +11,7 @@ import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
+    type TradingRootStateWithAccounts,
     selectTradingAccountAccordingActiveSection,
     selectTradingBuyInfo,
     selectTradingExchangeInfo,
@@ -18,7 +20,7 @@ import {
     selectTradingSellInfo,
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
-import { type TradingType } from '../../types';
+import { type TradeServerEnvironment, type TradingType } from '../../types';
 import { loadBuyInfoThunk } from '../buy/loadBuyInfoThunk';
 import { loadExchangeInfoThunk } from '../exchange/loadExchangeInfoThunk';
 import { loadSellInfoThunk } from '../sell/loadSellInfoThunk';
@@ -28,12 +30,21 @@ export interface LoadInitialDataThunkProps {
     forcedApiKey?: string;
 }
 
-export const loadInitialDataThunk = createThunk(
+type LoadInitialDataThunkState = TradingRootStateWithAccounts;
+type LoadInitialDataThunkDeps = {
+    services: {
+        getSelectedAccount: () => SelectedAccountStatus;
+        getTradingEnvironment: () => TradeServerEnvironment | undefined;
+    };
+};
+
+export const loadInitialDataThunk = createThunk<
+    void,
+    LoadInitialDataThunkProps,
+    { state: LoadInitialDataThunkState; extra: LoadInitialDataThunkDeps }
+>(
     `${TRADING_THUNK_PREFIX}/loadInitialData`,
-    async (
-        { activeSection, forcedApiKey }: LoadInitialDataThunkProps,
-        { dispatch, getState, extra },
-    ) => {
+    async ({ activeSection, forcedApiKey }, { dispatch, getState, extra }) => {
         const selectedAccount = extra.services.getSelectedAccount();
         const account = selectTradingAccountAccordingActiveSection(
             getState(),

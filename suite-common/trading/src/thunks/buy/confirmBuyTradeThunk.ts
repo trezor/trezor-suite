@@ -5,7 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingBuyReceiveAccountKey,
     selectTradingBuySelectedQuote,
@@ -23,7 +23,13 @@ export type ConfirmTradeThunkProps = {
     processResponseData: (response: BuyTradeResponse) => void;
 };
 
-export const confirmBuyTradeThunk = createThunk(
+type ConfirmBuyTradeThunkState = TradingRootState;
+
+export const confirmBuyTradeThunk = createThunk<
+    BuyTrade | undefined,
+    ConfirmTradeThunkProps,
+    { state: ConfirmBuyTradeThunkState }
+>(
     `${TRADING_BUY_THUNK_PREFIX}/confirmTrade`,
     async (
         {
@@ -33,7 +39,7 @@ export const confirmBuyTradeThunk = createThunk(
             account,
             triggerAnalyticsTradeConfirmation,
             processResponseData,
-        }: ConfirmTradeThunkProps,
+        },
         { dispatch, getState },
     ) => {
         const selectedQuote = selectTradingBuySelectedQuote(getState());

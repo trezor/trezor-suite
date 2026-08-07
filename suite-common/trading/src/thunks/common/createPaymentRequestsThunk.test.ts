@@ -1,8 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTradeSigned } from 'invity-api';
 
+import { deviceInitialState } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, { type Address, type PROTO } from '@trezor/connect';
 import { validatePath } from '@trezor/connect-common';
@@ -210,9 +212,11 @@ describe('createPaymentRequestsThunk', () => {
         configureMockStore({
             extra: extraDependenciesCommonMock,
             reducer: combineReducers({
+                device: () => deviceInitialState,
                 wallet: combineReducers({
-                    trading: tradingReducer,
                     accounts: () => [mockAccount],
+                    settings: () => initialWalletSettingsState,
+                    trading: tradingReducer,
                 }),
             }),
             preloadedState: {

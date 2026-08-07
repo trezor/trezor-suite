@@ -4,7 +4,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { tradingSellActions } from '../../reducers/sellReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingSellSelectedQuote } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
 import {
@@ -50,9 +50,11 @@ const watchTradeData = async <T extends TradingType>({
     };
 };
 
-export const watchTradeThunk = createThunk(
+type WatchTradeThunkState = TradingRootState;
+
+export const watchTradeThunk = createThunk<void, WatchTradeThunk, { state: WatchTradeThunkState }>(
     `${TRADING_THUNK_PREFIX}/watchTrade`,
-    async ({ account, trade, refreshCount }: WatchTradeThunk, { dispatch, getState }) => {
+    async ({ account, trade, refreshCount }, { dispatch, getState }) => {
         tradeApi.createApiKey(account.descriptor);
 
         const { tradeType } = trade;

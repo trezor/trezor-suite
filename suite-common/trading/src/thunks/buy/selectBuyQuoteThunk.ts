@@ -4,7 +4,7 @@ import { createThunk } from '@suite-common/redux-utils';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingBuyInfo,
     selectTradingBuyQuotesRequest,
@@ -20,12 +20,15 @@ export type SelectBuyQuoteThunkProps = {
     nextStep: () => void;
 };
 
-export const selectBuyQuoteThunk = createThunk(
+type SelectBuyQuoteThunkState = TradingRootState;
+
+export const selectBuyQuoteThunk = createThunk<
+    void,
+    SelectBuyQuoteThunkProps,
+    { state: SelectBuyQuoteThunkState }
+>(
     `${TRADING_BUY_THUNK_PREFIX}/selectQuote`,
-    async (
-        { quote, returnUrl, loginRequest, nextStep }: SelectBuyQuoteThunkProps,
-        { dispatch, getState },
-    ) => {
+    async ({ quote, returnUrl, loginRequest, nextStep }, { dispatch, getState }) => {
         const buyInfo = selectTradingBuyInfo(getState());
         const quotesRequest = selectTradingBuyQuotesRequest(getState());
 

@@ -181,7 +181,7 @@ type CoinSpecificComposeResponse = ActionsFromAsyncThunk<
     | typeof composeSolanaTransactionFeeLevelsThunk
     | typeof composeTronTransactionFeeLevelsThunk
 >;
-type ComposeSendFormTransactionFeeLevelsThunkState = BlockchainRootState &
+export type ComposeSendFormTransactionFeeLevelsThunkState = BlockchainRootState &
     DeviceRootState &
     WalletSettingsRootState;
 

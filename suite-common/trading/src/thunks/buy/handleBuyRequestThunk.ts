@@ -6,7 +6,7 @@ import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingBuyQuotesRequest,
     selectTradingCoinSymbolByCryptoId,
@@ -87,16 +87,19 @@ const getQuoteRequestData = ({
     };
 };
 
+type HandleBuyRequestThunkState = TradingRootState;
+
 export const handleBuyRequestThunk = createThunk<
     BuyTrade[],
     HandleBuyRequestThunkProps,
     {
         rejectValue: string;
+        state: HandleBuyRequestThunkState;
     }
 >(
     `${TRADING_BUY_THUNK_PREFIX}/handleRequest`,
     async (
-        { formValues, network, shouldSendInSats }: HandleBuyRequestThunkProps,
+        { formValues, network, shouldSendInSats },
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
         const quotesRequest = selectTradingBuyQuotesRequest(getState());
