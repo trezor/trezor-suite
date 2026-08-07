@@ -9,6 +9,10 @@ import * as protocolConstants from './constants/protocolConstants';
 import * as protocolActions from './protocolActions';
 import { type HandleProtocolRequestDeps } from './protocolActions';
 
+jest.mock('@suite-common/walletconnect', () => ({
+    walletConnectPairThunk: jest.fn(),
+}));
+
 const findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol = protocol =>
     protocol === 'bitcoin' ? asNetworkSymbol('btc') : null;
 
@@ -32,10 +36,10 @@ const createHandleProtocolRequestDeps = () => {
 };
 
 describe('Protocol actions', () => {
-    it('saves address and amount from Bitcoin URI protocol', () => {
+    it('saves address, amount and label from Bitcoin URI protocol', () => {
         const { actions, dispatch, getState, extra } = createHandleProtocolRequestDeps();
 
-        protocolActions.handleProtocolRequest('bitcoin:12345abcde?amount=1.02')(
+        protocolActions.handleProtocolRequest('bitcoin:12345abcde?amount=1.02&label=Alice')(
             dispatch,
             getState,
             extra,
@@ -49,6 +53,7 @@ describe('Protocol actions', () => {
                     scheme: 'bitcoin',
                     address: '12345abcde',
                     amount: '1.02',
+                    label: 'Alice',
                 }),
             }),
         );

@@ -31,6 +31,7 @@ import { PROTO } from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
 
 import { type AppState } from 'src/reducers/store';
+import protocolReducer from 'src/reducers/suite/protocolReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
@@ -416,7 +417,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
                 () => ({}),
             ),
         }),
-        protocol: createReducer({ sendForm: {} }, () => ({})),
+        protocol: protocolReducer,
         messageSystem: createReducer(
             {
                 validMessages: {
