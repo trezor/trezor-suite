@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { events } from '@suite-common/analytics';
 import { Context } from '@suite-common/message-system';
 import { WRAPPED_NATIVE, getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -23,6 +24,7 @@ import { YieldFeeSection } from '../components/YieldFeeSection';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
 import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
+import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useStandaloneWrappedNativeFlow } from '../hooks/useStandaloneWrappedNativeFlow';
 import { useWrappedNativeTokenFees } from '../hooks/useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from '../hooks/useWrappedNativeTokenForm';
@@ -84,6 +86,16 @@ export const UnwrapNativeTokenScreen = () => {
         preparedAction: unwrapFee.preparedAction,
     });
 
+    useNavigateBackAnalytics({
+        type: events.yieldNavigateEvent.name,
+        payload: {
+            action: 'cancel',
+            from: 'unwrap-form',
+            to: 'account-detail',
+            networkSymbol: account?.symbol,
+        },
+    });
+
     if (!account || !wrappedNative || account.networkType !== 'ethereum') {
         return null;
     }
@@ -126,6 +138,7 @@ export const UnwrapNativeTokenScreen = () => {
                         <WrappedNativeTokenAmountInputCard
                             amountLabel={<Translation id="earn.unwrapNativeToken.amountToUnwrap" />}
                             balance={wrappedBalance}
+                            onMaxPress={flow.reportMaxSelected}
                             symbol={account.symbol}
                             tokenContract={toTokenAddress(wrappedNative.address)}
                             tokenDecimals={wrappedNative.decimals}

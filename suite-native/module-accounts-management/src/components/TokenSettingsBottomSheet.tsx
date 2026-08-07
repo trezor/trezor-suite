@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
     DefinitionType,
@@ -21,6 +23,7 @@ import {
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     BottomSheetModal,
     Box,
@@ -105,6 +108,7 @@ export const TokenSettingsBottomSheet = forwardRef(
     ) => {
         const { applyStyle } = useNativeStyles();
         const dispatch = useDispatch();
+        const { analytics } = useServices(selectNativeAnalyticsDep);
         const navigation =
             useNavigation<
                 StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>
@@ -182,6 +186,16 @@ export const TokenSettingsBottomSheet = forwardRef(
                 return;
             }
 
+            analytics.report({
+                type: events.yieldNavigateEvent.name,
+                payload: {
+                    action: 'continue',
+                    from: 'account-detail',
+                    to: 'unwrap-form',
+                    networkSymbol: account.symbol,
+                },
+            });
+
             navigation.navigate(RootStackRoutes.WrappedNativeTokenNavigator, {
                 screen: WrappedNativeTokenStackRoutes.UnwrapNativeToken,
                 params: { accountKey },
@@ -196,6 +210,16 @@ export const TokenSettingsBottomSheet = forwardRef(
 
                 return;
             }
+
+            analytics.report({
+                type: events.yieldNavigateEvent.name,
+                payload: {
+                    action: 'continue',
+                    from: 'account-detail',
+                    to: 'wrap-form',
+                    networkSymbol: account.symbol,
+                },
+            });
 
             navigation.navigate(RootStackRoutes.WrappedNativeTokenNavigator, {
                 screen: WrappedNativeTokenStackRoutes.WrapNativeToken,

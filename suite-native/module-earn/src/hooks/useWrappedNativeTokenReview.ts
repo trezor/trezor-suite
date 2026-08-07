@@ -17,6 +17,7 @@ import {
     type YieldReviewStatus,
 } from '../types';
 import { useEarnTransactionReview } from './useEarnTransactionReview';
+import { useWrappedNativeFlowAnalytics } from './useWrappedNativeFlowAnalytics';
 import { wrappedNativeTokenFlowRoutes } from '../utils/wrappedNativeTokenFlowRoutes';
 import {
     type SignedWrappedNativeTokenTransaction,
@@ -62,6 +63,15 @@ export const useWrappedNativeTokenReview = ({
     const [signedTransaction, setSignedTransaction] =
         useState<SignedWrappedNativeTokenTransaction | null>(null);
 
+    // The in-flow wrap step (onBroadcast set) is already tracked as yield/deposit type:'wrap', so
+    // reporting yield/wrap|yield/unwrap here too would double-count it.
+    const isStandaloneFlow = !onBroadcast;
+    const { reportError, reportSent } = useWrappedNativeFlowAnalytics({
+        flowType,
+        networkSymbol: account.symbol,
+    });
+    const reportSubmitFailed = useCallback(() => reportError('submit-failed'), [reportError]);
+
     const signAction = useCallback(
         () =>
             dispatch(signWrappedNativeTokenThunk({ account, token, amount, unsignedTransaction })),
@@ -86,6 +96,7 @@ export const useWrappedNativeTokenReview = ({
                 return;
             }
 
+            reportSent();
             navigation.popTo(wrappedNativeTokenFlowRoutes[flowType].form, {
                 accountKey: account.key,
                 pendingTransaction: {
@@ -96,7 +107,7 @@ export const useWrappedNativeTokenReview = ({
                 },
             });
         },
-        [account, amount, flowType, navigation, onBroadcast, signedTransaction],
+        [account, amount, flowType, navigation, onBroadcast, reportSent, signedTransaction],
     );
 
     const review = useEarnTransactionReview({
@@ -106,6 +117,8 @@ export const useWrappedNativeTokenReview = ({
         onPushSuccess,
         onReviewLeave,
         onSignSuccess: setSignedTransaction,
+        reportCancel: isStandaloneFlow ? reportSubmitFailed : undefined,
+        reportError: isStandaloneFlow ? reportError : undefined,
         signAction,
         pushAction,
     });
