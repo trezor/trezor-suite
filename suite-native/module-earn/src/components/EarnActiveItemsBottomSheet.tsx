@@ -1,12 +1,10 @@
 import { useCallback, useMemo } from 'react';
-import { useStore } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -17,8 +15,7 @@ import {
 } from '@suite-native/navigation';
 
 import { EarnAccountCard } from './EarnAccountCard';
-import { type NavigateToStakingDetail } from '../hooks/useStakingDetailNavigation';
-import { useStakingNavigateAnalytics } from '../hooks/useStakingNavigateAnalytics';
+import { useNavigateToStakingDetailWithAnalytics } from '../hooks/useNavigateToStakingDetailWithAnalytics';
 import { type EarnDepositsCardActiveItem } from '../types';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
@@ -27,7 +24,6 @@ type EarnActiveItemsBottomSheetProps = {
     ref: BottomSheetModalRef;
     type: EarnDepositsCardActiveItem['type'];
     items: EarnDepositsCardActiveItem[];
-    navigateToStakingDetail: NavigateToStakingDetail;
     onClose: () => void;
 };
 
@@ -35,12 +31,10 @@ export const EarnActiveItemsBottomSheet = ({
     ref,
     type,
     items,
-    navigateToStakingDetail,
     onClose,
 }: EarnActiveItemsBottomSheetProps) => {
     const navigation = useNavigation<NavigationProp>();
-    const reportStakingNavigate = useStakingNavigateAnalytics();
-    const store = useStore<AccountsRootState>();
+    const navigateToStakingDetailWithAnalytics = useNavigateToStakingDetailWithAnalytics();
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const title = useMemo(
@@ -59,11 +53,7 @@ export const EarnActiveItemsBottomSheet = ({
 
             switch (item.type) {
                 case 'staking': {
-                    const account = selectAccountByKey(store.getState(), item.accountKey);
-                    if (account) {
-                        reportStakingNavigate(account);
-                    }
-                    navigateToStakingDetail({
+                    navigateToStakingDetailWithAnalytics({
                         accountKey: item.accountKey,
                         symbol: item.symbol,
                     });
@@ -89,7 +79,7 @@ export const EarnActiveItemsBottomSheet = ({
                 }
             }
         },
-        [navigateToStakingDetail, analytics, navigation, onClose, reportStakingNavigate, store],
+        [analytics, navigateToStakingDetailWithAnalytics, navigation, onClose],
     );
 
     const handleClaimPress = useCallback(
