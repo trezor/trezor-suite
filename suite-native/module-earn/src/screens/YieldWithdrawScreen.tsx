@@ -486,6 +486,7 @@ export const YieldWithdrawScreen = () => {
                 operation: flowType,
                 networkSymbol: account?.symbol,
                 vaultId: vault?.id,
+                wrappedNative: isWrappedNativeVault,
                 ...(apyBreakdown && { apyBreakdown }),
             },
         });
@@ -512,6 +513,7 @@ export const YieldWithdrawScreen = () => {
         flowKey,
         isWithdrawDisabled,
         isWithdrawReviewReady,
+        isWrappedNativeVault,
         navigation,
         preparedAction,
         route.params,

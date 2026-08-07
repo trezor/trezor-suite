@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type NetworkSymbol, isWrappedNativeToken } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -39,7 +40,7 @@ type YieldResolutionOutcome = 'success' | 'error' | 'leftPending';
 
 type ReportYieldTransactionResolutionParams = {
     analytics: NativeAnalyticsDep['analytics'];
-    networkSymbol: string;
+    networkSymbol: NetworkSymbol;
     outcome: YieldResolutionOutcome;
     pendingTransactionType: YieldPendingTransactionState['type'];
     submittedAt: number | undefined;
@@ -61,6 +62,7 @@ const reportYieldTransactionResolution = ({
 }: ReportYieldTransactionResolutionParams) => {
     const durationMs = submittedAt ? Date.now() - submittedAt : undefined;
     const errorMessage = outcome === 'error' ? { errorMessage: 'on-chain-failure' } : {};
+    const wrappedNative = isWrappedNativeToken(networkSymbol, vault?.token.address);
 
     switch (pendingTransactionType) {
         case 'approve':
@@ -74,10 +76,10 @@ const reportYieldTransactionResolution = ({
                 wrap: 'wrap-success',
             } as const;
 
-            const apyBreakdown =
-                pendingTransactionType === 'deposit' && outcome === 'success'
-                    ? getApyBreakdown(vault?.rewardRate?.components)
-                    : '';
+            const isDepositSuccess = pendingTransactionType === 'deposit' && outcome === 'success';
+            const apyBreakdown = isDepositSuccess
+                ? getApyBreakdown(vault?.rewardRate?.components)
+                : '';
 
             analytics.report({
                 type: events.yieldDepositEvent.name,
@@ -88,6 +90,7 @@ const reportYieldTransactionResolution = ({
                     vaultId: vault?.id,
                     durationMs,
                     ...(apyBreakdown && { apyBreakdown }),
+                    ...(isDepositSuccess && { wrappedNative }),
                     ...errorMessage,
                 },
             });
@@ -109,6 +112,7 @@ const reportYieldTransactionResolution = ({
                     vaultId: vault?.id,
                     durationMs,
                     ...(apyBreakdown && { apyBreakdown }),
+                    ...(outcome === 'success' && { wrappedNative }),
                     ...errorMessage,
                 },
             });
