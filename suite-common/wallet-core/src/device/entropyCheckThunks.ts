@@ -44,8 +44,13 @@ type ProcessEntropyCheckResultThunkParams = {
     device: AcquiredDevice;
     result: Awaited<ReturnType<typeof TrezorConnect.resetDevice>>;
 };
+type ProcessEntropyCheckResultThunkDeps = FailEntropyCheckThunkDeps;
 
-export const processEntropyCheckResultThunk = createThunk(
+export const processEntropyCheckResultThunk = createThunk<
+    void,
+    ProcessEntropyCheckResultThunkParams,
+    { extra: ProcessEntropyCheckResultThunkDeps }
+>(
     `${DEVICE_MODULE_PREFIX}/processEntropyCheckResultThunk`,
     ({ device, result }: ProcessEntropyCheckResultThunkParams, { dispatch }) => {
         if (result.success) {
