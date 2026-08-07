@@ -2832,6 +2832,7 @@ export const messages = {
             pendingTitle: 'Confirming unstake',
             amountLabel: 'Unstaking amount',
             viewTransactionButton: 'Unstake now',
+            followDeviceInstructions: "Follow the instructions on your Trezor's screen.",
             pushTransactionFailedAlert: {
                 title: 'Transaction failed',
                 description: 'Failed to complete your unstaking transaction. Try again.',

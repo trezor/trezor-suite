@@ -7,6 +7,8 @@ type TxValidityTimerProps = {
     isBroadcasting?: boolean;
     onRetry: () => void;
     isRetryDisabled?: boolean;
+    retryTestID?: string;
+    isCompact?: boolean;
 };
 
 export const TxValidityTimer = ({
@@ -15,6 +17,8 @@ export const TxValidityTimer = ({
     isBroadcasting = false,
     onRetry,
     isRetryDisabled = false,
+    retryTestID,
+    isCompact = false,
 }: TxValidityTimerProps) => {
     const getLabel = () => {
         if (isBroadcasting) {
@@ -33,19 +37,34 @@ export const TxValidityTimer = ({
         );
     };
 
+    const badge = <Badge intent="warning" size="medium" label={getLabel()} />;
+    const retryButton = (
+        <Button
+            size="medium"
+            intent="neutral"
+            priority="secondary"
+            iconLeft="arrowsCounterClockwise"
+            isDisabled={isBroadcasting || isRetryDisabled}
+            onPress={onRetry}
+            testID={retryTestID}
+        >
+            <Translation id="generic.buttons.tryAgain" />
+        </Button>
+    );
+
+    if (isCompact) {
+        return (
+            <HStack spacing="sp8" alignItems="center" flexShrink={1}>
+                {retryButton}
+                {badge}
+            </HStack>
+        );
+    }
+
     return (
         <HStack paddingVertical="sp8" justifyContent="space-between" alignItems="center">
-            <Badge intent="warning" size="medium" label={getLabel()} />
-            <Button
-                size="medium"
-                intent="neutral"
-                priority="secondary"
-                iconLeft="arrowsCounterClockwise"
-                isDisabled={isBroadcasting || isRetryDisabled}
-                onPress={onRetry}
-            >
-                <Translation id="generic.buttons.tryAgain" />
-            </Button>
+            {badge}
+            {retryButton}
         </HStack>
     );
 };
