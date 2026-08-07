@@ -19,15 +19,15 @@ import { useNativeStyles } from '@trezor/styles-native';
 
 const DiscreetTextExample = () => {
     const { utils } = useNativeStyles();
+    const { fontSize, lineHeight } = utils.typography['body-sm'];
 
     return (
-        <Box style={{ height: utils.typography['body-sm'].lineHeight }}>
+        <Box style={{ height: lineHeight, width: 30 }}>
             <DiscreetCanvas
                 text="$100"
                 color="contentSecondary"
-                width={30}
-                fontSize={utils.typography['body-sm'].fontSize}
-                height={utils.typography['body-sm'].lineHeight}
+                fontSize={fontSize}
+                lineHeight={lineHeight}
             />
         </Box>
     );

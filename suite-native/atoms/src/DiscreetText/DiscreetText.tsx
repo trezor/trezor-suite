@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { type LayoutChangeEvent } from 'react-native';
+import { useEffect } from 'react';
 
 import { useDiscreetMode } from '@suite-common/discreet-mode';
 import {
@@ -12,6 +11,7 @@ import { nativeTypography } from '@trezor/theme';
 import { Box } from '../Box';
 import { Text, type TextProps } from '../Text';
 import { DiscreetCanvas } from './DiscreetCanvas';
+import { preloadDiscreetFont } from './useDiscreetFont';
 
 export type DiscreetTextProps = TextProps & {
     children?: string | null;
@@ -34,15 +34,14 @@ export const DiscreetText = ({
 }: DiscreetTextProps) => {
     const { applyStyle } = useNativeStyles();
     const { isDiscreetMode } = useDiscreetMode();
-    const [width, setWidth] = useState(0);
-    const [height, setHeight] = useState(0);
 
-    const handleLayout = ({ nativeEvent }: LayoutChangeEvent) => {
-        setWidth(nativeEvent.layout.width);
-        setHeight(nativeEvent.layout.height);
-    };
+    // Warm the Skia typeface cache up front so the first discreet-mode toggle
+    // paints the blurred canvas immediately instead of flashing blank.
+    useEffect(() => {
+        preloadDiscreetFont();
+    }, []);
 
-    const { fontSize } = nativeTypography[variant];
+    const { fontSize, lineHeight } = nativeTypography[variant];
     if (!children) return null;
     const showAsDiscreet = isDiscreetMode || !!isForcedDiscreetMode;
 
@@ -50,17 +49,16 @@ export const DiscreetText = ({
         <Box>
             {showAsDiscreet && (
                 <DiscreetCanvas
-                    width={width}
-                    height={height}
                     fontSize={fontSize}
+                    lineHeight={lineHeight}
                     text={children}
                     color={color}
                 />
             )}
 
-            {/* Plain Text needs to be always rendered so it shares its width with DiscreetCanvas. */}
+            {/* Plain Text always sizes the parent that the DiscreetCanvas fills. */}
             {/* If the DiscreetMode is on, it is hidden with opacity set to zero. */}
-            <Box onLayout={handleLayout}>
+            <Box>
                 <Text
                     testID={showAsDiscreet ? 'discreet-text' : 'plain-text'}
                     variant={variant}
