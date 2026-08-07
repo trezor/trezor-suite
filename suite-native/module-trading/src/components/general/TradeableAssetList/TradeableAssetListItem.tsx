@@ -25,7 +25,7 @@ export const TradeableAssetListItem = ({
     invariant(networkSymbol, `Network symbol not found for cryptoId: ${cryptoId}`);
 
     const balanceContent = balance ? (
-        <VStack alignItems="flex-end">
+        <VStack alignItems="flex-end" spacing={0}>
             <BaseCurrencyAmountFormatter
                 value={balance.fiatAmount}
                 variant="body-md"

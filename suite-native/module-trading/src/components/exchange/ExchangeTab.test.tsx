@@ -28,6 +28,12 @@ jest.mock('@suite-native/trading-state', () => ({
     selectIsTradingExchangeEnabled: () => mockIsTradingExchangeEnabled,
 }));
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: jest.fn(), setParams: jest.fn() }),
+    useRoute: () => ({ params: {} }),
+}));
+
 describe('ExchangeTab', () => {
     const renderExchangeTab = () =>
         renderWithTradingProvider(<ExchangeTab />, { tradeType: 'exchange' });

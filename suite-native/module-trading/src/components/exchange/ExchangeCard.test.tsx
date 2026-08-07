@@ -14,6 +14,12 @@ import { ExchangeCard } from './ExchangeCard';
 import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 import { createTradingPreloadedState } from '../../test-utils/tradingTestUtils';
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: jest.fn(), setParams: jest.fn() }),
+    useRoute: () => ({ params: {} }),
+}));
+
 describe('ExchangeCard', () => {
     let form: ExchangeFormType;
 

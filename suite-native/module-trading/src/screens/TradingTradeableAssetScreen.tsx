@@ -103,7 +103,7 @@ export const TradingTradeableAssetScreen = ({
             header={
                 <ScreenHeader
                     closeActionType="back"
-                    title={<Translation id="moduleTrading.tradeableAssetsSheet.title" />}
+                    title={<Translation id="moduleTrading.selectCoin.title" />}
                 />
             }
             isScrollable={false}

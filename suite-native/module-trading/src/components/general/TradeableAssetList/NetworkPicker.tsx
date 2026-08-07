@@ -6,7 +6,7 @@ import { selectDiscoverySupportedNetworks } from '@suite-native/discovery';
 import { NetworkIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { useBottomSheetControls } from '@suite-native/trading-atoms';
-import { useNativeStyles } from '@trezor/styles-native';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { NetworksSheet } from './NetworksSheet';
 
@@ -16,8 +16,12 @@ export type NetworkPickerProps = {
     testID?: string;
 };
 
+const pickerButtonStyle = prepareNativeStyle(({ spacings }) => ({
+    height: spacings.sp48,
+}));
+
 export const NetworkPicker = ({ selectedNetwork, onSelectNetwork, testID }: NetworkPickerProps) => {
-    const { utils } = useNativeStyles();
+    const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const { isSheetVisible, hideSheet, showSheet } = useBottomSheetControls();
     const networks = useSelector(selectDiscoverySupportedNetworks);
@@ -27,7 +31,7 @@ export const NetworkPicker = ({ selectedNetwork, onSelectNetwork, testID }: Netw
     return (
         <>
             <Button
-                style={{ height: utils.spacings.sp48 }}
+                style={applyStyle(pickerButtonStyle)}
                 size="large"
                 accessibilityLabel={selectedNetworkName ?? pickerLabel}
                 accessibilityRole="button"

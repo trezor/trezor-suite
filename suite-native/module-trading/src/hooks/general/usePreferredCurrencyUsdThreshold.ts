@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -63,9 +64,13 @@ export const usePreferredCurrencyUsdThreshold = () => {
         baseCurrencyCode: 'usd',
     });
 
-    return calculatePreferredCurrencyUsdThreshold({
-        baseCurrency,
-        btcUsdRate,
-        btcBaseCurrencyRate,
-    });
+    return useMemo(
+        () =>
+            calculatePreferredCurrencyUsdThreshold({
+                baseCurrency,
+                btcUsdRate,
+                btcBaseCurrencyRate,
+            }),
+        [baseCurrency, btcUsdRate, btcBaseCurrencyRate],
+    );
 };

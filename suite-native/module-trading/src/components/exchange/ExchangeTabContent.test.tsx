@@ -15,6 +15,12 @@ jest.mock('@suite-native/trading-state', () => ({
     selectIsTradingExchangeEnabled: () => true,
 }));
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: jest.fn(), setParams: jest.fn() }),
+    useRoute: () => ({ params: {} }),
+}));
+
 describe('ExchangeTab', () => {
     beforeEach(() => {
         mockUseTradingExchangeData = jest.fn(() => ({

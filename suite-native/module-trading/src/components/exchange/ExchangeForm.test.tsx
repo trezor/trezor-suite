@@ -24,6 +24,12 @@ jest.mock('../../hooks/general/useFocusedValueWatch', () =>
     jest.requireActual('../../hooks/general/useFocusedValueWatch'),
 );
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: jest.fn(), setParams: jest.fn() }),
+    useRoute: () => ({ params: {} }),
+}));
+
 describe('ExchangeForm', () => {
     let form: ExchangeFormType;
     const defaultPreloadedState = createTradingPreloadedState({

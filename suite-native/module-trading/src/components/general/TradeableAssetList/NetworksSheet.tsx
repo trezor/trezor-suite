@@ -121,21 +121,24 @@ export const NetworksSheet = ({
         [],
     );
 
-    const footer = (
-        <Box paddingHorizontal="sp16">
-            <Button
-                intent="neutral"
-                priority="secondary"
-                isFullWidth
-                onPress={() => {
-                    onSelectNetwork(undefined);
-                    onClose();
-                }}
-                testID={testID ? `${testID}/clear-filter` : undefined}
-            >
-                <Translation id="moduleTrading.tradeableAssetsSheet.networksSheet.clearFilter" />
-            </Button>
-        </Box>
+    const footer = useMemo(
+        () => (
+            <Box paddingHorizontal="sp16">
+                <Button
+                    intent="neutral"
+                    priority="secondary"
+                    isFullWidth
+                    onPress={() => {
+                        onSelectNetwork(undefined);
+                        onClose();
+                    }}
+                    testID={testID ? `${testID}/clear-filter` : undefined}
+                >
+                    <Translation id="moduleTrading.tradeableAssetsSheet.networksSheet.clearFilter" />
+                </Button>
+            </Box>
+        ),
+        [onClose, onSelectNetwork, testID],
     );
 
     return (

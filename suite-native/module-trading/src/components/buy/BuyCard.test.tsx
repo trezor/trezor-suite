@@ -15,6 +15,12 @@ import {
     renderWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: jest.fn(), setParams: jest.fn() }),
+    useRoute: () => ({ params: {} }),
+}));
+
 describe('BuyCard', () => {
     let form: BuyFormType;
 
