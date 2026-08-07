@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { useDevice } from '@suite/device';
 import { Translation, messages } from '@suite/intl';
-import { MODAL_CONTEXT_DEVICE, selectModalRequestId } from '@suite/modal';
+import { MODAL_CONTEXT_DEVICE, MODAL_CONTEXT_NONE, selectModalRequestId } from '@suite/modal';
 import {
     type RecoveryInputType,
     type SeedInputStatus,
@@ -43,6 +43,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const intl = useIntl();
     const pinRequestId = useSelector(selectModalRequestId);
     const { pin, setPin, handlePinSubmit } = usePin(device?.buttonRequests ?? [], pinRequestId);
+    // Set when the user cancels a running device request; the modal close is deferred (see effect below).
+    const cancelRequestedRef = useRef(false);
 
     const deviceModelInternal = device?.features?.internal_model;
     const isT1B1 = deviceModelInternal === DeviceModelInternal.T1B1;
@@ -61,16 +63,34 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
     const handleClose = () => {
         if (['in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
+            // Navigation is blocked while a device request is active, so the modal cannot be closed
+            // synchronously here. Abort the request and defer the close to the effect below, which
+            // runs once the device becomes idle and the device modal context clears. The resulting
+            // Method_Cancel is handled by the recovery thunks (which reset the reducer), so no
+            // "seed check failed" screen is shown in the meantime.
+            cancelRequestedRef.current = true;
             TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
         } else {
             onCancel();
         }
     };
 
+    // Close the modal once a requested cancel has settled: the device is idle again and the device
+    // modal context has cleared, which is exactly when closeModalApp (onCancel) can navigate away.
+    useEffect(() => {
+        if (cancelRequestedRef.current && !isLocked() && modal.context === MODAL_CONTEXT_NONE) {
+            cancelRequestedRef.current = false;
+            onCancel();
+        }
+    }, [isLocked, modal.context, onCancel]);
+
     const handleBackClick = () => {
-        const previousIndex = statesInProgressBar.indexOf(recovery.status) - 1;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const previousState: SeedInputStatus = statesInProgressBar[previousIndex];
+        const currentIndex = statesInProgressBar.indexOf(recovery.status);
+        // Fall back to 'initial' when the current status is not part of this device model's progress
+        // bar (e.g. a T1B1-only status lingering after hot-swapping to a touch device), which would
+        // otherwise produce an out-of-bounds index and dispatch setStatus(undefined).
+        const previousState: SeedInputStatus =
+            (currentIndex > 0 ? statesInProgressBar[currentIndex - 1] : undefined) ?? 'initial';
         dispatch(recoveryActions.setStatus(previousState));
     };
 
@@ -281,14 +301,17 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
 
     return (
         <Modal.Backdrop>
-            {['in-progress', 'waiting-for-confirmation'].includes(recovery.status) && (
-                <ConfirmOnDevicePill
-                    title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                    deviceModelInternal={device.features.internal_model}
-                    deviceUnitColor={device.features.unit_color}
-                    onCancel={handleClose}
-                />
-            )}
+            {['in-progress', 'waiting-for-confirmation'].includes(recovery.status) &&
+                modal.context === MODAL_CONTEXT_DEVICE && (
+                    // Gate on the device modal context so the pill is not left orphaned after the
+                    // device disconnects mid-recovery (which clears the modal context to 'none').
+                    <ConfirmOnDevicePill
+                        title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                        deviceModelInternal={device.features.internal_model}
+                        deviceUnitColor={device.features.unit_color}
+                        onCancel={handleClose}
+                    />
+                )}
             <Modal.ModalBase
                 heading={hasError ? undefined : <Translation id="TR_CHECK_RECOVERY_SEED" />}
                 description={

@@ -249,31 +249,8 @@ export const RecoveryStep = () => {
         );
     }
 
-    if (device?.mode === 'normal') {
-        // Ready to continue to the next step
-        const handleClick = () => dispatch(goToNextStep('set-pin'));
-
-        return (
-            <RecoveryStepBox
-                heading={
-                    <Column gap={8} alignItems="center" justifyContent="center">
-                        <Badge intent="neutral" size="medium">
-                            <Translation id="TR_RECOVER_WALLET" />
-                        </Badge>
-                        <Translation id="TR_WALLET_RECOVERED_FROM_SEED" />
-                    </Column>
-                }
-                innerActions={
-                    <OnboardingCard.Button
-                        data-testid="@onboarding/recovery/continue-button"
-                        onClick={handleClick}
-                    >
-                        <Translation id="TR_CONTINUE" />
-                    </OnboardingCard.Button>
-                }
-            />
-        );
-    }
+    // Check the error state before the device.mode === 'normal' success screen: a failed recovery
+    // must always show the retry UI, never the "wallet recovered" screen, regardless of device.mode.
     if (status === 'finished' && error) {
         return (
             <RecoveryStepBox
@@ -298,6 +275,32 @@ export const RecoveryStep = () => {
                         intent="critical"
                     >
                         <Translation id="TR_RETRY" />
+                    </OnboardingCard.Button>
+                }
+            />
+        );
+    }
+
+    if (device?.mode === 'normal') {
+        // Ready to continue to the next step
+        const handleClick = () => dispatch(goToNextStep('set-pin'));
+
+        return (
+            <RecoveryStepBox
+                heading={
+                    <Column gap={8} alignItems="center" justifyContent="center">
+                        <Badge intent="neutral" size="medium">
+                            <Translation id="TR_RECOVER_WALLET" />
+                        </Badge>
+                        <Translation id="TR_WALLET_RECOVERED_FROM_SEED" />
+                    </Column>
+                }
+                innerActions={
+                    <OnboardingCard.Button
+                        data-testid="@onboarding/recovery/continue-button"
+                        onClick={handleClick}
+                    >
+                        <Translation id="TR_CONTINUE" />
                     </OnboardingCard.Button>
                 }
             />

@@ -51,6 +51,14 @@ export const checkSeedThunk = createThunk(
         });
 
         if (!response.success) {
+            // A user-initiated cancellation is not a failure: reset the flow instead of leaving the
+            // reducer on the 'finished' + error state, which renders the "seed check failed" screen.
+            if (response.error.code === 'Method_Cancel') {
+                dispatch(recoveryActions.resetReducer());
+
+                return;
+            }
+
             dispatch(recoveryActions.setError(response.error.message));
             asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: events.settingsDeviceCheckSeedEvent.name,
@@ -110,6 +118,14 @@ export const recoverDeviceThunk = createThunk(
         });
 
         if (!response.success) {
+            // A user-initiated cancellation is not a failure: reset the flow instead of leaving the
+            // reducer on the 'finished' + error state, which renders the "recovery failed" screen.
+            if (response.error.code === 'Method_Cancel') {
+                dispatch(recoveryActions.resetReducer());
+
+                return;
+            }
+
             dispatch(recoveryActions.setError(response.error.message));
         }
 
@@ -136,6 +152,17 @@ export const recoveryRerunThunk = createThunk<
     // reload fresh features before deciding what to do
     const response = await TrezorConnect.getFeatures({ device: { path: device.path } });
 
+    // If the selected device changed during the getFeatures round-trip (a multi-device switch), bail
+    // out before touching shared recovery state on EITHER response branch — otherwise this device's
+    // outcome (including a stale 'failed to rerun' error) would be applied to a different device, and
+    // the seed-input call the caller starts next would target the wrong device. Reset so the status
+    // set above is not left stuck; the newly-selected device re-triggers its own rerun if needed.
+    if (selectSelectedDevice(getState())?.path !== device.path) {
+        dispatch(recoveryActions.resetReducer());
+
+        return rejectWithValue('selected device changed');
+    }
+
     if (!response.success) {
         dispatch(recoveryActions.setStatus('finished'));
         dispatch(recoveryActions.setError('failed to rerun recovery'));
@@ -146,16 +173,16 @@ export const recoveryRerunThunk = createThunk<
     const features = response.payload;
 
     if (!isRecoveryInProgress(features)) {
+        // Device already left recovery mode; clear the transient 'in-progress' status set above so
+        // the recovery-detection guard and the recovery-mode banner CTA don't get stuck.
+        dispatch(recoveryActions.resetReducer());
+
         return rejectWithValue('recovery not in progress');
     }
 
-    if (!features.initialized) {
-        dispatch(recoverDeviceThunk());
-    }
-
-    if (features.initialized) {
-        dispatch(checkSeedThunk());
-    }
-
+    // The seed-input flow (recoverDeviceThunk / checkSeedThunk) is intentionally NOT started here.
+    // The caller starts it AFTER navigating to the recovery/onboarding view. Starting it here would
+    // race the routerAppChanged -> resetReducer that the navigation triggers, wiping the freshly-set
+    // 'in-progress' status back to 'initial' (wrong "Start" screen) while the device call is in flight.
     return { initialized: features.initialized };
 });
