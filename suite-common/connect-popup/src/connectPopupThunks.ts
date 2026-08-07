@@ -85,12 +85,6 @@ export const connectPopupCallThunkInner = createThunk<
     async ({ source, ...params }, { dispatch, getState, extra }) => {
         try {
             const { method, payload } = compatibilityHooks(params);
-            // Stamp the caller's correlation token onto the active call as early as possible (at
-            // initiateCall, below) so cancel-matching works throughout — including the pre-device
-            // window (permission prompt, reconnect wait, preCallHooks). Stamping it only at the device
-            // phase left that window with `activeCall.callId === undefined`, so a foreign scoped cancel
-            // arriving then fell through to the full teardown and killed this (unrelated) active call.
-            const { callId } = payload as { callId?: string };
 
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
 
@@ -137,7 +131,6 @@ export const connectPopupCallThunkInner = createThunk<
                     },
                     payload,
                     source,
-                    callId,
                 }),
             );
 
@@ -208,12 +201,8 @@ export const connectPopupCallThunkInner = createThunk<
             device = selectSelectedDevice(getState());
             if (!device) throw TypedError('Device_Disconnected');
 
-            // Record the device path so the cancel handler can clear this call's button requests
-            // (keyed by physical-device path). The popup's own device modals render through Suite's
-            // global UI_EVENT handler: a caller-supplied callId is never registered in the shared
-            // scoped-callId registry, so the global handler does not defer it and handles every event
-            // (incl. REQUEST_PASSPHRASE) itself — see connectInitThunks / scopedCallIdRegistry.
-            dispatch(connectPopupActions.setCallMeta({ devicePath: device.path }));
+            // Record the physical device so cancel can clear this call's button requests.
+            dispatch(connectPopupActions.setCallDevicePath(device.path));
 
             const response = await TrezorConnect.call({
                 device: {
@@ -1106,25 +1095,8 @@ export const connectPopupCancelThunk = createThunk<void, { error?: string; callI
     ({ error, callId }, { dispatch, getState }) => {
         const activeCall = selectConnectPopupCall(getState());
 
-        // A cancel with a callId that isn't the active call's targets a different call: forward it to
-        // Core and leave this popup untouched. Only short-circuit once the active call owns a callId
-        // (stamped at initiateCall) — an unscoped active call can't be matched and falls through to the
-        // full teardown, as does a plain cancel or one matching the active call.
-        if (
-            activeCall?.callId !== undefined &&
-            callId !== undefined &&
-            callId !== activeCall.callId
-        ) {
-            TrezorConnect.cancel({ reason: error, callId });
-
-            return;
-        }
-
         getPermissionDeferred().reject(TypedError('Method_Cancel'));
-        // Scope the abort to the active call: a plain cancel (no callId) would reach Core as
-        // callId=undefined, which aborts ALL in-flight work (abortRunningCall in core/index.ts). Falls
-        // back to the active call's callId; stays undefined only for an unscoped active call.
-        TrezorConnect.cancel({ reason: error, callId: callId ?? activeCall?.callId });
+        TrezorConnect.cancel({ reason: error, callId });
         // Clear the button requests so the modal reflects the cancel without waiting for the aborted
         // call to settle; keyed by the stored device path (undefined before the device phase = no-op).
         dispatch(deviceActions.removeButtonRequests({ path: activeCall?.devicePath }));

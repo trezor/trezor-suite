@@ -269,12 +269,9 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                     };
                 }
             })
-            .addCase(connectPopupActions.setCallMeta, (state, { payload }) => {
+            .addCase(connectPopupActions.setCallDevicePath, (state, { payload }) => {
                 if (state.activeCall) {
-                    state.activeCall = {
-                        ...state.activeCall,
-                        ...payload,
-                    };
+                    state.activeCall.devicePath = payload;
                 }
             });
     },
