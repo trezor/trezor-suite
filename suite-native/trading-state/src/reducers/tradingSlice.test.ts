@@ -43,7 +43,6 @@ describe('tradingSlice', () => {
 
             expect(state).toEqual(
                 expect.objectContaining({
-                    favouriteAssets: {},
                     tradingEnvironment: 'production',
                     isAmountInputActive: false,
                     activeTradingType: undefined,

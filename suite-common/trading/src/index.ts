@@ -29,7 +29,6 @@ export * from './reducers/exchangeReducer';
 export * from './reducers/sellReducer';
 export * from './reducers/tradingReducer';
 export * from './regional';
-export * from './selectors/favouritesSelectors';
 export { buyThunks } from './thunks/buy';
 export { tradingThunks } from './thunks/common';
 export { exchangeThunks } from './thunks/exchange';

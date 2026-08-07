@@ -3737,10 +3737,6 @@ export const messages = {
         },
         tradeableAssetsSheet: {
             title: 'Assets',
-            favouritesTitle: 'Favorites',
-            allTitle: 'All assets',
-            favouritesAdd: 'Add to favorites',
-            favouritesRemove: 'Remove from favorites',
             emptyTitleText: 'No coin or token found',
             emptyDescriptionText: 'Check the spelling or browse the list to select an asset.',
             searchInputPlaceholderText: 'Search',
