@@ -13,7 +13,7 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
-import { selectSessionByTopic } from '../walletConnectReducer';
+import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import {
     type PendingConnectionProposalNetwork,
     type WalletConnectAdapter,
@@ -35,6 +35,10 @@ const findAccount = (accounts: Account[], firstAddress: string) =>
         return usedAddresses.includes(firstAddress) || unusedAddresses.includes(firstAddress);
     });
 
+export type BitcoinRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
+    WalletConnectStateRootState;
+export type BitcoinRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+
 const bitcoinRequestThunk = createThunk<
     | { address: string; publicKey: string; path: Bip43Path }[]
     | { address: string; signature: string }
@@ -42,7 +46,8 @@ const bitcoinRequestThunk = createThunk<
     | undefined,
     {
         event: WalletKitTypes.SessionRequest;
-    }
+    },
+    { state: BitcoinRequestThunkState; extra: BitcoinRequestThunkDeps }
 >(`${WALLETCONNECT_MODULE}/bitcoinRequest`, async ({ event }, { dispatch, getState }) => {
     const device = selectSelectedDevice(getState());
     const session = selectSessionByTopic(getState(), event.topic);

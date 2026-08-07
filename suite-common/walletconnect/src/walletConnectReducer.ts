@@ -10,7 +10,7 @@ export type WalletConnectState = {
     pendingProposal: PendingConnectionProposal | undefined;
 };
 
-type WalletConnectStateRootState = {
+export type WalletConnectStateRootState = {
     walletConnect: WalletConnectState;
 };
 

@@ -12,7 +12,7 @@ import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
 import { type Result } from '@trezor/type-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
-import { selectSessionByTopic } from '../walletConnectReducer';
+import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import {
     type PendingConnectionProposalNetwork,
     type WalletConnectAdapter,
@@ -28,6 +28,9 @@ const methods = [
     'solana_signMessage',
 ];
 
+type SolanaSignTransactionThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState;
+type SolanaSignTransactionThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+
 const solanaSignTransaction = createThunk<
     { signature: string; transaction: string },
     {
@@ -36,7 +39,8 @@ const solanaSignTransaction = createThunk<
         feePayer?: string;
         origin: string;
         isDevnet: boolean;
-    }
+    },
+    { state: SolanaSignTransactionThunkState; extra: SolanaSignTransactionThunkDeps }
 >(
     `${WALLETCONNECT_MODULE}/solanaSignTransaction`,
     async ({ session, transaction, feePayer, origin, isDevnet }, { dispatch, getState }) => {
@@ -105,11 +109,15 @@ const solanaSignTransaction = createThunk<
     },
 );
 
+export type SolanaRequestThunkState = SolanaSignTransactionThunkState & WalletConnectStateRootState;
+export type SolanaRequestThunkDeps = SolanaSignTransactionThunkDeps;
+
 const solanaRequestThunk = createThunk<
     { pubkey: string }[] | { signature: string } | undefined,
     {
         event: WalletKitTypes.SessionRequest;
-    }
+    },
+    { state: SolanaRequestThunkState; extra: SolanaRequestThunkDeps }
 >(`${WALLETCONNECT_MODULE}/solanaRequest`, async ({ event }, { dispatch, getState }) => {
     const session = selectSessionByTopic(getState(), event.topic);
     if (!session) {
