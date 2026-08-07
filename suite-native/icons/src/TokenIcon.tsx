@@ -24,6 +24,7 @@ export const tokenIconSizes = {
     tiny: 16,
     extraSmall: 24,
     small: 32,
+    medium: 40,
     large: 48,
     extraLarge: 64,
 } as const;

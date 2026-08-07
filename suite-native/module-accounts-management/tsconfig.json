@@ -11,6 +11,9 @@
         },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/earn-stablecoin-api"
+        },
+        {
             "path": "../../suite-common/fiat-services"
         },
         { "path": "../../suite-common/graph" },
@@ -67,7 +70,6 @@
         { "path": "../suite-sync" },
         { "path": "../tokens" },
         { "path": "../transactions" },
-        { "path": "../../packages/device-utils" },
         {
             "path": "../../packages/styles-native"
         },

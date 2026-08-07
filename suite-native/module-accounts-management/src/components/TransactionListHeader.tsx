@@ -33,12 +33,12 @@ import { selectIsNetworkSendFlowEnabled, selectIsUnrecognizedToken } from '../se
 import { AccountDiscoveryFailedBanner } from './AccountBanners/AccountDiscoveryFailedBanner';
 import { SolanaLimitedHistoryBanner } from './AccountBanners/SolanaLimitedHistoryBanner';
 import { StellarLimitedHistoryBanner } from './AccountBanners/StellarLimitedHistoryBanner';
-import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import { AccountDetailGraph } from './AccountDetailGraph';
-import { CoinPriceCard } from './CoinPriceCard';
+import { AssetPriceCard } from './AssetPriceCard';
 import { StablecoinYieldTokenOverview } from './StablecoinYieldTokenOverview';
 import { StellarTokenActions } from './StellarTokenActions';
 import { TronResources } from './TronResources';
+import { YourPositionCard } from './YourPositionCard';
 
 type TransactionListHeaderProps = {
     accountKey: AccountKey;
@@ -70,37 +70,13 @@ const TransactionListHeaderContent = ({
             selectIsUnrecognizedToken(state, accountKey, tokenContract),
     );
 
-    const token = useSelector((state: TokensRootState) =>
-        selectAccountTokenInfo(state, accountKey, tokenContract),
-    );
-
     if (!account) return null;
 
     const isGraphDisplayed = hasAccountTransactions && !isTestnetAccount && !isUnrecognizedToken;
 
-    if (isGraphDisplayed) {
-        return <AccountDetailGraph accountKey={accountKey} tokenContract={tokenContract} />;
-    }
+    if (!isGraphDisplayed) return null;
 
-    if (isTestnetAccount) {
-        return (
-            <AccountDetailCryptoValue value={account.formattedBalance} symbol={account.symbol} />
-        );
-    }
-
-    if (token && isUnrecognizedToken) {
-        const { balance = '0', symbol: tokenSymbol } = token;
-
-        return (
-            <AccountDetailCryptoValue
-                value={balance}
-                symbol={account.symbol}
-                tokenSymbol={tokenSymbol}
-            />
-        );
-    }
-
-    return null;
+    return <AccountDetailGraph accountKey={accountKey} tokenContract={tokenContract} />;
 };
 
 export const TransactionListHeader = memo(
@@ -184,16 +160,14 @@ export const TransactionListHeader = memo(
             <>
                 <VStack spacing="sp24">
                     <AccountDiscoveryFailedBanner accountKey={accountKey} />
+
+                    <YourPositionCard account={account} token={token} />
+
                     <TransactionListHeaderContent
                         accountKey={accountKey}
                         tokenContract={tokenContract}
                     />
-                    {tokenContract && (
-                        <StablecoinYieldTokenOverview
-                            accountKey={accountKey}
-                            tokenContract={tokenContract}
-                        />
-                    )}
+
                     {hasAccountTransactions && (
                         <HStack paddingTop="sp8" paddingHorizontal="sp16" flex={1} spacing="sp12">
                             {isReceiveButtonDisplayed && (
@@ -221,7 +195,13 @@ export const TransactionListHeader = memo(
                         </HStack>
                     )}
                     {isPriceCardDisplayed && (
-                        <CoinPriceCard accountKey={accountKey} tokenContract={tokenContract} />
+                        <AssetPriceCard accountKey={accountKey} tokenContract={tokenContract} />
+                    )}
+                    {tokenContract && (
+                        <StablecoinYieldTokenOverview
+                            accountKey={accountKey}
+                            tokenContract={tokenContract}
+                        />
                     )}
                     {isStellarTokenActionsDisplayed && (
                         <StellarTokenActions
@@ -235,6 +215,7 @@ export const TransactionListHeader = memo(
                         <TronResources accountKey={accountKey} />
                     )}
                 </VStack>
+
                 {hasAccountTransactions && (
                     <Box marginTop="sp52" marginHorizontal="sp16">
                         <Text variant="headline-sm">

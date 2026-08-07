@@ -2018,9 +2018,18 @@ export const messages = {
             },
         },
         accountDetailContentScreen: {
+            assetPrice: 'Asset price',
             coinPriceCard: {
                 changeIn7d: '7D change',
                 coinPrice: '{coinName} price',
+            },
+            assetPriceCard: {
+                changeIn7d: '7d',
+            },
+            yieldBadge: {
+                upToRate: 'Up to {apy}% Yield',
+                yieldRate: '{apy}% Yield',
+                promoRate: 'Up to {apy}% Rate',
             },
         },
     },
