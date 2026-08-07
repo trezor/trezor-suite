@@ -8,6 +8,7 @@ import {
     ConfirmOnTrezorWrapper,
     useConfirmOnTrezorController,
 } from '@suite-native/confirm-on-trezor';
+import { FollowDeviceScreenContent } from '@suite-native/device';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -23,8 +24,6 @@ import {
     selectIsTransactionAlreadySigned,
 } from '@suite-native/transaction-management';
 
-import { EarnFollowDeviceContent } from '../components/EarnFollowDeviceContent';
-import { EarnFollowDeviceHeader } from '../components/EarnFollowDeviceHeader';
 import { UnstakeTransactionDataReviewStepList } from '../components/UnstakeTransactionDataReviewStepList';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { useEarnAccountLabel } from '../hooks/useEarnAccountLabel';
@@ -142,9 +141,15 @@ export const UnstakeTransactionDataReviewScreen = ({
         return (
             <Screen
                 isScrollable={false}
-                header={<EarnFollowDeviceHeader onClose={closeReview} timer={timer} />}
+                header={
+                    <ScreenHeader
+                        closeActionType="back"
+                        closeAction={closeReview}
+                        rightIcon={timer}
+                    />
+                }
             >
-                <EarnFollowDeviceContent />
+                <FollowDeviceScreenContent titleTxKey="earn.unstakeTransactionDataReviewScreen.followDeviceInstructions" />
             </Screen>
         );
     }
