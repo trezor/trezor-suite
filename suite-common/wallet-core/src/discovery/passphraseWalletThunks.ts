@@ -10,6 +10,8 @@ import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import {
     type RunDiscoveryThunkState,
+    type StartDiscoveryThunkDeps,
+    type StartDiscoveryThunkState,
     runDiscoveryThunk,
     startDiscoveryThunk,
 } from './discoveryThunks';
@@ -112,18 +114,31 @@ const startDiscoveryOfExistingPassphraseWalletThunk = createThunk<
 // AddWalletButton and the retry paths (PassphraseDuplicate / Mismatch / IsNotExist
 // modals), which restart the flow. New hidden wallet: only sets state (PassphraseModal
 // runs it later); existing hidden / standard wallet: starts the discovery right away.
-export const startAddWalletDiscoveryThunk = createThunk(
+type StartAddWalletDiscoveryThunkParams = {
+    device: TrezorDevice;
+    isAddingHiddenWallet?: boolean;
+    isAddingExistingWallet?: boolean;
+};
+type StartAddWalletDiscoveryThunkState = StartDiscoveryOfExistingPassphraseWalletThunkState &
+    StartDiscoveryThunkState;
+type StartAddWalletDiscoveryThunkDeps = StartDiscoveryOfExistingPassphraseWalletThunkDeps &
+    StartDiscoveryThunkDeps;
+
+export const startAddWalletDiscoveryThunk = createThunk<
+    void,
+    StartAddWalletDiscoveryThunkParams,
+    {
+        state: StartAddWalletDiscoveryThunkState;
+        extra: StartAddWalletDiscoveryThunkDeps;
+    }
+>(
     `${DISCOVERY_MODULE_PREFIX}/startAddWalletDiscovery`,
     (
         {
             device,
             isAddingHiddenWallet,
             isAddingExistingWallet,
-        }: {
-            device: TrezorDevice;
-            isAddingHiddenWallet?: boolean;
-            isAddingExistingWallet?: boolean;
-        },
+        }: StartAddWalletDiscoveryThunkParams,
         { dispatch },
     ): void => {
         if (isAddingHiddenWallet && isAddingExistingWallet) {

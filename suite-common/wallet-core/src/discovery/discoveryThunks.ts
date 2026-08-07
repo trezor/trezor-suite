@@ -618,8 +618,8 @@ type StartDiscoveryThunkParams = {
     isAddingExistingWallet?: boolean;
     useScopedCallIds?: boolean;
 };
-type StartDiscoveryThunkState = RunDiscoveryThunkState;
-type StartDiscoveryThunkDeps = {
+export type StartDiscoveryThunkState = RunDiscoveryThunkState;
+export type StartDiscoveryThunkDeps = {
     services: AnalyticsDep & GetTradedAccountKeysDep;
     thunks: FetchAndSaveMetadataDep;
 };
