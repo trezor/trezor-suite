@@ -17,6 +17,7 @@ import {
     getDecreaseOutputId,
     getStakeType,
     getTxValidityTimeoutInMs,
+    isDeviceReviewOnly,
     isRbfBumpFeeTransaction,
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
@@ -26,6 +27,7 @@ import { useSelector } from 'src/hooks/suite';
 
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../../UserContextModal/TxDetailModal/ReplaceByFeeFailedOriginalTxConfirmed';
 import { TransactionReviewDetails } from '../TransactionReviewDetails';
+import { TransactionReviewFollowDevice } from '../TransactionReviewFollowDevice';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList';
 
 type TransactionReviewModalContentProps = {
@@ -104,6 +106,10 @@ export const TransactionReviewModalContent = ({
 
     if (areDetailsVisible) {
         return <TransactionReviewDetails tx={precomposedTx} txHash={serializedTx?.tx} />;
+    }
+
+    if (isDeviceReviewOnly(precomposedTx)) {
+        return <TransactionReviewFollowDevice isSigned={!!serializedTx} />;
     }
 
     if (isRbfConfirmedError && isRbfTransaction(precomposedTx)) {
