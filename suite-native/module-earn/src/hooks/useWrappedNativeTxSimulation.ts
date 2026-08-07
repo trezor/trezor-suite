@@ -9,6 +9,7 @@ import { type PreparedWrappedNativeTokenAction } from './useWrappedNativeTokenFe
 
 type UseWrappedNativeTxSimulationParams = {
     amountValue: string | undefined;
+    isDisabled: boolean;
     preparedAction: PreparedWrappedNativeTokenAction | null;
     /** Runs once the prepared transaction matches the entered amount, before the sheet opens. */
     onSubmit?: () => void;
@@ -23,6 +24,7 @@ type UseWrappedNativeTxSimulationParams = {
  */
 export const useWrappedNativeTxSimulation = ({
     amountValue,
+    isDisabled,
     preparedAction,
     onSubmit,
     onConfirm,
@@ -41,19 +43,21 @@ export const useWrappedNativeTxSimulation = ({
     const isFirmwareSupported = useSelector(selectIsWrappedNativeFlowSupported);
 
     const handleSubmit = useCallback(() => {
-        if (preparedAction?.amount !== amountValue) {
+        // The remote config can flip while the simulation sheet is open, so both paths into the
+        // device review re-check it.
+        if (isDisabled || preparedAction?.amount !== amountValue) {
             return;
         }
 
         onSubmit?.();
         setPreparedTx(preparedAction);
         requestAnimationFrame(openSimulationBottomSheet);
-    }, [amountValue, onSubmit, openSimulationBottomSheet, preparedAction]);
+    }, [amountValue, isDisabled, onSubmit, openSimulationBottomSheet, preparedAction]);
 
     const handleConfirmSimulation = useCallback(() => {
         closeSimulationBottomSheet();
 
-        if (!preparedTx) {
+        if (isDisabled || !preparedTx) {
             return;
         }
 
@@ -67,7 +71,14 @@ export const useWrappedNativeTxSimulation = ({
         }
 
         onConfirm(preparedTx);
-    }, [closeSimulationBottomSheet, isDeviceConnected, isFirmwareSupported, onConfirm, preparedTx]);
+    }, [
+        closeSimulationBottomSheet,
+        isDeviceConnected,
+        isDisabled,
+        isFirmwareSupported,
+        onConfirm,
+        preparedTx,
+    ]);
 
     const handleCancelSimulation = useCallback(() => {
         closeSimulationBottomSheet();

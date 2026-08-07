@@ -2,12 +2,14 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { Context } from '@suite-common/message-system';
 import { WRAPPED_NATIVE, getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { Box, Button, FullAlertBox, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { ContextMessage } from '@suite-native/message-system';
 import {
     Screen,
     type WrappedNativeTokenStackParamList,
@@ -77,6 +79,7 @@ export const UnwrapNativeTokenScreen = () => {
         accountKey,
         amountValue,
         flowType: 'unwrap',
+        isDisabled: isUnwrapDisabled,
         pendingParam: pendingTransaction,
         preparedAction: unwrapFee.preparedAction,
     });
@@ -101,6 +104,7 @@ export const UnwrapNativeTokenScreen = () => {
         >
             <Box marginTop="sp16" pointerEvents={isUnwrapPending ? 'none' : 'auto'}>
                 <VStack spacing="sp16">
+                    <ContextMessage context={Context.getWrappedNative('unwrap')} />
                     {isUnwrapDisabled && (
                         <YieldDisabledAlert
                             type="unwrap"

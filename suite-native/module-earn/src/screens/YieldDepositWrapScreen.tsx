@@ -5,6 +5,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { Context } from '@suite-common/message-system';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
@@ -19,6 +20,7 @@ import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, FullAlertBox, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { ContextMessage } from '@suite-native/message-system';
 import {
     Screen,
     type StackNavigationProps,
@@ -228,6 +230,7 @@ export const YieldDepositWrapScreen = () => {
 
     const simulation = useWrappedNativeTxSimulation({
         amountValue,
+        isDisabled: isWrapDisabled || isDepositDisabled,
         onConfirm: handleSimulationConfirmed,
         onSubmit: handleSubmitAnalytics,
         preparedAction: wrapFee.preparedAction,
@@ -291,6 +294,16 @@ export const YieldDepositWrapScreen = () => {
             <Box pointerEvents={isWrapPending ? 'none' : 'auto'}>
                 <Form form={form.form}>
                     <VStack spacing="sp16">
+                        <YieldDepositStepCard
+                            currentStepId="wrap"
+                            hasWrapStep
+                            networkSymbol={account.symbol}
+                        />
+
+                        <ContextMessage
+                            context={Context.getWrappedNative('wrap')}
+                            marginHorizontal="sp16"
+                        />
                         {isDepositDisabled && (
                             <Box paddingHorizontal="sp16">
                                 <YieldDisabledAlert
@@ -309,11 +322,6 @@ export const YieldDepositWrapScreen = () => {
                                 />
                             </Box>
                         )}
-                        <YieldDepositStepCard
-                            currentStepId="wrap"
-                            hasWrapStep
-                            networkSymbol={account.symbol}
-                        />
 
                         <Box paddingHorizontal="sp16">
                             <WrappedNativeTokenAmountInputCard

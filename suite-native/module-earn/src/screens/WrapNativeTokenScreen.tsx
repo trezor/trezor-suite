@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { Context } from '@suite-common/message-system';
 import { WRAPPED_NATIVE, getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
@@ -14,6 +15,7 @@ import { toTokenSymbol } from '@suite-common/wallet-types';
 import { Box, Button, FullAlertBox, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { ContextMessage } from '@suite-native/message-system';
 import {
     Screen,
     type WrappedNativeTokenStackParamList,
@@ -79,6 +81,7 @@ export const WrapNativeTokenScreen = () => {
         accountKey,
         amountValue,
         flowType: 'wrap',
+        isDisabled: isWrapDisabled,
         pendingParam: pendingTransaction,
         preparedAction: wrapFee.preparedAction,
     });
@@ -111,6 +114,7 @@ export const WrapNativeTokenScreen = () => {
         >
             <Box marginTop="sp16" pointerEvents={isWrapPending ? 'none' : 'auto'}>
                 <VStack spacing="sp16">
+                    <ContextMessage context={Context.getWrappedNative('wrap')} />
                     {isWrapDisabled && (
                         <YieldDisabledAlert
                             type="wrap"
