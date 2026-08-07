@@ -12,7 +12,10 @@ import { BigNumber } from '@trezor/utils';
 
 import { type WithdrawThunkArguments, composeTronWithdrawFeeLevelsThunk } from './composeWithdraw';
 import { buildWithdrawContract, buildWithdrawReviewForm } from './withdrawContract';
-import { addFakePendingTronTxThunk } from '../../../../transactions/transactionsThunks';
+import {
+    type AddFakePendingTronTxThunkState,
+    addFakePendingTronTxThunk,
+} from '../../../../transactions/transactionsThunks';
 import { TRON_STAKE_MODULE } from '../../shared/constants';
 import { signTronContract } from '../../shared/signTronContract';
 import { tronStakeActions } from '../../tronStakeReducer';
@@ -25,7 +28,13 @@ interface SubmitWithdrawThunkArguments extends WithdrawThunkArguments {
     onSettled?: () => void;
 }
 
-export const submitTronWithdrawThunk = createThunk<void, SubmitWithdrawThunkArguments>(
+type SubmitTronWithdrawThunkState = AddFakePendingTronTxThunkState;
+
+export const submitTronWithdrawThunk = createThunk<
+    void,
+    SubmitWithdrawThunkArguments,
+    { state: SubmitTronWithdrawThunkState }
+>(
     `${TRON_STAKE_MODULE}/submitTronWithdrawThunk`,
     async ({ account, device, requestPushApproval, onSigningStart, onSettled }, { dispatch }) => {
         const { key: accountKey } = account;

@@ -6,7 +6,10 @@ import { asCoinSymbol } from '@trezor/connect-common';
 
 import { type VoteThunkArguments, composeTronVoteFeeLevelsThunk } from './composeVote';
 import { buildVoteContract, buildVoteReviewForm, getTotalVotes } from './voteContract';
-import { addFakePendingTronTxThunk } from '../../../../transactions/transactionsThunks';
+import {
+    type AddFakePendingTronTxThunkState,
+    addFakePendingTronTxThunk,
+} from '../../../../transactions/transactionsThunks';
 import { TRON_STAKE_MODULE } from '../../shared/constants';
 import { reportTronStakeTxId } from '../../shared/reportTronStakeTxId';
 import { signTronContract } from '../../shared/signTronContract';
@@ -22,7 +25,13 @@ interface SubmitVoteThunkArguments extends VoteThunkArguments {
     onSettled?: () => void;
 }
 
-export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
+type SubmitTronVoteThunkState = AddFakePendingTronTxThunkState;
+
+export const submitTronVoteThunk = createThunk<
+    void,
+    SubmitVoteThunkArguments,
+    { state: SubmitTronVoteThunkState }
+>(
     `${TRON_STAKE_MODULE}/submitTronVoteThunk`,
     async (
         {

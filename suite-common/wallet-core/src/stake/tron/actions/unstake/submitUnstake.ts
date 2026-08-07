@@ -8,7 +8,10 @@ import { BigNumber } from '@trezor/utils';
 
 import { type UnstakeThunkArguments, composeTronUnstakeFeeLevelsThunk } from './composeUnstake';
 import { buildUnstakeContract, buildUnstakeReviewForm } from './unstakeContract';
-import { addFakePendingTronTxThunk } from '../../../../transactions/transactionsThunks';
+import {
+    type AddFakePendingTronTxThunkState,
+    addFakePendingTronTxThunk,
+} from '../../../../transactions/transactionsThunks';
 import { TRON_STAKE_MODULE } from '../../shared/constants';
 import { signTronContract } from '../../shared/signTronContract';
 import { tronStakeActions } from '../../tronStakeReducer';
@@ -21,7 +24,13 @@ interface SubmitUnstakeThunkArguments extends UnstakeThunkArguments {
     onSettled?: () => void;
 }
 
-export const submitTronUnstakeThunk = createThunk<void, SubmitUnstakeThunkArguments>(
+type SubmitTronUnstakeThunkState = AddFakePendingTronTxThunkState;
+
+export const submitTronUnstakeThunk = createThunk<
+    void,
+    SubmitUnstakeThunkArguments,
+    { state: SubmitTronUnstakeThunkState }
+>(
     `${TRON_STAKE_MODULE}/submitTronUnstakeThunk`,
     async (
         { account, device, amount, resourceType, requestPushApproval, onSigningStart, onSettled },
