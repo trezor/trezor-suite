@@ -1,4 +1,8 @@
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
 import { type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKeyFromTicker, isTestnet } from '@suite-common/wallet-utils';
 
@@ -11,9 +15,11 @@ export const fiatRatesInitialState: FiatRatesState = {
     historic: {},
 };
 
+type FiatRatesReducerDeps = ActionTypesDep<'storageLoad'> & ReducersDep<'storageLoadHistoricRates'>;
+
 export const prepareFiatRatesReducer = createReducerWithExtraDeps(
     fiatRatesInitialState,
-    (builder, extra) => {
+    (builder, extra: FiatRatesReducerDeps) => {
         builder
             .addCase(updateFiatRatesThunk.pending, (state, action) => {
                 const { tickers, baseCurrencyCode, rateType } = action.meta.arg;

@@ -1,6 +1,6 @@
 import { type AnyAction } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { type ThpSuiteCredentials } from '@suite-common/suite-types';
 import {
     DEVICE,
@@ -51,7 +51,9 @@ const addCredential = (credentials: ThpSuiteCredentials[], credential: ThpCreden
         .filter(c => c.trezor_static_public_key !== credential.trezor_static_public_key)
         .concat([{ ...credential, connectionCounter: 0 }]);
 
-export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
+type ThpReducerDeps = ActionTypesDep<'storageLoad'>;
+
+export const prepareThpReducer = createReducerWithExtraDeps<ThpState, ThpReducerDeps>(
     initialThpState,
     (builder, extra) =>
         builder

@@ -2,6 +2,8 @@ import { A } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import {
+    type ActionTypesDep,
+    type ReducersDep,
     createReducerWithExtraDeps,
     createWeakMapSelector,
     returnStableArrayIfEmpty,
@@ -51,9 +53,12 @@ export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> 
     'addressDisplayType',
 ];
 
+type WalletSettingsReducerDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadWalletSettings'>;
+
 export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
     initialState,
-    (builder, extra) => {
+    (builder, extra: WalletSettingsReducerDeps) => {
         builder.addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadWalletSettings);
         builder.addCase(
             walletSettingsActions.setBaseCurrency.type,
