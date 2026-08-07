@@ -24,7 +24,7 @@ function stakingDataNeedsRefetch(data: StakeRootState['wallet']['stake']['data']
 
     return shouldRefetch;
 }
-type InitStakeDataThunkState = StakeRootState & WalletSettingsRootState;
+export type InitStakeDataThunkState = StakeRootState & WalletSettingsRootState;
 
 export const initStakeDataThunk = createThunk<void, void, { state: InitStakeDataThunkState }>(
     `${STAKE_MODULE}/initStakeDataThunk`,

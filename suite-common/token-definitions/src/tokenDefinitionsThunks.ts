@@ -39,10 +39,10 @@ export const getTokenDefinitionThunk = createThunk<
     },
 );
 
-type InitTokenDefinitionsThunkDeps = {
+export type InitTokenDefinitionsThunkDeps = {
     services: GetTokenDefinitionsEnabledNetworksDep;
 };
-type InitTokenDefinitionsThunkState = TokenDefinitionsRootState;
+export type InitTokenDefinitionsThunkState = TokenDefinitionsRootState;
 
 export const initTokenDefinitionsThunk = createThunk<
     unknown[],

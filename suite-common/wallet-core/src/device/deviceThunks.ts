@@ -259,7 +259,7 @@ export const initDevices = createThunk<void, void, { state: InitDevicesThunkStat
     },
 );
 
-type CreateImportedDeviceThunkState = DeviceRootState;
+export type CreateImportedDeviceThunkState = DeviceRootState;
 
 export const createImportedDeviceThunk = createThunk<
     void,
