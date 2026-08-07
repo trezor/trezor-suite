@@ -140,8 +140,8 @@ describe('useTradeableAssetsFilteredData', () => {
                 btcAsset,
                 ethAsset,
                 usdtAsset,
-                solAsset,
                 usdcAsset,
+                solAsset,
             ]);
         });
 

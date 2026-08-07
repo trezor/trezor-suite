@@ -161,7 +161,7 @@ export abstract class TradingFormActions extends TradingActions {
         await waitForVisible(receiveAssetButton, { timeout: this.SHORT_TIMEOUT });
         await receiveAssetButton.tap();
 
-        await this.expectScreenHeaderTitle('Assets');
+        await this.expectScreenHeaderTitle('You get');
 
         const searchReceiveCryptoInput = this.getSearchReceiveCryptoElement();
         await searchReceiveCryptoInput.tap();

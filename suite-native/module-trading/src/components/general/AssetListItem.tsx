@@ -16,13 +16,24 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { NetworkSymbolExtendedFormatter } from './NetworkSymbolExtendedFormatter';
 
-const ANIMATION_DURATION = 200;
+export type AssetListItemProps = {
+    name: string;
+    symbol: NetworkSymbolExtended;
+    contractAddress?: TokenAddress;
+    networkSymbol: NetworkSymbol;
+    onPress: () => void;
+    rightContent?: ReactNode;
+};
 
-export const AssetAnimatedPressable = ({ onPress, style, children, ...rest }: PressableProps) => {
+const ANIMATION_DURATION_MS = 100;
+
+const AssetAnimatedPressable = ({ onPress, style, children, ...rest }: PressableProps) => {
     const { utils } = useNativeStyles();
     const progress = useSharedValue(0);
-    const handlePressIn = () => (progress.value = withTiming(1, { duration: ANIMATION_DURATION }));
-    const handlePressOut = () => (progress.value = withTiming(0, { duration: ANIMATION_DURATION }));
+    const handlePressIn = () =>
+        (progress.value = withTiming(1, { duration: ANIMATION_DURATION_MS }));
+    const handlePressOut = () =>
+        (progress.value = withTiming(0, { duration: ANIMATION_DURATION_MS }));
 
     const animatedStyle = useAnimatedStyle(() => ({
         backgroundColor: interpolateColor(
@@ -45,14 +56,6 @@ export const AssetAnimatedPressable = ({ onPress, style, children, ...rest }: Pr
     );
 };
 
-export type AssetListItemProps = {
-    name: string;
-    symbol: NetworkSymbolExtended;
-    contractAddress?: TokenAddress;
-    networkSymbol: NetworkSymbol;
-    onPress: () => void;
-    rightContent?: ReactNode;
-};
 const vStackStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
     flex: 1,
@@ -60,7 +63,7 @@ const vStackStyle = prepareNativeStyle(() => ({
 }));
 
 const rightContentStyle = prepareNativeStyle(() => ({
-    maxWidth: '60%',
+    maxWidth: '50%',
     justifyContent: 'center',
 }));
 
@@ -92,14 +95,12 @@ export const AssetListItem = ({
                 paddingHorizontal="sp8"
                 paddingVertical="sp12"
             >
-                <Box justifyContent="center">
-                    <TokenIcon
-                        symbol={networkSymbol}
-                        contractAddress={contractAddress}
-                        showNetworkIcon
-                        size="medium"
-                    />
-                </Box>
+                <TokenIcon
+                    symbol={networkSymbol}
+                    contractAddress={contractAddress}
+                    showNetworkIcon
+                    size="medium"
+                />
                 <VStack style={applyStyle(vStackStyle)}>
                     <Text variant="body-md" color="contentPrimary">
                         {name}
