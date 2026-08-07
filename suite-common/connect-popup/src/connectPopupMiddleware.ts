@@ -1,7 +1,10 @@
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { type DeviceRootState } from '@suite-common/device';
+import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
+    type DiscoveryRootState,
     selectDeviceAccountsByNetworkSymbol,
     selectDiscoveryForSelectedDevice,
 } from '@suite-common/wallet-core';
@@ -82,46 +85,50 @@ const buildDiscoveryAccounts = (accounts: Account[], coinInfo: CoinInfo): Discov
     return result;
 };
 
-export const prepareConnectPopupMiddleware = createMiddlewareWithExtraDeps(
-    async (action, { dispatch, next, getState }) => {
-        await next(action);
+type ConnectPopupMiddlewareState = AccountsRootState & DeviceRootState & DiscoveryRootState;
 
-        if (action.type === UI_REQUEST.INSUFFICIENT_FUNDS) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'not-enough-funds-error',
-                }),
-            );
-        }
+export const prepareConnectPopupMiddleware = createMiddlewareWithExtraDeps<
+    void,
+    AnyAction,
+    ConnectPopupMiddlewareState
+>(async (action, { dispatch, next, getState }) => {
+    await next(action);
 
-        if (action.type === UI_REQUEST.REQUEST_DISCOVERY_ACCOUNTS) {
-            const discovery = selectDiscoveryForSelectedDevice(getState());
+    if (action.type === UI_REQUEST.INSUFFICIENT_FUNDS) {
+        dispatch(
+            notificationsActions.addToast({
+                type: 'not-enough-funds-error',
+            }),
+        );
+    }
 
-            if (discovery && discovery.status !== 'complete') {
-                // Discovery hasn't completed — send null so Connect falls back
-                // to its own on-device discovery instead of using partial data.
-                TrezorConnect.uiResponse({
-                    type: UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNTS,
-                    payload: null,
-                });
+    if (action.type === UI_REQUEST.REQUEST_DISCOVERY_ACCOUNTS) {
+        const discovery = selectDiscoveryForSelectedDevice(getState());
 
-                return action;
-            }
-
-            const { coinInfo } = action.payload;
-            const symbol = coinInfo.shortcut.toLowerCase() as NetworkSymbol;
-            const allAccounts = selectDeviceAccountsByNetworkSymbol(getState(), symbol);
-            // Exclude coinjoin accounts — they use SLIP-25 paths and unlockPath which
-            // Connect's Discovery does not produce and DiscoveryAccount does not support.
-            const accounts = allAccounts.filter(a => a.backendType !== 'coinjoin');
-            const discoveryAccounts = buildDiscoveryAccounts(accounts, coinInfo);
-
+        if (discovery && discovery.status !== 'complete') {
+            // Discovery hasn't completed — send null so Connect falls back
+            // to its own on-device discovery instead of using partial data.
             TrezorConnect.uiResponse({
                 type: UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNTS,
-                payload: discoveryAccounts.length > 0 ? { accounts: discoveryAccounts } : null,
+                payload: null,
             });
+
+            return action;
         }
 
-        return action;
-    },
-);
+        const { coinInfo } = action.payload;
+        const symbol = coinInfo.shortcut.toLowerCase() as NetworkSymbol;
+        const allAccounts = selectDeviceAccountsByNetworkSymbol(getState(), symbol);
+        // Exclude coinjoin accounts — they use SLIP-25 paths and unlockPath which
+        // Connect's Discovery does not produce and DiscoveryAccount does not support.
+        const accounts = allAccounts.filter(a => a.backendType !== 'coinjoin');
+        const discoveryAccounts = buildDiscoveryAccounts(accounts, coinInfo);
+
+        TrezorConnect.uiResponse({
+            type: UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNTS,
+            payload: discoveryAccounts.length > 0 ? { accounts: discoveryAccounts } : null,
+        });
+    }
+
+    return action;
+});

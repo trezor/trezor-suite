@@ -8,6 +8,7 @@
         { "path": "../device" },
         { "path": "../mev" },
         { "path": "../redux-utils" },
+        { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../toast-notifications" },
         { "path": "../wallet-config" },

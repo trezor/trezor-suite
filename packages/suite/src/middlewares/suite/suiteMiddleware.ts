@@ -1,14 +1,19 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { disconnectDeviceThunk } from '@suite/device';
+import { type FlagsRootState } from '@suite/flags';
 import { METADATA } from '@suite/metadata';
+import { type ModalRootState } from '@suite/modal';
 import { recoveryActions } from '@suite/recovery';
-import { goto, routerAppChanged } from '@suite/router';
+import { type RouterRootState, goto, routerAppChanged } from '@suite/router';
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
 import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
     observeSelectedDevice,
@@ -20,6 +25,13 @@ import { DEVICE } from '@trezor/connect';
 import { SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
+
+type SuiteMiddlewareState = AccountsRootState &
+    WalletSettingsRootState & {
+        flags: Pick<FlagsRootState['flags'], 'hasSeenDisconnectTooltip'>;
+        modal: Pick<ModalRootState['modal'], 'context'>;
+        router: Pick<RouterRootState['router'], 'route'>;
+    };
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
@@ -45,7 +57,15 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
     return false;
 };
 
-export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
+export type PrepareSuiteMiddlewareDeps = { services: SuiteSyncDep };
+
+const createSuiteMiddleware = createMiddlewareWithExtraDeps<
+    PrepareSuiteMiddlewareDeps,
+    AnyAction,
+    SuiteMiddlewareState
+>;
+
+export const prepareSuiteMiddleware = createSuiteMiddleware(
     (action, { dispatch, next, getState, extra }) => {
         if (
             action.type === routerAppChanged.type &&
