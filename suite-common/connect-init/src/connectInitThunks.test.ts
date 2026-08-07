@@ -238,12 +238,17 @@ describe('TrezorConnect Actions', () => {
         await connectInitThunk()(dispatch, getState, extra);
         actions.length = 0;
 
-        await testMocks.getTrezorConnectMock().getFeatures();
+        await testMocks
+            .getTrezorConnectMock()
+            .getFeatures({ device: { path: asDeviceUniquePath('device-path-42') } });
 
         expect(actions).toEqual([
             { type: extra.actions.lockDevice.type, payload: true },
             { type: extra.actions.lockDevice.type, payload: false },
-            expect.objectContaining({ type: '@suite/device/removeButtonRequests' }),
+            {
+                type: '@suite/device/removeButtonRequests',
+                payload: { path: 'device-path-42' },
+            },
         ]);
     });
 
@@ -279,21 +284,6 @@ describe('TrezorConnect Actions', () => {
             expect.objectContaining({ type: '@suite/device/addButtonRequest' }),
             expect.objectContaining({ type: defaultTrezorUIEventHandlerThunk.fulfilled.type }),
         ]);
-    });
-
-    it('cleans up button requests by the call device path', async () => {
-        const { actions, dispatch, getState, extra } = createThunkDeps();
-        await connectInitThunk()(dispatch, getState, extra);
-        actions.length = 0;
-        // No device in the response fixture -> the wrapper falls back to the call's device param path.
-        await testMocks
-            .getTrezorConnectMock()
-            .getFeatures({ device: { path: asDeviceUniquePath('device-path-42') } });
-
-        expect(actions.at(-1)).toMatchObject({
-            type: '@suite/device/removeButtonRequests',
-            payload: { path: 'device-path-42' },
-        });
     });
 
     it('connectInitHooks.deviceEvent is called for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED', async () => {
