@@ -543,7 +543,7 @@ interface EthereumGetCurrentNonceThunkParams {
     // See ResolveEthereumNonceParams: temporarily required so no caller can silently fall back to the stale nonce.
     fetchConfirmedNonce?: boolean;
 }
-type EthereumGetCurrentNonceThunkState = AccountsRootState & TransactionsRootState;
+export type EthereumGetCurrentNonceThunkState = AccountsRootState & TransactionsRootState;
 
 export const ethereumGetCurrentNonceThunk = createThunk<
     ResolveEthereumNonceResult,
