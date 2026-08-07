@@ -51,7 +51,7 @@ type ComposeYieldUnwrapTransactionPayload = {
     token: Pick<YieldFlowDisplayToken, 'contractAddress' | 'decimals'>;
     unwrapAmount: string;
 };
-type ComposeYieldWrapTransactionThunkState = AccountsRootState &
+export type ComposeYieldWrapTransactionThunkState = AccountsRootState &
     FeesRootState &
     TransactionsRootState;
 
@@ -141,7 +141,7 @@ export const composeYieldWrapTransactionThunk = createThunk<
     },
 );
 
-type ComposeYieldUnwrapTransactionThunkState = AccountsRootState &
+export type ComposeYieldUnwrapTransactionThunkState = AccountsRootState &
     FeesRootState &
     TransactionsRootState;
 

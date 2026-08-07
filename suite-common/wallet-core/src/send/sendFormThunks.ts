@@ -256,10 +256,10 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
     },
 );
 
-type CancelSignSendFormTransactionThunkDeps = {
+export type CancelSignSendFormTransactionThunkDeps = {
     actions: OnModalCancelDep;
 };
-type CancelSignSendFormTransactionThunkState = SendRootState;
+export type CancelSignSendFormTransactionThunkState = SendRootState;
 
 export const cancelSignSendFormTransactionThunk = createThunk<
     void,
@@ -300,10 +300,10 @@ type SynchronizeSentTransactionThunkParams = {
     // account.misc.nonce (which reads one too high until the backend picks up the real tx).
     ethereumNonce?: string;
 };
-type SynchronizeSentTransactionThunkState = FeesRootState &
+export type SynchronizeSentTransactionThunkState = FeesRootState &
     SendRootState &
     SyncAccountsWithBlockchainThunkState;
-type SynchronizeSentTransactionThunkDeps = {
+export type SynchronizeSentTransactionThunkDeps = {
     services: AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep;
 };
 
@@ -387,8 +387,8 @@ export const synchronizeSentTransactionThunk = createThunk<
     },
 );
 
-type PushSendFormTransactionThunkState = SynchronizeSentTransactionThunkState;
-type PushSendFormTransactionThunkDeps = {
+export type PushSendFormTransactionThunkState = SynchronizeSentTransactionThunkState;
+export type PushSendFormTransactionThunkDeps = {
     actions: OnModalCancelDep;
     services: AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep;
 };
@@ -641,7 +641,7 @@ type SignTransactionThunkParams = {
     selectedAccount: Account;
     paymentRequests?: PROTO.PaymentRequest[];
 };
-type SignTransactionThunkState = AccountsRootState &
+export type SignTransactionThunkState = AccountsRootState &
     DeviceRootState &
     TransactionsRootState &
     WalletSettingsRootState;
@@ -753,7 +753,7 @@ export const signTransactionThunk = createThunk<
     },
 );
 
-type EnhancePrecomposedTransactionThunkState = DeviceRootState;
+export type EnhancePrecomposedTransactionThunkState = DeviceRootState;
 
 export const enhancePrecomposedTransactionThunk = createThunk<
     GeneralPrecomposedTransactionFinal,

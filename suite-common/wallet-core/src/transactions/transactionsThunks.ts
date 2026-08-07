@@ -70,7 +70,9 @@ interface ReplaceTransactionThunkParams {
     precomposedTransaction: PrecomposedTransactionFinalBumpFeeRbf;
     newTxid: string;
 }
-type ReplaceTransactionThunkState = AccountsRootState & SendRootState & TransactionsRootState;
+export type ReplaceTransactionThunkState = AccountsRootState &
+    SendRootState &
+    TransactionsRootState;
 
 export const replaceTransactionThunk = createThunk<
     void,

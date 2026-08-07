@@ -1,10 +1,11 @@
 import { openDeferredModal } from '@suite/modal';
-import { events } from '@suite-common/analytics';
+import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    type ComposeYieldWrapTransactionThunkState,
     type YieldFlowDisplayToken,
     composeYieldWrapTransactionThunk,
     setYieldError,
@@ -13,6 +14,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 
 import {
+    type SendYieldTransactionDeps,
+    type SendYieldTransactionState,
     getYieldErrorTranslationKey,
     getYieldSubmitErrorAnalyticsMessage,
     sendYieldTransaction,
@@ -31,12 +34,19 @@ type WrapNativeTokenPayload = {
     };
 };
 
-export const submitWrapNativeTokenThunk = createThunk(
+type SubmitWrapNativeTokenThunkState = ComposeYieldWrapTransactionThunkState &
+    SendYieldTransactionState;
+type SubmitWrapNativeTokenThunkDeps = SendYieldTransactionDeps & {
+    services: AnalyticsDep;
+};
+
+export const submitWrapNativeTokenThunk = createThunk<
+    { txid: string } | undefined,
+    WrapNativeTokenPayload,
+    { state: SubmitWrapNativeTokenThunkState; extra: SubmitWrapNativeTokenThunkDeps }
+>(
     `${WRAP_NATIVE_TOKEN_PREFIX}/submit`,
-    async (
-        { account, token, wrapAmount, yieldFlow }: WrapNativeTokenPayload,
-        { dispatch, getState, extra },
-    ) => {
+    async ({ account, token, wrapAmount, yieldFlow }, { dispatch, getState, extra }) => {
         // In-flow wraps are already tracked as yield/deposit type:'wrap', so reporting here too
         // would double-count them.
         const reportError = (errorMessage: string) => {

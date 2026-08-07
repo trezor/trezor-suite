@@ -1,10 +1,11 @@
 import { openDeferredModal } from '@suite/modal';
-import { events } from '@suite-common/analytics';
+import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    type ComposeYieldUnwrapTransactionThunkState,
     type YieldFlowDisplayToken,
     type YieldWithdrawFlowType,
     composeYieldUnwrapTransactionThunk,
@@ -12,6 +13,8 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 
 import {
+    type SendYieldTransactionDeps,
+    type SendYieldTransactionState,
     getYieldSubmitErrorAnalyticsMessage,
     sendYieldTransaction,
 } from './stablecoin-yield/signingHelpers';
@@ -28,12 +31,19 @@ type UnwrapNativeTokenPayload = {
     };
 };
 
-export const submitUnwrapNativeTokenThunk = createThunk(
+type SubmitUnwrapNativeTokenThunkState = ComposeYieldUnwrapTransactionThunkState &
+    SendYieldTransactionState;
+type SubmitUnwrapNativeTokenThunkDeps = SendYieldTransactionDeps & {
+    services: AnalyticsDep;
+};
+
+export const submitUnwrapNativeTokenThunk = createThunk<
+    { txid: string } | undefined,
+    UnwrapNativeTokenPayload,
+    { state: SubmitUnwrapNativeTokenThunkState; extra: SubmitUnwrapNativeTokenThunkDeps }
+>(
     `${UNWRAP_NATIVE_TOKEN_PREFIX}/submit`,
-    async (
-        { account, token, unwrapAmount, yieldFlow }: UnwrapNativeTokenPayload,
-        { dispatch, getState, extra },
-    ) => {
+    async ({ account, token, unwrapAmount, yieldFlow }, { dispatch, getState, extra }) => {
         // In-flow unwraps are already tracked as yield/withdraw type:'unwrap', so reporting here
         // too would double-count them.
         const reportError = (errorMessage: string) => {

@@ -1,8 +1,12 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { selectIsSelectedAccountLoaded, selectSelectedAccountKey } from '@suite/account';
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import {
+    type SelectedAccountRootState,
+    selectIsSelectedAccountLoaded,
+    selectSelectedAccountKey,
+} from '@suite/account';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { processLegacyMetadataIntoSuiteSyncThunk } from '@suite/labeling';
 import { type MetadataRootState, metadataLabelingActions, selectMetadata } from '@suite/metadata';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
@@ -12,8 +16,16 @@ import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { type WithSuiteSyncState, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
+    type CancelSignSendFormTransactionThunkDeps,
+    type CancelSignSendFormTransactionThunkState,
+    type EnhancePrecomposedTransactionThunkState,
+    type PushSendFormTransactionThunkDeps,
+    type PushSendFormTransactionThunkState,
+    type ReplaceTransactionThunkState,
     type SendRootState,
+    type SignTransactionThunkState,
     cancelSignSendFormTransactionThunk,
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
@@ -37,51 +49,63 @@ import { getSynchronize } from '@trezor/utils';
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';
 import {
+    type MoveLabelsForRbfThunkDeps,
+    type MoveLabelsForRbfThunkState,
     type StateBeforePush,
     asStateBeforePush,
     moveLabelsForRbfThunk,
 } from '../../labels/moveLabelsForRbfThunk';
 
-export const saveSendFormDraftThunk = createThunk(
-    `${MODULE_PREFIX}/saveSendFormDraftThunk`,
-    ({ formState }: { formState: FormState }, { dispatch, getState }) => {
-        const selectedAccountKey = selectSelectedAccountKey(getState());
-        const isSelectedAccountLoaded = selectIsSelectedAccountLoaded(getState());
+type SaveSendFormDraftThunkParams = { formState: FormState };
+type SaveSendFormDraftThunkState = SelectedAccountRootState & SendRootState;
 
-        if (!isSelectedAccountLoaded || G.isNullable(selectedAccountKey)) return null;
+export const saveSendFormDraftThunk = createThunk<
+    null | undefined,
+    SaveSendFormDraftThunkParams,
+    { state: SaveSendFormDraftThunkState }
+>(`${MODULE_PREFIX}/saveSendFormDraftThunk`, ({ formState }, { dispatch, getState }) => {
+    const selectedAccountKey = selectSelectedAccountKey(getState());
+    const isSelectedAccountLoaded = selectIsSelectedAccountLoaded(getState());
 
-        dispatch(sendFormActions.storeDraft({ accountKey: selectedAccountKey, formState }));
-    },
-);
+    if (!isSelectedAccountLoaded || G.isNullable(selectedAccountKey)) return null;
 
-export const getSendFormDraftThunk = createThunk(
-    `${MODULE_PREFIX}/getSendFormDraftThunk`,
-    (_, { getState }) => {
-        const isSelectedAccountLoaded = selectIsSelectedAccountLoaded(getState());
-        const selectedAccountKey = selectSelectedAccountKey(getState());
-        const sendFormDrafts = selectSendFormDrafts(getState());
+    dispatch(sendFormActions.storeDraft({ accountKey: selectedAccountKey, formState }));
+});
 
-        if (!isSelectedAccountLoaded || G.isNullable(selectedAccountKey)) return;
+type GetSendFormDraftThunkState = SelectedAccountRootState & SendRootState;
 
-        const accountDraft = sendFormDrafts[selectedAccountKey];
-        if (accountDraft) {
-            // draft is a read-only redux object. make a copy to be able to modify values
-            return JSON.parse(JSON.stringify(accountDraft)) as FormState;
-        }
-    },
-);
+export const getSendFormDraftThunk = createThunk<
+    FormState | undefined,
+    void,
+    { state: GetSendFormDraftThunkState }
+>(`${MODULE_PREFIX}/getSendFormDraftThunk`, (_, { getState }) => {
+    const isSelectedAccountLoaded = selectIsSelectedAccountLoaded(getState());
+    const selectedAccountKey = selectSelectedAccountKey(getState());
+    const sendFormDrafts = selectSendFormDrafts(getState());
 
-export const removeSendFormDraftThunk = createThunk(
-    `${MODULE_PREFIX}/removeSendFormDraftThunk`,
-    (_, { dispatch, getState }) => {
-        const isSelectedAccountLoaded = selectIsSelectedAccountLoaded(getState());
-        const selectedAccountKey = selectSelectedAccountKey(getState());
+    if (!isSelectedAccountLoaded || G.isNullable(selectedAccountKey)) return;
 
-        if (!isSelectedAccountLoaded || G.isNullable(selectedAccountKey)) return 0;
+    const accountDraft = sendFormDrafts[selectedAccountKey];
+    if (accountDraft) {
+        // draft is a read-only redux object. make a copy to be able to modify values
+        return JSON.parse(JSON.stringify(accountDraft)) as FormState;
+    }
+});
 
-        dispatch(sendFormActions.removeDraft({ accountKey: selectedAccountKey }));
-    },
-);
+type RemoveSendFormDraftThunkState = SelectedAccountRootState & SendRootState;
+
+export const removeSendFormDraftThunk = createThunk<
+    0 | undefined,
+    void,
+    { state: RemoveSendFormDraftThunkState }
+>(`${MODULE_PREFIX}/removeSendFormDraftThunk`, (_, { dispatch, getState }) => {
+    const isSelectedAccountLoaded = selectIsSelectedAccountLoaded(getState());
+    const selectedAccountKey = selectSelectedAccountKey(getState());
+
+    if (!isSelectedAccountLoaded || G.isNullable(selectedAccountKey)) return 0;
+
+    dispatch(sendFormActions.removeDraft({ accountKey: selectedAccountKey }));
+});
 
 type UpdateRbfLabelsThunkParams = {
     precomposedTransaction: PrecomposedTransactionFinalBumpFeeRbf;
@@ -91,7 +115,14 @@ type UpdateRbfLabelsThunkParams = {
     stateBeforePush: StateBeforePush;
 };
 
-const updateRbfLabelsThunk = createThunk<void, UpdateRbfLabelsThunkParams, void>(
+type UpdateRbfLabelsThunkState = MoveLabelsForRbfThunkState & ReplaceTransactionThunkState;
+type UpdateRbfLabelsThunkDeps = MoveLabelsForRbfThunkDeps;
+
+const updateRbfLabelsThunk = createThunk<
+    void,
+    UpdateRbfLabelsThunkParams,
+    { state: UpdateRbfLabelsThunkState; extra: UpdateRbfLabelsThunkDeps }
+>(
     `${MODULE_PREFIX}/updateReplacedTransactionThunk`,
     (
         { deviceStaticSessionId, precomposedTransaction, txid, stateBeforePush, prevTxid },
@@ -128,11 +159,15 @@ type ApplySendFormMetadataLabelsThunkState = DeviceRootState &
     MetadataRootState &
     SendRootState &
     WithSuiteSyncState;
+type ApplySendFormMetadataLabelsThunkDeps = { services: SuiteSyncDep };
 
 const applySendFormMetadataLabelsThunk = createThunk<
     void,
     ApplySendFormMetadataLabelsThunkParams,
-    { state: ApplySendFormMetadataLabelsThunkState }
+    {
+        state: ApplySendFormMetadataLabelsThunkState;
+        extra: ApplySendFormMetadataLabelsThunkDeps;
+    }
 >(
     `${MODULE_PREFIX}/applyMetadataLabelsThunk`,
     ({ selectedAccount, precomposedTransaction, txid }, { dispatch, getState }) => {
@@ -206,15 +241,29 @@ type SignAndPushSendFormTransactionThunkParams = {
     paymentRequests?: PROTO.PaymentRequest[];
 };
 
-export const signAndPushSendFormTransactionThunk = createThunk(
+type SignAndPushSendFormTransactionThunkState = ApplySendFormMetadataLabelsThunkState &
+    CancelSignSendFormTransactionThunkState &
+    EnhancePrecomposedTransactionThunkState &
+    MessageSystemRootState &
+    PushSendFormTransactionThunkState &
+    SignTransactionThunkState &
+    UpdateRbfLabelsThunkState;
+type SignAndPushSendFormTransactionThunkDeps = ApplySendFormMetadataLabelsThunkDeps &
+    CancelSignSendFormTransactionThunkDeps &
+    PushSendFormTransactionThunkDeps &
+    UpdateRbfLabelsThunkDeps & { services: DesktopAnalyticsDep };
+
+export const signAndPushSendFormTransactionThunk = createThunk<
+    any,
+    SignAndPushSendFormTransactionThunkParams,
+    {
+        state: SignAndPushSendFormTransactionThunkState;
+        extra: SignAndPushSendFormTransactionThunkDeps;
+    }
+>(
     `${MODULE_PREFIX}/signSendFormTransactionThunk`,
     async (
-        {
-            formState,
-            precomposedTransaction,
-            selectedAccount,
-            paymentRequests,
-        }: SignAndPushSendFormTransactionThunkParams,
+        { formState, precomposedTransaction, selectedAccount, paymentRequests },
         { dispatch, getState, extra },
     ) => {
         const device = selectSelectedDevice(getState());
@@ -233,7 +282,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         // this action is blocked by preserveModal()
         dispatch(preserveModal());
 
-        asTypedDesktopAnalytics(extra.services.analytics).report({
+        extra.services.analytics.report({
             type: events.sendInitialisedEvent.name,
             payload: {
                 assetSymbol: selectedAccount.symbol,
@@ -249,7 +298,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             }),
         );
 
-        asTypedDesktopAnalytics(extra.services.analytics).report({
+        extra.services.analytics.report({
             type: events.sendConfirmedOnDeviceEvent.name,
             payload: {
                 assetSymbol: selectedAccount.symbol,
@@ -265,7 +314,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             // Do not close the modal if the transaction signing timed out
             if (signResponse.payload?.error === 'sign-transaction-timeout') {
                 // TODO: this is some kinda bizarre hack
-                return { type: signResponse.error.message } as any;
+                return { type: signResponse.error.message };
             }
 
             // Close the modal manually since UI.CLOSE_UI.WINDOW was

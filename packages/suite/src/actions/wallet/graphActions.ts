@@ -1,8 +1,10 @@
+import { type Dispatch } from '@reduxjs/toolkit';
+
 import { createThunk } from '@suite-common/redux-utils';
 import { resetTime } from '@suite-common/suite-utils';
 import {
     type BlockchainRootState,
-    type FiatRatesRootState,
+    type WalletSettingsRootState,
     selectBaseCurrency,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
@@ -12,7 +14,6 @@ import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
 import { type GraphState } from 'src/reducers/wallet/graphReducer';
-import { type Dispatch, type GetState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 import {
     type AccountHistoryWithBalance,
@@ -37,13 +38,19 @@ import {
 
 const DAY_IN_SECONDS = 3600 * 24;
 
-const selectAccountGraphData = (state: ReturnType<GetState>, account: Account) =>
+type GraphRootState = { wallet: { graph: GraphState } };
+type FetchAccountGraphDataThunkState = BlockchainRootState &
+    GraphRootState &
+    WalletSettingsRootState;
+
+const selectAccountGraphData = (state: GraphRootState, account: Account) =>
     state.wallet.graph.data.find(
         d =>
             d.account.deviceState === account.deviceState &&
             d.account.descriptor === account.descriptor &&
             d.account.symbol === account.symbol,
     )?.data;
+const selectGraph = (state: GraphRootState) => state.wallet.graph;
 
 export type GraphAction =
     | {
@@ -84,7 +91,7 @@ export const setSelectedRange = (range: GraphRange): GraphAction => ({
  */
 export const fetchAccountGraphData =
     (account: Account, options: { abortSignal?: AbortSignal }) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch<GraphAction>, getState: () => FetchAccountGraphDataThunkState) => {
         dispatch({
             type: ACCOUNT_GRAPH_START,
             payload: {
@@ -180,15 +187,14 @@ export const fetchAccountGraphData =
         }
     };
 
-type UpdateGraphDataThunkState = BlockchainRootState &
-    FiatRatesRootState & { wallet: { graph: GraphState } };
+type UpdateGraphDataThunkState = FetchAccountGraphDataThunkState;
 
 export const updateGraphData = createThunk<
     void,
     { accounts: Account[]; abortSignal?: AbortSignal },
     { state: UpdateGraphDataThunkState }
 >('wallet/updateGraphData', async ({ accounts, abortSignal }, { dispatch, getState }) => {
-    const { graph } = getState().wallet;
+    const graph = selectGraph(getState());
 
     const supportedAccounts = accounts.filter(
         a =>
