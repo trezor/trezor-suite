@@ -1,6 +1,11 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { createSliceWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createSliceWithExtraDeps,
+    createWeakMapSelector,
+} from '@suite-common/redux-utils';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type AccountKey, type ReceiveInfo } from '@suite-common/wallet-types';
 
@@ -32,6 +37,8 @@ type SetCurrentFreshAddressPayload = {
     accountKey: AccountKey;
     currentFreshAddress?: CurrentFreshAddress;
 };
+
+type ReceiveSliceDeps = ActionTypesDep<'storageLoad'> & ReducersDep<'storageLoadReceiveAccounts'>;
 
 export const receiveInitialState: ReceiveState = {
     accounts: {},
@@ -88,7 +95,7 @@ const receiveSlice = createSliceWithExtraDeps({
             accountState.currentFreshAddress = action.payload.currentFreshAddress;
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: ReceiveSliceDeps) => {
         builder
             .addCase(accountsActions.removeAccount, (state, action) => {
                 action.payload.forEach((account: { key: AccountKey }) => {

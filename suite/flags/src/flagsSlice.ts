@@ -1,6 +1,10 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createSliceWithExtraDeps,
+} from '@suite-common/redux-utils';
 import { DEVICE } from '@trezor/connect';
 
 import { type NewContentIndicatorId } from './flagsConstants';
@@ -45,6 +49,8 @@ export type FlagsRootState = { flags: FlagsState };
 export type BooleanFlagKey = {
     [Key in keyof FlagsState]: FlagsState[Key] extends boolean ? Key : never;
 }[keyof FlagsState];
+
+type FlagsSliceDeps = ActionTypesDep<'storageLoad'> & ReducersDep<'storageLoadFlags'>;
 
 export const flagsInitialState: FlagsState = {
     initialRun: true,
@@ -108,7 +114,7 @@ const flagsSlice = createSliceWithExtraDeps({
             }
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: FlagsSliceDeps) => {
         builder
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFlags)
             .addCase(DEVICE.CONNECT, state => {

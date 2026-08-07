@@ -632,7 +632,7 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
     }
 };
 
-type DeviceReducerDeps = ActionTypesDep<
+export type DeviceReducerDeps = ActionTypesDep<
     'setDeviceMetadata' | 'setDeviceMetadataPasswords' | 'storageLoad'
 > &
     ReducersDep<

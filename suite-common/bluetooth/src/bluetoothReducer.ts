@@ -40,8 +40,10 @@ export const prepareInitialState = <T extends BluetoothDeviceCommon>(): Bluetoot
     isDeviceOsUnpairingRequired: null,
 });
 
+export type BluetoothReducerDeps = ActionTypesDep<'storageLoad'>;
+
 export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>() =>
-    createReducerWithExtraDeps<BluetoothState<T>, ActionTypesDep<'storageLoad'>>(
+    createReducerWithExtraDeps<BluetoothState<T>, BluetoothReducerDeps>(
         prepareInitialState<T>(),
         (builder, extra) =>
             builder

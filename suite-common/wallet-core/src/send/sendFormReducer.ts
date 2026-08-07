@@ -47,7 +47,8 @@ export type SendRootState = {
     };
 };
 
-type SendFormReducerDeps = ActionTypesDep<'storageLoad'> & ReducersDep<'storageLoadFormDrafts'>;
+export type SendFormReducerDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadFormDrafts'>;
 
 export const prepareSendFormReducer = createReducerWithExtraDeps(
     initialState,
