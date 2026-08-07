@@ -7,7 +7,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingExchangeAccountKey,
     selectTradingExchangeProviders,
@@ -32,11 +32,14 @@ export type SendDexTransactionThunkProps = {
     signAndPushSendFormTransaction: RecomposeAndSignTxThunkProps['signAndPushSendFormTransaction'];
 };
 
+type SendDexTransactionThunkState = TradingRootState;
+
 export const sendDexTransactionThunk = createThunk<
     undefined,
     SendDexTransactionThunkProps,
     {
         rejectValue: TradingSendRejectedProps;
+        state: SendDexTransactionThunkState;
     }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/sendDexTransaction`,
@@ -49,7 +52,7 @@ export const sendDexTransactionThunk = createThunk<
             processResponseData,
             triggerAnalyticsTradeConfirmation,
             signAndPushSendFormTransaction,
-        }: SendDexTransactionThunkProps,
+        },
         { dispatch, getState, rejectWithValue },
     ) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());

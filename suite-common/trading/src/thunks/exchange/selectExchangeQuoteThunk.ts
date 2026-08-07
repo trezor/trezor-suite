@@ -4,7 +4,7 @@ import { createThunk } from '@suite-common/redux-utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingExchangeInfo } from '../../selectors/tradingSelectors';
 import { requiresTokenApproval } from '../../utils/exchange/exchangeUtils';
 
@@ -13,31 +13,34 @@ export type SelectExchangeQuoteThunkProps = {
     nextStep: () => void;
 };
 
-export const selectExchangeQuoteThunk = createThunk(
-    `${TRADING_EXCHANGE_THUNK_PREFIX}/selectQuote`,
-    ({ quote, nextStep }: SelectExchangeQuoteThunkProps, { dispatch, getState }) => {
-        const exchangeInfo = selectTradingExchangeInfo(getState());
-        const provider =
-            exchangeInfo?.providerInfos && quote.exchange
-                ? exchangeInfo?.providerInfos[quote.exchange]
-                : null;
+type SelectExchangeQuoteThunkState = TradingRootState;
 
-        if (!provider || !quote.send || !quote.receive) {
-            return;
-        }
+export const selectExchangeQuoteThunk = createThunk<
+    void,
+    SelectExchangeQuoteThunkProps,
+    { state: SelectExchangeQuoteThunkState }
+>(`${TRADING_EXCHANGE_THUNK_PREFIX}/selectQuote`, ({ quote, nextStep }, { dispatch, getState }) => {
+    const exchangeInfo = selectTradingExchangeInfo(getState());
+    const provider =
+        exchangeInfo?.providerInfos && quote.exchange
+            ? exchangeInfo?.providerInfos[quote.exchange]
+            : null;
 
-        // DEX ERC-20 swaps use preselectedQuote on approval screens until CONFIRM / SIGN_DATA.
-        // Native / no-approval DEX goes straight to preview and must be persisted as selectedQuote.
-        if (
-            !quote.isDex ||
-            quote.status === 'CONFIRM' ||
-            quote.status === 'SIGN_DATA' ||
-            !requiresTokenApproval(quote)
-        ) {
-            dispatch(tradingExchangeActions.saveSelectedQuote(quote));
-        }
+    if (!provider || !quote.send || !quote.receive) {
+        return;
+    }
 
-        dispatch(tradingActions.stopRefetchQuotes());
-        nextStep();
-    },
-);
+    // DEX ERC-20 swaps use preselectedQuote on approval screens until CONFIRM / SIGN_DATA.
+    // Native / no-approval DEX goes straight to preview and must be persisted as selectedQuote.
+    if (
+        !quote.isDex ||
+        quote.status === 'CONFIRM' ||
+        quote.status === 'SIGN_DATA' ||
+        !requiresTokenApproval(quote)
+    ) {
+        dispatch(tradingExchangeActions.saveSelectedQuote(quote));
+    }
+
+    dispatch(tradingActions.stopRefetchQuotes());
+    nextStep();
+});

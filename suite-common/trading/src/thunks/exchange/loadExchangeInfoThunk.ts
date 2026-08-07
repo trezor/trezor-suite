@@ -7,7 +7,7 @@ import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { type ExchangeInfo } from '../../reducers/exchangeReducer';
 import { tradeApi } from '../../tradeApi';
 
-export const loadExchangeInfoThunk = createThunk<ExchangeInfo>(
+export const loadExchangeInfoThunk = createThunk<ExchangeInfo, void, void>(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/loadInfo`,
     async (_, { fulfillWithValue }) => {
         const exchangeList = await tradeApi.getExchangeList();
