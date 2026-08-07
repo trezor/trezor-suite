@@ -12962,12 +12962,14 @@ __metadata:
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/device-onboarding": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/firmware": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/nfc": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/swipeable-walkthrough": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
@@ -13629,6 +13631,19 @@ __metadata:
     react-native-safe-area-context: "npm:5.6.2"
     react-redux: "npm:9.3.0"
     type-fest: "npm:5.5.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/nfc@workspace:*, @suite-native/nfc@workspace:suite-native/nfc":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/nfc@workspace:suite-native/nfc"
+  dependencies:
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    react: "npm:19.2.3"
+    react-native: "npm:0.85.3"
   languageName: unknown
   linkType: soft
 

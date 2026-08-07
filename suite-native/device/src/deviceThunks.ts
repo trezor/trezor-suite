@@ -38,11 +38,14 @@ const getResetDeviceConfig = (walletBackupType: BackupType): PROTO.ResetDevice =
 
 export const createAndBackupWalletThunk = createThunk<
     Err<SerializedError> | OkWithDevice<PROTO.Success>,
-    { walletBackupType: BackupType },
+    { walletBackupType: BackupType; backupMethod?: 'nfc'; skipBackup?: boolean },
     { rejectValue: string }
 >(
     `${NATIVE_DEVICE_MODULE_PREFIX}/createAndBackupWalletThunk`,
-    async ({ walletBackupType }, { getState, dispatch, fulfillWithValue, rejectWithValue }) => {
+    async (
+        { walletBackupType, backupMethod, skipBackup },
+        { getState, dispatch, fulfillWithValue, rejectWithValue },
+    ) => {
         const device = selectSelectedDevice(getState());
         const devicePath = selectDevicePath(getState());
         const isDeviceInitialized = selectIsDeviceInitialized(getState());
@@ -83,11 +86,20 @@ export const createAndBackupWalletThunk = createThunk<
             return fulfillWithValue(deviceResponse.payload);
         }
 
+        const backupConfig =
+            backupMethod === 'nfc'
+                ? {
+                      backup_type: PROTO.Enum_BackupType.Slip39_Basic_Extendable,
+                      strength: 128,
+                      backup_method: PROTO.BackupMethod.N4W1,
+                  }
+                : getResetDeviceConfig(walletBackupType);
+
         const deviceResponse = await requestPrioritizedDeviceAccess(() =>
             TrezorConnect.resetDevice({
                 device: { path: devicePath },
-                skip_backup: false,
-                ...getResetDeviceConfig(walletBackupType),
+                skip_backup: skipBackup ?? false,
+                ...backupConfig,
                 //Entropy check can be toggled via message system config so it should be always last to avoid unintentional disabling.
                 entropy_check: isEntropyCheckEnabled,
             }),

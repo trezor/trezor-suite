@@ -44,7 +44,7 @@ type RouteProps = RouteProp<
 
 export const WalletCreationScreen = () => {
     const route = useRoute<RouteProps>();
-    const { walletBackupType } = route.params;
+    const { walletBackupType, backupMethod, skipBackup } = route.params;
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
@@ -55,12 +55,18 @@ export const WalletCreationScreen = () => {
     );
 
     const handleCreateAndBackupWallet = useCallback(async () => {
-        const response = await dispatch(createAndBackupWalletThunk({ walletBackupType }));
+        const response = await dispatch(
+            createAndBackupWalletThunk({ walletBackupType, backupMethod, skipBackup }),
+        );
 
         if (isFulfilled(response)) {
             const responsePayload = response.payload;
 
             if (responsePayload.success) {
+                if (skipBackup) {
+                    return navigation.navigate(DeviceOnboardingStackRoutes.CreatePin);
+                }
+
                 return navigation.navigate(DeviceOnboardingStackRoutes.WalletCreatedSuccess, {
                     flowType: 'create',
                 });
@@ -93,6 +99,8 @@ export const WalletCreationScreen = () => {
     }, [
         dispatch,
         walletBackupType,
+        backupMethod,
+        skipBackup,
         navigation,
         navigateToInitialScreen,
         isEntropyCheckEnabled,

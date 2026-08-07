@@ -304,9 +304,15 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.DeviceTutorial]: undefined;
     [DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads]: undefined;
     [DeviceOnboardingStackRoutes.CreateWalletLoading]: undefined;
-    [DeviceOnboardingStackRoutes.WalletBackupTutorial]: undefined;
+    [DeviceOnboardingStackRoutes.WalletBackupTutorial]:
+        | {
+              skipNfcBranch?: boolean;
+          }
+        | undefined;
     [DeviceOnboardingStackRoutes.WalletCreation]: {
         walletBackupType: BackupType;
+        backupMethod?: 'nfc';
+        skipBackup?: boolean;
     };
     [DeviceOnboardingStackRoutes.RecoveryInstructions]: undefined;
     [DeviceOnboardingStackRoutes.WalletRecovery]: undefined;
@@ -317,6 +323,9 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.WalletRecoveryRecap]: undefined;
     [DeviceOnboardingStackRoutes.CreatePin]: undefined;
     [DeviceOnboardingStackRoutes.Congratulations]: undefined;
+    [DeviceOnboardingStackRoutes.NfcBackupType]: undefined;
+    [DeviceOnboardingStackRoutes.NfcHowItWorks]: undefined;
+    [DeviceOnboardingStackRoutes.NoNfcTags]: undefined;
 };
 
 export type AccountsImportStackParamList = {
