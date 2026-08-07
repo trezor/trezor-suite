@@ -36,9 +36,6 @@ export const getContractAddressForNetworkSymbol = (
     }
 };
 
-// Moved next to the WRAPPED_NATIVE config it reads; re-exported here for existing consumers.
-export { isWrappedNativeToken } from '@suite-common/wallet-config';
-
 type StellarRuntime = Awaited<ReturnType<typeof stellar>>;
 
 let loadedStellarRuntime: StellarRuntime | undefined;

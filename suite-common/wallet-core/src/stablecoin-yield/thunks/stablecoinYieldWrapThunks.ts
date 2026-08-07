@@ -1,9 +1,13 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { WRAPPED_NATIVE, getWrappedNativeAddress } from '@suite-common/wallet-config';
 import { WETH_DEPOSIT_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import { enhanceTokens, isWrappedNativeToken } from '@suite-common/wallet-utils';
+import { enhanceTokens } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/connect';
+import {
+    getWrappedNativeAddress,
+    getWrappedNativeToken,
+    isWrappedNativeToken,
+} from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import {
@@ -146,7 +150,7 @@ export const trackWrappedNativeTokenThunk = createThunk<
         }
 
         if (mode === 'ensure-tracked') {
-            const wrappedNative = WRAPPED_NATIVE[account.symbol];
+            const wrappedNative = getWrappedNativeToken(account.symbol);
 
             if (!wrappedNative) {
                 return null;

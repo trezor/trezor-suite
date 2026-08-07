@@ -73,6 +73,9 @@
         { "path": "../tokens" },
         { "path": "../transactions" },
         {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        {
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/type-utils" },

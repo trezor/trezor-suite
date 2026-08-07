@@ -1,7 +1,6 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { isWrappedNativeToken } from '@suite-common/wallet-utils';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -12,6 +11,7 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { HowEarnWorksBenefitsSection } from './HowEarnWorks/HowEarnWorksBenefitsSection';

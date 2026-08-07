@@ -30,7 +30,7 @@ import {
     submitYieldRevokeThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { isWrappedNativeToken } from '@suite-common/wallet-utils';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef, useFreshRef } from '@trezor/react-utils';
 
 import {

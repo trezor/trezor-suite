@@ -39,6 +39,9 @@
         { "path": "../device-utils" },
         { "path": "../env-utils" },
         { "path": "../icons" },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
         { "path": "../react-utils" },
         { "path": "../theme" },
         { "path": "../type-utils" },

@@ -1,11 +1,10 @@
-import {
-    type NetworkSymbol,
-    type NetworkType,
-    getWrappedNativeAddress,
-    isWrappedNativeToken,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
+import {
+    getWrappedNativeAddress,
+    isWrappedNativeToken,
+} from '@trezor/network-ethereum-suite-common';
 
 type WrappedNativeTokenEntry = {
     isDisabled: boolean;

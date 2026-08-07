@@ -1,5 +1,5 @@
 import { configureMockStore } from '@suite-common/test-utils';
-import { WRAPPED_NATIVE, asNetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import {
     type SignedWrappedNativeTokenTransaction,
@@ -32,7 +33,7 @@ jest.mock('@suite-common/wallet-core', () => ({
 }));
 
 const ethSymbol = asNetworkSymbol('eth');
-const WETH = WRAPPED_NATIVE.eth!;
+const WETH = getWrappedNativeToken('eth')!;
 
 const account = mockWalletAccount({ symbol: ethSymbol }) as Account;
 

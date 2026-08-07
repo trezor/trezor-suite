@@ -3,13 +3,10 @@ import {
     type YieldDtoV2,
     getProtocolIncentiveRewardTokens,
 } from '@suite-common/earn-stablecoin-api';
-import {
-    getNetworkByYieldXyzId,
-    getNetworkDisplaySymbol,
-    isWrappedNativeToken,
-} from '@suite-common/wallet-config';
+import { getNetworkByYieldXyzId, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, type TokenSymbol, toTokenSymbol } from '@suite-common/wallet-types';
 import { getApyPercent, getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {

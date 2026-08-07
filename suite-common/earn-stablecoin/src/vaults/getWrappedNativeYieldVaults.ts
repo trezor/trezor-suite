@@ -1,10 +1,7 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import {
-    type NetworkSymbol,
-    getNetworkByYieldXyzId,
-    isWrappedNativeToken,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import { isYieldVaultOperational } from '@suite-common/wallet-core';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 type WrappedNativeVaultFields = Pick<YieldDtoV2, 'metadata' | 'network' | 'status' | 'token'>;
 

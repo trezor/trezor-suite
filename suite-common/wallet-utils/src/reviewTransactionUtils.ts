@@ -6,11 +6,7 @@ import {
 } from '@suite-common/calldata';
 import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import {
-    EARN_YIELD_CLAIM_PROVIDER,
-    getWrappedNativeSymbol,
-    networks,
-} from '@suite-common/wallet-config';
+import { EARN_YIELD_CLAIM_PROVIDER, networks } from '@suite-common/wallet-config';
 import { WRAPPED_NATIVE_MIN_FIRMWARE } from '@suite-common/wallet-constants';
 import {
     type Account,
@@ -24,6 +20,7 @@ import {
 } from '@suite-common/wallet-types';
 import type { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { BigNumber, versionUtils } from '@trezor/utils';
 
 import { datetimeToLocktime } from './bitcoinUtils';

@@ -62,6 +62,7 @@
         "@suite-native/suite-sync": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@suite-native/transactions": "workspace:*",
+        "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",

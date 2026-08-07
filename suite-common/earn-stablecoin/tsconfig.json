@@ -13,6 +13,9 @@
         {
             "path": "../../packages/connect-common"
         },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
         { "path": "../../packages/utils" }
     ]
 }
