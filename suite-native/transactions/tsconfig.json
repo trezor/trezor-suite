@@ -61,6 +61,9 @@
         },
         { "path": "../../packages/connect" },
         {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        {
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },

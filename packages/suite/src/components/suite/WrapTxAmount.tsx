@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { getWrappedNativeSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -8,6 +7,7 @@ import {
     getUnwrapAmountByEthereumDataHex,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
