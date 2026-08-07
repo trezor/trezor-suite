@@ -6,7 +6,7 @@ import {
 } from '@trezor/network-ripple/constants';
 
 import { rippleValidator } from './addressValidator/rippleAddressValidator';
-import { getNetworkConfig } from './networkConfig';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 export type RippleNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<RippleNetworkSymbol>;
 
@@ -15,4 +15,5 @@ export const createRippleSuiteCommonNetworkModule = (): RippleNetworkSuiteCommon
     getSupportedNetworks: () => supportedRippleNetworks,
     isSupportedNetwork: isSupportedRippleNetwork,
     getNetworkConfig,
+    getAccountSyncInterval,
 });

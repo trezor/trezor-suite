@@ -16,4 +16,6 @@ export type SuiteCommonNetworkModule<TSymbol extends string> = {
     isSupportedNetwork: (symbol: string) => symbol is TSymbol;
 
     getNetworkConfig(symbol: TSymbol): SuiteCommonNetworkConfig;
+
+    getAccountSyncInterval(symbol: TSymbol): number;
 };

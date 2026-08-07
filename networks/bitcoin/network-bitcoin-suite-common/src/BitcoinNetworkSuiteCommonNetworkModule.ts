@@ -6,7 +6,7 @@ import {
 import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
 import { bitcoinValidator } from './addressValidator/bitcoinAddressValidator';
-import { getNetworkConfig } from './networkConfig';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 export type BitcoinNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<BitcoinNetworkSymbol>;
 
@@ -16,4 +16,5 @@ export const createBitcoinSuiteCommonNetworkModule =
         getSupportedNetworks: () => supportedBitcoinNetworks,
         isSupportedNetwork: isSupportedBitcoinNetwork,
         getNetworkConfig,
+        getAccountSyncInterval,
     });

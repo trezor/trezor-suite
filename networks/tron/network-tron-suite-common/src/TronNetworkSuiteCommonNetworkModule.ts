@@ -6,7 +6,7 @@ import {
 } from '@trezor/network-tron/constants';
 
 import { tronValidator } from './addressValidator/tronAddressValidator';
-import { getNetworkConfig } from './networkConfig';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 export type TronNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<TronNetworkSymbol>;
 
@@ -15,4 +15,5 @@ export const createTronSuiteCommonNetworkModule = (): TronNetworkSuiteCommonNetw
     getSupportedNetworks: () => supportedTronNetworks,
     isSupportedNetwork: isSupportedTronNetwork,
     getNetworkConfig,
+    getAccountSyncInterval,
 });

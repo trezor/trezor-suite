@@ -42,24 +42,6 @@ import { fetchAndUpdateAccountThunk, reportWalletBalanceThunk } from '../account
 import { preloadFeeInfoThunk } from '../fees/feesThunks';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 
-export const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000; // 1 minute
-
-const CUSTOM_ACCOUNT_SYNC_INTERVALS: Partial<Record<NetworkSymbol, number>> = {
-    bsc: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    pol: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    op: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    base: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    arb: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    avax: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    trx: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    rhc: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    hype: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
-    sol: DEFAULT_ACCOUNT_SYNC_INTERVAL * 5,
-};
-
-const getAccountSyncInterval = (symbol: NetworkSymbol) =>
-    CUSTOM_ACCOUNT_SYNC_INTERVALS[symbol] || DEFAULT_ACCOUNT_SYNC_INTERVAL;
-
 // call TrezorConnect.unsubscribe, it doesn't cost anything and should emit BLOCKCHAIN.CONNECT or BLOCKCHAIN.ERROR event
 export const reconnectBlockchainThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/reconnectBlockchainThunk`,
@@ -236,7 +218,7 @@ export const syncAccountsWithBlockchainThunk = createThunk(
         const accounts = selectAccounts(getState());
         const blockchain = selectBlockchainState(getState());
         const {
-            services: { getIsWindowVisible },
+            services: { getIsWindowVisible, networkModuleRepository },
         } = extra;
         const isWindowVisible = getIsWindowVisible();
 
@@ -264,7 +246,7 @@ export const syncAccountsWithBlockchainThunk = createThunk(
 
         const timeout = setTimeout(
             () => dispatch(syncAccountsWithBlockchainThunk(symbol)),
-            getAccountSyncInterval(symbol),
+            networkModuleRepository.get(symbol).getAccountSyncInterval(symbol),
         );
 
         dispatch(blockchainActions.synced({ symbol, timeout }));
