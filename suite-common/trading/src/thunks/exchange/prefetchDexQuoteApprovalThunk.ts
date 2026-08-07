@@ -5,6 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
+import { type TradingRootState } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingExchangeDexQuoteApprovalPrefetchLoadingQuoteId,
     selectTradingExchangeQuotes,
@@ -17,9 +18,15 @@ export type PrefetchDexQuoteApprovalThunkProps = {
     trade: ExchangeTrade;
 };
 
-export const prefetchDexQuoteApprovalThunk = createThunk(
+type PrefetchDexQuoteApprovalThunkState = TradingRootState;
+
+export const prefetchDexQuoteApprovalThunk = createThunk<
+    ExchangeTrade | undefined,
+    PrefetchDexQuoteApprovalThunkProps,
+    { state: PrefetchDexQuoteApprovalThunkState }
+>(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/prefetchDexQuoteApproval`,
-    async ({ trade, account }: PrefetchDexQuoteApprovalThunkProps, { dispatch, getState }) => {
+    async ({ trade, account }, { dispatch, getState }) => {
         dispatch(tradingExchangeActions.setDexQuoteApprovalPrefetchLoadingQuoteId(trade?.quoteId));
 
         try {

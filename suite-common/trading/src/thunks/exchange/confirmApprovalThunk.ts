@@ -5,7 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
-import { tradingActions } from '../../reducers/tradingCommonReducer';
+import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeAccountKey,
@@ -26,16 +26,16 @@ export type ConfirmApprovalThunkProps = {
     processResponseData: (response: ExchangeTrade) => void;
 };
 
-export const confirmApprovalThunk = createThunk(
+type ConfirmApprovalThunkState = TradingRootState;
+
+export const confirmApprovalThunk = createThunk<
+    ExchangeTrade | undefined,
+    ConfirmApprovalThunkProps,
+    { state: ConfirmApprovalThunkState }
+>(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/confirmApproval`,
     async (
-        {
-            trade,
-            receiveAddress,
-            account,
-            extraField,
-            processResponseData,
-        }: ConfirmApprovalThunkProps,
+        { trade, receiveAddress, account, extraField, processResponseData },
         { dispatch, getState },
     ) => {
         const getCoinSymbol = (cryptoId: CryptoId) =>
