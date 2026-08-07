@@ -95,8 +95,14 @@ export type YieldFlowParams = {
     yieldId?: string;
 };
 
+export type YieldClaimVaultParams = {
+    name: string;
+    tokenContract: TokenAddress;
+};
+
 export type YieldClaimParams = {
     accountKey: AccountKey;
+    vault?: YieldClaimVaultParams;
 };
 
 export type WrappedNativeTokenPendingTxParams = {

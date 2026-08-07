@@ -11,9 +11,10 @@ import {
     toTokenAddress,
 } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
+import { type YieldClaimVaultParams } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
-import { type StablecoinYieldClaimSummary } from '../types';
+import { type StablecoinYieldClaimSummary, type StablecoinYieldEarnItem } from '../types';
 
 type BuildStablecoinYieldClaimSummariesParams = {
     accounts: Account[];
@@ -166,6 +167,37 @@ export const buildStablecoinYieldClaimSummaries = ({
         ];
     });
 };
+
+export type StablecoinYieldClaimItem = {
+    summary: StablecoinYieldClaimSummary;
+    vault: YieldClaimVaultParams | null;
+};
+
+// Rewards are claimed per account, so a claim can only be attributed to a vault
+// when the account holds exactly one vault position with a known name.
+export const buildStablecoinYieldClaimItems = ({
+    stablecoinYieldClaimSummaries,
+    stablecoinYieldActiveItems,
+}: {
+    stablecoinYieldClaimSummaries: StablecoinYieldClaimSummary[];
+    stablecoinYieldActiveItems: StablecoinYieldEarnItem[];
+}): StablecoinYieldClaimItem[] =>
+    stablecoinYieldClaimSummaries.map(summary => {
+        const accountVaults = stablecoinYieldActiveItems.filter(
+            item => item.accountKey === summary.accountKey,
+        );
+        const accountVault = accountVaults.length === 1 ? accountVaults[0] : undefined;
+
+        return {
+            summary,
+            vault: accountVault?.vaultName
+                ? {
+                      name: accountVault.vaultName,
+                      tokenContract: accountVault.tokenContractAddress,
+                  }
+                : null,
+        };
+    });
 
 export const getTotalFiatClaimableAmount = (
     stablecoinYieldClaimSummaries: StablecoinYieldClaimSummary[],

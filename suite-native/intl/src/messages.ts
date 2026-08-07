@@ -2881,9 +2881,6 @@ export const messages = {
                 stakingTitle: 'Your stakes',
                 stablecoinYieldTitle: 'Your yields',
             },
-            claimRewards: {
-                title: 'Claim rewards from an account',
-            },
             stablecoinYieldLoadError: {
                 title: 'Unable to load yield opportunities',
                 description:
