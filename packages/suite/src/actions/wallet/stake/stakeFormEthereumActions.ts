@@ -1,6 +1,5 @@
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import {
     getStakeTxGasLimit,
     prepareClaimEthTx,
@@ -113,9 +112,11 @@ export const composeTransaction =
         );
     };
 
+type SignTransactionThunkDeps = { services: DesktopAnalyticsDep };
+
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
-    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    async (dispatch: Dispatch, getState: GetState, extra: SignTransactionThunkDeps) => {
         const { selectedAccount } = getState().wallet;
         const device = selectSelectedDevice(getState());
         if (selectedAccount.status !== 'loaded' || !device || transactionInfo?.type !== 'final')
@@ -225,7 +226,7 @@ export const signTransaction =
         });
 
         if (!signedTx.success) {
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.transactionCancelEvent.name,
                 payload: {
                     txType: 'stake',

@@ -1,6 +1,5 @@
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import { composeSolanaStakingTransaction, prepareSolanaStakeTxData } from '@suite-common/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAddressDisplayType } from '@suite-common/wallet-core';
@@ -40,9 +39,11 @@ export const composeTransaction =
         });
     };
 
+type SignTransactionThunkDeps = { services: DesktopAnalyticsDep };
+
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
-    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    async (dispatch: Dispatch, getState: GetState, extra: SignTransactionThunkDeps) => {
         const { selectedAccount, blockchain } = getState().wallet;
 
         const device = selectSelectedDevice(getState());
@@ -121,7 +122,7 @@ export const signTransaction =
         });
 
         if (!signedTx.success) {
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.transactionCancelEvent.name,
                 payload: {
                     txType: 'stake',
