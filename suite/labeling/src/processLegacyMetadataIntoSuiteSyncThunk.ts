@@ -27,7 +27,7 @@ type ProcessLegacyMetadataIntoSuiteSyncThunkDeps = { services: SuiteSyncDep };
 export const processLegacyMetadataIntoSuiteSyncThunk = createThunk<
     Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>,
     ProcessMetadataMessageThunkParams,
-    { extra: ProcessLegacyMetadataIntoSuiteSyncThunkDeps }
+    { state: void; extra: ProcessLegacyMetadataIntoSuiteSyncThunkDeps }
 >(
     '@suite/labeling/processMetadataMessageThunk',
     async ({ payload, deviceStaticSessionId, value }, { dispatch, extra: { services } }) => {

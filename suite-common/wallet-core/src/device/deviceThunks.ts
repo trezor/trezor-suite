@@ -377,7 +377,7 @@ export const deviceConnectThunks = createThunk<
 type SetDeviceAutoEjectThunkParams = {
     shouldEnable: boolean;
 };
-type SetDeviceAutoEjectThunkState = DeviceRootState & WalletSettingsRootState;
+export type SetDeviceAutoEjectThunkState = DeviceRootState & WalletSettingsRootState;
 
 export const setDeviceAutoEjectThunk = createThunk<
     void,
@@ -505,8 +505,8 @@ export type ForgetDeviceThunkParams = {
     skipDisconnect?: boolean;
     deviceId?: TrezorDevice['id'];
 };
-type ForgetDeviceThunkState = ForgetDevicePersistentDataThunkState;
-type ForgetDeviceThunkDeps = {
+export type ForgetDeviceThunkState = ForgetDevicePersistentDataThunkState;
+export type ForgetDeviceThunkDeps = {
     thunks: ForgetBluetoothDeviceDep;
 };
 

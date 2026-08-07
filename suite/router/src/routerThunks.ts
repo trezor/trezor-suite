@@ -78,8 +78,8 @@ type GotoPayload = {
     anchor?: AnchorType;
 };
 
-type GotoThunkState = LocksRootState & ModalRootState & RouterRootState;
-type GotoThunkDeps = { services: SuiteRouterHistoryDep };
+export type GotoThunkState = LocksRootState & ModalRootState & RouterRootState;
+export type GotoThunkDeps = { services: SuiteRouterHistoryDep };
 
 export const goto = createThunk<void, GotoPayload, { state: GotoThunkState; extra: GotoThunkDeps }>(
     '@router/goto',
@@ -137,12 +137,13 @@ export const goto = createThunk<void, GotoPayload, { state: GotoThunkState; extr
  * Application modal does not push route into router history, it changes it only in reducer (see goto action).
  * Reverse operation (again without touching history) needs to be done in back action.
  */
-type CloseModalAppThunkDeps = { services: SuiteRouterHistoryDep };
+type CloseModalAppThunkState = GotoThunkState;
+type CloseModalAppThunkDeps = GotoThunkDeps;
 
 export const closeModalApp = createThunk<
     void,
     boolean | undefined,
-    { extra: CloseModalAppThunkDeps }
+    { state: CloseModalAppThunkState; extra: CloseModalAppThunkDeps }
 >('@router/closeModalApp', (preserveParams = true, { dispatch, extra }) => {
     dispatch(lockRouter(false));
 
@@ -168,15 +169,16 @@ export const closeModalApp = createThunk<
  * Called from `@suite-middlewares/suiteMiddleware`
  * Redirects to requested modal app or welcome screen if `suite.flags.initialRun` is set to true
  */
-type InitialRedirectionThunkDeps = { services: SuiteRouterHistoryDep };
 type InitialRedirectionThunkParams = {
     isInitialRun?: boolean;
 };
+type InitialRedirectionThunkState = GotoThunkState;
+type InitialRedirectionThunkDeps = GotoThunkDeps;
 
 export const initialRedirection = createThunk<
     void,
     InitialRedirectionThunkParams,
-    { extra: InitialRedirectionThunkDeps }
+    { state: InitialRedirectionThunkState; extra: InitialRedirectionThunkDeps }
 >('@suite/initial-redirection', ({ isInitialRun = true }, { dispatch, extra }) => {
     const location = extra.services.suiteRouterHistory.getLocation();
     const route = findRoute(location.pathname);

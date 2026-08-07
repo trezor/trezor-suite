@@ -16,7 +16,7 @@ export const exportMetadataToBip329File = createThunk<
         account: Account;
         defaultAccountLabel: string;
     },
-    { extra: ExportMetadataToBip329FileThunkDeps }
+    { state: void; extra: ExportMetadataToBip329FileThunkDeps }
 >(
     METADATA.EXPORT_METADATA_TO_BIP329_FILE,
     ({ account, defaultAccountLabel }, { dispatch, extra: { services } }) => {
