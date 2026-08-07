@@ -70,8 +70,10 @@ type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     source: ConnectCallSource;
 };
 
-type ConnectPopupCallThunkState = DeviceRootState & ConnectPopupStateRootState & AccountsRootState;
-type ConnectPopupCallThunkDeps = {
+export type ConnectPopupCallThunkState = DeviceRootState &
+    ConnectPopupStateRootState &
+    AccountsRootState;
+export type ConnectPopupCallThunkDeps = {
     actions: LockDeviceDep;
     services: AnalyticsDep;
 };

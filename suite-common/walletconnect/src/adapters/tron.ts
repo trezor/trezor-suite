@@ -12,7 +12,7 @@ import type { TronContractInput } from '@trezor/connect-common';
 import { type Result } from '@trezor/type-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
-import { selectSessionByTopic } from '../walletConnectReducer';
+import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import type {
     PendingConnectionProposalNetwork,
     WalletConnectAdapter,
@@ -105,11 +105,16 @@ const processNamespaces = (
         },
     );
 
+export type TronRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
+    WalletConnectStateRootState;
+export type TronRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+
 const tronRequestThunk = createThunk<
     Record<string, unknown> | undefined,
     {
         event: WalletKitTypes.SessionRequest;
-    }
+    },
+    { state: TronRequestThunkState; extra: TronRequestThunkDeps }
 >(`${WALLETCONNECT_MODULE}/tronRequest`, async ({ event }, { dispatch, getState }) => {
     const session = selectSessionByTopic(getState(), event.topic);
     if (!session) {
