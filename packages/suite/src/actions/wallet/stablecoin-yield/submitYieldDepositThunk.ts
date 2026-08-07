@@ -1,10 +1,11 @@
-import { asTypedDesktopAnalytics } from '@suite/analytics';
+import { type DesktopAnalyticsDep, asTypedDesktopAnalytics } from '@suite/analytics';
 import { openDeferredModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    type ComposeYieldDepositTransactionThunkState,
     STABLECOIN_YIELD_PREFIX,
     type YieldFlowResolvedData,
     composeYieldDepositTransactionThunk,
@@ -15,6 +16,8 @@ import {
 } from '@suite-common/wallet-core';
 
 import {
+    type SendYieldTransactionDeps,
+    type SendYieldTransactionState,
     getYieldErrorTranslationKey,
     getYieldSubmitErrorAnalyticsMessage,
     sendYieldTransaction,
@@ -25,13 +28,19 @@ type SubmitYieldDepositPayload = {
     flowData: YieldFlowResolvedData;
     amount: string;
 };
+type SubmitYieldDepositThunkState = ComposeYieldDepositTransactionThunkState &
+    SendYieldTransactionState;
+type SubmitYieldDepositThunkDeps = SendYieldTransactionDeps & {
+    services: DesktopAnalyticsDep;
+};
 
-export const submitYieldDepositThunk = createThunk(
+export const submitYieldDepositThunk = createThunk<
+    void,
+    SubmitYieldDepositPayload,
+    { state: SubmitYieldDepositThunkState; extra: SubmitYieldDepositThunkDeps }
+>(
     `${STABLECOIN_YIELD_PREFIX}/thunk/submitDeposit`,
-    async (
-        { flowKey, flowData, amount }: SubmitYieldDepositPayload,
-        { dispatch, getState, extra },
-    ) => {
+    async ({ flowKey, flowData, amount }, { dispatch, getState, extra }) => {
         const flowType = 'deposit' as const;
 
         try {

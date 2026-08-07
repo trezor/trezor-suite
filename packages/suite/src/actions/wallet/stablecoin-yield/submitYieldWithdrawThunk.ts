@@ -1,4 +1,4 @@
-import { asTypedDesktopAnalytics } from '@suite/analytics';
+import { type DesktopAnalyticsDep, asTypedDesktopAnalytics } from '@suite/analytics';
 import { openDeferredModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
@@ -11,8 +11,13 @@ import {
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 
-import { composeYieldWithdrawTransaction } from './composeYieldWithdrawTransaction';
 import {
+    type ComposeYieldWithdrawTransactionState,
+    composeYieldWithdrawTransaction,
+} from './composeYieldWithdrawTransaction';
+import {
+    type SendYieldTransactionDeps,
+    type SendYieldTransactionState,
     getYieldErrorTranslationKey,
     getYieldSubmitErrorAnalyticsMessage,
     sendYieldTransaction,
@@ -24,13 +29,19 @@ type SubmitYieldWithdrawPayload = {
     amount: string;
     flowType: YieldWithdrawFlowType;
 };
+type SubmitYieldWithdrawThunkState = ComposeYieldWithdrawTransactionState &
+    SendYieldTransactionState;
+type SubmitYieldWithdrawThunkDeps = SendYieldTransactionDeps & {
+    services: DesktopAnalyticsDep;
+};
 
-export const submitYieldWithdrawThunk = createThunk(
+export const submitYieldWithdrawThunk = createThunk<
+    void,
+    SubmitYieldWithdrawPayload,
+    { state: SubmitYieldWithdrawThunkState; extra: SubmitYieldWithdrawThunkDeps }
+>(
     `${STABLECOIN_YIELD_PREFIX}/thunk/submitWithdraw`,
-    async (
-        { flowKey, flowData, amount, flowType }: SubmitYieldWithdrawPayload,
-        { dispatch, getState, extra },
-    ) => {
+    async ({ flowKey, flowData, amount, flowType }, { dispatch, getState, extra }) => {
         const reportSubmitError = (errorMessage = 'submit-failed') =>
             asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: events.yieldWithdrawEvent.name,
