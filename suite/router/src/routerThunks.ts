@@ -78,8 +78,8 @@ type GotoPayload = {
     anchor?: AnchorType;
 };
 
-type GotoThunkState = LocksRootState & ModalRootState & RouterRootState;
-type GotoThunkDeps = { services: SuiteRouterHistoryDep };
+export type GotoThunkState = LocksRootState & ModalRootState & RouterRootState;
+export type GotoThunkDeps = { services: SuiteRouterHistoryDep };
 
 export const goto = createThunk<void, GotoPayload, { state: GotoThunkState; extra: GotoThunkDeps }>(
     '@router/goto',

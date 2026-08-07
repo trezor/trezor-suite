@@ -1,7 +1,7 @@
 import { type SellFiatTrade } from 'invity-api';
 
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { goto } from '@suite/router';
+import { type DesktopAnalyticsDep, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     cryptoIdToNetworkSymbolAndContractAddress,
@@ -12,14 +12,19 @@ import {
     sellUtils,
 } from '@suite-common/trading';
 
-import { requestSellTradeThunk } from './requestSellTradeThunk';
+import { type RequestSellTradeThunkState, requestSellTradeThunk } from './requestSellTradeThunk';
 
-export const selectSellQuoteThunk = createThunk(
+type SelectSellQuoteThunkParams = { quote: SellFiatTrade; fractionButton?: number };
+type SelectSellQuoteThunkState = GotoThunkState & RequestSellTradeThunkState;
+type SelectSellQuoteThunkDeps = GotoThunkDeps & { services: DesktopAnalyticsDep };
+
+export const selectSellQuoteThunk = createThunk<
+    void,
+    SelectSellQuoteThunkParams,
+    { state: SelectSellQuoteThunkState; extra: SelectSellQuoteThunkDeps }
+>(
     'trading/sell/selectQuoteWithAnalytics',
-    async (
-        { quote, fractionButton }: { quote: SellFiatTrade; fractionButton?: number },
-        { dispatch, getState, extra },
-    ) => {
+    async ({ quote, fractionButton }, { dispatch, getState, extra }) => {
         const sellInfo = selectTradingSellInfo(getState());
         const quotesRequest = selectTradingSellQuotesRequest(getState());
 
