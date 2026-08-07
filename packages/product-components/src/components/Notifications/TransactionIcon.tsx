@@ -1,10 +1,10 @@
 import { type ReactNode } from 'react';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type NetworkSymbol,
     getWrappedNativeAddress,
     getWrappedNativeSymbol,
-} from '@suite-common/wallet-config';
+} from '@trezor/network-ethereum-suite-common';
 
 import {
     type TransactionNotificationToken,

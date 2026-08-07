@@ -1,19 +1,20 @@
 import {
-    WRAPPED_NATIVE as ETHEREUM_WRAPPED_NATIVE,
     getWrappedNativeAddress as getEthereumWrappedNativeAddress,
     getWrappedNativeSymbol as getEthereumWrappedNativeSymbol,
+    getWrappedNativeToken as getEthereumWrappedNativeToken,
     isWrappedNativeToken as isEthereumWrappedNativeToken,
     isSupportedEthereumNetwork,
 } from '@trezor/network-ethereum/constants';
 
-import { type NetworkSymbol } from './types';
+export const getWrappedNativeToken = (networkSymbol: string) => {
+    if (!isSupportedEthereumNetwork(networkSymbol)) {
+        return undefined;
+    }
 
-type WrappedNativeToken = (typeof ETHEREUM_WRAPPED_NATIVE)[keyof typeof ETHEREUM_WRAPPED_NATIVE];
+    return getEthereumWrappedNativeToken(networkSymbol);
+};
 
-export const WRAPPED_NATIVE: Partial<Record<NetworkSymbol, WrappedNativeToken>> =
-    ETHEREUM_WRAPPED_NATIVE;
-
-export const getWrappedNativeAddress = (networkSymbol: NetworkSymbol) => {
+export const getWrappedNativeAddress = (networkSymbol: string) => {
     if (!isSupportedEthereumNetwork(networkSymbol)) {
         return undefined;
     }
@@ -21,7 +22,7 @@ export const getWrappedNativeAddress = (networkSymbol: NetworkSymbol) => {
     return getEthereumWrappedNativeAddress(networkSymbol);
 };
 
-export const getWrappedNativeSymbol = (networkSymbol: NetworkSymbol) => {
+export const getWrappedNativeSymbol = (networkSymbol: string) => {
     if (!isSupportedEthereumNetwork(networkSymbol)) {
         return undefined;
     }
@@ -30,7 +31,7 @@ export const getWrappedNativeSymbol = (networkSymbol: NetworkSymbol) => {
 };
 
 export const isWrappedNativeToken = (
-    networkSymbol: NetworkSymbol,
+    networkSymbol: string,
     contractAddress?: string | null,
 ): boolean => {
     if (!isSupportedEthereumNetwork(networkSymbol)) {

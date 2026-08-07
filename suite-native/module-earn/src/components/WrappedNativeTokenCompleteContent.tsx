@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { WRAPPED_NATIVE, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type WrappedNativeFlowType,
@@ -11,6 +11,7 @@ import {
 import { type AccountKey, toTokenSymbol } from '@suite-common/wallet-types';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { YieldCompleteScreenContent } from './YieldCompleteScreenContent';
 import { getWrappedNativeCompleteRows } from './YieldCompleteScreenPresets';
@@ -45,7 +46,7 @@ export const WrappedNativeTokenCompleteContent = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
+    const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
     const nativeSymbol = account ? getNetworkDisplaySymbol(account.symbol) : '';
 
     // The form replaced itself with this screen, so this stack holds it alone — any back

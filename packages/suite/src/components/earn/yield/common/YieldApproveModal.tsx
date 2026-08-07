@@ -8,8 +8,8 @@ import { useServices } from '@suite-common/dependency-injection';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import { parseCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
-import { isWrappedNativeToken } from '@suite-common/wallet-utils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 
 import { type AllowanceModalProvider } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/AllowanceModalProviderInfo';

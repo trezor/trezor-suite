@@ -6,12 +6,12 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { type EthereumSpecific, type TokenInfo } from '@trezor/blockchain-link-types';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit, asAmountUnit } from './AmountTypes';
 import { unitsToSubunits } from './amountUtils';
-import { isWrappedNativeToken } from './tokenUtils';
 
 export const isEip1559 = (
     tx: Record<string, any> | null | undefined,

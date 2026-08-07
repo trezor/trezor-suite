@@ -1,13 +1,14 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getNetworkDisplaySymbol, getWrappedNativeSymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, toTokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { ReviewOutputHexData, ReviewOutputItemValues } from '@suite-native/transaction-management';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 
 import {
