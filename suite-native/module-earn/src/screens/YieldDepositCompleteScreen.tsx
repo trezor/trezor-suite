@@ -57,7 +57,7 @@ export const YieldDepositCompleteScreen = () => {
         selectStablecoinYieldSessionByFlowKey(state, 'deposit', flowKey),
     );
 
-    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault, apy });
+    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault });
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const feedbackForm = useFeedbackForm();

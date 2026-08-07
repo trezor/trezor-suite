@@ -4,7 +4,6 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type Account } from '@suite-common/wallet-types';
-import { isApyAvailable } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
@@ -14,15 +13,12 @@ import { StablecoinYieldApyBreakdown } from '../components/StablecoinYieldApyBre
 interface UseApyBreakdownAlertProps {
     account?: Account | null;
     vault?: YieldDtoV2 | null;
-    apy: number | null;
 }
 
-export const useApyBreakdownAlert = ({ account, vault, apy }: UseApyBreakdownAlertProps) => {
+export const useApyBreakdownAlert = ({ account, vault }: UseApyBreakdownAlertProps) => {
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
     const { analytics } = useServices(selectNativeAnalyticsDep);
-
-    const apyValue = apy && isApyAvailable(apy) ? `~${apy.toFixed(2)}%` : null;
 
     const onPress = useCallback(() => {
         if (!account || !vault) {
@@ -40,10 +36,6 @@ export const useApyBreakdownAlert = ({ account, vault, apy }: UseApyBreakdownAle
 
         showAlert({
             title: vault.outputToken?.name ?? '',
-            description: translate(
-                'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.apyLabel',
-                { apy: apyValue },
-            ),
             appendix: (
                 <StablecoinYieldApyBreakdown
                     networkSymbol={account.symbol}
@@ -56,7 +48,7 @@ export const useApyBreakdownAlert = ({ account, vault, apy }: UseApyBreakdownAle
             titleSpacing: 'sp4',
             primaryButtonTitle: translate('generic.buttons.close'),
         });
-    }, [account, analytics, vault, showAlert, translate, apyValue]);
+    }, [account, analytics, vault, showAlert, translate]);
 
     return { onPress };
 };

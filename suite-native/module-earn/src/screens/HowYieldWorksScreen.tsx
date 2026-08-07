@@ -39,7 +39,7 @@ export const HowYieldWorksScreen = () => {
         resolutionStatus,
     } = useResolvedYieldFlowData(route.params);
 
-    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault, apy });
+    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault });
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.yieldNavigateEvent.name,

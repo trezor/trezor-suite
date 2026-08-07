@@ -37,7 +37,7 @@ export const YieldDepositInfoBottomSheet = ({
     account,
     vault,
 }: YieldDepositInfoBottomSheetProps) => {
-    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault, apy });
+    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault });
 
     const { benefitItems, timelineSections } = createHowYieldWorksPreset({
         apy,
