@@ -3,6 +3,7 @@ import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stable
 import { createThunk } from '@suite-common/redux-utils';
 import {
     type YieldFlowDisplayToken,
+    isWrappedNativeFlowSupported,
     selectAddressDisplayType,
     synchronizeSentTransactionThunk,
 } from '@suite-common/wallet-core';
@@ -68,6 +69,13 @@ export const signWrappedNativeTokenThunk = createThunk<
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Invalid input data.',
+            });
+        }
+
+        if (!isWrappedNativeFlowSupported(device)) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Firmware does not support wrap/unwrap.',
             });
         }
 

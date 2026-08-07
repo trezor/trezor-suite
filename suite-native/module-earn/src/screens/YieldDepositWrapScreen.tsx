@@ -363,6 +363,17 @@ export const YieldDepositWrapScreen = () => {
                             </Box>
                         )}
 
+                        {simulation.isFirmwareOutdatedVisible && (
+                            <Box paddingHorizontal="sp16">
+                                <FullAlertBox
+                                    intent="critical"
+                                    title={
+                                        <Translation id="earn.wrappedNativeToken.firmwareOutdated" />
+                                    }
+                                />
+                            </Box>
+                        )}
+
                         {isFeeSectionDisplayed && (
                             <Box paddingHorizontal="sp16">
                                 <YieldFeeSection accountKey={account.key} fees={wrapFee} />

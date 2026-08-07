@@ -1,3 +1,6 @@
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+
+import { isWrappedNativeFlowSupported } from './stablecoinYieldDeviceUtils';
 import {
     type StablecoinYieldRootState,
     type StablecoinYieldSessionState,
@@ -6,6 +9,9 @@ import {
     initialStablecoinYieldSessionState,
 } from './stablecoinYieldReducer';
 import type { YieldFlowType } from './stablecoinYieldTypes';
+
+export const selectIsWrappedNativeFlowSupported = (state: DeviceRootState): boolean =>
+    isWrappedNativeFlowSupported(selectSelectedDevice(state));
 
 export const selectStablecoinYield = (state: StablecoinYieldRootState) =>
     state.wallet.stablecoinYield;

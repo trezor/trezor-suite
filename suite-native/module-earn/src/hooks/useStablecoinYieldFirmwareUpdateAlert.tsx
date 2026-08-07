@@ -1,70 +1,26 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
-import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     type StablecoinYieldVaultToken,
     type YieldFlowType,
     isStablecoinYieldSupported,
 } from '@suite-common/wallet-core';
-import { useAlert } from '@suite-native/alerts';
-import { Translation, useTranslate } from '@suite-native/intl';
-import {
-    DeviceSettingsStackRoutes,
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
+import { useTranslate } from '@suite-native/intl';
 
-type NavigationProps = StackNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.DeviceSettingsStack
->;
+import { useFirmwareUpdateAlert } from './useFirmwareUpdateAlert';
 
 export const useStablecoinYieldFirmwareUpdateAlert = () => {
-    const navigation = useNavigation<NavigationProps>();
-    const { showAlert } = useAlert();
     const { translate } = useTranslate();
     const selectedDevice = useSelector(selectSelectedDevice);
-    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
+    const showFirmwareUpdateAlert = useFirmwareUpdateAlert(translate('earn.defiYield'));
 
     const isFirmwareSupported = useCallback(
         (flowType: YieldFlowType, vaultToken?: StablecoinYieldVaultToken) =>
             isStablecoinYieldSupported(selectedDevice, { flowType, vaultToken }),
         [selectedDevice],
     );
-
-    const showFirmwareUpdateAlert = useCallback(() => {
-        showAlert({
-            title: (
-                <Translation id="moduleAccounts.accountDetail.stablecoinYield.firmwareUpdateAlert.title" />
-            ),
-            description: translate(
-                'moduleAccounts.accountDetail.stablecoinYield.firmwareUpdateAlert.description',
-                {
-                    name: deviceLabel,
-                    featureName: translate('earn.defiYield'),
-                },
-            ),
-            primaryButtonTitle: (
-                <Translation id="moduleAccounts.accountDetail.stablecoinYield.firmwareUpdateAlert.primaryButtonTitle" />
-            ),
-            onPressPrimaryButton: () => {
-                navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
-                    screen: DeviceSettingsStackRoutes.DeviceFirmware,
-                    params: { closeActionType: 'close' },
-                });
-            },
-            primaryButtonColorProps: { intent: 'info', priority: 'primary' },
-            secondaryButtonColorProps: { intent: 'info', priority: 'secondary' },
-            secondaryButtonTitle: (
-                <Translation id="moduleAccounts.accountDetail.stablecoinYield.firmwareUpdateAlert.secondaryButtonTitle" />
-            ),
-            testID: '@account-detail/stablecoin-yield/firmware-update-alert',
-        });
-    }, [deviceLabel, navigation, showAlert, translate]);
 
     return {
         isFirmwareSupported,

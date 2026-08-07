@@ -117,6 +117,7 @@ export const useStandaloneWrappedNativeFlow = ({
         handleSubmit: simulation.handleSubmit,
         hasFlowFailed,
         isDeviceNotConnectedVisible: simulation.isDeviceNotConnectedVisible,
+        isFirmwareOutdatedVisible: simulation.isFirmwareOutdatedVisible,
         isPending: !!pendingParam,
         pendingBottomSheetRef,
         pendingModalProps,

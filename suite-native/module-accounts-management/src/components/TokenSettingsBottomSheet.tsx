@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
     DefinitionType,
     type TokenDefinitionsRootState,
@@ -21,7 +21,6 @@ import {
 import {
     type AccountsRootState,
     type TokensRootState,
-    isWrappedNativeFlowSupported,
     selectAccountByKey,
     selectAccountHiddenTokens,
     selectAccountNetworkSymbol,
@@ -47,7 +46,7 @@ import {
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { useStablecoinYieldFirmwareUpdateAlert } from '@suite-native/module-earn';
+import { useWrappedNativeFirmwareUpdateAlert } from '@suite-native/module-earn';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -126,8 +125,9 @@ export const TokenSettingsBottomSheet = forwardRef(
         const isUnrecognized = useSelector((state: TokenDefinitionsRootState & AccountsRootState) =>
             selectIsUnrecognizedToken(state, accountKey, tokenContract),
         );
-        const device = useSelector(selectSelectedDevice);
-        const { showFirmwareUpdateAlert } = useStablecoinYieldFirmwareUpdateAlert();
+        const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+        const { isFirmwareSupported, showFirmwareUpdateAlert } =
+            useWrappedNativeFirmwareUpdateAlert();
 
         if (!account || !symbol) return null;
 
@@ -154,20 +154,20 @@ export const TokenSettingsBottomSheet = forwardRef(
         };
 
         const isUnwrapDisplayed =
+            !isPortfolioTrackerDevice &&
             account.networkType === 'ethereum' &&
             isWrappedNativeToken(account.symbol, tokenContract);
         const isWrapDisplayed =
+            !isPortfolioTrackerDevice &&
             isDevelopOrDebugEnv() &&
             !tokenContract &&
             account.networkType === 'ethereum' &&
             !!getWrappedNativeAddress(account.symbol);
 
-        const isWrappedNativeFirmwareSupported = isWrappedNativeFlowSupported(device);
-
         const handleUnwrapPress = () => {
             onNavigateAway?.();
 
-            if (!isWrappedNativeFirmwareSupported) {
+            if (!isFirmwareSupported) {
                 showFirmwareUpdateAlert();
 
                 return;
@@ -182,7 +182,7 @@ export const TokenSettingsBottomSheet = forwardRef(
         const handleWrapPress = () => {
             onNavigateAway?.();
 
-            if (!isWrappedNativeFirmwareSupported) {
+            if (!isFirmwareSupported) {
                 showFirmwareUpdateAlert();
 
                 return;
