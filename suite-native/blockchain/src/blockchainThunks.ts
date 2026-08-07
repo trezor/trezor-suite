@@ -5,6 +5,9 @@ import {
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import {
+    type FetchAndUpdateAccountThunkDeps,
+    type FetchAndUpdateAccountThunkState,
+    type SubscribeBlockchainThunkState,
     blockchainActions,
     fetchAndUpdateAccountThunk,
     selectAccountsSymbols,
@@ -36,80 +39,104 @@ const shouldRefetchAccount = ({
     return Date.now() - lastFetchTime > refetchLimitMs;
 };
 
-export const syncAccountsWithBlockchainThunk = createThunk(
-    `${BLOCKCHAIN_MODULE_PREFIX}/syncAccountsThunk`,
-    async ({ symbol }: { symbol: NetworkSymbol }, { getState, dispatch }) => {
-        const accounts = selectDeviceAccountsByNetworkSymbol(getState(), symbol);
-        const accountForRefetch = accounts.filter(({ key }) =>
-            shouldRefetchAccount({ accountKey: key }),
-        );
+type SyncAccountsWithBlockchainThunkParams = { symbol: NetworkSymbol };
+export type SyncAccountsWithBlockchainThunkState = FetchAndUpdateAccountThunkState;
+export type SyncAccountsWithBlockchainThunkDeps = FetchAndUpdateAccountThunkDeps;
 
-        const accountPromises = accountForRefetch.map(a =>
-            dispatch(fetchAndUpdateAccountThunk({ accountKey: a.key })),
-        );
-        accountForRefetch.forEach(a => {
-            accountLastFetchTime[a.key] = Date.now();
-        });
+export const syncAccountsWithBlockchainThunk = createThunk<
+    void,
+    SyncAccountsWithBlockchainThunkParams,
+    {
+        state: SyncAccountsWithBlockchainThunkState;
+        extra: SyncAccountsWithBlockchainThunkDeps;
+    }
+>(`${BLOCKCHAIN_MODULE_PREFIX}/syncAccountsThunk`, async ({ symbol }, { getState, dispatch }) => {
+    const accounts = selectDeviceAccountsByNetworkSymbol(getState(), symbol);
+    const accountForRefetch = accounts.filter(({ key }) =>
+        shouldRefetchAccount({ accountKey: key }),
+    );
 
-        await Promise.all(accountPromises);
+    const accountPromises = accountForRefetch.map(a =>
+        dispatch(fetchAndUpdateAccountThunk({ accountKey: a.key })),
+    );
+    accountForRefetch.forEach(a => {
+        accountLastFetchTime[a.key] = Date.now();
+    });
 
-        dispatch(blockchainActions.synced({ symbol }));
-    },
-);
+    await Promise.all(accountPromises);
 
-export const syncAllAccountsWithBlockchainThunk = createThunk(
-    `${BLOCKCHAIN_MODULE_PREFIX}/syncAllAccountsThunk`,
-    async (_, { getState, dispatch }) => {
-        const accountsSymbols = selectAccountsSymbols(getState());
+    dispatch(blockchainActions.synced({ symbol }));
+});
 
-        const accountPromises = accountsSymbols.map(symbol =>
-            dispatch(syncAccountsWithBlockchainThunk({ symbol })),
-        );
+export type SyncAllAccountsWithBlockchainThunkState = SyncAccountsWithBlockchainThunkState;
+export type SyncAllAccountsWithBlockchainThunkDeps = SyncAccountsWithBlockchainThunkDeps;
 
-        await Promise.all(accountPromises);
-    },
-);
+export const syncAllAccountsWithBlockchainThunk = createThunk<
+    void,
+    void,
+    {
+        state: SyncAllAccountsWithBlockchainThunkState;
+        extra: SyncAllAccountsWithBlockchainThunkDeps;
+    }
+>(`${BLOCKCHAIN_MODULE_PREFIX}/syncAllAccountsThunk`, async (_, { getState, dispatch }) => {
+    const accountsSymbols = selectAccountsSymbols(getState());
 
-export const onBlockchainConnectThunk = createThunk(
-    `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
-    async ({ symbol }: { symbol: string }, { dispatch }) => {
-        const network = getNetworkOptional(symbol.toLowerCase());
-        if (!network) return;
+    const accountPromises = accountsSymbols.map(symbol =>
+        dispatch(syncAccountsWithBlockchainThunk({ symbol })),
+    );
 
-        await dispatch(
-            subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true, onConnect: true }),
-        );
+    await Promise.all(accountPromises);
+});
 
-        // update accounts for connected network
-        await dispatch(syncAccountsWithBlockchainThunk({ symbol: network.symbol }));
-        dispatch(blockchainActions.connected(network.symbol));
-    },
-);
+type OnBlockchainConnectThunkParams = { symbol: string };
+export type OnBlockchainConnectThunkState = SubscribeBlockchainThunkState &
+    SyncAccountsWithBlockchainThunkState;
+export type OnBlockchainConnectThunkDeps = SyncAccountsWithBlockchainThunkDeps;
 
-export const onBlockchainNotificationThunk = createThunk(
-    `${BLOCKCHAIN_MODULE_PREFIX}/onNotificationThunk`,
-    (payload: BlockchainNotification, { dispatch, getState }) => {
-        const { descriptor, tx } = payload.notification;
-        const symbol = payload.coin.shortcut.toLowerCase();
-        if (!isNetworkSymbol(symbol)) {
-            return;
-        }
+export const onBlockchainConnectThunk = createThunk<
+    void,
+    OnBlockchainConnectThunkParams,
+    { state: OnBlockchainConnectThunkState; extra: OnBlockchainConnectThunkDeps }
+>(`${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`, async ({ symbol }, { dispatch }) => {
+    const network = getNetworkOptional(symbol.toLowerCase());
+    if (!network) return;
 
-        const account = selectDeviceAccountByDescriptorAndNetworkSymbol(
-            getState(),
-            descriptor,
-            symbol,
-        );
+    await dispatch(
+        subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true, onConnect: true }),
+    );
 
-        if (!account) return;
+    // update accounts for connected network
+    await dispatch(syncAccountsWithBlockchainThunk({ symbol: network.symbol }));
+    dispatch(blockchainActions.connected(network.symbol));
+});
 
-        // Skip throttle for pending txs so broadcast shows immediately. Throttle still applies to confirmed.
-        const isPendingNotification = !tx?.blockHeight;
-        if (!isPendingNotification && !shouldRefetchAccount({ accountKey: account.key })) return;
+export type OnBlockchainNotificationThunkState = FetchAndUpdateAccountThunkState;
+export type OnBlockchainNotificationThunkDeps = FetchAndUpdateAccountThunkDeps;
 
-        // Sometimes we randomly get notifications for all transactions in account at once, which would trigger lot of fetches.
-        // We are throttling per account, we don't want to fetch account too often to save resources.
-        dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
-        accountLastFetchTime[account.key] = Date.now();
-    },
-);
+export const onBlockchainNotificationThunk = createThunk<
+    void,
+    BlockchainNotification,
+    {
+        state: OnBlockchainNotificationThunkState;
+        extra: OnBlockchainNotificationThunkDeps;
+    }
+>(`${BLOCKCHAIN_MODULE_PREFIX}/onNotificationThunk`, (payload, { dispatch, getState }) => {
+    const { descriptor, tx } = payload.notification;
+    const symbol = payload.coin.shortcut.toLowerCase();
+    if (!isNetworkSymbol(symbol)) {
+        return;
+    }
+
+    const account = selectDeviceAccountByDescriptorAndNetworkSymbol(getState(), descriptor, symbol);
+
+    if (!account) return;
+
+    // Skip throttle for pending txs so broadcast shows immediately. Throttle still applies to confirmed.
+    const isPendingNotification = !tx?.blockHeight;
+    if (!isPendingNotification && !shouldRefetchAccount({ accountKey: account.key })) return;
+
+    // Sometimes we randomly get notifications for all transactions in account at once, which would trigger lot of fetches.
+    // We are throttling per account, we don't want to fetch account too often to save resources.
+    dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+    accountLastFetchTime[account.key] = Date.now();
+});

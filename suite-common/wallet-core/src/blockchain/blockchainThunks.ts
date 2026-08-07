@@ -161,7 +161,7 @@ export const initBlockchainThunk = createThunk<
 const isAccountSubscribable = (account: Account) =>
     !account.failed && isTrezorConnectBackendType(account.backendType);
 
-type SubscribeBlockchainThunkState = AccountsRootState;
+export type SubscribeBlockchainThunkState = AccountsRootState;
 type SubscribeBlockchainThunkParams = {
     symbol: NetworkSymbol;
     fiatRates?: boolean;
