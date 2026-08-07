@@ -74,7 +74,7 @@ export const StablecoinYieldTokenOverview = ({
         });
     const apyValueText = apy && isApyAvailable(apy) ? `~${apy.toFixed(2)}%` : null;
 
-    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault, apy });
+    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault });
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
     const depositMessageSystem = useMessageSystemYield('deposit', { vaultContractAddress });

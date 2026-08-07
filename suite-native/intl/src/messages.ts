@@ -2044,7 +2044,6 @@ export const messages = {
                     secondaryButtonTitle: 'Not now',
                 },
                 apyBreakdown: {
-                    apyLabel: '{apy} APY',
                     autoCompounded: 'Automatically added and compounded.',
                     manualCompound:
                         'Claim manually, then swap to {tokenSymbol} and deposit to compound.',
