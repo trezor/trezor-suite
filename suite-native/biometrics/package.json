@@ -20,9 +20,9 @@
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@trezor/styles-native": "workspace:*",
-        "expo-local-authentication": "~56.0.4",
+        "expo-local-authentication": "~57.0.1",
         "react": "19.2.3",
-        "react-native": "0.85.3",
+        "react-native": "0.86.0",
         "react-native-svg": "15.15.5",
         "react-redux": "9.3.0"
     }
