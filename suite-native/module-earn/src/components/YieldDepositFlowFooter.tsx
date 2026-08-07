@@ -1,13 +1,20 @@
 import { useMemo } from 'react';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
-import { useFormatters } from '@suite-common/formatters';
 import { type YieldApprovalAction } from '@suite-common/wallet-core';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { calculateRewards } from '@suite-common/wallet-utils';
 import { Box, Button, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
-import { Translation, type TxKeyPath, useTranslate } from '@suite-native/intl';
+import {
+    Translation,
+    type TxKeyPath,
+    selectSupportedLanguageLocale,
+    useTranslate,
+} from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
 
 const screenFooterStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
@@ -64,21 +71,15 @@ export const YieldDepositFlowFooter = ({
 }: YieldDepositFlowFooterProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
-    const { CryptoAmountFormatter } = useFormatters();
+    const locale = useSelector(selectSupportedLanguageLocale);
 
     const estimatedRewards = useMemo(() => {
         if (!amountValue || apy === null) return null;
 
         const rewards = calculateRewards(amountValue, apy);
 
-        return CryptoAmountFormatter.format(rewards, {
-            symbol: tokenSymbol,
-            isBalance: true,
-            withSymbol: true,
-            isEllipsisAppended: false,
-            maxDisplayedDecimals: 8,
-        });
-    }, [amountValue, apy, CryptoAmountFormatter, tokenSymbol]);
+        return formatEarnTokenAmount({ amount: rewards, locale, symbol: tokenSymbol });
+    }, [amountValue, apy, locale, tokenSymbol]);
 
     const buttonTranslationId = getSubmitButtonTranslationId(approvalAction);
     const isApprovalLimitAction = approvalAction === 'increase' || approvalAction === 'revoke';

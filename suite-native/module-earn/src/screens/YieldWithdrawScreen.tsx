@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -36,7 +35,7 @@ import {
 } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { decimalTransformer } from '@suite-native/helpers';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation, selectSupportedLanguageLocale, useTranslate } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import {
     Screen,
@@ -63,6 +62,7 @@ import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransa
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../hooks/useYieldSession';
 import { useYieldWithdrawFees } from '../hooks/useYieldWithdrawFees';
+import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
 import { getYieldWithdrawAmountValidationError } from '../utils/yieldWithdrawUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdraw>;
@@ -93,8 +93,8 @@ export const YieldWithdrawScreen = () => {
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
     const { applyStyle } = useNativeStyles();
-    const { CryptoAmountFormatter } = useFormatters();
     const { translate } = useTranslate();
+    const locale = useSelector(selectSupportedLanguageLocale);
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const [assetAmount, setAssetAmount] = useState('');
@@ -523,13 +523,7 @@ export const YieldWithdrawScreen = () => {
         : route.params.tokenContract;
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
     const depositedAmountLabel = maxAmount
-        ? CryptoAmountFormatter.format(maxAmount, {
-              symbol: activeUnitSymbol,
-              isBalance: true,
-              withSymbol: true,
-              isEllipsisAppended: false,
-              maxDisplayedDecimals: 8,
-          })
+        ? formatEarnTokenAmount({ amount: maxAmount, locale, symbol: activeUnitSymbol })
         : null;
 
     return (
