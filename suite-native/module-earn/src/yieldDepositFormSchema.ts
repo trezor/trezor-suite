@@ -60,6 +60,7 @@ export const yieldDepositFormValidationSchema = yup.object({
 
             return true;
         }),
+    fiat: yup.string(),
 });
 
 export type YieldDepositFormValues = yup.InferType<typeof yieldDepositFormValidationSchema>;

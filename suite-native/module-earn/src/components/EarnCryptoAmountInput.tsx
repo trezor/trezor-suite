@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { Input, type InputType, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
@@ -17,6 +18,9 @@ import { type EarnFormValues } from '../earnFormSchema';
 
 type EarnCryptoAmountInputProps = {
     symbol: NetworkSymbol;
+    tokenContract?: TokenAddress;
+    displaySymbol?: string;
+    accessibilityLabel?: string;
     inputRef?: RefObject<InputType | null>;
     isDisabled?: boolean;
     onPress?: TextInputProps['onPress'];
@@ -24,6 +28,9 @@ type EarnCryptoAmountInputProps = {
 
 export const EarnCryptoAmountInput = ({
     symbol,
+    tokenContract,
+    displaySymbol,
+    accessibilityLabel = 'amount to stake input',
     inputRef,
     isDisabled = false,
     onPress,
@@ -38,7 +45,7 @@ export const EarnCryptoAmountInput = ({
         code: baseCurrencyCode,
         isInSats: isBaseCurrencyInSats,
     });
-    const converters = useCryptoFiatConverters({ symbol });
+    const converters = useCryptoFiatConverters({ symbol, tokenContract });
 
     const { onChange, onBlur, value, hasError } = useField({
         name: 'amount',
@@ -66,7 +73,7 @@ export const EarnCryptoAmountInput = ({
             value={value}
             placeholder="0"
             keyboardType="numeric"
-            accessibilityLabel="amount to stake input"
+            accessibilityLabel={accessibilityLabel}
             editable={!isDisabled}
             onChangeText={handleChangeValue}
             onBlur={() => {
@@ -76,7 +83,7 @@ export const EarnCryptoAmountInput = ({
             hasError={!isDisabled && hasError}
             rightIcon={
                 <Text color={isDisabled ? 'contentSecondary' : 'contentPrimary'}>
-                    {formatter.format(symbol)}
+                    {displaySymbol ?? formatter.format(symbol)}
                 </Text>
             }
         />
