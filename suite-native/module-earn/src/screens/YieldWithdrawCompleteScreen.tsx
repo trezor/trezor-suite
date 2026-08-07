@@ -7,6 +7,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { useFormatters } from '@suite-common/formatters';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type StablecoinYieldRootState,
     getConvertedOutputTokenBalanceToInputTokenAmount,
@@ -118,10 +119,14 @@ export const YieldWithdrawCompleteScreen = () => {
             return [];
         }
 
-        const { completedAmount } = session.result;
-        const underlyingSymbol = toTokenSymbol(vault.token.symbol);
+        const { completedAmount, unwrappedAmount } = session.result;
+
+        const hasUnwrappedOutput = unwrappedAmount !== null;
+        const underlyingSymbol = hasUnwrappedOutput
+            ? toTokenSymbol(getNetworkDisplaySymbol(account.symbol))
+            : toTokenSymbol(vault.token.symbol);
         const vaultTokenSymbol = toTokenSymbol(vault.outputToken.symbol);
-        const receivedUnderlyingAmount = isSharesInput
+        const withdrawnUnderlyingAmount = isSharesInput
             ? getConvertedOutputTokenBalanceToInputTokenAmount({
                   networkSymbol: account.symbol,
                   token: vault.token,
@@ -130,6 +135,7 @@ export const YieldWithdrawCompleteScreen = () => {
                   pricePerShareState: vault.state?.pricePerShareState,
               })
             : completedAmount;
+        const receivedUnderlyingAmount = unwrappedAmount ?? withdrawnUnderlyingAmount;
 
         const receivedAmount = CryptoAmountFormatter.format(receivedUnderlyingAmount, {
             symbol: underlyingSymbol,
@@ -152,7 +158,9 @@ export const YieldWithdrawCompleteScreen = () => {
         return getYieldWithdrawCompleteRows({
             accountSymbol: account.symbol,
             receivedAmount,
-            receivedTokenContract: vault.token.address ?? undefined,
+            receivedTokenContract: hasUnwrappedOutput
+                ? undefined
+                : (vault.token.address ?? undefined),
             withdrawalAmount,
             withdrawalTokenContract: vault.outputToken.address ?? undefined,
         });
