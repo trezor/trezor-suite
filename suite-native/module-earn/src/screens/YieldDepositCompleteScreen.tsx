@@ -6,18 +6,16 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
-import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type StablecoinYieldRootState,
     selectStablecoinYieldSessionByFlowKey,
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
-import { toTokenSymbol } from '@suite-common/wallet-types';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { useFeedbackForm } from '@suite-native/feature-feedback';
-import { Translation } from '@suite-native/intl';
+import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -32,6 +30,7 @@ import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenCon
 import { getYieldDepositCompleteRows } from '../components/YieldCompleteScreenPresets';
 import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
 
 const abbrStyle = prepareNativeStyle(({ colors }) => ({
     borderStyle: 'dotted',
@@ -51,7 +50,7 @@ export const YieldDepositCompleteScreen = () => {
     const { applyStyle } = useNativeStyles();
     const dispatch = useDispatch();
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const { CryptoAmountFormatter } = useFormatters();
+    const locale = useSelector(selectSupportedLanguageLocale);
     const { vault, account, apy, flowData, flowKey, resolutionStatus, tokenSymbol } =
         useResolvedYieldFlowData(route.params);
     const session = useSelector((state: StablecoinYieldRootState) =>
@@ -132,23 +131,17 @@ export const YieldDepositCompleteScreen = () => {
             return [];
         }
 
-        const receivedAmount = CryptoAmountFormatter.format(session.result.completedReceiptAmount, {
-            symbol: toTokenSymbol(flowData.receiptToken.symbol),
-            isBalance: true,
-            withSymbol: true,
-            isEllipsisAppended: false,
-            maxDisplayedDecimals: 8,
+        const receivedAmount = formatEarnTokenAmount({
+            amount: session.result.completedReceiptAmount,
+            locale,
+            symbol: flowData.receiptToken.symbol,
         });
 
         const hasWrappedInput = !!session.result.wrappedAmount;
-        const sentAmount = CryptoAmountFormatter.format(session.result.completedAmount, {
-            symbol: hasWrappedInput
-                ? toTokenSymbol(getNetworkDisplaySymbol(account.symbol))
-                : tokenSymbol,
-            isBalance: true,
-            withSymbol: true,
-            isEllipsisAppended: false,
-            maxDisplayedDecimals: 8,
+        const sentAmount = formatEarnTokenAmount({
+            amount: session.result.completedAmount,
+            locale,
+            symbol: hasWrappedInput ? getNetworkDisplaySymbol(account.symbol) : tokenSymbol,
         });
 
         return getYieldDepositCompleteRows({
@@ -167,12 +160,12 @@ export const YieldDepositCompleteScreen = () => {
                 : (flowData.token.contractAddress ?? undefined),
         });
     }, [
-        CryptoAmountFormatter,
         applyStyle,
         apyBreakdownAlert.onPress,
         account,
         apy,
         flowData,
+        locale,
         resolutionStatus,
         session,
         tokenSymbol,

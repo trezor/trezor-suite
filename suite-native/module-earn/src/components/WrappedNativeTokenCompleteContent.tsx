@@ -1,19 +1,19 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useFormatters } from '@suite-common/formatters';
 import { WRAPPED_NATIVE, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type WrappedNativeFlowType,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { type AccountKey, toTokenSymbol } from '@suite-common/wallet-types';
-import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { Translation, type TxKeyPath, selectSupportedLanguageLocale } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 
 import { YieldCompleteScreenContent } from './YieldCompleteScreenContent';
 import { getWrappedNativeCompleteRows } from './YieldCompleteScreenPresets';
+import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
 
 type WrappedNativeTokenCompleteContentProps = {
     accountKey: AccountKey;
@@ -40,7 +40,7 @@ export const WrappedNativeTokenCompleteContent = ({
     flowType,
 }: WrappedNativeTokenCompleteContentProps) => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const { CryptoAmountFormatter } = useFormatters();
+    const locale = useSelector(selectSupportedLanguageLocale);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -60,14 +60,7 @@ export const WrappedNativeTokenCompleteContent = ({
             return [];
         }
 
-        const formatAmount = (symbol: string) =>
-            CryptoAmountFormatter.format(amount, {
-                symbol: toTokenSymbol(symbol),
-                isBalance: true,
-                withSymbol: true,
-                isEllipsisAppended: false,
-                maxDisplayedDecimals: 8,
-            });
+        const formatAmount = (symbol: string) => formatEarnTokenAmount({ amount, locale, symbol });
 
         return getWrappedNativeCompleteRows({
             accountSymbol: account.symbol,
@@ -76,7 +69,7 @@ export const WrappedNativeTokenCompleteContent = ({
             sentAmount: formatAmount(flowType === 'wrap' ? nativeSymbol : wrappedNative.symbol),
             sentTokenContract: flowType === 'wrap' ? undefined : wrappedNative.address,
         });
-    }, [CryptoAmountFormatter, account, amount, flowType, nativeSymbol, wrappedNative]);
+    }, [account, amount, flowType, locale, nativeSymbol, wrappedNative]);
 
     if (!account || !wrappedNative) {
         return null;

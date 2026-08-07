@@ -337,9 +337,10 @@ export const YieldDepositWrapScreen = () => {
                         {isWrapAmountReady && (
                             <Box paddingHorizontal="sp16">
                                 <YieldWrappedNativeReceivingCard
-                                    amount={amountValue ?? ''}
+                                    amount={amountValue ?? '0'}
                                     networkSymbol={account.symbol}
                                     tokenContract={toTokenAddress(token.contractAddress ?? '')}
+                                    tokenDecimals={token.decimals}
                                     tokenSymbol={wrappedTokenSymbol}
                                 />
                             </Box>

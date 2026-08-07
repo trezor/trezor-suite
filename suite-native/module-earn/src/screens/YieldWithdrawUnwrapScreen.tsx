@@ -366,6 +366,7 @@ export const YieldWithdrawUnwrapScreen = () => {
                                 <YieldWrappedNativeReceivingCard
                                     amount={amountValue ?? ''}
                                     networkSymbol={account.symbol}
+                                    tokenDecimals={getNetwork(account.symbol).decimals}
                                     tokenSymbol={nativeSymbol}
                                 />
                             </Box>

@@ -11,7 +11,7 @@ import { isApyAvailable, isSupportedStakingNetworkSymbol } from '@suite-common/w
 import { AccountTypeBadge } from '@suite-native/accounts';
 import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 import {
     selectApy,
     selectCanClaimByAccountKey,
@@ -23,11 +23,11 @@ import {
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { CRYPTO_BALANCE_DECIMALS } from '../constants';
 import { EarnClaimAlert } from './EarnClaimAlert';
 import { EarnTronVotingAlert } from './EarnTronVotingAlert';
 import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 import { type EarnDepositsCardActiveItem } from '../types';
+import { formatEarnActiveItemBalance } from '../utils/earnAmountUtils';
 
 const itemCardStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.sp16,
@@ -51,18 +51,6 @@ const valuesStyle = prepareNativeStyle(utils => ({
     paddingLeft: utils.spacings.sp8,
 }));
 
-export const formatActiveItemBalance = (item: EarnDepositsCardActiveItem) => {
-    const maxDecimals = item.type === 'staking' ? CRYPTO_BALANCE_DECIMALS : 2;
-    const balanceValue = Number(item.balance);
-    const formattedValue = Number.isNaN(balanceValue)
-        ? item.balance
-        : balanceValue.toLocaleString(undefined, {
-              maximumFractionDigits: maxDecimals,
-          });
-
-    return `${formattedValue} ${item.type === 'staking' ? item.symbol.toUpperCase() : item.tokenSymbol}`;
-};
-
 type EarnAccountCardProps = {
     item: EarnDepositsCardActiveItem;
     onPress: () => void;
@@ -75,6 +63,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
     const isDefiYieldItem = item.type === 'stablecoin-yield';
     const isSupportedStaking = isStakingItem && isSupportedStakingNetworkSymbol(item.symbol);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+    const locale = useSelector(selectSupportedLanguageLocale);
 
     const symbol = isStakingItem ? item.symbol : item.networkSymbol;
 
@@ -155,7 +144,7 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
                 </VStack>
 
                 <VStack spacing="sp2" style={applyStyle(valuesStyle)}>
-                    <Text variant="body-md">{formatActiveItemBalance(item)}</Text>
+                    <Text variant="body-md">{formatEarnActiveItemBalance({ item, locale })}</Text>
                     {(isAdaStakedOutsideEverstake || apyValue != null) && (
                         <Text variant="body-sm" color="contentSecondary">
                             {isAdaStakedOutsideEverstake || !isApyAvailable(apyValue) ? (

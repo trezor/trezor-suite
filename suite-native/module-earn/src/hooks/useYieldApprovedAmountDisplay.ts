@@ -1,8 +1,11 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
-import { useFormatters } from '@suite-common/formatters';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { selectSupportedLanguageLocale } from '@suite-native/intl';
+
+import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
 
 type UseYieldApprovedAmountDisplayParams = {
     allowanceAmount: string | null | undefined;
@@ -15,7 +18,7 @@ export const useYieldApprovedAmountDisplay = ({
     isApprovedAmountUnlimited,
     tokenSymbol,
 }: UseYieldApprovedAmountDisplayParams) => {
-    const { CryptoAmountFormatter } = useFormatters();
+    const locale = useSelector(selectSupportedLanguageLocale);
     const hasApprovedAmount =
         allowanceAmount !== null && allowanceAmount !== undefined
             ? isPositiveBalance(allowanceAmount)
@@ -26,20 +29,8 @@ export const useYieldApprovedAmountDisplay = ({
             return null;
         }
 
-        return CryptoAmountFormatter.format(allowanceAmount, {
-            symbol: tokenSymbol,
-            isBalance: true,
-            withSymbol: true,
-            isEllipsisAppended: false,
-            maxDisplayedDecimals: 8,
-        });
-    }, [
-        CryptoAmountFormatter,
-        allowanceAmount,
-        hasApprovedAmount,
-        isApprovedAmountUnlimited,
-        tokenSymbol,
-    ]);
+        return formatEarnTokenAmount({ amount: allowanceAmount, locale, symbol: tokenSymbol });
+    }, [allowanceAmount, hasApprovedAmount, isApprovedAmountUnlimited, locale, tokenSymbol]);
 
     return {
         formattedApprovedAmount,
