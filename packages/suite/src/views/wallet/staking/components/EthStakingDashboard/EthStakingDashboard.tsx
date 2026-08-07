@@ -1,7 +1,9 @@
 import { useEffect, useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api/src/staking';
 import { getDaysToAddToPool, getDaysToUnstake } from '@suite-common/staking';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     fetchAllTransactionsForAccountThunk,
     selectAccountIsStakingActive,
@@ -36,6 +38,7 @@ interface EthStakingDashboardProps {
 }
 
 export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { account } = selectedAccount;
 
     const accountKey = account.key;
@@ -72,9 +75,11 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const daysToAddToPool = getDaysToAddToPool(stakeTxs, validatorQueueData);
     const daysToUnstake = getDaysToUnstake(unstakeTxs, validatorQueueData);
 
-    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
+    const { canClaim = false } = getStakingDataForNetwork(networkConfigDeps, account) ?? {};
 
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isStakingActive = useSelector(state =>
+        selectAccountIsStakingActive(state, account.key, networkConfigDeps),
+    );
 
     return (
         <StakingDashboard

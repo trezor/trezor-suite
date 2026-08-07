@@ -14,6 +14,7 @@ import {
     selectTradingBuySupportedCryptoIds,
     tradingActions,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
@@ -37,6 +38,7 @@ import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFo
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 
 export const TradingBuyFormInputs = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const context = useTradingFormContext<TradingBuyType>();
     const quotes = useSelector(selectTradingBuyQuotes);
     const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
@@ -70,7 +72,7 @@ export const TradingBuyFormInputs = () => {
 
     const supportedNetworks = networkModuleRepository.getSupportedNetworks();
     const buySupportedCryptoIds = useSelector(state =>
-        selectTradingBuySupportedCryptoIds(state, supportedNetworks),
+        selectTradingBuySupportedCryptoIds(state, supportedNetworks, networkConfigDeps),
     );
 
     const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);

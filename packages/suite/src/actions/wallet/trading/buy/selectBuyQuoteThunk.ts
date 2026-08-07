@@ -23,7 +23,7 @@ export const selectBuyQuoteThunk = createThunk(
         const buyInfo = selectTradingBuyInfo(getState());
         const quotesRequest = selectTradingBuyQuotesRequest(getState());
         const receiveAddress = selectTradingBuyReceiveAddress(getState());
-        const account = selectTradingFormAccount(getState(), 'buy');
+        const account = selectTradingFormAccount(getState(), 'buy', extra.services);
 
         const provider = buyInfo && quote.exchange ? buyInfo.providerInfos[quote.exchange] : null;
 
@@ -37,7 +37,10 @@ export const selectBuyQuoteThunk = createThunk(
         );
 
         const { symbol: cryptoNetworkSymbol, contractAddress: cryptoContractAddress } =
-            cryptoIdToNetworkSymbolAndContractAddress(quotesRequest.receiveCurrency);
+            cryptoIdToNetworkSymbolAndContractAddress(
+                extra.services,
+                quotesRequest.receiveCurrency,
+            );
         const cryptoLabel = selectTradingCoinInfoByCryptoId(
             getState(),
             quotesRequest.receiveCurrency,

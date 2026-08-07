@@ -1,12 +1,17 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
     Feature,
     type MessageSystemRootState,
     selectIsYieldFeatureDisabled,
 } from '@suite-common/message-system';
-import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
+import {
+    findNetworkByYieldXyzId,
+    getNetworks,
+    selectNetworkConfigDeps,
+} from '@suite-common/wallet-config';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent, isApyAvailable } from '@suite-common/wallet-utils';
@@ -28,6 +33,8 @@ const isVaultDepositEnabled = (state: MessageSystemRootState, vault: YieldDtoV2)
     );
 
 export const useEarnEthBanner = (account: Account) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const networks = getNetworks(networkConfigDeps);
     const { rate: stakingRate } = useStakingRate({
         symbol: account.symbol,
         accountKey: account.key,
@@ -50,11 +57,12 @@ export const useEarnEthBanner = (account: Account) => {
                       vault =>
                           !vault.metadata.underMaintenance &&
                           !vault.metadata.deprecated &&
-                          getNetworkByYieldXyzId(vault.network)?.symbol === account.symbol &&
+                          findNetworkByYieldXyzId(networks, vault.network)?.symbol ===
+                              account.symbol &&
                           isWrappedNativeToken(account.symbol, vault.token.address),
                   )
                 : emptyVaults,
-        [isYieldOptionRelevant, availableVaults, account.symbol],
+        [isYieldOptionRelevant, availableVaults, account.symbol, networks],
     );
 
     const hasYieldOption = useSelector(state =>

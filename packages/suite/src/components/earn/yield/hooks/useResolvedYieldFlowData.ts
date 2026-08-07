@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkConfigDeps, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
     type YieldFlowToken,
@@ -22,9 +24,10 @@ const hasTokenSymbol = (
 ): accountToken is TokenInfoBranded => accountToken.symbol !== undefined;
 
 const getMatchedAccountToken = ({
+    getNetworkConfig,
     account,
     token,
-}: {
+}: Pick<NetworkConfigDeps, 'getNetworkConfig'> & {
     account: Account;
     token?: Pick<TokenDtoV2, 'address' | 'symbol' | 'decimals'>;
 }) => {
@@ -36,6 +39,7 @@ const getMatchedAccountToken = ({
         (accountToken): accountToken is TokenInfoBranded =>
             hasTokenSymbol(accountToken) &&
             doTokensMatch({
+                getNetworkConfig,
                 networkSymbol: account.symbol,
                 firstToken: {
                     address: accountToken.contract,
@@ -66,6 +70,7 @@ export const useResolvedYieldFlowData = ({
     account,
     vault,
 }: UseResolvedYieldFlowDataProps): UseResolvedYieldFlowDataResult => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const resolvedContractAddress = vault.token.address;
 
     const matchedToken = useMemo(() => {
@@ -73,8 +78,13 @@ export const useResolvedYieldFlowData = ({
             return account.tokens?.find((token): token is TokenInfo => {
                 const normalizedTokenAddress =
                     token.contract &&
-                    getContractAddressForNetworkSymbol(account.symbol, token.contract);
+                    getContractAddressForNetworkSymbol(
+                        networkConfigDeps,
+                        account.symbol,
+                        token.contract,
+                    );
                 const normalizedRouteAddress = getContractAddressForNetworkSymbol(
+                    networkConfigDeps,
                     account.symbol,
                     resolvedContractAddress,
                 );
@@ -84,18 +94,20 @@ export const useResolvedYieldFlowData = ({
         }
 
         return getMatchedAccountToken({
+            ...networkConfigDeps,
             account,
             token: vault.token,
         });
-    }, [account, resolvedContractAddress, vault.token]);
+    }, [account, networkConfigDeps, resolvedContractAddress, vault.token]);
 
     const matchedOutputToken = useMemo(
         () =>
             getMatchedAccountToken({
+                ...networkConfigDeps,
                 account,
                 token: vault.outputToken,
             }),
-        [account, vault],
+        [account, networkConfigDeps, vault],
     );
 
     const token = useMemo<YieldFlowToken | null>(
@@ -104,7 +116,7 @@ export const useResolvedYieldFlowData = ({
             symbol:
                 matchedToken?.symbol ??
                 vault.token.symbol ??
-                getNetworkDisplaySymbol(account.symbol),
+                getNetworkDisplaySymbol(networkConfigDeps, account.symbol),
             decimals: matchedToken?.decimals ?? vault.token.decimals,
             contractAddress: resolvedContractAddress ?? null,
             coingeckoId: vault.token.coinGeckoId,
@@ -128,6 +140,7 @@ export const useResolvedYieldFlowData = ({
     }, [account, token, vault]);
 
     const depositedAmount = getConvertedOutputTokenBalanceToInputTokenAmount({
+        ...networkConfigDeps,
         networkSymbol: account.symbol,
         token: vault.token,
         outputToken: vault.outputToken,

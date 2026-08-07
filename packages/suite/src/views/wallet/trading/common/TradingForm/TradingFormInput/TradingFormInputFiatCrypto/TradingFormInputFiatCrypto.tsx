@@ -2,8 +2,9 @@ import { memo } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { TRADING_FORM_AMOUNT_IN_CRYPTO, useTradingUtils } from '@suite-common/trading';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { getDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { Text } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -25,6 +26,7 @@ export const TradingFormInputFiatCrypto = memo(function TradingFormInputFiatCryp
     cryptoSelectName,
     fiatInputName,
 }: TradingFormInputFiatCryptoWrapProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const {
         type,
         form: {
@@ -38,7 +40,8 @@ export const TradingFormInputFiatCrypto = memo(function TradingFormInputFiatCryp
     const amountInCrypto = getValues(TRADING_FORM_AMOUNT_IN_CRYPTO);
     const amountLabels = tradingGetAmountLabels({ type, amountInCrypto });
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoCurrencyLabel);
-    const displaySymbol = coinSymbol && getDisplaySymbol(coinSymbol, contractAddress);
+    const displaySymbol =
+        coinSymbol && getDisplaySymbol(networkConfigDeps, coinSymbol, contractAddress);
 
     const inputProps = {
         cryptoInputName,

@@ -20,6 +20,7 @@ import {
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -50,6 +51,7 @@ export const useExchangeQuotes = ({
     receiveAccountSymbol,
     composeRequestCallback,
 }: UseExchangeQuotesProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { addressValidator, analytics } = useServices(
         selectAddressValidatorDep,
@@ -108,6 +110,7 @@ export const useExchangeQuotes = ({
 
         if (
             !isReceiveAddressCoherent({
+                ...networkConfigDeps,
                 addressValidator,
                 receiveAddress,
                 receiveCryptoId: receiveCryptoSelect?.id,

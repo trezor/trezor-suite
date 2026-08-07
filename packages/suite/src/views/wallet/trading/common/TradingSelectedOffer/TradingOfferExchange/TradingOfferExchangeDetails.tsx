@@ -1,6 +1,7 @@
 import { type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { ExperimentId, ExperimentWrapper } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
@@ -11,7 +12,7 @@ import {
     selectTradingExchangeReceiveAccountKey,
     useTradingUtils,
 } from '@suite-common/trading';
-import { networksCollection } from '@suite-common/wallet-config';
+import { getNetworks , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -46,6 +47,7 @@ export const TradingOfferExchangeDetails = ({
     exchange,
     providers,
 }: TradingOfferExchangeDetailsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const formStep = useSelector(selectTradingExchangeFormStep);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
@@ -55,6 +57,7 @@ export const TradingOfferExchangeDetails = ({
 
     const { symbol } = account;
     const formattedNetworkFee = subunitsToUnits({
+        ...networkConfigDeps,
         value: asAmountSubunit(new BigNumber(networkFee || '0')),
         symbol,
     }).toString();
@@ -66,10 +69,12 @@ export const TradingOfferExchangeDetails = ({
         cryptoId: exchangeQuote.receive,
     });
 
-    const supportedMevProtectionNetworks = networksCollection
+    const supportedMevProtectionNetworks = getNetworks(networkConfigDeps)
         .filter(network => network.features.includes('mev-protection'))
         .map(network => network.name);
-    const sendNetwork = exchangeQuote.send ? cryptoIdToNetwork(exchangeQuote.send) : undefined;
+    const sendNetwork = exchangeQuote.send
+        ? cryptoIdToNetwork(networkConfigDeps, exchangeQuote.send)
+        : undefined;
     const isMevProtectionSupported = sendNetwork?.features.includes('mev-protection') ?? false;
 
     const { coinSymbol: receiveCoinSymbol, contractAddress: receiveContractAddress } =

@@ -1,8 +1,10 @@
 import { type Dispatch, type SetStateAction, useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Icon, Input } from '@trezor/components';
@@ -32,6 +34,7 @@ export const TransactionListActions = ({
     isExportable = true,
     isTxFilteringEnabled = true,
 }: TransactionListActionsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
 
     const transactionHistoryPrefill = useSelector(
@@ -103,9 +106,10 @@ export const TransactionListActions = ({
                     />
                 }
             />
-            {isTxFilteringEnabled && hasNetworkPotentialFraudTransactions(account.symbol) && (
-                <FilterAction symbol={account.symbol} />
-            )}
+            {isTxFilteringEnabled &&
+                hasNetworkPotentialFraudTransactions(networkConfigDeps, account.symbol) && (
+                    <FilterAction symbol={account.symbol} />
+                )}
             {isExportable && <ExportAction account={account} searchQuery={searchQuery} />}
         </Row>
     );

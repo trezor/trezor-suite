@@ -1,7 +1,8 @@
 import { FormProvider } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { Banner, Card, Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -16,6 +17,7 @@ import { TronVoteRepresentativeSelect } from './TronVoteRepresentativeSelect';
 import { TronVoteSubmitButton } from './TronVoteSubmitButton';
 
 export const TronVoteForm = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { account, form, actions, fees } = useTronStakeContext();
     const { error, pendingTxid } = actions;
 
@@ -57,7 +59,10 @@ export const TronVoteForm = () => {
                             <Translation
                                 id="AMOUNT_NOT_ENOUGH_CURRENCY_FEE"
                                 values={{
-                                    networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                    networkDisplaySymbol: getNetworkDisplaySymbol(
+                                        networkConfigDeps,
+                                        account.symbol,
+                                    ),
                                 }}
                             />
                         }

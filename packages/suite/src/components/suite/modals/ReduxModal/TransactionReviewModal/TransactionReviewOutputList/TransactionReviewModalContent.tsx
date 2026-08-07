@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type SerializedTx,
     selectSendFormReviewButtonRequestsCount,
@@ -55,6 +57,7 @@ export const TransactionReviewModalContent = ({
     isSending,
     isRbfConfirmedError,
 }: TransactionReviewModalContentProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { symbol, networkType } = account;
     const device = useSelector(selectSelectedDevice);
     const swapSlippage = useSelector(selectTradingExchangeSelectedQuote)?.swapSlippage;
@@ -75,7 +78,7 @@ export const TransactionReviewModalContent = ({
             : undefined;
 
     const buttonRequestsCount = useSelector((state: DeviceRootState) =>
-        selectSendFormReviewButtonRequestsCount(state, symbol, decreaseOutputId),
+        selectSendFormReviewButtonRequestsCount(state, networkConfigDeps, symbol, decreaseOutputId),
     );
 
     const outputs = useMemo(

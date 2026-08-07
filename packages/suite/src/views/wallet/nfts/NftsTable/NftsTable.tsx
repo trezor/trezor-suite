@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { toNetwork } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Card, Column, Table } from '@trezor/components';
 
@@ -9,6 +11,7 @@ import { type GetTokensOutputType } from 'src/utils/wallet/tokenUtils';
 
 import NftsRow from './NftsRow';
 import { DropdownRow } from '../../tokens/DropdownRow';
+
 
 type NftsTableProps = {
     selectedAccount: SelectedAccountLoaded;
@@ -18,8 +21,9 @@ type NftsTableProps = {
 };
 
 const NftsTable = ({ selectedAccount, isShown, verified, nfts }: NftsTableProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { account } = selectedAccount;
-    const network = getNetwork(account.symbol);
+    const network = toNetwork(account.symbol, getNetworkConfig(account.symbol));
     const [isEmptyCollectionsOpen, setIsEmptyCollectionsOpen] = useState(false);
 
     const getNftsToShow = () => {

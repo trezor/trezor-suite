@@ -3,12 +3,14 @@ import { useEffect } from 'react';
 import type { CryptoId } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     requiresTokenApproval,
     selectIsTradingNetworkFeeMissing,
     selectTradingSendAccount,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
 
@@ -25,6 +27,7 @@ import { TradingRevokeModal } from 'src/views/wallet/trading/common/TradingForm/
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 export const TradingFormOfferExchangeActions = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const context = useTradingFormContext<'exchange'>();
     const {
@@ -37,7 +40,9 @@ export const TradingFormOfferExchangeActions = () => {
         isComposing,
         form: { state, helpers },
     } = context;
-    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'exchange'));
+    const account = useSelector(reduxState =>
+        selectTradingSendAccount(reduxState, 'exchange', networkConfigDeps),
+    );
 
     const modalControls = useReceiveAddressModalControls();
 
@@ -64,11 +69,13 @@ export const TradingFormOfferExchangeActions = () => {
     });
 
     const isReceiveAddressSelected = !!tradingReceiveAddress.receiveAddress;
-    const shouldShowApprovalStep = quote !== undefined && requiresTokenApproval(quote);
+    const shouldShowApprovalStep =
+        quote !== undefined && requiresTokenApproval(networkConfigDeps, quote);
     const isQuoteOutdated = quote?.send !== sendCryptoSelect?.id;
     const isQuoteForSelectedReceive = quote?.receive === receiveCryptoSelect?.id;
     const amountTooHigh = account
         ? isAmountTooHigh({
+              ...networkConfigDeps,
               amount,
               contractAddress: tokenAddress,
               account,

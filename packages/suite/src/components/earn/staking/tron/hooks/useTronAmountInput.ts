@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -21,6 +22,7 @@ type UseTronAmountInputProps = {
 };
 
 export const useTronAmountInput = ({ account, methods }: UseTronAmountInputProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const [currency, setCurrency] = useState<'crypto' | 'fiat'>('crypto');
 
     const { setValue, clearErrors } = methods;
@@ -28,7 +30,7 @@ export const useTronAmountInput = ({ account, methods }: UseTronAmountInputProps
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 
     const fiatRateKey = getFiatRateKey(account.symbol, baseCurrencyCode);
-    const { decimals } = getNetwork(account.symbol);
+    const { decimals } = getNetworkConfig(account.symbol);
 
     const currentRate = useSelector(state =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey, 'current'),

@@ -1,8 +1,10 @@
 import { type MouseEvent, type ReactNode } from 'react';
 
 import { type Route, goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
@@ -26,6 +28,7 @@ export const AssetActionButton = ({
     routeName,
     'data-testid': dataTest,
 }: AssetActionButtonProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { toggleCoinFilter, setSearchString } = useAccountSearch();
     const accounts = useSelector(selectVisibleDeviceAccounts);
@@ -54,7 +57,7 @@ export const AssetActionButton = ({
                 if (account) {
                     dispatch(
                         tradingActions.setTradingFromPrefilledAccount(
-                            getTradingPrefilledFromAccountData(account),
+                            getTradingPrefilledFromAccountData(networkConfigDeps, account),
                         ),
                     );
                 }

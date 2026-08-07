@@ -10,6 +10,7 @@ import {
     selectTradingSendAccount,
     tradeApi,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/ApproveModal';
 import { useSelector } from 'src/hooks/suite';
@@ -28,9 +29,12 @@ interface TradingApproveModalProps {
 }
 
 export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { state } = useAllowanceContext();
     const context = useTradingFormContext();
-    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, context.type));
+    const account = useSelector(reduxState =>
+        selectTradingSendAccount(reduxState, context.type, networkConfigDeps),
+    );
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);

@@ -2,6 +2,7 @@ import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import type { GetNetworkConfigDep } from '@suite-common/networks';
 import {
     type YieldFlowDisplayToken,
     type YieldFlowType,
@@ -49,7 +50,7 @@ export const getYieldSubmitErrorAnalyticsMessage = (error: unknown) =>
         ? 'push-failed'
         : 'submit-failed';
 
-export type SendYieldTransactionParams = {
+export type SendYieldTransactionParams = GetNetworkConfigDep & {
     account: Account;
     amount: string;
     token: YieldFlowDisplayToken;
@@ -71,6 +72,7 @@ export const sendYieldTransaction = async ({
     dispatch,
     getState,
     selectedFee,
+    getNetworkConfig,
 }: SendYieldTransactionParams) => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
@@ -84,6 +86,7 @@ export const sendYieldTransaction = async ({
     }
 
     const transactionReview = buildStablecoinYieldTransactionReview({
+        getNetworkConfig,
         unsignedTransaction,
         selectedFee,
         amount,
@@ -154,6 +157,7 @@ export const sendYieldTransaction = async ({
 
         const pushResponse = await TrezorConnect.pushTransaction({
             tx: getMevProtectedTxData(
+                { getNetworkConfig },
                 account.symbol,
                 signingResponse.payload.serializedTx,
                 isMevProtectionEnabled && isMevProtectionFeatureEnabled,

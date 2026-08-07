@@ -1,11 +1,12 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     EarnFlow,
     type EarnModalAction,
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
@@ -36,6 +37,7 @@ export const StakingEarnInANutshellModal = ({
     actionType,
     yieldContext,
 }: StakingEarnInANutshellModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { handleAction, onCancelClick, unstakingPeriod } = useEarnInANutshell({
         flow: EarnFlow.Stake,
         provider,
@@ -49,7 +51,7 @@ export const StakingEarnInANutshellModal = ({
         return null;
     }
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     if (!displaySymbol) return null;
 

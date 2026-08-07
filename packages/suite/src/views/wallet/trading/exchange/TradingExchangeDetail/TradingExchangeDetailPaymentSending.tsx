@@ -1,9 +1,10 @@
 import { type ExchangeTrade } from 'invity-api';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
-import { networks } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { Card, Column, InfoItem, type StepListItemState } from '@trezor/components';
 
@@ -44,13 +45,14 @@ export const TradingExchangeDetailPaymentSending = ({
     account,
     composedTransaction,
 }: TradingExchangeDetailPaymentSendingProps) => {
+    const { getNetworkConfig } = useServices(selectNetworkConfigDeps);
     const locale = useLocales();
     const rawFeeInfo = useSelector(state =>
         account ? selectRawNetworkFeeInfo(state, account.symbol) : undefined,
     );
 
     const state = getState(trade);
-    const networkType = account ? networks[account.symbol]?.networkType : undefined;
+    const networkType = account ? getNetworkConfig(account.symbol).networkType : undefined;
     const estimatedTimeSeconds = getTxEstimatedTimeSeconds(
         networkType,
         rawFeeInfo,

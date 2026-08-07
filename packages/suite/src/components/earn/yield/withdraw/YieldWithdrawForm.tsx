@@ -4,7 +4,8 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { getYieldFlowStepSequence, splitYieldPendingTransaction } from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
@@ -20,7 +21,10 @@ import { YieldFlowCompleteWithdraw } from '../common/YieldFlowCompleteWithdraw';
 import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { YieldUnwrapStep } from '../common/YieldUnwrapStep';
 
+
 export const YieldWithdrawForm = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const {
@@ -67,7 +71,7 @@ export const YieldWithdrawForm = () => {
         pendingTransaction?.type === 'unwrap' ? pendingTransaction : undefined;
     const withdrawInputUnit = flowType === 'redeem' ? 'shares' : 'asset';
 
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+    const nativeSymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
     const withdrawActionToken = flowType === 'redeem' ? receiptToken : token;
     // Approximate fiat value shown under the amount input, from the token's own rate.
     const actionApproxFiat = {
@@ -279,7 +283,7 @@ export const YieldWithdrawForm = () => {
                                     id="TR_EARN_YIELD_UNWRAP_DESCRIPTION"
                                     values={{
                                         tokenSymbol: token.symbol,
-                                        networkName: getNetwork(account.symbol).name,
+                                        networkName: getNetworkConfig(account.symbol).name,
                                     }}
                                 />
                             ),

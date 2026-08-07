@@ -1,3 +1,4 @@
+import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { formDraftActions, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
 import type { Output } from '@suite-common/wallet-types';
 import {
@@ -37,44 +38,50 @@ export const submitRequestForm =
         }
     };
 
-export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
-    const { accounts, formDrafts, settings } = getState().wallet;
-    const formDraftKeys = Object.keys(formDrafts);
+export const convertDrafts =
+    () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+        const { accounts, formDrafts, settings } = getState().wallet;
+        const formDraftKeys = Object.keys(formDrafts);
 
-    formDraftKeys.forEach(formDraftKey => {
-        const [_prefix, accountKey] = parseFormDraftKey(formDraftKey);
-        const relatedAccount = accounts.find(({ key }) => key === accountKey);
+        formDraftKeys.forEach(formDraftKey => {
+            const [_prefix, accountKey] = parseFormDraftKey(formDraftKey);
+            const relatedAccount = accounts.find(({ key }) => key === accountKey);
 
-        if (!relatedAccount || !hasNetworkFeatures(relatedAccount, 'amount-unit')) {
-            return;
-        }
-
-        const draft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as FormState | undefined;
-
-        if (draft) {
-            const areSatsSelected = settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
-            const conversion = areSatsSelected
-                ? convertAmountUnitsToSubunits
-                : convertAmountSubunitsToUnits;
-            const decimals = getAccountDecimals(relatedAccount.symbol);
-
-            if (draft.cryptoInput) {
-                draft.cryptoInput = conversion(draft.cryptoInput, decimals);
-            }
-            if (draft.outputs) {
-                draft.outputs.forEach(output => {
-                    if (output.amount) {
-                        output.amount = conversion(output.amount, decimals);
-                    }
-                });
+            if (
+                !relatedAccount ||
+                !hasNetworkFeatures(extra.services, relatedAccount, 'amount-unit')
+            ) {
+                return;
             }
 
-            dispatch(
-                formDraftActions.storeDraft({
-                    key: formDraftKey,
-                    formDraft: draft,
-                }),
-            );
-        }
-    });
-};
+            const draft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
+                | FormState
+                | undefined;
+
+            if (draft) {
+                const areSatsSelected = settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
+                const conversion = areSatsSelected
+                    ? convertAmountUnitsToSubunits
+                    : convertAmountSubunitsToUnits;
+                const decimals = getAccountDecimals(extra.services, relatedAccount.symbol);
+
+                if (draft.cryptoInput) {
+                    draft.cryptoInput = conversion(draft.cryptoInput, decimals);
+                }
+                if (draft.outputs) {
+                    draft.outputs.forEach(output => {
+                        if (output.amount) {
+                            output.amount = conversion(output.amount, decimals);
+                        }
+                    });
+                }
+
+                dispatch(
+                    formDraftActions.storeDraft({
+                        key: formDraftKey,
+                        formDraft: draft,
+                    }),
+                );
+            }
+        });
+    };

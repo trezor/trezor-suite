@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
@@ -11,7 +13,9 @@ interface AccountAmountProps {
 }
 
 export function AccountAmount({ account }: AccountAmountProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const accountBalance = subunitsToUnits({
+        ...networkConfigDeps,
         value: asAmountSubunit(new BigNumber(account.balance)),
         symbol: account.symbol,
     });

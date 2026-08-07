@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectHistoricFiatRates,
@@ -36,6 +38,7 @@ type AmountDetailsProps = {
 
 // TODO: Do not show FEE for sent but not mine transactions
 export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(tx.symbol, baseCurrencyCode);
 
@@ -45,11 +48,11 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
 
     const historicFiatRates = useSelector(selectHistoricFiatRates);
 
-    const fee = formatNetworkAmount(tx.fee, tx.symbol);
-    const amount = new BigNumber(formatNetworkAmount(tx.amount, tx.symbol));
+    const fee = formatNetworkAmount(networkConfigDeps, tx.fee, tx.symbol);
+    const amount = new BigNumber(formatNetworkAmount(networkConfigDeps, tx.amount, tx.symbol));
     const displayAmount = tx.blockHash ? amount : amount.minus(fee);
-    const cardanoWithdrawal = formatCardanoWithdrawal(tx);
-    const cardanoDeposit = formatCardanoDeposit(tx);
+    const cardanoWithdrawal = formatCardanoWithdrawal(networkConfigDeps, tx);
+    const cardanoDeposit = formatCardanoDeposit(networkConfigDeps, tx);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const txSignature = tx.ethereumSpecific?.parsedData?.methodId;
@@ -164,7 +167,11 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         <Table.Cell align="end">
                             <Text intent="neutral">
                                 <FormattedCryptoAmount
-                                    value={formatNetworkAmount(transfer.amount, tx.symbol)}
+                                    value={formatNetworkAmount(
+                                        networkConfigDeps,
+                                        transfer.amount,
+                                        tx.symbol,
+                                    )}
                                     symbol={tx.symbol}
                                     signValue={getTxOperation(transfer.type, true)}
                                 />
@@ -173,7 +180,11 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         <Table.Cell align="end">
                             <Text intent="neutral">
                                 <BaseCurrencyValue
-                                    amount={formatNetworkAmount(transfer.amount, tx.symbol)}
+                                    amount={formatNetworkAmount(
+                                        networkConfigDeps,
+                                        transfer.amount,
+                                        tx.symbol,
+                                    )}
                                     symbol={tx.symbol}
                                     historicRate={historicRate}
                                     useHistoricRate
@@ -183,7 +194,11 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         <Table.Cell align="end">
                             <Text intent="neutral">
                                 <BaseCurrencyValue
-                                    amount={formatNetworkAmount(transfer.amount, tx.symbol)}
+                                    amount={formatNetworkAmount(
+                                        networkConfigDeps,
+                                        transfer.amount,
+                                        tx.symbol,
+                                    )}
                                     symbol={tx.symbol}
                                 />
                             </Text>

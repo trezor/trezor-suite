@@ -2,6 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import {
     getResourceGain,
@@ -27,6 +28,7 @@ interface TronResourceModalProps {
 }
 
 export const TronResourceModal = ({ account, resourceType, onClose }: TronResourceModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const resources = getTronResources(account);
@@ -46,7 +48,7 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
     const delegatedSun = isEnergy
         ? (stakingInfo?.delegatedBalanceEnergy ?? '0')
         : (stakingInfo?.delegatedBalanceBandwidth ?? '0');
-    const delegatedTrx = sunToTrx(delegatedSun, account.symbol);
+    const delegatedTrx = sunToTrx(networkConfigDeps, delegatedSun, account.symbol);
     const delegatedToOthers = Math.round(
         getResourceGain(delegatedTrx, resourceType, resources) ?? 0,
     );

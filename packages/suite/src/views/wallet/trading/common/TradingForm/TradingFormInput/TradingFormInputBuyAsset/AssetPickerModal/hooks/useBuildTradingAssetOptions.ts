@@ -3,13 +3,15 @@ import { useMemo } from 'react';
 import { type CryptoId } from 'invity-api';
 
 import { type TranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingAssetOption,
     createAssetNativeTokenOption,
     createAssetTokenOption,
     getCryptoId,
 } from '@suite-common/trading';
-import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
+import { type NetworkConfigDeps, type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 
@@ -49,14 +51,14 @@ function assetSearchFilter(asset: TradingAssetOption, search: string) {
     );
 }
 
-function excludeCryptoIds(excludedCryptoIds: Set<CryptoId>) {
+function excludeCryptoIds(deps: NetworkConfigDeps, excludedCryptoIds: Set<CryptoId>) {
     return function excludeCryptoIdsFilter(accountOrToken: AggregatedAccountWithTokens) {
         switch (accountOrToken.type) {
             case 'account':
-                return !excludedCryptoIds.has(getCryptoId(accountOrToken.account.symbol));
+                return !excludedCryptoIds.has(getCryptoId(deps, accountOrToken.account.symbol));
             case 'token':
                 return !excludedCryptoIds.has(
-                    getCryptoId(accountOrToken.account.symbol, accountOrToken.token.contract),
+                    getCryptoId(deps, accountOrToken.account.symbol, accountOrToken.token.contract),
                 );
             default:
                 return false;
@@ -67,23 +69,23 @@ function excludeCryptoIds(excludedCryptoIds: Set<CryptoId>) {
 /**
  * Note this is going to be replaced soon with more sophisticated top assets logic.
  */
-function createTopFiveAssets(excludedCryptoIds: Set<CryptoId>) {
+function createTopFiveAssets(deps: NetworkConfigDeps, excludedCryptoIds: Set<CryptoId>) {
     return (
         (
             [
-                createAssetNativeTokenOption('btc'),
-                createAssetNativeTokenOption('eth'),
-                createAssetTokenOption('eth', {
+                createAssetNativeTokenOption(deps, 'btc'),
+                createAssetNativeTokenOption(deps, 'eth'),
+                createAssetTokenOption(deps, 'eth', {
                     contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
                     symbol: 'USDT',
                     name: 'Tether',
                 }),
-                createAssetTokenOption('eth', {
+                createAssetTokenOption(deps, 'eth', {
                     contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
                     symbol: 'USDC',
                     name: 'USDC',
                 }),
-                createAssetNativeTokenOption('sol'),
+                createAssetNativeTokenOption(deps, 'sol'),
             ] satisfies TradingAssetOption[]
         )
             // E.g. filter out "from" field value
@@ -92,19 +94,27 @@ function createTopFiveAssets(excludedCryptoIds: Set<CryptoId>) {
 }
 
 type GetOrderNetworksProps = {
+    networkConfigDeps: NetworkConfigDeps;
     topFiveAssets: TradingAssetOption[];
     assets: TradingAssetOption[];
     accountsWithTokens: AggregatedAccountWithTokens[];
 };
 
-function getOrderNetworks({ topFiveAssets, assets, accountsWithTokens }: GetOrderNetworksProps) {
+function getOrderNetworks({
+    networkConfigDeps,
+    topFiveAssets,
+    assets,
+    accountsWithTokens,
+}: GetOrderNetworksProps) {
     const networks: Set<NetworkSymbol> = new Set();
 
     topFiveAssets.forEach(asset => networks.add(asset.networkSymbol));
     assets.forEach(asset => networks.add(asset.networkSymbol));
     accountsWithTokens.forEach(item => networks.add(item.account.symbol));
 
-    return networkSymbolCollection.filter(networkSymbol => networks.has(networkSymbol));
+    return networkConfigDeps.networkModuleRepository
+        .getSupportedNetworks()
+        .filter(networkSymbol => networks.has(networkSymbol));
 }
 
 export type TradingAssetListItem =
@@ -148,6 +158,7 @@ export function useBuildTradingAssetOptions({
     search,
     networkSymbol,
 }: UseBuildTradingAssetOptionsProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { assets, includedCryptoIds, excludedCryptoIds } = useAssetsContext();
     const accountsWithTokens = useAgregatedAccountsWithTokens();
 
@@ -167,7 +178,9 @@ export function useBuildTradingAssetOptions({
         const listItems: TradingAssetListItem[] = [];
 
         const topFiveAssets =
-            search.length === 0 && !networkSymbol ? createTopFiveAssets(excludedCryptoIds) : [];
+            search.length === 0 && !networkSymbol
+                ? createTopFiveAssets(networkConfigDeps, excludedCryptoIds)
+                : [];
         const topFiveAssetIds = new Set(topFiveAssets.map(asset => asset.id));
 
         if (topFiveAssets.length > 0) {
@@ -185,14 +198,17 @@ export function useBuildTradingAssetOptions({
         }
 
         const allAccountsWithTokens = accountsWithTokens
-            .filter(excludeCryptoIds(excludedCryptoIds))
+            .filter(excludeCryptoIds(networkConfigDeps, excludedCryptoIds))
             .filter(accountOrToken => {
                 switch (accountOrToken.type) {
                     case 'account':
-                        return includedCryptoIds.has(getCryptoId(accountOrToken.account.symbol));
+                        return includedCryptoIds.has(
+                            getCryptoId(networkConfigDeps, accountOrToken.account.symbol),
+                        );
                     case 'token':
                         return includedCryptoIds.has(
                             getCryptoId(
+                                networkConfigDeps,
                                 accountOrToken.account.symbol,
                                 accountOrToken.token.contract,
                             ),
@@ -220,11 +236,13 @@ export function useBuildTradingAssetOptions({
                 switch (accountOrToken.type) {
                     case 'account':
                         return accountSearchFn(accountOrToken.account, search, {
+                            ...networkConfigDeps,
                             tokensMatch: false,
                             accountLabel: '', // Todo: select label from SuiteSync
                         });
                     case 'token': {
                         const displaySymbolName = getTokenDisplaySymbolName({
+                            ...networkConfigDeps,
                             tokenDisplaySymbolNames,
                             account: accountOrToken.account,
                             token: accountOrToken.token,
@@ -260,6 +278,7 @@ export function useBuildTradingAssetOptions({
 
                 case 'token': {
                     const tokenDisplaySymbolName = getTokenDisplaySymbolName({
+                        ...networkConfigDeps,
                         tokenDisplaySymbolNames,
                         account: accountOrToken.account,
                         token: accountOrToken.token,
@@ -309,6 +328,7 @@ export function useBuildTradingAssetOptions({
         }
 
         const orderedNetworks = getOrderNetworks({
+            networkConfigDeps,
             topFiveAssets,
             assets: allAssets,
             accountsWithTokens: allAccountsWithTokens,

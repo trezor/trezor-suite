@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import {
     type TradingTradeType,
@@ -8,12 +9,14 @@ import {
     useTradingUtils,
 } from '@suite-common/trading';
 import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 const DEFAULT_TOKEN_DECIMALS_LENGTH = 18;
 
 export const useTradingOfferRate = (trade: TradingTradeType | undefined): string | undefined => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
     const { cryptoIdToCoinSymbol } = useTradingUtils();
 
@@ -27,7 +30,9 @@ export const useTradingOfferRate = (trade: TradingTradeType | undefined): string
     ) => {
         if (value === undefined || cryptoId === undefined) return undefined;
         const coinSymbol = cryptoIdToCoinSymbol(cryptoId);
-        const networkDecimals = coinSymbol ? getNetworkDecimals(coinSymbol) : undefined;
+        const networkDecimals = coinSymbol
+            ? getNetworkDecimals(networkConfigDeps, coinSymbol)
+            : undefined;
 
         return CryptoAmountFormatter.format(value, {
             maxDisplayedDecimals: networkDecimals ?? DEFAULT_TOKEN_DECIMALS_LENGTH,

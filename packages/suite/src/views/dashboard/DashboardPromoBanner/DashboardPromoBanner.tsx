@@ -6,6 +6,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
 import { type Feature as MessageFeature } from '@suite-common/suite-types';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
@@ -22,11 +23,14 @@ const isCarouselBannerKey = (key: string): key is DashboardBannerType => isDashb
 export const DashboardPromoBanner = () => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
     const flags = useSelector(selectFlags);
     const selectedDevice = useSelector(selectSelectedDevice);
-    const isOnboardingFeedbackBannerShown = useSelector(selectShouldShowOnboardingFeedbackBanner);
+    const isOnboardingFeedbackBannerShown = useSelector(state =>
+        selectShouldShowOnboardingFeedbackBanner(state, networkConfigDeps),
+    );
 
     const allPromoBanners = useSelector(state =>
         selectFeaturesConfig(state, Feature.banners.dashboard.promo),

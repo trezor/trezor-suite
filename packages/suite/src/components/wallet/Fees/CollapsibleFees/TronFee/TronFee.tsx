@@ -1,5 +1,7 @@
 import { useWatch } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
@@ -17,6 +19,7 @@ type TronFeeProps = {
 };
 
 export function TronFee({ typographyStyle }: TronFeeProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { networkSymbol, composedLevels, tronResources } = useFeesContext();
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, networkSymbol));
     const formFeeLimit = useWatch<FormState, 'feeLimit'>({ name: 'feeLimit' });
@@ -27,7 +30,13 @@ export function TronFee({ typographyStyle }: TronFeeProps) {
         formFeeLimit && estimatedFeeLimit && new BigNumber(formFeeLimit).gt(estimatedFeeLimit)
             ? formFeeLimit
             : estimatedFeeLimit;
-    const fees = calculateTronFeeBreakdown(tx, tronResources, networkSymbol, feeLimitSun);
+    const fees = calculateTronFeeBreakdown(
+        networkConfigDeps,
+        tx,
+        tronResources,
+        networkSymbol,
+        feeLimitSun,
+    );
 
     return (
         <LoadingContent

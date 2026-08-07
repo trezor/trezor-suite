@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Column, H2 } from '@trezor/components';
 
@@ -21,6 +22,7 @@ export type ReceiveContentProps = {
 
 export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveContentProps) => {
     const dispatch = useDispatch();
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { isReceiveDisabled } = useReceiveDisabled();
 
     // Copying an address is the entry point to verification, so the cards report the copied path
@@ -58,13 +60,13 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
                     title={
                         <Translation
                             id="TR_EVM_EXPLANATION_TITLE"
-                            values={{ network: getNetwork(account.symbol).name }}
+                            values={{ network: getNetworkConfig(account.symbol).name }}
                         />
                     }
                     description={
                         <Translation
                             id="TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION"
-                            values={{ network: getNetwork(account.symbol).name }}
+                            values={{ network: getNetworkConfig(account.symbol).name }}
                         />
                     }
                 />
@@ -73,7 +75,9 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
             <H2>
                 <Translation
                     id="RECEIVE_TITLE"
-                    values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
+                    values={{
+                        networkDisplaySymbol: getNetworkConfig(account.symbol).displaySymbol,
+                    }}
                 />
             </H2>
 

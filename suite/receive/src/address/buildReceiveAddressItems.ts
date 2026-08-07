@@ -1,4 +1,5 @@
 import { getReceiveAddressHistoryList } from '@suite-common/address';
+import { type GetNetworkConfigDep } from '@suite-common/networks';
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { getAddressPathIndex } from '@trezor/crypto-utils';
@@ -12,7 +13,7 @@ export type ReceiveAddressItem = {
     isFresh: boolean;
 };
 
-type BuildReceiveAddressItemsParams = {
+type BuildReceiveAddressItemsParams = GetNetworkConfigDep & {
     account: Account;
     touchedAddresses: ReceiveInfo[];
     pendingAddresses: string[];
@@ -21,6 +22,7 @@ type BuildReceiveAddressItemsParams = {
 };
 
 export const buildReceiveAddressItems = ({
+    getNetworkConfig,
     account,
     touchedAddresses,
     pendingAddresses,
@@ -39,7 +41,7 @@ export const buildReceiveAddressItems = ({
         address: address.address,
         pathIndex: getAddressPathIndex(address.path),
         received: address.transfers
-            ? formatNetworkAmount(address.received || '0', account.symbol)
+            ? formatNetworkAmount({ getNetworkConfig }, address.received || '0', account.symbol)
             : undefined,
         label: addressLabels[address.address] ?? undefined,
         isFresh: !address.transfers,

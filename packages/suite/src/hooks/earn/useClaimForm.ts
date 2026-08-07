@@ -1,8 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
-import { getNetwork } from '@suite-common/wallet-config';
+import { toNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
@@ -25,11 +27,12 @@ type UseClaimFormsProps = {
 };
 
 export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValues => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const dispatch = useDispatch();
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 
-    const network = getNetwork(account.symbol);
+    const network = toNetwork(account.symbol, getNetworkConfig(account.symbol));
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
 
     const defaultValues = useMemo(() => {

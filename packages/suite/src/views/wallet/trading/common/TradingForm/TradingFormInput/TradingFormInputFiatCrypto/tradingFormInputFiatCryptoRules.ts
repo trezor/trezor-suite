@@ -2,7 +2,7 @@ import { type UseControllerProps } from 'react-hook-form';
 
 import { type TranslationFunction } from '@suite/intl';
 import { type Formatter } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkConfigDeps, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type RatesByKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
     buildCurrencyShortOption,
@@ -24,7 +24,7 @@ import {
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
 
-type FiatInputRulesProps = {
+type FiatInputRulesProps = NetworkConfigDeps & {
     isExchangeContext: boolean;
     isSellContext: boolean;
     translationString: TranslationFunction;
@@ -41,6 +41,8 @@ type FiatInputRulesProps = {
 };
 
 export const getFiatInputRules = ({
+    getNetworkConfig,
+    networkModuleRepository,
     isExchangeContext,
     isSellContext,
     translationString,
@@ -56,6 +58,8 @@ export const getFiatInputRules = ({
     rates,
 }: FiatInputRulesProps): UseControllerProps['rules'] => {
     const fiatInputDecimals = getDecimalsForBaseCurrency({
+        getNetworkConfig,
+        networkModuleRepository,
         code: selectedCurrencyCode,
         isInSats: false,
     });
@@ -154,7 +158,7 @@ export const getFiatInputRules = ({
     };
 };
 
-type CryptoInputRulesProps = {
+type CryptoInputRulesProps = NetworkConfigDeps & {
     isBuyContext: boolean;
     translationString: TranslationFunction;
     shouldSendInSats: boolean | undefined;
@@ -169,6 +173,8 @@ type CryptoInputRulesProps = {
 };
 
 export const getCryptoInputRules = ({
+    getNetworkConfig,
+    networkModuleRepository,
     isBuyContext,
     translationString,
     shouldSendInSats,
@@ -180,35 +186,42 @@ export const getCryptoInputRules = ({
     isNetworkReserveEnabled,
     contractAddress,
     feeInUnits,
-}: CryptoInputRulesProps): UseControllerProps['rules'] => ({
-    validate: {
-        min: validateMin(translationString),
-        integer: validateInteger(translationString, { except: !shouldSendInSats }),
-        decimals: validateDecimals(translationString, { decimals }),
-        limits: validateCryptoLimits(translationString, {
-            amountLimits,
-            areSatsUsed: !!shouldSendInSats,
-            formatter,
-        }),
-        ...(!isBuyContext
-            ? {
-                  reserveOrBalance: validateReserveOrBalance(translationString, {
-                      account: validationAccount,
-                      areSatsUsed: !!shouldSendInSats,
-                      contractAddress: outputToken ?? undefined,
-                  }),
-                  networkReserve: isNetworkReserveEnabled
-                      ? validateNetworkReserve(translationString, {
-                            reserve: getNetworkReserve({
-                                symbol: validationAccount.symbol,
-                                contractAddress,
-                                isEnabled: isNetworkReserveEnabled,
-                            }),
-                            balance: validationAccount.formattedBalance,
-                            fee: feeInUnits,
-                        })
-                      : () => undefined,
-              }
-            : {}),
-    },
-});
+}: CryptoInputRulesProps): UseControllerProps['rules'] => {
+    const networkConfigDeps = { getNetworkConfig, networkModuleRepository };
+
+    return {
+        validate: {
+            min: validateMin(translationString),
+            integer: validateInteger(translationString, { except: !shouldSendInSats }),
+            decimals: validateDecimals(translationString, { decimals }),
+            limits: validateCryptoLimits(translationString, {
+                ...networkConfigDeps,
+                amountLimits,
+                areSatsUsed: !!shouldSendInSats,
+                formatter,
+            }),
+            ...(!isBuyContext
+                ? {
+                      reserveOrBalance: validateReserveOrBalance(translationString, {
+                          ...networkConfigDeps,
+                          account: validationAccount,
+                          areSatsUsed: !!shouldSendInSats,
+                          contractAddress: outputToken ?? undefined,
+                      }),
+                      networkReserve: isNetworkReserveEnabled
+                          ? validateNetworkReserve(translationString, {
+                                reserve: getNetworkReserve({
+                                    ...networkConfigDeps,
+                                    symbol: validationAccount.symbol,
+                                    contractAddress,
+                                    isEnabled: isNetworkReserveEnabled,
+                                }),
+                                balance: validationAccount.formattedBalance,
+                                fee: feeInUnits,
+                            })
+                          : () => undefined,
+                  }
+                : {}),
+        },
+    };
+};

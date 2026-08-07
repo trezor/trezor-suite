@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -19,6 +21,7 @@ interface WrapTxAmountProps {
 }
 
 export const WrapTxAmount = ({ transaction, wrapped }: WrapTxAmountProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { symbol } = transaction;
 
     const amount = useMemo(() => {
@@ -34,7 +37,11 @@ export const WrapTxAmount = ({ transaction, wrapped }: WrapTxAmountProps) => {
                 : getUnwrapAmountByEthereumDataHex(transaction.ethereumSpecific?.data);
 
         return subunits
-            ? subunitsToUnits({ value: asAmountSubunit(new BigNumber(subunits)), symbol })
+            ? subunitsToUnits({
+                  ...networkConfigDeps,
+                  value: asAmountSubunit(new BigNumber(subunits)),
+                  symbol,
+              })
             : undefined;
     }, [transaction, symbol]);
 

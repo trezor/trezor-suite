@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectCurrentFiatRates,
@@ -42,6 +44,7 @@ export function useAccountWithTokensOptions({
     expandedHiddenTokensGroups,
     staticSessionId,
 }: UseAccountWithTokensOptionsProps): AccountWithTokensOption[] {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const baseAccounts = useSelector(selectVisibleDeviceAccounts);
 
     const accounts = useSelector(state =>
@@ -70,6 +73,7 @@ export function useAccountWithTokensOptions({
 
         return networkAccounts.map(account => {
             const { shownWithBalance, hiddenWithBalance } = getTokens({
+                ...networkConfigDeps,
                 tokens: account.tokens ?? [],
                 symbol: account.symbol,
                 tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,

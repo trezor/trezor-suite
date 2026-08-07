@@ -7,6 +7,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import { parseCryptoId, toTokenCryptoId } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
@@ -40,6 +41,7 @@ export const YieldApproveModal = ({
     onCancel,
     onSuccess,
 }: YieldApproveModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const {
@@ -47,7 +49,7 @@ export const YieldApproveModal = ({
         tx: { approvalTxid, setApprovalTxid },
     } = useAllowanceContext();
     const handledTxidRef = useRef<string | null>(null);
-    const cryptoId = toTokenCryptoId(account.symbol, contractAddress);
+    const cryptoId = toTokenCryptoId(networkConfigDeps, account.symbol, contractAddress);
     const { networkId, contractAddress: parsedContract } = parseCryptoId(cryptoId);
     const { data: vaultName } = useYieldOpportunity(vaultId, {
         select: yieldOpportunity => yieldOpportunity.metadata.name,

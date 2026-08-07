@@ -3,6 +3,7 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { type FiatCurrencyCode } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
@@ -11,6 +12,7 @@ import {
     type TradingFiatRatesReturn,
     mapFiatCurrencyCodeToBaseCurrencyCode,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     asAmountSubunit,
     getDecimalsForBaseCurrency,
@@ -39,6 +41,7 @@ export const useTradingFiatCryptoAmount = <T extends TradingSellExchangeFormProp
     networkDecimals,
     shouldSendInSats,
 }: UseTradingFiatCryptoAmountProps<T>) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { getValues, setValue, control } =
         methods as unknown as UseFormReturn<TradingSellExchangeFormProps>;
 
@@ -81,6 +84,7 @@ export const useTradingFiatCryptoAmount = <T extends TradingSellExchangeFormProp
         ) {
             const fiatValueBigNumber = formattedAmount.multipliedBy(rate.rate);
             const fiatDecimals = getDecimalsForBaseCurrency({
+                ...networkConfigDeps,
                 code: mappedBaseCurrencyCode,
                 isInSats: false,
             });

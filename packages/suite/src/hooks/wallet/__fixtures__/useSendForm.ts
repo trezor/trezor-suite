@@ -8,7 +8,8 @@ import { type SuiteSyncDataState, type SuiteSyncState } from '@suite-common/suit
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type Network, getNetwork } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
     accountsActions,
@@ -332,10 +333,10 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             ),
             explorer: createReducer(
                 {
-                    btc: { default: getNetwork('btc').explorer.base },
-                    eth: { default: getNetwork('eth').explorer.base },
-                    xrp: { default: getNetwork('xrp').explorer.base },
-                    sol: { default: getNetwork('sol').explorer.base },
+                    btc: { default: mockNetworkConfigDeps.getNetworkConfig('btc').explorer.base },
+                    eth: { default: mockNetworkConfigDeps.getNetworkConfig('eth').explorer.base },
+                    xrp: { default: mockNetworkConfigDeps.getNetworkConfig('xrp').explorer.base },
+                    sol: { default: mockNetworkConfigDeps.getNetworkConfig('sol').explorer.base },
                 },
                 () => ({}),
             ),

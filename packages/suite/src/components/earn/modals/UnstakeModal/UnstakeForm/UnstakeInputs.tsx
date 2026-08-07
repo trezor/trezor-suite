@@ -1,8 +1,9 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Column, type FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
@@ -23,6 +24,7 @@ import {
 } from 'src/utils/suite/validation';
 
 export const UnstakeInputs = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
 
@@ -47,13 +49,13 @@ export const UnstakeInputs = () => {
         autocompoundBalance = '0',
         depositedBalance = '0',
         restakedReward = '0',
-    } = getStakingDataForNetwork(account) ?? {};
+    } = getStakingDataForNetwork(networkConfigDeps, account) ?? {};
 
     const isRewardsVisible = restakedReward != '';
     const isRewardsDisabled = restakedReward === '0';
 
     const { symbol } = account;
-    const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol);
 
     const { outputs } = getValues();
     const amount = outputs?.[0]?.amount;
@@ -74,6 +76,7 @@ export const UnstakeInputs = () => {
                 rate: currentRate?.rate,
             }),
             solanaUnstakeAmount: validateSolanaUnstakeFiatAmount(translationString, {
+                ...networkConfigDeps,
                 account,
                 decimals: network.decimals,
                 rate: currentRate?.rate,
@@ -87,10 +90,14 @@ export const UnstakeInputs = () => {
             min: validateMin(translationString),
             decimals: validateDecimals(translationString, { decimals: network.decimals }),
             limits: validateCryptoLimits(translationString, {
+                ...networkConfigDeps,
                 amountLimits,
                 formatter: CryptoAmountFormatter,
             }),
-            solanaUnstakeAmount: validateSolanaUnstakeAmount(translationString, { account }),
+            solanaUnstakeAmount: validateSolanaUnstakeAmount(translationString, {
+                ...networkConfigDeps,
+                account,
+            }),
         },
     };
 

@@ -1,8 +1,9 @@
 import { useMemo, useRef, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { getInstantStakeType } from '@suite-common/staking';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
     selectAllPendingTransactions,
@@ -54,6 +55,7 @@ export const TxDetailModal = ({
     showCancelButton,
     onCancel,
 }: TxDetailModalProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const [section, setSection] = useState<TxDetailModalProps['flow']>(flow);
     const [tab, setTab] = useState<TabID | undefined>(undefined);
 
@@ -141,7 +143,7 @@ export const TxDetailModal = ({
         );
     }
 
-    const network = getNetwork(account.symbol);
+    const network = getNetworkConfig(account.symbol);
     const networkFeatures = network.accountTypes[account.accountType]?.features ?? network.features;
 
     // A pending EVM tx whose own nonce is gapped or already superseded can't be bumped OR

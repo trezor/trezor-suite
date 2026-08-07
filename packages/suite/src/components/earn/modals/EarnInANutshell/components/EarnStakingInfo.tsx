@@ -1,9 +1,10 @@
 import React from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { CARDANO_ACTIVATION_PERIOD_DAYS, CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectEthValidatorsQueue, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -163,12 +164,13 @@ const CardanoStakingRows = ({ flow, apy }: EarnStakingRowsProps) => (
 );
 
 export const EarnStakingInfo = ({ account, flow }: EarnStakingInfoProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const validatorsQueue = useSelector(selectEthValidatorsQueue);
 
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
 
     const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const content = (() => {
         switch (account.networkType) {

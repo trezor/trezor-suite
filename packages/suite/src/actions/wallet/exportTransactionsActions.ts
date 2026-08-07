@@ -71,7 +71,7 @@ export const exportTransactionsThunk = createThunk(
 
         const filteredTransaction =
             searchQuery.trim() !== ''
-                ? advancedSearchTransactions(transactions, searchLabels, searchQuery)
+                ? advancedSearchTransactions(services, transactions, searchLabels, searchQuery)
                 : transactions;
 
         // getAccountTransactions doesn't guarantee transactions will be sorted
@@ -79,6 +79,7 @@ export const exportTransactionsThunk = createThunk(
 
         // Prepare data in right format
         const data = await formatData(
+            services,
             {
                 symbol: account.symbol,
                 accountName,

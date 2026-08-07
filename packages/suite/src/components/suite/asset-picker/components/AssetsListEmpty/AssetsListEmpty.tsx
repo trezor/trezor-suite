@@ -5,7 +5,7 @@ import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbolName , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Paragraph } from '@trezor/components';
 
@@ -27,6 +27,7 @@ export const AssetsListEmpty = ({
     children,
     height,
 }: AssetsListEmptyProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { findNetworkSymbolForProtocol } = useServices(selectFindNetworkSymbolForProtocolDep);
     const protocolScheme = useSelector(selectProtocolSendFormScheme);
@@ -34,7 +35,9 @@ export const AssetsListEmpty = ({
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const protocolSymbol = protocolScheme ? findNetworkSymbolForProtocol(protocolScheme) : null;
-    const network = protocolSymbol ? getNetworkDisplaySymbolName(protocolSymbol) : undefined;
+    const network = protocolSymbol
+        ? getNetworkDisplaySymbolName(networkConfigDeps, protocolSymbol)
+        : undefined;
 
     const openActivateNetworkModal = () => {
         if (!protocolSymbol || !device) return;

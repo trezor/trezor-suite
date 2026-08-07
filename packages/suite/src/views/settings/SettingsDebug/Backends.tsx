@@ -2,7 +2,9 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEnabledNetworks, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { type ConnectionStatus } from '@suite-common/wallet-types';
 import { Button } from '@trezor/components';
@@ -119,6 +121,7 @@ const BackendItem = ({
 };
 
 const CoinItem = ({ symbol }: CoinItemProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { url, error, connected, reconnectionTime, identityConnections } = useSelector(state =>
         selectNetworkBlockchainInfo(state, symbol),
     );
@@ -140,7 +143,7 @@ const CoinItem = ({ symbol }: CoinItemProps) => {
                 <div>
                     <CoinCell>
                         <TokenIcon symbol={symbol} />
-                        <Title>{getNetwork(symbol).name}</Title>
+                        <Title>{getNetworkConfig(symbol).name}</Title>
                     </CoinCell>
                     <Button size="small" intent="neutral" priority="secondary" onClick={onSettings}>
                         <Translation id="TR_SETTINGS" />

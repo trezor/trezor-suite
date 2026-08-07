@@ -6,11 +6,8 @@ import {
     type TradingAssetOption,
     type TradingAssetOptionWithContractAddress,
 } from '@suite-common/trading';
-import {
-    type NetworkSymbol,
-    asNetworkSymbol,
-    toNetworkSymbolNonTestnet,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { BigNumber } from '@trezor/utils';
 
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
@@ -28,9 +25,6 @@ jest.mock('@suite-common/trading', () => ({
         buildAssetOptions: jest.fn(() => ({ assets: [] })),
     }),
 }));
-
-const ethSymbol = toNetworkSymbolNonTestnet('eth');
-const polSymbol = asNetworkSymbol('pol');
 
 const createAccount = (symbol: NetworkSymbol): AccountWithSuiteSyncLabel =>
     ({
@@ -62,14 +56,14 @@ const createAsset = (
         displaySymbol: 'ASSET',
         contractAddress: '0x1',
         networkName: 'Ethereum',
-        networkSymbol: ethSymbol,
+        networkSymbol: 'eth',
         ...assetOverrides,
     };
 };
 
 describe('useAccountsWithTokenDisplayNames', () => {
-    const ethereumAccount = createAccount(ethSymbol);
-    const polygonAccount = createAccount(polSymbol);
+    const ethereumAccount = createAccount('eth');
+    const polygonAccount = createAccount('pol');
 
     const accountOption: AccountWithTokensOption = {
         type: 'account',
@@ -114,6 +108,7 @@ describe('useAccountsWithTokenDisplayNames', () => {
 
     it('returns accounts with canonical token display names', () => {
         const accountsWithDisplayNames = getAccountsWithTokenDisplayNames(
+            mockNetworkConfigDeps,
             accountsWithTokens,
             new Map<CryptoId, string>([
                 ['ethereum--0x1' as CryptoId, 'Canonical One'],

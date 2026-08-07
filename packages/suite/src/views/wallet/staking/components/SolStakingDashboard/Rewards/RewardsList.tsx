@@ -1,7 +1,9 @@
 import React, { useRef } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { type SolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { Card, Column, Grid, IconCircle, Row, Text } from '@trezor/components';
 import { PiggyBankIcon } from '@trezor/icons';
@@ -26,9 +28,10 @@ interface RewardsListProps {
 }
 
 export const RewardsList = ({ account, rewardsQueryResult, pagination }: RewardsListProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const sectionRef = useRef<HTMLDivElement>(null);
     const { isBelowTablet } = useLayoutSize();
-    const isSolanaMainnet = !isTestnet(account.symbol);
+    const isSolanaMainnet = !isTestnet(networkConfigDeps, account.symbol);
 
     const onPageSelected = (page: number) => {
         pagination.changePage(page);
@@ -114,6 +117,7 @@ export const RewardsList = ({ account, rewardsQueryResult, pagination }: Rewards
                                                         reward?.amount && (
                                                             <FormattedCryptoAmount
                                                                 value={formatNetworkAmount(
+                                                                    networkConfigDeps,
                                                                     reward?.amount,
                                                                     account.symbol,
                                                                 )}
@@ -126,6 +130,7 @@ export const RewardsList = ({ account, rewardsQueryResult, pagination }: Rewards
                                                         reward?.amount && (
                                                             <BaseCurrencyValue
                                                                 amount={formatNetworkAmount(
+                                                                    networkConfigDeps,
                                                                     reward?.amount,
                                                                     account.symbol,
                                                                 )}

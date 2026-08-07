@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { WarningIcon } from '@trezor/icons';
 
@@ -11,13 +13,14 @@ import { SolStakingDashboard } from './components/SolStakingDashboard/SolStaking
 import { TronStakingDashboard } from './components/TronStakingDashboard/TronStakingDashboard';
 
 export const WalletStaking = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_NAV_STAKING" account={selectedAccount} />;
     }
 
-    if (hasNetworkFeatures(selectedAccount.account, 'staking')) {
+    if (hasNetworkFeatures(networkConfigDeps, selectedAccount.account, 'staking')) {
         switch (selectedAccount.account.networkType) {
             case 'cardano':
                 return <AdaStakingDashboard selectedAccount={selectedAccount} />;

@@ -1,11 +1,12 @@
 import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type GetNetworkConfigDep } from '@suite-common/networks';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type FormState, type StakeFormState } from '@suite-common/wallet-types';
 import { getEvmTransactionPurpose } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 
-interface GetTransactionReviewModalActionTranslationParams {
+interface GetTransactionReviewModalActionTranslationParams extends GetNetworkConfigDep {
     symbol: NetworkSymbol;
     stakeType: StakeFormState['stakeType'] | null;
     precomposedForm: FormState | StakeFormState;
@@ -18,6 +19,7 @@ interface GetTransactionReviewModalActionTranslationParams {
 }
 
 export const getTransactionReviewModalActionTranslation = ({
+    getNetworkConfig,
     symbol,
     stakeType,
     precomposedForm,
@@ -38,17 +40,17 @@ export const getTransactionReviewModalActionTranslation = ({
         case 'stake':
             return {
                 id: source === 'heading' ? 'TR_EARN_STAKE_TOKEN' : 'TR_STAKE_STAKE',
-                values: { symbol: getNetworkDisplaySymbol(symbol) },
+                values: { symbol: getNetworkDisplaySymbol({ getNetworkConfig }, symbol) },
             };
         case 'unstake':
             return {
                 id: source === 'heading' ? 'TR_STAKE_UNSTAKE_TOKEN' : 'TR_STAKE_UNSTAKE',
-                values: { symbol: getNetworkDisplaySymbol(symbol) },
+                values: { symbol: getNetworkDisplaySymbol({ getNetworkConfig }, symbol) },
             };
         case 'claim':
             return {
                 id: source === 'heading' ? 'TR_STAKE_CLAIM_TOKEN' : 'TR_STAKE_CLAIM',
-                values: { symbol: getNetworkDisplaySymbol(symbol) },
+                values: { symbol: getNetworkDisplaySymbol({ getNetworkConfig }, symbol) },
             };
         // no default
     }
@@ -105,7 +107,7 @@ export const getTransactionReviewModalActionTranslation = ({
                         ? 'TR_EARN_YIELD_WRAP_TITLE'
                         : 'TR_EARN_YIELD_UNWRAP_TITLE',
                 values: {
-                    nativeSymbol: getNetworkDisplaySymbol(symbol),
+                    nativeSymbol: getNetworkDisplaySymbol({ getNetworkConfig }, symbol),
                     tokenSymbol: getWrappedNativeSymbol(symbol),
                 },
             };

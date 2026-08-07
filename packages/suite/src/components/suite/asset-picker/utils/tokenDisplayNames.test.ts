@@ -4,15 +4,13 @@ import {
     type TradingAssetOption,
     type TradingAssetOptionWithContractAddress,
 } from '@suite-common/trading';
-import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 
 import {
     type TokenDisplayNameSource,
     getTokenDisplaySymbolName,
     getTokensDisplaySymbolNames,
 } from './tokenDisplayNames';
-
-const ethSymbol = toNetworkSymbolNonTestnet('eth');
 
 const createAsset = (
     overrides: Partial<TradingAssetOptionWithContractAddress> &
@@ -29,7 +27,7 @@ const createAsset = (
         displaySymbol: 'ASSET',
         contractAddress: '0x1',
         networkName: 'Ethereum',
-        networkSymbol: ethSymbol,
+        networkSymbol: 'eth',
         ...assetOverrides,
     };
 };
@@ -37,12 +35,13 @@ const createAsset = (
 describe('tokenDisplayNames', () => {
     it('returns canonical displaySymbolName for matching token crypto id', () => {
         const tokenSource: TokenDisplayNameSource = {
-            account: { symbol: ethSymbol },
+            account: { symbol: 'eth' },
             token: { contract: '0x1', name: 'Discovered Name' },
         };
         const tokens = [tokenSource];
 
         const tokenDisplaySymbolNames = getTokensDisplaySymbolNames({
+            ...mockNetworkConfigDeps,
             assets: [
                 createAsset({
                     id: 'ethereum--0x1' as CryptoId,
@@ -54,6 +53,7 @@ describe('tokenDisplayNames', () => {
 
         expect(
             getTokenDisplaySymbolName({
+                ...mockNetworkConfigDeps,
                 tokenDisplaySymbolNames,
                 account: tokenSource.account,
                 token: tokenSource.token,
@@ -63,12 +63,13 @@ describe('tokenDisplayNames', () => {
 
     it('falls back to asset name when displaySymbolName is missing', () => {
         const tokenSource: TokenDisplayNameSource = {
-            account: { symbol: ethSymbol },
+            account: { symbol: 'eth' },
             token: { contract: '0x1', name: 'Discovered Name' },
         };
         const tokens = [tokenSource];
 
         const tokenDisplaySymbolNames = getTokensDisplaySymbolNames({
+            ...mockNetworkConfigDeps,
             assets: [
                 createAsset({
                     id: 'ethereum--0x1' as CryptoId,
@@ -80,6 +81,7 @@ describe('tokenDisplayNames', () => {
 
         expect(
             getTokenDisplaySymbolName({
+                ...mockNetworkConfigDeps,
                 tokenDisplaySymbolNames,
                 account: tokenSource.account,
                 token: tokenSource.token,
@@ -89,18 +91,20 @@ describe('tokenDisplayNames', () => {
 
     it('falls back to discovered token name for unmatched tokens', () => {
         const tokenSource: TokenDisplayNameSource = {
-            account: { symbol: ethSymbol },
+            account: { symbol: 'eth' },
             token: { contract: '0x1', name: 'Discovered Name' },
         };
         const tokens = [tokenSource];
 
         const tokenDisplaySymbolNames = getTokensDisplaySymbolNames({
+            ...mockNetworkConfigDeps,
             assets: [createAsset({ id: 'ethereum--0x2' as CryptoId })],
             tokens,
         });
 
         expect(
             getTokenDisplaySymbolName({
+                ...mockNetworkConfigDeps,
                 tokenDisplaySymbolNames,
                 account: tokenSource.account,
                 token: tokenSource.token,
@@ -109,6 +113,8 @@ describe('tokenDisplayNames', () => {
     });
 
     it('handles empty assets and tokens', () => {
-        expect(getTokensDisplaySymbolNames({ assets: [], tokens: [] })).toEqual(new Map());
+        expect(
+            getTokensDisplaySymbolNames({ ...mockNetworkConfigDeps, assets: [], tokens: [] }),
+        ).toEqual(new Map());
     });
 });

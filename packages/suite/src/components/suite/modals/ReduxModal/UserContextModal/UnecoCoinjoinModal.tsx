@@ -3,6 +3,8 @@ import { UNECONOMICAL_COINJOIN_THRESHOLD } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits, getAccountDecimals } from '@suite-common/wallet-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { ArrowsInIcon } from '@trezor/icons';
@@ -12,6 +14,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
 export const UnecoCoinjoinModal = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const account = useSelector(selectSelectedAccount);
     const dispatch = useDispatch();
 
@@ -20,7 +23,7 @@ export const UnecoCoinjoinModal = () => {
     }
 
     const { symbol } = account;
-    const decimals = getAccountDecimals(symbol) || 8;
+    const decimals = getAccountDecimals(networkConfigDeps, symbol) || 8;
 
     const handleContinue = () => {
         dispatch(closeModal());

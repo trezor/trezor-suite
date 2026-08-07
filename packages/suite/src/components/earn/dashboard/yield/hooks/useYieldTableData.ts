@@ -1,10 +1,14 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type GetNetworkConfigDep } from '@suite-common/networks';
 import {
     type NetworkSymbol,
-    getNetworkByYieldXyzId,
+    findNetworkByYieldXyzId,
     getNetworkDisplaySymbol,
+    getNetworks,
+    selectNetworkConfigDeps,
 } from '@suite-common/wallet-config';
 import {
     doTokensMatch,
@@ -30,16 +34,16 @@ import {
     type YieldInactiveVaultOpportunity,
     type YieldOpportunityData,
 } from '../types';
-
 const hasTokenSymbol = (
     accountToken: NonNullable<Account['tokens']>[number],
 ): accountToken is TokenInfoBranded => accountToken.symbol !== undefined;
 
 const getMatchedAccountToken = ({
+    getNetworkConfig,
     account,
     networkSymbol,
     token,
-}: {
+}: GetNetworkConfigDep & {
     account: Account;
     networkSymbol: NetworkSymbol;
     token?: Pick<TokenDtoV2, 'address' | 'symbol' | 'decimals'>;
@@ -52,6 +56,7 @@ const getMatchedAccountToken = ({
         (accountToken): accountToken is TokenInfoBranded =>
             hasTokenSymbol(accountToken) &&
             doTokensMatch({
+                getNetworkConfig,
                 networkSymbol,
                 firstToken: {
                     address: accountToken.contract,
@@ -64,26 +69,30 @@ const getMatchedAccountToken = ({
 };
 
 export const getYieldOpportunityData = ({
+    getNetworkConfig,
     account,
     networkSymbol,
     vault,
-}: {
+}: GetNetworkConfigDep & {
     account: Account;
     networkSymbol: NetworkSymbol;
     vault: YieldDtoV2;
 }): YieldOpportunityData => {
     const matchedInputToken = getMatchedAccountToken({
+        getNetworkConfig,
         account,
         networkSymbol,
         token: vault.token,
     });
     const matchedOutputToken = getMatchedAccountToken({
+        getNetworkConfig,
         account,
         networkSymbol,
         token: vault.outputToken,
     });
     const hasVaultPosition = new BigNumber(matchedOutputToken?.balance ?? '0').gt(0);
     const depositedAmount = getConvertedOutputTokenBalanceToInputTokenAmount({
+        getNetworkConfig,
         networkSymbol,
         token: vault.token,
         outputToken: vault.outputToken,
@@ -111,7 +120,7 @@ export const getYieldOpportunityData = ({
         depositedAmount,
         additionalDepositAmount,
         depositedSymbol: isWrappedNativeVault
-            ? toTokenSymbol(getNetworkDisplaySymbol(networkSymbol))
+            ? toTokenSymbol(getNetworkDisplaySymbol({ getNetworkConfig }, networkSymbol))
             : (matchedInputToken?.symbol ?? toTokenSymbol(vault.token.symbol)),
         depositedContractAddress: isWrappedNativeVault
             ? null
@@ -138,9 +147,11 @@ export const useYieldTableData = ({
     visibleAccounts,
     visibleAccountSymbols,
 }: UseYieldTableDataProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const networks = getNetworks(networkConfigDeps);
     const yieldAccountOpportunities = useMemo<YieldAccountOpportunity[]>(() => {
         const allOpportunities = availableVaults.flatMap(vault => {
-            const network = getNetworkByYieldXyzId(vault.network);
+            const network = findNetworkByYieldXyzId(networks, vault.network);
 
             if (!network || !visibleAccountSymbols.has(network.symbol)) {
                 return [];
@@ -156,6 +167,7 @@ export const useYieldTableData = ({
                 networkSymbol: network.symbol,
                 vault,
                 ...getYieldOpportunityData({
+                    ...networkConfigDeps,
                     account,
                     networkSymbol: network.symbol,
                     vault,
@@ -189,22 +201,29 @@ export const useYieldTableData = ({
         return [
             ...activeOpportunities
                 .toSorted(compareEarnByAmountDesc(opportunity => opportunity.depositedAmount))
-                .toSorted(compareEarnByNetwork(opportunity => opportunity.account?.symbol)),
+                .toSorted(
+                    compareEarnByNetwork(
+                        networkConfigDeps,
+                        opportunity => opportunity.account?.symbol,
+                    ),
+                ),
             ...depositableOpportunities
                 .toSorted(
                     compareEarnByAmountDesc(opportunity => opportunity.additionalDepositAmount),
                 )
-                .toSorted(compareEarnByNetworkTokenOrder(toNetworkTokenSortKey)),
+                .toSorted(compareEarnByNetworkTokenOrder(networkConfigDeps, toNetworkTokenSortKey)),
             ...noBalanceOpportunities.toSorted(
-                compareEarnByNetworkTokenOrder(toNetworkTokenSortKey),
+                compareEarnByNetworkTokenOrder(networkConfigDeps, toNetworkTokenSortKey),
             ),
         ];
-    }, [availableVaults, visibleAccounts, visibleAccountSymbols]);
+    }, [availableVaults, networks, networkConfigDeps, visibleAccounts, visibleAccountSymbols]);
 
-    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const deviceSupportedNetworkSymbols = useSelector(state =>
+        selectDeviceSupportedNetworks(state, networkConfigDeps),
+    );
     const yieldInactiveVaultOpportunities = useMemo<YieldInactiveVaultOpportunity[]>(() => {
         const opportunities = availableVaults.flatMap(vault => {
-            const network = getNetworkByYieldXyzId(vault.network);
+            const network = findNetworkByYieldXyzId(networks, vault.network);
 
             if (!network) {
                 return [];
@@ -230,7 +249,7 @@ export const useYieldTableData = ({
         return opportunities.toSorted(
             compareEarnByApyDesc(opportunity => opportunity.apyPercentage),
         );
-    }, [availableVaults, deviceSupportedNetworkSymbols, visibleAccountSymbols]);
+    }, [availableVaults, deviceSupportedNetworkSymbols, networks, visibleAccountSymbols]);
 
     const isYieldActive = useMemo(
         () => yieldAccountOpportunities.some(opportunity => opportunity.hasVaultPosition),

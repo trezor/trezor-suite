@@ -1,5 +1,7 @@
 import { selectRouteName } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     hasPendingStakeTypeTransaction,
     selectAccountIsStakingActive,
@@ -20,6 +22,7 @@ interface CardanoNewProviderCardProps {
 }
 
 export function CardanoNewProviderCard({ account }: CardanoNewProviderCardProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const routeName = useSelector(selectRouteName);
 
     const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
@@ -31,7 +34,9 @@ export function CardanoNewProviderCard({ account }: CardanoNewProviderCardProps)
     const isNewProviderBannerEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
     );
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isStakingActive = useSelector(state =>
+        selectAccountIsStakingActive(state, account.key, networkConfigDeps),
+    );
     const isCardanoNetworkType = account?.networkType === 'cardano';
 
     if (

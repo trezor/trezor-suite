@@ -5,6 +5,7 @@ import { type Route, goto } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -30,6 +31,7 @@ export const TradeBoxActionButton = ({
     children,
     isDisabled = false,
 }: TradeBoxActionButtonProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
@@ -45,7 +47,7 @@ export const TradeBoxActionButton = ({
 
                 dispatch(
                     tradingActions.setTradingFromPrefilledAccount(
-                        getTradingPrefilledFromAccountData(account),
+                        getTradingPrefilledFromAccountData(networkConfigDeps, account),
                     ),
                 );
 

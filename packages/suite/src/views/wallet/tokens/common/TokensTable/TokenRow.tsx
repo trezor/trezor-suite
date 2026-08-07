@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
@@ -9,6 +10,7 @@ import {
 } from '@suite-common/token-definitions';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
@@ -51,9 +53,15 @@ export const TokenRow = ({
     isCollapsed,
     yieldOpportunities,
 }: TokenRowProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const device = useSelector(selectSelectedDevice);
     const isTokenKnown = useSelector(state =>
-        selectIsSpecificCoinDefinitionKnown(state, account.symbol, token.contract as TokenAddress),
+        selectIsSpecificCoinDefinitionKnown(
+            state,
+            account.symbol,
+            token.contract as TokenAddress,
+            networkConfigDeps,
+        ),
     );
     const yieldBadge = useTokenYieldBadge({
         networkSymbol: account.symbol,

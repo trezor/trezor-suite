@@ -8,14 +8,16 @@ import {
     type CoinjoinSymbol,
 } from '@suite/coinjoin';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { selectReloadAppDep } from '@suite-common/suite-types';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
+
 
 const CoordinatorVersionContainer = styled.div`
     display: flex;
@@ -58,13 +60,14 @@ const CoordinatorServer = ({
     value,
     onChange,
 }: CoordinatorServerProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const options = environments.map(environment => ({
         label: environment,
         value: environment,
     }));
 
     const selectedOption = (value && options.find(option => option.value === value)) ?? options[0];
-    const networkName = getNetwork(symbol).name;
+    const networkName = getNetworkConfig(symbol).name;
 
     if (!isCoinjoinSupportedSymbol(symbol)) return null;
 

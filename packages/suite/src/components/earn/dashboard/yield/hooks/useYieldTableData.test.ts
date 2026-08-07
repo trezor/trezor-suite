@@ -1,16 +1,19 @@
 import { renderHook } from '@testing-library/react';
 
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/wallet-config/mocks';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { getYieldOpportunityData, useYieldTableData } from './useYieldTableData';
 
-const ethSymbol = asNetworkSymbol('eth');
-
 jest.mock('src/hooks/suite', () => ({
     useSelector: () => [],
+}));
+
+jest.mock('@suite-common/dependency-injection', () => ({
+    useServices: () => mockNetworkConfigDeps,
 }));
 
 const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
@@ -67,7 +70,7 @@ describe(getYieldOpportunityData.name, () => {
     describe('wrapped-native (WETH) vault', () => {
         it('combines the token balance with the full native balance', () => {
             const account = mockWalletAccount({
-                symbol: ethSymbol,
+                symbol: 'eth',
                 formattedBalance: '1',
                 tokens: [
                     mockAccountToken({
@@ -80,8 +83,9 @@ describe(getYieldOpportunityData.name, () => {
             });
 
             const data = getYieldOpportunityData({
+                ...mockNetworkConfigDeps,
                 account,
-                networkSymbol: ethSymbol,
+                networkSymbol: 'eth',
                 vault: wethVault,
             });
 
@@ -89,14 +93,12 @@ describe(getYieldOpportunityData.name, () => {
         });
 
         it('counts a native-only account (no WETH token) as depositable', () => {
-            const account = mockWalletAccount({
-                symbol: ethSymbol,
-                formattedBalance: '1',
-            });
+            const account = mockWalletAccount({ symbol: 'eth', formattedBalance: '1' });
 
             const data = getYieldOpportunityData({
+                ...mockNetworkConfigDeps,
                 account,
-                networkSymbol: ethSymbol,
+                networkSymbol: 'eth',
                 vault: wethVault,
             });
 
@@ -106,14 +108,12 @@ describe(getYieldOpportunityData.name, () => {
         });
 
         it('counts a small native balance as fully depositable (no gas reserve deducted)', () => {
-            const account = mockWalletAccount({
-                symbol: ethSymbol,
-                formattedBalance: '0.003',
-            });
+            const account = mockWalletAccount({ symbol: 'eth', formattedBalance: '0.003' });
 
             const data = getYieldOpportunityData({
+                ...mockNetworkConfigDeps,
                 account,
-                networkSymbol: ethSymbol,
+                networkSymbol: 'eth',
                 vault: wethVault,
             });
 
@@ -123,7 +123,7 @@ describe(getYieldOpportunityData.name, () => {
 
         it('denominates amounts in the native symbol without a token contract', () => {
             const account = mockWalletAccount({
-                symbol: ethSymbol,
+                symbol: 'eth',
                 formattedBalance: '1',
                 tokens: [
                     mockAccountToken({
@@ -136,8 +136,9 @@ describe(getYieldOpportunityData.name, () => {
             });
 
             const data = getYieldOpportunityData({
+                ...mockNetworkConfigDeps,
                 account,
-                networkSymbol: ethSymbol,
+                networkSymbol: 'eth',
                 vault: wethVault,
             });
 
@@ -149,7 +150,7 @@ describe(getYieldOpportunityData.name, () => {
     describe('non-wrapped-native vault', () => {
         it('uses only the matched token balance and keeps the token denomination', () => {
             const account = mockWalletAccount({
-                symbol: ethSymbol,
+                symbol: 'eth',
                 formattedBalance: '1',
                 tokens: [
                     mockAccountToken({
@@ -162,8 +163,9 @@ describe(getYieldOpportunityData.name, () => {
             });
 
             const data = getYieldOpportunityData({
+                ...mockNetworkConfigDeps,
                 account,
-                networkSymbol: ethSymbol,
+                networkSymbol: 'eth',
                 vault: usdcVault,
             });
 
@@ -173,14 +175,12 @@ describe(getYieldOpportunityData.name, () => {
         });
 
         it('is not depositable without the matched token, regardless of native balance', () => {
-            const account = mockWalletAccount({
-                symbol: ethSymbol,
-                formattedBalance: '5',
-            });
+            const account = mockWalletAccount({ symbol: 'eth', formattedBalance: '5' });
 
             const data = getYieldOpportunityData({
+                ...mockNetworkConfigDeps,
                 account,
-                networkSymbol: ethSymbol,
+                networkSymbol: 'eth',
                 vault: usdcVault,
             });
 
@@ -193,12 +193,12 @@ describe(getYieldOpportunityData.name, () => {
 describe(useYieldTableData.name, () => {
     it('classifies a native-only account as depositable, ahead of empty accounts', () => {
         const emptyAccount = mockWalletAccount({
-            symbol: ethSymbol,
+            symbol: 'eth',
             descriptor: asAccountDescriptor('0xbe1030e5e50e5e0'),
             formattedBalance: '0',
         });
         const nativeOnlyAccount = mockWalletAccount({
-            symbol: ethSymbol,
+            symbol: 'eth',
             descriptor: asAccountDescriptor('0xde9051ab1e0e0e0'),
             formattedBalance: '1',
         });
@@ -207,7 +207,7 @@ describe(useYieldTableData.name, () => {
             useYieldTableData({
                 availableVaults: [wethVault],
                 visibleAccounts: [emptyAccount, nativeOnlyAccount],
-                visibleAccountSymbols: new Set<NetworkSymbol>([ethSymbol]),
+                visibleAccountSymbols: new Set<NetworkSymbol>(['eth']),
             }),
         );
 

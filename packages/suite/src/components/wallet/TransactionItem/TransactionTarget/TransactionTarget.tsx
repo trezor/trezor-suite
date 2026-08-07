@@ -7,9 +7,11 @@ import {
     selectLabelingDataForAccount,
     selectLabelingValueBeingEdited,
 } from '@suite/metadata';
+import { useServices } from '@suite-common/dependency-injection';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type Target,
     selectBaseCurrency,
@@ -56,6 +58,7 @@ export const TransactionTarget = ({
     targetId,
     ...baseLayoutProps
 }: TransactionTargetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { translationString } = useTranslation();
 
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, accountKey));
@@ -90,9 +93,12 @@ export const TransactionTarget = ({
 
         switch (type) {
             case 'target':
-                return getTargetAmount(payload, transaction);
+                return getTargetAmount(networkConfigDeps, payload, transaction);
             case 'internal':
-                return payload.amount && formatNetworkAmount(payload.amount, transaction.symbol);
+                return (
+                    payload.amount &&
+                    formatNetworkAmount(networkConfigDeps, payload.amount, transaction.symbol)
+                );
             case 'token':
                 return convertAmountSubunitsToUnits(payload.amount, payload.decimals);
             default:

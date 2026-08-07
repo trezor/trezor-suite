@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { sortByCoin } from '@suite-common/wallet-utils';
 import { isNotUndefined } from '@trezor/utils';
 
@@ -12,6 +14,7 @@ type UseYieldAccountsVisibilityProps = {
 export const useYieldAccountsVisibility = ({
     yieldAccountOpportunities,
 }: UseYieldAccountsVisibilityProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const [isExpanded, setIsExpanded] = useState(false);
 
     const { collapsedYieldAccountOpportunities, hiddenYieldAccountOpportunities } = useMemo(() => {
@@ -40,7 +43,7 @@ export const useYieldAccountsVisibility = ({
             const vaultAccounts = vaultOpportunities
                 .map(opportunity => opportunity.account)
                 .filter(isNotUndefined);
-            const [firstAccountByCoinOrder] = sortByCoin([...vaultAccounts]);
+            const [firstAccountByCoinOrder] = sortByCoin(networkConfigDeps, [...vaultAccounts]);
 
             const fallbackOpportunity = firstAccountByCoinOrder
                 ? vaultOpportunities.find(

@@ -1,5 +1,7 @@
 import { useCallback, useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { hasPendingStakeTypeTransaction, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
 import {
     type ActionAvailability,
@@ -20,6 +22,7 @@ import trezorConnect, { type CardanoCertificate } from '@trezor/connect';
 import { useSelector } from 'src/hooks/suite';
 
 export const useCardanoStaking = (): CardanoStaking => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const account = useSelector(state => state.wallet.selectedAccount.account);
 
     const isCardano = account?.networkType === 'cardano';
@@ -110,7 +113,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                 withdrawals,
                 changeAddress,
                 addressParameters,
-                testnet: isTestnet(account.symbol),
+                testnet: isTestnet(networkConfigDeps, account.symbol),
             });
 
             if (!response.success) throw new Error(response.error.message);

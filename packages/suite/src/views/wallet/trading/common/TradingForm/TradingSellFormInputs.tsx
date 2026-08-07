@@ -14,6 +14,7 @@ import {
     selectTradingSellSupportedCryptoIds,
     selectTradingSendAccount,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Row } from '@trezor/components';
@@ -43,6 +44,7 @@ import { TradingFormSection } from './TradingFormSection';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 
 export const TradingSellFormInputs = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const context = useTradingFormContext<TradingSellType>();
     const quotes = useSelector(selectTradingSellQuotes);
     const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
@@ -57,7 +59,7 @@ export const TradingSellFormInputs = () => {
         showReserveBanner,
     } = context;
     const asset = useSelectedTradingAsset(type);
-    const account = useSelector(state => selectTradingSendAccount(state, type));
+    const account = useSelector(state => selectTradingSendAccount(state, type, networkConfigDeps));
 
     const { control } = useFormContext<TradingSellFormProps>();
 
@@ -97,7 +99,7 @@ export const TradingSellFormInputs = () => {
 
     const supportedNetworks = networkModuleRepository.getSupportedNetworks();
     const sellSupportedCryptoIds = useSelector(state =>
-        selectTradingSellSupportedCryptoIds(state, supportedNetworks),
+        selectTradingSellSupportedCryptoIds(state, supportedNetworks, networkConfigDeps),
     );
 
     const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);

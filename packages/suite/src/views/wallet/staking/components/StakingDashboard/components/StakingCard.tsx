@@ -4,7 +4,7 @@ import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
     selectAccountStakeTypeTransactions,
@@ -95,14 +95,18 @@ export const StakingCard = ({
     daysToUnstake,
     account,
 }: StakingCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isBelowLaptop } = useLayoutSize();
 
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isStakingActive = useSelector(state =>
+        selectAccountIsStakingActive(state, account.key, networkConfigDeps),
+    );
 
     const solanaRewardsTotalQuery = useSolanaRewardsTotal(account);
     const { totalRewards, isTotalRewardsLoading } = getStakingTotalRewards(
+        networkConfigDeps,
         account,
         solanaRewardsTotalQuery,
     );
@@ -125,7 +129,7 @@ export const StakingCard = ({
         withdrawTotalAmount = '0',
         claimableAmount = '0',
         restakedReward = '0',
-    } = getStakingDataForNetwork(account) ?? {};
+    } = getStakingDataForNetwork(networkConfigDeps, account) ?? {};
 
     const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
 
@@ -271,6 +275,7 @@ export const StakingCard = ({
                                     id="TR_STAKE_FUNDS_FULLY_ACCESSIBLE"
                                     values={{
                                         networkDisplaySymbol: getNetworkDisplaySymbol(
+                                            networkConfigDeps,
                                             account.symbol,
                                         ),
                                     }}
@@ -310,6 +315,7 @@ export const StakingCard = ({
                                             id="TR_STAKE_ETH_REWARDS_EARN_APY"
                                             values={{
                                                 networkDisplaySymbol: getNetworkDisplaySymbol(
+                                                    networkConfigDeps,
                                                     account.symbol,
                                                 ),
                                             }}

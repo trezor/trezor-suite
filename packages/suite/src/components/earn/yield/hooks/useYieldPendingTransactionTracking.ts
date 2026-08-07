@@ -4,6 +4,7 @@ import { type AnalyticsDesktopEvents, selectDesktopAnalyticsDep } from '@suite/a
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     type YieldFlowType,
     type YieldPendingTransactionState,
@@ -185,6 +186,7 @@ export const useYieldPendingTransactionTracking = ({
 }: UseYieldPendingTransactionTrackingProps) => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const pendingTransaction = useSelector(
         state => selectStablecoinYieldSession(state, flowType, flowKey).action.pendingTransaction,
     );
@@ -193,7 +195,9 @@ export const useYieldPendingTransactionTracking = ({
             ? selectTransactionByAccountKeyAndTxid(state, account.key, pendingTransaction.txid)
             : null,
     );
-    const feeInfo = useSelector(state => selectConvertedNetworkFeeInfo(state, account.symbol));
+    const feeInfo = useSelector(state =>
+        selectConvertedNetworkFeeInfo(state, account.symbol, networkConfigDeps),
+    );
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
 
     const isCurrentlyPending =

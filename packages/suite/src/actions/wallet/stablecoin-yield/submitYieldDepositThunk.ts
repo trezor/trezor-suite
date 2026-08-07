@@ -103,6 +103,7 @@ export const submitYieldDepositThunk = createThunk(
             const selectedFee = userAcceptedTxSimulation?.selectedFee ?? null;
 
             const sendResult = await sendYieldTransaction({
+                ...extra.services,
                 account: flowData.account,
                 amount,
                 token: flowData.token,

@@ -4,6 +4,7 @@ import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
     getTronRewardClaimCooldownEndsAt,
@@ -33,6 +34,7 @@ interface TronVotingRewardsCardProps {
 }
 
 export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { device } = useDevice();
@@ -40,7 +42,7 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
     const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
         useFirmwareUpgradeModal();
 
-    const rewards = getTronStakingRewards(account);
+    const rewards = getTronStakingRewards(networkConfigDeps, account);
     const isClaimOnCooldown = isTronRewardClaimOnCooldown(account);
     const claimCooldownEndsAt = getTronRewardClaimCooldownEndsAt(account);
     const isClaimFirmwareOutdated = !isTronClaimSupported(device);

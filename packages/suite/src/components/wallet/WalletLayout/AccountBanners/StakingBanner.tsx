@@ -8,6 +8,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -33,6 +34,7 @@ type StakingBannerProps = {
 };
 
 export const StakingBanner = ({ account }: StakingBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
@@ -44,11 +46,13 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     } = useSelector(selectFlags);
     const { route } = useSelector(selectRouter);
     const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isStakingActive = useSelector(state =>
+        selectAccountIsStakingActive(state, account.key, networkConfigDeps),
+    );
     const earnEthBanner = useEarnEthBanner(account);
 
-    const displaySymbol = getDisplaySymbol(account.symbol);
-    const stakingData = getStakingDataForNetwork(account);
+    const displaySymbol = getDisplaySymbol(networkConfigDeps, account.symbol);
+    const stakingData = getStakingDataForNetwork(networkConfigDeps, account);
 
     const accountBalance = account.formattedBalance;
     const stakingBalance = stakingData?.depositedBalance ?? '0';

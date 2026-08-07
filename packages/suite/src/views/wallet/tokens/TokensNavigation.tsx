@@ -8,6 +8,7 @@ import { type Route, goto, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { type NetworkType } from '@suite-common/wallet-config';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
 import {
@@ -111,6 +112,7 @@ export const TokensNavigation = ({
     onManualActivation,
     showManualActivation = false,
 }: TokensNavigationProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const { account } = selectedAccount;
     const routeName = useSelector(selectRouteName);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -124,6 +126,7 @@ export const TokensNavigation = ({
     const { translationString } = useTranslation();
 
     const tokens = getTokens({
+        ...networkConfigDeps,
         tokens: selectedAccount.account.tokens || [],
         symbol: selectedAccount.account.symbol,
         tokenDefinitions,

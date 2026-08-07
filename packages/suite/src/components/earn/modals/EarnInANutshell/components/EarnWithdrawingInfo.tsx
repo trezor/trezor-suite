@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol , selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectEthValidatorsQueue } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
@@ -144,10 +145,11 @@ const CardanoWithdrawingRows = ({ flow, displaySymbol }: EarnWithdrawingRowsProp
 );
 
 export const EarnWithdrawingInfo = ({ account, flow }: EarnWithdrawingInfoProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const validatorsQueue = useSelector(selectEthValidatorsQueue);
     const daysToUnstake = getUnstakingPeriodInDays(account.networkType, validatorsQueue);
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const content = (() => {
         switch (account.networkType) {

@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -23,14 +25,17 @@ export type StakingAccountStatus =
     | 'staking-remaining-votes';
 
 export const useStakingAccountStatus = (account: Account): StakingAccountStatus => {
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    const isStakingActive = useSelector(state =>
+        selectAccountIsStakingActive(state, account.key, networkConfigDeps),
+    );
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
     const isNewProviderBannerEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
     );
 
     const accountBalance = account.formattedBalance;
-    const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
+    const stakingBalance = getAccountTotalStakingBalance(networkConfigDeps, account) ?? '0';
     const isCardanoNetworkType = account.networkType === 'cardano';
     const minStakingAmount = getStakingLimitsByNetworkSymbol(
         account.symbol,

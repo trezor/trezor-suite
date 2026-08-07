@@ -28,7 +28,7 @@ import { asSuiteRouterHistoryService } from './suiteRouterHistory';
  */
 export const onLocationChange = createThunk(
     '@router/onLocationChange',
-    (location: RouterPathOptional & { anchor?: AnchorType }, { dispatch, getState }) => {
+    (location: RouterPathOptional & { anchor?: AnchorType }, { dispatch, getState, extra }) => {
         const unlocked = selectCanNavigate(getState());
         const router = selectRouter(getState());
         if (!unlocked && router.loaded) return;
@@ -38,7 +38,7 @@ export const onLocationChange = createThunk(
         }
 
         // TODO: check if the view is not locked by the device request
-        const appWithParams = getAppWithParams(location);
+        const appWithParams = getAppWithParams(extra.services, location);
 
         return dispatch(routerLocationChange({ ...location, ...appWithParams }));
     },

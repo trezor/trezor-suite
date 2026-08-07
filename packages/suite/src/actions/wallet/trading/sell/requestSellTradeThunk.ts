@@ -15,8 +15,8 @@ import { submitRequestForm } from '../tradingCommonActions';
 
 export const requestSellTradeThunk = createThunk(
     'trading/sell/requestTrade',
-    async ({ quote }: { quote: SellFiatTrade }, { dispatch, getState }) => {
-        const account = selectTradingSendAccount(getState(), 'sell');
+    async ({ quote }: { quote: SellFiatTrade }, { dispatch, getState, extra }) => {
+        const account = selectTradingSendAccount(getState(), 'sell', extra.services);
 
         if (!account) {
             return;

@@ -1,5 +1,7 @@
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
@@ -13,13 +15,14 @@ interface EarnStakingActivateRowProps {
 }
 
 export const EarnStakingActivateRow = ({ symbol, isCardLayout }: EarnStakingActivateRowProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const { rate } = useStakingRate({ symbol });
 
     const { isStakingDisabled } = useMessageSystemStaking(symbol);
 
     if (isStakingDisabled) return null;
 
-    const { displaySymbol } = getNetwork(symbol);
+    const { displaySymbol } = getNetworkConfig(symbol);
     const minStakingAmount =
         getStakingLimitsByNetworkSymbol(symbol)?.MIN_AMOUNT_FOR_STAKING_DASHBOARD;
 

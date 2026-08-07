@@ -1,10 +1,12 @@
 import { type TranslationKey } from '@suite/intl';
 import { selectTorState } from '@suite/tor';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingType,
     selectTradingProviderCompanyName,
     selectTradingSendAccount,
 } from '@suite-common/trading';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type IconComponent } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
@@ -23,6 +25,7 @@ import {
 import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 export const useTradingFormOfferCommon = <T extends TradingType>() => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const context = useTradingFormContext();
     const {
         isAmountEmpty,
@@ -30,7 +33,9 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
         form: { state },
         type,
     } = context;
-    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, type));
+    const account = useSelector(reduxState =>
+        selectTradingSendAccount(reduxState, type, networkConfigDeps),
+    );
 
     const { amountInCrypto } = watch();
 

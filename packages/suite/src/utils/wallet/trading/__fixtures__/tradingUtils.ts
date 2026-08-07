@@ -15,6 +15,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
         option: {
             account: {
                 symbol: 'btc',
+                networkType: 'bitcoin',
                 descriptor: asAccountDescriptor('bbb'),
             },
             tokenContractAddress: undefined,
@@ -28,6 +29,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
         option: {
             account: {
                 symbol: 'eth',
+                networkType: 'ethereum',
                 descriptor: asAccountDescriptor('eee'),
             },
             tokenContractAddress: undefined,
@@ -41,6 +43,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
         option: {
             account: {
                 symbol: 'eth',
+                networkType: 'ethereum',
                 descriptor: asAccountDescriptor('aaa'),
             },
             tokenContractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
@@ -54,6 +57,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
         option: {
             account: {
                 symbol: 'sol',
+                networkType: 'solana',
                 descriptor: asAccountDescriptor('sss'),
             },
             tokenContractAddress: undefined,
@@ -67,6 +71,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
         option: {
             account: {
                 symbol: 'sol',
+                networkType: 'solana',
                 descriptor: asAccountDescriptor('ddd'),
             },
             tokenContractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
@@ -80,6 +85,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
         option: {
             account: {
                 symbol: 'ada',
+                networkType: 'cardano',
                 descriptor: asAccountDescriptor('ccc'),
             },
             tokenContractAddress: undefined,

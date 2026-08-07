@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { isPhishingTransaction } from '@suite-common/token-definitions';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import {
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
@@ -155,6 +157,7 @@ export const useVisibleTransactions = ({
     numberOfPagesRequested: number;
     enableFiltering?: boolean;
 }) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const allTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, account.key),
     );
@@ -183,6 +186,7 @@ export const useVisibleTransactions = ({
                 ? allTransactions.filter(
                       transaction =>
                           !isPhishingTransaction({
+                              ...networkConfigDeps,
                               transaction,
                               tokenDefinitions,
                               txsMarkedAsNotScam,
@@ -198,6 +202,7 @@ export const useVisibleTransactions = ({
             txsMarkedAsNotScam,
             historicRates,
             dustThreshold,
+            networkConfigDeps,
         ],
     );
 

@@ -4,8 +4,8 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectGetNetworkConfigDep } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { type ExportFileType } from '@suite-common/wallet-types';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
@@ -17,12 +17,14 @@ import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { type Account } from 'src/types/wallet';
 
+
 export interface ExportActionProps {
     account: Account;
     searchQuery: string;
 }
 
 export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
+    const { getNetworkConfig } = useServices(selectGetNetworkConfigDep);
     const [isExportRunning, setIsExportRunning] = useState(false);
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -34,7 +36,7 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
         }
 
         return translationString('LABELING_ACCOUNT', {
-            networkName: getNetwork(account.symbol).name,
+            networkName: getNetworkConfig(account.symbol).name,
             index: account.index + 1,
         });
     }, [account, translationString]);

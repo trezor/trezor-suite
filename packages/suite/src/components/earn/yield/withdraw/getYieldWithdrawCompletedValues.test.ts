@@ -1,14 +1,12 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockGetNetworkConfig } from '@suite-common/networks/mocks';
 import { type YieldFlowDisplayToken, type YieldFlowToken } from '@suite-common/wallet-core';
 
 import { getYieldWithdrawCompletedValues } from './getYieldWithdrawCompletedValues';
 
 type Params = Parameters<typeof getYieldWithdrawCompletedValues>[0];
 
-const ethSymbol = asNetworkSymbol('eth');
-
 const token: YieldFlowToken = {
-    networkSymbol: ethSymbol,
+    networkSymbol: 'eth',
     symbol: 'WETH',
     decimals: 18,
     contractAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
@@ -16,7 +14,7 @@ const token: YieldFlowToken = {
 };
 
 const receiptToken: YieldFlowDisplayToken = {
-    networkSymbol: ethSymbol,
+    networkSymbol: 'eth',
     symbol: 'trSHETHp',
     decimals: 18,
     contractAddress: '0x1111111111111111111111111111111111111111',
@@ -29,12 +27,13 @@ const pricePerShareState: Params['pricePerShareState'] = {
     quoteToken: { symbol: 'WETH', network: 'ethereum', name: 'Wrapped Ether', decimals: 18 },
 };
 
-const base = {
-    networkSymbol: ethSymbol,
+const base: Omit<Params, 'flowType' | 'completedAmount' | 'unwrappedAmount'> = {
+    getNetworkConfig: mockGetNetworkConfig,
+    networkSymbol: 'eth',
     token,
     receiptToken,
     pricePerShareState,
-} satisfies Omit<Params, 'flowType' | 'completedAmount' | 'unwrappedAmount'>;
+};
 
 describe('getYieldWithdrawCompletedValues', () => {
     it('redeem without unwrap: sends the trSHETHp shares entered, receives WETH', () => {

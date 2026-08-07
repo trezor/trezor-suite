@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import { goto, selectRouteName } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
@@ -17,6 +19,7 @@ import { HiddenTokensTable } from './hidden-tokens/HiddenTokensTable';
 import { InactiveTokensTable } from './inactive-tokens/InactiveTokensTable';
 
 export const Tokens = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
     const [searchQuery, setSearchQuery] = useState('');
     const [showManualInput, setShowManualInput] = useState(false);
     const [manualTokenContract, setManualTokenContract] = useState<string | null>(null);
@@ -28,7 +31,7 @@ export const Tokens = () => {
     useEffect(() => {
         if (
             selectedAccount.status === 'loaded' &&
-            !hasNetworkFeatures(selectedAccount.account, 'tokens') &&
+            !hasNetworkFeatures(networkConfigDeps, selectedAccount.account, 'tokens') &&
             routeName !== 'wallet-index'
         ) {
             dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
