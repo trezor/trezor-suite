@@ -241,7 +241,13 @@ type ConnectPopupCallError = {
     state: 'error';
     error: ConnectSerializedError;
 };
-export type ConnectPopupCall = ConnectPopupCallLoaded | ConnectPopupCallError;
+
+type ConnectPopupCallMeta = {
+    callId?: string;
+};
+
+export type ConnectPopupCall = (ConnectPopupCallLoaded | ConnectPopupCallError) &
+    ConnectPopupCallMeta;
 
 export type ConnectPopupCallWithState<
     CallState extends ConnectPopupCall['state'],
