@@ -15,6 +15,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import {
     defaultTrezorUIEventHandlerThunk,
     deviceConnectThunks,
+    isScopedCallId,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import TrezorConnect, {
@@ -84,11 +85,9 @@ export const connectInitThunk = createThunk<void, void, void>(
         });
 
         TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {
-            if ('callId' in action && action.callId) {
-                console.warn(
-                    `[connect-init] UI_EVENT ${action.type} (callId=${action.callId}) swallowed in global scope — handled by a scoped flow.`,
-                );
-
+            // A bare `callId` is not proof of ownership — it doubles as the
+            // cancellation token — so defer only events a scoped flow has registered.
+            if ('callId' in action && action.callId && isScopedCallId(action.callId)) {
                 return;
             }
             dispatch(defaultTrezorUIEventHandlerThunk(action));

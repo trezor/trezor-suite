@@ -7,6 +7,7 @@ import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import { runDiscoveryThunk, startDiscoveryThunk } from './discoveryThunks';
 import { defaultTrezorUIEventHandlerThunk } from '../uiEvent/defaultTrezorUIEventHandlerThunk';
+import { registerScopedCallId, unregisterScopedCallId } from '../uiEvent/scopedCallIdRegistry';
 
 // The "run" step. Exported because for a *new* hidden wallet the run is deferred from
 // start — called from PassphraseWalletIsNotExistFlow's "Next" once the user confirms
@@ -23,11 +24,14 @@ export const runPassphraseWalletAddingDiscoveryThunk = createThunk(
             dispatch(defaultTrezorUIEventHandlerThunk(action));
         };
 
+        // Claim this callId so the global handler defers its events to the scoped listener.
+        registerScopedCallId(callId);
         TrezorConnect.on(UI_EVENT, onUiEvent);
         try {
             await dispatch(runDiscoveryThunk({ device, callId })).unwrap();
         } finally {
             TrezorConnect.off(UI_EVENT, onUiEvent);
+            unregisterScopedCallId(callId);
         }
     },
 );
