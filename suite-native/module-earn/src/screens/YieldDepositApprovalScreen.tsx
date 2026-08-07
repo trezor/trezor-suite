@@ -167,6 +167,7 @@ export const YieldDepositApprovalScreen = () => {
         routeParams: route.params,
     });
     const isApprovalSessionReady = sessionStep === 'approve';
+    const canSkipApproval = isApprovalSessionReady && shouldShowApprovedAmountCard;
     const canSubmitApproval =
         isValid &&
         isAllowanceFeeReady &&
@@ -201,6 +202,42 @@ export const YieldDepositApprovalScreen = () => {
 
         dispatch(stablecoinYieldActions.disposeSession({ flowType: 'deposit', flowKey }));
     }, [dispatch, flowKey, isApprovalPending, navigateToInitialScreen, navigation]);
+
+    const handleSkipApproval = useCallback(() => {
+        if (!flowKey || isApprovalPending) {
+            return;
+        }
+
+        analytics.report({
+            type: events.yieldDepositEvent.name,
+            payload: {
+                action: 'cancel',
+                type: 'approve',
+                networkSymbol: account?.symbol,
+                vaultId: resolvedFlowData.vault?.id,
+            },
+        });
+
+        dispatch(
+            stablecoinYieldActions.skipApprovalStep({
+                flowType: 'deposit',
+                flowKey,
+                amount: amountValue || undefined,
+            }),
+        );
+
+        navigation.navigate(YieldStackRoutes.YieldDeposit, route.params);
+    }, [
+        account?.symbol,
+        amountValue,
+        analytics,
+        dispatch,
+        flowKey,
+        isApprovalPending,
+        navigation,
+        resolvedFlowData.vault?.id,
+        route.params,
+    ]);
 
     const handleNavigateToRevoke = useCallback(() => {
         if (!flowKey || isApprovalPending) {
@@ -326,7 +363,9 @@ export const YieldDepositApprovalScreen = () => {
                     apy={apy}
                     isDisabled={isSubmitDisabled}
                     isLoading={isCheckingApproval}
+                    isSkipDisabled={isApprovalPending || isCheckingApproval}
                     onPress={handleSubmit}
+                    onSkipPress={canSkipApproval ? handleSkipApproval : undefined}
                     tokenSymbol={tokenSymbol}
                 />
             }
