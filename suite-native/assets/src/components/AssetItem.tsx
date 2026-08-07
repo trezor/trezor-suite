@@ -57,6 +57,10 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
         selectHasDeviceAnyFailedAccountForNetworkSymbol(state, cryptoCurrencySymbol),
     );
 
+    const secondaryValue = hasAnyFailedAccount ? undefined : (
+        <CryptoAmount symbol={cryptoCurrencySymbol} />
+    );
+
     const handleAssetPress = useCallback(() => {
         // A single tokenless account opens its detail directly; anything else opens the list.
         if (singleAccountKey && !hasAnyTokens && !hasAnyAccountsWithStaking) {
@@ -93,9 +97,7 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
                     <FiatAmount symbol={cryptoCurrencySymbol} />
                 )
             }
-            secondaryValue={
-                hasAnyFailedAccount ? undefined : <CryptoAmount symbol={cryptoCurrencySymbol} />
-            }
+            secondaryValue={secondaryValue}
         />
     );
 });

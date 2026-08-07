@@ -204,7 +204,6 @@ export const messages = {
     accountList: {
         numberOfTokens: '+{numberOfTokens, plural, one{1 Token} other{# Tokens}}',
         staking: 'Staking',
-        rewardsReduced: 'Rewards reduced',
         stakingDisabled: 'Staking is currently unavailable.',
     },
     assets: {
@@ -3560,9 +3559,6 @@ export const messages = {
         },
         stakingCanBeManaged: 'Manage your staking accounts in the',
         trezorDesktop: 'Trezor Suite desktop app.',
-        infoBanner: {
-            rewardsReduced: 'Cardano staking rewards reduced',
-        },
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',
         apyPercentage: '~{apy}% APY',
@@ -3585,6 +3581,7 @@ export const messages = {
             upToApr: 'up to {value}% APR',
             upToRate: 'up to {value}% Rate',
         },
+        zeroApyBadge: '0% APY',
         messageSystem: {
             depositDisabled: 'Deposits currently disabled.',
             withdrawDisabled: 'Withdrawals currently disabled.',
