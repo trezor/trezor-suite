@@ -1,8 +1,12 @@
-import { type Account } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type GeneralPrecomposedTransaction,
+    type SolanaTxMeta,
+} from '@suite-common/wallet-types';
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import { StakeState } from '@trezor/network-solana/constants';
 
-import { getSolanaUnstakeAmountBounds } from './solanaStakingUtils';
+import { getSolanaUnstakeAmountBounds, isDeviceReviewOnly } from './solanaStakingUtils';
 
 const SOL = 1_000_000_000;
 
@@ -120,5 +124,44 @@ describe('getSolanaUnstakeAmountBounds', () => {
         );
 
         expect(getSolanaUnstakeAmountBounds(account, '1.5')).toBeNull();
+    });
+});
+
+const buildSolanaTxMeta = (overrides: Partial<SolanaTxMeta> = {}): SolanaTxMeta => ({
+    deviceAmountLamports: `${SOL}`,
+    feeLamports: '5000',
+    rentLamports: '0',
+    feeIncludingRentLamports: '5000',
+    hasSplitInstruction: false,
+    ...overrides,
+});
+
+const buildPrecomposedTransaction = (solanaTxMeta?: SolanaTxMeta): GeneralPrecomposedTransaction =>
+    ({
+        type: 'final',
+        totalSpent: `${SOL}`,
+        fee: '5000',
+        solanaTxMeta,
+    }) as unknown as GeneralPrecomposedTransaction;
+
+describe('isDeviceReviewOnly', () => {
+    it('returns false when there is no transaction', () => {
+        expect(isDeviceReviewOnly(undefined)).toBe(false);
+    });
+
+    it('returns false for a transaction of a network without Solana metadata', () => {
+        expect(isDeviceReviewOnly(buildPrecomposedTransaction())).toBe(false);
+    });
+
+    it('returns false for a Solana transaction without a split instruction', () => {
+        expect(isDeviceReviewOnly(buildPrecomposedTransaction(buildSolanaTxMeta()))).toBe(false);
+    });
+
+    it('returns true for a Solana transaction with a split instruction', () => {
+        expect(
+            isDeviceReviewOnly(
+                buildPrecomposedTransaction(buildSolanaTxMeta({ hasSplitInstruction: true })),
+            ),
+        ).toBe(true);
     });
 });
