@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "7.1.28",
+        "@react-navigation/native": "7.1.31",
         "@react-navigation/native-stack": "7.12.0",
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/analytics": "workspace:*",

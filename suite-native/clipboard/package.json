@@ -13,7 +13,7 @@
     "dependencies": {
         "@suite-native/intl": "workspace:*",
         "@suite-native/toasts": "workspace:*",
-        "expo-clipboard": "~56.0.3",
+        "expo-clipboard": "~57.0.1",
         "react": "19.2.3"
     }
 }

@@ -1,7 +1,6 @@
 /* eslint-disable require-await */
 
 const { withRozenite } = require('@rozenite/metro');
-const { withRozeniteReduxDevTools } = require('@rozenite/redux-devtools-plugin/metro');
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const { withStorybook } = require('@storybook/react-native/metro/withStorybook');
 const { mergeConfig } = require('metro-config');
@@ -129,7 +128,6 @@ if (
 ) {
     // enable Rozenite plugins only in debug build
     exportedConfig = withRozenite(configWithStorybook, {
-        enhanceMetroConfig: originalConfig => withRozeniteReduxDevTools(originalConfig),
         enabled: true,
     });
 }

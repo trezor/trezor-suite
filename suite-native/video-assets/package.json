@@ -14,11 +14,11 @@
     },
     "dependencies": {
         "@trezor/styles-native": "workspace:*",
-        "expo": "~56.0.6",
-        "expo-video": "~56.1.2",
+        "expo": "~57.0.8",
+        "expo-video": "~57.0.1",
         "prettier": "^3.9.6",
         "react": "19.2.3",
-        "react-native": "0.85.3",
-        "react-native-reanimated": "4.3.1"
+        "react-native": "0.86.0",
+        "react-native-reanimated": "4.5.0"
     }
 }

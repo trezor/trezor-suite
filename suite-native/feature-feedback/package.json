@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.28",
+        "@react-navigation/native": "7.1.31",
         "@suite-common/feedback": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",
@@ -19,7 +19,7 @@
         "@suite-native/settings": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "react": "19.2.3",
-        "react-native": "0.85.3",
+        "react-native": "0.86.0",
         "react-redux": "9.3.0"
     }
 }

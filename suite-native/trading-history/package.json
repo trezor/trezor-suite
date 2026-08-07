@@ -14,7 +14,7 @@
         "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.28",
+        "@react-navigation/native": "7.1.31",
         "@reduxjs/toolkit": "2.12.0",
         "@shopify/flash-list": "2.3.0",
         "@suite-common/dependency-injection": "workspace:*",
@@ -44,11 +44,11 @@
         "@suite-native/trading-state": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "expo-file-system": "~56.0.7",
-        "expo-sharing": "~56.0.18",
+        "expo-file-system": "~57.0.1",
+        "expo-sharing": "~57.0.6",
         "react": "19.2.3",
-        "react-native": "0.85.3",
-        "react-native-safe-area-context": "5.6.2",
+        "react-native": "0.86.0",
+        "react-native-safe-area-context": "~5.7.0",
         "react-native-svg": "15.15.5",
         "react-redux": "9.3.0"
     },

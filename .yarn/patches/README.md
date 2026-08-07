@@ -18,16 +18,10 @@ Either revert the original patch commit, or simply install a newer version `yarn
 
 ---
 
-## expo-modules-core
-
-Native-only, but does not break any CI.
-
-Gets rid of `The global process.env.EXPO_OS is not defined. This should be inlined by babel-preset-expo during transformation.`
-warning while running unit tests. Probably caused by an issue reported [here](https://github.com/expo/expo/issues/26513) or [here](https://github.com/expo/expo/issues/25452).
-
 ## expo-updates
 
-Undocumented reason, introduced in [#25924](https://github.com/trezor/trezor-suite/pull/25924)
+Prevents the Expo dev client from hanging when Detox starts an Android test. Introduced in
+[#25924](https://github.com/trezor/trezor-suite/pull/25924).
 
 ## nextra
 

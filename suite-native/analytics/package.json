@@ -26,6 +26,6 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:^",
-        "react-native": "0.85.3"
+        "react-native": "0.86.0"
     }
 }
