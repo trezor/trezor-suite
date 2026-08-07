@@ -161,46 +161,22 @@ export const useEarnDepositsCardData = ({
         isFiatRatesLoading,
     });
 
-    const stakingTitle = useMemo(() => {
-        const firstStakingSymbol = stakingRows[0]?.symbol;
-        const hasMultipleStakingSymbols = stakingRows.some(
-            item => item.symbol !== firstStakingSymbol,
-        );
-
-        return firstStakingSymbol && !hasMultipleStakingSymbols
-            ? translate('earn.earnScreen.depositsCard.networkStaking', {
-                  networkName: getNetworkDisplaySymbolName(firstStakingSymbol),
-              })
-            : translate('earn.staking');
-    }, [stakingRows, translate]);
-
-    const stablecoinTitle = useMemo(() => {
-        const firstStablecoinVaultName = stablecoinRows[0]?.title;
-        const hasMultipleStablecoinVaults = stablecoinRows.some(
-            item => item.title !== firstStablecoinVaultName,
-        );
-
-        return firstStablecoinVaultName && !hasMultipleStablecoinVaults
-            ? firstStablecoinVaultName
-            : translate('earn.defiYield');
-    }, [stablecoinRows, translate]);
-
     const stakingRow = useMemo(
         () =>
             createSummaryRow({
                 activeItems: stakingRows,
-                title: stakingTitle,
+                title: translate('earn.staking'),
             }),
-        [stakingRows, stakingTitle],
+        [stakingRows, translate],
     );
 
     const stablecoinYieldRow = useMemo(
         () =>
             createSummaryRow({
                 activeItems: stablecoinRows,
-                title: stablecoinTitle,
+                title: translate('earn.defiYield'),
             }),
-        [stablecoinRows, stablecoinTitle],
+        [stablecoinRows, translate],
     );
 
     return {
