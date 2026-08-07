@@ -1,15 +1,14 @@
-import { type SuiteRouterHistoryDep, findRoute, goto } from '@suite/router';
+import { type GotoThunkDeps, type GotoThunkState, findRoute, goto } from '@suite/router';
 import { DEVICE_MODULE_PREFIX } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 
-type RedirectAfterWalletSelectedThunkDeps = {
-    services: SuiteRouterHistoryDep;
-};
+type RedirectAfterWalletSelectedThunkState = GotoThunkState;
+type RedirectAfterWalletSelectedThunkDeps = GotoThunkDeps;
 
 export const redirectAfterWalletSelectedThunk = createThunk<
     void,
     { forceDeviceDashboard?: boolean } | undefined,
-    { extra: RedirectAfterWalletSelectedThunkDeps }
+    { state: RedirectAfterWalletSelectedThunkState; extra: RedirectAfterWalletSelectedThunkDeps }
 >(
     `${DEVICE_MODULE_PREFIX}/redirectAfterWalletSelectedThunk`,
     async (options, { dispatch, extra }) => {
@@ -40,9 +39,13 @@ export const redirectAfterWalletSelectedThunk = createThunk<
     },
 );
 
-export const openSwitchDeviceDialog = createThunk<void, void, void>(
-    `${DEVICE_MODULE_PREFIX}/openSwitchDeviceDialog`,
-    (_, { dispatch }) => {
-        dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
-    },
-);
+type OpenSwitchDeviceDialogThunkState = GotoThunkState;
+type OpenSwitchDeviceDialogThunkDeps = GotoThunkDeps;
+
+export const openSwitchDeviceDialog = createThunk<
+    void,
+    void,
+    { state: OpenSwitchDeviceDialogThunkState; extra: OpenSwitchDeviceDialogThunkDeps }
+>(`${DEVICE_MODULE_PREFIX}/openSwitchDeviceDialog`, (_, { dispatch }) => {
+    dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
+});
