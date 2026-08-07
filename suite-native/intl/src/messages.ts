@@ -3012,6 +3012,7 @@ export const messages = {
             approvalLimit: 'Approval limit',
             increaseApprovalLimit: 'Increase approval limit',
             revokeApproval: 'Revoke approval',
+            skipApproval: 'Skip',
             perDeposit: 'Per deposit',
             estimatedRewardsLabel: 'Estimated yearly rewards',
             approvalLimitSheet: {

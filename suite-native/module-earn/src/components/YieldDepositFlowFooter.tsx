@@ -29,7 +29,9 @@ type YieldDepositFlowFooterProps = {
     approvalAction?: YieldApprovalAction;
     isDisabled: boolean;
     isLoading?: boolean;
+    isSkipDisabled?: boolean;
     onPress: () => void;
+    onSkipPress?: () => void;
     shouldKeepEstimatedRewardsVisible?: boolean;
     tokenSymbol: TokenSymbol;
 };
@@ -54,7 +56,9 @@ export const YieldDepositFlowFooter = ({
     approvalAction,
     isDisabled,
     isLoading = false,
+    isSkipDisabled = false,
     onPress,
+    onSkipPress,
     shouldKeepEstimatedRewardsVisible = false,
     tokenSymbol,
 }: YieldDepositFlowFooterProps) => {
@@ -86,27 +90,45 @@ export const YieldDepositFlowFooter = ({
         <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
             <ScreenFooterGradient />
             <Box style={applyStyle(screenFooterStyle)}>
-                <Box style={isEstimatedRewardsVisible ? applyStyle(rewardsBoxStyle) : undefined}>
-                    {isEstimatedRewardsVisible && (
-                        <VStack spacing="sp4" paddingVertical="sp12" alignItems="center">
-                            <Text variant="body-sm" color="contentPrimary">
-                                <Translation id="earn.yieldDepositFlowScreen.estimatedRewardsLabel" />
-                            </Text>
-                            <Text variant="headline-sm" color="contentBrand">
-                                {estimatedRewards}
-                            </Text>
-                        </VStack>
-                    )}
-                    <Button
-                        accessibilityRole="button"
-                        accessibilityLabel={translate(buttonTranslationId)}
-                        onPress={onPress}
-                        isDisabled={isDisabled}
-                        isLoading={isLoading}
+                <VStack spacing="sp12">
+                    <Box
+                        style={isEstimatedRewardsVisible ? applyStyle(rewardsBoxStyle) : undefined}
                     >
-                        <Translation id={buttonTranslationId} />
-                    </Button>
-                </Box>
+                        {isEstimatedRewardsVisible && (
+                            <VStack spacing="sp4" paddingVertical="sp12" alignItems="center">
+                                <Text variant="body-sm" color="contentPrimary">
+                                    <Translation id="earn.yieldDepositFlowScreen.estimatedRewardsLabel" />
+                                </Text>
+                                <Text variant="headline-sm" color="contentBrand">
+                                    {estimatedRewards}
+                                </Text>
+                            </VStack>
+                        )}
+                        <Button
+                            accessibilityRole="button"
+                            accessibilityLabel={translate(buttonTranslationId)}
+                            onPress={onPress}
+                            isDisabled={isDisabled}
+                            isLoading={isLoading}
+                        >
+                            <Translation id={buttonTranslationId} />
+                        </Button>
+                    </Box>
+                    {onSkipPress && (
+                        <Button
+                            accessibilityRole="button"
+                            accessibilityLabel={translate(
+                                'earn.yieldDepositFlowScreen.skipApproval',
+                            )}
+                            intent="neutral"
+                            priority="secondary"
+                            onPress={onSkipPress}
+                            isDisabled={isSkipDisabled}
+                        >
+                            <Translation id="earn.yieldDepositFlowScreen.skipApproval" />
+                        </Button>
+                    )}
+                </VStack>
             </Box>
         </Animated.View>
     );
