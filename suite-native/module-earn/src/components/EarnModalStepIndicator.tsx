@@ -1,15 +1,18 @@
 import { type ReactNode } from 'react';
 import { View } from 'react-native';
 
-import { HStack, Text } from '@suite-native/atoms';
+import { HStack, PressableOpacity, RoundedIcon, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-type StepStatus = 'done' | 'active' | 'pending';
+type StepStatus = 'done' | 'skipped' | 'active' | 'pending';
 
 export type EarnModalStep = {
     id: string;
+    /** Marks a finished step the user chose to skip, e.g. an offered wrap they did not need. */
+    isSkipped?: boolean;
     label: ReactNode;
+    onEdit?: () => void;
 };
 
 type EarnModalStepIndicatorProps = {
@@ -17,9 +20,13 @@ type EarnModalStepIndicatorProps = {
     steps: EarnModalStep[];
 };
 
-const getStepStatus = (stepIndex: number, currentStepIndex: number): StepStatus => {
+const getStepStatus = (
+    stepIndex: number,
+    currentStepIndex: number,
+    isSkipped: boolean,
+): StepStatus => {
     if (stepIndex < currentStepIndex) {
-        return 'done';
+        return isSkipped ? 'skipped' : 'done';
     }
 
     if (stepIndex === currentStepIndex) {
@@ -41,6 +48,10 @@ const circleStyle = prepareNativeStyle<{ status: StepStatus }>((utils, { status 
             style: { backgroundColor: utils.colors.elementFillBrandBold },
         },
         {
+            condition: status === 'skipped',
+            style: { backgroundColor: utils.colors.elementFillNeutralBold },
+        },
+        {
             condition: status === 'active',
             style: {
                 backgroundColor: utils.colors.elementFillBrandSofter,
@@ -60,14 +71,14 @@ const innerDotStyle = prepareNativeStyle<{ status: StepStatus }>((utils, { statu
     },
 }));
 
-const connectorStyle = prepareNativeStyle<{ isDone: boolean }>((utils, { isDone }) => ({
+const connectorStyle = prepareNativeStyle<{ isResolved: boolean }>((utils, { isResolved }) => ({
     width: 2,
     height: 24,
     marginLeft: 8,
     marginVertical: -2,
     backgroundColor: 'transparent',
     extend: {
-        condition: isDone,
+        condition: isResolved,
         style: { backgroundColor: utils.colors.elementFillBrandBold },
     },
 }));
@@ -76,25 +87,39 @@ const containerStyle = prepareNativeStyle(utils => ({
     marginVertical: utils.spacings.sp8,
 }));
 
-const StepRow = ({ status, children }: { status: StepStatus; children: ReactNode }) => {
+const stepStatusIcons: Partial<Record<StepStatus, ReactNode>> = {
+    done: <Icon name="check" size="small" color="contentButtonBrandPrimary" />,
+    skipped: <Icon name="arrowFatLinesRight" size="small" color="contentButtonBrandPrimary" />,
+};
+
+const StepRow = ({
+    status,
+    isEditable = false,
+    children,
+}: {
+    status: StepStatus;
+    isEditable?: boolean;
+    children: ReactNode;
+}) => {
     const { applyStyle } = useNativeStyles();
     const isActive = status === 'active';
 
     return (
-        <HStack spacing="sp12" alignItems="center">
-            <View style={applyStyle(circleStyle, { status })}>
-                {status === 'done' ? (
-                    <Icon name="check" size="small" color="contentButtonBrandPrimary" />
-                ) : (
-                    <View style={applyStyle(innerDotStyle, { status })} />
-                )}
-            </View>
-            <Text
-                variant={isActive ? 'body-sm-strong' : 'body-sm'}
-                color={isActive ? undefined : 'contentSecondary'}
-            >
-                {children}
-            </Text>
+        <HStack spacing="sp12" alignItems="center" justifyContent="space-between">
+            <HStack spacing="sp12" alignItems="center" flexShrink={1}>
+                <View style={applyStyle(circleStyle, { status })}>
+                    {stepStatusIcons[status] ?? (
+                        <View style={applyStyle(innerDotStyle, { status })} />
+                    )}
+                </View>
+                <Text
+                    variant={isActive ? 'body-sm-strong' : 'body-sm'}
+                    color={isActive ? undefined : 'contentSecondary'}
+                >
+                    {children}
+                </Text>
+            </HStack>
+            {isEditable && <RoundedIcon name="arrowLeft" intent="brand" size={24} />}
         </HStack>
     );
 };
@@ -108,17 +133,28 @@ export const EarnModalStepIndicator = ({
     return (
         <View style={applyStyle(containerStyle)}>
             {steps.map((step, index) => {
-                const status = getStepStatus(index, currentStepIndex);
+                const status = getStepStatus(index, currentStepIndex, !!step.isSkipped);
                 const isLastStep = index === steps.length - 1;
+                const isStepResolved = status === 'done' || status === 'skipped';
+                const onEdit = isStepResolved ? step.onEdit : undefined;
 
                 return (
                     <View key={step.id}>
-                        <StepRow status={status}>{step.label}</StepRow>
+                        {onEdit ? (
+                            <PressableOpacity
+                                onPress={onEdit}
+                                testID={`@earn/step-indicator/${step.id}/edit-button`}
+                            >
+                                <StepRow status={status} isEditable>
+                                    {step.label}
+                                </StepRow>
+                            </PressableOpacity>
+                        ) : (
+                            <StepRow status={status}>{step.label}</StepRow>
+                        )}
                         {!isLastStep && (
                             <View
-                                style={applyStyle(connectorStyle, {
-                                    isDone: status === 'done',
-                                })}
+                                style={applyStyle(connectorStyle, { isResolved: isStepResolved })}
                             />
                         )}
                     </View>

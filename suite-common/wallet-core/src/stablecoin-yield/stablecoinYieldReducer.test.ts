@@ -95,6 +95,58 @@ describe('stablecoinYieldReducer', () => {
             expect(getSession(state, 'deposit')?.action.amount).toBeNull();
         });
 
+        it('stores the wrap step review on the session', () => {
+            const state = stablecoinYieldReducer(
+                initSession('deposit', true),
+                stablecoinYieldActions.storeWrappedNativeReviewData({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    step: 'wrap',
+                    amount: '0.2',
+                    unsignedTransaction: '{"to":"0xweth"}',
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.action.review).toEqual({
+                type: 'wrap',
+                amount: '0.2',
+                unsignedTransaction: '{"to":"0xweth"}',
+            });
+        });
+
+        it('marks the approve step as skipped when it is left without approving', () => {
+            const state = stablecoinYieldReducer(
+                initSession('deposit'),
+                stablecoinYieldActions.skipApprovalStep({ flowType: 'deposit', flowKey: FLOW_KEY }),
+            );
+
+            expect(getSession(state, 'deposit')?.approval.isSkipped).toBe(true);
+        });
+
+        it('clears the skipped approve step once an approval completes', () => {
+            const skipped = stablecoinYieldReducer(
+                initSession('deposit'),
+                stablecoinYieldActions.skipApprovalStep({ flowType: 'deposit', flowKey: FLOW_KEY }),
+            );
+            const returned = stablecoinYieldReducer(
+                skipped,
+                stablecoinYieldActions.enterModifyMode({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+            const approved = stablecoinYieldReducer(
+                returned,
+                stablecoinYieldActions.completeApproval({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    amount: '10',
+                }),
+            );
+
+            expect(getSession(approved, 'deposit')?.approval.isSkipped).toBe(false);
+        });
+
         it('does not regress once the wrap step has been left', () => {
             const resolveWrap = stablecoinYieldActions.resolveWrappedNativeStep({
                 flowType: 'deposit',

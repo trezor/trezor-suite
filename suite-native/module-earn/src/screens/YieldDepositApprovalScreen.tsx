@@ -39,6 +39,7 @@ import { YieldPendingTransactionModal } from '../components/YieldPendingTransact
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useRefreshYieldDepositAllowanceOnIdle } from '../hooks/useRefreshYieldDepositAllowanceOnIdle';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useReturnToYieldDepositWrapStep } from '../hooks/useReturnToYieldDepositWrapStep';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
 import { useYieldApprovalFees } from '../hooks/useYieldApprovalFees';
 import { useYieldApprovalLimit } from '../hooks/useYieldApprovalLimit';
@@ -98,6 +99,7 @@ export const YieldDepositApprovalScreen = () => {
     const session = useYieldSession({
         flowKey,
         flowType: 'deposit',
+        isWrappedNativeVault: resolvedFlowData.isWrappedNativeVault,
         shouldDisposeOnGoBack: true,
     });
     const isAllowanceAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
@@ -126,8 +128,10 @@ export const YieldDepositApprovalScreen = () => {
     });
     const shouldShowApprovedAmountCard = allowanceStatus === 'loaded' && hasApprovedAmount;
 
+    const hasWrappedAmount = !!session?.result.wrappedAmount;
     const depositForm = useYieldDepositForm({
-        defaultAmount: session?.approval.isModifyMode ? session.action.amount : undefined,
+        defaultAmount:
+            session?.approval.isModifyMode || hasWrappedAmount ? session?.action.amount : undefined,
         token,
         tokenSymbol,
     });
@@ -186,6 +190,11 @@ export const YieldDepositApprovalScreen = () => {
     useRefreshYieldDepositAllowanceOnIdle({
         allowanceStatus,
         resolvedFlowData,
+    });
+
+    const returnToWrapStep = useReturnToYieldDepositWrapStep({
+        flowKey,
+        routeParams: route.params,
     });
 
     const handleApprovalConfirmed = useCallback(() => {
@@ -386,7 +395,13 @@ export const YieldDepositApprovalScreen = () => {
                                 />
                             </Box>
                         )}
-                        <YieldDepositStepCard currentStepId="approval" />
+                        <YieldDepositStepCard
+                            currentStepId="approval"
+                            hasWrapStep={resolvedFlowData.isWrappedNativeVault}
+                            isWrapStepSkipped={!hasWrappedAmount}
+                            networkSymbol={account.symbol}
+                            onEditStep={{ wrap: returnToWrapStep }}
+                        />
 
                         {shouldShowApprovedAmountCard && (
                             <Box paddingHorizontal="sp16">

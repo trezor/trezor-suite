@@ -59,11 +59,13 @@ const reportYieldTransactionResolution = ({
     switch (pendingTransactionType) {
         case 'approve':
         case 'revoke':
-        case 'deposit': {
+        case 'deposit':
+        case 'wrap': {
             const successType = {
                 approve: 'approve-success',
                 revoke: 'revoke-success',
                 deposit: 'success',
+                wrap: 'wrap-success',
             } as const;
 
             const apyBreakdown =
@@ -121,9 +123,8 @@ const reportYieldTransactionResolution = ({
 
             return;
         }
-        case 'wrap':
         case 'unwrap':
-            // Intermediate steps of the deposit/withdraw flows; they carry no analytics event of their own.
+            // Intermediate step of the withdraw flow; it carries no analytics event of its own.
             return;
         default:
             exhaustive(pendingTransactionType);
@@ -285,6 +286,19 @@ export const useYieldPendingTransactionTracking = ({
             };
 
             void completeClaimAction();
+
+            return;
+        }
+
+        if (pendingTransaction.type === 'wrap') {
+            reportResolution('success');
+            dispatch(
+                stablecoinYieldActions.resolveWrappedNativeStep({
+                    ...sessionParams,
+                    step: 'wrap',
+                    amount: pendingTransaction.amount,
+                }),
+            );
 
             return;
         }

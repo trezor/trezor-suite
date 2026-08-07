@@ -11,14 +11,18 @@ import {
     type WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
 
-import { type YieldReviewSigningResult, type YieldReviewStatus } from '../types';
+import {
+    type YieldBroadcastTransaction,
+    type YieldReviewSigningResult,
+    type YieldReviewStatus,
+} from '../types';
+import { useEarnTransactionReview } from './useEarnTransactionReview';
+import { wrappedNativeTokenFlowRoutes } from '../utils/wrappedNativeTokenFlowRoutes';
 import {
     type SignedWrappedNativeTokenTransaction,
     pushWrappedNativeTokenThunk,
     signWrappedNativeTokenThunk,
 } from '../wrappedNativeTokenThunks';
-import { useEarnTransactionReview } from './useEarnTransactionReview';
-import { wrappedNativeTokenFlowRoutes } from '../utils/wrappedNativeTokenFlowRoutes';
 
 type UseWrappedNativeTokenReviewParams = {
     account: Account;
@@ -26,6 +30,8 @@ type UseWrappedNativeTokenReviewParams = {
     token: YieldFlowDisplayToken;
     amount: string;
     unsignedTransaction: string;
+
+    onBroadcast?: (broadcast: YieldBroadcastTransaction) => void;
     onReviewLeave?: () => void;
 };
 
@@ -48,6 +54,7 @@ export const useWrappedNativeTokenReview = ({
     token,
     amount,
     unsignedTransaction,
+    onBroadcast,
     onReviewLeave,
 }: UseWrappedNativeTokenReviewParams): UseWrappedNativeTokenReviewResult => {
     const dispatch = useDispatch();
@@ -73,6 +80,12 @@ export const useWrappedNativeTokenReview = ({
                 return;
             }
 
+            if (onBroadcast) {
+                onBroadcast({ txid, fee: signedTransaction.precomposedTransaction.fee });
+
+                return;
+            }
+
             navigation.popTo(wrappedNativeTokenFlowRoutes[flowType].form, {
                 accountKey: account.key,
                 pendingTransaction: {
@@ -83,7 +96,7 @@ export const useWrappedNativeTokenReview = ({
                 },
             });
         },
-        [account, amount, flowType, navigation, signedTransaction],
+        [account, amount, flowType, navigation, onBroadcast, signedTransaction],
     );
 
     const review = useEarnTransactionReview({

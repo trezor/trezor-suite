@@ -8,7 +8,7 @@ import {
     getProtocolIncentiveRewardTokens,
     useAllYieldOpportunities,
 } from '@suite-common/earn-stablecoin-api';
-import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
+import { getNetworkByYieldXyzId, isWrappedNativeToken } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type YieldFlowDisplayToken,
@@ -38,6 +38,7 @@ type UnresolvedYieldFlowData = {
     apy: number | null;
     bonusRewardTokenSymbol: string | null;
     flowKey: string | null;
+    isWrappedNativeVault: boolean;
     providerName: string | null;
     receiptToken: YieldFlowDisplayToken | null;
     resolutionStatus: Exclude<YieldFlowResolutionStatus, 'resolved'>;
@@ -56,6 +57,7 @@ type YieldFlowDataResolved = {
     apy: number | null;
     bonusRewardTokenSymbol: string | null;
     flowKey: string;
+    isWrappedNativeVault: boolean;
     providerName: string;
     receiptToken: YieldFlowDisplayToken;
     flowData: YieldFlowResolvedData;
@@ -85,6 +87,7 @@ const defaultFlowData: ResolvedYieldFlowData = {
     apy: null,
     bonusRewardTokenSymbol: null,
     flowKey: null,
+    isWrappedNativeVault: false,
     providerName: null,
     receiptToken: null,
     resolutionStatus: 'missing-vault',
@@ -214,6 +217,7 @@ export const resolveYieldFlowData = ({
         ...flowData,
         flowData,
         flowKey,
+        isWrappedNativeVault: isWrappedNativeToken(account.symbol, underlyingTokenContract),
         resolutionStatus: 'resolved',
         depositedSharesAmount: outputToken?.balance ?? '0',
         tokenSymbol,

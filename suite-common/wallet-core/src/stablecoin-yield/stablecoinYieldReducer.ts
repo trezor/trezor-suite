@@ -50,6 +50,11 @@ export type StablecoinYieldActionReviewState =
           type: 'claim';
           rewards: YieldFlowCompleteRewardItem[];
           unsignedTransaction: StablecoinYieldClaimUnsignedTransaction;
+      }
+    | {
+          type: WrappedNativeStepId;
+          amount: string;
+          unsignedTransaction: string;
       };
 
 type StablecoinYieldStoreActionReviewDataPayload =
@@ -87,6 +92,8 @@ export type StablecoinYieldSessionState = {
         modalState: YieldApproveModalState | null;
         isSubmitting: boolean;
         allowanceStatus: YieldAllowanceStatus;
+        /** Set when the step was left without approving, i.e. the allowance already covered it. */
+        isSkipped: boolean;
         isModifyMode: boolean;
         isRevokeRequired: boolean;
     };
@@ -129,6 +136,7 @@ export const initialStablecoinYieldSessionState: StablecoinYieldSessionState = {
         allowanceAmount: null,
         modalState: null,
         isSubmitting: false,
+        isSkipped: false,
         allowanceStatus: 'idle',
         isModifyMode: false,
         isRevokeRequired: false,
@@ -399,6 +407,7 @@ const stablecoinYieldSlice = createSlice({
                 session.approval.isModifyMode = false;
                 session.approval.modalState = null;
                 session.approval.isRevokeRequired = false;
+                session.approval.isSkipped = false;
                 session.action.amount = action.payload.amount;
                 session.action.pendingTransaction = null;
                 session.action.review = null;
@@ -432,6 +441,7 @@ const stablecoinYieldSlice = createSlice({
                 // with an amount above the current allowance would slip past it.
                 session.approval.isModifyMode = false;
                 session.approval.isRevokeRequired = false;
+                session.approval.isSkipped = true;
                 session.step = getNextYieldFlowStep(
                     action.payload.flowType,
                     'approve',
@@ -532,9 +542,6 @@ const stablecoinYieldSlice = createSlice({
                 session.action.isSubmitting = false;
             });
         },
-        // Unlike `startSubmittingAction`, a wrap/unwrap submit must not touch `action.amount` —
-        // that field holds the deposit/withdraw amount the later steps default to. The shared
-        // `finishSubmittingAction` closes both.
         startSubmittingWrappedNative(
             state: StablecoinYieldState,
             action: PayloadAction<StablecoinYieldSessionActionPayload>,
@@ -564,6 +571,24 @@ const stablecoinYieldSlice = createSlice({
                     type: action.payload.flowType,
                     amount: action.payload.amount,
                     receiptAmount: action.payload.receiptAmount,
+                    unsignedTransaction: action.payload.unsignedTransaction,
+                };
+            });
+        },
+        storeWrappedNativeReviewData(
+            state: StablecoinYieldState,
+            action: PayloadAction<
+                StablecoinYieldSessionActionPayload & {
+                    step: WrappedNativeStepId;
+                    amount: string;
+                    unsignedTransaction: string;
+                }
+            >,
+        ) {
+            withSession(state, action.payload, session => {
+                session.action.review = {
+                    type: action.payload.step,
+                    amount: action.payload.amount,
                     unsignedTransaction: action.payload.unsignedTransaction,
                 };
             });
