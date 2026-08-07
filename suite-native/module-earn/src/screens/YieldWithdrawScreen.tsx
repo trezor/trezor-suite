@@ -53,6 +53,7 @@ import { YieldDepositInfoBottomSheet } from '../components/YieldDepositInfoBotto
 import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
+import { YieldWithdrawStepCard } from '../components/YieldWithdrawStepCard';
 import { YieldWithdrawWarning } from '../components/YieldWithdrawWarning';
 import { AMOUNT_INPUT_UNFOCUSED_OFFSET, AMOUNT_INPUT_WRAPPER_HEIGHT } from '../constants';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
@@ -124,6 +125,7 @@ export const YieldWithdrawScreen = () => {
         bonusRewardTokenSymbol,
         flowData,
         flowKey,
+        isWrappedNativeVault,
         resolutionStatus,
         depositedSharesAmount: resolvedDepositedSharesAmount,
         vault,
@@ -260,6 +262,7 @@ export const YieldWithdrawScreen = () => {
     const session = useYieldSession({
         flowKey,
         flowType,
+        isWrappedNativeVault,
         shouldDisposeOnGoBack: true,
     });
     const pendingTransaction = session?.action.pendingTransaction ?? null;
@@ -305,6 +308,15 @@ export const YieldWithdrawScreen = () => {
     }, [closePendingBottomSheet, isFocused, isWithdrawPending, openPendingBottomSheet]);
 
     useEffect(() => {
+        if (session?.step === 'unwrap') {
+            navigation.replace(YieldStackRoutes.YieldWithdrawUnwrap, {
+                ...route.params,
+                withdrawFlowType: flowType,
+            });
+
+            return;
+        }
+
         if (session?.step === 'complete') {
             navigation.replace(YieldStackRoutes.YieldWithdrawComplete, {
                 ...route.params,
@@ -543,135 +555,142 @@ export const YieldWithdrawScreen = () => {
                 </>
             }
         >
-            <VStack
-                spacing="sp16"
-                paddingHorizontal="sp16"
-                pointerEvents={isWithdrawPending ? 'none' : 'auto'}
-            >
-                <ContextMessage context={Context.getEarnYield('withdraw')} />
-                {isWithdrawDisabled && (
-                    <YieldDisabledAlert
-                        type="withdraw"
-                        content={withdrawDisabledContent}
-                        variant={withdrawDisabledVariant}
-                    />
-                )}
-                <Card style={applyStyle(withdrawFormCardStyle)}>
-                    <VStack spacing="sp12">
-                        <HStack justifyContent="space-between" alignItems="center">
-                            <Text variant="body-sm">
-                                <Translation id="earn.yieldWithdrawFlowScreen.withdrawalAmount" />
-                            </Text>
-                            <HStack spacing="sp8" alignItems="center">
-                                <Text variant="body-sm">
-                                    <Translation id="earn.yieldWithdrawFlowScreen.withdrawMax" />
-                                </Text>
-                                <Switch isChecked={isMaxSelected} onChange={handleMaxChange} />
-                            </HStack>
-                        </HStack>
-
-                        <AnimatedDoubleInput
-                            activeView={isSharesInput ? 'secondary' : 'primary'}
-                            onInputSwitch={handleInputSwitch}
-                            unfocusedOffset={AMOUNT_INPUT_UNFOCUSED_OFFSET}
-                            wrapperHeight={AMOUNT_INPUT_WRAPPER_HEIGHT}
-                            renderPrimary={({ inputRef, isDisabled, onPress }) => (
-                                <Input
-                                    ref={inputRef}
-                                    labelType="noLabel"
-                                    value={assetAmount}
-                                    placeholder="0"
-                                    keyboardType="numeric"
-                                    editable={!isMaxSelected && !isDisabled}
-                                    onChangeText={handleAmountChange}
-                                    onPress={onPress}
-                                    hasError={!isDisabled && isAmountValidationErrorDisplayed}
-                                    accessibilityLabel={translate(
-                                        'earn.yieldWithdrawFlowScreen.amountToWithdraw',
-                                    )}
-                                    rightIcon={
-                                        <Text
-                                            color={
-                                                isDisabled ? 'contentSecondary' : 'contentPrimary'
-                                            }
-                                            numberOfLines={1}
-                                        >
-                                            {underlyingTokenSymbol}
-                                        </Text>
-                                    }
-                                />
-                            )}
-                            renderSecondary={({ inputRef, isDisabled, onPress }) => (
-                                <Input
-                                    ref={inputRef}
-                                    labelType="noLabel"
-                                    value={sharesAmount}
-                                    placeholder="0"
-                                    keyboardType="numeric"
-                                    editable={!isMaxSelected && !isDisabled}
-                                    onChangeText={handleAmountChange}
-                                    onPress={onPress}
-                                    style={applyStyle(withdrawOutputAmountInputStyle)}
-                                    hasError={!isDisabled && isAmountValidationErrorDisplayed}
-                                    accessibilityLabel={translate(
-                                        'earn.yieldWithdrawFlowScreen.amountToWithdraw',
-                                    )}
-                                    rightIcon={
-                                        <Text
-                                            color={
-                                                isDisabled ? 'contentSecondary' : 'contentPrimary'
-                                            }
-                                            numberOfLines={1}
-                                        >
-                                            {vaultTokenSymbol}
-                                        </Text>
-                                    }
-                                />
-                            )}
-                        />
-                        {amountValidationError && (
-                            <Hint variant="error">
-                                <Translation id={amountValidationError} />
-                            </Hint>
-                        )}
-
-                        {depositedAmountLabel && (
-                            <HStack spacing="sp4" alignItems="center">
-                                <Text variant="body-sm" color="contentSecondary">
-                                    <Translation id="earn.yieldWithdrawFlowScreen.deposited" />
-                                </Text>
-                                <Text variant="body-sm" color="contentSecondary">
-                                    {depositedAmountLabel}
-                                </Text>
-                            </HStack>
-                        )}
-                    </VStack>
-                </Card>
-
-                {hasFeeEstimationError && (
-                    <YieldFeeEstimationErrorAlert onRetry={retryFeeEstimation} />
-                )}
-
-                {isWithdrawReviewReady && (
-                    <FeeSelector
-                        accountKey={account.key}
-                        tokenContract={route.params.tokenContract}
-                        updateThunk={updateWithdrawFeeLevelThunk}
-                        selectedFee={selectedWithdrawFee}
-                        selectedFeePerUnit={withdrawFeeFormDraft.feePerUnit}
-                        formDraft={withdrawFeeFormDraft}
-                        formDraftKey={withdrawFeeFormDraftKey}
-                    />
-                )}
-
-                <YieldWithdrawWarning
-                    isAmountTooHigh={!isAmountValidationErrorDisplayed && isAmountTooHigh}
-                    isMaxWithdrawInfoVisible={isMaxWithdrawInfoVisible}
-                    shouldShowNetworkFeeWarning={
-                        !isAmountValidationErrorDisplayed && shouldShowNetworkFeeWarning
-                    }
-                    vaultTokenSymbol={vaultTokenSymbol}
+            <VStack spacing="sp16" pointerEvents={isWithdrawPending ? 'none' : 'auto'}>
+                <YieldWithdrawStepCard
+                    currentStepId="withdraw"
+                    hasUnwrapStep={isWrappedNativeVault}
+                    networkSymbol={account.symbol}
                 />
+                <VStack spacing="sp16" paddingHorizontal="sp16">
+                    <ContextMessage context={Context.getEarnYield('withdraw')} />
+                    {isWithdrawDisabled && (
+                        <YieldDisabledAlert
+                            type="withdraw"
+                            content={withdrawDisabledContent}
+                            variant={withdrawDisabledVariant}
+                        />
+                    )}
+                    <Card style={applyStyle(withdrawFormCardStyle)}>
+                        <VStack spacing="sp12">
+                            <HStack justifyContent="space-between" alignItems="center">
+                                <Text variant="body-sm">
+                                    <Translation id="earn.yieldWithdrawFlowScreen.withdrawalAmount" />
+                                </Text>
+                                <HStack spacing="sp8" alignItems="center">
+                                    <Text variant="body-sm">
+                                        <Translation id="earn.yieldWithdrawFlowScreen.withdrawMax" />
+                                    </Text>
+                                    <Switch isChecked={isMaxSelected} onChange={handleMaxChange} />
+                                </HStack>
+                            </HStack>
+
+                            <AnimatedDoubleInput
+                                activeView={isSharesInput ? 'secondary' : 'primary'}
+                                onInputSwitch={handleInputSwitch}
+                                unfocusedOffset={AMOUNT_INPUT_UNFOCUSED_OFFSET}
+                                wrapperHeight={AMOUNT_INPUT_WRAPPER_HEIGHT}
+                                renderPrimary={({ inputRef, isDisabled, onPress }) => (
+                                    <Input
+                                        ref={inputRef}
+                                        labelType="noLabel"
+                                        value={assetAmount}
+                                        placeholder="0"
+                                        keyboardType="numeric"
+                                        editable={!isMaxSelected && !isDisabled}
+                                        onChangeText={handleAmountChange}
+                                        onPress={onPress}
+                                        hasError={!isDisabled && isAmountValidationErrorDisplayed}
+                                        accessibilityLabel={translate(
+                                            'earn.yieldWithdrawFlowScreen.amountToWithdraw',
+                                        )}
+                                        rightIcon={
+                                            <Text
+                                                color={
+                                                    isDisabled
+                                                        ? 'contentSecondary'
+                                                        : 'contentPrimary'
+                                                }
+                                                numberOfLines={1}
+                                            >
+                                                {underlyingTokenSymbol}
+                                            </Text>
+                                        }
+                                    />
+                                )}
+                                renderSecondary={({ inputRef, isDisabled, onPress }) => (
+                                    <Input
+                                        ref={inputRef}
+                                        labelType="noLabel"
+                                        value={sharesAmount}
+                                        placeholder="0"
+                                        keyboardType="numeric"
+                                        editable={!isMaxSelected && !isDisabled}
+                                        onChangeText={handleAmountChange}
+                                        onPress={onPress}
+                                        style={applyStyle(withdrawOutputAmountInputStyle)}
+                                        hasError={!isDisabled && isAmountValidationErrorDisplayed}
+                                        accessibilityLabel={translate(
+                                            'earn.yieldWithdrawFlowScreen.amountToWithdraw',
+                                        )}
+                                        rightIcon={
+                                            <Text
+                                                color={
+                                                    isDisabled
+                                                        ? 'contentSecondary'
+                                                        : 'contentPrimary'
+                                                }
+                                                numberOfLines={1}
+                                            >
+                                                {vaultTokenSymbol}
+                                            </Text>
+                                        }
+                                    />
+                                )}
+                            />
+                            {amountValidationError && (
+                                <Hint variant="error">
+                                    <Translation id={amountValidationError} />
+                                </Hint>
+                            )}
+
+                            {depositedAmountLabel && (
+                                <HStack spacing="sp4" alignItems="center">
+                                    <Text variant="body-sm" color="contentSecondary">
+                                        <Translation id="earn.yieldWithdrawFlowScreen.deposited" />
+                                    </Text>
+                                    <Text variant="body-sm" color="contentSecondary">
+                                        {depositedAmountLabel}
+                                    </Text>
+                                </HStack>
+                            )}
+                        </VStack>
+                    </Card>
+
+                    {hasFeeEstimationError && (
+                        <YieldFeeEstimationErrorAlert onRetry={retryFeeEstimation} />
+                    )}
+
+                    {isWithdrawReviewReady && (
+                        <FeeSelector
+                            accountKey={account.key}
+                            tokenContract={route.params.tokenContract}
+                            updateThunk={updateWithdrawFeeLevelThunk}
+                            selectedFee={selectedWithdrawFee}
+                            selectedFeePerUnit={withdrawFeeFormDraft.feePerUnit}
+                            formDraft={withdrawFeeFormDraft}
+                            formDraftKey={withdrawFeeFormDraftKey}
+                        />
+                    )}
+
+                    <YieldWithdrawWarning
+                        isAmountTooHigh={!isAmountValidationErrorDisplayed && isAmountTooHigh}
+                        isMaxWithdrawInfoVisible={isMaxWithdrawInfoVisible}
+                        shouldShowNetworkFeeWarning={
+                            !isAmountValidationErrorDisplayed && shouldShowNetworkFeeWarning
+                        }
+                        vaultTokenSymbol={vaultTokenSymbol}
+                    />
+                </VStack>
             </VStack>
             {actionPendingTransaction && (
                 <YieldPendingTransactionModal

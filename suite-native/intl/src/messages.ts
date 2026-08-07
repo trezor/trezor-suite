@@ -3175,6 +3175,14 @@ export const messages = {
             withdrawMax: 'Withdraw max',
             deposited: 'Deposited:',
             withdrawPendingTitle: 'Confirming withdrawal',
+            modalTitle: 'Withdraw',
+            withdrawStepTitle: 'Withdraw assets',
+            unwrapStepTitle: 'Unwrap {tokenSymbol} to {nativeSymbol}',
+            unwrapStepDescription:
+                'You can also unwrap {tokenSymbol} anytime from the {networkName} account screen.',
+            unwrapSubmitButton: 'Unwrap {tokenSymbol}',
+            unwrapSkipButton: 'Skip',
+            unwrapPendingTitle: 'Unwrapping in progress',
             amountToWithdraw: 'Amount to withdraw',
             amountExceedsDeposited: 'The amount exceeds your deposited balance.',
             networkFeeWarning:

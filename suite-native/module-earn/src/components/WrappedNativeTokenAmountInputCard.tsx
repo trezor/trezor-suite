@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -20,6 +20,7 @@ import { EarnFiatAmountInput } from './EarnFiatAmountInput';
 type WrappedNativeTokenAmountInputCardProps = {
     amountLabel: ReactNode;
     balance: string;
+    defaultAmount?: string;
     maxAmount?: string;
     symbol: NetworkSymbol;
     tokenContract?: TokenAddress;
@@ -30,6 +31,7 @@ type WrappedNativeTokenAmountInputCardProps = {
 export const WrappedNativeTokenAmountInputCard = ({
     amountLabel,
     balance,
+    defaultAmount,
     maxAmount,
     symbol,
     tokenContract,
@@ -40,23 +42,39 @@ export const WrappedNativeTokenAmountInputCard = ({
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const converters = useCryptoFiatConverters({ symbol, tokenContract });
+    const hasPrefilledRef = useRef(false);
+
+    const setAmountWithFiat = useCallback(
+        (value: string) => {
+            setValue('amount', value, { shouldValidate: true });
+
+            const fiatValue = converters?.convertCryptoToFiat?.(new BigNumber(value));
+            if (fiatValue && !fiatValue.isNaN()) {
+                setValue(
+                    'fiat',
+                    fiatValue.toFixed(
+                        getDecimalsForBaseCurrency({
+                            code: baseCurrencyCode,
+                            isInSats: isBaseCurrencyInSats,
+                        }),
+                    ),
+                );
+            }
+        },
+        [baseCurrencyCode, converters, isBaseCurrencyInSats, setValue],
+    );
+
+    useEffect(() => {
+        if (!defaultAmount || hasPrefilledRef.current) {
+            return;
+        }
+
+        hasPrefilledRef.current = true;
+        setAmountWithFiat(defaultAmount);
+    }, [defaultAmount, setAmountWithFiat]);
 
     const handleMaxPress = () => {
-        const value = maxAmount ?? balance;
-        setValue('amount', value, { shouldValidate: true });
-
-        const fiatValue = converters?.convertCryptoToFiat?.(new BigNumber(value));
-        if (fiatValue && !fiatValue.isNaN()) {
-            setValue(
-                'fiat',
-                fiatValue.toFixed(
-                    getDecimalsForBaseCurrency({
-                        code: baseCurrencyCode,
-                        isInSats: isBaseCurrencyInSats,
-                    }),
-                ),
-            );
-        }
+        setAmountWithFiat(maxAmount ?? balance);
     };
 
     return (

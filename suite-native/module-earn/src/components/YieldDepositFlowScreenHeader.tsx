@@ -6,12 +6,13 @@ import { formatCoinBalance } from '@suite-common/wallet-utils';
 import { Box, DiscreetText, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
-import { ScreenHeader } from '@suite-native/navigation';
+import { type CloseActionType, ScreenHeader } from '@suite-native/navigation';
 
 type YieldDepositFlowScreenHeaderProps = {
     account: Account;
     closeAction?: () => void;
-    onInfoPress: () => void;
+    closeActionType?: CloseActionType;
+    onInfoPress?: () => void;
     tokenContract: TokenAddress;
     vaultName: string;
 };
@@ -19,6 +20,7 @@ type YieldDepositFlowScreenHeaderProps = {
 export const YieldDepositFlowScreenHeader = ({
     account,
     closeAction,
+    closeActionType = 'close',
     onInfoPress,
     tokenContract,
     vaultName,
@@ -31,7 +33,7 @@ export const YieldDepositFlowScreenHeader = ({
 
     return (
         <ScreenHeader
-            closeActionType="close"
+            closeActionType={closeActionType}
             closeAction={closeAction}
             customContent={
                 <HStack spacing="sp8" alignItems="center" flexShrink={1}>
@@ -70,13 +72,15 @@ export const YieldDepositFlowScreenHeader = ({
                 </HStack>
             }
             rightIcon={
-                <IconButton
-                    intent="neutral"
-                    priority="secondary"
-                    size="medium"
-                    iconName="info"
-                    onPress={onInfoPress}
-                />
+                onInfoPress && (
+                    <IconButton
+                        intent="neutral"
+                        priority="secondary"
+                        size="medium"
+                        iconName="info"
+                        onPress={onInfoPress}
+                    />
+                )
             }
         />
     );

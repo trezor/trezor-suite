@@ -23,6 +23,8 @@ import { YieldDepositWrapScreen } from '../screens/YieldDepositWrapScreen';
 import { YieldWithdrawCompleteScreen } from '../screens/YieldWithdrawCompleteScreen';
 import { YieldWithdrawReviewScreen } from '../screens/YieldWithdrawReviewScreen';
 import { YieldWithdrawScreen } from '../screens/YieldWithdrawScreen';
+import { YieldWithdrawUnwrapReviewScreen } from '../screens/YieldWithdrawUnwrapReviewScreen';
+import { YieldWithdrawUnwrapScreen } from '../screens/YieldWithdrawUnwrapScreen';
 
 const YieldStack = createNativeStackNavigator<YieldStackParamList>();
 
@@ -113,6 +115,16 @@ export const YieldStackNavigator = () => {
                 options={{ title: YieldStackRoutes.YieldDepositComplete }}
                 name={YieldStackRoutes.YieldDepositComplete}
                 component={YieldDepositCompleteScreen}
+            />
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldWithdrawUnwrap }}
+                name={YieldStackRoutes.YieldWithdrawUnwrap}
+                component={YieldWithdrawUnwrapScreen}
+            />
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldWithdrawUnwrapReview }}
+                name={YieldStackRoutes.YieldWithdrawUnwrapReview}
+                component={YieldWithdrawUnwrapReviewScreen}
             />
             <YieldStack.Screen
                 options={{ title: YieldStackRoutes.YieldWithdrawComplete }}
