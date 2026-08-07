@@ -8,7 +8,7 @@ export type {
     ForgetBluetoothDeviceThunkParams,
     BluetoothDeviceCommon,
 } from './types';
-export type { BluetoothState } from './bluetoothReducer';
+export type { BluetoothReducerDeps, BluetoothState } from './bluetoothReducer';
 export type { WithBluetoothState } from './bluetoothSelectors';
 
 export { BLUETOOTH_PREFIX, bluetoothActions } from './bluetoothActions';

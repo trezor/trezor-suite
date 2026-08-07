@@ -1,6 +1,7 @@
 import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 
 import {
+    type DeviceReducerDeps,
     type DeviceReducerState,
     deviceInitialState as commonInitialState,
     deviceActions,
@@ -42,7 +43,7 @@ const deviceSlice = createSliceWithExtraDeps({
             state.defaultConnectionMode = payload;
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: DeviceReducerDeps) => {
         const commonReducer = prepareCommonDeviceReducer(extra);
 
         builder

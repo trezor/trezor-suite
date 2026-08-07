@@ -1,6 +1,6 @@
 import { type AnyAction } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { messageSystemActions } from './messageSystemActions';
 import { type MessageState, type MessageSystemState } from './messageSystemTypes';
@@ -49,9 +49,11 @@ const getMessageStateById = (draft: MessageSystemState, id: string): MessageStat
     return draft.dismissedMessages[id];
 };
 
+type MessageSystemReducerDeps = ActionTypesDep<'storageLoad'>;
+
 export const prepareMessageSystemReducer = createReducerWithExtraDeps(
     initialState,
-    (builder, extra) => {
+    (builder, extra: MessageSystemReducerDeps) => {
         builder
             .addCase(messageSystemActions.fetchSuccess, (state, { payload }) => {
                 const { timestamp } = payload;
