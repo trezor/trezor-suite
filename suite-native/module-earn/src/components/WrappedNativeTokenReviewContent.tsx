@@ -11,12 +11,14 @@ import {
     useYieldReviewScreenControls,
     useYieldReviewSheetAutoStart,
 } from '../hooks/useYieldReviewScreenControls';
+import { type YieldBroadcastTransaction } from '../types';
 import { type YieldReviewPreview } from '../utils/yieldReviewOutputUtils';
 
 type WrappedNativeTokenReviewContentProps = {
     account: Account;
     amount: string;
     flowType: WrappedNativeFlowType;
+    onBroadcast?: (broadcast: YieldBroadcastTransaction) => void;
     preview: YieldReviewPreview;
     spentToken: YieldFlowDisplayToken;
     unsignedTransaction: string;
@@ -37,6 +39,7 @@ export const WrappedNativeTokenReviewContent = ({
     account,
     amount,
     flowType,
+    onBroadcast,
     preview,
     spentToken,
     unsignedTransaction,
@@ -55,6 +58,7 @@ export const WrappedNativeTokenReviewContent = ({
             token: spentToken,
             amount,
             unsignedTransaction,
+            onBroadcast,
             onReviewLeave: markReviewLeave,
         });
     const isSigned = status === 'signed' || status === 'sending';

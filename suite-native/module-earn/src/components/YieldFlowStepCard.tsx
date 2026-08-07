@@ -33,6 +33,8 @@ const bottomSheetFooterStyle = prepareNativeStyle(utils => ({
 
 export type YieldFlowStep<TStepId extends string> = {
     id: TStepId;
+    /** Marks a finished step the user chose to skip. */
+    isSkipped?: boolean;
     label: ReactNode;
 };
 

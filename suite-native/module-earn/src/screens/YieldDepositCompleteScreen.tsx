@@ -7,6 +7,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { useFormatters } from '@suite-common/formatters';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type StablecoinYieldRootState,
     selectStablecoinYieldSessionByFlowKey,
@@ -138,8 +139,12 @@ export const YieldDepositCompleteScreen = () => {
             isEllipsisAppended: false,
             maxDisplayedDecimals: 8,
         });
+
+        const hasWrappedInput = !!session.result.wrappedAmount;
         const sentAmount = CryptoAmountFormatter.format(session.result.completedAmount, {
-            symbol: tokenSymbol,
+            symbol: hasWrappedInput
+                ? toTokenSymbol(getNetworkDisplaySymbol(account.symbol))
+                : tokenSymbol,
             isBalance: true,
             withSymbol: true,
             isEllipsisAppended: false,
@@ -157,7 +162,9 @@ export const YieldDepositCompleteScreen = () => {
             receivedAmount,
             receivedTokenContract: flowData.receiptToken.contractAddress ?? undefined,
             sentAmount,
-            sentTokenContract: flowData.token.contractAddress ?? undefined,
+            sentTokenContract: hasWrappedInput
+                ? undefined
+                : (flowData.token.contractAddress ?? undefined),
         });
     }, [
         CryptoAmountFormatter,

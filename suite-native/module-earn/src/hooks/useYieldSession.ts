@@ -13,12 +13,14 @@ import {
 type UseYieldSessionParams = {
     flowKey: string | null;
     flowType: YieldFlowType;
+    isWrappedNativeVault?: boolean;
     shouldDisposeOnGoBack?: boolean;
 };
 
 export const useYieldSession = ({
     flowKey,
     flowType,
+    isWrappedNativeVault,
     shouldDisposeOnGoBack = false,
 }: UseYieldSessionParams) => {
     const dispatch = useDispatch();
@@ -31,9 +33,11 @@ export const useYieldSession = ({
 
     useEffect(() => {
         if (flowKey && !hasSession) {
-            dispatch(stablecoinYieldActions.initSession({ flowType, flowKey }));
+            dispatch(
+                stablecoinYieldActions.initSession({ flowType, flowKey, isWrappedNativeVault }),
+            );
         }
-    }, [dispatch, flowKey, flowType, hasSession]);
+    }, [dispatch, flowKey, flowType, hasSession, isWrappedNativeVault]);
 
     useEffect(() => {
         if (!shouldDisposeOnGoBack || !flowKey || hasPendingTransaction) {

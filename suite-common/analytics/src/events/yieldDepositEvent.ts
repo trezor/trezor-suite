@@ -82,7 +82,7 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
         },
         wrappedNative: {
             description:
-                'Whether the deposited vault token is the wrapped-native token of the network (e.g. WETH on Ethereum), meaning the deposit involves a native wrap step. Reported on `type=deposit` (submit) and `type=success` (confirmed). Desktop only for now.',
+                'Whether the deposited vault token is the wrapped-native token of the network (e.g. WETH on Ethereum), meaning the deposit involves a native wrap step. Reported on `type=deposit` (submit) and `type=success` (confirmed).',
             changelog: [{ version: '26.8.0', notes: 'added' }],
         },
     },

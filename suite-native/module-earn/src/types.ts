@@ -31,6 +31,11 @@ export type YieldReviewSigningResult =
     | 'not-ready'
     | 'already-running';
 
+export type YieldBroadcastTransaction = {
+    txid: string;
+    fee?: string;
+};
+
 export type StakingEarnItem = {
     id: string;
     type: 'staking';

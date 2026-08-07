@@ -43,6 +43,7 @@ import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useRefreshYieldDepositAllowanceOnIdle } from '../hooks/useRefreshYieldDepositAllowanceOnIdle';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useReturnToYieldDepositWrapStep } from '../hooks/useReturnToYieldDepositWrapStep';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
 import { useYieldApprovedAmountDisplay } from '../hooks/useYieldApprovedAmountDisplay';
 import { type PreparedYieldDepositAction, useYieldDepositFees } from '../hooks/useYieldDepositFees';
@@ -115,6 +116,7 @@ export const YieldDepositScreen = () => {
     const session = useYieldSession({
         flowKey,
         flowType: 'deposit',
+        isWrappedNativeVault: resolvedFlowData.isWrappedNativeVault,
     });
     const depositAmount = session?.action.amount;
     const allowanceAmount = session?.approval.allowanceAmount;
@@ -195,6 +197,11 @@ export const YieldDepositScreen = () => {
     useRefreshYieldDepositAllowanceOnIdle({
         allowanceStatus,
         resolvedFlowData,
+    });
+
+    const returnToWrapStep = useReturnToYieldDepositWrapStep({
+        flowKey,
+        routeParams: route.params,
     });
 
     useEffect(() => {
@@ -312,12 +319,20 @@ export const YieldDepositScreen = () => {
                 type: 'deposit',
                 networkSymbol: account?.symbol,
                 vaultId: resolvedFlowData.vault?.id,
+                wrappedNative: resolvedFlowData.isWrappedNativeVault,
                 ...(apyBreakdown && { apyBreakdown }),
             },
         });
 
         handleSubmitDeposit();
-    }, [account?.symbol, analytics, handleSubmitDeposit, isSubmitDisabled, resolvedFlowData.vault]);
+    }, [
+        account?.symbol,
+        analytics,
+        handleSubmitDeposit,
+        isSubmitDisabled,
+        resolvedFlowData.isWrappedNativeVault,
+        resolvedFlowData.vault,
+    ]);
 
     const handleMaxChangeWithAnalytics = useCallback(
         (value: boolean) => {
@@ -410,7 +425,17 @@ export const YieldDepositScreen = () => {
                             />
                         </Box>
                     )}
-                    <YieldDepositStepCard currentStepId="deposit" />
+                    <YieldDepositStepCard
+                        currentStepId="deposit"
+                        hasWrapStep={resolvedFlowData.isWrappedNativeVault}
+                        isApprovalStepSkipped={!!session?.approval.isSkipped}
+                        isWrapStepSkipped={!session?.result.wrappedAmount}
+                        networkSymbol={account.symbol}
+                        onEditStep={{
+                            wrap: returnToWrapStep,
+                            approval: handleGoBackToApproval,
+                        }}
+                    />
 
                     <Box paddingHorizontal="sp16">
                         <YieldDepositApprovedAmountCard

@@ -137,6 +137,8 @@ export type YieldStackParamList = {
     [YieldStackRoutes.YieldClaim]: YieldClaimParams;
     [YieldStackRoutes.YieldClaimReview]: YieldClaimParams;
     [YieldStackRoutes.YieldClaimComplete]: YieldClaimParams;
+    [YieldStackRoutes.YieldDepositWrap]: YieldFlowParams;
+    [YieldStackRoutes.YieldDepositWrapReview]: YieldFlowParams;
     [YieldStackRoutes.YieldDepositApproval]: YieldFlowParams;
     [YieldStackRoutes.YieldDeposit]: YieldFlowParams;
     [YieldStackRoutes.YieldDepositRevoke]: YieldDepositRevokeParams;
