@@ -1,12 +1,11 @@
 import {
+    type DesktopAnalyticsDep,
     type StakingCardanoPoolDelegationPayload,
-    asTypedDesktopAnalytics,
     events,
 } from '@suite/analytics';
 import { closeModal, openDeferredModal, openModal, preserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -92,10 +91,12 @@ export const cancelSignTx =
         }
     };
 
+type PushTransactionThunkDeps = { services: DesktopAnalyticsDep };
+
 // private, called from signTransaction only
 const pushTransaction =
     (stakeType: StakeType, cardanoPoolDelegation?: StakingCardanoPoolDelegationPayload) =>
-    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    async (dispatch: Dispatch, getState: GetState, extra: PushTransactionThunkDeps) => {
         const { serializedTx, precomposedTx } = getState().wallet.stake;
         const { account } = getState().wallet.selectedAccount;
         const device = selectSelectedDevice(getState());
@@ -137,7 +138,7 @@ const pushTransaction =
             };
 
             if (cardanoPoolDelegation) {
-                asTypedDesktopAnalytics(extra.services.analytics).report({
+                extra.services.analytics.report({
                     type: events.stakingCardanoPoolDelegationEvent.name,
                     payload: cardanoPoolDelegation,
                 });
@@ -208,7 +209,7 @@ const pushTransaction =
                     }),
                 );
 
-                asTypedDesktopAnalytics(extra.services.analytics).report({
+                extra.services.analytics.report({
                     type: events.stakingConfirmEvent.name,
                     payload: { action: stakeType, networkSymbol: account.symbol },
                 });
@@ -229,7 +230,7 @@ const pushTransaction =
                 }),
             );
 
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.stakingConfirmEvent.name,
                 payload: { action: stakeType, networkSymbol: account.symbol, success: false },
             });

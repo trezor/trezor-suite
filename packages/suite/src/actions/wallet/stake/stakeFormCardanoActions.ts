@@ -1,11 +1,10 @@
 import {
+    type DesktopAnalyticsDep,
     type StakingCardanoPoolDelegationPayload,
-    asTypedDesktopAnalytics,
     events,
 } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type AdaPools } from '@suite-common/earn-staking-api';
-import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import {
     calculate,
     composeStakingTransaction,
@@ -333,9 +332,11 @@ const getPoolDelegation = (
     };
 };
 
+type SignTransactionThunkDeps = { services: DesktopAnalyticsDep };
+
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
-    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    async (dispatch: Dispatch, getState: GetState, extra: SignTransactionThunkDeps) => {
         const { selectedAccount, stake } = getState().wallet;
         const cardanoPools = selectCardanoPoolsInfo(getState());
         if (!selectedAccount?.account) return;
@@ -401,7 +402,7 @@ export const signTransaction =
         });
 
         if (!signedTx.success) {
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.transactionCancelEvent.name,
                 payload: {
                     txType: 'stake',
