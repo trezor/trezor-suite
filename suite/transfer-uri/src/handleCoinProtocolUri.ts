@@ -11,6 +11,7 @@ export type CoinProtocol = {
     scheme: Protocol;
     address: string;
     amount?: string;
+    label?: string;
     token?: string;
     tokenAmount?: string;
 };
@@ -51,6 +52,7 @@ export const handleCoinProtocolUri =
             scheme: info.scheme,
             address: info.address,
             amount: info.format === 'bip321' ? info.amount : undefined,
+            label: info.format === 'bip321' ? info.label : undefined,
             token: info.format === 'erc681' ? info.token : undefined,
             tokenAmount: info.format === 'erc681' ? info.tokenAmount : undefined,
         };

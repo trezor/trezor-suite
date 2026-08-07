@@ -20,6 +20,7 @@ import {
     type UserAction,
     actionSequence,
     findByTestId,
+    renderHookWithProviders,
     renderWithProviders,
     waitForLoader,
 } from 'src/support/test-utils/hooksHelper';
@@ -27,7 +28,7 @@ import { type SendContextValues } from 'src/types/wallet/sendForm';
 import SendIndex from 'src/views/wallet/send';
 
 import * as fixtures from './__fixtures__/useSendForm';
-import { useSendFormContext } from './useSendForm';
+import { useSendForm, useSendFormContext } from './useSendForm';
 import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
 
 const TEST_TIMEOUT = 35000;
@@ -70,11 +71,19 @@ interface Args {
     selectedAccount?: any;
     coinjoin?: any;
     bitcoinAmountUnit?: PROTO.AmountUnit;
+    protocol?: Partial<RootReducerState['protocol']>;
 }
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
 
-const initStore = ({ send, fees, selectedAccount, coinjoin, bitcoinAmountUnit }: Args = {}) => {
+const initStore = ({
+    send,
+    fees,
+    selectedAccount,
+    coinjoin,
+    bitcoinAmountUnit,
+    protocol,
+}: Args = {}) => {
     const rootReducer = fixtures.getRootReducer(selectedAccount, fees);
 
     const preloadedState = initPreloadedState({
@@ -88,6 +97,7 @@ const initStore = ({ send, fees, selectedAccount, coinjoin, bitcoinAmountUnit }:
             suiteSettings: { ...suiteSettingsInitialState, language: 'en' },
             debug: debugInitialState,
             router: { route: { name: 'wallet-send' } },
+            ...(protocol ? { protocol } : {}),
         },
     });
 
@@ -241,6 +251,54 @@ describe('useSendForm hook', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
+
+    it(
+        'fills label from protocol uri into send output',
+        async () => {
+            const protocolAddress = '1BoatSLRHtKNngkdXEeobR76b53LETtpyT';
+            const protocolAmount = '0.1';
+            const protocolLabel = 'Trezor donation';
+            const store = initStore({
+                protocol: {
+                    sendForm: {
+                        shouldFill: true,
+                        scheme: 'bitcoin',
+                        address: protocolAddress,
+                        amount: protocolAmount,
+                        label: protocolLabel,
+                    },
+                },
+            });
+            const state = store.getState();
+            const { result, unmount } = renderHookWithProviders(
+                store,
+                extraDependenciesDesktopMock.services,
+                () =>
+                    useSendForm({
+                        selectedAccount: state.wallet.selectedAccount,
+                        localCurrency: 'usd',
+                        fees: state.wallet.fees,
+                        online: true,
+                        metadataEnabled: false,
+                    }),
+            );
+
+            await waitFor(() => {
+                expect(result.current.getValues()).toMatchObject({
+                    outputs: [
+                        {
+                            address: protocolAddress,
+                            amount: protocolAmount,
+                            label: protocolLabel,
+                        },
+                    ],
+                });
+            });
+
+            unmount();
+        },
+        TEST_TIMEOUT,
+    );
 
     fixtures.addingOutputs.forEach(f => {
         it(

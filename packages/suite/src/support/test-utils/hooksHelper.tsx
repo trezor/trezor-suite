@@ -4,9 +4,11 @@ import { Provider } from 'react-redux';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+    type RenderHookOptions,
     type RenderResult,
     act,
     render,
+    renderHook,
     screen,
     waitForElementToBeRemoved,
 } from '@testing-library/react';
@@ -24,6 +26,30 @@ const testQueryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
 });
 
+const SuiteProviders = ({
+    store,
+    services,
+    children,
+}: {
+    store: any;
+    services: SuiteServices;
+    children: ReactNode;
+}) => (
+    <QueryClientProvider client={testQueryClient}>
+        <Provider store={store}>
+            <ServicesProvider services={services}>
+                <ConnectedThemeProvider>
+                    <ResponsiveContextProvider>
+                        <IntlProvider locale="en">
+                            <MockedFormatterProvider>{children}</MockedFormatterProvider>
+                        </IntlProvider>
+                    </ResponsiveContextProvider>
+                </ConnectedThemeProvider>
+            </ServicesProvider>
+        </Provider>
+    </QueryClientProvider>
+);
+
 // used in hooks tests
 export const renderWithProviders = (
     store: any,
@@ -31,20 +57,25 @@ export const renderWithProviders = (
     children: ReactNode,
 ): RenderResult =>
     render(
-        <QueryClientProvider client={testQueryClient}>
-            <Provider store={store}>
-                <ServicesProvider services={services}>
-                    <ConnectedThemeProvider>
-                        <ResponsiveContextProvider>
-                            <IntlProvider locale="en">
-                                <MockedFormatterProvider>{children}</MockedFormatterProvider>
-                            </IntlProvider>
-                        </ResponsiveContextProvider>
-                    </ConnectedThemeProvider>
-                </ServicesProvider>
-            </Provider>
-        </QueryClientProvider>,
+        <SuiteProviders store={store} services={services}>
+            {children}
+        </SuiteProviders>,
     );
+
+export const renderHookWithProviders = <Result, Props>(
+    store: any,
+    services: SuiteServices,
+    callback: (props: Props) => Result,
+    options?: Omit<RenderHookOptions<Props>, 'wrapper'>,
+) =>
+    renderHook(callback, {
+        wrapper: ({ children }) => (
+            <SuiteProviders store={store} services={services}>
+                {children}
+            </SuiteProviders>
+        ),
+        ...options,
+    });
 
 export const waitForLoader = (text = /Loading/i) => {
     try {
