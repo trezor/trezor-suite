@@ -1,16 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceConnected } from '@suite-common/device';
 import {
     type WrappedNativeFlowType,
     type YieldPendingTransactionState,
     useWrappedNativePendingTx,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import { useBottomSheetModal } from '@suite-native/atoms';
 import {
     type StackNavigationProps,
     type WrappedNativeTokenPendingTxParams,
@@ -19,6 +16,7 @@ import {
 } from '@suite-native/navigation';
 
 import { type PreparedWrappedNativeTokenAction } from './useWrappedNativeTokenFees';
+import { useWrappedNativeTxSimulation } from './useWrappedNativeTxSimulation';
 import { useYieldPendingTransaction } from './useYieldPendingTransaction';
 import { wrappedNativeTokenFlowRoutes } from '../utils/wrappedNativeTokenFlowRoutes';
 
@@ -47,17 +45,7 @@ export const useStandaloneWrappedNativeFlow = ({
     const navigation = useNavigation<NavigationProps>();
     const isFocused = useIsFocused();
 
-    const [isDeviceNotConnectedVisible, setIsDeviceNotConnectedVisible] = useState(false);
     const [hasFlowFailed, setHasFlowFailed] = useState(false);
-    const [preparedTx, setPreparedTx] = useState<PreparedWrappedNativeTokenAction | null>(null);
-
-    const {
-        bottomSheetRef: simulationBottomSheetRef,
-        closeModal: closeSimulationBottomSheet,
-        openModal: openSimulationBottomSheet,
-    } = useBottomSheetModal();
-
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
     const pendingStatus = useWrappedNativePendingTx(account, pendingParam?.txid ?? null, flowType);
     const pendingTransaction: YieldPendingTransactionState | null = useMemo(
@@ -101,58 +89,38 @@ export const useStandaloneWrappedNativeFlow = ({
         }
     }, [accountKey, flowType, navigation, pendingParam, pendingStatus]);
 
-    const handleSubmit = useCallback(() => {
-        if (preparedAction?.amount !== amountValue) {
-            return;
-        }
-
+    const handleFlowRetry = useCallback(() => {
         setHasFlowFailed(false);
-        setPreparedTx(preparedAction);
-        requestAnimationFrame(openSimulationBottomSheet);
-    }, [amountValue, openSimulationBottomSheet, preparedAction]);
+    }, []);
 
-    const handleConfirmSimulation = useCallback(() => {
-        closeSimulationBottomSheet();
+    const handleSimulationConfirmed = useCallback(
+        (preparedTx: PreparedWrappedNativeTokenAction) => {
+            navigation.navigate(wrappedNativeTokenFlowRoutes[flowType].review, {
+                accountKey,
+                amount: preparedTx.amount,
+                unsignedTransaction: preparedTx.unsignedTransaction,
+            });
+        },
+        [accountKey, flowType, navigation],
+    );
 
-        if (!preparedTx) {
-            return;
-        }
-
-        if (!isDeviceConnected) {
-            setIsDeviceNotConnectedVisible(true);
-
-            return;
-        }
-
-        setIsDeviceNotConnectedVisible(false);
-        navigation.navigate(wrappedNativeTokenFlowRoutes[flowType].review, {
-            accountKey,
-            amount: preparedTx.amount,
-            unsignedTransaction: preparedTx.unsignedTransaction,
-        });
-    }, [
-        accountKey,
-        closeSimulationBottomSheet,
-        flowType,
-        isDeviceConnected,
-        navigation,
-        preparedTx,
-    ]);
-
-    const handleCancelSimulation = useCallback(() => {
-        closeSimulationBottomSheet();
-    }, [closeSimulationBottomSheet]);
+    const simulation = useWrappedNativeTxSimulation({
+        amountValue,
+        onConfirm: handleSimulationConfirmed,
+        onSubmit: handleFlowRetry,
+        preparedAction,
+    });
 
     return {
-        handleCancelSimulation,
-        handleConfirmSimulation,
-        handleSubmit,
+        handleCancelSimulation: simulation.handleCancelSimulation,
+        handleConfirmSimulation: simulation.handleConfirmSimulation,
+        handleSubmit: simulation.handleSubmit,
         hasFlowFailed,
-        isDeviceNotConnectedVisible,
+        isDeviceNotConnectedVisible: simulation.isDeviceNotConnectedVisible,
         isPending: !!pendingParam,
         pendingBottomSheetRef,
         pendingModalProps,
-        preparedTx,
-        simulationBottomSheetRef,
+        preparedTx: simulation.preparedTx,
+        simulationBottomSheetRef: simulation.simulationBottomSheetRef,
     };
 };
