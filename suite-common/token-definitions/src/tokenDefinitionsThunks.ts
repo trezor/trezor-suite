@@ -84,17 +84,24 @@ export const initTokenDefinitionsThunk = createThunk<
 
 let tokenDefinitionsTimeout: TimerId | null = null;
 
-export const periodicCheckTokenDefinitionsThunk = createThunk(
-    `${TOKEN_DEFINITIONS_MODULE}/periodicCheckTokenDefinitionsThunk`,
-    (_, { dispatch }) => {
-        if (tokenDefinitionsTimeout) {
-            clearTimeout(tokenDefinitionsTimeout);
-        }
+type PeriodicCheckTokenDefinitionsThunkDeps = InitTokenDefinitionsThunkDeps;
+type PeriodicCheckTokenDefinitionsThunkState = InitTokenDefinitionsThunkState;
 
-        tokenDefinitionsTimeout = setTimeout(() => {
-            dispatch(periodicCheckTokenDefinitionsThunk());
-        }, 60_000);
+export const periodicCheckTokenDefinitionsThunk = createThunk<
+    void,
+    void,
+    {
+        state: PeriodicCheckTokenDefinitionsThunkState;
+        extra: PeriodicCheckTokenDefinitionsThunkDeps;
+    }
+>(`${TOKEN_DEFINITIONS_MODULE}/periodicCheckTokenDefinitionsThunk`, async (_, { dispatch }) => {
+    if (tokenDefinitionsTimeout) {
+        clearTimeout(tokenDefinitionsTimeout);
+    }
 
-        return dispatch(initTokenDefinitionsThunk());
-    },
-);
+    tokenDefinitionsTimeout = setTimeout(() => {
+        dispatch(periodicCheckTokenDefinitionsThunk());
+    }, 60_000);
+
+    await dispatch(initTokenDefinitionsThunk());
+});

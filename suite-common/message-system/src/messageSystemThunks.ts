@@ -131,16 +131,17 @@ export const fetchConfigThunk = createThunk<void, void, { state: FetchConfigThun
     },
 );
 
-export const initMessageSystemThunk = createThunk(
-    `${ACTION_PREFIX}/init`,
-    async (_, { dispatch }) => {
-        const run = async () => {
-            await dispatch(fetchConfigThunk()).unwrap();
-        };
-        const interval = isNative()
-            ? FETCH_CHECK_INTERVAL_IN_MS_MOBILE
-            : FETCH_CHECK_INTERVAL_IN_MS;
+type InitMessageSystemThunkState = FetchConfigThunkState;
 
-        await messageSystemPolling.restart(run, interval);
-    },
-);
+export const initMessageSystemThunk = createThunk<
+    void,
+    void,
+    { state: InitMessageSystemThunkState }
+>(`${ACTION_PREFIX}/init`, async (_, { dispatch }) => {
+    const run = async () => {
+        await dispatch(fetchConfigThunk()).unwrap();
+    };
+    const interval = isNative() ? FETCH_CHECK_INTERVAL_IN_MS_MOBILE : FETCH_CHECK_INTERVAL_IN_MS;
+
+    await messageSystemPolling.restart(run, interval);
+});
