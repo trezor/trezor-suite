@@ -31,6 +31,7 @@ import { EarnDepositsCardRow } from './EarnDepositsCardRow';
 import { StablecoinYieldClaimRewardsBottomSheet } from './StablecoinYieldClaimRewardsBottomSheet';
 import { StablecoinYieldClaimRewardsCardSection } from './StablecoinYieldClaimRewardsCardSection';
 import { useEarnDepositsCardData } from '../hooks/useEarnDepositsCardData';
+import { useNavigateToStakingDetailWithAnalytics } from '../hooks/useNavigateToStakingDetailWithAnalytics';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../hooks/useStablecoinYieldFirmwareUpdateAlert';
 import {
     type StablecoinYieldClaimSummary,
@@ -79,6 +80,7 @@ export const EarnDepositsCard = ({
         stakingActiveItems,
         stablecoinYieldActiveItems,
     });
+    const navigateToStakingDetailWithAnalytics = useNavigateToStakingDetailWithAnalytics();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
     const {
@@ -131,6 +133,25 @@ export const EarnDepositsCard = ({
         },
         [analytics, navigation],
     );
+
+    const handleStakingRowPress = useCallback(() => {
+        const activeItems = stakingRow?.activeItems ?? [];
+
+        if (activeItems.length === 1) {
+            const onlyItem = activeItems[0];
+
+            if (onlyItem?.type === 'staking') {
+                navigateToStakingDetailWithAnalytics({
+                    accountKey: onlyItem.accountKey,
+                    symbol: onlyItem.symbol,
+                });
+            }
+
+            return;
+        }
+
+        openStakingSheet();
+    }, [navigateToStakingDetailWithAnalytics, openStakingSheet, stakingRow]);
 
     const handleStablecoinYieldClaimRewardsPress = useCallback(() => {
         if (!isFirmwareSupported('claim')) {
@@ -213,7 +234,7 @@ export const EarnDepositsCard = ({
                         <EarnDepositsCardRow
                             key={stakingRow.type}
                             row={stakingRow}
-                            onPress={openStakingSheet}
+                            onPress={handleStakingRowPress}
                         />
                     )}
 
