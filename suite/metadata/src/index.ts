@@ -6,7 +6,10 @@ export * from './metadataProviderThunks';
 export * as metadataLabelingActions from './metadataLabelingActions';
 export * as metadataLabelingConstants from './metadataLabelingConstants';
 export * as METADATA from './metadataConstants';
-export { moveLabelsForRbfOldMetadataThunk } from './moveLabelsForRbfOldMetadataThunk';
+export {
+    type MoveLabelsForRbfOldMetadataThunkState,
+    moveLabelsForRbfOldMetadataThunk,
+} from './moveLabelsForRbfOldMetadataThunk';
 export { MetadataProviderModal } from './MetadataProviderModal';
 export { MetadataProviderSelectionModal } from './MetadataProviderSelectionModal';
 export { metadataMiddleware } from './metadataMiddleware';

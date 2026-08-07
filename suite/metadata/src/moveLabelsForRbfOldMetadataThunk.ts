@@ -86,7 +86,7 @@ type MoveLabelsForRbfOldMetadataThunkParams = {
     newTxid: string;
 };
 
-type MoveLabelsForRbfOldMetadataThunkState = AccountsRootState & MetadataRootState;
+export type MoveLabelsForRbfOldMetadataThunkState = AccountsRootState & MetadataRootState;
 
 export const moveLabelsForRbfOldMetadataThunk = createThunk<
     void,

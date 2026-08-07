@@ -6,7 +6,7 @@ import { MODULE_PREFIX } from './sendThunksConsts';
 
 export const RBF_ERROR_ALREADY_MINED = 'replace-by-fee-error-transaction-already-mined';
 
-export const replaceByFeeErrorThunk = createThunk(
+export const replaceByFeeErrorThunk = createThunk<void, void, void>(
     `${MODULE_PREFIX}/replaceByFeeErrorThunk`,
     (_, { dispatch }) => {
         TrezorConnect.cancel({ reason: RBF_ERROR_ALREADY_MINED });

@@ -1,8 +1,16 @@
+import { type MetadataRootState } from '@suite/metadata';
+import { type AccountLabels } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
-import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions';
+import {
+    type TokenDefinitionsRootState,
+    selectNetworkTokenDefinitions,
+} from '@suite-common/token-definitions';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import {
+    type FiatRatesRootState,
     TRANSACTIONS_MODULE_PREFIX,
+    type TransactionsRootState,
+    type WalletSettingsRootState,
     selectAccountTransactionsMarkedAsNotScam,
     selectBaseCurrency,
     selectHistoricFiatRates,
@@ -11,25 +19,38 @@ import {
 import { type Account, type ExportFileType } from '@suite-common/wallet-types';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 
-import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
+import {
+    type SelectAccountLabelsForSearchState,
+    selectAccountLabelsForSearch,
+} from 'src/selectors/suite/selectAccountLabelsForSearch';
 import { formatData, getExportedFileName } from 'src/utils/wallet/exportTransactionsUtils';
 
-export const exportTransactionsThunk = createThunk(
+type ExportTransactionsThunkParams = {
+    account: Account;
+    accountName: string;
+    type: ExportFileType;
+    searchQuery: string;
+};
+type ExportTransactionsThunkState = FiatRatesRootState &
+    SelectAccountLabelsForSearchState &
+    TokenDefinitionsRootState &
+    TransactionsRootState &
+    WalletSettingsRootState;
+type ExportTransactionsThunkDeps = {
+    services: {
+        saveAs: (data: Blob, fileName: string) => void;
+    };
+};
+
+const selectMetadataState = (state: MetadataRootState) => state.metadata;
+
+export const exportTransactionsThunk = createThunk<
+    void,
+    ExportTransactionsThunkParams,
+    { state: ExportTransactionsThunkState; extra: ExportTransactionsThunkDeps }
+>(
     `${TRANSACTIONS_MODULE_PREFIX}/exportTransactions`,
-    async (
-        {
-            account,
-            accountName,
-            type,
-            searchQuery,
-        }: {
-            account: Account;
-            accountName: string;
-            type: ExportFileType;
-            searchQuery: string;
-        },
-        { getState, extra },
-    ) => {
+    async ({ account, accountName, type, searchQuery }, { getState, extra }) => {
         const { services } = extra;
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
@@ -44,16 +65,15 @@ export const exportTransactionsThunk = createThunk(
         // TODO: this is not nice (copy-paste)
         // metadata reducer is still not part of trezor-common and I can not import it
         // here. so either followup, or maybe when I have a moment I'll refactor it  before merging this
-        const provider = getState().metadata?.providers.find(
-            // @ts-expect-error
-            p => p.clientId === getState().metadata.selectedProvider.labels,
+        const provider = selectMetadataState(getState())?.providers.find(
+            p => p.clientId === selectMetadataState(getState()).selectedProvider.labels,
         );
         const metadataKeys = account?.metadata[1];
-        let labels = {};
+        let labels: Partial<AccountLabels> = {};
         if (!metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
             labels = { outputLabels: {} };
         } else {
-            labels = provider.data[metadataKeys.fileName];
+            labels = provider.data[metadataKeys.fileName] as AccountLabels;
         }
 
         const transactions = getAccountTransactions(account.key, allTransactions)
@@ -62,7 +82,6 @@ export const exportTransactionsThunk = createThunk(
                 ...transaction,
                 targets: transaction.targets.map(target => ({
                     ...target,
-                    // @ts-expect-error
                     metadataLabel: labels.outputLabels?.[transaction.txid]?.[target.n],
                 })),
             }));

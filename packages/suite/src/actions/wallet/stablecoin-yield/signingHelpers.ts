@@ -1,8 +1,14 @@
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
+    type SynchronizeSentTransactionThunkDeps,
+    type SynchronizeSentTransactionThunkState,
+    type WalletSettingsRootState,
     type YieldFlowDisplayToken,
     type YieldFlowType,
     selectAddressDisplayType,
@@ -18,8 +24,6 @@ import {
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-
-import type { AppState, Dispatch } from 'src/types/suite';
 
 // Marks failures of the final broadcast — the transaction is already signed at that point,
 // which deserves a more specific message than the generic one.
@@ -49,6 +53,17 @@ export const getYieldSubmitErrorAnalyticsMessage = (error: unknown) =>
         ? 'push-failed'
         : 'submit-failed';
 
+export type SendYieldTransactionState = DeviceRootState &
+    MessageSystemRootState &
+    SynchronizeSentTransactionThunkState &
+    WalletSettingsRootState;
+export type SendYieldTransactionDeps = SynchronizeSentTransactionThunkDeps;
+type SendYieldTransactionDispatch = ThunkDispatch<
+    SendYieldTransactionState,
+    SendYieldTransactionDeps,
+    UnknownAction
+>;
+
 export type SendYieldTransactionParams = {
     account: Account;
     amount: string;
@@ -56,8 +71,8 @@ export type SendYieldTransactionParams = {
     unsignedTransaction: string;
     flowKey: string;
     flowType: YieldFlowType;
-    dispatch: Dispatch;
-    getState: () => AppState;
+    dispatch: SendYieldTransactionDispatch;
+    getState: () => SendYieldTransactionState;
     selectedFee: EvmSelectedFee | null;
 };
 
@@ -71,7 +86,7 @@ export const sendYieldTransaction = async ({
     dispatch,
     getState,
     selectedFee,
-}: SendYieldTransactionParams) => {
+}: SendYieldTransactionParams): Promise<{ txid: string } | undefined> => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
 
