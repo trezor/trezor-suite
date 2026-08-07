@@ -1,6 +1,7 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
 import {
+    type BluetoothReducerDeps,
     type BluetoothState,
     prepareBluetoothReducerCreator,
     prepareInitialState,
@@ -36,7 +37,7 @@ const bluetoothSlice = createSliceWithExtraDeps({
             }
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: BluetoothReducerDeps) => {
         const commonReducer = prepareBluetoothReducerCreator<BluetoothDevice>()(extra);
         builder
             .addCase(UI_REQUEST.FIRMWARE_DISCONNECT, (_, action: FirmwareDisconnect) => {

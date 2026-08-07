@@ -1,7 +1,11 @@
-import { current, isAnyOf } from '@reduxjs/toolkit';
+import { type ActionCreatorWithPreparedPayload, current, isAnyOf } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+} from '@suite-common/redux-utils';
 import { networks } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { accountEqualTo, compareAccountsByCoin, enhanceHistory } from '@suite-common/wallet-utils';
@@ -107,9 +111,16 @@ const setMetadata = (state: Account[], account: Account) => {
     state[index].metadata = account.metadata;
 };
 
+type AccountsReducerDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadAccounts'> & {
+        actions: {
+            setAccountAddMetadata: ActionCreatorWithPreparedPayload<[Account], Account>;
+        };
+    };
+
 export const prepareAccountsReducer = createReducerWithExtraDeps(
     accountsInitialState,
-    (builder, extra) => {
+    (builder, extra: AccountsReducerDeps) => {
         builder
             .addCase(accountsActions.removeAccount, (state, action) => {
                 remove(state, action.payload);

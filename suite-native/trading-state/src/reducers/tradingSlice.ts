@@ -3,6 +3,7 @@ import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type TradeServerEnvironment,
+    type TradingReducerDeps,
     type TradingTypeWithConcierge,
     prepareTradingReducer,
 } from '@suite-common/trading';
@@ -99,7 +100,7 @@ export const tradingSlice = createSliceWithExtraDeps({
             state.sell.tradingAccountKey = undefined;
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: TradingReducerDeps) => {
         const commonTradingFormReducer = prepareTradingReducer(extra);
         builder
             .addMatcher(

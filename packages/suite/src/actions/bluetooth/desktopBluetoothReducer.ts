@@ -1,6 +1,7 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
 import {
+    type BluetoothReducerDeps,
     type BluetoothState,
     prepareBluetoothReducerCreator,
     prepareInitialState,
@@ -69,7 +70,7 @@ const bluetoothSlice = createSliceWithExtraDeps({
             state.isManualPairingRequired = payload;
         },
     },
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: BluetoothReducerDeps) => {
         const commonReducer = prepareBluetoothReducerCreator<DesktopBluetoothDevice>()(extra);
 
         builder

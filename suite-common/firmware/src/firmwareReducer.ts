@@ -1,6 +1,6 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
@@ -62,67 +62,72 @@ type StorageActionPayload = {
     };
 };
 
-export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
-    builder
-        .addCase(
-            extra.actionTypes.storageLoad,
-            (state, { payload }: PayloadAction<StorageActionPayload>) => {
-                if (payload.firmware) state.firmwareChannel = payload.firmware.firmwareChannel;
-            },
-        )
-        .addCase(firmwareActions.setStatus, (state, { payload }) => {
-            state.status = payload;
-        })
-        .addCase(firmwareActions.setSwitchFirmwareType, (state, { payload }) => {
-            state.switchFirmwareType = payload;
-        })
-        .addCase(firmwareActions.setFirmwareUpdateError, (state, { payload }) => {
-            state.error = payload;
-            if (payload) {
-                state.status = 'error';
-            }
-            state.uiEvent = undefined;
-        })
-        .addCase(firmwareActions.setTargetType, (state, { payload }) => {
-            state.targetType = payload;
-        })
-        .addCase(firmwareActions.resetReducer, state => ({
-            ...initialState,
-            firmwareChannel: state.firmwareChannel,
-            useDevkit: state.useDevkit,
-        }))
-        .addCase(firmwareActions.toggleUseDevkit, (state, { payload }) => {
-            state.useDevkit = payload;
-        })
-        .addCase(firmwareActions.cacheDevice, (state, { payload }) => {
-            state.cachedDevice = payload;
-        })
-        .addCase(firmwareActions.setFirmwareChannel, (state, { payload }) => {
-            state.firmwareChannel = payload;
-        })
-        .addMatcher<UiRequestConfirmation>(
-            action => action.type === UI_REQUEST.REQUEST_CONFIRMATION,
-            (state, action) => {
-                if (state.status === 'started' && action.payload.view === 'thp-pairing-start') {
-                    state.status = 'thp-pairing';
+type FirmwareReducerDeps = ActionTypesDep<'storageLoad'>;
+
+export const prepareFirmwareReducer = createReducerWithExtraDeps(
+    initialState,
+    (builder, extra: FirmwareReducerDeps) => {
+        builder
+            .addCase(
+                extra.actionTypes.storageLoad,
+                (state, { payload }: PayloadAction<StorageActionPayload>) => {
+                    if (payload.firmware) state.firmwareChannel = payload.firmware.firmwareChannel;
+                },
+            )
+            .addCase(firmwareActions.setStatus, (state, { payload }) => {
+                state.status = payload;
+            })
+            .addCase(firmwareActions.setSwitchFirmwareType, (state, { payload }) => {
+                state.switchFirmwareType = payload;
+            })
+            .addCase(firmwareActions.setFirmwareUpdateError, (state, { payload }) => {
+                state.error = payload;
+                if (payload) {
+                    state.status = 'error';
                 }
-            },
-        )
-        .addMatcher<FirmwareUpdateUiEvent>(
-            (action: FirmwareUpdateUiEvent) =>
-                action.type === UI_REQUEST.FIRMWARE_RECONNECT ||
-                action.type === UI_REQUEST.FIRMWARE_PROGRESS ||
-                action.type === UI_REQUEST.FIRMWARE_PROGRESS_UNEXPECTED_DELAY ||
-                action.type === DEVICE.BUTTON,
-            (state, action) => {
-                // DEVICE.BUTTON can be dispatched outside the firmware update flow and that should not change the uiEvent,
-                // otherwise it could result in confirmation pill being displayed unintentionally.
-                if (!(action.type === DEVICE.BUTTON && state.status === 'initial')) {
-                    state.uiEvent = action;
-                }
-            },
-        );
-});
+                state.uiEvent = undefined;
+            })
+            .addCase(firmwareActions.setTargetType, (state, { payload }) => {
+                state.targetType = payload;
+            })
+            .addCase(firmwareActions.resetReducer, state => ({
+                ...initialState,
+                firmwareChannel: state.firmwareChannel,
+                useDevkit: state.useDevkit,
+            }))
+            .addCase(firmwareActions.toggleUseDevkit, (state, { payload }) => {
+                state.useDevkit = payload;
+            })
+            .addCase(firmwareActions.cacheDevice, (state, { payload }) => {
+                state.cachedDevice = payload;
+            })
+            .addCase(firmwareActions.setFirmwareChannel, (state, { payload }) => {
+                state.firmwareChannel = payload;
+            })
+            .addMatcher<UiRequestConfirmation>(
+                action => action.type === UI_REQUEST.REQUEST_CONFIRMATION,
+                (state, action) => {
+                    if (state.status === 'started' && action.payload.view === 'thp-pairing-start') {
+                        state.status = 'thp-pairing';
+                    }
+                },
+            )
+            .addMatcher<FirmwareUpdateUiEvent>(
+                (action: FirmwareUpdateUiEvent) =>
+                    action.type === UI_REQUEST.FIRMWARE_RECONNECT ||
+                    action.type === UI_REQUEST.FIRMWARE_PROGRESS ||
+                    action.type === UI_REQUEST.FIRMWARE_PROGRESS_UNEXPECTED_DELAY ||
+                    action.type === DEVICE.BUTTON,
+                (state, action) => {
+                    // DEVICE.BUTTON can be dispatched outside the firmware update flow and that should not change the uiEvent,
+                    // otherwise it could result in confirmation pill being displayed unintentionally.
+                    if (!(action.type === DEVICE.BUTTON && state.status === 'initial')) {
+                        state.uiEvent = action;
+                    }
+                },
+            );
+    },
+);
 
 export const selectFirmware = (state: FirmwareRootState) => state.firmware;
 export const selectUseDevkit = (state: FirmwareRootState) => state.firmware.useDevkit;

@@ -1,6 +1,6 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { type ActionTypesDep, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 
 import {
     TRADING_BUY_PREFIX,
@@ -22,11 +22,13 @@ type StorageActionPayload = {
     tradingTrades?: TradingTransaction[];
 };
 
+export type TradingReducerDeps = ActionTypesDep<'storageLoad'>;
+
 const tradingSlice = createSliceWithExtraDeps({
     name: TRADING_EXTENDED_PREFIX,
     initialState,
     reducers: {},
-    extraReducers: (builder, extra) => {
+    extraReducers: (builder, extra: TradingReducerDeps) => {
         builder
             .addCase(
                 extra.actionTypes.storageLoad,
