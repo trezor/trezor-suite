@@ -15,8 +15,8 @@ import {
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
 
+import { WrappedNativeTokenAmountInputCard } from '../components/WrappedNativeTokenAmountInputCard';
 import { WrappedNativeTokenScreenHeader } from '../components/WrappedNativeTokenScreenHeader';
-import { YieldDepositAmountInputCard } from '../components/YieldDepositAmountInputCard';
 import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
@@ -57,7 +57,7 @@ export const UnwrapNativeTokenScreen = () => {
         decimals: wrappedNative?.decimals ?? 0,
         tokenSymbol: wrappedNative?.symbol ?? '',
     });
-    const { amountValue, handleAmountChange, handleMaxChange, isMaxSelected } = form;
+    const { amountValue } = form;
     const {
         formState: { isValid },
     } = form.form;
@@ -110,12 +110,12 @@ export const UnwrapNativeTokenScreen = () => {
                         />
                     )}
                     <Form form={form.form}>
-                        <YieldDepositAmountInputCard
+                        <WrappedNativeTokenAmountInputCard
                             amountLabel={<Translation id="earn.unwrapNativeToken.amountToUnwrap" />}
                             balance={wrappedBalance}
-                            isMaxSelected={isMaxSelected}
-                            onAmountChange={handleAmountChange}
-                            onMaxChange={handleMaxChange}
+                            symbol={account.symbol}
+                            tokenContract={toTokenAddress(wrappedNative.address)}
+                            tokenDecimals={wrappedNative.decimals}
                             tokenSymbol={wrappedTokenSymbol}
                         />
                     </Form>

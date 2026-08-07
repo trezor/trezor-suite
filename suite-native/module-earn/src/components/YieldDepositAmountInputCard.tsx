@@ -19,7 +19,6 @@ import { Translation } from '@suite-native/intl';
 import { YieldDepositAmountInput } from './YieldDepositAmountInput';
 
 type YieldDepositAmountInputCardProps = {
-    amountLabel?: ReactNode;
     isApprovalLimitDisabled?: boolean;
     approvalLimitTitle?: ReactNode;
     balance?: string;
@@ -31,7 +30,6 @@ type YieldDepositAmountInputCardProps = {
 };
 
 export const YieldDepositAmountInputCard = ({
-    amountLabel,
     approvalLimitTitle,
     balance,
     isApprovalLimitDisabled = false,
@@ -68,9 +66,7 @@ export const YieldDepositAmountInputCard = ({
             <VStack spacing="sp12" padding="sp16">
                 <HStack justifyContent="space-between" alignItems="center">
                     <Text variant="body-sm">
-                        {amountLabel ?? (
-                            <Translation id="earn.yieldDepositFlowScreen.amountToDeposit" />
-                        )}
+                        <Translation id="earn.yieldDepositFlowScreen.amountToDeposit" />
                     </Text>
                     <HStack spacing="sp8" alignItems="center">
                         <Text variant="body-sm">

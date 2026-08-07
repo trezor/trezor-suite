@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Input, type InputType, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
@@ -15,6 +15,9 @@ import { type EarnFormValues } from '../earnFormSchema';
 
 type EarnFiatAmountInputProps = {
     symbol: NetworkSymbol;
+    tokenContract?: TokenAddress;
+    tokenDecimals?: number;
+    accessibilityLabel?: string;
     inputRef?: RefObject<InputType | null>;
     isDisabled?: boolean;
     onPress?: TextInputProps['onPress'];
@@ -22,16 +25,19 @@ type EarnFiatAmountInputProps = {
 
 export const EarnFiatAmountInput = ({
     symbol,
+    tokenContract,
+    tokenDecimals,
+    accessibilityLabel = 'fiat amount to stake input',
     inputRef,
     isDisabled = false,
     onPress,
 }: EarnFiatAmountInputProps) => {
     const { setValue } = useFormContext<EarnFormValues>();
     const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
-    const { decimals } = getNetwork(symbol);
+    const decimals = tokenDecimals ?? getNetwork(symbol).decimals;
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
-    const converters = useCryptoFiatConverters({ symbol });
+    const converters = useCryptoFiatConverters({ symbol, tokenContract });
 
     const { onChange, onBlur, value } = useField({
         name: 'fiat',
@@ -58,7 +64,7 @@ export const EarnFiatAmountInput = ({
             value={value}
             placeholder="0"
             keyboardType="numeric"
-            accessibilityLabel="fiat amount to stake input"
+            accessibilityLabel={accessibilityLabel}
             editable={!isDisabled}
             onChangeText={handleChangeValue}
             onBlur={onBlur}

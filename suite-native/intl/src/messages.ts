@@ -2681,6 +2681,9 @@ export const messages = {
             subtitle: 'Get more {tokenSymbol} in this account to start earning yield.',
             getButton: 'Get more {tokenSymbol}',
         },
+        wrappedNativeToken: {
+            maxButton: 'Max',
+        },
         wrapNativeToken: {
             entryButton: 'Wrap',
             title: 'Wrap {nativeSymbol} to {wrappedSymbol}',

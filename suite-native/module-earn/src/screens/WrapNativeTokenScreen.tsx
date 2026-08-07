@@ -21,8 +21,8 @@ import {
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
 
+import { WrappedNativeTokenAmountInputCard } from '../components/WrappedNativeTokenAmountInputCard';
 import { WrappedNativeTokenScreenHeader } from '../components/WrappedNativeTokenScreenHeader';
-import { YieldDepositAmountInputCard } from '../components/YieldDepositAmountInputCard';
 import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
@@ -57,10 +57,9 @@ export const WrapNativeTokenScreen = () => {
     const form = useWrappedNativeTokenForm({
         availableBalance: account?.formattedBalance ?? '0',
         decimals: account ? getNetwork(account.symbol).decimals : 0,
-        maxAmount: getMaxWrapAmount(account?.formattedBalance ?? '0'),
         tokenSymbol: nativeSymbol,
     });
-    const { amountValue, handleAmountChange, handleMaxChange, isMaxSelected } = form;
+    const { amountValue } = form;
     const {
         formState: { isValid },
     } = form.form;
@@ -121,12 +120,11 @@ export const WrapNativeTokenScreen = () => {
                         />
                     )}
                     <Form form={form.form}>
-                        <YieldDepositAmountInputCard
+                        <WrappedNativeTokenAmountInputCard
                             amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
                             balance={account.formattedBalance}
-                            isMaxSelected={isMaxSelected}
-                            onAmountChange={handleAmountChange}
-                            onMaxChange={handleMaxChange}
+                            maxAmount={getMaxWrapAmount(account.formattedBalance)}
+                            symbol={account.symbol}
                             tokenSymbol={nativeSymbol}
                         />
                     </Form>
