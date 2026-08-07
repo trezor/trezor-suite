@@ -31,6 +31,7 @@ export const networkIconSizes = {
     tiny: 6,
     extraSmall: 9,
     small: 12,
+    medium: 15,
     large: 18,
     extraLarge: 24,
 } as const;

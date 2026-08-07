@@ -7,12 +7,6 @@ import { type FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
-    type NativeAccountsRootState,
-    selectAccountFiatBalance,
-    selectAccountTokenFiatBalance,
-} from '@suite-native/accounts';
-import { VStack } from '@suite-native/atoms';
-import {
     Graph,
     type GraphSliceRootState,
     accountDetailGraphAtoms,
@@ -27,7 +21,6 @@ import {
 } from '@suite-native/graph';
 
 import { AccountDetailGraphTimeSwitch } from './AccountDetailGraphTimeSwitch';
-import { AccountDetailHeader } from './AccountDetailHeader';
 import { selectAccountItemForGraph } from '../selectors';
 
 type AccountDetailGraphProps = {
@@ -45,11 +38,6 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
     );
     const accountGraphTimeframe = useSelector((state: GraphSliceRootState) =>
         selectAccountGraphTimeframe(state, accountKey, tokenContract),
-    );
-    const totalFiatBalance = useSelector((state: NativeAccountsRootState) =>
-        tokenContract
-            ? selectAccountTokenFiatBalance(state, accountKey, tokenContract)
-            : selectAccountFiatBalance(state, accountKey, false, false),
     );
     const accountItem = useSelector((state: AccountsRootState) =>
         selectAccountItemForGraph(state, accountKey, tokenContract),
@@ -92,31 +80,20 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
         refetchAccountGraph({ forceRefetch: true });
     }, [refetchAccountGraph]);
 
-    return (
-        <VStack spacing="sp24">
-            <AccountDetailHeader
-                accountKey={accountKey}
-                tokenAddress={tokenContract}
-                totalFiatBalance={totalFiatBalance}
-            />
+    if (!isHistoryEnabledAccount || isGraphHidden) return null;
 
-            {isHistoryEnabledAccount && !isGraphHidden && (
-                <>
-                    <Graph<FiatGraphPointWithCryptoBalance>
-                        onPointSelected={setSelectedPoint}
-                        onGestureEnd={handleGestureEnd}
-                        points={graphPoints}
-                        loading={isLoading}
-                        error={error}
-                        onTryAgain={handleTryAgain}
-                        events={graphEvents}
-                    />
-                    <AccountDetailGraphTimeSwitch
-                        accountKey={accountKey}
-                        tokenContract={tokenContract}
-                    />
-                </>
-            )}
-        </VStack>
+    return (
+        <>
+            <Graph<FiatGraphPointWithCryptoBalance>
+                onPointSelected={setSelectedPoint}
+                onGestureEnd={handleGestureEnd}
+                points={graphPoints}
+                loading={isLoading}
+                error={error}
+                onTryAgain={handleTryAgain}
+                events={graphEvents}
+            />
+            <AccountDetailGraphTimeSwitch accountKey={accountKey} tokenContract={tokenContract} />
+        </>
     );
 };

@@ -8,8 +8,7 @@ import { Screen } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { TransactionList } from '@suite-native/transactions';
 
-import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';
-import { TokenAccountDetailScreenHeader } from '../components/TokenAccountDetailScreenHeader';
+import { AssetDetailScreenHeader } from '../components/AssetDetailScreenHeader';
 import { TransactionListHeader } from '../components/TransactionListHeader';
 
 type AccountDetailContentScreenProps = {
@@ -48,16 +47,7 @@ export const AccountDetailContentScreen = ({
         <Screen
             /** Adding scrollable wraps content in ScrollView which is unwanted for this screen because list component already adds the scrollview **/
             isScrollable={false}
-            header={
-                tokenContract ? (
-                    <TokenAccountDetailScreenHeader
-                        tokenContract={tokenContract}
-                        accountKey={account.key}
-                    />
-                ) : (
-                    <AccountDetailScreenHeader account={account} />
-                )
-            }
+            header={<AssetDetailScreenHeader account={account} tokenContract={tokenContract} />}
             noHorizontalPadding
             noBottomPadding
             hasBottomInset={false}
