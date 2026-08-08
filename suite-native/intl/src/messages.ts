@@ -2972,6 +2972,11 @@ export const messages = {
         howYieldWorksScreen: {
             defiYieldTitle: 'How DeFi Yield works',
             defiYieldSubtitle: 'Put your assets to work and earn rewards.',
+            wrappedNativeVault: {
+                defiYieldTitle: 'How {nativeSymbol} vaults work',
+                defiYieldSubtitle:
+                    'You deposit {nativeSymbol}, other people borrow it, and the interest they pay becomes your earnings.',
+            },
             benefits: {
                 first: {
                     title: 'The deposited amount of {tokenSymbol} is always available.',
@@ -2990,11 +2995,36 @@ export const messages = {
                     title: 'You will also earn {bonusRewardTokenName} tokens as rewards.',
                     description: 'These must be claimed separately.',
                 },
+                wrappedNativeVault: {
+                    first: {
+                        title: 'This vault takes wrapped {nativeSymbol}',
+                        description: 'You can wrap your {nativeSymbol} during the deposit.',
+                    },
+                    second: {
+                        title: 'You put in {nativeSymbol} and get {vaultTokenSymbol} back',
+                        description:
+                            'Your receipt for the position. Value builds up in the position, not in the token count.',
+                    },
+                    third: {
+                        title: 'Return the {vaultTokenSymbol} to withdraw',
+                        description:
+                            'Any time you like. This is how earnings become {nativeSymbol} you can spend.',
+                    },
+                    fourth: {
+                        title: 'Bonus rewards you claim yourself',
+                        description:
+                            '{bonusRewardTokenSymbol} tokens, for a limited time, in the Earn tab.',
+                    },
+                },
             },
             timelineCardTitle: 'Deposit timeline',
             timelineBottomSheetTitle: 'Deposit timeline',
             depositTimelineTitle: 'Deposit',
             depositTimeline: {
+                wrap: {
+                    title: 'Wrap {nativeSymbol} to {tokenSymbol}',
+                    description: 'Network fee',
+                },
                 first: {
                     title: 'Approve spending transaction',
                     description: 'Network fee',
@@ -3012,6 +3042,10 @@ export const messages = {
             withdrawTimeline: {
                 first: {
                     title: 'Sign withdrawal transaction',
+                    description: 'Network fee',
+                },
+                unwrap: {
+                    title: 'Unwrap {tokenSymbol} to {nativeSymbol}',
                     description: 'Network fee',
                 },
                 second: {

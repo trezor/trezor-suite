@@ -2,7 +2,9 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
+import { isWrappedNativeToken } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -22,7 +24,7 @@ import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
-import { createHowYieldWorksPreset } from '../presets/HowEarnWorks/yieldPresets';
+import { useHowYieldWorksPreset } from '../presets/HowEarnWorks/yieldPresets';
 
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.HowYieldWorks>;
 
@@ -59,6 +61,10 @@ export const HowYieldWorksScreen = () => {
         variant: depositDisabledVariant,
     } = useMessageSystemYield('deposit', { vaultContractAddress });
 
+    const isWrappedNativeVault =
+        !!vault && !!account && isWrappedNativeToken(account.symbol, vault.token.address);
+    const nativeSymbol = account ? getNetworkDisplaySymbol(account.symbol) : null;
+
     const handleNavigateToYieldConsents = () => {
         analytics.report({
             type: events.yieldNavigateEvent.name,
@@ -86,25 +92,45 @@ export const HowYieldWorksScreen = () => {
         });
     };
 
-    if (resolutionStatus !== 'resolved') {
-        return null;
-    }
-
-    const { benefitItems, timelineSections } = createHowYieldWorksPreset({
-        tokenSymbol,
-        vaultTokenSymbol,
+    const { benefitItems, timelineSections } = useHowYieldWorksPreset({
+        tokenSymbol: tokenSymbol ?? '',
+        vaultTokenSymbol: vaultTokenSymbol ?? '',
         apy,
         onApyPress: apyBreakdownAlert.onPress,
         bonusRewardTokenSymbol,
+        isWrappedNativeVault,
+        nativeSymbol,
     });
+
+    if (resolutionStatus !== 'resolved') {
+        return null;
+    }
 
     return (
         <Screen header={<ScreenHeader closeActionType="back" />}>
             <VStack flex={1} justifyContent="space-between">
                 <VStack alignItems="flex-start" spacing="sp32">
                     <HowEarnWorksHeaderSection
-                        title={<Translation id="earn.howYieldWorksScreen.defiYieldTitle" />}
-                        subtitle={<Translation id="earn.howYieldWorksScreen.defiYieldSubtitle" />}
+                        title={
+                            <Translation
+                                id={
+                                    isWrappedNativeVault
+                                        ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldTitle'
+                                        : 'earn.howYieldWorksScreen.defiYieldTitle'
+                                }
+                                values={{ nativeSymbol }}
+                            />
+                        }
+                        subtitle={
+                            <Translation
+                                id={
+                                    isWrappedNativeVault
+                                        ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldSubtitle'
+                                        : 'earn.howYieldWorksScreen.defiYieldSubtitle'
+                                }
+                                values={{ nativeSymbol }}
+                            />
+                        }
                     />
                     <HowEarnWorksBenefitsSection items={benefitItems} />
                     <HowEarnWorksTimelineCard
