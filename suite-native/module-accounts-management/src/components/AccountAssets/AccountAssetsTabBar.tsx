@@ -15,7 +15,6 @@ const scrollStyle = prepareNativeStyle(() => ({
 const scrollContentStyle = prepareNativeStyle(({ spacings }) => ({
     alignItems: 'flex-start',
     gap: spacings.sp12,
-    paddingHorizontal: spacings.sp16,
     paddingVertical: spacings.sp8,
 }));
 

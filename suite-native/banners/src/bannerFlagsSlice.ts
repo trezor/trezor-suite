@@ -1,6 +1,7 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { type DeviceConnectActionPayload } from '@suite-common/device';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { DEVICE } from '@trezor/connect';
 
 export interface BannerFlagsState {
@@ -12,6 +13,7 @@ export interface BannerFlagsState {
     isDefiYieldPromoBannerClosed: boolean; // promo banner on Home dashboard nudging users to earn yield on their assets
     isEthVaultPromoBannerClosed: boolean; // promo banner on Home dashboard nudging users to earn with ETH
     isTs7PromoBannerClosed: boolean; // promo banner on Home dashboard nudging users to buy Trezor Safe 7
+    closedEarnBannerSymbols: NetworkSymbol[]; // networks for which the promo earn banner in account view was closed
 }
 
 export type BannerFlagsSliceRootState = {
@@ -27,6 +29,7 @@ export const bannerFlagsInitialState: BannerFlagsState = {
     isDefiYieldPromoBannerClosed: false,
     isEthVaultPromoBannerClosed: false,
     isTs7PromoBannerClosed: false,
+    closedEarnBannerSymbols: [],
 };
 
 export const bannerFlagsSlice = createSlice({
@@ -53,6 +56,11 @@ export const bannerFlagsSlice = createSlice({
         },
         setIsTs7PromoBannerClosed: state => {
             state.isTs7PromoBannerClosed = true;
+        },
+        setIsEarnBannerClosed: (state, action: PayloadAction<NetworkSymbol>) => {
+            if (!state.closedEarnBannerSymbols.includes(action.payload)) {
+                state.closedEarnBannerSymbols.push(action.payload);
+            }
         },
     },
     extraReducers: builder => {
@@ -81,6 +89,7 @@ export const bannerFlagsPersistWhitelist: Array<keyof BannerFlagsState> = [
     'isDefiYieldPromoBannerClosed',
     'isEthVaultPromoBannerClosed',
     'isTs7PromoBannerClosed',
+    'closedEarnBannerSymbols',
 ];
 
 export const selectIsStellarLimitedHistoryBannerClosed = (state: BannerFlagsSliceRootState) =>
@@ -107,6 +116,9 @@ export const selectIsEthVaultPromoBannerClosed = (state: BannerFlagsSliceRootSta
 export const selectIsTs7PromoBannerClosed = (state: BannerFlagsSliceRootState) =>
     state.bannerFlags.isTs7PromoBannerClosed;
 
+export const selectIsEarnBannerClosed = (state: BannerFlagsSliceRootState, symbol: NetworkSymbol) =>
+    state.bannerFlags.closedEarnBannerSymbols.includes(symbol);
+
 export const {
     setIsStellarLimitedHistoryBannerClosed,
     setIsSolanaLimitedHistoryBannerClosed,
@@ -115,6 +127,7 @@ export const {
     setIsDefiYieldPromoBannerClosed,
     setIsEthVaultPromoBannerClosed,
     setIsTs7PromoBannerClosed,
+    setIsEarnBannerClosed,
 } = bannerFlagsSlice.actions;
 
 export const bannerFlagsReducer = bannerFlagsSlice.reducer;

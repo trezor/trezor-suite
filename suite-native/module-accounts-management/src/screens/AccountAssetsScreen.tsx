@@ -22,6 +22,7 @@ import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-na
 import { AccountAssetsScreenHeader } from '../components/AccountAssets/AccountAssetsScreenHeader';
 import { AccountAssetsTabBar } from '../components/AccountAssets/AccountAssetsTabBar';
 import { AccountAssetsTabContent } from '../components/AccountAssets/AccountAssetsTabContent';
+import { AccountEarnPromoBanner } from '../components/AccountAssets/AccountEarnPromoBanner';
 import { type AccountAssetsTab } from '../components/AccountAssets/types';
 import { AccountDiscoveryFailedBanner } from '../components/AccountBanners/AccountDiscoveryFailedBanner';
 
@@ -77,7 +78,9 @@ export const AccountAssetsScreen = ({
             {isFailed ? (
                 <AccountDiscoveryFailedBanner accountKey={accountKey} />
             ) : (
-                <VStack spacing="sp32">
+                <VStack spacing="sp16">
+                    <AccountEarnPromoBanner account={account} />
+
                     <AccountAssetsTabBar
                         activeTab={activeTab}
                         tokenCount={tokenCount}
