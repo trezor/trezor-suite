@@ -24,6 +24,7 @@ import { AccountAssetsTabBar } from '../components/AccountAssets/AccountAssetsTa
 import { AccountAssetsTabContent } from '../components/AccountAssets/AccountAssetsTabContent';
 import { type AccountAssetsTab } from '../components/AccountAssets/types';
 import { AccountDiscoveryFailedBanner } from '../components/AccountBanners/AccountDiscoveryFailedBanner';
+import { AccountEarnBanner } from '../components/AccountAssets/AccountEarnBanner';
 
 export const AccountAssetsScreen = ({
     route: {
@@ -77,7 +78,9 @@ export const AccountAssetsScreen = ({
             {isFailed ? (
                 <AccountDiscoveryFailedBanner accountKey={accountKey} />
             ) : (
-                <VStack spacing="sp32">
+                <VStack spacing="sp16">
+                    <AccountEarnBanner account={account} />
+
                     <AccountAssetsTabBar
                         activeTab={activeTab}
                         tokenCount={tokenCount}

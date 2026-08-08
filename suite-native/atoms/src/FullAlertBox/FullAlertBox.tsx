@@ -1,4 +1,4 @@
-import { type PropsWithChildren } from 'react';
+import React, { type PropsWithChildren } from 'react';
 
 import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';

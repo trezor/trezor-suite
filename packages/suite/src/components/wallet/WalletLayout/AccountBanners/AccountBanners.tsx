@@ -62,7 +62,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             <TaprootBanner account={account} />
             <CardanoLegacyBanner account={account} />
             {account?.networkType === 'stellar' && <StellarLimitedHistoryBanner />}
-            {account?.symbol && <StakingBanner account={account} />}
+            {account?.symbol === 'eth' && <StakingBanner account={account} />}
             {account?.symbol && account?.accountType && (
                 <ContextMessage context={Context.getAccount(account.symbol, account.accountType)} />
             )}

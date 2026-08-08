@@ -11834,6 +11834,7 @@ __metadata:
   resolution: "@suite-native/banner-flags@workspace:suite-native/banner-flags"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft

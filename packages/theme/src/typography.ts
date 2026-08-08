@@ -11,6 +11,7 @@ export const nativeTypographyStyles = [
     'body-md', // 'body',
     'body-sm-strong', // 'callout',
     'body-sm', // 'hint',
+    'body-xs-strong', // 'caption',
     'body-xs', // 'label'
 ] as const;
 
@@ -83,6 +84,12 @@ export const typographyStylesBase: Record<NativeTypographyStyle, TypographyStyle
         fontWeight: fontWeights.medium,
         letterSpacing: -0.08,
     },
+    'body-xs-strong': {
+        fontSize: 12,
+        lineHeight: 16,
+        fontWeight: fontWeights.semiBold,
+        letterSpacing: 0,
+    },
     'body-xs': {
         fontSize: 12,
         lineHeight: 16,
@@ -99,6 +106,7 @@ const nativeFontFamilyStyle = {
     'body-md': 'TTSatoshi-Medium',
     'body-sm-strong': 'TTSatoshi-DemiBold',
     'body-sm': 'TTSatoshi-Medium',
+    'body-xs-strong': 'TTSatoshi-DemiBold',
     'body-xs': 'TTSatoshi-Medium',
 } as const satisfies Record<NativeTypographyStyle, NativeFont>;
 

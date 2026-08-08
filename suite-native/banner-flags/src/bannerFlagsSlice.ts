@@ -1,5 +1,6 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { DEVICE } from '@trezor/connect';
 
 export interface BannerFlagsState {
@@ -8,6 +9,7 @@ export interface BannerFlagsState {
     isGetTrezorBannerClosed: boolean; // promo banner on Home dashboard nudging users without a device to the eShop
     areGetTrezorPromoBannersDisabled: boolean; // permanently disabled once a physical device has ever been connected
     isOnboardingFeedbackBannerEnabled: boolean; // feedback banner on Home dashboard shown after completing device onboarding
+    closedEarnBannerSymbols: NetworkSymbol[]; // networks for which the promo earn banner in account view was closed
 }
 
 export type BannerFlagsSliceRootState = {
@@ -20,6 +22,7 @@ export const bannerFlagsInitialState: BannerFlagsState = {
     isGetTrezorBannerClosed: false,
     areGetTrezorPromoBannersDisabled: false,
     isOnboardingFeedbackBannerEnabled: false,
+    closedEarnBannerSymbols: [],
 };
 
 export const bannerFlagsSlice = createSlice({
@@ -37,6 +40,11 @@ export const bannerFlagsSlice = createSlice({
         },
         setIsOnboardingFeedbackBannerEnabled: (state, action: PayloadAction<boolean>) => {
             state.isOnboardingFeedbackBannerEnabled = action.payload;
+        },
+        setIsEarnBannerClosed: (state, action: PayloadAction<NetworkSymbol>) => {
+            if (!state.closedEarnBannerSymbols.includes(action.payload)) {
+                state.closedEarnBannerSymbols.push(action.payload);
+            }
         },
     },
     extraReducers: builder => {
@@ -56,6 +64,7 @@ export const bannerFlagsPersistWhitelist: Array<keyof BannerFlagsState> = [
     'isGetTrezorBannerClosed',
     'areGetTrezorPromoBannersDisabled',
     'isOnboardingFeedbackBannerEnabled',
+    'closedEarnBannerSymbols',
 ];
 
 export const selectIsStellarLimitedHistoryBannerClosed = (state: BannerFlagsSliceRootState) =>
@@ -73,11 +82,15 @@ export const selectAreGetTrezorPromoBannersDisabled = (state: BannerFlagsSliceRo
 export const selectIsOnboardingFeedbackBannerEnabled = (state: BannerFlagsSliceRootState) =>
     state.bannerFlags.isOnboardingFeedbackBannerEnabled;
 
+export const selectIsEarnBannerClosed = (state: BannerFlagsSliceRootState, symbol: NetworkSymbol) =>
+    state.bannerFlags.closedEarnBannerSymbols.includes(symbol);
+
 export const {
     setIsStellarLimitedHistoryBannerClosed,
     setIsSolanaLimitedHistoryBannerClosed,
     setIsGetTrezorBannerClosed,
     setIsOnboardingFeedbackBannerEnabled,
+    setIsEarnBannerClosed,
 } = bannerFlagsSlice.actions;
 
 export const bannerFlagsReducer = bannerFlagsSlice.reducer;

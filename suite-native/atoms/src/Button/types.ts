@@ -11,7 +11,7 @@ export type ButtonIntent = (typeof BUTTON_INTENTS)[number];
 export const BUTTON_PRIORITIES = ['primary', 'secondary'] as const;
 export type ButtonPriority = (typeof BUTTON_PRIORITIES)[number];
 
-export const BUTTON_SIZES = ['medium', 'large'] as const;
+export const BUTTON_SIZES = ['small', 'medium', 'large'] as const;
 export type ButtonSize = (typeof BUTTON_SIZES)[number];
 
 /**
