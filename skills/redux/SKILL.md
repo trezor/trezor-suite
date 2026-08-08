@@ -274,7 +274,6 @@ Mock external I/O at its own boundary; a Redux store is not needed for that eith
 ```ts
 type ConnectInitThunkTestDeps = {
     actions: unknown[];
-    waitForThunks: () => Promise<void>;
     dispatch: ConnectInitThunkDispatch;
     getState: () => ConnectInitThunkState;
     extra: ConnectInitThunkDeps;
@@ -317,9 +316,9 @@ const createThunkDeps = (
             ...services,
         },
     };
-    const { actions, dispatch, waitForThunks } = createMockDispatch({ getState, extra });
+    const { actions, dispatch } = createMockDispatch({ getState, extra });
 
-    return { actions, waitForThunks, dispatch, getState, extra };
+    return { actions, dispatch, getState, extra };
 };
 
 beforeEach(() => {
@@ -349,11 +348,6 @@ it('uses the injected bin files base URL', async () => {
     );
 });
 ```
-
-Await the directly invoked thunk immediately in ordinary tests. Use `waitForThunks()` only when code
-outside that awaited call, such as an event listener installed by `connectInitThunk`, later dispatches
-a fire-and-forget asynchronous thunk. In that case there is no returned promise for the test to await,
-so `waitForThunks()` drains the nested promises collected by the fake dispatch.
 
 Global application state and dependency contracts are wiring details. Application code may refer to
 them only in these composition-root files, where the final stores and service graphs are assembled:
