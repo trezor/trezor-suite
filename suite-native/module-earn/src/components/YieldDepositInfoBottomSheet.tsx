@@ -1,5 +1,7 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { isWrappedNativeToken } from '@suite-common/wallet-utils';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -14,7 +16,7 @@ import { Translation } from '@suite-native/intl';
 import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { HowEarnWorksBenefitsSection } from './HowEarnWorks/HowEarnWorksBenefitsSection';
 import { HowEarnWorksTimelineCard } from './HowEarnWorks/HowEarnWorksTimelineCard';
-import { createHowYieldWorksPreset } from '../presets/HowEarnWorks/yieldPresets';
+import { useHowYieldWorksPreset } from '../presets/HowEarnWorks/yieldPresets';
 
 type YieldDepositInfoBottomSheetProps = {
     apy: number | null;
@@ -39,18 +41,33 @@ export const YieldDepositInfoBottomSheet = ({
 }: YieldDepositInfoBottomSheetProps) => {
     const apyBreakdownAlert = useApyBreakdownAlert({ account, vault });
 
-    const { benefitItems, timelineSections } = createHowYieldWorksPreset({
+    const isWrappedNativeVault =
+        !!vault && !!account && isWrappedNativeToken(account.symbol, vault.token.address);
+    const nativeSymbol = account ? getNetworkDisplaySymbol(account.symbol) : null;
+
+    const { benefitItems, timelineSections } = useHowYieldWorksPreset({
         apy,
         onApyPress: apyBreakdownAlert.onPress,
         bonusRewardTokenSymbol,
         tokenSymbol,
         vaultTokenSymbol,
+        isWrappedNativeVault,
+        nativeSymbol,
     });
 
     return (
         <BottomSheetModal
             ref={ref}
-            title={<Translation id="earn.howYieldWorksScreen.defiYieldTitle" />}
+            title={
+                <Translation
+                    id={
+                        isWrappedNativeVault
+                            ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldTitle'
+                            : 'earn.howYieldWorksScreen.defiYieldTitle'
+                    }
+                    values={{ nativeSymbol }}
+                />
+            }
             isCloseDisplayed
             onClose={onClose}
             footer={
@@ -63,7 +80,14 @@ export const YieldDepositInfoBottomSheet = ({
         >
             <VStack spacing="sp32">
                 <Text variant="body-sm" color="contentSecondary">
-                    <Translation id="earn.howYieldWorksScreen.defiYieldSubtitle" />
+                    <Translation
+                        id={
+                            isWrappedNativeVault
+                                ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldSubtitle'
+                                : 'earn.howYieldWorksScreen.defiYieldSubtitle'
+                        }
+                        values={{ nativeSymbol }}
+                    />
                 </Text>
                 <HowEarnWorksBenefitsSection items={benefitItems} />
                 <HowEarnWorksTimelineCard
