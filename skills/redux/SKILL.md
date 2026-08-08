@@ -259,6 +259,102 @@ export const closeDialogThunk = createThunk<void, CloseDialogParams, void>(
 );
 ```
 
+### Testing thunks without a Redux store
+
+Unit-test a thunk as a function. Redux thunk middleware ultimately calls a thunk with three
+arguments: `dispatch`, `getState`, and `extra`. A unit test can provide those arguments directly; it
+does not need `configureMockStore`, application reducers, or the global dependency graph.
+
+Use `createMockDispatch` from `@suite-common/redux-utils/mocks`. It stores every plain dispatched
+action in an array and recursively executes function actions with the same test dependencies. Build
+`getState` and `extra` from the thunk's exported contracts, and keep the fixture local to the test.
+Mock external I/O at its own boundary; a Redux store is not needed for that either. For example,
+`connectInitThunk` is tested with this shape:
+
+```ts
+type ConnectInitThunkTestDeps = {
+    actions: unknown[];
+    waitForThunks: () => Promise<void>;
+    dispatch: ConnectInitThunkDispatch;
+    getState: () => ConnectInitThunkState;
+    extra: ConnectInitThunkDeps;
+};
+
+const state: ConnectInitThunkState = {
+    wallet: { settings: initialWalletSettingsState },
+    device: deviceInitialState,
+    firmware: firmwareInitialState,
+    messageSystem: messageSystemInitialState,
+};
+
+const createThunkDeps = (
+    services: Partial<ConnectInitThunkDeps['services']> = {},
+): ConnectInitThunkTestDeps => {
+    const getState = (): ConnectInitThunkState => state;
+    const extra: ConnectInitThunkDeps = {
+        actions: {
+            lockDevice: createAction<boolean>('@test/lock-device'),
+        },
+        services: {
+            analytics: { report: jest.fn() },
+            connectInitHooks: { deviceEvent: {}, uiEvent: {} },
+            connectInitSettings: {
+                manifest: {
+                    email: 'info@trezor.io',
+                    appName: 'Trezor Suite',
+                    appUrl: '@trezor/suite',
+                },
+            },
+            createTransports: () => [],
+            getAllowPrerelease: asGetter(() => false),
+            getBinFilesBaseUrl: asGetter(() => '/bin'),
+            getDebugSettings: asGetter(() => ({
+                transports: [],
+                showConnectLogs: false,
+            })),
+            getThpSettings: asGetter(() => ({ pairingMethods: ['CodeEntry'] })),
+            thpHostName: undefined,
+            ...services,
+        },
+    };
+    const { actions, dispatch, waitForThunks } = createMockDispatch({ getState, extra });
+
+    return { actions, waitForThunks, dispatch, getState, extra };
+};
+
+beforeEach(() => {
+    testMocks.setTrezorConnectFixtures();
+});
+
+afterEach(() => {
+    jest.restoreAllMocks();
+});
+
+it('uses the injected bin files base URL', async () => {
+    const getBinFilesBaseUrl = jest.fn(() => '/custom-bin-files');
+    const initSpy = jest.spyOn(TrezorConnect, 'init');
+    const { actions, dispatch, getState, extra } = createThunkDeps({
+        getBinFilesBaseUrl: asGetter(getBinFilesBaseUrl),
+    });
+
+    // The first call supplies the thunk payload; the second call runs the returned thunk directly.
+    await connectInitThunk()(dispatch, getState, extra);
+
+    expect(actions).toEqual([
+        expect.objectContaining({ type: connectInitThunk.pending.type }),
+        expect.objectContaining({ type: connectInitThunk.fulfilled.type }),
+    ]);
+    expect(initSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ binFilesBaseUrl: '/custom-bin-files' }),
+    );
+});
+```
+
+Await the directly invoked thunk immediately in ordinary tests. Use `waitForThunks()` only when code
+outside that awaited call, such as an event listener installed by `connectInitThunk`, later dispatches
+a fire-and-forget asynchronous thunk. In that case there is no returned promise for the test to await,
+so `waitForThunks()` drains the nested promises collected by the fake dispatch.
+
 Global application state and dependency contracts are wiring details. Application code may refer to
 them only in these composition-root files, where the final stores and service graphs are assembled:
 
