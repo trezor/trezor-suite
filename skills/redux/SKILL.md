@@ -269,7 +269,9 @@ Use `createMockDispatch` from `@suite-common/redux-utils/mocks`. It stores every
 action in an array and recursively executes function actions with the same test dependencies. Build
 `getState` and `extra` from the thunk's exported contracts, and keep the fixture local to the test.
 Mock external I/O at its own boundary; a Redux store is not needed for that either. For example,
-`connectInitThunk` is tested with this shape:
+`connectInitThunk` is tested with this shape. Its concrete state and dependency values are ordinary
+local fixtures typed as `ConnectInitThunkState` and `ConnectInitThunkDeps`; they are omitted here so
+the example focuses on running the thunk:
 
 ```ts
 type ConnectInitThunkTestDeps = {
@@ -279,62 +281,21 @@ type ConnectInitThunkTestDeps = {
     extra: ConnectInitThunkDeps;
 };
 
-const state: ConnectInitThunkState = {
-    wallet: { settings: initialWalletSettingsState },
-    device: deviceInitialState,
-    firmware: firmwareInitialState,
-    messageSystem: messageSystemInitialState,
-};
-
 const createThunkDeps = (
-    services: Partial<ConnectInitThunkDeps['services']> = {},
+    state: ConnectInitThunkState,
+    extra: ConnectInitThunkDeps,
 ): ConnectInitThunkTestDeps => {
     const getState = (): ConnectInitThunkState => state;
-    const extra: ConnectInitThunkDeps = {
-        actions: {
-            lockDevice: createAction<boolean>('@test/lock-device'),
-        },
-        services: {
-            analytics: { report: jest.fn() },
-            connectInitHooks: { deviceEvent: {}, uiEvent: {} },
-            connectInitSettings: {
-                manifest: {
-                    email: 'info@trezor.io',
-                    appName: 'Trezor Suite',
-                    appUrl: '@trezor/suite',
-                },
-            },
-            createTransports: () => [],
-            getAllowPrerelease: asGetter(() => false),
-            getBinFilesBaseUrl: asGetter(() => '/bin'),
-            getDebugSettings: asGetter(() => ({
-                transports: [],
-                showConnectLogs: false,
-            })),
-            getThpSettings: asGetter(() => ({ pairingMethods: ['CodeEntry'] })),
-            thpHostName: undefined,
-            ...services,
-        },
-    };
     const { actions, dispatch } = createMockDispatch({ getState, extra });
 
     return { actions, dispatch, getState, extra };
 };
 
-beforeEach(() => {
-    testMocks.setTrezorConnectFixtures();
-});
-
-afterEach(() => {
-    jest.restoreAllMocks();
-});
-
-it('uses the injected bin files base URL', async () => {
-    const getBinFilesBaseUrl = jest.fn(() => '/custom-bin-files');
-    const initSpy = jest.spyOn(TrezorConnect, 'init');
-    const { actions, dispatch, getState, extra } = createThunkDeps({
-        getBinFilesBaseUrl: asGetter(getBinFilesBaseUrl),
-    });
+it('dispatches its lifecycle actions', async () => {
+    const { actions, dispatch, getState, extra } = createThunkDeps(
+        connectInitState,
+        connectInitExtra,
+    );
 
     // The first call supplies the thunk payload; the second call runs the returned thunk directly.
     await connectInitThunk()(dispatch, getState, extra);
@@ -343,9 +304,6 @@ it('uses the injected bin files base URL', async () => {
         expect.objectContaining({ type: connectInitThunk.pending.type }),
         expect.objectContaining({ type: connectInitThunk.fulfilled.type }),
     ]);
-    expect(initSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ binFilesBaseUrl: '/custom-bin-files' }),
-    );
 });
 ```
 
