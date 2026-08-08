@@ -12,11 +12,18 @@
         {
             "path": "../../suite-common/message-system"
         },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../module-earn" },
         { "path": "../navigation" },
         { "path": "../../packages/connect" },
         {

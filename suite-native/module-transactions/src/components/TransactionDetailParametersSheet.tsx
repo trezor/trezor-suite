@@ -139,7 +139,6 @@ export const TransactionDetailParametersSheet = ({
                                     onPress={handleClickCopy}
                                     intent="neutral"
                                     priority="secondary"
-                                    // @ts-expect-error `small` icon button size was deprecated, but there is no replacement for this usage yet.
                                     size="small"
                                 />
                             </Box>

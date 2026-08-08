@@ -2603,6 +2603,17 @@ export const messages = {
             unstakedTitle: '{amount} {displaySymbol} unstaked instantly',
             claimedTitle: '{amount} {displaySymbol} claimed',
         },
+        promoStakeBanner: {
+            eth: {
+                title: 'Earn up to {apy}% on your ETH',
+                description: 'Stake ETH for network rewards, or deposit it in a yield vault.',
+            },
+            sol: {
+                title: 'Earn ~{apy}% APY by staking your SOL',
+                description: 'Make your SOL work for you. Start staking to earn rewards.',
+            },
+            exploreButton: 'Explore',
+        },
         stakingDetailScreen: {
             title: 'Staking',
         },
