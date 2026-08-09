@@ -28,6 +28,17 @@ snapshot — read them with `git log <snapshot>..HEAD` or on the
 | Auto-update | From this repo's `continuous` release (Windows/Linux; macOS via a self-signed build — experimental). |
 | Dark theme by default | Light / system still selectable in Settings. |
 
+## Alternative firmware — Firmware Dark
+
+Suite Dark has a companion project, **[Firmware Dark](https://github.com/suite-dark/firmware-dark)** —
+an unofficial, Bitcoin-only build of Trezor firmware for Trezor Model T, Safe 3,
+Safe 5 and Safe 7. You can install it directly from Suite Dark:
+**Settings → Device → Advanced → "Install Suite Dark firmware"**.
+
+> ⚠️ Installing unofficial firmware **wipes the device** (back up your recovery
+> seed first) and the device will permanently show an "unofficial firmware"
+> warning. This is inherent to unsigned firmware and cannot be removed.
+
 ## Build it yourself
 
 Prereqs: **Node 24**, **Yarn** (via corepack), git.
