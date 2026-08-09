@@ -41,6 +41,8 @@ global.resourcesPath = isDevEnv
     ? path.join(__dirname, '..', 'build', 'static')
     : process.resourcesPath;
 
+initUserData();
+
 const parseRemoveUserDataSwitch = () => {
     if (hasSwitch('remove-user-data-on-start')) {
         clearUserDataOptimistically();
@@ -120,8 +122,6 @@ const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams
 };
 
 const init = async () => {
-    initUserData(); // has to be before initSentry and logger
-
     // Logger
     const logger = new Logger();
 

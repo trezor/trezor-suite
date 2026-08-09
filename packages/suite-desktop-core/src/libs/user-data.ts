@@ -8,6 +8,8 @@ import type { Result } from '@trezor/type-utils';
 
 import { setAutoStartEnabled } from './auto-start';
 
+const LOCAL_USER_DATA_DIRECTORY = 'suitedark-desktop-local';
+
 export const resolveDirectoryInUserDataDir = (
     directory: string,
 ): Result<{ dir: string }, string> => {
@@ -52,16 +54,12 @@ export const clearAppCache = () =>
     });
 
 /**
- * By default, Electron uses the app name from package.json to construct the userData directory.
- * It's overwritten in electron-builder-config.js for builds. And here for local development.
- * Default (codesigned builds): @trezor/suite-desktop,
- * Dev (non-production builds): @trezor/suite-desktop-dev
- * Local development: @trezor/suite-desktop-local
+ * Electron-builder provides isolated Suite Dark user-data names for packaged builds. Local
+ * development needs an explicit name because the workspace package name is shared with upstream.
  */
 export const initUserData = () => {
     if (isDevEnv) {
-        const userDataDirDefault = app.getPath('userData');
-        const userDataDir = `${userDataDirDefault}-local`;
+        const userDataDir = path.join(app.getPath('appData'), LOCAL_USER_DATA_DIRECTORY);
         try {
             fs.accessSync(userDataDir, fs.constants.R_OK);
         } catch {

@@ -1,8 +1,10 @@
+import { app } from 'electron';
 import fs from 'fs';
 import path from 'path';
 
 import {
     clearAppData,
+    initUserData,
     open,
     read,
     readDir,
@@ -14,13 +16,41 @@ import {
 
 jest.mock('electron', () => ({
     app: {
-        getPath: jest.fn(() => '/tmp/user-data'),
+        getPath: jest.fn((name: string) =>
+            name === 'appData' ? '/tmp/app-data' : '/tmp/user-data',
+        ),
+        setPath: jest.fn(),
     },
 }));
 
 jest.mock('@suite-common/suite-utils', () => ({
-    isDevEnv: false,
+    isDevEnv: true,
 }));
+
+describe('initUserData', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('uses an isolated Suite Dark directory during local development', () => {
+        const accessSyncSpy = jest.spyOn(fs, 'accessSync').mockImplementation(() => undefined);
+
+        initUserData();
+
+        expect(accessSyncSpy).toHaveBeenCalledWith(
+            path.join('/tmp/app-data', 'suitedark-desktop-local'),
+            fs.constants.R_OK,
+        );
+        expect(app.setPath).toHaveBeenCalledWith(
+            'userData',
+            path.join('/tmp/app-data', 'suitedark-desktop-local'),
+        );
+    });
+});
 
 describe('resolveDirectoryInUserDataDir', () => {
     it('resolves a directory inside the user data directory', () => {
