@@ -42,6 +42,7 @@ import { ChangeLanguage } from './ChangeLanguage';
 import { ChangePin } from './ChangePin';
 import { CheckRecoverySeed } from './CheckRecoverySeed';
 import { CustomFirmware } from './CustomFirmware';
+import { SuiteDarkFirmware } from './SuiteDarkFirmware';
 import { DeviceAuthenticityOptOut } from './DeviceAuthenticityOptOut';
 import { DeviceLabel } from './DeviceLabel';
 import { DisplayRotation } from './DisplayRotation';
@@ -268,6 +269,7 @@ export const SettingsDevice = () => {
                 <WipeDevice isDeviceLocked={isDeviceLocked} />
                 {isNormalMode && <WipeCode isDeviceLocked={isDeviceLocked} />}
                 <CustomFirmware />
+                <SuiteDarkFirmware />
             </SettingsSection>
         </SettingsLayout>
     );

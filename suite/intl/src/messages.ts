@@ -2278,6 +2278,37 @@ export const messages = defineMessages({
         defaultMessage: 'Install custom firmware',
         id: 'TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE',
     },
+    TR_SUITE_DARK_FIRMWARE_TITLE: {
+        defaultMessage: 'Install Suite Dark firmware',
+        id: 'TR_SUITE_DARK_FIRMWARE_TITLE',
+    },
+    TR_SUITE_DARK_FIRMWARE_DESCRIPTION: {
+        defaultMessage:
+            "Replace the official firmware with the unofficial Suite Dark build, downloaded from the Suite Dark project's releases. This ERASES your device — back up your recovery seed first — and the device will permanently show an 'unofficial firmware' warning.",
+        id: 'TR_SUITE_DARK_FIRMWARE_DESCRIPTION',
+    },
+    TR_SUITE_DARK_FIRMWARE_BUTTON: {
+        defaultMessage: 'Install',
+        id: 'TR_SUITE_DARK_FIRMWARE_BUTTON',
+    },
+    TR_SUITE_DARK_FIRMWARE_WARNING: {
+        defaultMessage:
+            "This installs UNOFFICIAL firmware. Your device will be wiped, so make sure you have your recovery seed. After installation the device will always show an 'unofficial firmware' warning — this is expected and cannot be removed without official signing.",
+        id: 'TR_SUITE_DARK_FIRMWARE_WARNING',
+    },
+    TR_SUITE_DARK_FIRMWARE_DOWNLOADING: {
+        defaultMessage: 'Downloading Suite Dark firmware for your device…',
+        id: 'TR_SUITE_DARK_FIRMWARE_DOWNLOADING',
+    },
+    TR_SUITE_DARK_FIRMWARE_READY: {
+        defaultMessage: 'Firmware downloaded and ready. Continue to install.',
+        id: 'TR_SUITE_DARK_FIRMWARE_READY',
+    },
+    TR_SUITE_DARK_FIRMWARE_DOWNLOAD_ERROR: {
+        defaultMessage:
+            'Could not download the Suite Dark firmware for this device. Check your internet connection and try again.',
+        id: 'TR_SUITE_DARK_FIRMWARE_DOWNLOAD_ERROR',
+    },
     TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION: {
         defaultMessage:
             "Install custom firmware at your own risk—this will erase your device's memory and could render it unusable. Proceed only if you're absolutely sure.",
