@@ -30,6 +30,10 @@ export { default as evoluSignRegistrationRequest } from './evoluSignRegistration
 export { default as evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';
 export { default as nostrGetPublicKey } from './nostr/nostrGetPublicKey';
 export { default as nostrSignEvent } from './nostr/nostrSignEvent';
+export { default as authLabelGetState } from './authLabelGetState';
+export { default as authLabelShow } from './authLabelShow';
+export { default as authLabelChange } from './authLabelChange';
+export { default as authLabelBindAddress } from './authLabelBindAddress';
 export { default as composeTransaction } from './composeTransaction';
 export { default as discoverAccounts } from './discoverAccounts';
 export { default as getAccountInfo } from './getAccountInfo';

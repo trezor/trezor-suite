@@ -3,6 +3,7 @@ import { type ComponentType } from 'react';
 import { type PageName } from '@suite/router';
 
 import { ConnectPopup } from 'src/views/connect-popup';
+import { Contacts } from 'src/views/contacts';
 import { Dashboard } from 'src/views/dashboard';
 import { Earn } from 'src/views/earn';
 import {
@@ -59,6 +60,7 @@ import { Transactions } from 'src/views/wallet/transactions/Transactions';
 export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-index': Dashboard,
     'suite-earn': Earn,
+    'suite-contacts': Contacts,
     'earn-yield-deposit': EarnDeposit,
     'earn-yield-withdraw': EarnWithdraw,
     'earn-yield-claim': EarnClaim,

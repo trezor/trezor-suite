@@ -11,6 +11,8 @@ export const SHOULD_ROUTER_APP_START_DISCOVERY: Record<RouterApp, boolean> = {
     earn: true,
     'earn-yield': true,
     'earn-staking': true,
+    // contacts answer address requests from the user's own accounts
+    contacts: true,
 
     start: false,
     version: false,

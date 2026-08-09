@@ -141,6 +141,16 @@ import {
     EvoluSignRegistrationRequest,
 } from './messages-evolu';
 import {
+    AuthLabelBindAddress,
+    AuthLabelBindAddressAck,
+    AuthLabelChange,
+    AuthLabelChangeAck,
+    AuthLabelGetState,
+    AuthLabelShow,
+    AuthLabelShowAck,
+    AuthLabelState,
+} from './messages-authlabel';
+import {
     ApplyFlags,
     ApplySettings,
     AuthenticateDevice,
@@ -329,6 +339,7 @@ export * from './messages-eos';
 export * from './messages-ethereum';
 export * from './messages-ethereum-eip712';
 export * from './messages-evolu';
+export * from './messages-authlabel';
 export * from './messages-monero';
 export * from './messages-nostr';
 export * from './messages-ripple';
@@ -518,6 +529,14 @@ export const MessageType = Type.Object(
         EvoluDelegatedIdentityKey,
         EvoluIndexManagement,
         EvoluIndexManagementResponse,
+        AuthLabelGetState,
+        AuthLabelState,
+        AuthLabelShow,
+        AuthLabelShowAck,
+        AuthLabelChange,
+        AuthLabelChangeAck,
+        AuthLabelBindAddress,
+        AuthLabelBindAddressAck,
         MoneroGetAddress,
         MoneroAddress,
         MoneroGetWatchKey,
@@ -745,6 +764,10 @@ export type WireInMessage =
     | 'EvoluSignRegistrationRequest'
     | 'EvoluGetDelegatedIdentityKey'
     | 'EvoluIndexManagement'
+    | 'AuthLabelGetState'
+    | 'AuthLabelShow'
+    | 'AuthLabelChange'
+    | 'AuthLabelBindAddress'
     | 'MoneroGetAddress'
     | 'MoneroGetWatchKey'
     | 'MoneroTransactionInitRequest'
@@ -871,6 +894,10 @@ export type WireOutMessage =
     | 'EvoluRegistrationRequest'
     | 'EvoluDelegatedIdentityKey'
     | 'EvoluIndexManagementResponse'
+    | 'AuthLabelState'
+    | 'AuthLabelShowAck'
+    | 'AuthLabelChangeAck'
+    | 'AuthLabelBindAddressAck'
     | 'MoneroAddress'
     | 'MoneroWatchKey'
     | 'MoneroTransactionInitAck'

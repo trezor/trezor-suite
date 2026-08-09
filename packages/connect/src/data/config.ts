@@ -220,6 +220,19 @@ export const config: Config = {
             ],
         },
         {
+            methods: [
+                'authLabelGetState',
+                'authLabelShow',
+                'authLabelChange',
+                'authLabelBindAddress',
+            ],
+            firmwareType: 'production',
+            min: { T1B1: '0', T2T1: '0', T2B1: '0', T3B1: '0', T3T1: '0', T3W1: '0' },
+            comment: [
+                'Authenticated labeling (PoC) is only available on debug / unsigned firmware builds.',
+            ],
+        },
+        {
             capabilities: ['evolu'],
             methods: [
                 'evoluGetNode',

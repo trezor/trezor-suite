@@ -54,6 +54,11 @@ export const routes = [
         app: 'earn',
     },
     {
+        name: 'suite-contacts',
+        pattern: '/contacts',
+        app: 'contacts',
+    },
+    {
         name: 'earn-yield-deposit',
         pattern: '/earn/yield/deposit',
         app: 'earn-yield',

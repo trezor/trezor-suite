@@ -29,6 +29,7 @@ import { type WalletConnectState, prepareWalletConnectReducer } from '@suite-com
 import { extraDependencies } from 'src/support/extraDependencies';
 import { type Action } from 'src/types/suite';
 
+import contacts, { type ContactsState } from './contactsReducer';
 import guide, { type GuideState } from './guideReducer';
 import protocol, { type ProtocolState } from './protocolReducer';
 import suite, { type SuiteState } from './suiteReducer';
@@ -66,6 +67,7 @@ export type SuiteReducersState = {
     featureFeedback: FeatureFeedbackState<FeedbackFeatureName>;
     connectPopup: ConnectPopupState;
     walletConnect: WalletConnectState;
+    contacts: ContactsState;
 };
 
 export const suiteReducers: ReducersMapObject<SuiteReducersState, Action & UnknownAction> = {
@@ -91,4 +93,5 @@ export const suiteReducers: ReducersMapObject<SuiteReducersState, Action & Unkno
     featureFeedback: featureFeedbackReducer,
     connectPopup: connectPopupReducer,
     walletConnect: walletConnectReducer,
+    contacts,
 };

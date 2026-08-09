@@ -19,6 +19,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { AnalyticsLogging } from './AnalyticsLogging';
+import { AuthLabelDemo } from './AuthLabelDemo';
 import { Backends } from './Backends';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { ClearDevicePersistentData } from './ClearDevicePersistentData';
@@ -101,6 +102,7 @@ export const SettingsDebug = () => {
                 <ClearDevicePersistentData />
                 <N4w1Backup />
                 <PingDevice />
+                <AuthLabelDemo />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Testing">
                 <ThrowTestingError />

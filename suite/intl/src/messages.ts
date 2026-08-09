@@ -5117,6 +5117,51 @@ export const messages = defineMessages({
         id: 'TR_EARN',
         defaultMessage: 'Earn',
     },
+    TR_CONTACTS: {
+        id: 'TR_CONTACTS',
+        defaultMessage: 'Contacts',
+    },
+    TR_CONTACTS_MY_IDENTITY: {
+        id: 'TR_CONTACTS_MY_IDENTITY',
+        defaultMessage: 'Your contact identity',
+    },
+    TR_CONTACTS_MY_IDENTITY_DESCRIPTION: {
+        id: 'TR_CONTACTS_MY_IDENTITY_DESCRIPTION',
+        defaultMessage:
+            'Share this identity with people you transact with. It is derived from this wallet, so each passphrase has its own.',
+    },
+    TR_CONTACTS_IDENTITY_REQUIRES_DEBUG_FIRMWARE: {
+        id: 'TR_CONTACTS_IDENTITY_REQUIRES_DEBUG_FIRMWARE',
+        defaultMessage: 'Contacts require a debug (unsigned) firmware build.',
+    },
+    TR_CONTACTS_LOAD_IDENTITY: {
+        id: 'TR_CONTACTS_LOAD_IDENTITY',
+        defaultMessage: 'Show identity',
+    },
+    TR_CONTACTS_EMPTY: {
+        id: 'TR_CONTACTS_EMPTY',
+        defaultMessage: 'No contacts yet.',
+    },
+    TR_CONTACTS_ADD: {
+        id: 'TR_CONTACTS_ADD',
+        defaultMessage: 'Add contact',
+    },
+    TR_CONTACTS_ADD_DESCRIPTION: {
+        id: 'TR_CONTACTS_ADD_DESCRIPTION',
+        defaultMessage: 'Confirm the contact on your Trezor. Only then is it trusted.',
+    },
+    TR_CONTACTS_NAME: {
+        id: 'TR_CONTACTS_NAME',
+        defaultMessage: 'Name',
+    },
+    TR_CONTACTS_IDENTITY: {
+        id: 'TR_CONTACTS_IDENTITY',
+        defaultMessage: 'Identity (npub)',
+    },
+    TR_CONTACTS_REMOVE: {
+        id: 'TR_CONTACTS_REMOVE',
+        defaultMessage: 'Remove',
+    },
     TR_WALLET: {
         id: 'TR_WALLET',
         defaultMessage: 'Accounts',
@@ -5637,6 +5682,15 @@ export const messages = defineMessages({
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
         defaultMessage:
             'Use this utility to retrieve passwords stored on Dropbox and secured by Trezor. Designed for former users of the Trezor Password Manager Chrome extension.',
+    },
+    TR_EXPERIMENTAL_CONTACTS: {
+        id: 'TR_EXPERIMENTAL_CONTACTS',
+        defaultMessage: 'Contacts',
+    },
+    TR_EXPERIMENTAL_CONTACTS_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_CONTACTS_DESCRIPTION',
+        defaultMessage:
+            'Save people you transact with as contacts confirmed on your Trezor, and receive their addresses verified by their device.',
     },
     TR_EXPERIMENTAL_TOR_EXTERNAL: {
         id: 'TR_EXPERIMENTAL_TOR_EXTERNAL',

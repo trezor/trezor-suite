@@ -1,4 +1,5 @@
 import { protobufManager } from '@trezor/protobuf';
+import * as authLabelProto from '@trezor/protobuf/src/definitions/messages-authlabel_pb';
 import * as bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin_pb';
 import * as bleProto from '@trezor/protobuf/src/definitions/messages-ble_pb';
 import * as bootloaderProto from '@trezor/protobuf/src/definitions/messages-bootloader_pb';
@@ -26,6 +27,7 @@ import * as optionsProto from '@trezor/protobuf/src/definitions/options_pb';
 
 export const loadProtobufModules = () => {
     const definitionModules = [
+        authLabelProto,
         bitcoinProto,
         bleProto,
         bootloaderProto,
@@ -52,7 +54,11 @@ export const loadProtobufModules = () => {
         optionsProto,
     ];
 
-    protobufManager.load(definitionModules);
+    // messages-authlabel_pb is generated with the newer @bufbuild codegenv2 (it
+    // additionally declares the ts enum values), so the module union no longer
+    // matches Record<string, AnyDesc> as-is. The manager filters by `def.kind` at
+    // runtime, so the cast is safe; the same cast is used in the protobuf tests.
+    protobufManager.load(definitionModules as Parameters<typeof protobufManager.load>[0]);
 
     return Promise.resolve();
 };

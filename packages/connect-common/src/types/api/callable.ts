@@ -1,4 +1,5 @@
 import type { TrezorConnectAccount } from './account';
+import type { TrezorConnectAuthLabel } from './authLabel';
 import type { TrezorConnectBitcoin } from './bitcoin';
 import type { TrezorConnectBlockchain } from './blockchain';
 import type { TrezorConnectCardano } from './cardano';
@@ -30,4 +31,5 @@ export type TrezorConnectCallable = TrezorConnectManagement &
     TrezorConnectTezos &
     TrezorConnectTron &
     TrezorConnectEvolu &
-    TrezorConnectNostr;
+    TrezorConnectNostr &
+    TrezorConnectAuthLabel;

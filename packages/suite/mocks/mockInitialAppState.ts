@@ -124,6 +124,9 @@ export const mockInitialAppState: AppState = {
         sessions: [],
         pendingProposal: undefined,
     },
+    contacts: {
+        byWallet: {},
+    },
     bioAuth: {
         bioAuthEnabled: false,
         bioAuthAvailable: false,

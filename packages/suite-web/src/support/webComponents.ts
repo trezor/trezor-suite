@@ -13,6 +13,11 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             default: Earn,
         })),
     ),
+    'suite-contacts': lazy(() =>
+        import(/* webpackChunkName: "contacts" */ 'src/views/contacts/index').then(
+            ({ Contacts }) => ({ default: Contacts }),
+        ),
+    ),
     'earn-yield-deposit': lazy(() =>
         import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/deposit/index').then(
             ({ EarnDeposit }) => ({

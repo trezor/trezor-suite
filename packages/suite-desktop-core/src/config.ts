@@ -22,6 +22,9 @@ export const localhostDomains = ['localhost', '127.0.0.1'];
 export const allowedDomains = [
     ...localhostDomains,
     'trezor.io',
+    // Verified Contacts relay. Without this, interceptWebSocket blocks the socket on
+    // desktop only (web CSP connect-src is '*'), which is a confusing failure mode.
+    'relay.primal.net',
     'sldev.cz', // Test environment, available only with VPN
     'invity.io',
     'api.github.com',

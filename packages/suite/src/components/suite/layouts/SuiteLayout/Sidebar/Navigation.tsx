@@ -8,10 +8,11 @@ import {
     selectIsNewContentIndicatorVisible,
 } from '@suite/flags';
 import { type Route, selectRouteName } from '@suite/router';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasUnseenNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
-import { BellIcon, GearSixIcon, HouseIcon, KeyIcon } from '@trezor/icons';
+import { AddressBookIcon, BellIcon, GearSixIcon, HouseIcon, KeyIcon } from '@trezor/icons';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
@@ -39,6 +40,8 @@ export const Navigation = ({ children }: NavigationProps) => {
 
     const isInitialRun = useSelector(selectIsInitialRun);
     const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
+
+    const isContactsEnabled = useSelector(selectHasExperimentalFeature('contacts'));
 
     const hasUnseenNotifications = useSelector(selectHasUnseenNotifications);
     const isActivityNewContentIndicatorVisible = useSelector(
@@ -93,6 +96,17 @@ export const Navigation = ({ children }: NavigationProps) => {
                     goToRoute: 'password-manager-index',
                     routes: ['password-manager-index'],
                 },
+                // Verified Contacts (experimental): device-authenticated contact labels.
+                ...(isContactsEnabled
+                    ? [
+                          {
+                              nameId: 'TR_CONTACTS',
+                              icon: AddressBookIcon,
+                              goToRoute: 'suite-contacts',
+                              routes: ['suite-contacts'],
+                          } as NavigationItemProps,
+                      ]
+                    : []),
                 {
                     nameId: 'TR_NOTIFICATIONS',
                     icon: BellIcon,
@@ -120,6 +134,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                 hasActivityIndicator,
                 isActivityNewContentIndicatorVisible,
                 handleActivityNavigation,
+                isContactsEnabled,
             ],
         );
 
