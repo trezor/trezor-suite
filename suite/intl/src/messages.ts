@@ -5132,7 +5132,11 @@ export const messages = defineMessages({
     },
     TR_CONTACTS_IDENTITY_REQUIRES_DEBUG_FIRMWARE: {
         id: 'TR_CONTACTS_IDENTITY_REQUIRES_DEBUG_FIRMWARE',
-        defaultMessage: 'Contacts require a debug (unsigned) firmware build.',
+        defaultMessage: 'Contacts require the Firmware Dark build (with Nostr enabled).',
+    },
+    TR_CONTACTS_IDENTITY_ERROR: {
+        id: 'TR_CONTACTS_IDENTITY_ERROR',
+        defaultMessage: 'Could not load your identity from the device. Please try again.',
     },
     TR_CONTACTS_LOAD_IDENTITY: {
         id: 'TR_CONTACTS_LOAD_IDENTITY',

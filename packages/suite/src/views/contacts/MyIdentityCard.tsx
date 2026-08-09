@@ -35,6 +35,9 @@ export const MyIdentityCard = () => {
         if (error === 'firmware') {
             return <Translation id="TR_CONTACTS_IDENTITY_REQUIRES_DEBUG_FIRMWARE" />;
         }
+        if (error === 'generic') {
+            return <Translation id="TR_CONTACTS_IDENTITY_ERROR" />;
+        }
         if (identityNpub) return npubEncode(identityNpub);
 
         return <Translation id="TR_CONTACTS_MY_IDENTITY_DESCRIPTION" />;

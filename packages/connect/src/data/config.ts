@@ -210,15 +210,8 @@ export const config: Config = {
             min: { T1B1: '0', T2T1: '2.9.1', T2B1: '2.9.1', T3B1: '2.9.1', T3T1: '2.9.1' },
             comment: ['Cardano SignMessage call added in 2.9.1'],
         },
-        {
-            methods: ['nostrGetPublicKey', 'nostrSignEvent'],
-            firmwareType: 'production',
-            min: { T1B1: '0', T2T1: '0', T2B1: '0', T3B1: '0', T3T1: '0', T3W1: '0' },
-            comment: [
-                'Nostr is only available on debug / unsigned firmware builds.',
-                'On production firmware the method is rejected as FIRMWARE_NOT_SUPPORTED.',
-            ],
-        },
+        // Suite Dark flavour: Nostr is enabled on the Firmware Dark build (used for the
+        // verified-contacts identity), so the upstream production-firmware block is removed.
         {
             methods: [
                 'authLabelGetState',

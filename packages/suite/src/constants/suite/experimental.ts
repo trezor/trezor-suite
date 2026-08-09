@@ -64,14 +64,6 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         description: { id: 'TR_EXPERIMENTAL_SLIP24_DESCRIPTION' },
         isDisabled: ({ isDebug }) => !isDebug,
     },
-    contacts: {
-        title: { id: 'TR_EXPERIMENTAL_CONTACTS' },
-        description: { id: 'TR_EXPERIMENTAL_CONTACTS_DESCRIPTION' },
-        routeName: 'suite-contacts',
-        // every device call behind this feature (nostr*, authLabel*) is rejected on
-        // production firmware, so the feature is only usable on a debug build
-        isDisabled: ({ isDebug }) => !isDebug,
-    },
     'experimental-networks': {
         title: {
             id: 'TR_EXPERIMENTAL_NETWORKS',
