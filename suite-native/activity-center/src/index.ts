@@ -1,2 +1,2 @@
-export * from './components/NotificationDot';
 export * from './components/ActivityCenterButton';
+export * from './components/NotificationDot';

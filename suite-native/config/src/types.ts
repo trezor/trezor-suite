@@ -16,5 +16,4 @@ export type LaunchArguments = {
     isTradingSlip24Enabled?: boolean;
     isN4w1BackupEnabled?: boolean;
     isN4W1BackupEnabled?: boolean;
-    isActivityCenterEnabled?: boolean;
 };

@@ -130,6 +130,7 @@ export const Feature = {
     firmwareUpdate: 'device.firmware.update',
     inAppRating: 'inAppRating',
     demoAccountQuestionnaire: 'demoAccountQuestionnaire',
+    activityCenter: 'activityCenter',
 } as const;
 
 type ExtractFeatureValues<T> =

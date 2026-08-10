@@ -1,9 +1,13 @@
 import { useSelector } from 'react-redux';
 
+import {
+    Feature,
+    type MessageSystemRootState,
+    selectIsFeatureEnabled,
+} from '@suite-common/message-system';
 import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { ActivityCenterButton } from '@suite-native/activity-center';
 import { HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 import { DeviceManager } from './DeviceManager';
 
@@ -14,7 +18,9 @@ type DeviceManagerScreenHeaderProps = {
 export const DeviceManagerScreenHeader = ({
     noBottomPadding,
 }: DeviceManagerScreenHeaderProps = {}) => {
-    const isActivityCenterEnabled = useFeatureFlag(FeatureFlag.IsActivityCenterEnabled);
+    const isActivityCenterEnabled = useSelector((state: MessageSystemRootState) =>
+        selectIsFeatureEnabled(state, Feature.activityCenter, true),
+    );
     const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
 
     return (

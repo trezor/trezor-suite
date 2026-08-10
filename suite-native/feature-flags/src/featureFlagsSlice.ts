@@ -11,7 +11,6 @@ export const FeatureFlag = {
     IsTradingDebugEnabled: 'isTradingDebugEnabled',
     IsTradingSlip24Enabled: 'isTradingSlip24Enabled',
     IsN4w1BackupEnabled: 'isN4w1BackupEnabled',
-    IsActivityCenterEnabled: 'isActivityCenterEnabled',
 } as const;
 
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
@@ -38,8 +37,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsTradingSlip24Enabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_SLIP24_ENABLED === 'true',
     [FeatureFlag.IsN4w1BackupEnabled]: process.env.EXPO_PUBLIC_FF_IS_N4W1_BACKUP_ENABLED === 'true',
-    [FeatureFlag.IsActivityCenterEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_ACTIVITY_CENTER_ENABLED === 'true',
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -50,7 +47,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsTradingDebugEnabled,
     FeatureFlag.IsTradingSlip24Enabled,
     FeatureFlag.IsN4w1BackupEnabled,
-    FeatureFlag.IsActivityCenterEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({
