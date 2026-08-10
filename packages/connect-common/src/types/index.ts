@@ -22,6 +22,7 @@ export * from './api/tron/common';
 export * from './api/nostr/common';
 
 // types used in @trezor/suite. if you need a type, reexport it from ./api/<method>
+export type { ComposePsbtParams, ComposePsbtResult } from './api/bitcoin/composePsbt';
 export type {
     PrecomposeResultError,
     PrecomposeResultNonFinal,

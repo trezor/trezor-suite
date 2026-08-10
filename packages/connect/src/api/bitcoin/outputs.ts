@@ -8,7 +8,8 @@ import type {
     ProtoWithDerivationPath,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { ComposeOutput as ComposeOutputBase } from '@trezor/utxo-lib';
+import type { ComposeOutput as ComposeOutputBase, Network } from '@trezor/utxo-lib';
+import { address as BitcoinJsAddress, payments as BitcoinJsPayments } from '@trezor/utxo-lib';
 
 import { isValidAddress } from '../../utils/addressUtils';
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
@@ -163,4 +164,21 @@ export const outputToTrezor = (
         amount: output.amount,
         script_type: 'PAYTOADDRESS',
     };
+};
+
+export const parseOutputScript = (output: Buffer, network?: Network) => {
+    try {
+        const address = BitcoinJsAddress.fromOutputScript(output, network);
+
+        return { type: 'address', address } as const;
+    } catch {
+        try {
+            const { data: embedScript } = BitcoinJsPayments.embed({ output }, { validate: true });
+            const data = embedScript?.shift()?.toString('hex'); // shift OP code
+
+            return { type: 'data', data } as const;
+        } catch {
+            return { type: 'unknown' } as const;
+        }
+    }
 };

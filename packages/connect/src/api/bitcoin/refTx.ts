@@ -13,14 +13,13 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 import { bufferUtils } from '@trezor/utils';
 import {
-    address as BitcoinJsAddress,
     type TxInput as BitcoinJsInput,
     type TxOutput as BitcoinJsOutput,
-    payments as BitcoinJsPayments,
     Transaction as BitcoinJsTransaction,
     type Network,
 } from '@trezor/utxo-lib';
 
+import { parseOutputScript } from './outputs';
 import { getHDPath, getOutputScriptType, getScriptType } from '../../utils/pathUtils';
 
 // Referenced transactions are not required if:
@@ -90,22 +89,6 @@ const enhanceTransaction = (refTx: RefTransaction, srcTx: BitcoinJsTransaction):
     return refTx;
 };
 
-const parseOutputScript = (output: Buffer, network?: Network) => {
-    try {
-        const address = BitcoinJsAddress.fromOutputScript(output, network);
-
-        return { type: 'address', address } as const;
-    } catch {
-        try {
-            const { data } = BitcoinJsPayments.embed({ output }, { validate: true });
-
-            return { type: 'data', data } as const;
-        } catch {
-            return { type: 'unknown' } as const;
-        }
-    }
-};
-
 // Transform orig transactions from Blockbook (blockchain-link) to Trezor format
 const transformOrigTransaction = (
     tx: BitcoinJsTransaction,
@@ -149,8 +132,7 @@ const transformOrigTransaction = (
         const parsed = parseOutputScript(output.script, coinInfo.network);
         switch (parsed.type) {
             case 'data': {
-                const op_return_data = parsed.data?.shift()?.toString('hex'); // shift OP code
-                if (typeof op_return_data !== 'string') {
+                if (typeof parsed.data !== 'string') {
                     throw TypedError(
                         'Method_InvalidParameter',
                         `transformOrigTransactions: invalid op_return_data at ${tx.getId()} [${i}]`,
@@ -160,7 +142,7 @@ const transformOrigTransaction = (
                 return {
                     script_type: 'PAYTOOPRETURN',
                     amount: '0',
-                    op_return_data,
+                    op_return_data: parsed.data,
                 };
             }
             case 'address': {

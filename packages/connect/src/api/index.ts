@@ -30,6 +30,7 @@ export { default as evoluSignRegistrationRequest } from './evoluSignRegistration
 export { default as evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';
 export { default as nostrGetPublicKey } from './nostr/nostrGetPublicKey';
 export { default as nostrSignEvent } from './nostr/nostrSignEvent';
+export { default as composePsbt } from './composePsbt';
 export { default as composeTransaction } from './composeTransaction';
 export { default as discoverAccounts } from './discoverAccounts';
 export { default as getAccountInfo } from './getAccountInfo';
