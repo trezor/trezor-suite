@@ -8,9 +8,9 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
+import { selectIsUnrecognizedToken } from '@suite-native/tokens';
 import { TransactionsEmptyState } from '@suite-native/transactions';
 
-import { selectIsUnrecognizedToken } from '../selectors';
 import { AssetPriceCard } from './AssetPriceCard';
 
 type AccountDetailEmptyStateProps = {

@@ -147,6 +147,25 @@ export const isEvmApprovalTxByTextSignature = (
 export const isEvmYieldTxByTextSignature = (textSignature?: EvmTransactionPurpose) =>
     textSignature === 'deposit' || textSignature === 'withdraw' || textSignature === 'redeem';
 
+/**
+ * DeFi yield flow transactions: vault deposit/withdraw/redeem, rewards claim, and the native
+ * wrap/unwrap steps of the deposit/withdraw flows.
+ */
+export const isYieldTypeTx = (transaction: WalletAccountTransaction): boolean => {
+    const purpose = getEvmTransactionPurpose({
+        networkSymbol: transaction.symbol,
+        to: getWrappedNativeTxTarget(transaction),
+        data: transaction.ethereumSpecific?.data,
+    });
+
+    return (
+        purpose === 'wrap' ||
+        purpose === 'unwrap' ||
+        purpose === 'claim' ||
+        isEvmYieldTxByTextSignature(purpose)
+    );
+};
+
 export const ensureHexPrefix = (hex?: string): string => {
     if (!hex) return '';
 

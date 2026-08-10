@@ -8,6 +8,7 @@ export enum RootStackRoutes {
     AccountDetail = 'AccountDetail',
     StakingDetail = 'StakingDetail',
     StakingManagement = 'StakingManagement',
+    YieldManagement = 'YieldManagement',
     HowStakeWorksScreen = 'HowStakeWorksScreen',
     YieldNavigator = 'YieldNavigator',
     YieldInsufficientBalance = 'YieldInsufficientBalance',

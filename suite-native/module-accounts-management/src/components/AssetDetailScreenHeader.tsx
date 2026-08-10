@@ -14,6 +14,7 @@ import {
 import { HStack, IconButton, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
+import { TokenSettingsBottomSheet } from '@suite-native/module-earn';
 import {
     type AccountsStackParamList,
     type RootStackParamList,
@@ -23,7 +24,6 @@ import {
 } from '@suite-native/navigation';
 import { type TokensRootState, isNetworkWithTokens } from '@suite-native/tokens';
 
-import { TokenSettingsBottomSheet } from './TokenSettingsBottomSheet';
 import { selectAssetTabOfAccountToken } from '../selectors';
 
 type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<

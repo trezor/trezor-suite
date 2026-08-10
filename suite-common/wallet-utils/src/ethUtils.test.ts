@@ -14,6 +14,7 @@ import {
     getWrappedNativeTxTarget,
     isUnwrapNativeTx,
     isWrapNativeTx,
+    isYieldTypeTx,
     padLeftEven,
     sanitizeHex,
     strip,
@@ -353,6 +354,76 @@ describe('eth utils', () => {
 
         it('returns undefined without a WETH target or data', () => {
             expect(getNativeWrapTxKind(tx({}))).toBeUndefined();
+        });
+    });
+
+    describe('isYieldTypeTx', () => {
+        const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+        const RECEIVER = '0000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae3';
+        const AMOUNT = '00000000000000000000000000000000000000000000000000000000004c4b40';
+
+        const WETH_DEPOSIT = '0xd0e30db0';
+        const WETH_WITHDRAW =
+            '0x2e1a7d4d0000000000000000000000000000000000000000000000000de0b6b3a7640000';
+        const ERC4626_DEPOSIT = `0x6e553f65${AMOUNT}${RECEIVER}`;
+        const ERC4626_WITHDRAW = `0xb460af94${AMOUNT}${RECEIVER}${RECEIVER}`;
+        const ERC4626_REDEEM = `0xba087652${AMOUNT}${RECEIVER}${RECEIVER}`;
+        const TRANSFER = `0xa9059cbb${RECEIVER}${AMOUNT}`;
+
+        const tx = ({
+            targets = [],
+            internalTransfers = [],
+            data,
+        }: {
+            targets?: { addresses?: string[] }[];
+            internalTransfers?: { from: string }[];
+            data?: string;
+        }) =>
+            ({
+                symbol: 'eth',
+                targets,
+                internalTransfers,
+                ethereumSpecific: data ? { data } : undefined,
+            }) as unknown as WalletAccountTransaction;
+
+        it('detects ERC-4626 vault deposit/withdraw/redeem transactions', () => {
+            expect(isYieldTypeTx(tx({ data: ERC4626_DEPOSIT }))).toBe(true);
+            expect(isYieldTypeTx(tx({ data: ERC4626_WITHDRAW }))).toBe(true);
+            expect(isYieldTypeTx(tx({ data: ERC4626_REDEEM }))).toBe(true);
+        });
+
+        it('detects a distributor rewards claim transaction', () => {
+            const claimData = Calldata.evm.distributor.claim.encode(
+                {
+                    users: [VALID_CLAIM_ADDRESS],
+                    tokens: [VALID_CLAIM_ADDRESS],
+                    amounts: [new BigNumber(1)],
+                    proofs: [[]],
+                },
+                { sender: VALID_CLAIM_ADDRESS },
+            ).data;
+
+            expect(isYieldTypeTx(tx({ data: claimData ?? undefined }))).toBe(true);
+        });
+
+        it('detects the native wrap/unwrap steps of the yield flows', () => {
+            expect(
+                isYieldTypeTx(tx({ targets: [{ addresses: [WETH] }], data: WETH_DEPOSIT })),
+            ).toBe(true);
+            expect(
+                isYieldTypeTx(tx({ internalTransfers: [{ from: WETH }], data: WETH_WITHDRAW })),
+            ).toBe(true);
+        });
+
+        it('ignores WETH selectors when the target is not the wrapped-native contract', () => {
+            expect(isYieldTypeTx(tx({ data: WETH_DEPOSIT }))).toBe(false);
+            expect(isYieldTypeTx(tx({ data: WETH_WITHDRAW }))).toBe(false);
+        });
+
+        it('ignores other transactions', () => {
+            expect(isYieldTypeTx(tx({ data: TRANSFER }))).toBe(false);
+            expect(isYieldTypeTx(tx({ data: '0xdeadbeef' }))).toBe(false);
+            expect(isYieldTypeTx(tx({}))).toBe(false);
         });
     });
 

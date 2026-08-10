@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
+import { type Account, toTokenAddress } from '@suite-common/wallet-types';
 import { Badge, type BadgeProps } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
@@ -14,6 +14,8 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+
+import { useYieldDetailNavigation } from '../hooks/useYieldDetailNavigation';
 
 type YieldBadgeVariant = 'inactive' | 'active' | 'promo';
 
@@ -42,22 +44,23 @@ interface YieldBadgeProps {
     variant: YieldBadgeVariant;
     account: Account;
     vaultId: string;
-    tokenContract?: TokenAddress;
 }
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>;
 
-export const YieldBadge = ({ apy, variant, account, vaultId, tokenContract }: YieldBadgeProps) => {
+export const YieldBadge = ({ apy, variant, account, vaultId }: YieldBadgeProps) => {
     const navigation = useNavigation<NavigationProps>();
     const { data: vault } = useYieldOpportunity(vaultId);
+    const { navigateToYieldDetail } = useYieldDetailNavigation();
 
     const { translationId, intent } = variantConfigMap[variant];
 
     const vaultTokenContract = vault ? getYieldVaultContractAddress(vault) : null;
 
     const goToVault = () => {
-        // for promo, we want to navigate to the earn tab screen — it also promotes staking,
-        // so there is not always a vault behind it
+        if (!vaultTokenContract) return;
+
+        // for promo, we want to navigate to the earn tab screen
         if (variant === 'promo') {
             navigation.popTo(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.EarnStack,
@@ -67,16 +70,9 @@ export const YieldBadge = ({ apy, variant, account, vaultId, tokenContract }: Yi
             return;
         }
 
-        if (!vaultTokenContract) return;
-
-        // if we're on the vault token detail screen, don't navigate
-        if (vaultTokenContract === tokenContract) return;
-
-        // otherwise navigate to the vault token detail screen
-        navigation.push(RootStackRoutes.AccountDetail, {
+        navigateToYieldDetail({
             accountKey: account.key,
             tokenContract: toTokenAddress(vaultTokenContract),
-            closeActionType: 'back',
         });
     };
 

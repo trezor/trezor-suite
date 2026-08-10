@@ -21,6 +21,7 @@ type Attributes = {
         | 'unwrap-form'
         | 'choose-account-sheet'
         | 'account-detail'
+        | 'vault-detail'
         | 'insufficient-balance-screen'
     >;
     to: AttributeDef<
@@ -35,6 +36,7 @@ type Attributes = {
         | 'claim-select-account-modal'
         | 'choose-account-sheet'
         | 'account-detail'
+        | 'vault-detail'
         | 'insufficient-balance-screen'
     >;
     networkSymbol?: AttributeDef<string>;
@@ -86,6 +88,10 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
                 {
                     version: '26.8.0',
                     notes: 'added `wrap-form` and `unwrap-form` values, and `account-detail` is now also reported (desktop)',
+                },
+                {
+                    version: '26.8.0',
+                    notes: 'added `vault-detail` value (mobile)',
                 },
                 {
                     version: '26.8.1',

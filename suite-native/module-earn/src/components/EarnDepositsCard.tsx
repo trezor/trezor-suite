@@ -32,7 +32,6 @@ import { StablecoinYieldClaimRewardsBottomSheet } from './StablecoinYieldClaimRe
 import { StablecoinYieldClaimRewardsCardSection } from './StablecoinYieldClaimRewardsCardSection';
 import { useEarnDepositsCardData } from '../hooks/useEarnDepositsCardData';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../hooks/useStablecoinYieldFirmwareUpdateAlert';
-import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
 import {
     type StablecoinYieldClaimSummary,
     type StablecoinYieldEarnItem,
@@ -80,7 +79,6 @@ export const EarnDepositsCard = ({
         stakingActiveItems,
         stablecoinYieldActiveItems,
     });
-    const { navigateToStakingDetail } = useStakingDetailNavigation();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
     const {
@@ -234,14 +232,12 @@ export const EarnDepositsCard = ({
                 ref={stakingSheetRef}
                 type="staking"
                 items={stakingRow?.activeItems ?? []}
-                navigateToStakingDetail={navigateToStakingDetail}
                 onClose={closeStakingSheet}
             />
             <EarnActiveItemsBottomSheet
                 ref={stablecoinYieldSheetRef}
                 type="stablecoin-yield"
                 items={stablecoinYieldRow?.activeItems ?? []}
-                navigateToStakingDetail={navigateToStakingDetail}
                 onClose={closeStablecoinYieldSheet}
             />
 

@@ -26,18 +26,22 @@ import {
     SendStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import {
+    type TokensRootState,
+    selectAccountTokenInfo,
+    selectIsUnrecognizedToken,
+} from '@suite-native/tokens';
 import { selectHasAccountAnyTransactionsForToken } from '@suite-native/transactions';
 
-import { selectIsNetworkSendFlowEnabled, selectIsUnrecognizedToken } from '../selectors';
+import { selectIsNetworkSendFlowEnabled } from '../selectors';
 import { AccountDiscoveryFailedBanner } from './AccountBanners/AccountDiscoveryFailedBanner';
 import { SolanaLimitedHistoryBanner } from './AccountBanners/SolanaLimitedHistoryBanner';
 import { StellarLimitedHistoryBanner } from './AccountBanners/StellarLimitedHistoryBanner';
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { AssetPriceCard } from './AssetPriceCard';
-import { StablecoinYieldTokenOverview } from './StablecoinYieldTokenOverview';
 import { StellarTokenActions } from './StellarTokenActions';
 import { TronResources } from './TronResources';
+import { YieldVaultBanner } from './YieldVaultBanner';
 import { YourPositionCard } from './YourPositionCard';
 
 type TransactionListHeaderProps = {
@@ -169,6 +173,10 @@ export const TransactionListHeader = memo(
                         tokenContract={tokenContract}
                     />
 
+                    {tokenContract && (
+                        <YieldVaultBanner accountKey={accountKey} tokenContract={tokenContract} />
+                    )}
+
                     {hasAccountTransactions && (
                         <HStack paddingTop="sp8" paddingHorizontal="sp16" flex={1} spacing="sp12">
                             {isReceiveButtonDisplayed && (
@@ -197,12 +205,6 @@ export const TransactionListHeader = memo(
                     )}
                     {isPriceCardDisplayed && (
                         <AssetPriceCard accountKey={accountKey} tokenContract={tokenContract} />
-                    )}
-                    {tokenContract && (
-                        <StablecoinYieldTokenOverview
-                            accountKey={accountKey}
-                            tokenContract={tokenContract}
-                        />
                     )}
                     {isStellarTokenActionsDisplayed && (
                         <StellarTokenActions

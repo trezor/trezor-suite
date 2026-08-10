@@ -2045,6 +2045,7 @@ export const messages = {
                 vault: 'Vault',
                 deposited: 'Deposited',
                 depositMore: 'Deposit more',
+                deposit: 'Deposit',
                 withdraw: 'Withdraw',
                 firmwareUpdateAlert: {
                     title: 'Firmware update required',
@@ -3505,6 +3506,14 @@ export const messages = {
         apyPercentage: '~{apy}% APY',
         aprPercentage: '~{apy}% APR',
         ratePercentage: '~{apy}% Rate',
+        rewardsEveryBlock: 'Rewards every block',
+        positionValue: 'Position value',
+        yearlyRewards: 'Yearly rewards',
+        yearlyRewardsDeposited: '{amountWithSymbol} deposited',
+        potentialRewards: 'Potential yearly rewards',
+        potentialRewardsIfYouAdd: 'If you add {amountWithSymbol}',
+        tokenBalance: 'Token balance',
+        goToVault: 'Go to vault',
         notAvailableShort: 'N/A',
         yieldRateBadge: {
             apy: '{value}% APY',

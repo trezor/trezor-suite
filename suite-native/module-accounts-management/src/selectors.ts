@@ -1,9 +1,5 @@
 import { type AccountItem } from '@suite-common/graph';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import {
-    type TokenDefinitionsRootState,
-    selectIsSpecificCoinDefinitionKnown,
-} from '@suite-common/token-definitions';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -55,18 +51,6 @@ export const selectAccountItemForGraph = createAccountsMemoizedSelector(
         },
     },
 );
-
-export const selectIsUnrecognizedToken = (
-    state: TokenDefinitionsRootState & AccountsRootState,
-    accountKey: AccountKey,
-    tokenContract?: TokenAddress,
-): boolean => {
-    if (!tokenContract) return false;
-    const account = selectAccountByKey(state, accountKey);
-    if (!account) return false;
-
-    return !selectIsSpecificCoinDefinitionKnown(state, account.symbol, tokenContract);
-};
 
 export const selectAssetTabOfAccountToken = (
     state: TokensRootState & FiatRatesRootState & WalletSettingsRootState,

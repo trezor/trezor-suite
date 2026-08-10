@@ -45,11 +45,6 @@ import {
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    YieldDisabledAlert,
-    useMessageSystemWrappedNative,
-    useWrappedNativeFirmwareUpdateAlert,
-} from '@suite-native/module-earn';
-import {
     type RootStackParamList,
     RootStackRoutes,
     type StackNavigationProps,
@@ -58,11 +53,14 @@ import {
 import {
     type TokensRootState as NativeTokensRootState,
     selectAccountTokenInfo,
+    selectIsUnrecognizedToken,
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { selectIsUnrecognizedToken } from '../selectors';
-import { getWrappedNativeTokenEntries } from '../wrappedNativeTokenEntryUtils';
+import { YieldDisabledAlert } from './YieldDisabledAlert';
+import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
+import { useWrappedNativeFirmwareUpdateAlert } from '../hooks/useWrappedNativeFirmwareUpdateAlert';
+import { getWrappedNativeTokenEntries } from '../utils/wrappedNativeTokenEntryUtils';
 
 const detailRowStyle = prepareNativeStyle(({ spacings }) => ({
     flexDirection: 'row',
