@@ -38,7 +38,7 @@ export const WrappedNativeTokenAmountInputCard = ({
     tokenDecimals,
     tokenSymbol,
 }: WrappedNativeTokenAmountInputCardProps) => {
-    const { setValue } = useFormContext<YieldDepositFormValues>();
+    const { setValue, trigger } = useFormContext<YieldDepositFormValues>();
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const converters = useCryptoFiatConverters({ symbol, tokenContract });
@@ -60,8 +60,12 @@ export const WrappedNativeTokenAmountInputCard = ({
                     ),
                 );
             }
+
+            // setValue alone does not refresh formState.isValid here, so a prefilled or maxed
+            // amount would keep the submit button disabled until the user typed.
+            void trigger('amount');
         },
-        [baseCurrencyCode, converters, isBaseCurrencyInSats, setValue],
+        [baseCurrencyCode, converters, isBaseCurrencyInSats, setValue, trigger],
     );
 
     useEffect(() => {
