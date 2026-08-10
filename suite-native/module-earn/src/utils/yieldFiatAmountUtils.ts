@@ -1,5 +1,9 @@
 import { type YieldFlowDisplayToken } from '@suite-common/wallet-core';
-import { type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
+import {
+    type BaseCurrencyAmount,
+    type TokenAddress,
+    toTokenAddress,
+} from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 type GetFiatFormValueParams = {
@@ -34,3 +38,30 @@ export const getYieldTokenContract = (
     token: YieldFlowDisplayToken | null,
 ): TokenAddress | undefined =>
     token?.contractAddress ? toTokenAddress(token.contractAddress) : undefined;
+
+type GetApproximateFiatAmountParams = {
+    cryptoAmount: string;
+    convertCryptoToFiat?: (amount: BigNumber) => BaseCurrencyAmount | null;
+};
+
+/**
+ * Returns null when there's nothing to approximate (empty/invalid/zero amount or missing rate)
+ * so callers hide the whole "≈" row — zero also covers the shares→asset '0' fallback when the
+ * vault lacks price-per-share.
+ */
+export const getApproximateFiatAmount = ({
+    cryptoAmount,
+    convertCryptoToFiat,
+}: GetApproximateFiatAmountParams) => {
+    if (!cryptoAmount || !convertCryptoToFiat) {
+        return null;
+    }
+
+    const amount = new BigNumber(cryptoAmount);
+
+    if (amount.isNaN() || amount.isZero()) {
+        return null;
+    }
+
+    return convertCryptoToFiat(amount);
+};
