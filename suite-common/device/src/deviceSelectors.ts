@@ -164,11 +164,11 @@ export const selectSupportedDeviceLanguages = createMemoizedSelector(
     availableDeviceTranslations => {
         const supportedDeviceLanguages = Object.entries(LANGUAGES)
             .filter(([code]) => availableDeviceTranslations[code])
-            .map(([code, { icon, name }]) => ({
+            .map(([code, { icon, name, type }]) => ({
                 value: code as Locale,
                 icon,
                 label: name,
-                isBeta: true, // TODO: This will need tweaking in the future.
+                isBeta: type === 'community',
             }))
             .sort((a, b) => a.label.localeCompare(b.label));
 
