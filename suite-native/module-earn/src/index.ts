@@ -5,6 +5,7 @@ export { useStakingRate } from './hooks/useStakingRate';
 export { useNativeYieldVault } from './hooks/useNativeYieldVault';
 export { StablecoinYieldApyBreakdown } from './components/StablecoinYieldApyBreakdown';
 export { YieldDisabledAlert } from './components/YieldDisabledAlert';
+export { TokenYieldRateBadge } from './components/TokenYieldRateBadge';
 export { useApyBreakdownAlert } from './hooks/useApyBreakdownAlert';
 export { useMessageSystemWrappedNative } from './hooks/useMessageSystemWrappedNative';
 export { useMessageSystemYield } from './hooks/useMessageSystemYield';

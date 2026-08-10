@@ -11,6 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { AccountsListTokenItem } from '@suite-native/accounts';
+import { TokenYieldRateBadge } from '@suite-native/module-earn';
 
 import { type OnSelectAsset } from './types';
 
@@ -55,6 +56,9 @@ export const DefiTokensTab = ({ accountKey, onSelect }: DefiTokensTabProps) => {
                 hasBackground
                 isFirst={item.isFirst}
                 isLast={item.isLast}
+                badges={
+                    <TokenYieldRateBadge account={account!} token={item.token} variant="active" />
+                }
                 onSelectAccount={() =>
                     onSelect({ tokenContract: item.token.contract, tokenSymbol: item.token.symbol })
                 }

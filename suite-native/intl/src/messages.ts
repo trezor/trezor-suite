@@ -3506,6 +3506,14 @@ export const messages = {
         aprPercentage: '~{apy}% APR',
         ratePercentage: '~{apy}% Rate',
         notAvailableShort: 'N/A',
+        yieldRateBadge: {
+            apy: '{value}% APY',
+            apr: '{value}% APR',
+            rate: '{value}% Rate',
+            upToApy: 'up to {value}% APY',
+            upToApr: 'up to {value}% APR',
+            upToRate: 'up to {value}% Rate',
+        },
         messageSystem: {
             depositDisabled: 'Deposits currently disabled.',
             withdrawDisabled: 'Withdrawals currently disabled.',

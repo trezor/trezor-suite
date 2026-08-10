@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
@@ -6,13 +7,13 @@ import {
     type MessageSystemRootState,
     selectIsYieldFeatureDisabled,
 } from '@suite-common/message-system';
-import { getNetworkByYieldXyzId, isWrappedNativeToken } from '@suite-common/wallet-config';
-import { getYieldVaultContractAddress, isYieldVaultOperational } from '@suite-common/wallet-core';
+import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
 
 import { useMessageSystemYield } from './useMessageSystemYield';
 import { selectBestEnabledYieldVault } from '../selectors';
+import { getWrappedNativeYieldVaults } from '../utils/getWrappedNativeYieldVaults';
 
 const emptyVaults: YieldDtoV2[] = [];
 
@@ -29,15 +30,16 @@ export const useNativeYieldVault = ({ account }: UseNativeYieldVaultProps) => {
         enabled: isYieldOptionRelevant,
     });
 
-    const wrappedNativeVaults = isYieldOptionRelevant
-        ? (availableVaults ?? emptyVaults).filter(
-              vault =>
-                  isYieldVaultOperational(vault) &&
-                  vault.status.enter &&
-                  getNetworkByYieldXyzId(vault.network)?.symbol === account.symbol &&
-                  isWrappedNativeToken(account.symbol, vault.token.address),
-          )
-        : emptyVaults;
+    const wrappedNativeVaults = useMemo(
+        () =>
+            isYieldOptionRelevant
+                ? getWrappedNativeYieldVaults({
+                      vaults: availableVaults,
+                      networkSymbol: account.symbol,
+                  })
+                : emptyVaults,
+        [account?.symbol, availableVaults, isYieldOptionRelevant],
+    );
 
     const hasYieldOption = useSelector((state: MessageSystemRootState) =>
         wrappedNativeVaults.some(
