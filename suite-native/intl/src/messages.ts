@@ -2015,19 +2015,21 @@ export const messages = {
                 xpub: {
                     title: 'Public key (XPUB)',
                     showButton: 'Show public key (XPUB)',
+                    confirmOnTrezorButton: 'Confirm on Trezor',
                     copyMessage: 'XPUB copied',
                 },
                 copyButton: 'Copy',
                 viewOnlyWarning: {
-                    title: 'Public key (XPUB) can’t be verified',
-                    description: 'To confirm the public key (XPUB), connect your Trezor.',
-                    primaryButton: 'Continue without verifying',
+                    title: 'Your Trezor isn’t connected',
+                    description:
+                        'To prevent phishing attacks, verify the public key on your Trezor. Connect it to continue with the verification process.',
+                    primaryButton: 'Show unverified public key',
                     secondaryButton: 'Back',
                 },
                 unverifiedWarning: {
-                    title: 'Verify the public key (XPUB) on your Trezor',
+                    title: 'Public key not verified',
                     subtitle:
-                        'To prevent phishing attacks, verify the public key (XPUB) on your Trezor.',
+                        'To prevent phishing attacks, verify the public key on your Trezor once it’s connected.',
                 },
             },
             renameForm: {

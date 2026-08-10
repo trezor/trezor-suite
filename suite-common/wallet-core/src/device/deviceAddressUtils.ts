@@ -49,8 +49,6 @@ export const getPublicKeyForNetworkType = ({
             return TrezorConnect.getPublicKey(params);
         case 'cardano':
             return TrezorConnect.cardanoGetPublicKey({ ...params, derivationType });
-        case 'solana':
-            return TrezorConnect.solanaGetPublicKey(params);
         default:
             return methodNotDefinedError('getPublicKey');
     }

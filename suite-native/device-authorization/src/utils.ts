@@ -35,6 +35,7 @@ export const flowEndingButtonRequests = [
     'ButtonRequest_ConfirmOutput',
     'ButtonRequest_SignTx',
     'ButtonRequest_Address',
+    'ButtonRequest_PublicKey',
 ] as const;
 
 export const isFlowEndingButtonRequest = (action: UnknownAction) =>
