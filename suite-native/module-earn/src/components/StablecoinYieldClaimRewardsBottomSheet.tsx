@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { AccountTypeBadge } from '@suite-native/accounts';
+import { parseAccountKey } from '@suite-common/wallet-utils';
+import { AccountTypeBadge, selectAccountLabel } from '@suite-native/accounts';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -15,6 +17,7 @@ import {
 import { AddressFormatter, BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { type CombinedLabelingState } from '@suite-native/labeling';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type StablecoinYieldClaimItem } from '../utils/stablecoinYieldClaimSummaryUtils';
@@ -54,36 +57,40 @@ const StablecoinYieldClaimRewardsItem = ({
     onPress,
 }: StablecoinYieldClaimRewardsItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const { summary, vault } = claimItem;
+    const { summary, vaults } = claimItem;
+
+    const { accountDescriptor, deviceStaticSessionId } = parseAccountKey(summary.accountKey);
+    const customAccountLabel = useSelector((state: CombinedLabelingState) =>
+        selectAccountLabel(state, deviceStaticSessionId, accountDescriptor, summary.networkSymbol),
+    );
 
     const handlePress = useCallback(() => {
         onPress(claimItem);
     }, [claimItem, onPress]);
 
-    const accountTitle = summary.accountLabel ?? getNetworkDisplaySymbolName(summary.networkSymbol);
+    const accountTitle = customAccountLabel ?? getNetworkDisplaySymbolName(summary.networkSymbol);
+    const hasVaults = vaults.length > 0;
+    const singleVault = vaults.length === 1 ? vaults[0] : undefined;
+    const vaultsTitle = vaults.map(vault => vault.name).join(', ');
 
     return (
         <Card borderColor="borderNeutral" noPadding style={applyStyle(itemCardStyle)}>
             <PressableOpacity onPress={handlePress} style={applyStyle(itemRowStyle)}>
                 <Box marginRight="sp12">
-                    {vault ? (
-                        <TokenIcon
-                            symbol={summary.networkSymbol}
-                            contractAddress={vault.tokenContract}
-                            size="small"
-                            showNetworkIcon
-                            wrappedTokenIcon="network"
-                        />
-                    ) : (
-                        <TokenIcon symbol={summary.networkSymbol} size="small" />
-                    )}
+                    <TokenIcon
+                        symbol={summary.networkSymbol}
+                        contractAddress={singleVault?.tokenContract}
+                        size="small"
+                        showNetworkIcon={!!singleVault}
+                        wrappedTokenIcon="network"
+                    />
                 </Box>
 
                 <VStack spacing="sp2" style={applyStyle(itemContentStyle)}>
                     <Text numberOfLines={1} ellipsizeMode="tail">
-                        {vault?.name ?? accountTitle}
+                        {hasVaults ? vaultsTitle : accountTitle}
                     </Text>
-                    {vault ? (
+                    {hasVaults ? (
                         <Text
                             variant="body-sm"
                             color="contentSecondary"
@@ -94,7 +101,7 @@ const StablecoinYieldClaimRewardsItem = ({
                         </Text>
                     ) : (
                         <AddressFormatter
-                            value={summary.accountDescriptor}
+                            value={accountDescriptor}
                             format="short"
                             variant="body-sm"
                             color="contentSecondary"

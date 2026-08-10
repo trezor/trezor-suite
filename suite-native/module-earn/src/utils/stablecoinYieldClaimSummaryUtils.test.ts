@@ -122,8 +122,6 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
             {
                 type: 'stablecoin-yield',
                 accountKey: ethereumAccount.key,
-                accountLabel: ethereumAccount.accountLabel,
-                accountDescriptor: ethereumAccount.descriptor,
                 networkSymbol: ethereumAccount.symbol,
                 claimableRewardsCount: 1,
                 fiatClaimableAmount: null,
@@ -269,19 +267,21 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
             expect(items).toEqual([
                 {
                     summary: expect.objectContaining({ accountKey: ethereumAccount.key }),
-                    vault: {
-                        name: 'Spark USDC Vault',
-                        tokenContract: underlyingTokenContract,
-                    },
+                    vaults: [
+                        {
+                            name: 'Spark USDC Vault',
+                            tokenContract: underlyingTokenContract,
+                        },
+                    ],
                 },
                 {
                     summary: expect.objectContaining({ accountKey: exitedEthereumAccount.key }),
-                    vault: null,
+                    vaults: [],
                 },
             ]);
         });
 
-        it('does not attach a vault when the account holds multiple vault positions', () => {
+        it('attaches all named vault positions when the account holds multiple', () => {
             const items = buildStablecoinYieldClaimItems({
                 stablecoinYieldClaimSummaries: claimSummaries,
                 stablecoinYieldActiveItems: [
@@ -299,8 +299,13 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
             });
 
             expect(items).toEqual([
-                expect.objectContaining({ vault: null }),
-                expect.objectContaining({ vault: null }),
+                expect.objectContaining({
+                    vaults: [
+                        expect.objectContaining({ name: 'Spark USDC Vault' }),
+                        expect.objectContaining({ name: 'Steakhouse USDT Vault' }),
+                    ],
+                }),
+                expect.objectContaining({ vaults: [] }),
             ]);
         });
 
@@ -329,14 +334,19 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
             expect(items).toEqual([
                 {
                     summary: expect.objectContaining({ accountKey: ethereumAccount.key }),
-                    vault: {
-                        name: 'Spark USDC Vault',
-                        tokenContract: underlyingTokenContract,
-                    },
+                    vaults: [
+                        {
+                            name: 'Spark USDC Vault',
+                            tokenContract: underlyingTokenContract,
+                        },
+                    ],
                 },
                 {
                     summary: expect.objectContaining({ accountKey: exitedEthereumAccount.key }),
-                    vault: null,
+                    vaults: [
+                        expect.objectContaining({ name: 'Steakhouse USDT Vault' }),
+                        expect.objectContaining({ name: 'Morpho USDC Vault' }),
+                    ],
                 },
             ]);
         });
@@ -359,7 +369,7 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
             ]);
         });
 
-        it('does not attach a vault when the vault name is unknown', () => {
+        it('skips vault positions without a name', () => {
             const items = buildStablecoinYieldClaimItems({
                 stablecoinYieldClaimSummaries: claimSummaries,
                 stablecoinYieldActiveItems: [
@@ -367,7 +377,7 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
                 ],
             });
 
-            expect(items[0]?.vault).toBeNull();
+            expect(items[0]?.vaults).toEqual([]);
         });
     });
 });
