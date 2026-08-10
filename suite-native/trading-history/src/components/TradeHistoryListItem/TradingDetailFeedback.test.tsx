@@ -1,4 +1,6 @@
 import { sendFeedbackAction } from '@suite-common/feedback';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { fireEvent, screen } from '@suite-native/test-utils-store';
 
 import { TradingDetailFeedback } from './TradingDetailFeedback';
@@ -11,11 +13,15 @@ jest.mock('@suite-common/feedback', () => ({
 
 const sendFeedbackActionMock = sendFeedbackAction as unknown as jest.Mock;
 
+const reportMock = jest.fn();
+const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(reportMock) };
+
 describe('TradingDetailFeedback', () => {
     const renderTradingDetailFeedback = (
         props: Partial<Parameters<typeof TradingDetailFeedback>[0]> = {},
     ) =>
         renderWithTradingHistoryProvider(<TradingDetailFeedback type="exchange" {...props} />, {
+            services,
             overrides: {
                 geolocation: { countryCode: 'CZ' },
                 analytics: { instanceId: 'test-instance' },
@@ -24,6 +30,7 @@ describe('TradingDetailFeedback', () => {
 
     beforeEach(() => {
         sendFeedbackActionMock.mockClear();
+        reportMock.mockClear();
     });
 
     it('renders the feedback card heading', () => {
@@ -72,5 +79,31 @@ describe('TradingDetailFeedback', () => {
         fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
 
         expect(sendFeedbackActionMock).not.toHaveBeenCalled();
+        expect(reportMock).not.toHaveBeenCalledWith({
+            type: events.tradingFeedbackSentEvent.name,
+        });
+    });
+
+    it('reports the rating selected event with the rating and trade type', () => {
+        renderTradingDetailFeedback();
+
+        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+
+        expect(reportMock).toHaveBeenCalledWith({
+            type: events.tradingFeedbackRatingSelectedEvent.name,
+            payload: { rating: '4', type: 'exchange' },
+        });
+    });
+
+    it('reports the feedback sent event on submit', () => {
+        renderTradingDetailFeedback();
+
+        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+        fireEvent.changeText(screen.getByTestId('@feedback-form/description-input'), 'Great!');
+        fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
+
+        expect(reportMock).toHaveBeenCalledWith({
+            type: events.tradingFeedbackSentEvent.name,
+        });
     });
 });

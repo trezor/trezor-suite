@@ -13,6 +13,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/analytics": "workspace:*",
+        "@suite-common/feedback": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/trading": "workspace:*",

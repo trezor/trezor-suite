@@ -18,6 +18,7 @@ export type FeedbackCardProps = {
     successDescription: ReactNode;
     closeLabel: ReactNode;
     onSubmit: (rating: Rating, description: string) => void;
+    onRatingSelect?: (rating: Rating) => void;
     defaultView?: FeedbackCardView;
 };
 
@@ -29,6 +30,7 @@ export const FeedbackCard = ({
     successDescription,
     closeLabel,
     onSubmit,
+    onRatingSelect,
     defaultView = 'form',
 }: FeedbackCardProps) => {
     const [rating, setRating] = useState<Rating | undefined>();
@@ -36,8 +38,13 @@ export const FeedbackCard = ({
     const [view, setView] = useState<FeedbackCardView>(defaultView);
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal({ isNestedSheet: true });
 
-    const handleSelectRating = (selectedRating: Rating) => {
+    const selectRating = (selectedRating: Rating) => {
         setRating(selectedRating);
+        onRatingSelect?.(selectedRating);
+    };
+
+    const handleCardRatingPress = (selectedRating: Rating) => {
+        selectRating(selectedRating);
         openModal();
     };
 
@@ -74,7 +81,7 @@ export const FeedbackCard = ({
                                     key={id}
                                     rating={id}
                                     emoji={emoji}
-                                    onPress={handleSelectRating}
+                                    onPress={handleCardRatingPress}
                                 />
                             ))}
                         </HStack>
@@ -92,7 +99,7 @@ export const FeedbackCard = ({
                 isSuccessDisplayed={view === 'success'}
                 rating={rating}
                 feedbackText={feedbackText}
-                onRatingSelect={setRating}
+                onRatingSelect={selectRating}
                 onFeedbackTextChange={setFeedbackText}
                 onSubmit={handleSubmit}
                 onClose={closeModal}
