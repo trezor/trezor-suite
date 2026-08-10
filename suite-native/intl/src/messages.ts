@@ -3200,7 +3200,7 @@ export const messages = {
         },
         yieldWithdrawFlowScreen: {
             withdrawalAmount: 'Withdrawal amount',
-            withdrawMax: 'Withdraw max',
+            maxButton: 'Max',
             deposited: 'Deposited:',
             withdrawPendingTitle: 'Confirming withdrawal',
             modalTitle: 'Withdraw',

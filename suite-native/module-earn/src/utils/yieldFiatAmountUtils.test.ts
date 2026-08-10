@@ -1,13 +1,19 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { toTokenAddress } from '@suite-common/wallet-types';
+import { asBaseCurrencyAmount, toTokenAddress } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { getFiatFormValue, getYieldTokenContract } from './yieldFiatAmountUtils';
+import {
+    getApproximateFiatAmount,
+    getFiatFormValue,
+    getYieldTokenContract,
+} from './yieldFiatAmountUtils';
 
 const ethSymbol = asNetworkSymbol('eth');
 const USDC_ADDRESS = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 
 const convertAtRate = (rate: number) => (amount: BigNumber) => amount.multipliedBy(rate);
+const convertToBaseCurrencyAtRate = (rate: number) => (amount: BigNumber) =>
+    asBaseCurrencyAmount(amount.multipliedBy(rate));
 
 describe(getFiatFormValue.name, () => {
     it('returns an empty string for an empty crypto amount', () => {
@@ -107,5 +113,61 @@ describe(getYieldTokenContract.name, () => {
                 contractAddress: USDC_ADDRESS,
             }),
         ).toBe(USDC_ADDRESS);
+    });
+});
+
+describe(getApproximateFiatAmount.name, () => {
+    it('returns null for an empty crypto amount', () => {
+        expect(
+            getApproximateFiatAmount({
+                cryptoAmount: '',
+                convertCryptoToFiat: convertToBaseCurrencyAtRate(2000),
+            }),
+        ).toBeNull();
+    });
+
+    it('returns null when no converter is available', () => {
+        expect(
+            getApproximateFiatAmount({
+                cryptoAmount: '1',
+                convertCryptoToFiat: undefined,
+            }),
+        ).toBeNull();
+    });
+
+    it('returns null when the converter returns null', () => {
+        expect(
+            getApproximateFiatAmount({
+                cryptoAmount: '1',
+                convertCryptoToFiat: () => null,
+            }),
+        ).toBeNull();
+    });
+
+    it('returns null for a zero amount', () => {
+        expect(
+            getApproximateFiatAmount({
+                cryptoAmount: '0',
+                convertCryptoToFiat: convertToBaseCurrencyAtRate(2000),
+            }),
+        ).toBeNull();
+    });
+
+    it('returns null for a non-numeric amount', () => {
+        expect(
+            getApproximateFiatAmount({
+                cryptoAmount: 'not-a-number',
+                convertCryptoToFiat: convertToBaseCurrencyAtRate(2000),
+            }),
+        ).toBeNull();
+    });
+
+    it('returns the converted value for a valid amount and rate', () => {
+        expect(
+            getApproximateFiatAmount({
+                cryptoAmount: '2',
+                convertCryptoToFiat: convertToBaseCurrencyAtRate(2000),
+            })?.toString(),
+        ).toBe('4000');
     });
 });
