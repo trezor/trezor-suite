@@ -11,7 +11,7 @@ const { metroSecureResolver } = require('@trezor/bundler-security/src/metroSecur
 // Learn more https://docs.expo.io/guides/customizing-metro
 
 const jsonExpoConfig = getSentryExpoConfig(__dirname);
-const defaultSourceExts = jsonExpoConfig.resolver.sourceExts;
+const defaultSourceExts = [...jsonExpoConfig.resolver.sourceExts, 'md'];
 const additionalSourceExts = process.env.RN_SRC_EXT ? process.env.RN_SRC_EXT.split(',') : [];
 const sourceExts = [...additionalSourceExts, ...defaultSourceExts];
 
