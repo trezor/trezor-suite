@@ -118,6 +118,14 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
     const { isDiscreetMode } = useDiscreetMode();
     const ethName = transaction.ethereumSpecific?.parsedData?.name;
 
+    if (transaction.type === 'failed') {
+        return (
+            <Text variant={variant}>
+                <Translation id="transactions.name.failed" />
+            </Text>
+        );
+    }
+
     // WETH wrap/unwrap get their own label (with the amount) instead of the generic contract-call
     // method name ("deposit"/"withdraw") that the indexer parses.
     const wrapKind = getNativeWrapTxKind(transaction);

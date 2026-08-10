@@ -130,6 +130,10 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
         return <Translation id="TR_UNCONFIRMED_TX_LONG" />;
     }
 
+    if (transaction.type === 'failed') {
+        return <Translation id="TR_FAILED_TRANSACTION" />;
+    }
+
     // WETH wrap/unwrap are shown as their own labels instead of the generic contract-call name
     // ("deposit"/"withdraw") that the indexer parses. The wrapped-token amount isn't obvious from
     // the transaction row, so it's spelled out while the native side stays a bare symbol
@@ -149,7 +153,6 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
 
     if (
         transaction?.ethereumSpecific?.parsedData?.name &&
-        transaction.type !== 'failed' &&
         // Exclude Transfer txs, the default messages are more descriptive
         transaction.ethereumSpecific.parsedData.name !== 'Transfer'
     ) {
