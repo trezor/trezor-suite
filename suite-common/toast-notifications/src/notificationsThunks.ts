@@ -5,7 +5,7 @@ import { selectNotifications } from './notificationsSelectors';
 import { isTransactionNotification } from './notificationsUtils';
 import { type NotificationEntry, type NotificationsRootState } from './types';
 
-type TransactionEntry = NotificationEntry & { descriptor?: string; txid?: string };
+export type TransactionEntry = NotificationEntry & { descriptor?: string; txid?: string };
 
 const findTransactionEvents = (descriptor: string, notifications: NotificationEntry[]) =>
     notifications

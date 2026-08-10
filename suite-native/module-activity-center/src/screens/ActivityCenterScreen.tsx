@@ -33,7 +33,6 @@ export const ActivityCenterScreen = () => {
             label: <Translation id="moduleActivityCenter.tabs.notifications" />,
             accessory: hasUnseenNotifications ? <NotificationDot /> : undefined,
         },
-        { value: 'system', label: <Translation id="moduleActivityCenter.tabs.system" /> },
         {
             value: 'releaseNotes',
             label: <Translation id="moduleActivityCenter.tabs.releaseNotes" />,

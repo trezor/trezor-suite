@@ -301,4 +301,18 @@ export type TransactionNotification = (
 ) &
     CommonNotificationPayload;
 
-export type TransactionNotificationType = TransactionNotification['type'];
+export type TransactionNotificationType =
+    | 'tx-sent'
+    | 'tx-received'
+    | 'tx-confirmed'
+    | 'tx-staked'
+    | 'tx-unstaked'
+    | 'tx-claimed'
+    | 'tx-revoked'
+    | 'tx-approved'
+    | 'tx-wrap'
+    | 'tx-unwrap'
+    | 'raw-tx-sent'
+    | 'tx-yield-deposit'
+    | 'tx-yield-withdraw'
+    | 'tx-yield-claim';
