@@ -2718,7 +2718,7 @@ export const messages = {
         },
         unwrapNativeToken: {
             entryButton: 'Unwrap',
-            title: 'Unwrap',
+            title: 'Unwrap {wrappedSymbol} to {nativeSymbol}',
             amountToUnwrap: 'Amount to unwrap',
             submitButton: 'Unwrap',
             closeButton: 'Close',
