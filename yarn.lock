@@ -15229,7 +15229,7 @@ __metadata:
     "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    dropbox: "npm:^10.34.0"
+    dropbox: "npm:^10.38.0"
     immer: "npm:11.1.8"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
@@ -25406,14 +25406,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dropbox@npm:^10.34.0":
-  version: 10.34.0
-  resolution: "dropbox@npm:10.34.0"
-  dependencies:
-    node-fetch: "npm:^2.6.1"
-  peerDependencies:
-    "@types/node-fetch": ^2.5.7
-  checksum: 10/1a6c39b21c9503438bd4e73757d6a88314716a2dadf3bac61ee7ddee2cf0356aa2f98744f0e0a42065b81de7b10df1f5b8b9b694a60dad8c9275903fc3071daa
+"dropbox@npm:^10.38.0":
+  version: 10.38.0
+  resolution: "dropbox@npm:10.38.0"
+  checksum: 10/0a97720aec7581d4955bf21f3f54c9f4779985d7b945bdbb3026e9c685657fe03bc8f293d735ad8b116ffaccc4d634ecde2663219c0a6b0e6ce86405c806da8f
   languageName: node
   linkType: hard
 
@@ -37555,7 +37551,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:2.7.0, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.7, node-fetch@npm:^2.7.0":
+"node-fetch@npm:2.7.0, node-fetch@npm:^2.6.7, node-fetch@npm:^2.7.0":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
