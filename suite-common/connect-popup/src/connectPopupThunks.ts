@@ -43,7 +43,8 @@ import {
     type SelectAccountCandidate,
     isUtxoNetwork,
 } from './connectPopupTypes';
-import { postCallHooks, preCallHooks } from './methodHooks';
+import { compatibilityHooks, postCallHooks, preCallHooks } from './methodHooks';
+import type { DistributiveOmit } from './methodHooks/types';
 import {
     deriveCardanoEnabledNetworks,
     mergePermissions,
@@ -52,8 +53,6 @@ import {
 } from './permissions';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
-
-type DistributiveOmit<T, K extends keyof T> = T extends T ? Omit<T, K> : never;
 
 type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     method: M;
@@ -66,8 +65,10 @@ export const connectPopupCallThunkInner = createThunk<
     ConnectPopupCallThunkParams<CallMethodKeys>
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
-    async ({ method, payload, source }, { dispatch, getState, extra }) => {
+    async ({ source, ...params }, { dispatch, getState, extra }) => {
         try {
+            const { method, payload } = compatibilityHooks({ ...params, source });
+
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
 
             const methodInfo = await TrezorConnect.call({
@@ -253,7 +254,7 @@ export const connectPopupCallThunkInner = createThunk<
             extra.services.analytics.report({
                 type: events.connectPopupErrorEvent.name,
                 payload: {
-                    method,
+                    method: params.method,
                     origin: source.origin,
                     error: error?.code,
                     appName: source.manifest.appName,

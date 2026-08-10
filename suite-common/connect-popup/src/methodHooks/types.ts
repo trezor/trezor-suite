@@ -11,6 +11,20 @@ import { type Err, type Ok } from '@trezor/type-utils';
 
 import { type ConnectCallSource } from '../connectPopupTypes';
 
+export type DistributiveOmit<T, K extends keyof T> = T extends T ? Omit<T, K> : never;
+
+export type CompatibilityHookParams<M extends CallMethodKeys> = {
+    method: M;
+    payload: DistributiveOmit<CallMethodParams<M>, 'method'>;
+    source: ConnectCallSource;
+};
+
+// A compatibility hook only rewrites the method/payload; `source` is input-only.
+export type CompatibilityHookResult<M extends CallMethodKeys> = Pick<
+    CompatibilityHookParams<M>,
+    'method' | 'payload'
+>;
+
 export type PreCallHookParams<M extends CallMethodKeys> = {
     method: M;
     payload: Omit<CallMethodParams<M>, 'method'>;
