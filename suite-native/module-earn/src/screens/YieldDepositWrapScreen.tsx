@@ -277,8 +277,8 @@ export const YieldDepositWrapScreen = () => {
                     account={account}
                     closeAction={handleClose}
                     onInfoPress={openInfoBottomSheet}
+                    title={vaultTokenName}
                     tokenContract={route.params.tokenContract}
-                    vaultName={vaultTokenName}
                 />
             }
             footer={

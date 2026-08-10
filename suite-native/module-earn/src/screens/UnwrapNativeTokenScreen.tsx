@@ -17,7 +17,7 @@ import {
 } from '@suite-native/navigation';
 
 import { WrappedNativeTokenAmountInputCard } from '../components/WrappedNativeTokenAmountInputCard';
-import { WrappedNativeTokenScreenHeader } from '../components/WrappedNativeTokenScreenHeader';
+import { YieldDepositFlowScreenHeader } from '../components/YieldDepositFlowScreenHeader';
 import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldFeeSection } from '../components/YieldFeeSection';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
@@ -96,9 +96,11 @@ export const UnwrapNativeTokenScreen = () => {
     return (
         <Screen
             header={
-                <WrappedNativeTokenScreenHeader
-                    accountLabel={accountLabel}
+                <YieldDepositFlowScreenHeader
+                    account={account}
+                    closeActionType="back"
                     title={<Translation id="earn.unwrapNativeToken.title" />}
+                    tokenContract={toTokenAddress(wrappedNative.address)}
                 />
             }
         >
