@@ -144,6 +144,8 @@ export enum EventType {
     TradingCountrySelection = 'trading/country_selection',
     TradingExchange = 'trading/exchange',
     TradingExchangeIssue = 'trading/exchange-issue',
+    TradingFeedbackRatingSelected = 'trading/feedback/rating-selected',
+    TradingFeedbackSent = 'trading/feedback/sent',
     TradingNavigate = 'trading/navigate',
     // eslint-disable-next-line local-rules/analytics-event-name
     TradingParameterChanged = 'trading/parameter_changed',

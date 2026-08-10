@@ -80,6 +80,8 @@ export { tradingConfirmTradeEvent } from './tradingConfirmTradeEvent';
 export { tradingCountrySelectionEvent } from './tradingCountrySelectionEvent';
 export { tradingExchangeEvent } from './tradingExchangeEvent';
 export { tradingExchangeIssueEvent } from './tradingExchangeIssueEvent';
+export { tradingFeedbackRatingSelectedEvent } from './tradingFeedbackRatingSelectedEvent';
+export { tradingFeedbackSentEvent } from './tradingFeedbackSentEvent';
 export { tradingNavigateEvent } from './tradingNavigateEvent';
 export { tradingParameterChangedEvent } from './tradingParameterChangedEvent';
 export { tradingQuoteReceivedEvent } from './tradingQuoteReceivedEvent';

@@ -21,6 +21,7 @@ const expectSheetRatingSelection = (rating: string, isSelected: boolean) => {
 
 describe('FeedbackCard', () => {
     const onSubmit = jest.fn();
+    const onRatingSelect = jest.fn();
     const presentSpy = jest.spyOn(BottomSheetModal.prototype, 'present');
     const dismissSpy = jest.spyOn(BottomSheetModal.prototype, 'dismiss');
 
@@ -78,6 +79,25 @@ describe('FeedbackCard', () => {
         expectSheetRatingSelection('4', false);
         // Changing the rating inside the sheet must not present the sheet again.
         expect(presentSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls onRatingSelect when a card rating is pressed', () => {
+        renderFeedbackCard({ onRatingSelect });
+
+        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+
+        expect(onRatingSelect).toHaveBeenCalledTimes(1);
+        expect(onRatingSelect).toHaveBeenCalledWith('4');
+    });
+
+    it('calls onRatingSelect again when the rating is changed inside the sheet', () => {
+        renderFeedbackCard({ onRatingSelect });
+
+        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+        fireEvent.press(screen.getByTestId('@feedback-form/sheet/rating/2'));
+
+        expect(onRatingSelect).toHaveBeenCalledTimes(2);
+        expect(onRatingSelect).toHaveBeenLastCalledWith('2');
     });
 
     it('does not render the description row when no description is provided', () => {
