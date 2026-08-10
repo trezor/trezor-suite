@@ -5,8 +5,10 @@ import {
     type SellTradeStatus,
 } from 'invity-api';
 
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { selectCountryCode } from '@suite-common/geolocation';
 import {
@@ -40,6 +42,14 @@ export const TradingDetailFeedback = ({
     const dispatch = useDispatch();
     const geolocation = useSelector(selectCountryCode);
     const activeExperimentsWithVariants = useSelector(selectActiveExperimentsWithVariants);
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
+
+    const handleRatingSelect = (rating: Rating) => {
+        analytics.report({
+            type: events.tradingFeedbackRatingSelectedEvent.name,
+            payload: { rating, type },
+        });
+    };
 
     const handleSubmit = (rating: Rating, description: string) => {
         const userData = buildUserFeedbackData(device);
@@ -66,6 +76,8 @@ export const TradingDetailFeedback = ({
                 },
             }),
         );
+
+        analytics.report({ type: events.tradingFeedbackSentEvent.name });
     };
 
     return (
@@ -76,6 +88,7 @@ export const TradingDetailFeedback = ({
             successHeading={<Translation id="TR_FEEDBACK_CARD_SUCCESS_TITLE" />}
             successDescription={<Translation id="TR_FEEDBACK_CARD_SUCCESS_DESCRIPTION" />}
             onSubmit={handleSubmit}
+            onRatingSelect={handleRatingSelect}
         />
     );
 };
