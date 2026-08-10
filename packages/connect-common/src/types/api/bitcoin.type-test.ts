@@ -516,6 +516,34 @@ export const sendTransaction = async (api: TrezorConnect) => {
     }
 };
 
+export const composePsbt = async (api: TrezorConnect) => {
+    const precompose = await api.composePsbt({
+        account: {
+            path: 'm/49',
+            addresses: {
+                used: [],
+                unused: [],
+                change: [],
+            },
+            utxo: [],
+        },
+        coin: 'btc',
+        psbtData: '70736274ff01000a0000000000000000000000',
+    });
+
+    if (precompose.success) {
+        const { payload } = precompose;
+        const tx = payload;
+        if (tx.type === 'final') {
+            tx.inputs.map(a => a.prev_index.toFixed());
+            tx.outputs.map(a => a.amount.toString());
+        }
+    } else {
+        precompose.error.message.toLowerCase();
+        precompose.error.code.toLowerCase();
+    }
+};
+
 export const composeTransaction = async (api: TrezorConnect) => {
     const precompose = await api.composeTransaction({
         outputs: [],
@@ -530,8 +558,6 @@ export const composeTransaction = async (api: TrezorConnect) => {
         },
         feeLevels: [{ feePerUnit: '1' }],
         coin: 'btc',
-        // @ts-expect-error
-        push: true,
     });
 
     if (precompose.success) {
@@ -544,16 +570,15 @@ export const composeTransaction = async (api: TrezorConnect) => {
         if (tx.type === 'nonfinal') {
             tx.bytes.toFixed();
             tx.feePerByte.toLowerCase();
-            tx.inputs.map((a: any) => a);
+            tx.inputs.map(a => a.prev_index.toFixed());
         }
         if (tx.type === 'final') {
-            tx.inputs.map((a: any) => a);
-            tx.outputs.map((a: any) => a);
+            tx.inputs.map(a => a.prev_index.toFixed());
+            tx.outputs.map(a => a.amount.toString());
         }
     } else {
         precompose.error.message.toLowerCase();
-        // @ts-expect-error
-        precompose.payload.type.toLowerCase();
+        precompose.error.code.toLowerCase();
     }
 };
 
