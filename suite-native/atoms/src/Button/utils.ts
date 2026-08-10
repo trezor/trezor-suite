@@ -153,7 +153,7 @@ const backgroundMapPressed = {
 
 export const buttonSizeToDimensionsMap = {
     small: {
-        paddingVertical: nativeSpacings.sp2,
+        paddingVertical: nativeSpacings.sp6,
         paddingHorizontal: nativeSpacings.sp12,
         borderRadius: nativeBorders.radii.r8,
     },
@@ -197,7 +197,7 @@ export const iconButtonToIconSizeMap = {
 } as const satisfies Record<DeprecatedIconButtonSize, (typeof buttonToIconSizeMap)[ButtonSize]>;
 
 export const iconButtonPaddingMap = {
-    small: nativeSpacings.sp6,
+    small: nativeSpacings.sp8,
     medium: nativeSpacings.sp12,
     large: 14,
 } as const satisfies Record<DeprecatedIconButtonSize, number>;

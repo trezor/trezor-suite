@@ -76,7 +76,6 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                                     variant={yieldBadgeVariant}
                                     vaultId={yieldBadge.vaultId ?? ''}
                                     account={account}
-                                    tokenContract={token?.contract}
                                 />
                             )}
                         </HStack>

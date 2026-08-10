@@ -17,8 +17,9 @@ import {
 } from '@suite-native/navigation';
 
 import { EarnAccountCard } from './EarnAccountCard';
-import { type NavigateToStakingDetail } from '../hooks/useStakingDetailNavigation';
+import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
 import { useStakingNavigateAnalytics } from '../hooks/useStakingNavigateAnalytics';
+import { useYieldDetailNavigation } from '../hooks/useYieldDetailNavigation';
 import { type EarnDepositsCardActiveItem } from '../types';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
@@ -27,7 +28,6 @@ type EarnActiveItemsBottomSheetProps = {
     ref: BottomSheetModalRef;
     type: EarnDepositsCardActiveItem['type'];
     items: EarnDepositsCardActiveItem[];
-    navigateToStakingDetail: NavigateToStakingDetail;
     onClose: () => void;
 };
 
@@ -35,13 +35,15 @@ export const EarnActiveItemsBottomSheet = ({
     ref,
     type,
     items,
-    navigateToStakingDetail,
     onClose,
 }: EarnActiveItemsBottomSheetProps) => {
     const navigation = useNavigation<NavigationProp>();
     const reportStakingNavigate = useStakingNavigateAnalytics();
     const store = useStore<AccountsRootState>();
     const { analytics } = useServices(selectNativeAnalyticsDep);
+
+    const { navigateToStakingDetail } = useStakingDetailNavigation();
+    const { navigateToYieldDetail } = useYieldDetailNavigation();
 
     const title = useMemo(
         () =>
@@ -74,22 +76,28 @@ export const EarnActiveItemsBottomSheet = ({
                         type: events.yieldNavigateEvent.name,
                         payload: {
                             from: 'earn-dashboard',
-                            to: 'account-detail',
+                            to: 'vault-detail',
                             networkSymbol: item.networkSymbol,
                             action: 'continue',
                         },
                     });
 
-                    navigation.navigate(RootStackRoutes.AccountDetail, {
+                    navigateToYieldDetail({
                         accountKey: item.accountKey,
                         tokenContract: item.contractAddress,
-                        closeActionType: 'back',
                     });
                     break;
                 }
             }
         },
-        [navigateToStakingDetail, analytics, navigation, onClose, reportStakingNavigate, store],
+        [
+            navigateToStakingDetail,
+            navigateToYieldDetail,
+            analytics,
+            onClose,
+            reportStakingNavigate,
+            store,
+        ],
     );
 
     const handleClaimPress = useCallback(

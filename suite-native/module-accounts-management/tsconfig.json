@@ -2,9 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/analytics"
-        },
         { "path": "../../suite-common/bip329" },
         {
             "path": "../../suite-common/dependency-injection"
@@ -47,7 +44,6 @@
         { "path": "../atoms" },
         { "path": "../banners" },
         { "path": "../bip329" },
-        { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },

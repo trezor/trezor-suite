@@ -27,6 +27,7 @@ import {
     isStakeTx,
     isStakeTypeTx,
     isUnstakeTx,
+    isYieldTypeTx,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -237,6 +238,11 @@ export const selectAccountStakeTypeTransactions = createMemoizedSelector(
                     isCardanoStakingTx(tx),
             ),
         ),
+);
+
+export const selectAccountYieldTypeTransactions = createMemoizedSelector(
+    [selectAccountTransactions],
+    transactions => returnStableArrayIfEmpty(transactions.filter(isYieldTypeTx)),
 );
 
 export const selectAccountPendingStakeTypeTransactions = createMemoizedSelector(

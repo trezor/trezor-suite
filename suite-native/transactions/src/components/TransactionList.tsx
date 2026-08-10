@@ -24,6 +24,7 @@ import {
     type WalletAccountTransaction,
     selectAccountStakeTypeTransactionsWithTokenTransfers,
     selectAccountTransactionsWithTokenTransfers,
+    selectAccountYieldTypeTransactionsWithTokenTransfers,
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { arrayPartition } from '@trezor/utils';
@@ -41,6 +42,7 @@ type AccountTransactionProps = {
     account: Account;
     tokenContract?: TokenAddress;
     stakingOnly?: boolean;
+    yieldOnly?: boolean;
 };
 
 type RenderSectionHeaderParams = {
@@ -134,6 +136,7 @@ export const TransactionList = ({
     account,
     tokenContract,
     stakingOnly = false,
+    yieldOnly = false,
 }: AccountTransactionProps) => {
     const accountKey = account.key;
     const dispatch = useDispatch();
@@ -149,14 +152,20 @@ export const TransactionList = ({
     );
     const shouldDeferEmptyState = useSelector(
         (state: TransactionsRootState & AccountsRootState) =>
-            stakingOnly && !selectAreAllAccountTransactionsLoaded(state, accountKey),
+            (stakingOnly || yieldOnly) && !selectAreAllAccountTransactionsLoaded(state, accountKey),
     );
 
-    const transactions = useSelector((state: TransactionsRootState & TokensRootState) =>
-        stakingOnly
-            ? selectAccountStakeTypeTransactionsWithTokenTransfers(state, accountKey)
-            : selectAccountTransactionsWithTokenTransfers(state, accountKey),
-    );
+    const transactions = useSelector((state: TransactionsRootState & TokensRootState) => {
+        if (stakingOnly) {
+            return selectAccountStakeTypeTransactionsWithTokenTransfers(state, accountKey);
+        }
+
+        if (yieldOnly) {
+            return selectAccountYieldTypeTransactionsWithTokenTransfers(state, accountKey);
+        }
+
+        return selectAccountTransactionsWithTokenTransfers(state, accountKey);
+    });
 
     const txnsPerPage = getTxsPerPage(account.networkType);
 
