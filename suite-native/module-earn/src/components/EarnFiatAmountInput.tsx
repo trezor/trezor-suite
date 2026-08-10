@@ -5,13 +5,16 @@ import { useSelector } from 'react-redux';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { type TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { Input, type InputType, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { BigNumber } from '@trezor/utils';
 
+import { FIAT_INPUT_MAX_LENGTH } from '../constants';
 import { type EarnFormValues } from '../earnFormSchema';
+import { isAmountInputValueValid } from '../utils/yieldFiatAmountUtils';
 
 type EarnFiatAmountInputProps = {
     symbol: NetworkSymbol;
@@ -47,6 +50,15 @@ export const EarnFiatAmountInput = ({
 
     const handleChangeValue = (newValue: string) => {
         const transformedValue = fiatAmountTransformer(newValue);
+
+        const baseCurrencyDecimals = getDecimalsForBaseCurrency({
+            code: baseCurrencyCode,
+            isInSats: isBaseCurrencyInSats,
+        });
+        if (!isAmountInputValueValid({ value: transformedValue, decimals: baseCurrencyDecimals })) {
+            return;
+        }
+
         onChange(transformedValue);
 
         const cryptoValue = converters?.convertFiatToCrypto?.(
@@ -64,6 +76,7 @@ export const EarnFiatAmountInput = ({
             value={value}
             placeholder="0"
             keyboardType="numeric"
+            maxLength={FIAT_INPUT_MAX_LENGTH}
             accessibilityLabel={accessibilityLabel}
             editable={!isDisabled}
             onChangeText={handleChangeValue}

@@ -18,12 +18,7 @@ import {
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
-import {
-    asAmountSubunit,
-    getApyBreakdown,
-    isDecimalsValid,
-    subunitsToUnits,
-} from '@suite-common/wallet-utils';
+import { asAmountSubunit, getApyBreakdown, subunitsToUnits } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     AnimatedDoubleInput,
@@ -60,7 +55,11 @@ import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationEr
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldWithdrawStepCard } from '../components/YieldWithdrawStepCard';
 import { YieldWithdrawWarning } from '../components/YieldWithdrawWarning';
-import { AMOUNT_INPUT_UNFOCUSED_OFFSET, AMOUNT_INPUT_WRAPPER_HEIGHT } from '../constants';
+import {
+    AMOUNT_INPUT_MAX_LENGTH,
+    AMOUNT_INPUT_UNFOCUSED_OFFSET,
+    AMOUNT_INPUT_WRAPPER_HEIGHT,
+} from '../constants';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
@@ -69,7 +68,7 @@ import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTran
 import { useYieldSession } from '../hooks/useYieldSession';
 import { useYieldWithdrawFees } from '../hooks/useYieldWithdrawFees';
 import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
-import { getYieldTokenContract } from '../utils/yieldFiatAmountUtils';
+import { getYieldTokenContract, isAmountInputValueValid } from '../utils/yieldFiatAmountUtils';
 import { getYieldWithdrawAmountValidationError } from '../utils/yieldWithdrawUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdraw>;
@@ -418,7 +417,10 @@ export const YieldWithdrawScreen = () => {
             ? vault?.outputToken?.decimals
             : flowData.token.decimals;
 
-        if (inputDecimals != null && !isDecimalsValid(transformedValue, inputDecimals)) {
+        if (
+            inputDecimals != null &&
+            !isAmountInputValueValid({ value: transformedValue, decimals: inputDecimals })
+        ) {
             return;
         }
 
@@ -608,6 +610,7 @@ export const YieldWithdrawScreen = () => {
                                         value={assetAmount}
                                         placeholder="0"
                                         keyboardType="numeric"
+                                        maxLength={AMOUNT_INPUT_MAX_LENGTH}
                                         editable={!isDisabled}
                                         onChangeText={handleAmountChange}
                                         onPress={onPress}
@@ -636,6 +639,7 @@ export const YieldWithdrawScreen = () => {
                                         value={sharesAmount}
                                         placeholder="0"
                                         keyboardType="numeric"
+                                        maxLength={AMOUNT_INPUT_MAX_LENGTH}
                                         editable={!isDisabled}
                                         onChangeText={handleAmountChange}
                                         onPress={onPress}

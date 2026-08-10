@@ -79,6 +79,7 @@ export const YieldAmountInputCard = ({
                         <EarnCryptoAmountInput
                             symbol={symbol}
                             tokenContract={tokenContract}
+                            tokenDecimals={tokenDecimals}
                             displaySymbol={tokenSymbol}
                             accessibilityLabel="amount to deposit input"
                             inputRef={inputRef}

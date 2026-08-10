@@ -6,6 +6,7 @@ import {
     getApproximateFiatAmount,
     getFiatFormValue,
     getYieldTokenContract,
+    isAmountInputValueValid,
 } from './yieldFiatAmountUtils';
 
 const ethSymbol = asNetworkSymbol('eth');
@@ -169,5 +170,18 @@ describe(getApproximateFiatAmount.name, () => {
                 convertCryptoToFiat: convertToBaseCurrencyAtRate(2000),
             })?.toString(),
         ).toBe('4000');
+    });
+});
+
+describe(isAmountInputValueValid.name, () => {
+    it.each([
+        ['an empty value', '', 2, true],
+        ['an integer', '999999999999', 2, true],
+        ['a value within the decimal limit', '10.55', 2, true],
+        ['a value at the decimal limit', '0.123456789012345678', 18, true],
+        ['a value above the decimal limit', '10.555', 2, false],
+        ['any decimals when zero are allowed', '10.5', 0, false],
+    ])('%s → %s', (_description, value, decimals, expected) => {
+        expect(isAmountInputValueValid({ value, decimals })).toBe(expected);
     });
 });

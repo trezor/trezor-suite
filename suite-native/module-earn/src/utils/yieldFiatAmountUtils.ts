@@ -4,6 +4,7 @@ import {
     type TokenAddress,
     toTokenAddress,
 } from '@suite-common/wallet-types';
+import { isDecimalsValid } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 type GetFiatFormValueParams = {
@@ -38,6 +39,19 @@ export const getYieldTokenContract = (
     token: YieldFlowDisplayToken | null,
 ): TokenAddress | undefined =>
     token?.contractAddress ? toTokenAddress(token.contractAddress) : undefined;
+
+type IsAmountInputValueValidParams = {
+    value: string;
+    decimals: number;
+};
+
+export const isAmountInputValueValid = ({ value, decimals }: IsAmountInputValueValidParams) => {
+    if (!value) {
+        return true;
+    }
+
+    return isDecimalsValid(value, decimals);
+};
 
 type GetApproximateFiatAmountParams = {
     cryptoAmount: string;
