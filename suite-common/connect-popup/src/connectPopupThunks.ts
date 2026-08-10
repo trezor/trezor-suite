@@ -86,7 +86,7 @@ export const connectPopupCallThunkInner = createThunk<
     `${CONNECT_POPUP_MODULE}/callThunk`,
     async ({ source, ...params }, { dispatch, getState, extra }) => {
         try {
-            const { method, payload } = compatibilityHooks(params);
+            const { method, payload } = compatibilityHooks({ ...params, source });
 
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
 
