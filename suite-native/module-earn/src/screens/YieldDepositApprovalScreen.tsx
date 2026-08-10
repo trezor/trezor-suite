@@ -223,8 +223,8 @@ export const YieldDepositApprovalScreen = () => {
         analytics.report({
             type: events.yieldDepositEvent.name,
             payload: {
-                action: 'cancel',
-                type: 'approve',
+                action: 'continue',
+                type: 'approve-skipped',
                 networkSymbol: account?.symbol,
                 vaultId: resolvedFlowData.vault?.id,
             },
