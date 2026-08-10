@@ -16900,6 +16900,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/perf-e2e@workspace:*, @trezor/perf-e2e@workspace:packages/perf-e2e":
+  version: 0.0.0-use.local
+  resolution: "@trezor/perf-e2e@workspace:packages/perf-e2e"
+  dependencies:
+    "@trezor/eslint": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/product-components@workspace:*, @trezor/product-components@workspace:packages/product-components":
   version: 0.0.0-use.local
   resolution: "@trezor/product-components@workspace:packages/product-components"
@@ -17326,6 +17334,7 @@ __metadata:
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/network-solana": "workspace:*"
+    "@trezor/perf-e2e": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/suite-data": "workspace:*"
     "@trezor/suite-desktop": "workspace:*"

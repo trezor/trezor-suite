@@ -40,6 +40,7 @@ export const baseConfig: PlaywrightTestConfig = defineConfig<
         currentsFixturesEnabled: isDefaultGithubAction,
     },
     reportSlowTests: null,
+    // A no-op unless a perf-measured test ran.
     // Orchestrated CI runs use `pwc-p run --pwc-skip-reporter-injection`, so reporters must be
     // declared here rather than injected by the CLI. The GitHub reporter is opt-in via env.
     reporter: isDefaultGithubAction
@@ -52,8 +53,13 @@ export const baseConfig: PlaywrightTestConfig = defineConfig<
                         ] as ReporterDescription,
                     ]
                   : []),
+              [path.join(__dirname, '../performance/perfReporter.ts')] as ReporterDescription,
           ] // CI run
-        : [['list'], ['html', { open: 'never' }]], // Local run or Fix Agent CI run
+        : [
+              ['list'],
+              ['html', { open: 'never' }],
+              [path.join(__dirname, '../performance/perfReporter.ts')] as ReporterDescription,
+          ], // Local run or Fix Agent CI run
     timeout: getTimeout(),
     outputDir: path.join(__dirname, '../test-results'),
 });
