@@ -1,10 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import { type YieldFlowToken } from '@suite-common/wallet-core';
+import {
+    type YieldFlowToken,
+    selectBaseCurrency,
+    selectIsBaseCurrencyInSats,
+} from '@suite-common/wallet-core';
 import { type TokenSymbol } from '@suite-common/wallet-types';
+import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
+import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
+import { getFiatFormValue, getYieldTokenContract } from '../utils/yieldFiatAmountUtils';
 import {
     type YieldDepositFormValues,
     yieldDepositFormValidationSchema,
@@ -22,9 +30,26 @@ export const useYieldDepositForm = ({
     tokenSymbol,
 }: UseYieldDepositFormParams) => {
     const { translate } = useTranslate();
-    const [isMaxSelected, setIsMaxSelected] = useState(false);
+
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
+    const baseCurrencyDecimals = getDecimalsForBaseCurrency({
+        code: baseCurrencyCode,
+        isInSats: isBaseCurrencyInSats,
+    });
+    const converters = useCryptoFiatConverters({
+        symbol: token?.networkSymbol ?? null,
+        tokenContract: getYieldTokenContract(token),
+    });
 
     const availableBalance = token?.balance ?? '0';
+
+    const getFiatValue = (cryptoAmount: string) =>
+        getFiatFormValue({
+            cryptoAmount,
+            convertCryptoToFiat: converters?.convertCryptoToFiat,
+            decimals: baseCurrencyDecimals,
+        });
 
     const form = useForm<YieldDepositFormValues>({
         validation: yieldDepositFormValidationSchema,
@@ -35,7 +60,7 @@ export const useYieldDepositForm = ({
             tokenSymbol,
             translate,
         },
-        defaultValues: { amount: defaultAmount ?? '' },
+        defaultValues: { amount: defaultAmount ?? '', fiat: getFiatValue(defaultAmount ?? '') },
     });
 
     const amountValue = useWatch({ control: form.control, name: 'amount' });
@@ -46,22 +71,14 @@ export const useYieldDepositForm = ({
         }
     }, [defaultAmount, form]);
 
-    const handleMaxChange = (value: boolean) => {
-        setIsMaxSelected(value);
-        form.setValue('amount', value ? availableBalance : '', { shouldValidate: true });
-    };
-
-    const handleAmountChange = () => {
-        if (isMaxSelected) {
-            setIsMaxSelected(false);
-        }
+    const handleMaxPress = () => {
+        form.setValue('amount', availableBalance, { shouldValidate: true });
+        form.setValue('fiat', getFiatValue(availableBalance));
     };
 
     return {
         amountValue,
         form,
-        isMaxSelected,
-        handleAmountChange,
-        handleMaxChange,
+        handleMaxPress,
     };
 };

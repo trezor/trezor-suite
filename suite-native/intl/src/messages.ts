@@ -3118,7 +3118,7 @@ export const messages = {
             wrapReceivingLabel: 'Receiving',
             depositPendingTitle: 'Confirming deposit',
             amountToDeposit: 'Amount to deposit',
-            depositMax: 'Deposit max',
+            maxButton: 'Max',
             balance: 'Balance:',
             approvedAmount: 'Approved amount',
             approvalLimit: 'Approval limit',
