@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
@@ -12,6 +13,7 @@ type AccountListTokenItemProps = {
     account: Account;
     onSelectAccount: () => void;
 
+    badges?: ReactNode;
     hasBackground?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
@@ -22,6 +24,7 @@ export const AccountsListTokenItem = ({
     token,
     account,
     onSelectAccount,
+    badges,
     hasBackground,
     isFirst,
     isLast,
@@ -46,6 +49,7 @@ export const AccountsListTokenItem = ({
                 />
             }
             title={getTokenName(token.name)}
+            badges={badges}
             mainValue={
                 showFiatValue && (
                     <TokenToFiatAmountFormatter

@@ -12,7 +12,7 @@ import {
     type OnSelectAccount,
     selectAccountListSectionsWithZeroBalanceGroup,
 } from '@suite-native/accounts';
-import { useStakingDetailNavigation } from '@suite-native/module-earn';
+import { TokenYieldRateBadge, useStakingDetailNavigation } from '@suite-native/module-earn';
 
 import { ZeroBalanceTokensSection } from './ZeroBalanceTokensSection';
 import { type OnSelectAsset } from './types';
@@ -81,6 +81,9 @@ export const ActiveTokensTab = ({
                             hasBackground
                             showDivider
                             onPress={handleSelectAccount}
+                            badges={
+                                <TokenYieldRateBadge account={item.account} variant="inactive" />
+                            }
                         />
                     );
                 case 'staking':
@@ -102,6 +105,13 @@ export const ActiveTokensTab = ({
                         <AccountsListTokenItem
                             {...item}
                             hasBackground
+                            badges={
+                                <TokenYieldRateBadge
+                                    account={item.account}
+                                    token={item.token}
+                                    variant="inactive"
+                                />
+                            }
                             onSelectAccount={() =>
                                 handleSelectAccount({
                                     account: item.account,
