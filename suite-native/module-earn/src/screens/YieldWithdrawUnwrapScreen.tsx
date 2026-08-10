@@ -301,8 +301,8 @@ export const YieldWithdrawUnwrapScreen = () => {
                     account={account}
                     closeAction={handleClose}
                     closeActionType="back"
+                    title={vaultTokenName}
                     tokenContract={route.params.tokenContract}
-                    vaultName={vaultTokenName}
                 />
             }
             footer={

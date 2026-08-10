@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -13,8 +14,8 @@ type YieldDepositFlowScreenHeaderProps = {
     closeAction?: () => void;
     closeActionType?: CloseActionType;
     onInfoPress?: () => void;
+    title: ReactNode;
     tokenContract: TokenAddress;
-    vaultName: string;
 };
 
 export const YieldDepositFlowScreenHeader = ({
@@ -22,8 +23,8 @@ export const YieldDepositFlowScreenHeader = ({
     closeAction,
     closeActionType = 'close',
     onInfoPress,
+    title,
     tokenContract,
-    vaultName,
 }: YieldDepositFlowScreenHeaderProps) => {
     const locale = useSelector(selectSupportedLanguageLocale);
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
@@ -46,7 +47,7 @@ export const YieldDepositFlowScreenHeader = ({
                     />
                     <VStack spacing={0} flexShrink={1}>
                         <Text variant="body-md" numberOfLines={1} ellipsizeMode="tail">
-                            {vaultName}
+                            {title}
                         </Text>
                         <HStack spacing="sp24" justifyContent="space-between" alignItems="center">
                             <Box flexShrink={1}>

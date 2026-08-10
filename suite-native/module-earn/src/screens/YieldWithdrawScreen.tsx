@@ -540,8 +540,8 @@ export const YieldWithdrawScreen = () => {
                     account={account}
                     closeAction={handleClose}
                     onInfoPress={handleOpenInfoBottomSheet}
+                    title={vaultTokenName}
                     tokenContract={headerTokenContract}
-                    vaultName={vaultTokenName}
                 />
             }
             footer={
