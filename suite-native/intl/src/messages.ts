@@ -972,7 +972,7 @@ export const messages = {
                 longCardanoAddress:
                     "This Cardano (ADA) address is too long to fit on your Trezor's screen. Scroll on both screens to view and confirm it.",
                 sharedAssetsAndTokens:
-                    'The receive address is the same for all assets and tokens within this account.',
+                    'The receive address is the same for all assets and tokens in this account.',
                 token: 'Your receive address is your {networkName} address',
                 success: 'The receive address has been confirmed on your Trezor.',
             },
@@ -1056,7 +1056,7 @@ export const messages = {
             unused: 'Unused address',
             received: 'received',
             reuseWarning:
-                "Don't reuse this address to receive funds. It reduces your privacy. <link>Learn more.</link>",
+                "Don't reuse this address for receiving funds. It reduces your privacy. <link>Learn more.</link>",
         },
     },
     moduleSettings: {
@@ -2050,8 +2050,10 @@ export const messages = {
                     footerApy: 'APY may change over time.',
                     footerApyApr: 'APY and APR rates can change over time.',
                     footer: 'APY may change over time.',
+                    apyLabel: '{apy} APY',
                 },
                 infoText: 'This token represents your deposit and all rewards in stablecoin yield.',
+                apy: 'Annual Percentage Yield',
             },
         },
         emptyState: {
@@ -2760,6 +2762,10 @@ export const messages = {
                     secondItem:
                         'With Trezor Suite, easily and securely delegate your {displaySymbol} voting rights to the Everstake validator node. Enjoy competitive rewards, rely on a trusted validator, and retain full ownership of your assets.',
                 },
+                firstItem:
+                    'Everstake maintains and protects your staked {displaySymbol} with their smart contracts, infrastructure, and technology.',
+                secondItem:
+                    "When you stake, the responsibility for your funds' security transitions from your Trezor to Everstake.",
             },
         },
         earnTransactionDataReviewScreen: {
@@ -2835,7 +2841,7 @@ export const messages = {
             stakeMaxButton: 'Stake max',
             unstakeMaxButton: 'Unstake max',
             withdrawalFeesRecommendation:
-                "It's recommended to leave {amount} {displaySymbol} so you can pay for withdrawal fees.",
+                "It's recommended to leave {amount} {displaySymbol} so you can pay withdrawal fees.",
             insufficientBalanceBanner:
                 'Not enough {displaySymbol}. Staking requires at least {minAmount} {displaySymbol} plus network fees.',
             insufficientBalanceBannerButton: 'Buy {displaySymbol}',
@@ -2928,6 +2934,9 @@ export const messages = {
                 },
             },
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
+            claimRewards: {
+                title: 'Claim rewards from an account',
+            },
         },
         howStakeWorksScreen: {
             title: 'How {displaySymbol} staking works',
@@ -3236,7 +3245,7 @@ export const messages = {
                 reviewMismatch: {
                     title: "Claim couldn't be verified",
                     description:
-                        "Reward details didn't match the transaction, so nothing was signed and no funds were moved. Tap Continue to retry with updated info. If the issue persists, contact Trezor Support.",
+                        "Reward details didn't match the transaction, so nothing was signed and no funds were moved. Tap Continue to retry with updated details. If the issue persists, contact Trezor Support.",
                 },
             },
         },
@@ -3288,7 +3297,7 @@ export const messages = {
             deposited: 'Deposited',
             withdrawalAmount: 'Withdrawal amount',
             backToOverview: 'Back to overview',
-            sendAndBackToOverview: 'Send & back to overview',
+            sendAndBackToOverview: 'Send & go back to overview',
         },
         yieldReview: {
             outputs: {
@@ -4069,8 +4078,8 @@ export const messages = {
         },
     },
     feedbackForm: {
-        title: 'How was your trading experience?',
-        description: 'Your feedback helps us improve – tell us what you think.',
+        title: 'How was your experience?',
+        description: 'Your feedback helps us improve. Tell us what you think.',
         submitButton: 'Send feedback',
         successTitle: 'Thanks!',
         successDescription: 'We value your feedback.',
