@@ -27,6 +27,8 @@ export { earnStablecoinYieldTilePressedEvent } from './earnStablecoinYieldTilePr
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
 export { ejectDeviceClickEvent } from './ejectDeviceClickEvent';
 export { emptyDashboardActionEvent } from './emptyDashboardActionEvent';
+export { feedbackRatingSelectedEvent } from './feedbackRatingSelectedEvent';
+export { feedbackSentEvent } from './feedbackSentEvent';
 export { firmwareFirmwareUpdateCancelEvent } from './firmwareFirmwareUpdateCancelEvent';
 export { firmwareFirmwareUpdateFinishedEvent } from './firmwareFirmwareUpdateFinishedEvent';
 export { firmwareFirmwareUpdateStartedEvent } from './firmwareFirmwareUpdateStartedEvent';
@@ -80,8 +82,6 @@ export { tradingConfirmTradeEvent } from './tradingConfirmTradeEvent';
 export { tradingCountrySelectionEvent } from './tradingCountrySelectionEvent';
 export { tradingExchangeEvent } from './tradingExchangeEvent';
 export { tradingExchangeIssueEvent } from './tradingExchangeIssueEvent';
-export { tradingFeedbackRatingSelectedEvent } from './tradingFeedbackRatingSelectedEvent';
-export { tradingFeedbackSentEvent } from './tradingFeedbackSentEvent';
 export { tradingNavigateEvent } from './tradingNavigateEvent';
 export { tradingParameterChangedEvent } from './tradingParameterChangedEvent';
 export { tradingQuoteReceivedEvent } from './tradingQuoteReceivedEvent';

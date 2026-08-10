@@ -46,8 +46,8 @@ export const TradingDetailFeedback = ({
 
     const handleRatingSelect = (rating: Rating) => {
         analytics.report({
-            type: events.tradingFeedbackRatingSelectedEvent.name,
-            payload: { rating, type },
+            type: events.feedbackRatingSelectedEvent.name,
+            payload: { rating, category: 'trade', context: type },
         });
     };
 
@@ -77,7 +77,10 @@ export const TradingDetailFeedback = ({
             }),
         );
 
-        analytics.report({ type: events.tradingFeedbackSentEvent.name });
+        analytics.report({
+            type: events.feedbackSentEvent.name,
+            payload: { category: 'trade', context: type },
+        });
     };
 
     return (

@@ -14759,7 +14759,6 @@ __metadata:
     "@suite-common/feedback": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite/router": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
