@@ -7,12 +7,18 @@ import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 import { DeviceManager } from './DeviceManager';
 
-export const DeviceManagerScreenHeader = () => {
+type DeviceManagerScreenHeaderProps = {
+    noBottomPadding?: boolean;
+};
+
+export const DeviceManagerScreenHeader = ({
+    noBottomPadding,
+}: DeviceManagerScreenHeaderProps = {}) => {
     const isActivityCenterEnabled = useFeatureFlag(FeatureFlag.IsActivityCenterEnabled);
     const hasUnseenNotifications = useSelector(selectHasUnseenNotifications);
 
     return (
-        <ScreenHeaderWrapper>
+        <ScreenHeaderWrapper noBottomPadding={noBottomPadding}>
             <HStack spacing="sp12">
                 <DeviceManager />
                 {isActivityCenterEnabled && (
