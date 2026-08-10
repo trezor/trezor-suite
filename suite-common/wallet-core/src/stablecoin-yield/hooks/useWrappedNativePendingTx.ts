@@ -11,15 +11,15 @@ import {
     getWrappedNativePendingTxStatus,
 } from '@suite-common/wallet-utils';
 
-import { type WrappedNativeFlowType } from './stablecoinYieldTypes';
 import {
     type FetchAndUpdateAccountThunkDeps,
     type FetchAndUpdateAccountThunkState,
     fetchAndUpdateAccountThunk,
-} from '../accounts/accountsThunks';
-import { type FeesRootState, selectConvertedNetworkFeeInfo } from '../fees/feesReducer';
-import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
-import { selectAccountTransactions } from '../transactions/transactionsSelectors';
+} from '../../accounts/accountsThunks';
+import { type FeesRootState, selectConvertedNetworkFeeInfo } from '../../fees/feesReducer';
+import { type TransactionsRootState } from '../../transactions/transactionsReducerTypes';
+import { selectAccountTransactions } from '../../transactions/transactionsSelectors';
+import { type WrappedNativeFlowType } from '../stablecoinYieldTypes';
 
 export type { WrappedNativePendingTxStatus };
 

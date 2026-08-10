@@ -2,7 +2,7 @@ import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import type { YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import type { YieldPendingTransactionState } from './stablecoinYieldTypes';
+import type { YieldPendingTransactionState } from '../stablecoinYieldTypes';
 import {
     buildEvmSelectedFee,
     buildYieldDepositCalldata,

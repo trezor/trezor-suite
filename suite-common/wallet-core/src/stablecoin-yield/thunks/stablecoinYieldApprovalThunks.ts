@@ -9,16 +9,16 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
+import { fetchAllowance } from '../../allowance/fetchAllowance';
+import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
 import {
     type StablecoinYieldRootState,
     type StablecoinYieldTranslationKey,
     stablecoinYieldActions,
-} from './stablecoinYieldReducer';
-import { selectStablecoinYieldSession } from './stablecoinYieldSelectors';
-import type { YieldFlowResolvedData, YieldPositionFlowType } from './stablecoinYieldTypes';
-import { getAllowanceSpender, getWithdrawRequestAmount } from './stablecoinYieldUtils';
-import { fetchAllowance } from '../allowance/fetchAllowance';
+} from '../stablecoinYieldReducer';
+import { selectStablecoinYieldSession } from '../stablecoinYieldSelectors';
+import type { YieldFlowResolvedData, YieldPositionFlowType } from '../stablecoinYieldTypes';
+import { getAllowanceSpender, getWithdrawRequestAmount } from '../utils/stablecoinYieldUtils';
 
 const YIELD_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
 const YIELD_GENERIC_ERROR = 'TR_EARN_YIELD_ERROR_GENERIC';

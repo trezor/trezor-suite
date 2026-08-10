@@ -7,23 +7,23 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
 
 import { composeYieldDepositTransactionThunk } from './stablecoinYieldDepositThunks';
-import { estimateYieldFeeLevel } from './stablecoinYieldFeeEstimation';
-import { type YieldFlowResolvedData } from './stablecoinYieldTypes';
-import { accountsInitialState } from '../accounts/accountsReducer';
-import { fetchAllowance } from '../allowance/fetchAllowance';
-import { feesReducer } from '../fees/feesReducer';
-import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
-import { transactionsInitialState } from '../transactions/transactionsReducer';
+import { accountsInitialState } from '../../accounts/accountsReducer';
+import { fetchAllowance } from '../../allowance/fetchAllowance';
+import { feesReducer } from '../../fees/feesReducer';
+import { ethereumGetCurrentNonceThunk } from '../../send/sendFormEthereumThunks';
+import { transactionsInitialState } from '../../transactions/transactionsReducer';
+import { type YieldFlowResolvedData } from '../stablecoinYieldTypes';
+import { estimateYieldFeeLevel } from '../utils/stablecoinYieldFeeEstimation';
 
-jest.mock('../allowance/fetchAllowance', () => ({
+jest.mock('../../allowance/fetchAllowance', () => ({
     fetchAllowance: jest.fn(),
 }));
 
-jest.mock('./stablecoinYieldFeeEstimation', () => ({
+jest.mock('../utils/stablecoinYieldFeeEstimation', () => ({
     estimateYieldFeeLevel: jest.fn(),
 }));
 
-jest.mock('../send/sendFormEthereumThunks', () => ({
+jest.mock('../../send/sendFormEthereumThunks', () => ({
     ethereumGetCurrentNonceThunk: jest.fn(() => () => {
         const result = { nonce: '5', confirmedNonce: '5' };
 

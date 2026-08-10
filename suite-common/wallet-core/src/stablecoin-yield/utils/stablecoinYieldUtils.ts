@@ -14,7 +14,7 @@ import {
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { YIELD_FLOW_AVAILABLE_STEPS } from './stablecoinYieldConstants';
+import { YIELD_FLOW_AVAILABLE_STEPS } from '../stablecoinYieldConstants';
 import type {
     YieldFlowDisplayToken,
     YieldFlowResolvedData,
@@ -22,7 +22,7 @@ import type {
     YieldFlowType,
     YieldPendingTransactionState,
     YieldWithdrawFlowType,
-} from './stablecoinYieldTypes';
+} from '../stablecoinYieldTypes';
 
 type TokenLike = {
     address?: string | null;

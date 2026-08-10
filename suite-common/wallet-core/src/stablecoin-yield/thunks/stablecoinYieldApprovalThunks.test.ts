@@ -7,16 +7,16 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
 
 import { initYieldAllowanceThunk } from './stablecoinYieldApprovalThunks';
+import { fetchAllowance } from '../../allowance/fetchAllowance';
 import {
     type StablecoinYieldRootState,
     stablecoinYieldActions,
     stablecoinYieldReducer,
-} from './stablecoinYieldReducer';
-import { selectStablecoinYieldSession } from './stablecoinYieldSelectors';
-import { type YieldFlowResolvedData } from './stablecoinYieldTypes';
-import { fetchAllowance } from '../allowance/fetchAllowance';
+} from '../stablecoinYieldReducer';
+import { selectStablecoinYieldSession } from '../stablecoinYieldSelectors';
+import { type YieldFlowResolvedData } from '../stablecoinYieldTypes';
 
-jest.mock('../allowance/fetchAllowance', () => ({
+jest.mock('../../allowance/fetchAllowance', () => ({
     fetchAllowance: jest.fn(),
 }));
 
