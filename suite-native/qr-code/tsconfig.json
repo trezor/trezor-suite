@@ -11,6 +11,7 @@
         },
         { "path": "../atoms" },
         { "path": "../clipboard" },
+        { "path": "../device-authorization" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../toasts" },
