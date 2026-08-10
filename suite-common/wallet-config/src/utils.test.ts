@@ -1,10 +1,16 @@
-import { networks } from './networksConfig';
-import { asNetworkSymbol } from './types';
+import {
+    createGetNetworkConfig,
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
+
+import { getNetworks } from './networksConfig';
+import type { NetworkSymbol } from './types';
 import {
     filterNetworksByName,
     getMainnets,
     getNetworkChainId,
-    getNetworksWithMevProtection,
+    getNetworksWithFeature,
     getNetworksWithNativeTokenReserve,
     getTestnets,
     isAccountBasedNetwork,
@@ -12,52 +18,52 @@ import {
     isNetworkUsingExternalBackend,
 } from './utils';
 
-const { btc: bitcoin, eth: ethereum, test: testnet, regtest } = networks;
-
+const networkModules = createNetworksCompositionRoot();
+const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
+const deps = { getNetworkConfig, networkModuleRepository };
+const networks = getNetworks(deps);
+const getNetworkFixture = (symbol: NetworkSymbol) =>
+    networks.find(network => network.symbol === symbol)!;
+const bitcoin = getNetworkFixture('btc');
+const ethereum = getNetworkFixture('eth');
+const testnet = getNetworkFixture('test');
+const regtest = getNetworkFixture('regtest');
 const mockNetworks = [bitcoin, ethereum, testnet, regtest];
 
 describe(getMainnets.name, () => {
     it('returns non-testnet, non-debug-only networks when debug is false', () => {
-        const result = getMainnets({
-            allNetworks: mockNetworks,
-        });
-        expect(result).toEqual([bitcoin, ethereum]);
+        expect(getMainnets({ allNetworks: mockNetworks })).toEqual([bitcoin, ethereum]);
     });
 });
 
 describe(getTestnets.name, () => {
     it('returns testnet, non-debug-only networks when debug is false', () => {
-        const result = getTestnets({
-            useTestnetNetworks: true,
-            allNetworks: mockNetworks,
-        });
-        expect(result).toEqual([testnet]);
+        expect(getTestnets({ useTestnetNetworks: true, allNetworks: mockNetworks })).toEqual([
+            testnet,
+        ]);
     });
 
     it('includes all testnets when debug is true', () => {
-        const result = getTestnets({
-            debug: true,
-            useTestnetNetworks: true,
-            allNetworks: mockNetworks,
-        });
-        expect(result).toEqual([testnet, regtest]);
+        expect(
+            getTestnets({ debug: true, useTestnetNetworks: true, allNetworks: mockNetworks }),
+        ).toEqual([testnet, regtest]);
     });
 
     it('returns no testnets when testnet networks feature flag is disabled', () => {
-        const result = getTestnets({
-            allNetworks: mockNetworks,
-        });
-        expect(result).toEqual([]);
+        expect(getTestnets({ allNetworks: mockNetworks })).toEqual([]);
     });
 });
 
 describe(getNetworkChainId.name, () => {
     it('returns the configured chain ID', () => {
-        expect(getNetworkChainId('eth')).toBe(1);
+        expect(getNetworkChainId(deps, 'eth')).toBe(1);
     });
 
     it('throws when the network does not have a chain ID', () => {
-        expect(() => getNetworkChainId('btc')).toThrow('Network btc does not define a chain ID.');
+        expect(() => getNetworkChainId(deps, 'btc')).toThrow(
+            'Network btc does not define a chain ID.',
+        );
     });
 });
 
@@ -85,45 +91,47 @@ describe(isAccountOfNetwork.name, () => {
         accountType => expect(isAccountOfNetwork(bitcoin, accountType)).toBe(true),
     );
 
-    it('returns false for non-existing accountType in bitcoin', () => {
+    it('returns false for non-existing account types', () => {
         expect(isAccountOfNetwork(bitcoin, 'foobar')).toBe(false);
-    });
-
-    it('returns false for non-existing accountType in ethereum', () => {
         expect(isAccountOfNetwork(ethereum, 'segwit')).toBe(false);
     });
 });
 
-describe('isAccountBasedNetwork', () => {
-    it.each(['btc', 'ada'])('returns false for %s', symbol => {
-        expect(isAccountBasedNetwork(asNetworkSymbol(symbol))).toBe(false);
+describe(isAccountBasedNetwork.name, () => {
+    it.each<NetworkSymbol>(['btc', 'ada'])('returns false for %s', symbol => {
+        expect(isAccountBasedNetwork(deps, symbol)).toBe(false);
     });
 
-    it.each(['eth', 'sol', 'hype'])('returns true for %s', symbol => {
-        expect(isAccountBasedNetwork(asNetworkSymbol(symbol))).toBe(true);
-    });
-
-    it('returns throw for unknown network type', () => {
-        expect(() => isAccountBasedNetwork(asNetworkSymbol('unknown'))).toThrow();
+    it.each<NetworkSymbol>(['eth', 'sol', 'hype'])('returns true for %s', symbol => {
+        expect(isAccountBasedNetwork(deps, symbol)).toBe(true);
     });
 });
 
 describe(isNetworkUsingExternalBackend.name, () => {
-    it.each(['bsc', 'pol', 'op', 'arb', 'base', 'rhc', 'hype', 'avax', 'sol', 'dsol'])(
-        'returns true for %s',
-        symbol => {
-            expect(isNetworkUsingExternalBackend(asNetworkSymbol(symbol))).toBe(true);
-        },
+    it.each<NetworkSymbol>([
+        'bsc',
+        'pol',
+        'op',
+        'arb',
+        'base',
+        'rhc',
+        'hype',
+        'avax',
+        'sol',
+        'dsol',
+    ])('returns true for %s', symbol =>
+        expect(isNetworkUsingExternalBackend(deps, symbol)).toBe(true),
     );
 
-    it.each(['btc', 'eth', 'trx', 'xlm', 'xrp', 'ada'])('returns false for %s', symbol => {
-        expect(isNetworkUsingExternalBackend(asNetworkSymbol(symbol))).toBe(false);
-    });
+    it.each<NetworkSymbol>(['btc', 'eth', 'trx', 'xlm', 'xrp', 'ada'])(
+        'returns false for %s',
+        symbol => expect(isNetworkUsingExternalBackend(deps, symbol)).toBe(false),
+    );
 });
 
-describe(getNetworksWithMevProtection.name, () => {
+describe(getNetworksWithFeature.name, () => {
     it('returns string with all networks with MEV protection', () => {
-        expect(getNetworksWithMevProtection()).toEqual(
+        expect(getNetworksWithFeature(networks, 'mev-protection')).toBe(
             'Ethereum, BNB Smart Chain, Arbitrum One, Base',
         );
     });
@@ -131,7 +139,7 @@ describe(getNetworksWithMevProtection.name, () => {
 
 describe(getNetworksWithNativeTokenReserve.name, () => {
     it('returns string with all networks with native token reserve', () => {
-        expect(getNetworksWithNativeTokenReserve()).toEqual(
+        expect(getNetworksWithNativeTokenReserve(networks)).toBe(
             'Base, Optimism, Robinhood Chain, Solana',
         );
     });
