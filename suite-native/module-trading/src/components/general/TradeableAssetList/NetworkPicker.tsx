@@ -1,11 +1,10 @@
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Button, Text } from '@suite-native/atoms';
+import { Button, Text, useBottomSheetControls } from '@suite-native/atoms';
 import { selectDiscoverySupportedNetworks } from '@suite-native/discovery';
 import { NetworkIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import { useBottomSheetControls } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { NetworksSheet } from './NetworksSheet';
