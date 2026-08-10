@@ -30,15 +30,17 @@ export const useNativeYieldVault = ({ account }: UseNativeYieldVaultProps) => {
         enabled: isYieldOptionRelevant,
     });
 
+    const networkSymbol = account?.symbol;
+
     const wrappedNativeVaults = useMemo(
         () =>
-            isYieldOptionRelevant
+            isYieldOptionRelevant && networkSymbol !== undefined
                 ? getWrappedNativeYieldVaults({
                       vaults: availableVaults,
-                      networkSymbol: account.symbol,
+                      networkSymbol,
                   })
                 : emptyVaults,
-        [account?.symbol, availableVaults, isYieldOptionRelevant],
+        [availableVaults, isYieldOptionRelevant, networkSymbol],
     );
 
     const hasYieldOption = useSelector((state: MessageSystemRootState) =>
