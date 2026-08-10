@@ -5,6 +5,7 @@ import { networks } from './networksConfig';
 import {
     type AccountType,
     type Network,
+    type NetworkDisplaySymbol,
     type NetworkFeature,
     type NetworkSymbol,
     type NetworkSymbolExtended,
@@ -124,6 +125,16 @@ export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is Networ
  */
 export const getNetwork = (symbol: NetworkSymbol): Network => networks[symbol];
 
+export const getNetworkChainId = (symbol: NetworkSymbol): number => {
+    const { chainId } = getNetwork(symbol);
+
+    if (chainId === undefined) {
+        throw new Error(`Network ${symbol} does not define a chain ID.`);
+    }
+
+    return chainId;
+};
+
 /**
  * Use instead of getNetwork, if there is not a guarantee that the symbol is a valid network symbol.
  * @param symbol
@@ -147,7 +158,7 @@ export const getNetworkByTradeCryptoId = (tradeCryptoId: string): Network | unde
 export const getNetworkByEvmChainId = (chainId: number): Network | undefined =>
     networksCollection.find(n => n.chainId === chainId);
 
-export const getNetworkDisplaySymbol = (symbol: NetworkSymbol): string =>
+export const getNetworkDisplaySymbol = (symbol: NetworkSymbol): NetworkDisplaySymbol =>
     getNetwork(symbol).displaySymbol;
 
 export const getDisplaySymbol = (coinSymbol: string, contractAddress?: string | null) => {

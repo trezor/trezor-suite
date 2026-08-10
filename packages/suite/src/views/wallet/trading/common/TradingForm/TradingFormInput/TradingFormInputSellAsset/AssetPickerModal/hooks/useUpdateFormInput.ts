@@ -5,7 +5,7 @@ import {
     createAssetNativeTokenOption,
     useTradingAssets,
 } from '@suite-common/trading';
-import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { type AssetPickerListItem } from 'src/components/suite/asset-picker/hooks';
 
@@ -22,9 +22,7 @@ export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormI
             switch (asset.type) {
                 case 'account': {
                     onAssetSelect({
-                        ...createAssetNativeTokenOption(
-                            asset.account.symbol as NetworkConfigWithoutTestnets['symbol'],
-                        ),
+                        ...createAssetNativeTokenOption(asset.account.symbol as NetworkSymbol),
                         accountKey: asset.account.key,
                     });
                     break;
