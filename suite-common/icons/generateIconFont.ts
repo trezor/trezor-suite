@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-// eslint-disable-next-line import/no-extraneous-dependencies
 import chalk from 'chalk';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { FontAssetType, OtherAssetType, generateFonts } from 'fantasticon';
