@@ -46,6 +46,9 @@
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        {
             "path": "../../networks/ripple/network-ripple"
         },
         {

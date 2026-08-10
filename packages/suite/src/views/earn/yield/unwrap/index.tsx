@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { goto } from '@suite/router';
-import { WRAPPED_NATIVE } from '@suite-common/wallet-config';
-import { isWrappedNativeToken } from '@suite-common/wallet-utils';
+import { getWrappedNativeToken, isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
 import { WrappedNativePageHeader } from 'src/components/earn/yield/common/WrappedNativePageHeader';
@@ -14,7 +13,7 @@ import { EarnLayoutFallback } from '../../EarnLayoutFallback';
 export const EarnUnwrap = () => {
     const dispatch = useDispatch();
     const { account, routeParams } = useEarnRouteAccount();
-    const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
+    const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
     // Held here rather than in UnwrapNativeToken because useLayout renders the header outside it.
     const [isFlowComplete, setIsFlowComplete] = useState(false);
 
