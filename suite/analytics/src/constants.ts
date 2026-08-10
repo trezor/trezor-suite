@@ -137,6 +137,8 @@ export enum EventType {
     TradeSell = 'trade/sell',
     // eslint-disable-next-line local-rules/analytics-event-name
     TradeStatus = 'trade/status',
+    TradingFeedbackRatingSelected = 'trading/feedback/rating-selected',
+    TradingFeedbackSent = 'trading/feedback/sent',
     TransactionCancel = 'transaction/cancel',
     // eslint-disable-next-line local-rules/analytics-event-name
     TransactionCreated = 'transaction-created',

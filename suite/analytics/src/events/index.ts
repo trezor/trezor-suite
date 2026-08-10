@@ -105,6 +105,8 @@ export { tradeNavigateEvent } from './tradeNavigateEvent';
 export { tradeReceivedQuotesEvent } from './tradeReceivedQuotesEvent';
 export { tradeSellEvent } from './tradeSellEvent';
 export { tradeStatusEvent } from './tradeStatusEvent';
+export { tradingFeedbackRatingSelectedEvent } from './tradingFeedbackRatingSelectedEvent';
+export { tradingFeedbackSentEvent } from './tradingFeedbackSentEvent';
 export { transactionCancelEvent } from './transactionCancelEvent';
 export { transactionCreatedEvent } from './transactionCreatedEvent';
 export { transactionTimeoutRetryEvent } from './transactionTimeoutRetryEvent';

@@ -6,10 +6,16 @@
             "path": "../../suite-common/analytics"
         },
         {
+            "path": "../../suite-common/feedback"
+        },
+        {
             "path": "../../suite-common/metadata-types"
         },
         {
             "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/trading"
         },
         {
             "path": "../../suite-common/wallet-config"
