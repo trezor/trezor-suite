@@ -9,8 +9,8 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "lint:js:fix": "yarn lint:js --fix",
-        "test:unit": "yarn g:jest:native",
-        "test:unit:coverage": "yarn g:jest:native --coverage",
+        "test:unit": "yarn g:jest:native --passWithNoTests",
+        "test:unit:coverage": "yarn g:jest:native --coverage --passWithNoTests",
         "test:unit:watch": "yarn g:jest:native --watch",
         "type-check": "yarn g:tsc --build"
     },

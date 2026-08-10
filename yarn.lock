@@ -11687,6 +11687,7 @@ __metadata:
     "@whatwg-node/events": "npm:0.1.2"
     abortcontroller-polyfill: "npm:1.7.8"
     babel-jest: "npm:29.7.0"
+    babel-plugin-inline-import: "npm:^3.0.0"
     babel-plugin-transform-remove-console: "npm:^6.9.4"
     babel-preset-expo: "npm:~56.0.13"
     browserify-zlib: "npm:^0.2.0"
@@ -12573,6 +12574,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-native/analytics": "workspace:*"
+    "@suite-native/icons": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -12582,6 +12584,16 @@ __metadata:
   peerDependencies:
     react-native: "*"
     react-native-reanimated: "*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/markdown@workspace:*, @suite-native/markdown@workspace:suite-native/markdown":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/markdown@workspace:suite-native/markdown"
+  dependencies:
+    "@trezor/styles-native": "workspace:*"
+    react: "npm:19.2.3"
+    react-native-enriched-markdown: "npm:^0.7.4"
   languageName: unknown
   linkType: soft
 
@@ -12745,9 +12757,14 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/markdown": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
+    "@trezor/urls": "workspace:*"
     react: "npm:19.2.3"
+    react-native: "npm:0.85.3"
     react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
@@ -21237,6 +21254,15 @@ __metadata:
     webpack:
       optional: true
   checksum: 10/4169d55704e7b5204d79b628266d7820856602864044c7110893052e8a7c118a4cacb94bebfb33a6ca2e91b195e0359e6e214e6ef3c9e48137537b7624cc3338
+  languageName: node
+  linkType: hard
+
+"babel-plugin-inline-import@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "babel-plugin-inline-import@npm:3.0.0"
+  dependencies:
+    require-resolve: "npm:0.0.2"
+  checksum: 10/abb8de9995aa4f34bf587e1b18df3b9132e68890d336823a3f32512905c1b17fc890e9e248dde326d29c3bb8e1a88d93c0724d3bcde94ebfdebc5226c7019f0e
   languageName: node
   linkType: hard
 
@@ -38870,6 +38896,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path-extra@npm:^1.0.2":
+  version: 1.0.3
+  resolution: "path-extra@npm:1.0.3"
+  checksum: 10/3e433436896986d657a2c2497e3a52a2a6802a1ec1622f4c2a1ebeae67ccd8f546615005061e66192632d9d935ed2d1df5e56ff991e63c6e8a9eb63bda34d155
+  languageName: node
+  linkType: hard
+
 "path-is-absolute@npm:1.0.1, path-is-absolute@npm:^1.0.0":
   version: 1.0.1
   resolution: "path-is-absolute@npm:1.0.1"
@@ -40534,6 +40567,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-enriched-markdown@npm:^0.7.4":
+  version: 0.7.4
+  resolution: "react-native-enriched-markdown@npm:0.7.4"
+  peerDependencies:
+    "@expo/config-plugins": ">=50.0.0"
+    katex: ">=0.16.0"
+    react: "*"
+    react-native: "*"
+  peerDependenciesMeta:
+    "@expo/config-plugins":
+      optional: true
+    katex:
+      optional: true
+  checksum: 10/2b5d822ed0cf06aeb82c7d557c48fe543bd46cdfacc62cd8c52c80589fb945bb31c5b2cc7cf38cb4e939b1b5b09b587247ae220287e7469066a5b5b177a564b1
+  languageName: node
+  linkType: hard
+
 "react-native-gesture-handler@npm:2.31.1":
   version: 2.31.1
   resolution: "react-native-gesture-handler@npm:2.31.1"
@@ -41731,6 +41781,15 @@ __metadata:
   version: 2.0.1
   resolution: "require-package-name@npm:2.0.1"
   checksum: 10/3332d4eec10a730627ca20f37a8a7d57badd9e8953f238472aa457b0084907f86ca5b2af94694a0c8bb2e1101bdb3ed6ddc964d2044b040fe076a9bf5b19755f
+  languageName: node
+  linkType: hard
+
+"require-resolve@npm:0.0.2":
+  version: 0.0.2
+  resolution: "require-resolve@npm:0.0.2"
+  dependencies:
+    x-path: "npm:^0.0.2"
+  checksum: 10/a9e3cd75fbebec6d81f0b756dd5044298d49f0b92675bf23318ba8f2a543d8476fb7a18d9378baa4861380e06dcb0996a57206cbf3617e4af38f96465a1fbd64
   languageName: node
   linkType: hard
 
@@ -47806,6 +47865,15 @@ __metadata:
   dependencies:
     is-wsl: "npm:^3.1.0"
   checksum: 10/de4c92187e04c3c27b4478f410a02e81c351dc85efa3447bf1666f34fc80baacd890a6698ec91995631714086992036013286aea3d77e6974020d40a08e00aec
+  languageName: node
+  linkType: hard
+
+"x-path@npm:^0.0.2":
+  version: 0.0.2
+  resolution: "x-path@npm:0.0.2"
+  dependencies:
+    path-extra: "npm:^1.0.2"
+  checksum: 10/72a9c5459ac3a495e194039e4e529b98ffc3cca9c14013cb1da162e5886e5b5d40158a576362f0c3cc38b1d2a42cb4056d8435f745f9f50ceeaa5697a2eb19a6
   languageName: node
   linkType: hard
 
