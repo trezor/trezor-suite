@@ -75,6 +75,7 @@ const connectPublicCallableMethodGroups = {
     bitcoin: [
         'sendTransaction',
         'signTransaction',
+        'composePsbt',
         'composeTransaction',
         'authorizeCoinjoin',
         'cancelCoinjoinAuthorization',
