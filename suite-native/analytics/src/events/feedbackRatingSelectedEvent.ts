@@ -6,8 +6,8 @@ import { EventType } from '../constants';
 type Attributes = {
     rating: AttributeDef<Rating>;
     category: AttributeDef<FeedbackCategory>;
-    context: AttributeDef<string | undefined>;
-    provider: AttributeDef<string | undefined>;
+    context?: AttributeDef<string>;
+    provider?: AttributeDef<string>;
 };
 
 export const feedbackRatingSelectedEvent: EventDef<Attributes, EventType.FeedbackRatingSelected> = {
