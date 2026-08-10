@@ -6,6 +6,7 @@ import { EventType } from '../constants';
 type Attributes = {
     category: AttributeDef<FeedbackCategory>;
     context: AttributeDef<string | undefined>;
+    provider: AttributeDef<string | undefined>;
 };
 
 export const feedbackSentEvent: EventDef<Attributes, EventType.FeedbackSent> = {
@@ -21,6 +22,11 @@ export const feedbackSentEvent: EventDef<Attributes, EventType.FeedbackSent> = {
         context: {
             description:
                 'Optional label for the feedback context; for trade feedback the trade type `buy`, `sell`, or `exchange`',
+            changelog: [{ version: '26.8.1', notes: 'added' }],
+        },
+        provider: {
+            description:
+                'Optional provider or identifier for the feedback context; the exchange provider for trade, the vault id for yield',
             changelog: [{ version: '26.8.1', notes: 'added' }],
         },
     },

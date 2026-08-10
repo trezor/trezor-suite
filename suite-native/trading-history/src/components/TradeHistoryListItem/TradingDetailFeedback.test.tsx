@@ -84,19 +84,19 @@ describe('TradingDetailFeedback', () => {
         );
     });
 
-    it('reports the rating selected event with the rating, category and trade context', () => {
-        renderTradingDetailFeedback();
+    it('reports the rating selected event with the rating, category, trade context and provider', () => {
+        renderTradingDetailFeedback({ provider: 'changelly' });
 
         fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
 
         expect(reportMock).toHaveBeenCalledWith({
             type: events.feedbackRatingSelectedEvent.name,
-            payload: { rating: '4', category: 'trade', context: 'exchange' },
+            payload: { rating: '4', category: 'trade', context: 'exchange', provider: 'changelly' },
         });
     });
 
     it('reports the feedback sent event on submit', () => {
-        renderTradingDetailFeedback();
+        renderTradingDetailFeedback({ provider: 'changelly' });
 
         fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
         fireEvent.changeText(screen.getByTestId('@feedback-form/description-input'), 'Great!');
@@ -104,7 +104,7 @@ describe('TradingDetailFeedback', () => {
 
         expect(reportMock).toHaveBeenCalledWith({
             type: events.feedbackSentEvent.name,
-            payload: { category: 'trade', context: 'exchange' },
+            payload: { category: 'trade', context: 'exchange', provider: 'changelly' },
         });
     });
 });

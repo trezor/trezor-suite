@@ -56,7 +56,7 @@ export const YieldFlowComplete = ({
     const handleRatingSelect = (rating: Rating) => {
         analytics.report({
             type: feedbackRatingSelectedEvent.name,
-            payload: { rating, category: 'yield', context: type },
+            payload: { rating, category: 'yield', context: type, provider: vaultId },
         });
     };
 
@@ -85,7 +85,7 @@ export const YieldFlowComplete = ({
 
         analytics.report({
             type: feedbackSentEvent.name,
-            payload: { category: 'yield', context: type },
+            payload: { category: 'yield', context: type, provider: vaultId },
         });
     };
 
