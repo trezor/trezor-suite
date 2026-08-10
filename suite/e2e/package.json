@@ -57,6 +57,7 @@
         "@trezor/e2e-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/network-solana": "workspace:*",
+        "@trezor/perf-e2e": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/suite-data": "workspace:*",
         "@trezor/suite-desktop": "workspace:*",
