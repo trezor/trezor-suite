@@ -48,7 +48,7 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
         },
         type: {
             description:
-                '`approve-skipped` = user explicitly skipped the approval step because an existing allowance already covers the deposit — distinct from `type=approve` `action=cancel` (cancelled before submitting the allowance transaction) and `type=approve-modal` `action=cancel` (declined the allowance simulation modal)',
+                '`approve-skipped` = user skipped the approval step to continue with the allowance already granted — distinct from `type=approve` `action=cancel` (cancelled before submitting the allowance transaction) and `type=approve-modal` `action=cancel` (declined the allowance simulation modal)',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -87,7 +87,10 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
         wrappedNative: {
             description:
                 'Whether the deposited vault token is the wrapped-native token of the network (e.g. WETH on Ethereum), meaning the deposit involves a native wrap step. Reported on `type=deposit` (submit) and `type=success` (confirmed).',
-            changelog: [{ version: '26.8.0', notes: 'added' }],
+            changelog: [
+                { version: '26.8.0', notes: 'added' },
+                { version: '26.8.1', notes: 'reported from mobile as well' },
+            ],
         },
     },
 };

@@ -1,4 +1,5 @@
 import { type EventInstance, events } from '@suite-common/analytics';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type WrappedNativeFlowType,
     type WrappedNativePendingTxStatus,
@@ -16,7 +17,7 @@ export const buildWrappedNativeFlowEvent = (
 
 type WrappedNativeResolutionParams = {
     durationMs: number | undefined;
-    networkSymbol: string;
+    networkSymbol: NetworkSymbol | undefined;
     status: WrappedNativePendingTxStatus | null;
 };
 
