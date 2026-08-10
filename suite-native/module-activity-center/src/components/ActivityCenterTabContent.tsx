@@ -1,4 +1,5 @@
 import { NotificationsTabContent } from './notifications/NotificationsTabContent';
+import { ReleaseNotesTabContent } from './releaseNotes/ReleaseNotesTabContent';
 
 type ActivityCenterTab = 'notifications' | 'system' | 'releaseNotes';
 
@@ -13,6 +14,6 @@ export const ActivityCenterTabContent = ({ activeTab }: Props) => {
         case 'system':
             return null; //TODO: https://github.com/trezor/trezor-suite/issues/30755
         case 'releaseNotes':
-            return null; // TODO: https://github.com/trezor/trezor-suite/issues/30756
+            return <ReleaseNotesTabContent />;
     }
 };

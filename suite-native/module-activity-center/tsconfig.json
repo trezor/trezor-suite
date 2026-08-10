@@ -16,7 +16,13 @@
         { "path": "../atoms" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../link" },
+        { "path": "../markdown" },
         { "path": "../navigation" },
-        { "path": "../../packages/styles-native" }
+        { "path": "../../packages/env-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/urls" }
     ]
 }

@@ -22,9 +22,14 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/link": "workspace:*",
+        "@suite-native/markdown": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
+        "@trezor/urls": "workspace:*",
         "react": "19.2.3",
+        "react-native": "0.85.3",
         "react-redux": "9.3.0"
     }
 }

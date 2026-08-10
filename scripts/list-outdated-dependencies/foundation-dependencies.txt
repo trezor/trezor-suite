@@ -28,6 +28,7 @@
 @types/webpack-bundle-analyzer
 @types/webpack-plugin-serve
 babel-loader
+babel-plugin-inline-import
 babel-plugin-transform-remove-console
 chalk
 copy-webpack-plugin

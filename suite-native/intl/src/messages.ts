@@ -4561,6 +4561,10 @@ export const messages = {
             system: 'System',
             releaseNotes: 'Release notes',
         },
+        releaseNotes: {
+            version: 'Version',
+            viewOnGithub: 'View on GitHub',
+        },
         notifications: {
             empty: {
                 title: 'No notifications',

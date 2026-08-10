@@ -56,6 +56,7 @@ react-intl
 react-markdown
 react-medium-image-zoom
 react-native-edge-to-edge
+react-native-enriched-markdown
 react-native-gesture-handler
 react-native-keyboard-controller
 react-native-reanimated
