@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import {
     type YieldFlowToken,
+    getYieldDepositAvailableBalance,
     selectBaseCurrency,
     selectIsBaseCurrencyInSats,
 } from '@suite-common/wallet-core';
@@ -22,12 +23,14 @@ type UseYieldDepositFormParams = {
     defaultAmount?: string | null;
     token: YieldFlowToken | null;
     tokenSymbol: TokenSymbol | null;
+    wrappedAmount?: string | null;
 };
 
 export const useYieldDepositForm = ({
     defaultAmount,
     token,
     tokenSymbol,
+    wrappedAmount,
 }: UseYieldDepositFormParams) => {
     const { translate } = useTranslate();
 
@@ -42,7 +45,10 @@ export const useYieldDepositForm = ({
         tokenContract: getYieldTokenContract(token),
     });
 
-    const availableBalance = token?.balance ?? '0';
+    const availableBalance = getYieldDepositAvailableBalance({
+        tokenBalance: token?.balance,
+        wrappedAmount,
+    });
 
     const getFiatValue = (cryptoAmount: string) =>
         getFiatFormValue({
@@ -65,11 +71,15 @@ export const useYieldDepositForm = ({
 
     const amountValue = useWatch({ control: form.control, name: 'amount' });
 
+    // The wrapped-token balance can land after the screen mounted, when the prefilled amount was
+    // already validated against the stale one — re-run validation so it clears.
     useEffect(() => {
-        if (defaultAmount) {
-            void form.trigger('amount');
+        if (!form.getValues('amount')) {
+            return;
         }
-    }, [defaultAmount, form]);
+
+        void form.trigger('amount');
+    }, [availableBalance, defaultAmount, form]);
 
     const handleMaxPress = () => {
         form.setValue('amount', availableBalance, { shouldValidate: true });
@@ -78,6 +88,7 @@ export const useYieldDepositForm = ({
 
     return {
         amountValue,
+        availableBalance,
         form,
         handleMaxPress,
     };

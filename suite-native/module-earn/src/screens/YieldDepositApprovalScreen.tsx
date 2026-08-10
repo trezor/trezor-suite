@@ -136,8 +136,9 @@ export const YieldDepositApprovalScreen = () => {
             session?.approval.isModifyMode || hasWrappedAmount ? session?.action.amount : undefined,
         token,
         tokenSymbol,
+        wrappedAmount: session?.result.wrappedAmount,
     });
-    const { amountValue, form, handleMaxPress } = depositForm;
+    const { amountValue, availableBalance, form, handleMaxPress } = depositForm;
     const {
         formState: { isValid },
     } = form;
@@ -424,7 +425,7 @@ export const YieldDepositApprovalScreen = () => {
                                     <Translation id="earn.yieldDepositFlowScreen.amountToDeposit" />
                                 }
                                 approvalLimitTitle={approvalLimitTitle}
-                                balance={token.balance}
+                                balance={availableBalance}
                                 isApprovalLimitDisabled={isAllowanceAmountUnlimited}
                                 onApprovalLimitPress={openApprovalLimitBottomSheet}
                                 onMaxPress={handleMaxPress}

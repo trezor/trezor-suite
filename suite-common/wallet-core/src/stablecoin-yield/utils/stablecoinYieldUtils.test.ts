@@ -13,6 +13,7 @@ import {
     getMaxWrapAmount,
     getNextYieldFlowStep,
     getWrappableNativeBalance,
+    getYieldDepositAvailableBalance,
     getYieldDepositableBalance,
     getYieldFlowStepSequence,
     getYieldVaultForOutputToken,
@@ -495,6 +496,45 @@ describe('stablecoinYieldUtils', () => {
             expect(getYieldWrapAmount({ totalAmount: '1', matchedWethBalance: undefined })).toBe(
                 '1',
             );
+        });
+    });
+
+    describe('getYieldDepositAvailableBalance', () => {
+        it('returns the wrapped amount while the token balance still reports zero', () => {
+            expect(
+                getYieldDepositAvailableBalance({ tokenBalance: '0', wrappedAmount: '1.5' }),
+            ).toBe('1.5');
+        });
+
+        it('returns the token balance once it includes the wrap, without double counting', () => {
+            expect(
+                getYieldDepositAvailableBalance({ tokenBalance: '1.5', wrappedAmount: '1.5' }),
+            ).toBe('1.5');
+        });
+
+        it('returns the larger existing balance when only part of it was wrapped', () => {
+            expect(
+                getYieldDepositAvailableBalance({ tokenBalance: '3', wrappedAmount: '1.5' }),
+            ).toBe('3');
+        });
+
+        it('returns the token balance when wrappedAmount is null or undefined', () => {
+            expect(
+                getYieldDepositAvailableBalance({ tokenBalance: '2', wrappedAmount: null }),
+            ).toBe('2');
+            expect(
+                getYieldDepositAvailableBalance({ tokenBalance: '2', wrappedAmount: undefined }),
+            ).toBe('2');
+        });
+
+        it('returns 0 when neither a balance nor a wrap is present', () => {
+            expect(getYieldDepositAvailableBalance({})).toBe('0');
+        });
+
+        it('falls back to 0 for non-numeric input', () => {
+            expect(
+                getYieldDepositAvailableBalance({ tokenBalance: 'abc', wrappedAmount: 'xyz' }),
+            ).toBe('0');
         });
     });
 
