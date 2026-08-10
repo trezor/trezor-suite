@@ -332,7 +332,7 @@ export const rules = {
                 invalidFormat:
                     "Event name must be in format 'domain/event' (e.g. 'settings/app-log-exported'). Use one of the allowed domains and kebab-case for the event part.",
                 invalidDomain:
-                    "Invalid domain '{{domain}}'. Allowed: accounts, app, coin, dashboard, device, firmware, guide, menu, passphrase, promo, receive, send, settings, staking, trading, transaction, wallet-connect.",
+                    "Invalid domain '{{domain}}'. Allowed: accounts, app, coin, dashboard, device, feedback, firmware, guide, menu, passphrase, promo, receive, send, settings, staking, trading, transaction, wallet-connect.",
                 notKebabCase:
                     "Event part after domain must use kebab-case (e.g. 'app-log-exported'), got '{{eventPart}}'.",
             },
@@ -345,6 +345,7 @@ export const rules = {
                 'coin',
                 'dashboard',
                 'device',
+                'feedback',
                 'firmware',
                 'guide',
                 'menu',

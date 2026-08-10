@@ -79,19 +79,19 @@ describe('TradingDetailFeedback', () => {
         fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
 
         expect(sendFeedbackActionMock).not.toHaveBeenCalled();
-        expect(reportMock).not.toHaveBeenCalledWith({
-            type: events.tradingFeedbackSentEvent.name,
-        });
+        expect(reportMock).not.toHaveBeenCalledWith(
+            expect.objectContaining({ type: events.feedbackSentEvent.name }),
+        );
     });
 
-    it('reports the rating selected event with the rating and trade type', () => {
+    it('reports the rating selected event with the rating, category and trade context', () => {
         renderTradingDetailFeedback();
 
         fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: events.tradingFeedbackRatingSelectedEvent.name,
-            payload: { rating: '4', type: 'exchange' },
+            type: events.feedbackRatingSelectedEvent.name,
+            payload: { rating: '4', category: 'trade', context: 'exchange' },
         });
     });
 
@@ -103,7 +103,8 @@ describe('TradingDetailFeedback', () => {
         fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
 
         expect(reportMock).toHaveBeenCalledWith({
-            type: events.tradingFeedbackSentEvent.name,
+            type: events.feedbackSentEvent.name,
+            payload: { category: 'trade', context: 'exchange' },
         });
     });
 });
