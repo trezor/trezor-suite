@@ -3,7 +3,7 @@ import { type TextInputProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
@@ -14,11 +14,14 @@ import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useDebounce } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { AMOUNT_INPUT_MAX_LENGTH } from '../constants';
 import { type EarnFormValues } from '../earnFormSchema';
+import { isAmountInputValueValid } from '../utils/yieldFiatAmountUtils';
 
 type EarnCryptoAmountInputProps = {
     symbol: NetworkSymbol;
     tokenContract?: TokenAddress;
+    tokenDecimals?: number;
     displaySymbol?: string;
     accessibilityLabel?: string;
     inputRef?: RefObject<InputType | null>;
@@ -29,6 +32,7 @@ type EarnCryptoAmountInputProps = {
 export const EarnCryptoAmountInput = ({
     symbol,
     tokenContract,
+    tokenDecimals,
     displaySymbol,
     accessibilityLabel = 'amount to stake input',
     inputRef,
@@ -54,6 +58,12 @@ export const EarnCryptoAmountInput = ({
 
     const handleChangeValue = (newValue: string) => {
         const transformedValue = cryptoAmountTransformer(newValue);
+
+        const decimals = tokenDecimals ?? getNetwork(symbol).decimals;
+        if (!isAmountInputValueValid({ value: transformedValue, decimals })) {
+            return;
+        }
+
         onChange(transformedValue);
 
         if (transformedValue) {
@@ -73,6 +83,7 @@ export const EarnCryptoAmountInput = ({
             value={value}
             placeholder="0"
             keyboardType="numeric"
+            maxLength={AMOUNT_INPUT_MAX_LENGTH}
             accessibilityLabel={accessibilityLabel}
             editable={!isDisabled}
             onChangeText={handleChangeValue}

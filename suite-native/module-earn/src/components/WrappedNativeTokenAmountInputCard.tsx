@@ -89,6 +89,7 @@ export const WrappedNativeTokenAmountInputCard = ({
                         <EarnCryptoAmountInput
                             symbol={symbol}
                             tokenContract={tokenContract}
+                            tokenDecimals={tokenDecimals}
                             displaySymbol={tokenSymbol}
                             accessibilityLabel="amount input"
                             inputRef={inputRef}
