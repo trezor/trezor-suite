@@ -55,6 +55,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 
 import { createFormStateForSendForm } from './utils';
+import { getTradingFormDraftFeeLimit } from './utils/getTradingFormDraftFeeLimit';
 
 const NATIVE_TRADING_EXCHANGE_THUNK_PREFIX = 'trading/native';
 
@@ -234,7 +235,12 @@ export const composeTradingTransactionThunk = createThunk(
                                 ...formState,
                                 selectedFee: selectedFeeLevel,
                                 feePerUnit: composed.feePerByte,
-                                feeLimit: composed.feeLimit ?? '',
+                                feeLimit: getTradingFormDraftFeeLimit({
+                                    networkType: account.networkType,
+                                    fee: composed.fee,
+                                    feeLimit: composed.feeLimit,
+                                    estimatedFeeLimit: composed.estimatedFeeLimit,
+                                }),
                             },
                         }),
                     );
