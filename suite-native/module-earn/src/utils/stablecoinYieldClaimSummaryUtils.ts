@@ -158,8 +158,6 @@ export const buildStablecoinYieldClaimSummaries = ({
             {
                 type: 'stablecoin-yield',
                 accountKey: account.key,
-                accountLabel: account.accountLabel,
-                accountDescriptor: account.descriptor,
                 networkSymbol: account.symbol,
                 claimableRewardsCount: accountRewards.rewards.length,
                 fiatClaimableAmount: accountRewards.totalFiatClaimableAmount,
@@ -170,11 +168,11 @@ export const buildStablecoinYieldClaimSummaries = ({
 
 export type StablecoinYieldClaimItem = {
     summary: StablecoinYieldClaimSummary;
-    vault: YieldClaimVaultParams | null;
+    vaults: YieldClaimVaultParams[];
 };
 
-// Rewards are claimed per account, so a claim can only be attributed to a vault
-// when the account holds exactly one vault position with a known name.
+// Rewards are claimed per account, so one item covers all of the account's vault positions
+// — and rewards outlive a fully withdrawn position, which leaves an item with no vaults.
 export const buildStablecoinYieldClaimItems = ({
     stablecoinYieldClaimSummaries,
     stablecoinYieldActiveItems,
@@ -182,22 +180,15 @@ export const buildStablecoinYieldClaimItems = ({
     stablecoinYieldClaimSummaries: StablecoinYieldClaimSummary[];
     stablecoinYieldActiveItems: StablecoinYieldEarnItem[];
 }): StablecoinYieldClaimItem[] =>
-    stablecoinYieldClaimSummaries.map(summary => {
-        const accountVaults = stablecoinYieldActiveItems.filter(
-            item => item.accountKey === summary.accountKey,
-        );
-        const accountVault = accountVaults.length === 1 ? accountVaults[0] : undefined;
-
-        return {
-            summary,
-            vault: accountVault?.vaultName
-                ? {
-                      name: accountVault.vaultName,
-                      tokenContract: accountVault.tokenContractAddress,
-                  }
-                : null,
-        };
-    });
+    stablecoinYieldClaimSummaries.map(summary => ({
+        summary,
+        vaults: stablecoinYieldActiveItems
+            .filter(item => item.accountKey === summary.accountKey && item.vaultName)
+            .map(item => ({
+                name: item.vaultName,
+                tokenContract: item.tokenContractAddress,
+            })),
+    }));
 
 export const getTotalFiatClaimableAmount = (
     stablecoinYieldClaimSummaries: StablecoinYieldClaimSummary[],

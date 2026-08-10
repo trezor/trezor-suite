@@ -12,11 +12,13 @@ import {
     selectAccountByKey,
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
+import { selectAccountLabel } from '@suite-native/accounts';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, FullAlertBox, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { useFiatFromCryptoValue } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { type CombinedLabelingState } from '@suite-native/labeling';
 import { ContextMessage } from '@suite-native/message-system';
 import {
     Screen,
@@ -62,6 +64,11 @@ export const YieldClaimScreen = () => {
         useState<PreparedYieldClaimAction | null>(null);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
+    );
+    const customAccountLabel = useSelector((state: CombinedLabelingState) =>
+        account
+            ? selectAccountLabel(state, account.deviceState, account.descriptor, account.symbol)
+            : null,
     );
     const flowKey = account?.key ?? null;
     const {
@@ -235,8 +242,7 @@ export const YieldClaimScreen = () => {
         return null;
     }
 
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
-    const headerLabel = vault ? `${vault.name} · ${accountLabel}` : accountLabel;
+    const accountLabel = customAccountLabel ?? getNetwork(account.symbol).name;
 
     return (
         <Screen
@@ -248,25 +254,44 @@ export const YieldClaimScreen = () => {
                             <Text variant="body-md-strong">
                                 <Translation id="earn.yieldClaimFlowScreen.title" />
                             </Text>
-                            <HStack spacing="sp4" alignItems="center">
-                                {!!vault && (
-                                    <TokenIcon
-                                        symbol={account.symbol}
-                                        contractAddress={vault.tokenContract}
-                                        size="tiny"
-                                    />
-                                )}
-                                <Box flexShrink={1}>
+                            {vault ? (
+                                <>
+                                    <HStack spacing="sp4" alignItems="center">
+                                        <TokenIcon
+                                            symbol={account.symbol}
+                                            contractAddress={vault.tokenContract}
+                                            size="tiny"
+                                        />
+                                        <Box flexShrink={1}>
+                                            <Text
+                                                variant="body-md"
+                                                color="contentSecondary"
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
+                                            >
+                                                {vault.name}
+                                            </Text>
+                                        </Box>
+                                    </HStack>
                                     <Text
-                                        variant="body-md"
+                                        variant="body-xs"
                                         color="contentSecondary"
                                         numberOfLines={1}
                                         ellipsizeMode="tail"
                                     >
-                                        {headerLabel}
+                                        {accountLabel}
                                     </Text>
-                                </Box>
-                            </HStack>
+                                </>
+                            ) : (
+                                <Text
+                                    variant="body-md"
+                                    color="contentSecondary"
+                                    numberOfLines={1}
+                                    ellipsizeMode="tail"
+                                >
+                                    {accountLabel}
+                                </Text>
+                            )}
                         </VStack>
                     }
                 />

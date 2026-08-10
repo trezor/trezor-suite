@@ -113,7 +113,7 @@ export const EarnDepositsCard = ({
     );
 
     const handleStablecoinYieldClaimRewardPress = useCallback(
-        ({ summary, vault }: StablecoinYieldClaimItem) => {
+        ({ summary, vaults }: StablecoinYieldClaimItem) => {
             analytics.report({
                 type: events.yieldNavigateEvent.name,
                 payload: {
@@ -125,7 +125,10 @@ export const EarnDepositsCard = ({
             });
             navigation.navigate(RootStackRoutes.YieldNavigator, {
                 screen: YieldStackRoutes.YieldClaim,
-                params: { accountKey: summary.accountKey, vault: vault ?? undefined },
+                params: {
+                    accountKey: summary.accountKey,
+                    vault: vaults.length === 1 ? vaults[0] : undefined,
+                },
             });
         },
         [analytics, navigation],
