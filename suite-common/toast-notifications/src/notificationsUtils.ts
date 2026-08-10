@@ -1,14 +1,19 @@
-import { type NotificationsState, type UnknownTranslationKey } from './types';
+import {
+    type NotificationEntry,
+    type NotificationsState,
+    type TransactionNotificationType,
+    type UnknownTranslationKey,
+} from './types';
 
 export const filterNonActivityNotifications = <TKey extends string = UnknownTranslationKey>(
     notifications: NotificationsState<TKey>,
 ): NotificationsState<TKey> =>
     notifications.filter(notification => notification.type !== 'coin-scheme-protocol');
 
-export const isTransactionNotification = (notification: NotificationsState[number]): boolean =>
-    notification.type.startsWith('tx-') ||
-    notification.type === 'raw-tx-sent' ||
-    notification.type === 'successful-claim';
+export const isTransactionNotification = <TKey extends string = UnknownTranslationKey>(
+    notification: NotificationEntry<TKey>,
+): notification is Extract<NotificationEntry<TKey>, { type: TransactionNotificationType }> =>
+    notification.type.startsWith('tx-') || notification.type === 'raw-tx-sent';
 
 export const getSeenAndUnseenNotifications = <TKey extends string = UnknownTranslationKey>(
     notifications: NotificationsState<TKey>,

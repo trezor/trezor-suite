@@ -1,6 +1,11 @@
 import { type ReactNode } from 'react';
 
-import type { NotificationEntry } from '@suite-common/toast-notifications';
+import type {
+    NotificationEntry,
+    TransactionNotificationType,
+} from '@suite-common/toast-notifications';
+
+export type { TransactionNotificationType };
 
 type ExchangeToastAssetData = Extract<
     NotificationEntry,
@@ -15,22 +20,6 @@ export type ExchangeInfoAsset = Pick<ExchangeToastAssetData, 'symbol' | 'contrac
     coingeckoId?: string;
     icon?: ReactNode;
 };
-
-export type TransactionNotificationType =
-    | 'tx-sent'
-    | 'raw-tx-sent'
-    | 'tx-received'
-    | 'tx-confirmed'
-    | 'tx-staked'
-    | 'tx-unstaked'
-    | 'tx-claimed'
-    | 'tx-approved'
-    | 'tx-revoked'
-    | 'tx-yield-deposit'
-    | 'tx-yield-withdraw'
-    | 'tx-yield-claim'
-    | 'tx-wrap'
-    | 'tx-unwrap';
 
 type TransactionNotificationWithToken = Extract<
     NotificationEntry,

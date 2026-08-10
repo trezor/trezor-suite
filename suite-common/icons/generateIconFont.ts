@@ -34,6 +34,7 @@ const usedIcons = [
     'backspace',
     'bank',
     'bell',
+    'bellZ',
     'bluetooth',
     'bluetoothConnected',
     'bluetoothSlash',

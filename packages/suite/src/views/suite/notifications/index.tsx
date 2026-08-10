@@ -5,7 +5,6 @@ import { Translation } from '@suite/intl';
 import {
     isTransactionNotification,
     selectHasUnseenTransactionNotifications,
-    selectNotifications,
 } from '@suite-common/toast-notifications';
 import { Card, CollapsibleBox, Column, Dot, Row } from '@trezor/components';
 
@@ -25,7 +24,7 @@ const NotificationsView = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const [selectedTab, setSelectedTab] = useState<ActivityTab>('transactions');
 
-    const notifications = useSelector(selectNotifications);
+    const notifications = useSelector(state => state.notifications);
     const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
     const transactionNotifications = notifications.filter(isTransactionNotification);
     const activityNotifications = notifications.filter(

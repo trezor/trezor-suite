@@ -2,12 +2,21 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/formatters"
+        },
         {
             "path": "../../suite-common/toast-notifications"
         },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
         { "path": "../activity-center" },
         { "path": "../atoms" },
+        { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../navigation" }
+        { "path": "../navigation" },
+        { "path": "../../packages/styles-native" }
     ]
 }
