@@ -38,9 +38,7 @@ export const calculatePreferredCurrencyUsdThreshold = ({
     if (!btcUsdRate) {
         return null;
     }
-    if (baseCurrency === 'btc') {
-        return asBaseCurrencyAmount(USD_ASSET_THRESHOLD.div(btcUsdRate));
-    }
+
     if (!btcBaseCurrencyRate) {
         return null;
     }
@@ -57,11 +55,18 @@ export const usePreferredCurrencyUsdThreshold = () => {
         selectFiatRatesByFiatRateKey(state, getFiatRateKey('btc', baseCurrency)),
     )?.rate;
 
-    const isUsdToBtcRateMissing = baseCurrency !== 'usd' && btcUsdRate === undefined;
+    const isBtcUsdRateMissing = baseCurrency !== 'usd' && btcUsdRate === undefined;
+    const isBtcBaseCurrencyRateMissing =
+        baseCurrency !== 'usd' && btcBaseCurrencyRate === undefined;
 
     useMissingRateTickersQuery({
-        missingRateTickers: isUsdToBtcRateMissing ? BTC_TICKERS : NO_MISSING_TICKERS,
+        missingRateTickers: isBtcUsdRateMissing ? BTC_TICKERS : NO_MISSING_TICKERS,
         baseCurrencyCode: 'usd',
+    });
+
+    useMissingRateTickersQuery({
+        missingRateTickers: isBtcBaseCurrencyRateMissing ? BTC_TICKERS : NO_MISSING_TICKERS,
+        baseCurrencyCode: baseCurrency,
     });
 
     return useMemo(

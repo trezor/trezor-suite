@@ -155,7 +155,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: tradingReducer,
         persistedKeys: ['trades', 'residence', 'tradingEnvironment'],
         key: 'trading',
-        version: 3,
+        version: 4,
         migrations: {
             2: (oldState: any /* FIXME */) => {
                 if (!oldState) return oldState;

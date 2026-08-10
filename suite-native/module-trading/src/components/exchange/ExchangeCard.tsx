@@ -44,10 +44,12 @@ export const ExchangeCard = ({ isAmountInputActive }: ExchangeCardProps) => {
                 testID={`${EXCHANGE_CARD_TEST_ID}/receiveSection`}
                 title={<Translation id="moduleTrading.selectCoin.title" />}
                 titleAction={
-                    <CryptoToFiatValueBadge
-                        cryptoId={receiveAsset?.cryptoId}
-                        amount={receiveCryptoAmountInBaseUnit}
-                    />
+                    receiveAsset?.cryptoId && (
+                        <CryptoToFiatValueBadge
+                            cryptoId={receiveAsset?.cryptoId}
+                            amount={receiveCryptoAmountInBaseUnit}
+                        />
+                    )
                 }
             >
                 <ExchangeReceiveContent />
