@@ -3,13 +3,20 @@
 // Verifies byte-equivalence of the new viem-backed transformTypedData against
 // the firmware ground-truth fixtures in trezor-common.
 
-import { transformTypedData } from './ethereumSignTypedData';
-import {
-    commonFixturesAvailable,
-    loadCommonFixture,
-} from '../../../e2e/__fixtures__/commonFixtures';
+import { existsSync, readFileSync } from 'fs';
+import { join } from 'path';
 
-const commonFixtures = loadCommonFixture('ethereum/sign_typed_data.json');
+import { transformTypedData } from './ethereumSignTypedData';
+
+// Node-only parity test: read the vector from the trezor-common submodule directly
+// (no need for the browser `virtual:common-fixtures` loader). Skips when absent.
+const FIXTURE_PATH = join(
+    __dirname,
+    '../../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_typed_data.json',
+);
+const commonFixtures = existsSync(FIXTURE_PATH)
+    ? JSON.parse(readFileSync(FIXTURE_PATH, 'utf-8'))
+    : null;
 
 // fixtures sometimes start with 0x, sometimes not — normalize for comparison
 function messageToHex(string: string) {
@@ -21,7 +28,7 @@ function messageToHex(string: string) {
 const SKIP_FIXTURES = new Set(['array_of_structs', 'injective_testcase']);
 
 describe('transformTypedData (firmware-fixture parity)', () => {
-    if (!commonFixturesAvailable()) {
+    if (!commonFixtures) {
         // trezor-common submodule is not checked out; nothing to verify against.
         it.skip('skipped: trezor-common submodule not checked out', () => {});
 

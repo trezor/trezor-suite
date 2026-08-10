@@ -8,6 +8,7 @@
         "process",
         "stream-browserify",
         "tsx",
+        "virtual:common-fixtures",
         "virtual:txcache",
         "vm-browserify"
     ]
