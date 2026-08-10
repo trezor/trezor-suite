@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { Context } from '@suite-common/message-system';
-import { WRAPPED_NATIVE, getNetwork } from '@suite-common/wallet-config';
+import { WRAPPED_NATIVE, getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { Box, Button, FullAlertBox, VStack } from '@suite-native/atoms';
@@ -99,7 +99,15 @@ export const UnwrapNativeTokenScreen = () => {
                 <YieldDepositFlowScreenHeader
                     account={account}
                     closeActionType="back"
-                    title={<Translation id="earn.unwrapNativeToken.title" />}
+                    title={
+                        <Translation
+                            id="earn.unwrapNativeToken.title"
+                            values={{
+                                nativeSymbol: getNetworkDisplaySymbol(account.symbol),
+                                wrappedSymbol: wrappedNative.symbol,
+                            }}
+                        />
+                    }
                     tokenContract={toTokenAddress(wrappedNative.address)}
                 />
             }
