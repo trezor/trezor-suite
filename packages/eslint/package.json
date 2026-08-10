@@ -14,13 +14,13 @@
         "@tanstack/eslint-plugin-query": "5.101.0",
         "eslint": "^9.39.4",
         "eslint-plugin-import": "^2.32.0",
-        "eslint-plugin-jest": "^29.15.3",
+        "eslint-plugin-jest": "^29.16.0",
         "eslint-plugin-jsx-a11y": "^6.10.2",
         "eslint-plugin-local-rules": "^3.0.2",
         "eslint-plugin-playwright": "^2.10.4",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^7.1.1",
-        "globals": "^17.6.0",
-        "typescript-eslint": "^8.62.0"
+        "globals": "^17.8.0",
+        "typescript-eslint": "^8.65.0"
     }
 }

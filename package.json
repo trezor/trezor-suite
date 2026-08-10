@@ -156,7 +156,7 @@
         "jest-environment-node": "^29.7.0",
         "jest-expo": "~56.0.4",
         "node-gyp": "12.2.0",
-        "nx": "23.0.0",
+        "nx": "23.1.0",
         "postcss-styled-syntax": "^0.7.1",
         "postcss-value-parser": "^4.2.0",
         "prettier": "^3.9.6",
@@ -166,7 +166,7 @@
         "tslib": "^2.6.2",
         "tsx": "^4.21.0",
         "typescript": "6.0.3",
-        "typescript-eslint": "^8.62.0",
+        "typescript-eslint": "^8.65.0",
         "uint8array-tools": "^0.0.8",
         "version-bump-prompt": "^6.1.0"
     },
