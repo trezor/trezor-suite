@@ -27,14 +27,23 @@ type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldConsents>
 export const YieldConsentsScreen = () => {
     const { applyStyle } = useNativeStyles();
     const route = useRoute<RouteProps>();
-    const { account, flowData, flowKey, providerName, tokenSymbol, vault, resolutionStatus } =
-        useResolvedYieldFlowData(route.params);
+    const {
+        account,
+        flowData,
+        flowKey,
+        providerName,
+        tokenSymbol,
+        vault,
+        resolutionStatus,
+        wrappedNativeSymbol,
+    } = useResolvedYieldFlowData(route.params);
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const { handleStartYieldDepositFlow, isStartingDepositFlow } = useStartYieldDepositFlow({
         flowData,
         flowKey,
         routeParams: route.params,
     });
+
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.yieldNavigateEvent.name,
         payload: {
@@ -78,7 +87,7 @@ export const YieldConsentsScreen = () => {
                 </Text>
                 <YieldConsentsProviderCard
                     providerName={providerName}
-                    tokenSymbol={tokenSymbol}
+                    tokenSymbol={wrappedNativeSymbol ?? tokenSymbol}
                     onConfirm={handleConfirmConsents}
                     isConfirmLoading={isStartingDepositFlow}
                 />

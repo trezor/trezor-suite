@@ -2,9 +2,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
-import { isWrappedNativeToken } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -39,6 +37,7 @@ export const HowYieldWorksScreen = () => {
         vaultTokenSymbol,
         bonusRewardTokenSymbol,
         resolutionStatus,
+        wrappedNativeSymbol,
     } = useResolvedYieldFlowData(route.params);
 
     const apyBreakdownAlert = useApyBreakdownAlert({ account, vault });
@@ -60,10 +59,6 @@ export const HowYieldWorksScreen = () => {
         content: depositDisabledContent,
         variant: depositDisabledVariant,
     } = useMessageSystemYield('deposit', { vaultContractAddress });
-
-    const isWrappedNativeVault =
-        !!vault && !!account && isWrappedNativeToken(account.symbol, vault.token.address);
-    const nativeSymbol = account ? getNetworkDisplaySymbol(account.symbol) : null;
 
     const handleNavigateToYieldConsents = () => {
         analytics.report({
@@ -98,8 +93,7 @@ export const HowYieldWorksScreen = () => {
         apy,
         onApyPress: apyBreakdownAlert.onPress,
         bonusRewardTokenSymbol,
-        isWrappedNativeVault,
-        nativeSymbol,
+        wrappedNativeSymbol,
     });
 
     if (resolutionStatus !== 'resolved') {
@@ -114,21 +108,21 @@ export const HowYieldWorksScreen = () => {
                         title={
                             <Translation
                                 id={
-                                    isWrappedNativeVault
+                                    wrappedNativeSymbol !== null
                                         ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldTitle'
                                         : 'earn.howYieldWorksScreen.defiYieldTitle'
                                 }
-                                values={{ nativeSymbol }}
+                                values={{ nativeSymbol: wrappedNativeSymbol }}
                             />
                         }
                         subtitle={
                             <Translation
                                 id={
-                                    isWrappedNativeVault
+                                    wrappedNativeSymbol !== null
                                         ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldSubtitle'
                                         : 'earn.howYieldWorksScreen.defiYieldSubtitle'
                                 }
-                                values={{ nativeSymbol }}
+                                values={{ nativeSymbol: wrappedNativeSymbol }}
                             />
                         }
                     />

@@ -88,6 +88,7 @@ export const YieldDepositApprovalScreen = () => {
         vaultTokenSymbol,
         vaultTokenName,
         resolutionStatus,
+        wrappedNativeSymbol,
     } = resolvedFlowData;
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
@@ -491,6 +492,7 @@ export const YieldDepositApprovalScreen = () => {
                 vaultTokenSymbol={vaultTokenSymbol}
                 account={account}
                 vault={resolvedFlowData.vault}
+                wrappedNativeSymbol={wrappedNativeSymbol}
             />
             <YieldDepositApprovalLimitBottomSheet
                 ref={approvalLimitBottomSheetRef}
