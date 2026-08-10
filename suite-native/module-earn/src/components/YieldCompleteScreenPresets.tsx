@@ -163,7 +163,7 @@ export const getWrappedNativeCompleteRows = ({
                     size="extraSmall"
                 />
                 <Text variant="body-md-strong" color="contentPrimary" numberOfLines={1}>
-                    -{sentAmount}
+                    {sentAmount}
                 </Text>
             </HStack>
         ),
