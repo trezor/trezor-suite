@@ -76,7 +76,7 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
         },
         to: {
             description:
-                'Destination of the navigation. Also reports `account-detail` when leaving the wrap/unwrap pages, where it means the account Tokens tab',
+                'Destination of the navigation. Also reports `account-detail` when leaving the wrap/unwrap pages — the account Tokens tab on desktop, the account detail screen on mobile',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {

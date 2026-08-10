@@ -54,11 +54,8 @@ export const WrappedNativeTokenCompleteContent = ({
 
     // The form replaced itself with this screen, so this stack holds it alone — any back
     // navigation leaves the whole flow, which is what closing should do. Intercepting it (as the
-    // session-driven complete screens do) would only make the interceptor catch its own GO_BACK.
-    //
-    // useNavigateBackAnalytics is not used here for the same reason: useNavigateToInitialScreen
-    // ends in a goBack, which would make the interceptor catch its own dismissal and report a
-    // bogus cancel, so the intentional `continue` is reported explicitly instead.
+    // session-driven complete screens do) or watching it with useNavigateBackAnalytics would only
+    // catch the GO_BACK this very handler dispatches, so it reports the `continue` itself.
     const handleClose = useCallback(() => {
         analytics.report({
             type: events.yieldNavigateEvent.name,
@@ -69,6 +66,7 @@ export const WrappedNativeTokenCompleteContent = ({
                 networkSymbol: account?.symbol,
             },
         });
+
         navigateToInitialScreen();
     }, [account?.symbol, analytics, flowType, navigateToInitialScreen]);
 

@@ -15,10 +15,8 @@ import {
     type WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
 
-import {
-    useWrappedNativeFlowAnalytics,
-    useWrappedNativeFlowResolutionAnalytics,
-} from './useWrappedNativeFlowAnalytics';
+import { useWrappedNativeFlowAnalytics } from './useWrappedNativeFlowAnalytics';
+import { useWrappedNativeFlowResolutionAnalytics } from './useWrappedNativeFlowResolutionAnalytics';
 import { type PreparedWrappedNativeTokenAction } from './useWrappedNativeTokenFees';
 import { useWrappedNativeTxSimulation } from './useWrappedNativeTxSimulation';
 import { useYieldPendingTransaction } from './useYieldPendingTransaction';
@@ -53,7 +51,7 @@ export const useStandaloneWrappedNativeFlow = ({
 
     const [hasFlowFailed, setHasFlowFailed] = useState(false);
 
-    const networkSymbol = account?.symbol ?? '';
+    const networkSymbol = account?.symbol;
     const { reportMaxSelected, reportSimulation, reportSubmit } = useWrappedNativeFlowAnalytics({
         flowType,
         networkSymbol,
@@ -125,7 +123,15 @@ export const useStandaloneWrappedNativeFlow = ({
         [accountKey, flowType, navigation],
     );
 
-    const simulation = useWrappedNativeTxSimulation({
+    const {
+        handleCancelSimulation: cancelSimulation,
+        handleConfirmSimulation: confirmSimulation,
+        handleSubmit,
+        isDeviceNotConnectedVisible,
+        isFirmwareOutdatedVisible,
+        preparedTx,
+        simulationBottomSheetRef,
+    } = useWrappedNativeTxSimulation({
         amountValue,
         isDisabled,
         onConfirm: handleSimulationConfirmed,
@@ -135,26 +141,26 @@ export const useStandaloneWrappedNativeFlow = ({
 
     const handleConfirmSimulation = useCallback(() => {
         reportSimulation('continue');
-        simulation.handleConfirmSimulation();
-    }, [reportSimulation, simulation]);
+        confirmSimulation();
+    }, [confirmSimulation, reportSimulation]);
 
     const handleCancelSimulation = useCallback(() => {
         reportSimulation('cancel');
-        simulation.handleCancelSimulation();
-    }, [reportSimulation, simulation]);
+        cancelSimulation();
+    }, [cancelSimulation, reportSimulation]);
 
     return {
         handleCancelSimulation,
         handleConfirmSimulation,
-        handleSubmit: simulation.handleSubmit,
+        handleSubmit,
         hasFlowFailed,
-        isDeviceNotConnectedVisible: simulation.isDeviceNotConnectedVisible,
-        isFirmwareOutdatedVisible: simulation.isFirmwareOutdatedVisible,
+        isDeviceNotConnectedVisible,
+        isFirmwareOutdatedVisible,
         isPending: !!pendingParam,
         pendingBottomSheetRef,
         pendingModalProps,
-        preparedTx: simulation.preparedTx,
+        preparedTx,
         reportMaxSelected,
-        simulationBottomSheetRef: simulation.simulationBottomSheetRef,
+        simulationBottomSheetRef,
     };
 };
