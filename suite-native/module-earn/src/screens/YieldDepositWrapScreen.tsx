@@ -83,6 +83,7 @@ export const YieldDepositWrapScreen = () => {
         vaultTokenSymbol,
         vaultTokenName,
         resolutionStatus,
+        wrappedNativeSymbol,
     } = resolvedFlowData;
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
@@ -417,6 +418,7 @@ export const YieldDepositWrapScreen = () => {
                 vaultTokenSymbol={vaultTokenSymbol}
                 account={account}
                 vault={vault}
+                wrappedNativeSymbol={wrappedNativeSymbol}
             />
             {simulation.preparedTx && (
                 <YieldTxSimulationBottomSheet

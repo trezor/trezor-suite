@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     getConvertedOutputTokenBalanceToInputTokenAmount,
     getYieldVaultContractAddress,
@@ -66,7 +67,7 @@ export const StablecoinYieldTokenOverview = ({
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
     const { analytics } = useServices(selectNativeAnalyticsDep);
-    const { account, apy, resolutionStatus, depositedSharesAmount, vault } =
+    const { account, apy, resolutionStatus, depositedSharesAmount, vault, wrappedNativeSymbol } =
         useResolvedYieldFlowData({
             accountKey,
             tokenContract,
@@ -256,14 +257,23 @@ export const StablecoinYieldTokenOverview = ({
                         {depositedPosition && (
                             <HStack alignItems="center" spacing="sp8">
                                 <TokenIcon
-                                    symbol={depositedPosition.symbol}
+                                    symbol={
+                                        wrappedNativeSymbol !== null &&
+                                        isNetworkSymbol(wrappedNativeSymbol)
+                                            ? wrappedNativeSymbol
+                                            : depositedPosition.symbol
+                                    }
                                     contractAddress={depositedPosition.contractAddress}
                                     size="extraSmall"
                                     showNetworkIcon
                                 />
                                 <TokenAmountFormatter
                                     value={depositedPosition.balance}
-                                    tokenSymbol={depositedPosition.tokenSymbol}
+                                    tokenSymbol={
+                                        wrappedNativeSymbol !== null
+                                            ? toTokenSymbol(wrappedNativeSymbol)
+                                            : depositedPosition.tokenSymbol
+                                    }
                                     color="contentPrimary"
                                     variant="body-sm"
                                 />

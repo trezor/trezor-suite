@@ -8,7 +8,11 @@ import {
     getProtocolIncentiveRewardTokens,
     useAllYieldOpportunities,
 } from '@suite-common/earn-stablecoin-api';
-import { getNetworkByYieldXyzId, isWrappedNativeToken } from '@suite-common/wallet-config';
+import {
+    getNetworkByYieldXyzId,
+    getNetworkDisplaySymbol,
+    isWrappedNativeToken,
+} from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type YieldFlowDisplayToken,
@@ -46,6 +50,7 @@ type UnresolvedYieldFlowData = {
     vaultTokenName: string | null;
     vaultTokenSymbol: string | null;
     vaultName: string | null;
+    wrappedNativeSymbol: string | null;
 };
 
 type YieldFlowDataResolved = {
@@ -65,6 +70,7 @@ type YieldFlowDataResolved = {
     vaultTokenName: string;
     vaultTokenSymbol: string;
     vaultName: string;
+    wrappedNativeSymbol: string | null;
 };
 
 export type ResolvedYieldFlowData = UnresolvedYieldFlowData | YieldFlowDataResolved;
@@ -95,6 +101,7 @@ const defaultFlowData: ResolvedYieldFlowData = {
     vaultTokenName: null,
     vaultTokenSymbol: null,
     vaultName: null,
+    wrappedNativeSymbol: null,
 };
 
 export const resolveYieldFlowData = ({
@@ -127,6 +134,11 @@ export const resolveYieldFlowData = ({
         return defaultFlowData;
     }
 
+    const isWrappedNativeVault =
+        !!vault && !!account && isWrappedNativeToken(account.symbol, vault.token.address);
+    const nativeSymbol = account ? getNetworkDisplaySymbol(account.symbol) : null;
+    const wrappedNativeSymbol = isWrappedNativeVault && nativeSymbol ? nativeSymbol : null;
+
     const network = getNetworkByYieldXyzId(vault.network);
     const apy = getApyPercent(vault.rewardRate.total);
     const providerName = capitalizeFirstLetter(vault.providerId);
@@ -148,6 +160,7 @@ export const resolveYieldFlowData = ({
         vaultTokenName,
         vaultTokenSymbol,
         vaultName,
+        wrappedNativeSymbol,
     };
 
     if (!network) {

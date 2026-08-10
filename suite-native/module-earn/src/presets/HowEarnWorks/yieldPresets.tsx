@@ -18,8 +18,7 @@ type UseHowYieldWorksPresetProps = {
     apy: number | null;
     onApyPress: () => void;
     bonusRewardTokenSymbol?: string | null;
-    isWrappedNativeVault: boolean;
-    nativeSymbol: string | null;
+    wrappedNativeSymbol: string | null;
 };
 
 export const useHowYieldWorksPreset = ({
@@ -28,11 +27,10 @@ export const useHowYieldWorksPreset = ({
     apy,
     onApyPress,
     bonusRewardTokenSymbol,
-    isWrappedNativeVault,
-    nativeSymbol,
+    wrappedNativeSymbol,
 }: UseHowYieldWorksPresetProps): HowEarnWorksScreenPreset => {
     const benefitItems: HowEarnWorksBenefitItem[] = useMemo(() => {
-        if (isWrappedNativeVault) {
+        if (wrappedNativeSymbol !== null) {
             return [
                 {
                     id: 'yield-benefit-lock',
@@ -40,13 +38,13 @@ export const useHowYieldWorksPreset = ({
                     title: (
                         <Translation
                             id="earn.howYieldWorksScreen.benefits.wrappedNativeVault.first.title"
-                            values={{ nativeSymbol }}
+                            values={{ nativeSymbol: wrappedNativeSymbol }}
                         />
                     ),
                     description: (
                         <Translation
                             id="earn.howYieldWorksScreen.benefits.wrappedNativeVault.first.description"
-                            values={{ nativeSymbol }}
+                            values={{ nativeSymbol: wrappedNativeSymbol }}
                         />
                     ),
                 },
@@ -56,7 +54,7 @@ export const useHowYieldWorksPreset = ({
                     title: (
                         <Translation
                             id="earn.howYieldWorksScreen.benefits.wrappedNativeVault.second.title"
-                            values={{ nativeSymbol, vaultTokenSymbol }}
+                            values={{ nativeSymbol: wrappedNativeSymbol, vaultTokenSymbol }}
                         />
                     ),
                     description: (
@@ -75,7 +73,7 @@ export const useHowYieldWorksPreset = ({
                     description: (
                         <Translation
                             id="earn.howYieldWorksScreen.benefits.wrappedNativeVault.third.description"
-                            values={{ nativeSymbol }}
+                            values={{ nativeSymbol: wrappedNativeSymbol }}
                         />
                     ),
                 },
@@ -152,7 +150,7 @@ export const useHowYieldWorksPreset = ({
                   ]
                 : []),
         ];
-    }, [isWrappedNativeVault, nativeSymbol, tokenSymbol, vaultTokenSymbol, bonusRewardTokenSymbol]);
+    }, [wrappedNativeSymbol, tokenSymbol, vaultTokenSymbol, bonusRewardTokenSymbol]);
 
     const timelineSections: HowEarnWorksTimelineSectionPreset[] = useMemo(
         () => [
@@ -161,14 +159,17 @@ export const useHowYieldWorksPreset = ({
                 title: <Translation id="earn.howYieldWorksScreen.depositTimelineTitle" />,
                 iconName: 'arrowUpRight',
                 items: [
-                    ...(isWrappedNativeVault
+                    ...(wrappedNativeSymbol !== null
                         ? [
                               {
                                   id: 'deposit.wrap',
                                   title: (
                                       <Translation
                                           id="earn.howYieldWorksScreen.depositTimeline.wrap.title"
-                                          values={{ nativeSymbol, tokenSymbol }}
+                                          values={{
+                                              nativeSymbol: wrappedNativeSymbol,
+                                              tokenSymbol,
+                                          }}
                                       />
                                   ),
                                   description: (
@@ -231,14 +232,17 @@ export const useHowYieldWorksPreset = ({
                             <Translation id="earn.howYieldWorksScreen.withdrawTimeline.first.description" />
                         ),
                     },
-                    ...(isWrappedNativeVault
+                    ...(wrappedNativeSymbol !== null
                         ? [
                               {
                                   id: 'withdraw.unwrap',
                                   title: (
                                       <Translation
                                           id="earn.howYieldWorksScreen.withdrawTimeline.unwrap.title"
-                                          values={{ nativeSymbol, tokenSymbol }}
+                                          values={{
+                                              nativeSymbol: wrappedNativeSymbol,
+                                              tokenSymbol,
+                                          }}
                                       />
                                   ),
                                   description: (
@@ -252,7 +256,9 @@ export const useHowYieldWorksPreset = ({
                         title: (
                             <Translation
                                 id="earn.howYieldWorksScreen.withdrawTimeline.second.title"
-                                values={{ tokenSymbol }}
+                                values={{
+                                    tokenSymbol: wrappedNativeSymbol ?? tokenSymbol,
+                                }}
                             />
                         ),
                         description: (
@@ -295,8 +301,7 @@ export const useHowYieldWorksPreset = ({
                 : []),
         ],
         [
-            isWrappedNativeVault,
-            nativeSymbol,
+            wrappedNativeSymbol,
             tokenSymbol,
             vaultTokenSymbol,
             apy,

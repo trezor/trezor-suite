@@ -131,6 +131,7 @@ export const YieldWithdrawScreen = () => {
         vault,
         vaultTokenSymbol: resolvedVaultTokenSymbol,
         vaultTokenName,
+        wrappedNativeSymbol,
     } = useResolvedYieldFlowData(route.params);
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
@@ -720,6 +721,7 @@ export const YieldWithdrawScreen = () => {
                 vaultTokenSymbol={resolvedVaultTokenSymbol}
                 account={account}
                 vault={vault}
+                wrappedNativeSymbol={wrappedNativeSymbol}
             />
         </Screen>
     );

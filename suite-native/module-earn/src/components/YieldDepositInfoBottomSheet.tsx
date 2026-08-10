@@ -27,6 +27,7 @@ type YieldDepositInfoBottomSheetProps = {
     vaultTokenSymbol: string;
     account: Account;
     vault: YieldDtoV2;
+    wrappedNativeSymbol: string | null;
 };
 
 export const YieldDepositInfoBottomSheet = ({
@@ -38,6 +39,7 @@ export const YieldDepositInfoBottomSheet = ({
     vaultTokenSymbol,
     account,
     vault,
+    wrappedNativeSymbol,
 }: YieldDepositInfoBottomSheetProps) => {
     const apyBreakdownAlert = useApyBreakdownAlert({ account, vault });
 
@@ -51,8 +53,7 @@ export const YieldDepositInfoBottomSheet = ({
         bonusRewardTokenSymbol,
         tokenSymbol,
         vaultTokenSymbol,
-        isWrappedNativeVault,
-        nativeSymbol,
+        wrappedNativeSymbol,
     });
 
     return (
