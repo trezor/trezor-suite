@@ -4,7 +4,7 @@ import { isWrappedNativeToken } from '@suite-common/wallet-utils';
 import { DeviceModelInternal, getFirmwareVersionArray } from '@trezor/device-utils';
 import { type VersionArray, versionUtils } from '@trezor/utils';
 
-import type { YieldFlowDisplayToken, YieldFlowType } from './stablecoinYieldTypes';
+import type { YieldFlowDisplayToken, YieldFlowType } from '../stablecoinYieldTypes';
 
 const hasMinFirmware = (device: TrezorDevice | undefined, minVersion: VersionArray): boolean => {
     // The firmware gates target the T2+ line only; T1B1 versions its firmware as 1.x.

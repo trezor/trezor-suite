@@ -11,20 +11,20 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { getApprovalRequestAmount } from './stablecoinYieldApprovalThunks';
-import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
-import { estimateYieldFeeLevel } from './stablecoinYieldFeeEstimation';
-import type { YieldFlowResolvedData } from './stablecoinYieldTypes';
+import { type AccountsRootState } from '../../accounts/accountsReducer';
+import { fetchAllowance } from '../../allowance/fetchAllowance';
+import { type FeesRootState, selectRawNetworkFeeInfo } from '../../fees/feesReducer';
+import { ethereumGetCurrentNonceThunk } from '../../send/sendFormEthereumThunks';
+import { type TransactionsRootState } from '../../transactions/transactionsReducerTypes';
+import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
+import type { YieldFlowResolvedData } from '../stablecoinYieldTypes';
+import { estimateYieldFeeLevel } from '../utils/stablecoinYieldFeeEstimation';
 import {
     buildYieldDepositCalldata,
     buildYieldUnsignedTransaction,
     getAllowanceSpender,
     getWithdrawRequestAmount,
-} from './stablecoinYieldUtils';
-import { type AccountsRootState } from '../accounts/accountsReducer';
-import { fetchAllowance } from '../allowance/fetchAllowance';
-import { type FeesRootState, selectRawNetworkFeeInfo } from '../fees/feesReducer';
-import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
-import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
+} from '../utils/stablecoinYieldUtils';
 
 const YIELD_DEPOSIT_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
 

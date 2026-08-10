@@ -21,7 +21,7 @@ import {
     type YieldPendingTransactionState,
     type YieldPositionFlowType,
 } from './stablecoinYieldTypes';
-import { getNextYieldFlowStep, getYieldFlowStepSequence } from './stablecoinYieldUtils';
+import { getNextYieldFlowStep, getYieldFlowStepSequence } from './utils/stablecoinYieldUtils';
 import { transactionsActions } from '../transactions/transactionsActions';
 
 // Message ids must exist in the desktop `suite/intl` messages — the desktop app renders

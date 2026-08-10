@@ -8,18 +8,18 @@ import {
     isWrappedNativeToken,
 } from '@suite-common/wallet-utils';
 
-import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
-import { estimateYieldFeeLevel } from './stablecoinYieldFeeEstimation';
-import type { YieldFlowDisplayToken } from './stablecoinYieldTypes';
+import { type AccountsRootState } from '../../accounts/accountsReducer';
+import { type FeesRootState, selectRawNetworkFeeInfo } from '../../fees/feesReducer';
+import { ethereumGetCurrentNonceThunk } from '../../send/sendFormEthereumThunks';
+import { type TransactionsRootState } from '../../transactions/transactionsReducerTypes';
+import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
+import type { YieldFlowDisplayToken } from '../stablecoinYieldTypes';
+import { estimateYieldFeeLevel } from '../utils/stablecoinYieldFeeEstimation';
 import {
     buildYieldUnsignedTransaction,
     buildYieldUnwrapTransactionData,
     buildYieldWrapTransactionData,
-} from './stablecoinYieldUtils';
-import { type AccountsRootState } from '../accounts/accountsReducer';
-import { type FeesRootState, selectRawNetworkFeeInfo } from '../fees/feesReducer';
-import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
-import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
+} from '../utils/stablecoinYieldUtils';
 
 const YIELD_WRAP_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
 
