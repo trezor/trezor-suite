@@ -12,12 +12,12 @@ describe('data/coinInfo', () => {
         expect(getCoinInfoOrThrow('rhc')).toMatchObject({
             shortcut: 'RHC',
             chainId: 4663,
-            slip44: 4663,
+            slip44: 60,
         });
         expect(getCoinInfoOrThrow('hype')).toMatchObject({
             shortcut: 'HYPE',
             chainId: 999,
-            slip44: 999,
+            slip44: 60,
         });
 
         // the network name and label forms are no longer accepted (D2/D3)
@@ -38,6 +38,20 @@ describe('data/coinInfo', () => {
             type: 'blockbook',
             url: ['https://hype.trezor.io'],
         });
+    });
+
+    it('every evm network uses slip44 60, except ETC (61)', () => {
+        // Suite derives all EVM accounts at m/44'/60' (ETC at m/44'/61'), and slip44 drives the
+        // default discovery path in connect popup — a per-chain registry value (as ethereum-lists
+        // has for e.g. BSC or Optimism) would discover accounts Suite never shows.
+        getAllNetworks()
+            .filter(network => network.type === 'ethereum')
+            .forEach(network => {
+                expect({ shortcut: network.shortcut, slip44: network.slip44 }).toEqual({
+                    shortcut: network.shortcut,
+                    slip44: network.shortcut === 'ETC' ? 61 : 60,
+                });
+            });
     });
 
     it('resolves every misc firmware-gating shortcut (requiredFirmwareCoins is never [undefined])', () => {
