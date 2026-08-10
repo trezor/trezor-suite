@@ -461,6 +461,31 @@ export const getYieldWrapAmount = ({
 }: GetYieldWrapAmountParams): string =>
     BigNumber.max(0, new BigNumber(totalAmount || '0').minus(matchedWethBalance || '0')).toString();
 
+type GetYieldDepositAvailableBalanceParams = {
+    tokenBalance?: string | null;
+    wrappedAmount?: string | null;
+};
+
+/**
+ * Balance a yield deposit amount is validated against. Right after a wrap the account can still
+ * report the pre-wrap wrapped-token balance — deposit() emits no ERC-20 transfer, so the backend
+ * omits the token until it is tracked — which would block the very deposit the flow wrapped for.
+ * The just-wrapped amount is a lower bound of what the account holds, and taking the larger of
+ * the two cannot double-count: a refreshed balance already includes the wrap.
+ */
+export const getYieldDepositAvailableBalance = ({
+    tokenBalance,
+    wrappedAmount,
+}: GetYieldDepositAvailableBalanceParams): string => {
+    const balance = new BigNumber(tokenBalance || '0');
+    const wrapped = new BigNumber(wrappedAmount || '0');
+
+    return BigNumber.max(
+        balance.isFinite() ? balance : 0,
+        wrapped.isFinite() ? wrapped : 0,
+    ).toString();
+};
+
 type YieldTxReviewFlowIdentity = {
     accountKey?: AccountKey;
     flowKey?: string;

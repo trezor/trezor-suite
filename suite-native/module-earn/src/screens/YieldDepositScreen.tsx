@@ -148,8 +148,9 @@ export const YieldDepositScreen = () => {
         defaultAmount: depositAmount,
         token,
         tokenSymbol,
+        wrappedAmount: session?.result.wrappedAmount,
     });
-    const { amountValue, form, handleMaxPress } = depositForm;
+    const { amountValue, availableBalance, form, handleMaxPress } = depositForm;
     const {
         formState: { isValid },
     } = form;
@@ -451,7 +452,7 @@ export const YieldDepositScreen = () => {
                                 amountLabel={
                                     <Translation id="earn.yieldDepositFlowScreen.amountToDeposit" />
                                 }
-                                balance={token.balance}
+                                balance={availableBalance}
                                 onMaxPress={handleMaxPressWithAnalytics}
                                 symbol={account.symbol}
                                 tokenContract={getYieldTokenContract(token)}

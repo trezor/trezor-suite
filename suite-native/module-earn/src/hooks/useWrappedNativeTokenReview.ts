@@ -70,9 +70,9 @@ export const useWrappedNativeTokenReview = ({
     const pushAction = useCallback(
         () =>
             signedTransaction
-                ? dispatch(pushWrappedNativeTokenThunk({ account, signedTransaction }))
+                ? dispatch(pushWrappedNativeTokenThunk({ account, flowType, signedTransaction }))
                 : null,
-        [account, dispatch, signedTransaction],
+        [account, dispatch, flowType, signedTransaction],
     );
     const onPushSuccess = useCallback(
         ({ txid }: { txid: string }) => {
