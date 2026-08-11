@@ -13,7 +13,7 @@ export class TradingAssetPicker {
     readonly displaySymbol: Locator;
     readonly networkFilterButton: Locator;
     readonly buyNetworkFilterButton: Locator;
-    readonly networkFilterOption = (tab: AssetPickerNetworkFilter) =>
+    readonly networkFilterOption = (tab: AssetPickerNetworkFilter | NetworkSymbol) =>
         this.page.getByTestId(`@asset-picker/search/filter/select-option/${tab}`);
     readonly globalAddAccountButton: Locator;
 
@@ -57,7 +57,7 @@ export class TradingAssetPicker {
     }
 
     @step()
-    async filterByNetwork(networkFilter: AssetPickerNetworkFilter) {
+    async filterByNetwork(networkFilter: AssetPickerNetworkFilter | NetworkSymbol) {
         // use global retry helper since opening the dropdown is flaky in automation
         await this.page.selectDropdownOptionWithRetry(
             this.networkFilterButton,

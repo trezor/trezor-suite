@@ -13,6 +13,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { filterAccountsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 import { useCurrentRef } from '@trezor/react-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { type AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
 import {
@@ -57,9 +58,9 @@ export function useAccountWithTokensOptions({
     const fiatRatesRef = useCurrentRef(fiatRates);
 
     const accountsAndTokensSortedByCoin = useMemo(() => {
-        const fiatRates = fiatRatesRef.current;
+        const currentFiatRates = fiatRatesRef.current;
 
-        if (!fiatRates) {
+        if (!currentFiatRates) {
             return [];
         }
 
@@ -68,33 +69,42 @@ export function useAccountWithTokensOptions({
             networkSymbolFilter,
         );
 
-        return networkAccounts.map(account => {
-            const { shownWithBalance, hiddenWithBalance } = getTokens({
-                tokens: account.tokens ?? [],
-                symbol: account.symbol,
-                tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
-            });
+        return networkAccounts
+            .map(account => {
+                const { shownWithBalance, hiddenWithBalance } = getTokens({
+                    tokens: account.tokens ?? [],
+                    symbol: account.symbol,
+                    tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
+                });
 
-            const sortedTokensByFiatBalance = enhanceTokensWithRates(
-                shownWithBalance,
-                baseCurrencyCode,
-                account.symbol,
-                fiatRates,
-            ).sort(sortTokensWithRates);
+                const sortedTokensByFiatBalance = enhanceTokensWithRates(
+                    shownWithBalance,
+                    baseCurrencyCode,
+                    account.symbol,
+                    currentFiatRates,
+                ).sort(sortTokensWithRates);
 
-            const sortedHiddenTokensByFiatBalance = enhanceTokensWithRates(
-                hiddenWithBalance,
-                baseCurrencyCode,
-                account.symbol,
-                fiatRates,
-            ).sort(sortTokensWithRates);
+                const sortedHiddenTokensByFiatBalance = enhanceTokensWithRates(
+                    hiddenWithBalance,
+                    baseCurrencyCode,
+                    account.symbol,
+                    currentFiatRates,
+                ).sort(sortTokensWithRates);
 
-            return {
-                account,
-                tokens: sortedTokensByFiatBalance,
-                hiddenTokens: sortedHiddenTokensByFiatBalance,
-            };
-        });
+                return {
+                    account,
+                    tokens: sortedTokensByFiatBalance,
+                    hiddenTokens: sortedHiddenTokensByFiatBalance,
+                };
+            })
+            .filter(
+                // There is nothing to send from an account with neither native nor token balance,
+                // consistent with the Swap and Sell account selection.
+                ({ account, tokens, hiddenTokens }) =>
+                    new BigNumber(account.balance).gt(0) ||
+                    tokens.length > 0 ||
+                    hiddenTokens.length > 0,
+            );
     }, [fiatRatesRef, throttledAccounts, networkSymbolFilter, baseCurrencyCode, tokenDefinitions]);
 
     return useMemo(() => {
