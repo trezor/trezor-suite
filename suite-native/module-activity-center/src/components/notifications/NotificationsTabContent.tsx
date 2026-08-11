@@ -1,16 +1,14 @@
 import { useSelector } from 'react-redux';
 
-import {
-    getSeenAndUnseenNotifications,
-    selectTransactionNotifications,
-} from '@suite-common/toast-notifications';
+import { getSeenAndUnseenNotifications } from '@suite-common/toast-notifications';
+import { selectNonPhishingTransactionNotifications } from '@suite-common/wallet-core';
 import { Box } from '@suite-native/atoms';
 
 import { ActivityCenterEmptyState } from './ActivityCenterEmptyState';
 import { NotificationList } from './NotificationList';
 
 export const NotificationsTabContent = () => {
-    const txNotifications = useSelector(selectTransactionNotifications);
+    const txNotifications = useSelector(selectNonPhishingTransactionNotifications);
     const { seenNotifications, unseenNotifications } =
         getSeenAndUnseenNotifications(txNotifications);
 
