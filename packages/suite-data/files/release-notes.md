@@ -1,28 +1,25 @@
 ### 🚀 New features
 
-- Tron (TRX) staking is now available directly in Trezor Suite
-- Users can now cancel pending EVM transactions
-- Option added to view and edit nonce in the EVM send form
-- A new preview step has been added to the Buy flow
-- SLIP24 enabled for Ripple transactions
-- WalletConnect button added to the account menu for quick access to connected apps
+- Added support for HyperEVM network
+- ETH vault added to DeFi Yield
+- New and improved Receive flow
+- BIP-321 URIs added to Send form for simpler QR payments
+- Activity page redesigned, now including Notifications, and Release notes tabs
+- Transaction detail screen now shows profit / loss and price per unit
 
 ### 🎨 Improvements
 
-- Account sorting updated across sidebar menu and transaction screens
-- Zero-balance and hidden tokens are now sorted alphabetically
-- Page navigation simplified in the trading section
-- Expanded clear signing coverage for 1inch and other trading flows
-- Clearer error messages now shown during Swap transaction failures
-- Visual fixes for the in-app user guide
-- Lower minimum fee rate of 0.2 sat/vB for Normal priority transactions
-- Improved permission handling in Trezor Connect and the Connect popup
+- Sign & verify messages now display the full address
+- Stablecoin Yield renamed as DeFi Yield, alongside other UX improvements
+- Improved UX for suspicious transactions filter
+- Account loading behavior improved for enhanced app performance
+- Tor onion address used for Suite Sync connections for improved performance
 
 ### 🔧 Bug fixes
 
-- Prevention of canceling or speeding up EVM transactions with a nonce gap
-- Hidden assets are excluded from token search results
-- Unification of Bitcoin Cash address prefix throughout Suite
-- Fixed incorrect network fees shown for 1inch Fusion swaps
-- Visual / UX improvements throughout the application
+- Send form recomposes transaction details when OP_RETURN Hexadecimal input field is updated
+- Fixed incorrect fees displayed for Layer 2 EVM transactions
+- Restored the transaction ID ‘Copy’ button
+- Fixed balance details displayed for Solana contract transactions
+- Network fee calculation issues resolved for Tron swaps
 - Minor bugs have been resolved, along with general usability enhancements for a more reliable and seamless experience
