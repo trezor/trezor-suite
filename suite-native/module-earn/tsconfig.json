@@ -79,6 +79,7 @@
         { "path": "../link" },
         { "path": "../message-system" },
         { "path": "../navigation" },
+        { "path": "../scrollview" },
         { "path": "../settings" },
         { "path": "../staking" },
         { "path": "../test-utils" },

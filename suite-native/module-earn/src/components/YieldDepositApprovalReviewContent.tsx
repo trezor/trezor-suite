@@ -48,9 +48,6 @@ export const YieldDepositApprovalReviewContent = ({
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const activeStep = useYieldReviewActiveStep(flowData.account.symbol);
     const isRevokeReview = transactionType === 'revoke';
-    const successMessageTranslationId = isRevokeReview
-        ? 'earn.yieldDepositRevokeReviewScreen.successMessage'
-        : undefined;
     const submitButtonTranslationId = isRevokeReview
         ? 'earn.yieldDepositRevokeReviewScreen.submitButton'
         : 'earn.yieldDepositApprovalReviewScreen.submitButton';
@@ -106,7 +103,6 @@ export const YieldDepositApprovalReviewContent = ({
                     <EarnReviewSubmittedCard
                         buttonTranslationId={submitButtonTranslationId}
                         isButtonLoading={isSendingApproval}
-                        messageTranslationId={successMessageTranslationId}
                         onButtonPress={handleApprovalSubmitted}
                     />
                 ) : undefined

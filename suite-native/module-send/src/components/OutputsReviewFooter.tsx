@@ -25,8 +25,8 @@ import {
     type StackToStackCompositeNavigationProps,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
+import { ScrollToEndOnMount } from '@suite-native/scrollview';
 import { cleanupSendFormThunk, sendTransactionThunk } from '@suite-native/send';
-import { SignSuccessMessage } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
@@ -221,17 +221,18 @@ export const OutputsReviewFooter = ({
             style={applyStyle(containerStyle, { bottomInset: insets.bottom })}
         >
             <Card>
-                <SignSuccessMessage />
-                <Button
-                    isLoading={isSendInProgress}
-                    isDisabled={isSendDisabled}
-                    accessibilityRole="button"
-                    accessibilityLabel={translate('generic.validateForm')}
-                    testID="@send/send-transaction-button"
-                    onPress={handleSendTransaction}
-                >
-                    <Translation id="moduleSend.review.outputs.submitButton" />
-                </Button>
+                <ScrollToEndOnMount>
+                    <Button
+                        isLoading={isSendInProgress}
+                        isDisabled={isSendDisabled}
+                        accessibilityRole="button"
+                        accessibilityLabel={translate('generic.validateForm')}
+                        testID="@send/send-transaction-button"
+                        onPress={handleSendTransaction}
+                    >
+                        <Translation id="moduleSend.review.outputs.submitButton" />
+                    </Button>
+                </ScrollToEndOnMount>
             </Card>
         </AnimatedBox>
     );

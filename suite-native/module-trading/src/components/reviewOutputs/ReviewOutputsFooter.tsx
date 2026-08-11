@@ -3,7 +3,7 @@ import Animated, { SlideInDown } from 'react-native-reanimated';
 
 import { Button, Card } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { SignSuccessMessage } from '@suite-native/transaction-management';
+import { ScrollToEndOnMount } from '@suite-native/scrollview';
 
 export type ReviewOutputsFooterProps = {
     resolveConsent: (approved: boolean) => void;
@@ -30,16 +30,17 @@ export const ReviewOutputsFooter = ({
     return (
         <Animated.View entering={SlideInDown}>
             <Card testID={testID}>
-                <SignSuccessMessage />
-                <Button
-                    isLoading={isSendInProgress}
-                    isDisabled={!isConsentRequested}
-                    accessibilityRole="button"
-                    testID={buttonTestID}
-                    onPress={handleSendTransaction}
-                >
-                    <Translation id="moduleTrading.tradingReviewOutputs.submitButton" />
-                </Button>
+                <ScrollToEndOnMount>
+                    <Button
+                        isLoading={isSendInProgress}
+                        isDisabled={!isConsentRequested}
+                        accessibilityRole="button"
+                        testID={buttonTestID}
+                        onPress={handleSendTransaction}
+                    >
+                        <Translation id="moduleTrading.tradingReviewOutputs.submitButton" />
+                    </Button>
+                </ScrollToEndOnMount>
             </Card>
         </Animated.View>
     );
