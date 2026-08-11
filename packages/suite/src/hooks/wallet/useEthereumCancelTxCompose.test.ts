@@ -1,5 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
-
+import { useQuery } from '@suite-common/react-query';
 import {
     type Account,
     type WalletAccountTransactionWithRequiredRbfParams,
@@ -8,14 +7,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-import { useEthereumCancelTxCompose } from '../useEthereumCancelTxCompose';
-
-// The hook uses only useEffect (plus the mocked suite/react-query hooks), so mocking useEffect to
-// run synchronously lets us call it directly and assert its logic without a renderer.
-jest.mock('react', () => ({
-    ...jest.requireActual('react'),
-    useEffect: (effect: () => void) => effect(),
-}));
+import { useEthereumCancelTxCompose } from './useEthereumCancelTxCompose';
 
 jest.mock('src/hooks/suite', () => ({
     __esModule: true,
@@ -23,15 +15,15 @@ jest.mock('src/hooks/suite', () => ({
     useSelector: jest.fn(),
 }));
 
-jest.mock('@tanstack/react-query', () => ({
+jest.mock('@suite-common/react-query', () => ({
     __esModule: true,
-    useMutation: jest.fn(),
+    ...jest.requireActual('@suite-common/react-query'),
+    useQuery: jest.fn(),
 }));
 
 const mockUseDispatch = useDispatch as unknown as jest.Mock;
 const mockUseSelector = useSelector as unknown as jest.Mock;
-const mockUseMutation = useMutation as unknown as jest.Mock;
-const mutate = jest.fn();
+const mockUseQuery = useQuery as unknown as jest.Mock;
 
 const ethAccount = mockWalletAccount({ symbol: 'eth' }) as Account;
 const btcAccount = mockWalletAccount({ symbol: 'btc' }) as Account;
@@ -44,102 +36,126 @@ const bitcoinTx = {
 
 const feeInfoStub = { levels: [] };
 
-const setMutationResult = (overrides: Record<string, unknown>) =>
-    mockUseMutation.mockReturnValue({
-        mutate,
+const setQueryResult = (overrides: Record<string, unknown>) =>
+    mockUseQuery.mockReturnValue({
         data: undefined,
         error: null,
-        isPending: false,
+        isLoading: false,
         ...overrides,
     });
+
+const lastQueryOptions = () => mockUseQuery.mock.calls.at(-1)?.[0];
+
+// isRejected/isFulfilled require both meta.requestId and meta.requestStatus.
+const mockDispatchResult = (requestStatus: 'fulfilled' | 'rejected', payload?: unknown) =>
+    mockUseDispatch.mockReturnValue(
+        jest.fn().mockResolvedValue({
+            meta: { requestId: 'mock-request-id', requestStatus },
+            payload,
+        }),
+    );
 
 describe('useEthereumCancelTxCompose', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockUseDispatch.mockReturnValue(jest.fn());
         mockUseSelector.mockReturnValue(feeInfoStub);
-        setMutationResult({});
+        setQueryResult({});
     });
 
-    describe('automatic composition', () => {
-        it('composes for an ethereum account with fee info and ethereum rbf params', () => {
+    describe('composition gating', () => {
+        it('is enabled for an ethereum account with fee info and ethereum rbf params', () => {
             useEthereumCancelTxCompose({ account: ethAccount, tx: ethTx });
 
-            expect(mutate).toHaveBeenCalledTimes(1);
+            expect(lastQueryOptions().enabled).toBe(true);
         });
 
-        it('does not compose for a non-ethereum account', () => {
+        it('is disabled for a non-ethereum account', () => {
             useEthereumCancelTxCompose({ account: btcAccount, tx: ethTx });
 
-            expect(mutate).not.toHaveBeenCalled();
+            expect(lastQueryOptions().enabled).toBe(false);
         });
 
-        it('does not compose while fee info is unavailable', () => {
+        it('is disabled while fee info is unavailable', () => {
             mockUseSelector.mockReturnValue(undefined);
 
             useEthereumCancelTxCompose({ account: ethAccount, tx: ethTx });
 
-            expect(mutate).not.toHaveBeenCalled();
+            expect(lastQueryOptions().enabled).toBe(false);
         });
 
-        it('does not compose when the tx has no ethereum rbf params', () => {
+        it('is disabled when the tx has no ethereum rbf params', () => {
             useEthereumCancelTxCompose({ account: ethAccount, tx: bitcoinTx });
 
-            expect(mutate).not.toHaveBeenCalled();
+            expect(lastQueryOptions().enabled).toBe(false);
+        });
+    });
+
+    describe('composing via the thunk', () => {
+        it('returns the thunk payload when composition succeeds', async () => {
+            const payload = { composedCancelTx: {}, cancelFormState: {} };
+            mockDispatchResult('fulfilled', payload);
+
+            useEthereumCancelTxCompose({ account: ethAccount, tx: ethTx });
+
+            await expect(lastQueryOptions().queryFn()).resolves.toBe(payload);
+        });
+
+        it('throws the reject payload message when composition fails', async () => {
+            mockDispatchResult('rejected', {
+                error: 'fee-levels-compose-failed',
+                message: 'no fee',
+            });
+
+            useEthereumCancelTxCompose({ account: ethAccount, tx: ethTx });
+
+            await expect(lastQueryOptions().queryFn()).rejects.toThrow('no fee');
+        });
+
+        it('falls back to the error code when the reject payload has no message', async () => {
+            mockDispatchResult('rejected', { error: 'fee-levels-compose-failed' });
+
+            useEthereumCancelTxCompose({ account: ethAccount, tx: ethTx });
+
+            await expect(lastQueryOptions().queryFn()).rejects.toThrow('fee-levels-compose-failed');
+        });
+
+        it('falls back to "Unknown error" when there is no reject payload at all', async () => {
+            mockDispatchResult('rejected');
+
+            useEthereumCancelTxCompose({ account: ethAccount, tx: ethTx });
+
+            await expect(lastQueryOptions().queryFn()).rejects.toThrow('Unknown error');
         });
     });
 
     describe('error normalization', () => {
-        it('is null when the mutation has not errored', () => {
-            setMutationResult({ error: null });
+        it('is null when the query has not errored', () => {
+            setQueryResult({ error: null });
 
             expect(useEthereumCancelTxCompose({ account: ethAccount, tx: ethTx }).error).toBeNull();
         });
 
-        it('surfaces a plain Error message', () => {
-            setMutationResult({ error: new Error('boom') });
+        it('surfaces the error message', () => {
+            setQueryResult({ error: new Error('boom') });
 
             expect(useEthereumCancelTxCompose({ account: ethAccount, tx: ethTx }).error).toBe(
                 'boom',
             );
         });
-
-        it('surfaces a ComposeFeeLevelsError message', () => {
-            setMutationResult({ error: { error: 'fee-levels-compose-failed', message: 'no fee' } });
-
-            expect(useEthereumCancelTxCompose({ account: ethAccount, tx: ethTx }).error).toBe(
-                'no fee',
-            );
-        });
-
-        it('falls back to the error code when a ComposeFeeLevelsError has no message', () => {
-            setMutationResult({ error: { error: 'fee-levels-compose-failed' } });
-
-            expect(useEthereumCancelTxCompose({ account: ethAccount, tx: ethTx }).error).toBe(
-                'fee-levels-compose-failed',
-            );
-        });
-
-        it('returns "Unknown error" for an unrecognized error shape', () => {
-            setMutationResult({ error: { somethingElse: true } });
-
-            expect(useEthereumCancelTxCompose({ account: ethAccount, tx: ethTx }).error).toBe(
-                'Unknown error',
-            );
-        });
     });
 
-    it('exposes the composed tx and form state from the mutation data', () => {
+    it('exposes the composed tx and form state from the query data', () => {
         const data = {
             composedCancelTx: { type: 'final' },
             cancelFormState: { outputs: [] },
         };
-        setMutationResult({ data });
+        setQueryResult({ data, isLoading: true });
 
         const result = useEthereumCancelTxCompose({ account: ethAccount, tx: ethTx });
 
         expect(result.composedCancelTx).toBe(data.composedCancelTx);
         expect(result.cancelFormState).toBe(data.cancelFormState);
-        expect(result.isComposing).toBe(false);
+        expect(result.isComposing).toBe(true);
     });
 });
