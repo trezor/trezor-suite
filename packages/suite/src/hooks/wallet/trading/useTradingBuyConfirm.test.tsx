@@ -36,6 +36,7 @@ jest.mock('@suite-common/trading', () => {
 });
 
 const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
+const RECEIVE_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const BITCOIN_CRYPTO_ID = 'bitcoin' as CryptoId;
 const EURO_FIAT_CURRENCY = 'EUR' as FiatCurrencyCode;
 
@@ -60,19 +61,21 @@ type StateOverrides = {
     receiveAddress?: string;
     isLoading?: boolean;
     accountKey?: AccountKey;
+    receiveAccountKey?: AccountKey;
     accounts?: Account[];
 };
 
-const DEFAULTS: Required<StateOverrides> = {
+const DEFAULTS = {
     selectedQuote: SELECTED_QUOTE,
     receiveAddress: 'bc1qreceive',
     isLoading: false,
     accountKey: ACCOUNT.key,
+    receiveAccountKey: undefined,
     accounts: [ACCOUNT],
-};
+} satisfies StateOverrides;
 
 const buildState = (overrides: StateOverrides = {}) => {
-    const { selectedQuote, receiveAddress, isLoading, accountKey, accounts } = {
+    const { selectedQuote, receiveAddress, isLoading, accountKey, receiveAccountKey, accounts } = {
         ...DEFAULTS,
         ...overrides,
     };
@@ -86,7 +89,7 @@ const buildState = (overrides: StateOverrides = {}) => {
                     receiveAddress,
                     isLoading,
                     tradingAccountKey: accountKey,
-                    receiveAccountKey: undefined,
+                    receiveAccountKey,
                     buyInfo: undefined,
                 },
                 sell: {
@@ -177,6 +180,34 @@ describe('useTradingBuyConfirm', () => {
             await result.current.confirmTrade();
 
             expect(mockConfirmTradeThunk).not.toHaveBeenCalled();
+        });
+
+        it('uses the receive account, not the form account, for the trade and return url', async () => {
+            const { result } = renderConfirm({
+                receiveAccountKey: RECEIVE_ACCOUNT.key,
+                accounts: [ACCOUNT, RECEIVE_ACCOUNT],
+            });
+
+            await result.current.confirmTrade();
+
+            expect(mockConfirmTradeThunk).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    account: RECEIVE_ACCOUNT,
+                    returnUrl: expect.stringContaining(
+                        `detail/${RECEIVE_ACCOUNT.symbol}/${RECEIVE_ACCOUNT.accountType}/${RECEIVE_ACCOUNT.index}/`,
+                    ),
+                }),
+            );
+        });
+
+        it('falls back to the form account when there is no Suite receive account', async () => {
+            const { result } = renderConfirm();
+
+            await result.current.confirmTrade();
+
+            expect(mockConfirmTradeThunk).toHaveBeenCalledWith(
+                expect.objectContaining({ account: ACCOUNT }),
+            );
         });
     });
 });

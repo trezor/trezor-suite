@@ -8,6 +8,7 @@ import {
     cryptoIdToNetworkSymbolAndContractAddress,
     selectTradingBuyInfo,
     selectTradingBuyQuotesRequest,
+    selectTradingBuyReceiveAccount,
     selectTradingBuyReceiveAddress,
     selectTradingCoinInfoByCryptoId,
     selectTradingFormAccount,
@@ -24,6 +25,7 @@ export const selectBuyQuoteThunk = createThunk(
         const quotesRequest = selectTradingBuyQuotesRequest(getState());
         const receiveAddress = selectTradingBuyReceiveAddress(getState());
         const account = selectTradingFormAccount(getState(), 'buy');
+        const receiveAccount = selectTradingBuyReceiveAccount(getState());
 
         const provider = buyInfo && quote.exchange ? buyInfo.providerInfos[quote.exchange] : null;
 
@@ -33,7 +35,7 @@ export const selectBuyQuoteThunk = createThunk(
 
         const returnUrl = await createQuoteLink(
             { ...quotesRequest, paymentMethod: quote.paymentMethod },
-            account,
+            receiveAccount ?? account,
         );
 
         const { symbol: cryptoNetworkSymbol, contractAddress: cryptoContractAddress } =

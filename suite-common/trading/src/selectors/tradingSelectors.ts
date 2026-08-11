@@ -97,9 +97,10 @@ type SelectedAccountRootState = {
     };
 };
 
-export type TradingRootStateWithDeviceAndAccounts = TradingRootState &
+export type TradingRootStateWithAccounts = TradingRootState & AccountsRootState;
+
+export type TradingRootStateWithDeviceAndAccounts = TradingRootStateWithAccounts &
     DeviceRootState &
-    AccountsRootState &
     SelectedAccountRootState;
 
 export type TradingFormAccountRootState = TradingRootStateWithDeviceAndAccounts &
@@ -148,6 +149,8 @@ export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange' | 'sell
 };
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
+const createMemoizedSelectorWithAccounts =
+    createWeakMapSelector.withTypes<TradingRootStateWithAccounts>();
 const createMemoizedSelectorWithDeviceAndAccounts =
     createWeakMapSelector.withTypes<TradingRootStateWithDeviceAndAccounts>();
 const createMemoizedFormAccountSelector =
@@ -918,6 +921,17 @@ export const selectTradingBuyReceiveAccountKey = (state: TradingRootState) =>
     state.wallet.trading.buy.receiveAccountKey;
 export const selectTradingBuyReceiveAddress = (state: TradingRootState) =>
     state.wallet.trading.buy.receiveAddress;
+
+export const selectTradingBuyReceiveAccount = createMemoizedSelectorWithAccounts(
+    [selectAccounts, selectTradingBuyReceiveAccountKey],
+    (accounts, receiveAccountKey): Account | undefined => {
+        if (!receiveAccountKey) {
+            return undefined;
+        }
+
+        return accounts.find(account => account.key === receiveAccountKey);
+    },
+);
 
 export const selectTradingExchangeAccountKey = (state: TradingRootState) =>
     state.wallet.trading.exchange.tradingAccountKey;

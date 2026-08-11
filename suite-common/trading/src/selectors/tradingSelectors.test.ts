@@ -42,6 +42,7 @@ import {
     selectTradingBuyQuotesByPaymentMethod,
     selectTradingBuyQuotesPerPaymentMethod,
     selectTradingBuyQuotesRequest,
+    selectTradingBuyReceiveAccount,
     selectTradingBuySelectedQuote,
     selectTradingBuySupportedCryptoIds,
     selectTradingCoinInfoByCryptoId,
@@ -2366,6 +2367,28 @@ describe('tradingSelectors', () => {
         it('should return supported symbols for exchange', () => {
             expect(selectTradingSupportedSymbols(state, 'exchange', supportedCoins)).toEqual(
                 supportedSymbols,
+            );
+        });
+    });
+
+    describe(selectTradingBuyReceiveAccount.name, () => {
+        it('should return account for receiveAccountKey', () => {
+            state.wallet.trading.buy.receiveAccountKey = accountBtc.key;
+
+            expect(selectTradingBuyReceiveAccount(state)).toBe(accountBtc);
+        });
+
+        it('should return undefined when receiveAccountKey is not set', () => {
+            state.wallet.trading.buy.receiveAccountKey = undefined;
+
+            expect(selectTradingBuyReceiveAccount(state)).toBeUndefined();
+        });
+
+        it('should be stable', () => {
+            state.wallet.trading.buy.receiveAccountKey = accountBtc.key;
+
+            expect(selectTradingBuyReceiveAccount(state)).toBe(
+                selectTradingBuyReceiveAccount(state),
             );
         });
     });
