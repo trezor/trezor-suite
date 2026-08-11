@@ -1,6 +1,11 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type NetworkFeature, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type WalletAccountTransaction,
+    asAccountDescriptor,
+    createAccountKey,
+} from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import * as fixtures from './__fixtures__/accountUtils';
@@ -9,6 +14,7 @@ import {
     enhanceAddresses,
     findAccountDevice,
     findAccountsByAddress,
+    findTransactionSenderAccount,
     getAccountIdentifier,
     getBip43Type,
     getNetworkAccountFeatures,
@@ -124,6 +130,60 @@ describe('account utils', () => {
 
         expect(findAccountsByAddress(ethSymbol, '0xAccountAddress', [account])).toEqual([account]);
         expect(findAccountsByAddress(ethSymbol, '0xOtherAddress', [account])).toEqual([]);
+    });
+
+    describe('findTransactionSenderAccount', () => {
+        const senderAccount = mockWalletAccount({
+            symbol: ethSymbol,
+            descriptor: asAccountDescriptor('0xSender'),
+        });
+        const otherAccount = mockWalletAccount({
+            symbol: ethSymbol,
+            descriptor: asAccountDescriptor('0xOther'),
+        });
+        const accounts = [senderAccount, otherAccount];
+
+        const mockTx = (vin: Array<{ addresses?: string[] }>) =>
+            ({ symbol: ethSymbol, details: { vin } }) as unknown as Pick<
+                WalletAccountTransaction,
+                'details' | 'symbol'
+            >;
+
+        it('resolves the account owning the input address', () => {
+            expect(
+                findTransactionSenderAccount(mockTx([{ addresses: ['0xSender'] }]), accounts),
+            ).toBe(senderAccount);
+        });
+
+        it('resolves the account owning every input of a multi-input transaction', () => {
+            const tx = mockTx([{ addresses: ['0xSender'] }, { addresses: ['0xSender'] }]);
+            expect(findTransactionSenderAccount(tx, accounts)).toBe(senderAccount);
+        });
+
+        it('returns undefined for an unknown sender', () => {
+            expect(
+                findTransactionSenderAccount(mockTx([{ addresses: ['0xExternal'] }]), accounts),
+            ).toBeUndefined();
+        });
+
+        it('returns undefined when inputs belong to different known accounts', () => {
+            const tx = mockTx([{ addresses: ['0xSender'] }, { addresses: ['0xOther'] }]);
+            expect(findTransactionSenderAccount(tx, accounts)).toBeUndefined();
+        });
+
+        it('returns undefined when any input is unknown (multi-party transaction)', () => {
+            const tx = mockTx([{ addresses: ['0xSender'] }, { addresses: ['0xExternal'] }]);
+            expect(findTransactionSenderAccount(tx, accounts)).toBeUndefined();
+        });
+
+        it('returns undefined when an input has no addresses', () => {
+            const tx = mockTx([{ addresses: ['0xSender'] }, {}]);
+            expect(findTransactionSenderAccount(tx, accounts)).toBeUndefined();
+        });
+
+        it('returns undefined without inputs', () => {
+            expect(findTransactionSenderAccount(mockTx([]), accounts)).toBeUndefined();
+        });
     });
 
     it('getAccountKey', () => {
