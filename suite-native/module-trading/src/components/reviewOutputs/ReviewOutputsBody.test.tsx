@@ -30,11 +30,7 @@ describe('ReviewOutputsBody', () => {
 
         // invalid account id is provided, expect error
         expect(
-            getByText(
-                new RegExp(
-                    getTranslation('moduleTrading.accountScreen.accountEmpty.viewOnly.title'),
-                ),
-            ),
+            getByText(new RegExp(getTranslation('moduleTrading.accountScreen.accountEmpty.title'))),
         ).toBeOnTheScreen();
         expect(queryByTestId('@trading/outputs-review/skeleton')).not.toBeOnTheScreen();
     });
@@ -61,7 +57,7 @@ describe('ReviewOutputsBody', () => {
         ).toBeOnTheScreen();
         // ReviewOutputItemList renders "Account not found" for invalid keys; sign-data skips it
         expect(
-            queryByText(getTranslation('moduleTrading.accountScreen.accountEmpty.viewOnly.title')),
+            queryByText(getTranslation('moduleTrading.accountScreen.accountEmpty.title')),
         ).toBeNull();
     });
 });

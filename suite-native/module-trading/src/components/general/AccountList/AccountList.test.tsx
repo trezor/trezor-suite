@@ -1,43 +1,34 @@
 import { useNavigation } from '@react-navigation/native';
-import { combineReducers } from '@reduxjs/toolkit';
 
-import { messageSystemInitialState } from '@suite-common/message-system';
-import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { selectTradingBuyReceiveAccountKey } from '@suite-common/trading';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { getTranslation, localeReducer } from '@suite-native/intl';
-import {
-    type TestStore,
-    createLightStore,
-    createStaticReducer,
-    fireEvent,
-    renderWithStoreProvider,
-    screen,
-} from '@suite-native/test-utils-store';
+import { getTranslation } from '@suite-native/intl';
+import { RootStackRoutes } from '@suite-native/navigation';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accounts,
     btc1NormalAccount,
+    eth1NormalAccount,
 } from '@suite-native/trading-fixtures';
 import {
     selectBuySelectedReceiveAccount,
     selectExchangeSelectedReceiveAccount,
-    tradingInitialState,
-    tradingSlice,
 } from '@suite-native/trading-state';
-import { type ReceiveAccount } from '@suite-native/trading-types';
-import { type Address } from '@trezor/blockchain-link-types';
 
 import { AccountList, type AccountsListProps, keyExtractor } from './AccountList';
+import {
+    type PreloadedStatePartial,
+    type TradingTestPreloadedState,
+    createTradingLightStore,
+} from '../../../test-utils/tradingTestUtils';
 
-const defaultPreloadedState = {
+const navigationNavigate = jest.fn();
+const navigationPopToTop = jest.fn();
+
+const defaultOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
     device: {
         devices: [],
         selectedDevice: {
-            state: {
-                staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID,
-            },
+            state: { staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID },
             connected: true,
             available: true,
             remember: true,
@@ -46,272 +37,123 @@ const defaultPreloadedState = {
     wallet: { accounts },
 };
 
-const getStateMockupBuy = (selectedAccount: ReceiveAccount) => ({
-    ...defaultPreloadedState,
-    wallet: {
-        accounts: defaultPreloadedState.wallet.accounts,
-        trading: {
-            ...tradingInitialState,
-            buy: {
-                ...tradingInitialState.buy,
-                receiveAddress: selectedAccount?.address?.address,
-                tradingAccountKey: selectedAccount.account.key,
-            },
-        },
-    },
-});
-
-const getStateMockupExchange = (selectedAccount: ReceiveAccount) => ({
-    ...defaultPreloadedState,
-    wallet: {
-        accounts: defaultPreloadedState.wallet.accounts,
-        trading: {
-            ...tradingInitialState,
-            exchange: {
-                ...tradingInitialState.exchange,
-                receiveAddress: selectedAccount?.address?.address,
-                receiveAccountKey: selectedAccount.account.key,
-            },
-        },
-    },
-});
-
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: jest.fn(),
 }));
 
-describe('AccountList', () => {
-    const onSetPickerModeMock = jest.fn();
-    const popToTop = jest.fn();
-
-    let store: TestStore;
-
-    const createTestStore = (preloadedState = defaultPreloadedState) =>
-        createLightStore({
-            reducer: {
-                discreetMode: createStaticReducer({ isActive: false }),
-                locale: localeReducer,
-                device: createStaticReducer(preloadedState.device),
-                messageSystem: createStaticReducer(messageSystemInitialState),
-                suiteSync: createStaticReducer(initialSuiteSyncState),
-                suiteSyncData: createStaticReducer(initialSuiteSyncDataState),
-                wallet: combineReducers({
-                    accounts: createStaticReducer(preloadedState.wallet.accounts),
-                    settings: createStaticReducer(initialWalletSettingsState),
-                    trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
-                }),
-            },
-            preloadedState,
-        });
-
-    const renderComponent = (
-        props: Partial<AccountsListProps>,
-        preloadedState = defaultPreloadedState,
+describe(AccountList.name, () => {
+    const renderAccountList = (
+        props: Partial<AccountsListProps> = {},
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) => {
-        store = createTestStore(preloadedState);
-
-        return renderWithStoreProvider(
+        const store = createTradingLightStore({ overrides });
+        const symbol = props.symbol ?? 'btc';
+        const receiveAccounts = store
+            .getState()
+            .wallet.accounts.filter(account => account.symbol === symbol)
+            .map(account => ({ account }));
+        const data: AccountsListProps['data'] =
+            receiveAccounts.length === 0
+                ? []
+                : [{ key: '', label: '', data: receiveAccounts, sectionData: undefined }];
+        const result = renderWithStoreProvider(
             <AccountList
-                symbol="btc"
-                pickerMode="account"
+                symbol={symbol}
                 tradingType="buy"
                 onAddAccountTap={jest.fn()}
-                onSetPickerMode={jest.fn()}
                 {...props}
+                data={props.data ?? data}
             />,
             { store },
         );
+
+        return { ...result, store };
     };
 
-    describe('renderItem', () => {
-        afterEach(() => {
-            screen.unmount();
-        });
-
-        it('should display all accounts for given symbol', () => {
-            const { getByText } = renderComponent({
-                symbol: 'btc',
-                pickerMode: 'account',
-            });
-
-            expect(getByText('BTC Account #1')).toBeTruthy();
-            expect(getByText('BTC Account #2')).toBeTruthy();
-        });
-
-        it('should display addresses when picker mode is set and account is selected', () => {
-            const { getByText } = renderComponent(
-                {
-                    symbol: 'btc',
-                    pickerMode: 'address',
-                },
-                getStateMockupBuy({ account: btc1NormalAccount }),
-            );
-
-            const item = getByText('UNUSED1');
-            expect(item).toBeTruthy();
+    beforeEach(() => {
+        jest.clearAllMocks();
+        (useNavigation as jest.Mock).mockReturnValue({
+            navigate: navigationNavigate,
+            popToTop: navigationPopToTop,
         });
     });
 
-    describe('onItemSelect', () => {
-        afterEach(() => {
-            screen.unmount();
-        });
+    it('displays all accounts for the selected network', () => {
+        const { getByText } = renderAccountList();
 
-        it('should call onSetPickerMode when account is selected in account mode', () => {
-            (useNavigation as jest.Mock).mockReturnValue({ popToTop });
-
-            const { getByText } = renderComponent({
-                symbol: 'btc',
-                pickerMode: 'account',
-                onSetPickerMode: onSetPickerModeMock,
-            });
-
-            const item = getByText('BTC Account #1');
-            expect(item).toBeTruthy();
-
-            fireEvent.press(item);
-
-            expect(onSetPickerModeMock).toHaveBeenCalledWith('address');
-            expect(popToTop).not.toHaveBeenCalled();
-        });
-
-        it('should popToTop when account is selected in account mode and there are no addresses', () => {
-            (useNavigation as jest.Mock).mockReturnValue({ popToTop });
-
-            const { getByText } = renderComponent({
-                symbol: 'eth',
-                pickerMode: 'account',
-                onSetPickerMode: onSetPickerModeMock,
-            });
-
-            const item = getByText('ETH Account #1');
-            expect(item).toBeTruthy();
-
-            fireEvent.press(item);
-
-            expect(popToTop).toHaveBeenCalled();
-        });
-
-        it('should handle address selection in address mode', () => {
-            (useNavigation as jest.Mock).mockReturnValue({ popToTop });
-            const { getByText } = renderComponent(
-                {
-                    symbol: 'btc',
-                    pickerMode: 'address',
-                    onSetPickerMode: onSetPickerModeMock,
-                },
-                getStateMockupBuy({ account: btc1NormalAccount }),
-            );
-
-            const item = getByText('UNUSED1');
-            expect(item).toBeTruthy();
-
-            fireEvent.press(item);
-
-            expect(popToTop).toHaveBeenCalled();
-        });
-
-        it('should set correct state with tradingType set to "buy"', () => {
-            const { getByText } = renderComponent({
-                symbol: 'btc',
-                pickerMode: 'account',
-            });
-
-            fireEvent.press(getByText('BTC Account #1'));
-
-            expect(selectBuySelectedReceiveAccount(store.getState())).toEqual({
-                account: btc1NormalAccount,
-                address: undefined,
-            });
-            expect(selectTradingBuyReceiveAccountKey(store.getState())).toBe(btc1NormalAccount.key);
-        });
-
-        it('should set correct state with tradingType set to "exchange"', () => {
-            const { getByText } = renderComponent({
-                symbol: 'btc',
-                pickerMode: 'account',
-                tradingType: 'exchange',
-            });
-
-            fireEvent.press(getByText('BTC Account #1'));
-
-            expect(selectExchangeSelectedReceiveAccount(store.getState())).toEqual({
-                account: btc1NormalAccount,
-                address: undefined,
-            });
-        });
-
-        it('should handle address selection in address mode for "exchange"', () => {
-            (useNavigation as jest.Mock).mockReturnValue({ popToTop });
-            const { getByText } = renderComponent(
-                {
-                    symbol: 'btc',
-                    pickerMode: 'address',
-                    onSetPickerMode: onSetPickerModeMock,
-                    tradingType: 'exchange',
-                },
-                getStateMockupExchange({ account: btc1NormalAccount }),
-            );
-
-            const item = getByText('UNUSED1');
-            expect(item).toBeTruthy();
-
-            fireEvent.press(item);
-
-            expect(popToTop).toHaveBeenCalled();
-        });
+        expect(getByText('BTC Account #1')).toBeTruthy();
+        expect(getByText('BTC Account #2')).toBeTruthy();
     });
 
-    describe('footer', () => {
-        afterEach(() => {
-            screen.unmount();
+    it('opens the address picker without changing trading state for an address-based account', () => {
+        const { getByText, store } = renderAccountList();
+
+        fireEvent.press(getByText('BTC Account #1'));
+
+        expect(navigationNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingReceiveAddress, {
+            accountKey: btc1NormalAccount.key,
+            tradingType: 'buy',
         });
-
-        it('should display footer with "Add new" button in "account" mode', () => {
-            const { getByText } = renderComponent({
-                symbol: 'btc',
-                pickerMode: 'account',
-            });
-
-            expect(
-                getByText(
-                    getTranslation('moduleAddAccounts.coinDiscoveryFinishedScreen.addButton'),
-                ),
-            ).toBeTruthy();
-        });
-
-        it('should NOT display footer with "Add new" button in "address" mode', () => {
-            const { queryByText } = renderComponent(
-                {
-                    symbol: 'btc',
-                    pickerMode: 'address',
-                },
-                getStateMockupBuy({ account: btc1NormalAccount }),
-            );
-
-            expect(
-                queryByText(
-                    getTranslation('moduleAddAccounts.coinDiscoveryFinishedScreen.addButton'),
-                ),
-            ).toBeNull();
-        });
+        expect(selectBuySelectedReceiveAccount(store.getState())).toBeUndefined();
+        expect(navigationPopToTop).not.toHaveBeenCalled();
     });
 
-    describe('keyExtractor', () => {
-        it('should use default string for undefined address', () => {
-            expect(keyExtractor({ account: btc1NormalAccount, address: undefined })).toBe(
-                btc1NormalAccount.key + '_address_undefined',
-            );
-        });
+    it('selects an account-based buy account and closes the picker', () => {
+        const { getByText, store } = renderAccountList({ symbol: 'eth' });
 
-        it('should use address string for set address', () => {
-            expect(
-                keyExtractor({
-                    account: btc1NormalAccount,
-                    address: { address: 'ADDRESS1' } as Address,
-                }),
-            ).toBe(btc1NormalAccount.key + '_ADDRESS1');
+        fireEvent.press(getByText('ETH Account #1'));
+
+        expect(selectBuySelectedReceiveAccount(store.getState())).toEqual({
+            account: eth1NormalAccount,
         });
+        expect(navigationPopToTop).toHaveBeenCalledTimes(1);
+    });
+
+    it('selects an account-based exchange account and closes the picker', () => {
+        const { getByText, store } = renderAccountList({ symbol: 'eth', tradingType: 'exchange' });
+
+        fireEvent.press(getByText('ETH Account #1'));
+
+        expect(selectExchangeSelectedReceiveAccount(store.getState())).toEqual({
+            account: eth1NormalAccount,
+        });
+        expect(navigationPopToTop).toHaveBeenCalledTimes(1);
+    });
+
+    it('renders the separate add account button for a populated list', () => {
+        const onAddAccountTap = jest.fn();
+        const { getByText } = renderAccountList({ onAddAccountTap });
+
+        fireEvent.press(
+            getByText(getTranslation('moduleAddAccounts.coinDiscoveryFinishedScreen.addButton')),
+        );
+
+        expect(onAddAccountTap).toHaveBeenCalledTimes(1);
+    });
+
+    it('renders the redesigned empty state when no account exists', () => {
+        const { getByText } = renderAccountList(
+            {},
+            {
+                ...defaultOverrides,
+                wallet: { accounts: [] },
+            },
+        );
+
+        expect(
+            getByText(getTranslation('moduleTrading.accountScreen.accountEmpty.title')),
+        ).toBeTruthy();
+    });
+
+    it('extracts stable account and address keys', () => {
+        const usedAddress = btc1NormalAccount.addresses?.used[0];
+
+        expect(keyExtractor({ account: btc1NormalAccount, address: undefined })).toBe(
+            `${btc1NormalAccount.key}_address_undefined`,
+        );
+        expect(keyExtractor({ account: btc1NormalAccount, address: usedAddress })).toBe(
+            `${btc1NormalAccount.key}_${usedAddress?.address}`,
+        );
     });
 });

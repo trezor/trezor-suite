@@ -2000,7 +2000,7 @@
     "moduleTrading.accountScreen.accountEmpty.viewOnly.title": "Account not found",
     "moduleTrading.accountScreen.accountEmpty.viewOnly.description": "You need to connect your device to add a new account.",
     "moduleTrading.accountScreen.accountEmpty.networkNotEnabled.title": "Account not found",
-    "moduleTrading.accountScreen.accountEmpty.networkNotEnabled.description": "No account found for selected asset.",
+    "moduleTrading.accountScreen.accountEmpty.networkNotEnabled.description": "It seems that you don’t have any account matching selected asset.",
     "moduleTrading.accountScreen.accountEmpty.portfolioTracker.title": "Account not found",
     "moduleTrading.accountScreen.accountEmpty.portfolioTracker.description": "You don't have an account for this asset imported in the Portfolio Tracker.",
     "moduleTrading.accountScreen.addressEmpty.title": "Address not found",

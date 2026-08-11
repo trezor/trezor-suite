@@ -56,6 +56,7 @@ export enum RootStackRoutes {
     TradingMyAsset = 'TradingMyAsset',
     TradingTradeableAsset = 'TradingTradeableAsset',
     ReceiveAccounts = 'ReceiveAccounts',
+    TradingReceiveAddress = 'TradingReceiveAddress',
     TradingHistory = 'TradingHistory',
     TradingHistoryDetail = 'TradingHistoryDetail',
     TradingBuyPreview = 'TradingBuyPreview',

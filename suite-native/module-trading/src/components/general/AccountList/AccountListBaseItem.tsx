@@ -1,10 +1,9 @@
 import { type ReactNode } from 'react';
-import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { selectAccountLabel } from '@suite-native/accounts';
-import { Box, HStack, Text, VStack } from '@suite-native/atoms';
+import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { useCoinLabel } from '@suite-native/device';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
@@ -16,8 +15,9 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 export type AccountListBaseItemProps = {
     receiveAccount: ReceiveAccount;
     label: ReactNode;
-    info: ReactNode;
+    info?: ReactNode;
     isAddressDetail: boolean;
+    isFreshAddress?: boolean;
     onPress: () => void;
 };
 
@@ -49,6 +49,10 @@ const bottomContentStyle = prepareNativeStyle<{ hasSingleChildren: boolean }>(
     }),
 );
 
+const containerStyle = prepareNativeStyle(({ spacings }) => ({
+    minHeight: spacings.sp64,
+}));
+
 const AccountListLabel = ({ label, flex }: { label: ReactNode; flex: number }) => {
     const { applyStyle } = useNativeStyles();
 
@@ -56,6 +60,7 @@ const AccountListLabel = ({ label, flex }: { label: ReactNode; flex: number }) =
         <Text
             variant="body-md"
             style={applyStyle(labelTextStyle, { textColor: 'contentPrimary', flex })}
+            numberOfLines={1}
         >
             {label}
         </Text>
@@ -67,6 +72,7 @@ export const AccountListBaseItem = ({
     label,
     info,
     isAddressDetail,
+    isFreshAddress = false,
     onPress,
 }: AccountListBaseItemProps) => {
     const { applyStyle } = useNativeStyles();
@@ -76,7 +82,7 @@ export const AccountListBaseItem = ({
     const cryptoValue = isAddressDetail ? (address?.balance ?? '0') : account.availableBalance;
 
     const shouldDisplayCaret = !isAddressDetail && !!account.addresses;
-    const shouldDisplayBalance = !isAddressDetail || address?.balance != null;
+    const shouldDisplayBalance = !isFreshAddress;
 
     const accountLabel =
         useSelector((state: CombinedLabelingState) =>
@@ -84,16 +90,23 @@ export const AccountListBaseItem = ({
         ) ?? undefined;
 
     return (
-        <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={accountLabel}>
+        <PressableOpacity
+            onPress={onPress}
+            accessibilityRole="button"
+            accessibilityLabel={accountLabel}
+        >
             <HStack
                 alignItems="center"
                 spacing="sp12"
-                paddingVertical="sp12"
+                paddingVertical="sp16"
                 justifyContent="center"
+                style={applyStyle(containerStyle)}
             >
-                <Box justifyContent="center">
-                    <TokenIcon symbol={account.symbol} size="extraSmall" />
-                </Box>
+                {!isAddressDetail && (
+                    <Box justifyContent="center">
+                        <TokenIcon symbol={account.symbol} size="extraSmall" />
+                    </Box>
+                )}
                 {!info && (
                     <Box flex={1}>
                         <AccountListLabel label={label} flex={0} />
@@ -128,7 +141,7 @@ export const AccountListBaseItem = ({
                                 symbol={account.symbol}
                                 variant="body-sm"
                                 style={applyStyle(labelTextStyle, {
-                                    textColor: 'contentPrimary',
+                                    textColor: 'contentSecondary',
                                     flex: 1,
                                 })}
                                 accessibilityLabel={translate(
@@ -148,6 +161,6 @@ export const AccountListBaseItem = ({
                     </Box>
                 )}
             </HStack>
-        </Pressable>
+        </PressableOpacity>
     );
 };

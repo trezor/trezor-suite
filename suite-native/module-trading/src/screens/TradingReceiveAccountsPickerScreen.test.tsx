@@ -66,12 +66,14 @@ describe('TradingReceiveAccountsPickerScreen', () => {
         }
     });
 
-    it('should render account list with correct title', () => {
+    it('should render the empty-state title when no account exists', () => {
         mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 
         const { getByText } = renderScreen(overridesWithAccounts([]));
 
-        expect(getByText(getTranslation('moduleTrading.accountScreen.titleStep1'))).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.accountScreen.accountEmpty.title')),
+        ).toBeTruthy();
     });
 
     it('should render account list with accounts', () => {
@@ -96,17 +98,21 @@ describe('TradingReceiveAccountsPickerScreen', () => {
         const { getByText } = renderScreen(overridesWithAccounts([]));
 
         expect(
-            getByText(getTranslation('moduleTrading.accountScreen.accountEmpty.viewOnly.title')),
+            getByText(getTranslation('moduleTrading.accountScreen.accountEmpty.title')),
         ).toBeTruthy();
     });
 
-    it('should render add account button', () => {
+    it('should render the activation button when no account exists', () => {
         mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 
         const { getByText } = renderScreen(overridesWithAccounts([]));
 
         expect(
-            getByText(getTranslation('moduleAddAccounts.coinDiscoveryFinishedScreen.addButton')),
+            getByText(
+                getTranslation('moduleTrading.accountScreen.accountEmpty.activate', {
+                    network: 'Bitcoin',
+                }),
+            ),
         ).toBeTruthy();
     });
 });

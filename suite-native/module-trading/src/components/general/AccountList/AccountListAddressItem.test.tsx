@@ -51,9 +51,13 @@ const createAccount = (
 describe(AccountListAddressItem.name, () => {
     const onPressMock = jest.fn();
 
-    const renderAccountListAddressItem = (receiveAccount: ReceiveAccount) =>
+    const renderAccountListAddressItem = (receiveAccount: ReceiveAccount, isFreshAddress = false) =>
         renderWithTradingProvider(
-            <AccountListAddressItem receiveAccount={receiveAccount} onPress={onPressMock} />,
+            <AccountListAddressItem
+                receiveAccount={receiveAccount}
+                isFreshAddress={isFreshAddress}
+                onPress={onPressMock}
+            />,
         );
 
     beforeEach(() => {
@@ -176,6 +180,37 @@ describe(AccountListAddressItem.name, () => {
                 }),
             ),
         ).toHaveTextContent('0 BTC');
+    });
+
+    it('should hide balance for a fresh address', () => {
+        const receiveAccount: ReceiveAccount = {
+            account: createAccount({
+                key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
+                symbol: 'btc',
+                accountLabel: 'My BTC account',
+                availableBalance: '10000000',
+            }),
+            address: {
+                address: 'BTC_address',
+                balance: '0',
+                path: 'm/84/0/0',
+                transfers: 0,
+                sent: '',
+                received: '',
+            },
+        };
+        const { queryByLabelText } = renderAccountListAddressItem(receiveAccount, true);
+
+        expect(
+            queryByLabelText(
+                getTranslation('moduleTrading.accountScreen.balanceCrypto', {
+                    coinLabel: 'crypto',
+                }),
+            ),
+        ).toBeNull();
+        expect(
+            queryByLabelText(getTranslation('moduleTrading.accountScreen.balanceFiat')),
+        ).toBeNull();
     });
 
     it('should render nothing when no address is specified', () => {
