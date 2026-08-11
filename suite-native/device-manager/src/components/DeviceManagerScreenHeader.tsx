@@ -5,7 +5,7 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
+import { selectHasUnseenNonPhishingTransactionNotifications } from '@suite-common/wallet-core';
 import { ActivityCenterButton } from '@suite-native/activity-center';
 import { HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
 
@@ -21,7 +21,7 @@ export const DeviceManagerScreenHeader = ({
     const isActivityCenterEnabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureEnabled(state, Feature.activityCenter, true),
     );
-    const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
+    const hasUnseenNotifications = useSelector(selectHasUnseenNonPhishingTransactionNotifications);
 
     return (
         <ScreenHeaderWrapper noBottomPadding={noBottomPadding}>
