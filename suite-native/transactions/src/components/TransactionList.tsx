@@ -37,6 +37,7 @@ import { useFetchMissingTransactionFiatRates } from '../hooks/useFetchMissingTra
 
 type AccountTransactionProps = {
     listHeaderComponent: JSX.Element;
+    listEmptyComponent?: JSX.Element;
     account: Account;
     tokenContract?: TokenAddress;
     stakingOnly?: boolean;
@@ -129,6 +130,7 @@ const renderSectionHeader = ({ section: { monthKey } }: RenderSectionHeaderParam
 
 export const TransactionList = ({
     listHeaderComponent,
+    listEmptyComponent,
     account,
     tokenContract,
     stakingOnly = false,
@@ -226,20 +228,24 @@ export const TransactionList = ({
         ) as MonthKey[];
 
         if (tokenContract) {
-            return transactionMonthKeys.flatMap(monthKey => [
-                monthKey,
-                ...(accountTransactionsByMonth[monthKey] ?? []).flatMap(transaction =>
-                    transaction.tokens
-                        .filter(token => token.contract === tokenContract)
-                        .map(
-                            tokenTransfer =>
-                                ({
-                                    ...tokenTransfer,
-                                    originalTransaction: transaction,
-                                }) as TypedTokenTransferWithTx,
-                        ),
-                ),
-            ]);
+            return transactionMonthKeys.flatMap(monthKey => {
+                const tokenTransfers = (accountTransactionsByMonth[monthKey] ?? []).flatMap(
+                    transaction =>
+                        transaction.tokens
+                            .filter(token => token.contract === tokenContract)
+                            .map(
+                                tokenTransfer =>
+                                    ({
+                                        ...tokenTransfer,
+                                        originalTransaction: transaction,
+                                    }) as TypedTokenTransferWithTx,
+                            ),
+                );
+
+                // Months without any transfer of the token are dropped entirely, so an account
+                // with no transactions of the token results in empty data and shows the empty state.
+                return tokenTransfers.length > 0 ? [monthKey, ...tokenTransfers] : [];
+            });
         }
 
         return transactionMonthKeys.flatMap(monthKey => [
@@ -292,9 +298,9 @@ export const TransactionList = ({
                 renderItem={renderItem}
                 contentContainerStyle={applyStyle(sectionListContainerStyle)}
                 ListEmptyComponent={
-                    shouldDeferEmptyState ? null : (
-                        <TransactionsEmptyState accountKey={accountKey} />
-                    )
+                    shouldDeferEmptyState
+                        ? null
+                        : (listEmptyComponent ?? <TransactionsEmptyState accountKey={accountKey} />)
                 }
                 ListHeaderComponent={listHeaderComponent}
                 ListFooterComponent={

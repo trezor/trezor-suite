@@ -9,6 +9,7 @@ import {
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
     type FiatRatesRootState,
     type TransactionsRootState,
     type WalletSettingsRootState,
@@ -195,6 +196,24 @@ export const selectHasAccountAnyTransactions = createMemoizedSelector(
         return transactions.length > 0;
     },
 );
+
+// Unlike selectHasAccountAnyTransactions, the token branch can only inspect already fetched
+// transactions, so it returns false until the first transactions page is loaded.
+export const selectHasAccountAnyTransactionsForToken = (
+    state: AccountsRootState & TransactionsRootState,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+): boolean => {
+    if (!tokenContract) {
+        return selectHasAccountAnyTransactions(state, accountKey);
+    }
+
+    const transactions = selectAccountTransactions(state, accountKey);
+
+    return transactions.some(transaction =>
+        transaction.tokens.some(token => token.contract === tokenContract),
+    );
+};
 
 export const selectTransactionFiatRate = (
     state: WalletSettingsRootState & FiatRatesRootState,

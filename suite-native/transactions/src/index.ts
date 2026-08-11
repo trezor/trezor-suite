@@ -9,6 +9,7 @@ export * from './components/TransactionOutputLabelEditable';
 export * from './components/TokenTransferListItem';
 export * from './components/TransactionListItem';
 export * from './components/TransactionListItemContainer';
+export * from './components/TransactionsEmptyState';
 export * from './hooks/useFetchMissingTransactionFiatRates';
 export * from './components/TransactionTarget';
 export * from './selectors';
