@@ -96,11 +96,16 @@ export const YieldDepositFlowFooter = ({
                         style={isEstimatedRewardsVisible ? applyStyle(rewardsBoxStyle) : undefined}
                     >
                         {isEstimatedRewardsVisible && (
-                            <VStack spacing="sp4" paddingVertical="sp12" alignItems="center">
-                                <Text variant="body-sm" color="contentPrimary">
+                            <VStack
+                                spacing="sp4"
+                                paddingVertical="sp12"
+                                paddingHorizontal="sp16"
+                                alignItems="center"
+                            >
+                                <Text variant="body-sm" color="contentPrimary" textAlign="center">
                                     <Translation id="earn.yieldDepositFlowScreen.estimatedRewardsLabel" />
                                 </Text>
-                                <Text variant="headline-sm" color="contentBrand">
+                                <Text variant="headline-sm" color="contentBrand" textAlign="center">
                                     {estimatedRewards}
                                 </Text>
                             </VStack>
