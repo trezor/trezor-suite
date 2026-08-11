@@ -36,6 +36,7 @@ import TrezorConnect, {
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- temporary diagnostic
 import { __btcUnknownTxDebug__ } from '@trezor/connect/src/utils/pathUtils';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { BigNumber } from '@trezor/utils';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import { type TransactionsRootState } from './transactionsReducerTypes';
@@ -469,8 +470,10 @@ export const addFakePendingCardanoTxThunk = createThunk<
             txid,
             blockTime: Math.floor(new Date().getTime() / 1000),
             blockHash: undefined,
-            // amounts (as most of props below) don't matter much since it is temp fake anyway
-            amount: precomposedTransaction.totalSpent,
+            // fee is excluded to match the amount of the confirmed tx from blockfrost
+            amount: new BigNumber(precomposedTransaction.totalSpent)
+                .minus(precomposedTransaction.fee)
+                .toString(),
             fee: precomposedTransaction.fee,
             feeRate: '0',
             totalSpent: precomposedTransaction.totalSpent,
