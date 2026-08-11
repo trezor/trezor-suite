@@ -4,14 +4,17 @@ import {
     getNetwork,
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
+
+import type {
+    YieldFlowCompleteValue,
+    YieldFlowDisplayToken,
+    YieldFlowToken,
+    YieldWithdrawFlowType,
+} from '../stablecoinYieldTypes';
 import {
-    type YieldFlowCompleteValue,
-    type YieldFlowDisplayToken,
-    type YieldFlowToken,
-    type YieldWithdrawFlowType,
     getConvertedOutputTokenBalanceToInputTokenAmount,
     getWithdrawRequestAmount,
-} from '@suite-common/wallet-core';
+} from './stablecoinYieldUtils';
 
 type PricePerShareState = NonNullable<YieldDtoV2['state']>['pricePerShareState'];
 

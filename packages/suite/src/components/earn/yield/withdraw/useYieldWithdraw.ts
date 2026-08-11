@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { type YieldFlowCompleteValue, type YieldWithdrawFlowType } from '@suite-common/wallet-core';
+import {
+    type YieldFlowCompleteValue,
+    type YieldWithdrawFlowType,
+    getYieldWithdrawCompletedValues,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { getYieldWithdrawCompletedValues } from './getYieldWithdrawCompletedValues';
 import { type YieldFlowContextValues, useYieldFlow } from '../hooks/useYieldFlow';
 
 type UseYieldWithdrawProps = {

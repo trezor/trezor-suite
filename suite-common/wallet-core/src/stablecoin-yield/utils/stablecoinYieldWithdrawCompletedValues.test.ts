@@ -1,7 +1,7 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type YieldFlowDisplayToken, type YieldFlowToken } from '@suite-common/wallet-core';
 
-import { getYieldWithdrawCompletedValues } from './getYieldWithdrawCompletedValues';
+import { type YieldFlowDisplayToken, type YieldFlowToken } from '../stablecoinYieldTypes';
+import { getYieldWithdrawCompletedValues } from './stablecoinYieldWithdrawCompletedValues';
 
 type Params = Parameters<typeof getYieldWithdrawCompletedValues>[0];
 
@@ -87,4 +87,20 @@ describe('getYieldWithdrawCompletedValues', () => {
         expect(output.token.symbol).toBe('ETH');
         expect(output.amount).toBe('2.1');
     });
+
+    it.each(['redeem', 'withdraw'] as const)(
+        '%s without a known price per share: falls back to the completed amount for both legs',
+        flowType => {
+            const { input, output } = getYieldWithdrawCompletedValues({
+                ...base,
+                pricePerShareState: undefined,
+                flowType,
+                completedAmount: '2.1',
+                unwrappedAmount: null,
+            });
+
+            expect(input).toEqual({ token: receiptToken, amount: '2.1' });
+            expect(output).toEqual({ token, amount: '2.1' });
+        },
+    );
 });
