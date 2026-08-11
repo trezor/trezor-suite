@@ -107,9 +107,9 @@ export const EarnDepositsCard = ({
         () =>
             buildStablecoinYieldClaimItems({
                 stablecoinYieldClaimSummaries,
-                stablecoinYieldActiveItems,
+                earnDepositsActiveItems: stablecoinYieldRow?.activeItems ?? [],
             }),
-        [stablecoinYieldActiveItems, stablecoinYieldClaimSummaries],
+        [stablecoinYieldClaimSummaries, stablecoinYieldRow?.activeItems],
     );
 
     const handleStablecoinYieldClaimRewardPress = useCallback(
