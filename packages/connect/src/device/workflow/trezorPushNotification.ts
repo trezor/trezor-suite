@@ -5,6 +5,23 @@ import { resolveAfter } from '@trezor/utils';
 import type { TpnWorkflowContext } from '../../types/workflow';
 import { getThpChannel } from '../thp';
 
+const assureThpState = async (device: TpnWorkflowContext['device']) => {
+    const thpState = device.getThpState();
+    if (thpState?.phase !== 'paired') {
+        // try THP pairing without interaction
+        await getThpChannel(device, false);
+    }
+
+    if (device.getThpState()?.phase === 'paired') {
+        // and proceed only if further interaction is not required
+        await device.getFeatures();
+    } else {
+        // otherwise wait for start pairing request
+        device.setBusy('thp-locked');
+        device.emitDeviceChanged();
+    }
+};
+
 const setupDeviceMode = async (
     device: TpnWorkflowContext['device'],
     mode: TrezorPushNotificationMode,
@@ -27,16 +44,7 @@ const setupDeviceMode = async (
         // wait. THP may not be ready yet
         await resolveAfter(1000);
 
-        // try THP pairing without interaction
-        await getThpChannel(device, false);
-        if (device.getThpState()?.phase === 'paired') {
-            // and proceed only if further interaction is not required
-            await device.getFeatures();
-        } else {
-            // otherwise wait for start pairing request
-            device.setBusy('thp-locked');
-            device.emitDeviceChanged();
-        }
+        await assureThpState(device);
 
         await device.release();
     }
@@ -75,7 +83,7 @@ export const trezorPushNotificationHandler = async ({ device, message }: TpnWork
         case TrezorPushNotificationType.NOTIFY_POWER_STATUS_CHANGE:
             if (!device.isUsed()) {
                 await device.acquire();
-                await device.getFeatures();
+                await assureThpState(device);
                 await device.release();
             }
 
