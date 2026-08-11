@@ -175,7 +175,7 @@ describe(selectIsLabelActionEnabled.name, () => {
         expect(result).toBe(true);
     });
 
-    it('disables labeling when Suite Sync is enabled and remembered device is disconnected', () => {
+    it('allows labeling when Suite Sync is enabled and remembered device is disconnected', () => {
         const result = testLabelActionEnabled({
             unavailableCapabilities: {},
             isSuiteSyncFeatureEnabled: true,
@@ -187,7 +187,7 @@ describe(selectIsLabelActionEnabled.name, () => {
             },
         });
 
-        expect(result).toBe(false);
+        expect(result).toBe(true);
     });
 
     it('disables labeling for unsupported device', () => {
@@ -254,9 +254,26 @@ describe(selectIsLabelActionEnabled.name, () => {
 
         const result = testLabelActionEnabled({
             unavailableCapabilities: {},
-            isSuiteSyncFeatureEnabled: false,
+            isSuiteSyncFeatureEnabled: true,
             deviceOverrides: {
                 connected: true,
+            },
+        });
+
+        expect(result).toBe(true);
+    });
+
+    it('allows labeling when Suite Sync feature is available, disabled, and remembered device is disconnected', () => {
+        jest.mocked(selectIsLabelingAvailableForEntity).mockReturnValue(false);
+        jest.mocked(selectIsLabelingInitPossible).mockReturnValue(false);
+
+        const result = testLabelActionEnabled({
+            unavailableCapabilities: {},
+            isSuiteSyncFeatureEnabled: true,
+            deviceOverrides: {
+                connected: false,
+                available: false,
+                remember: true,
             },
         });
 

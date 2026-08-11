@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { setConnectionModal, setConnectionMode } from '@suite/device';
 import {
     type MetadataRootState,
     metadataLabelingActions,
+    metadataLabelingConstants,
     selectIsLabelingAvailableForEntity,
     selectIsMetadataEnabled,
     selectMetadata,
@@ -18,6 +20,7 @@ import {
     suiteSyncErrorHandler,
 } from '@suite/suite-sync';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import {
@@ -67,6 +70,10 @@ export const Labeling = ({
         selectIsLabelActionEnabled(state, deviceStaticSessionId, payload.entityKey),
     );
 
+    const device = useSelector((state: LabelingState) =>
+        selectDeviceByStaticSessionId(state, deviceStaticSessionId),
+    );
+
     const deviceState =
         payload.type === 'walletLabel' ? (payload.entityKey as StaticSessionId) : undefined;
     const isLegacyLabelingEnabled = useSelector((state: LabelingState) =>
@@ -80,6 +87,22 @@ export const Labeling = ({
     const handleEdit = useCallback(async () => {
         if (isSuiteSyncEnabled && suiteSyncInteraction === null) {
             return true;
+        }
+
+        const promptDeviceConnection = () => {
+            if (device?.descriptor?.apiType === 'bluetooth') {
+                dispatch(setConnectionMode('bluetooth'));
+            }
+            dispatch(setConnectionModal(true));
+
+            return false;
+        };
+
+        if (
+            (suiteSyncInteraction === 'keys-needed' || suiteSyncInteraction === 'suite-sync-off') &&
+            !device?.connected
+        ) {
+            return promptDeviceConnection();
         }
 
         // When clicking on inline input edit, ensure that everything needed is already ready.
@@ -115,6 +138,13 @@ export const Labeling = ({
                     });
                 }
             } else {
+                if (
+                    !device?.metadata?.[metadataLabelingConstants.ENCRYPTION_VERSION] &&
+                    !device?.connected
+                ) {
+                    return promptDeviceConnection();
+                }
+
                 return await dispatch(
                     metadataLabelingActions.init(
                         // Provide force=true argument (user wants to enable metadata).
@@ -128,6 +158,7 @@ export const Labeling = ({
 
         return true;
     }, [
+        device,
         deviceState,
         deviceStaticSessionId,
         dispatch,

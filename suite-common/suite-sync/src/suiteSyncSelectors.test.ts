@@ -1,5 +1,6 @@
 import { deviceReducerInitialState } from '@suite-common/device';
 import {
+    Feature,
     type MessageSystemRootState,
     messageSystemInitialState,
 } from '@suite-common/message-system';
@@ -13,6 +14,43 @@ import type { WithSuiteSyncAndDeviceState } from './suiteSyncSelectors';
 import { type SuiteSyncState, initialSuiteSyncState } from './suiteSyncSlice';
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
+
+const SUITE_SYNC_FEATURE_TOGGLE_MESSAGE_ID = 'test-toggle-suite-sync';
+
+const createSuiteSyncFeatureDisabledMessageSystemState =
+    (): MessageSystemRootState['messageSystem'] => ({
+        ...messageSystemInitialState,
+        validMessages: {
+            ...messageSystemInitialState.validMessages,
+            feature: [SUITE_SYNC_FEATURE_TOGGLE_MESSAGE_ID],
+        },
+        config: {
+            version: 1,
+            sequence: 1,
+            timestamp: '2020-01-01T00:00:00.000Z',
+            actions: [
+                {
+                    conditions: [
+                        {
+                            duration: {
+                                from: '2020-01-01T00:00:00.000Z',
+                                to: '2030-01-01T00:00:00.000Z',
+                            },
+                        },
+                    ],
+                    message: {
+                        id: SUITE_SYNC_FEATURE_TOGGLE_MESSAGE_ID,
+                        category: 'feature',
+                        priority: 1,
+                        dismissible: true,
+                        variant: 'info',
+                        content: { en: 't', es: 't', cs: 't', de: 't', fr: 't', pt: 't' },
+                        feature: [{ domain: Feature.suiteSync, flag: false }],
+                    },
+                },
+            ],
+        },
+    });
 
 const createMockState = (
     deviceOverrides: Parameters<typeof mockSuiteDevice>[0] = {},
@@ -150,10 +188,21 @@ describe(selectIsSuiteSyncInitPossible.name, () => {
         expect(result).toBe(true);
     });
 
-    it('returns false for a disconnected device', () => {
+    it('returns true for a disconnected supported device', () => {
         const state = createMockState({
             connected: false,
         });
+
+        const result = selectIsSuiteSyncInitPossible(state, DEVICE_STATIC_SESSION_ID_123);
+
+        expect(result).toBe(true);
+    });
+
+    it('returns false when the Suite Sync feature is not available', () => {
+        const state = createMockState({
+            connected: true,
+        });
+        state.messageSystem = createSuiteSyncFeatureDisabledMessageSystemState();
 
         const result = selectIsSuiteSyncInitPossible(state, DEVICE_STATIC_SESSION_ID_123);
 

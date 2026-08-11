@@ -8,7 +8,6 @@ import {
     type DesktopSuiteSyncRootState,
     selectDesktopSuiteSyncInteraction,
 } from '@suite/suite-sync';
-import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
     type WithSuiteSyncAndDeviceState,
@@ -31,16 +30,11 @@ export const selectIsLabelActionEnabled = (
     const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
 
     if (isSuiteSyncEnabled) {
-        const device = selectDeviceByStaticSessionId(state, deviceStaticSessionId);
         const suiteSyncInteraction = selectDesktopSuiteSyncInteraction(
             state,
             deviceStaticSessionId,
             selectIsMetadataEnabled(state),
         );
-
-        if (suiteSyncInteraction === 'keys-needed' && device?.connected === false) {
-            return false;
-        }
 
         return getIsSuiteSyncLabelingActionEnabled(suiteSyncInteraction);
     }

@@ -27,7 +27,7 @@ export const selectIsSuiteSyncDebugEnabled = (state: WithSuiteSyncAndDeviceState
     state.suiteSync.settings.isSuiteSyncDebugEnabled;
 
 export const selectIsSuiteSyncInitPossible = (
-    state: WithSuiteSyncAndDeviceState,
+    state: WithSuiteSyncAndDeviceState & MessageSystemRootState,
     deviceStaticSessionId: StaticSessionId | null,
 ): boolean => {
     if (deviceStaticSessionId === null) {
@@ -40,7 +40,7 @@ export const selectIsSuiteSyncInitPossible = (
         return false;
     }
 
-    return device.connected && isSuiteSyncSupportedByDevice(device);
+    return selectIsSuiteSyncFeatureAvailable(state) && isSuiteSyncSupportedByDevice(device);
 };
 
 export const selectSuiteSyncOwnerForDeviceStaticId = (
