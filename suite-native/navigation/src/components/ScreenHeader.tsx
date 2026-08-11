@@ -22,6 +22,8 @@ export type ScreenHeaderProps = ScreenHeaderContentProps &
         rightIcon?: ReactNode;
     };
 
+const ICON_SIZE = 40; // i.e. medium IconButton size
+
 const headerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -30,7 +32,11 @@ const headerStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
     paddingBottom: utils.spacings.sp16,
     backgroundColor: utils.colors.surfaceFillPage,
-    minHeight: 40, // i.e. medium IconButton size
+    minHeight: ICON_SIZE,
+}));
+
+const iconWrapperStyle = prepareNativeStyle(() => ({
+    minWidth: ICON_SIZE,
 }));
 
 export const ScreenHeader = ({
@@ -45,7 +51,7 @@ export const ScreenHeader = ({
 
     return (
         <Box style={applyStyle(headerStyle)}>
-            <Box testID="@screen/sub-header/icon-left">
+            <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-left">
                 {leftIcon !== undefined ? (
                     leftIcon
                 ) : (
@@ -57,7 +63,9 @@ export const ScreenHeader = ({
                 )}
             </Box>
             <ScreenHeaderContent title={title} customContent={customContent} />
-            <Box testID="@screen/sub-header/icon-right">{rightIcon}</Box>
+            <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-right">
+                {rightIcon}
+            </Box>
         </Box>
     );
 };
