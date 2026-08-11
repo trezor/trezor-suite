@@ -12,7 +12,7 @@ export type AssetAmountProps = {
     amount: string;
     contractAddress: string;
     fiatAmount?: BaseCurrencyAmount;
-    fiatFallackText?: boolean;
+    showNoTradingPairText?: boolean;
 };
 
 export function AssetAmount({
@@ -20,7 +20,7 @@ export function AssetAmount({
     symbol,
     fiatAmount,
     contractAddress,
-    fiatFallackText = false,
+    showNoTradingPairText = false,
 }: AssetAmountProps) {
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const fiatCurrency = useSelector(selectBaseCurrency);
@@ -41,7 +41,7 @@ export function AssetAmount({
                     <BaseCurrencyAmountFormatter value={fiatAmount} currency={fiatCurrency} />
                 </Text>
             )}
-            {!fiatAmount && fiatFallackText && (
+            {!fiatAmount && showNoTradingPairText && (
                 <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                     <Translation id="TR_HIDDEN_TOKEN_WITHOUT_FIAT" />
                 </Text>

@@ -32,6 +32,7 @@ export interface ExpandableAssetRowTokensProps {
     height: number;
     dataTestId?: string;
     showTokensPreview?: boolean;
+    showNoTradingPairText?: boolean;
 }
 
 export function ExpandableAssetRowTokens({
@@ -44,6 +45,7 @@ export function ExpandableAssetRowTokens({
     height,
     dataTestId,
     showTokensPreview = false,
+    showNoTradingPairText = false,
 }: ExpandableAssetRowTokensProps) {
     const tokensContentHeight = expanded ? getExpandableTokensContentHeight(tokens.length) : 0;
 
@@ -101,6 +103,7 @@ export function ExpandableAssetRowTokens({
                                     account={account}
                                     onClick={onTokenClick}
                                     isHiddenToken={true}
+                                    showNoTradingPairText={showNoTradingPairText}
                                 />
                             ))}
                     </CollapsibleContent>
