@@ -294,10 +294,10 @@ export type NotificationsRootState<TranslationKey extends string = UnknownTransl
     notifications: NotificationsState<TranslationKey>;
 };
 
-export type TransactionNotification = (
-    SentTransactionNotification | ReceivedTransactionNotification
-) &
-    CommonNotificationPayload;
+export type TransactionNotification = Extract<
+    NotificationEntry,
+    { type: TransactionNotificationType }
+>;
 
 export type TransactionNotificationType =
     | 'tx-sent'
