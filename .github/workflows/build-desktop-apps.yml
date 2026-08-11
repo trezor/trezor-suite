@@ -91,6 +91,14 @@ jobs:
           key: renderer-bundle-${{ github.sha }}
           fail-on-cache-miss: true
 
+      # usb 3.x ships its native binary as per-platform optional packages
+      # (@node-usb/usb-*) guarded by os/cpu. electron-builder bundles usb into the
+      # packaged app that runs on the end user's machine, and this job builds both
+      # x64 and arm64, so both target-arch binaries must be installed even though the
+      # CI host only matches one of them.
+      - name: Configure yarn to fetch all target-arch native binaries
+        run: yarn config set supportedArchitectures --json "{\"os\":[\"current\",\"${{ matrix.platform == 'mac' && 'darwin' || 'linux' }}\"],\"cpu\":[\"current\",\"x64\",\"arm64\"]}"
+
       # safedep/pmg not available on macOS (that's ok, it already guards the `build-and-cache-renderer` job)
       - name: Install deps and build libs
         run: |
@@ -152,6 +160,14 @@ jobs:
         continue-on-error: true
         with:
           version: v0.19.1
+
+      # usb 3.x ships its native binary as per-platform optional packages
+      # (@node-usb/usb-*) guarded by os/cpu. The Windows app is built on a Linux
+      # host (wine), so the win32 binary that electron-builder bundles into the
+      # packaged app must be installed explicitly.
+      - name: Configure yarn to fetch the win32 native binary
+        run: yarn config set supportedArchitectures --json '{"os":["current","win32"],"cpu":["current","x64"]}'
+
       - name: Install deps and build libs
         run: |
           yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system

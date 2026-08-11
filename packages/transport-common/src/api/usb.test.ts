@@ -180,17 +180,13 @@ describe('api/usb', () => {
 
         api.listen();
 
-        // @ts-expect-error: mock device with extra properties
+        // @ts-expect-error: onconnect is possibly null
         api.usbInterface.onconnect({
             device: {
                 ...createMockedDevice(),
                 serialNumber: null,
-                device: {
-                    deviceDescriptor: {
-                        iSerialNumber: 'foo',
-                    },
-                },
-                getStringDescriptor: () => new Promise(() => {}),
+                // never resolves, so loadSerialNumber is pending when dispose() aborts
+                open: () => new Promise(() => {}),
             },
         });
 
@@ -238,6 +234,33 @@ describe('api/usb', () => {
         await api.write(devicePath, Buffer.alloc(0), { signal: abortController.signal });
 
         expect(reset).toHaveBeenCalledTimes(0);
+    });
+
+    // usb 3.x defaults every transfer to a 1s timeout; reads/writes that wait for user
+    // interaction (button, PIN, THP pairing) must pass an effectively-infinite timeout so
+    // they are not cancelled prematurely.
+    it('read/write pass a long transfer timeout, not the usb 3.x 1s default', async () => {
+        const transferIn = jest.fn((_endpoint: number, _length: number, _timeout?: number) =>
+            Promise.resolve(createTransferInResult()),
+        );
+        const transferOut = jest.fn((_endpoint: number, _data: unknown, _timeout?: number) =>
+            Promise.resolve(createTransferOutResult()),
+        );
+        const api = new UsbApi({
+            usbInterface: createUsbMock({
+                getDevices: () =>
+                    Promise.resolve([createMockedDevice({ transferIn, transferOut })]),
+            }),
+        });
+
+        await api.enumerate();
+        await api.write(devicePath, Buffer.alloc(0), {});
+        await api.read(devicePath, {});
+
+        const writeTimeout = transferOut.mock.calls[0]?.[2];
+        const readTimeout = transferIn.mock.calls[0]?.[2];
+        expect(writeTimeout).toBeGreaterThan(60_000);
+        expect(readTimeout).toBeGreaterThan(60_000);
     });
 
     it.each(['5e81a7', undefined, ''])('disconnect with serialNumber: %p', async serialNumber => {
