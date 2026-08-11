@@ -2795,6 +2795,8 @@ export const messages = {
         },
         earnTransactionDataReviewScreen: {
             title: 'Confirm on Trezor',
+            pendingTitle: 'Confirming stake',
+            amountLabel: 'Staking amount',
             viewTransactionButton: 'Stake now',
             pushTransactionFailedAlert: {
                 title: 'Transaction failed',
@@ -2816,6 +2818,8 @@ export const messages = {
         },
         unstakeTransactionDataReviewScreen: {
             title: 'Confirm on Trezor',
+            pendingTitle: 'Confirming unstake',
+            amountLabel: 'Unstaking amount',
             viewTransactionButton: 'Unstake now',
             pushTransactionFailedAlert: {
                 title: 'Transaction failed',
@@ -3586,6 +3590,8 @@ export const messages = {
         },
         claimTransactionDataReviewScreen: {
             title: 'Confirm on Trezor',
+            pendingTitle: 'Confirming claim',
+            amountLabel: 'Claiming amount',
             viewTransactionButton: 'Claim now',
             pushTransactionFailedAlert: {
                 title: 'Transaction failed',

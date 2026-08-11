@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { CommonActions, useNavigation } from '@react-navigation/native';
@@ -15,7 +15,10 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { getPollIntervalMs } from '@suite-common/wallet-utils';
+import {
+    getPollIntervalMs,
+    isPending as isTransactionDataPending,
+} from '@suite-common/wallet-utils';
 import {
     AppTabsRoutes,
     type RootStackParamList,
@@ -74,21 +77,23 @@ export const useNavigateAfterPushedTransaction = ({
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
     const [txid, setTxid] = useState('');
+    const [submittedAt, setSubmittedAt] = useState<Date | null>(null);
 
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
+    const transaction = useSelector((state: TransactionsRootState) =>
         selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
     );
+    const isTransactionConfirmed = !!transaction && !isTransactionDataPending(transaction);
 
     const feeInfo = useSelector((state: FeesRootState) =>
         networkSymbol ? selectConvertedNetworkFeeInfo(state, networkSymbol) : null,
     );
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
 
-    const shouldPollPendingTransaction = !!txid && !isTransactionProcessedByBackend;
+    const shouldPollPendingTransaction = !!txid && !isTransactionConfirmed;
 
     useEffect(() => {
         if (!shouldPollPendingTransaction) {
@@ -103,7 +108,7 @@ export const useNavigateAfterPushedTransaction = ({
     }, [accountKey, dispatch, pollIntervalMs, shouldPollPendingTransaction]);
 
     useEffect(() => {
-        if (txid && isTransactionProcessedByBackend && networkSymbol) {
+        if (txid && isTransactionConfirmed && networkSymbol) {
             markReviewNavigationSuccess();
             navigation.dispatch(
                 navigateToPushedTransactionAction({ accountKey, symbol: networkSymbol, txid }),
@@ -111,7 +116,7 @@ export const useNavigateAfterPushedTransaction = ({
         }
     }, [
         accountKey,
-        isTransactionProcessedByBackend,
+        isTransactionConfirmed,
         markReviewNavigationSuccess,
         navigation,
         networkSymbol,
@@ -126,5 +131,15 @@ export const useNavigateAfterPushedTransaction = ({
         };
     }, [txid, dispatch]);
 
-    return { trackPushedTransaction: setTxid };
+    const trackPushedTransaction = useCallback((pushedTxid: string) => {
+        setTxid(pushedTxid);
+        setSubmittedAt(new Date());
+    }, []);
+
+    return {
+        trackPushedTransaction,
+        pendingTxid: txid || undefined,
+        isPending: shouldPollPendingTransaction,
+        submittedAt,
+    };
 };
