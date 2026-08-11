@@ -853,7 +853,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
             selectedAccountNetwork.chainId
         ) {
             isTokenKnown = await fetch(
-                `https://data.trezor.io/firmware/eth-definitions/chain-id/${
+                `https://data.trezor.io/firmware/definitions/eth/chain-id/${
                     selectedAccountNetwork.chainId
                 }/token-${enhancedPrecomposedTransaction.token.contract.substring(2).toLowerCase()}.dat`,
                 { method: 'HEAD' },
