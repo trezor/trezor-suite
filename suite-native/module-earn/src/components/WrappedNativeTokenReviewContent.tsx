@@ -1,8 +1,8 @@
 import { type WrappedNativeFlowType, type YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { type TxKeyPath } from '@suite-native/intl';
+import { Button } from '@suite-native/atoms';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 
-import { EarnReviewSubmittedCard } from './EarnReviewSubmittedCard';
 import { YieldReviewScreenLayout } from './YieldReviewScreenLayout';
 import { YieldTransactionReviewOutputList } from './YieldTransactionReviewOutputList';
 import { useWrappedNativeTokenReview } from '../hooks/useWrappedNativeTokenReview';
@@ -78,13 +78,11 @@ export const WrappedNativeTokenReviewContent = ({
         <YieldReviewScreenLayout
             confirmOnTrezorRef={confirmOnTrezorRef}
             titleTranslationId={flowMessages[flowType].title}
-            submittedCard={
+            submitButton={
                 isSigned && (
-                    <EarnReviewSubmittedCard
-                        buttonTranslationId={flowMessages[flowType].submitButton}
-                        isButtonLoading={status === 'sending'}
-                        onButtonPress={handleSubmitted}
-                    />
+                    <Button isLoading={status === 'sending'} onPress={handleSubmitted}>
+                        <Translation id={flowMessages[flowType].submitButton} />
+                    </Button>
                 )
             }
         >

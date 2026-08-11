@@ -40,26 +40,6 @@ describe('ReviewOutputsFooter', () => {
         ).toBeDisabled();
     });
 
-    it('should display "all set" info when transaction is signed', () => {
-        const { getByText } = renderReviewOutputsFooter(
-            { isConsentRequested: true },
-            {
-                wallet: {
-                    send: {
-                        serializedTx: {
-                            tx: 'tx',
-                            symbol: 'btc',
-                        },
-                    },
-                },
-            },
-        );
-
-        expect(
-            getByText(getTranslation('transactionManagement.review.outputs.signSuccessMessage')),
-        ).toBeOnTheScreen();
-    });
-
     it('should resolveConsent on press', async () => {
         const resolveConsent = jest.fn();
         const { getByTestId } = renderReviewOutputsFooter({ resolveConsent });

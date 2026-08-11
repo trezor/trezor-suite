@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type YieldFlowResolvedData } from '@suite-common/wallet-core';
+import { Button } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { selectIsTransactionAlreadySigned } from '@suite-native/transaction-management';
 
-import { EarnReviewSubmittedCard } from './EarnReviewSubmittedCard';
 import { YieldReviewScreenLayout } from './YieldReviewScreenLayout';
 import { YieldTransactionReviewOutputList } from './YieldTransactionReviewOutputList';
 import { useYieldApprovalReview } from '../hooks/useYieldApprovalReview';
@@ -48,9 +49,6 @@ export const YieldDepositApprovalReviewContent = ({
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const activeStep = useYieldReviewActiveStep(flowData.account.symbol);
     const isRevokeReview = transactionType === 'revoke';
-    const successMessageTranslationId = isRevokeReview
-        ? 'earn.yieldDepositRevokeReviewScreen.successMessage'
-        : undefined;
     const submitButtonTranslationId = isRevokeReview
         ? 'earn.yieldDepositRevokeReviewScreen.submitButton'
         : 'earn.yieldDepositApprovalReviewScreen.submitButton';
@@ -101,14 +99,11 @@ export const YieldDepositApprovalReviewContent = ({
         <YieldReviewScreenLayout
             confirmOnTrezorRef={confirmOnTrezorRef}
             titleTranslationId={titleTranslationId}
-            submittedCard={
+            submitButton={
                 isApprovalSigned ? (
-                    <EarnReviewSubmittedCard
-                        buttonTranslationId={submitButtonTranslationId}
-                        isButtonLoading={isSendingApproval}
-                        messageTranslationId={successMessageTranslationId}
-                        onButtonPress={handleApprovalSubmitted}
-                    />
+                    <Button isLoading={isSendingApproval} onPress={handleApprovalSubmitted}>
+                        <Translation id={submitButtonTranslationId} />
+                    </Button>
                 ) : undefined
             }
         >

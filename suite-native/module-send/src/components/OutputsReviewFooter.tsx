@@ -14,7 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
-import { AnimatedBox, Button, Card, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
+import { AnimatedBox, Button, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -25,8 +25,8 @@ import {
     type StackToStackCompositeNavigationProps,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
+import { ScrollToEndOnMount } from '@suite-native/scrollview';
 import { cleanupSendFormThunk, sendTransactionThunk } from '@suite-native/send';
-import { SignSuccessMessage } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
@@ -220,8 +220,7 @@ export const OutputsReviewFooter = ({
             entering={SlideInDown}
             style={applyStyle(containerStyle, { bottomInset: insets.bottom })}
         >
-            <Card>
-                <SignSuccessMessage />
+            <ScrollToEndOnMount>
                 <Button
                     isLoading={isSendInProgress}
                     isDisabled={isSendDisabled}
@@ -232,7 +231,7 @@ export const OutputsReviewFooter = ({
                 >
                     <Translation id="moduleSend.review.outputs.submitButton" />
                 </Button>
-            </Card>
+            </ScrollToEndOnMount>
         </AnimatedBox>
     );
 };

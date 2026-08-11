@@ -1,6 +1,7 @@
 import { type YieldFlowResolvedData } from '@suite-common/wallet-core';
+import { Button } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 
-import { EarnReviewSubmittedCard } from './EarnReviewSubmittedCard';
 import { YieldReviewScreenLayout } from './YieldReviewScreenLayout';
 import { YieldTransactionReviewOutputList } from './YieldTransactionReviewOutputList';
 import { useYieldDepositReview } from '../hooks/useYieldDepositReview';
@@ -57,13 +58,11 @@ export const YieldDepositReviewContent = ({
         <YieldReviewScreenLayout
             confirmOnTrezorRef={confirmOnTrezorRef}
             titleTranslationId="earn.yieldDepositReviewScreen.title"
-            submittedCard={
+            submitButton={
                 isDepositSigned ? (
-                    <EarnReviewSubmittedCard
-                        buttonTranslationId="earn.yieldDepositReviewScreen.submitButton"
-                        isButtonLoading={isSendingDeposit}
-                        onButtonPress={handleDepositSubmitted}
-                    />
+                    <Button isLoading={isSendingDeposit} onPress={handleDepositSubmitted}>
+                        <Translation id="earn.yieldDepositReviewScreen.submitButton" />
+                    </Button>
                 ) : undefined
             }
         >

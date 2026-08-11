@@ -1,6 +1,7 @@
 import { type Account } from '@suite-common/wallet-types';
+import { Button } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 
-import { EarnReviewSubmittedCard } from './EarnReviewSubmittedCard';
 import { YieldReviewScreenLayout } from './YieldReviewScreenLayout';
 import { YieldTransactionReviewOutputList } from './YieldTransactionReviewOutputList';
 import { useYieldClaimReview } from '../hooks/useYieldClaimReview';
@@ -53,13 +54,11 @@ export const YieldClaimReviewContent = ({
         <YieldReviewScreenLayout
             confirmOnTrezorRef={confirmOnTrezorRef}
             titleTranslationId="earn.yieldClaimReviewScreen.title"
-            submittedCard={
+            submitButton={
                 isClaimSigned ? (
-                    <EarnReviewSubmittedCard
-                        buttonTranslationId="earn.yieldClaimReviewScreen.submitButton"
-                        isButtonLoading={isSendingClaim}
-                        onButtonPress={handleClaimSubmitted}
-                    />
+                    <Button isLoading={isSendingClaim} onPress={handleClaimSubmitted}>
+                        <Translation id="earn.yieldClaimReviewScreen.submitButton" />
+                    </Button>
                 ) : undefined
             }
         >
