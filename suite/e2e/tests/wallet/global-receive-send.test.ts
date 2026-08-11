@@ -3,6 +3,7 @@ import { expect, test } from '../../support/fixtures';
 
 const ETHEREUM_ADDRESS_3 = '0x574BbB36871bA6b78E27f4B4dCFb76eA0091880B';
 const DEVICE_ETHEREUM_ADDRESS_3 = `${DEVICE_RENDERED_EVM_INDENT}${ETHEREUM_ADDRESS_3}`;
+const REGTEST_ADDRESS = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';
 
 test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
@@ -55,20 +56,41 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
         });
     });
 
-    test(`Global send`, async ({ page, devicePrompt, walletPage, tradingPage }) => {
+    test(`Global send`, async ({
+        page,
+        devicePrompt,
+        walletPage,
+        tradingPage,
+        settingsPage,
+        dashboardPage,
+        trezorUserEnv,
+    }) => {
+        // The send picker only lists accounts with a spendable balance and no mnemonic_all
+        // mainnet account is funded, so the test funds a regtest account first.
+        await test.step('Fund and enable a regtest account', async () => {
+            await trezorUserEnv.sendToAddressAndMineBlock({
+                address: REGTEST_ADDRESS,
+                btc_amount: 1,
+            });
+            await settingsPage.navigateTo('application');
+            await settingsPage.toggleDebugModeInSettings();
+            await settingsPage.toggleTestnetNetworks();
+            await settingsPage.changeNetworks({ enableNetworks: ['regtest'] });
+            await dashboardPage.navigateTo();
+        });
+
         await test.step('Open send form', async () => {
             await page.getByTestId('@wallet/menu/wallet-global-send').click();
             await expect(devicePrompt.header).toHaveTranslation('TR_NAV_SEND');
         });
 
-        await test.step('Bitcoin account selection', async () => {
-            await tradingPage.assetPicker.filterByNetwork('btc');
-            await tradingPage.assetPicker.searchAsset('3');
+        await test.step('Bitcoin Regtest account selection', async () => {
+            await tradingPage.assetPicker.filterByNetwork('regtest');
             await tradingPage.assetPicker
                 .sendOption({
                     accountType: 'normal',
-                    accountSymbol: 'btc',
-                    index: 2,
+                    accountSymbol: 'regtest',
+                    index: 0,
                 })
                 .click();
         });
@@ -76,9 +98,9 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
         await test.step('Send form validation', async () => {
             await expect(walletPage.sendFormHeader).toHaveTranslation('TR_NAV_SEND');
             await expect(
-                page.getByTestId("@metadata/accountLabel/m/84'/0'/2'/hover-container"),
+                page.getByTestId("@metadata/accountLabel/m/84'/1'/0'/hover-container"),
             ).toHaveTranslation('LABELING_ACCOUNT', {
-                values: { networkName: 'Bitcoin', index: '3' },
+                values: { networkName: 'Bitcoin Regtest', index: '1' },
             });
         });
     });
