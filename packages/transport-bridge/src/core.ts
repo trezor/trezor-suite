@@ -1,4 +1,4 @@
-import { WebUSB, usb } from 'usb';
+import { WebUSB } from 'usb';
 
 import {
     type TransportProtocol,
@@ -20,6 +20,7 @@ import {
     SessionsBackground,
     SessionsClient,
     UsbApi,
+    type UsbInterfaceApi,
     callThpMessage,
     createChunks,
     createProtocolMessage,
@@ -39,10 +40,9 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
     const sessionsBackground = new SessionsBackground();
     const sessionsClient = new SessionsClient(sessionsBackground);
 
-    if (apiArg === 'usb' && logger?.enabled) {
-        // https://libusb.sourceforge.io/api-1.0/group__libusb__lib.html#ga2d6144203f0fc6d373677f6e2e89d2d2
-        usb.setDebugLevel(1); // Level 3 would probably be ok as well (doesn't seem too spammy). For full debugging use 4.
-    }
+    // Note: the `usb` package v3 (node-usb-rs, a Rust rewrite) no longer exposes the
+    // legacy libusb `setDebugLevel` control. Its native logging is configured via the
+    // `RUST_LOG` environment variable instead, so there is nothing to toggle here.
 
     if (typeof apiArg === 'string') {
         api =
@@ -50,9 +50,13 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
                 ? new UdpApi({ logger })
                 : new UsbApi({
                       logger,
+                      // `usb` v3 (node-usb-rs) attaches `transferIn`/`transferOut` to the
+                      // device prototype at runtime but hides them from the published
+                      // `.d.ts`; WebUSB still satisfies `UsbInterfaceApi` structurally, so
+                      // cast to keep `@trezor/transport-common` free of DOM USB types.
                       usbInterface: new WebUSB({
                           allowAllDevices: true, // return all devices, not only authorized
-                      }),
+                      }) as unknown as UsbInterfaceApi,
 
                       // todo: possibly only for windows
                       forceReadSerialOnConnect: true,

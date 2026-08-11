@@ -21,7 +21,12 @@ const setupApisUnderTest = async () => {
         // type so `transport-common` consumers stay free of DOM lib refs.
         usbInterface = (window.navigator as unknown as { usb: UsbInterfaceApi }).usb;
     } else {
-        usbInterface = await import('usb').then(lib => new lib.WebUSB({ allowAllDevices: true }));
+        // `usb` v3 (node-usb-rs) hides `transferIn`/`transferOut` from its `.d.ts`
+        // (they are attached to the device prototype at runtime), so WebUSB no longer
+        // matches `UsbInterfaceApi` nominally; cast to keep transport-common DOM-free.
+        usbInterface = await import('usb').then(
+            lib => new lib.WebUSB({ allowAllDevices: true }) as unknown as UsbInterfaceApi,
+        );
     }
 
     type ApiTestFixture = {
