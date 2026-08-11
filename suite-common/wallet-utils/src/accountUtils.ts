@@ -23,6 +23,7 @@ import {
     type RatesByKey,
     type SuccessfulAccount,
     type TokenAddress,
+    type WalletAccountTransaction,
     asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
@@ -324,6 +325,33 @@ export const findAccountsByAddress = (
 
             return a.descriptor === address;
         });
+
+/**
+ * The account that owns every input of the transaction, or undefined when any input is missing,
+ * unknown, or owned by a different account — a single input must not be presented as "the sender"
+ * of a multi-party transaction (e.g. coinjoin, payjoin).
+ */
+export const findTransactionSenderAccount = (
+    transaction: Pick<WalletAccountTransaction, 'details' | 'symbol'>,
+    accounts: Account[],
+): Account | undefined => {
+    const inputs = transaction.details?.vin ?? [];
+    if (!inputs.length) return undefined;
+
+    let senderAccount: Account | undefined;
+    for (const input of inputs) {
+        if (!input.addresses?.length) return undefined;
+        for (const address of input.addresses) {
+            const [account] = findAccountsByAddress(transaction.symbol, address, accounts);
+            if (!account || (senderAccount && account.key !== senderAccount.key)) {
+                return undefined;
+            }
+            senderAccount = account;
+        }
+    }
+
+    return senderAccount;
+};
 
 export const findAccountDevice = (account: Account, devices: TrezorDevice[]) =>
     devices.find(d => d.state?.staticSessionId === account.deviceState);

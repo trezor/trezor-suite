@@ -169,11 +169,9 @@ export const TransactionTarget = ({
             case 'target':
                 return (
                     <TargetAddressLabel
-                        symbol={transaction.symbol}
+                        transaction={transaction}
                         accountKey={accountKey}
                         target={payload}
-                        type={transaction.type}
-                        deviceStaticSessionId={transaction.deviceState}
                     />
                 );
             case 'token':
