@@ -4949,7 +4949,7 @@ export const messages = defineMessages({
     },
     RECEIVE_UNUSED_ADDRESS_LIMIT_REACHED: {
         id: 'RECEIVE_UNUSED_ADDRESS_LIMIT_REACHED',
-        defaultMessage: 'You can generate only 20 unused addresses.',
+        defaultMessage: 'You can generate up to 20 unused addresses.',
     },
     RECEIVE_TABLE_ADDRESS: {
         id: 'RECEIVE_TABLE_ADDRESS',
