@@ -1,10 +1,7 @@
-import { type ReactNode } from 'react';
-
 import {
     selectDeviceButtonRequestsCodes,
     selectIsDeviceConnectedAndAuthorized,
 } from '@suite-common/device';
-import { QueryClient, QueryClientProvider } from '@suite-common/react-query';
 import {
     selectAccountByKey,
     selectIsTransactionPending,
@@ -13,12 +10,9 @@ import {
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type EvmNonceInfo } from '@suite-common/wallet-utils';
-import {
-    createStoreFromPreloadedState,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { useCancelEvmTransaction } from '../useCancelEvmTransaction';
+import { useCancelEvmTransaction } from './useCancelEvmTransaction';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -65,13 +59,15 @@ const ethRbfParams = {
     maxPriorityFeePerGas: '2',
 };
 
-// A pending outgoing ETH tx (nonce 5) that carries ethereum rbf params — the cancellable base case.
+// A pending outgoing ETH tx (nonce 5), signed by the account itself, carrying ethereum rbf
+// params — the cancellable base case.
 const pendingEvmTx = {
     type: 'sent',
     txid: '0xpendingtxid',
     blockHeight: 0,
     ethereumSpecific: { nonce: 5 },
     rbfParams: ethRbfParams,
+    details: { vin: [{ isAccountOwned: true }] },
 } as unknown as WalletAccountTransaction;
 
 // nonce 5 sits inside [confirmedNonce, nextNonce] with no confirmed tx in its slot -> 'ok'.
@@ -100,29 +96,10 @@ const selectDeviceButtonRequestsCodesMock = selectDeviceButtonRequestsCodes as u
 // Stable references so react-redux's reference-equality useSelector doesn't re-render every tick.
 const EMPTY_BUTTON_REQUEST_CODES: number[] = [];
 
-const renderCancelHook = (transaction: WalletAccountTransaction = pendingEvmTx) => {
-    const queryClient = new QueryClient({
-        defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
-    });
-    const wrapper = ({ children }: { children: ReactNode }) => (
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+const renderCancelHook = (transaction: WalletAccountTransaction = pendingEvmTx) =>
+    renderHookWithStoreProvider(() =>
+        useCancelEvmTransaction({ accountKey: ethAccount.key, transaction }),
     );
-
-    return renderHookWithStoreProvider(
-        () => useCancelEvmTransaction({ accountKey: ethAccount.key, transaction }),
-        {
-            store: createStoreFromPreloadedState({
-                wallet: { settings: { localCurrency: 'usd', bitcoinAmountUnit: 0 } },
-                locale: {
-                    appLocaleCode: 'en-US',
-                    systemLocaleCode: 'en-US',
-                    isSystemLocaleUsed: true,
-                },
-            }),
-            wrapper,
-        },
-    );
-};
 
 describe('useCancelEvmTransaction', () => {
     beforeEach(() => {

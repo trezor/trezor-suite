@@ -8,13 +8,9 @@ import {
     type RootStackParamList,
     RootStackRoutes,
 } from '@suite-native/navigation';
-import {
-    act,
-    createStoreFromPreloadedState,
-    renderHookWithStoreProvider,
-} from '@suite-native/test-utils-store';
+import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 
-import { useDeviceGuardedSign } from '../useDeviceGuardedSign';
+import { useDeviceGuardedSign } from './useDeviceGuardedSign';
 
 const mockNavigate = jest.fn();
 // The hook registers its focus handler via useFocusEffect; capture it so the test can simulate the
@@ -50,16 +46,7 @@ const cancelNavigationTarget = {
 } as unknown as NavigateParameters<RootStackParamList>;
 
 const renderGuardedSign = (sign: () => Promise<void>) =>
-    renderHookWithStoreProvider(() => useDeviceGuardedSign({ sign, cancelNavigationTarget }), {
-        store: createStoreFromPreloadedState({
-            wallet: { settings: { localCurrency: 'usd', bitcoinAmountUnit: 0 } },
-            locale: {
-                appLocaleCode: 'en-US',
-                systemLocaleCode: 'en-US',
-                isSystemLocaleUsed: true,
-            },
-        }),
-    });
+    renderHookWithStoreProvider(() => useDeviceGuardedSign({ sign, cancelNavigationTarget }));
 
 describe('useDeviceGuardedSign', () => {
     beforeEach(() => {
@@ -139,7 +126,8 @@ describe('useDeviceGuardedSign', () => {
             await Promise.resolve();
         });
 
-        expect(result.current.isSigning).toBe(true);
+        // The mutation's pending state propagates on the next notify tick, not synchronously.
+        await waitFor(() => expect(result.current.isSigning).toBe(true));
         expect(result.current.isWaitingForDevice).toBe(true);
 
         await act(async () => {
@@ -147,6 +135,6 @@ describe('useDeviceGuardedSign', () => {
             await Promise.resolve();
         });
 
-        expect(result.current.isSigning).toBe(false);
+        await waitFor(() => expect(result.current.isSigning).toBe(false));
     });
 });

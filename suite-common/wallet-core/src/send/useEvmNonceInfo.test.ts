@@ -5,8 +5,8 @@ import { type AccountWithNetworkType } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
-import { evmTx } from './evmFixtures';
-import { useEvmNonceInfo } from '../../src/send/useEvmNonceInfo';
+import { evmTx } from './__fixtures__/evmFixtures';
+import { useEvmNonceInfo } from './useEvmNonceInfo';
 
 // The hook uses only useMemo, useSelector and useQuery. Mocking those lets us call it directly and
 // assert its logic (query config, queryFn, derived nonce info) without a renderer — the same
@@ -23,14 +23,7 @@ jest.mock('react-redux', () => ({
 
 jest.mock('@suite-common/react-query', () => ({
     __esModule: true,
-    commonQueryKeys: {
-        evmConfirmedNonce: jest.fn((symbol, descriptor, lastKnownNonce) => [
-            'evm-confirmed-nonce',
-            symbol,
-            descriptor,
-            lastKnownNonce,
-        ]),
-    },
+    ...jest.requireActual('@suite-common/react-query'),
     useQuery: jest.fn(),
 }));
 
@@ -132,12 +125,12 @@ describe('useEvmNonceInfo', () => {
 
     describe('derived nonce info (useMemo)', () => {
         beforeEach(() => {
-            // A bogus locally-confirmed tx at a high nonce: the trusted path must ignore it, the
-            // untrusted path must reconcile the account nonce against it.
-            mockUseSelector.mockReturnValue([evmTx(50, { confirmed: true, type: 'sent' })]);
+            // An own pending tx at a low nonce: the trusted path takes the backend nonce as-is,
+            // while the untrusted path caps it at the lowest locally-known pending nonce.
+            mockUseSelector.mockReturnValue([evmTx(4, { confirmed: false, type: 'sent' })]);
         });
 
-        it('uses a trusted backend nonce as-is, ignoring the local-confirmed floor', () => {
+        it('uses a trusted backend nonce as-is', () => {
             mockUseQuery.mockReturnValue({
                 data: { nonce: '6', isTrusted: true },
                 isLoading: false,
@@ -148,12 +141,12 @@ describe('useEvmNonceInfo', () => {
             expect(nonceInfo).toEqual({
                 confirmedNonce: 6,
                 nextNonce: 6,
-                pendingNonces: [],
-                confirmedNonces: [50],
+                pendingNonces: [4],
+                confirmedNonces: [],
             });
         });
 
-        it('reconciles an untrusted account nonce against local data (raises it past a confirmed tx)', () => {
+        it('reconciles an untrusted account nonce against local data (caps it at the lowest pending nonce)', () => {
             mockUseQuery.mockReturnValue({
                 data: { nonce: '6', isTrusted: false },
                 isLoading: false,
@@ -162,10 +155,10 @@ describe('useEvmNonceInfo', () => {
             const { nonceInfo } = useEvmNonceInfo(account);
 
             expect(nonceInfo).toEqual({
-                confirmedNonce: 51,
-                nextNonce: 51,
-                pendingNonces: [],
-                confirmedNonces: [50],
+                confirmedNonce: 4,
+                nextNonce: 5,
+                pendingNonces: [4],
+                confirmedNonces: [],
             });
         });
 
