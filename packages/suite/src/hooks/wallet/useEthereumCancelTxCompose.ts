@@ -1,11 +1,7 @@
-import { useEffect } from 'react';
-
 import { isRejected } from '@reduxjs/toolkit';
-import { useMutation } from '@tanstack/react-query';
 
+import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 import {
-    type ComposeFeeLevelsError,
-    type ComposedEthereumCancelTransaction,
     composeEthereumCancelTransactionThunk,
     selectConvertedNetworkFeeInfo,
 } from '@suite-common/wallet-core';
@@ -21,63 +17,39 @@ interface UseEthereumCancelTxComposeParams {
     tx: WalletAccountTransactionWithRequiredRbfParams;
 }
 
-const isComposeFeeLevelsError = (error: unknown): error is ComposeFeeLevelsError =>
-    typeof error === 'object' &&
-    error !== null &&
-    'error' in error &&
-    error.error === 'fee-levels-compose-failed';
-
-const parseError = (mutationError: unknown): string | null => {
-    if (mutationError == null) {
-        return null;
-    }
-    if (mutationError instanceof Error) {
-        return mutationError.message;
-    }
-    if (isComposeFeeLevelsError(mutationError)) {
-        return mutationError.message ?? mutationError.error;
-    }
-
-    return 'Unknown error';
-};
-
 export const useEthereumCancelTxCompose = ({ account, tx }: UseEthereumCancelTxComposeParams) => {
     const dispatch = useDispatch();
     const feeInfo = useSelector(state => selectConvertedNetworkFeeInfo(state, account.symbol));
+    const ethereumAccount = account.networkType === 'ethereum' ? account : undefined;
 
-    const {
-        mutate,
-        data,
-        error: mutationError,
-        isPending: isComposing,
-    } = useMutation({
-        mutationFn: async (): Promise<ComposedEthereumCancelTransaction> => {
-            if (account.networkType !== 'ethereum') {
-                throw new Error('Ethereum cancellation is only available for EVM accounts');
-            }
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is account.key + txid; feeInfo deliberately stays out of the key, recomposition is driven by refetches
+    const { data, error, isLoading } = useQuery({
+        queryKey: desktopQueryKeys.composeEvmCancelTx(account.key, tx.txid),
+        queryFn: async () => {
+            // Unreachable while disabled — `enabled` below is false for non-ethereum accounts.
+            if (!ethereumAccount) throw new Error('Not an ethereum account');
 
-            const result = await dispatch(composeEthereumCancelTransactionThunk({ account, tx }));
+            const result = await dispatch(
+                composeEthereumCancelTransactionThunk({ account: ethereumAccount, tx }),
+            );
             if (isRejected(result)) {
-                throw result.payload ?? new Error('Unknown error');
+                throw new Error(
+                    result.payload?.message ?? result.payload?.error ?? 'Unknown error',
+                );
             }
 
             return result.payload;
         },
+        enabled: !!ethereumAccount && !!feeInfo && tx.rbfParams?.type === 'ethereum',
+        // A composed cancel tx is signed right away — never reuse one cached from a previous
+        // modal open.
+        gcTime: 0,
     });
-
-    useEffect(() => {
-        if (account.networkType !== 'ethereum' || !feeInfo || tx.rbfParams?.type !== 'ethereum') {
-            return;
-        }
-        mutate();
-    }, [account, tx, feeInfo, mutate]);
-
-    const error = parseError(mutationError);
 
     return {
         composedCancelTx: data?.composedCancelTx ?? null,
         cancelFormState: data?.cancelFormState ?? null,
-        error,
-        isComposing,
+        error: error?.message ?? null,
+        isComposing: isLoading,
     };
 };
