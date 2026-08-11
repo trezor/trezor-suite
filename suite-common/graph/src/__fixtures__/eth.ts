@@ -2180,3 +2180,134 @@ export const l2AccountBalanceHistoryResult: AccountHistoryMovementItem[] = [
         sentToSelf: new BigNumber('0'),
     },
 ];
+
+export const ethRevertedAndUnknownStatusTransactions: WalletAccountTransaction[] = [
+    {
+        // Reverted tx (status 0) carrying native value: only the fee is spent.
+        // Fee = 7000000000 * 21000 = 147000000000000.
+        descriptor: asAccountDescriptor('0x1111111111111111111111111111111111111111'),
+        deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
+        symbol: 'eth',
+        type: 'failed',
+        txid: '0xbbb1',
+        blockTime: 1721000000,
+        blockHeight: 200,
+        blockHash: '0xblock200',
+        amount: '0',
+        fee: '147000000000000',
+        targets: [],
+        tokens: [],
+        internalTransfers: [],
+        ethereumSpecific: {
+            status: 0,
+            error: 'Reverted',
+            nonce: 3,
+            gasLimit: 21000,
+            gasUsed: 21000,
+            gasPrice: '7000000000',
+            data: '0x',
+            internalTransfers: [
+                {
+                    type: 0,
+                    from: '0x2222222222222222222222222222222222222222',
+                    to: '0x1111111111111111111111111111111111111111',
+                    value: '10000000000000000',
+                },
+            ],
+        },
+        details: {
+            vin: [
+                {
+                    n: 0,
+                    addresses: ['0x1111111111111111111111111111111111111111'],
+                    isAddress: true,
+                },
+            ],
+            vout: [
+                {
+                    value: '50000000000000000',
+                    n: 0,
+                    addresses: ['0x2222222222222222222222222222222222222222'],
+                    isAddress: true,
+                },
+            ],
+            size: 0,
+            totalInput: '0',
+            totalOutput: '50000000000000000',
+        },
+    },
+    {
+        // Unknown status tx (status -2, pre-Byzantium): value is counted, matching blockbook.
+        // Sent = 40000000000000000 + 7000000000 * 21000.
+        descriptor: asAccountDescriptor('0x1111111111111111111111111111111111111111'),
+        deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
+        symbol: 'eth',
+        type: 'sent',
+        txid: '0xbbb2',
+        blockTime: 1721000100,
+        blockHeight: 201,
+        blockHash: '0xblock201',
+        amount: '40000000000000000',
+        fee: '147000000000000',
+        targets: [],
+        tokens: [],
+        internalTransfers: [],
+        ethereumSpecific: {
+            status: -2,
+            nonce: 4,
+            gasLimit: 21000,
+            gasUsed: 21000,
+            gasPrice: '7000000000',
+            data: '0x',
+            internalTransfers: [
+                {
+                    type: 0,
+                    from: '0x2222222222222222222222222222222222222222',
+                    to: '0x1111111111111111111111111111111111111111',
+                    value: '20000000000000000',
+                },
+            ],
+        },
+        details: {
+            vin: [
+                {
+                    n: 0,
+                    addresses: ['0x1111111111111111111111111111111111111111'],
+                    isAddress: true,
+                },
+            ],
+            vout: [
+                {
+                    value: '40000000000000000',
+                    n: 0,
+                    addresses: ['0x2222222222222222222222222222222222222222'],
+                    isAddress: true,
+                },
+            ],
+            size: 0,
+            totalInput: '0',
+            totalOutput: '40000000000000000',
+        },
+    },
+];
+
+export const ethRevertedAndUnknownStatusBalanceHistoryResult: AccountHistoryMovementItem[] = [
+    {
+        time: 1721000000,
+        txs: 1,
+        // the reverted internal transfer is not received
+        received: new BigNumber('0'),
+        // fee only, the reverted value is not spent
+        sent: new BigNumber('147000000000000'),
+        sentToSelf: new BigNumber('0'),
+    },
+    {
+        time: 1721000100,
+        txs: 1,
+        // the internal transfer
+        received: new BigNumber('20000000000000000'),
+        // value (40000000000000000) + fee (147000000000000)
+        sent: new BigNumber('40147000000000000'),
+        sentToSelf: new BigNumber('0'),
+    },
+];
