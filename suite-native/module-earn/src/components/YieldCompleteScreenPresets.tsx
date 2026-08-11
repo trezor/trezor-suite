@@ -121,7 +121,7 @@ export const getYieldWithdrawCompleteRows = ({
                     size="extraSmall"
                 />
                 <Text variant="body-md-strong" color="contentPrimary" numberOfLines={1}>
-                    -{withdrawalAmount}
+                    {withdrawalAmount}
                 </Text>
             </HStack>
         ),
