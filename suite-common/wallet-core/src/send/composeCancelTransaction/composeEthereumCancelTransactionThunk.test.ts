@@ -9,8 +9,8 @@ import {
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
-import { composeEthereumCancelTransactionThunk } from '../../../src/send/composeCancelTransaction/composeEthereumCancelTransactionThunk';
-import { type EthAccount, evmTx } from '../evmFixtures';
+import { composeEthereumCancelTransactionThunk } from './composeEthereumCancelTransactionThunk';
+import { type EthAccount, evmTx } from '../__fixtures__/evmFixtures';
 
 const ONE_ETH = '1000000000000000000';
 
@@ -82,6 +82,7 @@ const initStore = (levels?: FeeInfo['levels']) =>
             device: { selectedDevice: undefined },
             wallet: {
                 settings: { networkReserve: false },
+                transactions: { transactions: {} },
                 fees:
                     levels === undefined
                         ? {}

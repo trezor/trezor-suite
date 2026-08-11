@@ -14,8 +14,8 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { signAndPushEvmCancelTransactionThunk } from '../cancelTransactionThunks';
-import { cleanupSendFormThunk, signTransactionNativeThunk } from '../sendFormThunks';
+import { signAndPushEvmCancelTransactionThunk } from './cancelTransactionThunks';
+import { cleanupSendFormThunk, signTransactionNativeThunk } from './sendFormThunks';
 
 jest.mock('@suite-common/mev', () => ({
     __esModule: true,
@@ -38,7 +38,7 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-jest.mock('../sendFormThunks', () => ({
+jest.mock('./sendFormThunks', () => ({
     __esModule: true,
     signTransactionNativeThunk: jest.fn(),
     cleanupSendFormThunk: jest.fn(() => ({ type: 'mock/cleanupSendForm' })),

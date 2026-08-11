@@ -1,10 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
 import { type NetworkFeature, asNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type RbfTransactionParamsEthereum,
-    type WalletAccountTransaction,
-    asAccountDescriptor,
-} from '@suite-common/wallet-types';
+import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 
 import * as fixtures from './__fixtures__/transactionUtils';
 import {
@@ -82,6 +78,17 @@ const getOwnEvmTransaction = (params: EvmTransactionParams) =>
 const getForeignEvmTransaction = (params: EvmTransactionParams) =>
     getEvmTransaction(FOREIGN_SIGNER, params);
 
+// isTransactionCancellable/isTransactionBumpable only check for the presence of rbfParams, not
+// their shape, so any valid value serves for the positive cases.
+const rbfParams: WalletAccountTransaction['rbfParams'] = {
+    type: 'bitcoin',
+    txid: 'txid',
+    utxo: [],
+    outputs: [],
+    feeRate: '1',
+    baseFee: 144,
+};
+
 describe('transaction utils', () => {
     describe('parseTransactionDateKey', () => {
         it('parses date key correctly', () => {
@@ -110,17 +117,6 @@ describe('transaction utils', () => {
     });
 
     describe('isTransactionCancellable', () => {
-        // The function only checks for the presence of rbfParams, not their shape, so any valid
-        // value serves for the positive cases.
-        const rbfParams: WalletAccountTransaction['rbfParams'] = {
-            type: 'bitcoin',
-            txid: 'txid',
-            utxo: [],
-            outputs: [],
-            feeRate: '1',
-            baseFee: 144,
-        };
-
         it('is cancellable for a pending sent tx with rbfParams on an rbf network', () => {
             const tx = getWalletTransaction({ type: 'sent', rbfParams });
             expect(isTransactionCancellable(tx, true, ['rbf', 'sign-verify'])).toBe(true);
@@ -910,19 +906,9 @@ describe('transaction utils', () => {
     });
 
     describe('isTransactionBumpable', () => {
-        const ethRbfParams: RbfTransactionParamsEthereum = {
-            type: 'ethereum',
-            txid: '0x1',
-            outputs: [],
-            ethereumNonce: 1,
-            transactionData: '',
-            gasPrice: '',
-            maxFeePerGas: '20',
-            maxPriorityFeePerGas: '2',
-        };
         const rbfFeatures: NetworkFeature[] = ['rbf'];
         const bumpableTx = (overrides?: Partial<WalletAccountTransaction>) =>
-            getWalletTransaction({ type: 'sent', rbfParams: ethRbfParams, ...overrides });
+            getWalletTransaction({ type: 'sent', rbfParams, ...overrides });
 
         it('is true with rbfParams, the rbf network feature, no deadline and a non-joint tx', () => {
             expect(isTransactionBumpable(bumpableTx(), rbfFeatures)).toBe(true);
