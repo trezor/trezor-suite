@@ -1,8 +1,14 @@
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
-import { isApyAvailable, isErc4626 } from '@suite-common/wallet-utils';
-import { useNativeYieldVault, useStakingRate, useYieldBadge } from '@suite-native/module-earn';
+import { isErc4626 } from '@suite-common/wallet-utils';
+import {
+    getBestPromotedRate,
+    isEarnPromoSymbol,
+    useNativeYieldVault,
+    useStakingRate,
+    useYieldBadge,
+} from '@suite-native/module-earn';
 
 interface UseYourPositionCardYieldBadgeProps {
     account?: Account | null;
@@ -24,16 +30,16 @@ export const useYourPositionCardYieldBadge = ({
         accountKey: account?.key,
     });
 
-    const promoYieldBadge =
-        !token && nativeYieldVault?.bestVault
-            ? {
-                  apy:
-                      stakingRate !== null && isApyAvailable(stakingRate)
-                          ? Math.max(nativeYieldVault.bestVault.apy, stakingRate)
-                          : nativeYieldVault.bestVault.apy,
-                  vaultId: nativeYieldVault.bestVault.id,
-              }
-            : null;
+    const bestPromotedRate = token
+        ? null
+        : getBestPromotedRate({
+              vaultApy: nativeYieldVault.bestVault?.apy ?? null,
+              stakingRate: isEarnPromoSymbol(account?.symbol) ? stakingRate : null,
+          });
+
+    const promoYieldBadge = bestPromotedRate
+        ? { apy: bestPromotedRate.apy, vaultId: nativeYieldVault.bestVault?.id ?? null }
+        : null;
 
     const yieldBadge = useYieldBadge({
         networkSymbol: symbol ?? undefined,

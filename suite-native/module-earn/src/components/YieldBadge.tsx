@@ -56,12 +56,8 @@ export const YieldBadge = ({ apy, variant, account, vaultId, tokenContract }: Yi
     const vaultTokenContract = vault ? getYieldVaultContractAddress(vault) : null;
 
     const goToVault = () => {
-        if (!vaultTokenContract) return;
-
-        // if we're on the vault token detail screen, don't navigate
-        if (vaultTokenContract === tokenContract) return;
-
-        // for promo, we want to navigate to the earn tab screen
+        // for promo, we want to navigate to the earn tab screen — it also promotes staking,
+        // so there is not always a vault behind it
         if (variant === 'promo') {
             navigation.popTo(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.EarnStack,
@@ -70,6 +66,11 @@ export const YieldBadge = ({ apy, variant, account, vaultId, tokenContract }: Yi
 
             return;
         }
+
+        if (!vaultTokenContract) return;
+
+        // if we're on the vault token detail screen, don't navigate
+        if (vaultTokenContract === tokenContract) return;
 
         // otherwise navigate to the vault token detail screen
         navigation.push(RootStackRoutes.AccountDetail, {
@@ -80,7 +81,7 @@ export const YieldBadge = ({ apy, variant, account, vaultId, tokenContract }: Yi
     };
 
     return (
-        <Pressable onPress={goToVault} disabled={!vaultTokenContract}>
+        <Pressable onPress={goToVault} disabled={variant !== 'promo' && !vaultTokenContract}>
             <Badge
                 intent={intent}
                 size="small"
