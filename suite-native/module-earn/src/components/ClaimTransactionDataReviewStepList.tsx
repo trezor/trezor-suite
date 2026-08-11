@@ -25,6 +25,7 @@ import { BigNumber } from '@trezor/utils';
 import { ClaimOutputItem } from './ClaimOutputItem';
 import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
 import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
+import { getSolanaPrecomposedNetAmount } from '../utils/getSolanaPrecomposedNetAmount';
 
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.ClaimTransactionDataReview>;
 
@@ -61,9 +62,7 @@ export const ClaimTransactionDataReviewStepList = () => {
     // Solana: show composed lamports (totalSpent − fee), fall back to the claimable amount.
     const claimableAmountInWei =
         isSolanaClaim && precomposedTransaction
-            ? new BigNumber(precomposedTransaction.totalSpent)
-                  .minus(precomposedTransaction.fee)
-                  .toFixed(0)
+            ? getSolanaPrecomposedNetAmount(precomposedTransaction)
             : new BigNumber(claimableAmount || '0')
                   .times(new BigNumber(10).pow(networkDecimals))
                   .toFixed(0);

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { VStack } from '@suite-native/atoms';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import {
@@ -15,11 +14,11 @@ import {
     selectReviewSummaryOutput,
     useActiveStepOffset,
 } from '@suite-native/transaction-management';
-import { BigNumber } from '@trezor/utils';
 
 import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
 import { UnstakeOutputItem } from './UnstakeOutputItem';
 import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
+import { getAmountInBaseUnits } from '../utils/getAmountInBaseUnits';
 
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.UnstakeTransactionDataReview>;
 
@@ -50,10 +49,7 @@ export const UnstakeTransactionDataReviewStepList = () => {
         return null;
     }
 
-    const amountInBaseUnits = unitsToSubunits({
-        value: asAmountUnit(new BigNumber(amount)),
-        symbol: accountSymbol,
-    }).toString();
+    const amountInBaseUnits = getAmountInBaseUnits(amount, accountSymbol);
 
     return (
         <View>

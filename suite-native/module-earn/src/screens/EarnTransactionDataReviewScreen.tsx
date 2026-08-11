@@ -3,11 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import {
-    asAmountUnit,
-    isSupportedSolStakingNetworkSymbol,
-    unitsToSubunits,
-} from '@suite-common/wallet-utils';
+import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { selectAccountLabel } from '@suite-native/accounts';
 import { Button, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
@@ -29,7 +25,6 @@ import {
     selectIsTransactionAlreadySigned,
     useTransactionDetails,
 } from '@suite-native/transaction-management';
-import { BigNumber } from '@trezor/utils';
 
 import { EarnTransactionDataReviewStepList } from '../components/EarnTransactionDataReviewStepList';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
@@ -38,6 +33,7 @@ import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedP
 import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
 import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
+import { getAmountInBaseUnits } from '../utils/getAmountInBaseUnits';
 import { getSolanaPrecomposedNetAmount } from '../utils/getSolanaPrecomposedNetAmount';
 
 export const EarnTransactionDataReviewScreen = ({
@@ -137,10 +133,7 @@ export const EarnTransactionDataReviewScreen = ({
     if (isSolanaStake && precomposedTransaction) {
         pendingAmountInBaseUnits = getSolanaPrecomposedNetAmount(precomposedTransaction);
     } else if (account) {
-        pendingAmountInBaseUnits = unitsToSubunits({
-            value: asAmountUnit(new BigNumber(amount)),
-            symbol: account.symbol,
-        }).toString();
+        pendingAmountInBaseUnits = getAmountInBaseUnits(amount, account.symbol);
     }
 
     return (
