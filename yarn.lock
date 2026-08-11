@@ -13750,6 +13750,7 @@ __metadata:
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-native/config": "workspace:*"
+    "@suite-native/storage": "workspace:*"
   languageName: unknown
   linkType: soft
 

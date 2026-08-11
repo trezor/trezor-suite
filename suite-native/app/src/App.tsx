@@ -19,7 +19,11 @@ import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
 import { KillswitchMessageScreen } from '@suite-native/message-system';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
-import { initSentry } from '@suite-native/sentry';
+import {
+    initSentry,
+    markStartupJsBundleEvaluated,
+    reportStartupAppLoaded,
+} from '@suite-native/sentry';
 import {
     type PreloadedState,
     StoreProvider,
@@ -39,6 +43,8 @@ import { disableRTL } from './rtl';
 // The constant has to be placed at the beginning of this file to be initialized as soon as possible.
 // TODO: This method of measuring app loading time is not ideal, Should be substituted by some more sophisticated solution in the future.
 const APP_STARTED_TIMESTAMP = Date.now();
+
+markStartupJsBundleEvaluated();
 
 if (__DEV__) {
     require('./LogBox');
@@ -79,7 +85,8 @@ const AppComponent = () => {
 
     useEffect(() => {
         if (isAppReady) {
-            SplashScreen.hideAsync();
+            // Report the first usable frame even if the native splash API fails to resolve.
+            void SplashScreen.hideAsync().then(reportStartupAppLoaded, reportStartupAppLoaded);
         }
     }, [isAppReady]);
 
