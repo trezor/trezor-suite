@@ -34,7 +34,8 @@ export const LIMITS: Limits = {
         reactCommitCount: 260,
     },
     'account-switch': {
-        totalBlockingTimeMs: 700,
+        // TEMPORARY: deliberately impossible, to prove CI fails on a breach. Revert before merge.
+        totalBlockingTimeMs: 1,
         longTaskCount: 5,
         longestTaskMs: 700,
         reactCommitCount: 80,
