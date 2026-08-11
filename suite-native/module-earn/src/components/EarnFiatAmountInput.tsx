@@ -61,6 +61,14 @@ export const EarnFiatAmountInput = ({
 
         onChange(transformedValue);
 
+        // An emptied value has nothing to convert, so the crypto amount has to be cleared
+        // explicitly - otherwise it keeps the last typed digit and the form stays submittable.
+        if (!transformedValue) {
+            setValue('amount', '', { shouldValidate: true });
+
+            return;
+        }
+
         const cryptoValue = converters?.convertFiatToCrypto?.(
             asBaseCurrencyAmount(new BigNumber(transformedValue)),
         );
