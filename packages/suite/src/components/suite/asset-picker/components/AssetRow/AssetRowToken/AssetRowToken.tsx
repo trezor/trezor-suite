@@ -15,6 +15,7 @@ export type AssetRowTokenProps = {
     onClick?: (token: TokensWithRates, account: Account) => void;
     dataTestId?: string;
     isHiddenToken?: boolean;
+    showNoTradingPairText?: boolean;
 };
 
 export function AssetRowToken({
@@ -23,6 +24,7 @@ export function AssetRowToken({
     dataTestId,
     onClick,
     isHiddenToken = false,
+    showNoTradingPairText = false,
 }: AssetRowTokenProps) {
     return (
         <ItemClickableContainer
@@ -55,7 +57,7 @@ export function AssetRowToken({
                         }
                         contractAddress={token.contract}
                         amount={token.balance}
-                        fiatFallackText={isHiddenToken}
+                        showNoTradingPairText={showNoTradingPairText}
                     />
                 </Row>
             )}

@@ -87,6 +87,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                             height={item.height}
                             dataTestId={`@asset-picker/sell/option/non-tradable-tokens/${item.account.symbol}`}
                             showTokensPreview
+                            showNoTradingPairText
                         />
                     );
             }
