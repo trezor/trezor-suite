@@ -135,6 +135,10 @@ const getAccountHistoryMovementItemMisc = ({
     return { main: Array.from(summaryMap.values()).sort((a, b) => a.time - b.time), tokens: {} };
 };
 
+// Blockbook TxStatus: -2 unknown, -1 pending, 0 failure, 1 OK. Principal moves only for
+// OK and unknown txs (blockbook api/worker.go); a failed tx costs just its fee.
+const isPrincipalMovementCounted = (status: number) => status === 1 || status === -2;
+
 // this can be also used for networks of Ethereum type (like ETH, POL or BNB)
 const getAccountHistoryMovementItemETH = ({
     transactions,
@@ -166,10 +170,7 @@ const getAccountHistoryMovementItemETH = ({
         let countSentToSelf = false;
         const ethTxData = tx.ethereumSpecific;
 
-        if (
-            ethTxData.status === 1 /* TxStatusOK */ ||
-            ethTxData.status === 0 /* TxStatusUnknown */
-        ) {
+        if (isPrincipalMovementCounted(ethTxData.status)) {
             if (tx.details.vout.length > 0) {
                 const bchainVout = tx.details.vout[0];
                 if (bchainVout) {
@@ -215,7 +216,7 @@ const getAccountHistoryMovementItemETH = ({
                 const txAddrDesc = bchainVin.addresses[0];
 
                 if (txAddrDesc === tx.descriptor) {
-                    if (ethTxData.status === 1 || ethTxData.status === 0) {
+                    if (isPrincipalMovementCounted(ethTxData.status)) {
                         const value = new BigNumber(tx.details.vout[0]?.value || '0');
                         bh.sent = bh.sent.plus(value);
 

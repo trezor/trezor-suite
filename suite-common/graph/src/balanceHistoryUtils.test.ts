@@ -4,6 +4,8 @@ import { btcAccountBalanceHistoryResult, btcAccountTransactions } from './__fixt
 import {
     ethAccountBalanceHistoryResult,
     ethAccountTransactions,
+    ethRevertedAndUnknownStatusBalanceHistoryResult,
+    ethRevertedAndUnknownStatusTransactions,
     ethTokenBalanceHistoryResult,
     l2AccountBalanceHistoryResult,
     l2AccountTransactions,
@@ -71,6 +73,15 @@ describe('Account balance movement history', () => {
         });
 
         expect(balanceHistory.main).toMatchObject(ethAccountBalanceHistoryResult);
+    });
+
+    it('should count only the fee for reverted txs and the full value for unknown-status txs', async () => {
+        const balanceHistory = await getAccountHistoryMovementFromTransactions({
+            transactions: ethRevertedAndUnknownStatusTransactions,
+            symbol: 'eth',
+        });
+
+        expect(balanceHistory.main).toMatchObject(ethRevertedAndUnknownStatusBalanceHistoryResult);
     });
 
     it('should use effectiveGasPrice and add l1Fee for L2 fees, falling back to gasPrice', async () => {
