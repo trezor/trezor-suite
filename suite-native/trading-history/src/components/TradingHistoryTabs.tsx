@@ -1,5 +1,5 @@
 import { type TradingType } from '@suite-common/trading';
-import { Box, EdgeFades, type SubTabItem, SubTabs } from '@suite-native/atoms';
+import { EdgeFades, type SubTabItem, SubTabs } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useNativeStyles } from '@trezor/styles-native';
 
@@ -40,7 +40,7 @@ export const TradingHistoryTabs = ({ value, onChange }: TradingHistoryTabsProps)
     const { utils } = useNativeStyles();
 
     return (
-        <Box>
+        <>
             <SubTabs
                 items={items}
                 onChange={onChange}
@@ -50,6 +50,6 @@ export const TradingHistoryTabs = ({ value, onChange }: TradingHistoryTabsProps)
                 value={value}
             />
             <EdgeFades direction="horizontal" startSize={utils.spacings.sp20} />
-        </Box>
+        </>
     );
 };
