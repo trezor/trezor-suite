@@ -14,6 +14,7 @@ import {
     selectStablecoinYieldSession,
     selectStablecoinYieldSessionByFlowKey,
     stablecoinYieldActions,
+    trackWrappedNativeTokenThunk,
 } from '@suite-common/wallet-core';
 import {
     type StackNavigationProps,
@@ -102,15 +103,24 @@ export const useStartYieldDepositFlow = ({
                 stablecoinYieldActions.resetSession({ ...sessionParams, isWrappedNativeVault }),
             );
 
-            // Mirrors desktop: holding any wrapped token skips the wrap step up front; the user
-            // can still come back to it from the approve step.
-            if (isWrappedNativeVault && new BigNumber(flowData.token.balance).gt(0)) {
-                dispatch(
-                    stablecoinYieldActions.resolveWrappedNativeStep({
-                        ...sessionParams,
-                        step: 'wrap',
-                    }),
+            if (isWrappedNativeVault) {
+                const trackResponse = await dispatch(
+                    trackWrappedNativeTokenThunk({ accountKey: flowData.account.key }),
                 );
+                const wrappedTokenBalance = isFulfilled(trackResponse)
+                    ? (trackResponse.payload ?? flowData.token.balance)
+                    : flowData.token.balance;
+
+                // Mirrors desktop: holding any wrapped token skips the wrap step up front; the
+                // user can still come back to it from the approve step.
+                if (new BigNumber(wrappedTokenBalance).gt(0)) {
+                    dispatch(
+                        stablecoinYieldActions.resolveWrappedNativeStep({
+                            ...sessionParams,
+                            step: 'wrap',
+                        }),
+                    );
+                }
             }
 
             const response = await dispatch(

@@ -5,6 +5,7 @@ import {
     type StablecoinYieldRootState,
     type YieldFlowResolvedData,
     fetchAllowance,
+    fetchWrappedNativeTokenInfo,
     selectStablecoinYieldSession,
     stablecoinYieldActions,
     stablecoinYieldReducer,
@@ -33,8 +34,10 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 jest.mock('@suite-common/wallet-core/src/allowance/fetchAllowance');
+jest.mock('@suite-common/wallet-core/src/stablecoin-yield/utils/fetchWrappedNativeTokenInfo');
 
 const fetchAllowanceMock = jest.mocked(fetchAllowance);
+const fetchWrappedNativeTokenInfoMock = jest.mocked(fetchWrappedNativeTokenInfo);
 
 const accountKey = 'eth-account-key' as AccountKey;
 const ownerAddress = '0x0000000000000000000000000000000000000001';
@@ -55,7 +58,9 @@ const sessionParams = {
 const account = {
     key: accountKey,
     symbol: 'eth',
+    networkType: 'ethereum',
     descriptor: ownerAddress,
+    tokens: [],
 } as unknown as Account;
 
 const vault = {
@@ -87,9 +92,28 @@ const flowData = {
     },
 } satisfies YieldFlowResolvedData;
 
+const wethTokenContract = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' as TokenAddress;
+const wethFlowKey = `${accountKey}:${yieldId}:${wethTokenContract}`;
+const wethRouteParams = {
+    accountKey,
+    tokenContract: wethTokenContract,
+    yieldId,
+} satisfies YieldFlowParams;
+
+const wethFlowData = {
+    ...flowData,
+    token: {
+        balance: '0',
+        contractAddress: wethTokenContract,
+        decimals: 18,
+        networkSymbol: 'eth',
+        symbol: 'WETH',
+    },
+} satisfies YieldFlowResolvedData;
+
 const allowanceSubunits = (value: string) => asAmountSubunit(new BigNumber(value));
 
-const buildStore = () =>
+const buildStore = (storeAccount: Account = account) =>
     createLightStore({
         reducer: {
             locale: createStaticReducer({
@@ -98,6 +122,7 @@ const buildStore = () =>
                 isSystemLocaleUsed: true,
             }),
             wallet: combineReducers({
+                accounts: createStaticReducer([storeAccount]),
                 settings: createStaticReducer({
                     localCurrency: 'usd',
                     bitcoinAmountUnit: 0,
@@ -107,21 +132,29 @@ const buildStore = () =>
         },
     });
 
-const renderUseStartYieldDepositFlow = (store: TestStore) =>
-    renderHookWithStoreProvider(
-        () =>
-            useStartYieldDepositFlow({
-                flowData,
-                flowKey,
-                routeParams,
-            }),
-        { store },
-    );
+type HookParams = {
+    flowData: YieldFlowResolvedData;
+    flowKey: string;
+    routeParams: YieldFlowParams;
+};
+
+const defaultHookParams: HookParams = { flowData, flowKey, routeParams };
+const wethHookParams: HookParams = {
+    flowData: wethFlowData,
+    flowKey: wethFlowKey,
+    routeParams: wethRouteParams,
+};
+
+const renderUseStartYieldDepositFlow = (
+    store: TestStore,
+    hookParams: HookParams = defaultHookParams,
+) => renderHookWithStoreProvider(() => useStartYieldDepositFlow(hookParams), { store });
 
 describe('useStartYieldDepositFlow', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         fetchAllowanceMock.mockResolvedValue(allowanceSubunits('0'));
+        fetchWrappedNativeTokenInfoMock.mockResolvedValue(null);
     });
 
     it('navigates to deposit when allowance initialization skips to action step', async () => {
@@ -185,6 +218,61 @@ describe('useStartYieldDepositFlow', () => {
         expect(mockNavigate).toHaveBeenCalledWith(
             YieldStackRoutes.YieldDepositApproval,
             routeParams,
+        );
+    });
+
+    it('skips the wrap step when an untracked wrapped-native balance is found on chain', async () => {
+        const store = buildStore();
+        fetchWrappedNativeTokenInfoMock.mockResolvedValue({
+            standard: 'ERC20',
+            contract: wethTokenContract,
+            symbol: 'WETH',
+            name: 'Wrapped Ether',
+            decimals: 18,
+            balance: '2500000000000000000',
+        });
+        const { result } = renderUseStartYieldDepositFlow(store, wethHookParams);
+
+        await act(async () => {
+            await result.current.handleStartYieldDepositFlow();
+        });
+
+        expect(mockNavigate).toHaveBeenCalledWith(
+            YieldStackRoutes.YieldDepositApproval,
+            wethRouteParams,
+        );
+    });
+
+    it('skips the wrap step when the wrapped-native token is already tracked with a balance', async () => {
+        const trackedAccount = {
+            ...account,
+            tokens: [{ contract: wethTokenContract, symbol: 'WETH', decimals: 18, balance: '3' }],
+        } as unknown as Account;
+        const store = buildStore(trackedAccount);
+        const { result } = renderUseStartYieldDepositFlow(store, wethHookParams);
+
+        await act(async () => {
+            await result.current.handleStartYieldDepositFlow();
+        });
+
+        expect(fetchWrappedNativeTokenInfoMock).not.toHaveBeenCalled();
+        expect(mockNavigate).toHaveBeenCalledWith(
+            YieldStackRoutes.YieldDepositApproval,
+            wethRouteParams,
+        );
+    });
+
+    it('starts on the wrap step when no wrapped-native balance exists', async () => {
+        const store = buildStore();
+        const { result } = renderUseStartYieldDepositFlow(store, wethHookParams);
+
+        await act(async () => {
+            await result.current.handleStartYieldDepositFlow();
+        });
+
+        expect(mockNavigate).toHaveBeenCalledWith(
+            YieldStackRoutes.YieldDepositWrap,
+            wethRouteParams,
         );
     });
 
