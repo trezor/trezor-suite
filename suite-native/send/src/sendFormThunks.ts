@@ -19,6 +19,7 @@ import {
 import {
     type Account,
     type AccountKey,
+    type FormState,
     type GeneralPrecomposedTransactionFinal,
     type TokenAddress,
 } from '@suite-common/wallet-types';
@@ -42,16 +43,20 @@ export const signTransactionNativeThunk = createThunk<
         accountKey: AccountKey;
         feeLevel: GeneralPrecomposedTransactionFinal;
         tokenContract?: TokenAddress;
+        // Overrides the account's send draft, for flows that sign a form state which was never
+        // stored as a draft (e.g. a composed cancel transaction).
+        formState?: FormState;
     },
     { rejectValue: SignTransactionError | SignTransactionTimeoutError | undefined }
 >(
     `${SEND_MODULE_PREFIX}/signTransactionNativeThunk`,
     async (
-        { accountKey, tokenContract, feeLevel },
+        { accountKey, tokenContract, feeLevel, formState: providedFormState },
         { dispatch, rejectWithValue, fulfillWithValue, getState },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
-        const formState = selectSendFormDraftByKey(getState(), accountKey, tokenContract);
+        const formState =
+            providedFormState ?? selectSendFormDraftByKey(getState(), accountKey, tokenContract);
 
         if (!account || !formState)
             return rejectWithValue({

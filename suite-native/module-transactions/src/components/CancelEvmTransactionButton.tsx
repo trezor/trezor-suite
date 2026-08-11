@@ -1,49 +1,15 @@
 import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
-import {
-    BottomSheetModal,
-    Box,
-    Button,
-    Text,
-    VStack,
-    useBottomSheetModal,
-} from '@suite-native/atoms';
+import { BottomSheetModal, Button, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/confirm-on-trezor';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 
-import { TransactionDetailRow } from './TransactionDetailRow';
+import { CancelTransactionFeeRow } from './CancelTransactionFeeRow';
 import { useCancelEvmTransaction } from '../hooks/useCancelEvmTransaction';
 
 type CancelEvmTransactionButtonProps = {
     accountKey: AccountKey;
     transaction: WalletAccountTransaction;
 };
-
-type CancelTransactionFeeRowProps = {
-    title: string;
-    fee: string;
-    symbol: WalletAccountTransaction['symbol'];
-};
-
-const CancelTransactionFeeRow = ({ title, fee, symbol }: CancelTransactionFeeRowProps) => (
-    <TransactionDetailRow title={title}>
-        <Box alignItems="flex-end">
-            <CryptoAmountFormatter
-                value={fee}
-                symbol={symbol}
-                variant="body-sm"
-                color="contentPrimary"
-                isBalance={false}
-            />
-            <CryptoToFiatAmountFormatter
-                value={fee}
-                symbol={symbol}
-                variant="body-sm"
-                color="contentSecondary"
-            />
-        </Box>
-    </TransactionDetailRow>
-);
 
 export const CancelEvmTransactionButton = ({
     accountKey,
@@ -129,12 +95,7 @@ export const CancelEvmTransactionButton = ({
                             intent="critical"
                             onPress={confirmCancellation}
                             isLoading={isComposing || isSigning}
-                            isDisabled={
-                                composedCancelTx === null ||
-                                composeError ||
-                                isComposing ||
-                                isSigning
-                            }
+                            isDisabled={composedCancelTx === null || isSigning}
                             testID="@transaction-detail/confirm-cancel-transaction-button"
                         >
                             <Translation id="transactions.detail.cancelTransaction.confirmButton" />

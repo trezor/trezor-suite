@@ -7,9 +7,6 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { useMutation } from '@suite-common/react-query';
 import {
     type AccountsRootState,
-    type PushTransactionError,
-    type SignTransactionError,
-    type SignTransactionTimeoutError,
     type TransactionsRootState,
     composeEthereumCancelTransactionThunk,
     selectAccountByKey,
@@ -24,7 +21,7 @@ import {
 import {
     getNetworkAccountFeatures,
     getPendingEvmNonceStatus,
-    isTransactionBumpable,
+    isSignedByAccount,
     isTransactionCancellable,
 } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
@@ -36,7 +33,10 @@ import {
     type TransactionDetailStackParamList,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { signAndPushEvmCancelTransactionThunk } from '@suite-native/send';
+import {
+    type SignAndPushEvmCancelTransactionError,
+    signAndPushEvmCancelTransactionThunk,
+} from '@suite-native/send';
 import { useToast } from '@suite-native/toasts';
 
 import { useDeviceGuardedSign } from './useDeviceGuardedSign';
@@ -51,20 +51,15 @@ const hasEthereumRbfParams = (
     tx: WalletAccountTransaction,
 ): tx is WalletAccountTransactionWithRequiredRbfParams => tx.rbfParams?.type === 'ethereum';
 
-// Mirrors the reject value of signAndPushEvmCancelTransactionThunk.
-type CancelFailure =
-    | SignTransactionError
-    | SignTransactionTimeoutError
-    | PushTransactionError
-    | undefined;
-
 // Extracts a human-readable failure reason: push failures carry the node's message in `metadata`
 // (e.g. "nonce too low", "could not replace existing tx"), while signing failures/timeouts expose
 // it directly on `message`.
-const getCancelFailureReason = (error: CancelFailure): string | undefined => {
+const getCancelFailureReason = (
+    error: SignAndPushEvmCancelTransactionError,
+): string | undefined => {
     if (!error) return undefined;
 
-    if ('metadata' in error) return error.metadata.error.message;
+    if ('metadata' in error) return error.metadata.error?.message;
 
     return error.message;
 };
@@ -100,29 +95,29 @@ export const useCancelEvmTransaction = ({
     );
     const ethereumAccount = account?.networkType === 'ethereum' ? account : undefined;
     const isEvmTxWithRbfParams = hasEthereumRbfParams(transaction);
+    const networkFeatures = ethereumAccount
+        ? getNetworkAccountFeatures(ethereumAccount)
+        : undefined;
+
+    // Same gate the desktop TxDetailModal uses, checked before the nonce fetch below so the
+    // backend round trip is skipped when the tx isn't cancellable anyway.
+    const isLocallyCancellable =
+        isEvmTxWithRbfParams && isTransactionCancellable(transaction, isPendingTx, networkFeatures);
 
     // A pending EVM tx whose own nonce is gapped or already superseded can't be cancelled — the
     // replacement would re-send at a nonce that either can't confirm yet or already confirmed
-    // elsewhere. Same check the desktop TxDetailModal uses.
-    const { nonceInfo } = useEvmNonceInfo(ethereumAccount, {
-        enabled: isPendingTx && isEvmTxWithRbfParams,
-    });
-    const pendingTxNonce = transaction.ethereumSpecific?.nonce;
+    // elsewhere. A foreign-signed tx carries the signer's nonce, not the account's, so it is
+    // exempt. Same check the desktop TxDetailModal uses.
+    const { nonceInfo } = useEvmNonceInfo(ethereumAccount, { enabled: isLocallyCancellable });
+    const pendingTxNonce = isSignedByAccount(transaction)
+        ? transaction.ethereumSpecific?.nonce
+        : undefined;
     const isNonceStuck =
         nonceInfo !== undefined &&
         pendingTxNonce !== undefined &&
         getPendingEvmNonceStatus(pendingTxNonce, nonceInfo) !== 'ok';
 
-    const networkFeatures = ethereumAccount
-        ? getNetworkAccountFeatures(ethereumAccount)
-        : undefined;
-
-    const isCancellable =
-        !!ethereumAccount &&
-        isEvmTxWithRbfParams &&
-        isTransactionCancellable(transaction, isPendingTx, networkFeatures) &&
-        isTransactionBumpable(transaction, networkFeatures) &&
-        !isNonceStuck;
+    const isCancellable = isLocallyCancellable && !isNonceStuck;
 
     const {
         mutate: composeCancelTx,
@@ -132,9 +127,7 @@ export const useCancelEvmTransaction = ({
     } = useMutation({
         mutationFn: async () => {
             if (!ethereumAccount || !hasEthereumRbfParams(transaction)) {
-                throw new Error(
-                    translate('transactions.detail.cancelTransaction.composeErrorMessage'),
-                );
+                throw new Error('Not a cancellable EVM transaction');
             }
 
             const result = await dispatch(
@@ -145,13 +138,15 @@ export const useCancelEvmTransaction = ({
             );
             if (isRejected(result)) {
                 throw new Error(
-                    result.payload?.message ??
-                        translate('transactions.detail.cancelTransaction.composeErrorMessage'),
+                    result.payload?.message ?? result.payload?.error ?? 'Unknown error',
                 );
             }
 
             return result.payload;
         },
+        // Compose failures are mostly deterministic — surface the error to the sheet instead of
+        // the provider's default retries.
+        retry: false,
     });
 
     const signAndPush = useCallback(async () => {
