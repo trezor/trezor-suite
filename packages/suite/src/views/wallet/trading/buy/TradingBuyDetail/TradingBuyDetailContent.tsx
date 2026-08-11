@@ -75,6 +75,7 @@ export const TradingBuyDetailContent = () => {
     };
 
     const receiveAccount = accounts.find(account => account.key === trade?.receiveAccountKey);
+    const waitingStepAccount = receiveAccount ?? account;
 
     useEffect(() => {
         // if tradeStatus hasn't changed, don't send the analytics event
@@ -115,10 +116,10 @@ export const TradingBuyDetailContent = () => {
                         />
                         <Box margin={{ top: 32, bottom: 12 }}>
                             <TradingDetailStepList>
-                                {account && (
+                                {waitingStepAccount && (
                                     <TradingBuyDetailPaymentWaitingForUserStep
                                         trade={trade.data}
-                                        account={account}
+                                        account={waitingStepAccount}
                                         providerName={provider?.brandName || provider?.companyName}
                                     />
                                 )}

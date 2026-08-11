@@ -9,6 +9,7 @@ import {
     buyThunks,
     selectTradingAccountKeyByTradeType,
     selectTradingBuyIsLoading,
+    selectTradingBuyReceiveAccount,
     selectTradingBuyReceiveAddress,
     selectTradingBuySelectedQuote,
     tradingBuyActions,
@@ -29,6 +30,7 @@ export const useTradingBuyConfirm = () => {
     const isLoading = useSelector(selectTradingBuyIsLoading);
     const accountKey = useSelector(state => selectTradingAccountKeyByTradeType(state, 'buy'));
     const account = useSelector(state => selectAccountByKey(state, accountKey) ?? undefined);
+    const receiveAccount = useSelector(selectTradingBuyReceiveAccount);
 
     const isReady = !!selectedQuote && !!receiveAddress && !!account;
     const isConfirmDisabled = isLoading || !selectedQuote || !receiveAddress || !account;
@@ -42,7 +44,8 @@ export const useTradingBuyConfirm = () => {
     const confirmTrade = async (): Promise<BuyTrade | undefined> => {
         if (!account || !receiveAddress || !selectedQuote) return;
 
-        const returnUrl = await createTxLink(selectedQuote, account);
+        const tradeAccount = receiveAccount ?? account;
+        const returnUrl = await createTxLink(selectedQuote, tradeAccount);
 
         const processResponseData = (response: BuyTradeResponse) => {
             if (response.tradeForm) {
@@ -68,7 +71,7 @@ export const useTradingBuyConfirm = () => {
                 quote: selectedQuote,
                 address: receiveAddress,
                 returnUrl,
-                account,
+                account: tradeAccount,
                 processResponseData,
                 triggerAnalyticsTradeConfirmation,
             }),
