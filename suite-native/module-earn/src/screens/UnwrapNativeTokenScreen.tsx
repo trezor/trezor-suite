@@ -213,6 +213,7 @@ export const UnwrapNativeTokenScreen = () => {
                     isExploreDisabled={flow.pendingModalProps.isExploreDisabled}
                     onExplorePress={flow.pendingModalProps.onExplorePress}
                     submittedAt={flow.pendingModalProps.submittedAt}
+                    txid={flow.pendingModalProps.txid}
                     title={<Translation id="earn.unwrapNativeToken.pendingTransactionTitle" />}
                 />
             )}

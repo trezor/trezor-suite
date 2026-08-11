@@ -113,6 +113,7 @@ export const YieldDepositRevokeScreen = () => {
                     isExploreDisabled={pendingModal.isExploreDisabled}
                     onExplorePress={pendingModal.onExplorePress}
                     submittedAt={pendingModal.submittedAt}
+                    txid={pendingModal.txid}
                     title={<Translation id="earn.yieldDepositRevokeScreen.pendingTitle" />}
                     vaultName={vaultTokenName}
                     vaultTokenContract={tokenContract}

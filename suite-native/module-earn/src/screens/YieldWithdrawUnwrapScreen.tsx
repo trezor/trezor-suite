@@ -441,6 +441,7 @@ export const YieldWithdrawUnwrapScreen = () => {
                     onDismiss={pendingModalProps.onDismiss}
                     onExplorePress={pendingModalProps.onExplorePress}
                     submittedAt={pendingModalProps.submittedAt}
+                    txid={pendingModalProps.txid}
                     title={<Translation id="earn.yieldWithdrawFlowScreen.unwrapPendingTitle" />}
                     vaultName={vaultTokenName}
                     vaultTokenContract={route.params.tokenContract}
