@@ -5,6 +5,7 @@ import {
     type Account,
     type AccountBackendSpecific,
     type AccountFailureSpecific,
+    type AccountKey,
     type SelectedAccountStatus,
     asAccountDescriptor,
     createAccountKey,
@@ -153,6 +154,13 @@ const updateAccount = createAction(
     },
 );
 
+const addAccountTokens = createAction(
+    `${ACCOUNTS_MODULE_PREFIX}/addAccountTokens`,
+    (accountKey: AccountKey, tokens: NonNullable<Account['tokens']>) => ({
+        payload: { accountKey, tokens },
+    }),
+);
+
 const renameAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/renameAccount`,
     (accountKey: string, accountLabel: string) => ({
@@ -198,6 +206,7 @@ export const accountsActions = {
     createAccount,
     createAccountFromAccountInfo,
     updateAccount,
+    addAccountTokens,
     renameAccount,
     updateSelectedAccount,
     changeAccountVisibility,

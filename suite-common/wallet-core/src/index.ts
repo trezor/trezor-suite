@@ -70,6 +70,7 @@ export * from './stake/stakeSelectors';
 export * from './stake/stakeThunks';
 export * from './stablecoin-yield/stablecoinYieldReducer';
 export * from './stablecoin-yield/stablecoinYieldSelectors';
+export * from './stablecoin-yield/utils/fetchWrappedNativeTokenInfo';
 export * from './stablecoin-yield/utils/stablecoinYieldApprovalActionUtils';
 export * from './stablecoin-yield/thunks/stablecoinYieldApprovalThunks';
 export * from './stablecoin-yield/stablecoinYieldConstants';

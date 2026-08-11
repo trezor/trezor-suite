@@ -1,19 +1,25 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, getWrappedNativeAddress } from '@suite-common/wallet-config';
 import { WETH_DEPOSIT_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
+    enhanceTokens,
     getAccountIdentity,
     getConvertedOrDefaultFeeInfo,
     isWrappedNativeToken,
 } from '@suite-common/wallet-utils';
+import { type TokenInfo } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
 
+import { accountsActions } from '../../accounts/accountsActions';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
+import { selectAccountByKey } from '../../accounts/accountsSelectors';
 import { type FeesRootState, selectRawNetworkFeeInfo } from '../../fees/feesReducer';
 import { ethereumGetCurrentNonceThunk } from '../../send/sendFormEthereumThunks';
 import { type TransactionsRootState } from '../../transactions/transactionsReducerTypes';
 import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
 import type { YieldFlowDisplayToken } from '../stablecoinYieldTypes';
+import { fetchWrappedNativeTokenInfo } from '../utils/fetchWrappedNativeTokenInfo';
 import { estimateYieldFeeLevel } from '../utils/stablecoinYieldFeeEstimation';
 import {
     buildYieldUnsignedTransaction,
@@ -138,6 +144,82 @@ export const composeYieldWrapTransactionThunk = createThunk<
         );
 
         return { type: 'action-ready', unsignedTransaction } as const;
+    },
+);
+
+export type TrackWrappedNativeTokenThunkState = AccountsRootState;
+
+type TrackWrappedNativeTokenPayload = {
+    accountKey: AccountKey;
+};
+
+/**
+ * Makes sure the account tracks the wrapped-native token (e.g. WETH) of its network. Wrapping
+ * calls WETH `deposit()`, which emits no ERC-20 `Transfer` event, so the backend never discovers
+ * the token on its own and the account may hold a balance without knowing about it.
+ *
+ * Returns the balance in display units: `null` means it could not be determined (the caller may
+ * fall back to its own value), `'0'` means it was fetched successfully and is really zero.
+ */
+export const trackWrappedNativeTokenThunk = createThunk<
+    string | null,
+    TrackWrappedNativeTokenPayload,
+    { state: TrackWrappedNativeTokenThunkState }
+>(
+    `${YIELD_WRAP_THUNK_PREFIX}/trackWrappedNativeToken`,
+    async ({ accountKey }, { dispatch, getState }) => {
+        const account = selectAccountByKey(getState(), accountKey);
+
+        if (!account || account.networkType !== 'ethereum') {
+            return null;
+        }
+
+        const wrappedNativeContract = getWrappedNativeAddress(account.symbol);
+
+        if (!wrappedNativeContract) {
+            return null;
+        }
+
+        const isWrappedNativeContract = (contract: string) =>
+            contract.toLowerCase() === wrappedNativeContract.toLowerCase();
+
+        const trackedToken = account.tokens?.find(token => isWrappedNativeContract(token.contract));
+
+        if (trackedToken) {
+            return trackedToken.balance ?? '0';
+        }
+
+        let tokenInfo: TokenInfo | null;
+        try {
+            tokenInfo = await fetchWrappedNativeTokenInfo({ account });
+        } catch {
+            return null;
+        }
+
+        if (!tokenInfo) {
+            return null;
+        }
+
+        const [wrappedNativeToken] = enhanceTokens([tokenInfo]);
+        const balance = wrappedNativeToken?.balance ?? '0';
+
+        // A zero balance is not tracked, so it does not clutter the account's token list.
+        if (!wrappedNativeToken || !new BigNumber(balance).gt(0)) {
+            return '0';
+        }
+
+        const currentAccount = selectAccountByKey(getState(), accountKey);
+
+        if (
+            !currentAccount ||
+            currentAccount.tokens?.some(token => isWrappedNativeContract(token.contract))
+        ) {
+            return balance;
+        }
+
+        dispatch(accountsActions.addAccountTokens(accountKey, [wrappedNativeToken]));
+
+        return balance;
     },
 );
 

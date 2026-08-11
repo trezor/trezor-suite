@@ -4,6 +4,8 @@ import { type ExtraDependenciesPartial } from '@suite-common/redux-extra-depende
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type AccountInfo } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { accountsActions } from './accountsActions';
@@ -150,5 +152,88 @@ describe('Account Reducer', () => {
         spyWarn.mockRestore();
 
         expect(store.getState().wallet.accounts.length).toEqual(0);
+    });
+
+    describe('locally tracked tokens', () => {
+        const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+
+        const ethereumAccount = mockWalletAccount({
+            symbol: asNetworkSymbol('eth'),
+            deviceState: '1stTestnetAddress@device_id:0',
+        });
+
+        const wethAccountToken = mockAccountToken({
+            contract: WETH_ADDRESS,
+            symbol: 'WETH',
+            balance: '1.5',
+        });
+
+        const accountInfo: AccountInfo = {
+            descriptor: ethereumAccount.descriptor,
+            balance: '1000',
+            availableBalance: '1000',
+            empty: false,
+            history: { total: 1, unconfirmed: 0, transactions: [] },
+            tokens: [],
+            misc: { nonce: '2' },
+        };
+
+        const initStoreWithTrackedToken = () =>
+            initStore({
+                preloadedState: {
+                    wallet: {
+                        accounts: [{ ...ethereumAccount, tokens: [wethAccountToken] }],
+                    },
+                },
+            });
+
+        it('keeps a locally tracked token when an update from an older snapshot omits it', () => {
+            const store = initStoreWithTrackedToken();
+
+            // The stale snapshot and the account info payload know nothing about the token.
+            store.dispatch(accountsActions.updateAccount(ethereumAccount, accountInfo));
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
+                expect.objectContaining({ contract: WETH_ADDRESS, balance: '1.5' }),
+            ]);
+        });
+
+        it('does not duplicate a tracked token once the update reports it itself', () => {
+            const store = initStoreWithTrackedToken();
+
+            store.dispatch(
+                accountsActions.updateAccount(ethereumAccount, {
+                    ...accountInfo,
+                    tokens: [
+                        {
+                            standard: 'ERC20',
+                            contract: WETH_ADDRESS,
+                            symbol: 'WETH',
+                            name: 'Wrapped Ether',
+                            decimals: 18,
+                            balance: '2500000000000000000',
+                        },
+                    ],
+                }),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
+                expect.objectContaining({ contract: WETH_ADDRESS, balance: '2.5' }),
+            ]);
+        });
+
+        it('adds tokens to the account via addAccountTokens', () => {
+            const store = initStore({
+                preloadedState: { wallet: { accounts: [ethereumAccount] } },
+            });
+
+            store.dispatch(
+                accountsActions.addAccountTokens(ethereumAccount.key, [wethAccountToken]),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
+                expect.objectContaining({ contract: WETH_ADDRESS, balance: '1.5' }),
+            ]);
+        });
     });
 });
