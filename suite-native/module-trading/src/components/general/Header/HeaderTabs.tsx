@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useServices } from '@suite-common/dependency-injection';
 import { type TradingTypeWithConcierge } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Box, EdgeFades, HStack, type SubTabItem, SubTabs } from '@suite-native/atoms';
+import { Box, EdgeFades, type SubTabItem, SubTabs } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { useNativeStyles } from '@trezor/styles-native';
 
@@ -67,11 +67,14 @@ export const HeaderTabs = () => {
     };
 
     return (
-        <Box paddingHorizontal="sp16">
-            <HStack spacing={0}>
-                <SubTabs items={data} onChange={onTabPress} value={activeTab} />
-                <EdgeFades direction="horizontal" startSize={utils.spacings.sp20} />
-            </HStack>
+        <Box>
+            <SubTabs
+                items={data}
+                onChange={onTabPress}
+                paddingHorizontal="sp16"
+                value={activeTab}
+            />
+            <EdgeFades direction="horizontal" startSize={utils.spacings.sp20} />
         </Box>
     );
 };

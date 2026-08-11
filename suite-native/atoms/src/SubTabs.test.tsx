@@ -6,6 +6,7 @@ import {
     within,
 } from '@suite-native/test-utils';
 import { type NativeStyleUtils, useNativeStyles } from '@trezor/styles-native';
+import { type NativeSpacing } from '@trezor/theme';
 
 import { type SubTabItem, SubTabs } from './SubTabs';
 
@@ -34,15 +35,24 @@ describe('SubTabs', () => {
 
     const renderSubTabs = ({
         onChange = jest.fn(),
+        paddingHorizontal,
         size = 'normal',
         value = 'exchange',
     }: {
         onChange?: (value: string) => void;
+        paddingHorizontal?: NativeSpacing;
         size?: 'normal' | 'large';
         value?: string;
     } = {}) =>
         renderWithBasicProvider(
-            <SubTabs items={items} onChange={onChange} size={size} value={value} />,
+            <SubTabs
+                items={items}
+                onChange={onChange}
+                paddingHorizontal={paddingHorizontal}
+                size={size}
+                testID="sub-tabs"
+                value={value}
+            />,
         );
 
     it('renders the active and inactive tabs with accessible selected states', () => {
@@ -62,6 +72,14 @@ describe('SubTabs', () => {
         fireEvent.press(getByText('Buy'));
 
         expect(onChange).toHaveBeenCalledWith('buy');
+    });
+
+    it('applies configurable horizontal padding to the tab list', () => {
+        const { getByTestId } = renderSubTabs({ paddingHorizontal: 'sp4' });
+
+        expect(getByTestId('sub-tabs').props.contentContainerStyle).toEqual(
+            expect.objectContaining({ paddingHorizontal: 4 }),
+        );
     });
 
     it('uses normal size dimensions, typography, icon size, and active colors', () => {
