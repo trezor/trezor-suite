@@ -86,7 +86,7 @@ type GetYieldWithdrawCompleteRowsParams = {
     accountSymbol: NetworkSymbol;
     receivedAmount: string;
     receivedTokenContract?: string;
-    withdrawalAmount?: string;
+    withdrawalAmount: string;
     withdrawalTokenContract?: string;
 };
 
@@ -98,6 +98,22 @@ export const getYieldWithdrawCompleteRows = ({
     withdrawalTokenContract,
 }: GetYieldWithdrawCompleteRowsParams): YieldCompleteSummaryRow[] => [
     getYieldCompleteStatusRow(),
+    {
+        key: 'sent',
+        label: <Translation id="earn.yieldCompleteScreen.sent" />,
+        value: (
+            <HStack spacing="sp4" alignItems="center" flexShrink={1}>
+                <TokenIcon
+                    symbol={accountSymbol}
+                    contractAddress={withdrawalTokenContract}
+                    size="extraSmall"
+                />
+                <Text variant="body-md-strong" color="contentPrimary" numberOfLines={1}>
+                    -{withdrawalAmount}
+                </Text>
+            </HStack>
+        ),
+    },
     {
         key: 'received',
         label: <Translation id="earn.yieldCompleteScreen.received" />,
@@ -114,26 +130,6 @@ export const getYieldWithdrawCompleteRows = ({
             </HStack>
         ),
     },
-    ...(withdrawalAmount
-        ? [
-              {
-                  key: 'sent',
-                  label: <Translation id="earn.yieldCompleteScreen.sent" />,
-                  value: (
-                      <HStack spacing="sp4" alignItems="center" flexShrink={1}>
-                          <TokenIcon
-                              symbol={accountSymbol}
-                              contractAddress={withdrawalTokenContract}
-                              size="extraSmall"
-                          />
-                          <Text variant="body-md-strong" color="contentPrimary" numberOfLines={1}>
-                              -{withdrawalAmount}
-                          </Text>
-                      </HStack>
-                  ),
-              },
-          ]
-        : []),
 ];
 
 type GetWrappedNativeCompleteRowsParams = {
