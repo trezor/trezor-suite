@@ -28,6 +28,9 @@ const headerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    // With `space-between` this only engages once the row is full, i.e. exactly when wide
+    // content would otherwise butt against the side icons on a narrow screen.
+    gap: utils.spacings.sp12,
     paddingTop: utils.spacings.sp8,
     paddingHorizontal: utils.spacings.sp16,
     paddingBottom: utils.spacings.sp16,
