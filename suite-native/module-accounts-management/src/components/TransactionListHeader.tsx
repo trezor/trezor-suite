@@ -27,7 +27,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
-import { selectHasAccountAnyTransactions } from '@suite-native/transactions';
+import { selectHasAccountAnyTransactionsForToken } from '@suite-native/transactions';
 
 import { selectIsNetworkSendFlowEnabled, selectIsUnrecognizedToken } from '../selectors';
 import { AccountDiscoveryFailedBanner } from './AccountBanners/AccountDiscoveryFailedBanner';
@@ -59,8 +59,8 @@ const TransactionListHeaderContent = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const hasAccountTransactions = useSelector((state: TransactionsRootState & TokensRootState) =>
-        selectHasAccountAnyTransactions(state, accountKey),
+    const hasAccountTransactions = useSelector((state: AccountsRootState & TransactionsRootState) =>
+        selectHasAccountAnyTransactionsForToken(state, accountKey, tokenContract),
     );
     const isTestnetAccount = useSelector((state: AccountsRootState) =>
         selectIsTestnetAccount(state, accountKey),
@@ -90,8 +90,8 @@ export const TransactionListHeader = memo(
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account?.symbol);
 
         const hasAccountTransactions = useSelector(
-            (state: TransactionsRootState & TokensRootState) =>
-                selectHasAccountAnyTransactions(state, accountKey),
+            (state: AccountsRootState & TransactionsRootState) =>
+                selectHasAccountAnyTransactionsForToken(state, accountKey, tokenContract),
         );
         const isNetworkSendFlowEnabled = useSelector((state: FeatureFlagsRootState) =>
             selectIsNetworkSendFlowEnabled(state, account?.symbol),
@@ -149,7 +149,8 @@ export const TransactionListHeader = memo(
             });
         };
 
-        const isPriceCardDisplayed = shallDisplayBaseCurrency && !isUnrecognizedToken;
+        const isPriceCardDisplayed =
+            shallDisplayBaseCurrency && !isUnrecognizedToken && hasAccountTransactions;
         const isStellarAccount = account.networkType === 'stellar';
 
         const isSendButtonDisplayed = isNetworkSendFlowEnabled && !isPortfolioTrackerDevice;

@@ -8,6 +8,7 @@ import { Screen } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { TransactionList } from '@suite-native/transactions';
 
+import { AccountDetailEmptyState } from '../components/AccountDetailEmptyState';
 import { AssetDetailScreenHeader } from '../components/AssetDetailScreenHeader';
 import { TransactionListHeader } from '../components/TransactionListHeader';
 
@@ -43,6 +44,11 @@ export const AccountDetailContentScreen = ({
         [account.key, tokenContract],
     );
 
+    const listEmptyComponent = useMemo(
+        () => <AccountDetailEmptyState accountKey={account.key} tokenContract={tokenContract} />,
+        [account.key, tokenContract],
+    );
+
     return (
         <Screen
             /** Adding scrollable wraps content in ScrollView which is unwanted for this screen because list component already adds the scrollview **/
@@ -56,6 +62,7 @@ export const AccountDetailContentScreen = ({
                 account={account}
                 tokenContract={tokenContract}
                 listHeaderComponent={listHeaderComponent}
+                listEmptyComponent={listEmptyComponent}
             />
         </Screen>
     );
