@@ -8,6 +8,7 @@ import {
     type PrecomposedTransactionFinalCancelRbf,
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
+import { isCardanoTx } from '@suite-common/wallet-utils';
 
 import { selectConvertedNetworkFeeInfo } from '../../fees/feesReducer';
 import { SEND_MODULE_PREFIX } from '../sendFormConstants';
@@ -84,21 +85,25 @@ export const composeEthereumCancelTransactionThunk = createThunk<
         }
 
         const normalLevel = response.payload.normal;
-        if (!normalLevel || normalLevel.type === 'error' || normalLevel.type === 'nonfinal') {
+        if (
+            !normalLevel ||
+            normalLevel.type === 'error' ||
+            normalLevel.type === 'nonfinal' ||
+            // The ethereum compose path never yields the Cardano-specific final shape.
+            isCardanoTx(account, normalLevel)
+        ) {
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
                 message: 'Unable to compose a valid cancellation fee level.',
             });
         }
 
-        return {
-            // The ethereum compose path never yields the Cardano-specific final shape.
-            composedCancelTx: {
-                ...normalLevel,
-                rbfType: 'cancel',
-                prevTxid: tx.txid,
-            } as PrecomposedTransactionFinalCancelRbf,
-            cancelFormState,
+        const composedCancelTx: PrecomposedTransactionFinalCancelRbf = {
+            ...normalLevel,
+            rbfType: 'cancel',
+            prevTxid: tx.txid,
         };
+
+        return { composedCancelTx, cancelFormState };
     },
 );
