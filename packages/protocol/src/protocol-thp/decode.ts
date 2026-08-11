@@ -92,11 +92,15 @@ const readProtobufMessage = (
     { payload, thpState }: ThpMessage,
     protobufDecoder: ProtobufDecoder,
 ): ThpMessageResponse => {
+    if (!thpState.handshakeCredentials) {
+        throw new Error('ThpStateMissing');
+    }
+
     const tagPos = payload.length - TAG_LENGTH - CRC_LENGTH;
     const cipheredMessage = payload.subarray(0, tagPos);
     const tag = payload.subarray(tagPos, payload.length - CRC_LENGTH);
     const decipheredMessage = decipherMessage(
-        thpState.handshakeCredentials!.trezorKey,
+        thpState.handshakeCredentials.trezorKey,
         thpState.recvNonce,
         cipheredMessage,
         tag,

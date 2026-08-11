@@ -180,7 +180,7 @@ export const encodeProtobufMessage = (
     channel: Buffer,
     thpState?: ThpState,
 ) => {
-    if (!thpState) {
+    if (!thpState?.handshakeCredentials) {
         throw new Error('ThpStateMissing');
     }
 
@@ -198,7 +198,7 @@ export const encodeProtobufMessage = (
     const messageTypeBytes = Buffer.alloc(2);
     messageTypeBytes.writeUInt16BE(messageType);
     const cipheredMessage = cipherMessage(
-        thpState.handshakeCredentials!.hostKey,
+        thpState.handshakeCredentials.hostKey,
         thpState.sendNonce,
         Buffer.alloc(0),
         Buffer.concat([thpState.sessionId, messageTypeBytes, data]),
