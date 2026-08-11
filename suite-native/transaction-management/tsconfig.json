@@ -42,7 +42,6 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../scrollview" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/react-utils" },

@@ -8,5 +8,3 @@ export * from './sendFormSlice';
 export * from './thunks';
 export * from './addTransactionLabelingThunk';
 export * from './presets';
-
-export { default as sendArrowsLottie } from '../assets/send-arrows-lottie.json';
