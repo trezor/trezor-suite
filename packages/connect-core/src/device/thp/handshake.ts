@@ -118,7 +118,8 @@ export const thpHandshake = async (device: IDevice, unlockPin = false) => {
         encryptedPayload: handshakeCredentials.encryptedPayload,
     });
 
-    if (!handshakeCompletion.message.state && handshakeCredentials.credentials) {
+    const completionState = handshakeCompletion.message.state;
+    if (!completionState && handshakeCredentials.credentials) {
         // Known credentials was used but not accepted by device -> throw them away
         thpState.removePairingCredential(handshakeCredentials.credentials);
 
@@ -129,10 +130,18 @@ export const thpHandshake = async (device: IDevice, unlockPin = false) => {
         }
     }
 
-    thpState.setIsPaired(handshakeCompletion.message.state !== 0);
+    // Spec HH3 step 3: if no credential was presented the device MUST report STATE_UNPAIRED.
+    if (!handshakeCredentials.credentials && completionState !== 0) {
+        throw ERRORS.TypedError(
+            'Device_InvalidState',
+            'Device returned paired state without valid credentials',
+        );
+    }
+
+    thpState.setIsPaired(completionState !== 0);
     thpState.setPhase('pairing');
 
-    if (thpState.isAutoconnectPaired || handshakeCompletion.message.state === 2) {
+    if (handshakeCredentials.credentials?.autoconnect || completionState === 2) {
         // State HC1 -> HC2 pairing complete
         // finish pairing. device is ready to communicate without further interaction
         await thpCall(device, 'ThpEndRequest', {});
