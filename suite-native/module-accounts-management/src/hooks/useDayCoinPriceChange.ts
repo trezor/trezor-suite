@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { getUnixTime } from 'date-fns';
 
-import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import {
+    fetchErc4626UnderlyingAsset,
+    getFiatRatesForTimestamps,
+} from '@suite-common/fiat-services';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
@@ -21,10 +24,17 @@ import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 const UNIX_DAY = 24 * 60 * 60;
 const REFRESH_INTERVAL = 30_000;
 
-export const useDayCoinPriceChange = (
-    symbol?: NetworkSymbol | null,
-    tokenContract?: TokenAddress,
-) => {
+interface UseDayCoinPriceChangeProps {
+    symbol?: NetworkSymbol | null;
+    tokenContract?: TokenAddress;
+    isErc4626Token?: boolean;
+}
+
+export const useDayCoinPriceChange = ({
+    symbol,
+    tokenContract,
+    isErc4626Token,
+}: UseDayCoinPriceChangeProps) => {
     const [currentValue, setCurrentValue] = useState<BaseCurrencyAmount | null>(null);
     const [weekAgoValue, setWeekAgoValue] = useState<number | null>(null);
     const [valuePercentageChange, setValuePercentageChange] = useState<number | null>(null);
@@ -48,8 +58,20 @@ export const useDayCoinPriceChange = (
             const weekAgoTimestamp = currentTimestamp - 7 * UNIX_DAY;
 
             try {
+                // Rate providers have no tickers for ERC4626 vault share tokens, so fetch the
+                // rates of the underlying asset instead and scale them by the vault exchange
+                // rate. Both timestamps use the current exchange rate, because historical
+                // share-to-asset ratios are not available.
+                const underlyingAsset =
+                    isErc4626Token && tokenContract
+                        ? await fetchErc4626UnderlyingAsset({
+                              coin: symbol,
+                              contract: tokenContract,
+                          })
+                        : null;
+
                 const timestampedFiatRates = await getFiatRatesForTimestamps(
-                    { symbol, tokenAddress: tokenContract },
+                    { symbol, tokenAddress: underlyingAsset?.contract ?? tokenContract },
                     [weekAgoTimestamp, currentTimestamp],
                     fiatCurrencyCode,
                     isElectrumBackend,
@@ -58,8 +80,13 @@ export const useDayCoinPriceChange = (
 
                 const [weekAgo, today] = timestampedFiatRates?.tickers ?? [];
 
-                setWeekAgoValue(weekAgo?.rates[fiatCurrencyCode] ?? null);
-                const currentRate = today?.rates[fiatCurrencyCode];
+                const toVaultRate = (rate: number | undefined) =>
+                    rate !== undefined && underlyingAsset
+                        ? underlyingAsset.exchangeRate.multipliedBy(rate).toNumber()
+                        : rate;
+
+                setWeekAgoValue(toVaultRate(weekAgo?.rates[fiatCurrencyCode]) ?? null);
+                const currentRate = toVaultRate(today?.rates[fiatCurrencyCode]);
                 setCurrentValue(
                     currentRate !== undefined
                         ? asBaseCurrencyAmount(new BigNumber(currentRate))
@@ -77,7 +104,14 @@ export const useDayCoinPriceChange = (
         const refreshInterval = setInterval(getPrices, REFRESH_INTERVAL);
 
         return () => clearInterval(refreshInterval);
-    }, [symbol, tokenContract, fiatCurrencyCode, isElectrumBackend, isCoingeckoForce]);
+    }, [
+        symbol,
+        tokenContract,
+        isErc4626Token,
+        fiatCurrencyCode,
+        isElectrumBackend,
+        isCoingeckoForce,
+    ]);
 
     useEffect(() => {
         if (isNotNullOrUndefined(currentValue) && isNotNullOrUndefined(weekAgoValue)) {

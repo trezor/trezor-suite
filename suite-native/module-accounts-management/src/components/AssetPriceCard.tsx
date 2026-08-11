@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { isErc4626 } from '@suite-common/wallet-utils';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
@@ -71,10 +72,13 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
 
-    const { currentValue, valuePercentageChange, isLoading } = useDayCoinPriceChange(
+    const isErc4626Token = isErc4626(token);
+
+    const { currentValue, valuePercentageChange, isLoading } = useDayCoinPriceChange({
         symbol,
         tokenContract,
-    );
+        isErc4626Token,
+    });
 
     if (!symbol) return null;
     if (!isLoading && currentValue === null) return null;
@@ -121,13 +125,15 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
                             maximumFractionDigits={tokenContract ? 8 : 2}
                         />
 
-                        <HStack>
-                            <Text variant="body-sm" color="contentSecondary">
-                                <Translation id="moduleAccountManagement.accountDetailContentScreen.assetPriceCard.changeIn7d" />
-                            </Text>
+                        {!isErc4626Token && (
+                            <HStack>
+                                <Text variant="body-sm" color="contentSecondary">
+                                    <Translation id="moduleAccountManagement.accountDetailContentScreen.assetPriceCard.changeIn7d" />
+                                </Text>
 
-                            <PriceChangeLabel valuePercentageChange={valuePercentageChange} />
-                        </HStack>
+                                <PriceChangeLabel valuePercentageChange={valuePercentageChange} />
+                            </HStack>
+                        )}
                     </Box>
                 </HStack>
             </Card>
