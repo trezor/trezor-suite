@@ -484,8 +484,3 @@ export const selectHasUnseenNonPhishingTransactionNotifications =
         [selectNonPhishingTransactionNotifications],
         notifications => notifications.some(n => !n.seen),
     );
-
-export const selectNonPhishingTransactionTxids = createPhishingNotificationsSelector(
-    [selectNonPhishingTransactionNotifications],
-    notifications => new Set(notifications.map(n => n.txid)),
-);

@@ -10,6 +10,7 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import {
     formDraftReducer,
     initialWalletSettingsState,
+    phishingInitialState,
     transactionsInitialState,
 } from '@suite-common/wallet-core';
 import { bluetoothInitialState } from '@suite-native/bluetooth';
@@ -48,10 +49,14 @@ const createBaseTradingPreloadedState = (tradeType: TradingTestTradeType) => ({
     messageSystem: messageSystemInitialState,
     suiteSync: initialSuiteSyncState,
     suiteSyncData: initialSuiteSyncDataState,
+    notifications: [],
+    tokenDefinitions: {},
     wallet: {
         ...getWalletState({ tradeType }),
         fees: {},
         formDrafts: {},
+        phishing: phishingInitialState,
+        transactions: transactionsInitialState,
     },
 });
 
@@ -109,8 +114,10 @@ export const createTradingLightStore = (args?: {
         geolocation: createStaticReducer(preloadedState.geolocation),
         locale: createStaticReducer(preloadedState.locale),
         messageSystem: createStaticReducer(preloadedState.messageSystem),
+        notifications: createStaticReducer(preloadedState.notifications),
         suiteSync: createStaticReducer(preloadedState.suiteSync),
         suiteSyncData: createStaticReducer(preloadedState.suiteSyncData),
+        tokenDefinitions: createStaticReducer(preloadedState.tokenDefinitions),
         wallet: combineReducers({
             settings: createStaticReducer(
                 preloadedState.wallet.settings ?? initialWalletSettingsState,
@@ -119,6 +126,7 @@ export const createTradingLightStore = (args?: {
             fiat: createStaticReducer(preloadedState.wallet.fiat ?? {}),
             fees: createStaticReducer(preloadedState.wallet.fees ?? {}),
             formDrafts: formDraftReducer,
+            phishing: createStaticReducer(preloadedState.wallet.phishing),
             send: createStaticReducer(preloadedState.wallet.send ?? {}),
             transactions: createStaticReducer(transactionsInitialState),
             trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
