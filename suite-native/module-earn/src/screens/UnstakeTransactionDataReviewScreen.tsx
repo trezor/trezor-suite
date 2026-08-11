@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { selectAccountLabel } from '@suite-native/accounts';
 import { Button, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
@@ -25,7 +24,6 @@ import {
     selectIsTransactionAlreadySigned,
     useTransactionDetails,
 } from '@suite-native/transaction-management';
-import { BigNumber } from '@trezor/utils';
 
 import { UnstakeTransactionDataReviewStepList } from '../components/UnstakeTransactionDataReviewStepList';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
@@ -34,6 +32,7 @@ import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedP
 import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
 import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
+import { getAmountInBaseUnits } from '../utils/getAmountInBaseUnits';
 
 export const UnstakeTransactionDataReviewScreen = ({
     route,
@@ -125,12 +124,7 @@ export const UnstakeTransactionDataReviewScreen = ({
 
     const accountLabel = account ? (customAccountLabel ?? getNetwork(account.symbol).name) : '';
 
-    const pendingAmountInBaseUnits = account
-        ? unitsToSubunits({
-              value: asAmountUnit(new BigNumber(amount)),
-              symbol: account.symbol,
-          }).toString()
-        : '0';
+    const pendingAmountInBaseUnits = account ? getAmountInBaseUnits(amount, account.symbol) : '0';
 
     return (
         <ConfirmOnTrezorWrapper
