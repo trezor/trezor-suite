@@ -25,7 +25,7 @@ export const TradingReceiveAddressPickerScreen = () => {
                 />
             }
         >
-            <VStack flex={1} spacing="sp12">
+            <VStack flex={1} spacing="sp24">
                 <SearchInput
                     value={searchQuery}
                     onChange={setSearchQuery}
@@ -33,6 +33,7 @@ export const TradingReceiveAddressPickerScreen = () => {
                     size="large"
                     autoCorrect={false}
                     testId="@trading/receive-address/search"
+                    autoCapitalize="none"
                 />
                 <AddressList
                     accountKey={params.accountKey}

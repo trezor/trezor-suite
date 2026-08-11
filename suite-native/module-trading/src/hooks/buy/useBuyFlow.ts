@@ -9,7 +9,6 @@ import {
     buyThunks,
     selectTradingBuyIsLoading,
     selectTradingCoinInfoByCryptoId,
-    tradingBuyActions,
 } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useWatch } from '@suite-native/forms';
@@ -22,6 +21,7 @@ import {
 } from '@suite-native/navigation';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
+import { tradingActions } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 
 import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
@@ -102,8 +102,13 @@ export const useBuyFlow = (form: BuyFormType) => {
         const addressText = getReceiveAccountAddressText(receiveAccount);
         invariant(addressText, 'addressText is not defined');
 
-        dispatch(tradingBuyActions.setReceiveAddress(addressText));
-        dispatch(tradingBuyActions.setReceiveAccountKey(receiveAccount.account.key));
+        dispatch(
+            tradingActions.setReceiveAccount({
+                tradingType: 'buy',
+                accountKey: receiveAccount.account.key,
+                address: addressText,
+            }),
+        );
 
         const returnUrl = buildTradingUrl({
             actionType: 'quote',
