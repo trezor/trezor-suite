@@ -509,6 +509,7 @@ export const YieldDepositScreen = () => {
                     isExploreDisabled={pendingModalProps.isExploreDisabled}
                     onExplorePress={pendingModalProps.onExplorePress}
                     submittedAt={pendingModalProps.submittedAt}
+                    txid={pendingModalProps.txid}
                     title={<Translation id="earn.yieldDepositFlowScreen.depositPendingTitle" />}
                     vaultName={vaultTokenName}
                     vaultTokenContract={route.params.tokenContract}

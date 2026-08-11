@@ -338,6 +338,7 @@ export const useYieldDepositRevokeScreen = () => {
                   isExploreDisabled: pendingModalProps.isExploreDisabled,
                   onExplorePress: pendingModalProps.onExplorePress,
                   submittedAt: pendingModalProps.submittedAt,
+                  txid: pendingModalProps.txid,
               }
             : null;
 

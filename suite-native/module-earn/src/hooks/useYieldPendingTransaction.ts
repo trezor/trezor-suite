@@ -57,6 +57,7 @@ export const useYieldPendingTransaction = ({
                   onDismiss: handleSheetDismissed,
                   onExplorePress: openInBlockchain,
                   submittedAt: new Date(displayedPendingTransaction.submittedAt ?? 0),
+                  txid: displayedPendingTransaction.txid,
               }
             : null;
 

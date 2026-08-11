@@ -494,6 +494,7 @@ export const YieldDepositApprovalScreen = () => {
                     isExploreDisabled={pendingModalProps.isExploreDisabled}
                     onExplorePress={pendingModalProps.onExplorePress}
                     submittedAt={pendingModalProps.submittedAt}
+                    txid={pendingModalProps.txid}
                     title={
                         <Translation id="moduleTrading.tradingConfirmationScreen.approveTitle" />
                     }

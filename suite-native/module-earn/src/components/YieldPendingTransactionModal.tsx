@@ -14,20 +14,24 @@ import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import {
-    Badge,
     BottomSheetModal,
     type BottomSheetModalRef,
     Box,
-    Button,
     Card,
     CircularSpinner,
     HStack,
+    IconButton,
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { useCopyToClipboard } from '@suite-native/clipboard';
+import {
+    CryptoAmountFormatter,
+    CryptoToFiatAmountFormatter,
+    TransactionIdFormatter,
+} from '@suite-native/formatters';
 import { Icon, NetworkIcon, TokenIcon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { YieldPendingTransactionModalBackdrop } from './YieldPendingTransactionModalBackdrop';
@@ -46,10 +50,10 @@ type YieldPendingTransactionModalProps = {
     isExploreDisabled?: boolean;
     onDismiss?: () => void;
     onExplorePress: () => void;
-    pendingLabel?: ReactNode;
     ref: BottomSheetModalRef;
     submittedAt: Date;
     title: ReactNode;
+    txid: string;
     vaultName?: string;
     vaultTokenContract?: TokenAddress;
 };
@@ -69,9 +73,9 @@ const valueStyle = prepareNativeStyle(() => ({
     flexShrink: 1,
 }));
 
-const constrainedValueTextStyle = prepareNativeStyle(() => ({
-    minWidth: 0,
-    flexShrink: 1,
+const roundNetworkIconStyle = prepareNativeStyle(utils => ({
+    borderRadius: utils.borders.radii.round,
+    overflow: 'hidden',
 }));
 
 const getBottomSheet = (ref: BottomSheetModalRef): BottomSheetModalMethods | null => {
@@ -99,17 +103,19 @@ export const YieldPendingTransactionModal = ({
     isExploreDisabled,
     onDismiss,
     onExplorePress,
-    pendingLabel = <Translation id="moduleTrading.tradingConfirmationScreen.pending" />,
     ref,
     submittedAt,
     title,
+    txid,
     vaultName,
     vaultTokenContract,
 }: YieldPendingTransactionModalProps) => {
     const { applyStyle } = useNativeStyles();
     const { DateFormatter, TimeFormatter } = useFormatters();
+    const { translate } = useTranslate();
+    const copyToClipboard = useCopyToClipboard();
     const animatedIndex = useSharedValue<number>(modalSnap.expandedIndex);
-    const snapPoints = useMemo(() => [modalSnap.collapsedHeight, modalSnap.expandedHeight], []);
+    const snapPoints = useMemo(() => [modalSnap.collapsedHeight], []);
     const caretAnimatedStyle = useAnimatedStyle(() => {
         const rotation = interpolate(
             animatedIndex.value,
@@ -139,13 +145,24 @@ export const YieldPendingTransactionModal = ({
         [],
     );
 
+    const handleCopyTxid = useCallback(
+        () =>
+            copyToClipboard(
+                txid,
+                translate(
+                    'transactions.TransactionDetailScreen.parametersSheet.transactionIdCopied',
+                ),
+            ),
+        [copyToClipboard, translate, txid],
+    );
+
     return (
         <BottomSheetModal
             ref={ref}
             onDismiss={onDismiss}
             bottomSheetCustomProps={{
                 backdropComponent: renderBackdrop,
-                enableDynamicSizing: false,
+                enableDynamicSizing: true,
                 enablePanDownToClose: false,
                 handleComponent: () => (
                     <YieldPendingTransactionModalHeader
@@ -161,13 +178,12 @@ export const YieldPendingTransactionModal = ({
             }}
         >
             <VStack spacing="sp16" paddingBottom="sp16">
-                <VStack spacing="sp12" alignItems="center">
-                    <Badge intent="warning" label={pendingLabel} />
+                <Box alignItems="center">
                     <Box style={applyStyle(pendingIconStyle)}>
                         <CircularSpinner size={56} color="elementFillWarningBold" width={2} />
                         <Icon name="arrowUp" color="contentPrimary" size="large" />
                     </Box>
-                </VStack>
+                </Box>
 
                 <Card noPadding>
                     <YieldPendingTransactionModalRow
@@ -220,7 +236,7 @@ export const YieldPendingTransactionModal = ({
                                     color="contentPrimary"
                                     numberOfLines={1}
                                     ellipsizeMode="tail"
-                                    style={applyStyle(constrainedValueTextStyle)}
+                                    style={applyStyle(valueStyle)}
                                 >
                                     {vaultName}
                                 </Text>
@@ -246,15 +262,24 @@ export const YieldPendingTransactionModal = ({
                                         color="contentPrimary"
                                         numberOfLines={1}
                                         ellipsizeMode="tail"
-                                        style={applyStyle(constrainedValueTextStyle)}
+                                        style={applyStyle(valueStyle)}
                                     >
                                         {amount} {amountTokenSymbol}
                                     </Text>
                                 </HStack>
                             ) : (
-                                <Text variant="body-sm" color="contentPrimary">
-                                    {amount}
-                                </Text>
+                                <HStack
+                                    spacing="sp4"
+                                    alignItems="center"
+                                    style={applyStyle(valueStyle)}
+                                >
+                                    <Box style={applyStyle(roundNetworkIconStyle)}>
+                                        <NetworkIcon symbol={accountSymbol} size={20} />
+                                    </Box>
+                                    <Text variant="body-sm" color="contentPrimary">
+                                        {amount}
+                                    </Text>
+                                </HStack>
                             )}
                         </YieldPendingTransactionModalRow>
                     )}
@@ -287,17 +312,42 @@ export const YieldPendingTransactionModal = ({
                             </Text>
                         )}
                     </YieldPendingTransactionModalRow>
-                </Card>
 
-                <Button
-                    iconRight="arrowUpRight"
-                    intent="neutral"
-                    priority="secondary"
-                    isDisabled={isExploreDisabled}
-                    onPress={onExplorePress}
-                >
-                    <Translation id="moduleTrading.tradingConfirmationScreen.exploreInBlockchain" />
-                </Button>
+                    <YieldPendingTransactionModalRow
+                        label={
+                            <Translation id="moduleTrading.tradingConfirmationScreen.transactionId" />
+                        }
+                    >
+                        <HStack spacing="sp4" alignItems="center" style={applyStyle(valueStyle)}>
+                            <TransactionIdFormatter
+                                value={txid}
+                                color="contentPrimary"
+                                style={applyStyle(valueStyle)}
+                            />
+                            <IconButton
+                                iconName="copy"
+                                onPress={handleCopyTxid}
+                                intent="neutral"
+                                priority="secondary"
+                                size="small"
+                                accessibilityLabel={translate(
+                                    'transactions.TransactionDetailScreen.parametersSheet.transactionId',
+                                )}
+                            />
+                            <IconButton
+                                iconName="arrowUpRight"
+                                onPress={onExplorePress}
+                                isDisabled={isExploreDisabled}
+                                intent="neutral"
+                                priority="secondary"
+                                size="small"
+                                accessibilityLabel={translate(
+                                    'moduleTrading.tradingConfirmationScreen.exploreInBlockchain',
+                                )}
+                            />
+                        </HStack>
+                    </YieldPendingTransactionModalRow>
+                </Card>
             </VStack>
         </BottomSheetModal>
     );

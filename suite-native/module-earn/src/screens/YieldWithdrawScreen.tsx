@@ -766,6 +766,7 @@ export const YieldWithdrawScreen = () => {
                     onDismiss={handleSheetDismissed}
                     onExplorePress={openInBlockchain}
                     submittedAt={new Date(displayedPendingTransaction.submittedAt ?? 0)}
+                    txid={displayedPendingTransaction.txid}
                     title={<Translation id="earn.yieldWithdrawFlowScreen.withdrawPendingTitle" />}
                     vaultName={vaultTokenName}
                     vaultTokenContract={vaultTokenContract}

@@ -427,6 +427,7 @@ export const YieldDepositWrapScreen = () => {
                     isExploreDisabled={pendingModalProps.isExploreDisabled}
                     onExplorePress={pendingModalProps.onExplorePress}
                     submittedAt={pendingModalProps.submittedAt}
+                    txid={pendingModalProps.txid}
                     title={<Translation id="earn.wrapNativeToken.pendingTransactionTitle" />}
                     vaultName={vaultTokenName}
                     vaultTokenContract={route.params.tokenContract}
