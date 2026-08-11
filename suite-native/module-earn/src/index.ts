@@ -32,3 +32,5 @@ export { UnstakeTransactionDataReviewScreen } from './screens/UnstakeTransaction
 export { YieldConsentsScreen } from './screens/YieldConsentsScreen';
 export { YieldInsufficientBalanceScreen } from './screens/YieldInsufficientBalanceScreen';
 export { navigateByAccountState } from './utils/navigateByAccountState';
+export { getBestPromotedRate, isEarnPromoSymbol } from './utils/promotedRateUtils';
+export type { EarnPromoSymbol } from './utils/promotedRateUtils';

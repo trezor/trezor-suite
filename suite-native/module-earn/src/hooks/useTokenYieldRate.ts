@@ -11,9 +11,11 @@ import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
 
 import { useMessageSystemYield } from './useMessageSystemYield';
+import { useStakingRate } from './useStakingRate';
 import { selectBestEnabledYieldVault } from '../selectors';
 import { getWrappedNativeYieldVaults } from '../utils/getWrappedNativeYieldVaults';
 import { type YieldRateLabelType, getYieldRateLabelType } from '../utils/getYieldRateLabelType';
+import { getBestPromotedRate, isEarnPromoSymbol } from '../utils/promotedRateUtils';
 
 /** `inactive` = token eligible for a deposit, `active` = vault receipt token already earning. */
 export type TokenYieldRateVariant = 'inactive' | 'active';
@@ -39,8 +41,9 @@ type TokenYieldRate = {
 const emptyVaults: YieldDtoV2[] = [];
 
 /**
- * The yield rate a token row may advertise — the rate of the best not-killed vault
- * matching the token, or `null` when there is nothing to advertise.
+ * The rate a row may advertise — the best not-killed vault matching the token, or for a
+ * native-coin row the higher of that vault and staking. `null` when there is nothing to
+ * advertise.
  */
 export const useTokenYieldRate = ({
     account,
@@ -98,20 +101,29 @@ export const useTokenYieldRate = ({
         selectBestEnabledYieldVault(state, matchedVaults),
     );
 
+    // The native coin can also earn by staking, which is what the account's promo banner
+    // advertises — the row must not undersell it with the vault rate alone.
+    const { rate: stakingRate } = useStakingRate({
+        symbol: networkSymbol,
+        accountKey: account.key,
+    });
+    const promotedStakingRate =
+        tokenContract === undefined && isEarnPromoSymbol(networkSymbol) ? stakingRate : null;
+
     return useMemo(() => {
-        if (!bestVault) {
-            return null;
-        }
+        const vaultApy = bestVault ? getApyPercent(bestVault.rewardRate.total) : null;
+        const bestRate = getBestPromotedRate({ vaultApy, stakingRate: promotedStakingRate });
 
-        const apy = getApyPercent(bestVault.rewardRate.total);
-
-        if (apy === null) {
+        if (!bestRate) {
             return null;
         }
 
         return {
-            apy,
-            labelType: getYieldRateLabelType(bestVault.rewardRate),
+            apy: bestRate.apy,
+            labelType:
+                bestRate.isVaultRate && bestVault
+                    ? getYieldRateLabelType(bestVault.rewardRate)
+                    : 'apy',
         };
-    }, [bestVault]);
+    }, [bestVault, promotedStakingRate]);
 };

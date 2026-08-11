@@ -1,3 +1,4 @@
+import { type ComponentType } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type Account } from '@suite-common/wallet-types';
@@ -7,10 +8,16 @@ import {
     SolEarnPromoBanner,
     selectIsEarnBannerClosed,
 } from '@suite-native/banners';
+import { type EarnPromoSymbol } from '@suite-native/module-earn';
 
 interface AccountEarnPromoBannerProps {
     account?: Account | null;
 }
+
+const earnPromoBanners: Partial<Record<EarnPromoSymbol, ComponentType<{ account: Account }>>> = {
+    eth: EthEarnPromoBanner,
+    sol: SolEarnPromoBanner,
+};
 
 export const AccountEarnPromoBanner = ({ account }: AccountEarnPromoBannerProps) => {
     const symbol = account?.symbol;
@@ -19,17 +26,13 @@ export const AccountEarnPromoBanner = ({ account }: AccountEarnPromoBannerProps)
         symbol !== undefined ? selectIsEarnBannerClosed(state, symbol) : false,
     );
 
-    if (isClosed) {
+    if (isClosed || !account?.symbol) {
         return null;
     }
 
-    if (account?.symbol === 'eth') {
-        return <EthEarnPromoBanner account={account} />;
-    }
+    const BannerToRender = earnPromoBanners[account?.symbol];
 
-    if (account?.symbol === 'sol') {
-        return <SolEarnPromoBanner account={account} />;
-    }
+    if (BannerToRender) return <BannerToRender account={account} />;
 
     return null;
 };
