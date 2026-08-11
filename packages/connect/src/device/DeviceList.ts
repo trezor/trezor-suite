@@ -225,7 +225,9 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     private onPushNotification(event: { id: string; data: number[] }) {
         const device = this.devices.find(d => d.descriptor.id === event.id);
         if (device) {
-            trezorPushNotificationHandler({ device, message: event.data });
+            trezorPushNotificationHandler({ device, message: event.data }).catch(error => {
+                console.error('Error handling Trezor Push Notification', error);
+            });
         }
     }
 
