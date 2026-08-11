@@ -5,6 +5,7 @@ export * from './screens/TradingExchangeApprovalScreen';
 export * from './screens/TradingExchangePreviewScreen';
 export * from './screens/TradingExchangeRevokeScreen';
 export * from './screens/TradingOutputsReviewScreen';
+export * from './screens/TradingReceiveAddressPickerScreen';
 export * from './screens/TradingReceiveAccountsPickerScreen';
 export * from './screens/TradingSellPreviewScreen';
 export { TradingBuyPreviewScreen } from './screens/TradingBuyPreviewScreen';

@@ -616,6 +616,10 @@ export type RootStackParamList = {
         symbol: NetworkSymbol;
         tradingType: Exclude<TradingType, 'sell'>;
     };
+    [RootStackRoutes.TradingReceiveAddress]: {
+        accountKey: AccountKey;
+        tradingType: Exclude<TradingType, 'sell'>;
+    };
     [RootStackRoutes.TradingHistory]: undefined;
     [RootStackRoutes.TradingBuyPreview]: undefined;
     [RootStackRoutes.ActivityCenterStack]: NavigatorScreenParams<ActivityCenterStackParamList>;

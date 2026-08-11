@@ -1,5 +1,5 @@
 import { getTranslation } from '@suite-native/intl';
-import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { NoAccountsComponent } from './NoAccountsComponent';
 
@@ -7,56 +7,92 @@ describe('NoAccountsComponent', () => {
     const renderNoAccountsComponent = ({
         isConnected,
         id,
+        onActivateAccount = jest.fn(),
     }: {
         isConnected: boolean;
         id?: string;
+        onActivateAccount?: () => void;
     }) =>
-        renderWithStoreProvider(<NoAccountsComponent isBottomRounded />, {
-            preloadedState: {
-                device: {
-                    selectedDevice: {
-                        remember: true,
-                        connected: isConnected,
-                        id,
+        renderWithStoreProvider(
+            <NoAccountsComponent symbol="btc" onActivateAccount={onActivateAccount} />,
+            {
+                preloadedState: {
+                    device: {
+                        selectedDevice: {
+                            remember: true,
+                            connected: isConnected,
+                            id,
+                        },
                     },
                 },
             },
+        );
+
+    it('renders the connected-device state and activates the configured network', () => {
+        const onActivateAccount = jest.fn();
+        const { getByText } = renderNoAccountsComponent({
+            isConnected: true,
+            onActivateAccount,
         });
 
-    it('should render for not connected device', () => {
-        const { queryByText } = renderNoAccountsComponent({ isConnected: false });
-
         expect(
-            queryByText(
-                getTranslation('moduleTrading.accountScreen.accountEmpty.viewOnly.description'),
-            ),
+            getByText(getTranslation('moduleTrading.accountScreen.accountEmpty.title')),
         ).toBeTruthy();
-    });
-
-    it('should render for no account but connected device', () => {
-        const { queryByText } = renderNoAccountsComponent({ isConnected: true });
-
         expect(
-            queryByText(
+            getByText(
                 getTranslation(
-                    'moduleTrading.accountScreen.accountEmpty.networkNotEnabled.description',
+                    'moduleTrading.accountScreen.accountEmpty.networkNotEnabled.noAccountDescription',
                 ),
             ),
         ).toBeTruthy();
+
+        fireEvent.press(
+            getByText(
+                getTranslation('moduleTrading.accountScreen.accountEmpty.activate', {
+                    network: 'Bitcoin',
+                }),
+            ),
+        );
+
+        expect(onActivateAccount).toHaveBeenCalledTimes(1);
     });
 
-    it('should render for portfolio tracker', () => {
-        const { queryByText } = renderNoAccountsComponent({
+    it('renders the view-only explanation without activation', () => {
+        const { getByText, queryByText } = renderNoAccountsComponent({ isConnected: false });
+
+        expect(
+            getByText(
+                getTranslation('moduleTrading.accountScreen.accountEmpty.viewOnly.description'),
+            ),
+        ).toBeTruthy();
+        expect(
+            queryByText(
+                getTranslation('moduleTrading.accountScreen.accountEmpty.activate', {
+                    network: 'Bitcoin',
+                }),
+            ),
+        ).toBeNull();
+    });
+
+    it('renders the Portfolio Tracker explanation without activation', () => {
+        const { getByText, queryByText } = renderNoAccountsComponent({
             isConnected: false,
             id: 'hiddenDeviceWithImportedAccounts',
         });
 
         expect(
-            queryByText(
+            getByText(
                 getTranslation(
                     'moduleTrading.accountScreen.accountEmpty.portfolioTracker.description',
                 ),
             ),
         ).toBeTruthy();
+        expect(
+            queryByText(
+                getTranslation('moduleTrading.accountScreen.accountEmpty.activate', {
+                    network: 'Bitcoin',
+                }),
+            ),
+        ).toBeNull();
     });
 });

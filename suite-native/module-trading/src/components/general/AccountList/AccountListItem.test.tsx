@@ -128,4 +128,23 @@ describe('AccountListItem', () => {
             getByAccessibilityHint(getTranslation('moduleTrading.accountScreen.step2Hint')),
         ).toBeTruthy();
     });
+
+    it('should display the descriptor for an account-based network', () => {
+        const account = mockWalletAccount({
+            descriptor: asAccountDescriptor('0x1234567890abcdef'),
+            symbol: asNetworkSymbol('eth'),
+            deviceState: DEVICE_SESSION_ID,
+            accountLabel: 'My ETH account',
+            availableBalance: '1000000000000000000',
+        });
+        const { getByText } = renderAccountListItem(
+            { account },
+            {
+                ...defaultOverrides,
+                wallet: { accounts: [account] },
+            },
+        );
+
+        expect(getByText('0x 1234 5678 ... 90ab cdef')).toBeTruthy();
+    });
 });

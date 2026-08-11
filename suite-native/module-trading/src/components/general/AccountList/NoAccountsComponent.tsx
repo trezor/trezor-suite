@@ -1,73 +1,71 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceInViewOnlyMode, selectIsPortfolioTrackerDevice } from '@suite-common/device';
-import { Text, VStack } from '@suite-native/atoms';
-import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { Box, Button, Text, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+
+import { NoAccountSvg } from './NoAccountSvg';
 
 type NoAccountsComponentProps = {
-    isBottomRounded: boolean;
+    symbol: NetworkSymbol;
+    onActivateAccount: () => void;
 };
 
-const contentStyle = prepareNativeStyle<{ isBottomRounded: boolean }>(
-    (utils, { isBottomRounded }) => ({
-        padding: utils.spacings.sp16,
-        flex: 1,
-        backgroundColor: utils.colors.surfaceFillRaised,
-        borderTopLeftRadius: utils.borders.radii.r16,
-        borderTopRightRadius: utils.borders.radii.r16,
-        alignContent: 'center',
-        justifyContent: 'center',
-        gap: utils.spacings.sp12,
-        extend: [
-            {
-                condition: isBottomRounded,
-                style: {
-                    borderBottomRightRadius: utils.borders.radii.r16,
-                    borderBottomLeftRadius: utils.borders.radii.r16,
-                },
-            },
-        ],
-    }),
-);
+const NoAccountDescription = ({
+    isPortfolioTrackerDevice,
+    isDeviceInViewOnlyMode,
+}: {
+    isPortfolioTrackerDevice: boolean;
+    isDeviceInViewOnlyMode: boolean;
+}) => {
+    if (isPortfolioTrackerDevice) {
+        return (
+            <Translation id="moduleTrading.accountScreen.accountEmpty.portfolioTracker.description" />
+        );
+    }
 
-export const NoAccountsComponent = ({ isBottomRounded }: NoAccountsComponentProps) => {
-    const { applyStyle } = useNativeStyles();
+    if (isDeviceInViewOnlyMode) {
+        return <Translation id="moduleTrading.accountScreen.accountEmpty.viewOnly.description" />;
+    }
+
+    return (
+        <Translation id="moduleTrading.accountScreen.accountEmpty.networkNotEnabled.noAccountDescription" />
+    );
+};
+
+export const NoAccountsComponent = ({ symbol, onActivateAccount }: NoAccountsComponentProps) => {
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
-    const getContent = (): { title: TxKeyPath; description: TxKeyPath } => {
-        if (isPortfolioTrackerDevice) {
-            return {
-                title: 'moduleTrading.accountScreen.accountEmpty.portfolioTracker.title',
-                description:
-                    'moduleTrading.accountScreen.accountEmpty.portfolioTracker.description',
-            };
-        }
-
-        if (isDeviceInViewOnlyMode) {
-            return {
-                title: 'moduleTrading.accountScreen.accountEmpty.viewOnly.title',
-                description: 'moduleTrading.accountScreen.accountEmpty.viewOnly.description',
-            };
-        }
-
-        return {
-            title: 'moduleTrading.accountScreen.accountEmpty.networkNotEnabled.title',
-            description: 'moduleTrading.accountScreen.accountEmpty.networkNotEnabled.description',
-        };
-    };
-
-    const { title, description } = getContent();
+    const isActivationAvailable = !isDeviceInViewOnlyMode && !isPortfolioTrackerDevice;
 
     return (
-        <VStack style={applyStyle(contentStyle, { isBottomRounded })}>
-            <Text variant="body-md" color="contentPrimary" textAlign="center">
-                <Translation id={title} />
-            </Text>
-            <Text variant="body-sm" color="contentSecondary" textAlign="center">
-                <Translation id={description} />
-            </Text>
+        <VStack flex={1} justifyContent="space-between" paddingTop="sp32" spacing="sp32">
+            <Box flex={1} justifyContent="center" alignItems="center">
+                <NoAccountSvg />
+            </Box>
+            <VStack spacing="sp32">
+                <VStack spacing="sp12">
+                    <Text variant="headline-md">
+                        <Translation id="moduleTrading.accountScreen.accountEmpty.title" />
+                    </Text>
+                    <Text variant="body-md" color="contentSecondary">
+                        <NoAccountDescription
+                            isPortfolioTrackerDevice={isPortfolioTrackerDevice}
+                            isDeviceInViewOnlyMode={isDeviceInViewOnlyMode}
+                        />
+                    </Text>
+                </VStack>
+                {isActivationAvailable && (
+                    <Button onPress={onActivateAccount}>
+                        <Translation
+                            id="moduleTrading.accountScreen.accountEmpty.activate"
+                            values={{ network: getNetwork(symbol).name }}
+                        />
+                    </Button>
+                )}
+            </VStack>
         </VStack>
     );
 };

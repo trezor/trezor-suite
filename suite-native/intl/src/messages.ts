@@ -3846,16 +3846,16 @@ export const messages = {
         },
         accountScreen: {
             accountEmpty: {
+                title: 'No account',
+                activate: 'Activate {network}',
                 viewOnly: {
-                    title: 'Account not found',
                     description: 'You need to connect your device to add a new account.',
                 },
                 networkNotEnabled: {
-                    title: 'Account not found',
-                    description: 'No account found for selected asset.',
+                    noAccountDescription:
+                        'It seems that you don’t have any account matching selected asset.',
                 },
                 portfolioTracker: {
-                    title: 'Account not found',
                     description:
                         "You don't have an account for this asset imported in the Portfolio Tracker.",
                 },
@@ -3865,6 +3865,8 @@ export const messages = {
                 description: 'Check the spelling or browse the list to select an option.',
             },
             titleStep1: 'Select account',
+            receiveAddressTitle: 'Receive address',
+            searchPlaceholder: 'Search',
             newAddress: 'New address',
             usedAddresses: 'Used addresses',
             step2Hint: 'Select to display account addresses',
