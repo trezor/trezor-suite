@@ -26,7 +26,7 @@ A package may only import from scopes listed above it (e.g. `suite` can depend o
 - [Common Issues](skills/common-issues/SKILL.md) – Known issues and their solutions
 - [Components](skills/components/SKILL.md) – React component file structure and patterns
 - [Common Tasks](skills/common-tasks/SKILL.md) – Dependency management, package creation, and troubleshooting
-- [Defensive Programming](skills/defensive-programming/SKILL.md) – Exhaustive checks and safe defaults
+- [Defensive Programming](skills/defensive-programming/SKILL.md) – Exhaustive checks, safe defaults, and non-mutating array methods
 - [Dependency Injection](skills/dependency-injection/SKILL.md) – DI pattern for service definitions, factories, and composition roots
 - [Development Commands](skills/development-commands/SKILL.md) – Running apps, linting, testing, and building
 - [Git and Commit Guidelines](skills/git-and-commit-guidelines/SKILL.md) – Conventional Commits format and best practices
@@ -34,6 +34,10 @@ A package may only import from scopes listed above it (e.g. `suite` can depend o
 - [Import/Export](skills/import-export/SKILL.md) – Named exports and import ordering
 - [Naming](skills/naming/SKILL.md) – Naming conventions for variables, functions, and files
 - [Packages](skills/packages/SKILL.md) – How to create and structure packages
+- [Performance Complexity](skills/performance-complexity/SKILL.md) – Asymptotic complexity: indexing before iteration, sort comparators, reduce accumulators
+- [Performance DOM](skills/performance-dom/SKILL.md) – Forced layout from DOM reads, observer APIs, and transitioning only compositor properties
+- [Performance React Hooks](skills/performance-react-hooks/SKILL.md) – Memoization under React Compiler, stable hook dependencies, and telling a wasted memo from a render loop
+- [Performance Scheduling](skills/performance-scheduling/SKILL.md) – Breaking up long tasks and deferring non-essential work off the critical path
 - [Project Overview](skills/project-structure/SKILL.md) – What Trezor Suite is and how the monorepo is organized
 - [Publish Config](skills/publish-config/SKILL.md) – publishConfig rules for public npm packages
 - [Redux](skills/redux/SKILL.md) – Redux Toolkit patterns and best practices
