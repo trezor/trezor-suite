@@ -2568,9 +2568,9 @@ export const messages = defineMessages({
         defaultMessage: 'Rate not available',
         id: 'TR_FIAT_RATES_NOT_AVAILABLE',
     },
-    TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP: {
-        defaultMessage: 'The 7D change rate is currently not available.',
-        id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
+    TR_EXCHANGE_RATE_NOT_AVAILABLE_TOOLTIP: {
+        defaultMessage: 'The exchange rate is currently not available.',
+        id: 'TR_EXCHANGE_RATE_NOT_AVAILABLE_TOOLTIP',
     },
     TR_FIRMWARE: {
         defaultMessage: 'Firmware',
