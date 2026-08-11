@@ -11,14 +11,14 @@ import { ScreenHeader } from '@suite-native/navigation';
 type YieldReviewScreenLayoutProps = {
     children: ReactNode;
     confirmOnTrezorRef: Ref<BottomSheetControlProps>;
-    submittedCard?: ReactNode;
+    submitButton?: ReactNode;
     titleTranslationId: TxKeyPath;
 };
 
 export const YieldReviewScreenLayout = ({
     children,
     confirmOnTrezorRef,
-    submittedCard,
+    submitButton,
     titleTranslationId,
 }: YieldReviewScreenLayoutProps) => (
     <ConfirmOnTrezorWrapper
@@ -35,11 +35,11 @@ export const YieldReviewScreenLayout = ({
                 }
             />
         }
-        shouldKeepScrolledToEnd={!!submittedCard}
+        shouldKeepScrolledToEnd={!!submitButton}
     >
         <VStack flex={1} justifyContent="space-between">
             {children}
-            {submittedCard}
+            {submitButton}
         </VStack>
     </ConfirmOnTrezorWrapper>
 );

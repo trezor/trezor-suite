@@ -2788,7 +2788,6 @@ export const messages = {
         },
         earnTransactionDataReviewScreen: {
             title: 'Confirm on Trezor',
-            successMessage: 'You’re all set',
             viewTransactionButton: 'Stake now',
             pushTransactionFailedAlert: {
                 title: 'Transaction failed',
@@ -2809,7 +2808,6 @@ export const messages = {
         },
         unstakeTransactionDataReviewScreen: {
             title: 'Confirm on Trezor',
-            successMessage: "You're all set",
             viewTransactionButton: 'Unstake now',
             pushTransactionFailedAlert: {
                 title: 'Transaction failed',
@@ -3267,28 +3265,23 @@ export const messages = {
         yieldDepositApprovalReviewScreen: {
             title: 'Review with Trezor',
             submitButton: 'Approve',
-            successMessage: "You're all set",
         },
         yieldDepositRevokeReviewScreen: {
             title: 'Review with Trezor',
-            successMessage: 'Revoke approval transaction signed',
             submitButton: 'Revoke',
         },
         yieldDepositReviewScreen: {
             title: 'Review with Trezor',
             submitButton: 'Deposit',
-            successMessage: "You're all set",
         },
         yieldWithdrawReviewScreen: {
             title: 'Review with Trezor',
             submitButton: 'Withdraw',
             redeemSubmitButton: 'Redeem',
-            successMessage: "You're all set.",
         },
         yieldClaimReviewScreen: {
             title: 'Review with Trezor',
             submitButton: 'Claim now',
-            successMessage: "You're all set.",
         },
         yieldDepositCompleteScreen: {
             title: 'Deposit complete',
@@ -3565,7 +3558,6 @@ export const messages = {
         },
         claimTransactionDataReviewScreen: {
             title: 'Confirm on Trezor',
-            successMessage: "You're all set",
             viewTransactionButton: 'Claim now',
             pushTransactionFailedAlert: {
                 title: 'Transaction failed',
@@ -4415,7 +4407,6 @@ export const messages = {
                 },
                 approveMaxAmount: 'Unlimited',
                 noAccount: 'Account not found.',
-                signSuccessMessage: "You're all set",
             },
             cancelAlert: {
                 title: 'Cancel transaction?',

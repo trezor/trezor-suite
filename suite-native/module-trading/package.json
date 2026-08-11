@@ -62,6 +62,7 @@
         "@suite-native/message-system": "workspace:*",
         "@suite-native/module-stellar-token-management": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/scrollview": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@suite-native/trading-analytics": "workspace:*",

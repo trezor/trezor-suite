@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
+import { Button, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
     useConfirmOnTrezorController,
@@ -14,10 +14,10 @@ import {
     ScreenHeader,
     type StackProps,
 } from '@suite-native/navigation';
+import { ScrollToEndOnMount } from '@suite-native/scrollview';
 import {
     TxValidityTimer,
     selectIsTransactionAlreadySigned,
-    sendArrowsLottie,
 } from '@suite-native/transaction-management';
 
 import { UnstakeTransactionDataReviewStepList } from '../components/UnstakeTransactionDataReviewStepList';
@@ -126,19 +126,7 @@ export const UnstakeTransactionDataReviewScreen = ({
                     <UnstakeTransactionDataReviewStepList />
                 </VStack>
                 {isReadyToUnstake && (
-                    <Card>
-                        <VStack
-                            paddingTop="sp8"
-                            paddingHorizontal="sp24"
-                            paddingBottom="sp24"
-                            alignItems="center"
-                            spacing="sp24"
-                        >
-                            <LottieAnimation source={sendArrowsLottie} size="small" />
-                            <Text variant="body-md-strong" textAlign="center">
-                                <Translation id="earn.unstakeTransactionDataReviewScreen.successMessage" />
-                            </Text>
-                        </VStack>
+                    <ScrollToEndOnMount>
                         <Button
                             isLoading={isPushing}
                             isDisabled={isSolanaAccount && isPastDeadline}
@@ -147,7 +135,7 @@ export const UnstakeTransactionDataReviewScreen = ({
                         >
                             <Translation id="earn.unstakeTransactionDataReviewScreen.viewTransactionButton" />
                         </Button>
-                    </Card>
+                    </ScrollToEndOnMount>
                 )}
             </VStack>
         </ConfirmOnTrezorWrapper>

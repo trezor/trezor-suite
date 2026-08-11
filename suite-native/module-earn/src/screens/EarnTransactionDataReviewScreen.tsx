@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
+import { Button, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
     useConfirmOnTrezorController,
@@ -14,10 +14,10 @@ import {
     ScreenHeader,
     type StackProps,
 } from '@suite-native/navigation';
+import { ScrollToEndOnMount } from '@suite-native/scrollview';
 import {
     TxValidityTimer,
     selectIsTransactionAlreadySigned,
-    sendArrowsLottie,
 } from '@suite-native/transaction-management';
 
 import { EarnTransactionDataReviewStepList } from '../components/EarnTransactionDataReviewStepList';
@@ -132,19 +132,7 @@ export const EarnTransactionDataReviewScreen = ({
                     )}
                 </VStack>
                 {isReadyToStake && (
-                    <Card>
-                        <VStack
-                            paddingTop="sp8"
-                            paddingHorizontal="sp24"
-                            paddingBottom="sp24"
-                            alignItems="center"
-                            spacing="sp24"
-                        >
-                            <LottieAnimation source={sendArrowsLottie} size="small" />
-                            <Text variant="body-md-strong" textAlign="center">
-                                <Translation id="earn.earnTransactionDataReviewScreen.successMessage" />
-                            </Text>
-                        </VStack>
+                    <ScrollToEndOnMount>
                         <Button
                             isLoading={isPushing}
                             isDisabled={isSolanaAccount && isPastDeadline}
@@ -153,7 +141,7 @@ export const EarnTransactionDataReviewScreen = ({
                         >
                             <Translation id="earn.earnTransactionDataReviewScreen.viewTransactionButton" />
                         </Button>
-                    </Card>
+                    </ScrollToEndOnMount>
                 )}
             </VStack>
         </ConfirmOnTrezorWrapper>

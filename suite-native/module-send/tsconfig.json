@@ -57,6 +57,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
+        { "path": "../scrollview" },
         { "path": "../send" },
         { "path": "../tokens" },
         { "path": "../transaction-management" },

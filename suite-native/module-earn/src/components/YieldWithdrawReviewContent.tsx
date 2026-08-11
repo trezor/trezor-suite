@@ -3,8 +3,9 @@ import {
     type YieldFlowResolvedData,
     type YieldWithdrawFlowType,
 } from '@suite-common/wallet-core';
+import { Button } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 
-import { EarnReviewSubmittedCard } from './EarnReviewSubmittedCard';
 import { YieldReviewScreenLayout } from './YieldReviewScreenLayout';
 import { YieldTransactionReviewOutputList } from './YieldTransactionReviewOutputList';
 import { useYieldReviewActiveStep } from '../hooks/useYieldReviewActiveStep';
@@ -71,13 +72,11 @@ export const YieldWithdrawReviewContent = ({
         <YieldReviewScreenLayout
             confirmOnTrezorRef={confirmOnTrezorRef}
             titleTranslationId="earn.yieldWithdrawReviewScreen.title"
-            submittedCard={
+            submitButton={
                 isWithdrawSigned ? (
-                    <EarnReviewSubmittedCard
-                        buttonTranslationId={submitButtonTranslationId}
-                        isButtonLoading={isSendingWithdraw}
-                        onButtonPress={handleWithdrawSubmitted}
-                    />
+                    <Button isLoading={isSendingWithdraw} onPress={handleWithdrawSubmitted}>
+                        <Translation id={submitButtonTranslationId} />
+                    </Button>
                 ) : undefined
             }
         >
