@@ -47,7 +47,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
 
     const fee = formatNetworkAmount(tx.fee, tx.symbol);
     const amount = new BigNumber(formatNetworkAmount(tx.amount, tx.symbol));
-    const displayAmount = tx.blockHash ? amount : amount.minus(fee);
     const cardanoWithdrawal = formatCardanoWithdrawal(tx);
     const cardanoDeposit = formatCardanoDeposit(tx);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
@@ -125,7 +124,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <Table.Cell align="end">
                                 <Text intent="neutral">
                                     <FormattedCryptoAmount
-                                        value={displayAmount.abs().toString()}
+                                        value={amount.abs().toString()}
                                         symbol={tx.symbol}
                                         signValue={getAmountSignValue()}
                                     />
@@ -134,7 +133,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <Table.Cell align="end">
                                 <Text intent="neutral">
                                     <BaseCurrencyValue
-                                        amount={displayAmount.abs().toString()}
+                                        amount={amount.abs().toString()}
                                         symbol={tx.symbol}
                                         historicRate={historicRate}
                                         useHistoricRate
@@ -144,7 +143,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <Table.Cell align="end">
                                 <Text intent="neutral">
                                     <BaseCurrencyValue
-                                        amount={displayAmount.abs().toString()}
+                                        amount={amount.abs().toString()}
                                         symbol={tx.symbol}
                                     />
                                 </Text>
