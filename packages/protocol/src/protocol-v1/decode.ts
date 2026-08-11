@@ -1,5 +1,10 @@
 import { PROTOCOL_MALFORMED } from '../errors';
-import { HEADER_SIZE, MESSAGE_HEADER_BYTE, MESSAGE_MAGIC_HEADER_BYTE } from './constants';
+import {
+    HEADER_SIZE,
+    MESSAGE_HEADER_BYTE,
+    MESSAGE_MAGIC_HEADER_BYTE,
+    MESSAGE_MAX_LENGTH,
+} from './constants';
 import { type TransportProtocolDecode } from '../types';
 
 /**
@@ -37,7 +42,8 @@ export const decode: TransportProtocolDecode = bytes => {
     if (
         magic !== MESSAGE_MAGIC_HEADER_BYTE ||
         sharp1 !== MESSAGE_HEADER_BYTE ||
-        sharp2 !== MESSAGE_HEADER_BYTE
+        sharp2 !== MESSAGE_HEADER_BYTE ||
+        length > MESSAGE_MAX_LENGTH
     ) {
         // read-write is out of sync
         throw new Error(PROTOCOL_MALFORMED);
