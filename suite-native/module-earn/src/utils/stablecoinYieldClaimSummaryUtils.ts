@@ -6,6 +6,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
 import {
     type Account,
+    type AccountKey,
     type BaseCurrencyAmount,
     asBaseCurrencyAmount,
     toTokenAddress,
@@ -14,7 +15,11 @@ import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { type YieldClaimVaultParams } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
-import { type StablecoinYieldClaimSummary, type StablecoinYieldEarnItem } from '../types';
+import {
+    type EarnDepositsCardActiveItem,
+    type StablecoinYieldClaimSummary,
+    type StablecoinYieldPositionItem,
+} from '../types';
 
 type BuildStablecoinYieldClaimSummariesParams = {
     accounts: Account[];
@@ -168,27 +173,40 @@ export const buildStablecoinYieldClaimSummaries = ({
 
 export type StablecoinYieldClaimItem = {
     summary: StablecoinYieldClaimSummary;
+    positions: StablecoinYieldPositionItem[];
     vaults: YieldClaimVaultParams[];
 };
 
+const getAccountPositions = (
+    earnDepositsActiveItems: EarnDepositsCardActiveItem[],
+    accountKey: AccountKey,
+): StablecoinYieldPositionItem[] =>
+    earnDepositsActiveItems.flatMap(item =>
+        item.type === 'stablecoin-yield' && item.accountKey === accountKey ? [item] : [],
+    );
+
 // Rewards are claimed per account, so one item covers all of the account's vault positions
-// — and rewards outlive a fully withdrawn position, which leaves an item with no vaults.
+// — and rewards outlive a fully withdrawn position, which leaves an item with no positions.
 export const buildStablecoinYieldClaimItems = ({
     stablecoinYieldClaimSummaries,
-    stablecoinYieldActiveItems,
+    earnDepositsActiveItems,
 }: {
     stablecoinYieldClaimSummaries: StablecoinYieldClaimSummary[];
-    stablecoinYieldActiveItems: StablecoinYieldEarnItem[];
+    earnDepositsActiveItems: EarnDepositsCardActiveItem[];
 }): StablecoinYieldClaimItem[] =>
-    stablecoinYieldClaimSummaries.map(summary => ({
-        summary,
-        vaults: stablecoinYieldActiveItems
-            .filter(item => item.accountKey === summary.accountKey && item.vaultName)
-            .map(item => ({
-                name: item.vaultName,
-                tokenContract: item.tokenContractAddress,
-            })),
-    }));
+    stablecoinYieldClaimSummaries.map(summary => {
+        const positions = getAccountPositions(earnDepositsActiveItems, summary.accountKey);
+
+        return {
+            summary,
+            positions,
+            vaults: positions.flatMap(position =>
+                position.title
+                    ? [{ name: position.title, tokenContract: position.tokenContractAddress }]
+                    : [],
+            ),
+        };
+    });
 
 export const getTotalFiatClaimableAmount = (
     stablecoinYieldClaimSummaries: StablecoinYieldClaimSummary[],

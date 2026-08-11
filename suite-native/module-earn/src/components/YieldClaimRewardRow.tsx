@@ -7,7 +7,14 @@ import {
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
+
+// Capped so that the reward amount keeps enough of the row to wrap its full precision to two
+// lines — the fiat approximation is the one allowed to ellipsize.
+const fiatAmountStyle = prepareNativeStyle(() => ({
+    maxWidth: '32%',
+}));
 
 type YieldClaimRewardRowProps = {
     amount: string;
@@ -33,6 +40,8 @@ export const YieldClaimRewardRow = ({
     tokenDecimals,
     tokenSymbol,
 }: YieldClaimRewardRowProps) => {
+    const { applyStyle } = useNativeStyles();
+
     const isFiatAmountVisible = fiatAmount !== null || isFiatLoading;
 
     return (
@@ -56,7 +65,13 @@ export const YieldClaimRewardRow = ({
                 </Box>
             </HStack>
             {isFiatAmountVisible && (
-                <HStack spacing="sp2" alignItems="center" justifyContent="flex-end">
+                <HStack
+                    spacing="sp2"
+                    alignItems="center"
+                    justifyContent="flex-end"
+                    flexShrink={1}
+                    style={applyStyle(fiatAmountStyle)}
+                >
                     {!isFiatLoading && (
                         <Text variant="body-sm" color="contentSecondary">
                             ≈

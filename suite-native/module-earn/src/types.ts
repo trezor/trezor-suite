@@ -148,6 +148,11 @@ export type EarnDepositsCardActiveItem =
           apy: number | null;
       };
 
+export type StablecoinYieldPositionItem = Extract<
+    EarnDepositsCardActiveItem,
+    { type: 'stablecoin-yield' }
+>;
+
 export type EarnDepositsCardRow = {
     type: EarnPromoSectionType;
     title: string;

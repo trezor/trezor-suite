@@ -8,9 +8,8 @@ import {
 } from '@suite-common/earn-staking-api';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { isApyAvailable, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-utils';
-import { AccountTypeBadge } from '@suite-native/accounts';
-import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
-import { Icon, TokenIcon } from '@suite-native/icons';
+import { Text } from '@suite-native/atoms';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 import {
     selectApy,
@@ -21,44 +20,21 @@ import {
     selectTronVotesByAccountKey,
     useSelector as useStakingSelector,
 } from '@suite-native/staking';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { EarnAccountCardLayout } from './EarnAccountCardLayout';
 import { EarnClaimAlert } from './EarnClaimAlert';
 import { EarnTronVotingAlert } from './EarnTronVotingAlert';
 import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 import { type EarnDepositsCardActiveItem } from '../types';
 import { formatEarnActiveItemBalance } from '../utils/earnAmountUtils';
 
-const itemCardStyle = prepareNativeStyle(utils => ({
-    marginBottom: utils.spacings.sp16,
-}));
-
-const rowStyle = prepareNativeStyle(utils => ({
-    paddingLeft: utils.spacings.sp16,
-    paddingRight: utils.spacings.sp12,
-    paddingVertical: utils.spacings.sp12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    minHeight: 70,
-}));
-
-const contentStyle = prepareNativeStyle(_ => ({
-    flex: 1,
-}));
-
-const valuesStyle = prepareNativeStyle(utils => ({
-    alignItems: 'flex-end',
-    paddingLeft: utils.spacings.sp8,
-}));
-
 type EarnAccountCardProps = {
     item: EarnDepositsCardActiveItem;
     onPress: () => void;
-    onClaimPress: () => void;
+    onClaimPress?: () => void;
 };
 
 export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCardProps) => {
-    const { applyStyle } = useNativeStyles();
     const isStakingItem = item.type === 'staking';
     const isDefiYieldItem = item.type === 'stablecoin-yield';
     const isSupportedStaking = isStakingItem && isSupportedStakingNetworkSymbol(item.symbol);
@@ -121,73 +97,69 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
         : null;
 
     return (
-        <Card borderColor="borderNeutral" noPadding style={applyStyle(itemCardStyle)}>
-            <PressableOpacity onPress={onPress} style={applyStyle(rowStyle)}>
-                <Box marginRight="sp12">
-                    <TokenIcon
-                        symbol={symbol}
-                        contractAddress={contractAddress}
-                        size="extraSmall"
-                        showNetworkIcon
-                        wrappedTokenIcon={isDefiYieldItem ? 'network' : 'token'}
-                    />
-                </Box>
-
-                <VStack spacing="sp2" style={applyStyle(contentStyle)}>
-                    <Text>{item.title}</Text>
-                    {secondaryDescription && (
-                        <Text variant="body-sm" color="contentSecondary">
-                            {secondaryDescription}
-                        </Text>
-                    )}
-                    <AccountTypeBadge accountKey={item.accountKey} alignSelf="flex-start" />
-                </VStack>
-
-                <VStack spacing="sp2" style={applyStyle(valuesStyle)}>
-                    <Text variant="body-md">{formatEarnActiveItemBalance({ item, locale })}</Text>
-                    {(isAdaStakedOutsideEverstake || apyValue != null) && (
-                        <Text variant="body-sm" color="contentSecondary">
-                            {isAdaStakedOutsideEverstake || !isApyAvailable(apyValue) ? (
-                                <Translation id="earn.notAvailableShort" />
-                            ) : (
-                                <>
-                                    {item.type === 'staking' ? (
-                                        <Translation
-                                            id={
-                                                symbol === 'trx'
-                                                    ? 'earn.aprPercentage'
-                                                    : 'earn.apyPercentage'
-                                            }
-                                            values={{ apy: apyValue }}
-                                        />
-                                    ) : (
-                                        <Translation
-                                            id="earn.ratePercentage"
-                                            values={{ apy: apyValue }}
-                                        />
-                                    )}
-                                </>
-                            )}
-                        </Text>
-                    )}
-                </VStack>
-
-                <Box marginLeft="sp12">
-                    <Icon name="caretRight" size="mediumLarge" color="contentSecondary" />
-                </Box>
-            </PressableOpacity>
-
-            {showClaimAlert && (
-                <EarnClaimAlert
-                    claimableAmount={claimableAmount}
+        <EarnAccountCardLayout
+            accountKey={item.accountKey}
+            icon={
+                <TokenIcon
                     symbol={symbol}
-                    onClaimPress={onClaimPress}
+                    contractAddress={contractAddress}
+                    size="extraSmall"
+                    showNetworkIcon
+                    wrappedTokenIcon={isDefiYieldItem ? 'network' : 'token'}
                 />
-            )}
+            }
+            title={item.title}
+            description={
+                secondaryDescription && (
+                    <Text variant="body-sm" color="contentSecondary">
+                        {secondaryDescription}
+                    </Text>
+                )
+            }
+            value={<Text variant="body-md">{formatEarnActiveItemBalance({ item, locale })}</Text>}
+            valueDescription={
+                (isAdaStakedOutsideEverstake || apyValue != null) && (
+                    <Text variant="body-sm" color="contentSecondary">
+                        {isAdaStakedOutsideEverstake || !isApyAvailable(apyValue) ? (
+                            <Translation id="earn.notAvailableShort" />
+                        ) : (
+                            <>
+                                {item.type === 'staking' ? (
+                                    <Translation
+                                        id={
+                                            symbol === 'trx'
+                                                ? 'earn.aprPercentage'
+                                                : 'earn.apyPercentage'
+                                        }
+                                        values={{ apy: apyValue }}
+                                    />
+                                ) : (
+                                    <Translation
+                                        id="earn.ratePercentage"
+                                        values={{ apy: apyValue }}
+                                    />
+                                )}
+                            </>
+                        )}
+                    </Text>
+                )
+            }
+            alerts={
+                <>
+                    {showClaimAlert && onClaimPress && (
+                        <EarnClaimAlert
+                            claimableAmount={claimableAmount}
+                            symbol={symbol}
+                            onClaimPress={onClaimPress}
+                        />
+                    )}
 
-            {showTronVotingAlert && (
-                <EarnTronVotingAlert votesRemaining={availableTronVotingPower} />
-            )}
-        </Card>
+                    {showTronVotingAlert && (
+                        <EarnTronVotingAlert votesRemaining={availableTronVotingPower} />
+                    )}
+                </>
+            }
+            onPress={onPress}
+        />
     );
 };
