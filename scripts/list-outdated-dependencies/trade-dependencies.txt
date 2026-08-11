@@ -70,7 +70,6 @@ tslib
 tsx
 type-fest
 typescript
-typescript-styled-plugin
 ua-parser-js
 @react-native/jest-preset
 @svgr/cli
