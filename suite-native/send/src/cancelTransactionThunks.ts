@@ -9,7 +9,6 @@ import {
     pushSendFormTransactionThunk,
     selectAccountByKey,
     selectIsMevProtectionEnabled,
-    sendFormActions,
 } from '@suite-common/wallet-core';
 import {
     type AccountKey,
@@ -27,17 +26,13 @@ type SignAndPushEvmCancelTransactionThunkParams = {
     cancelFormState: FormState;
 };
 
-type SignAndPushEvmCancelTransactionError =
-    | SignTransactionError
-    | SignTransactionTimeoutError
-    | PushTransactionError
-    | undefined;
+export type SignAndPushEvmCancelTransactionError =
+    SignTransactionError | SignTransactionTimeoutError | PushTransactionError | undefined;
 
 /**
  * Signs and broadcasts a composed EVM cancel transaction (see
- * composeEthereumCancelTransactionThunk). The cancel form state is stored as the account's send
- * draft so the regular native signing pipeline can be reused; the draft and send state are always
- * cleaned up afterwards, replacing any unfinished send draft of the account.
+ * composeEthereumCancelTransactionThunk) through the regular native signing pipeline; the send
+ * state is always cleaned up afterwards. The account's send draft is left untouched.
  */
 export const signAndPushEvmCancelTransactionThunk = createThunk<
     Ok<{ txid: string }>,
@@ -58,10 +53,12 @@ export const signAndPushEvmCancelTransactionThunk = createThunk<
         }
 
         try {
-            dispatch(sendFormActions.storeDraft({ accountKey, formState: cancelFormState }));
-
             const signResponse = await dispatch(
-                signTransactionNativeThunk({ accountKey, feeLevel: composedCancelTx }),
+                signTransactionNativeThunk({
+                    accountKey,
+                    feeLevel: composedCancelTx,
+                    formState: cancelFormState,
+                }),
             );
             if (isRejected(signResponse)) {
                 return rejectWithValue(signResponse.payload);
@@ -79,7 +76,7 @@ export const signAndPushEvmCancelTransactionThunk = createThunk<
 
             return fulfillWithValue(pushResponse.payload);
         } finally {
-            dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: true }));
+            dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: false }));
         }
     },
 );

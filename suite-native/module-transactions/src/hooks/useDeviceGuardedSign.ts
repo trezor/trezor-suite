@@ -1,28 +1,21 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import {
     type DeviceRootState,
     selectDeviceButtonRequestsCodes,
     selectIsDeviceConnectedAndAuthorized,
 } from '@suite-common/device';
+import { useMutation } from '@suite-common/react-query';
 import {
     AuthorizeDeviceStackRoutes,
     type NavigateParameters,
     type RootStackParamList,
     RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
-    type TransactionDetailStackParamList,
-    type TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-
-type NavigationProp = StackToStackCompositeNavigationProps<
-    TransactionDetailStackParamList,
-    TransactionDetailStackRoutes.TransactionDetail,
-    RootStackParamList
->;
 
 type UseDeviceGuardedSignParams = {
     // The signing action to run once the device is connected and authorized.
@@ -42,7 +35,7 @@ export const useDeviceGuardedSign = ({
     sign,
     cancelNavigationTarget,
 }: UseDeviceGuardedSignParams) => {
-    const navigation = useNavigation<NavigationProp>();
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const isDeviceConnectedAndAuthorized = useSelector((state: DeviceRootState) =>
         selectIsDeviceConnectedAndAuthorized(state),
     );
@@ -50,18 +43,14 @@ export const useDeviceGuardedSign = ({
         selectDeviceButtonRequestsCodes(state),
     );
 
-    const [isSigning, setIsSigning] = useState(false);
     const pendingSignRef = useRef(false);
+    // An unexpected throw must never re-run device signing (the provider retries mutations by
+    // default); `sign` reports its own failures.
+    const { mutate: runSign, isPending: isSigning } = useMutation({
+        mutationFn: sign,
+        retry: false,
+    });
     const isWaitingForDevice = isSigning && buttonRequestCodes.length > 0;
-
-    const runSign = useCallback(async () => {
-        setIsSigning(true);
-        try {
-            await sign();
-        } finally {
-            setIsSigning(false);
-        }
-    }, [sign]);
 
     // When the screen regains focus after the device-connection guard, execute the pending sign.
     useFocusEffect(

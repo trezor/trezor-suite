@@ -6,7 +6,6 @@ import {
     pushSendFormTransactionThunk,
     selectAccountByKey,
     selectIsMevProtectionEnabled,
-    sendFormActions,
 } from '@suite-common/wallet-core';
 import {
     type FormState,
@@ -22,21 +21,13 @@ jest.mock('@suite-common/mev', () => ({
     selectIsMevProtectionFeatureEnabled: jest.fn(),
 }));
 
-jest.mock('@suite-common/wallet-core', () => {
-    const actual = jest.requireActual('@suite-common/wallet-core');
-
-    return {
-        __esModule: true,
-        ...actual,
-        pushSendFormTransactionThunk: jest.fn(),
-        selectAccountByKey: jest.fn(),
-        selectIsMevProtectionEnabled: jest.fn(),
-        sendFormActions: {
-            ...actual.sendFormActions,
-            storeDraft: jest.fn(() => ({ type: 'mock/storeDraft' })),
-        },
-    };
-});
+jest.mock('@suite-common/wallet-core', () => ({
+    __esModule: true,
+    ...jest.requireActual('@suite-common/wallet-core'),
+    pushSendFormTransactionThunk: jest.fn(),
+    selectAccountByKey: jest.fn(),
+    selectIsMevProtectionEnabled: jest.fn(),
+}));
 
 jest.mock('./sendFormThunks', () => ({
     __esModule: true,
@@ -75,12 +66,11 @@ const signMock = signTransactionNativeThunk as unknown as jest.Mock;
 const pushMock = pushSendFormTransactionThunk as unknown as jest.Mock;
 const cleanupMock = cleanupSendFormThunk as unknown as jest.Mock;
 const selectAccountByKeyMock = selectAccountByKey as unknown as jest.Mock;
-const storeDraftMock = sendFormActions.storeDraft as unknown as jest.Mock;
 const mevEnabledMock = selectIsMevProtectionEnabled as unknown as jest.Mock;
 const mevFeatureMock = selectIsMevProtectionFeatureEnabled as unknown as jest.Mock;
 
-const dispatchCancel = (store: ReturnType<typeof configureMockStore>) =>
-    store.dispatch(
+const dispatchCancel = () =>
+    configureMockStore().dispatch(
         signAndPushEvmCancelTransactionThunk({ accountKey, composedCancelTx, cancelFormState }),
     );
 
@@ -90,8 +80,6 @@ describe('signAndPushEvmCancelTransactionThunk', () => {
         selectAccountByKeyMock.mockReturnValue(account);
         signMock.mockReturnValue(fulfilledAction());
         pushMock.mockReturnValue(fulfilledAction(pushResultPayload));
-        storeDraftMock.mockReturnValue({ type: 'mock/storeDraft' });
-        cleanupMock.mockReturnValue({ type: 'mock/cleanupSendForm' });
         mevEnabledMock.mockReturnValue(false);
         mevFeatureMock.mockReturnValue(false);
     });
@@ -99,7 +87,7 @@ describe('signAndPushEvmCancelTransactionThunk', () => {
     it('rejects with "Account not found" and never touches the send pipeline when the account is missing', async () => {
         selectAccountByKeyMock.mockReturnValue(undefined);
 
-        const result = await dispatchCancel(configureMockStore());
+        const result = await dispatchCancel();
 
         expect(isRejected(result)).toBe(true);
         expect(result.payload).toEqual({
@@ -107,62 +95,55 @@ describe('signAndPushEvmCancelTransactionThunk', () => {
             message: 'Account not found.',
         });
         // The guard returns before the try/finally, so nothing (not even cleanup) should run.
-        expect(storeDraftMock).not.toHaveBeenCalled();
         expect(signMock).not.toHaveBeenCalled();
         expect(cleanupMock).not.toHaveBeenCalled();
     });
 
-    it('stores the draft, signs, pushes and cleans up on success', async () => {
-        const result = await dispatchCancel(configureMockStore());
+    it('signs with the cancel form state, pushes and cleans up on success', async () => {
+        const result = await dispatchCancel();
 
         expect(isFulfilled(result)).toBe(true);
         expect(result.payload).toEqual(pushResultPayload);
 
-        expect(storeDraftMock).toHaveBeenCalledWith({ accountKey, formState: cancelFormState });
-        expect(signMock).toHaveBeenCalledWith({ accountKey, feeLevel: composedCancelTx });
+        expect(signMock).toHaveBeenCalledWith({
+            accountKey,
+            feeLevel: composedCancelTx,
+            formState: cancelFormState,
+        });
         expect(pushMock).toHaveBeenCalledWith({
             selectedAccount: account,
             isMevProtectionEnabled: false,
         });
-        expect(cleanupMock).toHaveBeenCalledWith({ accountKey, shouldDeleteDraft: true });
-
-        // The draft must be reused by the signing pipeline, so it has to be stored first.
-        const [storeDraftOrder] = storeDraftMock.mock.invocationCallOrder;
-        const [signOrder] = signMock.mock.invocationCallOrder;
-        expect(storeDraftOrder).toBeDefined();
-        expect(signOrder).toBeDefined();
-        if (storeDraftOrder !== undefined && signOrder !== undefined) {
-            expect(storeDraftOrder).toBeLessThan(signOrder);
-        }
+        expect(cleanupMock).toHaveBeenCalledWith({ accountKey, shouldDeleteDraft: false });
     });
 
     it('propagates a signing failure, skips the push and still cleans up', async () => {
         const signError = { error: 'sign-transaction-failed', message: 'device disconnected' };
         signMock.mockReturnValue(rejectedAction(signError));
 
-        const result = await dispatchCancel(configureMockStore());
+        const result = await dispatchCancel();
 
         expect(isRejected(result)).toBe(true);
         expect(result.payload).toEqual(signError);
         expect(pushMock).not.toHaveBeenCalled();
-        expect(cleanupMock).toHaveBeenCalledWith({ accountKey, shouldDeleteDraft: true });
+        expect(cleanupMock).toHaveBeenCalledWith({ accountKey, shouldDeleteDraft: false });
     });
 
     it('propagates a push failure and still cleans up', async () => {
         const pushError = { error: 'push-transaction-failed', message: 'mempool rejected' };
         pushMock.mockReturnValue(rejectedAction(pushError));
 
-        const result = await dispatchCancel(configureMockStore());
+        const result = await dispatchCancel();
 
         expect(isRejected(result)).toBe(true);
         expect(result.payload).toEqual(pushError);
-        expect(cleanupMock).toHaveBeenCalledWith({ accountKey, shouldDeleteDraft: true });
+        expect(cleanupMock).toHaveBeenCalledWith({ accountKey, shouldDeleteDraft: false });
     });
 
     it('enables MEV protection only when both the user setting and the feature flag are on', async () => {
         mevEnabledMock.mockReturnValue(true);
         mevFeatureMock.mockReturnValue(true);
-        await dispatchCancel(configureMockStore());
+        await dispatchCancel();
         expect(pushMock).toHaveBeenLastCalledWith({
             selectedAccount: account,
             isMevProtectionEnabled: true,
@@ -170,7 +151,7 @@ describe('signAndPushEvmCancelTransactionThunk', () => {
 
         // Feature flag off overrides the user setting.
         mevFeatureMock.mockReturnValue(false);
-        await dispatchCancel(configureMockStore());
+        await dispatchCancel();
         expect(pushMock).toHaveBeenLastCalledWith({
             selectedAccount: account,
             isMevProtectionEnabled: false,
