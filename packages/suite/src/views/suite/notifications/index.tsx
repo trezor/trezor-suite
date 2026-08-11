@@ -2,10 +2,11 @@ import { useState } from 'react';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
+import { isTransactionNotification } from '@suite-common/toast-notifications';
 import {
-    isTransactionNotification,
-    selectHasUnseenTransactionNotifications,
-} from '@suite-common/toast-notifications';
+    selectHasUnseenNonPhishingTransactionNotifications,
+    selectNonPhishingTransactionNotifications,
+} from '@suite-common/wallet-core';
 import { Card, CollapsibleBox, Column, Dot, Row } from '@trezor/components';
 
 import {
@@ -25,8 +26,8 @@ const NotificationsView = () => {
     const [selectedTab, setSelectedTab] = useState<ActivityTab>('transactions');
 
     const notifications = useSelector(state => state.notifications);
-    const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
-    const transactionNotifications = notifications.filter(isTransactionNotification);
+    const hasUnseenNotifications = useSelector(selectHasUnseenNonPhishingTransactionNotifications);
+    const transactionNotifications = useSelector(selectNonPhishingTransactionNotifications);
     const activityNotifications = notifications.filter(
         notification => !isTransactionNotification(notification),
     );
