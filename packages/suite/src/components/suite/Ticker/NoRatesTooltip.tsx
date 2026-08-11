@@ -21,7 +21,7 @@ interface NoRatesTooltipProps {
 export const NoRatesTooltip = ({ customText, customTooltip, className }: NoRatesTooltipProps) => (
     <NoRatesMessage className={className}>
         <Tooltip
-            content={<Translation id={customTooltip || 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP'} />}
+            content={<Translation id={customTooltip || 'TR_EXCHANGE_RATE_NOT_AVAILABLE_TOOLTIP'} />}
             maxWidth={250}
             hasIcon
         >
