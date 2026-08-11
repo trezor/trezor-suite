@@ -74,11 +74,16 @@ export const EarnFormScreenFooter = ({
             <Box style={applyStyle(screenFooterStyle)}>
                 {isRewardsBoxVisible && (
                     <Box style={applyStyle(rewardsBoxStyle)}>
-                        <VStack spacing="sp4" paddingTop="sp12" alignItems="center">
-                            <Text variant="body-sm" color="contentPrimary">
+                        <VStack
+                            spacing="sp4"
+                            paddingTop="sp12"
+                            paddingHorizontal="sp16"
+                            alignItems="center"
+                        >
+                            <Text variant="body-sm" color="contentPrimary" textAlign="center">
                                 <Translation id="earn.earnFormScreen.estimatedRewardsLabel" />
                             </Text>
-                            <Text variant="headline-sm" color="contentBrand">
+                            <Text variant="headline-sm" color="contentBrand" textAlign="center">
                                 {estimatedRewards}
                             </Text>
                         </VStack>
