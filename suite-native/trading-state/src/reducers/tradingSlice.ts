@@ -4,9 +4,11 @@ import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type TradeServerEnvironment,
     type TradingReducerDeps,
+    type TradingType,
     type TradingTypeWithConcierge,
     prepareTradingReducer,
 } from '@suite-common/trading';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import type { ProviderConfirmationStatus, TradingState } from '@suite-native/trading-types';
 
@@ -14,6 +16,12 @@ import { TRADING_BUY, buyActions, buyReducer } from './buySlice';
 import { TRADING_EXCHANGE, exchangeActions, exchangeReducer } from './exchangeSlice';
 import { TRADING_RESIDENCE, residenceReducer } from './residenceSlice';
 import { TRADING_SELL, sellActions, sellReducer } from './sellSlice';
+
+type SetReceiveAccountPayload = {
+    tradingType: Exclude<TradingType, 'sell'>;
+    accountKey: AccountKey;
+    address: string | undefined;
+};
 
 const providerConfirmationStatusTransitions: Record<
     ProviderConfirmationStatus,
@@ -74,6 +82,23 @@ export const tradingSlice = createSliceWithExtraDeps({
         },
         clearActiveTradingType: (state: TradingState) => {
             state.activeTradingType = undefined;
+        },
+        setReceiveAccount: (
+            state: TradingState,
+            { payload }: PayloadAction<SetReceiveAccountPayload>,
+        ) => {
+            const { tradingType, accountKey, address } = payload;
+
+            if (tradingType === 'buy') {
+                state.buy.tradingAccountKey = accountKey;
+                state.buy.receiveAccountKey = accountKey;
+                state.buy.receiveAddress = address;
+
+                return;
+            }
+
+            state.exchange.receiveAccountKey = accountKey;
+            state.exchange.receiveAddress = address;
         },
         setProviderConfirmationStatus: (
             state: TradingState,

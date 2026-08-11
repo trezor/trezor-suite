@@ -33,6 +33,11 @@ jest.mock('@react-navigation/native', () => ({
         }) as RouteProp<RootStackParamList, RootStackRoutes.TradingReceiveAddress>,
 }));
 
+jest.mock('@trezor/react-utils', () => ({
+    ...jest.requireActual('@trezor/react-utils'),
+    useDebouncedValue: <T,>(value: T) => value,
+}));
+
 describe(TradingReceiveAddressPickerScreen.name, () => {
     const overrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         device: {

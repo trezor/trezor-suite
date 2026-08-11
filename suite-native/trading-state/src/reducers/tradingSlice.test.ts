@@ -339,6 +339,50 @@ describe('tradingSlice', () => {
         });
     });
 
+    describe('setReceiveAccount', () => {
+        it('should set the complete buy receive account selection', () => {
+            const accountKey = mockAccountKey({ descriptor: 'buyAccount' });
+
+            const state = tradingReducer(
+                undefined,
+                tradingActions.setReceiveAccount({
+                    tradingType: 'buy',
+                    accountKey,
+                    address: 'buyAddress',
+                }),
+            );
+
+            expect(state.buy.tradingAccountKey).toBe(accountKey);
+            expect(state.buy.receiveAccountKey).toBe(accountKey);
+            expect(state.buy.receiveAddress).toBe('buyAddress');
+        });
+
+        it('should set the complete exchange receive account selection', () => {
+            const accountKey = mockAccountKey({ descriptor: 'exchangeReceiveAccount' });
+            const tradingAccountKey = mockAccountKey({ descriptor: 'exchangeSendAccount' });
+            const prevState: TradingState = {
+                ...tradingInitialState,
+                exchange: {
+                    ...tradingInitialState.exchange,
+                    tradingAccountKey,
+                },
+            };
+
+            const state = tradingReducer(
+                prevState,
+                tradingActions.setReceiveAccount({
+                    tradingType: 'exchange',
+                    accountKey,
+                    address: 'exchangeAddress',
+                }),
+            );
+
+            expect(state.exchange.tradingAccountKey).toBe(tradingAccountKey);
+            expect(state.exchange.receiveAccountKey).toBe(accountKey);
+            expect(state.exchange.receiveAddress).toBe('exchangeAddress');
+        });
+    });
+
     describe('setIsAmountInputActive', () => {
         it('should set isAmountInputActive', () => {
             const actions = [tradingActions.setIsAmountInputActive(true)];

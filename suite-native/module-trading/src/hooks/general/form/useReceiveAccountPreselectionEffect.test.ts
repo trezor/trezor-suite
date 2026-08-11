@@ -1,4 +1,3 @@
-import { tradingBuyActions, tradingExchangeActions } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
@@ -10,6 +9,7 @@ import {
 import {
     selectBuySelectedReceiveAccount,
     selectExchangeSelectedReceiveAccount,
+    tradingActions,
 } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
@@ -77,9 +77,11 @@ describe('useReceiveAccountPreselectionEffect', () => {
         renderUseReceiveAccountPreselectionEffect({ store });
 
         expect(store.getActions()).toEqual([
-            tradingBuyActions.setTradingAccountKey(btc1AccountKey),
-            tradingBuyActions.setReceiveAccountKey(btc1AccountKey),
-            tradingBuyActions.setReceiveAddress('UNUSED1'),
+            tradingActions.setReceiveAccount({
+                tradingType: 'buy',
+                accountKey: btc1AccountKey,
+                address: 'UNUSED1',
+            }),
         ]);
     });
 
@@ -89,8 +91,11 @@ describe('useReceiveAccountPreselectionEffect', () => {
         renderUseReceiveAccountPreselectionEffect({ store, tradingType: 'exchange' });
 
         expect(store.getActions()).toEqual([
-            tradingExchangeActions.setReceiveAccountKey(btc1AccountKey),
-            tradingExchangeActions.setReceiveAddress('UNUSED1'),
+            tradingActions.setReceiveAccount({
+                tradingType: 'exchange',
+                accountKey: btc1AccountKey,
+                address: 'UNUSED1',
+            }),
         ]);
     });
 
