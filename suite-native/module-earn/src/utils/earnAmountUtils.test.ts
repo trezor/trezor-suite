@@ -3,7 +3,11 @@ import { asBaseCurrencyAmount, toTokenAddress, toTokenSymbol } from '@suite-comm
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
 
-import { formatEarnActiveItemBalance, formatEarnTokenAmount } from './earnAmountUtils';
+import {
+    formatEarnActiveItemBalance,
+    formatEarnAmount,
+    formatEarnTokenAmount,
+} from './earnAmountUtils';
 import { type EarnDepositsCardActiveItem } from '../types';
 
 const ethSymbol = asNetworkSymbol('eth');
@@ -32,6 +36,18 @@ const stakingItem = (balance: string): EarnDepositsCardActiveItem => ({
     accountKey,
     balance,
     fiatAmount,
+});
+
+describe(formatEarnAmount.name, () => {
+    it('leaves out the symbol so it can be rendered as a separate element', () => {
+        expect(formatEarnAmount({ amount: '10000.123', locale: 'en-US' })).toBe('10,000.123');
+    });
+
+    it('shows a dust amount in full precision instead of rounding it to zero', () => {
+        expect(formatEarnAmount({ amount: '0.000000000000000001', locale: 'en-US' })).toBe(
+            '0.000000000000000001',
+        );
+    });
 });
 
 describe(formatEarnTokenAmount.name, () => {

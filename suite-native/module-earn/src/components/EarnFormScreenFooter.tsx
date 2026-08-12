@@ -1,15 +1,12 @@
-import { useMemo } from 'react';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
-import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { calculateRewards } from '@suite-common/wallet-utils';
-import { Box, Button, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
-import { Translation, selectSupportedLanguageLocale, useTranslate } from '@suite-native/intl';
+import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { selectApy, useSelector as useStakingSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
+import { EarnEstimatedRewards } from './EarnEstimatedRewards';
 
 const screenFooterStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
@@ -48,25 +45,12 @@ export const EarnFormScreenFooter = ({
 }: EarnFormScreenFooterProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
-    const locale = useSelector(selectSupportedLanguageLocale);
 
     const apy = useStakingSelector(state => selectApy(state, { networkSymbol: symbol }));
 
-    const estimatedRewards = useMemo(() => {
-        if (!amountValue) return null;
-
-        const rewards = calculateRewards(amountValue, apy);
-
-        return formatEarnTokenAmount({
-            amount: rewards,
-            locale,
-            symbol: getNetworkDisplaySymbol(symbol),
-        });
-    }, [amountValue, apy, locale, symbol]);
-
     const buttonIntent = isDisabled ? 'neutral' : 'brand';
     const buttonPriority = isDisabled ? 'secondary' : 'primary';
-    const isRewardsBoxVisible = estimatedRewards !== null && !isDisabled;
+    const isRewardsBoxVisible = !!amountValue && !isDisabled;
 
     return (
         <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
@@ -74,19 +58,16 @@ export const EarnFormScreenFooter = ({
             <Box style={applyStyle(screenFooterStyle)}>
                 {isRewardsBoxVisible && (
                     <Box style={applyStyle(rewardsBoxStyle)}>
-                        <VStack
-                            spacing="sp4"
-                            paddingTop="sp12"
-                            paddingHorizontal="sp16"
-                            alignItems="center"
-                        >
-                            <Text variant="body-sm" color="contentPrimary" textAlign="center">
-                                <Translation id="earn.earnFormScreen.estimatedRewardsLabel" />
-                            </Text>
-                            <Text variant="headline-sm" color="contentBrand" textAlign="center">
-                                {estimatedRewards}
-                            </Text>
-                        </VStack>
+                        <Box paddingTop="sp12">
+                            <EarnEstimatedRewards
+                                amountValue={amountValue}
+                                apy={apy}
+                                label={
+                                    <Translation id="earn.earnFormScreen.estimatedRewardsLabel" />
+                                }
+                                symbol={getNetworkDisplaySymbol(symbol)}
+                            />
+                        </Box>
                     </Box>
                 )}
                 <Button

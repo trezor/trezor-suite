@@ -395,7 +395,7 @@ export const YieldDepositApprovalScreen = () => {
                     isSkipDisabled={isApprovalPending || isCheckingApproval}
                     onPress={handleSubmit}
                     onSkipPress={canSkipApproval ? handleSkipApproval : undefined}
-                    tokenSymbol={tokenSymbol}
+                    tokenSymbol={wrappedNativeSymbol ?? tokenSymbol}
                 />
             }
         >

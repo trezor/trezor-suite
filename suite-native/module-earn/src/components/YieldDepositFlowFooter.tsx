@@ -1,20 +1,11 @@
-import { useMemo } from 'react';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
-import { useSelector } from 'react-redux';
 
 import { type YieldApprovalAction } from '@suite-common/wallet-core';
-import { type TokenSymbol } from '@suite-common/wallet-types';
-import { calculateRewards } from '@suite-common/wallet-utils';
-import { Box, Button, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
-import {
-    Translation,
-    type TxKeyPath,
-    selectSupportedLanguageLocale,
-    useTranslate,
-} from '@suite-native/intl';
+import { Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
+import { Translation, type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
+import { EarnEstimatedRewards } from './EarnEstimatedRewards';
 
 const screenFooterStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
@@ -40,7 +31,8 @@ type YieldDepositFlowFooterProps = {
     onPress: () => void;
     onSkipPress?: () => void;
     shouldKeepEstimatedRewardsVisible?: boolean;
-    tokenSymbol: TokenSymbol;
+    /** For a wrapped-native vault this is the native symbol the user thinks in, e.g. ETH. */
+    tokenSymbol: string;
 };
 
 const getSubmitButtonTranslationId = (
@@ -71,21 +63,13 @@ export const YieldDepositFlowFooter = ({
 }: YieldDepositFlowFooterProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
-    const locale = useSelector(selectSupportedLanguageLocale);
-
-    const estimatedRewards = useMemo(() => {
-        if (!amountValue || apy === null) return null;
-
-        const rewards = calculateRewards(amountValue, apy);
-
-        return formatEarnTokenAmount({ amount: rewards, locale, symbol: tokenSymbol });
-    }, [amountValue, apy, locale, tokenSymbol]);
 
     const buttonTranslationId = getSubmitButtonTranslationId(approvalAction);
     const isApprovalLimitAction = approvalAction === 'increase' || approvalAction === 'revoke';
     const isEstimatedRewardsVisible =
         (shouldKeepEstimatedRewardsVisible || (!isApprovalLimitAction && !isDisabled)) &&
-        estimatedRewards !== null;
+        !!amountValue &&
+        apy !== null;
 
     return (
         <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
@@ -96,19 +80,16 @@ export const YieldDepositFlowFooter = ({
                         style={isEstimatedRewardsVisible ? applyStyle(rewardsBoxStyle) : undefined}
                     >
                         {isEstimatedRewardsVisible && (
-                            <VStack
-                                spacing="sp4"
-                                paddingVertical="sp12"
-                                paddingHorizontal="sp16"
-                                alignItems="center"
-                            >
-                                <Text variant="body-sm" color="contentPrimary" textAlign="center">
-                                    <Translation id="earn.yieldDepositFlowScreen.estimatedRewardsLabel" />
-                                </Text>
-                                <Text variant="headline-sm" color="contentBrand" textAlign="center">
-                                    {estimatedRewards}
-                                </Text>
-                            </VStack>
+                            <Box paddingVertical="sp12">
+                                <EarnEstimatedRewards
+                                    amountValue={amountValue}
+                                    apy={apy}
+                                    label={
+                                        <Translation id="earn.yieldDepositFlowScreen.estimatedRewardsLabel" />
+                                    }
+                                    symbol={tokenSymbol}
+                                />
+                            </Box>
                         )}
                         <Button
                             accessibilityRole="button"
