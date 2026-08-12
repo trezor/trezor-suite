@@ -330,11 +330,15 @@ export const getOutputTxAmount = (composedLevels?: PrecomposedLevels) => {
 export const calculateRewards = (amount: string, apyPercent: number | null, days = 365) => {
     if (apyPercent === null) return '0';
 
-    const apy = apyPercent / 100;
-    const factor = Math.pow(1 + apy, days / 365) - 1;
-    const currentRewards = new BigNumber(amount).multipliedBy(factor).toString();
+    // Compounding a partial year needs a fractional exponent, which only float `pow` offers. A full
+    // year is just the rate itself, and taking it through `pow` adds noise digits instead
+    // (1.0321 ** 1 - 1 === 0.032100000000000017) that then surface in displayed rewards.
+    const factor =
+        days === 365
+            ? new BigNumber(apyPercent).dividedBy(100)
+            : new BigNumber(Math.pow(1 + apyPercent / 100, days / 365) - 1);
 
-    return currentRewards;
+    return new BigNumber(amount).multipliedBy(factor).toString();
 };
 
 export const getStakingProvidersForAnalytics = (accounts: Account[]): string[] => {
