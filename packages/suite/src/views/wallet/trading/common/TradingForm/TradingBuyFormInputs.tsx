@@ -8,6 +8,7 @@ import {
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
+    TRADING_FORM_INPUT_AMOUNT_FIELDS,
     type TradingBuyType,
     isCountrySubdivisionRequired,
     selectTradingBuyQuotes,
@@ -42,7 +43,7 @@ export const TradingBuyFormInputs = () => {
     const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
 
     const { device } = useDevice();
-    const { setAmountLimits, getValues, setValue } = context;
+    const { setAmountLimits, getValues, setValue, clearErrors } = context;
     const {
         [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
         [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
@@ -56,16 +57,18 @@ export const TradingBuyFormInputs = () => {
     // `useTradingBuyForm` has many re-rendering issues, use refs to avoid them
     const setAmountLimitsRef = useCurrentRef(setAmountLimits);
     const setValueRef = useCurrentRef(setValue);
+    const clearErrorsRef = useCurrentRef(clearErrors);
 
     const handleCryptoSelect = useCallback<TradingFormInputBuyAssetProps['onAssetSelect']>(
         asset => {
             setValueRef.current(TRADING_FORM_CRYPTO_INPUT, '', { shouldDirty: true });
             setValueRef.current(TRADING_FORM_FIAT_INPUT, '', { shouldDirty: true });
             setValueRef.current(TRADING_FORM_CRYPTO_CURRENCY_SELECT, asset, { shouldDirty: true });
+            clearErrorsRef.current(TRADING_FORM_INPUT_AMOUNT_FIELDS);
             setAmountLimitsRef.current(undefined);
             dispatch(tradingActions.setModalCryptoCurrency(asset.id));
         },
-        [dispatch, setAmountLimitsRef, setValueRef],
+        [dispatch, setAmountLimitsRef, setValueRef, clearErrorsRef],
     );
 
     const supportedNetworks = networkModuleRepository.getSupportedNetworks();
