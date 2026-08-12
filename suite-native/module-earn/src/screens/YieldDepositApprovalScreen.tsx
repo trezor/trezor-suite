@@ -44,6 +44,7 @@ import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransa
 import { useYieldApprovalFees } from '../hooks/useYieldApprovalFees';
 import { useYieldApprovalLimit } from '../hooks/useYieldApprovalLimit';
 import { useYieldApprovedAmountDisplay } from '../hooks/useYieldApprovedAmountDisplay';
+import { useYieldCurrencyToggleAnalytics } from '../hooks/useYieldCurrencyToggleAnalytics';
 import { useYieldDepositApprovalSubmit } from '../hooks/useYieldDepositApprovalSubmit';
 import { useYieldDepositForm } from '../hooks/useYieldDepositForm';
 import { useYieldPendingTransaction } from '../hooks/useYieldPendingTransaction';
@@ -93,6 +94,10 @@ export const YieldDepositApprovalScreen = () => {
     } = resolvedFlowData;
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
+    const reportCurrencyToggle = useYieldCurrencyToggleAnalytics({
+        networkSymbol: account?.symbol,
+        vaultId: vault?.id,
+    });
     const {
         isDisabled: isDepositDisabled,
         content: depositDisabledContent,
@@ -139,6 +144,18 @@ export const YieldDepositApprovalScreen = () => {
         wrappedAmount: session?.result.wrappedAmount,
     });
     const { amountValue, availableBalance, form, handleMaxPress } = depositForm;
+    const handleMaxPressWithAnalytics = useCallback(() => {
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'deposit-max',
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
+        });
+
+        handleMaxPress();
+    }, [account?.symbol, analytics, handleMaxPress, vault?.id]);
     const {
         formState: { isValid },
     } = form;
@@ -428,7 +445,8 @@ export const YieldDepositApprovalScreen = () => {
                                 balance={availableBalance}
                                 isApprovalLimitDisabled={isAllowanceAmountUnlimited}
                                 onApprovalLimitPress={openApprovalLimitBottomSheet}
-                                onMaxPress={handleMaxPress}
+                                onCurrencyChange={reportCurrencyToggle}
+                                onMaxPress={handleMaxPressWithAnalytics}
                                 symbol={account.symbol}
                                 tokenContract={getYieldTokenContract(token)}
                                 tokenDecimals={token.decimals}

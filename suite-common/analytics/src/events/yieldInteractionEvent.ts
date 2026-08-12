@@ -37,7 +37,7 @@ export const yieldInteractionEvent: EventDef<Attributes, EventType.YieldInteract
     attributes: {
         element: {
             description:
-                'Which UI element the user interacted with — e.g. `apy-tooltip` = APY breakdown tooltip/alert, `how-it-works` = yield info modal (desktop), `earn-dashboard-claim-rewards` = claimable-rewards section on the mobile earn dashboard, `in-a-nutshell-process-tab` = deposit/withdraw/claim process timeline (modal tab on desktop, info bottom sheet on mobile), `withdraw-unit-toggle` = asset/shares input switch, `amount-currency-toggle` = crypto/fiat amount input switch (any yield amount form), `insufficient-funds-banner` = get-token button. The max-button values name the form the button belongs to: `deposit-max` / `withdraw-max` cover the deposit and withdraw forms including their in-flow wrap/unwrap steps, while `wrap-max` / `unwrap-max` are the standalone wrap/unwrap pages (no `vaultId`).',
+                'Which UI element the user interacted with — e.g. `apy-tooltip` = APY breakdown tooltip/alert, `how-it-works` = yield info modal (desktop), `earn-dashboard-claim-rewards` = claimable-rewards section on the mobile earn dashboard, `in-a-nutshell-process-tab` = deposit/withdraw/claim process timeline (modal tab on desktop, info bottom sheet on mobile), `withdraw-unit-toggle` = asset/shares input switch, `amount-currency-toggle` = crypto/fiat amount input switch (any yield amount form; no `vaultId` on the standalone wrap/unwrap forms, which are not tied to a vault), `insufficient-funds-banner` = get-token button. The max-button values name the form the button belongs to: `deposit-max` / `withdraw-max` cover the deposit and withdraw forms including their in-flow wrap/unwrap steps, while `wrap-max` / `unwrap-max` are the standalone wrap/unwrap pages (no `vaultId`).',
             changelog: [
                 { version: '26.5.2', notes: 'added' },
                 {
@@ -50,7 +50,7 @@ export const yieldInteractionEvent: EventDef<Attributes, EventType.YieldInteract
                 },
                 {
                     version: '26.8.1',
-                    notes: '`wrap-max` / `unwrap-max` reported from mobile as well',
+                    notes: '`wrap-max` / `unwrap-max` / `amount-currency-toggle` reported from mobile as well; mobile now also reports `deposit-max` from the approval and in-flow wrap steps and `withdraw-max` from the in-flow unwrap step, which previously reported no max event',
                 },
             ],
         },

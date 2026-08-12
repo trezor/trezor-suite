@@ -34,6 +34,7 @@ import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useStandaloneWrappedNativeFlow } from '../hooks/useStandaloneWrappedNativeFlow';
 import { useWrappedNativeTokenFees } from '../hooks/useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from '../hooks/useWrappedNativeTokenForm';
+import { useYieldCurrencyToggleAnalytics } from '../hooks/useYieldCurrencyToggleAnalytics';
 
 type RouteProps = RouteProp<
     WrappedNativeTokenStackParamList,
@@ -86,6 +87,10 @@ export const WrapNativeTokenScreen = () => {
         isDisabled: isWrapDisabled,
         pendingParam: pendingTransaction,
         preparedAction: wrapFee.preparedAction,
+    });
+
+    const reportCurrencyToggle = useYieldCurrencyToggleAnalytics({
+        networkSymbol: account?.symbol,
     });
 
     useNavigateBackAnalytics({
@@ -141,6 +146,7 @@ export const WrapNativeTokenScreen = () => {
                             amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
                             balance={account.formattedBalance}
                             maxAmount={getMaxWrapAmount(account.formattedBalance)}
+                            onCurrencyChange={reportCurrencyToggle}
                             onMaxPress={flow.reportMaxSelected}
                             symbol={account.symbol}
                             tokenSymbol={nativeSymbol}

@@ -49,6 +49,7 @@ import {
 } from '../hooks/useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from '../hooks/useWrappedNativeTokenForm';
 import { useWrappedNativeTxSimulation } from '../hooks/useWrappedNativeTxSimulation';
+import { useYieldCurrencyToggleAnalytics } from '../hooks/useYieldCurrencyToggleAnalytics';
 import { useYieldPendingTransaction } from '../hooks/useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../hooks/useYieldSession';
@@ -87,6 +88,24 @@ export const YieldDepositWrapScreen = () => {
     } = resolvedFlowData;
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
+    const reportCurrencyToggle = useYieldCurrencyToggleAnalytics({
+        networkSymbol: account?.symbol,
+        vaultId: vault?.id,
+    });
+
+    // The in-flow wrap step belongs to the deposit flow, so its max button reports `deposit-max`
+    // rather than the standalone `wrap-max`.
+    const reportMaxSelected = useCallback(() => {
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'deposit-max',
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
+        });
+    }, [account?.symbol, analytics, vault?.id]);
+
     const {
         isDisabled: isDepositDisabled,
         content: depositDisabledContent,
@@ -329,6 +348,8 @@ export const YieldDepositWrapScreen = () => {
                                 amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
                                 balance={nativeBalance}
                                 maxAmount={getMaxWrapAmount(nativeBalance)}
+                                onCurrencyChange={reportCurrencyToggle}
+                                onMaxPress={reportMaxSelected}
                                 symbol={account.symbol}
                                 tokenSymbol={nativeSymbol}
                             />

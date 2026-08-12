@@ -46,6 +46,7 @@ import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useReturnToYieldDepositWrapStep } from '../hooks/useReturnToYieldDepositWrapStep';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
 import { useYieldApprovedAmountDisplay } from '../hooks/useYieldApprovedAmountDisplay';
+import { useYieldCurrencyToggleAnalytics } from '../hooks/useYieldCurrencyToggleAnalytics';
 import { type PreparedYieldDepositAction, useYieldDepositFees } from '../hooks/useYieldDepositFees';
 import { useYieldDepositForm } from '../hooks/useYieldDepositForm';
 import { useYieldDepositSubmit } from '../hooks/useYieldDepositSubmit';
@@ -350,6 +351,11 @@ export const YieldDepositScreen = () => {
         handleMaxPress();
     }, [account?.symbol, analytics, handleMaxPress, resolvedFlowData.vault?.id]);
 
+    const reportCurrencyToggle = useYieldCurrencyToggleAnalytics({
+        networkSymbol: account?.symbol,
+        vaultId: resolvedFlowData.vault?.id,
+    });
+
     const handleOpenInfoBottomSheet = useCallback(() => {
         analytics.report({
             type: events.yieldInteractionEvent.name,
@@ -453,6 +459,7 @@ export const YieldDepositScreen = () => {
                                     <Translation id="earn.yieldDepositFlowScreen.amountToDeposit" />
                                 }
                                 balance={availableBalance}
+                                onCurrencyChange={reportCurrencyToggle}
                                 onMaxPress={handleMaxPressWithAnalytics}
                                 symbol={account.symbol}
                                 tokenContract={getYieldTokenContract(token)}
