@@ -4,21 +4,18 @@ import { createThunk } from '@suite-common/redux-utils';
 import {
     type WrappedNativeFlowType,
     type YieldFlowDisplayToken,
-    accountsActions,
     isWrappedNativeFlowSupported,
-    selectAccountByKey,
     selectAddressDisplayType,
     synchronizeSentTransactionThunk,
+    trackWrappedNativeTokenThunk,
 } from '@suite-common/wallet-core';
 import {
     type Account,
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { enhanceTokens } from '@suite-common/wallet-utils';
 
 import { EARN_MODULE_PREFIX } from './constants';
-import { getUntrackedWrappedNativeTokenInfo } from './utils/contractTokenBalanceUtils';
 import { pushYieldTransaction, signYieldTransactionOnDevice } from './utils/deviceTransactionUtils';
 import { getPushErrorType } from './yieldTransactionThunks';
 
@@ -137,7 +134,7 @@ export const pushWrappedNativeTokenThunk = createThunk<
     { rejectValue: WrappedNativeTokenPushError }
 >(
     `${WRAPPED_NATIVE_TOKEN_THUNK_PREFIX}/push`,
-    async ({ account, flowType, signedTransaction }, { dispatch, getState, rejectWithValue }) => {
+    async ({ account, flowType, signedTransaction }, { dispatch, rejectWithValue }) => {
         const pushResponse = await pushYieldTransaction({
             tx: signedTransaction.serializedTx,
             account,
@@ -160,21 +157,9 @@ export const pushWrappedNativeTokenThunk = createThunk<
         );
 
         if (flowType === 'wrap') {
-            // Re-select: synchronizeSentTransactionThunk may have updated the account already, and
-            // the payload snapshot would revert it.
-            const currentAccount = selectAccountByKey(getState(), account.key) ?? account;
-            const wrappedTokenInfo = getUntrackedWrappedNativeTokenInfo(currentAccount);
-
-            if (wrappedTokenInfo) {
-                dispatch(
-                    accountsActions.updateAccount({
-                        ...currentAccount,
-                        tokens: (currentAccount.tokens ?? []).concat(
-                            enhanceTokens([wrappedTokenInfo]),
-                        ),
-                    }),
-                );
-            }
+            await dispatch(
+                trackWrappedNativeTokenThunk({ accountKey: account.key, mode: 'ensure-tracked' }),
+            );
         }
 
         return { txid: pushResponse.payload.txid };
