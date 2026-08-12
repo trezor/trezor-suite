@@ -404,7 +404,7 @@ export const YieldDepositScreen = () => {
                     isLoading={isActionSubmitting}
                     onPress={handleContinue}
                     shouldKeepEstimatedRewardsVisible={isApprovalInsufficient}
-                    tokenSymbol={tokenSymbol}
+                    tokenSymbol={wrappedNativeSymbol ?? tokenSymbol}
                 />
             }
         >

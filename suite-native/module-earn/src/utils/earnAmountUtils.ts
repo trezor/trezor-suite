@@ -5,26 +5,34 @@ import { BigNumber } from '@trezor/utils';
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
 import { type EarnDepositsCardActiveItem } from '../types';
 
-type FormatEarnTokenAmountParams = {
+type FormatEarnAmountParams = {
     amount: string;
     locale: Locale;
+};
+
+type FormatEarnTokenAmountParams = FormatEarnAmountParams & {
     symbol: string;
 };
 
 // formatCoinBalance rounds amounts below this threshold away to "0.00".
 const COIN_BALANCE_DUST_THRESHOLD = new BigNumber('1e-8');
 
-// A fixed decimal cap would round dust-sized deposited and received amounts away to zero.
-export const formatEarnTokenAmount = ({ amount, locale, symbol }: FormatEarnTokenAmountParams) => {
+/**
+ * Formats an amount without its symbol, for callers rendering the symbol as a separate element.
+ */
+export const formatEarnAmount = ({ amount, locale }: FormatEarnAmountParams) => {
+    // A fixed decimal cap would round dust-sized deposited and received amounts away to zero.
     const amountBig = new BigNumber(amount);
     const isBelowCoinBalancePrecision =
         !amountBig.isZero() && amountBig.abs().lt(COIN_BALANCE_DUST_THRESHOLD);
-    const formattedAmount = isBelowCoinBalancePrecision
+
+    return isBelowCoinBalancePrecision
         ? localizeNumber(amount, locale)
         : formatCoinBalance(amount, locale);
-
-    return `${formattedAmount} ${symbol}`;
 };
+
+export const formatEarnTokenAmount = ({ amount, locale, symbol }: FormatEarnTokenAmountParams) =>
+    `${formatEarnAmount({ amount, locale })} ${symbol}`;
 
 type FormatEarnActiveItemBalanceParams = {
     item: EarnDepositsCardActiveItem;
