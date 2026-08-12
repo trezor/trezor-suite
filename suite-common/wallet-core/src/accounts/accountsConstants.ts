@@ -3,7 +3,7 @@ import { type AccountType, type NetworkType } from '@suite-common/wallet-config'
 export const ACCOUNTS_MODULE_PREFIX = '@common/wallet-core/accounts';
 
 const bitcoinFormattedAccountTypeMap: Record<AccountType, string | null> = {
-    normal: 'SegWit',
+    normal: null,
     taproot: 'Taproot',
     segwit: 'Legacy SegWit',
     legacy: 'Legacy',
@@ -29,6 +29,11 @@ const formattedAccountTypeWithDefaultMap: Record<AccountType, string | null> = {
     normal: 'Default',
 };
 
+const bitcoinFormattedAccountTypeWithDefaultMap: Record<AccountType, string | null> = {
+    ...bitcoinFormattedAccountTypeMap,
+    normal: 'SegWit',
+};
+
 export const getFormattedAccountType = (networkType: NetworkType, accountType: AccountType) =>
     (networkType === 'bitcoin' ? bitcoinFormattedAccountTypeMap : formattedAccountTypeMap)[
         accountType
@@ -39,5 +44,5 @@ export const getFormattedAccountTypeWithDefault = (
     accountType: AccountType,
 ) =>
     (networkType === 'bitcoin'
-        ? bitcoinFormattedAccountTypeMap
+        ? bitcoinFormattedAccountTypeWithDefaultMap
         : formattedAccountTypeWithDefaultMap)[accountType];
