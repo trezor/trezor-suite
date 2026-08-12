@@ -2,25 +2,16 @@ import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
-import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { wrappedNativeFlowMessages } from '../utils/wrappedNativeFlowMessages';
 
 const screenFooterStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
     paddingBottom: utils.spacings.sp16,
     backgroundColor: utils.colors.surfaceFillPage,
 }));
-
-const flowMessages = {
-    wrap: {
-        skipButton: 'earn.yieldDepositFlowScreen.wrapSkipButton',
-        submitButton: 'earn.yieldDepositFlowScreen.wrapSubmitButton',
-    },
-    unwrap: {
-        skipButton: 'earn.yieldWithdrawFlowScreen.unwrapSkipButton',
-        submitButton: 'earn.yieldWithdrawFlowScreen.unwrapSubmitButton',
-    },
-} satisfies Record<WrappedNativeFlowType, { skipButton: TxKeyPath; submitButton: TxKeyPath }>;
 
 type YieldWrappedNativeStepFooterProps = {
     flowType: WrappedNativeFlowType;
@@ -40,7 +31,7 @@ export const YieldWrappedNativeStepFooter = ({
     spentSymbol,
 }: YieldWrappedNativeStepFooterProps) => {
     const { applyStyle } = useNativeStyles();
-    const messages = flowMessages[flowType];
+    const messages = wrappedNativeFlowMessages[flowType].stepFooter;
     const skipButton = onSkip && (
         <Button
             intent="neutral"
