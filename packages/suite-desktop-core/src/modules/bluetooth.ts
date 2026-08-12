@@ -40,6 +40,8 @@ export const init: ModuleInit = () => {
         error: (...args) => logger.error(SERVICE_NAME, args as string[]),
     };
 
+    const createHeaders = (token: string) => ({ Authorization: `Bearer ${token}` });
+
     const lazyBluetooth = createLazy(
         async () => {
             const [port] = await getFreePort();
@@ -49,6 +51,7 @@ export const init: ModuleInit = () => {
             const client = new BluetoothIpc({
                 url: process.getUrl(),
                 logger: desktopLogger,
+                headers: createHeaders(process.getToken()),
             });
 
             return { process, client };
@@ -69,6 +72,7 @@ export const init: ModuleInit = () => {
                   id: 'BluetoothTransport',
                   url: api.process.getUrl(),
                   logger: desktopLogger,
+                  headers: createHeaders(api.process.getToken()),
                   // writeWithResponse: isMacOs(),
                   // writeWithDelay: isWindows(),
               })
