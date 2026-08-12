@@ -173,7 +173,6 @@ type WrappedNativeTokenReviewParams = {
 type WrappedNativeTokenCompleteParams = {
     accountKey: AccountKey;
     amount: string;
-    txid: string;
 };
 
 export type WrappedNativeTokenStackParamList = {

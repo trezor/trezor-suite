@@ -95,7 +95,6 @@ export const useStandaloneWrappedNativeFlow = ({
             navigation.replace(wrappedNativeTokenFlowRoutes[flowType].complete, {
                 accountKey,
                 amount: pendingParam.amount,
-                txid: pendingParam.txid,
             });
 
             return;
