@@ -4,6 +4,7 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
     TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_AMOUNT_FIELDS,
     TRADING_FORM_OUTPUT_CURRENCY,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_OUTPUT_MAX,
@@ -50,7 +51,7 @@ export const useTradingCryptoAssetChange = <T extends TradingSellExchangeFormPro
     setAccountOnChange,
 }: UseTradingCryptoAssetChangeProps<T>) => {
     // TODO: drop this cast via capability callbacks instead of methods: UseFormReturn<T>
-    const { getValues, setValue, control } =
+    const { getValues, setValue, clearErrors, control } =
         methods as unknown as UseFormReturn<TradingSellExchangeFormProps>;
 
     const sendCryptoSelect = useWatch({ control, name: TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT });
@@ -71,6 +72,7 @@ export const useTradingCryptoAssetChange = <T extends TradingSellExchangeFormPro
         setValue(TRADING_FORM_OUTPUT_FIAT, '');
         setValue(TRADING_FORM_OUTPUT_AMOUNT, '');
         setValue(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT, selected);
+        clearErrors(TRADING_FORM_OUTPUT_AMOUNT_FIELDS);
         setAmountLimits(undefined);
         setComposedLevels(undefined);
 

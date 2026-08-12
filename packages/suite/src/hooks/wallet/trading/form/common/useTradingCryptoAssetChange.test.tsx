@@ -132,6 +132,28 @@ describe('useTradingCryptoAssetChange', () => {
         expect(setAccountOnChange).toHaveBeenCalledWith(OTHER_ACCOUNT);
     });
 
+    it('onCryptoCurrencyChange clears the stale amount validation errors', async () => {
+        const { result } = renderCryptoAssetChange(buildSelect(ACCOUNT.key));
+
+        act(() => {
+            result.current.methods.setError('outputs.0.amount', {
+                type: 'limits',
+                message: 'Minimum is X ETH',
+            });
+            result.current.methods.setError('outputs.0.fiat', {
+                type: 'minFiat',
+                message: 'Minimum is X USD',
+            });
+        });
+
+        await act(async () => {
+            await result.current.change.onCryptoCurrencyChange(buildSelect(OTHER_ACCOUNT.key));
+        });
+
+        expect(result.current.methods.formState.errors.outputs?.[0]?.amount).toBeUndefined();
+        expect(result.current.methods.formState.errors.outputs?.[0]?.fiat).toBeUndefined();
+    });
+
     it('onCryptoCurrencyChange is a no-op when the same asset is reselected', async () => {
         const { result, setAccountOnChange } = renderCryptoAssetChange(buildSelect(ACCOUNT.key));
 

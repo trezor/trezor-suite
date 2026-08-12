@@ -53,6 +53,16 @@ export const TRADING_FORM_PAYMENT_METHOD_SELECT = 'paymentMethod';
 export const TRADING_FORM_PROVIDER_SELECT = 'provider';
 export const TRADING_FORM_AMOUNT_IN_CRYPTO = 'amountInCrypto';
 
+export const TRADING_FORM_OUTPUT_AMOUNT_FIELDS = [
+    TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_FIAT,
+] as const;
+
+export const TRADING_FORM_INPUT_AMOUNT_FIELDS = [
+    TRADING_FORM_CRYPTO_INPUT,
+    TRADING_FORM_FIAT_INPUT,
+] as const;
+
 export const TRADING_EXCHANGE_FROM_ADDRESS = 'fromAddress';
 
 export const TRADING_BUY_RECEIVE_ADDRESS = 'receiveAddress';
