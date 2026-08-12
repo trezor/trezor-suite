@@ -1,10 +1,11 @@
+import { selectSelectedAccount } from '@suite/account';
 import { Address } from '@suite/address';
 import { useFormatters } from '@suite-common/formatters';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
-import { CardList, Column, Icon, Row, Text } from '@trezor/components';
+import { Badge, CardList, Column, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
@@ -21,6 +22,7 @@ interface ReceiveAccountItemProps {
 export const ReceiveAccountItem = ({ account, onAccountSelect }: ReceiveAccountItemProps) => {
     const baseCurrency = useSelector(selectBaseCurrency);
     const { BaseCurrencyAmountFormatter } = useFormatters();
+    const selectedAccount = useSelector(selectSelectedAccount);
 
     const { fiatAmount } = useFiatFromCryptoValue({
         amount: account.formattedBalance,
@@ -38,13 +40,21 @@ export const ReceiveAccountItem = ({ account, onAccountSelect }: ReceiveAccountI
                 <TokenIcon size={24} symbol={account.symbol} />
 
                 <Column>
-                    <Text maxWidth={200} as="div">
-                        <AccountLabeling
-                            account={account}
-                            accountTypeBadgeSize="small"
-                            showAccountTypeBadge
-                        />
-                    </Text>
+                    <Row alignItems="center" gap={8}>
+                        <Text maxWidth={200} as="div">
+                            <AccountLabeling
+                                account={account}
+                                accountTypeBadgeSize="small"
+                                showAccountTypeBadge
+                            />
+                        </Text>
+
+                        {account.key === selectedAccount?.key && (
+                            <Badge intent="accentViolet" size="small">
+                                Myself
+                            </Badge>
+                        )}
+                    </Row>
 
                     {!isUtxoBasedNetwork && (
                         <Address
