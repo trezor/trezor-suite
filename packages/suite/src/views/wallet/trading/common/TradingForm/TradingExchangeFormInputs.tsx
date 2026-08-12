@@ -5,6 +5,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_AMOUNT_FIELDS,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_PROVIDER_SELECT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
@@ -75,7 +76,7 @@ export const TradingExchangeFormInputs = () => {
         () => getDisplayComposedLevels(selectedQuote, composedLevels),
         [selectedQuote, composedLevels],
     );
-    const { getValues, setValue } = useFormContext<TradingExchangeFormProps>();
+    const { getValues, setValue, clearErrors } = useFormContext<TradingExchangeFormProps>();
     const {
         [TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]: sendCryptoSelect,
         [TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT]: receiveCryptoSelect,
@@ -108,6 +109,7 @@ export const TradingExchangeFormInputs = () => {
     // `useTradingExchangeForm` has some re-rendering issues, use refs to avoid them
     const setAmountLimitsRef = useCurrentRef(setAmountLimits);
     const setValueRef = useCurrentRef(setValue);
+    const clearErrorsRef = useCurrentRef(clearErrors);
 
     const onCryptoCurrencyChangeRef = useCurrentRef(helpers.onCryptoCurrencyChange);
     const handleSellAssetSelect = useCallback<TradingFormInputSellAssetProps['onAssetSelect']>(
@@ -124,11 +126,12 @@ export const TradingExchangeFormInputs = () => {
             setValueRef.current(TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT, asset, {
                 shouldDirty: true,
             });
+            clearErrorsRef.current(TRADING_FORM_OUTPUT_AMOUNT_FIELDS);
             setAmountLimitsRef.current(undefined);
             dispatch(tradingActions.setModalCryptoCurrency(asset.id));
             setValueRef.current(TRADING_FORM_PROVIDER_SELECT, undefined, { shouldDirty: true });
         },
-        [dispatch, setAmountLimitsRef, setValueRef],
+        [dispatch, setAmountLimitsRef, setValueRef, clearErrorsRef],
     );
 
     const supportedNetworks = networkModuleRepository.getSupportedNetworks();
