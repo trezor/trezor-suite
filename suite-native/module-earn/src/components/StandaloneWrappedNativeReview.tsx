@@ -42,6 +42,7 @@ export const StandaloneWrappedNativeReview = ({
         <WrappedNativeTokenReviewContent
             account={account}
             amount={amount}
+            flowContext="standalone"
             flowType={flowType}
             preview={preview}
             spentToken={spentToken}

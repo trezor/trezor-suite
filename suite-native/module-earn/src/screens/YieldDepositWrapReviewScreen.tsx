@@ -87,6 +87,7 @@ export const YieldDepositWrapReviewScreen = () => {
         <WrappedNativeTokenReviewContent
             account={account}
             amount={review.amount}
+            flowContext="in-flow"
             flowType="wrap"
             onBroadcast={handleBroadcast}
             preview={preview}
