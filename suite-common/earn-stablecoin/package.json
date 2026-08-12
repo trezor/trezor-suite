@@ -5,6 +5,7 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "type": "module",
+    "main": "src/index.ts",
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",

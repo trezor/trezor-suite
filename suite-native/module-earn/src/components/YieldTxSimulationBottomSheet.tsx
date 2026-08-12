@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import {
     type StablecoinYieldTxSimulationParams,
     composeStablecoinYieldTxSimulationAction,
-} from '@suite-common/earn-stablecoin/src/tx-simulation';
+} from '@suite-common/earn-stablecoin';
 import { type Account } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,

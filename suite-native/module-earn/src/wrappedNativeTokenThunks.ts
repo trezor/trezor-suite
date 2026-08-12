@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
+import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     type WrappedNativeFlowType,

@@ -2,7 +2,7 @@ import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
+import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
