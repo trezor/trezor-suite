@@ -35,24 +35,35 @@ describe('TokenIcon', () => {
     const renderTokenIcon = (props: React.ComponentProps<typeof TokenIcon>) =>
         renderWithBasicProvider(<TokenIcon {...props} />);
 
-    it('shows a placeholder immediately and the correct icon after resolving when a recycled instance receives new props', async () => {
+    it('renders the correct icon synchronously when a recycled instance receives new props', () => {
         const fresh = renderTokenIcon({ symbol: ethSymbol });
-        await act(async () => {});
         const ethSource = fresh.getByHintText(tokenIconHint).props.source;
         fresh.unmount();
 
-        const { getByHintText, queryByHintText, rerender } = renderTokenIcon({
+        const { getByHintText, rerender } = renderTokenIcon({
             symbol: btcSymbol,
         });
-        await act(async () => {});
 
         // simulates FlashList cell recycling: same mounted instance, new asset props
         rerender(<TokenIcon symbol={ethSymbol} />);
 
-        expect(queryByHintText(tokenIconHint)).toBeNull();
-
-        await act(async () => {});
+        // native network icons resolve synchronously, so there is no placeholder frame
         expect(getByHintText(tokenIconHint).props.source).toEqual(ethSource);
+    });
+
+    it('renders a synchronously resolved token icon without a placeholder frame', () => {
+        (getAssetLogoContractAddresses as jest.Mock).mockImplementation(
+            (_symbol: string, contract: string) => [contract],
+        );
+
+        const { getByHintText } = renderTokenIcon({
+            symbol: ethSymbol,
+            contractAddress: contractA,
+        });
+
+        expect(JSON.stringify(getByHintText(tokenIconHint).props.source)).toContain(
+            getTokenIconUrl(contractA),
+        );
     });
 
     it('ignores a stale async url resolution that arrives after the instance was recycled', async () => {
@@ -126,7 +137,6 @@ describe('TokenIcon', () => {
             showNetworkIcon: true,
         });
 
-        // network icon decision is synchronous; token image requires async resolution
         expect(queryByHintText(networkIconHint)).toBeNull();
         await waitFor(() => {
             expect(getByHintText(tokenIconHint)).toBeTruthy();

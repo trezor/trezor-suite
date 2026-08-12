@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useFreshRef } from './useFreshRef';
 
@@ -7,28 +7,37 @@ const depsEqual = (prev: readonly unknown[], next: readonly unknown[]) =>
     prev.length === next.length && prev.every((dep, i) => Object.is(dep, next[i]));
 
 /**
- * Resolves `getValue` asynchronously and returns the result only while `deps` match the deps
- * it was resolved for, otherwise `undefined`. A reused component instance (e.g. recycled list
- * cell) therefore never renders a stale resolution, even when promises settle out of order.
- * A rejected `getValue` is swallowed and the hook keeps returning `undefined` for those deps.
+ * Memoizes `getValue` by `deps`. A synchronously returned value is available already during
+ * the first render, exactly like with `useMemo`. A returned promise is awaited instead and its
+ * result is returned only while `deps` match the deps it was resolved for, otherwise
+ * `undefined`. A reused component instance (e.g. recycled list cell) therefore never renders
+ * a stale resolution, even when promises settle out of order. A rejected promise is swallowed
+ * and the hook keeps returning `undefined` for those deps.
  */
 export function useAsyncMemo<T>(
-    getValue: () => Promise<T>,
+    getValue: () => T | Promise<T>,
     deps: readonly unknown[],
 ): T | undefined {
     const [resolved, setResolved] = useState<{ deps: readonly unknown[]; value: T }>();
     const getValueRef = useFreshRef(getValue);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const value = useMemo(() => getValueRef.current(), deps);
+
     useEffect(() => {
+        if (!(value instanceof Promise)) {
+            return;
+        }
+
         let cancelled = false;
 
-        getValueRef.current().then(
-            value => {
+        value.then(
+            resolvedValue => {
                 if (!cancelled) {
-                    setResolved({ deps, value });
+                    setResolved({ deps, value: resolvedValue });
                 }
             },
-            () => {}, // reject → stay undefined, callers render their fallback
+            () => {}, // Reject → stay undefined, callers render their fallback.
         );
 
         return () => {
@@ -36,6 +45,10 @@ export function useAsyncMemo<T>(
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, deps);
+
+    if (!(value instanceof Promise)) {
+        return value;
+    }
 
     return resolved && depsEqual(resolved.deps, deps) ? resolved.value : undefined;
 }

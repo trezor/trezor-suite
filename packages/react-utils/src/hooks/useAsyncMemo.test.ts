@@ -5,6 +5,40 @@ import { createDeferred } from '@trezor/utils';
 import { useAsyncMemo } from './useAsyncMemo';
 
 describe('useAsyncMemo', () => {
+    it('returns a synchronously computed value already during the first render', () => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        const { result } = renderHook(() => useAsyncMemo(() => 1, ['a']));
+
+        expect(result.current).toBe(1);
+    });
+
+    it('returns a synchronously computed value immediately after the deps change', async () => {
+        const { result, rerender } = renderHook(
+            ({ key, value }: { key: string; value: number | Promise<number> }) =>
+                // eslint-disable-next-line react-hooks/exhaustive-deps
+                useAsyncMemo(() => value, [key]),
+            { initialProps: { key: 'a', value: Promise.resolve(1) as number | Promise<number> } },
+        );
+
+        await waitFor(() => {
+            expect(result.current).toBe(1);
+        });
+
+        // async -> sync
+        // the new value replaces the stale resolution without an undefined frame
+        rerender({ key: 'b', value: 2 });
+        expect(result.current).toBe(2);
+
+        // sync -> async
+        // back to undefined until the promise resolves
+        rerender({ key: 'c', value: Promise.resolve(3) });
+        expect(result.current).toBeUndefined();
+
+        await waitFor(() => {
+            expect(result.current).toBe(3);
+        });
+    });
+
     it('returns undefined until the value resolves, then the value', async () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         const { result } = renderHook(() => useAsyncMemo(() => Promise.resolve(1), ['a']));
