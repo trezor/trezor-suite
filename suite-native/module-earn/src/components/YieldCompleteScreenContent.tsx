@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import {
+    type FeedbackCategory,
+    type Rating,
+    buildUserFeedbackData,
+    sendFeedbackAction,
+} from '@suite-common/feedback';
 import { type WrappedNativeFlowType, type YieldFlowType } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
@@ -21,6 +26,8 @@ import { FeedbackCard } from '@suite-native/feedback-form';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { type EarnFormDraftPrefix } from '../types';
 
 const contentStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.sp48,
@@ -62,15 +69,18 @@ export type YieldCompleteSummaryRow = {
       }
 );
 
-type YieldCompleteScreenType = YieldFlowType | WrappedNativeFlowType;
+type YieldCompleteScreenType = YieldFlowType | WrappedNativeFlowType | EarnFormDraftPrefix;
+
+type YieldCompleteFeedbackCategory = Extract<FeedbackCategory, 'yield' | 'staking'>;
 
 type YieldCompleteScreenContentProps = {
     buttonTranslationId: TxKeyPath;
     onButtonPress: () => void;
     rows: YieldCompleteSummaryRow[];
-    subtitle: ReactNode;
+    subtitle?: ReactNode;
     title: ReactNode;
     type: YieldCompleteScreenType;
+    feedbackCategory?: YieldCompleteFeedbackCategory;
     vaultId?: string;
 };
 
@@ -81,6 +91,7 @@ export const YieldCompleteScreenContent = ({
     subtitle,
     title,
     type,
+    feedbackCategory = 'yield',
     vaultId,
 }: YieldCompleteScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
@@ -91,7 +102,7 @@ export const YieldCompleteScreenContent = ({
     const onFeedbackRatingSelect = (rating: Rating) => {
         analytics.report({
             type: events.feedbackRatingSelectedEvent.name,
-            payload: { rating, category: 'yield', context: type },
+            payload: { rating, category: feedbackCategory, context: type },
         });
     };
 
@@ -102,7 +113,7 @@ export const YieldCompleteScreenContent = ({
             sendFeedbackAction({
                 type: 'SUGGESTION',
                 payload: {
-                    category: 'yield',
+                    category: feedbackCategory,
                     feature: type,
                     description,
                     rating,
@@ -114,7 +125,7 @@ export const YieldCompleteScreenContent = ({
 
         analytics.report({
             type: events.feedbackSentEvent.name,
-            payload: { category: 'yield', context: type },
+            payload: { category: feedbackCategory, context: type },
         });
     };
 

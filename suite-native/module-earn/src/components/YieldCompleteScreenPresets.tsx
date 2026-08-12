@@ -44,7 +44,7 @@ type GetYieldDepositCompleteRowsParams = {
     sentTokenContract?: string;
 };
 
-const getYieldCompleteStatusRow = (): YieldCompleteSummaryRow => ({
+export const getYieldCompleteStatusRow = (): YieldCompleteSummaryRow => ({
     key: 'status',
     label: <Translation id="earn.yieldCompleteScreen.status" />,
     value: (
