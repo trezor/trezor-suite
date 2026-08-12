@@ -170,7 +170,7 @@ export const trackWrappedNativeTokenThunk = createThunk<
     async ({ accountKey }, { dispatch, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
 
-        if (!account || account.networkType !== 'ethereum') {
+        if (account?.networkType !== 'ethereum') {
             return null;
         }
 
