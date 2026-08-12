@@ -90,6 +90,7 @@ export const YieldWithdrawUnwrapReviewScreen = () => {
         <WrappedNativeTokenReviewContent
             account={account}
             amount={review.amount}
+            flowContext="in-flow"
             flowType="unwrap"
             onBroadcast={handleBroadcast}
             preview={preview}
