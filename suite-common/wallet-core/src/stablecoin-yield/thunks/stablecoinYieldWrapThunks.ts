@@ -166,7 +166,8 @@ type TrackWrappedNativeTokenPayload = {
  * the token on its own and the account may hold a balance without knowing about it.
  *
  * Returns the balance in display units: `null` means it could not be determined (the caller may
- * fall back to its own value), `'0'` means it was fetched successfully and is really zero.
+ * fall back to its own value), `'0'` means it is really zero — fetched, or the zero-balance
+ * placeholder just added in 'ensure-tracked' mode.
  */
 export const trackWrappedNativeTokenThunk = createThunk<
     string | null,
