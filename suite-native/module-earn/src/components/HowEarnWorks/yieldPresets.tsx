@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle } from '@trezor/styles-native';
 
+import { type HowEarnWorksBenefitItem } from './HowEarnWorksBenefitsSection';
 import { type HowEarnWorksScreenPreset, type HowEarnWorksTimelineSectionPreset } from './types';
-import { type HowEarnWorksBenefitItem } from '../../components/HowEarnWorks/HowEarnWorksBenefitsSection';
 
 const abbrStyle = prepareNativeStyle(({ colors }) => ({
     borderStyle: 'dotted',

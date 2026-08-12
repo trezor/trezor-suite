@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { type TimelineDetailsCardItem } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 
-import { type HowEarnWorksBenefitItem } from '../../components/HowEarnWorks/HowEarnWorksBenefitsSection';
+import { type HowEarnWorksBenefitItem } from './HowEarnWorksBenefitsSection';
 
 export type HowEarnWorksTimelineSectionPreset = {
     id: string;

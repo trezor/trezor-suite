@@ -29,9 +29,9 @@ import {
 import { HowEarnWorksBenefitsSection } from '../components/HowEarnWorks/HowEarnWorksBenefitsSection';
 import { HowEarnWorksHeaderSection } from '../components/HowEarnWorks/HowEarnWorksHeaderSection';
 import { HowEarnWorksTimelineCard } from '../components/HowEarnWorks/HowEarnWorksTimelineCard';
+import { createHowStakeWorksPreset } from '../components/HowEarnWorks/stakePresets';
 import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
-import { createHowStakeWorksPreset } from '../presets/HowEarnWorks/stakePresets';
 
 export const HowStakeWorksScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.HowStakeWorksScreen>>();

@@ -17,12 +17,12 @@ import {
 import { HowEarnWorksBenefitsSection } from '../components/HowEarnWorks/HowEarnWorksBenefitsSection';
 import { HowEarnWorksHeaderSection } from '../components/HowEarnWorks/HowEarnWorksHeaderSection';
 import { HowEarnWorksTimelineCard } from '../components/HowEarnWorks/HowEarnWorksTimelineCard';
+import { useHowYieldWorksPreset } from '../components/HowEarnWorks/yieldPresets';
 import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
-import { useHowYieldWorksPreset } from '../presets/HowEarnWorks/yieldPresets';
 
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.HowYieldWorks>;
 
