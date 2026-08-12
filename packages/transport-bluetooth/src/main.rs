@@ -12,8 +12,13 @@ async fn main() {
 
     match server::start_server(&addr).await {
         // Ok should not happen as start_server runs indefinitely unless there's an error
-        Ok(_) => Err("Server unexpectedly stopped".to_string()),
-        Err(err) => Err(format!("Server start error {:?}", err)),
+        Ok(_) => {
+            eprintln!("Server unexpectedly stopped");
+            std::process::exit(1);
+        }
+        Err(err) => {
+            eprintln!("Server start error: {:?}", err);
+            std::process::exit(1);
+        }
     }
-    .expect("Server unexpectedly stopped")
 }
