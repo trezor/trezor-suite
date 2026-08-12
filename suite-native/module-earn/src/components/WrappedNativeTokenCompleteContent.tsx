@@ -11,31 +11,19 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Translation, type TxKeyPath, selectSupportedLanguageLocale } from '@suite-native/intl';
+import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 
 import { YieldCompleteScreenContent } from './YieldCompleteScreenContent';
 import { getWrappedNativeCompleteRows } from './YieldCompleteScreenPresets';
 import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
+import { wrappedNativeFlowMessages } from '../utils/wrappedNativeFlowMessages';
 
 type WrappedNativeTokenCompleteContentProps = {
     accountKey: AccountKey;
     amount: string;
     flowType: WrappedNativeFlowType;
 };
-
-const flowMessages = {
-    wrap: {
-        closeButton: 'earn.wrapNativeToken.closeButton',
-        subtitle: 'earn.wrapNativeToken.complete.subtitle',
-        title: 'earn.wrapNativeToken.complete.title',
-    },
-    unwrap: {
-        closeButton: 'earn.unwrapNativeToken.closeButton',
-        subtitle: 'earn.unwrapNativeToken.complete.subtitle',
-        title: 'earn.unwrapNativeToken.complete.title',
-    },
-} satisfies Record<WrappedNativeFlowType, Record<'closeButton' | 'subtitle' | 'title', TxKeyPath>>;
 
 export const WrappedNativeTokenCompleteContent = ({
     accountKey,
@@ -90,16 +78,18 @@ export const WrappedNativeTokenCompleteContent = ({
         return null;
     }
 
+    const messages = wrappedNativeFlowMessages[flowType].complete;
+
     return (
         <YieldCompleteScreenContent
             type={flowType}
-            buttonTranslationId={flowMessages[flowType].closeButton}
+            buttonTranslationId={messages.closeButton}
             onButtonPress={handleClose}
             rows={rows}
-            title={<Translation id={flowMessages[flowType].title} />}
+            title={<Translation id={messages.title} />}
             subtitle={
                 <Translation
-                    id={flowMessages[flowType].subtitle}
+                    id={messages.subtitle}
                     values={{ nativeSymbol, wrappedSymbol: wrappedNative.symbol }}
                 />
             }
