@@ -18,7 +18,7 @@ import { EarnStakeOutputItem } from './EarnStakeOutputItem';
 import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
 import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
 import { getAmountInBaseUnits } from '../utils/getAmountInBaseUnits';
-import { getSolanaPrecomposedNetAmount } from '../utils/getSolanaPrecomposedNetAmount';
+import { getEarnPendingAmountInBaseUnits } from '../utils/getEarnPendingAmountInBaseUnits';
 
 type EarnTransactionDataReviewStepListProps = {
     accountKey: AccountKey;
@@ -46,13 +46,12 @@ export const EarnTransactionDataReviewStepList = ({
 
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(activeStep);
 
-    const amountInBaseUnits = getAmountInBaseUnits(amount, accountSymbol);
-
     const isSolanaStake = isSupportedSolStakingNetworkSymbol(accountSymbol);
-    const displayedAmountInBaseUnits =
-        isSolanaStake && selectedPrecomposed
-            ? getSolanaPrecomposedNetAmount(selectedPrecomposed)
-            : amountInBaseUnits;
+    const displayedAmountInBaseUnits = getEarnPendingAmountInBaseUnits({
+        fallbackAmountInBaseUnits: getAmountInBaseUnits(amount, accountSymbol),
+        isSolanaStaking: isSolanaStake,
+        precomposedTransaction: selectedPrecomposed,
+    });
 
     return (
         <View>

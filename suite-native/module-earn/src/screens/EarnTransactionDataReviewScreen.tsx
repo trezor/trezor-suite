@@ -1,18 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
-import { selectAccountLabel } from '@suite-native/accounts';
-import { Button, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { Button, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
     useConfirmOnTrezorController,
 } from '@suite-native/confirm-on-trezor';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { type CombinedLabelingState } from '@suite-native/labeling';
 import {
     type RootStackParamList,
     type RootStackRoutes,
@@ -23,18 +20,19 @@ import { ScrollToEndOnMount } from '@suite-native/scrollview';
 import {
     TxValidityTimer,
     selectIsTransactionAlreadySigned,
-    useTransactionDetails,
 } from '@suite-native/transaction-management';
 
 import { EarnTransactionDataReviewStepList } from '../components/EarnTransactionDataReviewStepList';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
+import { useEarnAccountLabel } from '../hooks/useEarnAccountLabel';
+import { useEarnPendingTransactionSheet } from '../hooks/useEarnPendingTransactionSheet';
 import { useEarnReviewAutoStart } from '../hooks/useEarnReviewAutoStart';
 import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
 import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
 import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
 import { getAmountInBaseUnits } from '../utils/getAmountInBaseUnits';
-import { getSolanaPrecomposedNetAmount } from '../utils/getSolanaPrecomposedNetAmount';
+import { getEarnPendingAmountInBaseUnits } from '../utils/getEarnPendingAmountInBaseUnits';
 
 export const EarnTransactionDataReviewScreen = ({
     route,
@@ -50,11 +48,7 @@ export const EarnTransactionDataReviewScreen = ({
         selectAccountByKey(state, accountKey),
     );
 
-    const customAccountLabel = useSelector((state: CombinedLabelingState) =>
-        account
-            ? selectAccountLabel(state, account.deviceState, account.descriptor, account.symbol)
-            : null,
-    );
+    const accountLabel = useEarnAccountLabel(account);
 
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction('stake', accountKey);
 
@@ -70,19 +64,8 @@ export const EarnTransactionDataReviewScreen = ({
             markReviewNavigationSuccess,
         });
 
-    const { bottomSheetRef: pendingBottomSheetRef, openModal: openPendingBottomSheet } =
-        useBottomSheetModal();
-
-    useEffect(() => {
-        if (isPending) {
-            openPendingBottomSheet();
-        }
-    }, [isPending, openPendingBottomSheet]);
-
-    const { explorerUrl, openInBlockchain } = useTransactionDetails({
-        accountKey,
-        txid: pendingTxid ?? null,
-    });
+    const { pendingBottomSheetRef, isExploreDisabled, openInBlockchain } =
+        useEarnPendingTransactionSheet({ accountKey, isPending, pendingTxid });
 
     const { showTimer, secondsLeft, isPastDeadline, isBroadcasting, onRetry, isRetryDisabled } =
         useEarnTxValidityFlow({
@@ -124,17 +107,13 @@ export const EarnTransactionDataReviewScreen = ({
         setIsPushing(false);
     }, [handlePush, trackPushedTransaction]);
 
-    const accountLabel = account ? (customAccountLabel ?? getNetwork(account.symbol).name) : '';
-
     const isSolanaStake = !!account && isSupportedSolStakingNetworkSymbol(account.symbol);
 
-    let pendingAmountInBaseUnits = '0';
-
-    if (isSolanaStake && precomposedTransaction) {
-        pendingAmountInBaseUnits = getSolanaPrecomposedNetAmount(precomposedTransaction);
-    } else if (account) {
-        pendingAmountInBaseUnits = getAmountInBaseUnits(amount, account.symbol);
-    }
+    const pendingAmountInBaseUnits = getEarnPendingAmountInBaseUnits({
+        fallbackAmountInBaseUnits: account ? getAmountInBaseUnits(amount, account.symbol) : '0',
+        isSolanaStaking: isSolanaStake,
+        precomposedTransaction,
+    });
 
     return (
         <ConfirmOnTrezorWrapper
@@ -187,7 +166,7 @@ export const EarnTransactionDataReviewScreen = ({
                 )}
             </VStack>
 
-            {isPending && pendingTxid && submittedAt && account && (
+            {isPending && !!pendingTxid && !!submittedAt && !!account && (
                 <YieldPendingTransactionModal
                     ref={pendingBottomSheetRef}
                     accountLabel={accountLabel}
@@ -205,7 +184,7 @@ export const EarnTransactionDataReviewScreen = ({
                         <Translation id="earn.earnTransactionDataReviewScreen.amountLabel" />
                     }
                     fee={precomposedTransaction?.fee}
-                    isExploreDisabled={!explorerUrl}
+                    isExploreDisabled={isExploreDisabled}
                     onExplorePress={openInBlockchain}
                     submittedAt={submittedAt}
                     title={<Translation id="earn.earnTransactionDataReviewScreen.pendingTitle" />}
