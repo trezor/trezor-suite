@@ -1,3 +1,4 @@
+import { unwrapResult } from '@reduxjs/toolkit';
 import { type IWalletKit, WalletKit, type WalletKitTypes } from '@reown/walletkit';
 import { Core } from '@walletconnect/core';
 import {
@@ -184,16 +185,14 @@ const sessionRequestThunk = createThunk<
         }
 
         const result = await dispatch(adapter.requestThunk({ event }));
-        if (!result || result.error) {
-            throw result?.error || new Error('Device request failed');
-        }
+        const payload = unwrapResult(result);
 
         await walletKit.respondSessionRequest({
             topic: event.topic,
             response: {
                 id: event.id,
                 jsonrpc: '2.0',
-                result: result.payload,
+                result: payload,
             },
         });
         extra.services.analytics.report({
