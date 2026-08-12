@@ -1,7 +1,7 @@
 import {
     buildClaimTransactionReview,
     buildStablecoinYieldTransactionReview,
-} from '@suite-common/earn-stablecoin/src/signing';
+} from '@suite-common/earn-stablecoin';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type StablecoinYieldActionReviewState,

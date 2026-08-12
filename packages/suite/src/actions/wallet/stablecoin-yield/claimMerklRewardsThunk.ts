@@ -3,11 +3,11 @@ import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
+    type StablecoinYieldTxSimulationParams,
     buildClaimCalldata,
     buildClaimTransactionReview,
     buildUnsignedClaimTransaction,
-} from '@suite-common/earn-stablecoin/src/signing';
-import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
+} from '@suite-common/earn-stablecoin';
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
