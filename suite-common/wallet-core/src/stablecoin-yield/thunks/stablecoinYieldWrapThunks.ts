@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork, getWrappedNativeAddress } from '@suite-common/wallet-config';
+import { WRAPPED_NATIVE, getNetwork, getWrappedNativeAddress } from '@suite-common/wallet-config';
 import { WETH_DEPOSIT_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -158,6 +158,13 @@ export type TrackWrappedNativeTokenThunkState = AccountsRootState;
 
 type TrackWrappedNativeTokenPayload = {
     accountKey: AccountKey;
+    /**
+     * 'fetch-balance' (default) fetches the current on-chain balance and tracks the token only
+     * when it is positive. 'ensure-tracked' adds a zero-balance placeholder without fetching —
+     * for a just-broadcast wrap, whose balance lands only once the transaction confirms, so the
+     * token must already be tracked for account refreshes to pick it up.
+     */
+    mode?: 'fetch-balance' | 'ensure-tracked';
 };
 
 /**
@@ -174,7 +181,7 @@ export const trackWrappedNativeTokenThunk = createThunk<
     { state: TrackWrappedNativeTokenThunkState }
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/trackWrappedNativeToken`,
-    async ({ accountKey }, { dispatch, getState }) => {
+    async ({ accountKey, mode = 'fetch-balance' }, { dispatch, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (account?.networkType !== 'ethereum') {
@@ -194,6 +201,31 @@ export const trackWrappedNativeTokenThunk = createThunk<
 
         if (trackedToken) {
             return trackedToken.balance ?? '0';
+        }
+
+        if (mode === 'ensure-tracked') {
+            const wrappedNative = WRAPPED_NATIVE[account.symbol];
+
+            if (!wrappedNative) {
+                return null;
+            }
+
+            const [placeholderToken] = enhanceTokens([
+                {
+                    standard: 'ERC20',
+                    contract: wrappedNative.address,
+                    symbol: wrappedNative.symbol,
+                    name: wrappedNative.symbol,
+                    decimals: wrappedNative.decimals,
+                    balance: '0',
+                },
+            ]);
+
+            if (placeholderToken) {
+                dispatch(accountsActions.addAccountTokens(accountKey, [placeholderToken]));
+            }
+
+            return '0';
         }
 
         let tokenInfo: TokenInfo | null;

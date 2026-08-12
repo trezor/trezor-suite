@@ -52,7 +52,7 @@ const buildStore = (storeAccount: Account) =>
 const getTrackedTokenUpdates = (store: ReturnType<typeof buildStore>) =>
     store
         .getActions()
-        .filter(action => action.type === accountsActions.updateAccount.type)
+        .filter(action => action.type === accountsActions.addAccountTokens.type)
         .filter(action =>
             action.payload.tokens?.some(
                 (token: { contract: string }) =>

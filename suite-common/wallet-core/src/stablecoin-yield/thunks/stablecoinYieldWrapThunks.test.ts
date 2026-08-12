@@ -42,14 +42,12 @@ const buildState = (account: Account): TrackWrappedNativeTokenThunkState => ({
 
 const runThunk = async (
     getState: () => TrackWrappedNativeTokenThunkState,
-    accountKey = ethereumAccount.key,
+    payload: Parameters<typeof trackWrappedNativeTokenThunk>[0] = {
+        accountKey: ethereumAccount.key,
+    },
 ) => {
     const { actions, dispatch } = createMockDispatch({ getState, extra: {} });
-    const balance = await trackWrappedNativeTokenThunk({ accountKey })(
-        dispatch,
-        getState,
-        {},
-    ).unwrap();
+    const balance = await trackWrappedNativeTokenThunk(payload)(dispatch, getState, {}).unwrap();
     const addTokensActions = actions.filter(action =>
         accountsActions.addAccountTokens.match(action),
     );
@@ -136,10 +134,9 @@ describe('trackWrappedNativeTokenThunk', () => {
             deviceState: 'mock@device:0',
         });
 
-        const { addTokensActions, balance } = await runThunk(
-            () => buildState(bitcoinAccount),
-            bitcoinAccount.key,
-        );
+        const { addTokensActions, balance } = await runThunk(() => buildState(bitcoinAccount), {
+            accountKey: bitcoinAccount.key,
+        });
 
         expect(balance).toBeNull();
         expect(fetchWrappedNativeTokenInfoMock).not.toHaveBeenCalled();
@@ -185,5 +182,69 @@ describe('trackWrappedNativeTokenThunk', () => {
 
         expect(balance).toBe('2.5');
         expect(addTokensActions).toHaveLength(0);
+    });
+
+    describe('ensure-tracked mode', () => {
+        it('adds a zero-balance placeholder without fetching', async () => {
+            const { addTokensActions, balance } = await runThunk(
+                () => buildState(ethereumAccount),
+                { accountKey: ethereumAccount.key, mode: 'ensure-tracked' },
+            );
+
+            expect(balance).toBe('0');
+            expect(fetchWrappedNativeTokenInfoMock).not.toHaveBeenCalled();
+            expect(addTokensActions).toEqual([
+                expect.objectContaining({
+                    payload: {
+                        accountKey: ethereumAccount.key,
+                        tokens: [
+                            expect.objectContaining({
+                                contract: WETH_ADDRESS,
+                                symbol: 'WETH',
+                                balance: '0',
+                            }),
+                        ],
+                    },
+                }),
+            ]);
+        });
+
+        it('returns the tracked balance and adds nothing when the token is already tracked', async () => {
+            const trackedAccount = {
+                ...ethereumAccount,
+                // stored in a different case to prove the dedupe is case-insensitive
+                tokens: [
+                    mockAccountToken({
+                        contract: WETH_ADDRESS.toLowerCase(),
+                        symbol: 'WETH',
+                        balance: '1.5',
+                    }),
+                ],
+            };
+
+            const { addTokensActions, balance } = await runThunk(() => buildState(trackedAccount), {
+                accountKey: ethereumAccount.key,
+                mode: 'ensure-tracked',
+            });
+
+            expect(balance).toBe('1.5');
+            expect(fetchWrappedNativeTokenInfoMock).not.toHaveBeenCalled();
+            expect(addTokensActions).toHaveLength(0);
+        });
+
+        it('returns null for a non-ethereum account', async () => {
+            const bitcoinAccount = mockWalletAccount({
+                symbol: asNetworkSymbol('btc'),
+                deviceState: 'mock@device:0',
+            });
+
+            const { addTokensActions, balance } = await runThunk(() => buildState(bitcoinAccount), {
+                accountKey: bitcoinAccount.key,
+                mode: 'ensure-tracked',
+            });
+
+            expect(balance).toBeNull();
+            expect(addTokensActions).toHaveLength(0);
+        });
     });
 });
