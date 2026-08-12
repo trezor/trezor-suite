@@ -609,5 +609,11 @@ export class UsbApi extends AbstractApi {
             this.usbInterface.ondisconnect = null;
         }
         this.abortController.abort();
+        // try to close opened devices. this is not guaranteed to succeed, but it is better than nothing.
+        this.devices.forEach(d => {
+            if (d.device.opened) {
+                d.device.close().catch(() => {});
+            }
+        });
     }
 }
