@@ -1,6 +1,7 @@
 import { sendFeedbackAction } from '@suite-common/feedback';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent, screen } from '@suite-native/test-utils-store';
 
 import { TradingDetailFeedback } from './TradingDetailFeedback';
@@ -36,7 +37,7 @@ describe('TradingDetailFeedback', () => {
     it('renders the feedback card heading', () => {
         renderTradingDetailFeedback();
 
-        expect(screen.getByText('How was your trading experience?')).toBeOnTheScreen();
+        expect(screen.getByText(getTranslation('feedbackForm.title'))).toBeOnTheScreen();
     });
 
     it('sends a trade feedback with the selected rating and typed description on submit', () => {

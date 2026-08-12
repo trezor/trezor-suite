@@ -1,3 +1,5 @@
+import { getTranslation } from '@suite-native/intl';
+
 import { TradeStatusIcon, getTradeStatusIconConfig } from './TradeStatusIcon';
 import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
@@ -45,15 +47,15 @@ describe('TradeStatusIcon', () => {
     });
 
     it.each([
-        ['SUCCESS', 'Successful trade'],
-        ['ERROR', 'Failed trade'],
-        ['CANCELLED', 'Trade requires attention'],
-        ['SUBMITTED', 'Trade in progress'],
-    ] as const)('provides an accessible label for %s', (status, label) => {
+        ['SUCCESS', 'moduleTrading.tradeHistory.statusIcon.success'],
+        ['ERROR', 'moduleTrading.tradeHistory.statusIcon.error'],
+        ['CANCELLED', 'moduleTrading.tradeHistory.statusIcon.warning'],
+        ['SUBMITTED', 'moduleTrading.tradeHistory.statusIcon.pending'],
+    ] as const)('provides an accessible label for %s', (status, labelId) => {
         const { getByLabelText } = renderWithTradingHistoryProvider(
             <TradeStatusIcon status={status} />,
         );
 
-        expect(getByLabelText(label)).toBeTruthy();
+        expect(getByLabelText(getTranslation(labelId))).toBeTruthy();
     });
 });
