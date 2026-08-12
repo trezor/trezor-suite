@@ -20,6 +20,7 @@ export const Link: LinkStory = {
         label: 'This is a link',
         href: 'https://trezor.io',
         isUnderlined: false,
+        showExternalIcon: false,
         textColor: 'contentPrimary',
         textPressedColor: 'contentPrimaryPressed',
         textVariant: 'body-md',
@@ -36,6 +37,9 @@ export const Link: LinkStory = {
             table: { disable: true },
         },
         isUnderlined: {
+            control: { type: 'boolean' },
+        },
+        showExternalIcon: {
             control: { type: 'boolean' },
         },
         textColor: {
