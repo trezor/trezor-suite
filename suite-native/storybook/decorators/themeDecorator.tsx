@@ -1,27 +1,12 @@
 import React from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform } from 'react-native';
 
 import { StoryContext } from '@storybook/react';
 
-import {
-    StylesProvider,
-    createRenderer,
-    prepareNativeStyle,
-    useNativeStyles,
-} from '@trezor/styles-native';
+import { StylesProvider, createRenderer } from '@trezor/styles-native';
 import { ThemeColorVariant, prepareNativeTheme } from '@trezor/theme';
 
 const renderer = createRenderer();
-
-const storyContainerStyle = prepareNativeStyle(_ => ({
-    ...StyleSheet.absoluteFill,
-}));
-
-const ThemeWrapper = ({ children }: { children: React.ReactNode }) => {
-    const { applyStyle } = useNativeStyles();
-
-    return <View style={applyStyle(storyContainerStyle)}>{children}</View>;
-};
 
 export const themeDecorator = (Story: React.FC, context: StoryContext) => {
     const themeVariant = Platform.select({
@@ -33,9 +18,7 @@ export const themeDecorator = (Story: React.FC, context: StoryContext) => {
 
     return (
         <StylesProvider renderer={renderer} theme={theme}>
-            <ThemeWrapper>
-                <Story />
-            </ThemeWrapper>
+            <Story />
         </StylesProvider>
     );
 };
