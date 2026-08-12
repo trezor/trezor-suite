@@ -5,14 +5,26 @@ description: Dependency management, package creation, and troubleshooting comman
 
 # Common Tasks
 
-## Managing Dependencies
+## Managing npm dependencies via yarn
+
+Prefer existing dependencies. Add a new npm dependency only when no suitable dependency is already available in the repo.
 
 ```bash
 yarn workspace @trezor/package-name add dependency-name
-yarn build:libs  # Rebuild after dependency changes
 ```
 
-## Package Management
+After adding or updating a dependency, run:
+
+```bash
+yarn dedupe
+yarn requirements:verify
+```
+
+Review all changes made by `yarn dedupe` before keeping them.
+Do not bypass `.yarnrc.yml` `npmMinimalAgeGate`.
+If a blocked version is required to fix a bug, add a targeted exception to `npmPreapprovedPackages`.
+
+## Monorepo Package Management
 
 ```bash
 yarn generate-package      # Create new package
