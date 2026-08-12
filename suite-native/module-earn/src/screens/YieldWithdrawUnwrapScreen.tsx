@@ -43,6 +43,7 @@ import {
 } from '../hooks/useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from '../hooks/useWrappedNativeTokenForm';
 import { useWrappedNativeTxSimulation } from '../hooks/useWrappedNativeTxSimulation';
+import { useYieldCurrencyToggleAnalytics } from '../hooks/useYieldCurrencyToggleAnalytics';
 import { useYieldPendingTransaction } from '../hooks/useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../hooks/useYieldSession';
@@ -79,6 +80,26 @@ export const YieldWithdrawUnwrapScreen = () => {
         content: unwrapDisabledContent,
         variant: unwrapDisabledVariant,
     } = useMessageSystemWrappedNative('unwrap');
+
+    const reportCurrencyToggle = useYieldCurrencyToggleAnalytics({
+        networkSymbol: account?.symbol,
+        vaultId: vault?.id,
+    });
+
+    // The in-flow unwrap step belongs to the withdraw flow, so its max button reports
+    // `withdraw-max` rather than the standalone `unwrap-max`. The step has no asset/shares choice —
+    // the amount is always the wrapped token, i.e. the asset.
+    const reportMaxSelected = useCallback(() => {
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'withdraw-max',
+                value: 'asset',
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
+        });
+    }, [account?.symbol, analytics, vault?.id]);
 
     const session = useYieldSession({
         flowKey,
@@ -354,6 +375,8 @@ export const YieldWithdrawUnwrapScreen = () => {
                                 }
                                 balance={wrappedBalance}
                                 defaultAmount={withdrawnAmount}
+                                onCurrencyChange={reportCurrencyToggle}
+                                onMaxPress={reportMaxSelected}
                                 symbol={account.symbol}
                                 tokenContract={wrappedTokenContract}
                                 tokenDecimals={token.decimals}

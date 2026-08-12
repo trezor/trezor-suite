@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import {
+    type ActiveView,
     BaseAmountInputs,
     Button,
     Card,
@@ -27,6 +28,7 @@ type YieldAmountInputCardProps = {
     balance?: string;
     isApprovalLimitDisabled?: boolean;
     onApprovalLimitPress?: () => void;
+    onCurrencyChange?: (activeView: ActiveView) => void;
     onMaxPress: () => void;
     symbol: NetworkSymbol;
     tokenContract?: TokenAddress;
@@ -40,6 +42,7 @@ export const YieldAmountInputCard = ({
     balance,
     isApprovalLimitDisabled = false,
     onApprovalLimitPress,
+    onCurrencyChange,
     onMaxPress,
     symbol,
     tokenContract,
@@ -72,6 +75,7 @@ export const YieldAmountInputCard = ({
             <VStack spacing="sp12" padding="sp16">
                 <BaseAmountInputs
                     symbol={symbol}
+                    onInputSwitch={onCurrencyChange}
                     unfocusedOffset={AMOUNT_INPUT_UNFOCUSED_OFFSET}
                     wrapperHeight={AMOUNT_INPUT_WRAPPER_HEIGHT}
                     renderTopRow={() => <Text variant="body-sm">{amountLabel}</Text>}

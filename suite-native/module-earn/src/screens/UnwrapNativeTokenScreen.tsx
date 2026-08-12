@@ -28,6 +28,7 @@ import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useStandaloneWrappedNativeFlow } from '../hooks/useStandaloneWrappedNativeFlow';
 import { useWrappedNativeTokenFees } from '../hooks/useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from '../hooks/useWrappedNativeTokenForm';
+import { useYieldCurrencyToggleAnalytics } from '../hooks/useYieldCurrencyToggleAnalytics';
 import { getAccountTokenByContract } from '../utils/contractTokenBalanceUtils';
 
 type RouteProps = RouteProp<
@@ -86,6 +87,10 @@ export const UnwrapNativeTokenScreen = () => {
         preparedAction: unwrapFee.preparedAction,
     });
 
+    const reportCurrencyToggle = useYieldCurrencyToggleAnalytics({
+        networkSymbol: account?.symbol,
+    });
+
     useNavigateBackAnalytics({
         type: events.yieldNavigateEvent.name,
         payload: {
@@ -138,6 +143,7 @@ export const UnwrapNativeTokenScreen = () => {
                         <WrappedNativeTokenAmountInputCard
                             amountLabel={<Translation id="earn.unwrapNativeToken.amountToUnwrap" />}
                             balance={wrappedBalance}
+                            onCurrencyChange={reportCurrencyToggle}
                             onMaxPress={flow.reportMaxSelected}
                             symbol={account.symbol}
                             tokenContract={toTokenAddress(wrappedNative.address)}
