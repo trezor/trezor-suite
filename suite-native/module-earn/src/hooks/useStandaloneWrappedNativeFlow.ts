@@ -155,7 +155,6 @@ export const useStandaloneWrappedNativeFlow = ({
         hasFlowFailed,
         isDeviceNotConnectedVisible,
         isFirmwareOutdatedVisible,
-        isPending: !!pendingParam,
         pendingBottomSheetRef,
         pendingModalProps,
         preparedTx,

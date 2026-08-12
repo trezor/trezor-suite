@@ -18,6 +18,7 @@ import { type YieldReviewPreview } from '../utils/yieldReviewOutputUtils';
 type WrappedNativeTokenReviewContentProps = {
     account: Account;
     amount: string;
+    flowContext: 'standalone' | 'in-flow';
     flowType: WrappedNativeFlowType;
     onBroadcast?: (broadcast: YieldBroadcastTransaction) => void;
     preview: YieldReviewPreview;
@@ -28,6 +29,7 @@ type WrappedNativeTokenReviewContentProps = {
 export const WrappedNativeTokenReviewContent = ({
     account,
     amount,
+    flowContext,
     flowType,
     onBroadcast,
     preview,
@@ -44,6 +46,7 @@ export const WrappedNativeTokenReviewContent = ({
     const { handleSubmitted, leaveReviewFromDeviceCancel, startReview, status } =
         useWrappedNativeTokenReview({
             account,
+            flowContext,
             flowType,
             token: spentToken,
             amount,
