@@ -3384,6 +3384,17 @@ export const messages = {
             backToOverview: 'Back to overview',
             sendAndBackToOverview: 'Send & go back to overview',
         },
+        transactionCompleteScreen: {
+            doneButton: 'Done',
+            stakeTitle: 'Staking complete',
+            stakeAmountLabel: 'Staked',
+            stakeDescription:
+                'You will earn rewards after the {days, plural, one {# day} other {# days}} warm-up period',
+            unstakeTitle: 'Unstaking complete',
+            unstakeAmountLabel: 'Unstaked',
+            claimTitle: 'Claim complete',
+            claimAmountLabel: 'Claimed',
+        },
         yieldReview: {
             outputs: {
                 claimTitle: 'Claim rewards from',
