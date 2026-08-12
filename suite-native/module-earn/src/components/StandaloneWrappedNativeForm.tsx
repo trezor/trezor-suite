@@ -48,7 +48,6 @@ type StandaloneWrappedNativeFormProps = {
     flowType: WrappedNativeFlowType;
 };
 
-/** Form screen of the standalone flow — a wrap spends the native coin, an unwrap the token. */
 export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativeFormProps) => {
     const route = useRoute<RouteProps>();
     const { accountKey, pendingTransaction } = route.params;

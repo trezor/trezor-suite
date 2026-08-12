@@ -28,27 +28,18 @@ type UseYieldWrappedNativeStepParams = {
     availableBalance: string;
     decimals: number;
     flowKey: string | null;
-    /** Session flow the step belongs to — deposit wraps, withdraw/redeem unwraps. */
     flowType: YieldFlowType;
     isDisabled: boolean;
     isWrappedNativeVault: boolean;
-    /** Called after the confirmed simulation is stored, to open the step's review screen. */
     onNavigateToReview: () => void;
-    /** Analytics of the step's skip button — the event schema differs per flow. */
     onSkipAnalytics: () => void;
-    /** Analytics of the step's submit button — the event schema differs per flow. */
     onSubmitAnalytics: () => void;
     step: WrappedNativeFlowType;
     tokenSymbol: string;
     vault: YieldDtoV2 | null;
 };
 
-/**
- * Wiring shared by the in-flow wrap (deposit) and unwrap (withdraw/redeem) step screens: the
- * session, amount form, fee composition, pending-transaction modal and tracking, the simulation
- * sheet, and the skip/close handlers. The screens keep what genuinely differs — step redirects,
- * analytics payloads, and layout.
- */
+/** Wiring shared by the in-flow wrap (deposit) and unwrap (withdraw/redeem) step screens. */
 export const useYieldWrappedNativeStep = ({
     account,
     availableBalance,

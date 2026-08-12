@@ -17,10 +17,6 @@ type WrappedNativeFlowMessages = {
     stepFooter: Record<'skipButton' | 'submitButton', TxKeyPath>;
 };
 
-/**
- * Translation keys of both wrapped-native flows, keyed by the flow type the wrap/unwrap hooks
- * share — one map for all flow screens so the per-flow wording stays in one place.
- */
 export const wrappedNativeFlowMessages = {
     wrap: {
         complete: {

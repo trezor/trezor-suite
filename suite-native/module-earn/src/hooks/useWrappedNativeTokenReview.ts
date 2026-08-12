@@ -27,11 +27,6 @@ import {
 
 type UseWrappedNativeTokenReviewParams = {
     account: Account;
-    /**
-     * Where the review runs. The standalone flow reports its own yield/wrap|yield/unwrap
-     * analytics and returns to its form screen after the push; the in-flow step is tracked as
-     * yield/deposit|yield/withdraw by its screen and hands the broadcast to `onBroadcast`.
-     */
     flowContext: 'standalone' | 'in-flow';
     flowType: WrappedNativeFlowType;
     token: YieldFlowDisplayToken;
