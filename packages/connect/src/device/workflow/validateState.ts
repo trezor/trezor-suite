@@ -145,6 +145,18 @@ const validateThpDeviceState = async (context: WorkflowContext) => {
         }
     }
 
+    if (!uniqueState && !device.features.unlocked) {
+        // we don't have a sessionId yet and device is locked by pin.
+        // try to get staticSessionId (GetAddress) on the "seedless session" to display PIN matrix on the device.
+        // Failure_InvalidSession is expected here, because seedless session is not authorized to call GetAddress.
+        // This basically means the device is successfully unlocked. (failed successfully)
+        await getStaticSessionId(device).catch(e => {
+            if (e.code !== 'Failure_InvalidSession') {
+                throw e;
+            }
+        });
+    }
+
     if (!uniqueState || (!currentState?.deriveCardano && method.useCardanoDerivation)) {
         const newSessionId = thpState.createNewSessionId();
 
