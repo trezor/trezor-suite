@@ -16,6 +16,7 @@ import {
     selectConvertedNetworkFeeInfo,
     selectTransactionByAccountKeyAndTxid,
     stablecoinYieldActions,
+    useWrappedNativePendingTx,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyBreakdown, getPollIntervalMs, isPending } from '@suite-common/wallet-utils';
@@ -182,10 +183,24 @@ export const useYieldPendingTransactionTracking = ({
         accountSymbol ? selectConvertedNetworkFeeInfo(state, accountSymbol) : null,
     );
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
+
+    const isWrappedNativeStep =
+        pendingTransaction?.type === 'wrap' || pendingTransaction?.type === 'unwrap';
+
+    // The wrap/unwrap steps resolve through the shared nonce-following tracker, so a fee-bumped
+    // replacement of the step transaction is still followed; it also polls the account itself.
+    const wrappedNativeStatus = useWrappedNativePendingTx(
+        account,
+        isWrappedNativeStep && pendingTransaction ? pendingTransaction.txid : null,
+        pendingTransaction?.type === 'unwrap' ? 'unwrap' : 'wrap',
+    );
+
+    const isPendingTransactionUnresolved = isWrappedNativeStep
+        ? wrappedNativeStatus === 'pending'
+        : !trackedPendingTransaction || isPending(trackedPendingTransaction);
+
     const shouldPollPendingTransaction =
-        !!flowKey &&
-        !!pendingTransaction &&
-        (!trackedPendingTransaction || isPending(trackedPendingTransaction));
+        !!flowKey && !!pendingTransaction && !isWrappedNativeStep && isPendingTransactionUnresolved;
 
     // Snapshot of the still-unresolved transaction so the unmount cleanup can emit `leftPending`.
     const leftPendingSnapshotRef = useRef<Omit<
@@ -193,9 +208,7 @@ export const useYieldPendingTransactionTracking = ({
         'analytics' | 'outcome'
     > | null>(null);
     leftPendingSnapshotRef.current =
-        pendingTransaction &&
-        accountSymbol &&
-        (!trackedPendingTransaction || isPending(trackedPendingTransaction))
+        pendingTransaction && accountSymbol && isPendingTransactionUnresolved
             ? {
                   networkSymbol: accountSymbol,
                   pendingTransactionType: pendingTransaction.type,
@@ -241,11 +254,7 @@ export const useYieldPendingTransactionTracking = ({
     }, [accountKey, dispatch, pollIntervalMs, shouldPollPendingTransaction]);
 
     useEffect(() => {
-        if (!flowKey || !pendingTransaction || !trackedPendingTransaction) {
-            return;
-        }
-
-        if (isPending(trackedPendingTransaction)) {
+        if (!flowKey || !pendingTransaction) {
             return;
         }
 
@@ -265,6 +274,32 @@ export const useYieldPendingTransactionTracking = ({
                 withdrawOperation: getWithdrawOperation(flowType),
             });
         };
+
+        if (pendingTransaction.type === 'wrap' || pendingTransaction.type === 'unwrap') {
+            if (wrappedNativeStatus === 'failed') {
+                reportResolution('error');
+                dispatch(stablecoinYieldActions.transactionFailed(sessionParams));
+
+                return;
+            }
+
+            if (wrappedNativeStatus === 'confirmed') {
+                reportResolution('success');
+                dispatch(
+                    stablecoinYieldActions.resolveWrappedNativeStep({
+                        ...sessionParams,
+                        step: pendingTransaction.type,
+                        amount: pendingTransaction.amount,
+                    }),
+                );
+            }
+
+            return;
+        }
+
+        if (!trackedPendingTransaction || isPending(trackedPendingTransaction)) {
+            return;
+        }
 
         if (trackedPendingTransaction.type === 'failed') {
             reportResolution('error');
@@ -315,19 +350,6 @@ export const useYieldPendingTransactionTracking = ({
             return;
         }
 
-        if (pendingTransaction.type === 'wrap' || pendingTransaction.type === 'unwrap') {
-            reportResolution('success');
-            dispatch(
-                stablecoinYieldActions.resolveWrappedNativeStep({
-                    ...sessionParams,
-                    step: pendingTransaction.type,
-                    amount: pendingTransaction.amount,
-                }),
-            );
-
-            return;
-        }
-
         if (pendingTransaction.type !== 'approve') {
             reportResolution('success');
             dispatch(
@@ -369,5 +391,6 @@ export const useYieldPendingTransactionTracking = ({
         trackedPendingTransaction,
         vault,
         waitForMerklToResolveClaim,
+        wrappedNativeStatus,
     ]);
 };
