@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
@@ -12,7 +11,6 @@ import {
     getMaxWrapAmount,
     getYieldVaultContractAddress,
     shouldRecommendWrapReserve,
-    stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
@@ -26,7 +24,6 @@ import {
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
-    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
 import { WrappedNativeTokenAmountInputCard } from '../components/WrappedNativeTokenAmountInputCard';
@@ -42,17 +39,8 @@ import { YieldWrappedNativeStepFooter } from '../components/YieldWrappedNativeSt
 import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
-import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
-import {
-    type PreparedWrappedNativeTokenAction,
-    useWrappedNativeTokenFees,
-} from '../hooks/useWrappedNativeTokenFees';
-import { useWrappedNativeTokenForm } from '../hooks/useWrappedNativeTokenForm';
-import { useWrappedNativeTxSimulation } from '../hooks/useWrappedNativeTxSimulation';
 import { useYieldCurrencyToggleAnalytics } from '../hooks/useYieldCurrencyToggleAnalytics';
-import { useYieldPendingTransaction } from '../hooks/useYieldPendingTransaction';
-import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
-import { useYieldSession } from '../hooks/useYieldSession';
+import { useYieldWrappedNativeStep } from '../hooks/useYieldWrappedNativeStep';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositWrap>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldDepositWrap>;
@@ -60,9 +48,7 @@ type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoute
 export const YieldDepositWrapScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const dispatch = useDispatch();
     const isFocused = useIsFocused();
-    const navigateToInitialScreen = useNavigateToInitialScreen();
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const {
@@ -117,64 +103,53 @@ export const YieldDepositWrapScreen = () => {
         variant: wrapDisabledVariant,
     } = useMessageSystemWrappedNative('wrap');
 
-    const session = useYieldSession({
-        flowKey,
-        flowType: 'deposit',
-        isWrappedNativeVault,
-        shouldDisposeOnGoBack: true,
-    });
-    const isWrapSessionReady = session?.step === 'wrap';
-
     const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
     const nativeBalance = account?.formattedBalance ?? '0';
 
-    const form = useWrappedNativeTokenForm({
+    const handleSkipAnalytics = useCallback(() => {
+        analytics.report({
+            type: events.yieldDepositEvent.name,
+            payload: {
+                action: 'cancel',
+                type: 'wrap',
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
+        });
+    }, [account?.symbol, analytics, vault?.id]);
+
+    const handleSubmitAnalytics = useCallback(() => {
+        analytics.report({
+            type: events.yieldDepositEvent.name,
+            payload: {
+                action: 'continue',
+                type: 'wrap',
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
+        });
+    }, [account?.symbol, analytics, vault?.id]);
+
+    const handleNavigateToReview = useCallback(() => {
+        navigation.navigate(YieldStackRoutes.YieldDepositWrapReview, route.params);
+    }, [navigation, route.params]);
+
+    const step = useYieldWrappedNativeStep({
+        account,
         availableBalance: nativeBalance,
         decimals: account ? getNetwork(account.symbol).decimals : 0,
+        flowKey,
+        flowType: 'deposit',
+        isDisabled: isWrapDisabled || isDepositDisabled,
+        isWrappedNativeVault,
+        onNavigateToReview: handleNavigateToReview,
+        onSkipAnalytics: handleSkipAnalytics,
+        onSubmitAnalytics: handleSubmitAnalytics,
+        step: 'wrap',
         tokenSymbol: nativeSymbol,
-    });
-    const { amountValue } = form;
-    const {
-        formState: { isValid },
-    } = form.form;
-
-    const {
-        pendingBottomSheetRef,
-        pendingModalProps,
-        pendingTransaction: wrapPendingTransaction,
-        reopenPendingBottomSheet,
-    } = useYieldPendingTransaction({
-        accountKey: account?.key,
-        isFocused,
-        pendingTransaction: session?.action.pendingTransaction,
-        transactionType: 'wrap',
-    });
-    const isWrapPending = !!wrapPendingTransaction;
-    const isWrapAmountReady = isValid && !!amountValue;
-    const isFeeSectionDisplayed = isWrapAmountReady && !isWrapPending;
-
-    const wrapFee = useWrappedNativeTokenFees({
-        account: account ?? null,
-        amount: amountValue,
-        flowType: 'wrap',
-        isEnabled: isFeeSectionDisplayed && isWrapSessionReady,
-    });
-
-    useShowYieldTransactionFailureAlert({
-        error: session?.error,
-        flowKey,
-        flowType: 'deposit',
-        isEnabled: isFocused,
-    });
-
-    useYieldPendingTransactionTracking({
-        account,
-        flowKey,
-        flowType: 'deposit',
-        isScreenFocused: isFocused,
-        pendingTransaction: wrapPendingTransaction,
         vault,
     });
+    const { amountValue, fees, session, simulation } = step;
 
     useEffect(() => {
         if (!isFocused || !session) {
@@ -192,86 +167,10 @@ export const YieldDepositWrapScreen = () => {
         }
     }, [isFocused, navigation, route.params, session]);
 
-    const handleSkip = useCallback(() => {
-        if (!flowKey || isWrapPending) {
-            return;
-        }
-
-        analytics.report({
-            type: events.yieldDepositEvent.name,
-            payload: {
-                action: 'cancel',
-                type: 'wrap',
-                networkSymbol: account?.symbol,
-                vaultId: vault?.id,
-            },
-        });
-
-        dispatch(
-            stablecoinYieldActions.resolveWrappedNativeStep({
-                flowType: 'deposit',
-                flowKey,
-                step: 'wrap',
-            }),
-        );
-    }, [account?.symbol, analytics, dispatch, flowKey, isWrapPending, vault?.id]);
-
-    const handleSubmitAnalytics = useCallback(() => {
-        analytics.report({
-            type: events.yieldDepositEvent.name,
-            payload: {
-                action: 'continue',
-                type: 'wrap',
-                networkSymbol: account?.symbol,
-                vaultId: vault?.id,
-            },
-        });
-    }, [account?.symbol, analytics, vault?.id]);
-
-    const handleSimulationConfirmed = useCallback(
-        (preparedWrap: PreparedWrappedNativeTokenAction) => {
-            if (!flowKey) {
-                return;
-            }
-
-            dispatch(
-                stablecoinYieldActions.storeWrappedNativeReviewData({
-                    flowType: 'deposit',
-                    flowKey,
-                    step: 'wrap',
-                    amount: preparedWrap.amount,
-                    unsignedTransaction: preparedWrap.unsignedTransaction,
-                }),
-            );
-            navigation.navigate(YieldStackRoutes.YieldDepositWrapReview, route.params);
-        },
-        [dispatch, flowKey, navigation, route.params],
-    );
-
-    const simulation = useWrappedNativeTxSimulation({
-        amountValue,
-        isDisabled: isWrapDisabled || isDepositDisabled,
-        onConfirm: handleSimulationConfirmed,
-        onSubmit: handleSubmitAnalytics,
-        preparedAction: wrapFee.preparedAction,
-    });
-
-    const handleClose = useCallback(() => {
-        const isWrapRemovedByPopToTop = navigation.getState().routes.length > 1;
-
-        navigateToInitialScreen();
-
-        if (!isWrapRemovedByPopToTop || !flowKey || isWrapPending) {
-            return;
-        }
-
-        dispatch(stablecoinYieldActions.disposeSession({ flowType: 'deposit', flowKey }));
-    }, [dispatch, flowKey, isWrapPending, navigateToInitialScreen, navigation]);
-
     const handleCloseInfoBottomSheet = useCallback(() => {
         closeInfoBottomSheet();
-        reopenPendingBottomSheet();
-    }, [closeInfoBottomSheet, reopenPendingBottomSheet]);
+        step.reopenPendingBottomSheet();
+    }, [closeInfoBottomSheet, step]);
 
     if (resolutionStatus !== 'resolved' || !isWrappedNativeVault) {
         return null;
@@ -282,10 +181,10 @@ export const YieldDepositWrapScreen = () => {
     const hasWrappedTokenBalance = isPositiveBalance(token.balance);
     const isReserveRecommended = shouldRecommendWrapReserve(amountValue ?? '', nativeBalance);
     const isSubmitDisabled =
-        !isWrapAmountReady ||
-        !wrapFee.isFeeReady ||
-        !isWrapSessionReady ||
-        isWrapPending ||
+        !step.isAmountReady ||
+        !fees.isFeeReady ||
+        !step.isStepSessionReady ||
+        step.isStepPending ||
         isDepositDisabled ||
         isWrapDisabled;
 
@@ -295,7 +194,7 @@ export const YieldDepositWrapScreen = () => {
             header={
                 <YieldDepositFlowScreenHeader
                     account={account}
-                    closeAction={handleClose}
+                    closeAction={step.handleClose}
                     onInfoPress={openInfoBottomSheet}
                     title={vaultTokenName}
                     tokenContract={route.params.tokenContract}
@@ -305,15 +204,17 @@ export const YieldDepositWrapScreen = () => {
                 <YieldWrappedNativeStepFooter
                     flowType="wrap"
                     isSubmitDisabled={isSubmitDisabled}
-                    isSubmitLoading={wrapFee.isFeePreparing}
-                    onSkip={hasWrappedTokenBalance && !isWrapPending ? handleSkip : undefined}
+                    isSubmitLoading={fees.isFeePreparing}
+                    onSkip={
+                        hasWrappedTokenBalance && !step.isStepPending ? step.handleSkip : undefined
+                    }
                     onSubmit={simulation.handleSubmit}
                     spentSymbol={nativeSymbol}
                 />
             }
         >
-            <Box pointerEvents={isWrapPending ? 'none' : 'auto'}>
-                <Form form={form.form}>
+            <Box pointerEvents={step.isStepPending ? 'none' : 'auto'}>
+                <Form form={step.form.form}>
                     <VStack spacing="sp16">
                         <YieldDepositStepCard
                             currentStepId="wrap"
@@ -356,7 +257,7 @@ export const YieldDepositWrapScreen = () => {
                             />
                         </Box>
 
-                        {isWrapAmountReady && (
+                        {step.isAmountReady && (
                             <Box paddingHorizontal="sp16">
                                 <YieldWrappedNativeReceivingCard
                                     amount={amountValue ?? '0'}
@@ -407,27 +308,27 @@ export const YieldDepositWrapScreen = () => {
                             </Box>
                         )}
 
-                        {isFeeSectionDisplayed && (
+                        {step.isFeeSectionDisplayed && (
                             <Box paddingHorizontal="sp16">
-                                <YieldFeeSection accountKey={account.key} fees={wrapFee} />
+                                <YieldFeeSection accountKey={account.key} fees={fees} />
                             </Box>
                         )}
                     </VStack>
                 </Form>
             </Box>
-            {wrapPendingTransaction && pendingModalProps && (
+            {step.pendingTransaction && step.pendingModalProps && (
                 <YieldPendingTransactionModal
-                    ref={pendingBottomSheetRef}
+                    ref={step.pendingBottomSheetRef}
                     accountLabel={accountLabel}
                     accountSymbol={account.symbol}
-                    amount={wrapPendingTransaction.amount}
+                    amount={step.pendingTransaction.amount}
                     amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
                     amountTokenSymbol={nativeSymbol}
-                    fee={pendingModalProps.fee}
-                    isExploreDisabled={pendingModalProps.isExploreDisabled}
-                    onExplorePress={pendingModalProps.onExplorePress}
-                    submittedAt={pendingModalProps.submittedAt}
-                    txid={pendingModalProps.txid}
+                    fee={step.pendingModalProps.fee}
+                    isExploreDisabled={step.pendingModalProps.isExploreDisabled}
+                    onExplorePress={step.pendingModalProps.onExplorePress}
+                    submittedAt={step.pendingModalProps.submittedAt}
+                    txid={step.pendingModalProps.txid}
                     title={<Translation id="earn.wrapNativeToken.pendingTransactionTitle" />}
                     vaultName={vaultTokenName}
                     vaultTokenContract={route.params.tokenContract}

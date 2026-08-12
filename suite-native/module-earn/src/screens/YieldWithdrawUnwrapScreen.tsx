@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
@@ -9,7 +8,6 @@ import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config
 import {
     type YieldWithdrawFlowType,
     getConvertedOutputTokenBalanceToInputTokenAmount,
-    stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
@@ -21,7 +19,6 @@ import {
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
-    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
@@ -36,17 +33,8 @@ import { YieldWrappedNativeReceivingCard } from '../components/YieldWrappedNativ
 import { YieldWrappedNativeStepFooter } from '../components/YieldWrappedNativeStepFooter';
 import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
-import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
-import {
-    type PreparedWrappedNativeTokenAction,
-    useWrappedNativeTokenFees,
-} from '../hooks/useWrappedNativeTokenFees';
-import { useWrappedNativeTokenForm } from '../hooks/useWrappedNativeTokenForm';
-import { useWrappedNativeTxSimulation } from '../hooks/useWrappedNativeTxSimulation';
 import { useYieldCurrencyToggleAnalytics } from '../hooks/useYieldCurrencyToggleAnalytics';
-import { useYieldPendingTransaction } from '../hooks/useYieldPendingTransaction';
-import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
-import { useYieldSession } from '../hooks/useYieldSession';
+import { useYieldWrappedNativeStep } from '../hooks/useYieldWrappedNativeStep';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawUnwrap>;
 type NavigationProps = StackNavigationProps<
@@ -57,9 +45,7 @@ type NavigationProps = StackNavigationProps<
 export const YieldWithdrawUnwrapScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const dispatch = useDispatch();
     const isFocused = useIsFocused();
-    const navigateToInitialScreen = useNavigateToInitialScreen();
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const flowType: YieldWithdrawFlowType = route.params.withdrawFlowType ?? 'withdraw';
@@ -101,18 +87,58 @@ export const YieldWithdrawUnwrapScreen = () => {
         });
     }, [account?.symbol, analytics, vault?.id]);
 
-    const session = useYieldSession({
-        flowKey,
-        flowType,
-        isWrappedNativeVault,
-        shouldDisposeOnGoBack: true,
-    });
-    const isUnwrapSessionReady = session?.step === 'unwrap';
-
     const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
     const wrappedBalance = token?.balance ?? '0';
 
+    const handleSkipAnalytics = useCallback(() => {
+        analytics.report({
+            type: events.yieldWithdrawEvent.name,
+            payload: {
+                action: 'cancel',
+                type: 'unwrap',
+                operation: flowType,
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
+        });
+    }, [account?.symbol, analytics, flowType, vault?.id]);
+
+    const handleSubmitAnalytics = useCallback(() => {
+        analytics.report({
+            type: events.yieldWithdrawEvent.name,
+            payload: {
+                action: 'continue',
+                type: 'unwrap',
+                operation: flowType,
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
+        });
+    }, [account?.symbol, analytics, flowType, vault?.id]);
+
+    const handleNavigateToReview = useCallback(() => {
+        navigation.navigate(YieldStackRoutes.YieldWithdrawUnwrapReview, route.params);
+    }, [navigation, route.params]);
+
+    const step = useYieldWrappedNativeStep({
+        account,
+        availableBalance: wrappedBalance,
+        decimals: token?.decimals ?? 0,
+        flowKey,
+        flowType,
+        isDisabled: isUnwrapDisabled,
+        isWrappedNativeVault,
+        onNavigateToReview: handleNavigateToReview,
+        onSkipAnalytics: handleSkipAnalytics,
+        onSubmitAnalytics: handleSubmitAnalytics,
+        step: 'unwrap',
+        tokenSymbol: token?.symbol ?? '',
+        vault,
+    });
+    const { amountValue, fees, isSheetPresented, session, simulation } = step;
+
     const completedAmount = session?.result.completedAmount;
+    const isUnwrapSessionReady = step.isStepSessionReady;
     const withdrawnAmount = useMemo(() => {
         if (
             resolutionStatus !== 'resolved' ||
@@ -153,55 +179,6 @@ export const YieldWithdrawUnwrapScreen = () => {
         wrappedBalance,
     ]);
 
-    const form = useWrappedNativeTokenForm({
-        availableBalance: wrappedBalance,
-        decimals: token?.decimals ?? 0,
-        tokenSymbol: token?.symbol ?? '',
-    });
-    const { amountValue } = form;
-    const {
-        formState: { isValid },
-    } = form.form;
-
-    const {
-        displayedPendingTransaction,
-        isSheetPresented,
-        pendingBottomSheetRef,
-        pendingModalProps,
-        pendingTransaction: unwrapPendingTransaction,
-    } = useYieldPendingTransaction({
-        accountKey: account?.key,
-        isFocused,
-        pendingTransaction: session?.action.pendingTransaction,
-        transactionType: 'unwrap',
-    });
-    const isUnwrapPending = !!unwrapPendingTransaction;
-    const isUnwrapAmountReady = isValid && !!amountValue;
-    const isFeeSectionDisplayed = isUnwrapAmountReady && !isUnwrapPending;
-
-    const unwrapFee = useWrappedNativeTokenFees({
-        account: account ?? null,
-        amount: amountValue,
-        flowType: 'unwrap',
-        isEnabled: isFeeSectionDisplayed && isUnwrapSessionReady,
-    });
-
-    useShowYieldTransactionFailureAlert({
-        error: session?.error,
-        flowKey,
-        flowType,
-        isEnabled: isFocused,
-    });
-
-    useYieldPendingTransactionTracking({
-        account,
-        flowKey,
-        flowType,
-        isScreenFocused: isFocused,
-        pendingTransaction: unwrapPendingTransaction,
-        vault,
-    });
-
     useEffect(() => {
         if (!isFocused) {
             return;
@@ -230,84 +207,6 @@ export const YieldWithdrawUnwrapScreen = () => {
         }
     }, [flowType, isFocused, isSheetPresented, navigation, route.params, session?.step]);
 
-    const handleSkip = useCallback(() => {
-        if (!flowKey || isUnwrapPending) {
-            return;
-        }
-
-        analytics.report({
-            type: events.yieldWithdrawEvent.name,
-            payload: {
-                action: 'cancel',
-                type: 'unwrap',
-                operation: flowType,
-                networkSymbol: account?.symbol,
-                vaultId: vault?.id,
-            },
-        });
-
-        dispatch(
-            stablecoinYieldActions.resolveWrappedNativeStep({
-                flowType,
-                flowKey,
-                step: 'unwrap',
-            }),
-        );
-    }, [account?.symbol, analytics, dispatch, flowKey, flowType, isUnwrapPending, vault?.id]);
-
-    const handleSubmitAnalytics = useCallback(() => {
-        analytics.report({
-            type: events.yieldWithdrawEvent.name,
-            payload: {
-                action: 'continue',
-                type: 'unwrap',
-                operation: flowType,
-                networkSymbol: account?.symbol,
-                vaultId: vault?.id,
-            },
-        });
-    }, [account?.symbol, analytics, flowType, vault?.id]);
-
-    const handleSimulationConfirmed = useCallback(
-        (preparedUnwrap: PreparedWrappedNativeTokenAction) => {
-            if (!flowKey) {
-                return;
-            }
-
-            dispatch(
-                stablecoinYieldActions.storeWrappedNativeReviewData({
-                    flowType,
-                    flowKey,
-                    step: 'unwrap',
-                    amount: preparedUnwrap.amount,
-                    unsignedTransaction: preparedUnwrap.unsignedTransaction,
-                }),
-            );
-            navigation.navigate(YieldStackRoutes.YieldWithdrawUnwrapReview, route.params);
-        },
-        [dispatch, flowKey, flowType, navigation, route.params],
-    );
-
-    const simulation = useWrappedNativeTxSimulation({
-        amountValue,
-        isDisabled: isUnwrapDisabled,
-        onConfirm: handleSimulationConfirmed,
-        onSubmit: handleSubmitAnalytics,
-        preparedAction: unwrapFee.preparedAction,
-    });
-
-    const handleClose = useCallback(() => {
-        const isUnwrapRemovedByPopToTop = navigation.getState().routes.length > 1;
-
-        navigateToInitialScreen();
-
-        if (!isUnwrapRemovedByPopToTop || !flowKey || isUnwrapPending) {
-            return;
-        }
-
-        dispatch(stablecoinYieldActions.disposeSession({ flowType, flowKey }));
-    }, [dispatch, flowKey, flowType, isUnwrapPending, navigateToInitialScreen, navigation]);
-
     if (resolutionStatus !== 'resolved' || !isWrappedNativeVault) {
         return null;
     }
@@ -316,10 +215,10 @@ export const YieldWithdrawUnwrapScreen = () => {
     const wrappedTokenSymbol = toTokenSymbol(token.symbol);
     const wrappedTokenContract = toTokenAddress(token.contractAddress ?? '');
     const isSubmitDisabled =
-        !isUnwrapAmountReady ||
-        !unwrapFee.isFeeReady ||
-        !isUnwrapSessionReady ||
-        isUnwrapPending ||
+        !step.isAmountReady ||
+        !fees.isFeeReady ||
+        !step.isStepSessionReady ||
+        step.isStepPending ||
         isUnwrapDisabled;
 
     return (
@@ -328,7 +227,7 @@ export const YieldWithdrawUnwrapScreen = () => {
             header={
                 <YieldDepositFlowScreenHeader
                     account={account}
-                    closeAction={handleClose}
+                    closeAction={step.handleClose}
                     closeActionType="back"
                     title={vaultTokenName}
                     tokenContract={route.params.tokenContract}
@@ -339,15 +238,15 @@ export const YieldWithdrawUnwrapScreen = () => {
                     flowType="unwrap"
                     isSkipFirst
                     isSubmitDisabled={isSubmitDisabled}
-                    isSubmitLoading={unwrapFee.isFeePreparing}
-                    onSkip={isUnwrapPending ? undefined : handleSkip}
+                    isSubmitLoading={fees.isFeePreparing}
+                    onSkip={step.isStepPending ? undefined : step.handleSkip}
                     onSubmit={simulation.handleSubmit}
                     spentSymbol={wrappedTokenSymbol}
                 />
             }
         >
-            <Box pointerEvents={isUnwrapPending ? 'none' : 'auto'}>
-                <Form form={form.form}>
+            <Box pointerEvents={step.isStepPending ? 'none' : 'auto'}>
+                <Form form={step.form.form}>
                     <VStack spacing="sp16">
                         {isUnwrapDisabled && (
                             <Box paddingHorizontal="sp16">
@@ -393,7 +292,7 @@ export const YieldWithdrawUnwrapScreen = () => {
                             />
                         </Box>
 
-                        {isUnwrapAmountReady && (
+                        {step.isAmountReady && (
                             <Box paddingHorizontal="sp16">
                                 <YieldWrappedNativeReceivingCard
                                     amount={amountValue ?? ''}
@@ -415,11 +314,11 @@ export const YieldWithdrawUnwrapScreen = () => {
                             </Box>
                         )}
 
-                        {isFeeSectionDisplayed && (
+                        {step.isFeeSectionDisplayed && (
                             <Box paddingHorizontal="sp16">
                                 <YieldFeeSection
                                     accountKey={account.key}
-                                    fees={unwrapFee}
+                                    fees={fees}
                                     tokenContract={wrappedTokenContract}
                                 />
                             </Box>
@@ -427,21 +326,21 @@ export const YieldWithdrawUnwrapScreen = () => {
                     </VStack>
                 </Form>
             </Box>
-            {displayedPendingTransaction && pendingModalProps && (
+            {step.displayedPendingTransaction && step.pendingModalProps && (
                 <YieldPendingTransactionModal
-                    ref={pendingBottomSheetRef}
+                    ref={step.pendingBottomSheetRef}
                     accountLabel={accountLabel}
                     accountSymbol={account.symbol}
-                    amount={displayedPendingTransaction.amount}
+                    amount={step.displayedPendingTransaction.amount}
                     amountLabel={<Translation id="earn.unwrapNativeToken.amountToUnwrap" />}
                     amountTokenContract={wrappedTokenContract}
                     amountTokenSymbol={wrappedTokenSymbol}
-                    fee={pendingModalProps.fee}
-                    isExploreDisabled={pendingModalProps.isExploreDisabled}
-                    onDismiss={pendingModalProps.onDismiss}
-                    onExplorePress={pendingModalProps.onExplorePress}
-                    submittedAt={pendingModalProps.submittedAt}
-                    txid={pendingModalProps.txid}
+                    fee={step.pendingModalProps.fee}
+                    isExploreDisabled={step.pendingModalProps.isExploreDisabled}
+                    onDismiss={step.pendingModalProps.onDismiss}
+                    onExplorePress={step.pendingModalProps.onExplorePress}
+                    submittedAt={step.pendingModalProps.submittedAt}
+                    txid={step.pendingModalProps.txid}
                     title={<Translation id="earn.yieldWithdrawFlowScreen.unwrapPendingTitle" />}
                     vaultName={vaultTokenName}
                     vaultTokenContract={route.params.tokenContract}
