@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { getNetworkDecimals } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { VStack } from '@suite-native/atoms';
@@ -20,11 +19,11 @@ import {
     selectReviewSummaryOutput,
     useActiveStepOffset,
 } from '@suite-native/transaction-management';
-import { BigNumber } from '@trezor/utils';
 
 import { ClaimOutputItem } from './ClaimOutputItem';
 import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
 import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
+import { getAmountInBaseUnits } from '../utils/getAmountInBaseUnits';
 import { getEarnPendingAmountInBaseUnits } from '../utils/getEarnPendingAmountInBaseUnits';
 
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.ClaimTransactionDataReview>;
@@ -56,14 +55,13 @@ export const ClaimTransactionDataReviewStepList = () => {
 
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(activeStep);
 
-    const networkDecimals = accountSymbol ? (getNetworkDecimals(accountSymbol) ?? 18) : 18;
     const isSolanaClaim = !!accountSymbol && isSupportedSolStakingNetworkSymbol(accountSymbol);
 
     // Solana: show composed lamports (totalSpent − fee), fall back to the claimable amount.
     const claimableAmountInWei = getEarnPendingAmountInBaseUnits({
-        fallbackAmountInBaseUnits: new BigNumber(claimableAmount || '0')
-            .times(new BigNumber(10).pow(networkDecimals))
-            .toFixed(0),
+        fallbackAmountInBaseUnits: accountSymbol
+            ? getAmountInBaseUnits(claimableAmount || '0', accountSymbol)
+            : '0',
         isSolanaStaking: isSolanaClaim,
         precomposedTransaction,
     });

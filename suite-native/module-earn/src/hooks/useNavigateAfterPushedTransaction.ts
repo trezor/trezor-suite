@@ -27,18 +27,29 @@ import {
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 
+import { type EarnFormDraftPrefix } from '../types';
 import { resolveStakingTargetRoute } from '../utils/resolveStakingTargetRoute';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
+const stakeTypeCompleteRoute: Record<EarnFormDraftPrefix, RootStackRoutes> = {
+    stake: RootStackRoutes.EarnTransactionComplete,
+    unstake: RootStackRoutes.UnstakeTransactionComplete,
+    claim: RootStackRoutes.ClaimTransactionComplete,
+};
+
 const navigateToPushedTransactionAction = ({
     accountKey,
+    amountInBaseUnits,
+    failedTxid,
+    stakeType,
     symbol,
-    txid,
 }: {
     accountKey: AccountKey;
+    amountInBaseUnits: string;
+    failedTxid?: string;
+    stakeType: EarnFormDraftPrefix;
     symbol: NetworkSymbol;
-    txid: string;
 }) =>
     CommonActions.reset({
         index: 2,
@@ -51,28 +62,39 @@ const navigateToPushedTransactionAction = ({
                 name: resolveStakingTargetRoute(symbol),
                 params: { accountKey },
             },
-            {
-                name: RootStackRoutes.TransactionDetailStack,
-                params: {
-                    screen: TransactionDetailStackRoutes.TransactionDetail,
-                    params: {
-                        accountKey,
-                        txid,
-                        closeActionType: 'close',
-                    },
-                },
-            },
+            // A confirmed transaction can still have failed on-chain (e.g. reverted contract
+            // call) — the complete screen would falsely report success, so show the detail.
+            failedTxid
+                ? {
+                      name: RootStackRoutes.TransactionDetailStack,
+                      params: {
+                          screen: TransactionDetailStackRoutes.TransactionDetail,
+                          params: {
+                              accountKey,
+                              txid: failedTxid,
+                              closeActionType: 'close',
+                          },
+                      },
+                  }
+                : {
+                      name: stakeTypeCompleteRoute[stakeType],
+                      params: { accountKey, amountInBaseUnits },
+                  },
         ],
     });
 
 type UseNavigateAfterPushedTransactionParams = {
     accountKey: AccountKey;
+    amountInBaseUnits: string;
     markReviewNavigationSuccess: () => void;
+    stakeType: EarnFormDraftPrefix;
 };
 
 export const useNavigateAfterPushedTransaction = ({
     accountKey,
+    amountInBaseUnits,
     markReviewNavigationSuccess,
+    stakeType,
 }: UseNavigateAfterPushedTransactionParams) => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
@@ -87,6 +109,7 @@ export const useNavigateAfterPushedTransaction = ({
         selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
     );
     const isTransactionConfirmed = !!transaction && !isTransactionDataPending(transaction);
+    const isTransactionFailed = transaction?.type === 'failed';
 
     const feeInfo = useSelector((state: FeesRootState) =>
         networkSymbol ? selectConvertedNetworkFeeInfo(state, networkSymbol) : null,
@@ -111,15 +134,24 @@ export const useNavigateAfterPushedTransaction = ({
         if (txid && isTransactionConfirmed && networkSymbol) {
             markReviewNavigationSuccess();
             navigation.dispatch(
-                navigateToPushedTransactionAction({ accountKey, symbol: networkSymbol, txid }),
+                navigateToPushedTransactionAction({
+                    accountKey,
+                    amountInBaseUnits,
+                    failedTxid: isTransactionFailed ? txid : undefined,
+                    stakeType,
+                    symbol: networkSymbol,
+                }),
             );
         }
     }, [
         accountKey,
+        amountInBaseUnits,
         isTransactionConfirmed,
+        isTransactionFailed,
         markReviewNavigationSuccess,
         navigation,
         networkSymbol,
+        stakeType,
         txid,
     ]);
 

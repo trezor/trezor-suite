@@ -52,6 +52,14 @@ export const EarnTransactionDataReviewScreen = ({
 
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction('stake', accountKey);
 
+    const isSolanaStake = !!account && isSupportedSolStakingNetworkSymbol(account.symbol);
+
+    const pendingAmountInBaseUnits = getEarnPendingAmountInBaseUnits({
+        fallbackAmountInBaseUnits: account ? getAmountInBaseUnits(amount, account.symbol) : '0',
+        isSolanaStaking: isSolanaStake,
+        precomposedTransaction,
+    });
+
     const { handleSign, handlePush, closeReview, markReviewNavigationSuccess } =
         useHandleOnEarnTransactionReview({
             accountKey,
@@ -61,7 +69,9 @@ export const EarnTransactionDataReviewScreen = ({
     const { trackPushedTransaction, pendingTxid, isPending, submittedAt } =
         useNavigateAfterPushedTransaction({
             accountKey,
+            amountInBaseUnits: pendingAmountInBaseUnits,
             markReviewNavigationSuccess,
+            stakeType: 'stake',
         });
 
     const { pendingBottomSheetRef, isExploreDisabled, openInBlockchain } =
@@ -106,14 +116,6 @@ export const EarnTransactionDataReviewScreen = ({
 
         setIsPushing(false);
     }, [handlePush, trackPushedTransaction]);
-
-    const isSolanaStake = !!account && isSupportedSolStakingNetworkSymbol(account.symbol);
-
-    const pendingAmountInBaseUnits = getEarnPendingAmountInBaseUnits({
-        fallbackAmountInBaseUnits: account ? getAmountInBaseUnits(amount, account.symbol) : '0',
-        isSolanaStaking: isSolanaStake,
-        precomposedTransaction,
-    });
 
     return (
         <ConfirmOnTrezorWrapper
