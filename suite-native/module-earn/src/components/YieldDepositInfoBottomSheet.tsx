@@ -16,7 +16,7 @@ import { Translation } from '@suite-native/intl';
 import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { HowEarnWorksBenefitsSection } from './HowEarnWorks/HowEarnWorksBenefitsSection';
 import { HowEarnWorksTimelineCard } from './HowEarnWorks/HowEarnWorksTimelineCard';
-import { useHowYieldWorksPreset } from '../presets/HowEarnWorks/yieldPresets';
+import { useHowYieldWorksPreset } from './HowEarnWorks/yieldPresets';
 
 type YieldDepositInfoBottomSheetProps = {
     apy: number | null;
