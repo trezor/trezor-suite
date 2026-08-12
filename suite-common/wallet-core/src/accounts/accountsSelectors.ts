@@ -38,6 +38,23 @@ export const selectAccountsByDeviceState = createMemoizedSelector(
         pipe(getAccountsByDeviceState(accounts, deviceState), returnStableArrayIfEmpty),
 );
 
+export const selectAccountsByDeviceStateAndNetworkSymbol = createMemoizedSelector(
+    [
+        selectAccountsByDeviceState,
+        (
+            _state: AccountsRootState & DeviceRootState,
+            _deviceState: StaticSessionId | DeviceState,
+            networkSymbol: NetworkSymbol,
+        ) => networkSymbol,
+    ],
+    (accounts, networkSymbol) =>
+        pipe(
+            accounts,
+            A.filter(account => account.symbol === networkSymbol),
+            returnStableArrayIfEmpty,
+        ),
+);
+
 export const selectDeviceAccounts = createMemoizedSelector(
     [selectAccounts, selectSelectedDevice],
     (accounts, device) => {
