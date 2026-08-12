@@ -39,10 +39,47 @@ export const getContractAddressForNetworkSymbol = (
 // Moved next to the WRAPPED_NATIVE config it reads; re-exported here for existing consumers.
 export { isWrappedNativeToken } from '@suite-common/wallet-config';
 
-export const getAssetLogoContractAddresses = async (
+type StellarRuntime = Awaited<ReturnType<typeof stellar>>;
+
+let loadedStellarRuntime: StellarRuntime | undefined;
+let stellarRuntimePromise: Promise<StellarRuntime> | undefined;
+
+// the Stellar module is chunk-split on web, so it is fetched lazily on the first
+// XLM call and cached, which lets all subsequent calls read it synchronously
+const loadStellarRuntime = () => {
+    stellarRuntimePromise ??= stellar().then(runtime => {
+        loadedStellarRuntime = runtime;
+
+        return runtime;
+    });
+
+    return stellarRuntimePromise;
+};
+
+const getXlmAssetLogoContractAddresses = (contract: string, stellarRuntime: StellarRuntime) => {
+    try {
+        const { sorobanAssetContractId } = stellarRuntime.computeSorobanAssetContractId(contract);
+
+        // keep the classic contract first until CoinGecko finishes the Stellar migration
+        // once Soroban ids become the primary CDN key, flip the order to reduce retries
+        return [contract, sorobanAssetContractId];
+    } catch {
+        // a malformed classic contract has no derivable Soroban ID
+        // but the classic ID itself may still resolve on the CDN
+        return [contract];
+    }
+};
+
+/**
+ * Returns the contract address candidates under which an asset logo may be stored on the
+ * CoinGecko CDN. Resolves synchronously whenever possible so hot paths like token icon lists
+ * can render without an async placeholder frame; only the first xlm call returns a promise
+ * while the lazily loaded stellar module is being fetched.
+ */
+export const getAssetLogoContractAddresses = (
     symbol: NetworkSymbolExtended | undefined,
     contract: string | null | undefined,
-) => {
+): string[] | Promise<string[]> | undefined => {
     if (!contract || !symbol) return undefined;
 
     if (symbol === 'ada') {
@@ -57,13 +94,13 @@ export const getAssetLogoContractAddresses = async (
     // filename. Fall back to the locally-derived Soroban asset contract id so
     // the icon is still reachable.
     if (symbol === 'xlm') {
-        const { computeSorobanAssetContractId } = await stellar();
-        const { sorobanAssetContractId } = computeSorobanAssetContractId(contract);
+        if (loadedStellarRuntime) {
+            return getXlmAssetLogoContractAddresses(contract, loadedStellarRuntime);
+        }
 
-        // Keep the classic contract first until CoinGecko finishes the Stellar
-        // migration. Once Soroban ids become the primary CDN key, flip the
-        // order to reduce retries.
-        return [contract, sorobanAssetContractId];
+        return loadStellarRuntime().then(stellarRuntime =>
+            getXlmAssetLogoContractAddresses(contract, stellarRuntime),
+        );
     }
 
     return [getContractAddressForNetworkSymbol(symbol, contract)];
