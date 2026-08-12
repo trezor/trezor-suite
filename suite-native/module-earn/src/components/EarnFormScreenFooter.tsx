@@ -1,6 +1,10 @@
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getNetwork,
+    getNetworkDisplaySymbol,
+} from '@suite-common/wallet-config';
 import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { selectApy, useSelector as useStakingSelector } from '@suite-native/staking';
@@ -62,6 +66,7 @@ export const EarnFormScreenFooter = ({
                             <EarnEstimatedRewards
                                 amountValue={amountValue}
                                 apy={apy}
+                                decimals={getNetwork(symbol).decimals}
                                 label={
                                     <Translation id="earn.earnFormScreen.estimatedRewardsLabel" />
                                 }

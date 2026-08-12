@@ -10,6 +10,7 @@ import { formatEarnAmount } from '../utils/earnAmountUtils';
 type EarnEstimatedRewardsProps = {
     amountValue: string;
     apy: number | null;
+    decimals: number;
     label: ReactNode;
     symbol: string;
 };
@@ -17,12 +18,17 @@ type EarnEstimatedRewardsProps = {
 export const EarnEstimatedRewards = ({
     amountValue,
     apy,
+    decimals,
     label,
     symbol,
 }: EarnEstimatedRewardsProps) => {
     const locale = useSelector(selectSupportedLanguageLocale);
 
-    const rewards = formatEarnAmount({ amount: calculateRewards(amountValue, apy), locale });
+    const rewards = formatEarnAmount({
+        amount: calculateRewards(amountValue, apy),
+        locale,
+        maxDecimals: decimals,
+    });
 
     return (
         <VStack spacing="sp4" paddingHorizontal="sp16">

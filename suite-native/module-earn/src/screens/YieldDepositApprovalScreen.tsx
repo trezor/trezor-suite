@@ -390,6 +390,7 @@ export const YieldDepositApprovalScreen = () => {
                     amountValue={amountValue}
                     approvalAction={footerApprovalAction}
                     apy={apy}
+                    decimals={token.decimals}
                     isDisabled={isSubmitDisabled}
                     isLoading={isCheckingApproval}
                     isSkipDisabled={isApprovalPending || isCheckingApproval}

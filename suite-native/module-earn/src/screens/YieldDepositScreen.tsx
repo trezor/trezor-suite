@@ -406,6 +406,7 @@ export const YieldDepositScreen = () => {
                 <YieldDepositFlowFooter
                     amountValue={amountValue}
                     apy={apy}
+                    decimals={token.decimals}
                     isDisabled={isSubmitDisabled}
                     isLoading={isActionSubmitting}
                     onPress={handleContinue}

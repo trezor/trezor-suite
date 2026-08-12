@@ -25,6 +25,7 @@ type YieldDepositFlowFooterProps = {
     amountValue: string | undefined;
     apy: number | null;
     approvalAction?: YieldApprovalAction;
+    decimals: number;
     isDisabled: boolean;
     isLoading?: boolean;
     isSkipDisabled?: boolean;
@@ -53,6 +54,7 @@ export const YieldDepositFlowFooter = ({
     amountValue,
     apy,
     approvalAction,
+    decimals,
     isDisabled,
     isLoading = false,
     isSkipDisabled = false,
@@ -84,6 +86,7 @@ export const YieldDepositFlowFooter = ({
                                 <EarnEstimatedRewards
                                     amountValue={amountValue}
                                     apy={apy}
+                                    decimals={decimals}
                                     label={
                                         <Translation id="earn.yieldDepositFlowScreen.estimatedRewardsLabel" />
                                     }

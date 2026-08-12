@@ -8,6 +8,8 @@ import { type EarnDepositsCardActiveItem } from '../types';
 type FormatEarnAmountParams = {
     amount: string;
     locale: Locale;
+    /** Precision of the amount's token, so a computed estimate can't show digits it has no room for. */
+    maxDecimals?: number;
 };
 
 type FormatEarnTokenAmountParams = FormatEarnAmountParams & {
@@ -20,14 +22,14 @@ const COIN_BALANCE_DUST_THRESHOLD = new BigNumber('1e-8');
 /**
  * Formats an amount without its symbol, for callers rendering the symbol as a separate element.
  */
-export const formatEarnAmount = ({ amount, locale }: FormatEarnAmountParams) => {
+export const formatEarnAmount = ({ amount, locale, maxDecimals }: FormatEarnAmountParams) => {
     // A fixed decimal cap would round dust-sized deposited and received amounts away to zero.
     const amountBig = new BigNumber(amount);
     const isBelowCoinBalancePrecision =
         !amountBig.isZero() && amountBig.abs().lt(COIN_BALANCE_DUST_THRESHOLD);
 
     return isBelowCoinBalancePrecision
-        ? localizeNumber(amount, locale)
+        ? localizeNumber(amount, locale, 0, maxDecimals)
         : formatCoinBalance(amount, locale);
 };
 

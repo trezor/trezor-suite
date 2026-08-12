@@ -48,6 +48,26 @@ describe(formatEarnAmount.name, () => {
             '0.000000000000000001',
         );
     });
+
+    it('never shows more decimals than the token has, so a computed estimate cannot invent digits', () => {
+        expect(
+            formatEarnAmount({
+                amount: '0.0000000000396296292690000246913578',
+                locale: 'en-US',
+                maxDecimals: 18,
+            }),
+        ).toBe('0.000000000039629629');
+    });
+
+    it('rounds a sub-unit estimate to zero rather than showing digits the token cannot hold', () => {
+        expect(
+            formatEarnAmount({
+                amount: '0.000000000000000000000321',
+                locale: 'en-US',
+                maxDecimals: 18,
+            }),
+        ).toBe('0');
+    });
 });
 
 describe(formatEarnTokenAmount.name, () => {
