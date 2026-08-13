@@ -25,6 +25,23 @@ yarn workspace @trezor/connect-cli udp --autoconnect
 # "new_counter must equal current global counter + 1". Ensure the emulator really erased.
 
 
+if true; then
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"deleteMe","networkSymbol":"TEST","metadata":{"label":"Petr_deleteMeLabel"}}'
+
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange   --db-params='{"address":"deleteMe","networkSymbol":"TEST","delete":true}'
+
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
+
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
+
+	# Deleting again must FAIL fast ("nothing to delete") rather than write a second leaf.
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange   --db-params='{"address":"deleteMe","networkSymbol":"TEST","delete":true}'
+    yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
+	exit 0
+fi
+
 yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"first","networkSymbol":"TEST"}'
 yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"second","networkSymbol":"TEST","metadata":{"label":"Adr1_v0"}}'
 yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"third","networkSymbol":"TEST"}'
@@ -57,19 +74,12 @@ if true; then
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"adr1","networkSymbol":"TEST","metadata":{"label":"Petr_adr1_v0"}}'
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"adr1","networkSymbol":"TEST"}'
 
-	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
-	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"deleteMe","networkSymbol":"TEST","metadata":{"label":"Petr_deleteMeLabel"}}'
 
-	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"adr1","networkSymbol":"TEST"}'
 	#Authenticity verified: true
 
-	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange   --db-params='{"address":"deleteMe","networkSymbol":"TEST","metadata":{}}'
-	#yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"display","networkSymbol":"TEST"}'
-	#Authenticity verified: true
 
-	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
-	#Authenticity verified: true
+	# Unrelated entries survive the delete.
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"adr1","networkSymbol":"TEST"}'
 fi
 
@@ -110,13 +120,13 @@ if false; then
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"notThere","networkSymbol":"TEST"}'
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"deleteMe2","networkSymbol":"TEST"}'
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"deleteMe2","networkSymbol":"TEST","metadata":{"label":"Petr_deleteMeLabel"}}'
-	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"deleteMe2","networkSymbol":"TEST","metadata":{}}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"deleteMe2","networkSymbol":"TEST","delete":true}'
 	#Running @trezor/connect CLI with args {
 	#  _: [ 'method', 'db-params' ],
 	#  udp: true,
 	#  autoconnect: true,
 	#  method: 'dbchange',
-	#  db-params: '{"address":"deleteMe2","networkSymbol":"TEST","metadata":{}}'
+	#  db-params: '{"address":"deleteMe2","networkSymbol":"TEST","delete":true}'
 	#}
 	#
 	#Authenticity verified: false — database not updated

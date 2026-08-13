@@ -308,6 +308,10 @@ import {
     TronWithdrawUnfreeze,
 } from './messages-tron';
 import {
+    WARDConfirmBatchByWM,
+    WARDConfirmBatchByWMAck,
+    WARDConfirmRevertByWM,
+    WARDConfirmRevertByWMAck,
     WARDConfirmedByWM,
     WARDConfirmedByWMAck,
     WARDDebugSetRoot,
@@ -322,6 +326,10 @@ import {
     WARDListPendingEditsAck,
     WARDLookup,
     WARDLookupAck,
+    WARDPerformBatch,
+    WARDPerformBatchAck,
+    WARDPerformRevert,
+    WARDPerformRevertAck,
     WARDPerformUpdate,
     WARDPerformUpdateAck,
     WARDProofAck,
@@ -332,9 +340,10 @@ import {
     WARDReconcileAck,
     WARDSync,
     WARDSyncAck,
+    WARDVerifyChain,
+    WARDVerifyChainAck,
 } from './messages-ward';
 
-export type * from './messages-authdb';
 export type * from './options';
 export * from './messages-common';
 export * from './messages-bitcoin';
@@ -345,6 +354,7 @@ export * from './messages-crypto';
 export * from './messages-management';
 export * from './messages-debug';
 export * from './messages-definitions';
+export * from './messages-ward';
 export * from './messages-display_address';
 export * from './messages-eos';
 export * from './messages-ethereum';
@@ -358,7 +368,6 @@ export * from './messages-telemetry';
 export * from './messages-tezos';
 export * from './messages-thp';
 export * from './messages-tron';
-export * from './messages-ward';
 export type * from './messages';
 
 export type MessageType = Static<typeof MessageType>;
@@ -503,6 +512,40 @@ export const MessageType = Type.Object(
         DebugLinkN4W1Write,
         DebugLinkN4W1Read,
         DebugLinkN4W1Response,
+        WARDQueueUpdate,
+        WARDQueueUpdateAck,
+        WARDPerformUpdate,
+        WARDPerformUpdateAck,
+        WARDConfirmedByWM,
+        WARDConfirmedByWMAck,
+        WARDSync,
+        WARDSyncAck,
+        WARDIngestAttestation,
+        WARDIngestAttestationAck,
+        WARDListPendingEdits,
+        WARDListPendingEditsAck,
+        WARDReconcile,
+        WARDReconcileAck,
+        WARDLookup,
+        WARDLookupAck,
+        WARDDebugSetRoot,
+        WARDDebugSetRootAck,
+        WARDProofRequest,
+        WARDProofAck,
+        WARDExportKeys,
+        WARDExportKeysAck,
+        WARDDiscardPending,
+        WARDDiscardPendingAck,
+        WARDPerformBatch,
+        WARDPerformBatchAck,
+        WARDConfirmBatchByWM,
+        WARDConfirmBatchByWMAck,
+        WARDPerformRevert,
+        WARDPerformRevertAck,
+        WARDConfirmRevertByWM,
+        WARDConfirmRevertByWMAck,
+        WARDVerifyChain,
+        WARDVerifyChainAck,
         DisplayAddress,
         DisplayAddressWithProof,
         EosGetPublicKey,
@@ -645,30 +688,6 @@ export const MessageType = Type.Object(
         TronWithdrawUnfreeze,
         TronWithdrawBalance,
         TronSignature,
-        WARDQueueUpdate,
-        WARDQueueUpdateAck,
-        WARDPerformUpdate,
-        WARDPerformUpdateAck,
-        WARDConfirmedByWM,
-        WARDConfirmedByWMAck,
-        WARDSync,
-        WARDSyncAck,
-        WARDIngestAttestation,
-        WARDIngestAttestationAck,
-        WARDListPendingEdits,
-        WARDListPendingEditsAck,
-        WARDReconcile,
-        WARDReconcileAck,
-        WARDLookup,
-        WARDLookupAck,
-        WARDDebugSetRoot,
-        WARDDebugSetRootAck,
-        WARDProofRequest,
-        WARDProofAck,
-        WARDExportKeys,
-        WARDExportKeysAck,
-        WARDDiscardPending,
-        WARDDiscardPendingAck,
     },
     { $id: 'MessageType' },
 );
@@ -761,6 +780,23 @@ export type WireInMessage =
     | 'UnlockBootloader'
     | 'SetBrightness'
     | 'GetSerialNumber'
+    | 'WARDQueueUpdate'
+    | 'WARDPerformUpdate'
+    | 'WARDConfirmedByWM'
+    | 'WARDSync'
+    | 'WARDIngestAttestation'
+    | 'WARDListPendingEdits'
+    | 'WARDReconcile'
+    | 'WARDLookup'
+    | 'WARDDebugSetRoot'
+    | 'WARDProofAck'
+    | 'WARDExportKeys'
+    | 'WARDDiscardPending'
+    | 'WARDPerformBatch'
+    | 'WARDConfirmBatchByWM'
+    | 'WARDPerformRevert'
+    | 'WARDConfirmRevertByWM'
+    | 'WARDVerifyChain'
     | 'DisplayAddress'
     | 'DisplayAddressWithProof'
     | 'EosGetPublicKey'
@@ -844,19 +880,7 @@ export type WireInMessage =
     | 'TronFreezeBalanceV2Contract'
     | 'TronUnfreezeBalanceV2Contract'
     | 'TronWithdrawUnfreeze'
-    | 'TronWithdrawBalance'
-    | 'WARDQueueUpdate'
-    | 'WARDPerformUpdate'
-    | 'WARDConfirmedByWM'
-    | 'WARDSync'
-    | 'WARDIngestAttestation'
-    | 'WARDListPendingEdits'
-    | 'WARDReconcile'
-    | 'WARDLookup'
-    | 'WARDDebugSetRoot'
-    | 'WARDProofAck'
-    | 'WARDExportKeys'
-    | 'WARDDiscardPending';
+    | 'TronWithdrawBalance';
 
 export type WireOutMessage =
     | 'Success'
@@ -899,6 +923,23 @@ export type WireOutMessage =
     | 'Nonce'
     | 'UnlockedPathRequest'
     | 'SerialNumber'
+    | 'WARDQueueUpdateAck'
+    | 'WARDPerformUpdateAck'
+    | 'WARDConfirmedByWMAck'
+    | 'WARDSyncAck'
+    | 'WARDIngestAttestationAck'
+    | 'WARDListPendingEditsAck'
+    | 'WARDReconcileAck'
+    | 'WARDLookupAck'
+    | 'WARDDebugSetRootAck'
+    | 'WARDProofRequest'
+    | 'WARDExportKeysAck'
+    | 'WARDDiscardPendingAck'
+    | 'WARDPerformBatchAck'
+    | 'WARDConfirmBatchByWMAck'
+    | 'WARDPerformRevertAck'
+    | 'WARDConfirmRevertByWMAck'
+    | 'WARDVerifyChainAck'
     | 'EosPublicKey'
     | 'EosTxActionRequest'
     | 'EosSignedTx'
@@ -956,19 +997,7 @@ export type WireOutMessage =
     | 'ThpEndResponse'
     | 'TronAddress'
     | 'TronContractRequest'
-    | 'TronSignature'
-    | 'WARDQueueUpdateAck'
-    | 'WARDPerformUpdateAck'
-    | 'WARDConfirmedByWMAck'
-    | 'WARDSyncAck'
-    | 'WARDIngestAttestationAck'
-    | 'WARDListPendingEditsAck'
-    | 'WARDReconcileAck'
-    | 'WARDLookupAck'
-    | 'WARDDebugSetRootAck'
-    | 'WARDProofRequest'
-    | 'WARDExportKeysAck'
-    | 'WARDDiscardPendingAck';
+    | 'TronSignature';
 
 export type MessageKey = keyof MessageType;
 

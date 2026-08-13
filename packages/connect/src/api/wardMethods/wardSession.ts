@@ -18,8 +18,9 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { MessagesSchema as Messages } from '@trezor/protobuf';
+import type { LeafPart } from '@trezor/ward';
 
-import { readLeafContent } from './leafContent';
+import { readLeafContent, readLeafIdentity } from './leafContent';
 import type { DeviceCommands } from '../../device/DeviceCommands';
 
 type Cmd = ReturnType<typeof DeviceCommands>;
@@ -35,7 +36,6 @@ export type WardHead = { counter: number; mac?: string };
 export type WardSyncResult = {
     nonce: string;
     version: number;
-    walletId?: string;
     wardId?: string;
 };
 
@@ -43,23 +43,22 @@ export type WardSyncResult = {
 export type WardInstalled = {
     counter: number;
     root?: string;
-    walletId?: string;
     rootMac?: string;
 };
 
 /** The authorized candidate returned by perform (WARDPerformUpdateAck). Includes the
- * device-produced encrypted leaf blob the host must store (it can't compute it). */
+ * device-produced leaf — BOTH parts — which the host must store because it cannot
+ * encode a sealed part itself. `entryKey` is the LeafIdentityMAC and becomes the
+ * record's key; `keyType` is clear (it selects both keys). */
 export type WardCandidate = {
     counter: number;
     root?: string;
     mac?: string;
-    walletId?: string;
     wardId?: string;
     entryKey?: string;
-    entryType?: string;
-    nonce?: string;
-    tag?: string;
-    ct?: string;
+    keyType?: string;
+    identity?: LeafPart;
+    content?: LeafPart;
 };
 
 export class WardSession {
@@ -80,7 +79,6 @@ export class WardSession {
         return {
             nonce: message.nonce,
             version: message.version,
-            walletId: message.wallet_id,
             wardId: message.ward_id,
         };
     }
@@ -108,7 +106,6 @@ export class WardSession {
         return {
             counter: message.counter,
             root: message.new_root,
-            walletId: message.wallet_id,
             rootMac: message.root_mac,
         };
     }
@@ -119,7 +116,7 @@ export class WardSession {
         appId: string,
         address: string,
         newValueHex: string,
-    ): Promise<{ pendingId?: number; walletId?: string }> {
+    ): Promise<{ pendingId?: number }> {
         this.vlog('-> WARDQueueUpdate');
         const { message } = await this.cmd.typedCall('WARDQueueUpdate', 'WARDQueueUpdateAck', {
             address: utf8Hex(address),
@@ -128,7 +125,7 @@ export class WardSession {
         });
         this.vlog('<- WARDQueueUpdateAck', message);
 
-        return { pendingId: message.pending_id, walletId: message.wallet_id };
+        return { pendingId: message.pending_id };
     }
 
     /**
@@ -160,13 +157,14 @@ export class WardSession {
                 counter: message.counter,
                 root: message.new_root,
                 mac: message.mac,
-                walletId: message.wallet_id,
                 wardId: message.ward_id,
-                // The device is the encryptor: store the leaf blob it returned. The wire
-                // carries it as a self-describing LeafContent; decode to the flat triple.
+                // The device is the encoder: store the leaf it returned, both parts. The
+                // wire carries each part as a self-describing oneof; decode to LeafParts.
+                // key_type rides on LeafIdentity (it selects both keys, so it is clear).
                 entryKey: message.entry_key,
-                entryType: message.entry_type,
-                ...readLeafContent(message.content),
+                keyType: readLeafIdentity(message.identity).keyType,
+                identity: readLeafIdentity(message.identity).part,
+                content: readLeafContent(message.content),
             };
         } finally {
             this.cmd.setWardProofCallback(undefined);
@@ -192,7 +190,6 @@ export class WardSession {
         return {
             counter: message.counter,
             root: message.new_root,
-            walletId: message.wallet_id,
             rootMac: message.root_mac,
         };
     }
@@ -229,15 +226,6 @@ export class WardSession {
         });
     }
 
-    /** Verify a membership / non-membership proof against the device's authenticated root. */
-    async lookup(params: Messages.WARDLookup): Promise<Messages.WARDLookupAck> {
-        this.vlog('-> WARDLookup');
-        const { message } = await this.cmd.typedCall('WARDLookup', 'WARDLookupAck', params);
-        this.vlog('<- WARDLookupAck', message);
-
-        return message;
-    }
-
     /**
      * PULL verify: send WARDLookup with NO pushed proof material, so the device
      * computes the target entry_key itself, emits WARDProofRequest, and returns the
@@ -264,29 +252,6 @@ export class WardSession {
         } finally {
             this.cmd.setWardProofCallback(undefined);
         }
-    }
-
-    /** Report the device's queued pending-edit addresses (and echoed identities). */
-    async listPending(): Promise<{
-        addresses: string[];
-        pendingIds: number[];
-        walletId?: string;
-        wardId?: string;
-    }> {
-        this.vlog('-> WARDListPendingEdits');
-        const { message } = await this.cmd.typedCall(
-            'WARDListPendingEdits',
-            'WARDListPendingEditsAck',
-            {},
-        );
-        this.vlog('<- WARDListPendingEditsAck', message);
-
-        return {
-            addresses: message.addresses ?? [],
-            pendingIds: message.pending_ids ?? [],
-            walletId: message.wallet_id,
-            wardId: message.ward_id,
-        };
     }
 
     /**

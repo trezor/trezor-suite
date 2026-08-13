@@ -2,7 +2,7 @@ import type { MessagesSchema as Messages } from '@trezor/protobuf';
 import type { BlobRow } from '@trezor/ward';
 import { nonMembershipByKey, proofByKey } from '@trezor/ward';
 
-import { makeLeafContent } from './leafContent';
+import { makeLeafContent, makeLeafIdentity } from './leafContent';
 
 /**
  * Build the WARDProofAck the device pulls on demand, serving purely BY the opaque
@@ -10,12 +10,12 @@ import { makeLeafContent } from './leafContent';
  * (the host holds no keys and cannot compute entry_key/leaf itself).
  *
  *   empty tree      → {} (INIT)
- *   membership      → entry_type + nonce/tag/ct + proof
+ *   membership      → identity + content + proof (both leaf parts)
  *   non-membership  → witness_entry_key + witness_commit + proof (two hashes only)
  *
  * Mirrors trezorlib ward.build_proof_ack. Must stay in sync with the WARDProofAck
- * wire fields (entry_type/nonce/tag/ct/witness_commit) — a rename not regenerated
- * would silently drop a field and make the device reject the proof.
+ * wire fields (identity/content/witness_commit) — a rename not regenerated would
+ * silently drop a field and make the device reject the proof.
  */
 export const buildAckByKey = (rows: BlobRow[], entryKeyHex: string): Messages.WARDProofAck => {
     if (rows.length === 0) return { proof: [] };
@@ -24,8 +24,8 @@ export const buildAckByKey = (rows: BlobRow[], entryKeyHex: string): Messages.WA
     if (membership) {
         return {
             proof: proofByKey(rows, entryKeyHex),
-            entry_type: membership.entryType ?? 'address',
-            content: makeLeafContent(membership.nonceHex, membership.tagHex, membership.ctHex),
+            content: makeLeafContent(membership.content),
+            identity: makeLeafIdentity(membership.keyType, membership.identity),
         };
     }
 

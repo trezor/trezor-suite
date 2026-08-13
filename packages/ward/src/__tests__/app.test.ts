@@ -1,4 +1,4 @@
-import { commitLocal, loadEntry, loadHead, prepareChange, proofFor } from '../app';
+import { commitLocal, loadEntry, loadHead, prepareChange } from '../app';
 import { InMemoryWardDb } from '../storage';
 import type { WardLabel } from '../types';
 
@@ -38,54 +38,25 @@ describe('ward app layer', () => {
 
     it('prepareChange classifies insert vs update and builds an OLD-state proof', async () => {
         const db = seed();
-        const { rows } = await loadHead(db, WARD_ID);
 
         const update = prepareChange(
-            rows,
-            APP,
             await loadEntry(db, WARD_ID, APP, 'bc1qalice', NET),
-            'bc1qalice',
             NET,
             { label: 'alice2' },
             1,
         );
         expect(update.op).toBe('update');
-        expect(update.oldProof.kind).toBe('membership');
 
-        const insert = prepareChange(rows, APP, null, 'bc1qcarol', NET, { label: 'carol' }, 1);
+        const insert = prepareChange(null, NET, { label: 'carol' }, 1);
         expect(insert.op).toBe('insert');
-        expect(insert.oldProof.kind).toBe('non-membership');
     });
 
-    it('newValueHex is counter-free (strict model): same metadata → same value regardless of counter', async () => {
-        const db = seed();
-        const { rows } = await loadHead(db, WARD_ID);
+    it('newValueHex is counter-free (strict model): same metadata → same value regardless of counter', () => {
         const md: WardLabel = { label: 'x' };
-        const a = prepareChange(rows, APP, null, 'bc1qx', NET, md, 0); // newEntry.counter = 1
-        const b = prepareChange(rows, APP, null, 'bc1qx', NET, md, 41); // newEntry.counter = 42
+        const a = prepareChange(null, NET, md, 0); // newEntry.counter = 1
+        const b = prepareChange(null, NET, md, 41); // newEntry.counter = 42
         expect(a.newEntry.counter).not.toBe(b.newEntry.counter);
         expect(a.newValueHex).toBe(b.newValueHex); // counter is NOT in the value bytes
-    });
-
-    it('proofFor returns a normalized hex package for membership and non-membership', async () => {
-        const db = seed();
-        const { rows } = await loadHead(db, WARD_ID);
-        const m = proofFor(
-            rows,
-            APP,
-            'bc1qalice',
-            NET,
-            await loadEntry(db, WARD_ID, APP, 'bc1qalice', NET),
-        );
-        expect(m.kind).toBe('membership');
-        if (m.kind === 'membership') expect(typeof m.valueHex).toBe('string');
-        const n = proofFor(rows, APP, 'bc1qnope', NET, null);
-        expect(n.kind).toBe('non-membership');
-        // The witness is two hashes only — never a plaintext identifier/value.
-        if (n.kind === 'non-membership') {
-            expect(typeof n.witnessEntryKeyHex).toBe('string');
-            expect(typeof n.witnessValueHashHex).toBe('string');
-        }
     });
 
     it('commitLocal persists the DEVICE-confirmed counter, not a host guess', async () => {
@@ -108,6 +79,37 @@ describe('ward app layer', () => {
             counter: 7,
         });
         expect(await db.getTreeState(WARD_ID)).toEqual({ root: 'cafe', counter: 7, mac: 'f00d' });
+    });
+
+    it('commitLocal with deleted:true REMOVES the row (full delete, not empty update)', async () => {
+        const db = seed();
+        // A WARD delete removes the leaf from the trie, so the host record must go too.
+        // Keeping it (an "update to empty") would leave loadEntry answering with stale
+        // metadata for an entry the device can prove absent, and would feed a blob-less
+        // row to blobRows.
+        await commitLocal(db, WARD_ID, APP, 'bc1qalice', NET, {}, { counter: 8, deleted: true });
+
+        expect(await loadEntry(db, WARD_ID, APP, 'bc1qalice', NET)).toBeNull();
+        // the row is gone from the row set entirely, not merely blob-less
+        const rows = await db.getAllEntries(WARD_ID);
+        expect(rows.map(r => r.address)).toEqual(['bc1qbob']);
+    });
+
+    it('prepareChange: metadata:{} is an UPDATE, only delete:true is a delete', async () => {
+        // The tombstone bug: `metadata: {}` serializes to `${networkSymbol}:{}` — e.g.
+        // "TEST:{}", 7 non-empty bytes — so the device UPDATES the leaf and the entry
+        // survives. An empty new_value is the device's delete sentinel, and only an
+        // explicit delete produces one.
+        const existing = await loadEntry(seed(), WARD_ID, APP, 'bc1qalice', NET);
+
+        const emptyMeta = prepareChange(existing, NET, {}, 1);
+        expect(emptyMeta.op).toBe('update');
+        expect(emptyMeta.newValueHex).not.toBe('');
+        expect(Buffer.from(emptyMeta.newValueHex, 'hex').toString()).toBe('btc:{}');
+
+        const removed = prepareChange(existing, NET, {}, 1, true);
+        expect(removed.op).toBe('delete');
+        expect(removed.newValueHex).toBe('');
     });
 
     // TODO(handoff, gap 4): add API-boundary cold-start / inconsistent-head cases

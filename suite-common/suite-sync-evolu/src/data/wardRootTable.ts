@@ -1,3 +1,11 @@
+// FIXME(ward, UNWIRED): no reader. The Evolu-backed WardProvider that used these
+// (createEvoluWardDataProvider) was deleted -- it imported AuthLabelEntry/
+// AuthLabelProvider/AuthLabelRow, type names that no longer exist in @trezor/ward, so
+// it could not type-check, and it had no consumer. These tables ALSO cannot back the
+// current contract: there is no entryKey, no leaf envelope (identity/content) and no
+// transitions column, so a proof could never be served from them. A rewrite must add
+// those columns first (planned_fixes Gap 5). Table kept for the root checkpoint schema shape.
+
 import { NonEmptyString1000, id, nullOr, object } from '@evolu/common';
 
 /**

@@ -4,23 +4,19 @@
 
 // Proof (Merkle / MPT) primitives.
 export {
-    computeLeafHash,
     entryToValueBytes,
-    valueHexToEntry,
-    generateMerkleProof,
-    computeMerkleRoot,
-    generateNonMembershipProof,
-    evaluateProof,
     // keyed / encrypted-leaf model (serve proofs by the device's entry_key)
     commitOf,
     leafFromCommit,
     computeRootFromBlobs,
     proofByKey,
     nonMembershipByKey,
-    // leaf mode (encrypted 0x02 <-> plaintext 0x04) — mirrors firmware WARD_PLAINTEXT_LEAVES
-    wardLeafMode,
+    // two-part leaf (LeafIdentity + LeafContent)
+    ENC_ENCRYPTED,
+    ENC_PLAINTEXT,
+    EMPTY_PART,
 } from './proof';
-export type { BlobRow } from './proof';
+export type { BlobRow, LeafPart } from './proof';
 
 // Shared DTO types.
 export type * from './types';

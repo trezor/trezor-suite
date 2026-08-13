@@ -30,6 +30,13 @@ export const WardUpdateSchema = Type.Object({
     networkSymbol: Type.String(),
     metadata: WardLabelSchema,
     /**
+     * Request a FULL delete: the device removes the leaf from the trie and the host
+     * drops the record. Explicit on purpose -- `metadata: {}` is an UPDATE to the value
+     * `"<networkSymbol>:{}"`, not a delete, so clearing a label in a UI must not be
+     * able to destroy the record by accident. `metadata` is ignored when this is set.
+     */
+    delete: Type.Optional(Type.Boolean()),
+    /**
      * WM-facing wardId (SLIP21-derived) identifying which wallet's root checkpoint
      * this update belongs to; obtained from wardInit. The device echoes its own
      * ward_id and it must match (defense in depth).

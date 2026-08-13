@@ -3,6 +3,16 @@
 // DO NOT EDIT
 import { type Static, Type } from '@trezor/schema-utils';
 
+export type EncryptedIdentity = Static<typeof EncryptedIdentity>;
+export const EncryptedIdentity = Type.Object(
+    {
+        nonce: Type.Optional(Type.String()),
+        tag: Type.Optional(Type.String()),
+        ct: Type.Optional(Type.String()),
+    },
+    { $id: 'EncryptedIdentity' },
+);
+
 export type EncryptedLeaf = Static<typeof EncryptedLeaf>;
 export const EncryptedLeaf = Type.Object(
     {
@@ -31,12 +41,33 @@ export const LeafContent = Type.Object(
     { $id: 'LeafContent' },
 );
 
+export type PlainIdentity = Static<typeof PlainIdentity>;
+export const PlainIdentity = Type.Object(
+    {
+        identifier: Type.Optional(Type.String()),
+        app_id: Type.Optional(Type.String()),
+        device_id: Type.Optional(Type.Number()),
+    },
+    { $id: 'PlainIdentity' },
+);
+
+export type LeafIdentity = Static<typeof LeafIdentity>;
+export const LeafIdentity = Type.Object(
+    {
+        encoding: Type.Optional(Type.Number()),
+        key_type: Type.Optional(Type.String()),
+        encrypted: Type.Optional(EncryptedIdentity),
+        plain: Type.Optional(PlainIdentity),
+    },
+    { $id: 'LeafIdentity' },
+);
+
 export type WARDBatchLeaf = Static<typeof WARDBatchLeaf>;
 export const WARDBatchLeaf = Type.Object(
     {
         entry_key: Type.String(),
-        entry_type: Type.Optional(Type.String()),
         content: Type.Optional(LeafContent),
+        identity: Type.Optional(LeafIdentity),
     },
     { $id: 'WARDBatchLeaf' },
 );
@@ -166,9 +197,10 @@ export const WARDExportKeys = Type.Object(
 export type WARDExportKeysAck = Static<typeof WARDExportKeysAck>;
 export const WARDExportKeysAck = Type.Object(
     {
-        k_index: Type.Optional(Type.String()),
+        k_path: Type.Optional(Type.String()),
         k_data: Type.Optional(Type.String()),
         key_type: Type.Optional(Type.String()),
+        k_ident: Type.Optional(Type.String()),
     },
     { $id: 'WARDExportKeysAck' },
 );
@@ -219,6 +251,7 @@ export const WARDLookup = Type.Object(
         key_type: Type.Optional(Type.String()),
         device_id: Type.Optional(Type.Number()),
         content: Type.Optional(LeafContent),
+        identity: Type.Optional(LeafIdentity),
     },
     { $id: 'WARDLookup' },
 );
@@ -302,8 +335,8 @@ export const WARDPerformUpdateAck = Type.Object(
         wallet_id: Type.Optional(Type.String()),
         ward_id: Type.Optional(Type.String()),
         entry_key: Type.Optional(Type.String()),
-        entry_type: Type.Optional(Type.String()),
         content: Type.Optional(LeafContent),
+        identity: Type.Optional(LeafIdentity),
     },
     { $id: 'WARDPerformUpdateAck' },
 );
@@ -314,8 +347,8 @@ export const WARDProofAck = Type.Object(
         proof: Type.Array(Type.String()),
         witness_entry_key: Type.Optional(Type.String()),
         witness_commit: Type.Optional(Type.String()),
-        entry_type: Type.Optional(Type.String()),
         content: Type.Optional(LeafContent),
+        identity: Type.Optional(LeafIdentity),
     },
     { $id: 'WARDProofAck' },
 );

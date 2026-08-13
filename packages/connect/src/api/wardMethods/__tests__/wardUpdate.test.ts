@@ -261,19 +261,18 @@ describe('wardUpdate', () => {
         });
     });
 
-    it('runs offline (no device) by persisting locally and recomputing the root', async () => {
+    it('REJECTS an offline write — there is no keyless write path', async () => {
+        // The offline branch used to upsert locally and recompute a root with the
+        // pre-HMAC unkeyed model, which could never match the device's. A write must be
+        // authorized by the device: the host holds no keys, so it can neither encode a
+        // leaf nor compute an acceptable root.
         const provider = buildProvider();
         settingsStore.update({ wardDataProvider: provider });
 
         const method = buildMethod({});
-        const result = await method.run();
-
-        expect(provider.upsert).toHaveBeenCalledWith(WARD_ID, 'btc', 'bc1qaddr', 'btc', {
-            metadata: { label: 'x' },
-            counter: 1,
-        });
-        expect(result.counter).toBe(1);
-        expect(typeof result.root).toBe('string');
+        await expect(method.run()).rejects.toThrow(/requires a device/);
+        expect(provider.upsert).not.toHaveBeenCalled();
+        expect(provider.setTreeState).not.toHaveBeenCalled();
     });
 
     it('surfaces localCacheError instead of throwing when the device already committed', async () => {

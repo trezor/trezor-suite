@@ -81,6 +81,10 @@ class MockWardManagerService implements WardManagerService {
  * plumbed through. The commit endpoint returns 409 on a compare-and-set conflict,
  * surfaced here as WardCommitConflictError.
  */
+// FIXME(ward, UNWIRED): never instantiated. setWardManagerService() is called only
+// from tests, so the default MockWardManagerService is what signs every WARD
+// attestation in the running product -- with the well-known debug seed. This must be
+// wired before anything ships.
 export class HttpWardManagerService implements WardManagerService {
     private readonly baseUrl: string;
 

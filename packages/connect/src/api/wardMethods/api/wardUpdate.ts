@@ -3,7 +3,7 @@ import type { MethodPermission } from '@trezor/connect-common';
 import { WardUpdateSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
-import { blobRows, commitLocal, loadHead, offlineRoot, prepareChange } from '@trezor/ward';
+import { EMPTY_PART, blobRows, commitLocal, loadHead, prepareChange } from '@trezor/ward';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
@@ -57,8 +57,16 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
                 'wardUpdate requires wardDataProvider to be set via TrezorConnect.init()',
             );
         }
+        // Device-only: a write must be authorized by the device. There is no offline
+        // write path — the host holds no keys, so it cannot encode a leaf or compute a
+        // root the device would accept. (The removed offline branch computed a root with
+        // the pre-HMAC unkeyed model, which could never match the device's.)
+        if (!this.useDevice) {
+            throw ERRORS.TypedError('Runtime', 'wardUpdate requires a device');
+        }
         const wardManager = getWardManagerService();
         const { appId, address, networkSymbol, metadata, wardId } = this.params;
+        const removing = this.params.delete === true;
         const vlog = (...m: unknown[]) => console.log('[wardUpdate]', ...m);
 
         // --- Application flow: resolve DB state + prepare the requested change. ---
@@ -75,14 +83,20 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
             );
         }
         const oldEntry = await provider.lookup(wardId, appId, address, networkSymbol);
+        // A delete needs an existing entry: the device proves membership of the leaf it
+        // is removing, so a delete of an absent address cannot produce a valid round.
+        if (removing && oldEntry === null) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                `wardUpdate: nothing to delete at ${appId}/${address} (${networkSymbol})`,
+            );
+        }
         const change = prepareChange(
-            rows,
-            appId,
             oldEntry,
-            address,
             networkSymbol,
             metadata,
             tree?.counter ?? 0,
+            removing,
         );
         vlog('ENTER', {
             wardId,
@@ -90,16 +104,7 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
             address,
             networkSymbol,
             op: change.op,
-            mode: this.useDevice ? 'device' : 'offline',
         });
-
-        if (!this.useDevice) {
-            await provider.upsert(wardId, appId, address, networkSymbol, change.newEntry);
-            const root = offlineRoot(await provider.getAllEntries(wardId));
-            await provider.setTreeState(wardId, { root, counter: change.newEntry.counter });
-
-            return { counter: change.newEntry.counter, root };
-        }
 
         // --- WARD flow: authenticated round via the device transport seam. ---
         const session = new WardSession(this.getDevice().getCommands(), vlog);
@@ -175,17 +180,19 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
                 counter: installed.counter,
                 root: installed.root,
                 rootMac: installed.rootMac,
-                // Persist the device's encrypted leaf blob so future proofs (and roots)
-                // are served by entry_key. Present for insert/update (non-empty ct).
+                // A FULL delete: the device removed the leaf, so drop the row entirely
+                // rather than keep an empty-valued one.
+                deleted: candidate.content === undefined || candidate.content.bodyHex === '',
+                // Persist the device's leaf (both parts) so future proofs (and roots) are
+                // served by entry_key. Present for insert/update (non-empty content body).
                 ...(candidate.entryKey !== undefined &&
-                    candidate.ct !== undefined &&
-                    candidate.ct !== '' && {
+                    candidate.content !== undefined &&
+                    candidate.content.bodyHex !== '' && {
                         blob: {
                             entryKey: candidate.entryKey,
-                            entryType: candidate.entryType ?? 'address',
-                            nonce: candidate.nonce ?? '',
-                            tag: candidate.tag ?? '',
-                            ct: candidate.ct,
+                            keyType: candidate.keyType ?? 'address',
+                            identity: candidate.identity ?? EMPTY_PART,
+                            content: candidate.content,
                         },
                     }),
             });
@@ -217,10 +224,9 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
                     leaves: [
                         {
                             entryKey: candidate.entryKey ?? '',
-                            entryType: candidate.entryType ?? 'address',
-                            nonce: candidate.nonce ?? '',
-                            tag: candidate.tag ?? '',
-                            ct: candidate.ct ?? '',
+                            keyType: candidate.keyType ?? 'address',
+                            identity: candidate.identity ?? EMPTY_PART,
+                            content: candidate.content ?? EMPTY_PART,
                         },
                     ],
                 });

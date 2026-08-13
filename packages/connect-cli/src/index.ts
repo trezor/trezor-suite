@@ -320,15 +320,20 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
 
             if (method === 'dbchange') {
                 const { address, networkSymbol, metadata: rawMetadata } = params;
-                if (!address || !networkSymbol || !rawMetadata) {
+                // Explicit delete. `metadata:{}` is NOT a delete -- it updates the leaf to
+                // the literal value "<networkSymbol>:{}" and the entry survives as a
+                // tombstone. A delete needs no metadata.
+                const removing = params.delete === true;
+                if (!address || !networkSymbol || (!rawMetadata && !removing)) {
                     console.error(
-                        'dbchange requires --db-params=\'{"address":"...","networkSymbol":"...","metadata":{...}}\' ',
+                        'dbchange requires --db-params=\'{"address":"...","networkSymbol":"...","metadata":{...}}\'\n' +
+                            '  or, to delete: --db-params=\'{"address":"...","networkSymbol":"...","delete":true}\'',
                     );
                     process.exit(1);
                 }
                 const metadata: WardLabel = {
-                    ...(rawMetadata.label !== undefined && { label: String(rawMetadata.label) }),
-                    ...(rawMetadata.data !== undefined && { data: rawMetadata.data }),
+                    ...(rawMetadata?.label !== undefined && { label: String(rawMetadata.label) }),
+                    ...(rawMetadata?.data !== undefined && { data: rawMetadata.data }),
                 };
 
                 // Domain the entry is written to; defaults to the network symbol
@@ -341,6 +346,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     networkSymbol,
                     metadata,
                     wardId,
+                    ...(removing && { delete: true }),
                 });
                 if (!result.success) {
                     console.error('wardUpdate failed:', result);

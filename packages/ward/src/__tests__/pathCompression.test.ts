@@ -15,43 +15,54 @@ const BLOBS: BlobRow[] = [
         'b6d56e46fb665738a83c99fca9e215b1ac0b7cb19b5a659ca98bbf2e67b3e49f',
         '101010101010101010101010',
         '20202020202020202020202020202020',
+        '6964656e746974792d30',
+        '303030303030303030303030',
+        '40404040404040404040404040404040',
         '636970686572746578742d30',
     ],
     [
         '358b7591f24d313e523c7b34b8bd513e4310e08d058aee11d679ba41958853fe',
         '111111111111111111111111',
         '21212121212121212121212121212121',
+        '6964656e746974792d31',
+        '313131313131313131313131',
+        '41414141414141414141414141414141',
         '636970686572746578742d31',
     ],
     [
         'a4d69d3ec67354d851fc9ffae6d68e2fd15cfbebbcfe4cb4067b6fac22907e6b',
         '121212121212121212121212',
         '22222222222222222222222222222222',
+        '6964656e746974792d32',
+        '323232323232323232323232',
+        '42424242424242424242424242424242',
         '636970686572746578742d32',
     ],
     [
         'f88fb2e0a370e737e5c4e0c36ea8badcde2e8ec947ba1325f417e07f229bb21a',
         '131313131313131313131313',
         '23232323232323232323232323232323',
+        '6964656e746974792d33',
+        '333333333333333333333333',
+        '43434343434343434343434343434343',
         '636970686572746578742d33',
     ],
-].map(([entryKeyHex, nonceHex, tagHex, ctHex]) => ({
+].map(([entryKeyHex, idNonce, idTag, idBody, valNonce, valTag, valBody]) => ({
     entryKeyHex: entryKeyHex!,
-    nonceHex: nonceHex!,
-    tagHex: tagHex!,
-    ctHex: ctHex!,
-    entryType: 'address',
+    keyType: 'address',
+    identity: { encoding: 0, nonceHex: idNonce!, tagHex: idTag!, bodyHex: idBody! },
+    content: { encoding: 0, nonceHex: valNonce!, tagHex: valTag!, bodyHex: valBody! },
 }));
 
-// trezorlib.authdb_tree.WARDTree over BLOBS (== firmware):
-const REF_ROOT = '3807c1b543f81f5724c5f1bf0215a0ea94dd80bf9986e84933b4edc7a0ed2115';
+// trezorlib.authdb_tree.WARDTree over BLOBS (== firmware), two-part commit:
+const REF_ROOT = 'acfe9d9b2c3069070aeb21d72dd53cd7dd3245016ba461c09451d715cb2a6a2d';
 const MEMBER_KEY = '358b7591f24d313e523c7b34b8bd513e4310e08d058aee11d679ba41958853fe';
-const MEMBER_PROOF = ['000000008bec33d4889282b0880213c423ed8aebb39c12a63d30926bffc2c0e6945161c0'];
+const MEMBER_PROOF = ['00000000e96a5c3627be9ad15ae404da1ac72b42f1a602039dbc46fa22eb52e6071949d3'];
 const ABSENT_KEY = '5ad38304b535c2987dbd24657c1a11b884984ff600d9f389deb0d4e634fee792';
 const WITNESS_KEY = '358b7591f24d313e523c7b34b8bd513e4310e08d058aee11d679ba41958853fe';
-const WITNESS_COMMIT = 'e3d99ec40812a024b30264dea6e7c0d7904a5229c585b46959ed4b47bb481a11';
+const WITNESS_COMMIT = '2a36629301c9f5965be929bdbb741bbf5980f3829349748045ce20130496bb54';
 const NONMEMBER_PROOF = [
-    '000000008bec33d4889282b0880213c423ed8aebb39c12a63d30926bffc2c0e6945161c0',
+    '00000000e96a5c3627be9ad15ae404da1ac72b42f1a602039dbc46fa22eb52e6071949d3',
 ];
 
 describe('path-compressed trie — cross-impl parity with trezorlib/firmware (keyed path)', () => {

@@ -1,5 +1,4 @@
 import { protobufManager } from '@trezor/protobuf';
-import * as authdbProto from '@trezor/protobuf/src/definitions/messages-authdb_pb';
 import * as bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin_pb';
 import * as bleProto from '@trezor/protobuf/src/definitions/messages-ble_pb';
 import * as bootloaderProto from '@trezor/protobuf/src/definitions/messages-bootloader_pb';
@@ -40,7 +39,6 @@ export const loadProtobufModules = () => {
         eosProto,
         ethereumEip712Proto,
         ethereumProto,
-        authdbProto,
         wardProto,
         evoluProto,
         managementProto,

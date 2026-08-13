@@ -4,15 +4,21 @@ import { computeRootFromBlobs } from '../proof';
 import { InMemoryWardDb } from '../storage';
 import type { WardTransition } from '../types';
 
-// Leaf blobs are opaque to the host — reconstruction only re-derives commit/leaf hashes from
-// (entry_key, nonce, tag, ct), which is keyless. So fixtures can use arbitrary hex; they
-// need not be real ChaCha ciphertexts.
-const blob = (ek: string, ct: string): BlobRow => ({
-    entryKeyHex: ek.repeat(32),
+// Leaf parts are opaque to the host — reconstruction only re-derives commit/leaf hashes
+// from (entry_key, key_type, identity, content), which is keyless. So fixtures can use
+// arbitrary hex; they need not be real ChaCha ciphertexts.
+const part = (bodyHex: string) => ({
+    encoding: 0,
     nonceHex: '01'.repeat(12),
     tagHex: '02'.repeat(16),
-    ctHex: ct,
-    entryType: 'address',
+    bodyHex,
+});
+
+const blob = (ek: string, ct: string): BlobRow => ({
+    entryKeyHex: ek.repeat(32),
+    keyType: 'address',
+    identity: part('99' + ek),
+    content: part(ct),
 });
 
 const rootOf = (rows: BlobRow[]) => computeRootFromBlobs(rows);
@@ -22,7 +28,7 @@ const rootOf = (rows: BlobRow[]) => computeRootFromBlobs(rows);
 const buildChain = () => {
     const A = blob('aa', 'aabb');
     const B = blob('bb', 'ccdd');
-    const A2 = { ...A, ctHex: 'aaee' }; // update A (same entry_key, new ct)
+    const A2 = { ...A, content: part('aaee') }; // update A (same entry_key, new content)
 
     const s1 = [A];
     const s2 = [A, B];
@@ -45,14 +51,28 @@ const buildChain = () => {
         prevRoot,
         targetRoot,
         leaves: [
-            { entryKey: b.entryKeyHex, entryType: 'address', nonce: b.nonceHex, tag: b.tagHex, ct },
+            // A DELETE carries BOTH parts empty — the leaf ceases to exist, so there is
+            // no identity left to describe (no tombstone).
+            ct === ''
+                ? {
+                      entryKey: b.entryKeyHex,
+                      keyType: b.keyType,
+                      identity: { encoding: 1, nonceHex: '', tagHex: '', bodyHex: '' },
+                      content: { encoding: 1, nonceHex: '', tagHex: '', bodyHex: '' },
+                  }
+                : {
+                      entryKey: b.entryKeyHex,
+                      keyType: b.keyType,
+                      identity: b.identity,
+                      content: part(ct),
+                  },
         ],
     });
 
     const transitions: WardTransition[] = [
-        asT(1, '', R1, A, A.ctHex),
-        asT(2, R1, R2, B, B.ctHex),
-        asT(3, R2, R3, A2, A2.ctHex),
+        asT(1, '', R1, A, A.content.bodyHex),
+        asT(2, R1, R2, B, B.content.bodyHex),
+        asT(3, R2, R3, A2, A2.content.bodyHex),
         asT(4, R3, R4, B, ''), // delete B
     ];
 
@@ -68,7 +88,7 @@ describe('§7 hydrate — reconstruct + verify MPT from the transition lineage',
         // Only the surviving leaf (A2) remains; B was deleted.
         expect(res.blobs).toHaveLength(1);
         expect(res.blobs.map(b => b.entryKeyHex)).toEqual([A2.entryKeyHex]);
-        expect(res.blobs.map(b => b.ctHex)).toEqual([A2.ctHex]);
+        expect(res.blobs.map(b => b.content.bodyHex)).toEqual([A2.content.bodyHex]);
         expect(computeRootFromBlobs(res.blobs)).toBe(head);
     });
 
@@ -91,10 +111,9 @@ describe('§7 hydrate — reconstruct + verify MPT from the transition lineage',
             leaves: [
                 {
                     entryKey: 'cc'.repeat(32),
-                    entryType: 'address',
-                    nonce: '01'.repeat(12),
-                    tag: '02'.repeat(16),
-                    ct: 'beef',
+                    keyType: 'address',
+                    identity: part('99cc'),
+                    content: part('beef'),
                 },
             ],
         };
@@ -126,7 +145,15 @@ describe('§7 hydrate — reconstruct + verify MPT from the transition lineage',
         // Corrupt the ct of batch 3's leaf but keep its declared target_root — the forward
         // replay will now compute a different root than target_root.
         const corrupt = transitions.map(t =>
-            t.counter === 3 ? { ...t, leaves: t.leaves.map(lf => ({ ...lf, ct: 'dead' })) } : t,
+            t.counter === 3
+                ? {
+                      ...t,
+                      leaves: t.leaves.map(lf => ({
+                          ...lf,
+                          content: { ...lf.content, bodyHex: 'dead' },
+                      })),
+                  }
+                : t,
         );
         expect(() => hydrate(corrupt, head)).toThrow(/replays to .* != target/);
     });
@@ -138,10 +165,9 @@ describe('§7 hydrate — reconstruct + verify MPT from the transition lineage',
         const C = blob('c3', 'cc33');
         const toLeaf = (x: BlobRow) => ({
             entryKey: x.entryKeyHex,
-            entryType: 'address',
-            nonce: x.nonceHex,
-            tag: x.tagHex,
-            ct: x.ctHex,
+            keyType: x.keyType,
+            identity: x.identity,
+            content: x.content,
         });
         const R1 = rootOf([A, B, C]);
         const batch: WardTransition = {

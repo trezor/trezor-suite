@@ -35,11 +35,25 @@ export type WardProvider = {
         networkSymbol: string,
         entry: WardEntry,
     ): void | Promise<void>;
+    /** FULL delete: the record ceases to exist. A WARD delete removes the leaf from
+     * the trie outright (the device returns both leaf parts empty), so the host must
+     * drop the row rather than keep an empty-valued one — otherwise `lookup` keeps
+     * answering with stale metadata for an entry that is provably absent on-device.
+     * Optional so existing/mock providers stay valid. */
+    remove?(
+        wardId: string,
+        appId: string,
+        address: string,
+        networkSymbol: string,
+    ): void | Promise<void>;
     getAllEntries(wardId: string): WardRow[] | Promise<WardRow[]>;
     /** Serve a proof by the opaque trie path: the row whose entry_key matches, or
      * null. The keyed-path read primitive (the host never needs the identifier).
      * Optional so existing/mock providers stay valid; concrete providers implement it
      * and Gap 10 serve-by-key can require it via a guard. */
+    /** FIXME(ward, UNWIRED): implemented by both providers and never called --
+     * proofAck.ts:buildAckByKey does a linear `rows.find` over blobRows() instead.
+     * Wiring this turns membership serving from O(n) into an indexed O(1) hit. */
     getByEntryKey?(wardId: string, entryKey: string): WardRow | null | Promise<WardRow | null>;
     /** Each wallet keeps its own root checkpoint, identified by wardId. */
     getTreeState(wardId: string): TreeState | null | Promise<TreeState | null>;
@@ -92,6 +106,12 @@ export class InMemoryWardDb implements WardProvider {
             entryKey: entry.blob?.entryKey,
             entry,
         });
+    }
+
+    remove(wardId: string, appId: string, address: string, networkSymbol: string): void {
+        const k = key(wardId, appId, address, networkSymbol);
+        this.entries.delete(k);
+        this.order = this.order.filter(o => o !== k);
     }
 
     getAllEntries(wardId: string): WardRow[] {

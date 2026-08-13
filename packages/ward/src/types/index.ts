@@ -29,17 +29,31 @@ export type MerkleProof = string[];
  * proof is NOT stored; it is generated from the MPT before each device interaction.
  */
 /**
- * The device-produced encrypted leaf blob (ward-design.md §2.1), all hex. The host
- * is NOT the encryptor and cannot compute it — it stores exactly what the device
- * returned in WARDPerformUpdateAck, keyed by the device-supplied `entryKey`, and
- * uses it to build proofs BY entry_key (commit = sha256(0x02||nonce||tag||len32(ct)||ct)).
+ * The device-produced leaf (ToDo-leaf_structure.md), all hex. A leaf is TWO
+ * independently encoded parts, each under its own key:
+ *
+ *   identity  the entry_key preimage: identifier + app_id + device_id, under K_ident
+ *   content   C_leaf + value, under K_data
+ *
+ * `keyType` is always clear — it selects both keys. The host is NOT the encoder and
+ * cannot compute a sealed part; it stores exactly what the device returned in
+ * WARDPerformUpdateAck, keyed by the device-supplied `entryKey` (the LeafIdentityMAC),
+ * and builds proofs BY that key. Serving a proof needs NO key: the MAC is the stored
+ * key and the commit is over ciphertext. An empty `content.bodyHex` is a DELETE; the
+ * identity part survives it, so a tombstone stays self-describing.
  */
+export type WardLeafPart = {
+    encoding: number; // 0 = encrypted, 1 = plaintext
+    nonceHex: string;
+    tagHex: string;
+    bodyHex: string;
+};
+
 export type WardLeafBlob = {
     entryKey: string;
-    entryType: string;
-    nonce: string;
-    tag: string;
-    ct: string;
+    keyType: string;
+    identity: WardLeafPart;
+    content: WardLeafPart;
 };
 
 export type WardEntry = {
@@ -87,7 +101,7 @@ export type WardTransition = {
     prevRoot: string; // root before this commit; '' = from empty tree (genesis)
     targetRoot: string; // root after; '' = tree became empty
     targetRootMac?: string;
-    leaves: WardLeafBlob[]; // the batch's device leaves (1..N); ct==='' deletes that entry_key
+    leaves: WardLeafBlob[]; // the batch's device leaves (1..N); empty content deletes that entry_key
     // batch-update transition authentication — opaque to the host (no keys):
     authCommit?: string; // MAC(K_auth, TAG_COMMIT‖ward_id‖from_c‖from_root‖to_c‖to_root)
     headMac?: string; // MAC(K_head, TAG_HEAD‖ward_id‖to_c‖to_root)

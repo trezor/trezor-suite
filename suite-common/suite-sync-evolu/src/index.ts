@@ -14,7 +14,6 @@ export { OutputEvoluId } from './data/outputTable';
 export { WalletLabelId } from './data/walletTable';
 export { createEvoluErrorHandler } from './createEvoluErrorHandler';
 // WARD data provider (returns the AuthLabelProvider abstraction — no Evolu leak).
-export { createEvoluWardDataProvider } from './createEvoluWardDataProvider';
 
 // Useful in e2e to easily create fixtures
 export { WalletEvoluSchema } from './data/walletTable';

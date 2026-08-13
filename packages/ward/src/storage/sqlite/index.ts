@@ -146,6 +146,18 @@ export class WardDb implements WardProvider {
             );
     }
 
+    remove(wardId: string, appId: string, address: string, networkSymbol: string): void {
+        // FULL delete: a WARD delete removes the leaf from the trie, so the row must
+        // go too (not merely lose its blob) — a lingering row would keep answering
+        // `lookup` with stale metadata for a provably-absent entry.
+        this.db
+            .prepare(
+                `DELETE FROM addresses
+                 WHERE ward_id = ? AND app_id = ? AND address = ? AND network_symbol = ?`,
+            )
+            .run(wardId, appId, address, networkSymbol);
+    }
+
     getAllEntries(wardId: string): WardRow[] {
         const rows = this.db
             .prepare(

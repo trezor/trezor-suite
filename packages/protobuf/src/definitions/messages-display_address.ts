@@ -3,7 +3,7 @@
 // DO NOT EDIT
 import { type Static, Type } from '@trezor/schema-utils';
 
-import { LeafContent } from './messages-ward';
+import { LeafContent, LeafIdentity } from './messages-ward';
 
 export type DisplayAddress = Static<typeof DisplayAddress>;
 export const DisplayAddress = Type.Object(
@@ -30,8 +30,8 @@ export const DisplayAddressWithProof = Type.Object(
         witness_entry_key: Type.Optional(Type.String()),
         witness_commit: Type.Optional(Type.String()),
         app_id: Type.Optional(Type.String()),
-        entry_type: Type.Optional(Type.String()),
         content: Type.Optional(LeafContent),
+        identity: Type.Optional(LeafIdentity),
     },
     { $id: 'DisplayAddressWithProof' },
 );
