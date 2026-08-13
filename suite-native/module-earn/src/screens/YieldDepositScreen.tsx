@@ -407,7 +407,7 @@ export const YieldDepositScreen = () => {
                     amountValue={amountValue}
                     apy={apy}
                     isDisabled={isSubmitDisabled}
-                    isLoading={isActionSubmitting}
+                    isLoading={isActionSubmitting || depositFee.isPreparingDepositFee}
                     onPress={handleContinue}
                     shouldKeepEstimatedRewardsVisible={isApprovalInsufficient}
                     tokenSymbol={wrappedNativeSymbol ?? tokenSymbol}

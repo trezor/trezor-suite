@@ -1,7 +1,7 @@
-import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { SlideInDown } from 'react-native-reanimated';
 
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
-import { Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
+import { AnimatedBox, Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -26,6 +26,7 @@ type YieldWrappedNativeStepFooterProps = {
     flowType: WrappedNativeFlowType;
     isSkipFirst?: boolean;
     isSubmitDisabled: boolean;
+    isSubmitLoading?: boolean;
     onSkip?: () => void;
     onSubmit: () => void;
     spentSymbol: string;
@@ -35,6 +36,7 @@ export const YieldWrappedNativeStepFooter = ({
     flowType,
     isSkipFirst = false,
     isSubmitDisabled,
+    isSubmitLoading = false,
     onSkip,
     onSubmit,
     spentSymbol,
@@ -53,7 +55,7 @@ export const YieldWrappedNativeStepFooter = ({
     );
 
     return (
-        <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
+        <AnimatedBox entering={SlideInDown}>
             <ScreenFooterGradient />
             <Box style={applyStyle(screenFooterStyle)}>
                 <VStack spacing="sp8">
@@ -61,6 +63,7 @@ export const YieldWrappedNativeStepFooter = ({
                     <Button
                         onPress={onSubmit}
                         isDisabled={isSubmitDisabled}
+                        isLoading={isSubmitLoading}
                         testID={`@yield-${flowType}-step/submit-button`}
                     >
                         <Translation
@@ -71,6 +74,6 @@ export const YieldWrappedNativeStepFooter = ({
                     {!isSkipFirst && skipButton}
                 </VStack>
             </Box>
-        </Animated.View>
+        </AnimatedBox>
     );
 };

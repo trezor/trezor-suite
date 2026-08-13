@@ -305,6 +305,7 @@ export const YieldDepositWrapScreen = () => {
                 <YieldWrappedNativeStepFooter
                     flowType="wrap"
                     isSubmitDisabled={isSubmitDisabled}
+                    isSubmitLoading={wrapFee.isFeePreparing}
                     onSkip={hasWrappedTokenBalance && !isWrapPending ? handleSkip : undefined}
                     onSubmit={simulation.handleSubmit}
                     spentSymbol={nativeSymbol}

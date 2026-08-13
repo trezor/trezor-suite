@@ -226,10 +226,32 @@ describe('usePreparedTxFees', () => {
         expect(store.getState().wallet.formDrafts[FORM_DRAFT_KEY]).toEqual(FORM_DRAFT);
     });
 
-    it('propagates isFeeEstimationError from a failed compose', async () => {
-        const composeTransaction = jest
-            .fn()
-            .mockResolvedValue({ type: 'error', isFeeEstimationError: true });
+    it('surfaces an error for every failed compose', async () => {
+        const composeTransaction = jest.fn().mockResolvedValue({ type: 'error' });
+        const { result } = renderPreparedTxFees(createProps({ composeTransaction }));
+
+        await settleDebounce();
+
+        expect(result.current.hasFeeEstimationError).toBe(true);
+        expect(result.current.preparedTx).toBeNull();
+        // A failure must never leave the submit button waiting on a spinner instead.
+        expect(result.current.isFeePreparing).toBe(false);
+    });
+
+    it('surfaces an error when the base fee preview cannot be built', async () => {
+        buildFeePreviewMock.mockReturnValue(null);
+        const composeTransaction = jest.fn().mockResolvedValue(composeReady());
+        const { result } = renderPreparedTxFees(createProps({ composeTransaction }));
+
+        await settleDebounce();
+
+        expect(result.current.hasFeeEstimationError).toBe(true);
+        expect(result.current.preparedTx).toBeNull();
+        expect(result.current.isFeePreparing).toBe(false);
+    });
+
+    it('surfaces an error when the compose function throws', async () => {
+        const composeTransaction = jest.fn().mockRejectedValue(new Error('compose exploded'));
         const { result } = renderPreparedTxFees(createProps({ composeTransaction }));
 
         await settleDebounce();
