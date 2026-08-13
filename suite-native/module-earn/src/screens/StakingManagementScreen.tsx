@@ -108,7 +108,7 @@ export const StakingManagementScreen = () => {
                         <TransactionList
                             account={account}
                             listHeaderComponent={listHeaderComponent}
-                            stakingOnly
+                            filter="staking"
                         />
                     ))}
             </Screen>

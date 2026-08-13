@@ -36,15 +36,6 @@ import { TransactionsEmptyState } from './TransactionsEmptyState';
 import { TransactionsListFooter } from './TransactionsListFooter';
 import { useFetchMissingTransactionFiatRates } from '../hooks/useFetchMissingTransactionFiatRates';
 
-type AccountTransactionProps = {
-    listHeaderComponent: JSX.Element;
-    listEmptyComponent?: JSX.Element;
-    account: Account;
-    tokenContract?: TokenAddress;
-    stakingOnly?: boolean;
-    yieldOnly?: boolean;
-};
-
 type RenderSectionHeaderParams = {
     section: {
         monthKey: MonthKey;
@@ -130,13 +121,20 @@ const renderSectionHeader = ({ section: { monthKey } }: RenderSectionHeaderParam
     <TransactionListGroupTitle key={monthKey} monthKey={monthKey} />
 );
 
+type AccountTransactionProps = {
+    listHeaderComponent: JSX.Element;
+    listEmptyComponent?: JSX.Element;
+    account: Account;
+    tokenContract?: TokenAddress;
+    filter?: 'all' | 'staking' | 'yield';
+};
+
 export const TransactionList = ({
     listHeaderComponent,
     listEmptyComponent,
     account,
     tokenContract,
-    stakingOnly = false,
-    yieldOnly = false,
+    filter = 'all',
 }: AccountTransactionProps) => {
     const accountKey = account.key;
     const dispatch = useDispatch();
@@ -152,19 +150,21 @@ export const TransactionList = ({
     );
     const shouldDeferEmptyState = useSelector(
         (state: TransactionsRootState & AccountsRootState) =>
-            (stakingOnly || yieldOnly) && !selectAreAllAccountTransactionsLoaded(state, accountKey),
+            (filter === 'staking' || filter === 'yield') &&
+            !selectAreAllAccountTransactionsLoaded(state, accountKey),
     );
 
     const transactions = useSelector((state: TransactionsRootState & TokensRootState) => {
-        if (stakingOnly) {
-            return selectAccountStakeTypeTransactionsWithTokenTransfers(state, accountKey);
+        switch (filter) {
+            case 'all':
+                return selectAccountTransactionsWithTokenTransfers(state, accountKey);
+            case 'staking':
+                return selectAccountStakeTypeTransactionsWithTokenTransfers(state, accountKey);
+            case 'yield':
+                return selectAccountYieldTypeTransactionsWithTokenTransfers(state, accountKey);
+            default:
+                return [] as WalletAccountTransaction[];
         }
-
-        if (yieldOnly) {
-            return selectAccountYieldTypeTransactionsWithTokenTransfers(state, accountKey);
-        }
-
-        return selectAccountTransactionsWithTokenTransfers(state, accountKey);
     });
 
     const txnsPerPage = getTxsPerPage(account.networkType);

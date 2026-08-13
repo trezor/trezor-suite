@@ -467,7 +467,7 @@ export const YieldManagementScreen = () => {
                 <TransactionList
                     account={account}
                     listHeaderComponent={listHeaderComponent}
-                    yieldOnly
+                    filter="yield"
                 />
             </Screen>
         </EarnPortfolioTrackerGuard>
