@@ -48,7 +48,7 @@ export const useWrappedNativeTokenFees = ({
             const wrappedNative = account ? WRAPPED_NATIVE[account.symbol] : undefined;
 
             if (!account || !wrappedNative) {
-                return { type: 'error', isFeeEstimationError: false };
+                return { type: 'error' };
             }
 
             try {
@@ -77,7 +77,7 @@ export const useWrappedNativeTokenFees = ({
                 ).unwrap();
 
                 if (result.type !== 'action-ready') {
-                    return { type: 'error', isFeeEstimationError: true };
+                    return { type: 'error' };
                 }
 
                 const spentToken =
@@ -102,7 +102,7 @@ export const useWrappedNativeTokenFees = ({
                     },
                 };
             } catch {
-                return { type: 'error', isFeeEstimationError: true };
+                return { type: 'error' };
             }
         },
         [account, dispatch, flowType],

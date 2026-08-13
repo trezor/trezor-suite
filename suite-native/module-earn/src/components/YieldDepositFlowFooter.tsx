@@ -1,7 +1,7 @@
-import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { SlideInDown } from 'react-native-reanimated';
 
 import { type YieldApprovalAction } from '@suite-common/wallet-core';
-import { Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
+import { AnimatedBox, Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { Translation, type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -72,7 +72,7 @@ export const YieldDepositFlowFooter = ({
         apy !== null;
 
     return (
-        <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
+        <AnimatedBox entering={SlideInDown}>
             <ScreenFooterGradient />
             <Box style={applyStyle(screenFooterStyle)}>
                 <VStack spacing="sp12">
@@ -117,6 +117,6 @@ export const YieldDepositFlowFooter = ({
                     )}
                 </VStack>
             </Box>
-        </Animated.View>
+        </AnimatedBox>
     );
 };
