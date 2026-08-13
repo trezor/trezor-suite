@@ -33,12 +33,10 @@ import { useDebounce } from '@trezor/react-utils';
 
 import { buildEarnComposeFormState } from '../utils';
 import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
+import { updateEarnSelectedFeeLevelThunk } from '../earnFeeLevelThunks';
 import { type StablecoinYieldAccountRewards } from '../utils/stablecoinYieldClaimSummaryUtils';
 import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../utils/yieldClaimFeeUtils';
-import {
-    getYieldClaimFormDraftKey,
-    updateYieldClaimSelectedFeeLevelThunk,
-} from '../yieldClaimThunks';
+import { getYieldClaimFormDraftKey } from '../yieldClaimThunks';
 
 export type PreparedYieldClaimAction = {
     feePreview: PrecomposedTransactionFinal;
@@ -309,6 +307,6 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         preparedAction,
         retryFeeEstimation,
         selectedFee,
-        updateFeeLevelThunk: updateYieldClaimSelectedFeeLevelThunk,
+        updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
     };
 };

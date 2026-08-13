@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { asEvmAddress } from '@suite-common/calldata';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
-import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type FeesRootState,
@@ -18,7 +17,6 @@ import {
     formDraftActions,
     getYieldWithdrawInputToken,
     selectConvertedNetworkFeeInfo,
-    selectDeepCopyOfFormDraft,
     selectFormDraft,
 } from '@suite-common/wallet-core';
 import {
@@ -32,7 +30,6 @@ import {
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import {
     type NativeSendRootState,
-    type UpdateSelectedFeeLevelThunkParams,
     getFeeAvailability,
     selectFeeLevels,
     transactionManagementActions,
@@ -40,7 +37,7 @@ import {
 import { useDebounce } from '@trezor/react-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 
-import { EARN_MODULE_PREFIX } from '../constants';
+import { updateEarnSelectedFeeLevelThunk } from '../earnFeeLevelThunks';
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import { getYieldWithdrawFormDraftKey } from '../utils/yieldWithdrawUtils';
@@ -69,7 +66,7 @@ type UseYieldWithdrawFeesResult = {
     preparedAction: PreparedYieldWithdrawAction | null;
     retryFeeEstimation: () => void;
     selectedFee: FeeLevelLabel;
-    updateFeeLevelThunk: typeof updateYieldWithdrawSelectedFeeLevelThunk;
+    updateFeeLevelThunk: typeof updateEarnSelectedFeeLevelThunk;
 };
 
 // Only the inputs that should trigger a fresh (network) fee composition. The fee context
@@ -108,69 +105,6 @@ const getYieldWithdrawSelectedFeeFields = (
     maxFeePerGas: selectedFeeTransaction.maxFeePerGas,
     maxPriorityFeePerGas: selectedFeeTransaction.maxPriorityFeePerGas,
 });
-
-export const updateYieldWithdrawSelectedFeeLevelThunk = createThunk(
-    `${EARN_MODULE_PREFIX}/updateYieldWithdrawSelectedFeeLevelThunk`,
-    (
-        {
-            feeLevelLabel,
-            feePerUnit,
-            feeLimit,
-            formDraftKey,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-        }: UpdateSelectedFeeLevelThunkParams,
-        { dispatch, getState },
-    ) => {
-        if (!formDraftKey) return;
-
-        const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey);
-
-        if (!formDraft) {
-            return;
-        }
-
-        formDraft.selectedFee = feeLevelLabel;
-
-        if (feeLevelLabel === 'custom') {
-            if (feePerUnit) {
-                formDraft.feePerUnit = feePerUnit;
-            }
-
-            if (feeLimit) {
-                formDraft.feeLimit = feeLimit;
-            }
-
-            if (maxFeePerGas) {
-                formDraft.maxFeePerGas = maxFeePerGas;
-            }
-
-            if (maxPriorityFeePerGas) {
-                formDraft.maxPriorityFeePerGas = maxPriorityFeePerGas;
-            }
-
-            dispatch(formDraftActions.storeDraft({ key: formDraftKey, formDraft }));
-
-            return;
-        }
-
-        const selectedFeeTransaction = selectFeeLevels(getState())[feeLevelLabel];
-
-        if (!isFinalPrecomposedTransaction(selectedFeeTransaction)) {
-            return;
-        }
-
-        dispatch(
-            formDraftActions.storeDraft({
-                key: formDraftKey,
-                formDraft: {
-                    ...formDraft,
-                    ...getYieldWithdrawSelectedFeeFields(selectedFeeTransaction),
-                },
-            }),
-        );
-    },
-);
 
 const getFeeLevelForUnsignedTransaction = (feeInfo: FeeInfo) =>
     FEE_LEVEL_LABELS_BY_PRICE.map(label =>
@@ -540,6 +474,6 @@ export const useYieldWithdrawFees = ({
         preparedAction,
         retryFeeEstimation,
         selectedFee,
-        updateFeeLevelThunk: updateYieldWithdrawSelectedFeeLevelThunk,
+        updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
     };
 };

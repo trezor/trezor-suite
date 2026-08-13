@@ -3,20 +3,17 @@ import { buildClaimTransactionReview } from '@suite-common/earn-stablecoin';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     type YieldPushTransactionError,
-    formDraftActions,
     getPushErrorType,
     isYieldTxReviewForFlow,
     pushYieldTransaction,
     selectAddressDisplayType,
-    selectDeepCopyOfFormDraft,
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
     signYieldTransactionOnDevice,
     stablecoinYieldActions,
     synchronizeSentTransactionThunk,
 } from '@suite-common/wallet-core';
-import { type Account, type FormState } from '@suite-common/wallet-types';
-import { type UpdateSelectedFeeLevelThunkParams } from '@suite-native/transaction-management';
+import { type Account } from '@suite-common/wallet-types';
 
 import { EARN_MODULE_PREFIX } from './constants';
 import { getSelectedFeeFromUnsignedClaimTransaction } from './utils/yieldClaimFeeUtils';
@@ -34,48 +31,6 @@ type YieldClaimSignTransactionError = {
     errorCode?: string;
     message?: string;
 };
-
-export const updateYieldClaimSelectedFeeLevelThunk = createThunk(
-    `${EARN_MODULE_PREFIX}/updateYieldClaimSelectedFeeLevelThunk`,
-    (
-        {
-            feeLevelLabel,
-            feePerUnit,
-            feeLimit,
-            formDraftKey,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-        }: UpdateSelectedFeeLevelThunkParams,
-        { dispatch, getState },
-    ) => {
-        if (!formDraftKey) return;
-
-        const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
-            FormState | undefined;
-
-        if (!formDraft) return;
-
-        formDraft.selectedFee = feeLevelLabel;
-
-        if (feePerUnit) {
-            formDraft.feePerUnit = feePerUnit;
-        }
-
-        if (feeLimit) {
-            formDraft.feeLimit = feeLimit;
-        }
-
-        if (maxFeePerGas) {
-            formDraft.maxFeePerGas = maxFeePerGas;
-        }
-
-        if (maxPriorityFeePerGas) {
-            formDraft.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        }
-
-        dispatch(formDraftActions.storeDraft({ key: formDraftKey, formDraft }));
-    },
-);
 
 export const signYieldClaimReviewThunk = createThunk<
     { serializedTx: string },

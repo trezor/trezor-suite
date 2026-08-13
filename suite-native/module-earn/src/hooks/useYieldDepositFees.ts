@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { composeYieldDepositTransactionThunk } from '@suite-common/wallet-core';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
-import { updateEarnSelectedFeeLevelThunk } from './useComposeEarnFees';
+import { updateEarnSelectedFeeLevelThunk } from '../earnFeeLevelThunks';
 import { type ComposeTxResult, type ComposedTxBase, usePreparedTxFees } from './usePreparedTxFees';
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { getYieldDepositFormDraftKey } from '../utils/yieldDepositUtils';

@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { updateEarnSelectedFeeLevelThunk } from './useComposeEarnFees';
+import { updateEarnSelectedFeeLevelThunk } from '../earnFeeLevelThunks';
 import { type ComposeTxResult, type ComposedTxBase, usePreparedTxFees } from './usePreparedTxFees';
 import { EARN_MODULE_PREFIX } from '../constants';
 

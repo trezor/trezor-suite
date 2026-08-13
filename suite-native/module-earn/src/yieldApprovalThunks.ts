@@ -2,7 +2,6 @@ import { createThunk } from '@suite-common/redux-utils';
 import {
     REVOKE_ALLOWANCE_AMOUNT,
     type YieldFlowResolvedData,
-    formDraftActions,
     selectDeepCopyOfFormDraft,
     selectStablecoinYieldSession,
     sendFormActions,
@@ -13,10 +12,7 @@ import {
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
-import {
-    type UpdateSelectedFeeLevelThunkParams,
-    selectFeeLevels,
-} from '@suite-native/transaction-management';
+import { selectFeeLevels } from '@suite-native/transaction-management';
 import { exhaustive } from '@trezor/type-utils';
 
 import { EARN_MODULE_PREFIX } from './constants';
@@ -159,47 +155,5 @@ export const prepareYieldAllowanceReviewTransactionThunk = createThunk(
                 accountKey: flowData.account.key,
             }),
         );
-    },
-);
-
-export const updateYieldAllowanceSelectedFeeLevelThunk = createThunk(
-    `${EARN_MODULE_PREFIX}/updateYieldAllowanceSelectedFeeLevelThunk`,
-    (
-        {
-            feeLevelLabel,
-            feePerUnit,
-            feeLimit,
-            formDraftKey,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-        }: UpdateSelectedFeeLevelThunkParams,
-        { dispatch, getState },
-    ) => {
-        if (!formDraftKey) return;
-
-        const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
-            FormState | undefined;
-
-        if (!formDraft) return;
-
-        formDraft.selectedFee = feeLevelLabel;
-
-        if (feePerUnit) {
-            formDraft.feePerUnit = feePerUnit;
-        }
-
-        if (feeLimit) {
-            formDraft.feeLimit = feeLimit;
-        }
-
-        if (maxFeePerGas) {
-            formDraft.maxFeePerGas = maxFeePerGas;
-        }
-
-        if (maxPriorityFeePerGas) {
-            formDraft.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        }
-
-        dispatch(formDraftActions.storeDraft({ key: formDraftKey, formDraft }));
     },
 );

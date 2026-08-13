@@ -4,17 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,
     composeSendFormTransactionFeeLevelsThunk,
-    formDraftActions,
     selectAccountByKey,
     selectAreFeesLoading,
     selectConvertedNetworkFeeInfo,
-    selectDeepCopyOfFormDraft,
     useFormDraft,
 } from '@suite-common/wallet-core';
 import {
@@ -25,50 +22,14 @@ import {
 import { composeSolanaStakingTransactionFeeLevelsNativeThunk } from '@suite-native/staking';
 import {
     type NativeSendRootState,
-    type UpdateSelectedFeeLevelThunkParams,
     getFeeAvailability,
     selectFeeLevels,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
 
-import { EARN_MODULE_PREFIX } from '../constants';
+import { updateEarnSelectedFeeLevelThunk } from '../earnFeeLevelThunks';
 import { type EarnFormDraftPrefix } from '../types';
-
-export const updateEarnSelectedFeeLevelThunk = createThunk(
-    `${EARN_MODULE_PREFIX}/updateSelectedFeeLevelThunk`,
-    (
-        {
-            feeLevelLabel,
-            feePerUnit,
-            feeLimit,
-            formDraftKey,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-        }: UpdateSelectedFeeLevelThunkParams,
-        { dispatch, getState },
-    ) => {
-        if (!formDraftKey) return;
-        const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey);
-        if (!formDraft) return;
-
-        formDraft.selectedFee = feeLevelLabel;
-        if (feePerUnit) {
-            formDraft.feePerUnit = feePerUnit;
-        }
-        if (feeLimit) {
-            formDraft.feeLimit = feeLimit;
-        }
-        if (maxFeePerGas) {
-            formDraft.maxFeePerGas = maxFeePerGas;
-        }
-        if (maxPriorityFeePerGas) {
-            formDraft.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        }
-
-        dispatch(formDraftActions.storeDraft({ key: formDraftKey, formDraft }));
-    },
-);
 
 type UseComposeEarnFeesParams = {
     accountKey: AccountKey;

@@ -27,11 +27,9 @@ import {
 import { useDebounce } from '@trezor/react-utils';
 
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
+import { updateEarnSelectedFeeLevelThunk } from '../earnFeeLevelThunks';
 import { type YieldAllowanceFormDraftTransactionType } from '../types';
-import {
-    getYieldAllowanceFormDraftKey,
-    updateYieldAllowanceSelectedFeeLevelThunk,
-} from '../yieldApprovalThunks';
+import { getYieldAllowanceFormDraftKey } from '../yieldApprovalThunks';
 import { buildYieldAllowanceFormState, getYieldAllowanceFeeState } from '../yieldApprovalUtils';
 
 export type YieldAllowanceFeeTransaction = {
@@ -183,6 +181,6 @@ export const useYieldAllowanceFees = ({
         isComposingAllowanceFee,
         isFeeUnavailable,
         selectedFee,
-        updateFeeLevelThunk: updateYieldAllowanceSelectedFeeLevelThunk,
+        updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
     };
 };
