@@ -22,6 +22,7 @@ import { getProcessIcon } from './process-icon';
 import { type Dependencies } from '../modules';
 
 const LOG_PREFIX = 'connect-ws';
+const HANDSHAKE_TIMEOUT_MS = 10000;
 
 /**
  * allowed message from connect-in-suite-desktop implementation
@@ -109,6 +110,14 @@ export const exposeConnectWs = ({
         let requestedPermissions: PermissionRequest[] | undefined;
         let isHandshakeDone = false;
 
+        // Close connection if handshake is not received within timeout
+        const handshakeTimeout = setTimeout(() => {
+            if (!isHandshakeDone) {
+                logger.warn(LOG_PREFIX, `connection closed: handshake timeout from ${ip}:${port}`);
+                ws.close();
+            }
+        }, HANDSHAKE_TIMEOUT_MS);
+
         logger.info(LOG_PREFIX, `origin: ${origin}`);
 
         ws.on('error', err => {
@@ -149,6 +158,7 @@ export const exposeConnectWs = ({
                 version = parseVersion(message.payload.settings.version);
                 requestedPermissions = message.payload.settings.requestedPermissions;
                 isHandshakeDone = true;
+                clearTimeout(handshakeTimeout);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === POPUP.CLOSED) {
                 if (!isHandshakeDone) {
@@ -282,6 +292,7 @@ export const exposeConnectWs = ({
             }
         });
         ws.on('close', () => {
+            clearTimeout(handshakeTimeout);
             logger.info(LOG_PREFIX, 'Connection closed');
 
             if (connectionPendingMessages.size > 0) {
