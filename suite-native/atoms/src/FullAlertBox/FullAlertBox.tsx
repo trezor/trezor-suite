@@ -54,11 +54,13 @@ export const FullAlertBox = ({
         <Box style={applyStyle(containerStyle, { backgroundColor, borderColor })} {...restProps}>
             <VStack spacing="sp12">
                 <HStack spacing="sp12" alignItems="flex-start">
-                    <Icon
-                        name={iconName ?? intentToIconName[intent]}
-                        color={textColor}
-                        size="mediumLarge"
-                    />
+                    <Box paddingTop="sp1">
+                        <Icon
+                            name={iconName ?? intentToIconName[intent]}
+                            color={textColor}
+                            size="mediumLarge"
+                        />
+                    </Box>
                     <VStack spacing="sp12" flex={1}>
                         <VStack spacing="sp2">
                             <Text color={textColor}>{title}</Text>
