@@ -73,7 +73,6 @@ const Wrapper = styled.div`
 
 type AddressHistoryRowProps = {
     item: ReceiveAddressItem;
-    index: number;
     accountKey: AccountKey;
     disabled: boolean;
     isVerifyLoading: boolean;
@@ -85,7 +84,6 @@ type AddressHistoryRowProps = {
 
 export const AddressHistoryRow = ({
     item,
-    index,
     accountKey,
     disabled,
     isVerifyLoading,
@@ -125,7 +123,7 @@ export const AddressHistoryRow = ({
     }
 
     return (
-        <Wrapper data-testid={`@wallet/receive/used-address/${index}`}>
+        <Wrapper data-testid={`@wallet/receive/used-address/${item.pathIndex}`}>
             <Row gap={16} justifyContent="space-between" padding={{ vertical: 16, horizontal: 24 }}>
                 <Row gap={16} minWidth={0}>
                     {item.pathIndex !== undefined && (
@@ -154,7 +152,7 @@ export const AddressHistoryRow = ({
                                     priority="secondary"
                                     icon={CopyIcon}
                                     tooltip={{ content: <Translation id="RECEIVE_COPY_ADDRESS" /> }}
-                                    data-testid={`@wallet/receive/used-address/${index}/copy-button`}
+                                    data-testid={`@wallet/receive/used-address/${item.pathIndex}/copy-button`}
                                     onClick={handleCopy}
                                 />
                                 {canShareAddress() && (
@@ -164,7 +162,7 @@ export const AddressHistoryRow = ({
                                         priority="secondary"
                                         icon={ShareNetworkIcon}
                                         tooltip={{ content: <Translation id="RECEIVE_SHARE" /> }}
-                                        data-testid={`@wallet/receive/used-address/${index}/share-button`}
+                                        data-testid={`@wallet/receive/used-address/${item.pathIndex}/share-button`}
                                         onClick={handleShare}
                                     />
                                 )}
@@ -176,7 +174,7 @@ export const AddressHistoryRow = ({
                                     isDisabled={disabled || isVerifyDisabled}
                                     isLoading={isVerifyLoading}
                                     tooltip={{ content: <Translation id="TR_VERIFY" /> }}
-                                    data-testid={`@wallet/receive/used-address/${index}/verify-button`}
+                                    data-testid={`@wallet/receive/used-address/${item.pathIndex}/verify-button`}
                                     onClick={() => onVerify(item.path)}
                                 />
                             </Row>

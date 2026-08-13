@@ -110,7 +110,7 @@ export const AddressHistory = ({
                 </Text>
             </Box>
 
-            {items.map((item, index) => {
+            {items.map(item => {
                 const isVerifyLoading = verifyingAddressPath === item.path;
 
                 return (
@@ -118,7 +118,6 @@ export const AddressHistory = ({
                         <Divider margin={{ top: 0, bottom: 0 }} />
                         <AddressHistoryRow
                             item={item}
-                            index={index}
                             accountKey={accountKey}
                             disabled={disabled}
                             isVerifyLoading={isVerifyLoading}
