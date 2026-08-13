@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
 
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
-import { getNetworkByYieldXyzId, isWrappedNativeToken } from '@suite-common/wallet-config';
 import {
-    isYieldVaultOperational,
+    getWrappedNativeYieldVaults,
     selectBestEnabledYieldVault,
     selectIsYieldVaultDepositEnabled,
 } from '@suite-common/wallet-core';
@@ -30,13 +29,10 @@ export const useNativeYieldVault = (account: Account) => {
     const wrappedNativeVaults = useMemo(
         () =>
             isYieldOptionRelevant
-                ? (availableVaults ?? emptyVaults).filter(
-                      vault =>
-                          isYieldVaultOperational(vault) &&
-                          vault.status.enter &&
-                          getNetworkByYieldXyzId(vault.network)?.symbol === account.symbol &&
-                          isWrappedNativeToken(account.symbol, vault.token.address),
-                  )
+                ? getWrappedNativeYieldVaults({
+                      vaults: availableVaults,
+                      networkSymbol: account.symbol,
+                  })
                 : emptyVaults,
         [isYieldOptionRelevant, availableVaults, account.symbol],
     );

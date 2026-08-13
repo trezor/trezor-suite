@@ -4,7 +4,8 @@ import {
     getNetworkByYieldXyzId,
     isWrappedNativeToken,
 } from '@suite-common/wallet-config';
-import { isYieldVaultOperational } from '@suite-common/wallet-core';
+
+import { isYieldVaultOperational } from './stablecoinYieldUtils';
 
 type WrappedNativeVaultFields = Pick<YieldDtoV2, 'metadata' | 'network' | 'status' | 'token'>;
 

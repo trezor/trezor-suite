@@ -1,13 +1,8 @@
 import { useMemo } from 'react';
 
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
-import {
-    Feature,
-    type MessageSystemRootState,
-    selectIsYieldFeatureDisabled,
-} from '@suite-common/message-system';
 import { getNetworkByYieldXyzId, isWrappedNativeToken } from '@suite-common/wallet-config';
-import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
+import { selectIsYieldVaultDepositEnabled } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent, isApyAvailable } from '@suite-common/wallet-utils';
 
@@ -16,15 +11,6 @@ import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
 const emptyVaults: YieldDtoV2[] = [];
-
-// Each vault can be remotely killed on its own via the message system — a killed vault
-// must not be advertised.
-const isVaultDepositEnabled = (state: MessageSystemRootState, vault: YieldDtoV2) =>
-    !selectIsYieldFeatureDisabled(
-        state,
-        Feature.earn.yield.deposit,
-        getYieldVaultContractAddress(vault),
-    );
 
 export const useEarnEthBanner = (account: Account) => {
     const { rate: stakingRate } = useStakingRate({
@@ -57,11 +43,11 @@ export const useEarnEthBanner = (account: Account) => {
     );
 
     const hasYieldOption = useSelector(state =>
-        wrappedNativeVaults.some(vault => isVaultDepositEnabled(state, vault)),
+        wrappedNativeVaults.some(vault => selectIsYieldVaultDepositEnabled(state, vault)),
     );
     const bestVaultApy = useSelector(state => {
         const enabledVaultApys = wrappedNativeVaults
-            .filter(vault => isVaultDepositEnabled(state, vault))
+            .filter(vault => selectIsYieldVaultDepositEnabled(state, vault))
             .map(vault => getApyPercent(vault.rewardRate.total))
             .filter((vaultApy): vaultApy is number => isApyAvailable(vaultApy));
 

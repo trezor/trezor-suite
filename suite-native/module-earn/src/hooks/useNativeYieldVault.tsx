@@ -2,20 +2,16 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
-    Feature,
-    type MessageSystemRootState,
-    selectIsYieldFeatureDisabled,
-} from '@suite-common/message-system';
-import {
-    getYieldVaultContractAddress,
+    getWrappedNativeYieldVaults,
     selectBestEnabledYieldVault,
+    selectIsYieldVaultDepositEnabled,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
 
 import { useMessageSystemYield } from './useMessageSystemYield';
-import { getWrappedNativeYieldVaults } from '../utils/getWrappedNativeYieldVaults';
 
 const emptyVaults: YieldDtoV2[] = [];
 
@@ -46,14 +42,7 @@ export const useNativeYieldVault = ({ account }: UseNativeYieldVaultProps) => {
     );
 
     const hasYieldOption = useSelector((state: MessageSystemRootState) =>
-        wrappedNativeVaults.some(
-            vault =>
-                !selectIsYieldFeatureDisabled(
-                    state,
-                    Feature.earn.yield.deposit,
-                    getYieldVaultContractAddress(vault),
-                ),
-        ),
+        wrappedNativeVaults.some(vault => selectIsYieldVaultDepositEnabled(state, vault)),
     );
 
     const bestVault = useSelector((state: MessageSystemRootState) =>
