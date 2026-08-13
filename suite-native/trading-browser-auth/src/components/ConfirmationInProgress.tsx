@@ -1,6 +1,6 @@
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { AnimatedBox, InlineAlertBox } from '@suite-native/atoms';
+import { AnimatedBox, BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { WaitingCard, type WaitingCardProps } from '@suite-native/trading-atoms';
 import { type ProviderConfirmationStatus } from '@suite-native/trading-types';
@@ -37,7 +37,7 @@ export const ConfirmationInProgress = ({ status, loadingState }: ConfirmationInP
                     alignSelf="stretch"
                     paddingTop="sp16"
                 >
-                    <InlineAlertBox
+                    <BannerInline
                         title={
                             <Translation id="moduleTrading.tradingSellPreviewScreen.providerStatus.startOver" />
                         }

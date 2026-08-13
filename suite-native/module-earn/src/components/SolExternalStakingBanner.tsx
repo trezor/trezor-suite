@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
-import { FullAlertBox } from '@suite-native/atoms';
+import { BannerFull } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
@@ -38,7 +38,7 @@ export const SolExternalStakingBanner = ({
     }).toString();
 
     return (
-        <FullAlertBox
+        <BannerFull
             testID="@staking/outside-staking-card"
             intent="neutral"
             iconName="puzzlePiece"

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { FullAlertBox } from '@suite-native/atoms';
+import { BannerFull } from '@suite-native/atoms';
 import {
     selectIsSolanaLimitedHistoryBannerClosed,
     setIsSolanaLimitedHistoryBannerClosed,
@@ -22,7 +22,7 @@ export const SolanaLimitedHistoryBanner = () => {
     }
 
     return (
-        <FullAlertBox
+        <BannerFull
             marginHorizontal="sp16"
             title={translate('banner.solanaLimitedHistoryBanner.title')}
             description={translate('banner.solanaLimitedHistoryBanner.description')}

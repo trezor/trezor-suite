@@ -1,5 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
-import { FullAlertBox } from '@suite-native/atoms';
+import { BannerFull } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { useInstantUnstakeBanner } from '../hooks/useInstantUnstakeBanner';
@@ -36,7 +36,7 @@ export const InstantUnstakeConfirmationBanner = ({
     );
 
     return (
-        <FullAlertBox
+        <BannerFull
             testID="@staking/instant-unstake-banner"
             intent="neutral"
             iconName="lightning"

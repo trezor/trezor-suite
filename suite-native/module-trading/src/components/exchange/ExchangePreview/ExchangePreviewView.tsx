@@ -9,7 +9,7 @@ import {
     hasEip712SignData,
     selectTradingProviderKycPolicy,
 } from '@suite-common/trading';
-import { AnimatedVStack, InlineAlertBox, VStack } from '@suite-native/atoms';
+import { AnimatedVStack, BannerInline, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-provider-utils';
 import { SlippagePicker } from '@suite-native/trading-slippage';
@@ -50,7 +50,7 @@ export const ExchangePreviewView = memo(
             <VStack spacing="sp16">
                 <LastErrorMessage tradingType="exchange" />
                 {!!isApproved && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="brand"
                         title={
                             <Translation id="moduleTrading.tradingExchangePreviewScreen.approvalSuccessAlert" />
@@ -59,7 +59,7 @@ export const ExchangePreviewView = memo(
                 )}
                 {isTxnError && (
                     <Animated.View layout={LinearTransition} entering={FadeIn} exiting={FadeOut}>
-                        <InlineAlertBox intent="critical" title={txnErrorString} />
+                        <BannerInline intent="critical" title={txnErrorString} />
                     </Animated.View>
                 )}
                 <AnimatedVStack layout={LinearTransition} spacing="sp16">
@@ -82,7 +82,7 @@ export const ExchangePreviewView = memo(
                     )}
 
                     {hasKycPolicyWarning(kycPolicy) && (
-                        <InlineAlertBox
+                        <BannerInline
                             iconName="identificationCard"
                             title={<KycPolicyWarning kycPolicyType={kycPolicy} />}
                             accessibilityHint={translate('generic.warning')}

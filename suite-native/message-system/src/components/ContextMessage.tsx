@@ -5,12 +5,12 @@ import {
     type MessageSystemRootState,
     selectContextMessageContent,
 } from '@suite-common/message-system';
-import { InlineAlertBox, type InlineAlertBoxProps, Text } from '@suite-native/atoms';
+import { BannerInline, type BannerInlineProps, Text } from '@suite-native/atoms';
 import { selectLocale } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 
 export type ContextMessageProps = Omit<
-    InlineAlertBoxProps,
+    BannerInlineProps,
     'intent' | 'title' | 'buttonLabel' | 'onButtonPress' | 'isCloseButtonDisplayed'
 > & {
     context: ContextDomain;
@@ -31,7 +31,7 @@ export const ContextMessage = ({ context, ...rest }: ContextMessageProps) => {
     const shouldDisplayLink = !!(link && label);
 
     return (
-        <InlineAlertBox
+        <BannerInline
             intent={intent}
             title={
                 <Text variant="body-xs">

@@ -7,7 +7,7 @@ import {
     getDecimalsForBaseCurrency,
     getSolanaUnstakeAmountBounds,
 } from '@suite-common/wallet-utils';
-import { InlineAlertBox, Text } from '@suite-native/atoms';
+import { BannerInline, Text } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
     useCryptoFiatConverters,
@@ -83,7 +83,7 @@ export const SolanaUnstakeAmountBoundsAlert = ({
         );
 
     return (
-        <InlineAlertBox
+        <BannerInline
             intent="critical"
             title={
                 <Translation

@@ -1,4 +1,4 @@
-import { InlineAlertBox, VStack } from '@suite-native/atoms';
+import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type YieldWithdrawWarningProps = {
@@ -16,7 +16,7 @@ export const YieldWithdrawWarning = ({
 }: YieldWithdrawWarningProps) => {
     if (isAmountTooHigh) {
         return (
-            <InlineAlertBox
+            <BannerInline
                 intent="warning"
                 title={<Translation id="earn.yieldWithdrawFlowScreen.amountExceedsDeposited" />}
             />
@@ -30,13 +30,13 @@ export const YieldWithdrawWarning = ({
     return (
         <VStack spacing="sp16">
             {shouldShowNetworkFeeWarning && (
-                <InlineAlertBox
+                <BannerInline
                     intent="warning"
                     title={<Translation id="earn.yieldWithdrawFlowScreen.networkFeeWarning" />}
                 />
             )}
             {isMaxWithdrawInfoVisible && (
-                <InlineAlertBox
+                <BannerInline
                     intent="info"
                     title={
                         <Translation

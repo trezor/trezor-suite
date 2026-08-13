@@ -7,7 +7,7 @@ import { Context } from '@suite-common/message-system';
 import { WRAPPED_NATIVE, getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
-import { Box, Button, FullAlertBox, VStack } from '@suite-native/atoms';
+import { BannerFull, Box, Button, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
@@ -159,7 +159,7 @@ export const UnwrapNativeTokenScreen = () => {
                         />
                     )}
                     {flow.isDeviceNotConnectedVisible && (
-                        <FullAlertBox
+                        <BannerFull
                             intent="critical"
                             title={
                                 <Translation id="earn.unwrapNativeToken.errors.deviceNotConnected" />
@@ -167,13 +167,13 @@ export const UnwrapNativeTokenScreen = () => {
                         />
                     )}
                     {flow.isFirmwareOutdatedVisible && (
-                        <FullAlertBox
+                        <BannerFull
                             intent="critical"
                             title={<Translation id="earn.wrappedNativeToken.firmwareOutdated" />}
                         />
                     )}
                     {flow.hasFlowFailed && (
-                        <FullAlertBox
+                        <BannerFull
                             intent="critical"
                             title={<Translation id="earn.unwrapNativeToken.complete.failedTitle" />}
                             description={

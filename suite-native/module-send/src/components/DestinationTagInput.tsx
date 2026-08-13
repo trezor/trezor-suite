@@ -4,8 +4,8 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { type NetworkSymbol, getNetwork, getNetworkType } from '@suite-common/wallet-config';
 import {
     AnimatedVStack,
+    BannerInline,
     HStack,
-    InlineAlertBox,
     type InputType,
     Switch,
     Text,
@@ -121,7 +121,7 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
                 </AnimatedVStack>
             ) : (
                 <Animated.View entering={FadeIn} exiting={FadeOut}>
-                    <InlineAlertBox
+                    <BannerInline
                         intent="warning"
                         title={
                             <Translation

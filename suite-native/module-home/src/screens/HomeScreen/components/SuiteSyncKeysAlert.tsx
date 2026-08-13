@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/device';
 import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
-import { AnimatedFullAlertBox } from '@suite-native/atoms';
+import { AnimatedBannerFull } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type AuthorizeDeviceStackParamList,
@@ -63,7 +63,7 @@ export const SuiteSyncKeysAlert = () => {
     if (!shouldDisplaySuiteSyncAlert) return null;
 
     return (
-        <AnimatedFullAlertBox
+        <AnimatedBannerFull
             intent="info"
             title={<Translation id="moduleHome.suiteSyncAlert.title" />}
             description={

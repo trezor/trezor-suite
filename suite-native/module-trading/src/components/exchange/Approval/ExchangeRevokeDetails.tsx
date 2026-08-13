@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useFormDraft } from '@suite-common/wallet-core';
 import type { FormState } from '@suite-common/wallet-types';
-import { InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { NetworkAndAccountCard } from '@suite-native/trading-atoms';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
@@ -29,7 +29,7 @@ export const ExchangeRevokeDetails = ({ exchange }: ExchangeRevokeDetailsProps) 
 
     if (!account) {
         return (
-            <InlineAlertBox
+            <BannerInline
                 title={
                     <Translation id="moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert" />
                 }

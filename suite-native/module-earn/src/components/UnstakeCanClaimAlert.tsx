@@ -1,6 +1,6 @@
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type UnstakeCanClaimAlertProps = {
@@ -12,7 +12,7 @@ export const UnstakeCanClaimAlert = ({ claimableAmount, symbol }: UnstakeCanClai
     const { CryptoAmountFormatter: amountFormatter } = useFormatters();
 
     return (
-        <InlineAlertBox
+        <BannerInline
             intent="info"
             title={
                 <Translation

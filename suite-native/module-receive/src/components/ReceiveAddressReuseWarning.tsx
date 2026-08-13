@@ -1,10 +1,10 @@
-import { InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { HELP_CENTER_ADDRESSES_URL } from '@trezor/urls';
 
 export const ReceiveAddressReuseWarning = () => (
-    <InlineAlertBox
+    <BannerInline
         intent="warning"
         marginBottom="sp8"
         title={

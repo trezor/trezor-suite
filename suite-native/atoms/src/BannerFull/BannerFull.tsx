@@ -20,7 +20,7 @@ const containerStyle = prepareNativeStyle<Pick<AlertBoxStyles, 'backgroundColor'
     }),
 );
 
-export type FullAlertBoxProps = {
+export type BannerFullProps = {
     title: React.ReactNode;
     description?: React.ReactNode;
     primaryButtonLabel?: string | React.ReactNode;
@@ -33,7 +33,7 @@ export type FullAlertBoxProps = {
     iconName?: IconName;
 } & BoxProps;
 
-export const FullAlertBox = ({
+export const BannerFull = ({
     title,
     description,
     children,
@@ -46,7 +46,7 @@ export const FullAlertBox = ({
     intent = 'neutral',
     iconName,
     ...restProps
-}: PropsWithChildren<FullAlertBoxProps>) => {
+}: PropsWithChildren<BannerFullProps>) => {
     const { applyStyle } = useNativeStyles();
     const { backgroundColor, borderColor, textColor } = intentToColorMap[intent];
 

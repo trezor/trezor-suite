@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
+    BannerInline,
     BottomSheetModal,
     Card,
     HStack,
-    InlineAlertBox,
     PressableOpacity,
     Text,
     TimelineDetailsCard,
@@ -60,7 +60,7 @@ export const UnstakingTimelineCard = ({ accountKey }: UnstakingTimelineCardProps
                     </HStack>
 
                     {unstakingPeriodInDays !== undefined && (
-                        <InlineAlertBox
+                        <BannerInline
                             intent="info"
                             title={
                                 <Translation

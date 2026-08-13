@@ -1,5 +1,5 @@
 import { type OtcProviderType } from '@suite-common/trading';
-import { Box, InlineAlertBox, Text, useBottomSheetControls } from '@suite-native/atoms';
+import { BannerInline, Box, Text, useBottomSheetControls } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { OverviewRow } from '@suite-native/trading-atoms';
 
@@ -42,7 +42,7 @@ export const ConciergeProviderPicker = () => {
                 </OverviewRow>
             ) : (
                 <Box paddingHorizontal="sp20" paddingVertical="sp18">
-                    <InlineAlertBox
+                    <BannerInline
                         intent="warning"
                         title={
                             <Translation id="moduleTrading.tradingScreen.concierge.noProvidersAvailable" />

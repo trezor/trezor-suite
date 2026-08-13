@@ -1,5 +1,5 @@
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Box, InlineAlertBox, type InlineAlertBoxProps } from '@suite-native/atoms';
+import { BannerInline, type BannerInlineProps, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type ReceiveAddressInfoProps = {
@@ -10,7 +10,7 @@ type ReceiveAddressInfoProps = {
 export const ReceiveAddressInfo = ({ networkSymbol, isTokenAddress }: ReceiveAddressInfoProps) => {
     const { name: networkName } = getNetwork(networkSymbol);
 
-    const getAlertProps = (): InlineAlertBoxProps | undefined => {
+    const getAlertProps = (): BannerInlineProps | undefined => {
         if (networkSymbol === 'ada') {
             return {
                 title: (
@@ -52,7 +52,7 @@ export const ReceiveAddressInfo = ({ networkSymbol, isTokenAddress }: ReceiveAdd
 
     return (
         <Box marginBottom="sp4">
-            <InlineAlertBox {...alertProps} />
+            <BannerInline {...alertProps} />
         </Box>
     );
 };

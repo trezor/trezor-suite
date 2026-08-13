@@ -3,22 +3,22 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import { ICON_NAMES } from '@suite-native/icons';
 
 import {
-    FullAlertBox as FullAlertBoxComponent,
-    type FullAlertBoxProps,
-} from '../../FullAlertBox/FullAlertBox';
-import { ALERT_BOX_INTENTS } from '../../FullAlertBox/types';
+    BannerFull as BannerFullComponent,
+    type BannerFullProps,
+} from '../../BannerFull/BannerFull';
+import { ALERT_BOX_INTENTS } from '../../BannerFull/types';
 
-type FullAlertBoxStory = StoryObj<FullAlertBoxProps>;
+type BannerFullStory = StoryObj<BannerFullProps>;
 
-const meta: Meta<FullAlertBoxProps> = {
-    title: 'Atoms/AlertBoxes',
-    component: FullAlertBoxComponent,
+const meta: Meta<BannerFullProps> = {
+    title: 'Atoms/Banners',
+    component: BannerFullComponent,
 };
 
 export default meta;
 
-export const FullAlertBox: FullAlertBoxStory = {
-    name: 'FullAlertBox',
+export const BannerFull: BannerFullStory = {
+    name: 'BannerFull',
     args: {
         title: 'New Trezor firmware version available.',
         description: 'Version 2.8.0.',

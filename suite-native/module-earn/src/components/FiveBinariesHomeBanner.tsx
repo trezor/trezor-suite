@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { type AccountsRootState } from '@suite-common/wallet-core';
-import { InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { selectFirstCardanoAccountStakedWithFiveBinaries } from '@suite-native/staking';
@@ -22,7 +22,7 @@ export const FiveBinariesHomeBanner = () => {
     };
 
     return (
-        <InlineAlertBox
+        <BannerInline
             intent="warning"
             title={<Translation id="earn.infoBanner.rewardsReduced" />}
             buttonLabel={<Translation id="generic.buttons.learnMore" />}

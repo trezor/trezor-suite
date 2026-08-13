@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import type { BankAccount, SellFiatTrade } from 'invity-api';
 
 import { selectTradingSellFormStep } from '@suite-common/trading';
-import { AnimatedVStack, InlineAlertBox } from '@suite-native/atoms';
+import { AnimatedVStack, BannerInline } from '@suite-native/atoms';
 
 import { SellBankAccountPicker } from './BankAccount/SellBankAccountPicker';
 import { SellFromAccountTradePreviewCard } from './SellFromAccountTradePreviewCard';
@@ -40,7 +40,7 @@ export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewP
         <AnimatedVStack spacing="sp20" paddingVertical="sp20" layout={LinearTransition}>
             {isTxnError && (
                 <Animated.View>
-                    <InlineAlertBox intent="critical" title={txnErrorString} />
+                    <BannerInline intent="critical" title={txnErrorString} />
                 </Animated.View>
             )}
             <SellFromAccountTradePreviewCard quote={quote} />

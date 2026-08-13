@@ -18,7 +18,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { Box, Card, FullAlertBox, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { BannerFull, Box, Card, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -124,7 +124,7 @@ export const TransactionDetailData = ({
     return (
         <VStack spacing="sp16">
             {isPhishingTransaction && (
-                <FullAlertBox
+                <BannerFull
                     intent="warning"
                     title={<Translation id={getPhishingWarningTranslationId(phishingDetectorId)} />}
                     primaryButtonLabel={
@@ -141,7 +141,7 @@ export const TransactionDetailData = ({
             )}
 
             {!isPhishingTransaction && isTxMarkedAsNotScam && (
-                <FullAlertBox
+                <BannerFull
                     intent="info"
                     title={<Translation id="transactions.phishing.markedAsRecognized" />}
                     primaryButtonProps={{

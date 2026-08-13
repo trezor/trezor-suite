@@ -1,6 +1,6 @@
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     selectUnstakingBalanceByAccountKey,
@@ -21,7 +21,7 @@ export const TronStakingWithdrawBanner = ({ accountKey }: TronStakingWithdrawBan
     if (withdrawableBalance === '0') return null;
 
     return (
-        <InlineAlertBox
+        <BannerInline
             intent="info"
             title={
                 <Translation

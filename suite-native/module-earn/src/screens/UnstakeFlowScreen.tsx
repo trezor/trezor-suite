@@ -9,9 +9,9 @@ import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-commo
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     type ActiveView,
+    BannerInline,
     Box,
     Button,
-    InlineAlertBox,
     ScreenFooterGradient,
 } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
@@ -132,7 +132,7 @@ export const UnstakeFlowScreen = () => {
 
             {isAccountLimitExceeded && networkSymbol && (
                 <Box marginTop="sp16">
-                    <InlineAlertBox
+                    <BannerInline
                         intent="info"
                         title={
                             <Translation
@@ -168,7 +168,7 @@ export const UnstakeFlowScreen = () => {
             </Form>
             {showNetworkFeeWarning && (
                 <Box marginTop="sp16">
-                    <InlineAlertBox
+                    <BannerInline
                         intent="warning"
                         title={<Translation id="earn.earnFormScreen.networkFeeWarning" />}
                     />

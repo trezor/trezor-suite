@@ -5,11 +5,11 @@ import { type RequireOneOrNone } from 'type-fest';
 import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { type AlertBoxStyles, intentToColorMap, intentToIconName } from '../BannerFull/presets';
+import { type AlertBoxIntent } from '../BannerFull/types';
 import { type BoxProps } from '../Box';
 import { Button, type ButtonProps } from '../Button/Button';
 import { IconButton } from '../Button/IconButton';
-import { type AlertBoxStyles, intentToColorMap, intentToIconName } from '../FullAlertBox/presets';
-import { type AlertBoxIntent } from '../FullAlertBox/types';
 import { HStack } from '../Stack';
 import { Text } from '../Text';
 
@@ -32,7 +32,7 @@ const textStyle = prepareNativeStyle(utils => ({
     paddingRight: utils.spacings.sp12,
 }));
 
-export type InlineAlertBoxProps = Omit<BoxProps, 'style'> & {
+export type BannerInlineProps = Omit<BoxProps, 'style'> & {
     title: Exclude<ReactNode, null | undefined>;
     intent?: AlertBoxIntent;
     onButtonPress?: () => void;
@@ -43,7 +43,7 @@ export type InlineAlertBoxProps = Omit<BoxProps, 'style'> & {
         isCloseButtonDisplayed: boolean;
     }>;
 
-export const InlineAlertBox = ({
+export const BannerInline = ({
     title,
     buttonLabel,
     isCloseButtonDisplayed = false,
@@ -52,7 +52,7 @@ export const InlineAlertBox = ({
     buttonProps,
     intent = 'neutral',
     ...props
-}: InlineAlertBoxProps) => {
+}: BannerInlineProps) => {
     const { applyStyle } = useNativeStyles();
     const { backgroundColor, borderColor, textColor } = intentToColorMap[intent];
     const isTextButtonDisplayed = Boolean(buttonLabel);

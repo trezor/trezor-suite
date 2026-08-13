@@ -6,7 +6,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
-import { InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -49,7 +49,7 @@ export const EarnInsufficientBalanceBanner = ({
     };
 
     return (
-        <InlineAlertBox
+        <BannerInline
             marginTop="sp16"
             intent="warning"
             title={

@@ -7,7 +7,7 @@ import {
     selectAccountNetworkType,
 } from '@suite-common/wallet-core';
 import type { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
@@ -40,7 +40,7 @@ export const ReceiveDestinationTagInfo = ({
     }
 
     return (
-        <InlineAlertBox
+        <BannerInline
             intent="info"
             title={
                 <Translation

@@ -1,4 +1,4 @@
-import { FullAlertBox } from '@suite-native/atoms';
+import { BannerFull } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 type StablecoinYieldLoadErrorAlertProps = {
@@ -9,7 +9,7 @@ export const StablecoinYieldLoadErrorAlert = ({ onRetry }: StablecoinYieldLoadEr
     const { translate } = useTranslate();
 
     return (
-        <FullAlertBox
+        <BannerFull
             testID="@earn/stablecoin-yield-load-error-alert"
             margin="sp16"
             intent="warning"

@@ -8,7 +8,7 @@ import { selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Box, Button, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { BannerInline, Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -111,7 +111,7 @@ export const StakingManagementReadyToClaimCard = ({
                         />
                     </Text>
                     {isClaimingDisabled && claimingMessageContent && (
-                        <InlineAlertBox intent="warning" title={claimingMessageContent} />
+                        <BannerInline intent="warning" title={claimingMessageContent} />
                     )}
                     <Button
                         size="medium"

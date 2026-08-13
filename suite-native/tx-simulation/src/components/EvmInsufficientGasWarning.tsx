@@ -1,7 +1,7 @@
 import { computeGasFeeInWei, useHasSufficientFundsForGas } from '@suite-common/tx-simulation';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type TxSimulationMethod } from '@suite-common/wallet-types';
-import { FullAlertBox } from '@suite-native/atoms';
+import { BannerFull } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export type EvmInsufficientGasWarningProps = {
@@ -29,7 +29,7 @@ export function EvmInsufficientGasWarning({
     }
 
     return (
-        <FullAlertBox
+        <BannerFull
             intent="warning"
             title={
                 <Translation

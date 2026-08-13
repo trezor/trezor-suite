@@ -1,5 +1,5 @@
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Card, HStack, InlineAlertBox, Text } from '@suite-native/atoms';
+import { BannerInline, Card, HStack, Text } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -30,7 +30,7 @@ export const CorrectNetworkMessageCard = ({
 
     if (qrNetworkSymbol) {
         return (
-            <InlineAlertBox
+            <BannerInline
                 intent="warning"
                 title={
                     <Translation

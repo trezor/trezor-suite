@@ -6,7 +6,7 @@ import { selectEthNextRewardPayout } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Badge, Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { Badge, BannerInline, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -171,10 +171,10 @@ export const StakingManagementStakedCard = ({
             </HStack>
             <VStack style={applyStyle(buttonsRowStyle)}>
                 {isUnstakingDisabled && unstakingMessageContent && (
-                    <InlineAlertBox intent="warning" title={unstakingMessageContent} />
+                    <BannerInline intent="warning" title={unstakingMessageContent} />
                 )}
                 {isStakingDisabled && stakingMessageContent && (
-                    <InlineAlertBox intent="warning" title={stakingMessageContent} />
+                    <BannerInline intent="warning" title={stakingMessageContent} />
                 )}
                 <HStack spacing="sp12">
                     <Button

@@ -9,7 +9,7 @@ import {
     selectTradingExchangeSelectedQuote,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { InlineAlertBox, VStack } from '@suite-native/atoms';
+import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
@@ -119,7 +119,7 @@ const TradingExchangeRevokeScreenContent = ({
     if (!quote) {
         return (
             <Screen header={<ScreenHeader closeActionType="back" />}>
-                <InlineAlertBox
+                <BannerInline
                     title={
                         <Translation id="moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert" />
                     }
@@ -160,7 +160,7 @@ const TradingExchangeRevokeScreenContent = ({
         >
             <VStack spacing="sp12">
                 {!!shouldIncreaseLimit && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="info"
                         title={
                             <Translation id="moduleTrading.tradingExchangeRevokeScreen.lowLimitInfoAlert" />

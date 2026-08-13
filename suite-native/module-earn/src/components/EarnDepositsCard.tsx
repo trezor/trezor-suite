@@ -7,10 +7,10 @@ import { useServices } from '@suite-common/dependency-injection';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
+    BannerInline,
     Box,
     Card,
     HStack,
-    InlineAlertBox,
     ListItemSkeleton,
     Text,
     VStack,
@@ -188,7 +188,7 @@ export const EarnDepositsCard = ({
                             </VStack>
 
                             {isFiatTotalIncomplete && (
-                                <InlineAlertBox
+                                <BannerInline
                                     testID="@earn/deposits-card/incomplete-fiat-total"
                                     intent="warning"
                                     title={

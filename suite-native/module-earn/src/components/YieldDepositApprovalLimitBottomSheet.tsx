@@ -1,9 +1,9 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import {
+    BannerInline,
     BottomSheetModal,
     type BottomSheetModalRef,
-    InlineAlertBox,
     Text,
     VStack,
 } from '@suite-native/atoms';
@@ -72,7 +72,7 @@ export const YieldDepositApprovalLimitBottomSheet = ({
                     isChecked={selectedApprovalLimitType === 'unlimited'}
                     onChange={() => handleSelect('unlimited')}
                 >
-                    <InlineAlertBox
+                    <BannerInline
                         title={
                             <Translation
                                 id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.alert"

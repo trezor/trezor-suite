@@ -6,7 +6,7 @@ import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-utils';
-import { Box, Card, InlineAlertBox, PressableOpacity, Text } from '@suite-native/atoms';
+import { BannerInline, Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -103,7 +103,7 @@ export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
                     </Box>
                 </Box>
                 {isClaimingDisabled && claimingMessageContent && (
-                    <InlineAlertBox intent="warning" title={claimingMessageContent} />
+                    <BannerInline intent="warning" title={claimingMessageContent} />
                 )}
             </Card>
         </PressableOpacity>
