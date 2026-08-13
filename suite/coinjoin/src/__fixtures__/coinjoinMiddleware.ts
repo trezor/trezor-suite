@@ -9,6 +9,54 @@ import { DEVICE, type StaticSessionId } from '@trezor/connect';
 import * as COINJOIN from '../coinjoinConstants';
 import { type CoinjoinAccount, type CoinjoinSession, type CoinjoinState } from '../coinjoinTypes';
 
+type FixtureDevice = {
+    available: boolean;
+    connected: boolean;
+    id: string;
+    remember: boolean;
+    state: {
+        staticSessionId: string;
+    };
+    type: string;
+};
+
+type FixtureState = Partial<{
+    device: {
+        devices: FixtureDevice[];
+        selectedDevice: FixtureDevice;
+    };
+    router: RouterState;
+    suite: {
+        online: boolean;
+    };
+    tor: {
+        torStatus: TorStatus;
+        torBootstrap: null;
+    };
+    wallet: {
+        accounts: Account[];
+        coinjoin: CoinjoinState;
+        selectedAccount: SelectedAccountLoaded;
+    };
+}>;
+
+type FixtureAction = {
+    type: string;
+    payload?: unknown;
+};
+
+/** Opaque mock responses passed directly to setTrezorConnectFixtures. */
+type ConnectFixtures = unknown;
+
+type Fixture = {
+    description: string;
+    state: FixtureState;
+    action: FixtureAction;
+    expectedActions: FixtureAction[];
+    client?: 'btc';
+    connect?: ConnectFixtures;
+};
+
 const DEVICE_A = {
     available: true,
     connected: true,
@@ -150,7 +198,7 @@ const RESTORE_SESSION_B_ACTIONS = [
     },
 ];
 
-export const fixtures = [
+export const fixtures: Fixture[] = [
     {
         description: 'stopping coinjoin session when remembered device disconnects',
         state: DEFAULT_STATE,
