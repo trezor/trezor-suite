@@ -51,7 +51,7 @@ export const NotificationList = ({ unseenNotifications, seenNotifications }: Pro
 
     return (
         <Card style={applyStyle(cardStyle)}>
-            <VStack>
+            <VStack spacing="sp12">
                 <NotificationSection
                     titleId="moduleActivityCenter.notifications.sectionNew"
                     notifications={unseenNotifications}
