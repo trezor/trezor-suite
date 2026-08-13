@@ -36,9 +36,10 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=get-features
                                                 --method=apply-settings
                                                 --method=authenticate-device
-                                                --method=dbinit      Initialize device AuthDB state from the Quota Manager counter + stored root
+                                                --method=dbinit      Initialize device WARD state from the stored root checkpoint (WM signs freshness)
                                                 --method=dblookup    Look up a Bitcoin address in the local SQLite DB
                                                 --method=dbchange    Upsert metadata for a Bitcoin address in the local SQLite DB
+                                                --method=dbdelete    FULL delete of an entry (device shows a dedicated delete screen), then proves absence
                                                 --method=dbsetroot   Send stored root + MAC from DB to device (for initial sync)
                                                 --method=dblistroots List stored Merkle root(s) from local DB; prints ready-to-run dbsetroot command
     --params=<json>                           Extra params passed to the method (JSON object)
@@ -53,9 +54,12 @@ export const HELP = `@trezor/connect CLI arguments:
     --ward-id=<id>                            Ward (SLIP21 WM anchor) whose root checkpoint to read/write in tree_state (default: resolved from device)
                                                 Lets one shared DB track a separate checkpoint per wallet.
     --db-params=<json>                        Params for database commands (JSON object)
-                                                --db-params='{"qmCounter":<n>,"qmSignature":"<hex>"}' (dbinit)
+                                                --db-params='{"counter":<n>,"mac":"<hex>","root":"<hex>"}' (dbinit)
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc"}' (dblookup)
                                                 --db-params='{"address":"bc1q...","networkSymbol":"btc","metadata":{"label":"My wallet"}}' (dbchange)
+                                                --db-params='{"address":"bc1q...","networkSymbol":"btc"}' (dbdelete)
+                                                  NOTE dbchange with metadata:{} is an UPDATE to the value "<networkSymbol>:{}",
+                                                  NOT a delete. Use dbdelete (or dbchange with "delete":true) to remove an entry.
 `;
 
 // read and parse application arguments

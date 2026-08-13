@@ -23,6 +23,10 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
             networkSymbol: payload.networkSymbol,
             metadata: payload.metadata,
             wardId: payload.wardId,
+            // MUST be forwarded: this object (not `payload`) becomes this.params, so a
+            // field omitted here is silently dropped and a delete degrades into an
+            // update of the leaf to "<networkSymbol>:{}" -- a tombstone.
+            delete: payload.delete === true,
         };
 
         super(message, params);
@@ -213,13 +217,16 @@ export default class WardUpdate extends AbstractMethod<'wardUpdate', WardUpdateS
         // the MPT by backward-walk instead of trusting a flat rebuild (see @trezor/ward
         // `hydrate` reconstruction path). All values are already in hand — no extra device round. Best-effort
         // like commitLocal: a failure only degrades future reconstruction, not this write.
-        if (provider.appendTransition !== undefined && installed.root !== undefined) {
+        // Record the transition even when the tree became empty: WardTransition documents
+        // targetRoot '' as exactly that, and hydrate replays it. Skipping it would leave a
+        // hole in the lineage at the delete.
+        if (provider.appendTransition !== undefined) {
             try {
                 await provider.appendTransition(wardId, {
                     counter: installed.counter,
                     prevRoot: tree?.root ?? '',
-                    targetRoot: installed.root,
-                    ...(installed.rootMac !== undefined && { targetRootMac: installed.rootMac }),
+                    targetRoot: installed.root ?? '',
+                    ...(installed.rootMac != null && { targetRootMac: installed.rootMac }),
                     // A single-leaf commit is a batch of one (batch-native transition).
                     leaves: [
                         {

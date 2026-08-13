@@ -112,6 +112,32 @@ describe('ward app layer', () => {
         expect(removed.newValueHex).toBe('');
     });
 
+    it('commitLocal advances tree_state even when a delete EMPTIES the tree', async () => {
+        // The device reports no root at all when the tree becomes empty. Skipping the
+        // checkpoint write would pin tree_state to the pre-delete root while the device
+        // moved on -- a silent desync that breaks every later proof. '' is the host's
+        // canonical empty root (computeRootFromBlobs([]) === '').
+        const db = seed();
+        await db.setTreeState(WARD_ID, { root: 'oldroot', counter: 4, mac: 'oldmac' });
+
+        await commitLocal(
+            db,
+            WARD_ID,
+            APP,
+            'bc1qalice',
+            NET,
+            {},
+            {
+                counter: 5,
+                deleted: true,
+                // no root / rootMac: the tree is now empty
+            },
+        );
+
+        expect(await db.getTreeState(WARD_ID)).toEqual({ root: '', counter: 5 });
+        expect(await loadEntry(db, WARD_ID, APP, 'bc1qalice', NET)).toBeNull();
+    });
+
     // TODO(handoff, gap 4): add API-boundary cold-start / inconsistent-head cases
     // (empty tree init, "root present but mac absent", "non-empty root with empty-tree
     // attestation"). These currently fail LATE in firmware reconcile — see gaps.md #3/#4.

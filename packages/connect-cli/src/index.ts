@@ -67,16 +67,24 @@ const DB_METHODS = new Set([
     'dblookup',
     'dbdisplay',
     'dbchange',
+    'dbdelete',
     'dbsetroot',
     'dblistroots',
 ]);
-const DB_METHODS_REQUIRING_PARAMS = new Set(['dbinit', 'dblookup', 'dbdisplay', 'dbchange']);
+const DB_METHODS_REQUIRING_PARAMS = new Set([
+    'dbinit',
+    'dblookup',
+    'dbdisplay',
+    'dbchange',
+    'dbdelete',
+]);
 // Methods that must send a command to firmware (need a connected device even when --db-path is set)
 const DB_METHODS_NEEDING_DEVICE = new Set([
     'dbinit',
     'dblookup',
     'dbdisplay',
     'dbchange',
+    'dbdelete',
     'dbsetroot',
 ]);
 
@@ -367,6 +375,73 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                         ),
                     );
                     console.log('Authenticity verified: true');
+                }
+            }
+
+            if (method === 'dbdelete') {
+                // Dedicated FULL delete: the device shows its own "Delete WARD entry"
+                // screen (br_name "ward_delete"), removes the leaf from the trie, and the
+                // host drops the record. This is NOT `dbchange` with empty metadata --
+                // that serializes to "<networkSymbol>:{}" and would leave a tombstone.
+                const { address, networkSymbol } = params;
+                if (!address || !networkSymbol) {
+                    console.error(
+                        'dbdelete requires --db-params=\'{"address":"...","networkSymbol":"..."}\'',
+                    );
+                    process.exit(1);
+                }
+                const appId = params.appId ?? networkSymbol;
+                const result = await TrezorConnect.wardUpdate({
+                    device: device!,
+                    appId,
+                    address,
+                    networkSymbol,
+                    metadata: {},
+                    wardId,
+                    delete: true,
+                });
+                if (!result.success) {
+                    console.error('wardUpdate(delete) failed:', result);
+                    console.log('Authenticity verified: false — entry not deleted');
+                } else {
+                    // Prove the deletion: after a FULL delete the path must be provably
+                    // ABSENT, so re-verify on-device. A tombstone would come back
+                    // isMember:true; a broken delete would come back valid:false.
+                    const check = await TrezorConnect.wardVerify({
+                        device: device!,
+                        appId,
+                        address,
+                        networkSymbol,
+                        wardId,
+                    });
+                    const proven = check.success && check.payload.valid && !check.payload.isMember;
+                    console.log(
+                        JSON.stringify(
+                            {
+                                method: 'dbdelete',
+                                address,
+                                networkSymbol,
+                                counter: result.payload.counter,
+                                root: result.payload.root,
+                                nonMembershipProven: proven,
+                                ...(check.success && {
+                                    verify: {
+                                        valid: check.payload.valid,
+                                        isMember: check.payload.isMember,
+                                    },
+                                }),
+                            },
+                            null,
+                            2,
+                        ),
+                    );
+                    if (proven) {
+                        console.log('Authenticity verified: true — entry absent (proven)');
+                    } else {
+                        console.log(
+                            'Authenticity verified: false — delete committed but absence NOT proven',
+                        );
+                    }
                 }
             }
 

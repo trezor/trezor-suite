@@ -37,9 +37,14 @@ if true; then
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
 
 	# Deleting again must FAIL fast ("nothing to delete") rather than write a second leaf.
-	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange   --db-params='{"address":"deleteMe","networkSymbol":"TEST","delete":true}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdelete --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
+	# A tombstone check: dbchange with metadata:{} is an UPDATE, so adr1 must still be a
+	# MEMBER afterwards -- it must NOT look deleted.
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"adr1","networkSymbol":"TEST","metadata":{}}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"adr1","networkSymbol":"TEST"}'
+	#Expect: isMember TRUE (metadata:{} updated the value, it did not delete)
     yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe","networkSymbol":"TEST"}'
-	exit 0
+    
 fi
 
 yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"first","networkSymbol":"TEST"}'
@@ -120,7 +125,7 @@ if false; then
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"notThere","networkSymbol":"TEST"}'
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"deleteMe2","networkSymbol":"TEST"}'
 	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"deleteMe2","networkSymbol":"TEST","metadata":{"label":"Petr_deleteMeLabel"}}'
-	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"deleteMe2","networkSymbol":"TEST","delete":true}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdelete --db-params='{"address":"deleteMe2","networkSymbol":"TEST"}'
 	#Running @trezor/connect CLI with args {
 	#  _: [ 'method', 'db-params' ],
 	#  udp: true,
@@ -143,6 +148,24 @@ fi
 
 
 
+if true; then
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe3","networkSymbol":"TEST"}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange --db-params='{"address":"deleteMe3","networkSymbol":"TEST","metadata":{"label":"Petr_deleteMe3Label"}}'
+
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe3","networkSymbol":"TEST"}'
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbchange   --db-params='{"address":"deleteMe3","networkSymbol":"TEST","delete":true}'
+
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe3","networkSymbol":"TEST"}'
+
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dblookup --db-params='{"address":"deleteMe3","networkSymbol":"TEST"}'
+
+	# Deleting again must FAIL fast ("nothing to delete") rather than write a second leaf.
+	yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdelete --db-params='{"address":"deleteMe3","networkSymbol":"TEST"}'
+	# A tombstone check: dbchange with metadata:{} is an UPDATE, so adr1 must still be a
+	# MEMBER afterwards -- it must NOT look deleted.
+    yarn workspace @trezor/connect-cli udp --autoconnect --method=dbdisplay --db-params='{"address":"deleteMe3","networkSymbol":"TEST"}'
+    
+fi
 
 
 ( cd ~/GitHub/trezor-firmware && pytest tests/device_tests/misc/test_ward.py -q 2>&1 |tee pytest_ward.log )

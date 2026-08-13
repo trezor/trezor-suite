@@ -61,6 +61,16 @@ export type WardCandidate = {
     content?: LeafPart;
 };
 
+/**
+ * The wire decoder yields `null` for an absent optional field, while the
+ * `...(x !== undefined && { x })` spread guards used when BUILDING messages only
+ * suppress `undefined` -- so a decoded `null` would be forwarded and the encoder throws
+ * ("must be of type string ... Received null"). That is exactly what a DELETE that
+ * empties the tree produces: WARDPerformUpdateAck comes back with new_root = null and
+ * mac = null. Normalize at the decode boundary so "absent" has one representation.
+ */
+const absent = <T>(v: T | null | undefined): T | undefined => (v == null ? undefined : v);
+
 export class WardSession {
     private readonly cmd: Cmd;
     private readonly vlog: Vlog;
@@ -93,20 +103,34 @@ export class WardSession {
         this.vlog('-> WARDIngestAttestation');
         await this.cmd.typedCall('WARDIngestAttestation', 'WARDIngestAttestationAck', {
             counter: head.counter,
-            ...(head.mac !== undefined && { mac: head.mac }),
+            ...(head.mac != null && { mac: head.mac }),
             wm_signature: head.wmSignature,
         });
 
+        // FIXME(ward): firmware decides "attested empty tree" from the mac being ABSENT and
+        // then requires the root to be absent too -- so the pair must be consistent. A
+        // TreeState with a root but NO mac (mac is optional: "if the provider has one")
+        // would be rejected by reconcile with the same DataError. Not enforced here: some
+        // existing flows/fixtures carry exactly that combination, so validating it needs a
+        // decision about whether root-without-mac is legal at all (gap 3).
+        //
+        // EMPTY TREE: the firmware contract is that an ABSENT mac means "attested empty
+        // tree", and it then REQUIRES the root to be absent too ("attested tree is empty
+        // but a root was supplied", service.py reconcile). The host's canonical empty root
+        // is '' (computeRootFromBlobs([]) === ''), which is NOT absent on the wire -- an
+        // empty `bytes` field still arrives as b"", so `root is not None` and the device
+        // rejects the round. Every operation after a delete-to-empty hit this. Treat '' as
+        // absent so both fields are omitted together and the two sides agree.
         this.vlog('-> WARDReconcile');
         const { message } = await this.cmd.typedCall('WARDReconcile', 'WARDReconcileAck', {
-            ...(dbRoot !== undefined && { root: dbRoot }),
+            ...(dbRoot != null && dbRoot !== '' && { root: dbRoot }),
         });
         this.vlog('<- WARDReconcileAck', message);
 
         return {
             counter: message.counter,
-            root: message.new_root,
-            rootMac: message.root_mac,
+            root: absent(message.new_root),
+            rootMac: absent(message.root_mac),
         };
     }
 
@@ -155,9 +179,10 @@ export class WardSession {
 
             return {
                 counter: message.counter,
-                root: message.new_root,
-                mac: message.mac,
-                wardId: message.ward_id,
+                // null-normalized: a delete that empties the tree returns new_root/mac null
+                root: absent(message.new_root),
+                mac: absent(message.mac),
+                wardId: absent(message.ward_id),
                 // The device is the encoder: store the leaf it returned, both parts. The
                 // wire carries each part as a self-describing oneof; decode to LeafParts.
                 // key_type rides on LeafIdentity (it selects both keys, so it is clear).
@@ -181,16 +206,16 @@ export class WardSession {
         this.vlog('-> WARDConfirmedByWM');
         const { message } = await this.cmd.typedCall('WARDConfirmedByWM', 'WARDConfirmedByWMAck', {
             counter: args.counter,
-            ...(args.mac !== undefined && { mac: args.mac }),
+            ...(args.mac != null && { mac: args.mac }),
             wm_signature: args.wmSignature,
-            ...(args.pendingId !== undefined && { pending_id: args.pendingId }),
+            ...(args.pendingId != null && { pending_id: args.pendingId }),
         });
         this.vlog('<- WARDConfirmedByWMAck', message);
 
         return {
             counter: message.counter,
-            root: message.new_root,
-            rootMac: message.root_mac,
+            root: absent(message.new_root),
+            rootMac: absent(message.root_mac),
         };
     }
 
