@@ -71,7 +71,7 @@ describe('getTransactionWithFiatAmounts', () => {
             test(testName, () => {
                 expect(
                     getTransactionWithFiatAmounts({ transaction, historicRates }).tokens[0]
-                        .amountInFiat,
+                        ?.amountInFiat,
                 ).toBe(tokenAmountInFiat);
             });
         },
