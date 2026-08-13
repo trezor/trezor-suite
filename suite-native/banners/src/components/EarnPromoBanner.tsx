@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Button, FullAlertBox, HStack, IconButton } from '@suite-native/atoms';
+import { BannerFull, Button, HStack, IconButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -40,7 +40,7 @@ export const EarnPromoBanner = ({ symbol, title, description }: EarnPromoBannerP
     };
 
     return (
-        <FullAlertBox iconName="piggyBank" title={title} description={description} intent="brand">
+        <BannerFull iconName="piggyBank" title={title} description={description} intent="brand">
             <HStack marginTop="sp8">
                 <Button intent="brand" size="small" onPress={onExploreClick}>
                     <Translation id="earn.promoStakeBanner.exploreButton" />
@@ -54,6 +54,6 @@ export const EarnPromoBanner = ({ symbol, title, description }: EarnPromoBannerP
                     onPress={onCloseClick}
                 />
             </HStack>
-        </FullAlertBox>
+        </BannerFull>
     );
 };

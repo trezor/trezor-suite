@@ -7,7 +7,7 @@ import {
     type TradingTransactionSell,
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
-import { type AlertBoxIntent, FullAlertBox } from '@suite-native/atoms';
+import { type AlertBoxIntent, BannerFull } from '@suite-native/atoms';
 import type { IconName } from '@suite-native/icons';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
@@ -148,7 +148,7 @@ export const TradeDetailAlert = ({
     };
 
     return (
-        <FullAlertBox
+        <BannerFull
             title={translate(titleKey)}
             description={translate(descriptionKey)}
             iconName={iconName}

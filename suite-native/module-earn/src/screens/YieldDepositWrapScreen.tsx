@@ -17,7 +17,7 @@ import {
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Box, FullAlertBox, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { BannerFull, Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
@@ -369,7 +369,7 @@ export const YieldDepositWrapScreen = () => {
 
                         {isReserveRecommended && (
                             <Box paddingHorizontal="sp16">
-                                <FullAlertBox
+                                <BannerFull
                                     intent="info"
                                     title={
                                         <Translation
@@ -386,7 +386,7 @@ export const YieldDepositWrapScreen = () => {
 
                         {simulation.isDeviceNotConnectedVisible && (
                             <Box paddingHorizontal="sp16">
-                                <FullAlertBox
+                                <BannerFull
                                     intent="critical"
                                     title={
                                         <Translation id="earn.wrapNativeToken.errors.deviceNotConnected" />
@@ -397,7 +397,7 @@ export const YieldDepositWrapScreen = () => {
 
                         {simulation.isFirmwareOutdatedVisible && (
                             <Box paddingHorizontal="sp16">
-                                <FullAlertBox
+                                <BannerFull
                                     intent="critical"
                                     title={
                                         <Translation id="earn.wrappedNativeToken.firmwareOutdated" />

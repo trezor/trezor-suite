@@ -13,7 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { AccountsListTokenItem } from '@suite-native/accounts';
-import { Card, InlineAlertBox, PictogramTitleHeader, Text } from '@suite-native/atoms';
+import { BannerInline, Card, PictogramTitleHeader, Text } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -116,7 +116,7 @@ export const HiddenTokensTab = ({ accountKey, onSelect }: HiddenTokensTabProps) 
                 case 'warning':
                     return (
                         <View style={applyStyle(warningWrapperStyle)}>
-                            <InlineAlertBox
+                            <BannerInline
                                 intent="warning"
                                 title={
                                     <Translation id="moduleAccountManagement.accountAssetsScreen.hiddenTokensSection.warning" />

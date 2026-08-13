@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { type Variant } from '@suite-common/suite-types';
 import { type WrappedNativeFlowType, type YieldFlowType } from '@suite-common/wallet-core';
-import { InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 
 const yieldDisabledTitleMap = {
@@ -21,7 +21,7 @@ type YieldDisabledAlertProps = {
 };
 
 export const YieldDisabledAlert = ({ type, content, variant }: YieldDisabledAlertProps) => (
-    <InlineAlertBox
+    <BannerInline
         intent={variant ?? 'warning'}
         title={content ?? <Translation id={yieldDisabledTitleMap[type]} />}
     />

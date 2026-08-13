@@ -2,23 +2,23 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 
 import { ICON_NAMES } from '@suite-native/icons';
 
-import { ALERT_BOX_INTENTS } from '../../FullAlertBox/types';
+import { ALERT_BOX_INTENTS } from '../../BannerFull/types';
 import {
-    InlineAlertBox as InlineAlertBoxComponent,
-    type InlineAlertBoxProps,
-} from '../../InlineAlertBox/InlineAlertBox';
+    BannerInline as BannerInlineComponent,
+    type BannerInlineProps,
+} from '../../BannerInline/BannerInline';
 
-type InlineAlertBoxStory = StoryObj<InlineAlertBoxProps>;
+type BannerInlineStory = StoryObj<BannerInlineProps>;
 
-const meta: Meta<InlineAlertBoxProps> = {
-    title: 'Atoms/AlertBoxes',
-    component: InlineAlertBoxComponent,
+const meta: Meta<BannerInlineProps> = {
+    title: 'Atoms/Banners',
+    component: BannerInlineComponent,
 };
 
 export default meta;
 
-export const InlineAlertBox: InlineAlertBoxStory = {
-    name: 'InlineAlertBox',
+export const BannerInline: BannerInlineStory = {
+    name: 'BannerInline',
     args: {
         title: 'New version available (2.8.1).',
         buttonLabel: 'Button',

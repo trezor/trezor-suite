@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { Box, InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline, Box } from '@suite-native/atoms';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
 
 export const TradingEnvironmentWarning = () => {
@@ -12,7 +12,7 @@ export const TradingEnvironmentWarning = () => {
 
     return (
         <Box paddingHorizontal="sp16">
-            <InlineAlertBox title={`Trading environment: ${tradingEnvironment}`} intent="warning" />
+            <BannerInline title={`Trading environment: ${tradingEnvironment}`} intent="warning" />
         </Box>
     );
 };

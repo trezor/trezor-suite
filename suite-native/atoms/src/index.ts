@@ -1,8 +1,8 @@
 export * from './Accordion/AccordionContent';
 export * from './Accordion/AccordionList';
 export * from './BaseAmountInputs';
-export * from './InlineAlertBox/InlineAlertBox';
-export * from './InlineAlertBox/AnimatedInlineAlertBox';
+export * from './BannerInline/BannerInline';
+export * from './BannerInline/AnimatedBannerInline';
 export * from './InlineAlertText';
 export * from './Text';
 export * from './AnimatedBox';
@@ -75,8 +75,8 @@ export * from './useIllustrationColors';
 export * from './utils';
 export * from './PriceChangeBadge';
 export * from './resetLetterSpacingOnAndroidStyle';
-export * from './FullAlertBox/FullAlertBox';
-export * from './FullAlertBox/AnimatedFullAlertBox';
+export * from './BannerFull/BannerFull';
+export * from './BannerFull/AnimatedBannerFull';
 export * from './CircularSpinner';
 export * from './CardStepper/CardStepper';
 export * from './Sheet/BottomSheetModal';
@@ -94,4 +94,4 @@ export * from './SubTabs';
 
 export { useDebugView } from './DebugView';
 export { TouchableSwitchRow, TouchableSwitchRowDescription } from './TouchableSwitchRow';
-export { type AlertBoxIntent } from './FullAlertBox/types';
+export { type AlertBoxIntent } from './BannerFull/types';

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { noQuotaLeftWarningDismissed } from '@suite-common/suite-sync-quota-manager';
-import { AnimatedFullAlertBox } from '@suite-native/atoms';
+import { AnimatedBannerFull } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 
@@ -26,7 +26,7 @@ export const OutOfQuotaAlert = () => {
     };
 
     return (
-        <AnimatedFullAlertBox
+        <AnimatedBannerFull
             marginHorizontal="sp16"
             intent="info"
             iconName="info"

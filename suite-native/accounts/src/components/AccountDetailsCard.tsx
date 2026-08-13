@@ -5,7 +5,7 @@ import { G } from '@mobily/ts-belt';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
-import { Card, ErrorMessage, FullAlertBox, VStack } from '@suite-native/atoms';
+import { BannerFull, Card, ErrorMessage, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
@@ -39,7 +39,7 @@ export const AccountDetailsCard = ({ accountKey, tokenContract }: AccountDetails
     return (
         <VStack spacing="sp16">
             {isDefiToken && (
-                <FullAlertBox
+                <BannerFull
                     title={translate('moduleSend.defi.banner.title', { token: token?.symbol })}
                     description={translate('moduleSend.defi.banner.description')}
                     iconName="info"

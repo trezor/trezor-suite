@@ -6,8 +6,8 @@ import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
+import { BannerInline, type BannerInlineProps } from '../BannerInline/BannerInline';
 import { Box } from '../Box';
-import { InlineAlertBox, type InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
 import { Loader } from '../Loader';
 import { RoundedIcon, type RoundedIconIntent } from '../RoundedIcon';
 import { HStack, VStack } from '../Stack';
@@ -23,7 +23,7 @@ export type CompactCardWithIconLayoutProps = {
     title: ReactNode;
     subtitle?: ReactNode;
     isDisabled?: boolean;
-    alertBoxProps?: InlineAlertBoxProps;
+    alertBoxProps?: BannerInlineProps;
     onPress: () => void;
     variant?: CompactCardVariant;
     borderColor?: Color | null;
@@ -114,7 +114,7 @@ export const CompactCardWithIconLayout = ({
                     </HStack>
                     {alertBoxProps && (
                         <Box margin="sp4">
-                            <InlineAlertBox {...alertBoxProps} />
+                            <BannerInline {...alertBoxProps} />
                         </Box>
                     )}
                 </AnimatedContainerCard>

@@ -7,7 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { type SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-core';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
-import { Box, InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline, Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -118,7 +118,7 @@ export const SendOutputsScreen = ({
                 {isMissingUtxos ? (
                     <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
                         <Box padding="sp16">
-                            <InlineAlertBox
+                            <BannerInline
                                 intent="warning"
                                 title={<Translation id="moduleSend.coinControl.notEnoughCoins" />}
                             />

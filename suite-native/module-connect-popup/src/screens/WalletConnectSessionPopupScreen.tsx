@@ -13,11 +13,11 @@ import {
 import { AccountsListItem } from '@suite-native/accounts';
 import {
     Badge,
+    BannerInline,
     BottomSheetModal,
     Button,
     Card,
     HStack,
-    InlineAlertBox,
     Text,
     TitleHeader,
     VStack,
@@ -228,7 +228,7 @@ export const WalletConnectSessionPopupScreen = () => {
                 )}
 
                 {(requiredNetworksNotActivated || noNetworksActivated) && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="warning"
                         title={
                             <Translation
@@ -252,7 +252,7 @@ export const WalletConnectSessionPopupScreen = () => {
                 )}
 
                 {pendingProposal?.validation === 'INVALID' && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="critical"
                         title={
                             <Translation id="moduleConnectPopup.walletConnect.errors.unableToVerify" />
@@ -261,7 +261,7 @@ export const WalletConnectSessionPopupScreen = () => {
                 )}
 
                 {pendingProposal?.expired && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="warning"
                         title={
                             <Translation id="moduleConnectPopup.walletConnect.errors.requestExpired" />

@@ -1,5 +1,5 @@
 import { type EarnDashboardType } from '@suite-common/message-system';
-import { Box, InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { EarnPromoListRowContainer } from './EarnPromoListRow';
@@ -19,7 +19,7 @@ export const EarnDashboardDisabledRow = ({
     return (
         <EarnPromoListRowContainer isLastInSection={isLastInSection}>
             <Box padding="sp16">
-                <InlineAlertBox
+                <BannerInline
                     intent={variant ?? 'warning'}
                     title={content ?? <Translation id="earn.notAvailable" />}
                 />

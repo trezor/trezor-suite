@@ -2,7 +2,7 @@ import { type ReactNode, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type ExchangeIssue } from '@suite-common/trading';
-import { AnimatedFullAlertBox, BulletListItem, VStack } from '@suite-native/atoms';
+import { AnimatedBannerFull, BulletListItem, VStack } from '@suite-native/atoms';
 import { Translation, selectLocale } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -121,12 +121,12 @@ export const ExchangePreviewIssueBanner = ({
 
     if (!isSimulationEnabled) {
         return (
-            <AnimatedFullAlertBox intent={issue.severity} title={title} description={description} />
+            <AnimatedBannerFull intent={issue.severity} title={title} description={description} />
         );
     }
 
     return (
-        <AnimatedFullAlertBox
+        <AnimatedBannerFull
             intent={issue.severity}
             title={title}
             description={description}
@@ -154,6 +154,6 @@ export const ExchangePreviewIssueBanner = ({
                     ))}
                 </VStack>
             )}
-        </AnimatedFullAlertBox>
+        </AnimatedBannerFull>
     );
 };

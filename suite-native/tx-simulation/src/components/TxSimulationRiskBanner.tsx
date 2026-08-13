@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { CheckBox, FullAlertBox, HStack, PressableOpacity, Text } from '@suite-native/atoms';
+import { BannerFull, CheckBox, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type TxSimulationRiskBannerProps = {
@@ -19,7 +19,7 @@ export const TxSimulationRiskBanner = ({
     intent,
 }: TxSimulationRiskBannerProps) => (
     <>
-        <FullAlertBox intent={intent} title={title} description={description} />
+        <BannerFull intent={intent} title={title} description={description} />
         <PressableOpacity onPress={() => setDisclaimerAccepted(!disclaimerAccepted)}>
             <HStack spacing="sp16" padding="sp8" alignItems="center">
                 <CheckBox

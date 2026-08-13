@@ -14,7 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import { selectAccountLabel } from '@suite-native/accounts';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Box, FullAlertBox, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { BannerFull, Box, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { useFiatFromCryptoValue } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -323,7 +323,7 @@ export const YieldClaimScreen = () => {
                     <YieldFeeSection accountKey={account.key} fees={claimFee} />
 
                     {shouldShowFeeWarning && (
-                        <FullAlertBox
+                        <BannerFull
                             intent="warning"
                             title={<Translation id="earn.yieldClaimFlowScreen.feeWarning.title" />}
                             description={
@@ -333,7 +333,7 @@ export const YieldClaimScreen = () => {
                     )}
 
                     {shouldShowUnverifiableFeeWarning && (
-                        <FullAlertBox
+                        <BannerFull
                             intent="info"
                             title={
                                 <Translation id="earn.yieldClaimFlowScreen.unverifiableFeeWarning.title" />

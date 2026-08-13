@@ -2,7 +2,7 @@ import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AnimatedBox, FullAlertBox } from '@suite-native/atoms';
+import { AnimatedBox, BannerFull } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 const CONFIRMATION_FAILED_TEST_ID = '@trading/sell-preview/provider-confirmation-failed';
@@ -13,7 +13,7 @@ export const ConfirmationFailed = () => {
 
     return (
         <AnimatedBox entering={FadeIn} exiting={FadeOut} paddingTop="sp16">
-            <FullAlertBox
+            <BannerFull
                 title={
                     <Translation id="moduleTrading.tradingSellPreviewScreen.providerStatus.cannotBeCompletedAlert.title" />
                 }

@@ -8,7 +8,7 @@ import {
     selectAccountIsStakingActive,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import { FullAlertBox } from '@suite-native/atoms';
+import { BannerFull } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type SolStakingRewardsWarningProps = {
@@ -25,7 +25,7 @@ const SolStakingRewardsWarningContent = ({ account }: SolStakingRewardsWarningCo
     if (!shouldShowWarning) return null;
 
     return (
-        <FullAlertBox
+        <BannerFull
             testID="@staking/sol-rewards-warning"
             intent="warning"
             title={<Translation id="earn.stakingManagementScreen.solRewardsWarning" />}

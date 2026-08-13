@@ -8,11 +8,11 @@ import {
 } from '@suite-common/tx-simulation';
 import { type TxSimulationAction } from '@suite-common/wallet-types';
 import {
+    BannerFull,
     Box,
     Button,
     Card,
     Divider,
-    FullAlertBox,
     HStack,
     Loader,
     VStack,
@@ -80,7 +80,7 @@ export function EvmTxSimulationReviewContent({
 
     if (!simulation) {
         return (
-            <FullAlertBox
+            <BannerFull
                 intent="critical"
                 title={<Translation id="moduleConnectPopup.simulation.simulationStatusError" />}
             />
@@ -235,7 +235,7 @@ export function EvmTxSimulationReviewContent({
             )}
 
             {txSimulationQuery.error && (
-                <FullAlertBox
+                <BannerFull
                     intent="critical"
                     title={<Translation id="moduleConnectPopup.simulation.simulationStatusError" />}
                     description={txSimulationQuery.error.message}

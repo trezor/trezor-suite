@@ -15,7 +15,7 @@ import {
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Box, Button, FullAlertBox, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { BannerFull, BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -166,7 +166,7 @@ export const ClaimReviewScreen = () => {
                     formDraftKey={formDraftKey}
                 />
                 {isInsufficientFeeBalance && (
-                    <FullAlertBox
+                    <BannerFull
                         intent="critical"
                         iconName="warningCircle"
                         title={
@@ -184,7 +184,7 @@ export const ClaimReviewScreen = () => {
                     />
                 )}
                 {canClaimInstantly && !isInsufficientFeeBalance && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="brand"
                         title={
                             <Translation
@@ -195,7 +195,7 @@ export const ClaimReviewScreen = () => {
                     />
                 )}
                 {isAccountLimitExceeded && (
-                    <InlineAlertBox
+                    <BannerInline
                         intent="info"
                         title={
                             <Translation

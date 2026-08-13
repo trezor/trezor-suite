@@ -14,7 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Box, FullAlertBox, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { BannerFull, Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
@@ -456,7 +456,7 @@ export const YieldDepositApprovalScreen = () => {
 
                         {footerApprovalAction === 'revoke' && (
                             <Box paddingHorizontal="sp16">
-                                <FullAlertBox
+                                <BannerFull
                                     intent="warning"
                                     title={
                                         <Translation id="earn.yieldDepositFlowScreen.alerts.approvalIncreaseRequiresRevoke.title" />

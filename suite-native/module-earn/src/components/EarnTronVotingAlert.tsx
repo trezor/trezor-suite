@@ -1,4 +1,4 @@
-import { Box, InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -16,7 +16,7 @@ export const EarnTronVotingAlert = ({ votesRemaining }: EarnTronVotingAlertProps
 
     return (
         <Box style={applyStyle(alertStyle)}>
-            <InlineAlertBox
+            <BannerInline
                 intent="warning"
                 title={
                     <Translation id="earn.tron.votesAlertText" values={{ count: votesRemaining }} />

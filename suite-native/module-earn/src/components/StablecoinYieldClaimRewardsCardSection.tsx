@@ -6,7 +6,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Button, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
+import { BannerInline, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
@@ -58,7 +58,7 @@ export const StablecoinYieldClaimRewardsCardSection = ({
     return (
         <VStack spacing="sp12">
             {isClaimFeatureDisabled && claimDisabledContent && (
-                <InlineAlertBox
+                <BannerInline
                     intent={claimDisabledVariant ?? 'warning'}
                     title={claimDisabledContent}
                 />

@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { type NavigationProp, useNavigation } from '@react-navigation/native';
 
-import { AnimatedFullAlertBox } from '@suite-native/atoms';
+import { AnimatedBannerFull } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import { type ExperimentalFeature } from '@suite-native/settings';
@@ -33,7 +33,7 @@ export const FeatureFeedbackAlert = ({
     };
 
     return (
-        <AnimatedFullAlertBox
+        <AnimatedBannerFull
             marginHorizontal="sp16"
             iconName="smiley"
             title={

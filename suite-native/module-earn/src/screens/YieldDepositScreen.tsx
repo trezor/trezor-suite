@@ -16,7 +16,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { getYieldVaultContractAddress, stablecoinYieldActions } from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Box, FullAlertBox, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { BannerFull, Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
@@ -471,7 +471,7 @@ export const YieldDepositScreen = () => {
 
                     {isApprovalInsufficient && (
                         <Box paddingHorizontal="sp16">
-                            <FullAlertBox
+                            <BannerFull
                                 intent="warning"
                                 title={
                                     <Translation id="earn.yieldDepositFlowScreen.alerts.approvalTooLow.title" />

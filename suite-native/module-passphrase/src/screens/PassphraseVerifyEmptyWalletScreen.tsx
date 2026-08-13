@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { InlineAlertBox, Text, TitleHeader, VStack } from '@suite-native/atoms';
+import { BannerInline, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     type PassphraseStackParamList,
@@ -49,7 +49,7 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                     }
                     titleVariant="headline-md"
                 />
-                <InlineAlertBox
+                <BannerInline
                     intent="warning"
                     title={
                         <Translation

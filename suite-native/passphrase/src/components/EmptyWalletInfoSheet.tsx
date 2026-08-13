@@ -4,11 +4,11 @@ import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescrip
 import { useNavigation } from '@react-navigation/native';
 
 import {
+    BannerInline,
     BottomSheetListItem,
     BottomSheetModal,
     Box,
     Button,
-    InlineAlertBox,
     TitleHeader,
     VStack,
 } from '@suite-native/atoms';
@@ -89,7 +89,7 @@ export const EmptyWalletInfoSheet = forwardRef<BottomSheetModalMethods, EmptyWal
                     />
                 </VStack>
                 <VStack style={applyStyle(bottomSheetBottomStyle)}>
-                    <InlineAlertBox
+                    <BannerInline
                         intent="warning"
                         title={
                             <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.alertTitle" />

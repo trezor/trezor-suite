@@ -1,4 +1,4 @@
-import { InlineAlertBox } from '@suite-native/atoms';
+import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type YieldFeeEstimationErrorAlertProps = {
@@ -6,7 +6,7 @@ type YieldFeeEstimationErrorAlertProps = {
 };
 
 export const YieldFeeEstimationErrorAlert = ({ onRetry }: YieldFeeEstimationErrorAlertProps) => (
-    <InlineAlertBox
+    <BannerInline
         intent="critical"
         title={<Translation id="earn.feeEstimationFailed" />}
         buttonLabel={<Translation id="generic.buttons.tryAgain" />}

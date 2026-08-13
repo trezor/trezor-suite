@@ -13,7 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Box, FullAlertBox, Text, VStack } from '@suite-native/atoms';
+import { BannerFull, Box, Text, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -397,7 +397,7 @@ export const YieldWithdrawUnwrapScreen = () => {
 
                         {simulation.isDeviceNotConnectedVisible && (
                             <Box paddingHorizontal="sp16">
-                                <FullAlertBox
+                                <BannerFull
                                     intent="critical"
                                     title={
                                         <Translation id="earn.unwrapNativeToken.errors.deviceNotConnected" />
