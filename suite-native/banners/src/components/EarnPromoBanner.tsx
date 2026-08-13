@@ -40,13 +40,7 @@ export const EarnPromoBanner = ({ symbol, title, description }: EarnPromoBannerP
     };
 
     return (
-        <FullAlertBox
-            iconName="piggyBank"
-            verticalAlignment="center"
-            title={title}
-            description={description}
-            intent="brand"
-        >
+        <FullAlertBox iconName="piggyBank" title={title} description={description} intent="brand">
             <HStack marginTop="sp8">
                 <Button intent="brand" size="small" onPress={onExploreClick}>
                     <Translation id="earn.promoStakeBanner.exploreButton" />

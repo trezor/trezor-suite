@@ -31,7 +31,6 @@ export type FullAlertBoxProps = {
     secondaryButtonProps?: Partial<ButtonProps>;
     intent?: AlertBoxIntent;
     iconName?: IconName;
-    verticalAlignment?: 'flex-start' | 'center';
 } & BoxProps;
 
 export const FullAlertBox = ({
@@ -46,7 +45,6 @@ export const FullAlertBox = ({
     secondaryButtonProps,
     intent = 'neutral',
     iconName,
-    verticalAlignment = 'flex-start',
     ...restProps
 }: PropsWithChildren<FullAlertBoxProps>) => {
     const { applyStyle } = useNativeStyles();
@@ -55,7 +53,7 @@ export const FullAlertBox = ({
     return (
         <Box style={applyStyle(containerStyle, { backgroundColor, borderColor })} {...restProps}>
             <VStack spacing="sp12">
-                <HStack spacing="sp12" alignItems={verticalAlignment}>
+                <HStack spacing="sp12" alignItems="flex-start">
                     <Icon
                         name={iconName ?? intentToIconName[intent]}
                         color={textColor}
