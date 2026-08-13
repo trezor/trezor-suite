@@ -5,6 +5,9 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FeesRootState,
     type FormDraftRootState,
+    type YieldDepositFeeToken,
+    buildYieldDepositFeeDraftState,
+    buildYieldDepositFeePreview,
     formDraftActions,
     selectConvertedNetworkFeeInfo,
     selectFormDraft,
@@ -27,11 +30,6 @@ import { useDebounce } from '@trezor/react-utils';
 import { deepEqual } from '@trezor/utils';
 
 import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
-import {
-    type YieldDepositFeeToken,
-    buildYieldDepositFeeDraftState,
-    buildYieldDepositFeePreview,
-} from '../yieldDepositFeeUtils';
 
 export type ComposedTxBase = {
     symbol: NetworkSymbol;

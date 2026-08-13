@@ -85,6 +85,7 @@ export * from './stablecoin-yield/utils/stablecoinYieldFeeEstimation';
 export * from './stablecoin-yield/stablecoinYieldTypes';
 export * from './stablecoin-yield/utils/stablecoinYieldUtils';
 export * from './stablecoin-yield/utils/stablecoinYieldWithdrawCompletedValues';
+export * from './stablecoin-yield/utils/yieldDepositFeeUtils';
 export * from './stablecoin-yield/thunks/stablecoinYieldWrapThunks';
 export * from './stablecoin-yield/hooks/useWrappedNativePendingTx';
 export * from './stake/tron/tronStakeReducer';

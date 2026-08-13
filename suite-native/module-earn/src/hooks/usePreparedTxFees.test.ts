@@ -1,7 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { formDraftReducer } from '@suite-common/wallet-core';
+import {
+    buildYieldDepositFeeDraftState,
+    buildYieldDepositFeePreview,
+    formDraftReducer,
+} from '@suite-common/wallet-core';
 import {
     type FeesState,
     type FormState,
@@ -18,12 +22,10 @@ import { prepareSendFormReducer } from '@suite-native/transaction-management';
 import { createDeferred } from '@trezor/utils';
 
 import { type ComposeTxResult, type ComposedTxBase, usePreparedTxFees } from './usePreparedTxFees';
-import {
-    buildYieldDepositFeeDraftState,
-    buildYieldDepositFeePreview,
-} from '../yieldDepositFeeUtils';
 
-jest.mock('../yieldDepositFeeUtils', () => ({
+jest.mock('@suite-common/wallet-core', () => ({
+    __esModule: true,
+    ...jest.requireActual('@suite-common/wallet-core'),
     buildYieldDepositFeeDraftState: jest.fn(),
     buildYieldDepositFeePreview: jest.fn(),
 }));

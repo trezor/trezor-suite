@@ -1,7 +1,6 @@
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import { parseUnsignedEvmTransactionForSigning } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { buildEvmFeeFields, buildEvmSelectedFee } from '@suite-common/wallet-core';
 import {
     type FeeInfo,
     type FeeLevelLabel,
@@ -10,6 +9,8 @@ import {
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { calculateTotalGasCost, fromHex } from '@suite-common/wallet-utils';
+
+import { buildEvmFeeFields, buildEvmSelectedFee } from './stablecoinYieldUtils';
 
 type ParsedUnsignedEvmTransaction = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
