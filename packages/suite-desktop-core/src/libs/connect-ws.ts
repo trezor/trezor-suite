@@ -107,6 +107,7 @@ export const exposeConnectWs = ({
         let manifest: Manifest | undefined;
         let version: string | undefined;
         let requestedPermissions: PermissionRequest[] | undefined;
+        let isHandshakeDone = false;
 
         logger.info(LOG_PREFIX, `origin: ${origin}`);
 
@@ -147,18 +148,34 @@ export const exposeConnectWs = ({
                 manifest = parseManifest(message.payload.settings.manifest);
                 version = parseVersion(message.payload.settings.version);
                 requestedPermissions = message.payload.settings.requestedPermissions;
+                isHandshakeDone = true;
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === POPUP.CLOSED) {
+                if (!isHandshakeDone) {
+                    logger.warn(LOG_PREFIX, `${message.type} rejected: handshake not completed`);
+
+                    return;
+                }
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.error,
                     callId: message.payload?.callId,
                 });
             } else if (message.type === CORE_CALL_CANCEL) {
+                if (!isHandshakeDone) {
+                    logger.warn(LOG_PREFIX, `${message.type} rejected: handshake not completed`);
+
+                    return;
+                }
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.reason,
                     callId: message.payload?.callId,
                 });
             } else if (message.type === CORE_CALL) {
+                if (!isHandshakeDone) {
+                    logger.warn(LOG_PREFIX, `${message.type} rejected: handshake not completed`);
+
+                    return;
+                }
                 if (!processOnPort) {
                     // ts check, should be set
                     logger.error(LOG_PREFIX, 'processOnPort result not found');
