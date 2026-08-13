@@ -7,12 +7,12 @@ import {
     getYieldVaultForOutputToken,
     getYieldVaultsForInputToken,
     hasYieldVaultPosition,
+    selectBestEnabledYieldVault,
 } from '@suite-common/wallet-core';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
 
-import { getBestEnabledYieldVault } from 'src/components/earn/utils/yieldVaultUtils';
 import { useSelector } from 'src/hooks/suite';
 
 import type { TokensTableType } from '../types';
@@ -83,7 +83,7 @@ export const useTokenYieldBadge = ({
     // A vault the user already deposited into states the rate they actually earn, so it
     // outranks a higher-paying one they have not touched.
     const bestEnabledVault = useSelector(state =>
-        getBestEnabledYieldVault(
+        selectBestEnabledYieldVault(
             state,
             vaultsWithPosition.length > 0 ? vaultsWithPosition : matchedVaults,
         ),

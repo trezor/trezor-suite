@@ -2,14 +2,14 @@ import { useMemo } from 'react';
 
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { getNetworkByYieldXyzId, isWrappedNativeToken } from '@suite-common/wallet-config';
-import { isYieldVaultOperational } from '@suite-common/wallet-core';
+import {
+    isYieldVaultOperational,
+    selectBestEnabledYieldVault,
+    selectIsYieldVaultDepositEnabled,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
 
-import {
-    getBestEnabledYieldVault,
-    isYieldVaultDepositEnabled,
-} from 'src/components/earn/utils/yieldVaultUtils';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
@@ -42,9 +42,9 @@ export const useNativeYieldVault = (account: Account) => {
     );
 
     const hasYieldOption = useSelector(state =>
-        wrappedNativeVaults.some(vault => isYieldVaultDepositEnabled(state, vault)),
+        wrappedNativeVaults.some(vault => selectIsYieldVaultDepositEnabled(state, vault)),
     );
-    const bestVault = useSelector(state => getBestEnabledYieldVault(state, wrappedNativeVaults));
+    const bestVault = useSelector(state => selectBestEnabledYieldVault(state, wrappedNativeVaults));
     const bestVaultApy = bestVault ? getApyPercent(bestVault.rewardRate.total) : null;
 
     return {

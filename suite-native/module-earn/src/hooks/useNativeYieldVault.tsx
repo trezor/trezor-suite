@@ -7,12 +7,14 @@ import {
     type MessageSystemRootState,
     selectIsYieldFeatureDisabled,
 } from '@suite-common/message-system';
-import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
+import {
+    getYieldVaultContractAddress,
+    selectBestEnabledYieldVault,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
 
 import { useMessageSystemYield } from './useMessageSystemYield';
-import { selectBestEnabledYieldVault } from '../selectors';
 import { getWrappedNativeYieldVaults } from '../utils/getWrappedNativeYieldVaults';
 
 const emptyVaults: YieldDtoV2[] = [];

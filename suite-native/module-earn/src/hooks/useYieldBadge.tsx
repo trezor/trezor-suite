@@ -9,12 +9,11 @@ import {
     getYieldVaultForOutputToken,
     getYieldVaultsForInputToken,
     hasYieldVaultPosition,
+    selectBestEnabledYieldVault,
 } from '@suite-common/wallet-core';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
-
-import { selectBestEnabledYieldVault } from '../selectors';
 
 interface YieldBadgeData {
     apy: number;
