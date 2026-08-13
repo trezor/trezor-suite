@@ -23,6 +23,8 @@ import { type Dependencies } from '../modules';
 
 const LOG_PREFIX = 'connect-ws';
 const HANDSHAKE_TIMEOUT_MS = 10000;
+const MAX_CONCURRENT_CONNECTIONS = 50;
+const MAX_CONNECTIONS_PER_ORIGIN = 5;
 
 /**
  * allowed message from connect-in-suite-desktop implementation
@@ -84,6 +86,10 @@ export const exposeConnectWs = ({
     store,
     logger,
 }: ExposeConnectWsParams) => {
+    const connectionsByOrigin = new Map<string, number>();
+    const getActiveConnections = () =>
+        Array.from(connectionsByOrigin.values()).reduce((acc, val) => acc + val, 0);
+
     const wss = new WebSocketServer({
         noServer: true,
     });
@@ -102,10 +108,41 @@ export const exposeConnectWs = ({
 
             return;
         }
-        logger.info(LOG_PREFIX, `new connection from ${ip}:${port}`);
+
+        const { origin } = req.headers;
+        const originKey = origin || 'unknown';
+
+        // Enforce per-origin connection limit to prevent single client monopolization
+        const originConnections = connectionsByOrigin.get(originKey) ?? 0;
+        if (originConnections + 1 > MAX_CONNECTIONS_PER_ORIGIN) {
+            logger.warn(
+                LOG_PREFIX,
+                `connection rejected: limit per origin (${MAX_CONNECTIONS_PER_ORIGIN}) exceeded for ${originKey}`,
+            );
+            req.socket.destroy();
+
+            return;
+        }
+
+        const activeConnections = getActiveConnections();
+        // Enforce global connection limit to prevent resource exhaustion
+        if (activeConnections + 1 > MAX_CONCURRENT_CONNECTIONS) {
+            logger.warn(
+                LOG_PREFIX,
+                `connection rejected: limit (${MAX_CONCURRENT_CONNECTIONS}) exceeded`,
+            );
+            ws.close();
+
+            return;
+        }
+        connectionsByOrigin.set(originKey, originConnections + 1);
+
+        logger.info(
+            LOG_PREFIX,
+            `new connection from ${ip}:${port} (${activeConnections + 1}/${MAX_CONCURRENT_CONNECTIONS})`,
+        );
 
         let processOnPort: ProcessInfo | undefined;
-        const { origin } = req.headers;
 
         let manifest: Manifest | undefined;
         let version: string | undefined;
@@ -289,7 +326,16 @@ export const exposeConnectWs = ({
         });
         ws.on('close', () => {
             clearTimeout(handshakeTimeout);
-            logger.info(LOG_PREFIX, 'Connection closed');
+            const currentOriginCount = connectionsByOrigin.get(originKey) ?? 1;
+            if (currentOriginCount <= 1) {
+                connectionsByOrigin.delete(originKey);
+            } else {
+                connectionsByOrigin.set(originKey, currentOriginCount - 1);
+            }
+            logger.info(
+                LOG_PREFIX,
+                `Connection closed (${getActiveConnections()}/${MAX_CONCURRENT_CONNECTIONS})`,
+            );
 
             if (connectionPendingMessages.size > 0) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
