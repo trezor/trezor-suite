@@ -35,7 +35,7 @@ export const ReleaseNotesTabContent = () => {
     const version = getSuiteVersion();
 
     return (
-        <Box paddingVertical="sp16">
+        <Box>
             <View style={applyStyle(headerCardStyle)}>
                 <HStack spacing="sp6" alignItems="center">
                     <Text variant="body-sm" color="contentSecondary">

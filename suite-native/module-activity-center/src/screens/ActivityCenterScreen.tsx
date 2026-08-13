@@ -6,7 +6,7 @@ import {
     selectHasUnseenTransactionNotifications,
 } from '@suite-common/toast-notifications';
 import { NotificationDot } from '@suite-native/activity-center';
-import { Box, type SubTabItem, SubTabs, VStack } from '@suite-native/atoms';
+import { type SubTabItem, SubTabs, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
@@ -48,13 +48,9 @@ export const ActivityCenterScreen = () => {
                 />
             }
         >
-            <VStack flex={1}>
-                <Box>
-                    <SubTabs items={tabs} value={activeTab} onChange={setActiveTab} />
-                </Box>
-                <Box flex={1}>
-                    <ActivityCenterTabContent activeTab={activeTab} />
-                </Box>
+            <VStack spacing="sp16">
+                <SubTabs items={tabs} value={activeTab} onChange={setActiveTab} />
+                <ActivityCenterTabContent activeTab={activeTab} />
             </VStack>
         </Screen>
     );

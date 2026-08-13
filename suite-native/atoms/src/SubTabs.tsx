@@ -58,6 +58,7 @@ const iconSizeBySize = {
 const tabsStyle = prepareNativeStyle<TabsStyleProps>((utils, { paddingHorizontal }) => ({
     gap: utils.spacings.sp12,
     paddingHorizontal: paddingHorizontal ? utils.spacings[paddingHorizontal] : undefined,
+    paddingBottom: utils.spacings.sp2, // To prevent bottom shadow cutoff.
 }));
 
 const tabStyle = prepareNativeStyle<SubTabStyleProps>((utils, { isActive, size }) => ({

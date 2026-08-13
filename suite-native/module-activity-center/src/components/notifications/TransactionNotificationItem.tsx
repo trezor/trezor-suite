@@ -108,7 +108,7 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
                 <Icon name={iconName} size="mediumLarge" color={contentColor} />
                 <VStack flex={1} spacing="sp2">
                     <Text
-                        variant={seen ? 'body-sm' : 'body-md-strong'}
+                        variant={seen ? 'body-sm' : 'body-sm-strong'}
                         color={contentColor}
                         numberOfLines={1}
                     >
