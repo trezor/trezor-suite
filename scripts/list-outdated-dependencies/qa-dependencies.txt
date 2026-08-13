@@ -31,3 +31,4 @@ minimist
 ts-jest
 uri-scheme
 xml2js
+zxing-wasm

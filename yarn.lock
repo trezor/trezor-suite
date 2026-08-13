@@ -17360,6 +17360,7 @@ __metadata:
     tsx: "npm:^4.21.0"
     type-fest: "npm:5.5.0"
     xvfb-maybe: "npm:^0.2.1"
+    zxing-wasm: "npm:3.0.0"
   languageName: unknown
   linkType: soft
 

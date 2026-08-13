@@ -59,35 +59,49 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
                 }),
             },
             async ({ page, devicePrompt, settingsPage, walletPage }) => {
-                await settingsPage.changeNetworks({ enableNetworks: [coin] });
-                await walletPage.accountButton({ symbol: coin }).click();
-                await walletPage.receiveButton.click();
-                // Intercept writeText before clicking copy — Chromium enforces Permissions-Policy
-                // at the HTTP header level, so navigator.clipboard.readText() is blocked in CI
-                // even when context permissions are granted. Capture the value on write instead.
-                await page.evaluate(() => {
-                    const clipboard = navigator.clipboard as any;
-                    const original = clipboard.writeText.bind(clipboard);
-                    clipboard.writeText = (text: string) => {
-                        (window as any).__clipboardCapture = text;
-
-                        return original(text).catch(() => undefined);
-                    };
+                await test.step(`Enable ${coin.toUpperCase()} and open the receive tab`, async () => {
+                    await settingsPage.changeNetworks({ enableNetworks: [coin] });
+                    await walletPage.accountButton({ symbol: coin }).click();
+                    await walletPage.receiveButton.click();
                 });
-                // Copying is the entry point to verification: it opens the prompt offering to
-                // verify the address that was just copied.
-                await walletPage.copyAddressButton.click();
-                await expect(walletPage.copyToCliboardToast).toBeVisible();
-                await expect(walletPage.addressCopiedModal).toBeVisible();
-                await walletPage.addressCopiedModalVerifyButton.click();
-                const address = await devicePrompt.getAddressFromDisplay();
-                await devicePrompt.waitForPromptAndConfirm();
-                await expect(walletPage.addressCopiedModal).toBeHidden();
-                const clipboardText = await page.evaluate(
-                    () => (window as any).__clipboardCapture as string,
-                );
-                expect.soft(address).toEqual(`${deviceDisplayPrefix}${clipboardText}`);
-                expect.soft(address).toMatch(addressFormat);
+
+                await test.step('Intercept clipboard writes', async () => {
+                    await page.evaluate(() => {
+                        const clipboard = navigator.clipboard as any;
+                        const original = clipboard.writeText.bind(clipboard);
+                        clipboard.writeText = (text: string) => {
+                            (window as any).__clipboardCapture = text;
+
+                            return original(text).catch(() => undefined);
+                        };
+                    });
+                });
+
+                await test.step('Copy the receive address', async () => {
+                    // Copying is the entry point to verification: it opens the prompt offering to
+                    // verify the address that was just copied.
+                    await walletPage.copyAddressButton.click();
+                    await expect(walletPage.copyToCliboardToast).toBeVisible();
+                    await expect(walletPage.addressCopiedModal).toBeVisible();
+                });
+
+                const address = await test.step('Verify the address on the device', async () => {
+                    await walletPage.addressCopiedModalVerifyButton.click();
+                    const displayedAddress = await devicePrompt.getAddressFromDisplay();
+                    await devicePrompt.waitForPromptAndConfirm();
+                    await expect(walletPage.addressCopiedModal).toBeHidden();
+
+                    return displayedAddress;
+                });
+
+                await test.step('Verify the copied address matches the device display and QR code', async () => {
+                    const clipboardText = await page.evaluate(
+                        () => (window as any).__clipboardCapture as string,
+                    );
+                    expect.soft(address).toEqual(`${deviceDisplayPrefix}${clipboardText}`);
+                    expect.soft(address).toMatch(addressFormat);
+                    await expect(walletPage.receiveQrCode).toHaveQrCodeValue(clipboardText);
+                });
             },
         );
     });
