@@ -211,9 +211,6 @@ const erc20Balance = {
     decimals: 6,
 } satisfies BlockbookAccountToken;
 
-// `decimals` is declared as required (see the `it is optional #14796` note on the generated
-// `Token`), but older Blockbook instances really do omit it — which is what the default exists for.
-// The type cannot express that, so the omission has to be cast in.
 const { decimals: _decimals, ...erc20BalanceWithoutDecimals } = erc20Balance;
 const erc20BalanceMissingDecimals = erc20BalanceWithoutDecimals as BlockbookAccountToken;
 
