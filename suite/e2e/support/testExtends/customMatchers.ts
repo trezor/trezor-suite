@@ -17,6 +17,7 @@ import { getIndexOrThrow } from '@trezor/utils';
 import { formatAddress, formatEvmAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
 import { DeviceFixture } from '../device';
 import type { NormalizedDisplayContent } from '../helpers/displayContentNormalizedParser';
+import { decodeQrCodes } from '../helpers/qrCodeDecoder';
 
 type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'cardanoTetragrams' | 'fullLine';
 
@@ -337,6 +338,24 @@ export const expect = baseExpect.extend({
             pass: addressValidator.isAddressValid(stripped, symbol),
             message: () =>
                 `expected locator text to be a valid '${symbol}' address, but got '${text}' (stripped: '${stripped}')`,
+        };
+    },
+
+    async toHaveQrCodeValue(
+        locator: Locator,
+        expectedValue: string,
+        options?: { timeout?: number },
+    ) {
+        await baseExpect
+            .poll(async () => await decodeQrCodes(await locator.screenshot()), {
+                timeout: options?.timeout,
+                message: `expected the rendered QR code to decode to '${expectedValue}'`,
+            })
+            .toEqual([expectedValue]);
+
+        return {
+            pass: true,
+            message: () => 'errors are handled in expects above',
         };
     },
 

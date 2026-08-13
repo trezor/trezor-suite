@@ -34,13 +34,19 @@ export type QrCodeProps = {
     value: string;
     color?: Color;
     centerIcon?: ReactNode;
+    'data-testid'?: string;
 };
 
-export const QrCode = ({ value, color = 'contentPrimary', centerIcon }: QrCodeProps) => {
+export const QrCode = ({
+    value,
+    color = 'contentPrimary',
+    centerIcon,
+    'data-testid': dataTestId,
+}: QrCodeProps) => {
     const theme = useTheme();
 
     return (
-        <Flex position={{ type: 'relative' }} width="100%" height="100%">
+        <Flex position={{ type: 'relative' }} width="100%" height="100%" data-testid={dataTestId}>
             <QRCodeSVG
                 fgColor={theme[color]}
                 bgColor="transparent"

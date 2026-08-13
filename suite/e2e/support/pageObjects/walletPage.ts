@@ -50,6 +50,7 @@ export class WalletPage {
     readonly verifyAddressButton: Locator;
     readonly copyAddressButton: Locator;
     readonly receiveAddress: Locator;
+    readonly receiveQrCode: Locator;
     readonly showNextAddressButton: Locator;
     readonly addressCopiedModal: Locator;
     readonly addressCopiedModalVerifyButton: Locator;
@@ -116,6 +117,7 @@ export class WalletPage {
         this.verifyAddressButton = this.page.getByTestId('@wallet/receive/verify-address-button');
         this.copyAddressButton = this.page.getByTestId('@wallet/receive/copy-address-button');
         this.receiveAddress = this.page.getByTestId('@wallet/receive/address');
+        this.receiveQrCode = this.page.getByTestId('@wallet/receive/qr-code');
         this.showNextAddressButton = this.page.getByTestId(
             '@wallet/receive/show-next-address-button',
         );
