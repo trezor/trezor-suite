@@ -25,6 +25,8 @@ import {
 } from './utils';
 
 // ERC-20 default when a token does not expose decimals(); avoids breaking amount formatting.
+// Only applies when the field is absent — `0` is a valid value that must be preserved, so never
+// fall back on falsiness here.
 const DEFAULT_TOKEN_DECIMALS = 18;
 
 export const transformServerInfo = (payload: ServerInfo) => ({
@@ -86,7 +88,7 @@ export const filterTokenTransfers = (
             const tokenTransfer = {
                 ...transfer,
                 type,
-                decimals: transfer.decimals || DEFAULT_TOKEN_DECIMALS,
+                decimals: transfer.decimals ?? DEFAULT_TOKEN_DECIMALS,
                 amount: transfer.value || '',
                 standard: transfer.standard,
             };
@@ -399,7 +401,7 @@ export const transformTokenInfo = (
         return arr.concat([
             {
                 ...token,
-                decimals: token.decimals || DEFAULT_TOKEN_DECIMALS,
+                decimals: token.decimals ?? DEFAULT_TOKEN_DECIMALS,
                 standard: token.standard,
             },
         ]);
