@@ -25,6 +25,7 @@ const LOG_PREFIX = 'connect-ws';
 const HANDSHAKE_TIMEOUT_MS = 10000;
 const MAX_CONCURRENT_CONNECTIONS = 50;
 const MAX_CONNECTIONS_PER_ORIGIN = 5;
+const MAX_MESSAGE_SIZE = 2 * 1024 * 1024; // 2 MB
 
 /**
  * allowed message from connect-in-suite-desktop implementation
@@ -92,6 +93,7 @@ export const exposeConnectWs = ({
 
     const wss = new WebSocketServer({
         noServer: true,
+        maxPayload: MAX_MESSAGE_SIZE,
     });
 
     wss.on('listening', () => {
