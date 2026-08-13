@@ -1,7 +1,14 @@
+import type {
+    RatesByTimestamps,
+    Timestamp,
+    TokenAddress,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import type { TokenDefinitions } from '../../tokenDefinitionsTypes';
-import { DUST_PHISHING_THRESHOLD } from '../constants';
+import { DUST_PHISHING_THRESHOLD, DUST_PHISHING_THRESHOLD_CURRENCY } from '../constants';
 import { type TransactionWithFiatAmount } from '../types';
 
 const DUST_UNIT = new BigNumber(DUST_PHISHING_THRESHOLD).dividedBy(10);
@@ -888,5 +895,47 @@ export const isPhishingTransactionFixtures = [
         } as unknown as TransactionWithFiatAmount,
         tokenDefinitions: {} as TokenDefinitions,
         result: false,
+    },
+];
+
+const CONTRACT = '0xA' as TokenAddress;
+// on the hour, so roundTimestampToNearestPastHour is a no-op and the rate lookup below hits
+const BLOCK_TIME = 1699999200 as Timestamp;
+
+// 1 whole unit of the token is worth $10
+const historicRates = {
+    [getFiatRateKey('eth', DUST_PHISHING_THRESHOLD_CURRENCY, CONTRACT)]: { [BLOCK_TIME]: 10 },
+} as unknown as RatesByTimestamps;
+
+const transactionWithTokenDecimals = (decimals: number | undefined) =>
+    ({
+        symbol: 'eth',
+        type: 'recv',
+        amount: '0',
+        blockTime: BLOCK_TIME,
+        internalTransfers: [],
+        tokens: [{ amount: '5', contract: CONTRACT, decimals }],
+    }) as unknown as WalletAccountTransaction;
+
+export const getTransactionWithFiatAmountsFixtures = [
+    {
+        // regression: `decimals: 0` used to be read as "missing" and replaced by the network's 18,
+        // understating the amount by 10^18 and making a real transfer look like dust
+        testName: 'decimals: 0 is treated as 0 decimals, not as missing',
+        transaction: transactionWithTokenDecimals(0),
+        historicRates,
+        tokenAmountInFiat: '50', // 5 units * $10
+    },
+    {
+        testName: 'missing decimals falls back to the network decimals',
+        transaction: transactionWithTokenDecimals(undefined),
+        historicRates,
+        tokenAmountInFiat: '0.00000000000000005', // 5 wei * $10, using eth's 18 decimals
+    },
+    {
+        testName: 'reported decimals are used as-is',
+        transaction: transactionWithTokenDecimals(2),
+        historicRates,
+        tokenAmountInFiat: '0.5',
     },
 ];
