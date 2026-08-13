@@ -23,6 +23,7 @@ import { type Dependencies } from '../modules';
 
 const LOG_PREFIX = 'connect-ws';
 const HANDSHAKE_TIMEOUT_MS = 10000;
+const MAX_CONCURRENT_CONNECTIONS = 50;
 
 /**
  * allowed message from connect-in-suite-desktop implementation
@@ -82,6 +83,8 @@ export const exposeConnectWs = ({
 }) => {
     const { logger } = global;
 
+    let activeConnections = 0;
+
     const wss = new WebSocketServer({
         noServer: true,
     });
@@ -100,7 +103,23 @@ export const exposeConnectWs = ({
 
             return;
         }
-        logger.info(LOG_PREFIX, `new connection from ${ip}:${port}`);
+
+        // Enforce connection limit to prevent resource exhaustion
+        if (activeConnections + 1 > MAX_CONCURRENT_CONNECTIONS) {
+            logger.warn(
+                LOG_PREFIX,
+                `connection rejected: limit (${MAX_CONCURRENT_CONNECTIONS}) exceeded`,
+            );
+            ws.close();
+
+            return;
+        }
+        activeConnections += 1;
+
+        logger.info(
+            LOG_PREFIX,
+            `new connection from ${ip}:${port} (${activeConnections}/${MAX_CONCURRENT_CONNECTIONS})`,
+        );
 
         let processOnPort: ProcessInfo | undefined;
         const { origin } = req.headers;
@@ -293,7 +312,11 @@ export const exposeConnectWs = ({
         });
         ws.on('close', () => {
             clearTimeout(handshakeTimeout);
-            logger.info(LOG_PREFIX, 'Connection closed');
+            activeConnections = Math.max(0, activeConnections - 1);
+            logger.info(
+                LOG_PREFIX,
+                `Connection closed (${activeConnections}/${MAX_CONCURRENT_CONNECTIONS})`,
+            );
 
             if (connectionPendingMessages.size > 0) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
