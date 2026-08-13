@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { getUnixTime } from 'date-fns';
@@ -7,6 +6,7 @@ import {
     fetchErc4626UnderlyingAsset,
     getFiatRatesForTimestamps,
 } from '@suite-common/fiat-services';
+import { useQuery } from '@suite-common/react-query';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
@@ -19,10 +19,17 @@ import {
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import { percentageDiff } from '@suite-native/graph';
-import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils';
 
 const UNIX_DAY = 24 * 60 * 60;
 const REFRESH_INTERVAL = 30_000;
+
+type CoinPriceValues = {
+    currentValue: BaseCurrencyAmount | null;
+    weekAgoValue: number | null;
+};
+
+const NULL_PRICE_VALUES: CoinPriceValues = { currentValue: null, weekAgoValue: null };
 
 interface UseDayCoinPriceChangeProps {
     symbol?: NetworkSymbol | null;
@@ -35,11 +42,6 @@ export const useDayCoinPriceChange = ({
     tokenContract,
     isErc4626Token,
 }: UseDayCoinPriceChangeProps) => {
-    const [currentValue, setCurrentValue] = useState<BaseCurrencyAmount | null>(null);
-    const [weekAgoValue, setWeekAgoValue] = useState<number | null>(null);
-    const [valuePercentageChange, setValuePercentageChange] = useState<number | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
         selectIsElectrumBackendSelected(state, symbol ?? 'btc'),
@@ -48,11 +50,20 @@ export const useDayCoinPriceChange = ({
     // Block book does not have historical data for tokens of other networks than ETH.
     const isCoingeckoForce = tokenContract && symbol !== 'eth';
 
-    useEffect(() => {
-        const getPrices = async () => {
-            if (!symbol) return;
-
-            setIsLoading(true);
+    const { data, isLoading } = useQuery<CoinPriceValues>({
+        enabled: !!symbol,
+        queryKey: [
+            'day-coin-price-change',
+            symbol,
+            tokenContract,
+            isErc4626Token,
+            fiatCurrencyCode,
+            isElectrumBackend,
+            isCoingeckoForce,
+        ],
+        refetchInterval: REFRESH_INTERVAL,
+        queryFn: async () => {
+            if (!symbol) return NULL_PRICE_VALUES;
 
             const currentTimestamp = getUnixTime(Date.now());
             const weekAgoTimestamp = currentTimestamp - 7 * UNIX_DAY;
@@ -85,41 +96,26 @@ export const useDayCoinPriceChange = ({
                         ? underlyingAsset.exchangeRate.multipliedBy(rate).toNumber()
                         : rate;
 
-                setWeekAgoValue(toVaultRate(weekAgo?.rates[fiatCurrencyCode]) ?? null);
+                const weekAgoValue = toVaultRate(weekAgo?.rates[fiatCurrencyCode]) ?? null;
                 const currentRate = toVaultRate(today?.rates[fiatCurrencyCode]);
-                setCurrentValue(
+                const currentValue =
                     currentRate !== undefined
                         ? asBaseCurrencyAmount(new BigNumber(currentRate))
-                        : null,
-                );
+                        : null;
+
+                return { currentValue, weekAgoValue };
             } catch {
-                setWeekAgoValue(null);
-                setCurrentValue(null);
-            } finally {
-                setIsLoading(false);
+                return NULL_PRICE_VALUES;
             }
-        };
+        },
+    });
 
-        getPrices();
-        const refreshInterval = setInterval(getPrices, REFRESH_INTERVAL);
+    const { currentValue, weekAgoValue } = data ?? NULL_PRICE_VALUES;
 
-        return () => clearInterval(refreshInterval);
-    }, [
-        symbol,
-        tokenContract,
-        isErc4626Token,
-        fiatCurrencyCode,
-        isElectrumBackend,
-        isCoingeckoForce,
-    ]);
-
-    useEffect(() => {
-        if (isNotNullOrUndefined(currentValue) && isNotNullOrUndefined(weekAgoValue)) {
-            setValuePercentageChange(percentageDiff(weekAgoValue, currentValue.toNumber()));
-        } else {
-            setValuePercentageChange(null);
-        }
-    }, [currentValue, weekAgoValue]);
+    const valuePercentageChange =
+        currentValue !== null && weekAgoValue !== null
+            ? percentageDiff(weekAgoValue, currentValue.toNumber())
+            : null;
 
     return { currentValue, valuePercentageChange, isLoading };
 };
