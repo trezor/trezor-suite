@@ -1,5 +1,6 @@
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Translation } from '@suite-native/intl';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { type HowEarnWorksScreenPreset } from './types';
 
@@ -17,15 +18,25 @@ export const createHowStakeWorksPreset = ({
     apy,
 }: CreateHowStakeWorksPresetProps): HowEarnWorksScreenPreset => {
     const displaySymbol = getNetworkDisplaySymbol(symbol);
+    const isSolana = symbol === 'sol';
 
     const entryPeriodDescriptionId =
         entryPeriodInDays !== undefined
             ? 'earn.howStakeWorksScreen.stakingTimeline.second.description'
             : 'earn.notAvailable';
+    const stakingPeriodTitleId = isSolana
+        ? 'earn.howStakeWorksScreen.stakingTimeline.second.title.solana'
+        : 'earn.howStakeWorksScreen.stakingTimeline.second.title.ethereum';
+    const stakingRewardsTitleId = isSolana
+        ? 'earn.howStakeWorksScreen.stakingTimeline.third.title.solana'
+        : 'earn.howStakeWorksScreen.stakingTimeline.third.title.ethereum';
     const stakingRewardsDescriptionId =
         apy != null
             ? 'earn.howStakeWorksScreen.stakingTimeline.third.description'
             : 'earn.notAvailableShort';
+    const unstakingPeriodTitleId = isSolana
+        ? 'earn.howStakeWorksScreen.unstakeTimeline.second.title.solana'
+        : 'earn.howStakeWorksScreen.unstakeTimeline.second.title.ethereum';
     const unstakingPeriodDescriptionId =
         unstakingPeriodInDays !== undefined
             ? 'earn.howStakeWorksScreen.unstakeTimeline.second.description'
@@ -97,9 +108,7 @@ export const createHowStakeWorksPreset = ({
                     },
                     {
                         id: 'staking.second',
-                        title: (
-                            <Translation id="earn.howStakeWorksScreen.stakingTimeline.second.title" />
-                        ),
+                        title: <Translation id={stakingPeriodTitleId} />,
                         description: (
                             <Translation
                                 id={entryPeriodDescriptionId}
@@ -110,7 +119,10 @@ export const createHowStakeWorksPreset = ({
                     {
                         id: 'staking.third',
                         title: (
-                            <Translation id="earn.howStakeWorksScreen.stakingTimeline.third.title" />
+                            <Translation
+                                id={stakingRewardsTitleId}
+                                values={{ days: SOLANA_EPOCH_DAYS }}
+                            />
                         ),
                         description: (
                             <Translation id={stakingRewardsDescriptionId} values={{ apy }} />
@@ -134,9 +146,7 @@ export const createHowStakeWorksPreset = ({
                     },
                     {
                         id: 'unstake.second',
-                        title: (
-                            <Translation id="earn.howStakeWorksScreen.unstakeTimeline.second.title" />
-                        ),
+                        title: <Translation id={unstakingPeriodTitleId} />,
                         description: (
                             <Translation
                                 id={unstakingPeriodDescriptionId}
