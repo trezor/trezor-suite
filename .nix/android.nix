@@ -2,13 +2,16 @@
 
 let
   androidComposition = pkgs.androidenv.composeAndroidPackages {
-    platformVersions = [ "31" "34" "35" "36" ];
-    buildToolsVersions = [ "31.0.0" "34.0.0" "35.0.0" "36.0.0" ];
+    # 34 is the Pixel_6_API_34 emulator image; 36 is RN/Expo compileSdk.
+    platformVersions = [ "34" "36" ];
+    # 36 is RN's default; 35 is still requested by native modules (e.g. quick-crypto).
+    buildToolsVersions = [ "35.0.0" "36.0.0" ];
     includeEmulator = true;
     includeSystemImages = true;
     systemImageTypes = [ "google_apis" ];
     abiVersions = [ "x86_64" ];
     includeNDK = true;
+    # 27.1 is RN's default; 27.0 is still requested by expo-sqlite.
     ndkVersions = [ "27.1.12297006" "27.0.12077973" ];
     cmakeVersions = [ "3.22.1" ];
   };
