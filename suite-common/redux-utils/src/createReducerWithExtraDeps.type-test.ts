@@ -10,7 +10,8 @@ type TestState = { value: number };
 createReducerWithExtraDeps({ value: 0 }, (_builder, extra) => {
     // @ts-expect-error Dependency-free reducers cannot access injected action types.
     void extra.actionTypes;
-})(null);
+    // A composition root may still hand over its whole dependency object; nothing can be read off it.
+})({});
 
 createReducerWithExtraDeps<TestState, SelectedReducerDeps>({ value: 0 }, (_builder, extra) => {
     void extra.actionTypes.selectedAction;

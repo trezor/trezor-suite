@@ -3,6 +3,7 @@ import { type ActionCreatorWithPreparedPayload, current, isAnyOf } from '@reduxj
 import { deviceActions } from '@suite-common/device';
 import {
     type ActionTypesDep,
+    type ActionsDep,
     type ReducersDep,
     createReducerWithExtraDeps,
 } from '@suite-common/redux-utils';
@@ -112,11 +113,8 @@ const setMetadata = (state: Account[], account: Account) => {
 };
 
 type AccountsReducerDeps = ActionTypesDep<'storageLoad'> &
-    ReducersDep<'storageLoadAccounts'> & {
-        actions: {
-            setAccountAddMetadata: ActionCreatorWithPreparedPayload<[Account], Account>;
-        };
-    };
+    ReducersDep<'storageLoadAccounts', AccountsState> &
+    ActionsDep<{ setAccountAddMetadata: ActionCreatorWithPreparedPayload<[Account], Account> }>;
 
 export const prepareAccountsReducer = createReducerWithExtraDeps(
     accountsInitialState,

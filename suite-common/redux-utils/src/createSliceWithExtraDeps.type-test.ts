@@ -11,7 +11,7 @@ createSliceWithExtraDeps({
         // @ts-expect-error Dependency-free slices cannot access injected action types.
         void extra.actionTypes;
     },
-}).prepareReducer(null);
+}).prepareReducer({});
 
 createSliceWithExtraDeps({
     name: 'selected-dependencies',
