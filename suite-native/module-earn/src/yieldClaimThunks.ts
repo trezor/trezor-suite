@@ -2,12 +2,16 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { buildClaimTransactionReview } from '@suite-common/earn-stablecoin';
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    type YieldPushTransactionError,
     formDraftActions,
+    getPushErrorType,
     isYieldTxReviewForFlow,
+    pushYieldTransaction,
     selectAddressDisplayType,
     selectDeepCopyOfFormDraft,
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
+    signYieldTransactionOnDevice,
     stablecoinYieldActions,
     synchronizeSentTransactionThunk,
 } from '@suite-common/wallet-core';
@@ -15,11 +19,8 @@ import { type Account, type FormState } from '@suite-common/wallet-types';
 import { type UpdateSelectedFeeLevelThunkParams } from '@suite-native/transaction-management';
 
 import { EARN_MODULE_PREFIX } from './constants';
-import { pushYieldTransaction, signYieldTransactionOnDevice } from './utils/deviceTransactionUtils';
 import { getSelectedFeeFromUnsignedClaimTransaction } from './utils/yieldClaimFeeUtils';
 import { buildYieldClaimRewards } from './utils/yieldClaimReviewUtils';
-import { getPushErrorType } from './yieldTransactionThunks';
-import type { YieldPushTransactionError } from './yieldTransactionThunks';
 
 export const getYieldClaimFormDraftKey = (flowKey: string) => `yield-claim/${flowKey}`;
 

@@ -1,24 +1,32 @@
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    type YieldFlowDisplayToken,
-    type YieldFlowResolvedData,
-    type YieldPositionFlowType,
-    isStablecoinYieldSupported,
-    isYieldTxReviewForFlow,
-    selectAddressDisplayType,
-    selectStablecoinYieldSession,
-    selectStablecoinYieldTxReview,
-    stablecoinYieldActions,
-    synchronizeSentTransactionThunk,
-} from '@suite-common/wallet-core';
 import { type EvmSelectedFee } from '@suite-common/wallet-types';
 
-import { EARN_MODULE_PREFIX } from './constants';
-import { pushYieldTransaction, signYieldTransactionOnDevice } from './utils/deviceTransactionUtils';
+import { synchronizeSentTransactionThunk } from '../../send/sendFormThunks';
+import {
+    type WalletSettingsRootState,
+    selectAddressDisplayType,
+} from '../../settings/walletSettingsReducer';
+import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
+import { type StablecoinYieldRootState, stablecoinYieldActions } from '../stablecoinYieldReducer';
+import {
+    selectStablecoinYieldSession,
+    selectStablecoinYieldTxReview,
+} from '../stablecoinYieldSelectors';
+import type {
+    YieldFlowDisplayToken,
+    YieldFlowResolvedData,
+    YieldPositionFlowType,
+} from '../stablecoinYieldTypes';
+import {
+    pushYieldTransaction,
+    signYieldTransactionOnDevice,
+} from '../utils/deviceTransactionUtils';
+import { isStablecoinYieldSupported } from '../utils/stablecoinYieldDeviceUtils';
+import { isYieldTxReviewForFlow } from '../utils/stablecoinYieldUtils';
 
-const YIELD_TRANSACTION_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/yield-transaction`;
+const YIELD_TRANSACTION_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk/yield-transaction`;
 
 type YieldActionReviewThunkPayload = {
     flowData: YieldFlowResolvedData;
@@ -44,10 +52,14 @@ export const getPushErrorType = (message: string): YieldPushTransactionError['er
         ? 'push-transaction-pending-conflict'
         : 'push-transaction-failed';
 
+export type SignYieldActionReviewThunkState = StablecoinYieldRootState &
+    DeviceRootState &
+    WalletSettingsRootState;
+
 export const signYieldActionReviewThunk = createThunk<
     { serializedTx: string },
     YieldActionReviewThunkPayload,
-    { rejectValue: YieldSignTransactionError }
+    { state: SignYieldActionReviewThunkState; rejectValue: YieldSignTransactionError }
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/signActionReview`,
     async (
@@ -162,7 +174,7 @@ export const signYieldActionReviewThunk = createThunk<
 export const pushYieldActionReviewThunk = createThunk<
     { txid: string },
     YieldActionReviewThunkPayload,
-    { rejectValue: YieldPushTransactionError }
+    { state: StablecoinYieldRootState; rejectValue: YieldPushTransactionError }
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/pushActionReview`,
     async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue }) => {

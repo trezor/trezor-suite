@@ -12,8 +12,10 @@ import {
     type YieldFlowResolvedData,
     type YieldWithdrawFlowType,
     isYieldTxReviewForFlow,
+    pushYieldActionReviewThunk,
     selectFormDraft,
     selectStablecoinYieldTxReview,
+    signYieldActionReviewThunk,
 } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -36,7 +38,6 @@ import { useYieldActionReviewBackNavigation } from './useYieldActionReviewBackNa
 import { useYieldReviewAnalytics } from './useYieldReviewAnalytics';
 import { getSelectedEvmFeeFromFormDraft } from '../utils/yieldSelectedFeeUtils';
 import { getYieldWithdrawFormDraftKey } from '../utils/yieldWithdrawUtils';
-import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from '../yieldTransactionThunks';
 
 type UseYieldWithdrawReviewParams = {
     flowData: YieldFlowResolvedData;

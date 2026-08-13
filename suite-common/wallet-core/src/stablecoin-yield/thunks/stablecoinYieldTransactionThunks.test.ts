@@ -4,17 +4,6 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
 import {
-    type StablecoinYieldRootState,
-    type YieldFlowResolvedData,
-    type YieldFlowToken,
-    type YieldPositionFlowType,
-    selectStablecoinYieldSession,
-    selectStablecoinYieldTxReview,
-    stablecoinYieldActions,
-    stablecoinYieldReducer,
-    synchronizeSentTransactionThunk,
-} from '@suite-common/wallet-core';
-import {
     type Account,
     type FormState,
     type PrecomposedTransactionFinal,
@@ -23,7 +12,25 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from './yieldTransactionThunks';
+import {
+    pushYieldActionReviewThunk,
+    signYieldActionReviewThunk,
+} from './stablecoinYieldTransactionThunks';
+import { synchronizeSentTransactionThunk } from '../../send/sendFormThunks';
+import {
+    type StablecoinYieldRootState,
+    stablecoinYieldActions,
+    stablecoinYieldReducer,
+} from '../stablecoinYieldReducer';
+import {
+    selectStablecoinYieldSession,
+    selectStablecoinYieldTxReview,
+} from '../stablecoinYieldSelectors';
+import {
+    type YieldFlowResolvedData,
+    type YieldFlowToken,
+    type YieldPositionFlowType,
+} from '../stablecoinYieldTypes';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -43,9 +50,9 @@ jest.mock('@suite-common/device', () => ({
     selectSelectedDevice: jest.fn(),
 }));
 
-jest.mock('@suite-common/wallet-core', () => ({
+jest.mock('../../send/sendFormThunks', () => ({
     __esModule: true,
-    ...jest.requireActual('@suite-common/wallet-core'),
+    ...jest.requireActual('../../send/sendFormThunks'),
     synchronizeSentTransactionThunk: jest.fn(params => ({
         type: 'test/synchronizeSentTransactionThunk',
         payload: params,

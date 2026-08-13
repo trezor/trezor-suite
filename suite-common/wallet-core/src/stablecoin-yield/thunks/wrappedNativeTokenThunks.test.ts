@@ -1,6 +1,5 @@
 import { configureMockStore } from '@suite-common/test-utils';
 import { WRAPPED_NATIVE, asNetworkSymbol } from '@suite-common/wallet-config';
-import { accountsActions } from '@suite-common/wallet-core';
 import {
     type Account,
     type FormState,
@@ -13,6 +12,7 @@ import {
     type SignedWrappedNativeTokenTransaction,
     pushWrappedNativeTokenThunk,
 } from './wrappedNativeTokenThunks';
+import { accountsActions } from '../../accounts/accountsActions';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -22,9 +22,9 @@ jest.mock('@trezor/connect', () => ({
     },
 }));
 
-jest.mock('@suite-common/wallet-core', () => ({
+jest.mock('../../send/sendFormThunks', () => ({
     __esModule: true,
-    ...jest.requireActual('@suite-common/wallet-core'),
+    ...jest.requireActual('../../send/sendFormThunks'),
     synchronizeSentTransactionThunk: jest.fn(params => ({
         type: 'test/synchronizeSentTransactionThunk',
         payload: params,

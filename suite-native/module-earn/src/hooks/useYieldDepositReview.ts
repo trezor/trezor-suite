@@ -7,7 +7,9 @@ import {
     type StablecoinYieldRootState,
     type YieldFlowResolvedData,
     isYieldTxReviewForFlow,
+    pushYieldActionReviewThunk,
     selectStablecoinYieldTxReview,
+    signYieldActionReviewThunk,
 } from '@suite-common/wallet-core';
 import type {
     StackNavigationProps,
@@ -16,7 +18,6 @@ import type {
 } from '@suite-native/navigation';
 
 import { type YieldReviewSigningResult, type YieldReviewStatus } from '../types';
-import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from '../yieldTransactionThunks';
 import { useEarnTransactionReview } from './useEarnTransactionReview';
 import { useYieldReviewAnalytics } from './useYieldReviewAnalytics';
 

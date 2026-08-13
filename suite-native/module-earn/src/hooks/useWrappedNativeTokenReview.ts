@@ -3,7 +3,13 @@ import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type WrappedNativeFlowType, type YieldFlowDisplayToken } from '@suite-common/wallet-core';
+import {
+    type SignedWrappedNativeTokenTransaction,
+    type WrappedNativeFlowType,
+    type YieldFlowDisplayToken,
+    pushWrappedNativeTokenThunk,
+    signWrappedNativeTokenThunk,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     type StackNavigationProps,
@@ -19,11 +25,6 @@ import {
 import { useEarnTransactionReview } from './useEarnTransactionReview';
 import { useWrappedNativeFlowAnalytics } from './useWrappedNativeFlowAnalytics';
 import { wrappedNativeTokenFlowRoutes } from '../utils/wrappedNativeTokenFlowRoutes';
-import {
-    type SignedWrappedNativeTokenTransaction,
-    pushWrappedNativeTokenThunk,
-    signWrappedNativeTokenThunk,
-} from '../wrappedNativeTokenThunks';
 
 type UseWrappedNativeTokenReviewParams = {
     account: Account;

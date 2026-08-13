@@ -1,25 +1,28 @@
-import { selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    type WrappedNativeFlowType,
-    type YieldFlowDisplayToken,
-    isWrappedNativeFlowSupported,
-    selectAddressDisplayType,
-    synchronizeSentTransactionThunk,
-    trackWrappedNativeTokenThunk,
-} from '@suite-common/wallet-core';
 import {
     type Account,
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 
-import { EARN_MODULE_PREFIX } from './constants';
-import { pushYieldTransaction, signYieldTransactionOnDevice } from './utils/deviceTransactionUtils';
-import { getPushErrorType } from './yieldTransactionThunks';
+import { getPushErrorType } from './stablecoinYieldTransactionThunks';
+import { trackWrappedNativeTokenThunk } from './stablecoinYieldWrapThunks';
+import { synchronizeSentTransactionThunk } from '../../send/sendFormThunks';
+import {
+    type WalletSettingsRootState,
+    selectAddressDisplayType,
+} from '../../settings/walletSettingsReducer';
+import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
+import type { WrappedNativeFlowType, YieldFlowDisplayToken } from '../stablecoinYieldTypes';
+import {
+    pushYieldTransaction,
+    signYieldTransactionOnDevice,
+} from '../utils/deviceTransactionUtils';
+import { isWrappedNativeFlowSupported } from '../utils/stablecoinYieldDeviceUtils';
 
-const WRAPPED_NATIVE_TOKEN_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/wrapped-native-token`;
+const WRAPPED_NATIVE_TOKEN_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk/wrapped-native-token`;
 
 export type WrappedNativeTokenSignError = {
     error: 'sign-transaction-failed';
@@ -53,6 +56,8 @@ type PushWrappedNativeTokenPayload = {
     signedTransaction: SignedWrappedNativeTokenTransaction;
 };
 
+export type SignWrappedNativeTokenThunkState = DeviceRootState & WalletSettingsRootState;
+
 /**
  * Signs a composed wrap/unwrap transaction on the device. Unlike the yield action review thunks,
  * it is session-less — the standalone wrapped-native flows have no vault, so all inputs are
@@ -62,7 +67,7 @@ type PushWrappedNativeTokenPayload = {
 export const signWrappedNativeTokenThunk = createThunk<
     SignedWrappedNativeTokenTransaction,
     SignWrappedNativeTokenPayload,
-    { rejectValue: WrappedNativeTokenSignError }
+    { state: SignWrappedNativeTokenThunkState; rejectValue: WrappedNativeTokenSignError }
 >(
     `${WRAPPED_NATIVE_TOKEN_THUNK_PREFIX}/sign`,
     async ({ account, token, amount, unsignedTransaction }, { getState, rejectWithValue }) => {
