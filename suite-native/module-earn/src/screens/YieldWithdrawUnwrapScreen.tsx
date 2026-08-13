@@ -331,6 +331,7 @@ export const YieldWithdrawUnwrapScreen = () => {
                     flowType="unwrap"
                     isSkipFirst
                     isSubmitDisabled={isSubmitDisabled}
+                    isSubmitLoading={unwrapFee.isFeePreparing}
                     onSkip={isUnwrapPending ? undefined : handleSkip}
                     onSubmit={simulation.handleSubmit}
                     spentSymbol={wrappedTokenSymbol}

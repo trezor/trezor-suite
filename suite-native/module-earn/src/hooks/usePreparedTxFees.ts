@@ -40,7 +40,7 @@ export type ComposedTxBase = {
 };
 
 export type ComposeTxResult<TComposed extends ComposedTxBase> =
-    { type: 'ready'; transaction: TComposed } | { type: 'error'; isFeeEstimationError: boolean };
+    { type: 'ready'; transaction: TComposed } | { type: 'error' };
 
 export type PreparedTx<TComposed extends ComposedTxBase> = {
     amount: string;
@@ -60,8 +60,8 @@ type UsePreparedTxFeesParams<TComposed extends ComposedTxBase> = {
     amount: string | undefined;
     /**
      * Composes the base transaction for the debounced amount. Must not throw — map failures to
-     * the `error` result (with `isFeeEstimationError` deciding whether the retryable
-     * fee-estimation alert is shown).
+     * the `error` result. Every error is surfaced as a retryable alert; a failure that only
+     * disables the submit button leaves the user with no way to proceed.
      */
     composeTransaction: (amount: string) => Promise<ComposeTxResult<TComposed>>;
     /** Empty string marks a missing draft context; the store is then only cleared, never written. */
@@ -154,7 +154,7 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
             try {
                 result = await composeTransaction(composeAmount);
             } catch {
-                result = { type: 'error', isFeeEstimationError: false };
+                result = { type: 'error' };
             }
 
             if (requestId !== requestIdRef.current) {
@@ -162,10 +162,7 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
             }
 
             if (result.type !== 'ready') {
-                if (result.isFeeEstimationError) {
-                    setHasFeeEstimationError(true);
-                }
-
+                setHasFeeEstimationError(true);
                 clearFeeState();
 
                 return;
@@ -175,7 +172,9 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
                 result.transaction.unsignedTransaction,
             );
 
+            // A transaction that composed but cannot be priced is a failure, not a pending state.
             if (!baseFeePreview) {
+                setHasFeeEstimationError(true);
                 clearFeeState();
 
                 return;

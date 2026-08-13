@@ -572,7 +572,11 @@ export const YieldWithdrawScreen = () => {
                 <>
                     <ScreenFooterGradient />
                     <Box style={applyStyle(screenFooterStyle)}>
-                        <Button isDisabled={isSubmitDisabled} onPress={handleContinue}>
+                        <Button
+                            isDisabled={isSubmitDisabled}
+                            isLoading={isComposingWithdrawFee}
+                            onPress={handleContinue}
+                        >
                             <Translation id="generic.buttons.continue" />
                         </Button>
                     </Box>
@@ -717,7 +721,7 @@ export const YieldWithdrawScreen = () => {
                         <YieldFeeEstimationErrorAlert onRetry={retryFeeEstimation} />
                     )}
 
-                    {isWithdrawReviewReady && (
+                    {!!withdrawFeeFormDraft && (
                         <FeeSelector
                             accountKey={account.key}
                             tokenContract={route.params.tokenContract}

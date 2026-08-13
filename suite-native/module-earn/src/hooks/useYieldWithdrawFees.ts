@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 
 import { asEvmAddress } from '@suite-common/calldata';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
@@ -20,6 +20,7 @@ import {
     selectConvertedNetworkFeeInfo,
     selectDeepCopyOfFormDraft,
     selectFormDraft,
+    updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import {
     type FeeInfo,
@@ -73,8 +74,8 @@ type UseYieldWithdrawFeesResult = {
 };
 
 // Only the inputs that should trigger a fresh (network) fee composition. The fee context
-// (feeInfo, selected/custom fee, flowData) is read from refs at compose time instead, so it can't
-// re-trigger the effect — most importantly the fee draft that the compose itself writes.
+// (selected/custom fee, flowData) is read from refs at compose time and fee info is fetched by the
+// compose itself, so neither can re-trigger the effect — most importantly the fee draft it writes.
 type ComposeWithdrawFeeParams = {
     amount: string;
     flowType: YieldWithdrawFlowType;
@@ -201,20 +202,6 @@ const getYieldWithdrawFeeState = (formDraft: FormState | null | undefined) => {
     };
 };
 
-const getWithdrawFeeInfoRevision = (feeInfo: FeeInfo | null | undefined) =>
-    feeInfo?.levels
-        .map(({ baseFeePerGas, blocks, feePerUnit, label, maxFeePerGas, maxPriorityFeePerGas }) =>
-            [label, feePerUnit, blocks, maxFeePerGas, maxPriorityFeePerGas, baseFeePerGas].join(
-                ':',
-            ),
-        )
-        .join('|') ?? '';
-
-const isWithdrawFeeInfoReady = (feeInfo: FeeInfo | null | undefined) =>
-    !!feeInfo?.levels.some(
-        feeLevel => feeLevel.label !== 'normal' || feeLevel.maxFeePerGas || feeLevel.blocks !== -1,
-    );
-
 const composeYieldWithdrawTransaction = async ({
     amount,
     dispatch,
@@ -312,6 +299,7 @@ export const useYieldWithdrawFees = ({
     isEnabled,
 }: UseYieldWithdrawFeesParams): UseYieldWithdrawFeesResult => {
     const dispatch = useDispatch();
+    const store = useStore<FeesRootState>();
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
     const [preparedAction, setPreparedAction] = useState<PreparedYieldWithdrawAction | null>(null);
@@ -327,9 +315,6 @@ export const useYieldWithdrawFees = ({
         () => (flowKey ? getYieldWithdrawFormDraftKey(flowKey) : ''),
         [flowKey],
     );
-    const feeInfo = useSelector((state: FeesRootState) =>
-        selectConvertedNetworkFeeInfo(state, flowData?.account.symbol),
-    );
     const formDraft = useSelector((state: FormDraftRootState) =>
         formDraftKey ? selectFormDraft<FormState>(state, formDraftKey) : undefined,
     );
@@ -342,8 +327,6 @@ export const useYieldWithdrawFees = ({
     // changes (which would otherwise loop: compose -> stores draft -> draft change -> compose ...).
     const flowDataRef = useRef(flowData);
     flowDataRef.current = flowData;
-    const feeInfoRef = useRef(feeInfo);
-    feeInfoRef.current = feeInfo;
     const feeStateRef = useRef(feeState);
     feeStateRef.current = feeState;
     const selectedFeeLevel = feeLevels[selectedFee];
@@ -355,33 +338,41 @@ export const useYieldWithdrawFees = ({
         isLoading: isComposingWithdrawFee,
     });
 
-    // `formDraftKey` is truthy only once the flow is resolved (so flowData is available), and
-    // `hasFeeInfo` flips compose back on when fee info finishes loading without re-triggering on
-    // every fee-info identity change.
-    const feeInfoRevision = useMemo(() => getWithdrawFeeInfoRevision(feeInfo), [feeInfo]);
-    const hasFeeInfo = isWithdrawFeeInfoReady(feeInfo);
     const composeWithdrawFee = useCallback(
         async (params: ComposeWithdrawFeeParams, requestId: number) => {
             const { amount: withdrawAmount, formDraftKey: withdrawFormDraftKey } = params;
             const withdrawFlowData = flowDataRef.current;
-            const withdrawFeeInfo = feeInfoRef.current;
             const currentFlowType = params.flowType;
             const { customFee: withdrawCustomFee, selectedFee: withdrawSelectedFee } =
                 feeStateRef.current;
 
-            if (!withdrawFlowData || !withdrawFeeInfo) {
-                if (requestId === requestIdRef.current) {
-                    dispatch(formDraftActions.removeDraft({ key: withdrawFormDraftKey }));
-                    setPreparedAction(null);
-                    setIsComposingWithdrawFee(false);
-                }
-
-                return;
-            }
-
             try {
                 if (requestId !== requestIdRef.current) {
                     return;
+                }
+
+                if (!withdrawFlowData) {
+                    throw new Error('Yield withdraw flow data is not available.');
+                }
+
+                // There is no background fee-info sync on mobile (desktop has one) and `fees` is not
+                // persisted, so levels are refreshed before composing. The refresh is best-effort —
+                // a failed one still composes from the stored levels, only missing fee info fails.
+                await dispatch(
+                    updateFeeInfoThunk({ networkSymbol: withdrawFlowData.account.symbol }),
+                );
+
+                if (requestId !== requestIdRef.current) {
+                    return;
+                }
+
+                const withdrawFeeInfo = selectConvertedNetworkFeeInfo(
+                    store.getState(),
+                    withdrawFlowData.account.symbol,
+                );
+
+                if (!withdrawFeeInfo) {
+                    throw new Error('Fee info is not available.');
                 }
 
                 const composeResult = await composeYieldWithdrawTransaction({
@@ -452,6 +443,7 @@ export const useYieldWithdrawFees = ({
                     : undefined;
 
                 if (!isFinalPrecomposedTransaction(selectedFeeTransaction)) {
+                    setHasFeeEstimationError(true);
                     dispatch(formDraftActions.removeDraft({ key: withdrawFormDraftKey }));
                     setPreparedAction(null);
 
@@ -475,6 +467,7 @@ export const useYieldWithdrawFees = ({
                 });
             } catch {
                 if (requestId === requestIdRef.current) {
+                    setHasFeeEstimationError(true);
                     dispatch(formDraftActions.removeDraft({ key: withdrawFormDraftKey }));
                     setPreparedAction(null);
                 }
@@ -484,7 +477,7 @@ export const useYieldWithdrawFees = ({
                 }
             }
         },
-        [dispatch, setHasFeeEstimationError],
+        [dispatch, setHasFeeEstimationError, store],
     );
 
     useEffect(() => {
@@ -493,7 +486,7 @@ export const useYieldWithdrawFees = ({
 
         setHasFeeEstimationError(false);
 
-        if (!isEnabled || !amount || !formDraftKey || !hasFeeInfo) {
+        if (!isEnabled || !amount || !formDraftKey) {
             setIsComposingWithdrawFee(false);
             setPreparedAction(null);
 
@@ -522,10 +515,8 @@ export const useYieldWithdrawFees = ({
         debounce,
         dispatch,
         feeEstimationRetryKey,
-        feeInfoRevision,
         flowType,
         formDraftKey,
-        hasFeeInfo,
         isEnabled,
         setHasFeeEstimationError,
     ]);

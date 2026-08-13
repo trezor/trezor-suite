@@ -40,7 +40,7 @@ export const useYieldDepositFees = ({
     const composeTransaction = useCallback(
         async (composeAmount: string): Promise<ComposeTxResult<ComposedDepositTransaction>> => {
             if (!flowData) {
-                return { type: 'error', isFeeEstimationError: false };
+                return { type: 'error' };
             }
 
             try {
@@ -49,11 +49,7 @@ export const useYieldDepositFees = ({
                 ).unwrap();
 
                 if (result.type !== 'action-ready') {
-                    return {
-                        type: 'error',
-                        isFeeEstimationError:
-                            result.type === 'error' && result.reason === 'fee-estimation-failed',
-                    };
+                    return { type: 'error' };
                 }
 
                 return {
@@ -66,7 +62,7 @@ export const useYieldDepositFees = ({
                     },
                 };
             } catch {
-                return { type: 'error', isFeeEstimationError: false };
+                return { type: 'error' };
             }
         },
         [dispatch, flowData],

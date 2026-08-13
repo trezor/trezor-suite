@@ -1,7 +1,7 @@
-import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { SlideInDown } from 'react-native-reanimated';
 
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
+import { AnimatedBox, Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { selectApy, useSelector as useStakingSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -53,7 +53,7 @@ export const EarnFormScreenFooter = ({
     const isRewardsBoxVisible = !!amountValue && !isDisabled;
 
     return (
-        <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
+        <AnimatedBox entering={SlideInDown}>
             <ScreenFooterGradient />
             <Box style={applyStyle(screenFooterStyle)}>
                 {isRewardsBoxVisible && (
@@ -71,7 +71,6 @@ export const EarnFormScreenFooter = ({
                     </Box>
                 )}
                 <Button
-                    key={`${buttonIntent}-${buttonPriority}`}
                     accessibilityRole="button"
                     accessibilityLabel={translate('generic.validateForm')}
                     intent={buttonIntent}
@@ -83,6 +82,6 @@ export const EarnFormScreenFooter = ({
                     <Translation id="generic.buttons.continue" />
                 </Button>
             </Box>
-        </Animated.View>
+        </AnimatedBox>
     );
 };
