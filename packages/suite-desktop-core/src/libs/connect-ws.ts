@@ -107,6 +107,7 @@ export const exposeConnectWs = ({
         let manifest: Manifest | undefined;
         let version: string | undefined;
         let requestedPermissions: PermissionRequest[] | undefined;
+        let isHandshakeDone = false;
 
         logger.info(LOG_PREFIX, `origin: ${origin}`);
 
@@ -137,6 +138,12 @@ export const exposeConnectWs = ({
 
                 return;
             }
+
+            if (!isHandshakeDone && message.type !== POPUP.HANDSHAKE) {
+                logger.warn(LOG_PREFIX, `${message.type} rejected: handshake not completed`);
+
+                return;
+            }
             if (message.type === POPUP.HANDSHAKE) {
                 const filterSelf = !process.env.PLAYWRIGHT_RUN; // ignore own process, unless testing
                 processOnPort = await findProcessFromIncomingPort(port, filterSelf).catch(() => {
@@ -147,6 +154,7 @@ export const exposeConnectWs = ({
                 manifest = parseManifest(message.payload.settings.manifest);
                 version = parseVersion(message.payload.settings.version);
                 requestedPermissions = message.payload.settings.requestedPermissions;
+                isHandshakeDone = true;
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === POPUP.CLOSED) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
