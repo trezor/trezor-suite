@@ -41,6 +41,7 @@ export const getStakingBatch: (
 ) => Promise<StakingBatch> = earnHttpClient('/', {
     method: 'GET',
     schema: stakingBatchResponse,
+    timeout: 60_000,
 });
 
 export const getStakingStats: (
