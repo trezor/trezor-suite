@@ -106,7 +106,7 @@ export const exposeConnectWs = ({
         const port = req.socket.remotePort;
         if ((ip !== '127.0.0.1' && ip !== '::1') || !port) {
             logger.error(LOG_PREFIX, `invalid connection attempt from ${ip}:${port}`);
-            ws.close();
+            req.socket.destroy();
 
             return;
         }
@@ -133,7 +133,7 @@ export const exposeConnectWs = ({
                 LOG_PREFIX,
                 `connection rejected: limit (${MAX_CONCURRENT_CONNECTIONS}) exceeded`,
             );
-            ws.close();
+            req.socket.destroy();
 
             return;
         }
@@ -155,7 +155,7 @@ export const exposeConnectWs = ({
         const handshakeTimeout = setTimeout(() => {
             if (!isHandshakeDone) {
                 logger.warn(LOG_PREFIX, `connection closed: handshake timeout from ${ip}:${port}`);
-                ws.close();
+                req.socket.destroy();
             }
         }, HANDSHAKE_TIMEOUT_MS);
 
@@ -356,12 +356,19 @@ export const exposeConnectWs = ({
     });
 
     httpReceiver.server.on('upgrade', (request, socket, head) => {
-        if (!request?.url) return;
+        if (!request?.url) {
+            socket.destroy();
+
+            return;
+        }
+
         const { pathname } = new URL(request.url, 'http://localhost');
         if (pathname === '/connect-ws') {
             wss.handleUpgrade(request, socket, head, ws => {
                 wss.emit('connection', ws, request);
             });
+        } else {
+            socket.destroy();
         }
     });
 };
