@@ -33,6 +33,7 @@ import {
     type TokenDefinitionsState,
     prepareTokenDefinitionsReducer,
 } from '@suite-common/token-definitions';
+import TrezorConnect from '@trezor/connect';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
@@ -206,6 +207,7 @@ export const initStore = (
             getState: api.getState,
             dispatch: api.dispatch,
             history: deps.history,
+            trezorConnect: TrezorConnect,
             platformEncryption: deps.platformEncryption,
             reloadApp: deps.reloadApp,
             createLogger: deps.createConnectLoggerFactory?.({ getState: api.getState }),

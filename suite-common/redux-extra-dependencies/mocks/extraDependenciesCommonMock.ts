@@ -154,6 +154,21 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
          * The result does not matter here, Connect updates the Device payload and it gets propagated into redux.
          * */
         rerunFwAuthenticityChecksCall: () => undefined,
+        // Nothing else competes for the device in tests, so every request is granted right away.
+        requestDeviceAccess: async deviceCallback => ({
+            success: true,
+            payload: await deviceCallback(),
+        }),
+        trezorConnect: {
+            getFeatures: () =>
+                Promise.resolve({
+                    success: false,
+                    error: {
+                        message: 'Mock TrezorConnect: getFeatures is not implemented.',
+                        code: 'Failure_UnknownCode',
+                    },
+                }),
+        },
     },
     actions: {
         setAccountAddMetadata: notImplementedAction('setAccountAddMetadata'),

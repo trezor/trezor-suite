@@ -33,10 +33,12 @@ import {
     type OpenModalDep,
     type ReloadAppDep,
     type ReportSecurityCheckDep,
+    type RequestDeviceAccessDep,
     type RerunFwAuthenticityChecksCallDep,
     type ShouldRetryFirmwareRevisionCheckErrorDep,
     type ThpHostNameDep,
     type TransportsDep,
+    type TrezorConnectDep,
 } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -102,10 +104,12 @@ export type CommonServices = SuiteSyncDep &
         getThpSettings: Getter<[], ThpSettings>;
     } & ReportSecurityCheckDep &
     ReloadAppDep &
+    RequestDeviceAccessDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
     CreateLoggerDep &
     ThpHostNameDep &
-    TransportsDep;
+    TransportsDep &
+    TrezorConnectDep;
 
 export type ExtraDependenciesStatic = {
     /** @deprecated Do not add any thunks here, this is antipattern. */

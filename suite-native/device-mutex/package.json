@@ -7,6 +7,7 @@
     "sideEffects": false,
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
+        "@suite-common/suite-types": "workspace:*",
         "expo-keep-awake": "~56.0.3"
     },
     "scripts": {
