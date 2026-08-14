@@ -2,7 +2,7 @@
 
 script_directory="$(dirname "${BASH_SOURCE[0]}")"
 
-domains=("connect" "foundation" "growth" "trade" "qa" "wallet")
+domains=("connect" "earn" "growth" "networks" "qa" "trade" "wallet")
 valid_arguments_hint="Valid values are: ${domains[*]}."
 
 # Check if an argument was provided

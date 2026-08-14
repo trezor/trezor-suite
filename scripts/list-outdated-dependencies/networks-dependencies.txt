@@ -1,0 +1,27 @@
+# Transaction simulation
+@blockaid/client
+
+@braintree/sanitize-url
+@exodus/patch-broken-hermes-typed-arrays
+@fivebinaries/coin-selection
+@noble/hashes
+@solana-program/compute-budget
+@solana-program/memo
+@solana-program/stake
+@solana-program/system
+@solana-program/token
+@solana-program/token-2022
+@solana/kit
+@solana/rpc-api
+@solana/rpc-types
+@stellar/stellar-sdk
+@whatwg-node/events
+abortcontroller-polyfill
+ajv
+bignumber.js
+event-target-shim
+react-native-tcp-socket # needed byElectrumWorker
+toml
+viem
+worker-loader
+xrpl
