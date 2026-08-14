@@ -4,9 +4,8 @@ import { saveAs } from 'file-saver';
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
 import { fixLoadedCoinjoinAccount } from '@suite/coinjoin';
-import { rerunFwAuthenticityChecksThunk } from '@suite/device';
 import type { FlagsState } from '@suite/flags';
-import { lockDevice } from '@suite/locks';
+import { createDesktopRequestDeviceAccess, lockDevice, selectIsDeviceLocked } from '@suite/locks';
 import {
     metadataActions,
     metadataLabelingActions,
@@ -38,8 +37,15 @@ import {
 } from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
-import { type DeviceReducerState, selectDeviceByStaticSessionId } from '@suite-common/device';
-import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
+import {
+    type DeviceReducerState,
+    selectDeviceByStaticSessionId,
+    selectSelectedDevice,
+} from '@suite-common/device';
+import {
+    FW_HASH_CHECK_DEFAULT_TIMEOUTS,
+    createRerunFwAuthenticityChecks,
+} from '@suite-common/firmware-authenticity';
 import {
     createFindNetworkSymbolForProtocol,
     createGetNetworkConfig,
@@ -59,7 +65,11 @@ import {
     selectIsSuiteSyncEnabled,
     selectSuiteSyncWalletLabel,
 } from '@suite-common/suite-sync';
-import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
+import {
+    type GetBinFilesBaseUrlDep,
+    type ReloadAppDep,
+    type TrezorConnectModuleDep,
+} from '@suite-common/suite-types';
 import { type ThpHostNameDep } from '@suite-common/thp';
 import {
     type TokenDefinitionsState,
@@ -80,7 +90,7 @@ import {
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage, sortByCoin } from '@suite-common/wallet-utils';
-import TrezorConnect, { type CreateLoggerDep, type StaticSessionId } from '@trezor/connect';
+import { type CreateLoggerDep, type StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
 import { type StorageLoadAction } from 'src/actions/suite/storageActions';
@@ -111,6 +121,7 @@ export type StoreAPIDep = {
 
 export type SuiteAppDeps = StoreAPIDep &
     HistoryDep &
+    TrezorConnectModuleDep &
     PlatformEncryptionDep &
     CreateLoggerDep &
     GetBinFilesBaseUrlDep &
@@ -133,10 +144,19 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
         getState: deps.getState,
         platformEncryption: deps.platformEncryption,
-        trezorConnect: TrezorConnect,
+        trezorConnect: deps.trezorConnect,
     });
 
     const analytics = createAnalytics();
+
+    const requestDeviceAccess = createDesktopRequestDeviceAccess({
+        getIsDeviceLocked: toGetter(deps.getState, selectIsDeviceLocked),
+    });
+    const rerunFwAuthenticityChecksCall = createRerunFwAuthenticityChecks({
+        getSelectedDevice: toGetter(deps.getState, selectSelectedDevice),
+        requestDeviceAccess,
+        trezorConnect: deps.trezorConnect,
+    });
 
     const getCurrentAccountLabels = toGetter(deps.getState, selectAllLabelsForAccount);
     const getAccountsByDeviceState = toGetter(deps.getState, selectAccountsByDeviceState);
@@ -160,7 +180,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
         getState: deps.getState,
         platformEncryption: deps.platformEncryption,
-        trezorConnect: TrezorConnect,
+        trezorConnect: deps.trezorConnect,
         ensureDelegatedIdentityKey,
         analytics,
         fetch: globalThis.fetch.bind(globalThis),
@@ -259,9 +279,9 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             deps.getState,
             selectShouldRetryFirmwareRevisionCheckError,
         ),
-        rerunFwAuthenticityChecksCall: () => {
-            deps.dispatch(rerunFwAuthenticityChecksThunk());
-        },
+        rerunFwAuthenticityChecksCall,
+        requestDeviceAccess,
+        trezorConnect: deps.trezorConnect,
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,

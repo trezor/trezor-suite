@@ -12192,6 +12192,7 @@ __metadata:
   resolution: "@suite-native/device-mutex@workspace:suite-native/device-mutex"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@suite-common/suite-types": "workspace:*"
     expo-keep-awake: "npm:~56.0.3"
   languageName: unknown
   linkType: soft
@@ -13947,6 +13948,7 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/firmware": "workspace:*"
+    "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/logger": "workspace:*"
     "@suite-common/message-system": "workspace:*"
@@ -13959,6 +13961,7 @@ __metadata:
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/thp": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
@@ -13972,6 +13975,7 @@ __metadata:
     "@suite-native/bluetooth": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
+    "@suite-native/device-mutex": "workspace:*"
     "@suite-native/device-onboarding": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-feedback": "workspace:*"
@@ -15160,6 +15164,8 @@ __metadata:
   resolution: "@suite/locks@workspace:suite/locks"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
   languageName: unknown
   linkType: soft

@@ -22,6 +22,9 @@
         },
         { "path": "../../suite-common/firmware" },
         {
+            "path": "../../suite-common/firmware-authenticity"
+        },
+        {
             "path": "../../suite-common/geolocation"
         },
         { "path": "../../suite-common/logger" },
@@ -51,6 +54,9 @@
         {
             "path": "../../suite-common/suite-sync-types"
         },
+        {
+            "path": "../../suite-common/suite-types"
+        },
         { "path": "../../suite-common/thp" },
         {
             "path": "../../suite-common/toast-notifications"
@@ -74,6 +80,7 @@
         { "path": "../bluetooth" },
         { "path": "../device" },
         { "path": "../device-authorization" },
+        { "path": "../device-mutex" },
         { "path": "../device-onboarding" },
         { "path": "../discovery" },
         { "path": "../feature-feedback" },

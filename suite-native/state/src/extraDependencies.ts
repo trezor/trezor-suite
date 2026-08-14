@@ -7,6 +7,8 @@ import { createAddressValidator } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { asGetter, toGetter } from '@suite-common/dependency-injection';
+import { selectSelectedDevice } from '@suite-common/device';
+import { createRerunFwAuthenticityChecks } from '@suite-common/firmware-authenticity';
 import {
     createFindNetworkSymbolForProtocol,
     createGetNetworkConfig,
@@ -24,13 +26,12 @@ import {
 } from '@suite-common/redux-extra-dependencies';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { type TrezorConnectModuleDep } from '@suite-common/suite-types';
 import { createAccountRefreshThrottle } from '@suite-common/wallet-core';
 import { analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
-import {
-    rerunFwAuthenticityChecksThunk,
-    selectShouldRetryFirmwareRevisionCheckError,
-} from '@suite-native/device';
+import { selectShouldRetryFirmwareRevisionCheckError } from '@suite-native/device';
+import { createNativeRequestDeviceAccess } from '@suite-native/device-mutex';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
@@ -38,7 +39,7 @@ import { type NativeServices } from '@suite-native/services';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-state';
-import TrezorConnect, { type ConnectSettings, initLog } from '@trezor/connect';
+import { type ConnectSettings, initLog } from '@trezor/connect';
 import { resolveConnectPath } from '@trezor/env-utils';
 import { BridgeTransport } from '@trezor/transport-common';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
@@ -63,24 +64,32 @@ type NativeAppDeps = {
     getState: () => any;
     dispatch: any;
 } & EnsureEncryptionKeyDep &
-    MMKVStorageDep;
+    MMKVStorageDep &
+    TrezorConnectModuleDep;
 
 export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices => {
     const platformEncryption = createNativePlatformEncryption({
         ensureEncryptionKey: deps.ensureEncryptionKey,
     });
+    const requestDeviceAccess = createNativeRequestDeviceAccess();
+    const rerunFwAuthenticityChecksCall = createRerunFwAuthenticityChecks({
+        getSelectedDevice: toGetter(deps.getState, selectSelectedDevice),
+        requestDeviceAccess,
+        trezorConnect: deps.trezorConnect,
+    });
+
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
         dispatch: deps.dispatch,
         getState: deps.getState,
         platformEncryption,
-        trezorConnect: TrezorConnect,
+        trezorConnect: deps.trezorConnect,
     });
 
     const suiteSync = createSuiteSyncNativeCompositionRoot({
         dispatch: deps.dispatch,
         getState: deps.getState,
         platformEncryption,
-        trezorConnect: TrezorConnect,
+        trezorConnect: deps.trezorConnect,
         ensureDelegatedIdentityKey,
         analytics,
         fetch: globalThis.fetch.bind(globalThis),
@@ -177,9 +186,9 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
             deps.getState,
             selectShouldRetryFirmwareRevisionCheckError,
         ),
-        rerunFwAuthenticityChecksCall: () => {
-            deps.dispatch(rerunFwAuthenticityChecksThunk());
-        },
+        rerunFwAuthenticityChecksCall,
+        requestDeviceAccess,
+        trezorConnect: deps.trezorConnect,
         getBinFilesBaseUrl: asGetter(() => resolveConnectPath('data')),
 
         // Not implemented. We assume those are NEVER called on Native.

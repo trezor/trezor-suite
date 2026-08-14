@@ -33,6 +33,7 @@ import {
     prepareTradingLastErrorSentryMiddleware,
     prepareTradingMiddleware,
 } from '@suite-native/trading-state';
+import TrezorConnect from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
 
 import { createNativeCompositionRoot, extraDependencies } from './extraDependencies';
@@ -122,6 +123,7 @@ export const initStore = (preloadedState?: PreloadedState): StoreWithExtra => {
             ...api,
             ensureEncryptionKey,
             mmkvStorage,
+            trezorConnect: TrezorConnect,
         }),
     });
 
