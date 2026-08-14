@@ -123,7 +123,7 @@ export const MessageSystemAddExperimentForm = () => {
                     items={experimentOptions}
                     value={currentExperiment?.experiment.id ?? ''}
                     onSelectItem={handleSelectExperiment}
-                    isLabelShown
+                    labelType="innerLabel"
                 />
                 <TextInputField
                     name="experimentJson"

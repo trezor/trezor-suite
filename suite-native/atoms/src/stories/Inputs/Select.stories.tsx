@@ -1,6 +1,8 @@
 import { type Meta, type StoryObj } from '@storybook/react-native';
 import { useArgs } from 'storybook/preview-api';
 
+import { type TextInputType } from '../../Input/Input';
+import { InputWrapper } from '../../Input/InputWrapper';
 import {
     Select as SelectComponent,
     type SelectItemType,
@@ -10,7 +12,10 @@ import {
 const OPTIONS = ['option1', 'option2', 'option3'] as const;
 type SelectValue = (typeof OPTIONS)[number];
 
-type SelectArgs = SelectProps<SelectValue>;
+type SelectArgs = Omit<SelectProps<SelectValue>, 'labelType'> & {
+    labelType: TextInputType;
+    errorMessage: string;
+};
 type SelectStory = StoryObj<SelectArgs>;
 
 const items: SelectItemType<SelectValue>[] = [
@@ -21,15 +26,23 @@ const items: SelectItemType<SelectValue>[] = [
 
 const meta: Meta<SelectArgs> = {
     title: 'Atoms/Inputs',
-    render: args => {
+    render: ({ labelType, errorMessage, ...args }) => {
         const [{ value }, updateArgs] = useArgs<SelectArgs>();
 
         return (
-            <SelectComponent
-                {...args}
-                value={value}
-                onSelectItem={(selectedValue: SelectValue) => updateArgs({ value: selectedValue })}
-            />
+            <InputWrapper
+                label={labelType === 'outsideLabel' ? args.title : undefined}
+                error={args.hasError ? errorMessage : undefined}
+            >
+                <SelectComponent
+                    {...args}
+                    labelType={labelType === 'innerLabel' ? 'innerLabel' : 'noLabel'}
+                    value={value}
+                    onSelectItem={(selectedValue: SelectValue) =>
+                        updateArgs({ value: selectedValue })
+                    }
+                />
+            </InputWrapper>
         );
     },
 };
@@ -41,8 +54,12 @@ export const Select: SelectStory = {
     args: {
         title: 'Label',
         value: 'option1',
-        isLabelShown: true,
+        labelType: 'innerLabel',
         isConfirmable: false,
+        hasError: false,
+        errorMessage: 'Something went wrong',
+        isReadOnly: false,
+        isDisabled: false,
         items,
     },
     argTypes: {
@@ -50,13 +67,29 @@ export const Select: SelectStory = {
             control: { type: 'text' },
         },
         value: {
-            options: Object.values(OPTIONS),
+            options: [null, ...Object.values(OPTIONS)],
+            control: {
+                type: 'select',
+                labels: { null: 'Unselected' },
+            },
+        },
+        labelType: {
+            options: ['innerLabel', 'outsideLabel', 'noLabel'],
             control: { type: 'select' },
         },
         isConfirmable: {
             control: { type: 'boolean' },
         },
-        isLabelShown: {
+        hasError: {
+            control: { type: 'boolean' },
+        },
+        errorMessage: {
+            control: { type: 'text' },
+        },
+        isReadOnly: {
+            control: { type: 'boolean' },
+        },
+        isDisabled: {
             control: { type: 'boolean' },
         },
         items: {

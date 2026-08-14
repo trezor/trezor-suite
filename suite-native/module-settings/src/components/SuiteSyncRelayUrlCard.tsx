@@ -28,7 +28,7 @@ export const SuiteSyncRelayUrlCard = () => {
                         items={serverTypes}
                         value={server}
                         onSelectItem={setServer}
-                        isLabelShown
+                        labelType="innerLabel"
                     />
                     {server === SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP.custom.value && (
                         <TextInputField

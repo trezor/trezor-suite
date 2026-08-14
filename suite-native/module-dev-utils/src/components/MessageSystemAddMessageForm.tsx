@@ -60,7 +60,7 @@ export const MessageSystemAddMessageForm = () => {
                 items={[...CATEGORY_OPTIONS]}
                 value={presetCategory}
                 onSelectItem={handlePreset}
-                isLabelShown
+                labelType="innerLabel"
             />
             {canAddCondition && (
                 <Select<keyof Condition | ''>
@@ -68,7 +68,7 @@ export const MessageSystemAddMessageForm = () => {
                     items={[...availableConditionOptions]}
                     value=""
                     onSelectItem={handleAddCondition}
-                    isLabelShown
+                    labelType="innerLabel"
                 />
             )}
             <Input

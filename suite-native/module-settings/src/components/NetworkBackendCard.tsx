@@ -55,7 +55,7 @@ export const NetworkBackendCard = ({ form }: NetworkBackendCardProps) => {
                     items={serverTypes}
                     value={selectedServerType}
                     onSelectItem={setServerType}
-                    isLabelShown
+                    labelType="innerLabel"
                 />
                 {selectedServerType !== 'default' && (
                     <TextInputField
