@@ -39,6 +39,8 @@ export type UseYieldFiatInputResult = {
     // Fills the exact crypto max and, in fiat mode, the rounded-down max fiat display, without
     // switching the active unit.
     setMaxAmount: (cryptoMax: string) => void;
+    // Resets both fields to a crypto amount, filling the fiat display from the current rate.
+    resetAmounts: (cryptoAmount: string) => void;
 };
 
 /**
@@ -128,6 +130,16 @@ export const useYieldFiatInput = ({
           }
         : undefined;
 
+    const resetAmounts = useCallback(
+        (cryptoAmount: string) => {
+            methods.reset({
+                amountInput: cryptoAmount,
+                fiatInput: getYieldFiatInputValue({ amount: cryptoAmount, rate: currentRate }),
+            });
+        },
+        [currentRate, methods],
+    );
+
     const setMaxAmount = useCallback(
         (cryptoMax: string) => {
             methods.setValue('amountInput', cryptoMax, { shouldValidate: true, shouldDirty: true });
@@ -143,5 +155,5 @@ export const useYieldFiatInput = ({
         [currency, currentRate, methods],
     );
 
-    return { fiatToggle, setMaxAmount };
+    return { fiatToggle, setMaxAmount, resetAmounts };
 };
