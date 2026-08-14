@@ -44,6 +44,7 @@ type YieldPendingTransactionModalProps = {
     amountTokenSymbol?: TokenSymbol;
     fee?: string;
     isExploreDisabled?: boolean;
+    onDismiss?: () => void;
     onExplorePress: () => void;
     pendingLabel?: ReactNode;
     ref: BottomSheetModalRef;
@@ -96,6 +97,7 @@ export const YieldPendingTransactionModal = ({
     amountTokenSymbol,
     fee,
     isExploreDisabled,
+    onDismiss,
     onExplorePress,
     pendingLabel = <Translation id="moduleTrading.tradingConfirmationScreen.pending" />,
     ref,
@@ -140,6 +142,7 @@ export const YieldPendingTransactionModal = ({
     return (
         <BottomSheetModal
             ref={ref}
+            onDismiss={onDismiss}
             bottomSheetCustomProps={{
                 backdropComponent: renderBackdrop,
                 enableDynamicSizing: false,

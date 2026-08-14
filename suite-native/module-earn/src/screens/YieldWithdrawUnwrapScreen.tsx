@@ -164,6 +164,8 @@ export const YieldWithdrawUnwrapScreen = () => {
     } = form.form;
 
     const {
+        displayedPendingTransaction,
+        isSheetPresented,
         pendingBottomSheetRef,
         pendingModalProps,
         pendingTransaction: unwrapPendingTransaction,
@@ -205,6 +207,12 @@ export const YieldWithdrawUnwrapScreen = () => {
             return;
         }
 
+        // Replacing the screen while the sheet is still dismissing crashes Fabric — see
+        // `useYieldPendingSheet`.
+        if (isSheetPresented) {
+            return;
+        }
+
         if (session?.step === 'action') {
             navigation.replace(YieldStackRoutes.YieldWithdraw, {
                 ...route.params,
@@ -220,7 +228,7 @@ export const YieldWithdrawUnwrapScreen = () => {
                 withdrawFlowType: flowType,
             });
         }
-    }, [flowType, isFocused, navigation, route.params, session?.step]);
+    }, [flowType, isFocused, isSheetPresented, navigation, route.params, session?.step]);
 
     const handleSkip = useCallback(() => {
         if (!flowKey || isUnwrapPending) {
@@ -419,17 +427,18 @@ export const YieldWithdrawUnwrapScreen = () => {
                     </VStack>
                 </Form>
             </Box>
-            {unwrapPendingTransaction && pendingModalProps && (
+            {displayedPendingTransaction && pendingModalProps && (
                 <YieldPendingTransactionModal
                     ref={pendingBottomSheetRef}
                     accountLabel={accountLabel}
                     accountSymbol={account.symbol}
-                    amount={unwrapPendingTransaction.amount}
+                    amount={displayedPendingTransaction.amount}
                     amountLabel={<Translation id="earn.unwrapNativeToken.amountToUnwrap" />}
                     amountTokenContract={wrappedTokenContract}
                     amountTokenSymbol={wrappedTokenSymbol}
                     fee={pendingModalProps.fee}
                     isExploreDisabled={pendingModalProps.isExploreDisabled}
+                    onDismiss={pendingModalProps.onDismiss}
                     onExplorePress={pendingModalProps.onExplorePress}
                     submittedAt={pendingModalProps.submittedAt}
                     title={<Translation id="earn.yieldWithdrawFlowScreen.unwrapPendingTitle" />}
