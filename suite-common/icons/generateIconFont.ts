@@ -52,6 +52,7 @@ const usedIcons = [
     'caretRight',
     'caretUp',
     'caretUpDown',
+    'caretUpDownReverse',
     'caretUpFilled',
     'change',
     'chatCircle',

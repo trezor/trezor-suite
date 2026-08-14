@@ -594,6 +594,9 @@ export type RootStackParamList = {
     [RootStackRoutes.TradingConfirming]: {
         flowType: ConfirmingScreenFlowType;
     };
+    [RootStackRoutes.TradingMyAsset]: {
+        tradingType: Extract<TradingType, 'sell' | 'exchange'>;
+    };
     [RootStackRoutes.TradingTradeableAsset]: {
         tradingType: Extract<TradingType, 'buy' | 'exchange'>;
     };
@@ -630,6 +633,8 @@ export type ExchangeFlowType = 'swap' | 'sign-data' | ConfirmingScreenFlowType;
 export type TradingStackParamList = {
     [TradingStackRoutes.Trading]: {
         tradingType?: TradingType;
+        selectedMyAssetAccountKey?: AccountKey;
+        selectedMyAssetCryptoId?: string;
         selectedTradeableAssetCryptoId?: string;
     };
 };

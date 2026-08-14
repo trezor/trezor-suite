@@ -12,7 +12,7 @@ export abstract class TradingFormActions extends TradingActions {
     }
 
     getSearchSendCryptoElement() {
-        return this.getElementById('send-asset-sheet/header/search-input');
+        return this.getElementById('send-asset-screen/search-input');
     }
 
     getSearchFiatElement() {
@@ -194,20 +194,24 @@ export abstract class TradingFormActions extends TradingActions {
         await waitForVisible(sendAssetButton, { timeout: this.SHORT_TIMEOUT });
         await sendAssetButton.tap();
 
-        await this.expectSheetHeaderTitle('Your assets');
+        await this.expectScreenHeaderTitle('Your assets');
 
         const searchSendCryptoInput = this.getSearchSendCryptoElement();
         await searchSendCryptoInput.tap();
         await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
         const searchForStr = searchString ?? asset;
-        await searchSendCryptoInput.replaceText(searchForStr.slice(0, -1));
+        await searchSendCryptoInput.replaceText(searchForStr);
 
         if (network) {
-            const networkFilterTab = element(
-                by.text(network).withAncestor(by.id(this.getTestId('send-asset-sheet/header'))),
+            const networkPicker = this.getElementById('send-asset-screen/network-picker');
+            await networkPicker.tap();
+
+            const networksSheet = by.id(
+                this.getTestId('send-asset-screen/network-picker/networks-sheet'),
             );
-            await waitForVisible(networkFilterTab);
-            await networkFilterTab.tap();
+            const networkOption = element(by.text(network).withAncestor(networksSheet));
+            await waitForVisible(networkOption);
+            await networkOption.tap();
         }
 
         const firstMatchingAsset = element(by.text(asset)).atIndex(0);

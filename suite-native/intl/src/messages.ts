@@ -4082,7 +4082,7 @@ export const messages = {
             kycRequired: 'KYC is required',
             lessToReceiveThanRequested: '{percent} less to receive than requested ({amount})',
         },
-        myAssetSheet: {
+        myAssetScreen: {
             title: 'Your assets',
             searchInputPlaceholder: 'Search assets',
             emptyTitle: 'No assets found',
@@ -4091,7 +4091,8 @@ export const messages = {
                 note: 'No pair',
                 toast: 'No trading pair',
             },
-            nonTradeable: '+ {count} non-tradeable {count, plural, one{token} other{tokens}}',
+            lowBalance: 'Low balance',
+            nonTradeable: 'Non-tradeable',
         },
         slippage: {
             title: 'Maximum slippage',

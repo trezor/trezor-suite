@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { Dimensions } from 'react-native';
 
-import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     BottomSheetFlashList,
     type BottomSheetFlashListHandleProps,
@@ -20,7 +20,7 @@ import { SimpleSheetHeader } from '../SimpleSheetHeader';
 
 export type NetworksSheetProps = {
     isVisible: boolean;
-    networks: Network[];
+    networkSymbols: NetworkSymbol[];
     selectedNetwork: NetworkSymbol | undefined;
     onClose: () => void;
     onSelectNetwork: (symbol: NetworkSymbol | undefined) => void;
@@ -90,15 +90,19 @@ const NetworkRow = ({
     );
 };
 
+const networkSheetContainerStyle = prepareNativeStyle(({ spacings }) => ({
+    paddingTop: spacings.sp10,
+}));
+
 export const NetworksSheet = ({
     isVisible,
-    networks,
+    networkSymbols,
     selectedNetwork,
     onClose,
     onSelectNetwork,
     testID,
 }: NetworksSheetProps) => {
-    const { utils } = useNativeStyles();
+    const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const networkOptions = useMemo<NetworkOption[]>(
         () => [
@@ -106,9 +110,9 @@ export const NetworksSheet = ({
                 name: translate('moduleTrading.tradeableAssetsSheet.networksSheet.allNetworks'),
                 symbol: undefined,
             },
-            ...networks,
+            ...networkSymbols.map(symbol => ({ name: getNetwork(symbol).name, symbol })),
         ],
-        [networks, translate],
+        [networkSymbols, translate],
     );
 
     const renderHandle = useCallback(
@@ -153,7 +157,7 @@ export const NetworksSheet = ({
             handleComponent={renderHandle}
             extraData={selectedNetwork}
             testID={testID}
-            contentContainerStyle={{ paddingTop: utils.spacings.sp10 }}
+            contentContainerStyle={applyStyle(networkSheetContainerStyle)}
             showEdgeFades
             renderItem={({ item, index }, { closeSheet }) => (
                 <NetworkRow
