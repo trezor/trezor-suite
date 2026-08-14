@@ -4,15 +4,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Box, EdgeFades, HStack, SearchInput, VStack } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
+import { Box, EdgeFades, VStack } from '@suite-native/atoms';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { type TradeableAssetBalances } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
-import { useNativeStyles } from '@trezor/styles-native';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { NetworkPicker } from './NetworkPicker';
-import { TradeableAssetListEmptyComponent } from './TradeableAssetListEmptyComponent';
 import { TradeableAssetListItem } from './TradeableAssetListItem';
+import { TradingAssetListEmptyComponent } from '../TradingAssetListEmptyComponent';
+import { TradingAssetListHeader } from '../TradingAssetListHeader';
 
 export type TradeableAssetListProps = {
     assets: TradeableAsset[];
@@ -27,6 +27,14 @@ export type TradeableAssetListProps = {
 
 const keyExtractor = ({ cryptoId }: TradeableAsset) => `asset_${cryptoId}`;
 
+const listContentContainerStyle = prepareNativeStyle<{ bottomInset: number }>(
+    ({ spacings }, { bottomInset }) => ({
+        paddingTop: spacings.sp6,
+        paddingBottom: bottomInset,
+        paddingHorizontal: spacings.sp8,
+    }),
+);
+
 export const TradeableAssetList = ({
     assets,
     onAssetSelect,
@@ -39,7 +47,7 @@ export const TradeableAssetList = ({
 }: TradeableAssetListProps) => {
     const { translate } = useTranslate();
     const flashListRef = useRef<FlashListRef<TradeableAsset>>(null);
-    const { utils } = useNativeStyles();
+    const { applyStyle, utils } = useNativeStyles();
     const { bottom } = useSafeAreaInsets();
 
     useEffect(() => {
@@ -48,24 +56,15 @@ export const TradeableAssetList = ({
 
     return (
         <VStack flex={1} spacing="sp10" testID={testID}>
-            <HStack spacing="sp12" paddingHorizontal="sp16" alignItems="center">
-                <Box flex={1}>
-                    <SearchInput
-                        onChange={onFilterChange}
-                        placeholder={translate(
-                            'moduleTrading.tradeableAssetsSheet.searchInputPlaceholderText',
-                        )}
-                        autoCorrect={false}
-                        size="large"
-                        testId={testID ? `${testID}/search-input` : undefined}
-                    />
-                </Box>
-                <NetworkPicker
-                    selectedNetwork={selectedNetworkFilter}
-                    onSelectNetwork={onSelectedNetworkFilter}
-                    testID={testID ? `${testID}/network-picker` : undefined}
-                />
-            </HStack>
+            <TradingAssetListHeader
+                onFilterChange={onFilterChange}
+                onSelectedNetworkFilter={onSelectedNetworkFilter}
+                placeholder={translate(
+                    'moduleTrading.tradeableAssetsSheet.searchInputPlaceholderText',
+                )}
+                selectedNetworkFilter={selectedNetworkFilter}
+                testID={testID}
+            />
             <Box flex={1}>
                 <FlashList
                     ref={flashListRef}
@@ -80,13 +79,20 @@ export const TradeableAssetList = ({
                     extraData={assetBalances}
                     keyExtractor={keyExtractor}
                     ItemSeparatorComponent={() => <Box paddingVertical="sp4" />}
-                    ListEmptyComponent={<TradeableAssetListEmptyComponent />}
+                    ListEmptyComponent={
+                        <TradingAssetListEmptyComponent
+                            title={
+                                <Translation id="moduleTrading.tradeableAssetsSheet.emptyTitleText" />
+                            }
+                            subtitle={
+                                <Translation id="moduleTrading.tradeableAssetsSheet.emptyDescriptionText" />
+                            }
+                        />
+                    }
                     keyboardShouldPersistTaps="handled"
-                    contentContainerStyle={{
-                        paddingTop: utils.spacings.sp6,
-                        paddingBottom: bottom,
-                        paddingHorizontal: utils.spacings.sp8,
-                    }}
+                    contentContainerStyle={applyStyle(listContentContainerStyle, {
+                        bottomInset: bottom,
+                    })}
                 />
                 <EdgeFades direction="vertical" startSize={utils.spacings.sp16} endSize={bottom} />
             </Box>

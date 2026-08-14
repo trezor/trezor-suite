@@ -14,13 +14,13 @@ import { useSellInputFormControls } from '../../../hooks/sell/useSellInputFormCo
 import { AmountInput } from '../../general/Input/AmountInput';
 
 export type SellSendAmountInputProps = {
-    showAssetsSheet: () => void;
+    showAssetsScreen: () => void;
 };
 
 const SELL_SEND_INPUT_TEST_ID = '@trading/sell/send-amount-input';
 
 export const SellSendAmountInput = forwardRef<TextInput, SellSendAmountInputProps>(
-    ({ showAssetsSheet }, ref) => {
+    ({ showAssetsScreen }, ref) => {
         const { translate } = useTranslate();
         const { control } = useSellFormContext();
         const [asset, account, amountInCrypto] = useWatch({
@@ -44,7 +44,7 @@ export const SellSendAmountInput = forwardRef<TextInput, SellSendAmountInputProp
                 editable={isAssetSelected}
                 inputTransformer={cryptoAmountTransformer}
                 maxDecimals={decimals}
-                onPress={isAssetSelected ? undefined : showAssetsSheet}
+                onPress={isAssetSelected ? undefined : showAssetsScreen}
                 loadingAccessibilityLabel={translate(
                     'moduleTrading.tradingScreen.quotesLoadingLabel',
                 )}
