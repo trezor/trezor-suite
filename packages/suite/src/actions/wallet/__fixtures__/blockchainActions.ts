@@ -7,6 +7,7 @@ import {
     blockchainActions,
     feesActions,
     transactionsActions,
+    updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { analyzeTransactions } from '@suite-common/wallet-utils/src/__fixtures__/transactionUtils';
 import { type BlockchainBlock, type BlockchainNotification } from '@trezor/connect-common';
@@ -494,7 +495,7 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 0,
+        blockchainEstimateFee: 1,
         blockchainSubscribe: 0,
     },
     {
@@ -507,7 +508,7 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 0,
+        blockchainEstimateFee: 1,
         blockchainSubscribe: 0,
     },
     {
@@ -525,7 +526,7 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 0,
+        blockchainEstimateFee: 1,
         blockchainSubscribe: 1,
     },
     {
@@ -542,7 +543,7 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 0,
+        blockchainEstimateFee: 1,
         blockchainSubscribe: 1,
     },
     {
@@ -550,14 +551,15 @@ export const onConnect: OnConnectFixture[] = [
         initialState: {
             accounts: [{ symbol: 'btc', history: {} }],
         },
-        // order: subscribe > estimateFee
-        connect: [undefined, { success: false }],
+        // order: estimateFee > subscribe > estimateFee
+        connect: [{ success: false }, undefined, { success: false }],
         symbol: 'btc',
         actions: [
+            { type: updateFeeInfoThunk.rejected.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 0,
+        blockchainEstimateFee: 1,
         blockchainSubscribe: 1,
     },
     {
@@ -565,14 +567,15 @@ export const onConnect: OnConnectFixture[] = [
         initialState: {
             accounts: [{ symbol: 'eth', history: {}, deviceState: 'abc' }],
         },
-        // order: subscribe > subscribe > estimateFee
-        connect: [undefined, undefined, { success: false }],
+        // order: estimateFee > subscribe > subscribe > estimateFee
+        connect: [{ success: false }, undefined, undefined, { success: false }],
         symbol: 'eth',
         actions: [
+            { type: updateFeeInfoThunk.rejected.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 0,
+        blockchainEstimateFee: 1,
         blockchainSubscribe: 2,
     },
 ];

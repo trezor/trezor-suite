@@ -8,14 +8,14 @@ import {
     buildYieldUnsignedTransaction,
     buildYieldWithdrawCalldata,
     estimateYieldFeeLevel,
-    selectRawNetworkFeeInfo,
+    getOrFetchRawFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 
-import type { AppState, Dispatch } from 'src/types/suite';
+import type { Dispatch } from 'src/types/suite';
 
 export type ComposeYieldWithdrawTransactionParams = {
     account: Account & { networkType: 'ethereum' };
@@ -23,7 +23,6 @@ export type ComposeYieldWithdrawTransactionParams = {
     amount: string;
     flowType: YieldWithdrawFlowType;
     dispatch: Dispatch;
-    getState: () => AppState;
 };
 
 export const composeYieldWithdrawTransaction = async ({
@@ -32,7 +31,6 @@ export const composeYieldWithdrawTransaction = async ({
     amount,
     flowType,
     dispatch,
-    getState,
 }: ComposeYieldWithdrawTransactionParams): Promise<Result<string, YieldFeeEstimationError>> => {
     const { vault } = flowData;
 
@@ -83,14 +81,18 @@ export const composeYieldWithdrawTransaction = async ({
 
     const gasLimit = estimatedFeeLevel.payload.feeLimit;
 
+    const rawFeeInfo = await dispatch(
+        getOrFetchRawFeeInfoThunk({ networkSymbol: account.symbol }),
+    ).unwrap();
+
     const feeInfo = getConvertedOrDefaultFeeInfo({
         networkType: account.networkType,
-        feeInfo: selectRawNetworkFeeInfo(getState(), account.symbol),
+        feeInfo: rawFeeInfo,
     });
     const normalLevel = feeInfo.levels.find(level => level.label === 'normal') ?? feeInfo.levels[0];
 
     if (!normalLevel) {
-        throw new Error(`Fee info is not available.`);
+        return err('fee-estimation-failed');
     }
 
     const unsignedTx = buildYieldUnsignedTransaction({

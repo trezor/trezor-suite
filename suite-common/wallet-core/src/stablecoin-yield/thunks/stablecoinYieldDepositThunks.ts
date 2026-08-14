@@ -13,7 +13,10 @@ import { BigNumber } from '@trezor/utils';
 import { getApprovalRequestAmount } from './stablecoinYieldApprovalThunks';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { fetchAllowance } from '../../allowance/fetchAllowance';
-import { type FeesRootState, selectRawNetworkFeeInfo } from '../../fees/feesReducer';
+import {
+    type GetOrFetchRawFeeInfoThunkState,
+    getOrFetchRawFeeInfoThunk,
+} from '../../fees/feesThunks';
 import { ethereumGetCurrentNonceThunk } from '../../send/sendFormEthereumThunks';
 import { type TransactionsRootState } from '../../transactions/transactionsReducerTypes';
 import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
@@ -65,7 +68,7 @@ type ComposeYieldDepositTransactionPayload = {
     amount: string;
 };
 type ComposeYieldDepositTransactionThunkState = AccountsRootState &
-    FeesRootState &
+    GetOrFetchRawFeeInfoThunkState &
     TransactionsRootState;
 
 export const composeYieldDepositTransactionThunk = createThunk<
@@ -76,7 +79,7 @@ export const composeYieldDepositTransactionThunk = createThunk<
     }
 >(
     `${YIELD_DEPOSIT_THUNK_PREFIX}/composeDepositTransaction`,
-    async ({ flowData, amount }, { dispatch, getState }) => {
+    async ({ flowData, amount }, { dispatch }) => {
         const { account, token, vault } = flowData;
 
         if (account.networkType !== 'ethereum') {
@@ -149,9 +152,13 @@ export const composeYieldDepositTransactionThunk = createThunk<
             return { type: 'error', reason: 'fee-estimation-failed' } as const;
         }
 
+        const rawFeeInfo = await dispatch(
+            getOrFetchRawFeeInfoThunk({ networkSymbol: account.symbol }),
+        ).unwrap();
+
         const feeInfo = getConvertedOrDefaultFeeInfo({
             networkType: account.networkType,
-            feeInfo: selectRawNetworkFeeInfo(getState(), account.symbol),
+            feeInfo: rawFeeInfo,
         });
         const normalLevel =
             feeInfo.levels.find(level => level.label === 'normal') ?? feeInfo.levels[0];

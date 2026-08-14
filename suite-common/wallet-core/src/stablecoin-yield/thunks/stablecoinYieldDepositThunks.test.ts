@@ -1,5 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { deviceInitialState } from '@suite-common/device';
 import { configureMockStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -9,6 +10,7 @@ import { BigNumber } from '@trezor/utils';
 import { composeYieldDepositTransactionThunk } from './stablecoinYieldDepositThunks';
 import { accountsInitialState } from '../../accounts/accountsReducer';
 import { fetchAllowance } from '../../allowance/fetchAllowance';
+import { blockchainInitialState } from '../../blockchain/blockchainReducer';
 import { feesReducer } from '../../fees/feesReducer';
 import { ethereumGetCurrentNonceThunk } from '../../send/sendFormEthereumThunks';
 import { transactionsInitialState } from '../../transactions/transactionsReducer';
@@ -72,15 +74,19 @@ const ethFeeInfo: FeeInfo = {
 const initStore = () =>
     configureMockStore({
         reducer: combineReducers({
+            device: () => deviceInitialState,
             wallet: combineReducers({
                 accounts: () => accountsInitialState,
+                blockchain: () => blockchainInitialState,
                 fees: feesReducer,
                 transactions: () => transactionsInitialState,
             }),
         }),
         preloadedState: {
+            device: deviceInitialState,
             wallet: {
                 accounts: accountsInitialState,
+                blockchain: blockchainInitialState,
                 fees: { eth: { status: 'loaded', data: ethFeeInfo } },
                 transactions: transactionsInitialState,
             },
