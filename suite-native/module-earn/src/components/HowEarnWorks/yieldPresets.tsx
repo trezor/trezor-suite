@@ -140,7 +140,7 @@ export const useHowYieldWorksPreset = ({
                           title: (
                               <Translation
                                   id="earn.howYieldWorksScreen.benefits.fourth.title"
-                                  values={{ bonusRewardTokenSymbol }}
+                                  values={{ bonusRewardTokenName: bonusRewardTokenSymbol }}
                               />
                           ),
                           description: (
