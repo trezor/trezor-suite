@@ -8,6 +8,11 @@ import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 let mockIsDeviceInViewOnlyMode = false;
 let mockIsPortfolioTrackerDevice = false;
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useRoute: () => ({ params: {} }),
+}));
+
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
     selectIsDeviceInViewOnlyMode: () => mockIsDeviceInViewOnlyMode,
