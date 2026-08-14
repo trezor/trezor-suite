@@ -155,7 +155,7 @@
   "RECEIVE_TABLE_ADDRESS": "Alamat",
   "RECEIVE_TABLE_NOT_USED": "Belum digunakan",
   "RECEIVE_TITLE": "Terima {networkDisplaySymbol}",
-  "RECEIVE_UNUSED_ADDRESS_LIMIT_REACHED": "Anda hanya dapat menghasilkan 20 alamat yang belum digunakan.",
+  "RECEIVE_UNUSED_ADDRESS_LIMIT_REACHED": "Anda dapat menghasilkan hingga 20 alamat yang belum digunakan.",
   "RECEIVE_VERIFY_ON_TREZOR": "Konfirmasi di Trezor",
   "RECIPIENT_ADD": "Tambah penerima",
   "RECIPIENT_ADDRESS": "Alamat",
