@@ -6,7 +6,7 @@ import {
     selectHasUnseenTransactionNotifications,
 } from '@suite-common/toast-notifications';
 import { NotificationDot } from '@suite-native/activity-center';
-import { type SubTabItem, SubTabs, VStack } from '@suite-native/atoms';
+import { Box, type SubTabItem, SubTabs, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
@@ -48,9 +48,12 @@ export const ActivityCenterScreen = () => {
                 />
             }
         >
-            <VStack spacing="sp16">
+            {/* 0.6 → apx. centered to whole screen, similar in SearchNoResults. It's a crude solution, we could maybe unify it somehow. */}
+            <VStack flex={0.6} spacing="sp16">
                 <SubTabs items={tabs} value={activeTab} onChange={setActiveTab} />
-                <ActivityCenterTabContent activeTab={activeTab} />
+                <Box flex={1}>
+                    <ActivityCenterTabContent activeTab={activeTab} />
+                </Box>
             </VStack>
         </Screen>
     );
