@@ -15,6 +15,11 @@ import {
     createTradingPreloadedState,
 } from '../../../test-utils/tradingTestUtils';
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useRoute: () => ({ params: {} }),
+}));
+
 describe('ExchangeSendContent', () => {
     let form: ExchangeFormType;
     const preloadedState = createTradingPreloadedState({
