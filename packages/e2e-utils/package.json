@@ -23,6 +23,7 @@
         "llm-exploratory-tester:context": "tsx src/llmExploratoryTester/context.ts",
         "llm-exploratory-tester:setup": "tsx src/llmExploratoryTester/setup.ts",
         "llm-exploratory-tester:run": "tsx src/llmExploratoryTester/run.ts",
+        "llm-exploratory-tester:comment": "tsx src/llmExploratoryTester/comment.ts",
         "llm-exploratory-tester": "yarn llm-exploratory-tester:context && yarn llm-exploratory-tester:setup && yarn llm-exploratory-tester:run",
         "gh-pr-stats": "tsx ./src/ghPrStats/index.ts",
         "github:create:project": "tsx src/githubReporter/scriptCreateProject.ts",

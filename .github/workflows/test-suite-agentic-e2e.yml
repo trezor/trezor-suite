@@ -1,0 +1,116 @@
+name: "[Test] LLM Exploratory Tester"
+
+# Comment `/e2e-test [model=T3T1]` on a PR (or on an issue with a linked PR)
+# to have a Claude Code agent test the PR preview deployment against the
+# trezor emulator and report back as a PR comment.
+# Locally: TARGET=<pr-url> DEVICE_MODEL=T3T1 yarn workspace @trezor/e2e-utils llm-exploratory-tester
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agentic-e2e-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  agentic-e2e:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    if: >
+      github.repository == 'trezor/trezor-suite' &&
+      startsWith(github.event.comment.body, '/e2e-test') &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
+    env:
+      COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
+      TARGET: ${{ github.event.issue.html_url }}
+
+    steps:
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: React to triggering comment
+        env:
+          GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+        run: |
+          gh api "repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions" \
+            -f content=eyes --silent
+
+      # Harness runs from the default branch (develop), never from the PR — a PR
+      # must not be able to hijack the bot's prompt or harness code.
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn workspaces focus @trezor/e2e-utils @trezor/suite-e2e
+
+      - name: Install Playwright Chromium
+        run: yarn workspace @trezor/suite-e2e exec playwright install chromium --with-deps
+
+      - name: Install Claude sandbox dependencies
+        run: sudo apt-get update && sudo apt-get install --yes bubblewrap socat
+
+      # trezor-user-env also serves the trezor-emulator MCP on :9003
+      # (started by src/main.py in the pinned image, host networking).
+      - name: Start trezor-user-env
+        run: |
+          docker compose pull --quiet trezor-user-env-unix
+          docker compose up -d trezor-user-env-unix
+
+      # `/e2e-test model=T3T1` — the model is validated by the context script.
+      - name: Resolve PR context
+        env:
+          GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          model=$(printf '%s' "$COMMENT_BODY" | grep -oP 'model=\K[A-Z0-9]+' || true)
+          if [ -n "$model" ]; then export DEVICE_MODEL="$model"; fi
+          yarn workspace @trezor/e2e-utils llm-exploratory-tester:context
+
+      - name: Wallet setup and Suite onboarding
+        env:
+          HEADLESS: "true"
+          AGENT_GITHUB_ACTION: "true"
+          LLM_EXPLORATORY_TESTER_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
+        run: yarn workspace @trezor/e2e-utils llm-exploratory-tester:setup
+
+      - name: Run LLM Exploratory Tester
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.E2E_FIX_EXECUTION_CLAUDE_API_KEY }}
+        run: yarn workspace @trezor/e2e-utils llm-exploratory-tester:run
+
+      - name: Post PR comment
+        env:
+          GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: yarn workspace @trezor/e2e-utils llm-exploratory-tester:comment
+
+      - name: Upload test artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: llm-exploratory-tester-report
+          path: |
+            packages/e2e-utils/src/llmExploratoryTester/reports/context.json
+            packages/e2e-utils/src/llmExploratoryTester/reports/test-result.json
+            packages/e2e-utils/src/llmExploratoryTester/reports/browser
+          if-no-files-found: warn
+
+      - name: Docker Compose Down
+        if: always()
+        run: docker compose down
