@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
 
 import { error, log } from '../logger';
+import { downloadAttachmentImages } from './contextImages';
 import { CONTEXT_FILE, writeJson } from './paths';
 import { DeviceModelSchema, type PrContext } from './schemas';
 import { parsePrNumber } from './target';
@@ -120,13 +121,18 @@ function stripBotSections(body: string | undefined): string {
     return stripped.trim().slice(0, MAX_BODY_CHARS);
 }
 
-function main(): void {
+async function main(): Promise<void> {
     const prNumber = parsePrNumber(process.env.TARGET);
     const deviceModel = DeviceModelSchema.parse(process.env.DEVICE_MODEL ?? DEFAULT_MODEL);
 
     const pr = loadPullRequest(prNumber);
     const issue = loadClosingIssue(pr);
     const suiteUrl = `${PREVIEW_SUITE_URL_BASE}/${pr.headRefName}/web/`;
+    const texts = [pr.body];
+    if (issue !== null) {
+        texts.push(issue.body);
+    }
+    const contextImages = await downloadAttachmentImages(texts);
 
     const context: PrContext = {
         prNumber: pr.number,
@@ -141,17 +147,17 @@ function main(): void {
         },
         deviceModel,
         suiteUrl,
+        contextImages,
     };
 
     writeJson(CONTEXT_FILE, context);
     log(`PR #${context.prNumber}: ${context.prTitle}`);
     log(`Suite URL: ${context.suiteUrl}`);
     log(`Device model: ${context.deviceModel}`);
+    log(`Context images: ${context.contextImages.length}`);
 }
 
-try {
-    main();
-} catch (e) {
+main().catch(e => {
     error(`context failed: ${e instanceof Error ? e.message : e}`);
     process.exit(1);
-}
+});

@@ -29,6 +29,7 @@ export const PrContextSchema = z.object({
         .nullable(),
     deviceModel: DeviceModelSchema,
     suiteUrl: z.string(),
+    contextImages: z.array(z.string()),
 });
 
 export const ScreenshotBasenameSchema = z
@@ -38,15 +39,19 @@ export const ScreenshotBasenameSchema = z
 export const IssueSchema = z.object({
     id: z.string(),
     severity: z.enum(['critical', 'high', 'medium', 'low', 'info']),
-    title: z.string(),
-    description: z.string(),
-    reproSteps: z.array(z.string()),
+    title: z.string().describe('Short noun phrase. No analysis.'),
+    description: z.string().describe('One sentence of the defect. No root cause.'),
+    reproSteps: z.array(z.string()).describe('3–8 short imperative steps. No commentary.'),
     screenshots: z.array(ScreenshotBasenameSchema).min(1),
 });
 
 export const TestResultSchema = z.object({
     result: z.enum(['pass', 'partial', 'fail', 'blocked']),
-    summary: z.string(),
+    summary: z
+        .string()
+        .describe(
+            '1–2 sentences of what was tested (feature/flow + device). Not a walkthrough. On blocked, one short reason.',
+        ),
     issues: z.array(IssueSchema),
 });
 
