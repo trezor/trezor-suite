@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import valueParser from 'postcss-value-parser';
-import stylelint from 'stylelint';
+const valueParser = require('postcss-value-parser');
+const stylelint = require('stylelint');
 
 const ruleName = 'trezor/dimension-token-values';
 
@@ -140,7 +140,6 @@ const ruleFunction = primary => (root, result) => {
 ruleFunction.ruleName = ruleName;
 ruleFunction.messages = messages;
 
-const plugin = stylelint.createPlugin(ruleName, ruleFunction);
-plugin.messages = messages;
-
-export default plugin;
+module.exports = stylelint.createPlugin(ruleName, ruleFunction);
+module.exports.ruleName = ruleName;
+module.exports.messages = messages;
