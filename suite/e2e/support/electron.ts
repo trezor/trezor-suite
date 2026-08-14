@@ -19,6 +19,7 @@ export type LaunchSuiteParams = {
     bridgeDaemon?: boolean;
     exposeConnectWs?: boolean;
     offlineMode?: boolean;
+    tor?: boolean;
     locale?: string;
     colorScheme?: 'light' | 'dark' | 'no-preference' | null | undefined;
     artefactFolder: string;
@@ -67,6 +68,11 @@ const buildArgs = (params: LaunchSuiteParams) => {
         args.push('--offline-mode');
     }
 
+    // Starts the app with Tor already enabled (see `hasSwitch('tor')` in suite-desktop-core).
+    if (params.tor) {
+        args.push('--tor');
+    }
+
     const deleteUserData = !params.keepUserData;
     if (deleteUserData) {
         args.push(removeUserDataArgument);
@@ -80,10 +86,22 @@ const setupLoggingToFile = (electronApp: ElectronApplication, params: LaunchSuit
     ensureDirSync(params.artefactFolder);
     const logStream = createWriteStream(logFilePath, { flags: 'a' });
 
-    electronApp.process().stdout?.on('data', data => logStream.write(data.toString()));
-    electronApp
-        .process()
-        .stderr?.on('data', data => logStream.write(formatErrorLogMessage(data.toString())));
+    // Set PRINT_ELECTRON_LOGS=1 to also stream the desktop app's main-process logs (Tor
+    // bootstrap, bridge, etc.) to the terminal while the test runs, on top of the log file.
+    const printToConsole = process.env.PRINT_ELECTRON_LOGS === '1';
+
+    electronApp.process().stdout?.on('data', data => {
+        logStream.write(data.toString());
+        if (printToConsole) {
+            process.stdout.write(data.toString());
+        }
+    });
+    electronApp.process().stderr?.on('data', data => {
+        logStream.write(formatErrorLogMessage(data.toString()));
+        if (printToConsole) {
+            process.stderr.write(formatErrorLogMessage(data.toString()));
+        }
+    });
     electronApp.process().on('close', () => {
         logStream.end();
     });

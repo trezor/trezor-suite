@@ -37,9 +37,14 @@ process.traceProcessWarnings = true;
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
 if (isDevEnv || process.env.PLAYWRIGHT_RUN) app.setVersion(process.env.VERSION);
 
-global.resourcesPath = isDevEnv
-    ? path.join(__dirname, '..', 'build', 'static')
-    : process.resourcesPath;
+// During e2e tests the app is built in production mode (NODE_ENV=production) but launched
+// unpacked, so bundled binaries (tor, coinjoin, ...) live in build/static/bin, not in
+// process.resourcesPath. PLAYWRIGHT_RUN is set by the e2e launcher and is not inlined at build
+// time, so it can be used to point resourcesPath at the unpacked build output.
+global.resourcesPath =
+    isDevEnv || process.env.PLAYWRIGHT_RUN
+        ? path.join(__dirname, '..', 'build', 'static')
+        : process.resourcesPath;
 
 const parseRemoveUserDataSwitch = () => {
     if (hasSwitch('remove-user-data-on-start')) {

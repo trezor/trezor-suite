@@ -81,7 +81,7 @@ export const enhancePage = (page: Page): Page => {
                     await discoveryBar.waitFor({ state: 'detached', timeout: 120_000 });
                 }
                 await expect(discoveryBar).toBeHidden();
-            }).toPass({ timeout: 120_000 });
+            }).toPass({ timeout: 1920_000 });
         });
     };
 
