@@ -430,6 +430,30 @@ describe('transaction utils', () => {
                 ).toEqual(f.result);
             });
         });
+
+        // The stored list is written by index (see transactionsReducer `addTransaction`), so a
+        // partially paginated account holds empty slots. `getAccountTransactions` passes that array
+        // through unfiltered.
+        it('confirms a pre-pending tx even when the known list has empty slots', () => {
+            const known = [
+                { blockHeight: undefined, blockHash: '1', txid: '1', deadline: 5 },
+                { blockHeight: 3, blockHash: '3', txid: '3' },
+                undefined,
+                { blockHeight: 2, blockHash: '2', txid: '2' },
+            ];
+
+            const fresh = [
+                { blockHeight: 4, blockHash: '1', txid: '1' },
+                { blockHeight: 3, blockHash: '3', txid: '3' },
+                { blockHeight: 2, blockHash: '2', txid: '2' },
+            ];
+
+            expect(analyzeTransactions(fresh as any, known as any, { blockHeight: 4 })).toEqual({
+                newTransactions: [{ blockHeight: 4, blockHash: '1', txid: '1' }],
+                add: [{ blockHeight: 4, blockHash: '1', txid: '1' }],
+                remove: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 5 }],
+            });
+        });
     });
 
     describe('enhanceTransaction', () => {
