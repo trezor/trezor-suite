@@ -1,7 +1,13 @@
 import { useSelector } from 'react-redux';
 
+import { type DeviceRootState } from '@suite-common/device';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type AccountsRootState,
+    selectDeviceAccountByDescriptorAndNetworkSymbol,
+} from '@suite-common/wallet-core';
 import { type AccountDescriptor, type TxTargetId } from '@suite-common/wallet-types';
+import { isUtxoBased } from '@suite-common/wallet-utils';
 import { AddressLabel } from '@suite-native/address';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
@@ -31,6 +37,11 @@ export const TransactionUtxoAddress = ({
 }: TransactionUtxoAddressProps) => {
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
 
+    const account = useSelector((state: AccountsRootState & DeviceRootState) =>
+        selectDeviceAccountByDescriptorAndNetworkSymbol(state, accountDescriptor, networkSymbol),
+    );
+    const isUtxoBasedAccount = account !== null && isUtxoBased(account);
+
     return (
         <VStack alignItems="flex-start">
             <HStack spacing={4}>
@@ -40,7 +51,9 @@ export const TransactionUtxoAddress = ({
                     fallback={<AddressFormatter key={address} value={address} format="long" />}
                 />
 
-                {isLabellingAllowed && isDebugEnv() && <Text>[{`${txTargetId}`}]</Text>}
+                {isUtxoBasedAccount && isLabellingAllowed && isDebugEnv() && (
+                    <Text>[{`${txTargetId}`}]</Text>
+                )}
             </HStack>
 
             {showLabels && (
