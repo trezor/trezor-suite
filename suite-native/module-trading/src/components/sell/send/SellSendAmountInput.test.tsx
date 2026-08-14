@@ -34,7 +34,7 @@ describe('SellSendAmountInput', () => {
     ) =>
         renderWithTradingProvider(
             <Form form={form}>
-                <SellSendAmountInput showAssetsSheet={jest.fn()} {...props} />
+                <SellSendAmountInput showAssetsScreen={jest.fn()} {...props} />
             </Form>,
             { tradeType: 'sell', overrides },
         );
@@ -78,31 +78,31 @@ describe('SellSendAmountInput', () => {
         ).toBeDisabled();
     });
 
-    it('should call showAssetsSheet when disabled and pressed', async () => {
-        const showAssetsSheet = jest.fn();
+    it('should call showAssetsScreen when disabled and pressed', async () => {
+        const showAssetsScreen = jest.fn();
         const form = renderUseTradingSellForm();
-        const { getByLabelText } = renderCryptoAmountInput({ showAssetsSheet }, form);
+        const { getByLabelText } = renderCryptoAmountInput({ showAssetsScreen }, form);
 
         await userEvent.press(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
         );
 
-        expect(showAssetsSheet).toHaveBeenCalledTimes(1);
+        expect(showAssetsScreen).toHaveBeenCalledTimes(1);
     });
 
-    it('should not call showAssetsSheet when enabled and pressed', async () => {
-        const showAssetsSheet = jest.fn();
+    it('should not call showAssetsScreen when enabled and pressed', async () => {
+        const showAssetsScreen = jest.fn();
         const form = renderUseTradingSellForm();
         act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({ showAssetsSheet }, form);
+        const { getByLabelText } = renderCryptoAmountInput({ showAssetsScreen }, form);
 
         await userEvent.press(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
         );
 
-        expect(showAssetsSheet).not.toHaveBeenCalled();
+        expect(showAssetsScreen).not.toHaveBeenCalled();
     });
 
     it('should format input value to be decimal by default', async () => {

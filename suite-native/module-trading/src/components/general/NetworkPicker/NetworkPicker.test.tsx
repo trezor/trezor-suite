@@ -17,21 +17,25 @@ const mockNetworks: Network[] = [
 
 jest.mock('@suite-native/discovery', () => ({
     ...jest.requireActual('@suite-native/discovery'),
-    selectDiscoverySupportedNetworks: () => mockNetworks,
+    selectDeviceEnabledDiscoveryNetworkSymbols: () => ['eth'],
+    selectDiscoveryNetworkSymbols: () => mockNetworks.map(({ symbol }) => symbol),
 }));
 
 describe('NetworkPicker', () => {
     const testID = '@trading/test/network-picker';
 
     const renderNetworkPicker = ({
+        networkFilterMode,
         selectedNetwork,
         onSelectNetwork = jest.fn(),
     }: {
+        networkFilterMode?: 'all-supported' | 'discovered';
         selectedNetwork?: Network['symbol'];
         onSelectNetwork?: jest.Mock;
     } = {}) =>
         renderWithTradingProvider(
             <NetworkPicker
+                networkFilterMode={networkFilterMode}
                 selectedNetwork={selectedNetwork}
                 onSelectNetwork={onSelectNetwork}
                 testID={testID}
@@ -59,6 +63,17 @@ describe('NetworkPicker', () => {
         fireEvent.press(getByTestId(`${testID}/networks-sheet/eth`));
 
         expect(onSelectNetwork).toHaveBeenCalledWith('eth');
+    });
+
+    it('renders only discovered networks in discovered mode', () => {
+        const { getByTestId, getByText, queryByText } = renderNetworkPicker({
+            networkFilterMode: 'discovered',
+        });
+
+        fireEvent.press(getByTestId(testID));
+
+        expect(getByText('Ethereum')).toBeOnTheScreen();
+        expect(queryByText('Bitcoin')).not.toBeOnTheScreen();
     });
 
     it('selects all networks', () => {

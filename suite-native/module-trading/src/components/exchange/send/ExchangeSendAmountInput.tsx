@@ -12,13 +12,13 @@ import { useInputFieldControls } from '../../../hooks/general/useInputFieldContr
 import { AmountInput } from '../../general/Input/AmountInput';
 
 export type ExchangeSendAmountInputProps = {
-    showAssetsSheet: () => void;
+    showAssetsScreen: () => void;
 };
 
 const EXCHANGE_SEND_INPUT_TEST_ID = '@trading/exchange/send-amount-input';
 
 export const ExchangeSendAmountInput = forwardRef<TextInput, ExchangeSendAmountInputProps>(
-    ({ showAssetsSheet }, ref) => {
+    ({ showAssetsScreen }, ref) => {
         const { translate } = useTranslate();
         const { control, setValue } = useExchangeFormContext();
         const [asset, amount, account] = useWatch({
@@ -40,7 +40,7 @@ export const ExchangeSendAmountInput = forwardRef<TextInput, ExchangeSendAmountI
                 editable={isAssetSelected}
                 inputTransformer={cryptoAmountTransformer}
                 maxDecimals={decimals}
-                onPress={isAssetSelected ? undefined : showAssetsSheet}
+                onPress={isAssetSelected ? undefined : showAssetsScreen}
                 loadingAccessibilityLabel={translate(
                     'moduleTrading.tradingScreen.quotesLoadingLabel',
                 )}

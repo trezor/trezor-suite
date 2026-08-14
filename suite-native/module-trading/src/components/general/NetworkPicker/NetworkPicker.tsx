@@ -2,7 +2,10 @@ import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, Text, useBottomSheetControls } from '@suite-native/atoms';
-import { selectDiscoverySupportedNetworks } from '@suite-native/discovery';
+import {
+    selectDeviceEnabledDiscoveryNetworkSymbols,
+    selectDiscoveryNetworkSymbols,
+} from '@suite-native/discovery';
 import { NetworkIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -10,6 +13,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { NetworksSheet } from './NetworksSheet';
 
 export type NetworkPickerProps = {
+    networkFilterMode?: 'all-supported' | 'discovered';
     selectedNetwork: NetworkSymbol | undefined;
     onSelectNetwork: (symbol: NetworkSymbol | undefined) => void;
     testID?: string;
@@ -19,12 +23,21 @@ const pickerButtonStyle = prepareNativeStyle(({ spacings }) => ({
     height: spacings.sp48,
 }));
 
-export const NetworkPicker = ({ selectedNetwork, onSelectNetwork, testID }: NetworkPickerProps) => {
+export const NetworkPicker = ({
+    networkFilterMode = 'all-supported',
+    selectedNetwork,
+    onSelectNetwork,
+    testID,
+}: NetworkPickerProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const { isSheetVisible, hideSheet, showSheet } = useBottomSheetControls();
-    const networks = useSelector(selectDiscoverySupportedNetworks);
-    const selectedNetworkName = networks.find(({ symbol }) => symbol === selectedNetwork)?.name;
+    const networkSymbols = useSelector(
+        networkFilterMode === 'discovered'
+            ? selectDeviceEnabledDiscoveryNetworkSymbols
+            : selectDiscoveryNetworkSymbols,
+    );
+
     const pickerLabel = translate('moduleTrading.tradeableAssetsSheet.networkPickerLabel');
 
     return (
@@ -32,7 +45,7 @@ export const NetworkPicker = ({ selectedNetwork, onSelectNetwork, testID }: Netw
             <Button
                 style={applyStyle(pickerButtonStyle)}
                 size="large"
-                accessibilityLabel={selectedNetworkName ?? pickerLabel}
+                accessibilityLabel={pickerLabel}
                 accessibilityRole="button"
                 onPress={showSheet}
                 testID={testID}
@@ -49,7 +62,7 @@ export const NetworkPicker = ({ selectedNetwork, onSelectNetwork, testID }: Netw
             </Button>
             <NetworksSheet
                 isVisible={isSheetVisible}
-                networks={networks}
+                networkSymbols={networkSymbols}
                 selectedNetwork={selectedNetwork}
                 onClose={hideSheet}
                 onSelectNetwork={onSelectNetwork}

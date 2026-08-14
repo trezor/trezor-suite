@@ -21,7 +21,8 @@ export type AssetListItemProps = {
     symbol: NetworkSymbolExtended;
     contractAddress?: TokenAddress;
     networkSymbol: NetworkSymbol;
-    onPress: () => void;
+    isDisabled?: boolean;
+    onPress?: () => void;
     rightContent?: ReactNode;
 };
 
@@ -67,15 +68,19 @@ const rightContentStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
 }));
 
-const containerStyle = prepareNativeStyle(({ borders }) => ({
-    borderRadius: borders.radii.r12,
-}));
+const containerStyle = prepareNativeStyle<{ isDisabled: boolean }>(
+    ({ borders }, { isDisabled }) => ({
+        borderRadius: borders.radii.r12,
+        opacity: isDisabled ? 0.5 : 1,
+    }),
+);
 
 export const AssetListItem = ({
     name,
     symbol,
     contractAddress,
     networkSymbol,
+    isDisabled = false,
     onPress,
     rightContent,
 }: AssetListItemProps) => {
@@ -84,10 +89,12 @@ export const AssetListItem = ({
     return (
         <AssetAnimatedPressable
             onPress={onPress}
+            disabled={isDisabled}
             accessible={true}
             accessibilityRole="button"
+            accessibilityState={{ disabled: isDisabled }}
             accessibilityLabel={name}
-            style={applyStyle(containerStyle)}
+            style={applyStyle(containerStyle, { isDisabled })}
         >
             <HStack
                 alignItems="center"
