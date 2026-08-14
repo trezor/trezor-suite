@@ -184,13 +184,14 @@ export const useYieldFlow = ({
         accountSymbol: account.symbol,
         token,
     });
-    const { fiatToggle, setMaxAmount } = useYieldFiatInput({
+    const { fiatToggle, setMaxAmount, resetAmounts } = useYieldFiatInput({
         methods,
         symbol: rateToken?.symbol,
         tokenAddress: rateToken?.tokenAddress,
         decimals: token?.decimals ?? getNetwork(account.symbol).decimals,
         vaultId: vault.id,
     });
+    const resetAmountsRef = useCurrentRef(resetAmounts);
 
     const getMaxAmount = () => {
         if (flowType === 'deposit') {
@@ -343,10 +344,7 @@ export const useYieldFlow = ({
 
         if (prevStep !== null && prevStep !== nextStep) {
             if (prevStep === 'wrap' && nextStep === 'approve') {
-                methodsRef.current.reset({
-                    amountInput: session.action.amount ?? '',
-                    fiatInput: '',
-                });
+                resetAmountsRef.current(session.action.amount ?? '');
             }
 
             if (nextStep === 'wrap') {
@@ -361,26 +359,22 @@ export const useYieldFlow = ({
                 })
                     ? maxAmount
                     : actionAmount;
-                methodsRef.current.reset({
-                    amountInput: cappedAmount,
-                    fiatInput: '',
-                });
+                resetAmountsRef.current(cappedAmount);
             }
 
             if (prevStep === 'action' && nextStep === 'approve') {
-                methodsRef.current.reset({
-                    amountInput: getYieldModifyAmountInput({
+                resetAmountsRef.current(
+                    getYieldModifyAmountInput({
                         liveAmount: methodsRef.current.getValues('amountInput'),
                         actionAmount: session.action.amount,
                         maxAmount,
                     }),
-                    fiatInput: '',
-                });
+                );
             }
         }
 
         prevStepRef.current = nextStep;
-    }, [session.step, session.action.amount, methodsRef, maxAmount]);
+    }, [session.step, session.action.amount, methodsRef, resetAmountsRef, maxAmount]);
 
     // The withdraw flow's unwrap step must default to the amount just withdrawn (in asset units),
     // not the account's whole wrapped-native balance — otherwise it would sweep in unrelated WETH
@@ -414,11 +408,11 @@ export const useYieldFlow = ({
             unwrapDefaultAmountRef.current === null ||
             currentAmount === unwrapDefaultAmountRef.current
         ) {
-            methodsRef.current.reset({ amountInput: unwrapDefaultAmount, fiatInput: '' });
+            resetAmountsRef.current(unwrapDefaultAmount);
         }
 
         unwrapDefaultAmountRef.current = unwrapDefaultAmount;
-    }, [methodsRef, session.step, unwrapDefaultAmount]);
+    }, [methodsRef, resetAmountsRef, session.step, unwrapDefaultAmount]);
 
     const flow = useMemo(
         () => ({ currentStep: session.step, isWrappedNativeVault }),

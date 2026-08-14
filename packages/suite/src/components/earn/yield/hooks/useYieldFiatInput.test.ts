@@ -81,6 +81,27 @@ describe('useYieldFiatInput', () => {
         expect(result.current.methods.getValues('amountInput')).toBe('0.1');
     });
 
+    it('fills the fiat display when resetting to an amount in fiat mode', () => {
+        const { result } = renderYieldFiatInput();
+
+        act(() => result.current.fiat.fiatToggle?.onToggle());
+        act(() => result.current.fiat.resetAmounts('0.1'));
+
+        expect(result.current.methods.getValues('amountInput')).toBe('0.1');
+        expect(result.current.methods.getValues('fiatInput')).toBe('333.34');
+    });
+
+    it('clears both fields when resetting to an empty amount', () => {
+        const { result } = renderYieldFiatInput();
+
+        act(() => result.current.fiat.fiatToggle?.onToggle());
+        act(() => result.current.fiat.fiatToggle?.onFiatAmountChange('333.33'));
+        act(() => result.current.fiat.resetAmounts(''));
+
+        expect(result.current.methods.getValues('amountInput')).toBe('');
+        expect(result.current.methods.getValues('fiatInput')).toBe('');
+    });
+
     it('converts a typed fiat amount into the crypto source of truth', () => {
         const { result } = renderYieldFiatInput();
 
