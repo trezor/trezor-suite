@@ -11,6 +11,7 @@ import {
     type DeviceRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
     deviceActions,
+    isSamePhysicalDevice,
     portfolioTrackerDevice,
     selectDeviceById,
     selectDevices,
@@ -22,6 +23,7 @@ import {
 } from '@suite-common/device';
 import {
     type FirmwareRootState,
+    selectFirmware,
     selectIsFirmwareInstallationRunning,
 } from '@suite-common/firmware';
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
@@ -69,7 +71,7 @@ import {
     type WalletSettingsRootState,
     selectIsDeviceAutoEjectEnabled,
 } from '../settings/walletSettingsReducer';
-type HandleDeviceDisconnectThunkState = DeviceRootState;
+type HandleDeviceDisconnectThunkState = DeviceRootState & FirmwareRootState;
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`
@@ -83,6 +85,14 @@ export const handleDeviceDisconnect = createThunk<
     const selectedDevice = selectSelectedDevice(getState());
     if (!selectedDevice) return;
     if (selectedDevice.path !== device.path) return;
+
+    // The device being updated disconnects and reconnects on its own, in bootloader mode and then
+    // back in normal mode. Handing the selection to another wallet meanwhile would take the
+    // firmware flow away from the device it belongs to, so it keeps the selection until it is back.
+    const firmware = selectFirmware(getState());
+    if (firmware.status !== 'initial' && isSamePhysicalDevice(firmware.cachedDevice, device)) {
+        return;
+    }
 
     const devices = selectDevices(getState());
 

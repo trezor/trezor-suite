@@ -46,7 +46,7 @@ type GetShouldSelectConnectedDeviceParams = {
  * `descriptor.id` identifies the physical device across reconnects, unlike `path`, which is
  * assigned per connection, and unlike `id`, which a device in bootloader mode does not report.
  */
-const isSamePhysicalDevice = (
+export const isSamePhysicalDevice = (
     a: Device | TrezorDevice | undefined,
     b: Device | TrezorDevice | undefined,
 ) => {
