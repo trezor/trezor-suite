@@ -246,7 +246,17 @@ const stablecoinYieldSlice = createSlice({
                 return;
             }
 
-            delete state[flowType][getStablecoinYieldSessionKey(flowKey)];
+            const sessionKey = getStablecoinYieldSessionKey(flowKey);
+
+            // A session tracking a pending transaction must survive its page unmounting:
+            // re-entering the flow resumes/reconciles it (pending panel, duplicate-submit guard,
+            // completion into the next step), and the `replaceTransaction` extraReducer needs it
+            // to follow an RBF. It is dropped once the transaction resolves.
+            if (state[flowType][sessionKey]?.action.pendingTransaction) {
+                return;
+            }
+
+            delete state[flowType][sessionKey];
         },
         resetSession(
             state: StablecoinYieldState,

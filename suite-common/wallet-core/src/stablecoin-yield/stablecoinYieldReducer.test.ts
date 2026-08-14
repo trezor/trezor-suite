@@ -432,6 +432,65 @@ describe('stablecoinYieldReducer', () => {
         });
     });
 
+    describe('session lifecycle', () => {
+        it('disposes a session with no pending transaction', () => {
+            const state = stablecoinYieldReducer(
+                initSession('deposit'),
+                stablecoinYieldActions.disposeSession({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')).toBeUndefined();
+        });
+
+        it('keeps a session whose transaction is still pending when disposed', () => {
+            const pendingTransaction: YieldPendingTransactionState = {
+                type: 'deposit',
+                txid: '0xpendingtxid',
+                amount: '100',
+            };
+            const state = stablecoinYieldReducer(
+                stablecoinYieldReducer(
+                    initSession('deposit'),
+                    stablecoinYieldActions.setPendingTx({
+                        flowType: 'deposit',
+                        flowKey: FLOW_KEY,
+                        tx: pendingTransaction,
+                    }),
+                ),
+                stablecoinYieldActions.disposeSession({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.action.pendingTransaction).toEqual(
+                pendingTransaction,
+            );
+        });
+
+        it('resets a session even while its transaction is still pending', () => {
+            const state = stablecoinYieldReducer(
+                stablecoinYieldReducer(
+                    initSession('deposit'),
+                    stablecoinYieldActions.setPendingTx({
+                        flowType: 'deposit',
+                        flowKey: FLOW_KEY,
+                        tx: { type: 'deposit', txid: '0xpendingtxid', amount: '100' },
+                    }),
+                ),
+                stablecoinYieldActions.resetSession({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.action.pendingTransaction).toBeNull();
+        });
+    });
+
     describe('txReview', () => {
         const ACCOUNT_KEY = mockAccountKey({
             symbol: ethSymbol,
