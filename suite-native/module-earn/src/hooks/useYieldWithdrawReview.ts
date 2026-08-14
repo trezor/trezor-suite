@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -67,6 +67,7 @@ export const useYieldWithdrawReview = ({
 }: UseYieldWithdrawReviewParams): UseYieldWithdrawReviewResult => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
+    const isPushingRef = useRef(false);
     const { showReviewAlert } = useShowPushTransactionFailedDuringReviewAlert('yield-withdraw');
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
     const handleReviewError = useHandleEarnReviewError('yield-withdraw', navigation);
@@ -184,10 +185,15 @@ export const useYieldWithdrawReview = ({
     ]);
 
     const handleWithdrawSubmitted = useCallback(async () => {
-        if (withdrawStatus !== 'signed') {
+        // `withdrawStatus` is captured state, so two presses in the same frame both pass this
+        // check. The second push finds the review data already discarded by the first and rejects
+        // with "Transaction not found.", which surfaces as "not submitted" for a broadcast that
+        // did go out. Broadcasting has to be idempotent per signed transaction.
+        if (withdrawStatus !== 'signed' || isPushingRef.current) {
             return;
         }
 
+        isPushingRef.current = true;
         setWithdrawActionStatus('sending');
 
         const pushResponse = await dispatch(
@@ -198,6 +204,9 @@ export const useYieldWithdrawReview = ({
             }),
         );
 
+        // Released once the push settles, so a deliberate retry after a failure still works —
+        // only concurrent invocations are blocked.
+        isPushingRef.current = false;
         setWithdrawActionStatus('idle');
         const isPushRejected = isRejected(pushResponse);
 

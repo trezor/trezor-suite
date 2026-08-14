@@ -718,7 +718,12 @@ export const analyzeTransactions = (
         };
     }
 
-    const [knownPrepending, knownRest] = arrayPartition(known, tx => 'deadline' in tx);
+    // The stored list is written by index (transactionsReducer `addTransaction`), so a partially
+    // paginated account has empty slots and reaches here unfiltered via `getAccountTransactions`.
+    const [knownPrepending, knownRest] = arrayPartition(
+        known.filter(isNotNullOrUndefined),
+        tx => 'deadline' in tx,
+    );
 
     const removePrepending = knownPrepending.filter(
         tx => (tx.deadline && tx.deadline < blockHeight) || fresh.find(fTx => fTx.txid === tx.txid),
@@ -735,7 +740,7 @@ export const analyzeTransactions = (
     }
 
     // make sure the known transactions are sorted properly
-    const knownSorted = knownRest.filter(isNotNullOrUndefined).sort(sortByBlockHeight);
+    const knownSorted = [...knownRest].sort(sortByBlockHeight);
     // run thru all fresh txs
     fresh.forEach((tx, i) => {
         const height = tx.blockHeight;

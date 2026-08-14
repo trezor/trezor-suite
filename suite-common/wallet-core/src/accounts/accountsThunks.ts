@@ -255,7 +255,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
                     if ((freshTx.tokens?.length ?? 0) > 0) return freshTx;
                     const fakeMatch = accountTxs.find(
                         t =>
-                            t.txid === freshTx.txid &&
+                            t?.txid === freshTx.txid &&
                             'deadline' in t &&
                             (t.tokens?.length ?? 0) > 0,
                     );
