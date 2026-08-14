@@ -59,7 +59,6 @@ export const submitYieldWithdrawThunk = createThunk(
                 amount,
                 flowType,
                 dispatch,
-                getState,
             });
 
             if (!composeResult.success) {

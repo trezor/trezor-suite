@@ -10,6 +10,7 @@ import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { useFetchFees } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useFetchFees';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { useYieldWithdrawContext } from './useYieldWithdrawContext';
@@ -52,6 +53,8 @@ export const YieldWithdrawForm = () => {
         setMaxAmount,
         flow,
     } = useYieldWithdrawContext();
+
+    useFetchFees({ networkSymbol: account.symbol });
 
     const {
         isDisabled: isUnwrapDisabled,

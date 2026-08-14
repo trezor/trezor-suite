@@ -122,3 +122,28 @@ export const updateFeeInfoThunk = createThunk<
         return fulfillWithValue(data);
     },
 );
+
+export type GetOrFetchRawFeeInfoThunkState = UpdateFeeInfoThunkState;
+
+interface GetOrFetchRawFeeInfoThunkProps {
+    networkSymbol: NetworkSymbol;
+}
+
+export const getOrFetchRawFeeInfoThunk = createThunk<
+    FeeInfo | undefined,
+    GetOrFetchRawFeeInfoThunkProps,
+    { state: GetOrFetchRawFeeInfoThunkState }
+>(
+    `${FEES_MODULE_PREFIX}/getOrFetchRawFeeInfoThunk`,
+    async ({ networkSymbol }, { dispatch, getState }) => {
+        const rawFeeInfo = selectRawNetworkFeeInfo(getState(), networkSymbol);
+
+        if (rawFeeInfo) {
+            return rawFeeInfo;
+        }
+
+        await dispatch(updateFeeInfoThunk({ networkSymbol }));
+
+        return selectRawNetworkFeeInfo(getState(), networkSymbol);
+    },
+);

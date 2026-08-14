@@ -47,7 +47,11 @@ import {
     fetchAndUpdateAccountThunk,
     reportWalletBalanceThunk,
 } from '../accounts/accountsThunks';
-import { preloadFeeInfoThunk } from '../fees/feesThunks';
+import {
+    type GetOrFetchRawFeeInfoThunkState,
+    getOrFetchRawFeeInfoThunk,
+    preloadFeeInfoThunk,
+} from '../fees/feesThunks';
 import {
     type WalletSettingsRootState,
     selectBitcoinAmountUnit,
@@ -322,7 +326,8 @@ export const syncAccountsWithBlockchainThunk = createThunk<
     },
 );
 
-type OnBlockchainConnectThunkState = SyncAccountsWithBlockchainThunkState;
+type OnBlockchainConnectThunkState = SyncAccountsWithBlockchainThunkState &
+    GetOrFetchRawFeeInfoThunkState;
 type OnBlockchainConnectThunkDeps = {
     services: AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep;
 };
@@ -337,6 +342,8 @@ export const onBlockchainConnectThunk = createThunk<
 >(`${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`, async (symbol, { dispatch }) => {
     const network = getNetworkOptional(symbol.toLowerCase());
     if (!network) return;
+
+    await dispatch(getOrFetchRawFeeInfoThunk({ networkSymbol: network.symbol }));
 
     await dispatch(
         subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true, onConnect: true }),

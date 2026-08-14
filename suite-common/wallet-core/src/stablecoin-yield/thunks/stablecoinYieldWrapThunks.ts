@@ -14,7 +14,10 @@ import { BigNumber } from '@trezor/utils';
 import { accountsActions } from '../../accounts/accountsActions';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey } from '../../accounts/accountsSelectors';
-import { type FeesRootState, selectRawNetworkFeeInfo } from '../../fees/feesReducer';
+import {
+    type GetOrFetchRawFeeInfoThunkState,
+    getOrFetchRawFeeInfoThunk,
+} from '../../fees/feesThunks';
 import { ethereumGetCurrentNonceThunk } from '../../send/sendFormEthereumThunks';
 import { type TransactionsRootState } from '../../transactions/transactionsReducerTypes';
 import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
@@ -58,7 +61,7 @@ type ComposeYieldUnwrapTransactionPayload = {
     unwrapAmount: string;
 };
 export type ComposeYieldWrapTransactionThunkState = AccountsRootState &
-    FeesRootState &
+    GetOrFetchRawFeeInfoThunkState &
     TransactionsRootState;
 
 /**
@@ -74,7 +77,7 @@ export const composeYieldWrapTransactionThunk = createThunk<
     }
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeWrapTransaction`,
-    async ({ account, token, wrapAmount }, { dispatch, getState }) => {
+    async ({ account, token, wrapAmount }, { dispatch }) => {
         if (account.networkType !== 'ethereum') {
             return { type: 'error', reason: 'unsupported-network' } as const;
         }
@@ -119,9 +122,13 @@ export const composeYieldWrapTransactionThunk = createThunk<
             ? estimatedFeeLevel.payload.feeLimit
             : WETH_DEPOSIT_BACKUP_GAS_LIMIT;
 
+        const rawFeeInfo = await dispatch(
+            getOrFetchRawFeeInfoThunk({ networkSymbol: account.symbol }),
+        ).unwrap();
+
         const feeInfo = getConvertedOrDefaultFeeInfo({
             networkType: account.networkType,
-            feeInfo: selectRawNetworkFeeInfo(getState(), account.symbol),
+            feeInfo: rawFeeInfo,
         });
         const normalLevel =
             feeInfo.levels.find(level => level.label === 'normal') ?? feeInfo.levels[0];
@@ -224,7 +231,7 @@ export const trackWrappedNativeTokenThunk = createThunk<
 );
 
 export type ComposeYieldUnwrapTransactionThunkState = AccountsRootState &
-    FeesRootState &
+    GetOrFetchRawFeeInfoThunkState &
     TransactionsRootState;
 
 /**
@@ -239,7 +246,7 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
     }
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeUnwrapTransaction`,
-    async ({ account, token, unwrapAmount }, { dispatch, getState }) => {
+    async ({ account, token, unwrapAmount }, { dispatch }) => {
         if (account.networkType !== 'ethereum') {
             return { type: 'error', reason: 'unsupported-network' } as const;
         }
@@ -281,9 +288,13 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
             return { type: 'error', reason: 'fee-estimation-failed' } as const;
         }
 
+        const rawFeeInfo = await dispatch(
+            getOrFetchRawFeeInfoThunk({ networkSymbol: account.symbol }),
+        ).unwrap();
+
         const feeInfo = getConvertedOrDefaultFeeInfo({
             networkType: account.networkType,
-            feeInfo: selectRawNetworkFeeInfo(getState(), account.symbol),
+            feeInfo: rawFeeInfo,
         });
         const normalLevel =
             feeInfo.levels.find(level => level.label === 'normal') ?? feeInfo.levels[0];
