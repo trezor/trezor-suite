@@ -35,7 +35,7 @@ export const EarnStakingEnvironmentSelect = () => {
             items={earnStakingWorkerBaseUrlItems}
             value={storedValue ?? defaultEarnStakingWorkerBaseUrl}
             onSelectItem={handleSelectEnvironment}
-            isLabelShown
+            labelType="innerLabel"
         />
     );
 };

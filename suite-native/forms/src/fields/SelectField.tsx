@@ -8,7 +8,7 @@ type SelectFieldProps<TItemValue extends SelectItemValue> = {
     name: FieldName;
     labelType?: 'innerLabel' | 'outsideLabel' | 'noLabel';
     showCopyButton?: boolean;
-} & Omit<SelectProps<TItemValue>, 'value' | 'isLabelShown' | 'rightIcon'>;
+} & Omit<SelectProps<TItemValue>, 'value' | 'labelType' | 'rightIcon'>;
 
 export const SelectField = <TItemValue extends SelectItemValue>({
     name,
@@ -28,7 +28,7 @@ export const SelectField = <TItemValue extends SelectItemValue>({
                 {...otherProps}
                 title={title}
                 value={value as TItemValue}
-                isLabelShown={labelType === 'innerLabel'}
+                labelType={labelType === 'innerLabel' ? 'innerLabel' : 'noLabel'}
                 rightIcon={showCopyButton && <CopyButton value={value} />}
                 hasError={hasError}
             />
