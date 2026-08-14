@@ -6,7 +6,7 @@
 # Usage: TEAM=Suite-Growth ./create-monthly-deps-issue.sh
 #
 # Environment variables:
-#   TEAM     (required) - e.g. Suite-Growth, Suite-Wallet, Suite-Foundation, Suite-Trade
+#   TEAM     (required) - e.g. Suite-Growth, Suite-Wallet, Suite-Trade, Suite-Earn, Suite-Networks
 #   GH_TOKEN - GitHub token for gh CLI (optional if already authenticated)
 
 set -euo pipefail

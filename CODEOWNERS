@@ -3,12 +3,13 @@
 /docker @vdovhanych @mroz22
 
 /scripts @vdovhanych
-/scripts/list-outdated-dependencies/connect-dependencies.txt @martykan @vdovhanych
-/scripts/list-outdated-dependencies/foundation-dependencies.txt @matejkriz @vdovhanych
-/scripts/list-outdated-dependencies/growth-dependencies.txt @jvaclavik @vdovhanych
-/scripts/list-outdated-dependencies/trade-dependencies.txt @vytick @vdovhanych
-/scripts/list-outdated-dependencies/qa-dependencies.txt @Vere-Grey @vdovhanych
-/scripts/list-outdated-dependencies/wallet-dependencies.txt @tomasklim @vdovhanych
+/scripts/list-outdated-dependencies/connect-dependencies.txt @martykan
+/scripts/list-outdated-dependencies/earn-dependencies.txt @tomasklim
+/scripts/list-outdated-dependencies/growth-dependencies.txt @jvaclavik @Lemonexe
+/scripts/list-outdated-dependencies/networks-dependencies.txt @OriginalEveres
+/scripts/list-outdated-dependencies/trade-dependencies.txt @vytick
+/scripts/list-outdated-dependencies/qa-dependencies.txt @Vere-Grey @STew790
+/scripts/list-outdated-dependencies/wallet-dependencies.txt @matusbalascak
 
 /packages/blockchain-link @mroz22 @marekrjpolak
 
