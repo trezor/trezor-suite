@@ -33,4 +33,7 @@ if ! contains "$1" "${domains[@]}"; then
 fi
 
 # Run yarn outdated on target dependencies
-tr '\n' ' ' < "$script_directory/$1-dependencies.txt" | xargs yarn outdated
+sed -E 's/[[:space:]]*#.*$//; s/^[[:space:]]+//; s/[[:space:]]+$//; /^[[:space:]]*$/d' \
+  "$script_directory/$1-dependencies.txt" |
+  tr '\n' ' ' |
+  xargs yarn outdated
