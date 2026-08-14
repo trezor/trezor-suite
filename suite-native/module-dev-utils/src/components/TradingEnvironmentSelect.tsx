@@ -26,7 +26,7 @@ export const TradingEnvironmentSelect = () => {
             items={tradingEnvironmentItems}
             value={selectedTradingEnvironment}
             onSelectItem={handleSelectEnvironment}
-            isLabelShown
+            labelType="innerLabel"
         />
     );
 };
