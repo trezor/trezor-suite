@@ -17,7 +17,7 @@
 @evolu/web
 @noble/curves
 @pmmmwh/react-refresh-webpack-plugin
-@react-native-async-storage/async-storage
+@react-native-async-storage/async-storage # peer dependency required by @walletconnect/react-native-compat
 @sentry/browser
 @sentry/core
 @sentry/electron
@@ -68,7 +68,7 @@ prettier
 react-freeze
 react-native-ble-plx
 react-native-mmkv
-react-native-nitro-modules
+react-native-nitro-modules # peer dependency of some packages with mobile native code, they use this to compile
 set.prototype.difference
 set.prototype.intersection
 set.prototype.isdisjointfrom
