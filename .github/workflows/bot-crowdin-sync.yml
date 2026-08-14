@@ -99,10 +99,12 @@ jobs:
             PR_TITLE="Crowdin translations update [DESKTOP]"
             PR_BODY="Automatically generated PR for updating DESKTOP crowdin translations from ${{ env.SOURCE_BRANCH }} branch."
             COMMIT_SCOPE="suite"
+            PLATFORM_LABEL_ARGS="--label desktop"
           else
             PR_TITLE="Crowdin translations update [MOBILE]"
             PR_BODY="Automatically generated PR for updating MOBILE crowdin translations from ${{ env.SOURCE_BRANCH }} branch."
             COMMIT_SCOPE="suite-native"
+            PLATFORM_LABEL_ARGS=""
           fi
 
           if [[ "${{ env.SOURCE_BRANCH }}" == release/* ]] || [[ "${{ env.SOURCE_BRANCH }}" == release-native/* ]]; then
@@ -125,5 +127,5 @@ jobs:
             --body "${PR_BODY}" \
             --base ${{ env.SOURCE_BRANCH }} \
             --label translations \
-            --label ${{ github.event.inputs.platform }} \
+            ${PLATFORM_LABEL_ARGS} \
             --label no-project
