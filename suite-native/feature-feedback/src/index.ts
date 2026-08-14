@@ -7,4 +7,3 @@ export {
     feedbackRequested,
 } from './featureFeedbackSlice';
 export { FeatureRatingForm } from './FeatureRatingForm';
-export { FeedbackForm, useFeedbackForm, type FeedbackFormState } from './FeedbackForm';

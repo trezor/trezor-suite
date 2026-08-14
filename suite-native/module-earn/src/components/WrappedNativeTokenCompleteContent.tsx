@@ -92,6 +92,7 @@ export const WrappedNativeTokenCompleteContent = ({
 
     return (
         <YieldCompleteScreenContent
+            type={flowType}
             buttonTranslationId={flowMessages[flowType].closeButton}
             onButtonPress={handleClose}
             rows={rows}

@@ -8,9 +8,9 @@ type FeedbackSuccessMessageProps = {
 };
 
 export const FeedbackSuccessMessage = ({ heading, description }: FeedbackSuccessMessageProps) => (
-    <HStack spacing="sp20" alignItems="center">
+    <HStack spacing="sp16" alignItems="center">
         <RoundedIcon name="check" intent="brand" size={40} />
-        <VStack spacing="sp8" flex={1}>
+        <VStack spacing="sp1" flex={1}>
             <Text variant="headline-sm">{heading}</Text>
             <Text variant="body-sm" color="contentSecondary">
                 {description}
