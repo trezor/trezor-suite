@@ -1,6 +1,12 @@
 import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectSelectedDevice } from '@suite-common/device';
+import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import { type WrappedNativeFlowType, type YieldFlowType } from '@suite-common/wallet-core';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -12,34 +18,10 @@ import {
     TitleHeader,
     VStack,
 } from '@suite-native/atoms';
-import { FeedbackForm, type FeedbackFormState } from '@suite-native/feature-feedback';
+import { FeedbackCard } from '@suite-native/feedback-form';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-export type YieldCompleteSummaryRow = {
-    key: string;
-    label: ReactNode;
-    onPress?: () => void;
-} & (
-    | {
-          value: ReactNode;
-          content?: never;
-      }
-    | {
-          value?: never;
-          content: ReactNode;
-      }
-);
-
-type YieldCompleteScreenContentProps = {
-    buttonTranslationId: TxKeyPath;
-    onButtonPress: () => void;
-    rows: YieldCompleteSummaryRow[];
-    subtitle: ReactNode;
-    title: ReactNode;
-    feedbackForm?: FeedbackFormState;
-};
 
 const contentStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.sp48,
@@ -67,15 +49,76 @@ const footerStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.sp36,
 }));
 
+export type YieldCompleteSummaryRow = {
+    key: string;
+    label: ReactNode;
+    onPress?: () => void;
+} & (
+    | {
+          value: ReactNode;
+          content?: never;
+      }
+    | {
+          value?: never;
+          content: ReactNode;
+      }
+);
+
+type YieldCompleteScreenType = YieldFlowType | WrappedNativeFlowType;
+
+type YieldCompleteScreenContentProps = {
+    buttonTranslationId: TxKeyPath;
+    onButtonPress: () => void;
+    rows: YieldCompleteSummaryRow[];
+    subtitle: ReactNode;
+    title: ReactNode;
+    type: YieldCompleteScreenType;
+    vaultId?: string;
+};
+
 export const YieldCompleteScreenContent = ({
     buttonTranslationId,
     onButtonPress,
     rows,
     subtitle,
     title,
-    feedbackForm,
+    type,
+    vaultId,
 }: YieldCompleteScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const device = useSelector(selectSelectedDevice);
+    const dispatch = useDispatch();
+
+    const onFeedbackRatingSelect = (rating: Rating) => {
+        analytics.report({
+            type: events.feedbackRatingSelectedEvent.name,
+            payload: { rating, category: 'yield', context: type },
+        });
+    };
+
+    const onFeedbackSubmit = (rating: Rating, description: string) => {
+        const userData = buildUserFeedbackData(device);
+
+        dispatch(
+            sendFeedbackAction({
+                type: 'SUGGESTION',
+                payload: {
+                    category: 'yield',
+                    feature: type,
+                    description,
+                    rating,
+                    vaultId,
+                    ...userData,
+                },
+            }),
+        );
+
+        analytics.report({
+            type: events.feedbackSentEvent.name,
+            payload: { category: 'yield', context: type },
+        });
+    };
 
     return (
         <Screen
@@ -145,7 +188,16 @@ export const YieldCompleteScreenContent = ({
                     })}
                 </Card>
 
-                {!!feedbackForm && <FeedbackForm {...feedbackForm} />}
+                <FeedbackCard
+                    heading={<Translation id="feedbackForm.title" />}
+                    description={<Translation id="feedbackForm.description" />}
+                    submitLabel={<Translation id="feedbackForm.submitButton" />}
+                    successHeading={<Translation id="feedbackForm.successTitle" />}
+                    successDescription={<Translation id="feedbackForm.successDescription" />}
+                    closeLabel={<Translation id="generic.buttons.close" />}
+                    onSubmit={onFeedbackSubmit}
+                    onRatingSelect={onFeedbackRatingSelect}
+                />
             </VStack>
         </Screen>
     );

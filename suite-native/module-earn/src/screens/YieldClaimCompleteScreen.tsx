@@ -5,7 +5,6 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import {
     type AccountsRootState,
     type StablecoinYieldRootState,
@@ -14,7 +13,6 @@ import {
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { useFeedbackForm } from '@suite-native/feature-feedback';
 import { Translation } from '@suite-native/intl';
 import {
     type YieldStackParamList,
@@ -41,8 +39,6 @@ export const YieldClaimCompleteScreen = () => {
     );
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
-    const feedbackForm = useFeedbackForm();
-
     const handleExit = useCallback(() => {
         analytics.report({
             type: events.yieldNavigateEvent.name,
@@ -54,28 +50,9 @@ export const YieldClaimCompleteScreen = () => {
             },
         });
 
-        if (feedbackForm.isValid) {
-            const userData = buildUserFeedbackData();
-
-            const { rating, description } = feedbackForm;
-
-            dispatch(
-                sendFeedbackAction({
-                    type: 'SUGGESTION',
-                    payload: {
-                        category: 'yield',
-                        feature: 'claim',
-                        description,
-                        rating,
-                        ...userData,
-                    },
-                }),
-            );
-        }
-
         navigateToInitialScreen();
         dispatch(stablecoinYieldActions.disposeSession({ flowType: 'claim', flowKey: accountKey }));
-    }, [feedbackForm, accountKey, analytics, dispatch, navigateToInitialScreen, networkSymbol]);
+    }, [accountKey, analytics, dispatch, navigateToInitialScreen, networkSymbol]);
 
     useInterceptNativeNavigation({ onPress: handleExit });
 
@@ -95,16 +72,12 @@ export const YieldClaimCompleteScreen = () => {
 
     return (
         <YieldCompleteScreenContent
-            buttonTranslationId={
-                feedbackForm.isValid
-                    ? 'earn.yieldCompleteScreen.sendAndBackToOverview'
-                    : 'earn.yieldCompleteScreen.backToOverview'
-            }
+            type="claim"
+            buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
             onButtonPress={handleExit}
             rows={rows}
             title={<Translation id="earn.yieldClaimCompleteScreen.title" />}
             subtitle={<Translation id="earn.yieldClaimCompleteScreen.subtitle" />}
-            feedbackForm={feedbackForm}
         />
     );
 };

@@ -5,7 +5,6 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type StablecoinYieldRootState,
@@ -14,7 +13,6 @@ import {
 } from '@suite-common/wallet-core';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
-import { useFeedbackForm } from '@suite-native/feature-feedback';
 import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 import {
     type StackNavigationProps,
@@ -60,8 +58,6 @@ export const YieldDepositCompleteScreen = () => {
     const apyBreakdownAlert = useApyBreakdownAlert({ account, vault });
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
-    const feedbackForm = useFeedbackForm();
-
     const handleExit = useCallback(() => {
         analytics.report({
             type: events.yieldNavigateEvent.name,
@@ -78,35 +74,8 @@ export const YieldDepositCompleteScreen = () => {
             dispatch(stablecoinYieldActions.disposeSession({ flowType: 'deposit', flowKey }));
         }
 
-        if (feedbackForm.isValid) {
-            const userData = buildUserFeedbackData();
-
-            const { rating, description } = feedbackForm;
-
-            dispatch(
-                sendFeedbackAction({
-                    type: 'SUGGESTION',
-                    payload: {
-                        category: 'yield',
-                        feature: 'deposit',
-                        description,
-                        rating,
-                        ...userData,
-                    },
-                }),
-            );
-        }
-
         navigateToInitialScreen();
-    }, [
-        feedbackForm,
-        account?.symbol,
-        analytics,
-        dispatch,
-        flowKey,
-        navigateToInitialScreen,
-        vault?.id,
-    ]);
+    }, [account?.symbol, analytics, dispatch, flowKey, navigateToInitialScreen, vault?.id]);
 
     useOverrideBackNavigation({ onNavigateBack: handleExit });
 
@@ -177,16 +146,13 @@ export const YieldDepositCompleteScreen = () => {
 
     return (
         <YieldCompleteScreenContent
-            buttonTranslationId={
-                feedbackForm.isValid
-                    ? 'earn.yieldCompleteScreen.sendAndBackToOverview'
-                    : 'earn.yieldCompleteScreen.backToOverview'
-            }
+            type="deposit"
+            vaultId={vault.id}
+            buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
             onButtonPress={handleExit}
             rows={rows}
             title={<Translation id="earn.yieldDepositCompleteScreen.title" />}
             subtitle={<Translation id="earn.yieldDepositCompleteScreen.subtitle" />}
-            feedbackForm={feedbackForm}
         />
     );
 };

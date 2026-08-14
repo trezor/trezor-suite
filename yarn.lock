@@ -13064,7 +13064,7 @@ __metadata:
     "@suite-native/confirm-on-trezor": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
-    "@suite-native/feature-feedback": "workspace:*"
+    "@suite-native/feedback-form": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/helpers": "workspace:*"

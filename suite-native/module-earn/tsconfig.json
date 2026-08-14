@@ -73,7 +73,7 @@
         { "path": "../confirm-on-trezor" },
         { "path": "../device-manager" },
         { "path": "../device-mutex" },
-        { "path": "../feature-feedback" },
+        { "path": "../feedback-form" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../helpers" },
