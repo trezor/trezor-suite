@@ -206,7 +206,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: walletSettingsReducer,
         persistedKeys: walletSettingsPersistedWhitelist,
         key: 'walletSettings',
-        version: 4,
+        version: 5,
         migrations: {
             1: initialMigrateAppSettingsAndDiscoveryConfig({
                 mmkvStorage: deps.mmkvStorage,
@@ -235,6 +235,13 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                 }
 
                 return oldState;
+            },
+            5: (oldState: any /* FIXME */) => {
+                if (!oldState) return oldState;
+
+                const { hideSuspiciousTransactions: _, ...rest } = oldState;
+
+                return rest;
             },
         },
         storage: deps.mmkvStorage,

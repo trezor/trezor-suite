@@ -2,6 +2,7 @@ import { deviceInitialState } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { type SuspiciousTransactionsFilter } from '@suite-common/wallet-types';
 import { FirmwareType } from '@trezor/device-utils';
 
 import * as walletSettingsActions from './walletSettingsActions';
@@ -10,6 +11,8 @@ import {
     prepareWalletSettingsReducer,
     selectIsHideSuspiciousTransactions,
     selectIsNetworkReserveSettingsVisible,
+    selectIsSuspiciousTransactionsBlurringEnabled,
+    selectSuspiciousTransactionsFilter,
 } from './walletSettingsReducer';
 
 const initialState = initialWalletSettingsState;
@@ -63,51 +66,84 @@ describe('settings reducer', () => {
         });
     });
 
-    it('TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS toggles the setting only for the given network', () => {
-        const toggledOn = reducer(
+    it('SET_SUSPICIOUS_TRANSACTIONS_FILTER sets the filter only for the given network', () => {
+        const hidden = reducer(
             undefined,
-            walletSettingsActions.toggleHideSuspiciousTransactions(opSymbol),
+            walletSettingsActions.setSuspiciousTransactionsFilter({
+                symbol: opSymbol,
+                filter: 'hideSuspicious',
+            }),
         );
 
-        expect(toggledOn).toEqual({
+        expect(hidden).toEqual({
             ...initialState,
-            hideSuspiciousTransactions: { op: true },
+            suspiciousTransactionsFilter: { op: 'hideSuspicious' },
         });
 
-        const toggledOff = reducer(
-            toggledOn,
-            walletSettingsActions.toggleHideSuspiciousTransactions(opSymbol),
+        const unblurred = reducer(
+            hidden,
+            walletSettingsActions.setSuspiciousTransactionsFilter({
+                symbol: ethSymbol,
+                filter: 'showUnblurred',
+            }),
         );
 
-        expect(toggledOff).toEqual({
+        expect(unblurred).toEqual({
             ...initialState,
-            hideSuspiciousTransactions: { op: false },
+            suspiciousTransactionsFilter: { op: 'hideSuspicious', eth: 'showUnblurred' },
         });
+    });
+
+    it('SET_SUSPICIOUS_TRANSACTIONS_FILTER removes the entry when set back to the default', () => {
+        const hidden = reducer(
+            undefined,
+            walletSettingsActions.setSuspiciousTransactionsFilter({
+                symbol: opSymbol,
+                filter: 'hideSuspicious',
+            }),
+        );
+
+        const reset = reducer(
+            hidden,
+            walletSettingsActions.setSuspiciousTransactionsFilter({
+                symbol: opSymbol,
+                filter: 'showAll',
+            }),
+        );
+
+        expect(reset).toEqual(initialState);
     });
 });
 
-describe('selectIsHideSuspiciousTransactions', () => {
-    const getState = (hideSuspiciousTransactions: Partial<Record<NetworkSymbol, boolean>>) => ({
+describe('suspicious transactions filter selectors', () => {
+    const buildState = (
+        suspiciousTransactionsFilter: Partial<Record<NetworkSymbol, SuspiciousTransactionsFilter>>,
+    ) => ({
         wallet: {
             settings: {
                 ...initialState,
-                hideSuspiciousTransactions,
+                suspiciousTransactionsFilter,
             },
         },
     });
+    const state = buildState({ [opSymbol]: 'hideSuspicious', [ethSymbol]: 'showUnblurred' });
 
-    it('returns true only for networks with the setting enabled', () => {
-        const hideSuspiciousTransactions = { [opSymbol]: true, [ethSymbol]: false };
+    it('selectSuspiciousTransactionsFilter falls back to showAll', () => {
+        expect(selectSuspiciousTransactionsFilter(state, opSymbol)).toBe('hideSuspicious');
+        expect(selectSuspiciousTransactionsFilter(state, ethSymbol)).toBe('showUnblurred');
+        expect(selectSuspiciousTransactionsFilter(state, btcSymbol)).toBe('showAll');
+    });
 
-        expect(
-            selectIsHideSuspiciousTransactions(getState(hideSuspiciousTransactions), opSymbol),
-        ).toBe(true);
-        expect(
-            selectIsHideSuspiciousTransactions(getState(hideSuspiciousTransactions), ethSymbol),
-        ).toBe(false);
-        expect(
-            selectIsHideSuspiciousTransactions(getState(hideSuspiciousTransactions), btcSymbol),
-        ).toBe(false);
+    it('selectIsHideSuspiciousTransactions returns true only for hiding networks', () => {
+        expect(selectIsHideSuspiciousTransactions(state, opSymbol)).toBe(true);
+        expect(selectIsHideSuspiciousTransactions(state, ethSymbol)).toBe(false);
+        expect(selectIsHideSuspiciousTransactions(state, btcSymbol)).toBe(false);
+    });
+
+    it('selectIsSuspiciousTransactionsBlurringEnabled returns false only for unblurred networks', () => {
+        expect(selectIsSuspiciousTransactionsBlurringEnabled(state, opSymbol)).toBe(true);
+        expect(selectIsSuspiciousTransactionsBlurringEnabled(state, ethSymbol)).toBe(false);
+        expect(selectIsSuspiciousTransactionsBlurringEnabled(state, btcSymbol)).toBe(true);
     });
 });
 

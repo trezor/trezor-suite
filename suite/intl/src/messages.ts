@@ -139,6 +139,14 @@ export const messages = defineMessages({
         defaultMessage: 'Crypto moves fast. Our filters may not always be 100% up to date.',
         id: 'TR_HIDE_SUSPICIOUS_TRANSACTIONS_DESCRIPTION',
     },
+    TR_SHOW_UNBLURRED: {
+        defaultMessage: 'Show unblurred',
+        id: 'TR_SHOW_UNBLURRED',
+    },
+    TR_SHOW_UNBLURRED_TRANSACTIONS_DESCRIPTION: {
+        defaultMessage: "Suspicious transactions stay flagged but aren't blurred.",
+        id: 'TR_SHOW_UNBLURRED_TRANSACTIONS_DESCRIPTION',
+    },
     TR_ACCOUNT_IS_EMPTY_TITLE: {
         defaultMessage: 'No transactions',
         id: 'TR_ACCOUNT_IS_EMPTY_TITLE',

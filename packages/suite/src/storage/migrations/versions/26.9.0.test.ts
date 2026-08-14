@@ -3,9 +3,9 @@ import { type IDBPDatabase, deleteDB, openDB } from 'idb';
 
 import { type SuiteDBSchema } from 'src/storage/definitions';
 
-import migration from './26.8.0.2';
+import migration from './26.9.0';
 
-const DB_NAME = 'suite-idb-test-26.8.0.2';
+const DB_NAME = 'suite-idb-test-26.9.0';
 const INITIAL_VERSION = 1;
 
 const runMigration = () =>
@@ -30,15 +30,15 @@ const createDBWithWalletSettings = async (walletSettings?: Record<string, unknow
     db.close();
 };
 
-describe('migration 26.8.0.2', () => {
+describe('migration 26.9.0', () => {
     beforeEach(async () => {
         await deleteDB(DB_NAME);
     });
 
-    test('converts stored `true` to a record of all enabled networks', async () => {
+    test('converts the boolean record to a filter record, keeping only hiding networks', async () => {
         await createDBWithWalletSettings({
             enabledNetworks: ['btc', 'eth', 'op'],
-            hideSuspiciousTransactions: true,
+            hideSuspiciousTransactions: { btc: true, eth: false },
         });
 
         const migratedDb = await runMigration();
@@ -46,30 +46,13 @@ describe('migration 26.8.0.2', () => {
 
         expect(settings).toEqual({
             enabledNetworks: ['btc', 'eth', 'op'],
-            hideSuspiciousTransactions: { btc: true, eth: true, op: true },
+            suspiciousTransactionsFilter: { btc: 'hideSuspicious' },
         });
 
         migratedDb.close();
     });
 
-    test('converts stored `false` to an empty record', async () => {
-        await createDBWithWalletSettings({
-            enabledNetworks: ['btc', 'eth'],
-            hideSuspiciousTransactions: false,
-        });
-
-        const migratedDb = await runMigration();
-        const settings = await migratedDb.get('walletSettings', 'wallet');
-
-        expect(settings).toEqual({
-            enabledNetworks: ['btc', 'eth'],
-            hideSuspiciousTransactions: {},
-        });
-
-        migratedDb.close();
-    });
-
-    test('leaves settings without the old boolean untouched', async () => {
+    test('leaves settings without the old record untouched', async () => {
         await createDBWithWalletSettings({
             enabledNetworks: ['btc'],
         });

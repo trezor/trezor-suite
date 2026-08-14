@@ -14,6 +14,7 @@ import {
     type Target,
     selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
+    selectIsSuspiciousTransactionsBlurringEnabled,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
@@ -75,6 +76,9 @@ export const TransactionTarget = ({
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
+    const isBlurringEnabled = useSelector(state =>
+        selectIsSuspiciousTransactionsBlurringEnabled(state, transaction.symbol),
+    );
 
     const suiteSyncOutputLabels = useSelector(state =>
         isSuiteSyncEnabled
@@ -196,7 +200,7 @@ export const TransactionTarget = ({
         <TransactionTargetLayout
             {...baseLayoutProps}
             useHiddenPlaceholder={!isBeingEdited}
-            isPhishingTransaction={isPhishingTransaction}
+            isBlurred={(isPhishingTransaction ?? false) && isBlurringEnabled}
             addressLabel={
                 <Labeling
                     deviceStaticSessionId={transaction.deviceState}
