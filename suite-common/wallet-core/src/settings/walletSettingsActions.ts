@@ -1,7 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AddressDisplayOptions } from '@suite-common/wallet-types';
+import {
+    type AddressDisplayOptions,
+    type SuspiciousTransactionsFilter,
+} from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type PROTO } from '@trezor/connect';
 
@@ -35,9 +38,9 @@ export const setNetworkReserve = createAction(
     (enabled: boolean) => ({ payload: enabled }),
 );
 
-export const toggleHideSuspiciousTransactions = createAction(
-    WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS,
-    (symbol: NetworkSymbol) => ({ payload: symbol }),
+export const setSuspiciousTransactionsFilter = createAction(
+    WALLET_SETTINGS.SET_SUSPICIOUS_TRANSACTIONS_FILTER,
+    (payload: { symbol: NetworkSymbol; filter: SuspiciousTransactionsFilter }) => ({ payload }),
 );
 
 export const setAutoEjectEnabled = createAction(
@@ -66,7 +69,7 @@ export type SetBitcoinAmountUnitsAction = {
 export type WalletSettingsAction =
     | ReturnType<typeof changeNetworks>
     | ReturnType<typeof setBaseCurrency>
-    | ReturnType<typeof toggleHideSuspiciousTransactions>
+    | ReturnType<typeof setSuspiciousTransactionsFilter>
     | ReturnType<typeof setAutoEjectEnabled>
     | ReturnType<typeof setMevProtection>
     | ReturnType<typeof setNetworkReserve>

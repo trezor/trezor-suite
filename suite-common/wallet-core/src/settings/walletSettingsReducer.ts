@@ -13,7 +13,11 @@ import {
     getNetwork,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
-import { AddressDisplayOptions, type WalletSettings } from '@suite-common/wallet-types';
+import {
+    AddressDisplayOptions,
+    type SuspiciousTransactionsFilter,
+    type WalletSettings,
+} from '@suite-common/wallet-types';
 import { isBaseCurrencyWithSats } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 
@@ -33,7 +37,7 @@ export const createMemoizedSelector = createWeakMapSelector.withTypes<WalletSett
 const initialState: WalletSettingsState = {
     localCurrency: 'usd',
     enabledNetworks: [],
-    hideSuspiciousTransactions: {},
+    suspiciousTransactionsFilter: {},
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
     mevProtection: true,
     networkReserve: true,
@@ -45,7 +49,7 @@ export const initialWalletSettingsState: WalletSettingsState = initialState;
 export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> = [
     'localCurrency',
     'enabledNetworks',
-    'hideSuspiciousTransactions',
+    'suspiciousTransactionsFilter',
     'bitcoinAmountUnit',
     'mevProtection',
     'networkReserve',
@@ -95,14 +99,17 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
             },
         );
         builder.addCase(
-            WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS,
+            WALLET_SETTINGS.SET_SUSPICIOUS_TRANSACTIONS_FILTER,
             (
                 state,
-                action: ReturnType<typeof walletSettingsActions.toggleHideSuspiciousTransactions>,
+                action: ReturnType<typeof walletSettingsActions.setSuspiciousTransactionsFilter>,
             ) => {
-                const symbol = action.payload;
-                state.hideSuspiciousTransactions[symbol] =
-                    !state.hideSuspiciousTransactions[symbol];
+                const { symbol, filter } = action.payload;
+                if (filter === 'showAll') {
+                    delete state.suspiciousTransactionsFilter[symbol];
+                } else {
+                    state.suspiciousTransactionsFilter[symbol] = filter;
+                }
             },
         );
         builder.addCase(
@@ -124,10 +131,19 @@ export const selectEnabledNetworks = (state: WalletSettingsRootState) =>
     returnStableArrayIfEmpty(state.wallet.settings.enabledNetworks);
 export const selectBaseCurrency = (state: WalletSettingsRootState) =>
     state.wallet.settings.localCurrency;
+export const selectSuspiciousTransactionsFilter = (
+    state: WalletSettingsRootState,
+    symbol: NetworkSymbol,
+): SuspiciousTransactionsFilter =>
+    state.wallet.settings.suspiciousTransactionsFilter[symbol] ?? 'showAll';
 export const selectIsHideSuspiciousTransactions = (
     state: WalletSettingsRootState,
     symbol: NetworkSymbol,
-) => Boolean(state.wallet.settings.hideSuspiciousTransactions[symbol]);
+) => selectSuspiciousTransactionsFilter(state, symbol) === 'hideSuspicious';
+export const selectIsSuspiciousTransactionsBlurringEnabled = (
+    state: WalletSettingsRootState,
+    symbol: NetworkSymbol,
+) => selectSuspiciousTransactionsFilter(state, symbol) !== 'showUnblurred';
 export const selectBitcoinAmountUnit = (state: WalletSettingsRootState) =>
     state.wallet.settings.bitcoinAmountUnit;
 export const selectIsDeviceAutoEjectEnabled = (state: WalletSettingsRootState) =>

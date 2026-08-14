@@ -5,9 +5,10 @@ import { Translation } from '@suite/intl';
 import { selectHasActiveModal } from '@suite/modal';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    selectIsHideSuspiciousTransactions,
-    toggleHideSuspiciousTransactions,
+    selectSuspiciousTransactionsFilter,
+    setSuspiciousTransactionsFilter,
 } from '@suite-common/wallet-core';
+import { type SuspiciousTransactionsFilter } from '@suite-common/wallet-types';
 import {
     Badge,
     Box,
@@ -28,37 +29,40 @@ import { zIndices } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-type FilterValue = boolean | string;
-
-type FilterOption = {
-    value: FilterValue;
+type FilterOption<TValue> = {
+    value: TValue;
     label: ReactNode;
     description?: ReactNode;
     isDefault?: boolean;
 };
 
-type FilterSection = {
+type FilterSection<TValue> = {
     key: string;
     title: ReactNode;
-    options: readonly FilterOption[];
-    value: FilterValue;
-    onChange: (value: FilterValue) => void;
+    options: readonly FilterOption<TValue>[];
+    value: TValue;
+    onChange: (value: TValue) => void;
 };
 
-const suspiciousTransactionsOptions: readonly FilterOption[] = [
+const suspiciousTransactionsOptions: readonly FilterOption<SuspiciousTransactionsFilter>[] = [
     {
-        value: false,
+        value: 'showAll',
         label: <Translation id="TR_SHOW_ALL" />,
         isDefault: true,
     },
     {
-        value: true,
+        value: 'showUnblurred',
+        label: <Translation id="TR_SHOW_UNBLURRED" />,
+        description: <Translation id="TR_SHOW_UNBLURRED_TRANSACTIONS_DESCRIPTION" />,
+    },
+    {
+        value: 'hideSuspicious',
         label: <Translation id="TR_HIDE_SUSPICIOUS" />,
         description: <Translation id="TR_HIDE_SUSPICIOUS_TRANSACTIONS_DESCRIPTION" />,
     },
 ];
 
-const getSectionDefaultValue = (section: FilterSection) =>
+const getSectionDefaultValue = <TValue,>(section: FilterSection<TValue>) =>
     section.options.find(option => option.isDefault)?.value;
 
 type FilterActionProps = {
@@ -67,8 +71,8 @@ type FilterActionProps = {
 
 export const FilterAction = ({ symbol }: FilterActionProps) => {
     const { suspiciousTransactionsTooltipClosed } = useSelector(selectFlags);
-    const suspiciousTransactionsHidden = useSelector(state =>
-        selectIsHideSuspiciousTransactions(state, symbol),
+    const suspiciousTransactionsFilter = useSelector(state =>
+        selectSuspiciousTransactionsFilter(state, symbol),
     );
     const hasActiveModal = useSelector(selectHasActiveModal);
     const dispatch = useDispatch();
@@ -80,18 +84,21 @@ export const FilterAction = ({ symbol }: FilterActionProps) => {
     };
     const dataTest = '@wallet/accounts/hide-scam-transactions';
 
-    const handleToggleSuspiciousTransactionsRequest = (requestedHidden: FilterValue) => {
-        if (requestedHidden === suspiciousTransactionsHidden) return;
-        dispatch(toggleHideSuspiciousTransactions(symbol));
+    const handleSuspiciousTransactionsFilterChange = (
+        requestedFilter: SuspiciousTransactionsFilter,
+    ) => {
+        if (requestedFilter === suspiciousTransactionsFilter) return;
+
+        dispatch(setSuspiciousTransactionsFilter({ symbol, filter: requestedFilter }));
     };
 
-    const filterSections: FilterSection[] = [
+    const filterSections: FilterSection<SuspiciousTransactionsFilter>[] = [
         {
             key: 'suspiciousTransactions',
             title: <Translation id="TR_SUSPICIOUS_TRANSACTIONS" />,
             options: suspiciousTransactionsOptions,
-            value: suspiciousTransactionsHidden,
-            onChange: handleToggleSuspiciousTransactionsRequest,
+            value: suspiciousTransactionsFilter,
+            onChange: handleSuspiciousTransactionsFilterChange,
         },
     ];
 
@@ -178,7 +185,7 @@ export const FilterAction = ({ symbol }: FilterActionProps) => {
                                                 onChange={() => {
                                                     section.onChange(option.value);
                                                 }}
-                                                data-testid={dataTest}
+                                                data-testid={`${dataTest}/${option.value}`}
                                                 verticalAlignment="center"
                                             >
                                                 <Column>

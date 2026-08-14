@@ -504,7 +504,7 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case WALLET_SETTINGS.SET_NETWORK_RESERVE:
                 case WALLET_SETTINGS.SET_AUTO_EJECT:
                 case WALLET_SETTINGS.SET_ADDRESS_DISPLAY_TYPE:
-                case WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS:
+                case WALLET_SETTINGS.SET_SUSPICIOUS_TRANSACTIONS_FILTER:
                     api.dispatch(storageActions.saveWalletSettings());
 
                     break;
