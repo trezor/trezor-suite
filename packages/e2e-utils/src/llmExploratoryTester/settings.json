@@ -4,7 +4,6 @@
     "permissions": {
         "defaultMode": "auto",
         "deny": [
-            "Read",
             "Glob",
             "Grep",
             "Edit",
@@ -25,7 +24,7 @@
     "hooks": {
         "PreToolUse": [
             {
-                "matcher": "mcp__playwright__browser_navigate|mcp__playwright__browser_tabs|mcp__playwright__browser_take_screenshot",
+                "matcher": "Read|mcp__playwright__browser_navigate|mcp__playwright__browser_tabs|mcp__playwright__browser_take_screenshot",
                 "hooks": [
                     {
                         "type": "command",

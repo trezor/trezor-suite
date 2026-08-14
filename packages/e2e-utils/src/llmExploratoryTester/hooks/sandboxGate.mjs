@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 
 const SUITE_HOST = 'dev.suite.sldev.cz';
+const CONTEXT_IMAGES_DIR = 'packages/e2e-utils/src/llmExploratoryTester/reports/context-images';
 const BROWSER_DIR = 'packages/e2e-utils/src/llmExploratoryTester/reports/browser';
 
 function deny(reason) {
@@ -18,6 +19,13 @@ try {
 
 const toolName = String(event.tool_name ?? '');
 const toolInput = event.tool_input ?? {};
+
+if (toolName === 'Read') {
+    const filePath = String(toolInput.file_path ?? '');
+    if (filePath.includes('..') || !filePath.startsWith(`${CONTEXT_IMAGES_DIR}/`)) {
+        deny(`Read blocked: ${filePath || 'missing file_path'}`);
+    }
+}
 
 if (toolName.endsWith('browser_navigate')) {
     const url = new URL(String(toolInput.url).trim());
