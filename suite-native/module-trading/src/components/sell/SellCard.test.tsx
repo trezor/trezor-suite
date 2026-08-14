@@ -13,6 +13,11 @@ import { SellCard } from './SellCard';
 import { useSellForm } from '../../hooks/sell/useSellForm';
 import { createTradingPreloadedState } from '../../test-utils/tradingTestUtils';
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useRoute: () => ({ params: {} }),
+}));
+
 describe('SellCard', () => {
     let form: SellFormType;
     const preloadedState = createTradingPreloadedState({ tradeType: 'sell' });

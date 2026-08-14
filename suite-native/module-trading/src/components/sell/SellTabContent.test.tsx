@@ -6,6 +6,11 @@ import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockUseSellData: jest.Mock;
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useRoute: () => ({ params: {} }),
+}));
+
 jest.mock('../../hooks/sell/useSellData', () => ({
     useSellData: (...params: unknown[]) => mockUseSellData(...params),
 }));

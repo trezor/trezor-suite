@@ -21,6 +21,11 @@ import {
     renderWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useRoute: () => ({ params: {} }),
+}));
+
 jest.mock('../../hooks/general/useFocusedValueWatch', () =>
     jest.requireActual('../../hooks/general/useFocusedValueWatch'),
 );
