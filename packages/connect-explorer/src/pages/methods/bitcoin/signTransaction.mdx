@@ -174,6 +174,47 @@ TrezorConnect.signTransaction({
 });
 ```
 
+###### SPENDWITNESS
+
+```javascript
+TrezorConnect.signTransaction({
+    inputs: [
+        {
+            address_n: [
+                (84 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                0,
+                0,
+            ],
+            prev_index: 0,
+            prev_hash: '572155584b42e3551bca1dfa768fd6c8a3e2375395242eced06673bb281a310e',
+            amount: 50000,
+            script_type: 'SPENDWITNESS',
+        },
+    ],
+    outputs: [
+        {
+            address_n: [
+                (84 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                1,
+                0,
+            ],
+            amount: 29000,
+            script_type: 'PAYTOWITNESS',
+        },
+        {
+            address: 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk',
+            amount: 20000,
+            script_type: 'PAYTOADDRESS',
+        },
+    ],
+    coin: 'btc',
+});
+```
+
 ###### PAYTOADDRESS with refTxs (transaction data provided from custom backend)
 
 ```javascript
