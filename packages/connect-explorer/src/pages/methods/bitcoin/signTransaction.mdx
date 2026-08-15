@@ -9,12 +9,14 @@ import signTransactionMultisig from '../../../data/methods/bitcoin/signTransacti
 import signTransactionOpreturn from '../../../data/methods/bitcoin/signTransaction.opreturn';
 import signTransactionP2SH from '../../../data/methods/bitcoin/signTransaction.p2sh';
 import signTransactionPaytoaddress from '../../../data/methods/bitcoin/signTransaction.paytoaddress';
+import signTransactionSegwit from '../../../data/methods/bitcoin/signTransaction.segwit';
 import signTransactionZcash from '../../../data/methods/bitcoin/signTransaction.zcash';
 
 <ApiPlayground
     options={[
         { title: 'PayToAddress', legacyConfig: signTransactionPaytoaddress[0] },
         { title: 'P2SH', legacyConfig: signTransactionP2SH[0] },
+        { title: 'Segwit', legacyConfig: signTransactionSegwit[0] },
         { title: 'OpReturn', legacyConfig: signTransactionOpreturn[0] },
         { title: 'Multisig', legacyConfig: signTransactionMultisig[0] },
         { title: 'Zcash', legacyConfig: signTransactionZcash[0] },
@@ -166,6 +168,47 @@ TrezorConnect.signTransaction({
         },
         {
             address: '18WL2iZKmpDYWk1oFavJapdLALxwSjcSk2',
+            amount: 200000,
+            script_type: 'PAYTOADDRESS',
+        },
+    ],
+    coin: 'btc',
+});
+```
+
+###### SPENDWITNESS
+
+```javascript
+TrezorConnect.signTransaction({
+    inputs: [
+        {
+            address_n: [
+                (84 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                (2 | 0x80000000) >>> 0,
+                1,
+                0,
+            ],
+            prev_index: 0,
+            prev_hash: 'b035d89d4543ce5713c553d69431698116a822c57c03ddacf3f04b763d1999ac',
+            amount: 3431747,
+            script_type: 'SPENDWITNESS',
+        },
+    ],
+    outputs: [
+        {
+            address_n: [
+                (84 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                (2 | 0x80000000) >>> 0,
+                1,
+                1,
+            ],
+            amount: 3181747,
+            script_type: 'PAYTOWITNESS',
+        },
+        {
+            address: 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk',
             amount: 200000,
             script_type: 'PAYTOADDRESS',
         },
