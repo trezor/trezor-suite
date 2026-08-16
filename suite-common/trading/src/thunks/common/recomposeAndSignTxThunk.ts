@@ -191,7 +191,23 @@ export const recomposeAndSignTxThunk = createThunk<
             }),
         );
 
-        if (!selectedFee || isRejectedWithValue(composedLevels)) {
+        if (isRejectedWithValue(composedLevels)) {
+            const composeError = composedLevels.payload as { message?: string } | undefined;
+
+            return rejectWithValue({
+                type: 'sign-tx-error',
+                error: composeError?.message
+                    ? {
+                          id: 'TR_TRADING_COMPOSE_FAILED',
+                          values: { error: composeError.message },
+                      }
+                    : {
+                          id: 'TR_TRADING_MISSING_FEE_LEVEL',
+                      },
+            });
+        }
+
+        if (!selectedFee) {
             return rejectWithValue({
                 type: 'sign-tx-error',
                 error: {

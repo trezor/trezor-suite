@@ -344,6 +344,10 @@ export const messages = defineMessages({
         defaultMessage: 'Missing fee level',
         id: 'TR_TRADING_MISSING_FEE_LEVEL',
     },
+    TR_TRADING_COMPOSE_FAILED: {
+        defaultMessage: 'Unable to create transaction. {error}',
+        id: 'TR_TRADING_COMPOSE_FAILED',
+    },
     TR_TRADING_ERROR_WITH_PARTNER_MESSAGE: {
         defaultMessage: '{base} Message from partner: {partnerMessage}',
         id: 'TR_TRADING_ERROR_WITH_PARTNER_MESSAGE',
