@@ -2662,6 +2662,7 @@
   "TR_TRADING_CANNOT_CREATE_TRANSACTION": "Unable to create transaction",
   "TR_TRADING_CANNOT_SEND_TRANSACTION": "Unable to send transaction, missing data",
   "TR_TRADING_CEX_TOOLTIP": "Centralized exchange",
+  "TR_TRADING_COMPOSE_FAILED": "Unable to create transaction. {error}",
   "TR_TRADING_CONCIERGE_BENEFIT_EXECUTION_DESCRIPTION": "Lock in your price instantly. Funds typically arrive the next business day.",
   "TR_TRADING_CONCIERGE_BENEFIT_EXECUTION_TITLE": "Expedited execution & settlement",
   "TR_TRADING_CONCIERGE_BENEFIT_PRICING_DESCRIPTION": "Avoid slippage and get a tailored quote for your trade.",
