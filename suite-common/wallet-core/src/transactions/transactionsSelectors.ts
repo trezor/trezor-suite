@@ -300,6 +300,14 @@ export const selectAccountClaimTransactions = createMemoizedSelector(
         ),
 );
 
+export const selectHasPendingTransactionBlockingClaim = createMemoizedSelector(
+    [selectAccountByKey, selectAccountClaimTransactions, hasPendingStakeTypeTransaction],
+    (account, claimTransactions, hasPendingStakeTx) =>
+        account?.networkType === 'cardano'
+            ? hasPendingStakeTx
+            : claimTransactions.some(tx => isPending(tx)),
+);
+
 export const selectAccountIsStakingActive = createMemoizedSelector(
     [selectAccountClaimTransactions, selectAccountByKey],
     (claimTransactions, account) => isAccountStakingActive(account, claimTransactions),
