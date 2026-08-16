@@ -9,17 +9,16 @@ import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    selectAccountClaimTransactions,
+    selectAccountCanClaimStaking,
     selectAccountIsStakingActive,
+    selectHasPendingTransactionBlockingClaim,
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
     getAccountTotalStakingBalance,
-    getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
-    isPending,
 } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Paragraph, Row, Table, Text } from '@trezor/components';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
@@ -60,8 +59,8 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     const displaySymbol = getDisplaySymbol(account.symbol);
     const isCardanoNetworkType = account.networkType === 'cardano';
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
-    const isClaimPending = useSelector(state =>
-        selectAccountClaimTransactions(state, account.key).some(tx => isPending(tx)),
+    const isClaimBlocked = useSelector(state =>
+        selectHasPendingTransactionBlockingClaim(state, account.key),
     );
     const {
         isStakingDisabled,
@@ -72,8 +71,8 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         votingMessageContent,
     } = useMessageSystemStaking(account.symbol);
 
-    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
-    const isClaimButtonDisabled = isClaimingDisabled || isClaimPending;
+    const canClaim = useSelector(state => selectAccountCanClaimStaking(state, account.key));
+    const isClaimButtonDisabled = isClaimingDisabled || isClaimBlocked;
 
     const minStakingAmount = getStakingLimitsByNetworkSymbol(
         account.symbol,
