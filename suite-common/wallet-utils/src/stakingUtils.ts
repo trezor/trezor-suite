@@ -56,6 +56,7 @@ import { asAmountSubunit } from './AmountTypes';
 import { subunitsToUnits } from './amountUtils';
 import {
     getAdaAccountTotalStakingBalance,
+    hasCardanoStakingRewards,
     isSupportedAdaStakingNetworkSymbol,
     subtypeToStakeTypeMap,
 } from './cardanoStakingUtils';
@@ -233,7 +234,7 @@ export const getStakingDataForNetwork = (
                 symbol: account.symbol,
             }).toString();
 
-            const hasRewards = new BigNumber(rewards).isGreaterThan(0);
+            const hasRewards = hasCardanoStakingRewards(account);
             const totalPendingStakeBalance = !hasRewards ? account.formattedBalance : '';
 
             return {
