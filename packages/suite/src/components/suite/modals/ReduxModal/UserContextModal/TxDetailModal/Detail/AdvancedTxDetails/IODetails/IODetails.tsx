@@ -13,7 +13,6 @@ type IODetailsProps = {
     tx: WalletAccountTransaction;
 };
 
-// Not ready for Cardano tokens because they are utxo based
 export const IODetails = ({ tx }: IODetailsProps) => {
     const network = useSelector(state => state.wallet.selectedAccount.network);
     const accountKey = createAccountKey({
@@ -73,6 +72,22 @@ export const IODetails = ({ tx }: IODetailsProps) => {
                         tx={tx}
                         inputs={tx.details.vin?.filter(vin => !vin.isAccountOwned)}
                         outputs={tx.details.vout?.filter(vout => !vout.isAccountOwned)}
+                        isPhishingTransaction={isPhishingTransaction}
+                    />
+                </>
+            );
+        } else if (network?.networkType === 'cardano') {
+            return (
+                <>
+                    <IOGroup
+                        tx={tx}
+                        inputs={tx.details.vin}
+                        outputs={tx.details.vout}
+                        isUtxoBased
+                        isPhishingTransaction={isPhishingTransaction}
+                    />
+                    <TokenSpecificBalanceDetailsRow
+                        tx={tx}
                         isPhishingTransaction={isPhishingTransaction}
                     />
                 </>

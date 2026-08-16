@@ -64,6 +64,8 @@ export const TokenSpecificBalanceDetailsRow = ({
                     switch (standard) {
                         case 'STELLAR-CLASSIC':
                             return 'Stellar';
+                        case 'BLOCKFROST':
+                            return 'Cardano';
                         default:
                             return standard.toUpperCase();
                     }
