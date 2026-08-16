@@ -87,5 +87,22 @@ describe('exchangeUtils', () => {
                 `${window.location.origin}/coinmarket-redirect#exchange-offers/sol/normal/1/bitcoin/litecoin/1/quoteId/normal/1/2/3/4`,
             );
         });
+
+        it('should create link for quote when account network type is tron', async () => {
+            expect(
+                await createQuoteLink(
+                    mockQuotesRequest,
+                    {
+                        ...mockAccount,
+                        symbol: 'trx',
+                        networkType: 'tron',
+                    } as Account,
+                    { ...mockComposedInfo, selectedFee: 'normal' },
+                    mockQuoteId,
+                ),
+            ).toStrictEqual(
+                `${window.location.origin}/coinmarket-redirect#exchange-offers/trx/normal/1/bitcoin/litecoin/1/quoteId/normal/1/2/3/4`,
+            );
+        });
     });
 });

@@ -86,5 +86,22 @@ describe('sellUtils', () => {
                 `${window.location.origin}/coinmarket-redirect#sell-offers/sol/normal/1/p-qc/CZ/EUR/0.001/bitcoin/creditCard/quoteId/normal/1/2/3/4`,
             );
         });
+
+        it('should create link for quote when account network type is tron', async () => {
+            expect(
+                await createQuoteLink(
+                    QUOTE_REQUEST_CRYPTO,
+                    {
+                        ...mockAccount,
+                        symbol: 'trx',
+                        networkType: 'tron',
+                    } as Account,
+                    { ...mockComposedInfo, selectedFee: 'normal' },
+                    mockQuoteId,
+                ),
+            ).toStrictEqual(
+                `${window.location.origin}/coinmarket-redirect#sell-offers/trx/normal/1/p-qc/CZ/EUR/0.001/bitcoin/creditCard/quoteId/normal/1/2/3/4`,
+            );
+        });
     });
 });
