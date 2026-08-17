@@ -70,7 +70,6 @@ export const AccountAssetsScreen = ({
     );
 
     const tokenCount = sections.filter(item => item.type === 'token').length;
-    const showInactiveTab = account?.networkType === 'stellar' && flowType === 'assets';
     const isFailed = !!account && isAccountFailed(account);
 
     return (
@@ -83,10 +82,11 @@ export const AccountAssetsScreen = ({
 
                     <AccountAssetsTabBar
                         activeTab={activeTab}
+                        flowType={flowType}
+                        networkType={account?.networkType}
                         tokenCount={tokenCount}
                         defiTokenCount={defiTokenCount}
                         hiddenTokenCount={manuallyHiddenTokens}
-                        showInactiveTab={showInactiveTab}
                         onTabChange={setActiveTab}
                     />
                     <AccountAssetsTabContent

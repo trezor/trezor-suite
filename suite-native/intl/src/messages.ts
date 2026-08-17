@@ -1987,6 +1987,9 @@ export const messages = {
                     'Proceed with caution. This transaction may include hidden or unrecognized tokens.',
                 emptyTitle: 'No hidden tokens',
             },
+            defiTokensSection: {
+                emptyTitle: 'No DeFi tokens',
+            },
         },
         tokenSettings: {
             contractAddress: 'Contract address',
