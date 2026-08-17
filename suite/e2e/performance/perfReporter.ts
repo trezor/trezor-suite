@@ -1,4 +1,5 @@
 import type { FullResult, Reporter, TestCase, TestResult } from '@playwright/test/reporter';
+import chalk from 'chalk';
 
 import {
     Baselines,
@@ -16,15 +17,6 @@ import { BASELINES, LIMITS } from './budgets';
 
 const BUDGETS_MODULE_PATH = 'suite/e2e/performance/budgets.ts';
 
-// GitHub Actions logs render ANSI, so a failure is visible at a glance.
-const RED = '\x1b[31m';
-const GREEN = '\x1b[32m';
-const BOLD = '\x1b[1m';
-const RESET = '\x1b[0m';
-const paint = (text: string, ...codes: string[]) => `${codes.join('')}${text}${RESET}`;
-
-const pad = (value: string, width: number) => value.padEnd(width);
-
 const fmt = (value: number | null, unit: string) => {
     if (value === null) {
         return 'n/a';
@@ -38,19 +30,6 @@ type Metric = PerfJsonReport['metrics'][number];
 
 const fmtOfLimit = (metric: Metric) =>
     metric.ratioToLimit === null ? 'n/a' : `${Math.round(metric.ratioToLimit * 100)}%`;
-
-const WELL_UNDER_LIMIT_RATIO = 0.5;
-
-const isWellUnderLimit = (metric: Metric) =>
-    metric.ratioToLimit !== null && metric.ratioToLimit <= WELL_UNDER_LIMIT_RATIO;
-
-const colorMetricRow = (row: string, metric: Metric) => {
-    if (metric.exceededLimit) {
-        return paint(row, RED);
-    }
-
-    return isWellUnderLimit(metric) ? paint(row, GREEN) : row;
-};
 
 /**
  * The whole `budgets.ts` as it would look with this run's numbers in it, so refreshing the baseline
@@ -84,7 +63,7 @@ const toMetrics = (report: PerfJsonReport): PerfMetrics =>
 
 const scenarioVerdict = (report: PerfJsonReport) => {
     if (report.overLimit) {
-        return paint('OVER LIMIT', BOLD, RED);
+        return chalk.bold.red('OVER LIMIT');
     }
 
     return report.unlimited ? 'no limits set (nothing measured against)' : 'within limits';
@@ -157,43 +136,42 @@ class PerfReporter implements Reporter {
         });
 
         const overLimit = scenarios.filter(entry => entry.report.overLimit);
-        const headerColor = overLimit.length > 0 ? [BOLD, RED] : [BOLD, GREEN];
+        // Chalk keeps its colors in GitHub Actions logs, so a failure is visible at a glance.
+        const headerStyle = overLimit.length > 0 ? chalk.bold.red : chalk.bold.green;
 
         const lines: string[] = [
             '',
-            paint('━'.repeat(72), ...headerColor),
-            paint('PERFORMANCE REPORT', ...headerColor),
-            paint('━'.repeat(72), ...headerColor),
+            headerStyle('━'.repeat(72)),
+            headerStyle('PERFORMANCE REPORT'),
+            headerStyle('━'.repeat(72)),
         ];
 
         lines.push(
             ...scenarios.flatMap(({ scenario, report, runs }) => [
                 '',
                 `Scenario: ${scenario}  (median of ${runs} run${runs === 1 ? '' : 's'})   →   ${scenarioVerdict(report)}`,
-                `  ${pad('metric', 24)}${pad('current', 12)}${pad('limit', 12)}${pad('% of limit', 12)}baseline`,
-                ...report.metrics.map(metric =>
-                    colorMetricRow(
-                        `  ${pad(metric.label, 24)}${pad(fmt(metric.current, metric.unit), 12)}` +
-                            `${pad(fmt(metric.limit, metric.unit), 12)}${pad(fmtOfLimit(metric), 12)}` +
-                            `${fmt(metric.baseline, metric.unit)}${metric.exceededLimit ? ' !!' : ''}`,
-                        metric,
-                    ),
-                ),
+                `  ${'metric'.padEnd(24)}${'current'.padEnd(12)}${'limit'.padEnd(12)}${'% of limit'.padEnd(12)}baseline`,
+                ...report.metrics.map(metric => {
+                    const row =
+                        `  ${metric.label.padEnd(24)}${fmt(metric.current, metric.unit).padEnd(12)}` +
+                        `${fmt(metric.limit, metric.unit).padEnd(12)}${fmtOfLimit(metric).padEnd(12)}` +
+                        `${fmt(metric.baseline, metric.unit)}${metric.exceededLimit ? ' !!' : ''}`;
+
+                    return metric.exceededLimit ? chalk.red(row) : row;
+                }),
             ]),
             '',
-            paint('─'.repeat(72), ...headerColor),
+            headerStyle('─'.repeat(72)),
         );
 
         if (overLimit.length > 0) {
             lines.push(
-                paint(
+                chalk.bold.red(
                     `Result: over limit — ${overLimit.map(e => e.scenario).join(', ')}. Reported only, the run is not failed.`,
-                    BOLD,
-                    RED,
                 ),
             );
         } else {
-            lines.push(paint('Result: within limits.', BOLD, GREEN));
+            lines.push(chalk.bold.green('Result: within limits.'));
         }
 
         // Both numbers in one paste: the baseline refreshed to this run, and every limit lifted to
@@ -217,7 +195,7 @@ class PerfReporter implements Reporter {
             'TS',
         );
 
-        lines.push(paint('━'.repeat(72), ...headerColor), '');
+        lines.push(headerStyle('━'.repeat(72)), '');
 
         // eslint-disable-next-line no-console
         console.log(lines.join('\n'));

@@ -94,10 +94,12 @@ describe(compareScenario.name, () => {
         ).toEqual(['reactCommitCount']);
     });
 
-    it('does not report a scenario whose every limited metric is within its limit', () => {
+    it('does not report a scenario whose measured metrics all stay under their limits', () => {
         const comparison = compareScenario('wallet-discovery', metrics(), undefined, limits);
 
-        expect(comparison.overLimit).toBe(false);
+        // `unlimited` tells this apart from a scenario that was never measured against anything,
+        // which would report the very same `overLimit`.
+        expect(comparison).toMatchObject({ overLimit: false, unlimited: false });
     });
 
     it('marks a scenario nothing is limited for, so that it cannot look measured against', () => {

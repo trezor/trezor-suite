@@ -17349,6 +17349,7 @@ __metadata:
     "@types/lodash": "npm:^4.17.16"
     "@walletconnect/sign-client": "npm:^2.23.10"
     "@walletconnect/types": "npm:^2.23.10"
+    chalk: "npm:^6.0.0"
     dotenv: "npm:17.2.3"
     fs-extra: "npm:^11.3.1"
     jest-diff: "npm:^30.2.0"
