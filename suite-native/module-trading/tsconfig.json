@@ -72,7 +72,6 @@
         },
         { "path": "../navigation" },
         { "path": "../scrollview" },
-        { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../trading-analytics" },
         { "path": "../trading-atoms" },
