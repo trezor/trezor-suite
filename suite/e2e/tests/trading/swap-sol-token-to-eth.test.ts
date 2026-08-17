@@ -101,7 +101,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                 T3W1: {
                     header: { title: 'Send' },
                     body: [
-                        ['Amount:'],
+                        ['Amount'],
                         [formattedSendAmount],
                         ['Max fees and rent'],
                         device.wrapText(`${reviewFee} SOL`, { wrapByWords: true }),
