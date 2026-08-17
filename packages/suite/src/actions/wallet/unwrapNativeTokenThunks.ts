@@ -28,6 +28,7 @@ type UnwrapNativeTokenPayload = {
     yieldFlow?: {
         flowKey: string;
         flowType: YieldWithdrawFlowType;
+        vaultId?: string;
     };
 };
 
@@ -44,10 +45,27 @@ export const submitUnwrapNativeTokenThunk = createThunk<
 >(
     `${UNWRAP_NATIVE_TOKEN_PREFIX}/submit`,
     async ({ account, token, unwrapAmount, yieldFlow }, { dispatch, getState, extra }) => {
-        // In-flow unwraps are already tracked as yield/withdraw type:'unwrap', so reporting here
-        // too would double-count them.
+        // An in-flow unwrap belongs to the withdraw funnel, so its failures are reported there
+        // rather than as a standalone yield/unwrap. Only the broadcast unwrap transaction is
+        // resolved by `useYieldPendingTransactionTracking`, so these pre-broadcast failures are the
+        // withdraw event's only view of them and cannot double-count. The `unwrap-` prefix keeps
+        // them apart from failures of the withdraw transaction itself.
         const reportError = (errorMessage: string) => {
-            if (yieldFlow) return;
+            if (yieldFlow) {
+                extra.services.analytics.report({
+                    type: events.yieldWithdrawEvent.name,
+                    payload: {
+                        type: 'error',
+                        action: 'continue',
+                        operation: yieldFlow.flowType,
+                        networkSymbol: account.symbol,
+                        vaultId: yieldFlow.vaultId,
+                        errorMessage: `unwrap-${errorMessage}`,
+                    },
+                });
+
+                return;
+            }
 
             extra.services.analytics.report({
                 type: events.yieldUnwrapEvent.name,

@@ -31,6 +31,7 @@ type WrapNativeTokenPayload = {
     yieldFlow?: {
         flowKey: string;
         flowType: 'deposit';
+        vaultId?: string;
     };
 };
 
@@ -47,10 +48,26 @@ export const submitWrapNativeTokenThunk = createThunk<
 >(
     `${WRAP_NATIVE_TOKEN_PREFIX}/submit`,
     async ({ account, token, wrapAmount, yieldFlow }, { dispatch, getState, extra }) => {
-        // In-flow wraps are already tracked as yield/deposit type:'wrap', so reporting here too
-        // would double-count them.
+        // An in-flow wrap belongs to the deposit funnel, so its failures are reported there rather
+        // than as a standalone yield/wrap. Only the broadcast wrap transaction is resolved by
+        // `useYieldPendingTransactionTracking`, so these pre-broadcast failures are the deposit
+        // event's only view of them and cannot double-count. The `wrap-` prefix keeps them apart
+        // from failures of the deposit transaction itself.
         const reportError = (errorMessage: string) => {
-            if (yieldFlow) return;
+            if (yieldFlow) {
+                extra.services.analytics.report({
+                    type: events.yieldDepositEvent.name,
+                    payload: {
+                        type: 'error',
+                        action: 'continue',
+                        networkSymbol: account.symbol,
+                        vaultId: yieldFlow.vaultId,
+                        errorMessage: `wrap-${errorMessage}`,
+                    },
+                });
+
+                return;
+            }
 
             extra.services.analytics.report({
                 type: events.yieldWrapEvent.name,

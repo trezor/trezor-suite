@@ -40,6 +40,7 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
         { version: '26.5.2', notes: 'renamed from yield/supply to yield/deposit' },
         { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
         { version: '26.8.0', notes: 'added wrap transaction events' },
+        { version: '26.9.0', notes: 'added pre-broadcast wrap-step failures' },
     ],
 
     attributes: {
@@ -77,7 +78,12 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
             changelog: [{ version: '26.5.2', notes: 'added' }],
         },
         errorMessage: {
-            changelog: [{ version: '26.5.0', notes: 'added' }],
+            description:
+                'Values prefixed with `wrap-` are failures of the wrap step of a wrapped-native deposit, all of them before the wrap transaction is broadcast: `wrap-submit-failed` (signing failed, or the user rejected the transaction on the device or in the review modal), `wrap-push-failed` (signed but the broadcast failed), and `wrap-<compose reason>` (e.g. `wrap-fee-estimation-failed`) when the transaction could not be composed. A wrap that fails on chain instead reports `on-chain-failure`, as does the deposit transaction itself.',
+            changelog: [
+                { version: '26.5.0', notes: 'added' },
+                { version: '26.9.0', notes: 'added `wrap-` prefixed values' },
+            ],
         },
         apyBreakdown: {
             description:

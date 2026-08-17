@@ -49,6 +49,11 @@ const dispatchUnwrap = (report: jest.Mock) =>
         .unwrap();
 
 describe('submitUnwrapNativeTokenThunk', () => {
+    beforeAll(() => {
+        // The thunk logs every caught failure; the expected ones would clutter the test output.
+        jest.spyOn(console, 'error').mockImplementation();
+    });
+
     beforeEach(() => {
         jest.clearAllMocks();
         mockComposeYieldUnwrapTransactionThunk.mockImplementation(() => () => ({
@@ -160,6 +165,92 @@ describe('submitUnwrapNativeTokenThunk', () => {
         expect(report).not.toHaveBeenCalledWith(
             expect.objectContaining({ type: events.yieldUnwrapEvent.name }),
         );
+    });
+
+    describe('in-flow failure analytics', () => {
+        const yieldFlow = {
+            flowKey: 'yield-flow',
+            flowType: 'redeem',
+            vaultId: 'vault-1',
+        } as const;
+
+        const dispatchInFlowUnwrap = (report: jest.Mock) =>
+            buildStore(report)
+                .dispatch(
+                    submitUnwrapNativeTokenThunk({
+                        account,
+                        token,
+                        unwrapAmount: '1',
+                        yieldFlow,
+                    }),
+                )
+                .unwrap();
+
+        const expectWithdrawError = (report: jest.Mock, errorMessage: string) => {
+            expect(report).toHaveBeenCalledWith({
+                type: events.yieldWithdrawEvent.name,
+                payload: {
+                    type: 'error',
+                    action: 'continue',
+                    operation: 'redeem',
+                    networkSymbol: 'eth',
+                    vaultId: 'vault-1',
+                    errorMessage,
+                },
+            });
+            expect(report).not.toHaveBeenCalledWith(
+                expect.objectContaining({ type: events.yieldUnwrapEvent.name }),
+            );
+        };
+
+        it('reports a compose failure on the withdraw event', async () => {
+            const report = jest.fn();
+            mockComposeYieldUnwrapTransactionThunk.mockImplementation(() => () => ({
+                unwrap: () => Promise.resolve({ type: 'error', reason: 'fee-estimation-failed' }),
+            }));
+
+            await dispatchInFlowUnwrap(report);
+
+            expectWithdrawError(report, 'unwrap-fee-estimation-failed');
+        });
+
+        it('reports a device rejection on the withdraw event', async () => {
+            const report = jest.fn();
+            mockOpenDeferredModal.mockImplementation(
+                () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+            );
+            mockSendYieldTransaction.mockResolvedValue(undefined);
+
+            await dispatchInFlowUnwrap(report);
+
+            expectWithdrawError(report, 'unwrap-submit-failed');
+        });
+
+        it('reports a thrown signing failure on the withdraw event', async () => {
+            const report = jest.fn();
+            mockOpenDeferredModal.mockImplementation(
+                () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+            );
+            mockSendYieldTransaction.mockRejectedValue(new Error('boom'));
+
+            await dispatchInFlowUnwrap(report);
+
+            expectWithdrawError(report, 'unwrap-submit-failed');
+        });
+
+        it('reports no withdraw error once the unwrap is broadcast', async () => {
+            const report = jest.fn();
+            mockOpenDeferredModal.mockImplementation(
+                () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+            );
+            mockSendYieldTransaction.mockResolvedValue({ txid: '0xunwrap' });
+
+            await dispatchInFlowUnwrap(report);
+
+            expect(report).not.toHaveBeenCalledWith(
+                expect.objectContaining({ type: events.yieldWithdrawEvent.name }),
+            );
+        });
     });
 
     it('reports the tx-simulation-modal cancel', async () => {
