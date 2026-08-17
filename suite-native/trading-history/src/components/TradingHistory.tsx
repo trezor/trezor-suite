@@ -33,7 +33,8 @@ const listFooterStyle = prepareNativeStyle(({ spacings }) => ({
     paddingTop: spacings.sp32,
 }));
 
-const keyExtractor = (item: TradingTransaction) => `${item.key ?? ''}`;
+const keyExtractor = (item: TradingTransaction) =>
+    item.key ?? item.data.orderId ?? `${item.tradeType}-${item.date}`;
 
 export const TradingHistory = () => {
     const navigation = useNavigation();
@@ -109,6 +110,7 @@ export const TradingHistory = () => {
                     }
                     ListFooterComponent={<Footer />}
                     ListFooterComponentStyle={applyStyle(listFooterStyle)}
+                    maintainVisibleContentPosition={{ disabled: true }}
                 />
                 <EdgeFades
                     direction="vertical"
