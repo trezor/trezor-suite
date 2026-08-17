@@ -40,10 +40,10 @@ const DEVICE_B_UNACQUIRED = withDescriptor(
 const NO_FIRMWARE_UPDATE = { status: 'initial' } as const;
 
 describe('getShouldSelectConnectedDevice', () => {
-    it('selects nothing when no device is connected', () => {
+    it('selects nothing when no device is being connected', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: undefined,
+                incomingDevice: undefined,
                 selectedDevice: DEVICE_A,
                 physicalDeviceWallets: [DEVICE_A],
                 firmware: NO_FIRMWARE_UPDATE,
@@ -54,7 +54,7 @@ describe('getShouldSelectConnectedDevice', () => {
     it('selects the first device when no wallet is selected yet', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_A,
+                incomingDevice: DEVICE_A,
                 selectedDevice: undefined,
                 physicalDeviceWallets: [DEVICE_A],
                 firmware: NO_FIRMWARE_UPDATE,
@@ -65,7 +65,7 @@ describe('getShouldSelectConnectedDevice', () => {
     it('selects the device of the selected remembered wallet when it connects', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_A,
+                incomingDevice: DEVICE_A,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED],
                 firmware: NO_FIRMWARE_UPDATE,
@@ -76,7 +76,7 @@ describe('getShouldSelectConnectedDevice', () => {
     it('keeps the selection when the selected wallet already has its device connected', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_B,
+                incomingDevice: DEVICE_B,
                 selectedDevice: DEVICE_A,
                 physicalDeviceWallets: [DEVICE_A, DEVICE_B],
                 firmware: NO_FIRMWARE_UPDATE,
@@ -87,7 +87,7 @@ describe('getShouldSelectConnectedDevice', () => {
     it('selects a connected device when the selected wallet has no device present', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_B,
+                incomingDevice: DEVICE_B,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B],
                 firmware: NO_FIRMWARE_UPDATE,
@@ -98,7 +98,7 @@ describe('getShouldSelectConnectedDevice', () => {
     it('selects an unacquired device, which is how a device pairing over THP shows up first', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_B_UNACQUIRED,
+                incomingDevice: DEVICE_B_UNACQUIRED,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
                 firmware: NO_FIRMWARE_UPDATE,
@@ -109,7 +109,7 @@ describe('getShouldSelectConnectedDevice', () => {
     it('keeps the selection when another device is connected too, as the intent is ambiguous', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_B,
+                incomingDevice: DEVICE_B,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_A, DEVICE_B],
                 firmware: NO_FIRMWARE_UPDATE,
@@ -120,7 +120,7 @@ describe('getShouldSelectConnectedDevice', () => {
     it('does not count two wallets of one connected device as two devices', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_B,
+                incomingDevice: DEVICE_B,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [
                     DEVICE_A_REMEMBERED,
@@ -135,7 +135,7 @@ describe('getShouldSelectConnectedDevice', () => {
     it('does not take two unacquired devices for one just because neither has an id', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_B_UNACQUIRED,
+                incomingDevice: DEVICE_B_UNACQUIRED,
                 selectedDevice: DEVICE_A_BOOTLOADER,
                 physicalDeviceWallets: [DEVICE_A_BOOTLOADER, DEVICE_B_UNACQUIRED],
                 firmware: NO_FIRMWARE_UPDATE,
@@ -147,7 +147,7 @@ describe('getShouldSelectConnectedDevice', () => {
     it('does not take two devices in bootloader mode for one just because both report a null id', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: { ...DEVICE_B, id: null } as TrezorDevice,
+                incomingDevice: { ...DEVICE_B, id: null } as TrezorDevice,
                 selectedDevice: { ...DEVICE_A_REMEMBERED, id: null } as TrezorDevice,
                 physicalDeviceWallets: [{ ...DEVICE_A_REMEMBERED, id: null } as TrezorDevice],
                 firmware: NO_FIRMWARE_UPDATE,
@@ -163,7 +163,7 @@ describe('getShouldSelectConnectedDevice during a firmware update', () => {
     it('does not select an unrelated device while the installation is running', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_B_UNACQUIRED,
+                incomingDevice: DEVICE_B_UNACQUIRED,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
                 firmware: { status: 'started', cachedDevice: DEVICE_A },
@@ -174,7 +174,7 @@ describe('getShouldSelectConnectedDevice during a firmware update', () => {
     it('does not select an unrelated device while the updated device pairs over THP', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_B_UNACQUIRED,
+                incomingDevice: DEVICE_B_UNACQUIRED,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
                 firmware: { status: 'thp-pairing', cachedDevice: DEVICE_A },
@@ -185,7 +185,7 @@ describe('getShouldSelectConnectedDevice during a firmware update', () => {
     it('does not select an unrelated device while the seed backup is being confirmed', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_B_UNACQUIRED,
+                incomingDevice: DEVICE_B_UNACQUIRED,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
                 firmware: { status: 'check-seed', cachedDevice: DEVICE_A },
@@ -197,7 +197,7 @@ describe('getShouldSelectConnectedDevice during a firmware update', () => {
     it('does not select an unrelated device after the update is done', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_B_UNACQUIRED,
+                incomingDevice: DEVICE_B_UNACQUIRED,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
                 firmware: { status: 'done', cachedDevice: DEVICE_A },
@@ -209,7 +209,7 @@ describe('getShouldSelectConnectedDevice during a firmware update', () => {
     it('does not select an unrelated device after the update failed', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_B_UNACQUIRED,
+                incomingDevice: DEVICE_B_UNACQUIRED,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
                 firmware: { status: 'error', cachedDevice: DEVICE_A },
@@ -220,7 +220,7 @@ describe('getShouldSelectConnectedDevice during a firmware update', () => {
     it('does not select an unrelated device when no device was cached', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_B_UNACQUIRED,
+                incomingDevice: DEVICE_B_UNACQUIRED,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
                 firmware: { status: 'started' },
@@ -233,7 +233,7 @@ describe('getShouldSelectConnectedDevice during a firmware update', () => {
 
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: withDescriptor(DEVICE_B_UNACQUIRED, noDescriptorId),
+                incomingDevice: withDescriptor(DEVICE_B_UNACQUIRED, noDescriptorId),
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED],
                 firmware: {
@@ -247,7 +247,7 @@ describe('getShouldSelectConnectedDevice during a firmware update', () => {
     it('selects the updated device when it reconnects in bootloader mode without its id', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_A_BOOTLOADER,
+                incomingDevice: DEVICE_A_BOOTLOADER,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_A_BOOTLOADER],
                 firmware: { status: 'started', cachedDevice: DEVICE_A },
@@ -260,7 +260,7 @@ describe('getShouldSelectConnectedDevice during a firmware update', () => {
     it('does not select an unrelated device while nothing is selected', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_B_UNACQUIRED,
+                incomingDevice: DEVICE_B_UNACQUIRED,
                 selectedDevice: undefined,
                 physicalDeviceWallets: [DEVICE_B_UNACQUIRED],
                 firmware: { status: 'done', cachedDevice: DEVICE_A },
@@ -271,7 +271,7 @@ describe('getShouldSelectConnectedDevice during a firmware update', () => {
     it('selects the updated device while nothing is selected', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_A,
+                incomingDevice: DEVICE_A,
                 selectedDevice: undefined,
                 physicalDeviceWallets: [DEVICE_A],
                 firmware: { status: 'done', cachedDevice: DEVICE_A },
@@ -286,7 +286,7 @@ describe('getShouldSelectConnectedDevice during a firmware update', () => {
 
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: withDescriptor(DEVICE_A, bluetoothDescriptor),
+                incomingDevice: withDescriptor(DEVICE_A, bluetoothDescriptor),
                 selectedDevice: undefined,
                 physicalDeviceWallets: [withDescriptor(DEVICE_A, bluetoothDescriptor)],
                 firmware: { status: 'done', cachedDevice: DEVICE_A },
@@ -297,7 +297,7 @@ describe('getShouldSelectConnectedDevice during a firmware update', () => {
     it('selects the updated device when it comes back acquired with its id', () => {
         expect(
             getShouldSelectConnectedDevice({
-                connectedDevice: DEVICE_A,
+                incomingDevice: DEVICE_A,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_A],
                 firmware: { status: 'done', cachedDevice: DEVICE_A },

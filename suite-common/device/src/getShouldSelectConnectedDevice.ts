@@ -34,7 +34,7 @@ type FirmwareState = {
 
 type GetShouldSelectConnectedDeviceParams = {
     /** The device that has just connected. */
-    connectedDevice: Device | TrezorDevice | undefined;
+    incomingDevice: Device | TrezorDevice | undefined;
     /** The wallet selected so far, whose device may or may not be present. */
     selectedDevice: TrezorDevice | undefined;
     /** All wallets of all physical devices, i.e. `selectPhysicalDeviceWallets`. */
@@ -43,8 +43,16 @@ type GetShouldSelectConnectedDeviceParams = {
 };
 
 /**
- * `descriptor.id` identifies the physical device across reconnects, unlike `path`, which is
- * assigned per connection, and unlike `id`, which a device in bootloader mode does not report.
+ * Neither identifier alone recognises a device that comes back, so both are compared:
+ *
+ * - `descriptor.id` is stable across reconnects, unlike `path`, which is assigned per connection,
+ *   and it is reported in bootloader mode, unlike `id`. It is scoped to the transport that reports
+ *   it, though - a device reached over USB and over Bluetooth has a different one of each.
+ * - `id` is the same on every transport, but a device in bootloader mode does not report it.
+ *
+ * What is left uncovered is a device in bootloader mode arriving on another transport than it left
+ * on, which has nothing in common with the device it was. It is then taken for an unrelated device,
+ * which is the safe way to be wrong here: nothing is selected, rather than the wrong wallet.
  */
 const isSamePhysicalDevice = (
     a: Device | TrezorDevice | undefined,
@@ -58,8 +66,7 @@ const isSamePhysicalDevice = (
         return true;
     }
 
-    // `descriptor.id` is scoped to the transport, so the same device reached over another one does
-    // not match by it. `id` is reported whenever the device is not in bootloader mode.
+    // Same as above: a device that reports no `id` must not match another one that reports none.
     return a?.id != null && a.id === b?.id;
 };
 
@@ -69,24 +76,25 @@ const isSamePhysicalDevice = (
  * the state it needs.
  */
 export const getShouldSelectConnectedDevice = ({
-    connectedDevice,
+    incomingDevice,
     selectedDevice,
     physicalDeviceWallets,
     firmware,
 }: GetShouldSelectConnectedDeviceParams): DeviceSelectionDecision => {
-    if (connectedDevice === undefined) {
+    // This function should be called when there is an incoming device being connected, but just to cover all cases:
+    if (incomingDevice === undefined) {
         return { shouldSelect: false, reason: 'no-connected-device' };
     }
 
-    // Checked before anything else: the device being updated disconnects and reconnects, and while
-    // it is away the selection can end up empty, which would otherwise let any device take it.
-    // While an update is running, only the device it started on may take the selection.
+    // Checked before anything else: while an update runs, no device may take the selection - except
+    // the device being updated, which is what the comparison is for. It disconnects and reconnects
+    // in bootloader mode, and while it is away the selection can end up empty, which would
+    // otherwise let any device take it. Its reconnect is also the only chance to select it again.
     // `status` covers the whole flow, not just the installation: the device also reconnects while
     // pairing over THP, after the update is `done` and after it failed.
-    if (
-        firmware.status !== 'initial' &&
-        !isSamePhysicalDevice(firmware.cachedDevice, connectedDevice)
-    ) {
+    const isDeviceBeingUpdated = isSamePhysicalDevice(firmware.cachedDevice, incomingDevice);
+
+    if (firmware.status !== 'initial' && !isDeviceBeingUpdated) {
         return { shouldSelect: false, reason: 'other-device-firmware-update' };
     }
 
@@ -94,10 +102,10 @@ export const getShouldSelectConnectedDevice = ({
         return { shouldSelect: true, reason: 'no-selected-device' };
     }
 
-    // Compared only when the connected device reports an `id`, otherwise two devices that both
+    // Compared only when the incoming device reports an `id`, otherwise two devices that both
     // lack one - an unacquired device has none and a device in bootloader mode reports `null` -
     // would look like a match.
-    if (connectedDevice.id != null && connectedDevice.id === selectedDevice.id) {
+    if (incomingDevice.id != null && incomingDevice.id === selectedDevice.id) {
         return { shouldSelect: true, reason: 'same-device' };
     }
 
@@ -108,7 +116,7 @@ export const getShouldSelectConnectedDevice = ({
     // Wallets are matched by path, because an unacquired device has no `id` yet and a device
     // reconnecting in bootloader mode reports none either.
     const isOnlyConnectedDevice = physicalDeviceWallets.every(
-        wallet => !wallet.connected || wallet.path === connectedDevice.path,
+        wallet => !wallet.connected || wallet.path === incomingDevice.path,
     );
 
     return isOnlyConnectedDevice
