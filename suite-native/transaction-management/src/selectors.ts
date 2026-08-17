@@ -79,12 +79,29 @@ export const selectIsTransactionAlreadySigned = (state: NativeSendRootState) => 
     return isNotNullOrUndefined(serializedTx);
 };
 
+const selectSendReviewButtonRequestsCount = (
+    state: TransactionReviewOutputsState,
+    accountKey: AccountKey,
+    _tokenContract?: TokenAddress,
+    precomposedForm?: FormState | null,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    const precomposedTx = selectSendPrecomposedTx(state);
+
+    const decreaseOutputId =
+        precomposedTx && isRbfBumpFeeTransaction(precomposedTx) && precomposedTx.useNativeRbf
+            ? precomposedForm?.setMaxOutputId
+            : undefined;
+
+    return selectSendFormReviewButtonRequestsCount(state, account?.symbol, decreaseOutputId);
+};
+
 export const selectTransactionReviewOutputs = createSendMemoizedSelector(
     [
-        state => state,
+        selectSendReviewButtonRequestsCount,
         (
             _state,
-            _accountKey: string,
+            _accountKey: AccountKey,
             _tokenContract?: TokenAddress,
             precomposedForm?: FormState | null,
         ) => precomposedForm,
@@ -93,7 +110,14 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
         selectSelectedDevice,
         selectIsTransactionAlreadySigned,
     ],
-    (state, precomposedForm, precomposedTx, account, device, isTransactionAlreadySigned) => {
+    (
+        sendReviewButtonRequests,
+        precomposedForm,
+        precomposedTx,
+        account,
+        device,
+        isTransactionAlreadySigned,
+    ) => {
         if (!account || !device || !precomposedForm || !precomposedTx) {
             return null;
         }
@@ -102,12 +126,6 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
             isRbfBumpFeeTransaction(precomposedTx) && precomposedTx.useNativeRbf
                 ? precomposedForm?.setMaxOutputId
                 : undefined;
-
-        const sendReviewButtonRequests = selectSendFormReviewButtonRequestsCount(
-            state,
-            account?.symbol,
-            decreaseOutputId,
-        );
 
         const outputs = constructTransactionReviewOutputs({
             account,

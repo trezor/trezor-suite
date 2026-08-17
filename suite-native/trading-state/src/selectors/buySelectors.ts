@@ -16,7 +16,7 @@ import {
     selectTradingBuySupportedCryptoIds,
     selectValidTradingBuyQuotes,
 } from '@suite-common/trading';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import {
     coinInfoToTradeableAsset,
@@ -41,14 +41,18 @@ const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 
 export const selectTradingBuy = (state: TradingRootState) => state.wallet.trading.buy;
 
-export const selectBuySelectedReceiveAccount = createMemoizedSelectorWithAccounts(
-    [state => state, selectTradingBuy],
-    (state, { receiveAddress, tradingAccountKey }) => {
-        if (!tradingAccountKey) {
-            return undefined;
-        }
+const selectBuyReceiveAccount = (state: TradingRootState & AccountsRootState) => {
+    const { tradingAccountKey } = selectTradingBuy(state);
 
-        const account = selectAccountByKey(state, tradingAccountKey);
+    return tradingAccountKey ? selectAccountByKey(state, tradingAccountKey) : null;
+};
+
+const selectTradingBuyReceiveAddress = (state: TradingRootState) =>
+    selectTradingBuy(state).receiveAddress;
+
+export const selectBuySelectedReceiveAccount = createMemoizedSelectorWithAccounts(
+    [selectBuyReceiveAccount, selectTradingBuyReceiveAddress],
+    (account, receiveAddress) => {
         if (!account) {
             return undefined;
         }

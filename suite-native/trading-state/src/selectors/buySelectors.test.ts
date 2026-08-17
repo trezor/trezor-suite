@@ -79,6 +79,14 @@ describe('buySelectors', () => {
             );
         });
 
+        it('should be stable across dispatches that do not change the account', () => {
+            const first = selectBuySelectedReceiveAccount(state);
+            // A dispatch produces a new top-level state reference while the account stays the same.
+            const nextState = { ...state };
+
+            expect(selectBuySelectedReceiveAccount(nextState)).toBe(first);
+        });
+
         it('should return undefined when no account with given key exists', () => {
             state.wallet.trading.buy.tradingAccountKey = mockAccountKey({
                 descriptor: 'unknownAccountKey',
