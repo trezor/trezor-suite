@@ -13504,7 +13504,6 @@ __metadata:
     "@suite-native/settings": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
-    "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@suite-native/trading-analytics": "workspace:*"
     "@suite-native/trading-atoms": "workspace:*"
