@@ -1,8 +1,17 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type FeeLevelLabel, type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import {
+    type FeeLevelLabel,
+    type FormState,
+    type GeneralPrecomposedLevels,
+} from '@suite-common/wallet-types';
 import { isClearSignedEvmTradingSwapTransaction } from '@suite-common/wallet-utils';
 
-import { ETH_ACCOUNT_KEY, getEthAccount, getWalletState } from './__fixtures__/walletState';
+import {
+    BTC_ACCOUNT_KEY,
+    ETH_ACCOUNT_KEY,
+    getEthAccount,
+    getWalletState,
+} from './__fixtures__/walletState';
 import {
     type TransactionReviewOutputsState,
     selectCustomFeeLevel,
@@ -11,14 +20,23 @@ import {
     selectFormDraftByPrefix,
     selectIsClearSignedTradingSwap,
     selectIsTransactionAlreadySigned,
+    selectTransactionReviewOutputs,
 } from './selectors';
 import { type NativeSendRootState } from './sendFormSlice';
 
 const btcSymbol = asNetworkSymbol('btc');
 
+const mockConstructTransactionReviewOutputs = jest.fn();
+const mockGetTransactionReviewOutputState = jest.fn();
+
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),
     isClearSignedEvmTradingSwapTransaction: jest.fn().mockReturnValue(false),
+    constructTransactionReviewOutputs: (...args: unknown[]) =>
+        mockConstructTransactionReviewOutputs(...args),
+    getTransactionReviewOutputState: (...args: unknown[]) =>
+        mockGetTransactionReviewOutputState(...args),
+    getIsUpdatedSendFlow: () => true,
 }));
 
 const createMockState = (
@@ -299,6 +317,97 @@ describe('transaction-management selectors', () => {
             const result = selectFormDraftByPrefix(state, 'trading-buy', ETH_ACCOUNT_KEY);
 
             expect(result).toEqual(MOCK_DRAFT);
+        });
+    });
+
+    describe('selectTransactionReviewOutputs', () => {
+        const precomposedForm = { outputs: [] } as unknown as FormState;
+
+        const buildState = (buttonRequests: { code: string }[]): TransactionReviewOutputsState =>
+            ({
+                wallet: {
+                    ...getWalletState(),
+                    send: {
+                        ...getWalletState().send,
+                        precomposedTx: { totalSpent: '1', fee: '1' },
+                    },
+                },
+                device: {
+                    selectedDevice: { buttonRequests },
+                },
+            }) as unknown as TransactionReviewOutputsState;
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+            mockConstructTransactionReviewOutputs.mockReturnValue([
+                { type: 'address', value: 'addr' },
+                { type: 'amount', value: '1' },
+            ]);
+            mockGetTransactionReviewOutputState.mockReturnValue('active');
+        });
+
+        it('returns null when the precomposed form is missing', () => {
+            const state = buildState([]);
+
+            expect(
+                selectTransactionReviewOutputs(state, BTC_ACCOUNT_KEY, undefined, null),
+            ).toBeNull();
+        });
+
+        it('maps constructed outputs with their review state', () => {
+            const state = buildState([{ code: 'ButtonRequest_ConfirmOutput' }]);
+
+            expect(
+                selectTransactionReviewOutputs(state, BTC_ACCOUNT_KEY, undefined, precomposedForm),
+            ).toEqual([
+                { type: 'address', value: 'addr', state: 'active' },
+                { type: 'amount', value: '1', state: 'active' },
+            ]);
+        });
+
+        it('does not recompute when only the top-level state reference changes', () => {
+            const state = buildState([{ code: 'ButtonRequest_ConfirmOutput' }]);
+            const first = selectTransactionReviewOutputs(
+                state,
+                BTC_ACCOUNT_KEY,
+                undefined,
+                precomposedForm,
+            );
+
+            // A dispatch produces a new top-level state reference while the relevant slices
+            // (account, device, precomposed transaction) stay the same.
+            const nextState = { ...state };
+            const second = selectTransactionReviewOutputs(
+                nextState,
+                BTC_ACCOUNT_KEY,
+                undefined,
+                precomposedForm,
+            );
+
+            expect(second).toBe(first);
+            expect(mockConstructTransactionReviewOutputs).toHaveBeenCalledTimes(1);
+        });
+
+        it('recomputes when the send review button request count changes', () => {
+            const state = buildState([{ code: 'ButtonRequest_ConfirmOutput' }]);
+            selectTransactionReviewOutputs(state, BTC_ACCOUNT_KEY, undefined, precomposedForm);
+
+            // A new button request arrives on the same device — only the button requests change.
+            const nextState = {
+                ...state,
+                device: {
+                    selectedDevice: {
+                        buttonRequests: [
+                            { code: 'ButtonRequest_ConfirmOutput' },
+                            { code: 'ButtonRequest_SignTx' },
+                        ],
+                    },
+                },
+            } as unknown as TransactionReviewOutputsState;
+            selectTransactionReviewOutputs(nextState, BTC_ACCOUNT_KEY, undefined, precomposedForm);
+
+            expect(mockConstructTransactionReviewOutputs).toHaveBeenCalledTimes(2);
+            expect(mockGetTransactionReviewOutputState).toHaveBeenCalledWith(expect.any(Number), 2);
         });
     });
 });
