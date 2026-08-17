@@ -21,5 +21,5 @@ jobs:
           TARGET_REPO: "trezor-suite"
         with:
           script: |
-            const script = require('./scripts/stale-monitor.js')
+            const script = require('./scripts/stale-monitor.cjs')
             await script({ github, context, core })
