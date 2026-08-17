@@ -161,7 +161,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: deviceReview.providerTitle },
-                    body: [[deviceReview.providerName]],
+                    body: [[suiteProviderName]],
                     actions: { right_button: deviceReview.confirmButton },
                 },
             });
