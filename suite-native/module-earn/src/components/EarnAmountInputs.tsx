@@ -71,7 +71,11 @@ export const EarnAmountInputs = ({
                 )}
             />
             {isWithdrawalFeesBannerVisible && (
-                <EarnWithdrawalFeesBanner accountKey={accountKey} symbol={symbol} />
+                <EarnWithdrawalFeesBanner
+                    accountKey={accountKey}
+                    symbol={symbol}
+                    isMaxSelected={isMaxSelected}
+                />
             )}
         </VStack>
     );
