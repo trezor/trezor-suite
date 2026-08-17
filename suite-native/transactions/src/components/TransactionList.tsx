@@ -309,7 +309,7 @@ export const TransactionList = ({
                 ListEmptyComponent={
                     shouldDeferEmptyState
                         ? null
-                        : (listEmptyComponent ?? <TransactionsEmptyState accountKey={accountKey} />)
+                        : (listEmptyComponent ?? <TransactionsEmptyState />)
                 }
                 ListHeaderComponent={listHeaderComponent}
                 ListFooterComponent={

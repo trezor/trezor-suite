@@ -11,13 +11,13 @@ import {
     selectAccountUnrecognizedTokens,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { isPositiveBalance, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import {
     FeatureFlag,
     type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
-import { type TokensRootState } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { deepEqual } from '@trezor/utils';
 
 import { type AccountAssetsTab } from './components/AccountAssets/types';
@@ -68,6 +68,24 @@ export const selectAssetTabOfAccountToken = (
         return 'hidden';
 
     return 'tokens';
+};
+
+export const selectHasAccountOrTokenSpendableBalance = (
+    state: AccountsRootState & TokensRootState,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+): boolean => {
+    const account = selectAccountByKey(state, accountKey);
+
+    if (!account) return false;
+
+    if (tokenContract) {
+        const token = selectAccountTokenInfo(state, accountKey, tokenContract);
+
+        return isPositiveBalance(token?.balance ?? '0');
+    }
+
+    return isPositiveBalance(account.availableBalance);
 };
 
 export const selectIsNetworkSendFlowEnabled = (

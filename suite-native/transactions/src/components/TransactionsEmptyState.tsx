@@ -1,61 +1,20 @@
-import { useSelector } from 'react-redux';
-
-import { useNavigation } from '@react-navigation/native';
-
-import { type AccountKey } from '@suite-common/wallet-types';
-import { Box, Button, Text, VStack } from '@suite-native/atoms';
-import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
+import { Box, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    ReceiveStackRoutes,
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
 
 import { NoTransactionsSvg } from './NoTransactionsSvg';
 
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>;
-
-export const TransactionsEmptyState = ({ accountKey }: { accountKey: AccountKey }) => {
-    const navigation = useNavigation<NavigationProp>();
-    const hasFirmwareAuthenticityCheckHardFailed = useSelector(
-        selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
-    );
-    const showReceiveButton = !hasFirmwareAuthenticityCheckHardFailed;
-
-    const handleReceive = () => {
-        navigation.navigate(RootStackRoutes.ReceiveStack, {
-            screen: ReceiveStackRoutes.ReceiveAddress,
-            params: {
-                accountKey,
-                closeActionType: 'close',
-            },
-        });
-    };
-
-    return (
-        <VStack marginHorizontal="sp16" spacing="sp32">
-            <Box alignItems="center">
-                <NoTransactionsSvg />
-                <VStack alignItems="center">
-                    <Text textAlign="center" variant="headline-sm">
-                        <Translation id="transactions.emptyState.title" />
-                    </Text>
-                    <Text textAlign="center" color="contentSecondary">
-                        <Translation id="transactions.emptyState.subtitle" />
-                    </Text>
-                </VStack>
-            </Box>
-            {showReceiveButton && (
-                <Button
-                    iconLeft="arrowLineDown"
-                    onPress={handleReceive}
-                    testID="@account-detail/receive-button"
-                >
-                    <Translation id="transactions.emptyState.button" />
-                </Button>
-            )}
-        </VStack>
-    );
-};
+export const TransactionsEmptyState = () => (
+    <VStack marginHorizontal="sp16" spacing="sp32">
+        <Box alignItems="center">
+            <NoTransactionsSvg />
+            <VStack alignItems="center">
+                <Text textAlign="center" variant="headline-sm">
+                    <Translation id="transactions.emptyState.title" />
+                </Text>
+                <Text textAlign="center" color="contentSecondary">
+                    <Translation id="transactions.emptyState.subtitle" />
+                </Text>
+            </VStack>
+        </Box>
+    </VStack>
+);
