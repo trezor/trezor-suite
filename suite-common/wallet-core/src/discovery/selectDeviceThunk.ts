@@ -64,15 +64,21 @@ export const selectNewlyConnectedDeviceThunk = createThunk<
 >(
     `${DEVICE_MODULE_PREFIX}/selectNewlyConnectedDevice`,
     ({ device }, { dispatch, getState, rejectWithValue }) => {
+        // Mobile has a single device at a time, so it always follows the one that connected.
+        if (isNative()) {
+            dispatch(selectDeviceThunk({ device }));
+
+            return;
+        }
+
         const { shouldSelect, reason } = getShouldSelectConnectedDevice({
-            connectedDevice: device,
+            incomingDevice: device,
             selectedDevice: selectSelectedDevice(getState()),
             physicalDeviceWallets: selectPhysicalDeviceWallets(getState()),
             firmware: selectFirmware(getState()),
         });
 
-        // Mobile has a single device at a time, so it always follows the one that connected.
-        if (!isNative() && !shouldSelect) {
+        if (!shouldSelect) {
             // Rejected with the reason, so that it is visible in the action and in the logs.
             return rejectWithValue(reason);
         }
