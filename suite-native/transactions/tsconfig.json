@@ -46,7 +46,6 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../atoms" },
-        { "path": "../device" },
         { "path": "../feature-feedback" },
         { "path": "../formatters" },
         { "path": "../icons" },

@@ -11,6 +11,7 @@ import { VStack } from '@suite-native/atoms';
 import { selectIsUnrecognizedToken } from '@suite-native/tokens';
 import { TransactionsEmptyState } from '@suite-native/transactions';
 
+import { AccountDetailActionButtons } from './AccountDetailActionButtons';
 import { AssetPriceCard } from './AssetPriceCard';
 
 type AccountDetailEmptyStateProps = {
@@ -35,7 +36,8 @@ export const AccountDetailEmptyState = ({
 
     return (
         <VStack spacing="sp24">
-            <TransactionsEmptyState accountKey={accountKey} />
+            <TransactionsEmptyState />
+            <AccountDetailActionButtons accountKey={accountKey} tokenContract={tokenContract} />
             {isPriceCardDisplayed && (
                 <AssetPriceCard accountKey={accountKey} tokenContract={tokenContract} />
             )}
