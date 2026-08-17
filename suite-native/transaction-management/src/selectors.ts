@@ -79,9 +79,29 @@ export const selectIsTransactionAlreadySigned = (state: NativeSendRootState) => 
     return isNotNullOrUndefined(serializedTx);
 };
 
+// `state => state` as an input selector would defeat memoization, because `state` changes reference
+// on every dispatch. Derive the button-request count in a dedicated input selector so the result
+// recomputes only when the count (a primitive) actually changes.
+const selectSendReviewButtonRequestsCount = (
+    state: TransactionReviewOutputsState,
+    accountKey: string,
+    _tokenContract?: TokenAddress,
+    precomposedForm?: FormState | null,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    const precomposedTx = selectSendPrecomposedTx(state);
+
+    const decreaseOutputId =
+        isRbfBumpFeeTransaction(precomposedTx) && precomposedTx.useNativeRbf
+            ? precomposedForm?.setMaxOutputId
+            : undefined;
+
+    return selectSendFormReviewButtonRequestsCount(state, account?.symbol, decreaseOutputId);
+};
+
 export const selectTransactionReviewOutputs = createSendMemoizedSelector(
     [
-        state => state,
+        selectSendReviewButtonRequestsCount,
         (
             _state,
             _accountKey: string,
@@ -93,7 +113,14 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
         selectSelectedDevice,
         selectIsTransactionAlreadySigned,
     ],
-    (state, precomposedForm, precomposedTx, account, device, isTransactionAlreadySigned) => {
+    (
+        sendReviewButtonRequests,
+        precomposedForm,
+        precomposedTx,
+        account,
+        device,
+        isTransactionAlreadySigned,
+    ) => {
         if (!account || !device || !precomposedForm || !precomposedTx) {
             return null;
         }
@@ -102,12 +129,6 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
             isRbfBumpFeeTransaction(precomposedTx) && precomposedTx.useNativeRbf
                 ? precomposedForm?.setMaxOutputId
                 : undefined;
-
-        const sendReviewButtonRequests = selectSendFormReviewButtonRequestsCount(
-            state,
-            account?.symbol,
-            decreaseOutputId,
-        );
 
         const outputs = constructTransactionReviewOutputs({
             account,
