@@ -31,6 +31,7 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
         { version: '26.5.0', notes: 'added' },
         { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
         { version: '26.8.0', notes: 'added unwrap transaction events' },
+        { version: '26.9.0', notes: 'added pre-broadcast unwrap-step failures' },
     ],
 
     attributes: {
@@ -39,7 +40,7 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
         },
         type: {
             description:
-                'Which step of the withdraw flow the event refers to: `withdraw` = form submit, `tx-simulation-modal` = simulation modal shown (desktop only), `success` / `error` / `leftPending` = withdraw transaction resolution',
+                'Which step of the withdraw flow the event refers to: `withdraw` = form submit, `tx-simulation-modal` = simulation modal shown (desktop only), `success` / `error` / `leftPending` = withdraw transaction resolution. `error` also covers a failure of the unwrap step — see `errorMessage`.',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -67,7 +68,12 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
             changelog: [{ version: '26.5.2', notes: 'added' }],
         },
         errorMessage: {
-            changelog: [{ version: '26.5.0', notes: 'added' }],
+            description:
+                'Values prefixed with `unwrap-` are failures of the unwrap step of a wrapped-native withdraw, all of them before the unwrap transaction is broadcast: `unwrap-submit-failed` (signing failed, or the user rejected the transaction on the device or in the review modal), `unwrap-push-failed` (signed but the broadcast failed), and `unwrap-<compose reason>` (e.g. `unwrap-fee-estimation-failed`) when the transaction could not be composed. An unwrap that fails on chain instead reports `on-chain-failure`, as does the withdraw transaction itself.',
+            changelog: [
+                { version: '26.5.0', notes: 'added' },
+                { version: '26.9.0', notes: 'added `unwrap-` prefixed values' },
+            ],
         },
         apyBreakdown: {
             description:

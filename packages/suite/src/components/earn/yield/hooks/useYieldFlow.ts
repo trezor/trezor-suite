@@ -537,7 +537,7 @@ export const useYieldFlow = ({
                             account,
                             token: wrappedToken,
                             wrapAmount: amount,
-                            yieldFlow: { flowType: 'deposit', flowKey },
+                            yieldFlow: { flowType: 'deposit', flowKey, vaultId: vault.id },
                         }),
                     ).unwrap();
                     txid = result?.txid;
@@ -547,7 +547,7 @@ export const useYieldFlow = ({
                             account,
                             token: wrappedToken,
                             unwrapAmount: amount,
-                            yieldFlow: { flowType, flowKey },
+                            yieldFlow: { flowType, flowKey, vaultId: vault.id },
                         }),
                     ).unwrap();
                     txid = result?.txid;
@@ -592,6 +592,7 @@ export const useYieldFlow = ({
             openDeviceConnectionModal,
             resolveWrappedNativeStep,
             token,
+            vault.id,
         ],
     );
 
