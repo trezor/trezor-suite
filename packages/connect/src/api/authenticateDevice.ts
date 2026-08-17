@@ -174,7 +174,12 @@ export default class AuthenticateDevice extends AbstractMethod<
                 authenticityProof;
             const isAvailable = signature && certificates.length > 0;
             if (isAvailable) {
-                return await verifyAuthenticityProof({ ...commonParams, certificates, signature });
+                return await verifyAuthenticityProof({
+                    proofType: 'optiga',
+                    ...commonParams,
+                    certificates,
+                    signature,
+                });
             }
 
             // all devices capable of 'authenticateDevice' (see src/data/config.ts) have Optiga, so it's always required
@@ -188,7 +193,12 @@ export default class AuthenticateDevice extends AbstractMethod<
             const isAvailable = signature && certificates.length > 0;
             const isRequired = hasTropicAbility;
             if (isAvailable) {
-                return await verifyAuthenticityProof({ ...commonParams, certificates, signature });
+                return await verifyAuthenticityProof({
+                    proofType: 'tropic',
+                    ...commonParams,
+                    certificates,
+                    signature,
+                });
             }
 
             return isRequired ? { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' } : null;
@@ -200,6 +210,7 @@ export default class AuthenticateDevice extends AbstractMethod<
             const isRequired = !unavailableCapabilities['mcuDeviceAuthentication'];
             if (isAvailable) {
                 return await verifyAuthenticityProof({
+                    proofType: 'mcu',
                     ...commonParams,
                     certificates,
                     signature,
