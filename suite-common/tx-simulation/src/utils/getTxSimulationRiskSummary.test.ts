@@ -2,8 +2,7 @@ import type {
     TransactionSimulation,
     TransactionSimulationError,
     TransactionValidation,
-} from '@blockaid/client/resources/evm';
-
+} from '../types';
 import { getTxSimulationRiskSummary } from './getTxSimulationRiskSummary';
 
 const createValidation = (

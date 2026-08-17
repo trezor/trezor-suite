@@ -3,7 +3,7 @@ import type {
     TransactionScanResponse,
     TransactionSimulationError,
     TransactionValidation,
-} from '@blockaid/client/resources/evm';
+} from '../types';
 
 export type TxSimulationValidationSummary = {
     riskLevel: Extract<TransactionValidation['result_type'], 'Malicious' | 'Warning'>;

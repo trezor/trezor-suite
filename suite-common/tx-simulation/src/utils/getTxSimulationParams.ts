@@ -1,8 +1,10 @@
 import { type JsonRpcScanParams } from '@blockaid/client/resources/evm';
 
-import { type NetworkConfig, networks } from '@suite-common/wallet-config';
+import { type NetworkConfig, type NetworkType, networks } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
+
+import { type BlockaidSupportedNetwork } from '../constants';
 
 type ChainId = Extract<NetworkConfig, { networkType: 'ethereum'; testnet: false }>['chainId'];
 
@@ -19,6 +21,10 @@ const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID = {
     [networks.hype.chainId]: 'hyperevm',
     [networks.avax.chainId]: 'avalanche',
 } as const satisfies Readonly<Record<ChainId, string>>;
+
+export const isBlockaidSupportedNetwork = (
+    network: NetworkType,
+): network is BlockaidSupportedNetwork => ['solana', 'ethereum'].includes(network);
 
 const resolveBlockaidEvmChain = (chainId: number | undefined = 1) =>
     BLOCKAID_EVM_CHAIN_BY_CHAIN_ID[chainId as keyof typeof BLOCKAID_EVM_CHAIN_BY_CHAIN_ID];

@@ -1,8 +1,7 @@
-import type { TransactionScanResponse } from '@blockaid/client/resources/evm';
-
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 
 import { client } from '../client';
+import { type TransactionScanResponse } from '../types';
 import { type GetTxSimulationParams } from '../utils';
 
 type TxSimulationCommonResult = { needsDisclaimer: boolean };

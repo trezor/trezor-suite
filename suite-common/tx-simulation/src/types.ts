@@ -1,15 +1,23 @@
-import type { NativeAddressAssetBalanceChangeDiff } from '@blockaid/client/resources';
-import type { AccountSummary } from '@blockaid/client/resources/evm';
+import type { JsonRpcScanResponse } from '@blockaid/client/resources/evm';
 
-export type EvmAssetDiff =
-    | AccountSummary.Erc20AddressAssetBalanceChangeDiff
-    | AccountSummary.Erc721AddressAssetBalanceChangeDiff
-    | AccountSummary.Erc1155AddressAssetBalanceChangeDiff
-    | NativeAddressAssetBalanceChangeDiff;
+// The SDK inlines a `RoutersEvm*`-prefixed copy of every shared type per endpoint, so this is the
+// one place that names them. Everything else in the repo imports the aliases below.
+export type TransactionScanResponse = JsonRpcScanResponse;
 
-export type EvmAssetExposure =
-    | AccountSummary.Erc20AddressExposure
-    | AccountSummary.Erc721AddressExposure
-    | AccountSummary.Erc1155AddressExposure;
+export type TransactionSimulation = JsonRpcScanResponse.RoutersEvmResponseTransactionSimulation;
+export type TransactionSimulationError =
+    JsonRpcScanResponse.RoutersEvmResponseTransactionSimulationError;
+export type TransactionValidation = JsonRpcScanResponse.RoutersEvmResponseTransactionValidation;
 
-export type { TransactionScanResponse } from '@blockaid/client/resources';
+export type TransactionScanFeature = TransactionValidation['features'][number];
+
+export type AccountSummary = TransactionSimulation['account_summary'];
+export type EvmAssetDiff = AccountSummary['assets_diffs'][number];
+export type EvmAssetExposure = AccountSummary['exposures'][number];
+
+export type InsufficientFundsErrorDetails =
+    JsonRpcScanResponse.RoutersEvmResponseTransactionSimulationError.RoutersEvmResponseGeneralInsufficientFundsErrorDetails;
+export type InvalidAddressErrorDetails =
+    JsonRpcScanResponse.RoutersEvmResponseTransactionSimulationError.RoutersEvmResponseGeneralInvalidAddressErrorDetails;
+export type UnsupportedEip712MessageErrorDetails =
+    JsonRpcScanResponse.RoutersEvmResponseTransactionSimulationError.RoutersEvmResponseUnsupportedEip712MessageErrorDetails;

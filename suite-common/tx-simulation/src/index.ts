@@ -1,6 +1,10 @@
 export * from './client';
 export type * from './types';
-export { getSimulationErrorRiskLevel, areTxSimulationMethods } from './utils';
+export {
+    getSimulationErrorRiskLevel,
+    areTxSimulationMethods,
+    isBlockaidSupportedNetwork,
+} from './utils';
 export { getAssetDiffTransferAmount } from './utils/getAssetDiffTransferAmount';
 export {
     getTxSimulationRiskSummary,
@@ -16,7 +20,6 @@ export {
 } from './hooks/useNetworkTxSimulation';
 export { useTxSimulation } from './hooks/useTxSimulation';
 
-export type { AccountSummary, TransactionSimulation } from '@blockaid/client/resources/evm';
 export { TX_METHODS_WITH_FEES } from './config';
 export {
     computeGasFeeInWei,
