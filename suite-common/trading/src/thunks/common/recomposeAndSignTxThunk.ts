@@ -191,12 +191,12 @@ export const recomposeAndSignTxThunk = createThunk<
             }),
         );
 
-        if (isRejectedWithValue(composedLevels)) {
-            const composeError = composedLevels.payload as { message?: string } | undefined;
+        if (isRejectedWithValue(composeSendFormTransactionFeeLevelsThunk)(composedLevels)) {
+            const composeError = composedLevels.payload;
 
             return rejectWithValue({
                 type: 'sign-tx-error',
-                error: composeError?.message
+                error: composeError.message
                     ? {
                           id: 'TR_TRADING_COMPOSE_FAILED',
                           values: { error: composeError.message },
