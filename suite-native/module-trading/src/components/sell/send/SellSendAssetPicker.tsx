@@ -20,12 +20,13 @@ const ASSET_PICKER_TEST_ID = '@trading/sell/asset-send-button';
 export const SellSendAssetPicker = () => {
     const inputRef = useRef<TextInput>(null);
     const form = useSellFormContext();
+    const { control, setValue } = form;
     const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
     const myAssets = useTradingMyAssets('sell');
-    const selectedValue = useWatch({ control: form.control, name: 'sendAsset' });
+    const selectedValue = useWatch({ control, name: 'sendAsset' });
     const setSelectedValue = useCallback(
-        (asset: TradeableAsset) => form.setValue('sendAsset', asset),
-        [form],
+        (asset: TradeableAsset) => setValue('sendAsset', asset),
+        [setValue],
     );
 
     const changeAsset = useTradeableAssetChange({

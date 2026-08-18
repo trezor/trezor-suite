@@ -45,7 +45,7 @@ describe('ExchangeSendAmountInput', () => {
     ) =>
         renderWithTradingProvider(
             <Form form={form}>
-                <ExchangeSendAmountInput showAssetsScreen={jest.fn()} {...props} />
+                <ExchangeSendAmountInput onSelectAssetPress={jest.fn()} {...props} />
             </Form>,
             {
                 tradeType: 'exchange',
@@ -95,7 +95,10 @@ describe('ExchangeSendAmountInput', () => {
     it('should call showAssetsScreen when disabled and pressed', async () => {
         const showAssetsScreen = jest.fn();
         const form = renderUseTradingExchangeForm();
-        const { getByLabelText } = renderCryptoAmountInput({ showAssetsScreen }, form);
+        const { getByLabelText } = renderCryptoAmountInput(
+            { onSelectAssetPress: showAssetsScreen },
+            form,
+        );
 
         await userEvent.press(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
@@ -110,7 +113,10 @@ describe('ExchangeSendAmountInput', () => {
         act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({ showAssetsScreen }, form);
+        const { getByLabelText } = renderCryptoAmountInput(
+            { onSelectAssetPress: showAssetsScreen },
+            form,
+        );
 
         await userEvent.press(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),

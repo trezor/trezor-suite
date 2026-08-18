@@ -63,7 +63,7 @@ export const ExchangeSendAssetPicker = () => {
         [changeAsset, shouldFocusInput],
     );
 
-    const showAssetsScreen = useMyAssetPickerNavigation({
+    const openAssetPicker = useMyAssetPickerNavigation({
         assets: myAssets,
         onAssetSelect,
         tradingType: 'exchange',
@@ -71,22 +71,19 @@ export const ExchangeSendAssetPicker = () => {
 
     const showAssetsScreenAndFocusInput = useCallback(() => {
         setShouldFocusInput(true);
-        showAssetsScreen();
-    }, [showAssetsScreen]);
+        openAssetPicker();
+    }, [openAssetPicker]);
 
     return (
         <HStack justifyContent="space-between" alignItems="center">
             <SelectTradeableAssetButton
-                onPress={showAssetsScreen}
+                onPress={openAssetPicker}
                 selectedAsset={selectedValue}
                 buttonColorProps={{ intent: 'neutral', priority: 'secondary' }}
                 caret
                 testID={ASSET_PICKER_TEST_ID}
             />
-            <ExchangeSendAmountInput
-                ref={inputRef}
-                showAssetsScreen={showAssetsScreenAndFocusInput}
-            />
+            <ExchangeSendAmountInput ref={inputRef} onSelectAsset={showAssetsScreenAndFocusInput} />
         </HStack>
     );
 };
