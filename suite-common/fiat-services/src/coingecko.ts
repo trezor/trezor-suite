@@ -1,5 +1,12 @@
 import { getNetwork, networks } from '@suite-common/wallet-config';
-import { type HistoricRates, type TickerId } from '@suite-common/wallet-types';
+import {
+    type GraphFiatPoint,
+    type GraphFiatResolution,
+    type HistoricRates,
+    type TickerId,
+    type Timestamp,
+    asTimestamp,
+} from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 import stellar from '@trezor/network-stellar/runtime';
@@ -11,6 +18,16 @@ import { RateLimiter } from './limiter';
 const COINGECKO_API_BASE_URL = 'https://cdn.trezor.io/dynamic/coingecko/api/v3';
 
 const ONE_DAY_IN_S = 24 * 60 * 60;
+const GRAPH_FIAT_STALE_INTERVALS_MS: Record<GraphFiatResolution, number> = {
+    day: 60 * 60 * 1000,
+    month: 60 * 60 * 1000,
+    max: 24 * 60 * 60 * 1000,
+};
+const GRAPH_FIAT_FAILURE_RETRY_INTERVAL_MS = 5 * 60 * 1000;
+const GRAPH_FIAT_MARKET_CHART_DAYS: Record<Exclude<GraphFiatResolution, 'max'>, number> = {
+    day: 1,
+    month: 31,
+};
 
 interface HistoricalResponse extends HistoricRates {
     symbol: string;
@@ -22,11 +39,19 @@ interface FetchCurrentFiatRatesOptions {
 
 const rateLimiter = new RateLimiter(1_000, 15_000);
 
-const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
+const fetchCoinGecko = async (
+    url: string,
+    options?: { skipCache?: boolean; skipLimiter?: boolean },
+) => {
+    const shouldSkipCache = options?.skipCache ?? false;
+    const shouldSkipLimiter = shouldSkipCache || (options?.skipLimiter ?? false);
+
     try {
         let res: Response;
-        if (skipCache) {
+        if (shouldSkipCache) {
             res = await fetchUrl(url, { headers: { 'X-Bypass-Cache': '1' } });
+        } else if (shouldSkipLimiter) {
+            res = await fetchUrl(url);
         } else {
             res = await rateLimiter.limit(signal => fetchUrl(url, { signal }));
         }
@@ -41,6 +66,98 @@ const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
         // Do not report to Sentry to save the issues count limit.
         console.warn(error);
     }
+};
+
+const normalizeGraphFiatPoints = (prices: unknown): GraphFiatPoint[] => {
+    if (!Array.isArray(prices)) {
+        return [];
+    }
+
+    return prices
+        .filter(
+            (price): price is [number, number] =>
+                Array.isArray(price) &&
+                price.length >= 2 &&
+                typeof price[0] === 'number' &&
+                Number.isFinite(price[0]) &&
+                typeof price[1] === 'number' &&
+                Number.isFinite(price[1]),
+        )
+        .map(([milliseconds, price]) => ({
+            time: milliseconds / 1000,
+            price,
+        }));
+};
+
+export const getGraphFiatCoinId = (symbol: TickerId['symbol']): string | undefined => {
+    const network = getNetwork(symbol);
+
+    if (network.testnet) {
+        return;
+    }
+
+    if (network.settlementLayer) {
+        return getNetwork(network.settlementLayer).tradeCryptoId;
+    }
+
+    return network.tradeCryptoId;
+};
+
+export const getGraphFiatFetchTimestamp = () => asTimestamp(Date.now());
+
+export const isGraphHistoricResolutionStale = (
+    fetchedAt: Timestamp | null,
+    resolution: GraphFiatResolution,
+    now = Date.now(),
+) => fetchedAt === null || now - fetchedAt > GRAPH_FIAT_STALE_INTERVALS_MS[resolution];
+
+export const isGraphHistoricResolutionCoverageStale = (
+    lastPointTimestamp: number | null,
+    resolution: GraphFiatResolution,
+    now = Date.now(),
+) =>
+    resolution === 'day' &&
+    (lastPointTimestamp === null ||
+        now - lastPointTimestamp * 1000 > GRAPH_FIAT_STALE_INTERVALS_MS.day);
+
+export const canRetryGraphHistoricFiatRates = (failedAt: Timestamp | null, now = Date.now()) =>
+    failedAt === null || now - failedAt >= GRAPH_FIAT_FAILURE_RETRY_INTERVAL_MS;
+
+export const mergeGraphHistoricFiatSeries = (
+    resolutions: Partial<Record<GraphFiatResolution, GraphFiatPoint[]>>,
+): GraphFiatPoint[] => {
+    const pointsByTime = new Map<number, number>();
+
+    [resolutions.max, resolutions.month, resolutions.day].forEach(points => {
+        points?.forEach(point => pointsByTime.set(point.time, point.price));
+    });
+
+    return Array.from(pointsByTime, ([time, price]) => ({ time, price })).sort(
+        (left, right) => left.time - right.time,
+    );
+};
+
+export const fetchGraphHistoricFiatRates = async ({
+    baseCurrencyCode,
+    coinId,
+    resolution,
+}: {
+    baseCurrencyCode: BaseCurrencyCode;
+    coinId: string;
+    resolution: GraphFiatResolution;
+}): Promise<GraphFiatPoint[]> => {
+    const baseUrl = `${COINGECKO_API_BASE_URL}/coins/${coinId}/market_chart`;
+    const daysParam =
+        resolution === 'max' ? 'max' : GRAPH_FIAT_MARKET_CHART_DAYS[resolution].toString();
+    const url = `${baseUrl}?vs_currency=${baseCurrencyCode}&days=${daysParam}`;
+    const response = await fetchCoinGecko(url, { skipLimiter: true });
+    const points = normalizeGraphFiatPoints(response?.prices);
+
+    if (points.length === 0) {
+        throw new Error('CoinGecko returned no valid historical prices.');
+    }
+
+    return points;
 };
 
 /**
@@ -121,7 +238,7 @@ export const fetchCurrentFiatRates = async (
 
     for (const coinUrl of coinUrls) {
         const url = `${coinUrl}?${urlParams}`;
-        const rates = await fetchCoinGecko(url, options?.skipCache);
+        const rates = await fetchCoinGecko(url, { skipCache: options?.skipCache });
 
         if (rates) {
             return {

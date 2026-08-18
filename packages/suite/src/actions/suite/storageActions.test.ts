@@ -27,7 +27,7 @@ import {
     transactionsActions,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { asAccountDescriptor, asTimestamp } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
@@ -520,6 +520,54 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.forgetDevice(dev1));
 
         expect(await db.getItemByPK('suiteSyncOwners', deviceStaticId)).toBeUndefined();
+    });
+
+    it('persists graph fiat resolutions independently', async () => {
+        const dayKey = 'persistence-test-coin:usd:day';
+        const maxKey = 'persistence-test-coin:usd:max';
+        const dayEntry = {
+            points: [{ time: 1, price: 10 }],
+            fetchedAt: asTimestamp(1000),
+            failedAt: null,
+            lastPointTimestamp: 1,
+            isLoading: false,
+            error: null,
+        };
+        const maxEntry = {
+            points: [{ time: 2, price: 20 }],
+            fetchedAt: asTimestamp(2000),
+            failedAt: null,
+            lastPointTimestamp: 2,
+            isLoading: false,
+            error: null,
+        };
+
+        await Promise.all([
+            db.removeItemByPK('graphFiatRates', dayKey),
+            db.removeItemByPK('graphFiatRates', maxKey),
+        ]);
+        await Promise.all([
+            storageActions.saveGraphFiatRates({
+                baseCurrencyCode: 'usd',
+                coinId: 'persistence-test-coin',
+                graphFiatResolutionEntry: dayEntry,
+                resolution: 'day',
+            }),
+            storageActions.saveGraphFiatRates({
+                baseCurrencyCode: 'usd',
+                coinId: 'persistence-test-coin',
+                graphFiatResolutionEntry: maxEntry,
+                resolution: 'max',
+            }),
+        ]);
+
+        const [storedDayEntry, storedMaxEntry] = await Promise.all([
+            db.getItemByPK('graphFiatRates', dayKey),
+            db.getItemByPK('graphFiatRates', maxKey),
+        ]);
+
+        expect(storedDayEntry).toEqual(dayEntry);
+        expect(storedMaxEntry).toEqual(maxEntry);
     });
 
     it('should remove legacy labels migration flag on forgetDevice', async () => {

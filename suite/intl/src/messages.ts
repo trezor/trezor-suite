@@ -5831,6 +5831,14 @@ export const messages = defineMessages({
         defaultMessage:
             'Allow your Trezor to scan wallet addresses beyond the default 20 unused addresses during recovery if transactions are missing.',
     },
+    TR_EXPERIMENTAL_NEW_BALANCE_GRAPH: {
+        id: 'TR_EXPERIMENTAL_NEW_BALANCE_GRAPH',
+        defaultMessage: 'New balance graph',
+    },
+    TR_EXPERIMENTAL_NEW_BALANCE_GRAPH_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_NEW_BALANCE_GRAPH_DESCRIPTION',
+        defaultMessage: 'Enable the redesigned balance graph in portfolio and account views.',
+    },
     TR_EXPERIMENTAL_MCP_SERVER: {
         id: 'TR_EXPERIMENTAL_MCP_SERVER',
         defaultMessage: 'MCP server',
@@ -7191,6 +7199,10 @@ export const messages = defineMessages({
     TR_GRAPH_HIDE: {
         id: 'TR_GRAPH_HIDE',
         defaultMessage: 'Hide graph',
+    },
+    TR_GRAPH_SHOW_TRANSACTIONS: {
+        id: 'TR_GRAPH_SHOW_TRANSACTIONS',
+        defaultMessage: 'Show transactions',
     },
     TR_EXPAND: {
         id: 'TR_EXPAND',

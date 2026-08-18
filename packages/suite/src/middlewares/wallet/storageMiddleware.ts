@@ -58,7 +58,9 @@ import { walletConnectActions } from '@suite-common/walletconnect';
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { GRAPH } from 'src/actions/wallet/constants';
+import { refreshGraphFiatResolution } from 'src/actions/wallet/graphFiatActions';
 import { db } from 'src/storage';
+import { getGraphFiatEntryKey } from 'src/support/wallet/graphFiatUtils';
 import type { AppState, Dispatch, GetState, Action as SuiteAction } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
 
@@ -321,6 +323,29 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     save({ action, device }, { dispatch: api.dispatch, getState: api.getState });
                 }
             });
+
+            if (refreshGraphFiatResolution.fulfilled.match(action)) {
+                const { baseCurrencyCode, coinId, resolution } = action.payload;
+                const graphFiatKey = getGraphFiatEntryKey({
+                    baseCurrencyCode,
+                    coinId,
+                    resolution,
+                });
+                const graphFiatResolutionEntry = api.getState().wallet.graphFiat[graphFiatKey];
+
+                if (graphFiatResolutionEntry) {
+                    void storageActions
+                        .saveGraphFiatRates({
+                            baseCurrencyCode,
+                            coinId,
+                            graphFiatResolutionEntry,
+                            resolution,
+                        })
+                        ?.catch(error => {
+                            console.error('Failed to persist graph fiat history.', error);
+                        });
+                }
+            }
 
             if (accountsActions.removeAccount.match(action)) {
                 action.payload.forEach(storageActions.removeAccountWithDependencies(api.getState));

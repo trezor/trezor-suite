@@ -1,8 +1,9 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { asAccountDescriptor, asTimestamp } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 
 import { GRAPH } from 'src/actions/wallet/constants';
+import { setSelectedRange } from 'src/actions/wallet/graphActions';
 import { type AccountHistoryWithBalance, type AccountIdentifier } from 'src/types/wallet/graph';
 
 import graphReducer from './graphReducer';
@@ -29,6 +30,33 @@ const getStateWithData = () =>
     });
 
 describe('graphReducer', () => {
+    it('defaults to a serializable one-month range', () => {
+        const state = graphReducer(undefined, { type: 'unknown' } as any);
+
+        expect(state.selectedRange).toMatchObject({
+            label: 'month',
+            groupBy: 'day',
+        });
+        expect(typeof state.selectedRange.startDate).toBe('number');
+        expect(typeof state.selectedRange.endDate).toBe('number');
+        expect(JSON.parse(JSON.stringify(state.selectedRange))).toEqual(state.selectedRange);
+    });
+
+    it('stores custom ranges as serializable timestamps', () => {
+        const range = {
+            label: 'range',
+            startDate: asTimestamp(new Date('2026-08-01T00:00:00.000Z').getTime()),
+            endDate: asTimestamp(new Date('2026-08-18T23:59:59.999Z').getTime()),
+            groupBy: 'day',
+        } as const;
+        const action = setSelectedRange(range);
+        const state = graphReducer(undefined, action);
+
+        expect(JSON.parse(JSON.stringify(action))).toEqual(action);
+        expect(JSON.parse(JSON.stringify(state.selectedRange))).toEqual(state.selectedRange);
+        expect(state.selectedRange).toEqual(range);
+    });
+
     it('ACCOUNT_GRAPH_START keeps existing data while loading', () => {
         const state = graphReducer(getStateWithData(), {
             type: GRAPH.ACCOUNT_GRAPH_START,

@@ -23,6 +23,7 @@ import {
 } from '@suite-common/wallet-core';
 
 import { type GraphAction } from 'src/actions/wallet/graphActions';
+import { type GraphFiatAction } from 'src/actions/wallet/graphFiatActions';
 import { type accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
 
 // reexport
@@ -87,6 +88,7 @@ export type WalletAction =
     | ReceiveAction
     | SignVerifyAction
     | GraphAction
+    | GraphFiatAction
     | DiscoveryAction
     | TradingAction
     | TradingBuyAction

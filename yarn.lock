@@ -8097,6 +8097,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@seibei-iguchi/liveline@npm:0.10.0":
+  version: 0.10.0
+  resolution: "@seibei-iguchi/liveline@npm:0.10.0"
+  peerDependencies:
+    react: ">=18"
+  checksum: 10/7dbd41494ae49e5185f646ae70d29c8d44643a6ed0482ddc5614bc58b10f64c984ecf18492ef5916f38e35ffa405603131e2f55bb8773a92e1be7bd0a32fabc0
+  languageName: node
+  linkType: hard
+
 "@sentry/browser-utils@npm:10.69.0":
   version: 10.69.0
   resolution: "@sentry/browser-utils@npm:10.69.0"
@@ -17415,6 +17424,7 @@ __metadata:
     "@hookform/resolvers": "npm:^5.4.0"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@seibei-iguchi/liveline": "npm:0.10.0"
     "@sentry/core": "npm:10.69.0"
     "@suite-common/address": "workspace:*"
     "@suite-common/analytics": "workspace:*"

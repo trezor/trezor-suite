@@ -1,5 +1,6 @@
 import { configureMockStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { asTimestamp } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { type AppState } from 'src/reducers/store';
@@ -21,8 +22,8 @@ const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 // A single day interval (the '1d' range), which is empty for any account without a transaction today.
 const DAY_RANGE: GraphRange = {
     label: 'day',
-    startDate: new Date('2026-01-01T00:00:00.000Z'),
-    endDate: new Date('2026-01-01T23:59:59.999Z'),
+    startDate: asTimestamp(new Date('2026-01-01T00:00:00.000Z').getTime()),
+    endDate: asTimestamp(new Date('2026-01-01T23:59:59.999Z').getTime()),
     groupBy: 'day',
 };
 const DAY_TICKS = [1767225600]; // 2026-01-01T00:00:00Z

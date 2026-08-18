@@ -1,5 +1,9 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountDescriptor, type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import {
+    type AccountDescriptor,
+    type BaseCurrencyAmount,
+    type Timestamp,
+} from '@suite-common/wallet-types';
 import { type BlockchainAccountBalanceHistory, type StaticSessionId } from '@trezor/connect';
 
 export interface AccountHistoryWithBalance extends BlockchainAccountBalanceHistory {
@@ -33,8 +37,8 @@ export interface CommonAggregatedHistory {
 export type GraphRange =
     | {
           label: 'day' | 'week' | 'month' | 'year' | 'range';
-          startDate: Date;
-          endDate: Date;
+          startDate: Timestamp;
+          endDate: Timestamp;
           groupBy: 'month' | 'day';
       }
     | {

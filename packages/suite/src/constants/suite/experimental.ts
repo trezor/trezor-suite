@@ -106,4 +106,8 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
             }
         },
     },
+    'new-balance-graph': {
+        title: { id: 'TR_EXPERIMENTAL_NEW_BALANCE_GRAPH' },
+        description: { id: 'TR_EXPERIMENTAL_NEW_BALANCE_GRAPH_DESCRIPTION' },
+    },
 };

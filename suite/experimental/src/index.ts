@@ -10,7 +10,8 @@ export type ExperimentalFeature =
     | 'slip24'
     | 'experimental-networks'
     | 'mcp-server'
-    | 'gap-limit';
+    | 'gap-limit'
+    | 'new-balance-graph';
 
 /**
  * Set of features that are truly experimental (as opposed to regular features
@@ -22,6 +23,7 @@ export const experimentalFeedbackFeatureSet: ReadonlySet<ExperimentalFeature> =
         'tor-external',
         'slip24',
         'experimental-networks',
+        'new-balance-graph',
     ]);
 
 /**
@@ -34,6 +36,7 @@ export const translatedExperimentalFeatures: ExperimentalFeatureTranslation = {
     slip24: 'TR_EXPERIMENTAL_SLIP24',
     'mcp-server': 'TR_EXPERIMENTAL_MCP_SERVER',
     'gap-limit': 'TR_EXPERIMENTAL_GAP_LIMIT',
+    'new-balance-graph': 'TR_EXPERIMENTAL_NEW_BALANCE_GRAPH',
 };
 
 export type FeedbackFeatureName = ExperimentalFeature | 'suite-sync' | 'stablecoin-yield';
