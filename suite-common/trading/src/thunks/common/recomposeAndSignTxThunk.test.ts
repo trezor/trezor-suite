@@ -18,10 +18,18 @@ import { tradingThunks } from './index';
 
 jest.mock('@suite-common/wallet-core', () => {
     const actualModule = jest.requireActual('@suite-common/wallet-core');
+    const actualCompose = actualModule.composeSendFormTransactionFeeLevelsThunk;
+    // RTK `isRejectedWithValue(thunk)` detects async thunks via pending/fulfilled/rejected.
+    const mockedComposeSendFormTransactionFeeLevelsThunk = Object.assign(jest.fn(), {
+        typePrefix: actualCompose.typePrefix,
+        pending: actualCompose.pending,
+        fulfilled: actualCompose.fulfilled,
+        rejected: actualCompose.rejected,
+    });
 
     return {
         ...actualModule,
-        composeSendFormTransactionFeeLevelsThunk: jest.fn(),
+        composeSendFormTransactionFeeLevelsThunk: mockedComposeSendFormTransactionFeeLevelsThunk,
     };
 });
 
