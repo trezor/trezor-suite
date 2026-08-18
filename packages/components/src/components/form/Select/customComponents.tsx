@@ -18,7 +18,7 @@ import styled from 'styled-components';
 
 import { CaretDownIcon } from '@trezor/icons';
 
-import type { Option as OptionType } from './types';
+import type { CustomSelectProps, Option as OptionType } from './types';
 import { Box } from '../../Box/Box';
 import { Column, Row } from '../../Flex/Flex';
 import { Icon } from '../../Icon/Icon';
@@ -100,23 +100,27 @@ export const Control = ({
     );
 };
 
-export const Menu = ({ children, ...props }: MenuProps<OptionType, boolean>) => (
-    <components.Menu {...props}>
-        <Box
-            flex="1"
-            minWidth={140}
-            borderRadius={16}
-            backgroundColor="surfaceFillModeless"
-            borderColor="surfaceBorderModeless"
-            borderWidth={1}
-            shadow="surfaceShadowModeless"
-            overflow="auto"
-            width="fit-content"
-        >
-            {children}
-        </Box>
-    </components.Menu>
-);
+export const Menu = ({ children, ...props }: MenuProps<OptionType, boolean>) => {
+    const { isMenuFullWidth } = props.selectProps as typeof props.selectProps & CustomSelectProps;
+
+    return (
+        <components.Menu {...props}>
+            <Box
+                flex="1"
+                minWidth={140}
+                borderRadius={16}
+                backgroundColor="surfaceFillModeless"
+                borderColor="surfaceBorderModeless"
+                borderWidth={1}
+                shadow="surfaceShadowModeless"
+                overflow="auto"
+                width={isMenuFullWidth ? '100%' : 'fit-content'}
+            >
+                {children}
+            </Box>
+        </components.Menu>
+    );
+};
 
 export const MenuList = ({ children, ...props }: MenuListProps<OptionType, boolean>) => {
     const isGrouped = props.selectProps.options.some(option => option.options);
@@ -244,7 +248,15 @@ export const ValueContainer = ({
     );
 
 export const SingleValue = ({ children }: SingleValueProps<OptionType>) => (
-    <Text ellipsisLineCount={1} as="div" maxWidth="100%" intent="neutral" priority="primary">
+    // full width so a formatOptionLabel row can align its own content, instead of shrinking to fit
+    <Text
+        ellipsisLineCount={1}
+        as="div"
+        width="100%"
+        maxWidth="100%"
+        intent="neutral"
+        priority="primary"
+    >
         {children}
     </Text>
 );
