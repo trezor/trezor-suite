@@ -18,6 +18,7 @@ import { ExchangeEIP712Info } from './ExchangeEIP712Info';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
 import { ExchangeInfo } from './ExchangeInfo';
 import { ExchangePreviewIssueBanner } from './ExchangePreviewIssueBanner';
+import { ExchangeSimulationPreviewCard } from './ExchangeSimulationPreviewCard';
 import { ExchangeToAccountTradePreviewCard } from './ExchangeToAccountTradePreviewCard';
 import { LastErrorMessage } from '../../general/Error/LastErrorMessage';
 
@@ -65,6 +66,7 @@ export const ExchangePreviewView = memo(
                 <AnimatedVStack layout={LinearTransition} spacing="sp16">
                     <ExchangeFromAccountTradePreviewCard quote={quote} />
                     <ExchangeToAccountTradePreviewCard quote={quote} />
+                    <ExchangeSimulationPreviewCard />
                     {hasEIP712SignData ? (
                         <ExchangeEIP712Info exchange={quote?.exchange}>
                             <SlippagePicker onSlippageConfirmed={onSlippageConfirmed} />

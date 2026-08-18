@@ -13523,6 +13523,7 @@ __metadata:
     "@suite-native/trading-state": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
+    "@suite-native/tx-simulation": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"

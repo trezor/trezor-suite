@@ -85,6 +85,7 @@
         { "path": "../trading-slippage" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
+        { "path": "../tx-simulation" },
         {
             "path": "../../packages/analytics-uploader"
         },

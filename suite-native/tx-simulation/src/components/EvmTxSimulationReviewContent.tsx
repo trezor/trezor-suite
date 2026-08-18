@@ -8,16 +8,7 @@ import {
     useTxSimulation,
 } from '@suite-common/tx-simulation';
 import { type TxSimulationAction } from '@suite-common/wallet-types';
-import {
-    BannerFull,
-    Box,
-    Button,
-    Card,
-    Divider,
-    HStack,
-    Loader,
-    VStack,
-} from '@suite-native/atoms';
+import { BannerFull, Button, Card, HStack, Loader, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation } from '@suite-native/intl';
 
@@ -31,11 +22,8 @@ import {
 } from './EvmTxSimulationInfoPresets';
 import { EvmTxSimulationInfoSection } from './EvmTxSimulationInfoSection';
 import { EvmTxSimulationRowInfoItems } from './EvmTxSimulationRowInfoItems';
-import { EvmTxSimulationStackedAsset } from './EvmTxSimulationStackedAsset';
 import { EvmTxSimulationStackedInfoItems } from './EvmTxSimulationStackedInfoItems';
-import { EvmTxSimulationWrappedAsset } from './EvmTxSimulationWrappedAsset';
-import { SolanaTxSimulationAsset } from './SolanaTxSimulationAsset';
-import { StellarTxSimulationAsset } from './StellarTxSimulationAsset';
+import { TxSimulationAssetRows } from './TxSimulationAssetRows';
 import { TxSimulationRiskBanner } from './TxSimulationRiskBanner';
 
 type EvmTxSimulationReviewContentProps = {
@@ -139,8 +127,6 @@ export function EvmTxSimulationReviewContent({
                   transaction: action.payload.transaction,
               })
             : [];
-    const EvmTxSimulationAssetComponent =
-        assetVariant === 'wrap' ? EvmTxSimulationWrappedAsset : EvmTxSimulationStackedAsset;
 
     return (
         <VStack spacing="sp16">
@@ -164,31 +150,12 @@ export function EvmTxSimulationReviewContent({
                         <VStack>
                             {title}
                             <Card noPadding>
-                                {evmSimulation.account_summary.assets_diffs.map(
-                                    (assetDiff, index) => (
-                                        <Box key={`diff-${index}`}>
-                                            {areAssetDividersDisplayed && index > 0 && <Divider />}
-                                            <EvmTxSimulationAssetComponent
-                                                assetDiff={assetDiff}
-                                                network={network}
-                                            />
-                                        </Box>
-                                    ),
-                                )}
-                                {evmSimulation.account_summary.exposures.map(
-                                    (assetExposure, index) => (
-                                        <Box key={`exposure-${index}`}>
-                                            {areAssetDividersDisplayed &&
-                                                (index > 0 ||
-                                                    evmSimulation.account_summary.assets_diffs
-                                                        .length > 0) && <Divider />}
-                                            <EvmTxSimulationAssetComponent
-                                                assetExposure={assetExposure}
-                                                network={network}
-                                            />
-                                        </Box>
-                                    ),
-                                )}
+                                <TxSimulationAssetRows
+                                    result={simulationData}
+                                    network={network}
+                                    areAssetDividersDisplayed={areAssetDividersDisplayed}
+                                    assetVariant={assetVariant}
+                                />
 
                                 {targetContract && (
                                     <EvmTxSimulationInfoSection
@@ -223,15 +190,12 @@ export function EvmTxSimulationReviewContent({
                         <VStack>
                             {title}
                             <Card noPadding>
-                                {solanaAssetDiffs.map((assetDiff, index) => (
-                                    <Box key={`solana-diff-${index}`}>
-                                        {areAssetDividersDisplayed && index > 0 && <Divider />}
-                                        <SolanaTxSimulationAsset
-                                            assetDiff={assetDiff}
-                                            network={network}
-                                        />
-                                    </Box>
-                                ))}
+                                <TxSimulationAssetRows
+                                    result={simulationData}
+                                    network={network}
+                                    areAssetDividersDisplayed={areAssetDividersDisplayed}
+                                    assetVariant={assetVariant}
+                                />
                             </Card>
                         </VStack>
                     )}
@@ -240,15 +204,12 @@ export function EvmTxSimulationReviewContent({
                         <VStack>
                             {title}
                             <Card noPadding>
-                                {stellarAssetDiffs.map((assetDiff, index) => (
-                                    <Box key={`stellar-diff-${index}`}>
-                                        {areAssetDividersDisplayed && index > 0 && <Divider />}
-                                        <StellarTxSimulationAsset
-                                            assetDiff={assetDiff}
-                                            network={network}
-                                        />
-                                    </Box>
-                                ))}
+                                <TxSimulationAssetRows
+                                    result={simulationData}
+                                    network={network}
+                                    areAssetDividersDisplayed={areAssetDividersDisplayed}
+                                    assetVariant={assetVariant}
+                                />
                             </Card>
                         </VStack>
                     )}

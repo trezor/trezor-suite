@@ -640,6 +640,7 @@ export const messages = {
             protocol: 'Protocol',
             address: 'Address',
             contractFunction: 'Contract function',
+            crossChainAsset: '{amount} on {chain}',
         },
         optional: 'Optional',
         alwaysAllow: 'Always allow for this app',
