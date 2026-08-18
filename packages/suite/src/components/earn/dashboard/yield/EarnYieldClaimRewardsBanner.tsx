@@ -1,4 +1,5 @@
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -64,10 +65,15 @@ export const EarnYieldClaimRewardsBanner = ({
                         <Skeleton width={50} height={16} animate />
                     ) : (
                         <>
-                            <Text typographyStyle="body-sm-strong">
-                                {!isClaimDisabled && '≈ '}
-                                <BaseCurrencyAmountFormatter value={value} currency={currency} />
-                            </Text>
+                            <HiddenPlaceholder>
+                                <Text typographyStyle="body-sm-strong">
+                                    {!isClaimDisabled && '≈ '}
+                                    <BaseCurrencyAmountFormatter
+                                        value={value}
+                                        currency={currency}
+                                    />
+                                </Text>
+                            </HiddenPlaceholder>
 
                             {tokenRewards.length > 0 && (
                                 <EarnYieldClaimRewardsBannerTokensTooltip
