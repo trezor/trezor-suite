@@ -28,6 +28,14 @@ const fmt = (value: number | null, unit: string) => {
 
 type Metric = PerfJsonReport['metrics'][number];
 
+type MeasuredRun = { project: string; testId: string; report: PerfJsonReport };
+
+type MeasurementSamples = { scenario: string; project: string; metrics: PerfMetrics[] };
+
+/** Names one measured run of a scenario, which is one scenario on one device model. */
+const measurementLabel = (scenario: string, project: string) =>
+    project ? `${scenario} [${project}]` : scenario;
+
 const fmtOfLimit = (metric: Metric) =>
     metric.ratioToLimit === null ? 'n/a' : `${Math.round(metric.ratioToLimit * 100)}%`;
 
@@ -42,7 +50,7 @@ const formatBudgetsModule = (baselines: Baselines, limits: Limits) =>
         '/** What each scenario costs today, measured on CI. Reference only, never enforced. */',
         `export const BASELINES: Baselines = ${JSON.stringify(baselines, null, 4)};`,
         '',
-        '/** The highest value each metric may reach before the run fails. Raise deliberately. */',
+        '/** The highest value each metric may reach before it is reported as over limit. Raise deliberately. */',
         `export const LIMITS: Limits = ${JSON.stringify(limits, null, 4)};`,
     ].join('\n');
 
@@ -92,15 +100,20 @@ const annotateOverLimit = (scenarios: string[]) => {
  * median block per scenario, and prints the table last.
  */
 class PerfReporter implements Reporter {
-    private readonly reports: PerfJsonReport[] = [];
+    private readonly reports: MeasuredRun[] = [];
 
-    onTestEnd(_test: TestCase, result: TestResult) {
-        const reports = result.attachments
+    onTestEnd(test: TestCase, result: TestResult) {
+        // A scenario is measured once per device model, and a retry repeats the very same test, so
+        // only the test and its project together say which runs are samples of one another.
+        const project = test.parent?.project()?.name ?? '';
+
+        const runs = result.attachments
             .filter(attachment => attachment.name.startsWith('perf-report-') && attachment.body)
             .map(attachment => parseReport(attachment.body))
-            .filter((report): report is PerfJsonReport => report !== null);
+            .filter((report): report is PerfJsonReport => report !== null)
+            .map(report => ({ project, testId: test.id, report }));
 
-        this.reports.push(...reports);
+        this.reports.push(...runs);
     }
 
     onEnd(_result: FullResult) {
@@ -108,32 +121,46 @@ class PerfReporter implements Reporter {
             return;
         }
 
-        // Aggregate retries: one median comparison per scenario (a test may run 2-3× on CI).
-        const samplesByScenario = this.reports.reduce<Record<string, PerfMetrics[]>>(
-            (samples, report) => ({
-                ...samples,
-                [report.scenario]: [...(samples[report.scenario] ?? []), toMetrics(report)],
-            }),
+        // Aggregate retries: one median comparison per measurement (a test may run 2-3× on CI).
+        // Grouping by scenario alone would average a slow device model with a fast one and hide a
+        // breach in the middle.
+        const samplesByMeasurement = this.reports.reduce<Record<string, MeasurementSamples>>(
+            (samples, { project, testId, report }) => {
+                const key = `${project}\u0000${testId}\u0000${report.scenario}`;
+                const existing = samples[key];
+
+                return {
+                    ...samples,
+                    [key]: {
+                        scenario: report.scenario,
+                        project,
+                        metrics: [...(existing?.metrics ?? []), toMetrics(report)],
+                    },
+                };
+            },
             {},
         );
 
-        const scenarios = Object.entries(samplesByScenario).map(([scenario, samples]) => {
-            const median = aggregateSamples(samples);
-            const comparison = compareScenario(
-                scenario,
-                median,
-                BASELINES[scenario],
-                LIMITS[scenario],
-            );
+        const scenarios = Object.values(samplesByMeasurement).map(
+            ({ scenario, project, metrics }) => {
+                const median = aggregateSamples(metrics);
+                const comparison = compareScenario(
+                    scenario,
+                    median,
+                    BASELINES[scenario],
+                    LIMITS[scenario],
+                );
 
-            return {
-                scenario,
-                median,
-                comparison,
-                runs: samples.length,
-                report: buildJsonReport(comparison),
-            };
-        });
+                return {
+                    scenario,
+                    project,
+                    median,
+                    comparison,
+                    runs: metrics.length,
+                    report: buildJsonReport(comparison),
+                };
+            },
+        );
 
         const overLimit = scenarios.filter(entry => entry.report.overLimit);
         // Chalk keeps its colors in GitHub Actions logs, so a failure is visible at a glance.
@@ -147,9 +174,9 @@ class PerfReporter implements Reporter {
         ];
 
         lines.push(
-            ...scenarios.flatMap(({ scenario, report, runs }) => [
+            ...scenarios.flatMap(({ scenario, project, report, runs }) => [
                 '',
-                `Scenario: ${scenario}  (median of ${runs} run${runs === 1 ? '' : 's'})   →   ${scenarioVerdict(report)}`,
+                `Scenario: ${measurementLabel(scenario, project)}  (median of ${runs} run${runs === 1 ? '' : 's'})   →   ${scenarioVerdict(report)}`,
                 `  ${'metric'.padEnd(24)}${'current'.padEnd(12)}${'limit'.padEnd(12)}${'% of limit'.padEnd(12)}baseline`,
                 ...report.metrics.map(metric => {
                     const row =
@@ -167,7 +194,7 @@ class PerfReporter implements Reporter {
         if (overLimit.length > 0) {
             lines.push(
                 chalk.bold.red(
-                    `Result: over limit — ${overLimit.map(e => e.scenario).join(', ')}. Reported only, the run is not failed.`,
+                    `Result: over limit — ${overLimit.map(e => measurementLabel(e.scenario, e.project)).join(', ')}. Reported only, the run is not failed.`,
                 ),
             );
         } else {
@@ -175,7 +202,9 @@ class PerfReporter implements Reporter {
         }
 
         // Both numbers in one paste: the baseline refreshed to this run, and every limit lifted to
-        // fit it where the run went over. Untouched scenarios are preserved.
+        // fit it where the run went over. Untouched scenarios are preserved. Where a scenario ran on
+        // more than one device model, the last one measured is the baseline recorded for it, while
+        // the limit fits them all (see `suggestLimits`).
         const updatedBaselines: Baselines = {
             ...BASELINES,
             ...Object.fromEntries(scenarios.map(entry => [entry.scenario, entry.median])),
@@ -200,7 +229,7 @@ class PerfReporter implements Reporter {
         // eslint-disable-next-line no-console
         console.log(lines.join('\n'));
 
-        annotateOverLimit(overLimit.map(entry => entry.scenario));
+        annotateOverLimit(overLimit.map(entry => measurementLabel(entry.scenario, entry.project)));
     }
 }
 

@@ -2,8 +2,8 @@ import { type MetricDefinition, type PerfMetricKey } from './types';
 
 /**
  * The metric registry. Order defines the order used in reports. Thresholds are per scenario, in
- * limits.json — the same metric means very different things in an account switch and in a
- * multi-account discovery.
+ * the app's `budgets.ts` — the same metric means very different things in an account switch and in
+ * a multi-account discovery.
  */
 export const METRIC_DEFINITIONS: readonly MetricDefinition[] = [
     {

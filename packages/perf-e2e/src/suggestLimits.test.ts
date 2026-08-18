@@ -62,4 +62,40 @@ describe(suggestLimits.name, () => {
 
         expect(suggested['wallet-discovery']?.longTaskCount).toBe(5);
     });
+
+    // The block the report prints replaces the scenario as a whole, so a metric left out of it
+    // would delete that budget from `budgets.ts` on the next paste.
+    it('keeps the limit of a metric this run could not measure', () => {
+        const suggested = suggestLimits([
+            comparison(
+                { totalBlockingTimeMs: null, reactCommitCount: 10 },
+                { totalBlockingTimeMs: 500, reactCommitCount: 100 },
+            ),
+        ]);
+
+        expect(suggested['wallet-discovery']).toEqual({
+            totalBlockingTimeMs: 500,
+            reactCommitCount: 100,
+        });
+    });
+
+    // One scenario is measured once per device model, so the pasted limit has to fit the slowest of
+    // them rather than whichever was reported last.
+    it('keeps the highest suggestion when a scenario was measured more than once', () => {
+        const suggested = suggestLimits([
+            comparison({ totalBlockingTimeMs: 1296 }, { totalBlockingTimeMs: 1000 }),
+            comparison({ totalBlockingTimeMs: 100 }, { totalBlockingTimeMs: 1000 }),
+        ]);
+
+        expect(suggested['wallet-discovery']?.totalBlockingTimeMs).toBe(2000);
+    });
+
+    it('keeps the highest suggestion whichever order the models are reported in', () => {
+        const suggested = suggestLimits([
+            comparison({ totalBlockingTimeMs: 100 }, { totalBlockingTimeMs: 1000 }),
+            comparison({ totalBlockingTimeMs: 1296 }, { totalBlockingTimeMs: 1000 }),
+        ]);
+
+        expect(suggested['wallet-discovery']?.totalBlockingTimeMs).toBe(2000);
+    });
 });

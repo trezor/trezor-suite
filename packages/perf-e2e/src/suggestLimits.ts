@@ -25,27 +25,55 @@ const roundUpToNiceNumber = (value: number): number => {
  * paste rather than arithmetic — and still an edit to a committed number, reviewed as the decision it
  * is.
  */
+/**
+ * The higher of two suggestions per metric. A scenario is measured once per device model, so the
+ * pasted limit has to be the one that fits every model, not the one that happened to come last.
+ */
+const keepHigherLimits = (current: ScenarioLimits, incoming: ScenarioLimits): ScenarioLimits =>
+    Object.entries(incoming).reduce<ScenarioLimits>(
+        (merged, [key, limit]) => {
+            const existing = merged[key as keyof ScenarioLimits];
+
+            return {
+                ...merged,
+                [key]: existing === undefined ? limit : Math.max(existing, limit),
+            };
+        },
+        { ...current },
+    );
+
 export const suggestLimits = (comparisons: readonly ScenarioComparison[]): Limits =>
     comparisons.reduce<Limits>((limits, comparison) => {
         const scenarioLimits = comparison.metrics.reduce<ScenarioLimits>((metrics, metric) => {
-            if (metric.limit === null || metric.current === null) {
+            if (metric.limit === null) {
                 return metrics;
             }
 
-            // Only a metric that went over gets a new number. Fitting a limit around a run that was
-            // already inside it would inflate every budget on every paste.
-            return {
-                ...metrics,
-                [metric.key]: metric.exceededLimit
+            // A metric that could not be measured keeps the limit it already has. Leaving the key
+            // out would delete that budget from the block the report tells you to paste.
+            // Otherwise only a metric that went over gets a new number: fitting a limit around a run
+            // that was already inside it would inflate every budget on every paste.
+            const suggested =
+                metric.current !== null && metric.exceededLimit
                     ? Math.max(
                           metric.limit,
                           roundUpToNiceNumber(metric.current * SUGGESTED_LIMIT_HEADROOM),
                       )
-                    : metric.limit,
-            };
+                    : metric.limit;
+
+            return { ...metrics, [metric.key]: suggested };
         }, {});
 
-        return Object.keys(scenarioLimits).length > 0
-            ? { ...limits, [comparison.scenario]: scenarioLimits }
-            : limits;
+        if (Object.keys(scenarioLimits).length === 0) {
+            return limits;
+        }
+
+        const alreadySuggested = limits[comparison.scenario];
+
+        return {
+            ...limits,
+            [comparison.scenario]: alreadySuggested
+                ? keepHigherLimits(alreadySuggested, scenarioLimits)
+                : scenarioLimits,
+        };
     }, {});

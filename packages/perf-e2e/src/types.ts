@@ -1,4 +1,4 @@
-// Keep the keys stable: they are persisted in baselines.json and limits.json.
+// Keep the keys stable: they are persisted in the baselines and limits of `budgets.ts`.
 export type PerfMetricKey =
     | 'totalBlockingTimeMs'
     | 'longTaskCount'
@@ -22,8 +22,8 @@ export type MetricDefinition = {
 export type Baselines = Record<string, Partial<PerfMetrics>>;
 
 /**
- * The highest value each metric may reach before the run fails, keyed by metric. A metric without a
- * limit is reported but never enforced.
+ * The highest value each metric may reach before the run reports it as over limit, keyed by metric.
+ * Going over is reported, never failed; a metric without a limit is not even reported as over.
  */
 export type ScenarioLimits = Partial<Record<PerfMetricKey, number>>;
 
