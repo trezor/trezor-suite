@@ -37,11 +37,12 @@ jobs:
     outputs:
       dailyMatrix: ${{ steps.set-matrix-daily.outputs.matrix }}
       dailyWebMatrix: ${{ steps.set-matrix-daily-web.outputs.matrix }}
-      nightlyT3W1Matrix: ${{ steps.set-matrix-nightly-t3w1.outputs.matrix }}
+      t3w1MainMatrix: ${{ steps.set-matrix-t3w1-main.outputs.matrix }}
       otherDevicesMatrix: ${{ steps.set-matrix-other-devices.outputs.matrix }}
       allFwsMatrix: ${{ steps.set-matrix-all-firmwares.outputs.matrix }}
       allTransportsMatrix: ${{ steps.set-matrix-all-transports.outputs.matrix }}
-      modelOneMatrix: ${{ steps.set-matrix-model-one.outputs.matrix }}
+      t1b1LatestMatrix: ${{ steps.set-matrix-t1b1-latest.outputs.matrix }}
+      t1b1MainMatrix: ${{ steps.set-matrix-t1b1-main.outputs.matrix }}
       experimentalMethodsMatrix: ${{ steps.set-matrix-experimental-methods.outputs.matrix }}
     steps:
       - name: Checkout repository
@@ -55,8 +56,8 @@ jobs:
         id: set-matrix-daily-web
         run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=web --groups=api,init,thp --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
 
-      - name: Set nightly T3W1 matrix
-        id: set-matrix-nightly-t3w1
+      - name: Set T3W1 main matrix
+        id: set-matrix-t3w1-main
         run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-main --env=all --groups=all --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
 
       - name: Set all firmwares matrix
@@ -69,11 +70,11 @@ jobs:
 
       - name: Set all transports matrix
         id: set-matrix-all-transports
-        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=node --groups=api --disable_cache_tx=true --transport=all)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=node --groups=api --disable_cache_tx=true --transport=all)" >> $GITHUB_OUTPUT
 
-      - name: Set trezor model one matrix
-        id: set-matrix-model-one
-        # T1B1 nightly covers the most-used Trezor methods on legacy firmware.
+      - name: Set T1B1 latest matrix
+        id: set-matrix-t1b1-latest
+        # T1B1 matrix covers the most-used Trezor methods on legacy firmware.
         # `ethereum` validates EIP-712 signing (T1B1 needs host-side hashing);
         # `btc-sign` and `btc-others` cover the bulk of real-world usage. Other
         # coins (cardano, solana, monero, …) are intentionally omitted —
@@ -84,13 +85,17 @@ jobs:
         # is required.
         run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T1B1 --firmware=1-latest --env=node --groups=api,ethereum,btc-sign,btc-others --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
 
+      - name: Set T1B1 main matrix
+        id: set-matrix-t1b1-main
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T1B1 --firmware=1-main --env=node --groups=api,ethereum,btc-sign,btc-others --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
+
       - name: Set experimental methods matrix
         id: set-matrix-experimental-methods
-        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=node --groups=experimental --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1,T3W1 --firmware=2-main,2-latest --env=node --groups=experimental --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
 
   PR-check:
     needs: [set-matrix]
-    name: PR-check ${{ matrix.key }}
+    name: PR-check (${{ matrix.model }} ${{ matrix.firmware }})
     if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
@@ -109,7 +114,7 @@ jobs:
 
   PR-check-web:
     needs: [set-matrix]
-    name: PR-check-web ${{ matrix.key }}
+    name: PR-check web (${{ matrix.model }} ${{ matrix.firmware }})
     if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
@@ -126,9 +131,9 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyWebMatrix) }}
 
-  PR-nightly-t3w1:
+  t3w1-main:
     needs: [set-matrix]
-    name: PR-nightly-t3w1 ${{ matrix.key }}
+    name: ${{ matrix.model }} ${{ matrix.firmware }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
@@ -140,14 +145,14 @@ jobs:
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
-      testGroup: PR-nightly-t3w1
+      testGroup: t3w1-main
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.set-matrix.outputs.nightlyT3W1Matrix) }}
+      matrix: ${{ fromJson(needs.set-matrix.outputs.t3w1MainMatrix) }}
 
   randomized-order:
     needs: [set-matrix]
-    name: randomized ${{ matrix.key }}
+    name: Randomized (${{ matrix.model }} ${{ matrix.firmware }})
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
@@ -167,7 +172,7 @@ jobs:
 
   all-fws:
     needs: [set-matrix]
-    name: all-fws ${{ matrix.key }} ${{ matrix.firmware }}
+    name: All versions ${{ matrix.model }} ${{ matrix.firmware }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
@@ -186,14 +191,14 @@ jobs:
 
   all-models-api:
     needs: [set-matrix]
-    name: all-models-api ${{ matrix.key }}
+    name: All models ${{ matrix.key }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       testPattern: ${{ matrix.groups.pattern }}
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.model }}-${{ matrix.firmware }}
+      testDescription: ${{ matrix.model }}-${{ matrix.firmware }}-${{ matrix.groups.pattern }}
       disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
@@ -205,14 +210,14 @@ jobs:
 
   all-transports:
     needs: [set-matrix]
-    name: all-transports-api ${{ matrix.key }}
+    name: All transports ${{ matrix.key }} (${{ matrix.model }} ${{ matrix.firmware }})
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       testPattern: ${{ matrix.groups.pattern }}
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.transport }}
+      testDescription: ${{ matrix.transport }}-${{ matrix.groups.pattern }}
       disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
@@ -222,38 +227,54 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.allTransportsMatrix) }}
 
-  model-one-api:
+  t1b1-latest:
     needs: [set-matrix]
-    # Display name includes `groups.name` so multi-group matrices render as
-    # distinct rows in the GitHub Actions UI (e.g. `model-one api`,
-    # `model-one ethereum`, `model-one btc-sign`, `model-one btc-others`).
-    name: model-one ${{ matrix.groups.name }} ${{ matrix.key }}
+    name: ${{ matrix.model }} ${{ matrix.firmware }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       testPattern: ${{ matrix.groups.pattern }}
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.model }}-${{ matrix.firmware }}-${{ matrix.groups.name }}
+      testDescription: ${{ matrix.firmware }}-${{ matrix.groups.name }}
       disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}
-      testGroup: model-one-api
+      testGroup: t1b1-latest
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.set-matrix.outputs.modelOneMatrix) }}
+      matrix: ${{ fromJson(needs.set-matrix.outputs.t1b1LatestMatrix) }}
 
-  experimental-methods:
+  t1b1-main:
     needs: [set-matrix]
-    name: experimental-methods ${{ matrix.key }}
+    name: ${{ matrix.model }} ${{ matrix.firmware }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       testPattern: ${{ matrix.groups.pattern }}
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
-      testDescription: ${{ matrix.env }}-${{ matrix.groups.pattern }}-${{ matrix.groups.name }}
+      testDescription: ${{ matrix.firmware }}-${{ matrix.groups.name }}
+      disable_cache_tx: ${{ matrix.disable_cache_tx }}
+      transport: ${{ matrix.transport }}
+      testEnv: ${{ matrix.env }}
+      testFirmwareModel: ${{ matrix.model }}
+      testGroup: t1b1-main
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.t1b1MainMatrix) }}
+
+  experimental-methods:
+    needs: [set-matrix]
+    name: Experimental methods ${{ matrix.key }}
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      testPattern: ${{ matrix.groups.pattern }}
+      includeFilter: ${{ matrix.groups.includeFilter }}
+      testsFirmware: ${{ matrix.firmware }}
+      testDescription: ${{ matrix.model }}-${{ matrix.firmware }}
       disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
