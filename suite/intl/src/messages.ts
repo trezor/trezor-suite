@@ -10442,11 +10442,11 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_REVIEW_WITHDRAW_TITLE: {
         id: 'TR_EARN_YIELD_REVIEW_WITHDRAW_TITLE',
-        defaultMessage: 'Redeem',
+        defaultMessage: 'Withdraw',
     },
     TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION: {
         id: 'TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION',
-        defaultMessage: 'Review details to redeem from vault.',
+        defaultMessage: 'Review details to withdraw from vault.',
     },
     TR_EARN_YIELD_REVIEW_REDEEM_TITLE: {
         id: 'TR_EARN_YIELD_REVIEW_REDEEM_TITLE',
@@ -10474,7 +10474,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_REVIEW_WITHDRAW_AMOUNT: {
         id: 'TR_EARN_YIELD_REVIEW_WITHDRAW_AMOUNT',
-        defaultMessage: 'Redeem amount',
+        defaultMessage: 'Withdraw amount',
     },
     TR_EARN_YIELD_REVIEW_REDEEM_AMOUNT: {
         id: 'TR_EARN_YIELD_REVIEW_REDEEM_AMOUNT',
