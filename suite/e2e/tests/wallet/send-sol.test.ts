@@ -118,7 +118,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
                     [Model.T3W1]: {
                         header: { title: 'Send' },
                         body: [
-                            ['Amount:'],
+                            ['Amount'],
                             amountWrapped,
                             ['Transaction fee'],
                             device.wrapText(`${maxFee} SOL`, { wrapByWords: true }),
