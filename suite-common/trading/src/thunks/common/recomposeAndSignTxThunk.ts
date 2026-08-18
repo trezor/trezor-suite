@@ -1,4 +1,4 @@
-import { isRejectedWithValue } from '@reduxjs/toolkit';
+import { isRejected } from '@reduxjs/toolkit';
 
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
@@ -191,12 +191,12 @@ export const recomposeAndSignTxThunk = createThunk<
             }),
         );
 
-        if (isRejectedWithValue(composeSendFormTransactionFeeLevelsThunk)(composedLevels)) {
+        if (isRejected(composeSendFormTransactionFeeLevelsThunk)(composedLevels)) {
             const composeError = composedLevels.payload;
 
             return rejectWithValue({
                 type: 'sign-tx-error',
-                error: composeError.message
+                error: composeError?.message
                     ? {
                           id: 'TR_TRADING_COMPOSE_FAILED',
                           values: { error: composeError.message },
