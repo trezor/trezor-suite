@@ -4,7 +4,7 @@ import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Grid, Text, Tooltip } from '@trezor/components';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
+import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 
 import { type TokenRewards } from './hooks/useYieldClaimRewardsData';
 
@@ -32,12 +32,14 @@ export const EarnYieldClaimRewardsBannerTokensTooltip = ({
                                 <FormattedCryptoAmount value={crypto.toString()} symbol={symbol} />
                             </Text>
 
-                            <Text align="end">
-                                <BaseCurrencyAmountFormatter
-                                    value={asBaseCurrencyAmount(fiat)}
-                                    currency={currency}
-                                />
-                            </Text>
+                            <HiddenPlaceholder>
+                                <Text align="end">
+                                    <BaseCurrencyAmountFormatter
+                                        value={asBaseCurrencyAmount(fiat)}
+                                        currency={currency}
+                                    />
+                                </Text>
+                            </HiddenPlaceholder>
                         </>
                     ))}
                 </Grid>

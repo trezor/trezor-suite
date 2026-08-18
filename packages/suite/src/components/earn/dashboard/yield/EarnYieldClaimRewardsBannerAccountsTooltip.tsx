@@ -1,4 +1,5 @@
 import { AccountLabel } from '@suite/account';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -31,12 +32,14 @@ export const EarnYieldClaimRewardsBannerAccountsTooltip = ({
                                 <AccountLabel account={account} showAccountTypeBadge />
                             </Text>
 
-                            <Text align="end">
-                                <BaseCurrencyAmountFormatter
-                                    value={asBaseCurrencyAmount(fiat)}
-                                    currency={currency}
-                                />
-                            </Text>
+                            <HiddenPlaceholder>
+                                <Text align="end">
+                                    <BaseCurrencyAmountFormatter
+                                        value={asBaseCurrencyAmount(fiat)}
+                                        currency={currency}
+                                    />
+                                </Text>
+                            </HiddenPlaceholder>
                         </>
                     ))}
                 </Grid>

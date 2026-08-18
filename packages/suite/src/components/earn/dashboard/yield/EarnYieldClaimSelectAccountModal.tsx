@@ -2,6 +2,7 @@ import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -104,11 +105,13 @@ export const EarnYieldClaimSelectAccountModal = ({
                                 ) : undefined
                             }
                         >
-                            <Text typographyStyle="body-md-strong">
-                                {BaseCurrencyAmountFormatter.format(
-                                    accountRewards.totalClaimableFiatAmount,
-                                )}
-                            </Text>
+                            <HiddenPlaceholder>
+                                <Text typographyStyle="body-md-strong">
+                                    {BaseCurrencyAmountFormatter.format(
+                                        accountRewards.totalClaimableFiatAmount,
+                                    )}
+                                </Text>
+                            </HiddenPlaceholder>
                         </Tooltip>
                     </CardList.Item>
                 ))}
