@@ -15,10 +15,12 @@ import {
     useDexExchangeTxSimulation,
     useExchangeIssue,
 } from '@suite-common/trading';
+import { getNetwork } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Button, Card, Column, H2 } from '@trezor/components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
+import { TxSimulationSuccessResult } from 'src/components/tx-simulation/common/components/TxSimulationSuccessResult';
 import { TRADING_DEX_SOURCE_ORIGIN } from 'src/constants/wallet/trading/txSimulation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
@@ -158,6 +160,14 @@ export const TradingOfferExchange = () => {
                             exchangeQuote={selectedTrade}
                             providers={providers as TradingExchangeProvidersInfoProps}
                             exchange={exchange}
+                        />
+                    )}
+
+                    {sendAccount && simulationResult && (
+                        <TxSimulationSuccessResult
+                            result={simulationResult}
+                            network={getNetwork(sendAccount.symbol)}
+                            targetContract={null}
                         />
                     )}
 

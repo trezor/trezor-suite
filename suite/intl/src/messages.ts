@@ -12711,6 +12711,12 @@ export const messages = defineMessages({
         id: 'TR_SIMULATION_NO_ASSETS',
         defaultMessage: 'No changes to your assets were detected.',
     },
+    TR_SIMULATION_CROSS_CHAIN_ASSET: {
+        id: 'TR_SIMULATION_CROSS_CHAIN_ASSET',
+        defaultMessage: '{amount} on {chain}',
+        description:
+            'An asset moving on another chain as part of a bridge, e.g. "1 USDC on Arbitrum".',
+    },
     TR_NETWORK_RESERVE_BANNER: {
         id: 'TR_NETWORK_RESERVE_BANNER',
         defaultMessage: "We've reserved {amount} {displaySymbol} to cover any extra network fees.",
