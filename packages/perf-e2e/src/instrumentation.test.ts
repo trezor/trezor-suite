@@ -4,6 +4,7 @@ import {
     installPerfInstrumentation,
     readPerfMetrics,
     startPerfMeasurement,
+    waitForPageIdle,
 } from './instrumentation';
 
 type LongTaskEntry = { startTime: number; duration: number };
@@ -216,5 +217,45 @@ describe('measurement window', () => {
         expect(() => startPerfMeasurement()).toThrow('not installed');
         expect(() => endPerfInteraction()).toThrow('not installed');
         expect(() => readPerfMetrics()).toThrow('not installed');
+    });
+});
+
+describe(waitForPageIdle.name, () => {
+    afterEach(() => {
+        delete (globalThis as any).window;
+        jest.useRealTimers();
+    });
+
+    it('waits only as long as the page needs, not for the whole timeout', async () => {
+        const requestIdleCallback = jest.fn((callback: () => void) => setTimeout(callback, 5));
+        (globalThis as any).window = { requestIdleCallback };
+
+        const startedAt = performance.now();
+        await waitForPageIdle(5_000);
+
+        expect(performance.now() - startedAt).toBeLessThan(5_000);
+        expect(requestIdleCallback).toHaveBeenCalledWith(expect.any(Function), { timeout: 5_000 });
+    });
+
+    it('falls back to waiting out the timeout where the page cannot report being idle', async () => {
+        // Timers rather than the wall clock: `setTimeout` and `performance.now()` are not driven by
+        // the same clock, so a real 20ms wait can measure as 19.5 and fail a test that is about
+        // waiting for the timeout, not about how long a machine took to do it.
+        jest.useFakeTimers();
+        (globalThis as any).window = {};
+
+        let settled = false;
+        const idle = waitForPageIdle(20).then(() => {
+            settled = true;
+        });
+
+        jest.advanceTimersByTime(19);
+        await Promise.resolve();
+        expect(settled).toBe(false);
+
+        jest.advanceTimersByTime(1);
+        await idle;
+
+        expect(settled).toBe(true);
     });
 });

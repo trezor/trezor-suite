@@ -173,6 +173,36 @@ export function startPerfMeasurement(): void {
 }
 
 /**
+ * Resolves as soon as the page has nothing left to do, and after `timeoutMs` at the latest.
+ *
+ * Long-task entries and React commits arrive after the interaction resolves, so the metrics must not
+ * be read straight away. Waiting for idle takes as long as the page actually needs instead of a
+ * fixed sleep, and the timeout is the ceiling — `requestIdleCallback` guarantees the callback runs
+ * once it expires, however busy the page still is.
+ */
+export function waitForPageIdle(timeoutMs: number): Promise<void> {
+    return new Promise<void>(resolve => {
+        const requestIdle = (
+            window as unknown as {
+                requestIdleCallback?: (
+                    callback: () => void,
+                    options?: { timeout: number },
+                ) => number;
+            }
+        ).requestIdleCallback;
+
+        if (typeof requestIdle !== 'function') {
+            // Not in every engine; there the ceiling is the whole wait.
+            setTimeout(resolve, timeoutMs);
+
+            return;
+        }
+
+        requestIdle(() => resolve(), { timeout: timeoutMs });
+    });
+}
+
+/**
  * Ends the measured interaction without reading the metrics yet, so that whatever the page still
  * does afterwards is measured but not counted as interaction time.
  */
