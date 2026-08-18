@@ -6828,6 +6828,10 @@ export const messages = defineMessages({
         defaultMessage: 'This is a change address created from a previous send.',
         description: 'Tooltip over an icon in Coin control section',
     },
+    TR_ACCOUNT_TOKENS_COUNT: {
+        id: 'TR_ACCOUNT_TOKENS_COUNT',
+        defaultMessage: '{count, plural, one {+{count} token} other {+{count} tokens}}',
+    },
     TR_IN_PENDING_TRANSACTION: {
         id: 'TR_IN_PENDING_TRANSACTION',
         defaultMessage: 'In pending transaction',
