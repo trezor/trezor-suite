@@ -97,9 +97,11 @@ const useExchangeQuoteChangeEffect = ({ control, setValue }: ExchangeFormType) =
         selectIsAmountInSats(state, symbol),
     );
 
+    const isQuoteMatchingAsset = selectedQuote && selectedQuote.receive === receiveAsset?.cryptoId;
+    const amount = selectedQuote?.receiveStringAmount;
+
     useEffect(() => {
-        const amount = selectedQuote?.receiveStringAmount;
-        if (!amount) {
+        if (!isQuoteMatchingAsset || !amount) {
             setValue('receiveCryptoAmount', undefined, { shouldValidate: true });
 
             return;
@@ -110,7 +112,15 @@ const useExchangeQuoteChangeEffect = ({ control, setValue }: ExchangeFormType) =
                 ? convertAmountUnitsToSubunits(amount, getNetwork(symbol).decimals)
                 : amount;
         setValue('receiveCryptoAmount', value, { shouldValidate: true });
-    }, [selectedQuote, isAmountInSats, symbol, setValue]);
+    }, [
+        selectedQuote,
+        isQuoteMatchingAsset,
+        amount,
+        receiveAsset?.cryptoId,
+        isAmountInSats,
+        symbol,
+        setValue,
+    ]);
 };
 
 const useDexQuoteApprovalInfoChangeEffect = ({

@@ -20,6 +20,7 @@ import {
     cexdirectCreditCardBuyQuote,
     eth1NormalAccount,
     eth2legacyAccount,
+    ethAsset,
     getInitializedTradingState,
     mercuryoApplePayBuyQuote,
     mercuryoCreditCardBuyQuote,
@@ -253,6 +254,20 @@ describe('useBuyForm', () => {
 
             expect(result.current.getValues('cryptoValue')).toEqual('0.001000168');
             expect(result.current.getValues('fiatValue')).toEqual('10');
+        });
+
+        it('should not update cryptoValue from a quote for a different asset', () => {
+            const store = getInitializedStore();
+            const { result } = renderUseTradingBuyForm(store);
+
+            initFormAndQuotes(result.current, store);
+
+            act(() => {
+                result.current.setValue('asset', ethAsset);
+                result.current.setValue('cryptoValue', undefined);
+            });
+
+            expect(result.current.getValues('cryptoValue')).toBeUndefined();
         });
 
         it('should update fiatAmount when selected quote is changed and user inserted cryptoAmount and truncate it to 3 decimals', () => {

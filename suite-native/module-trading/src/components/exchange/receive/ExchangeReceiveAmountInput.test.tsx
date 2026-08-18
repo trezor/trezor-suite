@@ -2,7 +2,7 @@ import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-fla
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act, fireEvent } from '@suite-native/test-utils-store';
-import { mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
+import { btcAsset, mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import {
@@ -50,8 +50,13 @@ describe('ExchangeReceiveAmountInput', () => {
 
     it('should render receiveCryptoAmount form value', () => {
         act(() => {
+            form.setValue('sendAsset', btcAsset);
             form.setValue('receiveAsset', usdcAsset);
-            form.setValue('quote', mercuryoFixedWorstQuote);
+            form.setValue('quote', {
+                ...mercuryoFixedWorstQuote,
+                send: btcAsset.cryptoId,
+                receive: usdcAsset.cryptoId,
+            });
         });
 
         const { getByLabelText } = renderExchangeReceiveAmountInput();
