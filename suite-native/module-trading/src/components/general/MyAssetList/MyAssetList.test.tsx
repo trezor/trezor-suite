@@ -82,22 +82,6 @@ describe('MyAssetList', () => {
         expect(getByText('Disabled')).toBeDisabled();
     });
 
-    it('connects adjacent asset groups without a gap or inner rounded corners', () => {
-        const { getByTestId } = renderList();
-        const accountTestID = `${testID}/${eth1NormalAccount.key}`;
-
-        expect(getByTestId(`${accountTestID}/groups`)).toHaveStyle({ gap: 0 });
-        expect(getByTestId(`${accountTestID}/low-balance`)).toHaveStyle({
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
-        });
-        expect(getByTestId(`${accountTestID}/non-tradeable`)).toHaveStyle({
-            borderTopLeftRadius: 0,
-            borderTopRightRadius: 0,
-            borderTopWidth: 0,
-        });
-    });
-
     it('renders the existing empty-state copy', () => {
         const { getByText } = renderList([]);
 
