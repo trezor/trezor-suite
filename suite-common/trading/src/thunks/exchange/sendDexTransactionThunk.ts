@@ -16,6 +16,7 @@ import {
 } from '../../selectors/tradingSelectors';
 import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
+import { solanaDexTxDataToHex } from '../../utils/exchange/exchangeUtils';
 import { tradingThunks } from '../common';
 import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
 import { type RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
@@ -84,11 +85,8 @@ export const sendDexTransactionThunk = createThunk<
 
         let serializedTx = selectedQuote.dexTx.data;
         if (account.networkType === 'solana' && serializedTx) {
-            // let's assume data obtained from trading api are always base64
-            // convert from base64 to hex (base16)
             try {
-                const transactionBuffer = Buffer.from(serializedTx, 'base64');
-                serializedTx = transactionBuffer.toString('hex');
+                serializedTx = solanaDexTxDataToHex(serializedTx);
             } catch (error) {
                 console.error(error);
 

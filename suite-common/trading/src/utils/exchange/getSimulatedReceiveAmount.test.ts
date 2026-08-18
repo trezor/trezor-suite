@@ -41,6 +41,10 @@ const sendQuote: CryptoId = `ethereum--${USDC_CONTRACT}` as CryptoId;
 const nativeQuoteReceive: CryptoId = 'ethereum' as CryptoId;
 const tokenQuoteReceive: CryptoId = `ethereum--${USDC_CONTRACT}` as CryptoId;
 
+const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+const solQuoteReceive: CryptoId = 'solana' as CryptoId;
+const splQuoteReceive: CryptoId = `solana--${USDC_MINT}` as CryptoId;
+
 describe('getSimulatedReceiveAmount', () => {
     it('returns null without a simulation result', () => {
         expect(getSimulatedReceiveAmount(undefined, sendQuote, nativeQuoteReceive)).toBeNull();
@@ -214,6 +218,182 @@ describe('getSimulatedReceiveAmount', () => {
             } as unknown as NetworkTxSimulationResult;
 
             expect(getSimulatedReceiveAmount(result, ethSend, solReceive)).toBeNull();
+        });
+    });
+
+    describe('solana', () => {
+        // Solana reports a single in/out object per asset and numeric amounts.
+        const solNativeDiff = {
+            asset_type: 'NATIVE',
+            asset: { type: 'SOL', decimals: 9 },
+            in: { raw_value: 1500000000, value: 1.5 },
+        };
+
+        const usdcSplDiff = {
+            asset_type: 'TOKEN',
+            asset: {
+                type: 'TOKEN',
+                address: USDC_MINT,
+                decimals: 6,
+                name: 'USD Coin',
+                symbol: 'USDC',
+            },
+            in: { raw_value: 250000000, value: 250 },
+        };
+
+        const solSend: CryptoId = `solana--${USDC_MINT}` as CryptoId;
+
+        const createSolanaResult = (assetDiffs: unknown[]): NetworkTxSimulationResult =>
+            ({
+                method: 'solanaSignTransaction',
+                payload: {
+                    needsDisclaimer: false,
+                    status: 'SUCCESS',
+                    result: {
+                        simulation: { account_summary: { account_assets_diff: assetDiffs } },
+                    },
+                },
+            }) as unknown as NetworkTxSimulationResult;
+
+        it('reads the native amount from the raw value', () => {
+            expect(
+                getSimulatedReceiveAmount(
+                    createSolanaResult([solNativeDiff]),
+                    solSend,
+                    solQuoteReceive,
+                ),
+            ).toBe('1.5');
+        });
+
+        it('matches an SPL mint case-sensitively', () => {
+            expect(
+                getSimulatedReceiveAmount(
+                    createSolanaResult([usdcSplDiff]),
+                    solQuoteReceive,
+                    splQuoteReceive,
+                ),
+            ).toBe('250');
+            expect(
+                getSimulatedReceiveAmount(
+                    createSolanaResult([usdcSplDiff]),
+                    solQuoteReceive,
+                    `solana--${USDC_MINT.toLowerCase()}` as CryptoId,
+                ),
+            ).toBeNull();
+        });
+
+        it('returns null when the receive asset has no incoming transfer', () => {
+            const outOnly = { ...solNativeDiff, in: null, out: { raw_value: 1, value: 1 } };
+
+            expect(
+                getSimulatedReceiveAmount(createSolanaResult([outOnly]), solSend, solQuoteReceive),
+            ).toBeNull();
+        });
+    });
+    describe('stellar', () => {
+        // Stellar carries no decimals, so only `value` is usable, and `in` is a single object.
+        const XLM_USDC_CONTRACT = 'CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75';
+
+        const xlmNativeDiff = {
+            asset_type: 'NATIVE',
+            asset: { type: 'NATIVE', code: 'XLM' },
+            in: { raw_value: 15000000, value: 1.5 },
+        };
+
+        const usdcContractDiff = {
+            asset_type: 'CONTRACT',
+            asset: {
+                type: 'CONTRACT',
+                address: XLM_USDC_CONTRACT,
+                name: 'USD Coin',
+                symbol: 'USDC',
+            },
+            in: { raw_value: 2500000000, value: 250 },
+        };
+
+        const usdcLegacyDiff = {
+            asset_type: 'ASSET',
+            asset: {
+                type: 'ASSET',
+                code: 'USDC',
+                issuer: 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+                org_name: 'Centre',
+                org_url: 'https://centre.io',
+            },
+            in: { raw_value: 2500000000, value: 250 },
+        };
+
+        const xlmReceive: CryptoId = 'stellar' as CryptoId;
+        const usdcReceive: CryptoId = `stellar--${XLM_USDC_CONTRACT}` as CryptoId;
+        const xlmSend: CryptoId = `stellar--${XLM_USDC_CONTRACT}` as CryptoId;
+
+        const createStellarResult = (assetDiffs: unknown[]): NetworkTxSimulationResult =>
+            ({
+                method: 'stellarSignTransaction',
+                payload: {
+                    needsDisclaimer: false,
+                    simulation: {
+                        status: 'Success',
+                        account_summary: { account_assets_diffs: assetDiffs },
+                    },
+                },
+            }) as unknown as NetworkTxSimulationResult;
+
+        it('reads the native amount from the value', () => {
+            expect(
+                getSimulatedReceiveAmount(
+                    createStellarResult([xlmNativeDiff]),
+                    xlmSend,
+                    xlmReceive,
+                ),
+            ).toBe('1.5');
+        });
+
+        it('matches a contract asset by its address', () => {
+            expect(
+                getSimulatedReceiveAmount(
+                    createStellarResult([usdcContractDiff]),
+                    xlmReceive,
+                    usdcReceive,
+                ),
+            ).toBe('250');
+        });
+
+        it('does not match a legacy asset, which carries no contract address', () => {
+            expect(
+                getSimulatedReceiveAmount(
+                    createStellarResult([usdcLegacyDiff]),
+                    xlmReceive,
+                    usdcReceive,
+                ),
+            ).toBeNull();
+        });
+
+        it('does not read a legacy asset as the native one', () => {
+            expect(
+                getSimulatedReceiveAmount(
+                    createStellarResult([usdcLegacyDiff]),
+                    xlmSend,
+                    xlmReceive,
+                ),
+            ).toBeNull();
+        });
+
+        it('returns null when the receive asset has no incoming transfer', () => {
+            const outOnly = { ...xlmNativeDiff, in: null, out: { raw_value: 1, value: 1 } };
+
+            expect(
+                getSimulatedReceiveAmount(createStellarResult([outOnly]), xlmSend, xlmReceive),
+            ).toBeNull();
+        });
+
+        it('returns null when the simulation errored', () => {
+            const errored = {
+                method: 'stellarSignTransaction',
+                payload: { needsDisclaimer: false, simulation: { status: 'Error' } },
+            } as unknown as NetworkTxSimulationResult;
+
+            expect(getSimulatedReceiveAmount(errored, xlmSend, xlmReceive)).toBeNull();
         });
     });
 });

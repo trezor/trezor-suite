@@ -175,6 +175,9 @@ export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatu
     return 'needs_approval';
 };
 
+/** Trading API returns Solana `dexTx.data` base64-encoded, Connect signs and simulates it as hex. */
+export const solanaDexTxDataToHex = (data: string) => Buffer.from(data, 'base64').toString('hex');
+
 export const getDexEstimationData = (quote: ExchangeTrade): string | undefined => {
     if (!quote.dexTx?.data) {
         return undefined;

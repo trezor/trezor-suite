@@ -1,5 +1,6 @@
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
+import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useDexExchangeTxSimulation } from './useDexExchangeTxSimulation';
@@ -10,7 +11,7 @@ import { initialState } from '../reducers/tradingCommonReducer';
 import { createTradingTestState, renderHookWithTradingStore } from '../test-utils/testUtils';
 
 type SimulationResult = NonNullable<ReturnType<typeof useDexExchangeTxSimulation>['data']>;
-type SimulationPayload = Pick<SimulationResult['payload'], 'validation' | 'simulation'>;
+type SimulationPayload = Partial<Pick<TxSimulationEVMResult, 'validation' | 'simulation'>>;
 
 jest.mock('./useDexExchangeTxSimulation', () => ({
     useDexExchangeTxSimulation: jest.fn(),

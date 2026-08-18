@@ -19,6 +19,20 @@ export const accountBtc = {
     deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
 };
 
+export const accountSol = {
+    index: 0,
+    accountType: 'normal',
+    networkType: 'solana',
+    symbol: 'sol',
+    descriptor: 'GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW',
+    key: mockAccountKey({
+        descriptor: 'GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW',
+        symbol: 'sol',
+    }),
+    path: "m/44'/501'/0'/0'",
+    deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
+};
+
 export const accountEth = {
     index: 1,
     accountType: 'normal',

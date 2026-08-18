@@ -1,6 +1,11 @@
 import { networks } from '@suite-common/wallet-config';
 
-import { isBlockaidSupportedNetwork, resolveBlockaidEvmChain } from './chains';
+import {
+    isBlockaidSupportedNetwork,
+    resolveBlockaidEvmChain,
+    resolveBlockaidSolanaChain,
+    resolveBlockaidStellarChain,
+} from './chains';
 
 describe('resolveBlockaidEvmChain', () => {
     it.each([
@@ -28,12 +33,29 @@ describe('resolveBlockaidEvmChain', () => {
     });
 });
 
-describe('isBlockaidSupportedNetwork', () => {
-    it.each(['eth', 'hype', 'tsep'] as const)('supports %s', symbol => {
-        expect(isBlockaidSupportedNetwork(symbol)).toBe(true);
+describe('resolveBlockaidSolanaChain', () => {
+    it('maps Solana network symbols to Blockaid cluster names', () => {
+        expect(resolveBlockaidSolanaChain('sol')).toBe('mainnet');
+        expect(resolveBlockaidSolanaChain('dsol')).toBe('devnet');
     });
+});
 
-    it.each(['etc', 'thod', 'btc', 'sol'] as const)('does not support %s', symbol => {
+describe('resolveBlockaidStellarChain', () => {
+    it('maps Stellar network symbols to Blockaid network names', () => {
+        expect(resolveBlockaidStellarChain('xlm')).toBe('pubnet');
+        expect(resolveBlockaidStellarChain('txlm')).toBe('testnet');
+    });
+});
+
+describe('isBlockaidSupportedNetwork', () => {
+    it.each(['eth', 'hype', 'tsep', 'sol', 'dsol', 'xlm', 'txlm'] as const)(
+        'supports %s',
+        symbol => {
+            expect(isBlockaidSupportedNetwork(symbol)).toBe(true);
+        },
+    );
+
+    it.each(['etc', 'thod', 'btc', 'trx', 'ada'] as const)('does not support %s', symbol => {
         expect(isBlockaidSupportedNetwork(symbol)).toBe(false);
     });
 });

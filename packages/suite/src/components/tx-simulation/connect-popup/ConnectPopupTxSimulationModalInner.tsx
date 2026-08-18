@@ -8,7 +8,7 @@ import {
     TxSimulationProvider,
     TxSimulationTitle,
 } from '@suite/tx-simulation/src/common';
-import { EvmInsufficientGasWarning, EvmTxSimulationDisclaimer } from '@suite/tx-simulation/src/evm';
+import { EvmInsufficientGasWarning } from '@suite/tx-simulation/src/evm';
 import { connectPopupActions } from '@suite-common/connect-popup';
 import {
     TX_METHODS_WITH_FEES,
@@ -25,6 +25,7 @@ import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop'
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch } from 'src/hooks/suite';
 
+import { TxSimulationDisclaimer } from '../common/components/TxSimulationDisclaimer';
 import { TxSimulationHeader } from '../common/components/TxSimulationHeader';
 import { TxSimulationSuccessResult } from '../common/components/TxSimulationSuccessResult';
 import { useEvmTxSimulationFeesForm } from '../common/hooks/useEvmTxSimulationFeesForm';
@@ -71,15 +72,6 @@ export function ConnectPopupTxSimulationModalInner({
     if (!simulation) return null;
 
     const { txSimulationQuery, network, targetContract } = simulation;
-
-    if (
-        !areTxSimulationMethods(
-            ['ethereumSignTransaction', 'ethereumSignTypedData'] as const,
-            action,
-        )
-    ) {
-        return null;
-    }
 
     function confirm() {
         const selectedFee = getSelectedFee();
@@ -147,8 +139,8 @@ export function ConnectPopupTxSimulationModalInner({
                                         network={network}
                                         targetContract={targetContract}
                                     />
-                                    <EvmTxSimulationDisclaimer
-                                        result={txSimulationQuery.data.payload}
+                                    <TxSimulationDisclaimer
+                                        result={txSimulationQuery.data}
                                         isAccepted={disclaimerAccepted}
                                         onChange={setDisclaimerAccepted}
                                     />
@@ -175,11 +167,13 @@ export function ConnectPopupTxSimulationModalInner({
                             </FormProvider>
                         )}
 
-                        <EvmInsufficientGasWarning
-                            composedLevel={currentComposedLevel}
-                            accountBalance={account.balance}
-                            networkSymbol={account.symbol}
-                        />
+                        {areTxSimulationMethods(TX_METHODS_WITH_FEES, action) && (
+                            <EvmInsufficientGasWarning
+                                composedLevel={currentComposedLevel}
+                                accountBalance={account.balance}
+                                networkSymbol={account.symbol}
+                            />
+                        )}
                     </Column>
                 </Column>
             </Modal.ModalBase>

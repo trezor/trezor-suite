@@ -31,6 +31,9 @@
         {
             "path": "../../networks/solana/network-solana"
         },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },

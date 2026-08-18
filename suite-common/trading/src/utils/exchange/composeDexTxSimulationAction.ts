@@ -8,8 +8,10 @@ import {
     type EthereumSignTypedDataMessage,
     type EthereumSignTypedDataTypes,
 } from '@trezor/connect';
+import { toSolanaNetworkSymbol } from '@trezor/network-solana/constants';
+import { toStellarNetworkSymbol } from '@trezor/network-stellar/constants';
 
-import { hasEip712SignData } from './exchangeUtils';
+import { hasEip712SignData, solanaDexTxDataToHex } from './exchangeUtils';
 
 type ComposeDexTxSimulationActionParams = {
     quote: ExchangeTrade | undefined;
@@ -27,6 +29,43 @@ export const composeDexTxSimulationAction = ({
     }
 
     const network = getNetwork(account.symbol);
+
+    if (network.networkType === 'solana') {
+        if (!quote.dexTx?.data) {
+            return null;
+        }
+
+        return {
+            method: 'solanaSignTransaction',
+            symbol: toSolanaNetworkSymbol(account.symbol),
+            fromAddress: account.descriptor,
+            sourceOrigin,
+            payload: {
+                path: account.path,
+                serializedTx: solanaDexTxDataToHex(quote.dexTx.data),
+            },
+        };
+    }
+
+    if (network.networkType === 'stellar') {
+        if (!quote.dexTx?.data) {
+            return null;
+        }
+
+        const symbol = toStellarNetworkSymbol(account.symbol);
+
+        return {
+            method: 'stellarSignTransaction',
+            symbol,
+            fromAddress: account.descriptor,
+            sourceOrigin,
+            payload: {
+                path: account.path,
+                xdrBase64: quote.dexTx.data,
+                testnet: symbol === 'txlm',
+            },
+        };
+    }
 
     if (network.networkType !== 'ethereum' || network.chainId === undefined) {
         return null;

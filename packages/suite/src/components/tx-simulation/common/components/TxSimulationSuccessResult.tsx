@@ -1,5 +1,7 @@
 import { TxSimulationResult } from '@suite/tx-simulation/src/common';
 import { EvmTxSimulationAsset } from '@suite/tx-simulation/src/evm';
+import { SolanaTxSimulationAsset } from '@suite/tx-simulation/src/solana';
+import { StellarTxSimulationAsset } from '@suite/tx-simulation/src/stellar';
 import { type NetworkTxSimulationResult } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 
@@ -53,6 +55,49 @@ export function TxSimulationSuccessResult({
                         />
                     )}
                 </>
+            );
+        }
+
+        case 'solanaSignTransaction': {
+            const assetDiffs = payload.result?.simulation?.account_summary.account_assets_diff;
+
+            if (!assetDiffs) {
+                return null;
+            }
+
+            return (
+                <TxSimulationResult isEmpty={assetDiffs.length === 0}>
+                    {assetDiffs.map((assetDiff, index) => (
+                        <SolanaTxSimulationAsset
+                            key={`asset-diff-${index}`}
+                            assetDiff={assetDiff}
+                            network={network}
+                        />
+                    ))}
+                </TxSimulationResult>
+            );
+        }
+
+        case 'stellarSignTransaction': {
+            const assetDiffs =
+                payload.simulation?.status === 'Success'
+                    ? payload.simulation.account_summary.account_assets_diffs
+                    : undefined;
+
+            if (!assetDiffs) {
+                return null;
+            }
+
+            return (
+                <TxSimulationResult isEmpty={assetDiffs.length === 0}>
+                    {assetDiffs.map((assetDiff, index) => (
+                        <StellarTxSimulationAsset
+                            key={`asset-diff-${index}`}
+                            assetDiff={assetDiff}
+                            network={network}
+                        />
+                    ))}
+                </TxSimulationResult>
             );
         }
 

@@ -24,6 +24,8 @@
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:^",
         "@trezor/crypto-utils": "workspace:*",
+        "@trezor/network-solana": "workspace:*",
+        "@trezor/network-stellar": "workspace:*",
         "@trezor/type-utils": "workspace:^",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",

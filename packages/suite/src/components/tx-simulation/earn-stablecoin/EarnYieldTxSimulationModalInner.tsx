@@ -10,7 +10,6 @@ import {
     TxSimulationProvider,
     TxSimulationTitle,
 } from '@suite/tx-simulation/src/common';
-import { EvmTxSimulationDisclaimer } from '@suite/tx-simulation/src/evm';
 import {
     TX_METHODS_WITH_FEES,
     areTxSimulationMethods,
@@ -24,6 +23,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
 
+import { TxSimulationDisclaimer } from '../common/components/TxSimulationDisclaimer';
 import { TxSimulationHeader } from '../common/components/TxSimulationHeader';
 import { TxSimulationSuccessResult } from '../common/components/TxSimulationSuccessResult';
 import { useEvmTxSimulationFeesForm } from '../common/hooks/useEvmTxSimulationFeesForm';
@@ -147,8 +147,8 @@ export function EarnYieldTxSimulationModalInner({
                                         network={network}
                                         targetContract={targetContract}
                                     />
-                                    <EvmTxSimulationDisclaimer
-                                        result={txSimulationQuery.data.payload}
+                                    <TxSimulationDisclaimer
+                                        result={txSimulationQuery.data}
                                         isAccepted={disclaimerAccepted}
                                         onChange={setDisclaimerAccepted}
                                     />

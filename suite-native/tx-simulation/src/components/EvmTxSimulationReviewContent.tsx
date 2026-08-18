@@ -3,6 +3,7 @@ import { type ReactNode, useState } from 'react';
 import { useFormatters } from '@suite-common/formatters';
 import {
     type NetworkTxSimulationResult,
+    getTxSimulationRiskSummary,
     isTxSimulationResultWithMethods,
     useTxSimulation,
 } from '@suite-common/tx-simulation';
@@ -33,6 +34,8 @@ import { EvmTxSimulationRowInfoItems } from './EvmTxSimulationRowInfoItems';
 import { EvmTxSimulationStackedAsset } from './EvmTxSimulationStackedAsset';
 import { EvmTxSimulationStackedInfoItems } from './EvmTxSimulationStackedInfoItems';
 import { EvmTxSimulationWrappedAsset } from './EvmTxSimulationWrappedAsset';
+import { SolanaTxSimulationAsset } from './SolanaTxSimulationAsset';
+import { StellarTxSimulationAsset } from './StellarTxSimulationAsset';
 import { TxSimulationRiskBanner } from './TxSimulationRiskBanner';
 
 type EvmTxSimulationReviewContentProps = {
@@ -88,13 +91,33 @@ export function EvmTxSimulationReviewContent({
     }
 
     const { txSimulationQuery, network, targetContract } = simulation;
-    const simulationData = isTxSimulationResultWithMethods(
+    const simulationData = txSimulationQuery.data ?? null;
+    const evmSimulationData = isTxSimulationResultWithMethods(
         ['ethereumSignTypedData', 'ethereumSignTransaction'] as const,
-        txSimulationQuery.data,
+        simulationData,
     )
-        ? txSimulationQuery.data
+        ? simulationData
         : null;
-    const evmSimulation = simulationData?.payload.simulation;
+    const evmSimulation = evmSimulationData?.payload.simulation;
+    const solanaAssetDiffs = isTxSimulationResultWithMethods(
+        ['solanaSignTransaction'] as const,
+        simulationData,
+    )
+        ? simulationData.payload.result?.simulation?.account_summary.account_assets_diff
+        : undefined;
+    const stellarResult = isTxSimulationResultWithMethods(
+        ['stellarSignTransaction'] as const,
+        simulationData,
+    )
+        ? simulationData.payload
+        : undefined;
+    const stellarAssetDiffs =
+        stellarResult?.simulation?.status === 'Success'
+            ? stellarResult.simulation.account_summary.account_assets_diffs
+            : undefined;
+    const { validationRisk, simulationFailure } = getTxSimulationRiskSummary(
+        simulationData ?? undefined,
+    );
     const isConfirmButtonDisabled =
         !simulationData ||
         txSimulationQuery.isLoading ||
@@ -196,37 +219,71 @@ export function EvmTxSimulationReviewContent({
                         </VStack>
                     )}
 
-                    {simulationData.payload.validation?.result_type === 'Malicious' && (
+                    {solanaAssetDiffs && (
+                        <VStack>
+                            {title}
+                            <Card noPadding>
+                                {solanaAssetDiffs.map((assetDiff, index) => (
+                                    <Box key={`solana-diff-${index}`}>
+                                        {areAssetDividersDisplayed && index > 0 && <Divider />}
+                                        <SolanaTxSimulationAsset
+                                            assetDiff={assetDiff}
+                                            network={network}
+                                        />
+                                    </Box>
+                                ))}
+                            </Card>
+                        </VStack>
+                    )}
+
+                    {stellarAssetDiffs && (
+                        <VStack>
+                            {title}
+                            <Card noPadding>
+                                {stellarAssetDiffs.map((assetDiff, index) => (
+                                    <Box key={`stellar-diff-${index}`}>
+                                        {areAssetDividersDisplayed && index > 0 && <Divider />}
+                                        <StellarTxSimulationAsset
+                                            assetDiff={assetDiff}
+                                            network={network}
+                                        />
+                                    </Box>
+                                ))}
+                            </Card>
+                        </VStack>
+                    )}
+
+                    {validationRisk?.riskLevel === 'Malicious' && (
                         <TxSimulationRiskBanner
                             intent="critical"
                             title={
                                 <Translation id="moduleConnectPopup.simulation.simulationStatusMalicious" />
                             }
-                            description={simulationData.payload.validation?.description}
+                            description={validationRisk.description}
                             disclaimerAccepted={disclaimerAccepted}
                             setDisclaimerAccepted={setDisclaimerAccepted}
                         />
                     )}
 
-                    {simulationData.payload.validation?.result_type === 'Warning' && (
+                    {validationRisk?.riskLevel === 'Warning' && (
                         <TxSimulationRiskBanner
                             intent="warning"
                             title={
                                 <Translation id="moduleConnectPopup.simulation.simulationStatusWarning" />
                             }
-                            description={simulationData.payload.validation?.description}
+                            description={validationRisk.description}
                             disclaimerAccepted={disclaimerAccepted}
                             setDisclaimerAccepted={setDisclaimerAccepted}
                         />
                     )}
 
-                    {evmSimulation?.status === 'Error' && (
+                    {simulationFailure && (
                         <TxSimulationRiskBanner
                             intent="critical"
                             title={
                                 <Translation id="moduleConnectPopup.simulation.simulationStatusError" />
                             }
-                            description={evmSimulation.error}
+                            description={simulationFailure.error}
                             disclaimerAccepted={disclaimerAccepted}
                             setDisclaimerAccepted={setDisclaimerAccepted}
                         />

@@ -92,15 +92,12 @@ const mockUseExchangeIssue = jest.mocked(useExchangeIssue);
 const mockUseDexExchangeTxSimulation = jest.mocked(useDexExchangeTxSimulation);
 type SimulationResult = NonNullable<ReturnType<typeof useDexExchangeTxSimulation>['data']>;
 
-const createSimulationResult = (
-    payload: Partial<SimulationResult['payload']> = {},
-): SimulationResult => ({
+const createSimulationResult = (): SimulationResult => ({
     method: 'ethereumSignTransaction',
     payload: {
         block: '123',
         chain: 'ethereum',
         needsDisclaimer: false,
-        ...payload,
     },
 });
 

@@ -6,15 +6,15 @@ export { getAssetDiffTransferAmount } from './utils/getAssetDiffTransferAmount';
 export { type CrossChainAssetDiff, getCrossChainAssetDiffs } from './utils/getCrossChainAssetDiffs';
 export {
     getTxSimulationRiskSummary,
+    type TxSimulationFailure,
     type TxSimulationRiskSummary,
+    type TxSimulationValidationFeature,
     type TxSimulationValidationSummary,
 } from './utils/getTxSimulationRiskSummary';
 export { useDappScan } from './hooks/useDappScan';
 export {
     useNetworkTxSimulation,
     isTxSimulationResultWithMethods,
-    type NetworkTxSimulationResult,
-    type TxSimulationEVMResult,
 } from './hooks/useNetworkTxSimulation';
 export { useTxSimulation } from './hooks/useTxSimulation';
 
