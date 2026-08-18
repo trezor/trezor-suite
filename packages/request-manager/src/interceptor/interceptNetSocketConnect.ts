@@ -78,7 +78,7 @@ export const interceptNetSocketConnect: Interceptor = ({ context, validateReques
         }
 
         const hostname = details.split(':')[0] ?? '';
-        validateRequest({ hostname });
+        validateRequest({ hostname, interceptType: 'netSocketConnect' });
 
         context.handler({
             type: 'INTERCEPTED_REQUEST',

@@ -9,7 +9,7 @@ import { interceptNetSocketConnect } from './interceptor/interceptNetSocketConne
 import { interceptTlsConnect } from './interceptor/interceptTlsConnect';
 import { interceptWebSocket } from './interceptor/interceptWebSocket';
 import { TorIdentities } from './torIdentities';
-import { type InterceptorOptions } from './types';
+import type { InterceptorOptions, ValidateRequestCallback } from './types';
 
 /**
  * Create an interceptor that can be used to intercept and manage network requests made from a Node.js environment.
@@ -21,11 +21,14 @@ export const createInterceptor = (interceptorOptions: InterceptorOptions) => {
     const torIdentities = new TorIdentities(interceptorOptions.getTorSettings);
     const context = { ...interceptorOptions, requestPool, torIdentities };
 
-    const validateRequest = ({ hostname }: { hostname: string }) => {
+    const validateRequest: ValidateRequestCallback = ({ hostname, fullUrl, interceptType }) => {
         // FYI for main electron session, the base list of whitelisted domains is in 'packages/suite-desktop-core/src/config.ts'
         if (!isWhitelistedHost(hostname, context.getWhitelistedDomains())) {
             // Sometimes the error is not reported correctly so for debug reasons we log it as well
-            console.error(`Request blocked, not whitelisted domain: ${hostname}`);
+            console.error(`Request blocked, not whitelisted domain: ${hostname}`, {
+                fullUrl,
+                interceptType,
+            });
 
             throw new Error(`Request blocked, not whitelisted domain: ${hostname}`);
         }
