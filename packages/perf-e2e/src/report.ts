@@ -1,20 +1,36 @@
-import { type MetricComparison, type ScenarioComparison } from './types';
+import {
+    type MetricComparison,
+    type MetricUnit,
+    type PerfMetricKey,
+    type ScenarioComparison,
+} from './types';
 
-const formatValue = (value: number | null, unit: string): string => {
+/**
+ * What each unit is written as after the number. A count is just the number — `20 count` reads as
+ * neither English nor a measurement. Keyed by unit so a new one cannot be left unhandled.
+ */
+const UNIT_SUFFIX: Record<MetricUnit, string> = {
+    ms: ' ms',
+    count: '',
+};
+
+/** `null` is a metric this environment could not measure, which is not the same as a zero. */
+export const formatMetricValue = (value: number | null, unit: MetricUnit): string => {
     if (value === null) {
         return 'n/a';
     }
+
     const rounded = Math.round(value * 10) / 10;
 
-    return unit === 'ms' ? `${rounded} ms` : `${rounded}`;
+    return `${rounded}${UNIT_SUFFIX[unit]}`;
 };
 
 const formatMetricBlock = (metric: MetricComparison): string =>
     [
         metric.label,
-        `limit   : ${formatValue(metric.limit, metric.unit)}`,
-        `current : ${formatValue(metric.current, metric.unit)}`,
-        `baseline: ${formatValue(metric.baseline, metric.unit)} (not enforced)`,
+        `limit   : ${formatMetricValue(metric.limit, metric.unit)}`,
+        `current : ${formatMetricValue(metric.current, metric.unit)}`,
+        `baseline: ${formatMetricValue(metric.baseline, metric.unit)} (not enforced)`,
     ].join('\n');
 
 /**
@@ -25,9 +41,9 @@ export const formatHumanReport = (comparison: ScenarioComparison): string => {
         const summary = comparison.metrics
             .map(
                 metric =>
-                    `  ${metric.label}: ${formatValue(metric.current, metric.unit)}` +
+                    `  ${metric.label}: ${formatMetricValue(metric.current, metric.unit)}` +
                     (metric.limit !== null
-                        ? ` (limit ${formatValue(metric.limit, metric.unit)})`
+                        ? ` (limit ${formatMetricValue(metric.limit, metric.unit)})`
                         : ' (no limit)'),
             )
             .join('\n');
@@ -52,9 +68,9 @@ export type PerfJsonReport = {
     overLimit: boolean;
     unlimited: boolean;
     metrics: Array<{
-        key: string;
+        key: PerfMetricKey;
         label: string;
-        unit: string;
+        unit: MetricUnit;
         baseline: number | null;
         current: number | null;
         limit: number | null;

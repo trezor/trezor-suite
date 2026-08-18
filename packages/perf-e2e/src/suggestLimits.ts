@@ -21,13 +21,8 @@ const roundUpToNiceNumber = (value: number): number => {
 };
 
 /**
- * The limits this run would need, for the metrics that have one. Printed so raising a limit is a
- * paste rather than arithmetic — and still an edit to a committed number, reviewed as the decision it
- * is.
- */
-/**
- * The higher of two suggestions per metric. A scenario is measured once per device model, so the
- * pasted limit has to be the one that fits every model, not the one that happened to come last.
+ * The higher of two suggestions per metric, for a key measured more than once in a run — the pasted
+ * limit has to be the one that fits every measurement of it, not the one that happened to come last.
  */
 const keepHigherLimits = (current: ScenarioLimits, incoming: ScenarioLimits): ScenarioLimits =>
     Object.entries(incoming).reduce<ScenarioLimits>(
@@ -42,6 +37,11 @@ const keepHigherLimits = (current: ScenarioLimits, incoming: ScenarioLimits): Sc
         { ...current },
     );
 
+/**
+ * The limits this run would need, for the metrics that have one. Printed so raising a limit is a
+ * paste rather than arithmetic — and still an edit to a committed number, reviewed as the decision it
+ * is.
+ */
 export const suggestLimits = (comparisons: readonly ScenarioComparison[]): Limits =>
     comparisons.reduce<Limits>((limits, comparison) => {
         const scenarioLimits = comparison.metrics.reduce<ScenarioLimits>((metrics, metric) => {

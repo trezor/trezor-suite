@@ -5,11 +5,13 @@ import {
     Baselines,
     Limits,
     PerfJsonReport,
-    PerfMetricKey,
     PerfMetrics,
     aggregateSamples,
     buildJsonReport,
     compareScenario,
+    formatMetricValue,
+    measurementKey,
+    resolveBudget,
     suggestLimits,
 } from '@trezor/perf-e2e';
 
@@ -17,24 +19,11 @@ import { BASELINES, LIMITS } from './budgets';
 
 const BUDGETS_MODULE_PATH = 'suite/e2e/performance/budgets.ts';
 
-const fmt = (value: number | null, unit: string) => {
-    if (value === null) {
-        return 'n/a';
-    }
-    const rounded = Math.round(value * 10) / 10;
-
-    return unit === 'ms' ? `${rounded}ms` : `${rounded}`;
-};
-
 type Metric = PerfJsonReport['metrics'][number];
 
 type MeasuredRun = { project: string; testId: string; report: PerfJsonReport };
 
 type MeasurementSamples = { scenario: string; project: string; metrics: PerfMetrics[] };
-
-/** Names one measured run of a scenario, which is one scenario on one device model. */
-const measurementLabel = (scenario: string, project: string) =>
-    project ? `${scenario} [${project}]` : scenario;
 
 const fmtOfLimit = (metric: Metric) =>
     metric.ratioToLimit === null ? 'n/a' : `${Math.round(metric.ratioToLimit * 100)}%`;
@@ -65,7 +54,7 @@ const parseReport = (body: Buffer | undefined): PerfJsonReport | null => {
 
 const toMetrics = (report: PerfJsonReport): PerfMetrics =>
     report.metrics.reduce<PerfMetrics>(
-        (metrics, metric) => ({ ...metrics, [metric.key as PerfMetricKey]: metric.current }),
+        (metrics, metric) => ({ ...metrics, [metric.key]: metric.current }),
         {} as PerfMetrics,
     );
 
@@ -82,16 +71,16 @@ const scenarioVerdict = (report: PerfJsonReport) => {
  * renders red there, while the exit code stays the job's own. No-op outside GitHub Actions, where the
  * console table is the whole report.
  */
-const annotateOverLimit = (scenarios: string[]) => {
-    if (!process.env.GITHUB_ACTIONS || scenarios.length === 0) {
+const annotateOverLimit = (measurements: string[]) => {
+    if (!process.env.GITHUB_ACTIONS || measurements.length === 0) {
         return;
     }
 
-    // Scenario names go in the message, not in `title=`: workflow-command properties are
+    // Measurement names go in the message, not in `title=`: workflow-command properties are
     // comma-separated, so a comma in the title would start another property.
     // eslint-disable-next-line no-console
     console.log(
-        `::error title=Performance over limit::${scenarios.join(', ')} — see PERFORMANCE REPORT in this job's log. Does not fail the run.`,
+        `::error title=Performance over limit::${measurements.join(', ')} — see PERFORMANCE REPORT in this job's log. Does not fail the run.`,
     );
 };
 
@@ -147,8 +136,8 @@ class PerfReporter implements Reporter {
                 const comparison = compareScenario(
                     scenario,
                     median,
-                    BASELINES[scenario],
-                    LIMITS[scenario],
+                    resolveBudget(BASELINES, scenario, project),
+                    resolveBudget(LIMITS, scenario, project),
                 );
 
                 return {
@@ -176,13 +165,13 @@ class PerfReporter implements Reporter {
         lines.push(
             ...scenarios.flatMap(({ scenario, project, report, runs }) => [
                 '',
-                `Scenario: ${measurementLabel(scenario, project)}  (median of ${runs} run${runs === 1 ? '' : 's'})   →   ${scenarioVerdict(report)}`,
+                `Scenario: ${measurementKey(scenario, project)}  (median of ${runs} run${runs === 1 ? '' : 's'})   →   ${scenarioVerdict(report)}`,
                 `  ${'metric'.padEnd(24)}${'current'.padEnd(12)}${'limit'.padEnd(12)}${'% of limit'.padEnd(12)}baseline`,
                 ...report.metrics.map(metric => {
                     const row =
-                        `  ${metric.label.padEnd(24)}${fmt(metric.current, metric.unit).padEnd(12)}` +
-                        `${fmt(metric.limit, metric.unit).padEnd(12)}${fmtOfLimit(metric).padEnd(12)}` +
-                        `${fmt(metric.baseline, metric.unit)}${metric.exceededLimit ? ' !!' : ''}`;
+                        `  ${metric.label.padEnd(24)}${formatMetricValue(metric.current, metric.unit).padEnd(12)}` +
+                        `${formatMetricValue(metric.limit, metric.unit).padEnd(12)}${fmtOfLimit(metric).padEnd(12)}` +
+                        `${formatMetricValue(metric.baseline, metric.unit)}${metric.exceededLimit ? ' !!' : ''}`;
 
                     return metric.exceededLimit ? chalk.red(row) : row;
                 }),
@@ -194,7 +183,7 @@ class PerfReporter implements Reporter {
         if (overLimit.length > 0) {
             lines.push(
                 chalk.bold.red(
-                    `Result: over limit — ${overLimit.map(e => measurementLabel(e.scenario, e.project)).join(', ')}. Reported only, the run is not failed.`,
+                    `Result: over limit — ${overLimit.map(e => measurementKey(e.scenario, e.project)).join(', ')}. Reported only, the run is not failed.`,
                 ),
             );
         } else {
@@ -202,16 +191,24 @@ class PerfReporter implements Reporter {
         }
 
         // Both numbers in one paste: the baseline refreshed to this run, and every limit lifted to
-        // fit it where the run went over. Untouched scenarios are preserved. Where a scenario ran on
-        // more than one device model, the last one measured is the baseline recorded for it, while
-        // the limit fits them all (see `suggestLimits`).
+        // fit it where the run went over. Untouched entries are preserved. Each measurement is
+        // recorded under its own key, so two device models keep two sets of numbers instead of
+        // overwriting one another.
+        const measured = scenarios.map(entry => ({
+            ...entry,
+            key: measurementKey(entry.scenario, entry.project),
+        }));
+
+        // Nothing is removed, only added to: a run that covers one device model must not delete the
+        // scenario-wide entry the other one still falls back to, and CI is free to measure the models
+        // in separate jobs whose reports are pasted one after the other.
         const updatedBaselines: Baselines = {
             ...BASELINES,
-            ...Object.fromEntries(scenarios.map(entry => [entry.scenario, entry.median])),
+            ...Object.fromEntries(measured.map(entry => [entry.key, entry.median])),
         };
         const updatedLimits: Limits = {
             ...LIMITS,
-            ...suggestLimits(scenarios.map(entry => entry.comparison)),
+            ...suggestLimits(measured.map(entry => ({ ...entry.comparison, scenario: entry.key }))),
         };
 
         lines.push(
@@ -229,7 +226,7 @@ class PerfReporter implements Reporter {
         // eslint-disable-next-line no-console
         console.log(lines.join('\n'));
 
-        annotateOverLimit(overLimit.map(entry => measurementLabel(entry.scenario, entry.project)));
+        annotateOverLimit(overLimit.map(entry => measurementKey(entry.scenario, entry.project)));
     }
 }
 

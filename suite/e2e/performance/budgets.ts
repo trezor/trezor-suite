@@ -1,5 +1,12 @@
 import { type Baselines, type Limits } from '@trezor/perf-e2e';
 
+/**
+ * Both maps below are keyed by measurement: `'wallet-discovery [T3W1]'` applies to that scenario on
+ * that device model only, while a bare `'wallet-discovery'` is the default for every model that has
+ * no entry of its own. The entries here predate the per-model split, so they are still scenario-wide;
+ * the end-of-run report prints per-model numbers to replace them with.
+ */
+
 /** What each scenario costs today, measured on CI. Reference only, never enforced. */
 export const BASELINES: Baselines = {
     'wallet-discovery': {

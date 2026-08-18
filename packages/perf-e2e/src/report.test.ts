@@ -1,5 +1,5 @@
 import { compareScenario } from './compare';
-import { buildJsonReport, formatHumanReport } from './report';
+import { buildJsonReport, formatHumanReport, formatMetricValue } from './report';
 import { type PerfMetrics } from './types';
 
 const metrics = (overrides: Partial<PerfMetrics> = {}): PerfMetrics => ({
@@ -9,6 +9,21 @@ const metrics = (overrides: Partial<PerfMetrics> = {}): PerfMetrics => ({
     reactCommitCount: 0,
     interactionDurationMs: 0,
     ...overrides,
+});
+
+describe(formatMetricValue.name, () => {
+    it('writes a duration with its unit', () => {
+        expect(formatMetricValue(453.26, 'ms')).toBe('453.3 ms');
+    });
+
+    // `18 count` would read as neither English nor a measurement.
+    it('writes a count as the bare number', () => {
+        expect(formatMetricValue(18, 'count')).toBe('18');
+    });
+
+    it('writes an unmeasurable metric as n/a rather than as a zero', () => {
+        expect(formatMetricValue(null, 'ms')).toBe('n/a');
+    });
 });
 
 describe('formatHumanReport', () => {
