@@ -67,6 +67,7 @@ export const TradeableAssetList = ({
             />
             <Box flex={1}>
                 <FlashList
+                    maintainVisibleContentPosition={{ disabled: true }}
                     ref={flashListRef}
                     data={assets}
                     renderItem={({ item }) => (

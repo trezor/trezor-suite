@@ -78,6 +78,7 @@ export const MyAssetList = ({
             />
             <Box flex={1}>
                 <FlashList
+                    maintainVisibleContentPosition={{ disabled: true }}
                     ref={listRef}
                     data={assets}
                     keyExtractor={keyExtractor}
