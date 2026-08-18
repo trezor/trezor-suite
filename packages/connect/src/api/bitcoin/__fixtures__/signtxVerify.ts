@@ -204,6 +204,21 @@ export default [
         error: 'verifyTx: Wrong output amount at output 0. Requested: 20000, signed: 10000',
     },
     {
+        // numeric 0 is a valid amount (e.g. an ephemeral anchor/P2A-style output) and must
+        // not be treated as "no amount to verify" by a JS truthiness check
+        description: 'Error, amount differ (requested amount is numeric 0)',
+        inputs,
+        outputs: [
+            {
+                address: 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4',
+                amount: 0,
+                script_type: 'PAYTOADDRESS',
+            },
+        ],
+        tx: '01000000016d20f69067ad1ffd50ee7c0f377dde2c932ccb03e84b5659732da99c20f1f650010000006b483045022100cdf268cb89433f2cdc990ca3f45bf356befe51bbbbd6b57f1ca08ac69298acad022032beef4e1380bd3819c0cbf1b1a70b434a115199d1cbe5c59de8d94f98086452012102a7a079c1ef9916b289c2ff21a992c808d0de3dfcf8a9f163205c5c9e21f55d5cffffffff011027000000000000160014751e76e8199196d454941c45d1b3a323f1433bd600000000',
+        error: 'verifyTx: Wrong output amount at output 0. Requested: 0, signed: 10000',
+    },
+    {
         description: 'Error, wrong length (inputs)',
         inputs: [],
         outputs: [],
