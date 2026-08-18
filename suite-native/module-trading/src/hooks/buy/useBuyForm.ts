@@ -95,9 +95,7 @@ const useBuyQuoteChangeEffect = ({ control, getValues, setValue }: BuyFormType) 
     );
 
     useEffect(() => {
-        const isQuoteMatchingAsset = quote && quote.receiveCurrency === asset?.cryptoId;
-
-        if (!isQuoteMatchingAsset) {
+        if (quote && quote.receiveCurrency !== asset?.cryptoId) {
             return;
         }
 
