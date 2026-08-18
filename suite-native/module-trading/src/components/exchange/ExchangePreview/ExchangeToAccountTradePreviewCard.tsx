@@ -21,7 +21,11 @@ export const ExchangeToAccountTradePreviewCard = ({
     const { toValue } = useChangeStringsExtractor(quote);
     const { isLoading: isSimulationLoading, data: simulationResult } = useDexExchangeTxSimulation();
 
-    const simulatedReceiveAmount = getSimulatedReceiveAmount(simulationResult, quote?.receive);
+    const simulatedReceiveAmount = getSimulatedReceiveAmount(
+        simulationResult,
+        quote?.send,
+        quote?.receive,
+    );
 
     return (
         <TradingAccountCard

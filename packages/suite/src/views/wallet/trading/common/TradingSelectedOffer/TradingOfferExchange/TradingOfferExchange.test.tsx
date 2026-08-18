@@ -187,7 +187,11 @@ describe('TradingOfferExchange', () => {
         renderOfferExchange();
 
         expect(screen.getByTestId('info-item-receive')).toHaveTextContent('1100');
-        expect(mockGetSimulatedReceiveAmount).toHaveBeenCalledWith(undefined, TETHER_CRYPTO_ID);
+        expect(mockGetSimulatedReceiveAmount).toHaveBeenCalledWith(
+            undefined,
+            ETHEREUM_CRYPTO_ID,
+            TETHER_CRYPTO_ID,
+        );
     });
 
     it('prefers the simulated receive amount over the quote one', () => {

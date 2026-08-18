@@ -1,41 +1,23 @@
 import { type JsonRpcScanParams } from '@blockaid/client/resources/evm';
 
-import { type NetworkConfig, type NetworkType, networks } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
-import { type BlockaidSupportedNetwork } from '../constants';
-
-type ChainId = Extract<NetworkConfig, { networkType: 'ethereum'; testnet: false }>['chainId'];
-
-// Maps EVM chainId to Blockaid's canonical chain name.
-const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID = {
-    [networks.eth.chainId]: 'ethereum',
-    [networks.op.chainId]: 'optimism',
-    [networks.bsc.chainId]: 'bsc',
-    [networks.etc.chainId]: 'ethereumClassic',
-    [networks.pol.chainId]: 'polygon',
-    [networks.base.chainId]: 'base',
-    [networks.arb.chainId]: 'arbitrum',
-    [networks.rhc.chainId]: 'robinhood',
-    [networks.hype.chainId]: 'hyperevm',
-    [networks.avax.chainId]: 'avalanche',
-} as const satisfies Readonly<Record<ChainId, string>>;
-
-export const isBlockaidSupportedNetwork = (
-    network: NetworkType,
-): network is BlockaidSupportedNetwork => ['solana', 'ethereum'].includes(network);
-
-const resolveBlockaidEvmChain = (chainId: number | undefined = 1) =>
-    BLOCKAID_EVM_CHAIN_BY_CHAIN_ID[chainId as keyof typeof BLOCKAID_EVM_CHAIN_BY_CHAIN_ID];
+import { resolveBlockaidEvmChain } from '../chains';
 
 function transformPayloadOfEthereumSignTransaction({
     payload: { transaction },
     fromAddress,
     sourceOrigin,
 }: TxSimulationMethod<'ethereumSignTransaction'>) {
+    const chain = resolveBlockaidEvmChain(transaction.chainId);
+
+    if (!chain) {
+        return null;
+    }
+
     return {
-        chain: resolveBlockaidEvmChain(transaction.chainId),
+        chain,
         data: {
             method: 'eth_sendTransaction',
             params: [
@@ -65,10 +47,16 @@ function transformPayloadOfEthereumSignTypedData({
     fromAddress,
     sourceOrigin,
 }: TxSimulationMethod<'ethereumSignTypedData'>) {
+    const chain = resolveBlockaidEvmChain(
+        data.domain.chainId ? Number(data.domain.chainId) : undefined,
+    );
+
+    if (!chain) {
+        return null;
+    }
+
     return {
-        chain: resolveBlockaidEvmChain(
-            data.domain.chainId ? Number(data.domain.chainId) : undefined,
-        ),
+        chain,
         data: {
             method: 'eth_signTypedData_v4',
             params: [fromAddress, JSON.stringify(data)],
@@ -93,16 +81,16 @@ export function getTxSimulationParams(action: TxSimulationAction | null) {
     }
 
     switch (action.method) {
-        case 'ethereumSignTransaction':
-            return {
-                method: action.method,
-                params: transformPayloadOfEthereumSignTransaction(action),
-            } as const;
-        case 'ethereumSignTypedData':
-            return {
-                method: action.method,
-                params: transformPayloadOfEthereumSignTypedData(action),
-            } as const;
+        case 'ethereumSignTransaction': {
+            const params = transformPayloadOfEthereumSignTransaction(action);
+
+            return params && ({ method: action.method, params } as const);
+        }
+        case 'ethereumSignTypedData': {
+            const params = transformPayloadOfEthereumSignTypedData(action);
+
+            return params && ({ method: action.method, params } as const);
+        }
         default:
             return null;
     }

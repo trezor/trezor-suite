@@ -86,6 +86,7 @@ export const TradingOfferExchange = () => {
 
     const simulatedReceiveAmount = getSimulatedReceiveAmount(
         simulationResult,
+        selectedTrade.send,
         selectedTrade.receive,
     );
     const hasIssueToResolve = isSimulationEnabled && issue !== null;

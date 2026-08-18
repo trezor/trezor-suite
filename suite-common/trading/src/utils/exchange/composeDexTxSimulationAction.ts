@@ -1,5 +1,6 @@
 import { type ExchangeTrade } from 'invity-api';
 
+import { isBlockaidSupportedNetwork } from '@suite-common/tx-simulation';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { fromEther } from '@suite-common/wallet-utils';
@@ -21,7 +22,7 @@ export const composeDexTxSimulationAction = ({
     account,
     sourceOrigin,
 }: ComposeDexTxSimulationActionParams): TxSimulationAction | null => {
-    if (!quote?.isDex || !account) {
+    if (!quote?.isDex || !account || !isBlockaidSupportedNetwork(account.symbol)) {
         return null;
     }
 

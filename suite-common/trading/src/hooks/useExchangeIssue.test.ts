@@ -23,12 +23,12 @@ jest.mock('./useExchangeFiatDeviation', () => ({
 const mockUseDexExchangeTxSimulation = jest.mocked(useDexExchangeTxSimulation);
 const mockUseExchangeFiatDeviation = jest.mocked(useExchangeFiatDeviation);
 
-// Contract-less receive crypto id so the NATIVE asset diff of the simulation matches it.
+// Same-chain, so the NATIVE diff below is genuinely the receive asset.
 const selectedQuote: ExchangeTrade = {
     exchange: 'changelly',
-    receive: 'bitcoin' as CryptoId,
+    receive: 'ethereum' as CryptoId,
     receiveStringAmount: '0.0609979',
-    send: 'litecoin' as CryptoId,
+    send: `ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48` as CryptoId,
     sendStringAmount: '12',
 };
 const account = accountEth as Account;

@@ -1,11 +1,9 @@
 export * from './client';
 export type * from './types';
-export {
-    getSimulationErrorRiskLevel,
-    areTxSimulationMethods,
-    isBlockaidSupportedNetwork,
-} from './utils';
+export { getNetworkByBlockaidChain, isBlockaidSupportedNetwork } from './chains';
+export { getSimulationErrorRiskLevel, areTxSimulationMethods } from './utils';
 export { getAssetDiffTransferAmount } from './utils/getAssetDiffTransferAmount';
+export { type CrossChainAssetDiff, getCrossChainAssetDiffs } from './utils/getCrossChainAssetDiffs';
 export {
     getTxSimulationRiskSummary,
     type TxSimulationRiskSummary,
