@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { AccountLabel, AccountTypeBadge } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
@@ -13,10 +12,11 @@ import {
     switchSelectedAccountThunk,
     walletConnectActions,
 } from '@suite-common/walletconnect';
-import { Column, Modal, type Option, Row, Select } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
+import { Column, Modal, type Option, Select } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
+
+import { WalletConnectAccountOption } from './WalletConnectAccountOption';
 
 interface WalletConnectSwitchAccountModalProps {
     sessionTopic: string;
@@ -80,18 +80,11 @@ export const WalletConnectSwitchAccountModal = ({
                     isSearchable={false}
                     isClearable={false}
                     size="large"
+                    isMenuFullWidth
                     value={selectedDefaultAccount}
                     options={selectableAccounts}
                     formatOptionLabel={(account: Account) => (
-                        <Row gap={8}>
-                            {account.symbol && <TokenIcon symbol={account.symbol} size={24} />}
-                            <AccountLabel account={account} key={account.descriptor} />
-                            <AccountTypeBadge
-                                accountType={account.accountType}
-                                networkType={account.networkType}
-                                size="small"
-                            />
-                        </Row>
+                        <WalletConnectAccountOption account={account} />
                     )}
                     onChange={(option: Option) => setSelectedDefaultAccount(option)}
                 />

@@ -2,12 +2,12 @@ import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { useDappScan } from '@suite-common/tx-simulation';
+import { networkSymbolCollection } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
@@ -30,10 +30,12 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
-import { NetworkIcon, TokenIcon } from '@trezor/product-components';
+import { NetworkIcon } from '@trezor/product-components';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+
+import { WalletConnectAccountOption } from './WalletConnectAccountOption';
 
 const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
     display: flex;
@@ -42,6 +44,13 @@ const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
     align-items: center;
     opacity: ${props => (props.$isDisabled ? 0.5 : 1)};
 `;
+
+// networks the dapp requests arrive in its own order, the modal follows the coin settings one
+const getNetworkOrder = (symbol?: string) => {
+    const index = networkSymbolCollection.findIndex(networkSymbol => networkSymbol === symbol);
+
+    return index === -1 ? networkSymbolCollection.length : index;
+};
 
 interface WalletConnectProposalModalProps {
     eventId: number;
@@ -61,6 +70,13 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     ) ?? [],
             ),
         [accounts, pendingProposal?.networks],
+    );
+    const requestedNetworks = useMemo(
+        () =>
+            (pendingProposal?.networks ?? [])
+                .filter(network => network.status !== 'unsupported')
+                .toSorted((a, b) => getNetworkOrder(a.symbol) - getNetworkOrder(b.symbol)),
+        [pendingProposal?.networks],
     );
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
         selectableAccounts[0] || null,
@@ -187,27 +203,22 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                 </Text>
                 <Card>
                     <Row rowGap={8} columnGap={12} flexWrap="wrap">
-                        {pendingProposal.networks
-                            .filter(network => network.status !== 'unsupported')
-                            .map(network => (
-                                <Tooltip
-                                    content={getTooltipContent(network)}
-                                    key={network.namespaceId}
-                                >
-                                    <NetworkItemWrapper $isDisabled={network.status !== 'active'}>
-                                        {network.symbol && (
-                                            <NetworkIcon
-                                                networkSymbol={network.symbol as any}
-                                                size={24}
-                                            />
-                                        )}
-                                        <Text>
-                                            {network.name}
-                                            {network.required && <Text intent="critical">*</Text>}
-                                        </Text>
-                                    </NetworkItemWrapper>
-                                </Tooltip>
-                            ))}
+                        {requestedNetworks.map(network => (
+                            <Tooltip content={getTooltipContent(network)} key={network.namespaceId}>
+                                <NetworkItemWrapper $isDisabled={network.status !== 'active'}>
+                                    {network.symbol && (
+                                        <NetworkIcon
+                                            networkSymbol={network.symbol as any}
+                                            size={24}
+                                        />
+                                    )}
+                                    <Text>
+                                        {network.name}
+                                        {network.required && <Text intent="critical">*</Text>}
+                                    </Text>
+                                </NetworkItemWrapper>
+                            </Tooltip>
+                        ))}
                     </Row>
                 </Card>
 
@@ -215,30 +226,19 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     <Translation id="TR_DEFAULT_ACCOUNT" />
                 </Text>
                 {selectableAccounts.length > 0 && (
-                    <Card paddingType="none">
-                        <Select
-                            isSearchable={false}
-                            isClearable={false}
-                            size="large"
-                            value={selectedDefaultAccount}
-                            options={selectableAccounts}
-                            formatOptionLabel={(account: Account) => (
-                                <Row gap={8}>
-                                    {account.symbol && (
-                                        <TokenIcon symbol={account.symbol} size={24} />
-                                    )}
-                                    <AccountLabel
-                                        account={account}
-                                        key={account.descriptor}
-                                        showAccountTypeBadge
-                                        accountTypeBadgeSize="small"
-                                    />
-                                </Row>
-                            )}
-                            onChange={(option: Option) => setSelectedDefaultAccount(option)}
-                            closeMenuOnScroll={false}
-                        />
-                    </Card>
+                    <Select
+                        isSearchable={false}
+                        isClearable={false}
+                        size="large"
+                        isMenuFullWidth
+                        value={selectedDefaultAccount}
+                        options={selectableAccounts}
+                        formatOptionLabel={(account: Account) => (
+                            <WalletConnectAccountOption account={account} />
+                        )}
+                        onChange={(option: Option) => setSelectedDefaultAccount(option)}
+                        closeMenuOnScroll={false}
+                    />
                 )}
 
                 {(requiredNetworksNotActivated ||
