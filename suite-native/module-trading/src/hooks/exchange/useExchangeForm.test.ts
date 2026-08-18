@@ -17,6 +17,7 @@ import {
     btcAsset,
     cexdirectFloatingQuote,
     eth1NormalAccount,
+    ethAsset,
     exchangeCexdirect,
     exchangeQuotes,
     invityDexQuote,
@@ -204,16 +205,34 @@ describe('useExchangeForm', () => {
         it('should set receiveCryptoAmount based on selected quote', () => {
             const { result } = renderUseExchangeForm();
             act(() => {
+                result.current.setValue('sendAsset', usdcAsset);
+                result.current.setValue('receiveAsset', btcAsset);
                 store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
             });
 
             expect(result.current.getValues('receiveCryptoAmount')).toBe('0.00089118');
         });
 
+        it('should clear receiveCryptoAmount when receive asset does not match selected quote', () => {
+            const { result } = renderUseExchangeForm();
+            act(() => {
+                result.current.setValue('sendAsset', usdcAsset);
+                result.current.setValue('receiveAsset', btcAsset);
+                store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
+            });
+
+            act(() => {
+                result.current.setValue('receiveAsset', ethAsset);
+            });
+
+            expect(result.current.getValues('receiveCryptoAmount')).toBeUndefined();
+        });
+
         it('should set receiveCryptoAmount in sats when using BTC and amount in sats', () => {
             store = getInitializedStore(PROTO.AmountUnit.SATOSHI);
             const { result } = renderUseExchangeForm();
             act(() => {
+                result.current.setValue('sendAsset', usdcAsset);
                 result.current.setValue('receiveAsset', btcAsset);
                 store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
             });

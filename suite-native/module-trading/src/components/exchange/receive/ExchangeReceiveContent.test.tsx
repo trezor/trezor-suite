@@ -5,7 +5,7 @@ import {
     renderHookWithStoreProvider,
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
+import { btcAsset, mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { ExchangeReceiveContent } from './ExchangeReceiveContent';
@@ -57,8 +57,13 @@ describe('ExchangeReceiveContent', () => {
 
     it('should render all components', () => {
         act(() => {
+            form.setValue('sendAsset', btcAsset);
             form.setValue('receiveAsset', usdcAsset);
-            form.setValue('quote', mercuryoFixedWorstQuote);
+            form.setValue('quote', {
+                ...mercuryoFixedWorstQuote,
+                send: btcAsset.cryptoId,
+                receive: usdcAsset.cryptoId,
+            });
         });
         const { getByText, getByLabelText } = renderExchangeReceiveContent();
 

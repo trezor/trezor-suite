@@ -95,6 +95,12 @@ const useBuyQuoteChangeEffect = ({ control, getValues, setValue }: BuyFormType) 
     );
 
     useEffect(() => {
+        const isQuoteMatchingAsset = quote && quote.receiveCurrency === asset?.cryptoId;
+
+        if (!isQuoteMatchingAsset) {
+            return;
+        }
+
         const [amountInCrypto, fiatValue, cryptoValue] = getValues([
             'amountInCrypto',
             'fiatValue',
@@ -121,7 +127,7 @@ const useBuyQuoteChangeEffect = ({ control, getValues, setValue }: BuyFormType) 
                     : truncatedCryptoAmount;
             setValue('cryptoValue', value);
         }
-    }, [quote, isAmountInSats, symbol, getValues, setValue]);
+    }, [asset?.cryptoId, quote, isAmountInSats, symbol, getValues, setValue]);
 };
 
 const useValidations = (
