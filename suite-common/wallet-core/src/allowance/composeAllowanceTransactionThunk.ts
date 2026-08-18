@@ -1,10 +1,17 @@
+import { isRejected } from '@reduxjs/toolkit';
+
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    DEFAULT_PAYMENT,
+    DEFAULT_VALUES,
+    ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+} from '@suite-common/wallet-constants';
 import {
     type Account,
     type FeeInfo,
     type FeeLevelLabel,
+    type FormState,
     type PrecomposedLevels,
 } from '@suite-common/wallet-types';
 import { findToken, getAccountIdentity } from '@suite-common/wallet-utils';
@@ -16,6 +23,7 @@ import { ALLOWANCE_MODULE_PREFIX } from './allowanceConstants';
 import { buildAllowanceTransaction } from './buildAllowanceTransaction';
 import { ETHEREUM_ADJUST_GAS_LIMIT } from '../fees/feesUtils';
 import { type ComposeFeeLevelsError } from '../send/sendFormTypes';
+import { composeTronTransactionFeeLevelsThunk } from '../send/tron/sendFormTronThunks';
 
 export interface ComposeAllowanceTransactionThunkParams {
     feeInfo: FeeInfo;
@@ -37,7 +45,10 @@ export const composeAllowanceTransactionThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${ALLOWANCE_MODULE_PREFIX}/composeAllowanceTransactionThunk`,
-    async ({ feeInfo, account, contract, selectedFee, customFee, data }, { rejectWithValue }) => {
+    async (
+        { feeInfo, account, contract, selectedFee, customFee, data },
+        { dispatch, rejectWithValue },
+    ) => {
         const token = findToken(account.tokens, contract);
 
         if (!token) {
@@ -45,6 +56,29 @@ export const composeAllowanceTransactionThunk = createThunk<
                 error: 'fee-levels-compose-failed',
                 message: 'Token not found in account tokens.',
             });
+        }
+
+        if (account.networkType === 'tron') {
+            const formState: FormState = {
+                ...DEFAULT_VALUES,
+                outputs: [{ ...DEFAULT_PAYMENT, address: contract, amount: '0', token: null }],
+                transactionData: data,
+                options: ['broadcast'],
+                selectedUtxos: [],
+            };
+
+            const response = await dispatch(
+                composeTronTransactionFeeLevelsThunk({
+                    formState,
+                    composeContext: { account, network: getNetwork(account.symbol), feeInfo },
+                }),
+            );
+
+            if (isRejected(response)) {
+                return rejectWithValue(response.payload ?? { error: 'fee-levels-compose-failed' });
+            }
+
+            return response.payload;
         }
 
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
