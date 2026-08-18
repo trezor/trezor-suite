@@ -45,7 +45,7 @@ describe('ExchangeSendAmountInput', () => {
     ) =>
         renderWithTradingProvider(
             <Form form={form}>
-                <ExchangeSendAmountInput onSelectAssetPress={jest.fn()} {...props} />
+                <ExchangeSendAmountInput onSelectAsset={jest.fn()} {...props} />
             </Form>,
             {
                 tradeType: 'exchange',
@@ -96,7 +96,7 @@ describe('ExchangeSendAmountInput', () => {
         const showAssetsScreen = jest.fn();
         const form = renderUseTradingExchangeForm();
         const { getByLabelText } = renderCryptoAmountInput(
-            { onSelectAssetPress: showAssetsScreen },
+            { onSelectAsset: showAssetsScreen },
             form,
         );
 
@@ -114,7 +114,7 @@ describe('ExchangeSendAmountInput', () => {
             form.setValue('sendAsset', btcAsset);
         });
         const { getByLabelText } = renderCryptoAmountInput(
-            { onSelectAssetPress: showAssetsScreen },
+            { onSelectAsset: showAssetsScreen },
             form,
         );
 
