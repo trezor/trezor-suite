@@ -314,6 +314,26 @@ import {
     TronWithdrawBalance,
     TronWithdrawUnfreeze,
 } from './messages-tron';
+import {
+    WardDeleteEntry,
+    WardEntryAck,
+    WardEntryRequest,
+    WardGetEntry,
+    WardIngestAttestation,
+    WardIngestAttestationAck,
+    WardLeafAck,
+    WardReconcile,
+    WardReconcileAck,
+    WardRecoverCounter,
+    WardRecoverCounterAck,
+    WardRollback,
+    WardRollbackAck,
+    WardSetEntry,
+    WardSync,
+    WardSyncAck,
+    WardVerifyChain,
+    WardVerifyChainAck,
+} from './messages-ward';
 
 export type * from './options';
 export * from './messages-common';
@@ -338,6 +358,7 @@ export * from './messages-telemetry';
 export * from './messages-tezos';
 export * from './messages-thp';
 export * from './messages-tron';
+export * from './messages-ward';
 export type * from './messages';
 
 export type MessageType = Static<typeof MessageType>;
@@ -633,6 +654,24 @@ export const MessageType = Type.Object(
         TronWithdrawUnfreeze,
         TronWithdrawBalance,
         TronSignature,
+        WardGetEntry,
+        WardSetEntry,
+        WardDeleteEntry,
+        WardEntryRequest,
+        WardEntryAck,
+        WardLeafAck,
+        WardVerifyChain,
+        WardVerifyChainAck,
+        WardSync,
+        WardSyncAck,
+        WardIngestAttestation,
+        WardIngestAttestationAck,
+        WardReconcile,
+        WardReconcileAck,
+        WardRollback,
+        WardRollbackAck,
+        WardRecoverCounter,
+        WardRecoverCounterAck,
     },
     { $id: 'MessageType' },
 );
@@ -812,7 +851,17 @@ export type WireInMessage =
     | 'TronFreezeBalanceV2Contract'
     | 'TronUnfreezeBalanceV2Contract'
     | 'TronWithdrawUnfreeze'
-    | 'TronWithdrawBalance';
+    | 'TronWithdrawBalance'
+    | 'WardGetEntry'
+    | 'WardSetEntry'
+    | 'WardDeleteEntry'
+    | 'WardEntryAck'
+    | 'WardVerifyChain'
+    | 'WardSync'
+    | 'WardIngestAttestation'
+    | 'WardReconcile'
+    | 'WardRollback'
+    | 'WardRecoverCounter';
 
 export type WireOutMessage =
     | 'Success'
@@ -917,7 +966,15 @@ export type WireOutMessage =
     | 'ThpEndResponse'
     | 'TronAddress'
     | 'TronContractRequest'
-    | 'TronSignature';
+    | 'TronSignature'
+    | 'WardEntryRequest'
+    | 'WardLeafAck'
+    | 'WardVerifyChainAck'
+    | 'WardSyncAck'
+    | 'WardIngestAttestationAck'
+    | 'WardReconcileAck'
+    | 'WardRollbackAck'
+    | 'WardRecoverCounterAck';
 
 export type MessageKey = keyof MessageType;
 
