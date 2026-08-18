@@ -25,7 +25,7 @@ export const BASELINES: Baselines = {
     },
 };
 
-/** The highest value each metric may reach before the run fails. Raise deliberately. */
+/** The highest value each metric may reach before it is reported as over limit. Raise deliberately. */
 export const LIMITS: Limits = {
     'wallet-discovery': {
         totalBlockingTimeMs: 2000,

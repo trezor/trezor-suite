@@ -15,6 +15,7 @@ export const PERF_GLOBAL_KEY = '__trezorPerf__';
 
 type PerfController = {
     start: () => void;
+    endInteraction: () => void;
     stop: () => PerfMetrics;
 };
 
@@ -45,6 +46,7 @@ export function installPerfInstrumentation(): void {
         endTime: 0,
         commitCount: 0,
         longTasks: [] as Array<{ start: number; duration: number }>,
+        observesLongTasks: false,
     };
 
     const onCommit = (): void => {
@@ -106,8 +108,10 @@ export function installPerfInstrumentation(): void {
             }
         });
         observer.observe({ type: 'longtask', buffered: true });
+        state.observesLongTasks = true;
     } catch {
-        // 'longtask' is not supported in every engine; TBT/long-task metrics stay 0 there.
+        // 'longtask' is not supported in every engine. The metrics that come from it are reported
+        // as null there — zeros would make such an environment look artificially fast.
     }
 
     const controller: PerfController = {
@@ -118,9 +122,17 @@ export function installPerfInstrumentation(): void {
             state.commitCount = 0;
             state.longTasks = [];
         },
+        endInteraction() {
+            // Stamped when the interaction itself finishes, so the settle wait that follows does not
+            // end up in its duration. Anything landing during that wait still counts towards the
+            // other metrics, which is what the wait is for.
+            if (state.endTime === 0) {
+                state.endTime = performance.now();
+            }
+        },
         stop() {
             state.enabled = false;
-            state.endTime = performance.now();
+            const endTime = state.endTime === 0 ? performance.now() : state.endTime;
 
             // Keep only long tasks that started within the measured window.
             const windowTasks = state.longTasks.filter(task => task.start >= state.startTime);
@@ -138,11 +150,11 @@ export function installPerfInstrumentation(): void {
             }
 
             return {
-                totalBlockingTimeMs: Math.round(totalBlockingTime),
-                longTaskCount: windowTasks.length,
-                longestTaskMs: Math.round(longestTask),
+                totalBlockingTimeMs: state.observesLongTasks ? Math.round(totalBlockingTime) : null,
+                longTaskCount: state.observesLongTasks ? windowTasks.length : null,
+                longestTaskMs: state.observesLongTasks ? Math.round(longestTask) : null,
                 reactCommitCount: state.commitCount,
-                interactionDurationMs: Math.round(state.endTime - state.startTime),
+                interactionDurationMs: Math.round(endTime - state.startTime),
             };
         },
     };
@@ -158,6 +170,20 @@ export function startPerfMeasurement(): void {
         );
     }
     controller.start();
+}
+
+/**
+ * Ends the measured interaction without reading the metrics yet, so that whatever the page still
+ * does afterwards is measured but not counted as interaction time.
+ */
+export function endPerfInteraction(): void {
+    const controller = (window as unknown as { __trezorPerf__?: PerfController }).__trezorPerf__;
+    if (!controller) {
+        throw new Error(
+            'Performance instrumentation is not installed. Call installPerfInstrumentation before page load.',
+        );
+    }
+    controller.endInteraction();
 }
 
 export function readPerfMetrics(): PerfMetrics {

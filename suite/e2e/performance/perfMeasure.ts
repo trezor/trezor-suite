@@ -4,6 +4,7 @@ import {
     PerfMetrics,
     buildJsonReport,
     compareScenario,
+    endPerfInteraction,
     formatHumanReport,
     readPerfMetrics,
     startPerfMeasurement,
@@ -45,6 +46,9 @@ export const measurePerformance = async (
 
     await page.evaluate(startPerfMeasurement);
     await interaction();
+    // The clock stops with the interaction; the settle wait below only lets trailing long tasks and
+    // renders arrive, and must not be reported as time the interaction took.
+    await page.evaluate(endPerfInteraction);
     await page.waitForTimeout(SETTLE_MS);
     const current = await page.evaluate(readPerfMetrics);
 
