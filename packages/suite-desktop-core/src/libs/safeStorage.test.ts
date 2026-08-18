@@ -27,9 +27,12 @@ jest.mock('@trezor/env-utils', () => ({
 }));
 
 import {
+    decryptStoredPrimitiveValue,
     decryptFromSafeStorage,
+    encryptStoredPrimitiveValue,
     encryptToSafeStorage,
     isSafeStorageEncryptionAvailable,
+    wrapOnDidChangeWithDecryptedValues,
 } from './safeStorage';
 
 describe('safeStorage', () => {
@@ -99,5 +102,74 @@ describe('safeStorage', () => {
         });
 
         expect(decryptFromSafeStorage('invalid-hex')).toStrictEqual(err(DecryptionFailed()));
+    });
+
+    it('encrypts booleans as encrypted store values', () => {
+        mockSafeStorage.encryptString.mockReturnValue(Buffer.from('encrypted-bool'));
+
+        expect(encryptStoredPrimitiveValue(true)).toBe(
+            `safeStorage:encrypted:${Buffer.from('encrypted-bool').toString('hex')}`,
+        );
+    });
+
+    it('falls back to branded plaintext string values when encryption fails', () => {
+        mockSafeStorage.isEncryptionAvailable.mockReturnValue(false);
+
+        expect(encryptStoredPrimitiveValue('token')).toBe('safeStorage:plaintext:token');
+    });
+
+    it('returns legacy plaintext values as-is', () => {
+        expect(
+            decryptStoredPrimitiveValue({
+                rawValue: 'legacy-token',
+                defaultValue: undefined,
+            }),
+        ).toBe('legacy-token');
+    });
+
+    it('decrypts stored plaintext wrapper values', () => {
+        expect(
+            decryptStoredPrimitiveValue({
+                rawValue: 'safeStorage:plaintext:token' as SafeStoragePlaintextValue,
+                defaultValue: undefined,
+            }),
+        ).toBe('token');
+    });
+
+    it('returns the fallback boolean when encrypted data cannot be decrypted', () => {
+        mockSafeStorage.decryptString.mockImplementation(() => {
+            throw new Error('Decryption failed');
+        });
+
+        expect(
+            decryptStoredPrimitiveValue({
+                rawValue:
+                    `safeStorage:encrypted:${Buffer.from('encrypted-bool').toString('hex')}` as SafeStorageEncryptedValue,
+                defaultValue: true,
+            }),
+        ).toBe(true);
+    });
+
+    it('wraps onDidChange callbacks with decrypted values', () => {
+        mockSafeStorage.decryptString.mockReturnValue('secret-token');
+        const callback = jest.fn();
+        const wrappedCallback = wrapOnDidChangeWithDecryptedValues<
+            string | SafeStorageEncryptedValue | SafeStoragePlaintextValue,
+            string
+        >({
+            decryptValue: value =>
+                decryptStoredPrimitiveValue({
+                    rawValue: value,
+                    defaultValue: undefined,
+                }),
+            callback,
+        });
+
+        wrappedCallback(
+            `safeStorage:encrypted:${Buffer.from('encrypted-token').toString('hex')}` as SafeStorageEncryptedValue,
+            'safeStorage:plaintext:old-token' as SafeStoragePlaintextValue,
+        );
+
+        expect(callback).toHaveBeenCalledWith('secret-token', 'old-token');
     });
 });

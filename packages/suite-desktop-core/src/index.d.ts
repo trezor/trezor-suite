@@ -141,12 +141,28 @@ declare type ElectronConnectSettings = {
     hasUsedConnectWs: boolean;
 };
 
+declare type SafeStorageEncryptedValue = string &
+    import('@trezor/type-utils').Branded<'SafeStorageEncryptedValue'>;
+
+declare type SafeStoragePlaintextValue = string &
+    import('@trezor/type-utils').Branded<'SafeStoragePlaintextValue'>;
+
 declare type BioAuthSettings = {
     enabled?: boolean;
+};
+
+declare type StoredBioAuthSettings = {
+    enabled?: boolean | SafeStorageEncryptedValue;
 };
 
 declare type McpSettings = {
     enabled: boolean;
     port: number;
     token?: string;
+};
+
+declare type StoredMcpSettings = {
+    enabled: boolean;
+    port: number;
+    token?: SafeStorageEncryptedValue | SafeStoragePlaintextValue;
 };

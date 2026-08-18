@@ -1,7 +1,13 @@
 import ElectronStore from 'electron-store';
 
+import { isLinux } from '@trezor/env-utils';
 import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
+import {
+    decryptStoredPrimitiveValue,
+    encryptStoredPrimitiveValue,
+    wrapOnDidChangeWithDecryptedValues,
+} from './safeStorage';
 import { getInitialWindowSize } from './screen';
 
 type OnDidChangeCallback<T> = (newValue?: T, oldValue?: T) => void;
@@ -12,19 +18,31 @@ export type WinBoundsCoords = WinBounds & {
     y?: number;
 };
 
+type StoreSchema = {
+    winBounds: WinBoundsCoords;
+    updateSettings: UpdateSettings;
+    themeSettings: SuiteThemeVariant;
+    torSettings: TorSettings;
+    bridgeSettings: BridgeSettings;
+    traySettings: TraySettings;
+    connectSettings: ElectronConnectSettings;
+    bioAuthSettings: StoredBioAuthSettings;
+    mcpSettings: StoredMcpSettings;
+};
+
+type LegacyStoredBioAuthSettings = {
+    enabled?: boolean | SafeStorageEncryptedValue;
+};
+
+type LegacyStoredMcpSettings = {
+    enabled: boolean;
+    port: number;
+    token?: string | SafeStorageEncryptedValue | SafeStoragePlaintextValue;
+};
+
 export class Store {
     private static instance: Store;
-    private readonly store: ElectronStore<{
-        winBounds: WinBoundsCoords;
-        updateSettings: UpdateSettings;
-        themeSettings: SuiteThemeVariant;
-        torSettings: TorSettings;
-        bridgeSettings: BridgeSettings;
-        traySettings: TraySettings;
-        connectSettings: ElectronConnectSettings;
-        bioAuthSettings: BioAuthSettings;
-        mcpSettings: McpSettings;
-    }>;
+    private readonly store: ElectronStore<StoreSchema>;
 
     private constructor() {
         this.store = new ElectronStore();
@@ -125,38 +143,86 @@ export class Store {
     }
 
     public getBioAuthSettings() {
+        const storedBioAuthSettings = this.getStoredBioAuthSettings();
+
         // back-compatibility: previously stored in redux, now in electron store. this is the reason why we don't setup default explicitly but keep it undefined,
         // after the first start of the application, this value should be set to the old stored value.
-        return this.store.get('bioAuthSettings', { enabled: undefined });
+        return {
+            enabled: decryptStoredPrimitiveValue({
+                rawValue: storedBioAuthSettings.enabled,
+                defaultValue: !isLinux(),
+            }),
+        };
     }
 
     public setBioAuthSettings(bioAuthSettings: Partial<BioAuthSettings>) {
+        const currentBioAuthSettings = this.getBioAuthSettings();
+        const nextBioAuthSettings = { ...currentBioAuthSettings, ...bioAuthSettings };
+
         this.store.set('bioAuthSettings', {
-            ...this.store.get('bioAuthSettings'),
-            ...bioAuthSettings,
+            enabled: encryptStoredPrimitiveValue(nextBioAuthSettings.enabled),
         });
     }
 
     public onBioAuthSettingsChange(callback: OnDidChangeCallback<BioAuthSettings>): Unsubscribe {
-        return this.store.onDidChange('bioAuthSettings', callback);
+        return this.store.onDidChange(
+            'bioAuthSettings',
+            wrapOnDidChangeWithDecryptedValues({
+                decryptValue: storedBioAuthSettings => {
+                    if (!storedBioAuthSettings) {
+                        return undefined;
+                    }
+
+                    return {
+                        enabled: decryptStoredPrimitiveValue({
+                            rawValue: storedBioAuthSettings.enabled,
+                            defaultValue: !isLinux(),
+                        }),
+                    };
+                },
+                callback,
+            }),
+        );
     }
 
     public getMcpSettings() {
-        return this.store.get('mcpSettings', {
-            enabled: false,
-            port: 21340,
-        });
+        const storedMcpSettings = this.getStoredMcpSettings();
+
+        return {
+            ...storedMcpSettings,
+            token: decryptStoredPrimitiveValue({
+                rawValue: storedMcpSettings.token,
+                defaultValue: undefined,
+            }),
+        };
     }
 
     public setMcpSettings(mcpSettings: Partial<McpSettings>) {
+        const currentMcpSettings = this.getMcpSettings();
+        const nextMcpSettings = { ...currentMcpSettings, ...mcpSettings };
+
         this.store.set('mcpSettings', {
-            ...this.getMcpSettings(),
-            ...mcpSettings,
+            enabled: nextMcpSettings.enabled,
+            port: nextMcpSettings.port,
+            token: encryptStoredPrimitiveValue(nextMcpSettings.token),
         });
     }
 
     /** Deletes all items from the store. */
     public clear() {
         this.store.clear();
+    }
+
+    private getStoredBioAuthSettings() {
+        return this.store.get('bioAuthSettings', {
+            enabled: undefined,
+        }) as LegacyStoredBioAuthSettings;
+    }
+
+    private getStoredMcpSettings() {
+        return this.store.get('mcpSettings', {
+            enabled: false,
+            port: 21340,
+        }) as LegacyStoredMcpSettings;
     }
 }
