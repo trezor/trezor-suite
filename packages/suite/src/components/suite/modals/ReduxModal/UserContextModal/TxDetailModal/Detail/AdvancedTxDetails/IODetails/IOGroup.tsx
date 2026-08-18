@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { selectFullSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbolExtended } from '@suite-common/wallet-config';
@@ -8,7 +10,7 @@ import { ArrowRightIcon } from '@trezor/icons';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
 import { type IODetailsType } from './IODetailsType';
-import { IOItem } from './IOItem';
+import { type AddressOwnership, IOItem } from './IOItem';
 
 export type IOGroupProps = {
     /**
@@ -33,8 +35,35 @@ export const IOGroup = ({
     isPhishingTransaction,
 }: IOGroupProps) => {
     const selectedAccount = useSelector(selectFullSelectedAccount);
+    const accountAddresses = selectedAccount?.account?.addresses;
+    const accountDescriptor = selectedAccount?.account?.descriptor;
 
-    const anonymitySet = selectedAccount?.account?.addresses?.anonymitySet;
+    const ownershipByAddress = useMemo(() => {
+        if (!accountAddresses) return undefined;
+
+        const ownership = new Map<string, AddressOwnership>();
+        accountAddresses.used.forEach(({ address }) => ownership.set(address, 'own'));
+        accountAddresses.unused.forEach(({ address }) => ownership.set(address, 'own'));
+        accountAddresses.change.forEach(({ address }) => ownership.set(address, 'change'));
+
+        return ownership;
+    }, [accountAddresses]);
+
+    // Change counts only on an output; spent as an input it is just one of the account's addresses.
+    // Address-based accounts have no change chain and need case-insensitive matching (EIP-55).
+    const getOwnership = (address?: string, isOutput = false) => {
+        if (!address) return undefined;
+
+        if (!ownershipByAddress) {
+            return address.toLowerCase() === accountDescriptor?.toLowerCase() ? 'own' : undefined;
+        }
+
+        const ownership = ownershipByAddress.get(address);
+
+        return ownership === 'change' && !isOutput ? 'own' : ownership;
+    };
+
+    const anonymitySet = accountAddresses?.anonymitySet;
     const hasInputs = !!inputs?.length;
     const hasOutputs = !!outputs?.length;
 
@@ -66,6 +95,7 @@ export const IOGroup = ({
                             value={input.addresses?.[0]}
                             amount={input.value}
                             isPhishingTransaction={isPhishingTransaction}
+                            ownership={getOwnership(input.addresses?.[0])}
                         />
                     ))}
                 </Column>
@@ -98,6 +128,7 @@ export const IOGroup = ({
                             value={output.addresses?.[0]}
                             amount={output.value}
                             isPhishingTransaction={isPhishingTransaction}
+                            ownership={getOwnership(output.addresses?.[0], true)}
                         />
                     ))}
                 </Column>

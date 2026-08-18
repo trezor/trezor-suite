@@ -6836,6 +6836,15 @@ export const messages = defineMessages({
         id: 'TR_ACCOUNT_TOKENS_COUNT',
         defaultMessage: '{count, plural, one {+{count} token} other {+{count} tokens}}',
     },
+    TR_OWN_ADDRESS_TOOLTIP: {
+        id: 'TR_OWN_ADDRESS_TOOLTIP',
+        defaultMessage: 'This is your address.',
+    },
+    TR_CHANGE_OUTPUT_TOOLTIP: {
+        id: 'TR_CHANGE_OUTPUT_TOOLTIP',
+        defaultMessage:
+            'A change address of this account. The remainder of a send normally returns here.',
+    },
     TR_IN_PENDING_TRANSACTION: {
         id: 'TR_IN_PENDING_TRANSACTION',
         defaultMessage: 'In pending transaction',
