@@ -57,7 +57,7 @@ jobs:
 
       - name: Set nightly T3W1 matrix
         id: set-matrix-nightly-t3w1
-        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=all --groups=all --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-main --env=all --groups=all --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
 
       - name: Set all firmwares matrix
         id: set-matrix-all-firmwares
