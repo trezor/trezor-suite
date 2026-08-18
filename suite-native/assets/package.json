@@ -8,10 +8,12 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest:native"
     },
     "dependencies": {
         "@react-navigation/native": "7.1.31",
+        "@shopify/flash-list": "2.3.0",
         "@suite-common/assets": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
@@ -25,16 +27,16 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/accounts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "@suite-native/discovery": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/module-earn": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/staking": "workspace:*",
         "@suite-native/tokens": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
+        "react-native": "0.86.0",
         "react-native-reanimated": "4.5.0",
         "react-redux": "9.3.0"
     }

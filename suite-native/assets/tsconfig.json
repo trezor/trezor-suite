@@ -31,14 +31,15 @@
         },
         { "path": "../accounts" },
         { "path": "../atoms" },
-        { "path": "../discovery" },
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../module-earn" },
         { "path": "../navigation" },
         { "path": "../staking" },
         { "path": "../tokens" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/utils" }
     ]
 }

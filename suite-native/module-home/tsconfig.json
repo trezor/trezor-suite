@@ -49,6 +49,7 @@
         { "path": "../graph" },
         { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../module-earn" },
         { "path": "../navigation" },
         { "path": "../settings" },
         { "path": "../suite-sync" },

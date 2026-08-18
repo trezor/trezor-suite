@@ -61,20 +61,25 @@ export const HomeScreen = () => {
             case 'discoveryNotFinished':
                 return <DiscoveryNotFinished />;
             case 'portfolioContent':
-                return <PortfolioContent ref={portfolioGraphRef} />;
+                return <PortfolioContent ref={portfolioGraphRef} refreshControl={refreshControl} />;
             default:
                 return exhaustive(homeScreenState);
         }
     };
 
-    // Portfolio graph needs to be rendered full width edge to edge.
-    const isFullWidthScreenState = homeScreenState === 'portfolioContent';
+    // The portfolio content owns its scrolling viewport via FlashList, so the Screen's own scroll
+    // view is disabled and the refresh control is handed to the list instead. The portfolio graph
+    // also needs to be rendered full width edge to edge.
+    const isPortfolioContent = homeScreenState === 'portfolioContent';
 
     return (
         <Screen
             header={<DeviceManagerScreenHeader />}
-            refreshControl={refreshControl}
-            noHorizontalPadding={isFullWidthScreenState}
+            refreshControl={isPortfolioContent ? undefined : refreshControl}
+            isScrollable={!isPortfolioContent}
+            noHorizontalPadding={isPortfolioContent}
+            noBottomPadding={isPortfolioContent}
+            hasBottomInset={!isPortfolioContent}
         >
             {renderContent()}
         </Screen>

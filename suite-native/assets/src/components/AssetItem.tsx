@@ -34,6 +34,8 @@ import { PercentageIcon } from './PercentageIcon';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
+    isFirst?: boolean;
+    isLast?: boolean;
 };
 
 type NavigationType = TabToStackCompositeNavigationProp<
@@ -42,7 +44,7 @@ type NavigationType = TabToStackCompositeNavigationProp<
     RootStackParamList
 >;
 
-export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
+export const AssetItem = memo(({ cryptoCurrencySymbol, isFirst, isLast }: AssetItemProps) => {
     const navigation = useNavigation<NavigationType>();
     const singleAccountKey = useSelector((state: AssetsRootState) =>
         selectSingleDeviceAccountKeyForNetworkSymbol(state, cryptoCurrencySymbol),
@@ -83,6 +85,9 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     return (
         <AccountsListItemBase
             onPress={handleAssetPress}
+            hasBackground
+            isFirst={isFirst}
+            isLast={isLast}
             icon={<PercentageIcon symbol={cryptoCurrencySymbol} />}
             title={<AssetItemTitle symbol={cryptoCurrencySymbol} />}
             badges={<AssetItemBadges symbol={cryptoCurrencySymbol} />}
