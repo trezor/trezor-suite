@@ -1,4 +1,4 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { type TradeExchangeAction, events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
@@ -28,6 +28,7 @@ import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingOfferExchangeDetails } from './TradingOfferExchangeDetails';
 import { TradingOfferExchangeIssueBanner } from './TradingOfferExchangeIssueBanner';
 import { TradingOfferExchangeSimulationSubtitle } from './TradingOfferExchangeSimulationSubtitle';
+import { useExchangeIssueAnalytics } from './useExchangeIssueAnalytics';
 import { TradingInfoItem } from '../TradingInfo/TradingInfoItem';
 
 export const TradingOfferExchange = () => {
@@ -65,7 +66,9 @@ export const TradingOfferExchange = () => {
         error: simulationError,
         data: simulationResult,
     } = useDexExchangeTxSimulation(txSimulationParams);
-    const { issue, isSimulationEnabled } = useExchangeIssue(txSimulationParams);
+    const { issue, isSimulationEnabled, isSimulation } = useExchangeIssue(txSimulationParams);
+
+    useExchangeIssueAnalytics({ issue, isSimulationLoading, isSimulation });
 
     const isConfirmDisabled =
         isLoading || !selectedQuote || !sendAccount || !device?.connected || isSimulationLoading;
@@ -77,11 +80,8 @@ export const TradingOfferExchange = () => {
     }
 
     const providers = exchangeInfo?.providerInfos;
-
     const amountLabels = tradingGetAmountLabels({ type: 'exchange', amountInCrypto: false });
-
     const { exchange, signData } = selectedTrade;
-
     const isSignData = formStep === 'SIGN_DATA' && !!signData;
 
     const simulatedReceiveAmount = getSimulatedReceiveAmount(
@@ -90,17 +90,11 @@ export const TradingOfferExchange = () => {
     );
     const hasIssueToResolve = isSimulationEnabled && issue !== null;
 
-    const titleTranslationId = selectedTrade.isDex
-        ? 'TR_TRADING_REVIEW_SWAP'
-        : 'TR_SELL_CONFIRM_SEND_STEP';
-
-    const confirmAndSend = async () => {
-        const result = await sendTransaction();
-
+    const reportConfirmAndSendStep = (action: TradeExchangeAction) => {
         analytics.report({
             type: events.tradeExchangeEvent.name,
             payload: {
-                action: result ? 'continue' : 'cancel',
+                action,
                 step: 'confirm-and-send',
                 slippage: selectedTrade.swapSlippage,
             },
@@ -109,13 +103,19 @@ export const TradingOfferExchange = () => {
 
     const onConfirmAndSendClick = async () => {
         if (isSignData) {
+            reportConfirmAndSendStep('continue');
             await signDataAndConfirm();
-        } else {
-            await confirmAndSend();
+
+            return;
         }
+
+        const result = await sendTransaction();
+
+        reportConfirmAndSendStep(result ? 'continue' : 'cancel');
     };
 
     const onBackToTradeFormClick = () => {
+        reportConfirmAndSendStep('cancel');
         dispatch(goto({ routeName: 'wallet-trading-exchange', preserveParams: true }));
     };
 
@@ -125,7 +125,7 @@ export const TradingOfferExchange = () => {
                 <Column gap={20}>
                     <Column gap={4} alignItems="start">
                         <H2 typographyStyle="headline-sm">
-                            <Translation id={titleTranslationId} />
+                            <Translation id="TR_TRADING_REVIEW_SWAP" />
                         </H2>
                         <TradingOfferExchangeSimulationSubtitle
                             isSimulationEnabled={isSimulationEnabled}

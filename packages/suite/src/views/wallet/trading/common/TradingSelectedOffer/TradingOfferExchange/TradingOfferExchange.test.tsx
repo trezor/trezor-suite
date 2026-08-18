@@ -4,9 +4,12 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
+import { events } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
 import {
     type ExchangeIssue,
+    type TradingExchangeStepType,
     exchangeInitialState,
     getSimulatedReceiveAmount,
     initialState as tradingInitialState,
@@ -17,6 +20,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { type AppState } from 'src/reducers/store';
+import { type SuiteServices } from 'src/support/extraDependencies';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingOfferExchange } from './TradingOfferExchange';
@@ -24,6 +28,7 @@ import { extraDependenciesDesktopMock } from '../../../../../../../mocks/extraDe
 import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
 
 const mockSendTransaction = jest.fn(() => Promise.resolve(true));
+const mockSignDataAndConfirm = jest.fn(() => Promise.resolve());
 const mockGoto = jest.fn((payload: unknown) => ({ type: 'test/goto', payload }));
 
 jest.mock('@suite/device', () => ({
@@ -52,7 +57,7 @@ jest.mock('src/hooks/wallet/trading/useTradingExchangeTradeActions', () => ({
     useTradingExchangeTradeActions: () => ({
         account: mockWalletAccount({ symbol: asNetworkSymbol('eth') }),
         sendTransaction: mockSendTransaction,
-        signDataAndConfirm: jest.fn(),
+        signDataAndConfirm: mockSignDataAndConfirm,
     }),
 }));
 
@@ -99,6 +104,11 @@ const CROSS_CHAIN_QUOTE: ExchangeTrade = {
     receive: 'bitcoin' as CryptoId,
 };
 
+const SIGN_DATA_QUOTE: ExchangeTrade = {
+    ...SELECTED_QUOTE,
+    signData: { type: 'eip712-typed-data', data: {} },
+};
+
 const PRICE_IMPACT_ISSUE: ExchangeIssue = {
     type: 'price-impact',
     severity: 'warning',
@@ -112,6 +122,7 @@ type SimulationOverrides = {
     simulatedReceiveAmount?: string | null;
     simulationError?: Error | null;
     selectedQuote?: ExchangeTrade;
+    formStep?: TradingExchangeStepType;
 };
 
 const renderOfferExchange = ({
@@ -121,6 +132,7 @@ const renderOfferExchange = ({
     simulatedReceiveAmount = null,
     simulationError = null,
     selectedQuote = SELECTED_QUOTE,
+    formStep = exchangeInitialState.formStep,
 }: SimulationOverrides = {}) => {
     mockUseDexExchangeTxSimulation.mockReturnValue({
         isEnabled: isSimulationEnabled,
@@ -143,13 +155,21 @@ const renderOfferExchange = ({
                 ...mockInitialAppState.wallet,
                 trading: {
                     ...tradingInitialState,
-                    exchange: { ...exchangeInitialState, selectedQuote },
+                    exchange: { ...exchangeInitialState, selectedQuote, formStep },
                 },
             },
         } satisfies AppState,
     });
 
-    renderWithProviders(store, extraDependenciesDesktopMock.services, <TradingOfferExchange />);
+    const report = jest.fn();
+    const services: SuiteServices = {
+        ...extraDependenciesDesktopMock.services,
+        analytics: mockDesktopAnalytics(report),
+    };
+
+    renderWithProviders(store, services, <TradingOfferExchange />);
+
+    return { report };
 };
 
 describe('TradingOfferExchange', () => {
@@ -157,17 +177,10 @@ describe('TradingOfferExchange', () => {
         jest.clearAllMocks();
     });
 
-    it('reviews a DEX swap under the swap title', () => {
-        renderOfferExchange();
+    it.each([true, false])('reviews a swap under the swap title (isDex: %s)', isDex => {
+        renderOfferExchange({ selectedQuote: { ...SELECTED_QUOTE, isDex } });
 
         expect(screen.getByText('TR_TRADING_REVIEW_SWAP')).toBeInTheDocument();
-    });
-
-    it('keeps the original title for a CEX trade', () => {
-        renderOfferExchange({ selectedQuote: { ...SELECTED_QUOTE, isDex: false } });
-
-        expect(screen.getByText('TR_SELL_CONFIRM_SEND_STEP')).toBeInTheDocument();
-        expect(screen.queryByText('TR_TRADING_REVIEW_SWAP')).not.toBeInTheDocument();
     });
 
     it('shows the quote receive amount until the simulation provides its own', () => {
@@ -232,10 +245,64 @@ describe('TradingOfferExchange', () => {
     });
 
     it('sends the transaction from continue anyway inside the banner', async () => {
-        renderOfferExchange({ issue: PRICE_IMPACT_ISSUE });
+        const { report } = renderOfferExchange({ issue: PRICE_IMPACT_ISSUE });
 
         await userEvent.click(screen.getByTestId('@trading/offer/continue-anyway'));
 
         expect(mockSendTransaction).toHaveBeenCalledTimes(1);
+        expect(report).toHaveBeenCalledWith({
+            type: events.tradeExchangeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'confirm-and-send',
+                slippage: undefined,
+            },
+        });
+    });
+
+    it('reports the shown issue', () => {
+        const { report } = renderOfferExchange({ issue: PRICE_IMPACT_ISSUE });
+
+        expect(report).toHaveBeenCalledWith({
+            type: events.tradingExchangeIssueEvent.name,
+            payload: {
+                issue: 'price-impact-warning',
+                isSimulation: true,
+            },
+        });
+    });
+
+    it('reports leaving for the trade form as a cancellation', async () => {
+        const { report } = renderOfferExchange({ issue: PRICE_IMPACT_ISSUE });
+
+        await userEvent.click(screen.getByTestId('@trading/offer/back-to-trade-form'));
+
+        expect(report).toHaveBeenCalledWith({
+            type: events.tradeExchangeEvent.name,
+            payload: {
+                action: 'cancel',
+                step: 'confirm-and-send',
+                slippage: undefined,
+            },
+        });
+    });
+
+    it('reports continuing on the sign data step', async () => {
+        const { report } = renderOfferExchange({
+            selectedQuote: SIGN_DATA_QUOTE,
+            formStep: 'SIGN_DATA',
+        });
+
+        await userEvent.click(screen.getByTestId('@trading/offer/confirm-on-trezor-and-send'));
+
+        expect(mockSignDataAndConfirm).toHaveBeenCalledTimes(1);
+        expect(report).toHaveBeenCalledWith({
+            type: events.tradeExchangeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'confirm-and-send',
+                slippage: undefined,
+            },
+        });
     });
 });
