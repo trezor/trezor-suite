@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getNetworkDecimals } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { Button, Text, VStack } from '@suite-native/atoms';
@@ -26,7 +25,6 @@ import {
     TxValidityTimer,
     selectIsTransactionAlreadySigned,
 } from '@suite-native/transaction-management';
-import { BigNumber } from '@trezor/utils';
 
 import { ClaimTransactionDataReviewStepList } from '../components/ClaimTransactionDataReviewStepList';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
@@ -37,6 +35,7 @@ import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedP
 import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
 import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
 import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
+import { getAmountInBaseUnits } from '../utils/getAmountInBaseUnits';
 import { getEarnPendingAmountInBaseUnits } from '../utils/getEarnPendingAmountInBaseUnits';
 
 export const ClaimTransactionDataReviewScreen = ({
@@ -62,6 +61,16 @@ export const ClaimTransactionDataReviewScreen = ({
 
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction('claim', accountKey);
 
+    const isSolanaClaim = !!account && isSupportedSolStakingNetworkSymbol(account.symbol);
+
+    const pendingAmountInBaseUnits = getEarnPendingAmountInBaseUnits({
+        fallbackAmountInBaseUnits: account
+            ? getAmountInBaseUnits(frozenClaimableAmount ?? claimableAmount ?? '0', account.symbol)
+            : '0',
+        isSolanaStaking: isSolanaClaim,
+        precomposedTransaction,
+    });
+
     const { handleSign, handlePush, closeReview, markReviewNavigationSuccess } =
         useHandleOnEarnTransactionReview({
             accountKey,
@@ -71,7 +80,9 @@ export const ClaimTransactionDataReviewScreen = ({
     const { trackPushedTransaction, pendingTxid, isPending, submittedAt } =
         useNavigateAfterPushedTransaction({
             accountKey,
+            amountInBaseUnits: pendingAmountInBaseUnits,
             markReviewNavigationSuccess,
+            stakeType: 'claim',
         });
 
     const { pendingBottomSheetRef, isExploreDisabled, openInBlockchain } =
@@ -118,17 +129,6 @@ export const ClaimTransactionDataReviewScreen = ({
 
         setIsPushing(false);
     }, [claimableAmount, handlePush, trackPushedTransaction]);
-
-    const networkDecimals = account ? (getNetworkDecimals(account.symbol) ?? 18) : 18;
-    const isSolanaClaim = !!account && isSupportedSolStakingNetworkSymbol(account.symbol);
-
-    const pendingAmountInBaseUnits = getEarnPendingAmountInBaseUnits({
-        fallbackAmountInBaseUnits: new BigNumber(frozenClaimableAmount ?? claimableAmount ?? '0')
-            .times(new BigNumber(10).pow(networkDecimals))
-            .toFixed(0),
-        isSolanaStaking: isSolanaClaim,
-        precomposedTransaction,
-    });
 
     return (
         <ConfirmOnTrezorWrapper

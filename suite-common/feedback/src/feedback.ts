@@ -13,6 +13,7 @@ export type FeedbackCategory =
     | 'experimental'
     | 'feature'
     | 'yield'
+    | 'staking'
     | 'other';
 
 type FeedbackExtras = Record<string, any>;

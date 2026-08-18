@@ -50,6 +50,8 @@ export const UnstakeTransactionDataReviewScreen = ({
 
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction('unstake', accountKey);
 
+    const pendingAmountInBaseUnits = account ? getAmountInBaseUnits(amount, account.symbol) : '0';
+
     const { handleSign, handlePush, closeReview, markReviewNavigationSuccess } =
         useHandleOnEarnTransactionReview({
             accountKey,
@@ -59,7 +61,9 @@ export const UnstakeTransactionDataReviewScreen = ({
     const { trackPushedTransaction, pendingTxid, isPending, submittedAt } =
         useNavigateAfterPushedTransaction({
             accountKey,
+            amountInBaseUnits: pendingAmountInBaseUnits,
             markReviewNavigationSuccess,
+            stakeType: 'unstake',
         });
 
     const { pendingBottomSheetRef, isExploreDisabled, openInBlockchain } =
@@ -104,8 +108,6 @@ export const UnstakeTransactionDataReviewScreen = ({
 
         setIsPushing(false);
     }, [handlePush, trackPushedTransaction]);
-
-    const pendingAmountInBaseUnits = account ? getAmountInBaseUnits(amount, account.symbol) : '0';
 
     return (
         <ConfirmOnTrezorWrapper

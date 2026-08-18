@@ -16,7 +16,7 @@ export const feedbackSentEvent: EventDef<Attributes, EventType.FeedbackSent> = {
 
     attributes: {
         category: {
-            description: 'Where the feedback card is shown, e.g. `trade`, `yield`',
+            description: 'Where the feedback card is shown, e.g. `trade`, `yield`, `staking`',
             changelog: [{ version: '26.8.1', notes: 'added' }],
         },
         context: {

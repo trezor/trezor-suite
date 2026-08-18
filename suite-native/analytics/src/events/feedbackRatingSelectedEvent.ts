@@ -21,7 +21,7 @@ export const feedbackRatingSelectedEvent: EventDef<Attributes, EventType.Feedbac
             changelog: [{ version: '26.8.1', notes: 'added' }],
         },
         category: {
-            description: 'Where the feedback card is shown, e.g. `trade`, `yield`',
+            description: 'Where the feedback card is shown, e.g. `trade`, `yield`, `staking`',
             changelog: [{ version: '26.8.1', notes: 'added' }],
         },
         context: {

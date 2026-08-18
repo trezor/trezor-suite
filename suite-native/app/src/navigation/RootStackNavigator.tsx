@@ -30,14 +30,17 @@ import {
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import {
     ClaimReviewScreen,
+    ClaimTransactionCompleteScreen,
     ClaimTransactionDataReviewScreen,
     EarnConsentsScreen,
     EarnFormScreen,
+    EarnTransactionCompleteScreen,
     EarnTransactionDataReviewScreen,
     HowStakeWorksScreen,
     StakingDetailScreen,
     StakingManagementScreen,
     UnstakeFlowScreen,
+    UnstakeTransactionCompleteScreen,
     UnstakeTransactionDataReviewScreen,
     WrappedNativeTokenStackNavigator,
     YieldInsufficientBalanceScreen,
@@ -185,9 +188,19 @@ export const RootStackNavigator = () => {
                 component={EarnTransactionDataReviewScreen}
             />
             <RootStack.Screen
+                options={{ title: RootStackRoutes.EarnTransactionComplete }}
+                name={RootStackRoutes.EarnTransactionComplete}
+                component={EarnTransactionCompleteScreen}
+            />
+            <RootStack.Screen
                 options={{ title: RootStackRoutes.UnstakeTransactionDataReview }}
                 name={RootStackRoutes.UnstakeTransactionDataReview}
                 component={UnstakeTransactionDataReviewScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.UnstakeTransactionComplete }}
+                name={RootStackRoutes.UnstakeTransactionComplete}
+                component={UnstakeTransactionCompleteScreen}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.ClaimReview }}
@@ -198,6 +211,11 @@ export const RootStackNavigator = () => {
                 options={{ title: RootStackRoutes.ClaimTransactionDataReview }}
                 name={RootStackRoutes.ClaimTransactionDataReview}
                 component={ClaimTransactionDataReviewScreen}
+            />
+            <RootStack.Screen
+                options={{ title: RootStackRoutes.ClaimTransactionComplete }}
+                name={RootStackRoutes.ClaimTransactionComplete}
+                component={ClaimTransactionCompleteScreen}
             />
             {/* Trading screens */}
             <RootStack.Group>
