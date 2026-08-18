@@ -84,6 +84,9 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                     ],
                     actions: { right_button: 'Continue' },
                 },
+                T3T1: {
+                    header: { title: 'Address', subtitle: 'Recipient #1' },
+                },
             });
             await devicePrompt.waitForPromptAndConfirm();
         });
@@ -97,6 +100,10 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                     header: { title: 'Send' },
                     body: [['Amount'], [formattedSendAmount]],
                     actions: { right_button: 'Confirm' },
+                },
+                T3T1: {
+                    header: { title: 'Amount', subtitle: 'Recipient #1' },
+                    body: [[formattedSendAmount]],
                 },
             });
             await devicePrompt.waitForPromptAndConfirm();
