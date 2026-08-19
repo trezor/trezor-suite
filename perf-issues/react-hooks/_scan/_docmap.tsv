@@ -1,0 +1,44 @@
+docid	filename	sev	sources	scanfiles	note
+p1-01	p1-01-uselayout-effect-keyed-on-inline-jsx-rerenders-app-shell.md	P1	F-01-1	01-suite-hooks.md
+p1-02	p1-02-useaccountsearch-provider-value-recreated-every-render.md	P1	F-01-2	01-suite-hooks.md
+p1-03	p1-03-cancel-tx-compose-refires-on-account-churn.md	P1	F-01-3,F-02-1,F-02-15	01-suite-hooks.md,02-suite-components.md	MERGE: hook (F-01-3) + its modal caller (F-02-1) are one defect chain — one doc, both anchors; fold F-02-15 (CancelTxContext provider value) in as a same-PR cleanup note.
+p1-04	p1-04-addtokenmodal-refetches-account-info-per-account-refresh.md	P1	F-02-2	02-suite-components.md
+p1-05	p1-05-graphtooltipbase-effect-keyed-on-whole-props.md	P1	F-02-3	02-suite-components.md	Distinct from filed #31137 (setWidth) — state that explicitly in the lead.
+p1-06	p1-06-transactionsgraph-rebuilds-interval-data-per-hover-render.md	P1	F-02-4	02-suite-components.md	Distinct from filed #31137 — say so; cross-reference p1-05 as sibling draft (hover cadence source).
+p1-07	p1-07-suitelayout-scrollcontext-value-unmemoized.md	P1	F-02-5	02-suite-components.md
+p1-08	p1-08-feescontext-provider-hands-14-consumers-fresh-object.md	P1	F-03-5	03-wallet-earn-comp.md
+p1-09	p1-09-yield-pending-tx-poll-keys-on-whole-account.md	P1	F-03-6	03-wallet-earn-comp.md	Cite the correct Tron sibling (useTronStakePendingTransactionTracking.ts:56) as the in-repo fix template.
+p1-10	p1-10-coincontrol-refetches-utxo-transactions-on-account-churn.md	P1	F-04-1	04-views-wallet.md	Note relation to asymptotic-complexity drafts on the same path (additive, not duplicate).
+p1-11	p1-11-responsivecontext-provider-rerenders-app-shell.md	P1	F-05-1	05-views-rest.md
+p1-12	p1-12-assetsview-rebuilds-assetrow-props-every-render.md	P1	F-05-2,F-05-3	05-views-rest.md	MERGE: parent props pipeline (F-05-2) + per-row AssetCoinLogo recompute (F-05-3) — one doc, two anchors; note additive to asymptotic-complexity p2-26.
+p1-13	p1-13-useapprovalstep-effect-can-double-fire-quote-refresh.md	P1	F-06-1	06-suite-common.md
+p1-14	p1-14-formatterprovider-memo-defeated-on-web.md	P1	F-06-2	06-suite-common.md	Fix is in packages/suite (useFormattersConfig.ts); native counterpart is the correct sibling.
+p1-15	p1-15-table-context-value-rerenders-all-rows-on-scroll-edge.md	P1	F-07-1	07-shared-components.md
+p1-16	p1-16-usetranslatedmessages-double-renders-app-at-cold-start.md	P1	F-08-1	08-native-shared.md	Native: fix is derive-in-render (useMemo is fine here — it replaces state, not adds memoization; explain per native rules).
+p1-17	p1-17-native-fee-compose-effects-key-on-whole-account.md	P1	F-09-1,F-09-2,F-09-3,F-09-4,F-09-5	09-native-modules-a.md	MERGE: one family doc, five anchors (yield deposit/withdraw/approval chain, useSendForm ×2, useComposeEarnFees, useEvmApprovalFees); cite the three correct siblings the scan names as fix template.
+p2-01	p2-01-usetradingcomposetransaction-whole-device-dep.md	P2	F-01-4	01-suite-hooks.md
+p2-02	p2-02-usetotalfiatbalance-recomputes-unmemoized.md	P2	F-01-6	01-suite-hooks.md
+p2-03	p2-03-usecurrentref-read-inside-usememo-three-sites.md	P2	F-02-6,F-04-6	02-suite-components.md,04-views-wallet.md	MERGE: identical class-7 defect at 3 sites (Send picker + two Trading asset pickers) — one doc, all anchors, one fix pattern (useFreshRef or list the dep).
+p2-04	p2-04-connectionglobalmodalcontext-value-unmemoized.md	P2	F-02-7	02-suite-components.md
+p2-05	p2-05-suitebanners-filters-accounts-every-render.md	P2	F-02-8	02-suite-components.md
+p2-06	p2-06-accountname-exhaustive-deps-suppression.md	P2	F-02-9	02-suite-components.md
+p2-07	p2-07-tokeniconset-memo-defeated-by-wrapper.md	P2	F-03-2,F-07-3	03-wallet-earn-comp.md,07-shared-components.md	MERGE: wrapper recompute (F-03-2) defeats inner memo (F-07-3) — one doc; explicitly distinct from asymptotic-complexity p2-17 (pass row's own accounts).
+p2-08	p2-08-accountsection-gettokens-per-sidebar-row.md	P2	F-03-4	03-wallet-earn-comp.md
+p2-09	p2-09-earn-staking-dashboard-filter-crosses-hook-boundary.md	P2	F-03-7	03-wallet-earn-comp.md
+p2-10	p2-10-transactionitem-createtargets-unmemoized.md	P2	F-03-8	03-wallet-earn-comp.md
+p2-11	p2-11-tokenselect-revalidation-keyed-on-whole-account.md	P2	F-04-2	04-views-wallet.md
+p2-12	p2-12-usebuildtokenoptions-keyed-on-whole-account.md	P2	F-04-3	04-views-wallet.md
+p2-13	p2-13-ethereumnonce-refilters-history-per-keystroke.md	P2	F-04-4	04-views-wallet.md	Hooks angle only — complexity of the scan itself stays out; check overlap with asymptotic-complexity p2-28 (getOwnEvmNonceSets) and cross-reference instead of duplicating.
+p2-14	p2-14-tokensnavigation-tab-counts-per-render.md	P2	F-04-5	04-views-wallet.md
+p2-15	p2-15-trading-forms-bare-watch-rerenders-per-keystroke.md	P2	F-04-7	04-views-wallet.md	Five anchors, one doc (web trading forms; scoped watch()/useWatch fix).
+p2-16	p2-16-pinstep-effect-keyed-on-whole-device.md	P2	F-05-4	05-views-rest.md
+p2-17	p2-17-virtualizedlist-scroll-debounce-reset-by-caller.md	P2	F-07-2	07-shared-components.md	Distinct from asymptotic-complexity p2-11 (prefix sums) — say so.
+p2-18	p2-18-usenetworkselect-memos-defeated-per-keystroke.md	P2	F-07-4	07-shared-components.md
+p2-19	p2-19-menu-rebuilds-global-keydown-listeners.md	P2	F-07-5	07-shared-components.md
+p2-20	p2-20-selectfilterknowntokens-unmemoized-native.md	P2	F-10-1	10-native-modules-b.md	Fix in suite-common/token-definitions selector; consumer evidence is the native screen.
+p2-21	p2-21-accountimportloading-stale-retry-closure.md	P2	F-10-2	10-native-modules-b.md
+p2-22	p2-22-native-analytics-effects-whole-account-deps.md	P2	F-10-3,F-10-6	10-native-modules-b.md	MERGE: same defect shape, two screens — one doc, both anchors.
+p3-01	p3-01-cleanups-suite-hooks-and-components.md	P3	F-01-5,F-01-7,F-01-8,F-02-10,F-02-11,F-02-12,F-02-13,F-02-14,F-03-1,F-03-3,F-03-9	01-suite-hooks.md,02-suite-components.md,03-wallet-earn-comp.md	BATCH doc: one ### section per finding (Where/Before/After compressed); one issue, one PR.
+p3-02	p3-02-cleanups-suite-views-and-support.md	P3	F-04-8,F-04-9,F-05-5,F-05-6,F-05-7,F-05-8	04-views-wallet.md,05-views-rest.md	BATCH doc.
+p3-03	p3-03-cleanups-suite-common-and-design-system.md	P3	F-06-3,F-06-4,F-06-5,F-07-6,F-07-7	06-suite-common.md,07-shared-components.md	BATCH doc.
+p3-04	p3-04-cleanups-suite-native.md	P3	F-08-2,F-08-3,F-08-4,F-09-6,F-09-7,F-09-8,F-09-9,F-09-10,F-10-4,F-10-5	08-native-shared.md,09-native-modules-a.md,10-native-modules-b.md	BATCH doc; F-09-10 is low-confidence — include with an explicit verify-first caveat.
