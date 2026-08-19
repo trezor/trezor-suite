@@ -44,7 +44,7 @@ describe('AppTabNavigator', () => {
         const { getByText } = renderTabs();
 
         expect(getByText(getTranslation('navigation.tabs.home'))).toBeTruthy();
-        expect(getByText(getTranslation('navigation.tabs.accounts'))).toBeTruthy();
+        expect(getByText(getTranslation('navigation.tabs.accountsList'))).toBeTruthy();
         expect(getByText(getTranslation('navigation.tabs.settings'))).toBeTruthy();
     });
 

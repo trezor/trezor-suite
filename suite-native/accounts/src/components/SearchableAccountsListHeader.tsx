@@ -82,7 +82,7 @@ export const SearchableAccountsListHeader = ({
         <Box style={applyStyle(searchFormContainerStyle)}>
             {isSearchActive ? (
                 <SearchForm
-                    placeholder="accounts.searchForm.placeholder"
+                    placeholder="accounts.searchForm.searchAccountsPlaceholder"
                     onPressCancel={handleHideFilter}
                     onInputChange={onSearchInputChange}
                 />

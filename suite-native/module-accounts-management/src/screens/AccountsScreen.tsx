@@ -45,7 +45,7 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
         // noBottomPadding: SearchableAccountsListHeader owns the top spacing to accommodate filter badge overflow.
         <Screen header={<DeviceManagerScreenHeader noBottomPadding />} isScrollable={false}>
             <AccountsListWithFilter
-                title={<Translation id="moduleAccountManagement.accountsScreen.title" />}
+                title={<Translation id="moduleAccountManagement.accountsScreen.accountsTitle" />}
                 onSelectAccount={handleSelectAccount}
                 flowType="accounts"
                 networksFilter={networksFilter}
