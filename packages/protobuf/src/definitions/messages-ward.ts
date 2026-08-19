@@ -208,6 +208,11 @@ export const WardQueueGetAck = Type.Object(
         unreadable: Type.Optional(Type.Boolean()),
         stale: Type.Optional(Type.Boolean()),
         counter: Type.Optional(Type.Number()),
+        key_type: Type.Optional(Type.String()),
+        app_id: Type.Optional(Type.String()),
+        identifier: Type.Optional(Type.String()),
+        value: Type.Optional(Type.String()),
+        mac: Type.Optional(Type.String()),
     },
     { $id: 'WardQueueGetAck' },
 );
@@ -235,6 +240,9 @@ export const WardQueueSetEntry = Type.Object(
         app_id: Type.Optional(Type.String()),
         identifier: Type.Optional(Type.String()),
         value: Type.Optional(Type.String()),
+        mac: Type.Optional(Type.String()),
+        counter: Type.Optional(Type.Number()),
+        key_type: Type.Optional(Type.String()),
     },
     { $id: 'WardQueueSetEntry' },
 );

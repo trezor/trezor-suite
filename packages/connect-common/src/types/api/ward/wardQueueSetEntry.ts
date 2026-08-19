@@ -12,6 +12,10 @@ import type { Params, Response } from '../../params';
  * the caller to store except the path; the change reaches the host later, sealed, through
  * `WardFlushQueue`. Use `wardSetEntry` for a write that must apply now -- it requires a synced
  * session and refuses without one.
+ *
+ * PASSING `mac` MAKES THIS A RESTORE of a queued change the device exported for backup. Send back
+ * exactly what the export contained (`mac`, `counter`, `key_type` and the fields), unchanged: every
+ * one of them is covered by the MAC the device verifies before it writes or shows anything.
  */
 export declare function wardQueueSetEntry(
     params: Params<PROTO.WardQueueSetEntry>,

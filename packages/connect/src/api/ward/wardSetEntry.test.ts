@@ -75,6 +75,28 @@ describe('WardQueueSetEntry', () => {
         expect(typedCall).toHaveBeenCalledWith('WardQueueSetEntry', 'WardQueueSetAck', PARAMS);
     });
 
+    it('forwards the restore fields, which the device MACs and must get back unchanged', async () => {
+        const backup = {
+            ...PARAMS,
+            mac: '66'.repeat(32),
+            counter: 3,
+            key_type: 'address',
+        };
+        const { method, typedCall } = makeMethod(
+            WardQueueSetEntry,
+            'wardQueueSetEntry',
+            backup,
+            { entry_key: '11'.repeat(32) },
+            'WardQueueSetAck',
+        );
+
+        await method.run();
+
+        // Every one of these is inside the intent MAC, so dropping or defaulting one here would
+        // surface as a device-side authentication failure rather than as a host bug.
+        expect(typedCall).toHaveBeenCalledWith('WardQueueSetEntry', 'WardQueueSetAck', backup);
+    });
+
     it('returns the path and nothing else -- there is no leaf to invent', async () => {
         const ack = { entry_key: '11'.repeat(32) };
         const { method } = makeMethod(
