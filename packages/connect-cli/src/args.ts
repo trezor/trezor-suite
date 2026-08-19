@@ -38,8 +38,19 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=authenticate-device
                                                 --method=nostr-get-public-key
                                                 --method=nostr-sign-event
+                                                --method=ward_add
+                                                --method=ward_update
+                                                --method=ward_delete
+                                                --method=ward_display
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
+
+  WARD options (default: disabled)
+    --queue                                   Offline only: ward_add/ward_update/ward_delete just
+                                                place the change into the local pending queue and
+                                                ward_display only looks the entry up there.
+                                                No device round, no WARD Manager exchange.
+                                                --method=ward_add --params='{"scope":"example.com","value":"secret"}'
 `;
 
 // read and parse application arguments
