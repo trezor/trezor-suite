@@ -1,8 +1,11 @@
+import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { WRAPPED_NATIVE, asNetworkSymbol } from '@suite-common/wallet-config';
+import { type StablecoinYieldActionReviewState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { buildYieldReviewPreview } from './yieldReviewOutputUtils';
 
@@ -75,4 +78,54 @@ describe('buildYieldReviewPreview', () => {
             expect(preview?.outputs.map(output => output.type)).toEqual(['regular_legacy', 'data']);
         },
     );
+
+    // A claim review that cannot be built is reported to the user as "reward details didn't match
+    // the transaction", so the legacy T1B1 outputs have to stay within the rendered types too.
+    it('builds a claim preview for a T1B1 device', () => {
+        const claimUser = asEvmAddress('0x1111111111111111111111111111111111111111');
+        const rewardToken = asEvmAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
+        const claimData = Calldata.evm.distributor.claim.encode(
+            {
+                users: [claimUser],
+                tokens: [rewardToken],
+                amounts: [new BigNumber(1)],
+                proofs: [[]],
+            },
+            { sender: claimUser },
+        ).data;
+        const review = {
+            type: 'claim',
+            rewards: [
+                {
+                    token: {
+                        networkSymbol: ethSymbol,
+                        symbol: 'USDC',
+                        decimals: 6,
+                        contractAddress: rewardToken,
+                    },
+                    value: '1',
+                    fiatValue: '1',
+                },
+            ],
+            unsignedTransaction: {
+                to: '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae',
+                data: claimData,
+                chainId: 1,
+                gasLimit: '21000',
+                maxFeePerGas: '2000000000',
+                maxPriorityFeePerGas: '1000000000',
+                nonce: '10',
+            },
+        } as Extract<StablecoinYieldActionReviewState, { type: 'claim' }>;
+
+        const preview = buildYieldReviewPreview({
+            account,
+            device: t1b1Device,
+            review,
+            type: 'claim',
+        });
+
+        expect(preview?.evmTransactionPurpose).toBe('claim');
+        expect(preview?.outputs.map(output => output.type)).toEqual(['regular_legacy', 'data']);
+    });
 });

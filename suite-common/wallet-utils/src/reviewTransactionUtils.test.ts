@@ -1,3 +1,4 @@
+import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -11,6 +12,7 @@ import {
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { TokenInfo } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { buildApprovalTransactionData } from './ethUtils';
 import {
@@ -33,6 +35,20 @@ const LIFI_SWAP_DATA = `0x5fd9ae2e${'00'.repeat(32 * 4)}`;
 
 // ERC-20 transfer (global selector a9059cbb) — works on any contract
 const ERC20_TRANSFER_DATA = `0xa9059cbb${'00'.repeat(32 * 2)}`;
+
+// Merkl rewards distributor — the earn "claim rewards" target.
+const MERKL_DISTRIBUTOR = '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae';
+const CLAIM_USER = '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3';
+const DISTRIBUTOR_CLAIM_DATA =
+    Calldata.evm.distributor.claim.encode(
+        {
+            users: [asEvmAddress(CLAIM_USER)],
+            tokens: [asEvmAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48')],
+            amounts: [new BigNumber(1)],
+            proofs: [[]],
+        },
+        { sender: asEvmAddress(CLAIM_USER) },
+    ).data ?? '';
 
 // Everstake staking pool
 const EVERSTAKE_POOL = '0xD523794C879D9eC028960a231F866758e405bE34';
@@ -554,6 +570,30 @@ describe('constructTransactionReviewOutputs', () => {
         expect(outputs).toEqual([
             { type: 'regular_legacy', value: WETH_MAINNET },
             { type: 'data', value: transactionData },
+        ]);
+    });
+
+    // A rewards claim takes the same legacy path on T1B1 as wrap/unwrap: the review renders the
+    // fee as its own summary row, so a separate 'fee' output would desync the steps and, in the
+    // earn claim review, fail its output allowlist — leaving the flow with a "reward details
+    // didn't match the transaction" alert instead of a review.
+    it('mirrors the legacy device screens for a rewards claim on T1B1', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device: mockSuiteDevice(undefined, {
+                internal_model: DeviceModelInternal.T1B1,
+                major_version: 1,
+                minor_version: 13,
+                patch_version: 0,
+            }),
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData: DISTRIBUTOR_CLAIM_DATA }),
+            precomposedTx: buildPrecomposedTransaction({ to: MERKL_DISTRIBUTOR }),
+        });
+
+        expect(outputs).toEqual([
+            { type: 'regular_legacy', value: MERKL_DISTRIBUTOR },
+            { type: 'data', value: DISTRIBUTOR_CLAIM_DATA },
         ]);
     });
 

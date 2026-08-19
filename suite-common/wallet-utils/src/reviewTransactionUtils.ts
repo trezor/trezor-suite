@@ -263,10 +263,14 @@ const constructOldFlow = ({
             ?.address,
         data: precomposedForm.transactionData,
     });
-    // Wrap/unwrap are yield operations as well: their review renders the fee in its own summary
-    // step, so the legacy flow must not emit a separate fee output for them either.
+    // Wrap/unwrap and the rewards claim are yield operations as well: their reviews render the fee
+    // in their own summary step, so the legacy flow must not emit a separate fee output for them
+    // either. The updated flow and the desktop review list draw the same line.
     const isYieldOperation =
-        isEvmYieldTxByTextSignature(evmTxType) || evmTxType === 'wrap' || evmTxType === 'unwrap';
+        isEvmYieldTxByTextSignature(evmTxType) ||
+        evmTxType === 'wrap' ||
+        evmTxType === 'unwrap' ||
+        evmTxType === 'claim';
 
     const hasDestinationTag = 'destinationTag' in precomposedForm;
 
