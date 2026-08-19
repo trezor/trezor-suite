@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-RELEASE_URL="https://github.com/trezor/WalletWasabi/releases/latest/download"
+# Pinned version is older than June 2025, so SHA256 checksum digest is not available from Github API.
+PINNED_VERSION="release/v15.0"
+RELEASE_URL="https://github.com/trezor/WalletWasabi/releases/download/$PINNED_VERSION"
 RELEASE_NAME="WabiSabiClientLibrary"
 
 DIST="./files/bin/coinjoin"
