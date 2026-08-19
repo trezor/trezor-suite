@@ -13,25 +13,41 @@ import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
 import { type AssetListRow, getAssetListRowKey, getAssetListRows } from './getAssetListRows';
 
 type AssetsProps = {
-    listHeaderComponent?: ReactElement | null;
-    listFooterComponent?: ReactElement | null;
+    ListHeaderComponent?: ReactElement | null;
+    ListFooterComponent?: ReactElement | null;
     refreshControl?: ScrollViewProps['refreshControl'];
 };
 
-// Keeps the last row clear of the home indicator on devices without a bottom inset.
-const DEFAULT_BOTTOM_INSET = 25;
-
-const listContentStyle = prepareNativeStyle<{ bottomInset: number }>((_, { bottomInset }) => ({
-    paddingBottom: Math.max(bottomInset, DEFAULT_BOTTOM_INSET),
+const listContentStyle = prepareNativeStyle<{ bottomInset: number }>((utils, { bottomInset }) => ({
+    paddingBottom: Math.max(bottomInset, utils.spacings.sp24),
 }));
 
-const rowStyle = prepareNativeStyle(utils => ({
-    marginHorizontal: utils.spacings.sp16,
-}));
+const rowCardStyle = prepareNativeStyle<{ isFirst: boolean; isLast: boolean }>(
+    (utils, { isFirst, isLast }) => ({
+        backgroundColor: utils.colors.surfaceFillRaised,
+        marginHorizontal: utils.spacings.sp16,
+        extend: [
+            {
+                condition: isFirst,
+                style: {
+                    borderTopLeftRadius: utils.borders.radii.r16,
+                    borderTopRightRadius: utils.borders.radii.r16,
+                },
+            },
+            {
+                condition: isLast,
+                style: {
+                    borderBottomLeftRadius: utils.borders.radii.r16,
+                    borderBottomRightRadius: utils.borders.radii.r16,
+                },
+            },
+        ],
+    }),
+);
 
 export const Assets = ({
-    listHeaderComponent,
-    listFooterComponent,
+    ListHeaderComponent,
+    ListFooterComponent,
     refreshControl,
 }: AssetsProps) => {
     const { applyStyle } = useNativeStyles();
@@ -47,15 +63,11 @@ export const Assets = ({
 
     const renderItem = useCallback(
         ({ item }: { item: AssetListRow }) => (
-            <Box style={applyStyle(rowStyle)}>
+            <Box style={applyStyle(rowCardStyle, { isFirst: item.isFirst, isLast: item.isLast })}>
                 {item.type === 'asset' ? (
-                    <AssetItem
-                        cryptoCurrencySymbol={item.symbol}
-                        isFirst={item.isFirst}
-                        isLast={item.isLast}
-                    />
+                    <AssetItem cryptoCurrencySymbol={item.symbol} />
                 ) : (
-                    <DiscoveryAssetsLoader isFirst={item.isFirst} isLast={item.isLast} />
+                    <DiscoveryAssetsLoader />
                 )}
             </Box>
         ),
@@ -69,8 +81,8 @@ export const Assets = ({
             getItemType={item => item.type}
             renderItem={renderItem}
             refreshControl={refreshControl}
-            ListHeaderComponent={listHeaderComponent}
-            ListFooterComponent={listFooterComponent}
+            ListHeaderComponent={ListHeaderComponent}
+            ListFooterComponent={ListFooterComponent}
             contentContainerStyle={applyStyle(listContentStyle, { bottomInset })}
         />
     );
