@@ -96,6 +96,7 @@ import {
     DebugLinkSetBatteryState,
     DebugLinkSetLogFilter,
 } from './messages-debug';
+import { DisplayAddress } from './messages-display_address';
 import {
     EosGetPublicKey,
     EosPublicKey,
@@ -318,10 +319,13 @@ import {
     WardDeleteEntry,
     WardEntryAck,
     WardEntryRequest,
+    WardEraseCachedEntry,
+    WardFlushQueue,
     WardGetEntry,
     WardIngestAttestation,
     WardIngestAttestationAck,
     WardLeafAck,
+    WardPinCachedEntry,
     WardReconcile,
     WardReconcileAck,
     WardRecoverCounter,
@@ -345,6 +349,7 @@ export * from './messages-crypto';
 export * from './messages-management';
 export * from './messages-debug';
 export * from './messages-definitions';
+export * from './messages-display_address';
 export * from './messages-eos';
 export * from './messages-ethereum';
 export * from './messages-ethereum-eip712';
@@ -503,6 +508,7 @@ export const MessageType = Type.Object(
         DebugLinkN4W1Write,
         DebugLinkN4W1Read,
         DebugLinkN4W1Response,
+        DisplayAddress,
         EosGetPublicKey,
         EosPublicKey,
         EosSignTx,
@@ -672,6 +678,9 @@ export const MessageType = Type.Object(
         WardRollbackAck,
         WardRecoverCounter,
         WardRecoverCounterAck,
+        WardPinCachedEntry,
+        WardEraseCachedEntry,
+        WardFlushQueue,
     },
     { $id: 'MessageType' },
 );
@@ -764,6 +773,7 @@ export type WireInMessage =
     | 'UnlockBootloader'
     | 'SetBrightness'
     | 'GetSerialNumber'
+    | 'DisplayAddress'
     | 'EosGetPublicKey'
     | 'EosSignTx'
     | 'EosTxActionAck'
@@ -861,7 +871,10 @@ export type WireInMessage =
     | 'WardIngestAttestation'
     | 'WardReconcile'
     | 'WardRollback'
-    | 'WardRecoverCounter';
+    | 'WardRecoverCounter'
+    | 'WardPinCachedEntry'
+    | 'WardEraseCachedEntry'
+    | 'WardFlushQueue';
 
 export type WireOutMessage =
     | 'Success'

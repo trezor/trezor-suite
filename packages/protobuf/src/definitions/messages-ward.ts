@@ -103,6 +103,18 @@ export const WardEntryRequest = Type.Object(
     { $id: 'WardEntryRequest' },
 );
 
+export type WardEraseCachedEntry = Static<typeof WardEraseCachedEntry>;
+export const WardEraseCachedEntry = Type.Object(
+    {
+        app_id: Type.Optional(Type.String()),
+        identifier: Type.Optional(Type.String()),
+    },
+    { $id: 'WardEraseCachedEntry' },
+);
+
+export type WardFlushQueue = Static<typeof WardFlushQueue>;
+export const WardFlushQueue = Type.Record(Type.Never(), Type.Never(), { $id: 'WardFlushQueue' });
+
 export type WardGetEntry = Static<typeof WardGetEntry>;
 export const WardGetEntry = Type.Object(
     {
@@ -141,8 +153,19 @@ export const WardLeafAck = Type.Object(
         mac: Type.Optional(Type.String()),
         auth_commit: Type.Optional(Type.String()),
         auth_sig: Type.Optional(Type.String()),
+        queued: Type.Optional(Type.Boolean()),
+        remaining: Type.Optional(Type.Number()),
     },
     { $id: 'WardLeafAck' },
+);
+
+export type WardPinCachedEntry = Static<typeof WardPinCachedEntry>;
+export const WardPinCachedEntry = Type.Object(
+    {
+        app_id: Type.Optional(Type.String()),
+        identifier: Type.Optional(Type.String()),
+    },
+    { $id: 'WardPinCachedEntry' },
 );
 
 export type WardReconcile = Static<typeof WardReconcile>;
