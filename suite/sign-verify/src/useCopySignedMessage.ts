@@ -24,6 +24,16 @@ ${address}
 ${signature}
 -----END ${network} SIGNED MESSAGE-----`;
 
+export const getSignedMessage = (data: SignedMessageData, network?: Network): string | null => {
+    // Cardano hands over the signature alone and has no message block, hence null rather than a
+    // block that would repeat the signature.
+    if (network?.networkType === 'cardano') {
+        return null;
+    }
+
+    return format(data, (network?.name || '').split('(')[0]?.toUpperCase() ?? '');
+};
+
 export const useCopySignedMessage = <T extends SignedMessageData>(
     { message, address, signature }: T,
     network?: Network,
@@ -31,22 +41,10 @@ export const useCopySignedMessage = <T extends SignedMessageData>(
     const dispatch = useDispatch();
 
     const canCopy = address && signature;
+    const signedMessage = getSignedMessage({ message, address, signature }, network);
 
-    const formatMessage = () => {
-        if (network?.networkType === 'cardano') {
-            return signature || '';
-        }
-
-        return format(
-            { message, address, signature },
-            (network?.name || '').split('(')[0]?.toUpperCase() ?? '',
-        );
-    };
-
-    const copy = async () => {
-        const formatted = formatMessage();
-
-        const result = await copyToClipboard(formatted);
+    const copyValue = async (value: string) => {
+        const result = await copyToClipboard(value);
 
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
@@ -55,6 +53,9 @@ export const useCopySignedMessage = <T extends SignedMessageData>(
 
     return {
         canCopy,
-        copy,
+        signedMessage,
+        copyValue,
+        copySignature: () => copyValue(signature || ''),
+        copySignedMessage: () => copyValue(signedMessage || signature || ''),
     };
 };

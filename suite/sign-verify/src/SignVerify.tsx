@@ -21,7 +21,6 @@ import {
     Textarea,
     Tooltip,
 } from '@trezor/components';
-import { copyToClipboard } from '@trezor/dom-utils';
 import { CheckIcon, CopyIcon } from '@trezor/icons';
 
 import { SignAddressInput } from './SignAddressInput';
@@ -33,6 +32,41 @@ import {
     type SignVerifyFields,
     useSignVerifyForm,
 } from './useSignVerifyForm';
+
+type CopyFieldButtonProps = {
+    labelId: TranslationKey;
+    onClick: () => void;
+    isDisabled: boolean;
+    'data-testid': string;
+};
+
+const CopyFieldButton = ({
+    labelId,
+    onClick,
+    isDisabled,
+    'data-testid': dataTestId,
+}: CopyFieldButtonProps) => (
+    <Tooltip
+        content={isDisabled ? <Translation id="TR_NOTHING_TO_COPY" /> : undefined}
+        cursor={isDisabled ? 'not-allowed' : undefined}
+    >
+        {/* A disabled button dispatches no mouse events, so the pointer has to reach the tooltip. */}
+        <Box pointerEvents={isDisabled ? 'none' : undefined}>
+            <Button
+                type="button"
+                intent="neutral"
+                priority="secondary"
+                size="small"
+                iconLeft={CopyIcon}
+                onClick={onClick}
+                isDisabled={isDisabled}
+                data-testid={dataTestId}
+            >
+                <Translation id={labelId} />
+            </Button>
+        </Box>
+    </Tooltip>
+);
 
 type SignVerifyShellProps = {
     title: 'TR_NAV_SIGN_VERIFY' | 'TR_SIGN_MESSAGE';
@@ -76,7 +110,8 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
 
     const { isLocked, device } = useDevice();
     const { translationString } = useTranslation();
-    const { canCopy, copy } = useCopySignedMessage(formValues, network);
+    const { canCopy, signedMessage, copyValue, copySignature, copySignedMessage } =
+        useCopySignedMessage(formValues, network);
 
     const getErrorMessage = (error?: FieldError) =>
         error ? translationString(error.message as TranslationKey) : undefined;
@@ -182,12 +217,22 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                         <Textarea
                             labelLeft={<Translation id="TR_MESSAGE" />}
                             labelRight={
-                                <Switch
-                                    label={<Translation id="TR_HEX_FORMAT" />}
-                                    labelPosition="start"
-                                    size="small"
-                                    {...hexField}
-                                />
+                                <Row gap={12}>
+                                    <Switch
+                                        label={<Translation id="TR_HEX_FORMAT" />}
+                                        labelPosition="start"
+                                        size="small"
+                                        {...hexField}
+                                    />
+                                    {isSignPage && (
+                                        <CopyFieldButton
+                                            labelId="TR_COPY_TO_CLIPBOARD"
+                                            onClick={() => copyValue(formValues.message || '')}
+                                            isDisabled={!formValues.message}
+                                            data-testid="@sign-verify/copy-message"
+                                        />
+                                    )}
+                                </Row>
                             }
                             hasError={!!formErrors.message}
                             characterCount={{
@@ -207,6 +252,16 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                                         <SignAddressInput
                                             name="path"
                                             label={<Translation id="TR_ADDRESS" />}
+                                            labelRight={
+                                                <CopyFieldButton
+                                                    labelId="TR_COPY_TO_CLIPBOARD"
+                                                    onClick={() =>
+                                                        copyValue(formValues.address || '')
+                                                    }
+                                                    isDisabled={!formValues.address}
+                                                    data-testid="@sign-verify/copy-address"
+                                                />
+                                            }
                                             account={account}
                                             touchedAddresses={touchedAddresses}
                                             hasError={!!formErrors.path}
@@ -282,27 +337,36 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                                         'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
                                     )}
                                     rightContent={
-                                        canCopy ? (
-                                            <Button
-                                                type="button"
-                                                intent="neutral"
-                                                priority="secondary"
-                                                onClick={copy}
-                                                iconLeft={CopyIcon}
-                                                size="small"
-                                            >
-                                                <Translation
-                                                    id={
-                                                        isCardano
-                                                            ? 'TR_COPY_TO_CLIPBOARD'
-                                                            : 'TR_COPY_SIGNED_MESSAGE'
-                                                    }
-                                                />
-                                            </Button>
-                                        ) : undefined
+                                        <CopyFieldButton
+                                            labelId="TR_COPY_SIGNATURE"
+                                            onClick={copySignature}
+                                            isDisabled={!formValues.signature}
+                                            data-testid="@sign-verify/copy-signature"
+                                        />
                                     }
                                     {...signatureProps}
                                 />
+                                {signedMessage !== null && (
+                                    <Textarea
+                                        labelLeft={<Translation id="TR_SIGNED_MESSAGE" />}
+                                        labelRight={
+                                            <CopyFieldButton
+                                                labelId="TR_COPY_SIGNED_MESSAGE"
+                                                onClick={copySignedMessage}
+                                                isDisabled={!canCopy}
+                                                data-testid="@sign-verify/copy-signed-message"
+                                            />
+                                        }
+                                        readOnly
+                                        isDisabled={!canCopy}
+                                        value={canCopy ? signedMessage : ''}
+                                        placeholder={translationString(
+                                            'TR_SIGNED_MESSAGE_AFTER_SIGNING_PLACEHOLDER',
+                                        )}
+                                        rows={7}
+                                        data-testid="@sign-verify/signed-message"
+                                    />
+                                )}
                                 {isCardano && (
                                     <Input
                                         type="text"
@@ -312,20 +376,12 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                                             'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
                                         )}
                                         rightContent={
-                                            canCopy ? (
-                                                <Button
-                                                    type="button"
-                                                    intent="neutral"
-                                                    priority="secondary"
-                                                    onClick={() =>
-                                                        copyToClipboard(formValues.pubKey || '')
-                                                    }
-                                                    iconLeft={CopyIcon}
-                                                    size="small"
-                                                >
-                                                    <Translation id="TR_COPY_TO_CLIPBOARD" />
-                                                </Button>
-                                            ) : undefined
+                                            <CopyFieldButton
+                                                labelId="TR_COPY_TO_CLIPBOARD"
+                                                onClick={() => copyValue(formValues.pubKey || '')}
+                                                isDisabled={!formValues.pubKey}
+                                                data-testid="@sign-verify/copy-pubkey"
+                                            />
                                         }
                                         {...pubKeyProps}
                                     />
