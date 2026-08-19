@@ -1,24 +1,30 @@
 import { forwardRef } from 'react';
-import { type ScrollViewProps } from 'react-native';
 
-import { Assets } from '@suite-native/assets';
+import { Assets, type AssetsProps } from '@suite-native/assets';
+import { useScrollDivider } from '@suite-native/scrollview';
 
 import { type PortfolioGraphRef } from './PortfolioGraph';
 import { PortfolioListFooter } from './PortfolioListFooter';
 import { PortfolioListHeader } from './PortfolioListHeader';
 
-type PortfolioContentProps = {
-    refreshControl?: ScrollViewProps['refreshControl'];
-};
+type PortfolioContentProps = Pick<AssetsProps, 'refreshControl'>;
 
 export const PortfolioContent = forwardRef<PortfolioGraphRef, PortfolioContentProps>(
-    ({ refreshControl }, ref) => (
-        <Assets
-            refreshControl={refreshControl}
-            ListHeaderComponent={<PortfolioListHeader ref={ref} />}
-            ListFooterComponent={<PortfolioListFooter />}
-        />
-    ),
+    ({ refreshControl }, ref) => {
+        const { scrollDivider, handleScroll } = useScrollDivider();
+
+        return (
+            <>
+                {scrollDivider}
+                <Assets
+                    refreshControl={refreshControl}
+                    ListHeaderComponent={<PortfolioListHeader ref={ref} />}
+                    ListFooterComponent={<PortfolioListFooter />}
+                    onScroll={handleScroll}
+                />
+            </>
+        );
+    },
 );
 
 PortfolioContent.displayName = 'PortfolioContent';

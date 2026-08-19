@@ -51,6 +51,7 @@
         { "path": "../link" },
         { "path": "../module-earn" },
         { "path": "../navigation" },
+        { "path": "../scrollview" },
         { "path": "../settings" },
         { "path": "../suite-sync" },
         { "path": "../toasts" },

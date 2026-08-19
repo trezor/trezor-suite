@@ -1,8 +1,7 @@
-import { type ReactElement, useCallback, useMemo } from 'react';
-import { type ScrollViewProps } from 'react-native';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, type FlashListProps } from '@shopify/flash-list';
 
 import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -12,11 +11,10 @@ import { AssetItem } from './AssetItem';
 import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
 import { type AssetListRow, getAssetListRowKey, getAssetListRows } from './getAssetListRows';
 
-type AssetsProps = {
-    ListHeaderComponent?: ReactElement | null;
-    ListFooterComponent?: ReactElement | null;
-    refreshControl?: ScrollViewProps['refreshControl'];
-};
+export type AssetsProps = Pick<
+    FlashListProps<AssetListRow>,
+    'ListHeaderComponent' | 'ListFooterComponent' | 'refreshControl' | 'onScroll'
+>;
 
 const listContentStyle = prepareNativeStyle<{ bottomInset: number }>((utils, { bottomInset }) => ({
     paddingBottom: Math.max(bottomInset, utils.spacings.sp24),
@@ -49,6 +47,7 @@ export const Assets = ({
     ListHeaderComponent,
     ListFooterComponent,
     refreshControl,
+    onScroll,
 }: AssetsProps) => {
     const { applyStyle } = useNativeStyles();
     const { bottom: bottomInset } = useBannerAwareSafeAreaInsets();
@@ -84,6 +83,7 @@ export const Assets = ({
             ListHeaderComponent={ListHeaderComponent}
             ListFooterComponent={ListFooterComponent}
             contentContainerStyle={applyStyle(listContentStyle, { bottomInset })}
+            onScroll={onScroll}
         />
     );
 };

@@ -46,6 +46,7 @@
         "@suite-native/link": "workspace:*",
         "@suite-native/module-earn": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/scrollview": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/suite-sync": "workspace:*",
         "@suite-native/toasts": "workspace:*",
