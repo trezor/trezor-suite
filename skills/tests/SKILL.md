@@ -82,9 +82,34 @@ void invalid;
 
 ### Typing
 
-All fixtures and mocks shall be typed and declaratively defined; using `as` to cast an incomplete object is only a last
-resort. This may add boilerplate, but it ensures type changes surface as type errors instead of hard-to-fix failing
-tests.
+All fixtures and mocks shall be typed and declaratively defined; `as unknown as T` — the form actually in the
+tree — is only a last resort. This may add boilerplate, but it ensures type changes surface as type errors
+instead of hard-to-fix failing tests. The double cast disables checking for every field inside, so renaming or
+retyping a field leaves the fixture compiling and the test asserting on a shape production no longer produces;
+the failure then surfaces as a mysterious assertion far from the fixture.
+
+Reach for `satisfies` instead, and for a deliberately partial fixture say which part is missing with
+`satisfies Omit<T, 'field'>[]` or `satisfies Pick<T, …>`.
+
+```ts
+// bad - useSubscribeForSolanaBlockUpdates.test.ts:20 - the double cast turns off checking for every field
+// inside, so a renamed Account field keeps compiling here
+const solanaAccount = {
+    key: 'sol-account-1',
+    symbol: 'sol',
+    networkType: 'solana',
+} as unknown as Account;
+
+// good - the fields present stay checked, and the type says what was deliberately left out
+const tokens = [{ contract, symbol: 'USDC', decimals: 6, balance: '25' }] satisfies Omit<
+    TokenInfo,
+    'standard'
+>[];
+```
+
+Two exceptions are unavoidable: a cast on a branded primitive (`'eth-account-key' as AccountKey`, since
+[`AccountKey`](../../suite-common/wallet-types/src/account.ts) is a branded template literal), and
+`} satisfies T as unknown as T` for a fixture that is structurally complete but nominally incompatible.
 
 ### Organization & Naming Convention
 

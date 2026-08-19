@@ -123,15 +123,50 @@ dependency array on a memo whose callback reads through a ref. Restructure inste
 which one. When the value is genuinely read through a stable callback and the linter therefore cannot see
 it, keep the dependency listed and reference it with a `void` statement so the rule stays live rather than
 suppressed — `useTradingBuyFormDefaultValues.ts:45` does exactly that with `void coins;`, and carries no
-`eslint-disable` at all.
-[`useFreshRef`](../../packages/react-utils/src/hooks/useFreshRef.ts) assigns during render, so `.current`
-is always the newest value; it is the only correct choice when the ref is read in render or inside a
-`useMemo`. [`useCurrentRef`](../../packages/react-utils/src/hooks/useCurrentRef.ts) assigns in an effect,
-so during render `.current` still holds the last committed value. Neither tracks the previous value — for
-that, assign a plain `useRef` at the end of the effect. And confirm the dependency is genuinely unstable
-at its declaration first: a `useCallback(…, [])` handler is already stable and belongs in the array
+`eslint-disable` at all. And confirm the dependency is genuinely unstable at its declaration first: a
+`useCallback(…, [])` handler is already stable and belongs in the array
 ([#26319](https://github.com/trezor/trezor-suite/pull/26319#discussion_r3137461927),
 [#27384](https://github.com/trezor/trezor-suite/pull/27384#discussion_r3193474335)).
+
+## Pick the ref hook by when `.current` is read
+
+Choose by the moment the value is read, not by which helper is nearest.
+[`useFreshRef`](../../packages/react-utils/src/hooks/useFreshRef.ts) assigns during render, so `.current` is
+always the newest value — the only correct choice when the ref is read in render or inside a `useMemo`.
+[`useCurrentRef`](../../packages/react-utils/src/hooks/useCurrentRef.ts) assigns in an effect keyed on the
+value, so during render `.current` still holds the last committed one. There are 33 `useCurrentRef` call sites
+in `packages/suite`, so the distinction is live rather than theoretical.
+
+Neither holds the _previous_ value, and `useCurrentRef` does not either inside a later effect, because its own
+effect is declared first and has already run. Reaching for a helper when previous-value semantics are what you
+need makes the transition condition permanently false: the branch never runs, with no lint error and no crash.
+
+```tsx
+// bad - the suggestion on #27725 - useFreshRef assigns during render, so `.current` is already the new
+// serializedTx by the time the effect runs and the transition is never detected
+const serializedTxRef = useFreshRef(serializedTx);
+
+useEffect(() => {
+    if (serializedTxRef.current && !serializedTx && isSending) {
+        setIsSending(false);
+    }
+}, [isSending, serializedTx, serializedTxRef]);
+
+// good - TransactionReviewModalBody.tsx:59 - a plain ref, read at the top and assigned on the last line,
+// is the only shape that holds the previous value
+const prevSerializedTxRef = useRef(serializedTx);
+
+useEffect(() => {
+    if (prevSerializedTxRef.current && !serializedTx && isSending) {
+        setIsSending(false);
+    }
+
+    prevSerializedTxRef.current = serializedTx;
+}, [isSending, serializedTx]);
+```
+
+That branch is what clears `isSending` after a failed push; if it never fires, the expired-transaction "Try
+again" button stays blocked and the user is stuck in the review modal.
 
 ## Related skills
 
@@ -146,3 +181,5 @@ at its declaration first: a `useCallback(…, [])` handler is already stable and
 - [DOM and CSS](../performance-dom/SKILL.md) — forced layout, observers, compositor-only animation.
 - [Long and non-essential tasks](../performance-scheduling/SKILL.md) — yielding long tasks, deferring
   background work.
+- [Data fetching](../data-fetching/SKILL.md) — the `useQuery` shape that removes the fetching effect
+  altogether.

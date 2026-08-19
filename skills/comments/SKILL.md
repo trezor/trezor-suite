@@ -1,6 +1,6 @@
 ---
 name: comments
-description: Comment conventions for Trezor Suite — prefer self-documenting code, and how to write and format a comment when one is actually needed. Use when writing or reviewing code comments.
+description: Comment conventions for Trezor Suite — prefer self-documenting code, extract and name logic rather than explaining it in a comment paragraph, and how to write and format a comment when one is actually needed. Use when writing or reviewing code comments, or when a block needs a comment before it makes sense.
 ---
 
 # Comments
@@ -31,6 +31,57 @@ index += 1;
 // Firmware < 2.6.0 reports the fee in a different unit, so we normalize here.
 const fee = normalizeFee(rawFee, firmwareVersion);
 ```
+
+## Give a name to logic the reader has to decode
+
+Sometimes the honest fix for a block that needs a comment is not a better comment — it is a name. Two
+concrete triggers:
+
+- **A block needs a multi-line comment before it makes sense.** Extract it into a named function and let
+  early returns replace the nesting. The long comment then hangs on the extracted unit instead of on a line
+  only someone already inside the block will ever see. `getPoolDelegation`
+  ([stakeFormCardanoActions.ts:313](../../packages/suite/src/actions/wallet/stake/stakeFormCardanoActions.ts))
+  came out of exactly this.
+- **The same compound condition appears twice.** Hoist it into a named `const` — `apyAvailable`
+  ([EarnStakingAccountRow.tsx:297](../../packages/suite/src/components/earn/dashboard/staking/EarnStakingAccountRow.tsx))
+  is read at two branches that previously each spelled the check out, and would have drifted the moment a
+  third status was added.
+
+A component body that assembles a `ReactNode` into a `let` through an `if / else if / else` chain is the same
+defect wearing JSX: extract it into its own component and each case returns.
+
+```tsx
+// bad - the pre-fix shape from #30255 - three layouts assembled into a `let` before the screen renders
+// anything, so the reader unwinds the chain to find the actual output
+let transactionTitle: ReactNode;
+if (isUnstakeTransaction) {
+    transactionTitle = <UnstakeTransactionDetailTitle unstakeAmount={unstakeAmount} />;
+} else if (wrapKind) {
+    transactionTitle = <WrapTransactionName transaction={transaction} kind={wrapKind} />;
+} else {
+    transactionTitle = <TransactionName transaction={transaction} isPending={isPending} />;
+}
+
+// good - TransactionDetailTitle.tsx:21 - each case returns and is then forgotten; the screen renders
+// <TransactionDetailTitle /> and the name says what it is
+export const TransactionDetailTitle = ({ transaction, isPending }: Props) => {
+    const unstakeAmount = getUnstakeTxAmount(transaction);
+    const wrapKind = getNativeWrapTxKind(transaction);
+
+    if (unstakeAmount !== undefined) {
+        return <UnstakeTransactionDetailTitle unstakeAmount={unstakeAmount} />;
+    }
+
+    if (wrapKind) {
+        return <WrapTransactionName transaction={transaction} kind={wrapKind} />;
+    }
+
+    return <TransactionName transaction={transaction} isPending={isPending} />;
+};
+```
+
+Don't extract a single-use one-liner — the triggers above are the whole rule, and a comment explaining
+genuinely non-obvious _why_ stays a comment.
 
 ## Start with an uppercase letter and end with a period
 

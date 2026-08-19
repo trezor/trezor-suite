@@ -26,7 +26,8 @@ A package may only import from scopes listed above it (e.g. `suite` can depend o
 - [Common Issues](skills/common-issues/SKILL.md) – Known issues and their solutions
 - [Components](skills/components/SKILL.md) – React component file structure and patterns
 - [Common Tasks](skills/common-tasks/SKILL.md) – Dependency management, package creation, and troubleshooting
-- [Defensive Programming](skills/defensive-programming/SKILL.md) – Exhaustive checks, safe defaults, and non-mutating array methods
+- [Data Fetching](skills/data-fetching/SKILL.md) – TanStack Query: useQuery over effect-driven fetching, query keys, shared query hooks
+- [Defensive Programming](skills/defensive-programming/SKILL.md) – Exhaustive checks, safe defaults, absent values, network features, EVM address comparison, and non-mutating array methods
 - [Dependency Injection](skills/dependency-injection/SKILL.md) – DI pattern for service definitions, factories, and composition roots
 - [Development Commands](skills/development-commands/SKILL.md) – Running apps, linting, testing, and building
 - [Git and Commit Guidelines](skills/git-and-commit-guidelines/SKILL.md) – Conventional Commits format and best practices

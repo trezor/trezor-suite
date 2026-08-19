@@ -1,6 +1,6 @@
 ---
 name: components
-description: React component file structure and patterns for Trezor Suite. Use when creating or reviewing React components, including prop passing and component organization.
+description: React component file structure and patterns for Trezor Suite, including one component per file and where an extracted helper component or hook goes. Use when creating or reviewing React components, including prop passing and component organization.
 ---
 
 # Components
@@ -14,6 +14,43 @@ description: React component file structure and patterns for Trezor Suite. Use w
 5. 🆎 Component types
 6. 🎭 Component prop type
 7. 🍱 Component
+
+## Export one component per file, and give an extracted hook its own file
+
+A file exports exactly one React component. A helper component that only this file uses still gets its own
+file next to it — not a shared `parts.tsx` — and a hook extracted from a component goes into
+`hooks/<useHookName>.ts(x)`, named after the hook
+([useYourPositionCardYieldBadge.tsx](../../suite-native/module-accounts-management/src/hooks/useYourPositionCardYieldBadge.tsx)
+is the shape, `.tsx` because it returns JSX-bearing values).
+
+The second component in a file is reliably the part that later needs reuse or refactoring, and it is
+reachable by neither filename nor a test that renders it alone.
+
+```tsx
+// bad - two components in one file; the fee row is not findable by filename and cannot be rendered on
+// its own in a test
+const CancelTransactionFeeRow = ({ title, fee, symbol }: CancelTransactionFeeRowProps) => (
+    <TransactionDetailRow title={title}>{/* ... */}</TransactionDetailRow>
+);
+
+export const CancelEvmTransactionButton = ({ accountKey, transaction }: Props) => (
+    <CancelTransactionFeeRow title={feeTitle} fee={fee} symbol={transaction.symbol} />
+);
+
+// good - CancelEvmTransactionButton.tsx - one component, with the row and the hook each in their own file
+import { useCancelEvmTransaction } from '../hooks/useCancelEvmTransaction';
+
+import { CancelTransactionFeeRow } from './CancelTransactionFeeRow';
+
+export const CancelEvmTransactionButton = ({ accountKey, transaction }: Props) => {
+    const { fee, cancel } = useCancelEvmTransaction({ accountKey, transaction });
+
+    return <CancelTransactionFeeRow fee={fee} symbol={transaction.symbol} onPress={cancel} />;
+};
+```
+
+Counting the components in a file is a job for `react/no-multi-comp`, which is not enabled yet; what a linter
+cannot decide, and what this rule is therefore about, is _where_ the extracted unit goes.
 
 ## 🟠 Component structure
 
