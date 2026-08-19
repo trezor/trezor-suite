@@ -1,31 +1,34 @@
-import { forwardRef } from 'react';
+import { useRef } from 'react';
+import { useSelector } from 'react-redux';
 
-import { Assets, type AssetsProps } from '@suite-native/assets';
+import { selectIsDiscoveredDeviceAccountless } from '@suite-common/wallet-core';
+import { Assets } from '@suite-native/assets';
 import { useScrollDivider } from '@suite-native/scrollview';
 
 import { type PortfolioGraphRef } from './PortfolioGraph';
 import { PortfolioListFooter } from './PortfolioListFooter';
 import { PortfolioListHeader } from './PortfolioListHeader';
+import { useHomeRefreshControl } from '../hooks/useHomeRefreshControl';
 
-type PortfolioContentProps = Pick<AssetsProps, 'refreshControl'>;
+export const PortfolioContent = () => {
+    const { scrollDivider, handleScroll } = useScrollDivider();
+    const portfolioGraphRef = useRef<PortfolioGraphRef>(null);
+    const isDiscoveredDeviceAccountless = useSelector(selectIsDiscoveredDeviceAccountless);
+    const refreshControl = useHomeRefreshControl({
+        isDiscoveredDeviceAccountless,
+        portfolioGraphRef,
+    });
 
-export const PortfolioContent = forwardRef<PortfolioGraphRef, PortfolioContentProps>(
-    ({ refreshControl }, ref) => {
-        const { scrollDivider, handleScroll } = useScrollDivider();
-
-        return (
-            <>
-                {scrollDivider}
-                <Assets
-                    refreshControl={refreshControl}
-                    ListHeaderComponent={<PortfolioListHeader ref={ref} />}
-                    ListFooterComponent={<PortfolioListFooter />}
-                    onScroll={handleScroll}
-                    testID="@screen/mainScrollView"
-                />
-            </>
-        );
-    },
-);
-
-PortfolioContent.displayName = 'PortfolioContent';
+    return (
+        <>
+            {scrollDivider}
+            <Assets
+                refreshControl={refreshControl}
+                ListHeaderComponent={<PortfolioListHeader ref={portfolioGraphRef} />}
+                ListFooterComponent={<PortfolioListFooter />}
+                onScroll={handleScroll}
+                testID="@screen/mainScrollView"
+            />
+        </>
+    );
+};

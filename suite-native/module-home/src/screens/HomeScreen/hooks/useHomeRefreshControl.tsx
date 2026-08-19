@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { syncAllAccountsWithBlockchainThunk } from '@suite-native/blockchain';
 import { useNativeStyles } from '@trezor/styles-native';
 
-import { type PortfolioGraphRef } from './components/PortfolioGraph';
+import { type PortfolioGraphRef } from '../components/PortfolioGraph';
 
 export const useHomeRefreshControl = ({
     isDiscoveredDeviceAccountless,
@@ -33,8 +33,10 @@ export const useHomeRefreshControl = ({
         setIsRefreshing(false);
     }, [dispatch, portfolioGraphRef]);
 
-    const refreshControl = useMemo(() => {
-        if (isDiscoveredDeviceAccountless) return undefined;
+    return useMemo(() => {
+        if (isDiscoveredDeviceAccountless) {
+            return undefined;
+        }
 
         return (
             <RefreshControl
@@ -44,6 +46,4 @@ export const useHomeRefreshControl = ({
             />
         );
     }, [isDiscoveredDeviceAccountless, handleRefresh, colors, isRefreshing]);
-
-    return refreshControl;
 };
