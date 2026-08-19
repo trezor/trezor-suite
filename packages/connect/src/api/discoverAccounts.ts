@@ -12,8 +12,8 @@ import {
     type FirmwareRange,
     PAGING,
     type PermissionRequest,
-    UI_REQUEST,
-    createUiMessage,
+    UI_EVENTS,
+    createUiEventMessage,
 } from '@trezor/connect-common';
 import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
@@ -176,7 +176,7 @@ export default class DiscoverAccounts extends AbstractMethod<
             (Object.keys(this.progress).length || 1);
 
         sendCoreMessage(
-            createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
+            createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, {
                 total: 100,
                 progress: 100 * progress,
                 response,
@@ -226,11 +226,11 @@ export default class DiscoverAccounts extends AbstractMethod<
 
                 let error;
                 if (min === '0') {
-                    error = UI_REQUEST.FIRMWARE_NOT_SUPPORTED;
+                    error = UI_EVENTS.FIRMWARE_NOT_SUPPORTED;
                 } else if (!versionUtils.isNewerOrEqual(version, min)) {
-                    error = UI_REQUEST.FIRMWARE_OLD;
+                    error = UI_EVENTS.FIRMWARE_OLD;
                 } else if (max !== '0' && versionUtils.isNewer(version, max)) {
-                    error = UI_REQUEST.FIRMWARE_NOT_COMPATIBLE;
+                    error = UI_EVENTS.FIRMWARE_NOT_COMPATIBLE;
                 }
 
                 return error ? { ...item, error } : item;

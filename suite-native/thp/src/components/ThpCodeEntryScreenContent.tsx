@@ -5,7 +5,7 @@ import { selectThpPairingRequestId, selectThpStep } from '@suite-common/thp';
 import { useAlert } from '@suite-native/alerts';
 import { CenteredTitleHeader, Loader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 
 import { SecurityCodeInput } from './SecurityCodeInput';
 
@@ -24,7 +24,7 @@ export const ThpCodeEntryScreenContent = ({ onRetry }: ThpCodeEntryScreenContent
     const onSubmit = (tag: string) => {
         setIsLoading(true);
         TrezorConnect.uiResponse({
-            type: 'ui-receive_thp_pairing_tag',
+            type: UI_RESPONSE.RECEIVE_THP_PAIRING_TAG,
             payload: { tag },
             requestId,
         });

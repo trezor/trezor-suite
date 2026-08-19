@@ -4,6 +4,11 @@ import path from 'path';
 import TrezorConnect, {
     type Device,
     ThpPairingMethod,
+    UI_EVENT,
+    UI_EVENTS,
+    UI_REQUEST,
+    UI_REQUESTS,
+    UI_RESPONSE,
     type UiRequestThpPairing,
     initLog,
 } from '@trezor/connect';
@@ -232,52 +237,10 @@ const run = async () => {
         }
     });
 
-    TrezorConnect.on('UI_EVENT', async event => {
+    TrezorConnect.on(UI_EVENT, async event => {
         console.info('UI_EVENT', event);
 
-        if (event.type === 'ui-request_confirmation') {
-            return TrezorConnect.uiResponse({
-                type: 'ui-receive_confirmation',
-                payload: true,
-                requestId: event.requestId,
-            });
-        }
-
-        if (event.type === 'ui-request_passphrase') {
-            if (args['cancel-passphrase']) {
-                return TrezorConnect.cancel();
-            }
-            if (args['cancel-passphrase-ui']) {
-                // respond with no passphrase
-                // @ts-expect-error
-                return TrezorConnect.uiResponse({
-                    type: 'ui-receive_passphrase',
-                    requestId: event.requestId,
-                });
-            }
-
-            const value = args.passphrase || '';
-            TrezorConnect.uiResponse({
-                type: 'ui-receive_passphrase',
-                payload: { value, passphraseOnDevice: args['passphrase-on-device'] },
-                requestId: event.requestId,
-            });
-        }
-
-        if (event.type === 'ui-request_thp_pairing') {
-            const tag = await waitForPairingTag(event);
-            if (tag) {
-                TrezorConnect.uiResponse({
-                    type: 'ui-receive_thp_pairing_tag',
-                    payload: { tag },
-                    requestId: event.requestId,
-                });
-            } else {
-                return TrezorConnect.cancel();
-            }
-        }
-
-        if (event.type === 'ui-button') {
+        if (event.type === UI_EVENTS.BUTTON_REQUEST) {
             if (!isDebugLinkInteraction('button')) {
                 const resp = await waitForStdio(
                     `Confirm ${event.payload.code} (${event.payload.name}) on device or type [c] for Cancel:`,
@@ -287,6 +250,52 @@ const run = async () => {
                 }
             } else {
                 await debugLinkDecision();
+            }
+        }
+    });
+
+    TrezorConnect.on(UI_REQUEST, async event => {
+        console.info('UI_REQUEST', event);
+
+        if (event.type === UI_REQUESTS.REQUEST_CONFIRMATION) {
+            return TrezorConnect.uiResponse({
+                type: UI_RESPONSE.RECEIVE_CONFIRMATION,
+                payload: true,
+                requestId: event.requestId,
+            });
+        }
+
+        if (event.type === UI_REQUESTS.REQUEST_PASSPHRASE) {
+            if (args['cancel-passphrase']) {
+                return TrezorConnect.cancel();
+            }
+            if (args['cancel-passphrase-ui']) {
+                // respond with no passphrase
+                // @ts-expect-error
+                return TrezorConnect.uiResponse({
+                    type: UI_RESPONSE.RECEIVE_PASSPHRASE,
+                    requestId: event.requestId,
+                });
+            }
+
+            const value = args.passphrase || '';
+            TrezorConnect.uiResponse({
+                type: UI_RESPONSE.RECEIVE_PASSPHRASE,
+                payload: { value, passphraseOnDevice: args['passphrase-on-device'] },
+                requestId: event.requestId,
+            });
+        }
+
+        if (event.type === UI_REQUESTS.REQUEST_THP_PAIRING_TAG) {
+            const tag = await waitForPairingTag(event);
+            if (tag) {
+                TrezorConnect.uiResponse({
+                    type: UI_RESPONSE.RECEIVE_THP_PAIRING_TAG,
+                    payload: { tag },
+                    requestId: event.requestId,
+                });
+            } else {
+                return TrezorConnect.cancel();
             }
         }
     });

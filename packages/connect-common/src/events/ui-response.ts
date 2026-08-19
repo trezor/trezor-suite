@@ -1,6 +1,6 @@
 import type { ThpPairingMethod } from '@trezor/protocol';
 
-import { type UI_EVENT } from './ui-request';
+import { type UI_REQUEST } from './ui-request';
 import type { DiscoveryAccount } from '../types/account';
 import type { FeeLevel } from '../types/fees';
 import type { LocalFirmwares } from '../types/settings';
@@ -96,4 +96,4 @@ export type UiResponseEvent =
     | UiResponseDiscoveryAccounts
     | UiResponseFirmwares;
 
-export type UiResponseMessage = UiResponseEvent & { event: typeof UI_EVENT; requestId?: string };
+export type UiResponseMessage = UiResponseEvent & { event: typeof UI_REQUEST; requestId?: string };

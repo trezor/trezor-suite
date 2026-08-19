@@ -6,7 +6,8 @@ import {
     DEVICE,
     type DeviceThpCredentialsChanged,
     type DeviceThpPairingStatusChanged,
-    UI_REQUEST,
+    UI_EVENTS,
+    UI_REQUESTS,
     isUiEventOfType,
 } from '@trezor/connect';
 import type { ThpCredentials } from '@trezor/protocol';
@@ -86,7 +87,7 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState, ThpReducer
                 state.autoconnectStep = null;
             })
             .addMatcher(
-                action => action.type === UI_REQUEST.REQUEST_THP_PAIRING,
+                action => action.type === UI_REQUESTS.REQUEST_THP_PAIRING_TAG,
                 (state, action: { type: string; requestId?: string }) => {
                     state.step = 'CodeEntry';
                     state.pairingRequestId = action.requestId;
@@ -135,7 +136,7 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState, ThpReducer
                 },
             )
             .addMatcher(
-                action => isUiEventOfType(action, UI_REQUEST.REQUEST_BUTTON),
+                action => isUiEventOfType(action, UI_EVENTS.BUTTON_REQUEST),
                 (state, action) => {
                     const actionName = action.payload.name as THPButtonRequestName;
                     switch (actionName) {
@@ -153,7 +154,7 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState, ThpReducer
             )
             // This is the THP flow in Firmware Update
             .addMatcher(
-                action => action.type === UI_REQUEST.REQUEST_CONFIRMATION,
+                action => action.type === UI_REQUESTS.REQUEST_CONFIRMATION,
                 (state, action: { type: string; requestId?: string }) => {
                     if (state.step !== 'CodeInvalid') {
                         state.step = 'BeforeConnectionInfo';

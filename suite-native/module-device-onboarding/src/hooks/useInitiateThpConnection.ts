@@ -10,7 +10,7 @@ import {
     type RootStackParamList,
     type StackToTabCompositeProps,
 } from '@suite-native/navigation';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 
 type NavigationProp = StackToTabCompositeProps<
     DeviceOnboardingStackParamList,
@@ -26,7 +26,11 @@ export const useInitiateThpConnection = () => {
 
     const initiateThpConnection = () => {
         // Device is acquired by the FW installation hook, just respond as expected.
-        TrezorConnect.uiResponse({ type: 'ui-receive_confirmation', payload: true, requestId });
+        TrezorConnect.uiResponse({
+            type: UI_RESPONSE.RECEIVE_CONFIRMATION,
+            payload: true,
+            requestId,
+        });
     };
 
     useEffect(() => {

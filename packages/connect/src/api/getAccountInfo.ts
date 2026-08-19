@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import { UI_REQUEST, createUiMessage } from '@trezor/connect-common';
+import { UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import type {
     AccountInfo,
     AccountUtxo,
@@ -150,7 +150,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             if (!this.hasBundle || this.getDevice()?.getCurrentSession().isDisposed()) return;
             // send progress to UI
             context.sendCoreMessage(
-                createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
+                createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, {
                     total: this.params.length,
                     progress,
                     response,

@@ -1,6 +1,13 @@
 import { vi } from 'vitest';
 
-import TrezorConnect, { type Device, type ThpSettings, type UiEvent } from '../../../src';
+import TrezorConnect, {
+    type Device,
+    type ThpSettings,
+    UI_EVENTS,
+    UI_REQUESTS,
+    UI_RESPONSE,
+    type UiRequestEvent,
+} from '../../../src';
 import { THP_CREDENTIALS } from '../../common-thp-credentials';
 import { getController, initTrezorConnect, restartEmu, setup } from '../../common.setup';
 
@@ -45,7 +52,7 @@ describe('THP pairing', () => {
     const getPairingInfo = ({
         device,
         nfcData,
-    }: Extract<UiEvent, { type: 'ui-request_thp_pairing' }>['payload']) =>
+    }: Extract<UiRequestEvent, { type: typeof UI_REQUESTS.REQUEST_THP_PAIRING_TAG }>['payload']) =>
         controller.getPairingInfo(device.thp!.channel, nfcData).catch(e => {
             console.error('DebugLinkGetPairingInfo', device.thp!.channel, e);
 
@@ -55,7 +62,7 @@ describe('THP pairing', () => {
     it('ThpPairing SkipPairing', async () => {
         const spy = vi.fn();
         const device = await waitForDevice({ pairingMethods: ['SkipPairing'] });
-        TrezorConnect.on('ui-request_thp_pairing', spy);
+        TrezorConnect.on(UI_REQUESTS.REQUEST_THP_PAIRING_TAG, spy);
 
         const address = await TrezorConnect.getAddress({
             device,
@@ -69,11 +76,11 @@ describe('THP pairing', () => {
     it('ThpPairing NFC', async () => {
         const device = await waitForDevice({ pairingMethods: ['NFC'] });
 
-        TrezorConnect.on('ui-request_thp_pairing', async event => {
+        TrezorConnect.on(UI_REQUESTS.REQUEST_THP_PAIRING_TAG, async event => {
             const state = await getPairingInfo(event);
-            TrezorConnect.removeAllListeners('ui-request_thp_pairing');
+            TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_THP_PAIRING_TAG);
             TrezorConnect.uiResponse({
-                type: 'ui-receive_thp_pairing_tag',
+                type: UI_RESPONSE.RECEIVE_THP_PAIRING_TAG,
                 payload: { tag: state.nfc_secret_trezor },
             });
         });
@@ -102,7 +109,7 @@ describe('THP pairing', () => {
         });
 
         const pairingSpy = vi.fn();
-        TrezorConnect.on('ui-request_thp_pairing', pairingSpy);
+        TrezorConnect.on(UI_REQUESTS.REQUEST_THP_PAIRING_TAG, pairingSpy);
 
         const address = await TrezorConnect.getAddress({
             device,
@@ -123,10 +130,10 @@ describe('THP pairing', () => {
             // console.log('Credentials', event.credentials);
         });
 
-        TrezorConnect.on('ui-request_thp_pairing', async event => {
+        TrezorConnect.on(UI_REQUESTS.REQUEST_THP_PAIRING_TAG, async event => {
             const state = await getPairingInfo(event);
             TrezorConnect.uiResponse({
-                type: 'ui-receive_thp_pairing_tag',
+                type: UI_RESPONSE.RECEIVE_THP_PAIRING_TAG,
                 payload: { tag: state.code_entry_code },
             });
         });
@@ -142,8 +149,8 @@ describe('THP pairing', () => {
         expect(credentialsSpy).toHaveBeenCalledTimes(2);
 
         // expect no pairing or button request from now on
-        TrezorConnect.removeAllListeners('ui-request_thp_pairing');
-        TrezorConnect.removeAllListeners('ui-button');
+        TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_THP_PAIRING_TAG);
+        TrezorConnect.removeAllListeners(UI_EVENTS.BUTTON_REQUEST);
 
         // restart the device
         await restartEmu(controller);
@@ -181,10 +188,10 @@ describe('THP pairing', () => {
             statusChangeEvents.push(status);
         });
 
-        TrezorConnect.on('ui-request_thp_pairing', () => {
-            TrezorConnect.removeAllListeners('ui-request_thp_pairing');
+        TrezorConnect.on(UI_REQUESTS.REQUEST_THP_PAIRING_TAG, () => {
+            TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_THP_PAIRING_TAG);
             TrezorConnect.uiResponse({
-                type: 'ui-receive_thp_pairing_tag',
+                type: UI_RESPONSE.RECEIVE_THP_PAIRING_TAG,
                 payload: { tag: '111111' },
             });
         });
@@ -212,7 +219,7 @@ describe('THP pairing', () => {
         let result;
 
         // 1. reject pairing tag request from host
-        TrezorConnect.on('ui-request_thp_pairing', cancelOnHost);
+        TrezorConnect.on(UI_REQUESTS.REQUEST_THP_PAIRING_TAG, cancelOnHost);
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
         expect(result.error.message).toMatch(CANCEL_ERR);
@@ -222,8 +229,8 @@ describe('THP pairing', () => {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // 2. reject pairing tag request from Trezor
-        TrezorConnect.removeAllListeners('ui-request_thp_pairing');
-        TrezorConnect.on('ui-request_thp_pairing', () => {
+        TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_THP_PAIRING_TAG);
+        TrezorConnect.on(UI_REQUESTS.REQUEST_THP_PAIRING_TAG, () => {
             controller.send({ type: 'emulator-press-no' });
         });
         result = await TrezorConnect.getFeatures({ device });
@@ -235,8 +242,8 @@ describe('THP pairing', () => {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // 3. reject pairing confirmation from Trezor
-        TrezorConnect.removeAllListeners('ui-button');
-        TrezorConnect.on('ui-button', () => {
+        TrezorConnect.removeAllListeners(UI_EVENTS.BUTTON_REQUEST);
+        TrezorConnect.on(UI_EVENTS.BUTTON_REQUEST, () => {
             controller.send({ type: 'emulator-press-no' });
         });
         result = await TrezorConnect.getFeatures({ device });
@@ -245,21 +252,21 @@ describe('THP pairing', () => {
         expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(3));
 
         // 3. reject pairing confirmation from host
-        TrezorConnect.removeAllListeners('ui-button');
-        TrezorConnect.on('ui-button', cancelOnHost);
+        TrezorConnect.removeAllListeners(UI_EVENTS.BUTTON_REQUEST);
+        TrezorConnect.on(UI_EVENTS.BUTTON_REQUEST, cancelOnHost);
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
         expect(result.error.message).toMatch(FW_CANCEL_ERR); // canceled gracefully on Trezor
         expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(4));
 
         // check if pairing is still responsive
-        TrezorConnect.removeAllListeners('ui-button');
-        TrezorConnect.removeAllListeners('ui-request_thp_pairing');
-        TrezorConnect.on('ui-button', buttonRequestHandler());
-        TrezorConnect.on('ui-request_thp_pairing', async event => {
+        TrezorConnect.removeAllListeners(UI_EVENTS.BUTTON_REQUEST);
+        TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_THP_PAIRING_TAG);
+        TrezorConnect.on(UI_EVENTS.BUTTON_REQUEST, buttonRequestHandler());
+        TrezorConnect.on(UI_REQUESTS.REQUEST_THP_PAIRING_TAG, async event => {
             const state = await getPairingInfo(event);
             TrezorConnect.uiResponse({
-                type: 'ui-receive_thp_pairing_tag',
+                type: UI_RESPONSE.RECEIVE_THP_PAIRING_TAG,
                 payload: { tag: state.code_entry_code },
             });
         });
@@ -280,13 +287,13 @@ describe('THP pairing', () => {
 
         const enterPassphraseOnHost = (value: string) => () => {
             TrezorConnect.uiResponse({
-                type: 'ui-receive_passphrase',
+                type: UI_RESPONSE.RECEIVE_PASSPHRASE,
                 payload: {
                     passphraseOnDevice: false,
                     value,
                 },
             });
-            TrezorConnect.removeAllListeners('ui-request_passphrase');
+            TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_PASSPHRASE);
         };
 
         let result;
@@ -295,11 +302,11 @@ describe('THP pairing', () => {
         result = await TrezorConnect.getFeatures({ device });
         expect(result).toMatchObject({ success: true });
 
-        TrezorConnect.on('ui-request_passphrase', enterPassphraseOnHost(''));
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, enterPassphraseOnHost(''));
 
         // 4. reject ButtonRequest from host
-        TrezorConnect.removeAllListeners('ui-button');
-        TrezorConnect.on('ui-button', cancelOnHost);
+        TrezorConnect.removeAllListeners(UI_EVENTS.BUTTON_REQUEST);
+        TrezorConnect.on(UI_EVENTS.BUTTON_REQUEST, cancelOnHost);
         result = await TrezorConnect.getAddress({
             device,
             path: "m/44'/0'/0'/1/1",
@@ -309,8 +316,8 @@ describe('THP pairing', () => {
         expect(result.error.message).toMatch(CANCEL_ERR);
 
         // 4. reject ButtonRequest from Trezor
-        TrezorConnect.removeAllListeners('ui-button');
-        TrezorConnect.on('ui-button', () => {
+        TrezorConnect.removeAllListeners(UI_EVENTS.BUTTON_REQUEST);
+        TrezorConnect.on(UI_EVENTS.BUTTON_REQUEST, () => {
             controller.send({ type: 'emulator-press-no' });
         });
         result = await TrezorConnect.getAddress({
@@ -322,10 +329,10 @@ describe('THP pairing', () => {
         expect(result.error.message).toMatch(FW_CANCEL_ERR);
 
         // 5. reject passphrase from host using TrezorConnect.cancel()
-        TrezorConnect.removeAllListeners('ui-request_passphrase');
-        TrezorConnect.removeAllListeners('ui-button');
-        TrezorConnect.on('ui-button', buttonRequestHandler());
-        TrezorConnect.on('ui-request_passphrase', cancelOnHost);
+        TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_PASSPHRASE);
+        TrezorConnect.removeAllListeners(UI_EVENTS.BUTTON_REQUEST);
+        TrezorConnect.on(UI_EVENTS.BUTTON_REQUEST, buttonRequestHandler());
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, cancelOnHost);
         result = await TrezorConnect.getAddress({
             device: {
                 ...device,
@@ -338,10 +345,10 @@ describe('THP pairing', () => {
         expect(result.error.message).toMatch(CANCEL_ERR);
 
         // 6. reject passphrase from host using empty payload
-        TrezorConnect.removeAllListeners('ui-request_passphrase');
-        TrezorConnect.removeAllListeners('ui-button');
-        TrezorConnect.on('ui-button', buttonRequestHandler());
-        TrezorConnect.on('ui-request_passphrase', () => {
+        TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_PASSPHRASE);
+        TrezorConnect.removeAllListeners(UI_EVENTS.BUTTON_REQUEST);
+        TrezorConnect.on(UI_EVENTS.BUTTON_REQUEST, buttonRequestHandler());
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, () => {
             // @ts-expect-error payload is missing
             TrezorConnect.uiResponse({
                 type: 'ui-receive_passphrase',
@@ -359,10 +366,10 @@ describe('THP pairing', () => {
         expect(result.error.code).toMatch('Method_Cancel');
 
         // 7. reject passphrase from Trezor
-        TrezorConnect.removeAllListeners('ui-request_passphrase');
-        TrezorConnect.removeAllListeners('ui-button');
-        TrezorConnect.on('ui-request_passphrase', enterPassphraseOnHost('a'));
-        TrezorConnect.on('ui-button', buttonRequestHandler('passphrase_host1')); // NOTE: .name may be changed in the future
+        TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_PASSPHRASE);
+        TrezorConnect.removeAllListeners(UI_EVENTS.BUTTON_REQUEST);
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, enterPassphraseOnHost('a'));
+        TrezorConnect.on(UI_EVENTS.BUTTON_REQUEST, buttonRequestHandler('passphrase_host1')); // NOTE: .name may be changed in the future
         result = await TrezorConnect.getAddress({
             device: {
                 ...device,
@@ -375,10 +382,10 @@ describe('THP pairing', () => {
         expect(result.error.message).toMatch(FW_CANCEL_ERR);
 
         // and finally check if device is still responsive
-        TrezorConnect.removeAllListeners('ui-button');
-        TrezorConnect.removeAllListeners('ui-request_passphrase');
-        TrezorConnect.on('ui-request_passphrase', enterPassphraseOnHost('a'));
-        TrezorConnect.on('ui-button', buttonRequestHandler());
+        TrezorConnect.removeAllListeners(UI_EVENTS.BUTTON_REQUEST);
+        TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_PASSPHRASE);
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, enterPassphraseOnHost('a'));
+        TrezorConnect.on(UI_EVENTS.BUTTON_REQUEST, buttonRequestHandler());
         result = await TrezorConnect.getAddress({
             device: {
                 ...device,

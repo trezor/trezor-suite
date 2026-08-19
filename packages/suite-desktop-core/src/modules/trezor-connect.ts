@@ -2,8 +2,7 @@ import TrezorConnect, {
     type ConnectSettings,
     type ConnectSettingsTransport,
     type LocalFirmwares,
-    UI_EVENT,
-    UI_REQUEST,
+    UI_EVENTS,
     UI_RESPONSE,
 } from '@trezor/connect';
 import { initLog } from '@trezor/connect-common';
@@ -232,11 +231,8 @@ export const init: ModuleInit = ({ mainThreadEmitter }) => {
         //     mainThreadEmitter.emit('module/trezor-connect/device-event', event);
         // });
 
-        TrezorConnect.on(UI_EVENT, event => {
-            const { type } = event;
-            if (type === UI_REQUEST.FIRMWARE_DOWNLOADED) {
-                mainThreadEmitter.emit('module/trezor-connect/firmware-store', event.payload);
-            }
+        TrezorConnect.on(UI_EVENTS.FIRMWARE_DOWNLOADED, event => {
+            mainThreadEmitter.emit('module/trezor-connect/firmware-store', event);
         });
     };
 

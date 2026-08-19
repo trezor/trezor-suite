@@ -9,7 +9,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { Column, H3, Paragraph } from '@trezor/components';
-import TrezorConnect, { UI_REQUEST, UI_RESPONSE } from '@trezor/connect';
+import TrezorConnect, { UI_REQUESTS, UI_RESPONSE } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
@@ -25,7 +25,8 @@ export const ConfirmPassphraseBeforeAction = () => {
 
     // Global passphrase modal: the device is ready once Connect raises REQUEST_PASSPHRASE.
     const isDeviceLoading = !(
-        modal.context === MODAL_CONTEXT_DEVICE && modal.windowType === UI_REQUEST.REQUEST_PASSPHRASE
+        modal.context === MODAL_CONTEXT_DEVICE &&
+        modal.windowType === UI_REQUESTS.REQUEST_PASSPHRASE
     );
 
     const intl = useIntl();

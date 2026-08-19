@@ -28,12 +28,12 @@ import { type TrezorConnectBackendType } from '@suite-common/wallet-config';
 import { type DiscoveryStatus, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import TrezorConnect, {
     type AccountInfo,
-    type BundleProgress,
     type DeviceState,
     type DeviceUniquePath,
     type StaticSessionId,
-    UI_REQUEST,
+    UI_EVENTS,
     UI_RESPONSE,
+    type UiEventBundleProgress,
 } from '@trezor/connect';
 import { type DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/account/discoverAccounts';
 import type { Bip43Path } from '@trezor/crypto-utils';
@@ -61,7 +61,7 @@ const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
 type DiscoveryReportingThunkState = TokenDefinitionsRootState & WalletCoreCompoundRootState;
 type DiscoveryReportingDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
-type ProgressEvent = BundleProgress<DiscoverAccountsProgress>['payload'];
+type ProgressEvent = UiEventBundleProgress<DiscoverAccountsProgress>['payload'];
 
 function assertDeviceIsAuthorized(device?: TrezorDevice): asserts device is AuthorizedDevice {
     if (!device?.state?.staticSessionId) {
@@ -484,7 +484,7 @@ export const runDiscoveryThunk = createThunk<
                 dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
             };
 
-            TrezorConnect.on(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
+            TrezorConnect.on(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
 
             // NOTE: sync set discovery status to progress to make sure that there aren't some hanging states
             // before asnyc onBundleProgress is called which sets progress
@@ -508,7 +508,7 @@ export const runDiscoveryThunk = createThunk<
                 callId,
             });
 
-            TrezorConnect.off(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
+            TrezorConnect.off(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
 
             if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
                 return;
@@ -755,7 +755,7 @@ export const runAdditionalDiscoveryThunk = createThunk<
             dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
         };
 
-        TrezorConnect.on(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.on(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
 
         // have Connect check the discovered account with persisted xpub hashes, but those are valid only for standard wallet
         const entropyCheckResult = selectEntropyCheckResultByDeviceId(getState(), device.id);
@@ -774,7 +774,7 @@ export const runAdditionalDiscoveryThunk = createThunk<
             entropyCheckResult,
         });
 
-        TrezorConnect.off(UI_REQUEST.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.off(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
 
         dispatch(
             discoveryActions.updateDiscovery(

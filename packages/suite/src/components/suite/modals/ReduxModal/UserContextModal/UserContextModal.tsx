@@ -8,7 +8,7 @@ import {
 } from '@suite/tor-desktop';
 import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_EVENTS } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import {
@@ -105,7 +105,7 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <ImportTransactionModal {...payload} onCancel={onCancel} />;
         case 'pin-mismatch':
             return <PinMismatchModal />;
-        case UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED:
+        case UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED:
             return <PinInvalidModal onCancel={onCancel} />;
         case 'application-log':
             return <ApplicationLogModal onCancel={onCancel} />;

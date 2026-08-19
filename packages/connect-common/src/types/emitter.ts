@@ -9,7 +9,8 @@ import type {
 import type { DEVICE_EVENT, DeviceEvent, DeviceEventMessage } from '../events/device';
 import type { PopupEvent, PopupEventMessage } from '../events/popup';
 import type { TRANSPORT_EVENT, TransportEvent, TransportEventMessage } from '../events/transport';
-import type { UI_EVENT, UiEvent, UiEventMessage } from '../events/ui-request';
+import type { UI_EVENT, UiEvent, UiEventMessage } from '../events/ui-event';
+import type { UI_REQUEST, UiRequestEvent, UiRequestMessage } from '../events/ui-request';
 
 type EventPayloadMap<T extends { type: string; payload?: any }> = {
     [E in T as E['type']]: E extends { payload: infer P } ? P : undefined;
@@ -20,10 +21,12 @@ type ConnectEventMap = {
     [TRANSPORT_EVENT]: TransportEventMessage;
     [BLOCKCHAIN_EVENT]: BlockchainEventMessage;
     [UI_EVENT]: UiEventMessage | PopupEventMessage;
+    [UI_REQUEST]: UiRequestMessage;
 } & EventPayloadMap<DeviceEvent> &
     EventPayloadMap<TransportEvent> &
     EventPayloadMap<BlockchainEvent> &
     EventPayloadMap<UiEvent> &
+    EventPayloadMap<UiRequestEvent> &
     EventPayloadMap<PopupEvent>;
 
 export type ConnectEvents = keyof ConnectEventMap;

@@ -14,7 +14,7 @@ import {
     selectIsDiscoveryStatusConfirmEmptyPassphrase,
     submitPassphrase,
 } from '@suite-common/wallet-core';
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_EVENTS } from '@trezor/connect';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -55,13 +55,13 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
 
     const onBackToInitial = () => {
         dispatch(cancelDiscoveryThunk(device));
-        dispatch({ type: UI_REQUEST.CLOSE_UI_WINDOW });
+        dispatch({ type: UI_EVENTS.CLOSE_UI_WINDOW });
         dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
     };
 
     const onCancel = () => {
         dispatch(cancelDiscoveryThunk(device));
-        dispatch({ type: UI_REQUEST.CLOSE_UI_WINDOW });
+        dispatch({ type: UI_EVENTS.CLOSE_UI_WINDOW });
     };
 
     const onSubmit = useCallback(

@@ -15,7 +15,7 @@ import {
     type Device,
     type DeviceButtonRequestPayload,
     FirmwareType,
-    UI_REQUEST,
+    UI_EVENTS,
 } from '@trezor/connect';
 import {
     DeviceModelInternal,
@@ -130,13 +130,13 @@ export const useFirmwareInstallation = () => {
 
     const [reconnectEvent, buttonEvent, progressEvent] = useMemo(() => {
         if (firmware.uiEvent) {
-            if (firmware.uiEvent.type === UI_REQUEST.FIRMWARE_RECONNECT) {
+            if (firmware.uiEvent.type === UI_EVENTS.FIRMWARE_RECONNECT) {
                 return [firmware.uiEvent.payload];
             }
             if (firmware.uiEvent.type === DEVICE.BUTTON) {
                 return [undefined, firmware.uiEvent.payload];
             }
-            if (firmware.uiEvent.type === UI_REQUEST.FIRMWARE_PROGRESS) {
+            if (firmware.uiEvent.type === UI_EVENTS.FIRMWARE_PROGRESS) {
                 return [undefined, undefined, firmware.uiEvent.payload];
             }
         }
@@ -148,8 +148,8 @@ export const useFirmwareInstallation = () => {
     // Until then, access device as normal.
     const originalDevice = firmware.cachedDevice || device;
 
-    // To instruct user to reboot to bootloader manually, UI.FIRMWARE_DISCONNECT event is emitted first,
-    // and UI_REQUEST.FIRMWARE_RECONNECT is emitted after the device disconnects.
+    // To instruct user to reboot to bootloader manually, UI_EVENTS.FIRMWARE_DISCONNECT event is emitted first,
+    // and UI_EVENTS.FIRMWARE_RECONNECT is emitted after the device disconnects.
     const showManualReconnectPrompt = reconnectEvent?.method === 'manual';
     const deviceIsWaitingForConfirmationToInitiateConnection =
         reconnectEvent?.method === 'auto' && reconnectEvent.target === 'bootloader';
@@ -191,7 +191,7 @@ export const useFirmwareInstallation = () => {
     const showConfirmationPill =
         (!showReconnectPrompt && progressEvent?.operation === 'downloading') ||
         isThpConfirmationRequested ||
-        firmware.uiEvent?.type === UI_REQUEST.FIRMWARE_RECONNECT ||
+        firmware.uiEvent?.type === UI_EVENTS.FIRMWARE_RECONNECT ||
         firmware.uiEvent?.type === 'button';
 
     const updateStatus = useMemo<FirmwareOperationStatus>(() => {

@@ -11,7 +11,8 @@ import type {
     TransportRequestWebUSBDevice,
     TransportSetTransports,
 } from './transport';
-import type { UiEventMessage } from './ui-request';
+import type { UiEventMessage } from './ui-event';
+import type { UiRequestMessage } from './ui-request';
 import type { UiResponseEvent } from './ui-response';
 import type { ErrorCode, SerializedError, TrezorError } from '../constants/errors';
 
@@ -35,6 +36,7 @@ export type CoreEventMessage = {
     | DeviceEventMessage
     | TransportEventMessage
     | UiEventMessage
+    | UiRequestMessage
     | MethodResponseMessage
     | PopupEventMessage
 );
