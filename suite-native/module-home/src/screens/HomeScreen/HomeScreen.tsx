@@ -1,4 +1,5 @@
-import React, { useCallback, useRef } from 'react';
+import React, { type ForwardedRef, useCallback, useRef } from 'react';
+import type { ScrollViewProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -20,8 +21,38 @@ import { PortfolioContent } from './components/PortfolioContent';
 import { type PortfolioGraphRef } from './components/PortfolioGraph';
 import { UninitializedConnectedDeviceState } from './components/UninitializedConnectedDeviceState';
 import { selectHomeScreenState } from './homescreenSelectors';
+import type { HomeScreenState } from './homescreenTypes';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { useShowAutoEjectAlert } from './useShowAutoEjectAlert';
+
+type HomeScreenContentProp = {
+    homeScreenState: HomeScreenState;
+    refreshControl?: ScrollViewProps['refreshControl'];
+    portfolioGraphRef?: ForwardedRef<PortfolioGraphRef>;
+};
+
+const HomeScreenContent = ({
+    homeScreenState,
+    portfolioGraphRef,
+    refreshControl,
+}: HomeScreenContentProp) => {
+    switch (homeScreenState) {
+        case 'emptyPortfolioCrossroads':
+            return <EmptyPortfolioCrossroads />;
+        case 'emptyPortfolioTracker':
+            return <EmptyPortfolioTrackerState />;
+        case 'uninitializedDevice':
+            return <UninitializedConnectedDeviceState />;
+        case 'noNetworkConfigured':
+            return <NoNetworksConfigured />;
+        case 'discoveryNotFinished':
+            return <DiscoveryNotFinished />;
+        case 'portfolioContent':
+            return <PortfolioContent ref={portfolioGraphRef} refreshControl={refreshControl} />;
+        default:
+            return exhaustive(homeScreenState);
+    }
+};
 
 export const HomeScreen = () => {
     const { showSystemUnpairingAlert } = useBluetoothAlerts();
@@ -48,25 +79,6 @@ export const HomeScreen = () => {
 
     useShowAutoEjectAlert();
 
-    const renderContent = () => {
-        switch (homeScreenState) {
-            case 'emptyPortfolioCrossroads':
-                return <EmptyPortfolioCrossroads />;
-            case 'emptyPortfolioTracker':
-                return <EmptyPortfolioTrackerState />;
-            case 'uninitializedDevice':
-                return <UninitializedConnectedDeviceState />;
-            case 'noNetworkConfigured':
-                return <NoNetworksConfigured />;
-            case 'discoveryNotFinished':
-                return <DiscoveryNotFinished />;
-            case 'portfolioContent':
-                return <PortfolioContent ref={portfolioGraphRef} refreshControl={refreshControl} />;
-            default:
-                return exhaustive(homeScreenState);
-        }
-    };
-
     // The portfolio content owns its scrolling viewport via FlashList, so the Screen's own scroll
     // view is disabled and the refresh control is handed to the list instead. The portfolio graph
     // also needs to be rendered full width edge to edge.
@@ -81,7 +93,11 @@ export const HomeScreen = () => {
             noBottomPadding={isPortfolioContent}
             hasBottomInset={!isPortfolioContent}
         >
-            {renderContent()}
+            <HomeScreenContent
+                homeScreenState={homeScreenState}
+                portfolioGraphRef={portfolioGraphRef}
+                refreshControl={refreshControl}
+            />
         </Screen>
     );
 };
