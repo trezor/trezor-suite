@@ -1,3 +1,4 @@
+import { MAX_NAME_LENGTH, sanitizeName } from './sanitizeName';
 import type { ConnectSettings, ThpSettings } from '../types/settings';
 
 export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): ThpSettings => {
@@ -12,13 +13,13 @@ export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): T
     }
 
     if (typeof thp?.hostName === 'string') {
-        settings.hostName = thp.hostName;
+        settings.hostName = sanitizeName(thp.hostName, MAX_NAME_LENGTH);
     }
 
     if (typeof thp?.appName === 'string') {
-        settings.appName = thp.appName;
+        settings.appName = sanitizeName(thp.appName, MAX_NAME_LENGTH);
     } else if (typeof manifest?.appName === 'string') {
-        settings.appName = manifest?.appName;
+        settings.appName = sanitizeName(manifest.appName, MAX_NAME_LENGTH);
     }
 
     if (Array.isArray(thp?.knownCredentials)) {
