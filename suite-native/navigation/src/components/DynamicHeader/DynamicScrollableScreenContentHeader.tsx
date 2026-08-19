@@ -1,7 +1,8 @@
 import { type ReactNode } from 'react';
-import { type LayoutChangeEvent } from 'react-native';
+import { type LayoutChangeEvent, type ViewProps } from 'react-native';
+import { type AnimatedProps } from 'react-native-reanimated';
 
-import { Text, VStack } from '@suite-native/atoms';
+import { AnimatedVStack, Text } from '@suite-native/atoms';
 import { type NativeSpacing } from '@trezor/theme';
 
 import { useDynamicHeader } from './DynamicScreenHeaderContext';
@@ -13,6 +14,7 @@ type DynamicScrollableScreenContentHeaderProps = {
     marginBottom?: NativeSpacing;
     marginTop?: NativeSpacing;
     expandedContent?: ReactNode;
+    contentEnteringAnimation?: AnimatedProps<ViewProps>['entering'];
 } & Pick<ScreenHeaderProps, 'title'>;
 
 export const DynamicScrollableScreenContentHeader = ({
@@ -22,6 +24,7 @@ export const DynamicScrollableScreenContentHeader = ({
     marginTop = 'sp16',
     expandedContent,
     subtitleVariant,
+    contentEnteringAnimation,
 }: DynamicScrollableScreenContentHeaderProps) => {
     const { setScrollableHeaderHeight } = useDynamicHeader();
 
@@ -31,11 +34,12 @@ export const DynamicScrollableScreenContentHeader = ({
     };
 
     return (
-        <VStack
+        <AnimatedVStack
             paddingHorizontal="sp16"
             marginTop={marginTop}
             marginBottom={marginBottom}
             onLayout={expandedContent ? handleLayout : undefined}
+            entering={contentEnteringAnimation}
         >
             {expandedContent || (
                 <>
@@ -49,6 +53,6 @@ export const DynamicScrollableScreenContentHeader = ({
                     )}
                 </>
             )}
-        </VStack>
+        </AnimatedVStack>
     );
 };

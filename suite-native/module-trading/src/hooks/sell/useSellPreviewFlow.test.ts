@@ -44,7 +44,7 @@ describe('useSellPreviewFlow', () => {
 
         act(() => result.current.continueToProvider());
 
-        expect(mockReplace).toHaveBeenCalledWith('TradingSellAwaiting');
+        expect(mockReplace).toHaveBeenCalledWith('TradingSellCompletion');
         expect(mockReport).toHaveBeenCalledWith({
             type: events.tradingSellEvent.name,
             payload: expect.objectContaining({

@@ -3958,7 +3958,7 @@ export const messages = {
                 },
             },
         },
-        tradingSellAwaitingScreen: {
+        tradingSellCompletionScreen: {
             finishingTitle: 'Finishing up with {companyName}',
             finishingSubtitle:
                 'You’ll confirm on your Trezor once they’re done. Closed {companyName} early? Go back and start a new sell.',

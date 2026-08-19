@@ -9,7 +9,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 export type AccessoryType = 'caret' | 'select' | 'none';
 
-export type SellBankAccountItemP = {
+export type SellBankAccountItemProps = {
     bankAccount: BankAccount;
     accessoryType: AccessoryType;
     noBorder?: boolean;
@@ -17,7 +17,7 @@ export type SellBankAccountItemP = {
     onPress?: () => void;
 };
 
-export type AccessoryViewProps = {
+export type SellBankAccountAccessoryProps = {
     accessoryType: AccessoryType;
     isSelected: boolean;
     onPress: () => void;
@@ -25,7 +25,7 @@ export type AccessoryViewProps = {
 
 export const BANK_ACCOUNT_ITEM_TEST_ID = '@trading/sell/bank-account-item';
 
-const AccessoryView = ({ accessoryType, isSelected, onPress }: AccessoryViewProps) => {
+const AccessoryView = ({ accessoryType, isSelected, onPress }: SellBankAccountAccessoryProps) => {
     switch (accessoryType) {
         case 'caret':
             return <Icon name="caretRight" size="medium" testID="caret-right-icon" />;
@@ -52,7 +52,7 @@ export const SellBankAccountItem = ({
     accessoryType,
     noBorder = false,
     onPress = () => {},
-}: SellBankAccountItemP) => (
+}: SellBankAccountItemProps) => (
     <TradeInfoRow onPress={onPress} noBorder={noBorder} testID={BANK_ACCOUNT_ITEM_TEST_ID}>
         <VStack spacing={0}>
             <Text variant="body-sm">{bankAccount.holder}</Text>

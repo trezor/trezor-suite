@@ -29,7 +29,7 @@ export const useSellPreviewFlow = () => {
         }
 
         reportToAnalytics('transaction-preview', 'continue');
-        navigation.replace(RootStackRoutes.TradingSellAwaiting);
+        navigation.replace(RootStackRoutes.TradingSellCompletion);
     }, [canProceed, navigation, reportToAnalytics]);
 
     return {

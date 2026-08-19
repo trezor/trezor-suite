@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ComponentProps } from 'react';
 
 import { type TradingTransaction } from '@suite-common/trading';
 import {
@@ -14,13 +14,13 @@ import {
     renderWithTradingProvider,
 } from '../../../../test-utils/tradingTestUtils';
 
-// Mock the SellBankAccountSheet component to isolate the picker component
+// Mock the sheet to isolate the picker behavior.
 jest.mock('./SellBankAccountSheet', () => ({
     SellBankAccountSheet: jest.fn().mockImplementation(() => <div>Bank Account Sheet</div>),
 }));
 
 describe('SellBankAccountPicker', () => {
-    const mockOnBankAccountSelect = jest.fn();
+    const mockSelectBankAccount = jest.fn();
     type SellTradingTransaction = Extract<TradingTransaction, { tradeType: 'sell' }>;
 
     const getTrade = (
@@ -36,7 +36,7 @@ describe('SellBankAccountPicker', () => {
     });
 
     const renderPicker = (
-        props: React.ComponentProps<typeof SellBankAccountPicker>,
+        props: ComponentProps<typeof SellBankAccountPicker>,
         overrides: PreloadedStatePartial<TradingTestPreloadedState>,
     ) =>
         renderWithTradingProvider(<SellBankAccountPicker {...props} />, {
@@ -54,7 +54,7 @@ describe('SellBankAccountPicker', () => {
                 {
                     orderId: 'order_id_1',
                     selectedBankAccountIban: '',
-                    onBankAccountSelect: mockOnBankAccountSelect,
+                    onBankAccountSelect: mockSelectBankAccount,
                 },
                 {
                     wallet: {
@@ -74,7 +74,7 @@ describe('SellBankAccountPicker', () => {
                 {
                     orderId: 'order_id_1',
                     selectedBankAccountIban: '',
-                    onBankAccountSelect: mockOnBankAccountSelect,
+                    onBankAccountSelect: mockSelectBankAccount,
                 },
                 {
                     wallet: {
@@ -94,7 +94,7 @@ describe('SellBankAccountPicker', () => {
                 {
                     orderId: undefined,
                     selectedBankAccountIban: verifiedBankAccount.bankAccount,
-                    onBankAccountSelect: mockOnBankAccountSelect,
+                    onBankAccountSelect: mockSelectBankAccount,
                 },
                 {
                     wallet: {

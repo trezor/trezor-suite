@@ -15,6 +15,7 @@ export type WaitingCardProps = {
     loadingState?: SpinnerLoadingState;
     children?: ReactNode;
     testID?: string;
+    onComplete?: () => void;
 };
 
 export const WaitingCard = ({
@@ -23,6 +24,7 @@ export const WaitingCard = ({
     loadingState = 'idle',
     testID,
     children,
+    onComplete,
 }: WaitingCardProps) => (
     <AnimatedVStack
         entering={FadeIn}
@@ -32,7 +34,7 @@ export const WaitingCard = ({
         spacing="sp16"
         testID={testID}
     >
-        <Spinner loadingState={loadingState} />
+        <Spinner loadingState={loadingState} onComplete={onComplete} />
         <VStack alignItems="center" spacing="sp4">
             <AnimatedText
                 variant="headline-sm"

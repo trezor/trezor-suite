@@ -66,6 +66,7 @@ import {
     TradingMyAssetScreen,
     TradingReceiveAccountsPickerScreen,
     TradingReceiveAddressPickerScreen,
+    TradingSellCompletionScreen,
     TradingSellOutputsReviewScreen,
     TradingSellPreviewScreen,
     TradingTradeableAssetScreen,
@@ -240,6 +241,11 @@ export const RootStackNavigator = () => {
                     options={{ title: RootStackRoutes.TradingSellPreview }}
                     name={RootStackRoutes.TradingSellPreview}
                     component={TradingSellPreviewScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingSellCompletion }}
+                    name={RootStackRoutes.TradingSellCompletion}
+                    component={TradingSellCompletionScreen}
                 />
                 <RootStack.Screen
                     options={{ title: RootStackRoutes.TradingConfirming }}

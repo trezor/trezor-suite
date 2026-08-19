@@ -17,7 +17,7 @@ type SellBankAccountSheetProps = {
 
 export const SellBankAccountSheet = forwardRef<BottomSheetModalMethods, SellBankAccountSheetProps>(
     ({ bankAccounts, selectedBankAccountIban, onBankAccountSelect, closeModal }, ref) => {
-        const handleBankAccountPress = (bankAccount: BankAccount) => {
+        const handleBankAccountSelect = (bankAccount: BankAccount) => {
             onBankAccountSelect(bankAccount);
             closeModal();
         };
@@ -36,9 +36,9 @@ export const SellBankAccountSheet = forwardRef<BottomSheetModalMethods, SellBank
                             <SellBankAccountItem
                                 bankAccount={bankAccount}
                                 accessoryType="select"
-                                noBorder={true}
+                                noBorder
                                 isSelected={selectedBankAccountIban === bankAccount.bankAccount}
-                                onPress={() => handleBankAccountPress(bankAccount)}
+                                onPress={() => handleBankAccountSelect(bankAccount)}
                             />
                         </Card>
                     ))}
