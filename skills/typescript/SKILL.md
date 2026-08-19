@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: TypeScript-specific conventions including ts-expect-error usage, unknown vs any, const assertions, and type vs interface preferences. Use when writing TypeScript code.
+description: TypeScript-specific conventions including ts-expect-error usage, unknown vs any, what to reach for instead of an `as` cast, narrowing an account to one network type, const assertions, and type vs interface preferences. Use when writing TypeScript code, when you are about to write `as`, or when a function takes an Account but only works for one network.
 ---
 
 # TypeScript
@@ -34,6 +34,77 @@ const validateKey = (key: unknown): key is DictionaryKey => {
 ```
 
 If the above type guard marked `key` as `any`, calling `key()` would not throw.
+
+## Replace an `as` cast with `satisfies`, a guard, a parse, or a better type
+
+An `as` cast is an unchecked claim, so it is the wrong tool at exactly the places it is most tempting. It
+silences the compiler where the shape is decided, so a later field rename — or a value that was never a
+`NetworkSymbol` — keeps compiling and fails at runtime, far from the cast that caused it. Each case has a
+tool that keeps the code compiling only while it is still true:
+
+- **Constructing a value** — `satisfies`. It checks the shape without erasing what the compiler knows.
+- **Narrowing a string you did not construct** — the
+  [`isNetworkSymbol`](../../suite-common/wallet-config/src/utils.ts) guard where there is a fallback to fall
+  back to, or the sanctioned [`asNetworkSymbol`](../../suite-common/wallet-config/src/types.ts) wrapper at a
+  parse boundary where the string comes from outside and there is no alternative.
+- **An object payload from outside the type system** — parse it. `safeParse` on a schema in
+  `@suite-common/schemas`, the way [`parseEvmFeeHex`](../../suite-common/schemas/src/evm/fees/index.ts) does;
+  HTTP responses already get this from `createHttpClient`'s per-endpoint `schema`.
+- **None of the above fits** — the type is wrong. Change it instead of casting around it.
+
+```ts
+// bad - useEthereumCancelTxCompose.ts:105 - the cast is the only reason this literal type-checks, so a
+// renamed field on PrecomposedTransactionFinalCancelRbf keeps compiling here
+return {
+    composedCancelTx: {
+        ...normalLevel,
+        rbfType: 'cancel',
+        prevTxid: tx.txid,
+    } as PrecomposedTransactionFinalCancelRbf,
+    cancelFormState: formState,
+};
+
+// good - `satisfies` checks the same shape without erasing it; if it stops compiling, the type is wrong
+// and that is the thing to fix rather than assert past
+const composedCancelTx = {
+    ...normalLevel,
+    rbfType: 'cancel',
+    prevTxid: tx.txid,
+} satisfies PrecomposedTransactionFinalCancelRbf;
+```
+
+## Take `AccountWithNetworkType<T>`, not `Account`
+
+When code only makes sense for one network type, type its input as `AccountWithNetworkType<'tron'>`
+([account.ts:111](../../suite-common/wallet-types/src/account.ts)) instead of `Account` or a hand-rolled
+`Account & { networkType: 'tron' }`. Do the "is this the right account?" check once at the boundary that
+produces the account, so nothing downstream needs a guard for a case that cannot happen.
+
+Passing the wide `Account` pushes that check into every consumer, and the fallbacks it forces are what hide
+the bug: `getTronResources` returns `undefined` for every non-tron account, so an all-zero card is
+indistinguishable from a real one.
+
+```tsx
+// bad - TronResourcesCard.tsx:18 - any Account gets in, so the card re-derives the network check (:26)
+// and every read needs a `?? 0` that renders an all-zero card for a non-tron account
+interface TronResourcesCardProps {
+    account: Account;
+}
+
+const resources = getTronResources(account);
+const energyAvailable = resources?.availableEnergy ?? 0;
+
+// good - the network check happens once upstream, so the redundant call and its chain are gone
+type TronResourcesCardProps = {
+    account: AccountWithNetworkType<'tron'>;
+};
+
+const energyAvailable = account.misc.tronResources?.availableEnergy ?? 0;
+```
+
+The narrower type earns its keep by deleting impossible branches rather than handling them defensively — see
+[Defensive programming](../defensive-programming/SKILL.md). On the ethereum variant it also makes
+`misc.nonce: string` non-optional outright.
 
 ## Prefer direct type assignment to indirect
 

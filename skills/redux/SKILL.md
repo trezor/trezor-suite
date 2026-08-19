@@ -1,6 +1,6 @@
 ---
 name: redux
-description: Redux Toolkit patterns including slices, selectors, thunks, and middleware conventions for Trezor Suite. Use when writing or reviewing Redux state management code.
+description: Redux Toolkit patterns including slices, selectors, thunks, handling a rejected thunk when calling .unwrap(), and middleware conventions for Trezor Suite. Use when writing or reviewing Redux state management code, or when dispatching a thunk from a component.
 ---
 
 # Redux
@@ -215,6 +215,36 @@ await TrezorConnect.init({
 
 - For async thunks, try to make use of the [lifecycle actions](https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions) whenever it makes sense. For example, when you have an async thunk that fetches something and saves in state. If fetching was not successful, you can explicitly modify the slice state in a relevant way: add an error message, change some status or reset the state (if business logic deems no data better than not-up-to-date data)
 - When using async thunks in effects, cancel the action by calling the [abort() method](https://redux-toolkit.js.org/api/createAsyncThunk#canceling-while-running) in effect cleanup.
+
+### Only call `.unwrap()` where you handle the rejection
+
+`dispatch(thunk())` resolves with the rejected action; `.unwrap()` re-throws it instead
+([`createThunk`](../../suite-common/redux-utils/src/createThunk.ts) is RTK's `createAsyncThunk`, so those are
+its semantics). Every `.unwrap()` must therefore sit inside a `try/catch`, inside a `useMutation`
+`mutationFn`, or be returned to a caller that does one of those. If you don't need the resolved value, drop
+`.unwrap()` and read the lifecycle state from the slice.
+
+An unhandled rejection from an `onClick` gives the user a button that silently does nothing, skips every
+statement after the `await`, and surfaces as a context-free unhandled rejection in Sentry instead of the error
+state the thunk already wrote to the store.
+
+```tsx
+// bad - useTradingSellTradeActions.ts:103 - reached from onClick (TradingOfferSellBankAccount.tsx:62);
+// nothing catches the rejected thunk
+const addBankAccount = async () => {
+    if (!selectedQuote) return;
+
+    await dispatch(requestSellTradeThunk({ quote: selectedQuote })).unwrap();
+};
+
+// good - the mutation owns the rejection, and `mutation.error` is what renders it
+const addBankAccountMutation = useMutation({
+    mutationFn: (quote: SellQuote) => dispatch(requestSellTradeThunk({ quote })).unwrap(),
+});
+```
+
+A `catch {}` may be empty only with a comment naming the thunk that owns the error state — see
+`TransactionReviewModal.tsx:99`.
 
 ### State and dependency contracts
 

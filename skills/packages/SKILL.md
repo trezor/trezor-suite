@@ -1,6 +1,6 @@
 ---
 name: packages
-description: How to create and structure packages in the Trezor Suite monorepo, including scopes and sizing guidance. Use when creating new packages or resolving cyclic dependencies.
+description: How to create and structure packages in the Trezor Suite monorepo, including scopes, sizing guidance, and moving logic both apps need into suite-common instead of duplicating it. Use when creating new packages, resolving cyclic dependencies, or when the same logic is about to exist in both suite and suite-native.
 ---
 
 # Packages
@@ -15,6 +15,39 @@ Use command `yarn generate-package @scope/newPackageName`. For example using nam
 | @suite-common | /suite-common | code shared between @suite and @suite native                                                            | @trezor                   |
 | @suite-native | /suite-native | mobile Suite                                                                                            | @trezor and @suite-common |
 | @suite        | /suite        | desktop & web Suite                                                                                     | @trezor and @suite-common |
+
+## Move logic both apps need into suite-common instead of duplicating it
+
+When the same derivation or hook body appears in the web/desktop app and in `suite-native`, move the
+platform-agnostic core into the shared layer — into the `@suite-common/*` hook that already returns the raw
+data, or into a `@suite-common/*` util — and leave only the platform glue in each app: navigation, native
+components, desktop analytics.
+
+Copies drift silently, and the drift is invisible at the copy site. `getPollIntervalMs` was extracted to
+[`pollingUtils.ts:5`](../../suite-common/wallet-utils/src/pollingUtils.ts), but `packages/suite` kept two
+local re-implementations, so the block-time-to-poll-interval ratio now lives in three places: change the
+shared one and mobile plus suite's wrap/unwrap flows move, while suite's Tron-stake and yield pending-tx
+screens keep the old value with nothing to indicate it.
+
+```tsx
+// bad - the pre-review shape from #28374 - each app re-derives the same value from the same raw query
+const { data } = useTronStakingStats();
+const maxApr = data?.length ? Math.max(...data.map(({ apr }) => apr)) : null;
+
+// good - useTronStakingStats.ts:17 - the shared hook derives it once and both apps just read it
+export function useTronStakingStats(queryOptions?: Partial<UseQueryOptions<TrxStats>>) {
+    const stats = useQuery({ staleTime: 5 * 60 * 1000, ...queryOptions, queryKey, queryFn });
+
+    const maxApr = stats.data?.length ? Math.max(...stats.data.map(({ apr }) => apr)) : null;
+
+    return { stats, maxApr };
+}
+```
+
+If a hook cannot be shared wholesale, extract the pure parts rather than copying the file — the platform
+specifics are the reason to split it, not a reason to duplicate it. If nothing platform-agnostic is left, keep
+the duplicate and say so in a comment. The direction is one-way and half of it is already enforced:
+`local-rules/no-suite-imports-in-suite-common` fails the build if the shared layer reaches back into an app.
 
 ## Packages size
 
