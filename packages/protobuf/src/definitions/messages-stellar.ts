@@ -299,7 +299,7 @@ export type StellarSorobanAddressCredentials = Static<typeof StellarSorobanAddre
 export const StellarSorobanAddressCredentials = Type.Object(
     {
         address: Type.String(),
-        nonce: Type.Number(),
+        nonce: Type.Uint({ allowNegative: true }),
         signature_expiration_ledger: Type.Number(),
         signature: StellarSCVal,
     },
@@ -463,7 +463,7 @@ export type StellarSorobanAuthorizationWithAddress = Static<
 >;
 export const StellarSorobanAuthorizationWithAddress = Type.Object(
     {
-        nonce: Type.Number(),
+        nonce: Type.Uint({ allowNegative: true }),
         signature_expiration_ledger: Type.Number(),
         address: Type.String(),
         invocation: StellarSorobanAuthorizedInvocation,
