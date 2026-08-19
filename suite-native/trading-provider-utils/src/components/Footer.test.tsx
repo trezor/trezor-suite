@@ -67,9 +67,7 @@ describe('Footer', () => {
 
         expect(getByText(/Cexdirect/)).toBeOnTheScreen();
         await userEvent.press(
-            getByText(
-                getTranslation('moduleTrading.tradingScreen.footer.howTradingWorksSheet.item5'),
-            ),
+            getByText(getTranslation('moduleTrading.tradingScreen.footer.termsApply')),
         );
 
         expect(mockOpenLink).toHaveBeenCalledTimes(1);

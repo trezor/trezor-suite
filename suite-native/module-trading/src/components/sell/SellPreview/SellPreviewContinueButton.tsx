@@ -1,72 +1,41 @@
-import { memo } from 'react';
-import { useSelector } from 'react-redux';
-
-import { useNavigation } from '@react-navigation/native';
-import type { SellFiatTrade } from 'invity-api';
-
-import { parseCryptoId } from '@suite-common/trading';
-import { selectSendPrecomposedTx } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
-import { Button } from '@suite-native/atoms';
+import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
-import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { useSellPreviewFlow } from '../../../hooks/sell/useSellPreviewFlow';
 
 export type SellPreviewContinueButtonProps = {
-    isDisabled: boolean;
-    quote?: SellFiatTrade;
-    onSignTransactionNavigation: () => void;
+    companyName: string;
 };
-
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.TradingSellPreview>;
 
 const SELL_PREVIEW_CONTINUE_BUTTON_TEST_ID = '@trading/sell-preview/continue-button';
 
-export const SellPreviewContinueButton = memo(
-    ({ isDisabled, quote, onSignTransactionNavigation }: SellPreviewContinueButtonProps) => {
-        const navigation = useNavigation<NavigationProp>();
+const footerStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.sp16,
+    paddingBottom: utils.spacings.sp16,
+}));
 
-        const precomposedTransaction = useSelector(selectSendPrecomposedTx);
-        const fromAccount = useSelector(selectSellSelectedSendAccount);
+export const SellPreviewContinueButton = ({ companyName }: SellPreviewContinueButtonProps) => {
+    const { applyStyle } = useNativeStyles();
+    const { canProceed, isLoading, continueToProvider } = useSellPreviewFlow();
 
-        if (precomposedTransaction?.type !== 'final') {
-            return null;
-        }
-
-        const handleSignTransaction = () => {
-            if (!quote || !fromAccount) {
-                console.warn('quote or fromAccount is not defined', {
-                    hasQuote: !!quote,
-                    hasFromAccount: !!fromAccount,
-                });
-
-                return;
-            }
-
-            const tokenContract = quote.cryptoCurrency
-                ? (parseCryptoId(quote.cryptoCurrency)?.contractAddress as TokenAddress)
-                : undefined;
-
-            navigation.navigate(RootStackRoutes.TradingSellOutputsReview, {
-                accountKey: fromAccount.key,
-                tokenContract,
-                orderId: quote.orderId ?? '',
-            });
-            onSignTransactionNavigation();
-        };
-
-        return (
-            <Button
-                onPress={handleSignTransaction}
-                isDisabled={isDisabled}
-                testID={SELL_PREVIEW_CONTINUE_BUTTON_TEST_ID}
-            >
-                <Translation id="generic.buttons.continue" />
-            </Button>
-        );
-    },
-);
+    return (
+        <Box>
+            <ScreenFooterGradient />
+            <Box style={applyStyle(footerStyle)}>
+                <Button
+                    onPress={continueToProvider}
+                    iconRight="arrowSquareOut"
+                    isDisabled={!canProceed}
+                    isLoading={isLoading}
+                    testID={SELL_PREVIEW_CONTINUE_BUTTON_TEST_ID}
+                >
+                    <Translation
+                        id="moduleTrading.tradingSellPreviewScreen.sellVia"
+                        values={{ companyName }}
+                    />
+                </Button>
+            </Box>
+        </Box>
+    );
+};

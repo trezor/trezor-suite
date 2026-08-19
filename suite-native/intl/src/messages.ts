@@ -3735,8 +3735,8 @@ export const messages = {
             provider: 'Provider',
             quotesLoadingLabel: 'Searching for your best offer...',
             footer: {
-                termsOfProvider:
-                    'This service is offered by {companyName}, not Trezor. <link>Terms apply</link>',
+                providerDisclaimer: 'This service is offered by {companyName}, not Trezor.',
+                termsApply: 'Terms apply',
                 termsAndConditionsGeneric:
                     'This service is offered by a third-party provider, not Trezor. Provider’s terms apply.',
                 howTradingWorksSheet: {
@@ -3932,7 +3932,12 @@ export const messages = {
             fiatDeviationWarning: 'Receiving {percent} less in estimated value.',
         },
         tradingSellPreviewScreen: {
-            title: 'Sell',
+            headerTitle: 'Continue your sell on {companyName}',
+            subtitle:
+                'Complete all the steps on the {companyName} website, then come back here to confirm the transaction on your Trezor.',
+            sellVia: 'Sell with {companyName}',
+            youPay: 'You pay',
+            youGet: 'You get',
             fromAccount: 'From',
             toFiat: 'To',
             bankAccount: 'Bank account',
@@ -3952,6 +3957,14 @@ export const messages = {
                     button: 'Sell again',
                 },
             },
+        },
+        tradingSellAwaitingScreen: {
+            finishingTitle: 'Finishing up with {companyName}',
+            finishingSubtitle:
+                'You’ll confirm on your Trezor once they’re done. Closed {companyName} early? Go back and start a new sell.',
+            sendTitle: 'Send your {cryptoSymbol} to {companyName}',
+            sendSubtitle: 'Check the amount and address on your Trezor before confirming.',
+            confirmOnTrezorAndSend: 'Confirm on Trezor & send',
         },
         composeAllowanceError: 'Failed to estimate approval fees. Try again.',
         confirmApprovalError: 'Failed to confirm approval. Try again.',

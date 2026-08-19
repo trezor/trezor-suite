@@ -1,4 +1,5 @@
-import { type TradingSellStepType } from '@suite-common/trading';
+import { type SellFiatTrade } from 'invity-api';
+
 import { getTranslation } from '@suite-native/intl';
 import {
     banxaBankTransferSellQuote,
@@ -7,128 +8,72 @@ import {
     getSellTrade,
 } from '@suite-native/trading-fixtures';
 
-import { BANK_ACCOUNT_ITEM_TEST_ID } from './BankAccount/SellBankAccountItem';
-import { SellPreviewView, type SellPreviewViewProps } from './SellPreviewView';
-import {
-    type PreloadedStatePartial,
-    type TradingTestPreloadedState,
-    renderWithTradingProvider,
-} from '../../../test-utils/tradingTestUtils';
+import { SellPreviewView } from './SellPreviewView';
+import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('SellPreviewView', () => {
-    const getSellTradeWithBankAccounts = () => ({
-        ...getSellTrade({ status: undefined }),
-        data: {
-            ...getSellTrade({ status: undefined }).data,
-            orderId: banxaBankTransferSellQuote.orderId,
-            bankAccounts: banxaBankTransferSellQuote.bankAccounts,
-        },
-    });
-
-    const baseOverrides = (
-        formStep?: TradingSellStepType,
-    ): PreloadedStatePartial<TradingTestPreloadedState> => ({
-        wallet: {
-            trading: {
-                composedTransactionInfo: {
-                    composed: {
-                        fee: '1000',
-                        feePerByte: '1',
-                        feeLimit: '21000',
-                        estimatedFeeLimit: '21000',
+    const renderSellPreviewView = (quote: SellFiatTrade = banxaBankTransferSellQuote) =>
+        renderWithTradingProvider(<SellPreviewView quote={quote} />, {
+            tradeType: 'sell',
+            overrides: {
+                wallet: {
+                    trading: {
+                        composedTransactionInfo: {
+                            composed: {
+                                fee: '1000',
+                                feePerByte: '1',
+                                feeLimit: '21000',
+                                estimatedFeeLimit: '21000',
+                            },
+                        },
+                        sell: {
+                            tradingAccountKey: eth1NormalAccount.key,
+                            selectedQuote: quote,
+                            formStep: 'BANK_ACCOUNT',
+                        },
+                        trades: [
+                            {
+                                ...getSellTrade({ status: undefined }),
+                                data: {
+                                    ...getSellTrade({ status: undefined }).data,
+                                    orderId: quote.orderId,
+                                    bankAccounts: quote.bankAccounts,
+                                },
+                            },
+                        ],
+                        providerConfirmationStatus: 'confirmation_success',
                     },
                 },
-                sell: {
-                    tradingAccountKey: eth1NormalAccount.key,
-                    selectedQuote: banxaBankTransferSellQuote,
-                    ...(formStep !== undefined && { formStep }),
-                },
-                trades: [getSellTradeWithBankAccounts()],
-                providerConfirmationStatus: 'confirmation_success',
             },
-        },
-    });
+        });
 
-    const renderSellPreviewView = (
-        props: Partial<SellPreviewViewProps> = {},
-        formStep?: TradingSellStepType,
-    ) =>
-        renderWithTradingProvider(
-            <SellPreviewView quote={banxaBankTransferSellQuote} txnErrorString={null} {...props} />,
-            {
-                tradeType: 'sell',
-                overrides: baseOverrides(formStep),
-            },
-        );
-
-    it('should render all sections except alert', () => {
-        const { getByText } = renderSellPreviewView({});
+    it('renders the sell summary', () => {
+        const { getByText } = renderSellPreviewView();
 
         expect(
-            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.fromAccount')),
+            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.youPay')),
         ).toBeOnTheScreen();
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
         expect(
-            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.toFiat')),
+            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.youGet')),
         ).toBeOnTheScreen();
         expect(
             getByText(getTranslation('moduleTrading.paymentMethods.bankTransfer')),
         ).toBeOnTheScreen();
     });
 
-    it('should render txnErrorString when isTxnError is true', () => {
-        const { getByText } = renderSellPreviewView({
-            txnErrorString: 'Transaction error occurred',
-        });
+    it('renders the quote passed to the view', () => {
+        const { getByText } = renderSellPreviewView(banxaCreditCardSellQuote);
 
         expect(
-            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.fromAccount')),
-        ).toBeOnTheScreen();
-        expect(getByText('ETH Account #1')).toBeOnTheScreen();
-        expect(
-            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.toFiat')),
-        ).toBeOnTheScreen();
-        expect(
-            getByText(getTranslation('moduleTrading.paymentMethods.bankTransfer')),
-        ).toBeOnTheScreen();
-        expect(getByText('Transaction error occurred')).toBeOnTheScreen();
-    });
-
-    it('should not render bank account picker when form step is not BANK_ACCOUNT', () => {
-        const { queryByTestId } = renderSellPreviewView({}, 'SEND_TRANSACTION'); // Not BANK_ACCOUNT
-
-        expect(queryByTestId(BANK_ACCOUNT_ITEM_TEST_ID)).not.toBeOnTheScreen();
-    });
-
-    it('should render bank account picker when form step is BANK_ACCOUNT', () => {
-        const { getAllByTestId } = renderSellPreviewView({}, 'BANK_ACCOUNT');
-
-        expect(getAllByTestId(BANK_ACCOUNT_ITEM_TEST_ID).length).toBeGreaterThan(0);
-    });
-
-    it('should use quote prop instead of selector', () => {
-        const differentQuote = banxaCreditCardSellQuote;
-        const { getByText } = renderSellPreviewView({
-            quote: differentQuote,
-        });
-
-        expect(
-            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.fromAccount')),
-        ).toBeOnTheScreen();
-        expect(
-            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.toFiat')),
+            getByText(getTranslation('moduleTrading.paymentMethods.creditCard')),
         ).toBeOnTheScreen();
     });
 
-    it('should not render fee picker when quote has no cryptoCurrency', () => {
-        const quoteWithoutCrypto = {
-            ...banxaCreditCardSellQuote,
-            cryptoCurrency: undefined,
-        };
-        const { queryByText } = renderSellPreviewView({ quote: quoteWithoutCrypto });
+    it('does not render awaiting-only bank account or fee controls', () => {
+        const { queryByTestId } = renderSellPreviewView();
 
-        expect(
-            queryByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
-        ).not.toBeOnTheScreen();
+        expect(queryByTestId('@trading/sell/bank-account-item')).not.toBeOnTheScreen();
+        expect(queryByTestId('@transactionManagement/fee-selector-row')).not.toBeOnTheScreen();
     });
 });

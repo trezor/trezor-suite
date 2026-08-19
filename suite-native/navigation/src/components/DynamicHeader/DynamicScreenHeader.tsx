@@ -6,6 +6,7 @@ import { useDynamicHeader } from './DynamicScreenHeaderContext';
 import { ScreenHeader, type ScreenHeaderProps } from '../ScreenHeader';
 
 export type DynamicScreenHeaderProps = {
+    subtitleVariant?: 'body-sm' | 'body-md';
     subtitle?: ReactNode;
     isCompactOnly?: boolean;
     marginBottom?: NativeSpacing;
