@@ -70,7 +70,13 @@ const init = (params: any): Promise<void> => mockResponse('init', params);
 
 const call = (params: CallMethodPayload) => {
     if (params?.__info) {
-        connect.default.init({ manifest: { email: '', appUrl: '' } });
+        connect.default.init({
+            manifest: {
+                email: 'email@trezor.io',
+                appUrl: 'https://trezor.io',
+                appName: 'Test App',
+            },
+        });
 
         // call actual implementation
         return connect.default[params.method](params).finally(() => {
