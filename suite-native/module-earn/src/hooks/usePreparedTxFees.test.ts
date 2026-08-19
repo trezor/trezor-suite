@@ -78,6 +78,7 @@ const composeReady = (unsignedTransaction = BASE_UNSIGNED_TX) => ({
 
 type HookProps = {
     amount: string | undefined;
+    availableBalance: string;
     composeTransaction: (amount: string) => Promise<ComposeTxResult<ComposedTxBase>>;
     formDraftKey: string;
     hasInvalidContext: boolean;
@@ -106,6 +107,7 @@ const createTestStore = () =>
 
 const createProps = (overrides: Partial<HookProps> = {}): HookProps => ({
     amount: '1',
+    availableBalance: '1000000000000000000',
     composeTransaction: jest.fn(),
     formDraftKey: FORM_DRAFT_KEY,
     hasInvalidContext: false,

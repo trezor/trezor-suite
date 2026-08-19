@@ -58,6 +58,8 @@ type BaseActionContext<TComposed extends ComposedTxBase> = {
 
 type UsePreparedTxFeesParams<TComposed extends ComposedTxBase> = {
     amount: string | undefined;
+    /** Native balance in subunits; levels that outspend it are priced as unaffordable. */
+    availableBalance: string;
     /**
      * Composes the base transaction for the debounced amount. Must not throw — map failures to
      * the `error` result. Every error is surfaced as a retryable alert; a failure that only
@@ -88,6 +90,7 @@ const getFeeInfoRevision = (feeInfo: FeeInfo | null | undefined) =>
  */
 export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
     amount,
+    availableBalance,
     composeTransaction,
     formDraftKey,
     hasInvalidContext,
@@ -205,13 +208,14 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
         return buildYieldDepositFeeDraftState({
             currentFormDraft: formDraft,
             amount: baseActionContext.amount,
+            availableBalance,
             feeInfo: currentFeeInfo,
             gasLimit: baseActionContext.baseFeePreview.feeLimit,
             symbol: baseActionContext.transaction.symbol,
             token: baseActionContext.transaction.token,
             unsignedTransaction: baseActionContext.transaction.unsignedTransaction,
         });
-    }, [baseActionContext, feeInfoRevision, formDraft]);
+    }, [availableBalance, baseActionContext, feeInfoRevision, formDraft]);
 
     const preparedTx = useMemo((): PreparedTx<TComposed> | null => {
         if (!baseActionContext) {

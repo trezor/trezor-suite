@@ -110,6 +110,7 @@ export const useWrappedNativeTokenFees = ({
 
     const fees = usePreparedTxFees({
         amount,
+        availableBalance: account?.availableBalance ?? '0',
         composeTransaction,
         formDraftKey,
         hasInvalidContext,

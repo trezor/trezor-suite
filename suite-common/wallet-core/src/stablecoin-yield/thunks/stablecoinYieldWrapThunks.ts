@@ -28,7 +28,7 @@ import {
     buildYieldUnsignedTransaction,
     buildYieldUnwrapTransactionData,
     buildYieldWrapTransactionData,
-    getYieldTransactionNativeCost,
+    canAffordYieldTransaction,
 } from '../utils/stablecoinYieldUtils';
 
 const YIELD_WRAP_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
@@ -153,7 +153,7 @@ export const composeYieldWrapTransactionThunk = createThunk<
         // A wrap carries its amount in the transaction value, so the fee is paid out of the same
         // balance — composing a transaction that does not fit gets it signed on the device and
         // then rejected by the node ("insufficient funds for gas * price + value").
-        if (getYieldTransactionNativeCost(transaction).gt(account.availableBalance)) {
+        if (!canAffordYieldTransaction(transaction, account.availableBalance)) {
             return { type: 'error', reason: 'insufficient-native-balance' } as const;
         }
 
@@ -324,7 +324,7 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
         });
 
         // An unwrap spends the wrapped token, but its fee still comes out of the native balance.
-        if (getYieldTransactionNativeCost(transaction).gt(account.availableBalance)) {
+        if (!canAffordYieldTransaction(transaction, account.availableBalance)) {
             return { type: 'error', reason: 'insufficient-native-balance' } as const;
         }
 

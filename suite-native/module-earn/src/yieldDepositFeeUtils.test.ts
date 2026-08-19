@@ -9,6 +9,10 @@ import {
     buildYieldDepositSelectedFeeUnsignedTransaction,
 } from './yieldDepositFeeUtils';
 
+// Comfortably above every fee the fixtures price, so levels stay affordable unless a test says
+// otherwise.
+const AVAILABLE_BALANCE = '1000000000000000000';
+
 const baseUnsignedTransaction = {
     from: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
     to: '0xbEef047a543E45807105E51A8BBEFCc5950fcfBa',
@@ -132,6 +136,7 @@ describe('buildYieldDepositFeeLevels', () => {
     it('derives EIP-1559 fee levels from the base deposit transaction', () => {
         const result = buildYieldDepositFeeLevels({
             amount: '1.25',
+            availableBalance: AVAILABLE_BALANCE,
             feeInfo: eip1559FeeInfo,
             gasLimit: '21000',
             symbol: 'eth' as NetworkSymbol,
@@ -171,6 +176,65 @@ describe('buildYieldDepositFeeLevels', () => {
             maxPriorityFeePerGas: '1',
         });
         expect(result.custom).toBeUndefined();
+    });
+
+    // Fee levels the native balance cannot pay for are offered as errors so the fee selector shows
+    // the "insufficient coin for the fee" banner and blocks the submit, instead of letting the
+    // device sign a transaction the node will reject.
+    it('prices a level the native balance cannot cover as unaffordable', () => {
+        const result = buildYieldDepositFeeLevels({
+            amount: '1.25',
+            // One wei short of the normal level's 21000000000000 fee.
+            availableBalance: '20999999999999',
+            feeInfo: eip1559FeeInfo,
+            gasLimit: '21000',
+            symbol: 'eth' as NetworkSymbol,
+            token: {
+                contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                decimals: 6,
+                symbol: 'USDC',
+            },
+            unsignedTransaction: JSON.stringify({
+                ...baseUnsignedTransaction,
+                type: 2,
+                maxFeePerGas: '0x3b9aca00',
+                maxPriorityFeePerGas: '0x1dcd6500',
+            }),
+        });
+
+        expect(result.normal).toEqual({
+            type: 'error',
+            error: 'AMOUNT_IS_NOT_ENOUGH',
+            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
+        });
+    });
+
+    // A wrap spends the native coin in the transaction value, so the balance has to cover the
+    // wrapped amount and the fee together.
+    it('counts the wrapped amount when the transaction spends the native coin', () => {
+        const buildNativeLevels = (availableBalance: string) =>
+            buildYieldDepositFeeLevels({
+                amount: '0.001',
+                availableBalance,
+                feeInfo: eip1559FeeInfo,
+                gasLimit: '21000',
+                symbol: 'eth' as NetworkSymbol,
+                token: { contractAddress: null, decimals: 18, symbol: 'ETH' },
+                unsignedTransaction: JSON.stringify({
+                    ...baseUnsignedTransaction,
+                    type: 2,
+                    maxFeePerGas: '0x3b9aca00',
+                    maxPriorityFeePerGas: '0x1dcd6500',
+                }),
+            });
+
+        // 0.001 ETH + the 21000000000000 wei fee.
+        expect(buildNativeLevels('1021000000000000')).toMatchObject({
+            normal: { type: 'final' },
+        });
+        expect(buildNativeLevels('1020999999999999')).toMatchObject({
+            normal: { type: 'error', error: 'AMOUNT_IS_NOT_ENOUGH' },
+        });
     });
 });
 
@@ -335,6 +399,7 @@ describe('buildYieldDepositFeeDraftState', () => {
     it('adds a custom fee level when the custom fee draft is complete', () => {
         const result = buildYieldDepositFeeDraftState({
             amount: '1.25',
+            availableBalance: AVAILABLE_BALANCE,
             currentFormDraft: buildFormDraft({
                 selectedFee: 'custom',
                 feePerUnit: '7',

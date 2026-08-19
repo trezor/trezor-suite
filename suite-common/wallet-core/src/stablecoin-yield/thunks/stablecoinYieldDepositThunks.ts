@@ -25,6 +25,7 @@ import { estimateYieldFeeLevel } from '../utils/stablecoinYieldFeeEstimation';
 import {
     buildYieldDepositCalldata,
     buildYieldUnsignedTransaction,
+    canAffordYieldTransaction,
     getAllowanceSpender,
     getWithdrawRequestAmount,
 } from '../utils/stablecoinYieldUtils';
@@ -37,6 +38,7 @@ export type YieldDepositErrorReason =
     | 'vault-chain-mismatch'
     | 'missing-fee-level'
     | 'fee-estimation-failed'
+    | 'insufficient-native-balance'
     | 'compose-failed';
 
 export const getYieldDepositErrorTranslationKey = (reason: YieldDepositErrorReason) =>
@@ -167,17 +169,23 @@ export const composeYieldDepositTransactionThunk = createThunk<
             return { type: 'error', reason: 'missing-fee-level' } as const;
         }
 
-        const unsignedTransaction = JSON.stringify(
-            buildYieldUnsignedTransaction({
-                chainId: network.chainId,
-                data: calldata,
-                feeLevel: normalLevel,
-                from: account.descriptor,
-                gasLimit: estimatedFeeLevel.payload.feeLimit,
-                nonce: Number(nonce),
-                to: spender,
-            }),
-        );
+        const transaction = buildYieldUnsignedTransaction({
+            chainId: network.chainId,
+            data: calldata,
+            feeLevel: normalLevel,
+            from: account.descriptor,
+            gasLimit: estimatedFeeLevel.payload.feeLimit,
+            nonce: Number(nonce),
+            to: spender,
+        });
+
+        // The deposit moves the vault's input token, but its fee comes out of the native balance —
+        // without this the transaction gets signed on the device and only then rejected by the node.
+        if (!canAffordYieldTransaction(transaction, account.availableBalance)) {
+            return { type: 'error', reason: 'insufficient-native-balance' } as const;
+        }
+
+        const unsignedTransaction = JSON.stringify(transaction);
 
         const receiptAmount =
             getWithdrawRequestAmount({

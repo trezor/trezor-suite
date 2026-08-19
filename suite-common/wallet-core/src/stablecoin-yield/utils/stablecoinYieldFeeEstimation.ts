@@ -5,6 +5,12 @@ import type { BlockchainEstimatedFee } from '@trezor/connect-common/src/types/ap
 import { type Result, err, ok } from '@trezor/type-utils';
 
 export type YieldFeeEstimationError = 'fee-estimation-failed';
+/**
+ * Why a yield action transaction could not be composed for signing. `insufficient-native-balance`
+ * means the account cannot pay what the transaction spends (its value plus the whole fee
+ * allowance), which the node would reject after the device already signed it.
+ */
+export type YieldComposeError = YieldFeeEstimationError | 'insufficient-native-balance';
 export type YieldEstimatedFeeLevel = BlockchainEstimatedFee['levels'][number] & {
     feeLimit: string;
 };

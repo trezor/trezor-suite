@@ -11,6 +11,8 @@ import { calculateTotalGasCost, fromGwei, fromIntegerString } from '@suite-commo
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
+import { buildInsufficientFeeBalanceTransaction } from './yieldFeeAffordabilityUtils';
+
 type BuildYieldClaimFeeLevelsParams = {
     availableBalance: string;
     feeInfo: FeeInfo;
@@ -32,12 +34,6 @@ type YieldClaimFee = {
           maxPriorityFeePerGas?: never;
       }
 );
-
-const buildInsufficientFeeBalanceTransaction = (): PrecomposedTransaction => ({
-    type: 'error',
-    error: 'AMOUNT_IS_NOT_ENOUGH',
-    errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
-});
 
 const buildYieldClaimFeeLevel = ({
     availableBalance,

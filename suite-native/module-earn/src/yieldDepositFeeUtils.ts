@@ -11,6 +11,8 @@ import {
 } from '@suite-common/wallet-types';
 import { calculateTotalGasCost, fromHex } from '@suite-common/wallet-utils';
 
+import { applyYieldFeeAffordability } from './utils/yieldFeeAffordabilityUtils';
+
 type ParsedUnsignedEvmTransaction = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
 >;
@@ -23,6 +25,8 @@ export type YieldDepositFeeToken = {
 
 type BuildYieldDepositFeeLevelsParams = {
     amount: string;
+    /** Native balance in subunits; levels that outspend it are offered as unaffordable. */
+    availableBalance: string;
     feeInfo: FeeInfo;
     gasLimit: string;
     symbol: NetworkSymbol;
@@ -188,6 +192,7 @@ export const buildYieldDepositFeePreview = (
 
 export const buildYieldDepositFeeLevels = ({
     amount,
+    availableBalance,
     feeInfo,
     gasLimit,
     symbol,
@@ -206,7 +211,10 @@ export const buildYieldDepositFeeLevels = ({
                     unsignedTransaction,
                 });
 
-                return [feeLevel.label, precomposedTransaction];
+                return [
+                    feeLevel.label,
+                    applyYieldFeeAffordability(precomposedTransaction, availableBalance),
+                ];
             }),
     );
 

@@ -330,6 +330,16 @@ export const getYieldTransactionNativeCost = (tx: YieldUnsignedTransaction): Big
     return new BigNumber(tx.value).plus(new BigNumber(tx.gasLimit).multipliedBy(gasPrice));
 };
 
+/**
+ * Whether `availableBalance` (native subunits) covers everything the transaction spends. The node
+ * checks this before it accepts a transaction, so composing one the account cannot fund only gets
+ * it signed on the device and then rejected — every yield compose has to check it up front.
+ */
+export const canAffordYieldTransaction = (
+    tx: YieldUnsignedTransaction,
+    availableBalance: string,
+): boolean => getYieldTransactionNativeCost(tx).lte(availableBalance);
+
 type BuildYieldWrapTransactionDataParams = {
     wrapAmount: string;
     decimals: number;

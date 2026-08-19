@@ -38,10 +38,14 @@ jest.mock('../../send/sendFormEthereumThunks', () => ({
 const OWNER_ADDRESS = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
 const VAULT_ADDRESS = '0xd63070114470f685b75B74D60EEc7c1113d33a3D';
 
+// 750000 gas at 1 Gwei is the fee every case here prices, so the balance covers it exactly.
+const DEPOSIT_FEE_WEI = '750000000000000';
+
 const account = mockWalletAccount({
     symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor(OWNER_ADDRESS),
     deviceState: 'mock@device:0',
+    availableBalance: DEPOSIT_FEE_WEI,
 });
 
 const flowData = {
@@ -134,5 +138,27 @@ describe(composeYieldDepositTransactionThunk.name, () => {
             selectedAccount: account,
             fetchConfirmedNonce: true,
         });
+    });
+
+    // The deposit spends the vault's input token, but its fee comes out of the native balance —
+    // composing it anyway gets the transaction signed and only then rejected by the node.
+    it('fails with insufficient-native-balance when the native balance cannot cover the fee', async () => {
+        (estimateYieldFeeLevel as jest.Mock).mockResolvedValue({
+            success: true,
+            payload: { feeLimit: '750000' },
+        });
+
+        const poorAccount = { ...account, availableBalance: '749999999999999' };
+        const store = initStore();
+        const result = await store
+            .dispatch(
+                composeYieldDepositTransactionThunk({
+                    flowData: { ...flowData, account: poorAccount },
+                    amount: '1',
+                }),
+            )
+            .unwrap();
+
+        expect(result).toEqual({ type: 'error', reason: 'insufficient-native-balance' });
     });
 });

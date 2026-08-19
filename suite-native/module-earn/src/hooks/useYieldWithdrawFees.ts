@@ -8,11 +8,12 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     type FeesRootState,
     type FormDraftRootState,
-    type YieldFeeEstimationError,
+    type YieldComposeError,
     type YieldWithdrawFlowType,
     buildEvmSelectedFee,
     buildYieldUnsignedTransaction,
     buildYieldWithdrawCalldata,
+    canAffordYieldTransaction,
     estimateYieldFeeLevel,
     ethereumGetCurrentNonceThunk,
     formDraftActions,
@@ -44,6 +45,7 @@ import { type Result, err, ok } from '@trezor/type-utils';
 import { EARN_MODULE_PREFIX } from '../constants';
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
+import { applyYieldFeeAffordability } from '../utils/yieldFeeAffordabilityUtils';
 import { getYieldWithdrawFormDraftKey } from '../utils/yieldWithdrawUtils';
 
 type UseYieldWithdrawFeesParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
@@ -92,6 +94,8 @@ type ComposeYieldWithdrawTransactionParams = {
 
 type BuildYieldWithdrawFeeLevelsParams = {
     amount: string;
+    /** Native balance in subunits; levels that outspend it are priced as unaffordable. */
+    availableBalance: string;
     feeInfo: FeeInfo;
     gasLimit: string;
     reviewToken: WithdrawFlowData['receiptToken'];
@@ -208,7 +212,7 @@ const composeYieldWithdrawTransaction = async ({
     feeInfo,
     flowData,
     flowType,
-}: ComposeYieldWithdrawTransactionParams): Promise<Result<string, YieldFeeEstimationError>> => {
+}: ComposeYieldWithdrawTransactionParams): Promise<Result<string, YieldComposeError>> => {
     const { account, receiptToken, vault } = flowData;
 
     if (account.networkType !== 'ethereum') {
@@ -264,11 +268,18 @@ const composeYieldWithdrawTransaction = async ({
         to: vaultAddress,
     });
 
+    // The withdraw moves the receipt token, but its fee comes out of the native balance — without
+    // this the transaction gets signed on the device and only then rejected by the node.
+    if (!canAffordYieldTransaction(unsignedTransaction, account.availableBalance)) {
+        return err('insufficient-native-balance');
+    }
+
     return ok(JSON.stringify(unsignedTransaction));
 };
 
 const buildYieldWithdrawFeeLevels = ({
     amount,
+    availableBalance,
     feeInfo,
     gasLimit,
     reviewToken,
@@ -287,7 +298,10 @@ const buildYieldWithdrawFeeLevels = ({
                     unsignedTransaction,
                 });
 
-                return [feeLevel.label, precomposedTransaction];
+                return [
+                    feeLevel.label,
+                    applyYieldFeeAffordability(precomposedTransaction, availableBalance),
+                ];
             }),
     );
 
@@ -410,6 +424,7 @@ export const useYieldWithdrawFees = ({
                 });
                 const withdrawFeeLevels = buildYieldWithdrawFeeLevels({
                     amount: withdrawAmount,
+                    availableBalance: withdrawFlowData.account.availableBalance,
                     feeInfo: withdrawFeeInfo,
                     gasLimit: baseFormState.feeLimit,
                     reviewToken,
