@@ -22,26 +22,6 @@ import {
 
 const methods = ['stellar_signXDR', 'stellar_signAndSubmitXDR'];
 
-// Supported classic Stellar operation types in TrezorConnect.
-// TODO: Perhaps we can add this to `transformTransaction`
-const SUPPORTED_OPERATION_TYPES = new Set([
-    'createAccount',
-    'payment',
-    'pathPaymentStrictReceive',
-    'pathPaymentStrictSend',
-    'createPassiveSellOffer',
-    'manageSellOffer',
-    'manageBuyOffer',
-    'setOptions',
-    'changeTrust',
-    'allowTrust',
-    'accountMerge',
-    'inflation',
-    'manageData',
-    'bumpSequence',
-    'claimClaimableBalance',
-]);
-
 const resolveStellarRequestContext = (event: WalletKitTypes.SessionRequest) => {
     const { chainId } = event.params;
     const network = networksCollection.find(
@@ -80,13 +60,6 @@ const stellarSignXDR = createThunk<
         const { parseTransactionFromXDR } = await loadStellar();
 
         const transaction = parseTransactionFromXDR(xdrBase64, testnet);
-
-        // Validate all operations are supported classic types.
-        for (const op of transaction.operations) {
-            if (!SUPPORTED_OPERATION_TYPES.has(op.type)) {
-                throw new Error(`Unsupported operation: ${op.type}`);
-            }
-        }
 
         const device = selectSelectedDevice(getState());
         const accounts = selectAccounts(getState());
