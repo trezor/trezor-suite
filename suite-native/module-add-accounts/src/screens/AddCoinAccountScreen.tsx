@@ -1,10 +1,14 @@
 import { useCallback } from 'react';
+import { View } from 'react-native';
+
+import { FlashList } from '@shopify/flash-list';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountTypeDecisionBottomSheet, useAddCoinAccount } from '@suite-native/add-coin-account';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { VStack } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
 import { NetworkListItem } from '@suite-native/coin-enabling';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -14,13 +18,31 @@ import {
     Screen,
     type StackProps,
 } from '@suite-native/navigation';
-import { useScreenHeaderSearch } from '@suite-native/search';
+import { useScrollDivider } from '@suite-native/scrollview';
+import { SearchNoResults, useScreenHeaderSearch } from '@suite-native/search';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { isNotNullOrUndefined } from '@trezor/utils';
+
+const listSeparatorStyle = prepareNativeStyle(utils => ({
+    height: utils.spacings.sp12,
+}));
+
+const NETWORK_LIST_ITEM_ACCESSORY = <Icon name="caretRight" color="contentSecondary" />;
+
+const getNetworkSymbolKey = (symbol: NetworkSymbol) => symbol;
+
+const NetworkListSeparator = () => {
+    const { applyStyle } = useNativeStyles();
+
+    return <View style={applyStyle(listSeparatorStyle)} />;
+};
 
 export const AddCoinAccountScreen = ({
     route,
 }: StackProps<AddCoinAccountStackParamList, AddCoinAccountStackRoutes.AddCoinAccount>) => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
+
+    const { scrollDivider, handleScroll } = useScrollDivider();
 
     const reportSearchAnalytics = useCallback(
         () =>
@@ -54,25 +76,36 @@ export const AddCoinAccountScreen = ({
     const handleTypeSelectionTap = () => handleAccountTypeSelection(flowType);
     const handleConfirmTap = () => handleAccountTypeConfirmation(flowType);
 
+    const renderItem = useCallback(
+        ({ item: symbol }: { item: NetworkSymbol }) => (
+            <NetworkListItem
+                symbol={symbol}
+                accessory={NETWORK_LIST_ITEM_ACCESSORY}
+                onPress={() => onSelectedNetworkItem({ symbol, flowType })}
+                accessibilityRole="button"
+                testID={`@onboarding/select-coin/${symbol}`}
+            />
+        ),
+        [flowType, onSelectedNetworkItem],
+    );
+
     return (
-        <Screen header={header}>
-            <VStack spacing="sp12">
-                {supportedNetworkSymbols.map(symbol => (
-                    <NetworkListItem
-                        key={symbol}
-                        symbol={symbol}
-                        accessory={<Icon name="caretRight" color="contentSecondary" />}
-                        onPress={() =>
-                            onSelectedNetworkItem({
-                                symbol,
-                                flowType,
-                            })
-                        }
-                        accessibilityRole="button"
-                        testID={`@onboarding/select-coin/${symbol}`}
+        <Screen header={header} isScrollable={false}>
+            {supportedNetworkSymbols.length === 0 ? (
+                <SearchNoResults />
+            ) : (
+                <Box flex={1}>
+                    {scrollDivider}
+                    <FlashList
+                        data={supportedNetworkSymbols}
+                        keyExtractor={getNetworkSymbolKey}
+                        renderItem={renderItem}
+                        ItemSeparatorComponent={NetworkListSeparator}
+                        keyboardShouldPersistTaps="handled"
+                        onScroll={handleScroll}
                     />
-                ))}
-            </VStack>
+                </Box>
+            )}
             <AccountTypeDecisionBottomSheet
                 coinName={
                     isNotNullOrUndefined(networkSymbolWithTypeToBeAdded)

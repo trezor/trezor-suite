@@ -9,7 +9,9 @@ class CoinEnablingActions {
 
     async toggleNetwork(symbol: string) {
         const networkElement = element(by.id(`@coin-enabling/toggle-${symbol}`));
-        await scrollUntilVisible(networkElement);
+        await scrollUntilVisible(networkElement, {
+            scrollViewTestId: '@coin-enabling/network-list',
+        });
         await networkElement.tap();
     }
 
