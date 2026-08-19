@@ -1,6 +1,11 @@
 import { testMocks } from '@suite-common/test-utils';
 import { type NetworkFeature, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
+import {
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type WalletAccountTransaction,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 
 import * as fixtures from './__fixtures__/transactionUtils';
 import {
@@ -10,6 +15,7 @@ import {
     findChainedTransactions,
     generateTransactionMonthKey,
     getAccountTransactions,
+    getDecreaseOutputId,
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
     getEvmNonceStatus,
@@ -88,6 +94,20 @@ const rbfParams: WalletAccountTransaction['rbfParams'] = {
     feeRate: '1',
     baseFee: 144,
 };
+
+const buildBumpFeeRbfTx = (useNativeRbf: boolean): GeneralPrecomposedTransactionFinal =>
+    ({
+        rbfType: 'bump-fee',
+        useNativeRbf,
+    }) as unknown as GeneralPrecomposedTransactionFinal;
+
+const buildCancelRbfTx = (): GeneralPrecomposedTransactionFinal =>
+    ({
+        rbfType: 'cancel',
+    }) as unknown as GeneralPrecomposedTransactionFinal;
+
+const buildNonRbfTx = (): GeneralPrecomposedTransactionFinal =>
+    ({}) as unknown as GeneralPrecomposedTransactionFinal;
 
 describe('transaction utils', () => {
     describe('parseTransactionDateKey', () => {
@@ -1042,6 +1062,34 @@ describe('transaction utils', () => {
             });
 
             expect(getTargetAmount(selfTarget, transaction)).toBeNull();
+        });
+    });
+
+    describe('getDecreaseOutputId', () => {
+        const precomposedForm = { setMaxOutputId: 2 } as unknown as FormState;
+
+        it('returns the form setMaxOutputId for a native RBF bump-fee transaction', () => {
+            expect(getDecreaseOutputId(buildBumpFeeRbfTx(true), precomposedForm)).toBe(2);
+        });
+
+        it('returns undefined when the transaction is undefined', () => {
+            expect(getDecreaseOutputId(undefined, precomposedForm)).toBeUndefined();
+        });
+
+        it('returns undefined for a bump-fee transaction that is not native RBF', () => {
+            expect(getDecreaseOutputId(buildBumpFeeRbfTx(false), precomposedForm)).toBeUndefined();
+        });
+
+        it('returns undefined for a cancel RBF transaction', () => {
+            expect(getDecreaseOutputId(buildCancelRbfTx(), precomposedForm)).toBeUndefined();
+        });
+
+        it('returns undefined for a non-RBF transaction', () => {
+            expect(getDecreaseOutputId(buildNonRbfTx(), precomposedForm)).toBeUndefined();
+        });
+
+        it('returns undefined when the form is missing', () => {
+            expect(getDecreaseOutputId(buildBumpFeeRbfTx(true), undefined)).toBeUndefined();
         });
     });
 });

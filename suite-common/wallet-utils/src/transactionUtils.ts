@@ -7,6 +7,7 @@ import {
     type Account,
     type AccountKey,
     type ChainedTransactions,
+    type FormState,
     type GeneralPrecomposedTransactionFinal,
     type PrecomposedTransactionFinal,
     type PrecomposedTransactionFinalBumpFeeRbf,
@@ -343,6 +344,14 @@ export const isRbfBumpFeeTransaction = (
 export const isRbfCancelTransaction = (
     tx: GeneralPrecomposedTransactionFinal,
 ): tx is PrecomposedTransactionFinalCancelRbf => isRbfTransaction(tx) && tx.rbfType === 'cancel';
+
+export const getDecreaseOutputId = (
+    precomposedTx: GeneralPrecomposedTransactionFinal | undefined,
+    precomposedForm: FormState | null | undefined,
+) =>
+    precomposedTx && isRbfBumpFeeTransaction(precomposedTx) && precomposedTx.useNativeRbf
+        ? precomposedForm?.setMaxOutputId
+        : undefined;
 
 /* Convert date to string in YYYY-MM-DD format */
 const generateTransactionDateKey = (d: Date) =>
