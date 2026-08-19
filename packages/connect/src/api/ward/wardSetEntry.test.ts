@@ -1,46 +1,41 @@
+import WardQueueSetEntry from './wardQueueSetEntry';
 import WardSetEntry from './wardSetEntry';
 
-// The method is a thin, deliberate pass-through, and both halves of that are worth pinning: the
-// params it puts on the wire, and the fact that it returns the ack UNTOUCHED. A queued ack is the
-// case that matters -- it carries no leaf at all, and a method that "helpfully" filled one in
-// would hand a host something to store for a change the device has not applied.
-const makeMethod = (payload: Record<string, unknown>, response: Record<string, unknown>) => {
-    const typedCall = jest.fn().mockResolvedValue({ type: 'WardLeafAck', message: response });
-    const method = new WardSetEntry({
-        payload: { method: 'wardSetEntry', ...payload },
-    } as any);
-    method.getDevice = () => ({ getCommands: () => ({ typedCall }) }) as any;
+// Both methods are thin, deliberate pass-throughs, and what is worth pinning is that they are
+// SEPARATE: an applying write and a queued one are different requests with different acks, so
+// neither method can return the other's shape and no caller has to inspect a flag to find out
+// which happened.
+const makeMethod = (
+    Method: typeof WardSetEntry | typeof WardQueueSetEntry,
+    method: 'wardSetEntry' | 'wardQueueSetEntry',
+    payload: Record<string, unknown>,
+    response: Record<string, unknown>,
+    type = 'WardLeafAck',
+) => {
+    const typedCall = jest.fn().mockResolvedValue({ type, message: response });
+    const instance = new Method({ payload: { method, ...payload } } as any);
+    instance.getDevice = () => ({ getCommands: () => ({ typedCall }) }) as any;
 
-    return { method, typedCall };
+    return { method: instance, typedCall };
 };
 
+const PARAMS = { app_id: 'example.com', identifier: 'aabb', value: 'ccdd' };
+
 describe('WardSetEntry', () => {
-    it('sends exactly app_id, identifier and value', async () => {
-        const { method, typedCall } = makeMethod(
-            { app_id: 'example.com', identifier: 'aabb', value: 'ccdd', device: {} },
-            { entry_key: '00'.repeat(32), queued: true },
-        );
+    it('sends exactly app_id, identifier and value, expecting a leaf', async () => {
+        const { method, typedCall } = makeMethod(WardSetEntry, 'wardSetEntry', PARAMS, {
+            entry_key: '00'.repeat(32),
+            counter: 4,
+        });
 
         await method.run();
 
-        expect(typedCall).toHaveBeenCalledWith('WardSetEntry', 'WardLeafAck', {
-            app_id: 'example.com',
-            identifier: 'aabb',
-            value: 'ccdd',
-        });
+        // ONE expected type: the device refuses an unsynced write rather than answering a
+        // receipt, so there is no second shape to accept here.
+        expect(typedCall).toHaveBeenCalledWith('WardSetEntry', 'WardLeafAck', PARAMS);
     });
 
-    it('returns a queued ack verbatim, with no leaf invented for it', async () => {
-        const ack = { entry_key: '11'.repeat(32), queued: true };
-        const { method } = makeMethod(
-            { app_id: 'example.com', identifier: 'aabb', value: 'ccdd' },
-            ack,
-        );
-
-        await expect(method.run()).resolves.toEqual(ack);
-    });
-
-    it('returns an applied ack verbatim, counter and authenticators included', async () => {
+    it('returns the leaf ack verbatim, counter and authenticators included', async () => {
         const ack = {
             entry_key: '22'.repeat(32),
             identity: { encoding: 1 },
@@ -50,10 +45,7 @@ describe('WardSetEntry', () => {
             auth_commit: '44'.repeat(32),
             auth_sig: '55'.repeat(64),
         };
-        const { method } = makeMethod(
-            { app_id: 'example.com', identifier: 'aabb', value: '' },
-            ack,
-        );
+        const { method } = makeMethod(WardSetEntry, 'wardSetEntry', PARAMS, ack);
 
         await expect(method.run()).resolves.toEqual(ack);
     });
@@ -65,5 +57,34 @@ describe('WardSetEntry', () => {
                     payload: { method: 'wardSetEntry', app_id: 'example.com', identifier: 1 },
                 } as any),
         ).toThrow();
+    });
+});
+
+describe('WardQueueSetEntry', () => {
+    it('sends its own message and expects the queue ack', async () => {
+        const { method, typedCall } = makeMethod(
+            WardQueueSetEntry,
+            'wardQueueSetEntry',
+            PARAMS,
+            { entry_key: '11'.repeat(32) },
+            'WardQueueSetAck',
+        );
+
+        await method.run();
+
+        expect(typedCall).toHaveBeenCalledWith('WardQueueSetEntry', 'WardQueueSetAck', PARAMS);
+    });
+
+    it('returns the path and nothing else -- there is no leaf to invent', async () => {
+        const ack = { entry_key: '11'.repeat(32) };
+        const { method } = makeMethod(
+            WardQueueSetEntry,
+            'wardQueueSetEntry',
+            PARAMS,
+            ack,
+            'WardQueueSetAck',
+        );
+
+        await expect(method.run()).resolves.toEqual(ack);
     });
 });

@@ -7,13 +7,11 @@ import type { Params, Response } from '../../params';
  *
  * `identifier` and `value` are hex-encoded bytes, as every protobuf `bytes` field is here.
  *
- * The device answers a `WardLeafAck`, and there are TWO shapes of it. A synced session gets a
- * leaf plus `counter`/`mac`/`auth_commit`, which the caller MUST persist -- the device stores
- * nothing and a dropped result means the user confirmed a write that never happened. An
- * unsynced session gets `queued: true` and nothing else of substance: the device could not
- * pull, so it could not prove current state, derive a root or stamp a counter, and it held the
- * change in its own storage instead. A queued ack is not a leaf and must not be stored; the
- * change reaches the host later, sealed, through `WardFlushQueue`.
+ * REQUIRES A SYNCED SESSION and fails without one. The ack is a `WardLeafAck`: a leaf plus
+ * `counter`/`mac`/`auth_commit`, which the caller MUST persist -- the device stores nothing and a
+ * dropped result means the user confirmed a write that never happened. To hold a change on the
+ * device instead, call `wardQueueSetEntry`; that is a different request with a different ack, so
+ * "did this apply?" is never a question about hidden session state.
  */
 export declare function wardSetEntry(
     params: Params<PROTO.WardSetEntry>,

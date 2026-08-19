@@ -46,12 +46,12 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --params='{"use_passphrase": true}'
 
   WARD options (default: disabled)
-    --queue                                   Offline only: ward_add/ward_update/ward_delete just
-                                                place the change into the local pending queue and
-                                                ward_display only looks the entry up there.
-                                                No WARD Manager exchange -- the round is skipped,
-                                                which is exactly what makes the device queue the
-                                                change and answer "queued" instead of a leaf.
+    --queue                                   Operate on the device's own queue instead of the
+                                                tree. It picks a different wire message --
+                                                WardQueueSetEntry rather than WardSetEntry -- so
+                                                the change is HELD on the device and published
+                                                later; the applying request refuses without a
+                                                synced session rather than queueing silently.
                                                 --method=ward_add --params='{"scope":"example.com","value":"secret"}'
 `;
 

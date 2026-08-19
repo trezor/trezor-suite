@@ -321,11 +321,18 @@ import {
     WardEntryRequest,
     WardEraseCachedEntry,
     WardFlushQueue,
+    WardFlushQueueAck,
     WardGetEntry,
     WardIngestAttestation,
     WardIngestAttestationAck,
     WardLeafAck,
     WardPinCachedEntry,
+    WardQueueDeleteAck,
+    WardQueueDeleteEntry,
+    WardQueueGetAck,
+    WardQueueGetEntry,
+    WardQueueSetAck,
+    WardQueueSetEntry,
     WardReconcile,
     WardReconcileAck,
     WardRecoverCounter,
@@ -666,6 +673,13 @@ export const MessageType = Type.Object(
         WardEntryRequest,
         WardEntryAck,
         WardLeafAck,
+        WardQueueSetEntry,
+        WardQueueSetAck,
+        WardQueueDeleteEntry,
+        WardQueueDeleteAck,
+        WardQueueGetEntry,
+        WardQueueGetAck,
+        WardFlushQueueAck,
         WardVerifyChain,
         WardVerifyChainAck,
         WardSync,
@@ -866,6 +880,9 @@ export type WireInMessage =
     | 'WardSetEntry'
     | 'WardDeleteEntry'
     | 'WardEntryAck'
+    | 'WardQueueSetEntry'
+    | 'WardQueueDeleteEntry'
+    | 'WardQueueGetEntry'
     | 'WardVerifyChain'
     | 'WardSync'
     | 'WardIngestAttestation'
@@ -982,6 +999,10 @@ export type WireOutMessage =
     | 'TronSignature'
     | 'WardEntryRequest'
     | 'WardLeafAck'
+    | 'WardQueueSetAck'
+    | 'WardQueueDeleteAck'
+    | 'WardQueueGetAck'
+    | 'WardFlushQueueAck'
     | 'WardVerifyChainAck'
     | 'WardSyncAck'
     | 'WardIngestAttestationAck'

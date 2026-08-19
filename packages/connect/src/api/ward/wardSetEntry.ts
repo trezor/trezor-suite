@@ -8,13 +8,14 @@ import { AbstractMethod } from '../../core/AbstractMethod';
 /**
  * `WardSetEntry`: create or replace the WARD entry for (app_id, identifier).
  *
- * THE ACK IS RETURNED VERBATIM. The device answers one of two things and only the caller can
- * decide what to do about it: a leaf with `counter`/`mac`/`auth_commit`, which the caller MUST
- * persist because the device keeps nothing -- or, with no synced session, `queued: true` and
- * none of that, because the device could not pull, prove current state or derive a root and so
- * held the change in its own storage instead. Interpreting `queued` here would mean either
- * inventing a leaf that does not exist or failing a call that succeeded, so this method does
- * neither and leaves the branch to the host.
+ * ONLINE ONLY. The device requires a synced session and fails without one, naming
+ * `WardQueueSetEntry` -- see `wardQueueSetEntry`. It used to queue silently instead, so this one
+ * call could return either a leaf to store or a receipt to ignore depending on state the caller
+ * cannot see; a caller could not tell from its own request whether the change had applied.
+ *
+ * THE ACK IS RETURNED VERBATIM: a leaf with `counter`/`mac`/`auth_commit`, which the caller MUST
+ * persist because the device keeps nothing. A result dropped on the floor means the user
+ * confirmed a write that never happened.
  *
  * NO PULL HANDLING IS NEEDED HERE. When the session IS synced the device interrupts this call
  * with a `WardEntryRequest`; `DeviceCurrentSession` answers it from the registered

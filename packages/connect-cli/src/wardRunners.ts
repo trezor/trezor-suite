@@ -5,13 +5,11 @@
  * OWNS: mapping `--params` onto the wire message, the rules about what cannot run yet, and the
  * one assertion `--queue` is worth making.
  *
- * WHY `--queue` IS AN ASSERTION AND NOT A MODE. There is no queue flag on the wire. The device
- * queues a write exactly when the session has not completed a sync round, and it reports that
- * back as `queued: true` -- an ack carrying no leaf, no counter and no mac, because none of them
- * can be derived without current state. So `--queue` here means "do not sync first", and the
- * only thing left to check is that the device really did take the offline path. Silently
- * accepting an online ack under `--queue` would leave the caller holding a leaf it was told
- * nothing about and must have stored.
+ * `--queue` IS A MODE, AND IT PICKS THE MESSAGE. The queue has its own requests, so `--queue`
+ * sends `WardQueueSetEntry` and gets back a path and nothing else, while without it
+ * `WardSetEntry` goes out and the device requires a synced session. Neither call can answer the
+ * other's shape, so there is nothing to assert after the fact -- which is the point of the wire
+ * having two requests rather than one with a hidden mode.
  */
 
 import TrezorConnect, { type Device } from '@trezor/connect';
@@ -28,14 +26,14 @@ const wardAdd = async (context: WardCommandContext, device: Device) => {
 
     if (!queue) {
         // Said plainly here rather than letting the stub provider's "serveEntry is not
-        // implemented" be what the user sees: an online write needs a host store to pull the
+        // implemented" be what the user sees: an applying write needs a host store to pull the
         // current leaf from and prove it against the trusted root, and no provider is wired yet.
         throw new Error(
-            'an online WARD write needs a registered wardProvider (host store); not wired yet — pass --queue to place the change in the device queue',
+            'an applying WARD write needs a registered wardProvider (host store) and a synced session; not wired yet — pass --queue to hold the change on the device',
         );
     }
 
-    const result = await TrezorConnect.wardSetEntry({
+    const result = await TrezorConnect.wardQueueSetEntry({
         device,
         app_id: params.app_id ?? DEFAULT_APP_ID,
         identifier: toHex(params.scope),
@@ -46,12 +44,8 @@ const wardAdd = async (context: WardCommandContext, device: Device) => {
         throw new Error(`${result.error.code}: ${result.error.message}`);
     }
 
-    if (result.payload.queued !== true) {
-        throw new Error(
-            'device applied the write instead of queueing it (the session was already synced); the leaf in this ack must be stored, which --queue does not do',
-        );
-    }
-
+    // The ack type already means "held, not applied", so there is nothing to check: a
+    // WardQueueSetAck cannot describe a write that landed.
     return { entry_key: result.payload.entry_key, queued: true };
 };
 
@@ -65,11 +59,14 @@ export const runWardCommand = (
     }
 
     if (name === 'ward_delete' && context.queue) {
-        // The device refuses this outright: EMPTY_PART is plaintext, so any host could construct
-        // a delete leaf for any entry_key, and uploading queued deletes would hand a host the
-        // power to delete anything. A write can wait in a queue; a delete cannot.
+        // `WardQueueDeleteEntry` discards a QUEUED CHANGE; it does not delete a WARD entry, and
+        // there is no such thing as a queued deletion (EMPTY_PART is plaintext, so a host able to
+        // hand over delete leaves could delete anything). Wiring the discard is separate work, so
+        // this refuses rather than quietly doing the other thing.
         return Promise.reject(
-            new Error('a WARD delete cannot be queued; it requires a synced session'),
+            new Error(
+                'a WARD delete cannot be queued; --queue on ward_delete would discard a queued change instead, which is not wired yet',
+            ),
         );
     }
 
