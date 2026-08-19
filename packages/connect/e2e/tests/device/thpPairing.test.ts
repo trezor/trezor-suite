@@ -321,7 +321,7 @@ describe('THP pairing', () => {
         if (result.success) throw ERR;
         expect(result.error.message).toMatch(FW_CANCEL_ERR);
 
-        // 5. reject passphrase from host
+        // 5. reject passphrase from host using TrezorConnect.cancel()
         TrezorConnect.removeAllListeners('ui-request_passphrase');
         TrezorConnect.removeAllListeners('ui-button');
         TrezorConnect.on('ui-button', buttonRequestHandler());
@@ -337,7 +337,28 @@ describe('THP pairing', () => {
         if (result.success) throw ERR;
         expect(result.error.message).toMatch(CANCEL_ERR);
 
-        // 6. reject passphrase from Trezor
+        // 6. reject passphrase from host using empty payload
+        TrezorConnect.removeAllListeners('ui-request_passphrase');
+        TrezorConnect.removeAllListeners('ui-button');
+        TrezorConnect.on('ui-button', buttonRequestHandler());
+        TrezorConnect.on('ui-request_passphrase', () => {
+            // @ts-expect-error payload is missing
+            TrezorConnect.uiResponse({
+                type: 'ui-receive_passphrase',
+            });
+        });
+        result = await TrezorConnect.getAddress({
+            device: {
+                ...device,
+                instance: 1,
+            },
+            path: "m/44'/0'/0'/1/1",
+            showOnTrezor: true,
+        });
+        if (result.success) throw ERR;
+        expect(result.error.code).toMatch('Method_Cancel');
+
+        // 7. reject passphrase from Trezor
         TrezorConnect.removeAllListeners('ui-request_passphrase');
         TrezorConnect.removeAllListeners('ui-button');
         TrezorConnect.on('ui-request_passphrase', enterPassphraseOnHost('a'));
