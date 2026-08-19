@@ -214,7 +214,7 @@ export abstract class TradingFormActions extends TradingActions {
             await networkOption.tap();
         }
 
-        const firstMatchingAsset = element(by.text(asset)).atIndex(0);
+        const firstMatchingAsset = element(by.label(asset)).atIndex(0);
         await waitForVisible(firstMatchingAsset);
         await firstMatchingAsset.tap();
 
