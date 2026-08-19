@@ -1,6 +1,6 @@
 import { isUrl, isWhitelistedHost } from '@trezor/utils';
 
-import { allowedDesktopUpdateDomains } from '../config';
+import { allowedDesktopUpdateRemoteDomains, localhostDomains } from '../config';
 
 type ParseCustomFeedURLParams = {
     customFeedURL: string;
@@ -27,10 +27,22 @@ export const parseCustomFeedURL = ({
         return defaultFeedURL;
     }
 
-    const { hostname } = new URL(customFeedURL);
+    const { hostname, protocol } = new URL(customFeedURL);
 
-    if (!isWhitelistedHost(hostname, allowedDesktopUpdateDomains)) {
+    // Localhost is allowed if explicitely demanded; the user is reponsible for anything running on localhost.
+    // All protocols are allowed for localhost.
+    if (isWhitelistedHost(hostname, localhostDomains)) {
+        return customFeedURL;
+    }
+
+    // For the whitelisted remote domains, a secure protocol must be ensured to prevent MITM.
+    if (!isWhitelistedHost(hostname, allowedDesktopUpdateRemoteDomains)) {
         warn?.(`Custom desktop update URL ${customFeedURL} is from a forbidden domain.`);
+
+        return defaultFeedURL;
+    }
+    if (protocol !== 'https:') {
+        warn?.(`Custom desktop update URL ${customFeedURL} must be https.`);
 
         return defaultFeedURL;
     }

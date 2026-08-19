@@ -47,10 +47,9 @@ export const silentlyBlockedDomains = [
     'pulse.walletconnect.org', // WalletConnect analytics
 ];
 
-// Restrict Desktop Update to these URLs. Update installation is already gated by signature verification,
-// so this is only an additional layer – no need to allow any other domains.
-export const allowedDesktopUpdateDomains = [
+// Restrict Desktop Update to these remote URLs (localhost domains are also allowed).
+// Update installation is already gated by signature verification, so this is only an additional layer.
+export const allowedDesktopUpdateRemoteDomains = [
     'trezor.io', // Production server
     'sldev.cz', // Test environment, available only with VPN
-    ...localhostDomains, // Allowed for local testing
 ];

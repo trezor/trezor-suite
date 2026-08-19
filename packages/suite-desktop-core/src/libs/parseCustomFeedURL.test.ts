@@ -36,13 +36,30 @@ describe(parseCustomFeedURL.name, () => {
         },
         {
             it: 'allows a subdomain from the update domain allowlist',
-            customFeedURL: 'https://data.trezor.io/suite/releases/desktop/latest',
+            customFeedURL: 'https://data.trezor.io/update',
+            result: 'https://data.trezor.io/update',
+        },
+        {
+            it: 'falls back to the default URL when an allowed remote domain does not use https',
+            customFeedURL: 'http://trezor.io/update',
             result: defaultFeedURL,
+            shouldWarn: true,
+        },
+        {
+            it: 'falls back to the default URL when an allowed remote subdomain does not use https',
+            customFeedURL: 'http://data.trezor.io/update',
+            result: defaultFeedURL,
+            shouldWarn: true,
         },
         {
             it: 'allows localhost overrides',
             customFeedURL: 'http://127.0.0.1:8080/update',
             result: 'http://127.0.0.1:8080/update',
+        },
+        {
+            it: 'allows localhost subdomain overrides',
+            customFeedURL: 'http://dev.localhost:8080/update',
+            result: 'http://dev.localhost:8080/update',
         },
     ];
 
