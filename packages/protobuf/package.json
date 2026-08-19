@@ -1,6 +1,6 @@
 {
     "name": "@trezor/protobuf",
-    "version": "1.5.2",
+    "version": "1.5.3",
     "license": "See LICENSE.md in repo root",
     "repository": {
         "type": "git",
@@ -36,7 +36,7 @@
     "dependencies": {
         "@trezor/schema-utils": "workspace:*",
         "long": "5.2.5",
-        "protobufjs": "7.4.0"
+        "protobufjs": "7.5.5"
     },
     "devDependencies": {
         "protobufjs-cli": "^1.1.3",
