@@ -1,58 +1,22 @@
-import { type ReactNode, memo, useState } from 'react';
-import Animated, { LinearTransition } from 'react-native-reanimated';
-import { useSelector } from 'react-redux';
+import type { SellFiatTrade } from 'invity-api';
 
-import type { BankAccount, SellFiatTrade } from 'invity-api';
+import { VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 
-import { selectTradingSellFormStep } from '@suite-common/trading';
-import { AnimatedVStack, BannerInline } from '@suite-native/atoms';
-
-import { SellBankAccountPicker } from './BankAccount/SellBankAccountPicker';
-import { SellFromAccountTradePreviewCard } from './SellFromAccountTradePreviewCard';
-import { SellInfo } from './SellInfo';
-import { SellToFiatTradePreviewCard } from './SellToFiatTradePreviewCard';
+import { TradingPreviewInfoCard } from '../../general/TradingPreview/TradingPreviewInfoCard';
+import { SellFromAccountCard } from '../SellFromAccountCard';
 
 export type SellPreviewViewProps = {
-    quote: SellFiatTrade | undefined;
-    txnErrorString: ReactNode;
+    quote: SellFiatTrade;
 };
 
-export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewProps) => {
-    const formStep = useSelector(selectTradingSellFormStep);
-
-    const quoteBankAccounts = quote?.bankAccounts;
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const firstBankAccount: NonNullable<typeof quoteBankAccounts>[number] = quoteBankAccounts?.[0];
-    const [selectedBankAccountIban, setSelectedBankAccountIban] = useState(
-        firstBankAccount?.bankAccount,
-    );
-
-    const isTxnError = !!txnErrorString;
-
-    const shouldSelectBankAccount = formStep === 'BANK_ACCOUNT';
-    const showBankAccountPicker = shouldSelectBankAccount && selectedBankAccountIban;
-
-    const handleBankAccountSelect = (bankAccount: BankAccount) => {
-        setSelectedBankAccountIban(bankAccount.bankAccount);
-    };
-
-    return (
-        <AnimatedVStack spacing="sp20" paddingVertical="sp20" layout={LinearTransition}>
-            {isTxnError && (
-                <Animated.View>
-                    <BannerInline intent="critical" title={txnErrorString} />
-                </Animated.View>
-            )}
-            <SellFromAccountTradePreviewCard quote={quote} />
-            <SellToFiatTradePreviewCard quote={quote} />
-            <SellInfo quote={quote} isTxnError={isTxnError} />
-            {showBankAccountPicker && (
-                <SellBankAccountPicker
-                    orderId={quote?.orderId}
-                    selectedBankAccountIban={selectedBankAccountIban}
-                    onBankAccountSelect={handleBankAccountSelect}
-                />
-            )}
-        </AnimatedVStack>
-    );
-});
+export const SellPreviewView = ({ quote }: SellPreviewViewProps) => (
+    <VStack spacing="sp16">
+        <SellFromAccountCard quote={quote} />
+        <TradingPreviewInfoCard
+            quote={quote}
+            tradingType="sell"
+            fiatAmountLabel={<Translation id="moduleTrading.tradingSellPreviewScreen.youGet" />}
+        />
+    </VStack>
+);
