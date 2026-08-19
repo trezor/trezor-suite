@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
+import { sanitizeName } from './sanitizeName';
 import { parseThpSettings } from './thpSettings';
 import { VERSION } from './version';
 import { DEFINITIONS_CHANNELS } from '../types/definitions';
@@ -25,10 +26,13 @@ export const parseManifest = (manifest?: Manifest) => {
     if (typeof manifest.appName !== 'string') return;
     if (typeof manifest.appIcon !== 'undefined' && typeof manifest.appIcon !== 'string') return;
 
+    const appName = sanitizeName(manifest.appName);
+    if (!appName) return;
+
     return {
         email: manifest.email,
         appUrl: manifest.appUrl,
-        appName: manifest.appName,
+        appName,
         appIcon: manifest.appIcon,
     };
 };

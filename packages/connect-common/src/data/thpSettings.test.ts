@@ -98,4 +98,86 @@ describe('data/thpSettings', () => {
         });
         expect(result).toEqual({ appName, pairingMethods, knownCredentials: [] });
     });
+
+    describe('trims whitespace from name fields', () => {
+        const pairingMethods = ['CodeEntry' as const];
+
+        it('trims appName from thp settings', () => {
+            const result = parseThpSettings({
+                thp: { appName: '  My  App  ', pairingMethods },
+            });
+            expect(result.appName).toBe('My App');
+        });
+
+        it('trims appName when falling back to manifest', () => {
+            const result = parseThpSettings({
+                manifest: {
+                    appName: '  Manifest  App  ',
+                    appUrl: 'https://test.com',
+                    email: 'test@test.com',
+                },
+            });
+            expect(result.appName).toBe('Manifest App');
+        });
+
+        it('trims hostName', () => {
+            const result = parseThpSettings({
+                thp: { hostName: '  My  Host  ', pairingMethods },
+            });
+            expect(result.hostName).toBe('My Host');
+        });
+    });
+
+    describe('rejects invalid name fields', () => {
+        const pairingMethods = ['CodeEntry' as const];
+
+        it('drops empty appName from thp settings', () => {
+            const result = parseThpSettings({
+                thp: { appName: '', pairingMethods },
+            });
+            expect(result.appName).toBeUndefined();
+        });
+
+        it('drops whitespace-only appName from thp settings', () => {
+            const result = parseThpSettings({
+                thp: { appName: '   ', pairingMethods },
+            });
+            expect(result.appName).toBeUndefined();
+        });
+
+        it('drops appName with only control characters', () => {
+            const result = parseThpSettings({
+                thp: { appName: '\x00\x1F', pairingMethods },
+            });
+            expect(result.appName).toBeUndefined();
+        });
+
+        it('strips control characters from appName', () => {
+            const result = parseThpSettings({
+                thp: { appName: 'My\x00App', pairingMethods },
+            });
+            expect(result.appName).toBe('MyApp');
+        });
+
+        it('drops appName exceeding 100 characters', () => {
+            const result = parseThpSettings({
+                thp: { appName: 'A'.repeat(101), pairingMethods },
+            });
+            expect(result.appName).toBeUndefined();
+        });
+
+        it('drops empty hostName', () => {
+            const result = parseThpSettings({
+                thp: { hostName: '   ', pairingMethods },
+            });
+            expect(result.hostName).toBeUndefined();
+        });
+
+        it('strips control characters from hostName', () => {
+            const result = parseThpSettings({
+                thp: { hostName: 'My\x00Host', pairingMethods },
+            });
+            expect(result.hostName).toBe('MyHost');
+        });
+    });
 });
