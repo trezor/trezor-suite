@@ -28,6 +28,7 @@ import {
     buildYieldUnsignedTransaction,
     buildYieldUnwrapTransactionData,
     buildYieldWrapTransactionData,
+    getYieldTransactionNativeCost,
 } from '../utils/stablecoinYieldUtils';
 
 const YIELD_WRAP_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
@@ -37,7 +38,8 @@ export type ComposeYieldWrapErrorReason =
     | 'not-wrapped-native'
     | 'missing-chain-id'
     | 'missing-fee-level'
-    | 'fee-estimation-failed';
+    | 'fee-estimation-failed'
+    | 'insufficient-native-balance';
 
 export type ComposeYieldWrapResult =
     | {
@@ -137,20 +139,28 @@ export const composeYieldWrapTransactionThunk = createThunk<
             return { type: 'error', reason: 'missing-fee-level' } as const;
         }
 
-        const unsignedTransaction = JSON.stringify(
-            buildYieldUnsignedTransaction({
-                chainId: network.chainId,
-                data,
-                feeLevel: normalLevel,
-                from: account.descriptor,
-                gasLimit,
-                nonce: Number(nonce),
-                to: wethAddress,
-                value,
-            }),
-        );
+        const transaction = buildYieldUnsignedTransaction({
+            chainId: network.chainId,
+            data,
+            feeLevel: normalLevel,
+            from: account.descriptor,
+            gasLimit,
+            nonce: Number(nonce),
+            to: wethAddress,
+            value,
+        });
 
-        return { type: 'action-ready', unsignedTransaction } as const;
+        // A wrap carries its amount in the transaction value, so the fee is paid out of the same
+        // balance — composing a transaction that does not fit gets it signed on the device and
+        // then rejected by the node ("insufficient funds for gas * price + value").
+        if (getYieldTransactionNativeCost(transaction).gt(account.availableBalance)) {
+            return { type: 'error', reason: 'insufficient-native-balance' } as const;
+        }
+
+        return {
+            type: 'action-ready',
+            unsignedTransaction: JSON.stringify(transaction),
+        } as const;
     },
 );
 
@@ -303,18 +313,24 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
             return { type: 'error', reason: 'missing-fee-level' } as const;
         }
 
-        const unsignedTransaction = JSON.stringify(
-            buildYieldUnsignedTransaction({
-                chainId: network.chainId,
-                data,
-                feeLevel: normalLevel,
-                from: account.descriptor,
-                gasLimit: estimatedFeeLevel.payload.feeLimit,
-                nonce: Number(nonce),
-                to: wethAddress,
-            }),
-        );
+        const transaction = buildYieldUnsignedTransaction({
+            chainId: network.chainId,
+            data,
+            feeLevel: normalLevel,
+            from: account.descriptor,
+            gasLimit: estimatedFeeLevel.payload.feeLimit,
+            nonce: Number(nonce),
+            to: wethAddress,
+        });
 
-        return { type: 'action-ready', unsignedTransaction } as const;
+        // An unwrap spends the wrapped token, but its fee still comes out of the native balance.
+        if (getYieldTransactionNativeCost(transaction).gt(account.availableBalance)) {
+            return { type: 'error', reason: 'insufficient-native-balance' } as const;
+        }
+
+        return {
+            type: 'action-ready',
+            unsignedTransaction: JSON.stringify(transaction),
+        } as const;
     },
 );

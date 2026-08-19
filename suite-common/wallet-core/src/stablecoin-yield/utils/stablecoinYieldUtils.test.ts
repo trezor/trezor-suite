@@ -1,6 +1,7 @@
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import type { YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type FeeLevel } from '@trezor/connect';
 
 import type { YieldPendingTransactionState } from '../stablecoinYieldTypes';
 import {
@@ -12,6 +13,8 @@ import {
     buildYieldWrapTransactionData,
     getMaxWrapAmount,
     getNextYieldFlowStep,
+    getWrapFeeReserve,
+    getWrappableBalanceLimit,
     getWrappableNativeBalance,
     getYieldDepositAvailableBalance,
     getYieldDepositableBalance,
@@ -416,39 +419,91 @@ describe('stablecoinYieldUtils', () => {
         });
     });
 
+    describe('getWrapFeeReserve', () => {
+        const buildFeeInfo = (levels: Partial<FeeLevel>[]) =>
+            ({ levels }) as unknown as Parameters<typeof getWrapFeeReserve>[0];
+
+        it('prices the backup gas limit at the normal level maxFeePerGas', () => {
+            // 60000 gas * 20 Gwei = 0.0012 of the native coin.
+            expect(
+                getWrapFeeReserve(
+                    buildFeeInfo([
+                        { label: 'low', feePerUnit: '1', maxFeePerGas: '1' },
+                        { label: 'normal', feePerUnit: '30', maxFeePerGas: '20' },
+                    ]),
+                ),
+            ).toBe('0.0012');
+        });
+
+        it('falls back to feePerUnit on networks without EIP-1559 levels', () => {
+            expect(getWrapFeeReserve(buildFeeInfo([{ label: 'normal', feePerUnit: '20' }]))).toBe(
+                '0.0012',
+            );
+        });
+
+        it('returns zero when the fee levels are not loaded', () => {
+            expect(getWrapFeeReserve(null)).toBe('0');
+            expect(getWrapFeeReserve(buildFeeInfo([]))).toBe('0');
+        });
+    });
+
+    describe('getWrappableBalanceLimit', () => {
+        it('keeps the wrap fee aside', () => {
+            expect(getWrappableBalanceLimit('0.2', '0.0012')).toBe('0.1988');
+        });
+
+        it('floors at zero when the fee exceeds the balance', () => {
+            expect(getWrappableBalanceLimit('0.0005', '0.0012')).toBe('0');
+        });
+
+        it('treats an unknown fee as no reserve', () => {
+            expect(getWrappableBalanceLimit('0.2', '0')).toBe('0.2');
+        });
+    });
+
     describe('getMaxWrapAmount', () => {
+        const wrapFeeReserve = '0.0012';
+
         it('keeps the gas reserve aside when the balance covers it', () => {
-            expect(getMaxWrapAmount('0.2')).toBe('0.195');
+            expect(getMaxWrapAmount('0.2', wrapFeeReserve)).toBe('0.195');
         });
 
-        it('offers the whole balance when it does not cover the reserve', () => {
-            expect(getMaxWrapAmount('0.003')).toBe('0.003');
+        // Wrapping the whole balance can never be broadcast — the fee comes out of the same
+        // balance, so the node rejects it with "insufficient funds for gas * price + value".
+        it('keeps the wrap fee aside when the balance does not cover the gas reserve', () => {
+            expect(getMaxWrapAmount('0.003', wrapFeeReserve)).toBe('0.0018');
         });
 
-        it('offers the whole balance when it exactly matches the reserve', () => {
-            expect(getMaxWrapAmount('0.005')).toBe('0.005');
+        it('keeps the wrap fee aside when the balance exactly matches the gas reserve', () => {
+            expect(getMaxWrapAmount('0.005', wrapFeeReserve)).toBe('0.0038');
+        });
+
+        it('returns zero when the balance cannot even cover the wrap fee', () => {
+            expect(getMaxWrapAmount('0.001', wrapFeeReserve)).toBe('0');
         });
 
         // Max must offer an amount that is both usable and flagged, otherwise the button reads as
         // dead — the regression behind trezor/trezor-suite#30842.
         it('offers an amount that triggers the reserve recommendation', () => {
-            expect(shouldRecommendWrapReserve(getMaxWrapAmount('0.003'), '0.003')).toBe(true);
+            expect(
+                shouldRecommendWrapReserve(getMaxWrapAmount('0.003', wrapFeeReserve), '0.003'),
+            ).toBe(true);
         });
 
         it('treats an empty balance as zero', () => {
-            expect(getMaxWrapAmount('')).toBe('0');
+            expect(getMaxWrapAmount('', wrapFeeReserve)).toBe('0');
         });
 
         it('returns zero for a zero balance', () => {
-            expect(getMaxWrapAmount('0')).toBe('0');
+            expect(getMaxWrapAmount('0', wrapFeeReserve)).toBe('0');
         });
 
         it('returns zero for a negative balance', () => {
-            expect(getMaxWrapAmount('-1')).toBe('0');
+            expect(getMaxWrapAmount('-1', wrapFeeReserve)).toBe('0');
         });
 
         it('returns zero for non-numeric input', () => {
-            expect(getMaxWrapAmount('abc')).toBe('0');
+            expect(getMaxWrapAmount('abc', wrapFeeReserve)).toBe('0');
         });
     });
 

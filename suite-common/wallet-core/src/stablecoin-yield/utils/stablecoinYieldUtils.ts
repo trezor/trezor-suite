@@ -1,12 +1,16 @@
 import { Calldata, type EvmAddress } from '@suite-common/calldata';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol, getNetworkByYieldXyzId } from '@suite-common/wallet-config';
-import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
-import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
+import {
+    WETH_DEPOSIT_BACKUP_GAS_LIMIT,
+    WETH_WRAP_GAS_RESERVE,
+} from '@suite-common/wallet-constants';
+import { type AccountKey, type EvmSelectedFee, type FeeInfo } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
     fromGwei,
     fromIntegerString,
+    fromWei,
     getContractAddressForNetworkSymbol,
     isWrappedNativeToken,
     unitsToSubunits,
@@ -313,6 +317,19 @@ export const buildYieldUnsignedTransaction = ({
     };
 };
 
+type YieldUnsignedTransaction = ReturnType<typeof buildYieldUnsignedTransaction>;
+
+/**
+ * Native coin the transaction spends: its value plus the whole fee allowance
+ * (`gasLimit × gas price`). This is what the node checks the balance against before it accepts a
+ * transaction, so a wrap that spends more than this can never be broadcast.
+ */
+export const getYieldTransactionNativeCost = (tx: YieldUnsignedTransaction): BigNumber => {
+    const gasPrice = 'maxFeePerGas' in tx ? tx.maxFeePerGas : tx.gasPrice;
+
+    return new BigNumber(tx.value).plus(new BigNumber(tx.gasLimit).multipliedBy(gasPrice));
+};
+
 type BuildYieldWrapTransactionDataParams = {
     wrapAmount: string;
     decimals: number;
@@ -384,13 +401,60 @@ export const getWrappableNativeBalance = (nativeFormattedBalance: string): strin
     ).toString();
 
 /**
- * Amount the wrap step's "Max" button fills in: the balance minus `WETH_WRAP_GAS_RESERVE` while
- * that leaves something to wrap, otherwise the whole balance. A balance at or below the reserve
- * has nothing to keep aside, and offering `0` reads as a dead button
- * (trezor/trezor-suite#30842). Wrapping it all is allowed, and `shouldRecommendWrapReserve` then
- * surfaces the non-blocking recommendation to keep some native coin for the follow-up fees.
+ * Fee the wrap transaction itself will cost, in display units, estimated from the network's
+ * normal fee level and the `deposit()` gas backup limit. Deliberately an over-estimate — the real
+ * call is cheaper than the backup limit — because it is subtracted from the wrappable balance,
+ * where being short by a wei makes the signed transaction unbroadcastable.
+ *
+ * Returns `'0'` when the fee levels are not loaded yet; the compose thunks re-check the real cost.
  */
-export const getMaxWrapAmount = (nativeFormattedBalance: string): string => {
+export const getWrapFeeReserve = (feeInfo: FeeInfo | null | undefined): string => {
+    const level = feeInfo?.levels.find(({ label }) => label === 'normal') ?? feeInfo?.levels[0];
+    // EVM fee levels are converted to Gwei by `selectConvertedNetworkFeeInfo`.
+    const gasPriceGwei = level?.maxFeePerGas ?? level?.feePerUnit;
+
+    if (!gasPriceGwei || !new BigNumber(gasPriceGwei).isFinite()) {
+        return '0';
+    }
+
+    const feeWei = fromGwei(gasPriceGwei)
+        .toWei('bignumber')
+        .multipliedBy(WETH_DEPOSIT_BACKUP_GAS_LIMIT);
+
+    return fromWei(feeWei.toFixed(0)).toEther();
+};
+
+/**
+ * Most that can be wrapped out of the native balance: the wrap carries its amount in the
+ * transaction value, so the fee is paid out of the same balance and wrapping all of it can never
+ * be broadcast ("insufficient funds for gas * price + value").
+ */
+export const getWrappableBalanceLimit = (
+    nativeFormattedBalance: string,
+    wrapFeeReserve?: string,
+): string => {
+    const balance = new BigNumber(nativeFormattedBalance || '0');
+
+    if (!balance.isFinite() || balance.lte(0)) {
+        return '0';
+    }
+
+    return BigNumber.max(0, balance.minus(wrapFeeReserve || '0')).toString();
+};
+
+/**
+ * Amount the wrap step's "Max" button fills in: the balance minus `WETH_WRAP_GAS_RESERVE` while
+ * that leaves something to wrap, otherwise everything the balance can still fund. A balance at or
+ * below the reserve has nothing to keep aside, and offering `0` reads as a dead button
+ * (trezor/trezor-suite#30842) — but the wrap's own fee has to stay behind either way, so the
+ * fallback is the balance minus `wrapFeeReserve`, not the whole balance.
+ * `shouldRecommendWrapReserve` then surfaces the non-blocking recommendation to keep some native
+ * coin for the follow-up fees.
+ */
+export const getMaxWrapAmount = (
+    nativeFormattedBalance: string,
+    wrapFeeReserve?: string,
+): string => {
     const balance = new BigNumber(nativeFormattedBalance || '0');
 
     if (!balance.isFinite() || balance.lte(0)) {
@@ -399,7 +463,9 @@ export const getMaxWrapAmount = (nativeFormattedBalance: string): string => {
 
     const wrappableBalance = new BigNumber(getWrappableNativeBalance(nativeFormattedBalance));
 
-    return wrappableBalance.gt(0) ? wrappableBalance.toString() : balance.toString();
+    return wrappableBalance.gt(0)
+        ? wrappableBalance.toString()
+        : getWrappableBalanceLimit(nativeFormattedBalance, wrapFeeReserve);
 };
 
 /**

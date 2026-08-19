@@ -10,6 +10,7 @@ import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
     getMaxWrapAmount,
+    getWrappableBalanceLimit,
     getYieldVaultContractAddress,
     shouldRecommendWrapReserve,
     stablecoinYieldActions,
@@ -43,6 +44,7 @@ import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedN
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
+import { useWrapFeeReserve } from '../hooks/useWrapFeeReserve';
 import {
     type PreparedWrappedNativeTokenAction,
     useWrappedNativeTokenFees,
@@ -127,9 +129,12 @@ export const YieldDepositWrapScreen = () => {
 
     const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
     const nativeBalance = account?.formattedBalance ?? '0';
+    // The wrap pays its fee out of the same native balance it wraps, so the amount is capped
+    // below the balance — wrapping all of it signs a transaction the node cannot accept.
+    const wrapFeeReserve = useWrapFeeReserve(account?.symbol);
 
     const form = useWrappedNativeTokenForm({
-        availableBalance: nativeBalance,
+        availableBalance: getWrappableBalanceLimit(nativeBalance, wrapFeeReserve),
         decimals: account ? getNetwork(account.symbol).decimals : 0,
         tokenSymbol: nativeSymbol,
     });
@@ -348,7 +353,7 @@ export const YieldDepositWrapScreen = () => {
                             <WrappedNativeTokenAmountInputCard
                                 amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
                                 balance={nativeBalance}
-                                maxAmount={getMaxWrapAmount(nativeBalance)}
+                                maxAmount={getMaxWrapAmount(nativeBalance, wrapFeeReserve)}
                                 onCurrencyChange={reportCurrencyToggle}
                                 onMaxPress={reportMaxSelected}
                                 symbol={account.symbol}

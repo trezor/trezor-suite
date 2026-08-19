@@ -1,18 +1,43 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { deviceInitialState } from '@suite-common/device';
 import { createMockDispatch } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account, type FeeInfo, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type TokenInfo } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils';
 
 import {
     type TrackWrappedNativeTokenThunkState,
+    composeYieldWrapTransactionThunk,
     trackWrappedNativeTokenThunk,
 } from './stablecoinYieldWrapThunks';
 import { accountsActions } from '../../accounts/accountsActions';
+import { accountsInitialState } from '../../accounts/accountsReducer';
+import { blockchainInitialState } from '../../blockchain/blockchainReducer';
+import { feesReducer } from '../../fees/feesReducer';
+import { transactionsInitialState } from '../../transactions/transactionsReducer';
 import { fetchWrappedNativeTokenInfo } from '../utils/fetchWrappedNativeTokenInfo';
+import { estimateYieldFeeLevel } from '../utils/stablecoinYieldFeeEstimation';
 
 jest.mock('../utils/fetchWrappedNativeTokenInfo', () => ({
     fetchWrappedNativeTokenInfo: jest.fn(),
+}));
+
+jest.mock('../utils/stablecoinYieldFeeEstimation', () => ({
+    estimateYieldFeeLevel: jest.fn(),
+}));
+
+jest.mock('../../send/sendFormEthereumThunks', () => ({
+    ethereumGetCurrentNonceThunk: jest.fn(() => () => {
+        const result = { nonce: '5', confirmedNonce: '5' };
+
+        return Object.assign(Promise.resolve(result), {
+            unwrap: () => Promise.resolve(result),
+        });
+    }),
 }));
 
 const fetchWrappedNativeTokenInfoMock = jest.mocked(fetchWrappedNativeTokenInfo);
@@ -185,5 +210,102 @@ describe('trackWrappedNativeTokenThunk', () => {
 
         expect(balance).toBe('2.5');
         expect(addTokensActions).toHaveLength(0);
+    });
+});
+
+// 1 Gwei, raw — the thunk converts it to Gwei itself.
+const ethFeeInfo: FeeInfo = {
+    blockHeight: 100,
+    blockTime: 12,
+    minFee: 1,
+    maxFee: 100,
+    minPriorityFee: 1,
+    levels: [{ label: 'normal', feePerUnit: '1000000000', blocks: -1 }],
+};
+
+// The balance from the "insufficient funds for gas * price + value" report: wrapping all of it
+// leaves nothing for the fee, which is paid out of the very same balance.
+const WHOLE_BALANCE_WEI = '885386728109194';
+const WHOLE_BALANCE = '0.000885386728109194';
+// 60000 gas at 1 Gwei.
+const WRAP_FEE_WEI = '60000000000000';
+
+const wrapAccount: Account = {
+    ...ethereumAccount,
+    availableBalance: WHOLE_BALANCE_WEI,
+    formattedBalance: WHOLE_BALANCE,
+};
+
+const initWrapStore = () =>
+    configureMockStore({
+        reducer: combineReducers({
+            device: () => deviceInitialState,
+            wallet: combineReducers({
+                accounts: () => accountsInitialState,
+                blockchain: () => blockchainInitialState,
+                fees: feesReducer,
+                transactions: () => transactionsInitialState,
+            }),
+        }),
+        preloadedState: {
+            device: deviceInitialState,
+            wallet: {
+                accounts: accountsInitialState,
+                blockchain: blockchainInitialState,
+                fees: { eth: { status: 'loaded', data: ethFeeInfo } },
+                transactions: transactionsInitialState,
+            },
+        },
+    });
+
+const composeWrap = (wrapAmount: string) =>
+    initWrapStore()
+        .dispatch(
+            composeYieldWrapTransactionThunk({
+                account: wrapAccount,
+                token: { contractAddress: WETH_ADDRESS, decimals: 18 },
+                wrapAmount,
+            }),
+        )
+        .unwrap();
+
+describe('composeYieldWrapTransactionThunk', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        (estimateYieldFeeLevel as jest.Mock).mockResolvedValue({
+            success: true,
+            payload: { feeLimit: '60000' },
+        });
+    });
+
+    it('refuses to compose a wrap of the whole balance, which cannot cover its own fee', async () => {
+        await expect(composeWrap(WHOLE_BALANCE)).resolves.toEqual({
+            type: 'error',
+            reason: 'insufficient-native-balance',
+        });
+    });
+
+    it('refuses to compose when the amount leaves less than the fee behind', async () => {
+        const justUnderTheFee = new BigNumber(WHOLE_BALANCE_WEI)
+            .minus(WRAP_FEE_WEI)
+            .plus(1)
+            .shiftedBy(-18)
+            .toFixed();
+
+        await expect(composeWrap(justUnderTheFee)).resolves.toEqual({
+            type: 'error',
+            reason: 'insufficient-native-balance',
+        });
+    });
+
+    it('composes the largest amount the balance can still fund', async () => {
+        const maxFundable = new BigNumber(WHOLE_BALANCE_WEI)
+            .minus(WRAP_FEE_WEI)
+            .shiftedBy(-18)
+            .toFixed();
+
+        const result = await composeWrap(maxFundable);
+
+        expect(result.type).toBe('action-ready');
     });
 });

@@ -35,7 +35,6 @@ import {
 import { fromGwei, fromWei } from './ethConverter';
 import {
     getEvmTransactionPurpose,
-    getEvmTransactionTextSignature,
     isEvmApprovalTx,
     isEvmYieldTxByTextSignature,
     isUnwrapNativeTx,
@@ -255,8 +254,19 @@ const constructOldFlow = ({
     const isCardano = isCardanoTx(account, precomposedTx);
     const isStellar = account.networkType === 'stellar';
     const { networkType } = account;
-    const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
-    const isYieldOperation = isEvmYieldTxByTextSignature(evmTxType);
+    // Resolved from the full context rather than the calldata alone, so that the WETH
+    // deposit()/withdraw() selectors classify as wrap/unwrap instead of 'unknown', the same way
+    // the updated flow resolves them.
+    const evmTxType = getEvmTransactionPurpose({
+        networkSymbol: account.symbol,
+        to: precomposedTx.outputs.find(o => 'address' in o && typeof o.address === 'string')
+            ?.address,
+        data: precomposedForm.transactionData,
+    });
+    // Wrap/unwrap are yield operations as well: their review renders the fee in its own summary
+    // step, so the legacy flow must not emit a separate fee output for them either.
+    const isYieldOperation =
+        isEvmYieldTxByTextSignature(evmTxType) || evmTxType === 'wrap' || evmTxType === 'unwrap';
 
     const hasDestinationTag = 'destinationTag' in precomposedForm;
 

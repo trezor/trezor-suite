@@ -10,6 +10,7 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { TokenInfo } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { buildApprovalTransactionData } from './ethUtils';
 import {
@@ -528,6 +529,32 @@ describe('constructTransactionReviewOutputs', () => {
         expect(outputs).not.toEqual(
             expect.arrayContaining([expect.objectContaining({ type: 'contract_intent' })]),
         );
+    });
+
+    it.each([
+        { op: 'wrap', token: undefined, transactionData: WETH_DEPOSIT_DATA },
+        { op: 'unwrap', token: wethToken, transactionData: WETH_WITHDRAW_DATA },
+    ])('mirrors the legacy device screens for a WETH $op on T1B1', ({ token, transactionData }) => {
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device: mockSuiteDevice(undefined, {
+                internal_model: DeviceModelInternal.T1B1,
+                major_version: 1,
+                minor_version: 13,
+                patch_version: 0,
+            }),
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData }),
+            precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET, token }),
+        });
+
+        // The legacy flow walks address → data → fee, and the review renders that fee as its own
+        // summary row. A separate 'fee' output would both desync the steps and, in the earn
+        // review, fail its output allowlist and leave the screen blank.
+        expect(outputs).toEqual([
+            { type: 'regular_legacy', value: WETH_MAINNET },
+            { type: 'data', value: transactionData },
+        ]);
     });
 
     it('keeps the raw data row for a wrapped native the firmware does not clear-sign (WBNB on BSC)', () => {

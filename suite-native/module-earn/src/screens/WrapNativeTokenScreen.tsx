@@ -9,6 +9,7 @@ import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
     type AccountsRootState,
     getMaxWrapAmount,
+    getWrappableBalanceLimit,
     selectAccountByKey,
     shouldRecommendWrapReserve,
 } from '@suite-common/wallet-core';
@@ -32,6 +33,7 @@ import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBot
 import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useStandaloneWrappedNativeFlow } from '../hooks/useStandaloneWrappedNativeFlow';
+import { useWrapFeeReserve } from '../hooks/useWrapFeeReserve';
 import { useWrappedNativeTokenFees } from '../hooks/useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from '../hooks/useWrappedNativeTokenForm';
 import { useYieldCurrencyToggleAnalytics } from '../hooks/useYieldCurrencyToggleAnalytics';
@@ -58,8 +60,15 @@ export const WrapNativeTokenScreen = () => {
         variant: wrapDisabledVariant,
     } = useMessageSystemWrappedNative('wrap');
 
+    // The wrap pays its fee out of the same native balance it wraps, so the amount is capped
+    // below the balance — wrapping all of it signs a transaction the node cannot accept.
+    const wrapFeeReserve = useWrapFeeReserve(account?.symbol);
+
     const form = useWrappedNativeTokenForm({
-        availableBalance: account?.formattedBalance ?? '0',
+        availableBalance: getWrappableBalanceLimit(
+            account?.formattedBalance ?? '0',
+            wrapFeeReserve,
+        ),
         decimals: account ? getNetwork(account.symbol).decimals : 0,
         tokenSymbol: nativeSymbol,
     });
@@ -145,7 +154,7 @@ export const WrapNativeTokenScreen = () => {
                         <WrappedNativeTokenAmountInputCard
                             amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
                             balance={account.formattedBalance}
-                            maxAmount={getMaxWrapAmount(account.formattedBalance)}
+                            maxAmount={getMaxWrapAmount(account.formattedBalance, wrapFeeReserve)}
                             onCurrencyChange={reportCurrencyToggle}
                             onMaxPress={flow.reportMaxSelected}
                             symbol={account.symbol}
