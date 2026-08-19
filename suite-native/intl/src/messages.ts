@@ -2169,7 +2169,7 @@ export const messages = {
                 confirmButton: 'Cancel transaction',
                 confirmOnDevice:
                     'Follow the instructions on your Trezor to confirm the cancellation.',
-                successToast: 'Cancel transaction sent',
+                successToast: 'Transaction cancellation sent',
                 errorToast: 'Transaction cancellation failed: {error}',
                 errorToastGeneric: 'Transaction cancellation failed. Please try again.',
                 composeErrorMessage: 'Unable to prepare the cancellation transaction.',
@@ -2910,7 +2910,7 @@ export const messages = {
             title: 'Earn',
             otherOpportunities: 'Other opportunities',
             depositsCard: {
-                title: 'Your deposits',
+                title: 'Earn balance',
                 networkStaking: '{networkName} staking',
                 availableRewards: 'Bonus rewards',
                 claimRewardsButton: 'Claim rewards',
@@ -3042,7 +3042,7 @@ export const messages = {
                     description: 'This is your vault position.',
                 },
                 fourth: {
-                    title: 'You will also earn {bonusRewardTokenName} tokens as rewards.',
+                    title: "You'll earn {bonusRewardTokenName} as rewards.",
                     description: 'These must be claimed separately.',
                 },
                 wrappedNativeVault: {
@@ -4126,6 +4126,17 @@ export const messages = {
                 inputLabel: 'Slippage',
             },
         },
+        myAssetSheet: {
+            title: 'Your assets',
+            searchInputPlaceholder: 'Search assets',
+            emptyTitle: 'No assets found',
+            emptyDescription: 'No assets available for this operation.',
+            noPair: {
+                note: 'No pair',
+                toast: 'No trading pair',
+            },
+            nonTradeable: '+ {count} non-tradeable {count, plural, one{token} other{tokens}}',
+        },
     },
     feedbackForm: {
         title: 'How was your experience?',
@@ -4277,8 +4288,7 @@ export const messages = {
         },
         solanaLimitedHistoryBanner: {
             title: 'Transaction history is limited to the last 100 transactions per token',
-            description:
-                'Only the most recent 100 transactions per token are shown. For the full history, view on the blockchain explorer.',
+            description: 'For the full history, view on the blockchain explorer.',
             confirmButton: 'Got it',
         },
         defiYieldPromoBanner: {
