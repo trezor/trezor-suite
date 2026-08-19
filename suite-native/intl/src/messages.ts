@@ -198,7 +198,7 @@ export const messages = {
             letterCount: '{current} / {max} characters',
         },
         searchForm: {
-            placeholder: 'Search assets',
+            searchAccountsPlaceholder: 'Search accounts',
         },
     },
     accountList: {
@@ -1972,9 +1972,9 @@ export const messages = {
             retryButton: 'Retry',
         },
         accountsScreen: {
-            title: 'My assets',
+            accountsTitle: 'Accounts',
             networkFilter: {
-                title: 'Show assets on',
+                showAccountsOnTitle: 'Show accounts on',
                 applyButton: 'Apply',
                 clearButton: 'Clear filter',
                 showAllButton: 'Show all',
@@ -2080,10 +2080,11 @@ export const messages = {
             },
         },
         emptyState: {
-            title: 'No assets',
-            subtitle: 'Connect your Trezor or sync networks to view and track assets.',
+            noAccountsTitle: 'No accounts',
+            noAccountsSubtitle: 'Connect your Trezor or sync networks to view and track accounts.',
             addSubtitle: 'Start adding networks you want to use.',
-            receiveSubtitle: 'Connect your Trezor or sync networks to view and receive assets.',
+            noAccountsReceiveSubtitle:
+                'Connect your Trezor or sync networks to receive to your accounts.',
             searchTitle: 'No results found',
             searchAgain: 'Search again',
         },
@@ -4486,7 +4487,7 @@ export const messages = {
     navigation: {
         tabs: {
             home: 'Home',
-            accounts: 'My assets',
+            accountsList: 'Accounts',
             earn: 'Earn',
             trade: 'Trade',
             settings: 'Settings',

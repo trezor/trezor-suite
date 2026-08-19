@@ -73,7 +73,9 @@ export const NetworkFilterBottomSheet = forwardRef(
         return (
             <BottomSheetModal
                 ref={ref}
-                title={translate('moduleAccountManagement.accountsScreen.networkFilter.title')}
+                title={translate(
+                    'moduleAccountManagement.accountsScreen.networkFilter.showAccountsOnTitle',
+                )}
                 isCloseDisplayed
                 onDismiss={handleDismiss}
                 footer={

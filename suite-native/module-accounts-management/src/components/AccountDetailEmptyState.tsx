@@ -7,7 +7,7 @@ import {
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { VStack } from '@suite-native/atoms';
+import { Box, VStack } from '@suite-native/atoms';
 import { selectIsUnrecognizedToken } from '@suite-native/tokens';
 import { TransactionsEmptyState } from '@suite-native/transactions';
 
@@ -37,7 +37,9 @@ export const AccountDetailEmptyState = ({
     return (
         <VStack spacing="sp24">
             <TransactionsEmptyState />
-            <AccountDetailActionButtons accountKey={accountKey} tokenContract={tokenContract} />
+            <Box paddingHorizontal="sp16">
+                <AccountDetailActionButtons accountKey={accountKey} tokenContract={tokenContract} />
+            </Box>
             {isPriceCardDisplayed && (
                 <AssetPriceCard accountKey={accountKey} tokenContract={tokenContract} />
             )}

@@ -42,22 +42,22 @@ export const AccountsListEmptyPlaceholder = ({
         if (isReceiveRoute) {
             return {
                 icon: 'arrowLineDown',
-                title: <Translation id="moduleAccounts.emptyState.title" />,
+                title: <Translation id="moduleAccounts.emptyState.noAccountsTitle" />,
                 titleVariant: 'headline-md',
-                subtitle: <Translation id="moduleAccounts.emptyState.receiveSubtitle" />,
+                subtitle: <Translation id="moduleAccounts.emptyState.noAccountsReceiveSubtitle" />,
             };
         }
 
         return {
             icon: 'coins',
-            title: <Translation id="moduleAccounts.emptyState.title" />,
+            title: <Translation id="moduleAccounts.emptyState.noAccountsTitle" />,
             titleVariant: 'headline-md',
             subtitle: (
                 <Translation
                     id={
                         isDeviceConnected
                             ? 'moduleAccounts.emptyState.addSubtitle'
-                            : 'moduleAccounts.emptyState.subtitle'
+                            : 'moduleAccounts.emptyState.noAccountsSubtitle'
                     }
                 />
             ),
