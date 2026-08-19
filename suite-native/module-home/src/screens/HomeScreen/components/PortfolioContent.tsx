@@ -21,6 +21,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef, PortfolioContentPr
                     ListHeaderComponent={<PortfolioListHeader ref={ref} />}
                     ListFooterComponent={<PortfolioListFooter />}
                     onScroll={handleScroll}
+                    testID="@screen/mainScrollView"
                 />
             </>
         );

@@ -11,9 +11,9 @@ import { AssetItem } from './AssetItem';
 import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
 import { type AssetListRow, getAssetListRowKey, getAssetListRows } from './getAssetListRows';
 
-export type AssetsProps = Pick<
+export type AssetsProps = Omit<
     FlashListProps<AssetListRow>,
-    'ListHeaderComponent' | 'ListFooterComponent' | 'refreshControl' | 'onScroll'
+    'data' | 'keyExtractor' | 'getItemType' | 'renderItem' | 'contentContainerStyle'
 >;
 
 const listContentStyle = prepareNativeStyle<{ bottomInset: number }>((utils, { bottomInset }) => ({
@@ -43,12 +43,7 @@ const rowCardStyle = prepareNativeStyle<{ isFirst: boolean; isLast: boolean }>(
     }),
 );
 
-export const Assets = ({
-    ListHeaderComponent,
-    ListFooterComponent,
-    refreshControl,
-    onScroll,
-}: AssetsProps) => {
+export const Assets = (props: AssetsProps) => {
     const { applyStyle } = useNativeStyles();
     const { bottom: bottomInset } = useBannerAwareSafeAreaInsets();
 
@@ -79,11 +74,8 @@ export const Assets = ({
             keyExtractor={getAssetListRowKey}
             getItemType={item => item.type}
             renderItem={renderItem}
-            refreshControl={refreshControl}
-            ListHeaderComponent={ListHeaderComponent}
-            ListFooterComponent={ListFooterComponent}
             contentContainerStyle={applyStyle(listContentStyle, { bottomInset })}
-            onScroll={onScroll}
+            {...props}
         />
     );
 };
