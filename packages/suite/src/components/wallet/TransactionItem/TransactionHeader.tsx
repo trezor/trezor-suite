@@ -261,10 +261,11 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
 
     const isMultiTokenTransaction = transaction.tokens.length > 1;
     const transactionSymbol = getTxHeaderSymbol(transaction);
+    // token symbols carry their own casing (trSHUSDTp), only network symbols are stored lowercase
     const symbol =
         transactionSymbol && isNetworkSymbol(transactionSymbol)
             ? getNetworkDisplaySymbol(transactionSymbol)
-            : transactionSymbol?.toUpperCase();
+            : transactionSymbol;
 
     return (
         <BlurUrls
