@@ -8,6 +8,7 @@ export type * from './firmware';
 export * from './method';
 export * from './params';
 export * from './settings';
+export type * from './ward';
 
 // altcoin related types. these exports should satisfy needs of 3rd party apps
 export * from './api/cardano/common';

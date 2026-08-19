@@ -30,6 +30,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TrezorError } from '@trezor/connect-common/src/constants/errors';
 import { parseLocalFirmwares } from '@trezor/connect-common/src/data/connectSettings';
 import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
+import type { WardProvider } from '@trezor/connect-common/src/types/ward';
 import {
     type LogWriter,
     noopCreateLogger,
@@ -54,6 +55,7 @@ import type { IDeviceList } from '../device/DeviceList';
 import { DeviceList, assertDeviceListConnected } from '../device/DeviceList';
 import { validateState } from '../device/workflow/validateState';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
+import { createWardProviderStub } from '../ward/wardProviderStub';
 
 type CoreContext = ReturnType<Core['getCoreContext']>;
 
@@ -571,6 +573,24 @@ const onEmptyPassphraseHandler =
         callback({ success: true, payload: { value: '' } });
     };
 
+/**
+ * Answer the device's mid-call WARD pull from the registered provider.
+ *
+ * The no-UI counterpart of the handlers above -- compare `onEmptyPassphraseHandler`: the answer
+ * comes from host state, so there is no ui promise and nothing for the user to confirm. A
+ * provider that throws fails the device call, which is the point: the device is blocked on the
+ * wire and must be told, not left waiting.
+ */
+const onDeviceWardEntryHandler =
+    (context: CoreContext) =>
+    async ({ request, callback }: DeviceEvents['ward_entry']) => {
+        try {
+            callback({ success: true, payload: await context.wardProvider.serveEntry(request) });
+        } catch (error) {
+            callback({ success: false, error });
+        }
+    };
+
 const onThpPairingHandler =
     (device: Device, context: CoreContext) =>
     async ({ callback, payload }: DeviceEvents['thp_pairing']) => {
@@ -656,6 +676,7 @@ const registerDeviceEvents =
         device.on(DEVICE.THP_PAIRING, onThpPairingHandler(device, context));
         device.on(DEVICE.THP_CREDENTIALS_CHANGED, onThpCredentialsChangedHandler(device, context));
         device.on(DEVICE.THP_PAIRING_STATUS_CHANGED, onThpPhaseChangedHandler(device, context));
+        device.on(DEVICE.WARD_ENTRY, onDeviceWardEntryHandler(context));
     };
 
 // When `callId` is provided, the abort is scoped to the single method whose
@@ -771,6 +792,7 @@ export class Core extends EventEmitter {
 
     private createLogger: CreateLogger = noopCreateLogger;
     private coreLogger: Logger = noopLogger;
+    private wardProvider: WardProvider = createWardProviderStub(noopLogger);
 
     private waitForFirstMethod = createDeferred();
 
@@ -798,6 +820,7 @@ export class Core extends EventEmitter {
             uiPromises: this.uiPromises,
             deviceList: this.deviceList,
             logger: this.coreLogger,
+            wardProvider: this.wardProvider,
             callMethods: this.callMethods,
             methodSynchronize: this.methodSynchronize,
             sendCoreMessage: this.sendCoreMessage.bind(this),
@@ -966,6 +989,15 @@ export class Core extends EventEmitter {
         // is created because device discovery/handshake can log during init.
         this.createLogger = settings.createLogger ?? noopCreateLogger;
         this.coreLogger = this.createLogger('Core');
+
+        // Registered on every startup, host-supplied or not: a device that pulls mid-call is
+        // waiting on the wire, so the stub answering with an error beats having no answerer.
+        this.wardProvider =
+            settings.wardProvider ?? createWardProviderStub(this.createLogger('WardProvider'));
+        this.coreLogger.debug(
+            'ward provider',
+            settings.wardProvider ? 'supplied by host' : 'stub (serveEntry not implemented)',
+        );
 
         // do not send any event until Core is fully loaded
         // DeviceList emits TRANSPORT and DEVICE events if pendingTransportEvent is set

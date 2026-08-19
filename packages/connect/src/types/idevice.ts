@@ -86,6 +86,12 @@ export interface DeviceEvents {
     };
     'device-thp_credentials_changed': DeviceThpCredentialsChangedPayload;
     'device-thp_pairing_status_changed': DeviceThpPairingStatus;
+    // WARD pull: the device asked the host for the leaf at a keyed path mid-call. Answered from
+    // the registered `wardProvider`, so unlike its neighbours no UI is involved.
+    ward_entry: {
+        request: PROTO.WardEntryRequest;
+        callback: (response: PromptResult<PROTO.WardEntryAck>) => void;
+    };
 }
 
 /**
@@ -174,7 +180,7 @@ export interface IDevice {
     // ─── Event methods ──────────────────────────────────────────────────────────
     emit: TypedEmitter<DeviceEvents>['emit'];
     emitDeviceChanged(): void;
-    prompt<T extends 'pin' | 'passphrase' | 'word' | 'thp_pairing'>(
+    prompt<T extends 'pin' | 'passphrase' | 'word' | 'thp_pairing' | 'ward_entry'>(
         type: T,
         args: Omit<DeviceEvents[T], 'callback'>,
     ): Promise<Parameters<DeviceEvents[T]['callback']>[0]>;

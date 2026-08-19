@@ -128,6 +128,11 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.enabledNetworks = input.enabledNetworks;
     }
 
+    // Runtime object supplied by the host composition root; passthrough (not validated).
+    if (typeof input.wardProvider === 'object' && input.wardProvider !== null) {
+        settings.wardProvider = input.wardProvider;
+    }
+
     settings.thp = parseThpSettings(input);
 
     return settings;

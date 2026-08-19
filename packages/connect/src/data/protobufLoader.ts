@@ -21,6 +21,7 @@ import * as telemetryProto from '@trezor/protobuf/src/definitions/messages-telem
 import * as tezosProto from '@trezor/protobuf/src/definitions/messages-tezos_pb';
 import * as thpProto from '@trezor/protobuf/src/definitions/messages-thp_pb';
 import * as tronProto from '@trezor/protobuf/src/definitions/messages-tron_pb';
+import * as wardProto from '@trezor/protobuf/src/definitions/messages-ward_pb';
 import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
 import * as optionsProto from '@trezor/protobuf/src/definitions/options_pb';
 
@@ -48,6 +49,7 @@ export const loadProtobufModules = () => {
         tezosProto,
         thpProto,
         tronProto,
+        wardProto,
         messagesProto,
         optionsProto,
     ];

@@ -269,6 +269,24 @@ export class DeviceCurrentSession implements TypedCallProvider {
                     [name, data] = ['PassphraseAck', payload];
                     break;
                 }
+                case 'WardEntryRequest': {
+                    // WARD's PULL model: the device interrupts the call to ask the host for the
+                    // leaf at a keyed path, and resumes once it has the ack. Answered by the
+                    // `wardProvider` Core registered at init -- no UI, unlike its neighbours here.
+                    const promptRes = await Promise.race([
+                        this.device.prompt(DEVICE.WARD_ENTRY, { request: res.message }),
+                        abortPromise.then(nestedError),
+                    ]);
+
+                    if (!promptRes.success) {
+                        const cancelRes = await this.call('Cancel', {});
+
+                        return cancelRes.success ? promptRes : cancelRes;
+                    }
+
+                    [name, data] = ['WardEntryAck', promptRes.payload];
+                    break;
+                }
                 case 'WordRequest': {
                     const promptRes = await Promise.race([
                         this.device.prompt(DEVICE.WORD, { type: res.message.type }),
