@@ -42,6 +42,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
         async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMockNew }) => {
             tradingMockNew.setTradeFlow('swap');
             const ethBackend = await tradingMockNew.startBackend('eth');
+            await tradingMockNew.captureTxSimulation();
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
@@ -123,11 +124,24 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             await expect(tradingPage.confirmation.sendAccount).toHaveText(`from ${accountLabel}`);
             await expect(tradingPage.confirmation.receiveAccount).toHaveText(`to ${accountLabel}`);
             await expect(tradingPage.confirmation.sendCryptoAmount).toHaveText(formattedSendAmount);
-            // REWORK: The receiveCryptoAmount amount is now simulated and differs from trade offer
-            await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
-                // positive amount, optional thousands separators, up to 6 decimals, then the symbol
-                /^(?=.*[1-9])\d{1,3}(,\d{3})*(\.\d{1,6})? USDC$/,
+
+            // The subtitle appears only once the simulation settles, gating the amount assertion
+            // below on the simulated value instead of the skeleton.
+            await expect(tradingPage.confirmation.dexSimulationSubtitle).toHaveTranslation(
+                'TR_SIMULATION_POWERED_BY',
+                { values: { provider: 'Blockaid' } },
             );
+            // Every re-quote refetches the simulation with a freshly credited amount, so the
+            // rendered value is compared against the last captured scan on each attempt.
+            await expect(async () => {
+                await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
+                    `${localizeNumber(tradingMockNew.simulatedReceiveAmount)} USDC`,
+                    { timeout: 2_000 },
+                );
+            }).toPass({ timeout: 15_000 });
+            // The simulation credits close to what the trade promised, so the swap has no issue to
+            // resolve. Were the banner to show up, it would also replace the confirm button below.
+            await expect(tradingPage.confirmation.issueBanner).toBeHidden();
         });
 
         await test.step('Open Confirm & send modal', async () => {

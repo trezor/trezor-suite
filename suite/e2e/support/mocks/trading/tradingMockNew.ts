@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test';
-import type { ExchangeTrade } from 'invity-api';
+import type { CryptoId, ExchangeTrade } from 'invity-api';
 
+import { getSimulatedReceiveAmount } from '@suite-common/trading';
 import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { TradingChainBackend, createTradingChainBackend } from './tradingChainBackend';
@@ -12,8 +13,12 @@ export type CapturedLiveTrade = ExchangeTrade & {
     sendAddress: string;
     exchange: string;
     sendStringAmount: string;
+    receive: CryptoId;
     receiveStringAmount: string;
 };
+
+type TxSimulationResult = NonNullable<Parameters<typeof getSimulatedReceiveAmount>[0]>;
+type TxSimulationScan = Omit<TxSimulationResult['payload'], 'needsDisclaimer'>;
 
 type TradeFlow = 'buy' | 'sell' | 'swap';
 type TradeEndpoints = {
@@ -30,6 +35,8 @@ const TRADE_ENDPOINTS: Record<TradeFlow, TradeEndpoints> = {
 const WATCH_POLL_PERIOD = '00:30';
 const WATCH_POLL_TIMEOUT = 35_000;
 const ADVANCE_ATTEMPTS = 5;
+
+const TX_SIMULATION_ENDPOINT = /\/evm\/json-rpc\/scan/;
 
 const MOCK_PROVIDER_STATUS_ORIGIN = 'https://mocked.partner.site/orders';
 const mockProviderStatusPageHtml = (orderId: string) =>
@@ -54,6 +61,7 @@ export class TradingMockNew {
     private flow?: TradeFlow;
     private backend?: TradingChainBackend;
     private capturedTrade: CapturedLiveTrade | null = null;
+    private capturedTxSimulation: TxSimulationResult | null = null;
 
     constructor(private page: Page) {
         assertPassphraseEnv();
@@ -144,11 +152,12 @@ export class TradingMockNew {
         if (
             !trade.exchange ||
             !trade.sendStringAmount ||
+            !trade.receive ||
             !trade.receiveStringAmount ||
             !hasDepositAddress
         ) {
             throw new Error(
-                'Live trade response is missing exchange, sendStringAmount, receiveStringAmount or sendAddress',
+                'Live trade response is missing exchange, sendStringAmount, receive, receiveStringAmount or sendAddress',
             );
         }
 
@@ -161,6 +170,38 @@ export class TradingMockNew {
         }
 
         return this.capturedTrade;
+    }
+
+    // Amount the last captured simulation credits, derived the same way the confirm step derives
+    // the amount it renders. A re-quote refetches the scan, so read this at assertion time.
+    get simulatedReceiveAmount(): string {
+        const amount = getSimulatedReceiveAmount(
+            this.capturedTxSimulation ?? undefined,
+            this.liveTrade.receive,
+        );
+
+        if (!amount) {
+            throw new Error('No captured simulation credits the receive asset of the trade');
+        }
+
+        return amount;
+    }
+
+    // DEX only; the confirm step renders the amount the Blockaid simulation credits instead of the
+    // amount the trade promised. The scan runs untouched, only its result is kept for assertions.
+    @step()
+    async captureTxSimulation() {
+        await this.page.route(TX_SIMULATION_ENDPOINT, async route => {
+            const response = await route.fetch();
+            const scan = (await response.json()) as TxSimulationScan;
+
+            this.capturedTxSimulation = {
+                method: 'ethereumSignTransaction',
+                payload: { ...scan, needsDisclaimer: false },
+            };
+
+            await route.fulfill({ response });
+        });
     }
 
     @step()
