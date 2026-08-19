@@ -1,9 +1,13 @@
 /**
  * WARD command registry for @trezor/connect-cli.
  *
- * OWNS: the *declaration* of the WARD commands the CLI offers (`ward_add`,
- * `ward_update`, `ward_delete`, `ward_display`) — their names, help text, the
- * `--params` keys each one needs, and whether they accept `--queue`.
+ * OWNS: the *declaration* of the WARD commands the CLI offers — their names, help
+ * text, the input keys each one needs, and whether they accept `--queue`.
+ *
+ * `requiredParams` / `optionalParams` name keys of the INPUT OBJECT, which `index.ts`
+ * builds from `--params` JSON overlaid with the recognised WARD flags. So `scope` comes
+ * from JSON while `appid` / `ident` / `entry` come from flags, and this file does not
+ * have to know which spelling a caller used.
  *
  * MUST NOT: talk to a device, to @trezor/connect or to the WARD Manager. Every
  * `run` here is an unwired stub on purpose; wiring the calls is a separate step,
@@ -15,6 +19,8 @@ export const WARD_COMMAND_NAMES = [
     'ward_update',
     'ward_delete',
     'ward_display',
+    'ward_backup',
+    'ward_restore',
 ] as const;
 
 export type WardCommandName = (typeof WARD_COMMAND_NAMES)[number];
@@ -52,24 +58,24 @@ export const wardCommands: Record<WardCommandName, WardCommand> = {
     ward_add: {
         name: 'ward_add',
         description: 'Insert a new WARD entry',
-        requiredParams: ['scope', 'value'],
-        optionalParams: ['app_id', 'ward_id'],
+        requiredParams: ['ident', 'value'],
+        optionalParams: ['appid', 'ward_id'],
         supportsQueue: true,
         run: notWired('ward_add'),
     },
     ward_update: {
         name: 'ward_update',
         description: 'Update the value of an existing WARD entry',
-        requiredParams: ['scope', 'value'],
-        optionalParams: ['app_id', 'ward_id'],
+        requiredParams: ['ident', 'value'],
+        optionalParams: ['appid', 'ward_id'],
         supportsQueue: true,
         run: notWired('ward_update'),
     },
     ward_delete: {
         name: 'ward_delete',
         description: 'Delete an existing WARD entry',
-        requiredParams: ['scope'],
-        optionalParams: ['app_id', 'ward_id'],
+        requiredParams: ['ident'],
+        optionalParams: ['appid', 'ward_id'],
         supportsQueue: true,
         run: notWired('ward_delete'),
     },
@@ -77,9 +83,25 @@ export const wardCommands: Record<WardCommandName, WardCommand> = {
         name: 'ward_display',
         description: 'Look up a WARD entry and display it on the device',
         requiredParams: [],
-        optionalParams: ['scope', 'app_id', 'ward_id'],
+        optionalParams: ['ident', 'appid', 'ward_id'],
         supportsQueue: true,
         run: notWired('ward_display'),
+    },
+    ward_backup: {
+        name: 'ward_backup',
+        description: "Export a queued change from the device's own store, as 0x...",
+        requiredParams: ['appid', 'ident'],
+        optionalParams: [],
+        supportsQueue: true,
+        run: notWired('ward_backup'),
+    },
+    ward_restore: {
+        name: 'ward_restore',
+        description: 'Put a backed-up change (0x...) back into the queue',
+        requiredParams: ['entry'],
+        optionalParams: [],
+        supportsQueue: true,
+        run: notWired('ward_restore'),
     },
 };
 
@@ -89,6 +111,6 @@ export const isWardCommand = (name?: unknown): name is WardCommandName =>
 export const getWardCommand = (name?: unknown): WardCommand | undefined =>
     isWardCommand(name) ? wardCommands[name] : undefined;
 
-/** Names of `requiredParams` missing from `--params`, for an early, readable error. */
+/** Names of `requiredParams` missing from the assembled inputs, for an early, readable error. */
 export const missingWardParams = (command: WardCommand, params: Record<string, any>): string[] =>
     command.requiredParams.filter(key => params[key] === undefined);

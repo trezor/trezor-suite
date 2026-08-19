@@ -111,15 +111,35 @@ const runTestCase = async (device: Device) => {
     // second entry here to be runnable.
     const wardCommand = getWardCommand(method);
     if (wardCommand) {
-        const missing = missingWardParams(wardCommand, params);
+        // One place decides what a WARD command's inputs are: `--params` JSON overlaid with the
+        // dedicated flags. That is why the registry can name `appid` and `scope` in the same list
+        // without knowing which spelling the caller used -- and why a flag wins, being the more
+        // specific thing to type.
+        const wardParams = {
+            ...params,
+            ...(args.appid !== undefined ? { appid: args.appid } : {}),
+            ...(args.ident !== undefined ? { ident: args.ident } : {}),
+            ...(args.value !== undefined ? { value: args.value } : {}),
+            ...(args.entry !== undefined ? { entry: args.entry } : {}),
+        };
+        // `scope` was the JSON name for what the flags call `ident`. Aliasing it here means one
+        // vocabulary reaches the registry and the runners, so neither has to know both spellings.
+        if (wardParams.ident === undefined && wardParams.scope !== undefined) {
+            wardParams.ident = wardParams.scope;
+        }
+        if (wardParams.appid === undefined && wardParams.app_id !== undefined) {
+            wardParams.appid = wardParams.app_id;
+        }
+
+        const missing = missingWardParams(wardCommand, wardParams);
         if (missing.length) {
-            console.error(`${wardCommand.name} needs --params keys: ${missing.join(', ')}`);
+            console.error(`${wardCommand.name} needs: ${missing.join(', ')}`);
             process.exit(1);
         }
 
         const wardResult = await runWardCommand(
             wardCommand.name,
-            { queue: !!args.queue, params },
+            { queue: !!args.queue, params: wardParams },
             device,
         );
 

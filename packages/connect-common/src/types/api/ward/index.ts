@@ -1,6 +1,7 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
+import type { wardQueueGetEntry } from './wardQueueGetEntry';
 import type { wardQueueSetEntry } from './wardQueueSetEntry';
 import type { wardSetEntry } from './wardSetEntry';
 
@@ -10,5 +11,6 @@ import type { wardSetEntry } from './wardSetEntry';
 export const TrezorConnectWard = Type.Object({
     wardSetEntry: Type.Unsafe<typeof wardSetEntry>(),
     wardQueueSetEntry: Type.Unsafe<typeof wardQueueSetEntry>(),
+    wardQueueGetEntry: Type.Unsafe<typeof wardQueueGetEntry>(),
 });
 export type TrezorConnectWard = Static<typeof TrezorConnectWard>;
