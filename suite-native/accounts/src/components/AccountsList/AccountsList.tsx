@@ -63,6 +63,7 @@ export const AccountsList = ({
         <Box flex={1}>
             {isScrollDividerEnabled && scrollDivider}
             <FlashList
+                testID="@accountList"
                 style={applyStyle(listStyle)}
                 data={accountListRows}
                 keyExtractor={item => item.accountKey}
