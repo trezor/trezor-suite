@@ -3433,6 +3433,16 @@ export const messages = defineMessages({
         defaultMessage: 'Generated after signing',
         id: 'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
     },
+    TR_SIGNED_MESSAGE: {
+        defaultMessage: 'Signed message',
+        description:
+            'Label of the field holding the whole signed message block (message, address and signature) in Sign and Verify form',
+        id: 'TR_SIGNED_MESSAGE',
+    },
+    TR_SIGNED_MESSAGE_AFTER_SIGNING_PLACEHOLDER: {
+        defaultMessage: 'Generated after signing',
+        id: 'TR_SIGNED_MESSAGE_AFTER_SIGNING_PLACEHOLDER',
+    },
     TR_SKIP: {
         defaultMessage: 'Skip',
         description: 'Button. Skip one step',
@@ -8776,6 +8786,16 @@ export const messages = defineMessages({
     TR_COPY_SIGNED_MESSAGE: {
         id: 'TR_COPY_SIGNED_MESSAGE',
         defaultMessage: 'Copy signed message',
+    },
+    TR_COPY_SIGNATURE: {
+        id: 'TR_COPY_SIGNATURE',
+        defaultMessage: 'Copy signature',
+    },
+    TR_NOTHING_TO_COPY: {
+        id: 'TR_NOTHING_TO_COPY',
+        defaultMessage: 'This field is empty, so there is nothing to copy yet',
+        description:
+            'Tooltip of a disabled copy button in Sign and Verify form, explaining why it cannot be used',
     },
     TR_NAV_STAKING: {
         defaultMessage: 'Staking',
