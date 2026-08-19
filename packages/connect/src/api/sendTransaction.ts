@@ -9,9 +9,11 @@ import {
     type PermissionRequest,
     type RefTransaction,
     type SignedTransaction,
-    UI_REQUEST,
+    UI_EVENTS,
+    UI_REQUESTS,
     UI_RESPONSE,
-    createUiMessage,
+    createUiEventMessage,
+    createUiRequestMessage,
 } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
@@ -168,14 +170,14 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
 
             if (minFeeTx.type === 'final') {
                 context.sendCoreMessage(
-                    createUiMessage(UI_REQUEST.SELECT_FEE, {
+                    createUiRequestMessage(UI_REQUESTS.REQUEST_FEE, {
                         feeLevels: [{ label: 'custom', blocks: -1, feePerUnit }],
                         coinInfo: this.params.coinInfo,
                     }),
                 );
             } else {
                 // show error view
-                context.sendCoreMessage(createUiMessage(UI_REQUEST.INSUFFICIENT_FUNDS));
+                context.sendCoreMessage(createUiEventMessage(UI_EVENTS.INSUFFICIENT_FUNDS));
                 // wait few seconds...
                 await resolveAfter(2000);
 
@@ -186,7 +188,7 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
             // set select account view
             // this view will be updated from discovery events
             context.sendCoreMessage(
-                createUiMessage(UI_REQUEST.SELECT_FEE, {
+                createUiRequestMessage(UI_REQUESTS.REQUEST_FEE, {
                     feeLevels: composed.levels,
                     coinInfo: this.params.coinInfo,
                 }),
@@ -264,7 +266,7 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
 
         context.sendCoreMessage(
-            createUiMessage(UI_REQUEST.SELECT_ACCOUNT, {
+            createUiRequestMessage(UI_REQUESTS.REQUEST_ACCOUNT, {
                 type: 'complete',
                 accountTypes: unique(accounts.map(a => a.type)),
                 coinInfo,
@@ -292,8 +294,8 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         if (this.discovery?.completed) {
             const { discovery } = this;
             context.sendCoreMessage(
-                createUiMessage(
-                    UI_REQUEST.SELECT_ACCOUNT,
+                createUiRequestMessage(
+                    UI_REQUESTS.REQUEST_ACCOUNT,
                     {
                         type: 'end',
                         coinInfo,
@@ -324,8 +326,8 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
 
         discovery.on('progress', accounts => {
             context.sendCoreMessage(
-                createUiMessage(
-                    UI_REQUEST.SELECT_ACCOUNT,
+                createUiRequestMessage(
+                    UI_REQUESTS.REQUEST_ACCOUNT,
                     {
                         type: 'progress',
                         coinInfo,
@@ -337,8 +339,8 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         });
         discovery.on('complete', () => {
             context.sendCoreMessage(
-                createUiMessage(
-                    UI_REQUEST.SELECT_ACCOUNT,
+                createUiRequestMessage(
+                    UI_REQUESTS.REQUEST_ACCOUNT,
                     {
                         type: 'end',
                         coinInfo,
@@ -357,8 +359,8 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         // set select account view
         // this view will be updated from discovery events
         context.sendCoreMessage(
-            createUiMessage(
-                UI_REQUEST.SELECT_ACCOUNT,
+            createUiRequestMessage(
+                UI_REQUESTS.REQUEST_ACCOUNT,
                 {
                     type: 'start',
                     accountTypes: discovery.types.map(t => t.type),

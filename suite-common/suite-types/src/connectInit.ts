@@ -1,9 +1,17 @@
-import type { ConnectSettings, DEVICE, Device, Manifest, UI_REQUEST } from '@trezor/connect';
+import type {
+    ConnectSettings,
+    DEVICE,
+    Device,
+    Manifest,
+    UI_EVENTS,
+    UI_REQUESTS,
+} from '@trezor/connect';
 import type { POPUP } from '@trezor/connect-common';
 
 import type { TrezorDevice } from './device';
 
-type UiRequestType = (typeof UI_REQUEST)[keyof typeof UI_REQUEST];
+type UiRequestType =
+    (typeof UI_EVENTS)[keyof typeof UI_EVENTS] | (typeof UI_REQUESTS)[keyof typeof UI_REQUESTS];
 type PopupEventType = (typeof POPUP)[keyof typeof POPUP];
 
 export type ConnectInitDeviceEventHooks = Partial<

@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/WipeDevice.js
 
-import { DEVICE, type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
+import { DEVICE, type PermissionRequest, UI_EVENTS } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -10,7 +10,11 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
     constructor(message: MethodMessage<'wipeDevice'>) {
         super(message, undefined);
 
-        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS, UI_REQUEST.BOOTLOADER];
+        this.allowDeviceMode = [
+            UI_EVENTS.DEVICE_NOT_INITIALIZED,
+            UI_EVENTS.DEVICE_SEEDLESS,
+            UI_EVENTS.DEVICE_IN_BOOTLOADER,
+        ];
         this.useDeviceState = false;
         this.skipFinalReload = false;
     }

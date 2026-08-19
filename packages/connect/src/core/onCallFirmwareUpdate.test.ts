@@ -1,3 +1,4 @@
+import { UI_EVENTS } from '@trezor/connect-common';
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { noopCreateLogger } from '@trezor/connect-common/src/utils/debug';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
@@ -203,7 +204,7 @@ const setupTest = () => {
     };
 
     const postMessage = ({ type, payload }: any) => {
-        if (type === 'ui-firmware-progress') {
+        if (type === UI_EVENTS.FIRMWARE_PROGRESS) {
             // T1B1, without automatic reboot to bootloader
             if (payload.operation === 'downloading' && payload.progress === 100) {
                 api.emitInterfaceChange([]);
@@ -212,7 +213,7 @@ const setupTest = () => {
                 api.emitInterfaceChange([]);
             }
         }
-        if (type === 'ui-firmware_reconnect') {
+        if (type === UI_EVENTS.FIRMWARE_RECONNECT) {
             if (payload.target === 'bootloader') {
                 api.emitInterfaceChange([{ path: '1' }]);
             }

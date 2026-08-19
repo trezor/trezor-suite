@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
 import {
     isFlowEndingButtonRequest,
@@ -41,11 +41,11 @@ export const deviceAuthorizationSlice = createSlice({
     reducers: {},
     extraReducers: builder => {
         builder
-            .addCase(UI_REQUEST.REQUEST_PIN, (state, action) => {
+            .addCase(UI_REQUESTS.REQUEST_PIN, (state, action) => {
                 state.deviceAuthorizationStep = DeviceAuthorizationStep.PinRequested;
                 state.pinRequestId = (action as typeof action & { requestId?: string }).requestId;
             })
-            .addCase(UI_REQUEST.REQUEST_PASSPHRASE, (state, action) => {
+            .addCase(UI_REQUESTS.REQUEST_PASSPHRASE, (state, action) => {
                 state.passphraseRequestId = (
                     action as typeof action & { requestId?: string }
                 ).requestId;
@@ -57,12 +57,12 @@ export const deviceAuthorizationSlice = createSlice({
                     state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
                 }
             })
-            .addCase(UI_REQUEST.CLOSE_UI_WINDOW, state => {
+            .addCase(UI_EVENTS.CLOSE_UI_WINDOW, state => {
                 state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
                 state.passphraseRequestId = undefined;
                 state.pinRequestId = undefined;
             })
-            .addCase(UI_REQUEST.REQUEST_BUTTON, (state, action) => {
+            .addCase(UI_EVENTS.BUTTON_REQUEST, (state, action) => {
                 if (isPinButtonRequestCode(action)) {
                     state.deviceAuthorizationStep = DeviceAuthorizationStep.PinRequested;
                 } else if (isSuiteSyncButtonRequest(action)) {

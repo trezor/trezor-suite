@@ -1,13 +1,13 @@
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type ConnectInitHooksDeps } from '@suite-common/suite-types';
-import { UI_REQUEST } from '@trezor/connect';
-import type { PopupEventMessage, UiEventMessage } from '@trezor/connect-common';
+import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
+import type { PopupEventMessage, UiEventMessage, UiRequestMessage } from '@trezor/connect-common';
 import { type Without } from '@trezor/type-utils';
 
 const MODULE = '@common/wallet-core/uiEvent';
 
-export type UiEventAction = Without<UiEventMessage | PopupEventMessage, 'event'>;
+export type UiEventAction = Without<UiEventMessage | PopupEventMessage | UiRequestMessage, 'event'>;
 
 export type DefaultTrezorUIEventHandlerThunkState = DeviceRootState;
 export type DefaultTrezorUIEventHandlerThunkDeps = WithServices<ConnectInitHooksDeps>;
@@ -22,7 +22,7 @@ export const defaultTrezorUIEventHandlerThunk = createThunk<
 >(`${MODULE}/defaultTrezorUIEventHandler`, (action, { dispatch, getState, extra }) => {
     const { connectInitHooks } = extra.services;
 
-    if (action.type === UI_REQUEST.FIRMWARE_DOWNLOADED) {
+    if (action.type === UI_EVENTS.FIRMWARE_DOWNLOADED) {
         // We are in web therefore we ignore `FIRMWARE_DOWNLOADED` action.
         return;
     }
@@ -30,8 +30,8 @@ export const defaultTrezorUIEventHandlerThunk = createThunk<
     dispatch(action);
 
     switch (action.type) {
-        case UI_REQUEST.REQUEST_PIN:
-        case UI_REQUEST.INVALID_PIN:
+        case UI_REQUESTS.REQUEST_PIN:
+        case UI_EVENTS.INVALID_PIN:
             dispatch(
                 deviceActions.addButtonRequest({
                     // todo: note that this is not 'threadsafe', currently selected device is not necessarily the device
@@ -43,7 +43,7 @@ export const defaultTrezorUIEventHandlerThunk = createThunk<
                 }),
             );
             break;
-        case UI_REQUEST.REQUEST_BUTTON: {
+        case UI_EVENTS.BUTTON_REQUEST: {
             const { device: _, ...request } = action.payload;
             dispatch(
                 deviceActions.addButtonRequest({

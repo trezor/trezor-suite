@@ -1,6 +1,6 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 import type { UiRequestDeviceAction } from '@trezor/connect';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
@@ -10,7 +10,7 @@ export const pinButtonRequestCodes = [
 ] as const;
 
 export const isPinButtonRequestCode = (action: UnknownAction): action is UiRequestDeviceAction =>
-    action.type === UI_REQUEST.REQUEST_BUTTON &&
+    action.type === UI_EVENTS.BUTTON_REQUEST &&
     typeof action.payload === 'object' &&
     isNotNullOrUndefined(action.payload) &&
     'code' in action.payload &&
@@ -19,8 +19,8 @@ export const isPinButtonRequestCode = (action: UnknownAction): action is UiReque
 export const isPassphraseButtonRequestCode = (
     action: UnknownAction,
 ): action is UiRequestDeviceAction =>
-    action.type === UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE ||
-    (action.type === UI_REQUEST.REQUEST_BUTTON &&
+    action.type === UI_EVENTS.PASSPHRASE_ON_DEVICE ||
+    (action.type === UI_EVENTS.BUTTON_REQUEST &&
         typeof action.payload === 'object' &&
         isNotNullOrUndefined(action.payload) &&
         'code' in action.payload &&
@@ -29,7 +29,7 @@ export const isPassphraseButtonRequestCode = (
         action.payload.name === 'passphrase_host1');
 
 export const isPassphraseRequest = (action: UnknownAction): action is UiRequestDeviceAction =>
-    action.type === UI_REQUEST.REQUEST_PASSPHRASE;
+    action.type === UI_REQUESTS.REQUEST_PASSPHRASE;
 
 export const flowEndingButtonRequests = [
     'ButtonRequest_ConfirmOutput',
@@ -39,7 +39,7 @@ export const flowEndingButtonRequests = [
 ] as const;
 
 export const isFlowEndingButtonRequest = (action: UnknownAction) =>
-    action.type === UI_REQUEST.REQUEST_BUTTON &&
+    action.type === UI_EVENTS.BUTTON_REQUEST &&
     typeof action.payload === 'object' &&
     isNotNullOrUndefined(action.payload) &&
     'code' in action.payload &&
@@ -48,7 +48,7 @@ export const isFlowEndingButtonRequest = (action: UnknownAction) =>
     );
 
 export const isSuiteSyncButtonRequest = (action: UnknownAction) =>
-    action.type === UI_REQUEST.REQUEST_BUTTON &&
+    action.type === UI_EVENTS.BUTTON_REQUEST &&
     typeof action.payload === 'object' &&
     isNotNullOrUndefined(action.payload) &&
     'name' in action.payload &&

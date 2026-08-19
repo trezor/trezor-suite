@@ -5,12 +5,14 @@ import { type TrezorDevice, type UserContextPayload } from '@suite-common/suite-
 import { THP_BUTTON_REQUESTS_NAMES } from '@suite-common/thp';
 import {
     type Device,
-    UI_REQUEST,
+    UI_EVENTS,
+    UI_REQUESTS,
     type UiRequestButtonData,
     type UiRequestConfirmation,
     type UiRequestSelectAccount,
     type UiRequestSelectFee,
     isUiEventOfType,
+    isUiRequestOfType,
 } from '@trezor/connect';
 import { isArrayMember } from '@trezor/utils';
 
@@ -41,13 +43,13 @@ export type ModalState =
       }
     | {
           context: typeof MODAL_CONTEXT_DEVICE_CONFIRMATION;
-          windowType: typeof UI_REQUEST.SELECT_ACCOUNT;
+          windowType: typeof UI_REQUESTS.REQUEST_ACCOUNT;
           data?: UiRequestSelectAccount['payload'];
           requestId?: string;
       }
     | {
           context: typeof MODAL_CONTEXT_DEVICE_CONFIRMATION;
-          windowType: typeof UI_REQUEST.SELECT_FEE;
+          windowType: typeof UI_REQUESTS.REQUEST_FEE;
           data?: UiRequestSelectFee['payload'];
           requestId?: string;
       }
@@ -87,12 +89,11 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
 
     // assign device to modal context
     if (
+        isUiRequestOfType(action, UI_REQUESTS.REQUEST_PIN, UI_REQUESTS.REQUEST_PASSPHRASE) ||
         isUiEventOfType(
             action,
-            UI_REQUEST.REQUEST_PIN,
-            UI_REQUEST.INVALID_PIN,
-            UI_REQUEST.REQUEST_PASSPHRASE,
-            UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE,
+            UI_EVENTS.INVALID_PIN_ATTEMPTS_DEPLETED,
+            UI_EVENTS.PASSPHRASE_ON_DEVICE,
         )
     ) {
         return {
@@ -104,7 +105,7 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
         };
     }
 
-    if (isUiEventOfType(action, UI_REQUEST.REQUEST_BUTTON)) {
+    if (isUiEventOfType(action, UI_EVENTS.BUTTON_REQUEST)) {
         // THP ButtonRequests handled separately in the `thpReducer`
         if (
             action.payload.name !== undefined &&
@@ -122,12 +123,12 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
         };
     }
 
-    if (isUiEventOfType(action, UI_REQUEST.FIRMWARE_PROGRESS)) {
+    if (isUiEventOfType(action, UI_EVENTS.FIRMWARE_PROGRESS)) {
         // firmware update first sends UI_REQUEST.REQUEST_BUTTON. Clear it after first progress is received
         return initialState;
     }
 
-    if (isUiEventOfType(action, UI_REQUEST.REQUEST_CONFIRMATION)) {
+    if (isUiRequestOfType(action, UI_REQUESTS.REQUEST_CONFIRMATION)) {
         return {
             context: MODAL_CONTEXT_DEVICE_CONFIRMATION,
             windowType: action.payload.view,
@@ -136,7 +137,7 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
         };
     }
 
-    if (isUiEventOfType(action, UI_REQUEST.REQUEST_WORD)) {
+    if (isUiRequestOfType(action, UI_REQUESTS.REQUEST_WORD)) {
         return {
             context: MODAL_CONTEXT_DEVICE,
             device: action.payload.device,
@@ -146,19 +147,19 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
         };
     }
 
-    if (isUiEventOfType(action, UI_REQUEST.SELECT_ACCOUNT)) {
+    if (isUiRequestOfType(action, UI_REQUESTS.REQUEST_ACCOUNT)) {
         return {
             context: MODAL_CONTEXT_DEVICE_CONFIRMATION,
-            windowType: UI_REQUEST.SELECT_ACCOUNT,
+            windowType: UI_REQUESTS.REQUEST_ACCOUNT,
             data: action.payload,
             preserve: state.preserve,
         };
     }
 
-    if (isUiEventOfType(action, UI_REQUEST.SELECT_FEE)) {
+    if (isUiRequestOfType(action, UI_REQUESTS.REQUEST_FEE)) {
         return {
             context: MODAL_CONTEXT_DEVICE_CONFIRMATION,
-            windowType: UI_REQUEST.SELECT_FEE,
+            windowType: UI_REQUESTS.REQUEST_FEE,
             data: action.payload,
             preserve: state.preserve,
         };
@@ -176,7 +177,7 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
         return initialState;
     }
 
-    if (isUiEventOfType(action, UI_REQUEST.CLOSE_UI_WINDOW)) {
+    if (isUiEventOfType(action, UI_EVENTS.CLOSE_UI_WINDOW)) {
         if (
             state.context === MODAL_CONTEXT_DEVICE ||
             state.context === MODAL_CONTEXT_DEVICE_CONFIRMATION

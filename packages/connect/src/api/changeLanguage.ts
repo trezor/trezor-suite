@@ -3,7 +3,7 @@
 import {
     ChangeLanguage as ChangeLanguageSchema,
     type PermissionRequest,
-    UI_REQUEST,
+    UI_EVENTS,
 } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
@@ -18,7 +18,7 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
         Assert(ChangeLanguageSchema, payload);
 
         super(message, payload);
-        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
+        this.allowDeviceMode = [UI_EVENTS.DEVICE_NOT_INITIALIZED, UI_EVENTS.DEVICE_SEEDLESS];
         this.useEmptyPassphrase = true;
         this.skipFinalReload = false;
         this.useDeviceState = false;

@@ -6,7 +6,7 @@ import {
     type PROTO,
     type PermissionRequest,
 } from '@trezor/connect-common';
-import { UI_REQUEST, createUiMessage } from '@trezor/connect-common';
+import { UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { GetAddress as GetAddressSchema } from '@trezor/connect-common/src/types/api/account/getAddress';
 import { Assert } from '@trezor/schema-utils';
@@ -174,7 +174,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             if (this.hasBundle) {
                 // send progress
                 sendCoreMessage(
-                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
+                    createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response,

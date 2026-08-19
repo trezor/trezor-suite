@@ -5,7 +5,7 @@ import { messages } from '@suite/intl';
 import { type MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
-import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
+import TrezorConnect, { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -36,13 +36,13 @@ export const DeviceContextModal = ({
 
     switch (windowType) {
         // T1B1 firmware
-        case UI_REQUEST.REQUEST_PIN:
-        case UI_REQUEST.INVALID_PIN:
+        case UI_REQUESTS.REQUEST_PIN:
+        case UI_EVENTS.INVALID_PIN:
             return <PinModal device={device} />;
-        case UI_REQUEST.REQUEST_PASSPHRASE:
+        case UI_REQUESTS.REQUEST_PASSPHRASE:
             return <ConfirmPassphraseBeforeAction />;
         // T2T1 firmware
-        case UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE:
+        case UI_EVENTS.PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDeviceModal device={device} />;
         case 'ButtonRequest_ConfirmOutput':

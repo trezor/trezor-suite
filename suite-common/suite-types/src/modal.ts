@@ -3,7 +3,7 @@ import { type ActionCreatorWithPayload, type ActionCreatorWithoutPayload } from 
 import { type RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AddressType, type EvmSelectedFee } from '@suite-common/wallet-types';
-import { type UI_REQUEST } from '@trezor/connect';
+import { type UI_EVENTS } from '@trezor/connect';
 import { type Deferred } from '@trezor/utils';
 
 import { type TrezorDevice } from './device';
@@ -75,7 +75,7 @@ export type UserContextPayload =
           type: 'pin-mismatch';
       }
     | {
-          type: typeof UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED;
+          type: typeof UI_EVENTS.INVALID_PIN_ATTEMPTS_DEPLETED;
       }
     | {
           type: 'device-authenticity-check-opt-out';

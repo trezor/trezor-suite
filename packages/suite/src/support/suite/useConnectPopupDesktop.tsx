@@ -19,7 +19,8 @@ import TrezorConnect, {
     type CallMethodKeys,
     type CallMethodPayload,
     type PermissionRequest,
-    UI_REQUEST,
+    UI_EVENTS,
+    UI_REQUESTS,
 } from '@trezor/connect';
 import { isMacOs } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -179,11 +180,11 @@ export const useConnectPopupDesktop = () => {
 
         return (
             [
-                UI_REQUEST.REQUEST_PIN,
-                UI_REQUEST.INVALID_PIN,
-                UI_REQUEST.REQUEST_PASSPHRASE,
-                UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE,
-                UI_REQUEST.REQUEST_WORD,
+                UI_REQUESTS.REQUEST_PIN,
+                UI_EVENTS.INVALID_PIN,
+                UI_REQUESTS.REQUEST_PASSPHRASE,
+                UI_EVENTS.PASSPHRASE_ON_DEVICE,
+                UI_REQUESTS.REQUEST_WORD,
             ] as string[]
         ).includes(modal.windowType);
     });

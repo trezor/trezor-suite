@@ -3,8 +3,8 @@
 import {
     CipherKeyValue as CipherKeyValueSchema,
     type PermissionRequest,
-    UI_REQUEST,
-    createUiMessage,
+    UI_EVENTS,
+    createUiEventMessage,
 } from '@trezor/connect-common';
 import { Bundle } from '@trezor/connect-common/src/types/params';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
@@ -63,7 +63,7 @@ export default class CipherKeyValue extends AbstractMethod<
             if (this.hasBundle) {
                 // send progress
                 sendCoreMessage(
-                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
+                    createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response,

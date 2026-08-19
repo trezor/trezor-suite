@@ -21,7 +21,7 @@ import {
 } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { defaultTrezorUIEventHandlerThunk, observeSelectedDevice } from '@suite-common/wallet-core';
-import { UI_EVENT, UI_REQUEST } from '@trezor/connect';
+import { UI_EVENT, UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 import { noopCreateLogger } from '@trezor/connect-common';
 
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
@@ -93,11 +93,11 @@ describe('buttonRequest middleware', () => {
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
         // fake few ui events, just like when user is changing PIN
         emitTestEvent(UI_EVENT, {
-            type: UI_REQUEST.REQUEST_BUTTON,
+            type: UI_EVENTS.BUTTON_REQUEST,
             payload: { code: 'ButtonRequest_ProtectCall' },
         });
         emitTestEvent(UI_EVENT, {
-            type: UI_REQUEST.REQUEST_PIN,
+            type: UI_REQUESTS.REQUEST_PIN,
             payload: { type: 'PinMatrixRequestType_NewFirst', device },
         });
 
@@ -120,14 +120,14 @@ describe('buttonRequest middleware', () => {
             { type: connectInitThunk.fulfilled.type, payload: undefined },
             { type: lockDevice.type, payload: true },
             { type: defaultTrezorUIEventHandlerThunk.pending.type },
-            { type: UI_REQUEST.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } },
+            { type: UI_EVENTS.BUTTON_REQUEST, payload: { code: 'ButtonRequest_ProtectCall' } },
             {
                 type: deviceActions.addButtonRequest.type,
                 payload: { buttonRequest: { code: 'ButtonRequest_ProtectCall' }, device },
             },
             { type: defaultTrezorUIEventHandlerThunk.pending.type },
             {
-                type: UI_REQUEST.REQUEST_PIN,
+                type: UI_REQUESTS.REQUEST_PIN,
                 payload: { type: 'PinMatrixRequestType_NewFirst', device },
             },
             {

@@ -119,7 +119,7 @@ const goToSuite =
         const device = selectSelectedDevice(getState());
         const onboardingAnalytics = selectOnboardingAnalytics(getState());
         // Clear modals that might block navigation. They aren't relevant anyway, as there is no <ModalSwitcher /> in onboarding.
-        // After device interaction, Connect sends UI_REQUEST.CLOSE_UI_WINDOW to close any open modal. On Web this is
+        // After device interaction, Connect sends UI_EVENTS.CLOSE_UI_WINDOW to close any open modal. On Web this is
         // instant, so nothing blocks navigation, but on Desktop there is delay, so we must clear the modal manually to
         // ensure navigation to 'suite-index'. Particularly, setting PIN leaves ButtonRequest_Success hanging for a moment.
         dispatch(closeModal());

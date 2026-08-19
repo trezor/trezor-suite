@@ -18,7 +18,8 @@ import TrezorConnect, {
     DEVICE_EVENT,
     TRANSPORT_EVENT,
     UI_EVENT,
-    UI_REQUEST,
+    UI_EVENTS,
+    UI_REQUESTS,
 } from '@trezor/connect';
 
 import {
@@ -261,7 +262,7 @@ describe('TrezorConnect Actions', () => {
 
             expect(actions).toEqual([
                 expect.objectContaining({ type: defaultTrezorUIEventHandlerThunk.pending.type }),
-                expect.objectContaining({ type: UI_REQUEST.REQUEST_BUTTON }),
+                expect.objectContaining({ type: UI_EVENTS.BUTTON_REQUEST }),
                 expect.objectContaining({ type: '@suite/device/addButtonRequest' }),
                 expect.objectContaining({ type: defaultTrezorUIEventHandlerThunk.fulfilled.type }),
             ]);
@@ -269,7 +270,7 @@ describe('TrezorConnect Actions', () => {
         });
 
         emitTestEvent(UI_EVENT, {
-            type: UI_REQUEST.REQUEST_BUTTON,
+            type: UI_EVENTS.BUTTON_REQUEST,
             payload: { code: 'ButtonRequest_ProtectCall' },
             callId: 'unscoped-call-id',
         });
@@ -277,7 +278,7 @@ describe('TrezorConnect Actions', () => {
         registerScopedCallId(scopedCallId);
         try {
             emitTestEvent(UI_EVENT, {
-                type: UI_REQUEST.REQUEST_BUTTON,
+                type: UI_EVENTS.BUTTON_REQUEST,
                 payload: { code: 'ButtonRequest_ProtectCall' },
                 callId: scopedCallId,
             });
@@ -323,8 +324,8 @@ describe('TrezorConnect Actions', () => {
             connectInitHooks: {
                 deviceEvent: {},
                 uiEvent: {
-                    [UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED]: onInvalidPinDepleted,
-                    [UI_REQUEST.REQUEST_WORD]: onRequestWord,
+                    [UI_EVENTS.INVALID_PIN_ATTEMPTS_DEPLETED]: onInvalidPinDepleted,
+                    [UI_REQUESTS.REQUEST_WORD]: onRequestWord,
                 },
             },
         });
@@ -333,20 +334,20 @@ describe('TrezorConnect Actions', () => {
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
 
         emitTestEvent(UI_EVENT, {
-            type: UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED,
+            type: UI_EVENTS.INVALID_PIN_ATTEMPTS_DEPLETED,
             payload: {},
         });
 
         expect(onInvalidPinDepleted).toHaveBeenCalledTimes(1);
         expect(onRequestWord).not.toHaveBeenCalled();
 
-        emitTestEvent(UI_EVENT, { type: UI_REQUEST.REQUEST_WORD, payload: {} });
+        emitTestEvent(UI_EVENT, { type: UI_REQUESTS.REQUEST_WORD, payload: {} });
 
         expect(onInvalidPinDepleted).toHaveBeenCalledTimes(1);
         expect(onRequestWord).toHaveBeenCalledTimes(1);
 
         emitTestEvent(UI_EVENT, {
-            type: UI_REQUEST.REQUEST_BUTTON,
+            type: UI_EVENTS.BUTTON_REQUEST,
             payload: { code: 'ButtonRequest_ProtectCall' },
         });
 

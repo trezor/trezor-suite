@@ -6,7 +6,7 @@ import {
 } from '@suite-common/connect-popup';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_EVENTS } from '@trezor/connect';
 import { WarningIcon } from '@trezor/icons';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
@@ -140,19 +140,19 @@ export const ConnectErrorModal = () => {
             return <Translation id="TR_CONNECT_ERROR_GENERIC_DESCRIPTION" />;
         }
 
-        if (popupCall.error?.message === UI_REQUEST.BOOTLOADER)
+        if (popupCall.error?.message === UI_EVENTS.DEVICE_IN_BOOTLOADER)
             return <Translation id="TR_DEVICE_IN_BOOTLOADER" />;
-        if (popupCall.error?.message === UI_REQUEST.NOT_IN_BOOTLOADER)
+        if (popupCall.error?.message === UI_EVENTS.DEVICE_NOT_IN_BOOTLOADER)
             return <Translation id="TR_RECONNECT_IN_BOOTLOADER" />;
-        if (popupCall.error?.message === UI_REQUEST.SEEDLESS)
+        if (popupCall.error?.message === UI_EVENTS.DEVICE_SEEDLESS)
             return <Translation id="TR_YOUR_DEVICE_IS_SEEDLESS" />;
-        if (popupCall.error?.message === UI_REQUEST.INITIALIZE)
+        if (popupCall.error?.message === UI_EVENTS.DEVICE_NOT_INITIALIZED)
             return <Translation id="TR_DEVICE_NOT_INITIALIZED" />;
-        if (popupCall.error?.message === UI_REQUEST.FIRMWARE_NOT_INSTALLED)
+        if (popupCall.error?.message === UI_EVENTS.FIRMWARE_NOT_INSTALLED)
             return <Translation id="TR_NO_FIRMWARE" />;
-        if (popupCall.error?.message === UI_REQUEST.FIRMWARE_NOT_SUPPORTED)
+        if (popupCall.error?.message === UI_EVENTS.FIRMWARE_NOT_SUPPORTED)
             return <Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />;
-        if (popupCall.error?.message === UI_REQUEST.FIRMWARE_OLD)
+        if (popupCall.error?.message === UI_EVENTS.FIRMWARE_OLD)
             return <Translation id="TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED" />;
         if (popupCall.error?.message) return popupCall.error.message;
 

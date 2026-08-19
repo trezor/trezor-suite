@@ -3,8 +3,8 @@ import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type ConnectInitHooksDeps, type TrezorDevice } from '@suite-common/suite-types';
 import { type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
-import TrezorConnect, { UI_EVENT, UI_REQUEST } from '@trezor/connect';
-import { type PopupEventMessage, type UiEventMessage } from '@trezor/connect-common';
+import TrezorConnect, { UI_EVENT, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
+import type { PopupEventMessage, UiEventMessage, UiRequestMessage } from '@trezor/connect-common';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
@@ -42,21 +42,23 @@ export const runPassphraseWalletAddingDiscoveryThunk = createThunk<
     `${DISCOVERY_MODULE_PREFIX}/runPassphraseWalletAddingDiscovery`,
     async ({ device }, { dispatch }) => {
         const callId = crypto.randomUUID();
-        const onUiEvent = (message: UiEventMessage | PopupEventMessage) => {
+        const onUiEvent = (message: UiEventMessage | PopupEventMessage | UiRequestMessage) => {
             const { event: _, ...action } = message;
             if (!('callId' in action) || !action.callId) return;
             if (action.callId !== callId) return;
-            if (action.type === UI_REQUEST.REQUEST_PASSPHRASE) return;
+            if (action.type === UI_REQUESTS.REQUEST_PASSPHRASE) return;
             dispatch(defaultTrezorUIEventHandlerThunk(action));
         };
 
         // Claim this callId so the global handler defers its events to the scoped listener.
         registerScopedCallId(callId);
         TrezorConnect.on(UI_EVENT, onUiEvent);
+        TrezorConnect.on(UI_REQUEST, onUiEvent);
         try {
             await dispatch(runDiscoveryThunk({ device, callId })).unwrap();
         } finally {
             TrezorConnect.off(UI_EVENT, onUiEvent);
+            TrezorConnect.off(UI_REQUEST, onUiEvent);
             unregisterScopedCallId(callId);
         }
     },

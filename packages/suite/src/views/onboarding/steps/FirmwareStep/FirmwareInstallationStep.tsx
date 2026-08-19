@@ -23,8 +23,7 @@ export const FirmwareInstallationStep = ({ install, onSuccess }: FirmwareInstall
     const getInnerActionComponent = () => {
         if (
             isWebUsbTransport &&
-            reconnectEvent &&
-            reconnectEvent.disconnected &&
+            reconnectEvent?.disconnected &&
             reconnectEvent.i > 2 && // Add some latency for cases when the device is already paired or is restarting.
             status !== 'done'
         ) {

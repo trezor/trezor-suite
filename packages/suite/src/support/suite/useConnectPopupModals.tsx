@@ -75,7 +75,7 @@ export const useConnectPopupModals = () => {
                 (modalContext === MODAL_CONTEXT_NONE || isReplaceableByConnectModal)
             ) {
                 dispatch(openModal({ type }));
-                // Prevent UI_REQUEST.CLOSE_UI_WINDOW from unrelated TrezorConnect
+                // Prevent UI_EVENTS.CLOSE_UI_WINDOW from unrelated TrezorConnect
                 // calls (e.g. discovery finishing in the background) from closing
                 // the connect popup modal.
                 dispatch(preserveModal());

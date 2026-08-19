@@ -1,4 +1,4 @@
-import TrezorConnect, { type StaticSessionId } from '../../../src';
+import TrezorConnect, { type StaticSessionId, UI_REQUESTS, UI_RESPONSE } from '../../../src';
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const controller = getController();
@@ -19,8 +19,11 @@ describe('keepSession common param', () => {
     });
 
     conditionalTest(['1', '<2.3.2'], 'keepSession preserves Cardano derivation', async () => {
-        TrezorConnect.on('ui-request_passphrase', () => {
-            TrezorConnect.uiResponse({ type: 'ui-receive_passphrase', payload: { value: 'a' } });
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, () => {
+            TrezorConnect.uiResponse({
+                type: UI_RESPONSE.RECEIVE_PASSPHRASE,
+                payload: { value: 'a' },
+            });
         });
 
         // Enable 'ada'. The call forces a session re-create with derive_cardano.
@@ -37,7 +40,7 @@ describe('keepSession common param', () => {
 
         // change device instance to simulate app reload
         // passphrase request should not be called
-        TrezorConnect.removeAllListeners('ui-request_passphrase');
+        TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_PASSPHRASE);
         // modify instance in staticSessionId
         const staticSessionId = device.state.staticSessionId?.replace(
             ':0',

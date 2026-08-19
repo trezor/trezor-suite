@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { type ButtonRequest } from '@suite-common/suite-types';
-import TrezorConnect, { UI_REQUEST, UI_RESPONSE } from '@trezor/connect';
+import TrezorConnect, { UI_EVENTS, UI_RESPONSE } from '@trezor/connect';
 
 const NEW_PIN_REQUEST_TYPES = ['PinMatrixRequestType_NewFirst', 'PinMatrixRequestType_NewSecond'];
 const NEW_WIPE_CODE_REQUEST_TYPES = [
@@ -34,7 +34,7 @@ export const usePin = (buttonRequests: ButtonRequest[], requestId?: string) => {
         setSubmitted(false);
     }, [buttonRequests.length]);
 
-    const invalidPinAttempts = buttonRequests.filter(r => r.code === UI_REQUEST.INVALID_PIN).length;
+    const invalidPinAttempts = buttonRequests.filter(r => r.code === UI_EVENTS.INVALID_PIN).length;
 
     return {
         isSettingNewWipeCode,

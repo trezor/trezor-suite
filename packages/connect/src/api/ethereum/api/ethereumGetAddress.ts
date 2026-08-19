@@ -3,8 +3,8 @@
 import {
     Bundle,
     GetAddress as GetAddressSchema,
-    UI_REQUEST,
-    createUiMessage,
+    UI_EVENTS,
+    createUiEventMessage,
 } from '@trezor/connect-common';
 import type {
     EthereumNetworkInfoDefinitionValues,
@@ -175,7 +175,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
             if (this.hasBundle) {
                 // send progress
                 sendCoreMessage(
-                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
+                    createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response,

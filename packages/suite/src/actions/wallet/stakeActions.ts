@@ -307,7 +307,7 @@ export const signTransaction =
         );
 
         // TransactionReviewModal has 2 steps: signing and pushing
-        // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
+        // TrezorConnect emits UI_EVENTS.CLOSE_UI_WINDOW after the signing process
         // this action is blocked by preserveModal()
         dispatch(preserveModal());
 
@@ -343,7 +343,7 @@ export const signTransaction =
             if (serializedTx?.error?.message === 'tx-timeout') {
                 return;
             }
-            // close modal manually since UI.CLOSE_UI.WINDOW was blocked
+            // close modal manually since UI_EVENTS.CLOSE_UI_WINDOW was blocked
             dispatch(closeModal());
 
             const { stakeType } = formValues;

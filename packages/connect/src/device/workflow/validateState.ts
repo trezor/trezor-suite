@@ -1,4 +1,4 @@
-import { UI_REQUEST, createUiMessage } from '@trezor/connect-common';
+import { UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import type { StaticSessionId } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { toHardenedPathPart } from '@trezor/crypto-utils';
@@ -82,7 +82,7 @@ const validateDeviceState = async (context: WorkflowContext) => {
         } catch (error) {
             if (error.message.includes('PIN invalid')) {
                 context.sendCoreMessage(
-                    createUiMessage(UI_REQUEST.INVALID_PIN, {
+                    createUiEventMessage(UI_EVENTS.INVALID_PIN, {
                         device: context.device.toMessageObject(),
                     }),
                 );
@@ -95,7 +95,7 @@ const validateDeviceState = async (context: WorkflowContext) => {
     return validate(context).catch(error => {
         if (error.message.includes('PIN invalid')) {
             context.sendCoreMessage(
-                createUiMessage(UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED, {
+                createUiEventMessage(UI_EVENTS.INVALID_PIN_ATTEMPTS_DEPLETED, {
                     device: context.device.toMessageObject(),
                 }),
             );
