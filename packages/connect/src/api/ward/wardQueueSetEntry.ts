@@ -18,11 +18,11 @@ import { AbstractMethod } from '../../core/AbstractMethod';
  * state. Keep the path: it is how the host's store is organised, and the host has no other way
  * to learn it. The change itself arrives later, sealed, through `WardFlushQueue`.
  *
- * WITH `mac` THIS IS A RESTORE of a change the device exported for backup. Every field must be
- * exactly what `WardQueueGetAck` returned -- `counter` and `key_type` included -- because all of
- * them are inside the MAC, and the device recomputes it before showing the user anything. Pass the
- * export through unchanged rather than rebuilding it field by field: a dropped or defaulted field
- * is a verification failure, which is the design working, but it reads as a device fault.
+ * WITH `mac` THIS IS A RESTORE of a change the device exported for backup. The three fields must be
+ * exactly what `WardQueueGetAck` returned, because the device MACs them together with the path and
+ * key space it derives itself, and recomputes that before showing the user anything. Pass the export
+ * through unchanged rather than rebuilding it field by field: a dropped or altered field is a
+ * verification failure, which is the design working, but it reads as a device fault.
  *
  * NO PULL HAPPENS, so no `wardProvider` is involved: the device reads its own store to show what
  * the queued change replaces, and asks the host for nothing.
@@ -40,11 +40,9 @@ export default class WardQueueSetEntry extends AbstractMethod<
             app_id: payload.app_id,
             identifier: payload.identifier,
             value: payload.value,
-            // Restore only. Absent together, these three mean "queue this fresh"; present, they
-            // are the MAC'd backup and none of them may be filled in on the host's behalf.
+            // Restore only: absent means "queue this fresh". Nothing else travels, because the rest
+            // of what the MAC covers is derived on the device and never accepted from a host.
             mac: payload.mac,
-            counter: payload.counter,
-            key_type: payload.key_type,
         };
 
         super(message, params);

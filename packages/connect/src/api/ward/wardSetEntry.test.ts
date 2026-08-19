@@ -76,12 +76,7 @@ describe('WardQueueSetEntry', () => {
     });
 
     it('forwards the restore fields, which the device MACs and must get back unchanged', async () => {
-        const backup = {
-            ...PARAMS,
-            mac: '66'.repeat(32),
-            counter: 3,
-            key_type: 'address',
-        };
+        const backup = { ...PARAMS, mac: '66'.repeat(32) };
         const { method, typedCall } = makeMethod(
             WardQueueSetEntry,
             'wardQueueSetEntry',
@@ -92,21 +87,23 @@ describe('WardQueueSetEntry', () => {
 
         await method.run();
 
-        // Every one of these is inside the intent MAC, so dropping or defaulting one here would
-        // surface as a device-side authentication failure rather than as a host bug.
+        // All four are inside the intent MAC, so dropping or altering one here would surface as a
+        // device-side authentication failure rather than as a host bug.
         expect(typedCall).toHaveBeenCalledWith('WardQueueSetEntry', 'WardQueueSetAck', backup);
     });
 
-    it('returns the path and nothing else -- there is no leaf to invent', async () => {
-        const ack = { entry_key: '11'.repeat(32) };
+    it('returns the empty ack as it stands -- there is no leaf, and no path, to invent', async () => {
         const { method } = makeMethod(
             WardQueueSetEntry,
             'wardQueueSetEntry',
             PARAMS,
-            ack,
+            {},
             'WardQueueSetAck',
         );
 
-        await expect(method.run()).resolves.toEqual(ack);
+        // The TYPE is the whole answer: the change was held, not applied. A method that filled in a
+        // path here would be inventing one, since the device does not send it until the change
+        // reaches the tree.
+        await expect(method.run()).resolves.toEqual({});
     });
 });

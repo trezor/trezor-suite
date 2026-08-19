@@ -44,9 +44,10 @@ const wardAdd = async (context: WardCommandContext, device: Device) => {
         throw new Error(`${result.error.code}: ${result.error.message}`);
     }
 
-    // The ack type already means "held, not applied", so there is nothing to check: a
-    // WardQueueSetAck cannot describe a write that landed.
-    return { entry_key: result.payload.entry_key, queued: true };
+    // The ack type already means "held, not applied", so there is nothing to check and nothing to
+    // report from it: WardQueueSetAck is empty, because a queued change has no path worth naming
+    // until it reaches the tree.
+    return { queued: true };
 };
 
 export const runWardCommand = (
