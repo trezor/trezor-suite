@@ -41,8 +41,8 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=ward_add        (wired, --queue only)
                                                 --method=ward_backup    (wired, --queue only)
                                                 --method=ward_restore   (wired, --queue only)
+                                                --method=ward_delete     (wired, --queue only)
                                                 --method=ward_update    (not wired yet)
-                                                --method=ward_delete    (not wired yet)
                                                 --method=ward_display   (not wired yet)
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
@@ -61,6 +61,8 @@ export const HELP = `@trezor/connect CLI arguments:
     --ident=<key>                             Key within that domain (e.g. an address)
     --value=<value>                           Value to queue (ward_add)
     --entry=<0x...>                           A backup from ward_backup (ward_restore)
+    --target=<VAR>                            ward_backup only: print VAR=0x... on stdout instead
+                                                of the blob, for eval "$(... --target=VAR)"
                                                 Values are taken verbatim -- unlike other flags
                                                 they are NOT lowercased, because the device hashes
                                                 appid and ident.
@@ -72,12 +74,15 @@ export const HELP = `@trezor/connect CLI arguments:
     --method=ward_restore --queue --entry=0x...
                                               Puts that change back into the queue. The device
                                                 verifies the MAC before it shows or writes anything.
+    --method=ward_delete --queue --appid=example.com --ident=addr1
+                                              Discards a queued change. Reports missing when there
+                                                was none -- that is an answer, not an error.
 `;
 
 // Flags whose value must survive EXACTLY as typed. Everything else is lowercased for convenience,
 // which is fine for a method name and wrong for a value the device hashes: `--appid=TEST` lowercased
 // derives a different entry_key than the same entry written any other way, and nothing would say so.
-const VERBATIM_FLAGS = ['params', 'appid', 'ident', 'value', 'entry'];
+const VERBATIM_FLAGS = ['params', 'appid', 'ident', 'value', 'entry', 'target'];
 
 // read and parse application arguments
 const parseArgv = () => {

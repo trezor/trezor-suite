@@ -12,6 +12,8 @@
  * having two requests rather than one with a hidden mode.
  */
 
+import fs from 'fs';
+
 import TrezorConnect, { type Device } from '@trezor/connect';
 import { protobufManager } from '@trezor/protobuf';
 
@@ -93,6 +95,29 @@ const wardAdd = async (context: WardCommandContext, device: Device) => {
     return { queued: true };
 };
 
+/**
+ * `--target=VAR` prints `VAR=0x…` on STDOUT, so a caller can capture the blob and hand it straight to
+ * ward_restore:
+ *
+ *   eval "$(… ward_backup --target=BLOB | grep -E '^BLOB=0x')"
+ *   … ward_restore --entry="$BLOB"
+ *
+ * An assignment rather than the bare blob because a child process cannot set its parent's variable.
+ * The grep is not optional: this CLI logs its progress to stdout as well, so eval'ing everything it
+ * printed would fail on the first log line -- see `e2e/ward-queue.sh`.
+ */
+const captureTarget = (target: string, blob: string) => {
+    if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(target)) {
+        throw new Error(`--target must be a shell variable name, got "${target}"`);
+    }
+
+    // fs.writeSync, not console.log: stdout is a PIPE when a caller captures it, and writes to a
+    // pipe are asynchronous -- the `process.exit` that ends every CLI run discards whatever is still
+    // buffered, so the assignment silently never arrives. Found by the e2e script, which captured an
+    // empty variable.
+    fs.writeSync(1, `${target}=${blob}\n`);
+};
+
 const wardBackup = async (context: WardCommandContext, device: Device) => {
     const { queue, params } = context;
 
@@ -129,7 +154,46 @@ const wardBackup = async (context: WardCommandContext, device: Device) => {
         };
     }
 
-    return { entry: encodeBackup(ack) };
+    const entry = encodeBackup(ack);
+
+    if (params.target !== undefined) {
+        captureTarget(params.target, entry);
+
+        return { captured: params.target };
+    }
+
+    return { entry };
+};
+
+const wardDelete = async (context: WardCommandContext, device: Device) => {
+    const { queue, params } = context;
+
+    if (!queue) {
+        // The tree delete needs a synced session and a provider to prove the entry's current value
+        // with; neither is wired. Discarding a QUEUED change needs neither, which is why only that
+        // half runs today.
+        throw new Error(
+            'a WARD delete against the tree needs a registered wardProvider and a synced session; not wired yet — pass --queue to discard a QUEUED change instead',
+        );
+    }
+
+    const result = await TrezorConnect.wardQueueDeleteEntry({
+        device,
+        app_id: params.appid ?? DEFAULT_APP_ID,
+        identifier: toHex(params.ident),
+    });
+
+    if (!result.success) {
+        throw new Error(`${result.error.code}: ${result.error.message}`);
+    }
+
+    // `missing` is reported, not thrown: asking about a change that has already been published is an
+    // ordinary thing for a caller reconciling its own view of the queue to do.
+    if (result.payload.missing) {
+        return { missing: true, note: 'nothing was queued for this key' };
+    }
+
+    return { discarded: true };
 };
 
 const wardRestore = async (context: WardCommandContext, device: Device) => {
@@ -180,16 +244,11 @@ export const runWardCommand = (
         return wardRestore(context, device);
     }
 
-    if (name === 'ward_delete' && context.queue) {
-        // `WardQueueDeleteEntry` discards a QUEUED CHANGE; it does not delete a WARD entry, and
-        // there is no such thing as a queued deletion (EMPTY_PART is plaintext, so a host able to
-        // hand over delete leaves could delete anything). Wiring the discard is separate work, so
-        // this refuses rather than quietly doing the other thing.
-        return Promise.reject(
-            new Error(
-                'a WARD delete cannot be queued; --queue on ward_delete would discard a queued change instead, which is not wired yet',
-            ),
-        );
+    if (name === 'ward_delete') {
+        // `--queue` discards a QUEUED CHANGE rather than deleting a WARD entry -- there is no such
+        // thing as a queued deletion, because EMPTY_PART is plaintext and a host able to hand over
+        // delete leaves could delete anything.
+        return wardDelete(context, device);
     }
 
     return wardCommands[name].run(context);

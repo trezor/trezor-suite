@@ -73,7 +73,7 @@ export const wardCommands: Record<WardCommandName, WardCommand> = {
     },
     ward_delete: {
         name: 'ward_delete',
-        description: 'Delete an existing WARD entry',
+        description: 'Delete a WARD entry, or with --queue discard a queued change',
         requiredParams: ['ident'],
         optionalParams: ['appid', 'ward_id'],
         supportsQueue: true,
@@ -91,7 +91,7 @@ export const wardCommands: Record<WardCommandName, WardCommand> = {
         name: 'ward_backup',
         description: "Export a queued change from the device's own store, as 0x...",
         requiredParams: ['appid', 'ident'],
-        optionalParams: [],
+        optionalParams: ['target'],
         supportsQueue: true,
         run: notWired('ward_backup'),
     },
