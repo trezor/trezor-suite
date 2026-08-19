@@ -21,6 +21,9 @@ type Params = { path: number[] } & StellarSignTransactionSchema;
 const StellarSignTransactionFeatures = Object.freeze({
     manageBuyOffer: ['1.10.4', '2.4.3'],
     pathPaymentStrictSend: ['1.10.4', '2.4.3'],
+    // Soroban is not available on T1, so a plain version string is used instead of a
+    // per-model array: T1's major version is lower and never satisfies the comparison.
+    invokeHostFunction: '2.12.4',
 });
 
 export default class StellarSignTransaction extends AbstractMethod<
@@ -89,6 +92,7 @@ export default class StellarSignTransaction extends AbstractMethod<
 
         this._ensureFirmwareSupportsOperation('manageBuyOffer', transaction.operations);
         this._ensureFirmwareSupportsOperation('pathPaymentStrictSend', transaction.operations);
+        this._ensureFirmwareSupportsOperation('invokeHostFunction', transaction.operations);
 
         const response = await helper.stellarSignTx(
             this.getDevice().getCommands().typedCall,
