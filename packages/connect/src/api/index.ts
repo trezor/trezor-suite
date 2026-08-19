@@ -60,4 +60,5 @@ export { default as telemetryGet } from './telemetryGet';
 export { default as thpGetCredentials } from './thpGetCredentials';
 export { default as thpRemoveCredentials } from './thpRemoveCredentials';
 export { default as verifyMessage } from './verifyMessage';
+export { default as wardSetEntry } from './ward/wardSetEntry';
 export { default as wipeDevice } from './wipeDevice';

@@ -38,10 +38,10 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=authenticate-device
                                                 --method=nostr-get-public-key
                                                 --method=nostr-sign-event
-                                                --method=ward_add
-                                                --method=ward_update
-                                                --method=ward_delete
-                                                --method=ward_display
+                                                --method=ward_add        (wired, --queue only)
+                                                --method=ward_update    (not wired yet)
+                                                --method=ward_delete    (not wired yet)
+                                                --method=ward_display   (not wired yet)
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
 
@@ -49,7 +49,9 @@ export const HELP = `@trezor/connect CLI arguments:
     --queue                                   Offline only: ward_add/ward_update/ward_delete just
                                                 place the change into the local pending queue and
                                                 ward_display only looks the entry up there.
-                                                No device round, no WARD Manager exchange.
+                                                No WARD Manager exchange -- the round is skipped,
+                                                which is exactly what makes the device queue the
+                                                change and answer "queued" instead of a leaf.
                                                 --method=ward_add --params='{"scope":"example.com","value":"secret"}'
 `;
 

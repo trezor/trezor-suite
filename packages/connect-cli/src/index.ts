@@ -17,6 +17,8 @@ import {
     initDebugLink,
     isDebugLinkInteraction,
 } from './transport';
+import { getWardCommand, missingWardParams } from './wardCommands';
+import { runWardCommand } from './wardRunners';
 
 /* eslint-disable no-console */
 
@@ -103,6 +105,27 @@ const runTestCase = async (device: Device) => {
     }
 
     const params = args.params ? JSON.parse(args.params) : {};
+
+    // WARD commands come from their own registry rather than this switch: the registry is what
+    // declares them and what `--help` describes, so a name that exists there must not need a
+    // second entry here to be runnable.
+    const wardCommand = getWardCommand(method);
+    if (wardCommand) {
+        const missing = missingWardParams(wardCommand, params);
+        if (missing.length) {
+            console.error(`${wardCommand.name} needs --params keys: ${missing.join(', ')}`);
+            process.exit(1);
+        }
+
+        const wardResult = await runWardCommand(
+            wardCommand.name,
+            { queue: !!args.queue, params },
+            device,
+        );
+
+        console.warn(wardResult);
+        process.exit(1);
+    }
 
     let result;
     switch (method) {
