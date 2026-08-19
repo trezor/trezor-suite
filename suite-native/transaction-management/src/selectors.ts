@@ -23,11 +23,11 @@ import {
 } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputs,
+    getDecreaseOutputId,
     getFormDraftKey,
     getIsUpdatedSendFlow,
     getTransactionReviewOutputState,
     isClearSignedEvmTradingSwapTransaction,
-    isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
@@ -88,10 +88,7 @@ const selectSendReviewButtonRequestsCount = (
     const account = selectAccountByKey(state, accountKey);
     const precomposedTx = selectSendPrecomposedTx(state);
 
-    const decreaseOutputId =
-        precomposedTx && isRbfBumpFeeTransaction(precomposedTx) && precomposedTx.useNativeRbf
-            ? precomposedForm?.setMaxOutputId
-            : undefined;
+    const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
     return selectSendFormReviewButtonRequestsCount(state, account?.symbol, decreaseOutputId);
 };
@@ -122,10 +119,7 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
             return null;
         }
 
-        const decreaseOutputId =
-            isRbfBumpFeeTransaction(precomposedTx) && precomposedTx.useNativeRbf
-                ? precomposedForm?.setMaxOutputId
-                : undefined;
+        const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
         const outputs = constructTransactionReviewOutputs({
             account,

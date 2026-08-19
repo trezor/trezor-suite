@@ -21,6 +21,7 @@ import {
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import {
+    getDecreaseOutputId,
     getStakeType,
     getTxValidityTimeoutInMs,
     isEvmApprovalTx,
@@ -127,10 +128,7 @@ export const TransactionReviewModalBodyInner = ({
     const isBumpFeeRbfAction =
         precomposedTx !== undefined && isRbfBumpFeeTransaction(precomposedTx);
 
-    const decreaseOutputId =
-        isBumpFeeRbfAction && precomposedTx.useNativeRbf
-            ? precomposedForm?.setMaxOutputId
-            : undefined;
+    const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
     const buttonRequestsCount = useSelector((state: DeviceRootState) =>
         selectSendFormReviewButtonRequestsCount(state, account?.symbol, decreaseOutputId),

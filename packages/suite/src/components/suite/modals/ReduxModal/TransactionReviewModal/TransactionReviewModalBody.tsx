@@ -12,8 +12,8 @@ import { selectStablecoinYieldTxReview } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
+    getDecreaseOutputId,
     getTxValidityTimeoutInMs,
-    isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { type Deferred } from '@trezor/utils';
@@ -98,13 +98,7 @@ export const TransactionReviewModalBody = ({
         };
     }, [deadline, dispatch, isSending, shouldCheckTxTimeValidity]);
 
-    const isBumpFeeRbfAction =
-        precomposedTx !== undefined && isRbfBumpFeeTransaction(precomposedTx);
-
-    const decreaseOutputId =
-        isBumpFeeRbfAction && precomposedTx.useNativeRbf
-            ? precomposedForm?.setMaxOutputId
-            : undefined;
+    const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
     const outputs = constructTransactionReviewOutputsOptional({
         account,

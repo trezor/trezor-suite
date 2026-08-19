@@ -14,6 +14,7 @@ import {
 } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
+    getDecreaseOutputId,
     getStakeType,
     getTxValidityTimeoutInMs,
     isRbfBumpFeeTransaction,
@@ -69,10 +70,7 @@ export const TransactionReviewModalContent = ({
     const isBumpFeeRbfAction =
         precomposedTx !== undefined && isRbfBumpFeeTransaction(precomposedTx);
 
-    const decreaseOutputId =
-        isBumpFeeRbfAction && precomposedTx.useNativeRbf
-            ? precomposedForm?.setMaxOutputId
-            : undefined;
+    const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
     const buttonRequestsCount = useSelector((state: DeviceRootState) =>
         selectSendFormReviewButtonRequestsCount(state, symbol, decreaseOutputId),
