@@ -46,9 +46,8 @@ export const Spinner = ({ loadingState, onComplete, endFrame, size = 50 }: Spinn
         } else if (currentAnimation === 'idle') {
             if (loadingState !== 'idle') {
                 setCurrentAnimation(loadingState);
-            } else {
-                animationRef.current?.play(); // repeat idle animation
             }
+            animationRef.current?.play(); // repeat idle animation
         }
 
         if (currentAnimation === 'success' || currentAnimation === 'error') {
