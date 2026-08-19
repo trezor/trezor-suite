@@ -211,6 +211,10 @@ export const TYPE_PATCH = {
     'StellarInt256Parts.hi_lo': UINT_TYPE,
     'StellarInt256Parts.lo_hi': UINT_TYPE,
     'StellarInt256Parts.lo_lo': UINT_TYPE,
+    // Soroban authorization nonces are random sint64 values that routinely exceed
+    // Number.MAX_SAFE_INTEGER, so they must accept string bignums to sign correctly.
+    'StellarSorobanAddressCredentials.nonce': SINT_TYPE,
+    'StellarSorobanAuthorizationWithAddress.nonce': SINT_TYPE,
     'TezosContractID.tag': 'number',
     'TezosContractID.hash': 'Uint8Array',
     'TezosRevealOp.source': 'Uint8Array',

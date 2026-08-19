@@ -328,7 +328,46 @@ export const stellarSignTransaction = async (api: TrezorConnect) => {
                     balanceId:
                         '00000000178826fbfe339e1f5c53417c6fedfe2c05e8bec14303143ec46b38981b09c3f9',
                 },
+                {
+                    type: 'invokeHostFunction',
+                    function: {
+                        type: 0,
+                        invoke_contract: {
+                            contract_address:
+                                'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE',
+                            function_name: 'hello',
+                            args: [{ type: 3, u32: 1 }],
+                        },
+                    },
+                    auth: [
+                        {
+                            credentials: {
+                                type: 2,
+                                address_v2: {
+                                    address:
+                                        'GDNSSYSCSSJ76FER5WEEXME5G4MTCUBKDRQSKOYP36KUKVDB2VCMERS6',
+                                    nonce: '6216415363851494999',
+                                    signature_expiration_ledger: 5000,
+                                    signature: { type: 1 },
+                                },
+                            },
+                            root_invocation: {
+                                function: {
+                                    type: 0,
+                                    contract_fn: {
+                                        contract_address:
+                                            'CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE',
+                                        function_name: 'transfer',
+                                        args: [{ type: 10, i128: { hi: '0', lo: '1000' } }],
+                                    },
+                                },
+                                sub_invocations: [],
+                            },
+                        },
+                    ],
+                },
             ],
+            sorobanData: 'deadbeef',
         },
     });
 
