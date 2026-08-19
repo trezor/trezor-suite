@@ -24,6 +24,55 @@ set -u
 SUITE="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$SUITE" || exit 1
 
+# The emulator has to be up AND built with debuglink before anything below can work: every step that
+# shows a screen needs the debug port to confirm it. Checking here rather than letting the run
+# produce a page of cascading failures, which is what happens when it is missing -- the wire port
+# answers, so the first few calls look like device errors instead of a setup problem.
+# WHAT COUNTS AS "an emulator is there": the UDP ports are BOUND. Not that they answer -- this
+# firmware does not reply to the PINGPING liveness probe that trezorlib and connect's UdpTransport
+# send, so a handshake check would reject a perfectly working emulator. Binding is what actually
+# predicts whether the CLI can talk to it.
+#
+# If neither ss nor netstat exists we say so and carry on rather than guessing: a missing tool is not
+# evidence of a missing device.
+port_bound() {
+    if command -v ss >/dev/null 2>&1; then
+        ss -lun 2>/dev/null | grep -qE "127\.0\.0\.1:$1\b"
+    elif command -v netstat >/dev/null 2>&1; then
+        netstat -lun 2>/dev/null | grep -qE "127\.0\.0\.1:$1\b"
+    else
+        echo "  (no ss/netstat -- skipping the emulator preflight)" >&2
+
+        return 0
+    fi
+}
+
+if ! port_bound 21324; then
+    cat >&2 <<'MSG'
+No emulator is listening on udp 21324. Start one with the queue's own script wrapped around it:
+
+  cd <trezor-firmware>/core
+  python3 emu.py -q -a -t -s -c bash <trezor-suite>/packages/connect-cli/e2e/ward-queue.sh
+
+(emu.py exits when its stdin closes, so it has to wrap the script rather than run beside it.)
+MSG
+    exit 1
+fi
+
+if ! port_bound 21325; then
+    cat >&2 <<'MSG'
+An emulator is running but it binds no DEBUGLINK port (udp 21325), so nothing can confirm the screens
+this script walks through -- every step that shows one would fail. Rebuild it with debuglink:
+
+  cd <trezor-firmware>/core
+  xtask build firmware --emulator --pyopt=false --debug-link true --dbg-console none --model t3w1
+
+(plain `make build_unix` binds no debug port; t3w1 rather than t3t1 because the multi-session parts
+of the WARD suite need THP.)
+MSG
+    exit 1
+fi
+
 # Mixed case on purpose: these two are hashed into the entry_key and must survive verbatim.
 APPID="Example.COM"
 IDENT="Addr1"
