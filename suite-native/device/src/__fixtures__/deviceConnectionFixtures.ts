@@ -17,7 +17,7 @@ import {
 } from '@suite-native/navigation';
 import type { RootStackParamList } from '@suite-native/navigation';
 import { type AppSettingsState, appSettingsReducer } from '@suite-native/settings';
-import { FirmwareType, UI_REQUEST } from '@trezor/connect';
+import { FirmwareType, UI_EVENTS } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 const INIT_ACTION = { type: 'foo' };
@@ -159,14 +159,14 @@ const buildInitialState = ({
 // THP Pairing Fixtures
 export const thpPairingBlockedFixtures: NoNavigationFixture[] = [
     {
-        description: 'blocks non-THP UI_REQUEST.REQUEST_BUTTON actions',
+        description: 'blocks non-THP UI_EVENTS.BUTTON_REQUEST actions',
         initialState: buildInitialState(),
-        action: { type: UI_REQUEST.REQUEST_BUTTON },
+        action: { type: UI_EVENTS.BUTTON_REQUEST },
     },
     {
-        description: 'blocks UI_REQUEST.REQUEST_BUTTON with invalid payload name',
+        description: 'blocks UI_EVENTS.BUTTON_REQUEST with invalid payload name',
         initialState: buildInitialState(),
-        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'non-valid-name' } },
+        action: { type: UI_EVENTS.BUTTON_REQUEST, payload: { name: 'non-valid-name' } },
     },
     {
         description: 'blocks unrelated action types',
@@ -180,7 +180,7 @@ export const thpPairingBlockedFixtures: NoNavigationFixture[] = [
                 isFirmwareInstallationRunning: true,
             },
         }),
-        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_pairing_request' } },
+        action: { type: UI_EVENTS.BUTTON_REQUEST, payload: { name: 'thp_pairing_request' } },
     },
     {
         description: 'blocks thp_connection_request when firmware installation is running',
@@ -189,7 +189,7 @@ export const thpPairingBlockedFixtures: NoNavigationFixture[] = [
                 isFirmwareInstallationRunning: true,
             },
         }),
-        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_connection_request' } },
+        action: { type: UI_EVENTS.BUTTON_REQUEST, payload: { name: 'thp_connection_request' } },
     },
 ];
 
@@ -197,7 +197,7 @@ export const thpPairingNavigationFixtures: NavigationFixture[] = [
     {
         description: 'navigates to ThpConfirmation on thp_pairing_request',
         initialState: buildInitialState(),
-        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_pairing_request' } },
+        action: { type: UI_EVENTS.BUTTON_REQUEST, payload: { name: 'thp_pairing_request' } },
         expectedNavigation: {
             route: RootStackRoutes.AuthorizeDeviceStack,
             params: {
@@ -208,7 +208,7 @@ export const thpPairingNavigationFixtures: NavigationFixture[] = [
     {
         description: 'navigates to ThpConfirmation on thp_connection_request',
         initialState: buildInitialState(),
-        action: { type: UI_REQUEST.REQUEST_BUTTON, payload: { name: 'thp_connection_request' } },
+        action: { type: UI_EVENTS.BUTTON_REQUEST, payload: { name: 'thp_connection_request' } },
         expectedNavigation: {
             route: RootStackRoutes.AuthorizeDeviceStack,
             params: {

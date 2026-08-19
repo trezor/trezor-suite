@@ -1,5 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ResetDevice.js
-import { type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
+import { type PermissionRequest, UI_EVENTS } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { TransportError } from '@trezor/connect-common/src/constants/errors';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
@@ -36,7 +36,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         };
 
         super(message, params);
-        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
+        this.allowDeviceMode = [UI_EVENTS.DEVICE_NOT_INITIALIZED, UI_EVENTS.DEVICE_SEEDLESS];
         this.useDeviceState = false;
         this.skipFinalReload = false;
     }

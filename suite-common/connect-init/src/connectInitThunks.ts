@@ -38,6 +38,7 @@ import TrezorConnect, {
     DEVICE_EVENT,
     TRANSPORT_EVENT,
     UI_EVENT,
+    UI_REQUEST,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { getSynchronize, isArrayMember } from '@trezor/utils';
@@ -127,6 +128,15 @@ export const connectInitThunk = createThunk<
     });
 
     TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {
+        // A bare `callId` is not proof of ownership — it doubles as the
+        // cancellation token — so defer only events a scoped flow has registered.
+        if ('callId' in action && action.callId && isScopedCallId(action.callId)) {
+            return;
+        }
+        dispatch(defaultTrezorUIEventHandlerThunk(action));
+    });
+
+    TrezorConnect.on(UI_REQUEST, ({ event: _, ...action }) => {
         // A bare `callId` is not proof of ownership — it doubles as the
         // cancellation token — so defer only events a scoped flow has registered.
         if ('callId' in action && action.callId && isScopedCallId(action.callId)) {

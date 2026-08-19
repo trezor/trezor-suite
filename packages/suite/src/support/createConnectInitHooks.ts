@@ -3,7 +3,7 @@ import { type Dispatch } from '@reduxjs/toolkit';
 import { openModal, preserveModal } from '@suite/modal';
 import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { type ConnectInitHooks } from '@suite-common/suite-types';
-import { DEVICE, UI_REQUEST } from '@trezor/connect';
+import { DEVICE, UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
 import { bluetoothOnDeviceConnectedThunk } from '../actions/bluetooth/bluetoothOnDeviceConnectedThunk';
 import { markDeviceAsRecentlyConnectedThunk } from '../actions/wallet/markDeviceAsRecentlyConnectedThunk';
@@ -24,11 +24,11 @@ export const createConnectInitHooks = (deps: ConnectInitHooksDeps): ConnectInitH
         },
     },
     uiEvent: {
-        [UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
-            deps.dispatch(openModal({ type: UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED }));
+        [UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED]: () => {
+            deps.dispatch(openModal({ type: UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED }));
             deps.dispatch(preserveModal());
         },
-        [UI_REQUEST.REQUEST_WORD]: () => {
+        [UI_REQUESTS.REQUEST_WORD]: () => {
             if (selectRecoveryStatus(deps.getState()) === 'waiting-for-confirmation') {
                 // Since the device asked for a first word, we can safely assume we've received confirmation from the user
                 deps.dispatch(recoveryActions.setStatus('in-progress'));

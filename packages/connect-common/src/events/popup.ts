@@ -1,5 +1,5 @@
 import type { TransportInfo } from './transport';
-import { UI_EVENT } from './ui-request';
+import { UI_EVENT } from './ui-event';
 import type { PermissionRequest } from '../types/method';
 import type { ConnectDynamicSettings, Manifest } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';

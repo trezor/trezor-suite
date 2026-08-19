@@ -38,8 +38,7 @@ export const FirmwareInstallation = ({
     // in normal mode, till it is paired again.
     const isDeviceNotSelected =
         isWebUsbTransport &&
-        reconnectEvent &&
-        reconnectEvent.disconnected &&
+        reconnectEvent?.disconnected &&
         reconnectEvent.i > 2 && // Add some latency for cases when the device is already paired or is restarting.
         status !== 'done';
 

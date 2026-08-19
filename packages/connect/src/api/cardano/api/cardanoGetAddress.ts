@@ -4,8 +4,8 @@ import {
     Bundle,
     CardanoGetAddress as CardanoGetAddressSchema,
     type PermissionRequest,
-    UI_REQUEST,
-    createUiMessage,
+    UI_EVENTS,
+    createUiEventMessage,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { fromHardenedPathPart } from '@trezor/crypto-utils';
@@ -160,7 +160,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             if (this.hasBundle) {
                 // send progress
                 sendCoreMessage(
-                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
+                    createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response,

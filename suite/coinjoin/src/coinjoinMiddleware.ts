@@ -31,7 +31,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
-import { UI_REQUEST, isUiEventOfType } from '@trezor/connect';
+import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 import { arrayDistinct, typedObjectKeys } from '@trezor/utils';
 
 import * as coinjoinAccountActions from './coinjoinAccountActions';
@@ -72,7 +72,7 @@ export const coinjoinMiddleware =
         const allowedModals = ['coinjoin-success', 'more-rounds-needed', 'critical-coinjoin-phase'];
 
         if (
-            isUiEventOfType(action, UI_REQUEST.CLOSE_UI_WINDOW) &&
+            isUiEventOfType(action, UI_EVENTS.CLOSE_UI_WINDOW) &&
             'payload' in modal &&
             allowedModals.includes(modal.payload?.type)
         ) {

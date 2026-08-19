@@ -16,7 +16,7 @@ import { selectModalConfirmationRequestId } from './modalSelectors';
 export const closeModal = createAction(MODAL_CLOSE);
 
 /**
- * Don't close modals on UI.CLOSE_UI.WINDOW event (closing via modal US), but wait for explicit closing instead
+ * Don't close modals on UI_EVENTS.CLOSE_UI_WINDOW event, but wait for explicit closing instead
  * (usually coming from a redux action from device, or other sources not directly controlled by Suite UI)
  */
 export const preserveModal = createAction(MODAL_PRESERVE);

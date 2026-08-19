@@ -3,8 +3,8 @@ import { base58 } from '@scure/base';
 import {
     Bundle,
     GetPublicKey as GetPublicKeySchema,
-    UI_REQUEST,
-    createUiMessage,
+    UI_EVENTS,
+    createUiEventMessage,
 } from '@trezor/connect-common';
 import type { PROTO, PermissionRequest } from '@trezor/connect-common';
 import { fromHardenedPathPart } from '@trezor/crypto-utils';
@@ -93,7 +93,7 @@ export default class SolanaGetPublicKey extends AbstractMethod<
             if (this.hasBundle) {
                 // send progress
                 sendCoreMessage(
-                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
+                    createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, {
                         total: this.params.length,
                         progress: i,
                         response: message,

@@ -15,9 +15,10 @@ import TrezorConnect, {
     type CoinInfo,
     type DiscoveryAccount,
     type DiscoveryAccountType,
-    UI_REQUEST,
+    UI_EVENTS,
+    UI_REQUESTS,
     UI_RESPONSE,
-    isUiEventOfType,
+    isUiRequestOfType,
 } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
@@ -97,7 +98,7 @@ export const prepareConnectPopupMiddleware = createMiddlewareWithExtraDeps<
 >(async (action, { dispatch, next, getState }) => {
     await next(action);
 
-    if (action.type === UI_REQUEST.INSUFFICIENT_FUNDS) {
+    if (action.type === UI_EVENTS.ACCOUNT_INSUFFICIENT_FUNDS) {
         dispatch(
             notificationsActions.addToast({
                 type: 'not-enough-funds-error',
@@ -105,7 +106,7 @@ export const prepareConnectPopupMiddleware = createMiddlewareWithExtraDeps<
         );
     }
 
-    if (isUiEventOfType(action, UI_REQUEST.REQUEST_DISCOVERY_ACCOUNTS)) {
+    if (isUiRequestOfType(action, UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNTS)) {
         const discovery = selectDiscoveryForSelectedDevice(getState());
 
         if (discovery && discovery.status !== 'complete') {

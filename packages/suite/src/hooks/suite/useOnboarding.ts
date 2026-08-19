@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
 import { type BackupType } from '@suite-common/suite-types';
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_REQUESTS } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { type GoToSuiteOptions } from 'src/actions/onboarding/onboardingActions';
@@ -18,7 +18,7 @@ export const useOnboarding = () => {
     const modal = useSelector(state => state.modal);
 
     const showPinMatrix =
-        modal.context === '@modal/context-device' && modal.windowType === UI_REQUEST.REQUEST_PIN;
+        modal.context === '@modal/context-device' && modal.windowType === UI_REQUESTS.REQUEST_PIN;
 
     const actions = useMemo(
         () => ({

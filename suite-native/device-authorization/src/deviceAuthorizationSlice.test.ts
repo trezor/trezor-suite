@@ -1,5 +1,5 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
 import {
     type DeviceAuthorizationState,
@@ -22,9 +22,9 @@ describe('deviceAuthorizationSlice', () => {
         });
     });
 
-    describe('UI_REQUEST.REQUEST_PIN', () => {
+    describe('UI_REQUESTS.REQUEST_PIN', () => {
         it('should set deviceAuthorizationStep to PinRequested', () => {
-            const state = deviceAuthorizationReducer(undefined, { type: UI_REQUEST.REQUEST_PIN });
+            const state = deviceAuthorizationReducer(undefined, { type: UI_REQUESTS.REQUEST_PIN });
 
             expect(state).toEqual({
                 deviceAuthorizationStep: DeviceAuthorizationStep.PinRequested,
@@ -32,10 +32,10 @@ describe('deviceAuthorizationSlice', () => {
         });
     });
 
-    describe('UI_REQUEST.REQUEST_PASSPHRASE', () => {
+    describe('UI_REQUESTS.REQUEST_PASSPHRASE', () => {
         it('should set deviceAuthorizationStep to PassphraseRequested when device has staticSessionId', () => {
             const state = deviceAuthorizationReducer(undefined, {
-                type: UI_REQUEST.REQUEST_PASSPHRASE,
+                type: UI_REQUESTS.REQUEST_PASSPHRASE,
                 payload: {
                     device: mockSuiteDevice({
                         state: { staticSessionId: 'testWallet@testDevice:0' },
@@ -57,7 +57,7 @@ describe('deviceAuthorizationSlice', () => {
             });
 
             const state = deviceAuthorizationReducer(prevState, {
-                type: UI_REQUEST.REQUEST_PASSPHRASE,
+                type: UI_REQUESTS.REQUEST_PASSPHRASE,
             });
 
             expect(state).toEqual({
@@ -67,7 +67,7 @@ describe('deviceAuthorizationSlice', () => {
 
         it('should set deviceAuthorizationStep to Idle when device staticSessionId from connect is undefined', () => {
             const state = deviceAuthorizationReducer(undefined, {
-                type: UI_REQUEST.REQUEST_PASSPHRASE,
+                type: UI_REQUESTS.REQUEST_PASSPHRASE,
                 payload: {
                     device: { ...mockSuiteDevice(), state: { staticSessionId: undefined } },
                 },
@@ -79,14 +79,14 @@ describe('deviceAuthorizationSlice', () => {
         });
     });
 
-    describe('UI_REQUEST.CLOSE_UI_WINDOW', () => {
+    describe('UI_EVENTS.CLOSE_UI_WINDOW', () => {
         it('should reset deviceAuthorizationStep to Idle from any state', () => {
             const prevState = getDeviceAuthorizationState({
                 deviceAuthorizationStep: DeviceAuthorizationStep.PassphraseRequested,
             });
 
             const state = deviceAuthorizationReducer(prevState, {
-                type: UI_REQUEST.CLOSE_UI_WINDOW,
+                type: UI_EVENTS.CLOSE_UI_WINDOW,
             });
 
             expect(state).toEqual({
@@ -100,7 +100,7 @@ describe('deviceAuthorizationSlice', () => {
             'should set deviceAuthorizationStep to PinRequested for %s code',
             code => {
                 const state = deviceAuthorizationReducer(undefined, {
-                    type: UI_REQUEST.REQUEST_BUTTON,
+                    type: UI_EVENTS.BUTTON_REQUEST,
                     payload: { code },
                 });
 
@@ -120,7 +120,7 @@ describe('deviceAuthorizationSlice', () => {
                 });
 
                 const state = deviceAuthorizationReducer(prevState, {
-                    type: UI_REQUEST.REQUEST_BUTTON,
+                    type: UI_EVENTS.BUTTON_REQUEST,
                     payload: { code },
                 });
 
@@ -136,7 +136,7 @@ describe('deviceAuthorizationSlice', () => {
             'should set deviceAuthorizationStep to ContinueOnTrezorRequested for %s button request',
             name => {
                 const state = deviceAuthorizationReducer(undefined, {
-                    type: UI_REQUEST.REQUEST_BUTTON,
+                    type: UI_EVENTS.BUTTON_REQUEST,
                     payload: { name },
                 });
 

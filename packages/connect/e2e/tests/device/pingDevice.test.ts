@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-import TrezorConnect from '../../../src';
+import TrezorConnect, { UI_EVENTS } from '../../../src';
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const controller = getController();
@@ -50,7 +50,7 @@ describe('TrezorConnect.pingDevice', () => {
 
     it('with button request', async () => {
         const buttonSpy = vi.fn();
-        TrezorConnect.on('ui-button', buttonSpy);
+        TrezorConnect.on(UI_EVENTS.BUTTON_REQUEST, buttonSpy);
 
         const response = await TrezorConnect.pingDevice({
             button_protection: true,

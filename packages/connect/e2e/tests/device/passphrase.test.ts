@@ -1,4 +1,4 @@
-import TrezorConnect from '../../../src';
+import TrezorConnect, { UI_REQUESTS, UI_RESPONSE } from '../../../src';
 import {
     conditionalTest,
     getController,
@@ -11,14 +11,14 @@ const controller = getController();
 
 const passphraseHandler = (value: string) => () => {
     TrezorConnect.uiResponse({
-        type: 'ui-receive_passphrase',
+        type: UI_RESPONSE.RECEIVE_PASSPHRASE,
         payload: {
             passphraseOnDevice: false,
             value,
             save: true, // NOTE: this field is used only in legacy test of T1B1 firmware
         },
     });
-    TrezorConnect.removeAllListeners('ui-request_passphrase');
+    TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_PASSPHRASE);
 };
 
 describe('TrezorConnect passphrase', () => {
@@ -65,7 +65,7 @@ describe('TrezorConnect passphrase', () => {
         });
 
         // get state of walletA using passphrase "a"
-        TrezorConnect.on('ui-request_passphrase', passphraseHandler('a'));
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, passphraseHandler('a'));
         const walletA = await TrezorConnect.getDeviceState({
             device: {
                 instance: 1,
@@ -94,7 +94,7 @@ describe('TrezorConnect passphrase', () => {
         });
 
         // get state of walletB using passphrase "b"
-        TrezorConnect.on('ui-request_passphrase', passphraseHandler('b'));
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, passphraseHandler('b'));
         const walletB = await TrezorConnect.getDeviceState({
             device: {
                 instance: 2,
@@ -158,7 +158,7 @@ describe('TrezorConnect passphrase', () => {
         });
 
         // use invalid state on default instance
-        TrezorConnect.on('ui-request_passphrase', passphraseHandler('wrong'));
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, passphraseHandler('wrong'));
         const invalidState = await TrezorConnect.getAddress({
             device: {
                 instance: 0,
@@ -176,7 +176,7 @@ describe('TrezorConnect passphrase', () => {
             code: 'Device_InvalidState',
             message: 'Passphrase is incorrect',
         });
-        TrezorConnect.removeAllListeners('ui-request_passphrase');
+        TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_PASSPHRASE);
     });
 
     it('Using multiple passphrases with device restart', async () => {
@@ -187,7 +187,7 @@ describe('TrezorConnect passphrase', () => {
         if (!standard.success) throw new Error(standard.error.message);
 
         // get passphrase wallet state
-        TrezorConnect.on('ui-request_passphrase', passphraseHandler('a'));
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, passphraseHandler('a'));
         const passphrase = await TrezorConnect.getDeviceState({
             device: { instance: 1, state: undefined },
         });
@@ -197,7 +197,7 @@ describe('TrezorConnect passphrase', () => {
         await restartEmu(controller);
 
         // try to get passphrase wallet state, with now invalid sessionId
-        TrezorConnect.on('ui-request_passphrase', passphraseHandler('a'));
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, passphraseHandler('a'));
         const passphrase2 = await TrezorConnect.getDeviceState({
             device: {
                 instance: 1,
@@ -227,7 +227,7 @@ describe('TrezorConnect passphrase', () => {
     });
 
     it('Passphrase encoding', async () => {
-        TrezorConnect.on('ui-request_passphrase', passphraseHandler('příliš žluťoučký kůň'));
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, passphraseHandler('příliš žluťoučký kůň'));
 
         const xpub = await TrezorConnect.getPublicKey({
             device: {
@@ -247,15 +247,15 @@ describe('TrezorConnect passphrase', () => {
 
     // passphrase on device not available on T1B1
     conditionalTest(['1'], 'Input passphrase on device', async () => {
-        TrezorConnect.on('ui-request_passphrase', () => {
+        TrezorConnect.on(UI_REQUESTS.REQUEST_PASSPHRASE, () => {
             TrezorConnect.uiResponse({
-                type: 'ui-receive_passphrase',
+                type: UI_RESPONSE.RECEIVE_PASSPHRASE,
                 payload: {
                     passphraseOnDevice: true,
                     value: '',
                 },
             });
-            TrezorConnect.removeAllListeners('ui-request_passphrase');
+            TrezorConnect.removeAllListeners(UI_REQUESTS.REQUEST_PASSPHRASE);
             // Due to race condition with node-bridge, we have to wait a bit
             setTimeout(() => {
                 controller.send({ type: 'emulator-input', value: 'a' });

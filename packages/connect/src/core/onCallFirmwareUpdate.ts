@@ -6,7 +6,14 @@ import type {
     FirmwareUpdateFlowType,
     FirmwareUpdateResponse,
 } from '@trezor/connect-common';
-import { FirmwareType, UI_REQUEST, UI_RESPONSE, createUiMessage } from '@trezor/connect-common';
+import {
+    FirmwareType,
+    UI_EVENTS,
+    UI_REQUESTS,
+    UI_RESPONSE,
+    createUiEventMessage,
+    createUiRequestMessage,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getFirmwareOrBootloaderVersionArray } from '@trezor/device-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
@@ -64,8 +71,8 @@ const waitForThpPairingConfirmation = async ({
 }) => {
     const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_CONFIRMATION, device);
     postMessage(
-        createUiMessage(
-            UI_REQUEST.REQUEST_CONFIRMATION,
+        createUiRequestMessage(
+            UI_REQUESTS.REQUEST_CONFIRMATION,
             {
                 view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
             },
@@ -118,7 +125,7 @@ const waitForReconnectedDevice = async (
         log.debug('onCallFirmwareUpdate', 'waiting for device to disconnect');
 
         postMessage(
-            createUiMessage(UI_REQUEST.FIRMWARE_RECONNECT, {
+            createUiEventMessage(UI_EVENTS.FIRMWARE_RECONNECT, {
                 device: device.toMessageObject(),
                 disconnected: false,
                 method,
@@ -141,7 +148,7 @@ const waitForReconnectedDevice = async (
     let skipWaitTime = false;
     do {
         postMessage(
-            createUiMessage(UI_REQUEST.FIRMWARE_RECONNECT, {
+            createUiEventMessage(UI_EVENTS.FIRMWARE_RECONNECT, {
                 device: device.toMessageObject(),
                 disconnected: true,
                 method,
@@ -249,7 +256,7 @@ type WaitForBluetoothRebootParams = {
 const waitForBluetoothReboot = ({ device, target, postMessage }: WaitForBluetoothRebootParams) =>
     new Promise<void>(resolve => {
         postMessage(
-            createUiMessage(UI_REQUEST.FIRMWARE_RECONNECT, {
+            createUiEventMessage(UI_EVENTS.FIRMWARE_RECONNECT, {
                 device: device.toMessageObject(),
                 disconnected: false,
                 method: 'auto',
@@ -440,7 +447,7 @@ export const onCallFirmwareUpdate = async ({
 
     // We start downloading, it could be more than 1 FW in case we need `intermediary`.
     postMessage(
-        createUiMessage(UI_REQUEST.FIRMWARE_PROGRESS, {
+        createUiEventMessage(UI_EVENTS.FIRMWARE_PROGRESS, {
             device: device.toMessageObject(),
             operation: 'downloading',
             progress: 0,
@@ -483,7 +490,7 @@ export const onCallFirmwareUpdate = async ({
     }
 
     postMessage(
-        createUiMessage(UI_REQUEST.FIRMWARE_PROGRESS, {
+        createUiEventMessage(UI_EVENTS.FIRMWARE_PROGRESS, {
             device: device.toMessageObject(),
             operation: 'downloading',
             progress: 100,
@@ -497,7 +504,7 @@ export const onCallFirmwareUpdate = async ({
         isFirmwareCacheUsedForSelectedSource(settingsStore.get('firmwareChannel')) &&
         finalBinaryInfo.release
     ) {
-        const message = createUiMessage(UI_REQUEST.FIRMWARE_DOWNLOADED, {
+        const message = createUiEventMessage(UI_EVENTS.FIRMWARE_DOWNLOADED, {
             binary: finalBinaryInfo.binary,
             binaryVersion: finalBinaryInfo.binaryVersion,
             releaseVersion: finalBinaryInfo.release?.version,

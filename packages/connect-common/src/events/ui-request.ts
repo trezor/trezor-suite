@@ -1,150 +1,60 @@
 /*
- * messages to UI emitted as UI_EVENT
+ * messages to UI that require a UI_RESPONSE
  */
-import type { DeviceModelInternal, FirmwareRelease, FirmwareType } from '@trezor/device-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { createTypeGuardByType } from '@trezor/type-utils';
-import type { VersionArray } from '@trezor/utils';
 
-import type { DeviceButtonRequest, DeviceThpPairingPayload } from './device';
+import type { DeviceThpPairingPayload } from './device';
 import type { DiscoveryAccount, DiscoveryAccountType } from '../types/account';
 import type { BitcoinNetworkInfo, CoinInfo } from '../types/coinInfo';
 import type { Device } from '../types/device';
 import type { FeeLevel } from '../types/fees';
 import { type MessageFactoryFn } from '../types/utils';
 
-export const UI_EVENT = 'UI_EVENT';
-export const UI_REQUEST = {
-    TRANSPORT: 'ui-no_transport',
-    BOOTLOADER: 'ui-device_bootloader_mode',
-    NOT_IN_BOOTLOADER: 'ui-device_not_in_bootloader_mode',
-    INITIALIZE: 'ui-device_not_initialized',
-    SEEDLESS: 'ui-device_seedless',
-    FIRMWARE_OLD: 'ui-device_firmware_old',
-    FIRMWARE_OUTDATED: 'ui-device_firmware_outdated',
-    FIRMWARE_NOT_SUPPORTED: 'ui-device_firmware_unsupported',
-    FIRMWARE_NOT_COMPATIBLE: 'ui-device_firmware_not_compatible',
-    FIRMWARE_NOT_INSTALLED: 'ui-device_firmware_not_installed',
-    FIRMWARE_PROGRESS: 'ui-firmware-progress',
-    FIRMWARE_PROGRESS_UNEXPECTED_DELAY: 'ui-firmware-progress-unexpected-delay',
-    FIRMWARE_TYPE_CHANGED: 'ui-firmware_type_changed',
-
-    /** connect is waiting for device to be automatically reconnected */
-    FIRMWARE_RECONNECT: 'ui-firmware_reconnect',
-    FIRMWARE_DISCONNECT: 'ui-firmware_disconnect',
-
-    FIRMWARE_DOWNLOADED: 'ui-firmware_downloaded',
-
-    DEVICE_NEEDS_BACKUP: 'ui-device_needs_backup',
-
-    CLOSE_UI_WINDOW: 'ui-close_window',
-
-    REQUEST_CONFIRMATION: 'ui-request_confirmation',
-    REQUEST_PIN: 'ui-request_pin',
-    INVALID_PIN: 'ui-invalid_pin',
-    INVALID_PIN_ATTEMPTS_DEPLETED: 'ui-invalid_pin_attempts_depleted',
-    REQUEST_PASSPHRASE: 'ui-request_passphrase',
-    REQUEST_PASSPHRASE_ON_DEVICE: 'ui-request_passphrase_on_device',
-    REQUEST_THP_PAIRING: 'ui-request_thp_pairing',
-    SELECT_ACCOUNT: 'ui-select_account',
-    SELECT_FEE: 'ui-select_fee',
-    INSUFFICIENT_FUNDS: 'ui-insufficient_funds',
-    REQUEST_BUTTON: 'ui-button',
-    REQUEST_WORD: 'ui-request_word',
-
-    BUNDLE_PROGRESS: 'ui-bundle_progress',
-    REQUEST_DISCOVERY_ACCOUNTS: 'ui-request_discovery_accounts',
+export const UI_REQUEST = 'UI_REQUEST';
+export const UI_REQUESTS = {
+    REQUEST_CONFIRMATION: 'ui-request_confirmation', // -> RECEIVE_CONFIRMATION
+    REQUEST_PIN: 'ui-request_pin', // -> RECEIVE_PIN
+    REQUEST_PASSPHRASE: 'ui-request_passphrase', // -> RECEIVE_PASSPHRASE
+    REQUEST_THP_PAIRING_TAG: 'ui-request_thp_pairing_tag', // -> RECEIVE_THP_PAIRING_TAG
+    REQUEST_ACCOUNT: 'ui-request_account', // -> RECEIVE_ACCOUNT
+    REQUEST_FEE: 'ui-request_fee', // -> RECEIVE_FEE
+    REQUEST_WORD: 'ui-request_word', // -> RECEIVE_WORD
+    REQUEST_DISCOVERY_ACCOUNTS: 'ui-request_discovery_accounts', // -> RECEIVE_DISCOVERY_ACCOUNTS
 } as const;
-
-export type UiRequestWithoutPayload =
-    | {
-          type: typeof UI_REQUEST.TRANSPORT;
-          payload?: never;
-      }
-    | {
-          type: typeof UI_REQUEST.INSUFFICIENT_FUNDS;
-          payload?: never;
-      }
-    | {
-          type: typeof UI_REQUEST.CLOSE_UI_WINDOW;
-          payload?: never;
-      };
 
 export type UiRequestDeviceAction =
     | {
-          type: typeof UI_REQUEST.REQUEST_PIN;
+          type: typeof UI_REQUESTS.REQUEST_PIN;
           payload: {
               device: Device;
               type?: PROTO.PinMatrixRequestType;
           };
       }
     | {
-          type: typeof UI_REQUEST.REQUEST_WORD;
+          type: typeof UI_REQUESTS.REQUEST_WORD;
           payload: {
               device: Device;
               type: PROTO.WordRequestType;
           };
       }
     | {
-          type: typeof UI_REQUEST.INVALID_PIN;
+          type: typeof UI_REQUESTS.REQUEST_PASSPHRASE;
           payload: {
               device: Device;
               type?: never;
           };
-      }
-    | {
-          type: typeof UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED;
-          payload: {
-              device: Device;
-              type?: never;
-          };
-      }
-    | {
-          type: typeof UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE;
-          payload: {
-              device: Device;
-              type?: never;
-          };
-      }
-    | {
-          type: typeof UI_REQUEST.REQUEST_PASSPHRASE;
-          payload: {
-              device: Device;
-              type?: never;
-          };
-      };
-
-export type UiRequestButtonData =
-    | {
-          type: 'address';
-          serializedPath: string;
-          address: string;
-      }
-    | {
-          type: 'message';
-          serializedPath: string;
-          coin: string;
-          message: string;
       };
 
 export interface UiRequestThpPairing {
-    type: typeof UI_REQUEST.REQUEST_THP_PAIRING;
+    type: typeof UI_REQUESTS.REQUEST_THP_PAIRING_TAG;
     payload: DeviceThpPairingPayload & {
         device: Device;
     };
 }
 
-// ButtonRequest_FirmwareUpdate is a artificial button request thrown by "uploadFirmware" method
-// at the beginning of the uploading process
-export interface UiRequestButton {
-    type: typeof UI_REQUEST.REQUEST_BUTTON;
-    payload: DeviceButtonRequest['payload'] & {
-        data?: UiRequestButtonData;
-    };
-}
-
 export interface UiRequestConfirmation {
-    type: typeof UI_REQUEST.REQUEST_CONFIRMATION;
+    type: typeof UI_REQUESTS.REQUEST_CONFIRMATION;
     payload: {
         view:
             | 'thp-pairing-start'
@@ -166,42 +76,8 @@ export interface UiRequestConfirmation {
     };
 }
 
-export type FirmwareStoreEvent = {
-    binary: ArrayBuffer;
-    binaryVersion: VersionArray;
-    internalModel: DeviceModelInternal;
-    release: FirmwareRelease | undefined;
-    firmwareType: FirmwareType;
-    releaseVersion?: number[];
-};
-
-export interface UiRequestFirmwareDownloaded {
-    type: typeof UI_REQUEST.FIRMWARE_DOWNLOADED;
-    payload: FirmwareStoreEvent;
-}
-
-export interface UiRequestUnexpectedDeviceMode {
-    type:
-        | typeof UI_REQUEST.BOOTLOADER
-        | typeof UI_REQUEST.NOT_IN_BOOTLOADER
-        | typeof UI_REQUEST.INITIALIZE
-        | typeof UI_REQUEST.SEEDLESS
-        | typeof UI_REQUEST.DEVICE_NEEDS_BACKUP;
-    payload: Device;
-}
-
-export interface FirmwareException {
-    type:
-        | typeof UI_REQUEST.FIRMWARE_OLD
-        | typeof UI_REQUEST.FIRMWARE_OUTDATED
-        | typeof UI_REQUEST.FIRMWARE_NOT_SUPPORTED
-        | typeof UI_REQUEST.FIRMWARE_NOT_COMPATIBLE
-        | typeof UI_REQUEST.FIRMWARE_NOT_INSTALLED;
-    payload: Device;
-}
-
 export interface UiRequestSelectAccount {
-    type: typeof UI_REQUEST.SELECT_ACCOUNT;
+    type: typeof UI_REQUESTS.REQUEST_ACCOUNT;
     payload:
         | {
               type: 'start' | 'progress' | 'end';
@@ -221,117 +97,48 @@ export interface UiRequestSelectAccount {
 }
 
 export interface UiRequestSelectFee {
-    type: typeof UI_REQUEST.SELECT_FEE;
+    type: typeof UI_REQUESTS.REQUEST_FEE;
     payload: {
         coinInfo: BitcoinNetworkInfo;
         feeLevels: FeeLevel[];
     };
 }
 
-export interface BundleProgress<R> {
-    type: typeof UI_REQUEST.BUNDLE_PROGRESS;
-    payload: {
-        total: number;
-        progress: number;
-        response: R;
-        error?: string;
-    };
-}
-
-export interface FirmwareProgress {
-    type: typeof UI_REQUEST.FIRMWARE_PROGRESS;
-    payload: {
-        device: Device;
-        operation: 'downloading' | 'flashing' | 'start-flashing';
-        progress: number;
-    };
-}
-
-export interface FirmwareProgressUnexpectedDelay {
-    type: typeof UI_REQUEST.FIRMWARE_PROGRESS_UNEXPECTED_DELAY;
-    payload: Record<string, never>;
-}
-
-export interface FirmwareTypeChanged {
-    type: typeof UI_REQUEST.FIRMWARE_TYPE_CHANGED;
-    payload: {
-        device: Device;
-    };
-}
-
-/**
- * Prompt user to reconnect device during firmware installation.
- */
-export interface FirmwareReconnect {
-    type: typeof UI_REQUEST.FIRMWARE_RECONNECT;
-    payload: {
-        device: Device;
-        disconnected: boolean;
-        method: 'manual' | 'auto' | 'wait';
-        target: 'normal' | 'bootloader';
-        /** how many times this event was fired. resets when request is satisfied */
-        i: number;
-    };
-}
-
-export interface FirmwareDisconnect {
-    type: typeof UI_REQUEST.FIRMWARE_DISCONNECT;
-    payload: {
-        device: Device;
-    };
-}
-
 export interface UiRequestDiscoveryAccounts {
-    type: typeof UI_REQUEST.REQUEST_DISCOVERY_ACCOUNTS;
+    type: typeof UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNTS;
     payload: {
         coinInfo: CoinInfo;
     };
 }
 
-export type UiEvent =
-    | UiRequestWithoutPayload
+export type UiRequestEvent =
     | UiRequestDeviceAction
-    | UiRequestButton
     | UiRequestConfirmation
-    | UiRequestUnexpectedDeviceMode
     | UiRequestSelectAccount
     | UiRequestSelectFee
     | UiRequestThpPairing
-    | BundleProgress<any>
-    | FirmwareProgress
-    | FirmwareProgressUnexpectedDelay
-    | FirmwareTypeChanged
-    | FirmwareException
-    | FirmwareReconnect
-    | FirmwareDisconnect
-    | UiRequestFirmwareDownloaded
     | UiRequestDiscoveryAccounts;
 
-export const isUiEventOfType = createTypeGuardByType<UiEvent>();
+export const isUiRequestOfType = createTypeGuardByType<UiRequestEvent>();
 
-export type UiEventMessage = UiEvent & {
-    event: typeof UI_EVENT;
+export type UiRequestMessage = UiRequestEvent & {
+    event: typeof UI_REQUEST;
     requestId?: string;
     callId?: string;
 };
 
-// type CreateUiMessageOptions = {
-//     requestId?: string;
-//     callId?: string;
-// };
-
-export const createUiMessage = ((
-    type: UiEvent['type'],
-    payload?: UiEvent extends { payload: infer P } ? P : undefined,
+export const createUiRequestMessage = ((
+    type: UiRequestEvent['type'],
+    payload?: UiRequestEvent extends { payload: infer P } ? P : undefined,
     options?: { requestId?: string; callId?: string },
 ) => {
     const { requestId, callId } = options ?? {};
 
     return {
-        event: UI_EVENT,
+        event: UI_REQUEST,
         type,
         payload,
         requestId,
         callId,
     };
-}) as MessageFactoryFn<typeof UI_EVENT, UiEvent>;
+}) as MessageFactoryFn<typeof UI_REQUEST, UiRequestEvent>;

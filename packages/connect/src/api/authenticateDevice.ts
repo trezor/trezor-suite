@@ -1,4 +1,4 @@
-import { UI_REQUEST } from '@trezor/connect-common';
+import { UI_EVENTS } from '@trezor/connect-common';
 import type { PermissionRequest } from '@trezor/connect-common';
 import type { VerifyAuthenticityProofResult } from '@trezor/device-authenticity';
 import {
@@ -33,7 +33,7 @@ export default class AuthenticateDevice extends AbstractMethod<
 
         super(message, params);
         this.useEmptyPassphrase = true;
-        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
+        this.allowDeviceMode = [UI_EVENTS.DEVICE_NOT_INITIALIZED, UI_EVENTS.DEVICE_SEEDLESS];
         this.skipFinalReload = false;
         this.useDeviceState = false;
     }

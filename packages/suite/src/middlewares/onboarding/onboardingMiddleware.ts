@@ -6,7 +6,7 @@ import { routerAppChanged } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { firmwareActions } from '@suite-common/firmware';
 import { forgetDisconnectedDevices } from '@suite-common/wallet-core';
-import { UI_REQUEST, isUiEventOfType } from '@trezor/connect';
+import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { type AppState } from 'src/types/suite';
@@ -32,7 +32,7 @@ const onboardingMiddleware =
         }
 
         // seed is wiped when switching firmware type so we need to forget all device instances as well
-        if (isUiEventOfType(action, UI_REQUEST.FIRMWARE_TYPE_CHANGED)) {
+        if (isUiEventOfType(action, UI_EVENTS.FIRMWARE_TYPE_CHANGED)) {
             api.dispatch(
                 forgetDisconnectedDevices({
                     device: firmware.cachedDevice || action.payload.device,

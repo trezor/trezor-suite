@@ -1,4 +1,4 @@
-import { type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
+import { type PermissionRequest, UI_EVENTS } from '@trezor/connect-common';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -17,7 +17,11 @@ export default class PingDevice extends AbstractMethod<'pingDevice', PROTO.Ping>
         };
 
         super(message, params);
-        this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS, UI_REQUEST.BOOTLOADER];
+        this.allowDeviceMode = [
+            UI_EVENTS.DEVICE_NOT_INITIALIZED,
+            UI_EVENTS.DEVICE_SEEDLESS,
+            UI_EVENTS.DEVICE_IN_BOOTLOADER,
+        ];
         this.useDeviceState = false;
     }
 

@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RecoveryDevice.js
 
-import { type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
+import { type PermissionRequest, UI_EVENTS } from '@trezor/connect-common';
 import { RecoveryDevice as RecoveryDeviceSchema } from '@trezor/connect-common/src/types/api/management/recoveryDevice';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
@@ -27,7 +27,7 @@ export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PRO
         };
 
         super(message, params);
-        this.allowDeviceMode = [...this.allowDeviceMode, UI_REQUEST.INITIALIZE];
+        this.allowDeviceMode = [...this.allowDeviceMode, UI_EVENTS.DEVICE_NOT_INITIALIZED];
         this.useDeviceState = false;
         this.skipFinalReload = false;
         this.useEmptyPassphrase = true;

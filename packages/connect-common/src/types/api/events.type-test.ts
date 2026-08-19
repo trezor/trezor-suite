@@ -7,7 +7,10 @@ import {
     DEVICE_EVENT,
     TRANSPORT_EVENT,
     UI_EVENT,
+    UI_EVENTS,
     UI_REQUEST,
+    UI_REQUESTS,
+    UI_RESPONSE,
 } from '../../index';
 
 export const events = (api: TrezorConnect) => {
@@ -99,12 +102,12 @@ export const events = (api: TrezorConnect) => {
     api.off('transport-start', () => {});
 
     api.on(UI_EVENT, event => {
-        if (event.type === UI_REQUEST.BUNDLE_PROGRESS) {
+        if (event.type === UI_EVENTS.BUNDLE_PROGRESS) {
             // event.payload.progress;
             // event.error.message;
             // event.payload.response;
         }
-        if (event.type === UI_REQUEST.REQUEST_BUTTON) {
+        if (event.type === UI_EVENTS.BUTTON_REQUEST) {
             if (event.payload.code === 'ButtonRequest_ConfirmOutput') {
                 //
             }
@@ -123,8 +126,10 @@ export const events = (api: TrezorConnect) => {
             }
             event.payload.device.label.toLowerCase();
         }
+    });
 
-        if (event.type === UI_REQUEST.REQUEST_PIN) {
+    api.on(UI_REQUEST, event => {
+        if (event.type === UI_REQUESTS.REQUEST_PIN) {
             if (event.payload.type === 'PinMatrixRequestType_Current') {
                 //
             }
@@ -134,43 +139,43 @@ export const events = (api: TrezorConnect) => {
             }
         }
 
-        if (event.type === UI_REQUEST.REQUEST_WORD) {
+        if (event.type === UI_REQUESTS.REQUEST_WORD) {
             if (event.payload.type === 'WordRequestType_Plain') {
                 //
             }
         }
 
-        if (event.type === 'ui-request_thp_pairing') {
+        if (event.type === UI_REQUESTS.REQUEST_THP_PAIRING_TAG) {
             if (event.payload.device.thp?.properties?.pairing_methods[0] === 'CodeEntry') {
                 api.uiResponse({
-                    type: 'ui-receive_thp_pairing_tag',
+                    type: UI_RESPONSE.RECEIVE_THP_PAIRING_TAG,
                     payload: { selectedMethod: ThpPairingMethod.NFC },
                 });
 
                 api.uiResponse({
-                    type: 'ui-receive_thp_pairing_tag',
+                    type: UI_RESPONSE.RECEIVE_THP_PAIRING_TAG,
                     payload: { selectedMethod: 'SkipPairing' },
                 });
 
                 api.uiResponse({
-                    type: 'ui-receive_thp_pairing_tag',
+                    type: UI_RESPONSE.RECEIVE_THP_PAIRING_TAG,
                     // @ts-expect-error invalid string
                     payload: { selectedMethod: 'unknown method' },
                 });
 
                 api.uiResponse({
-                    type: 'ui-receive_thp_pairing_tag',
+                    type: UI_RESPONSE.RECEIVE_THP_PAIRING_TAG,
                     // @ts-expect-error invalid enum
                     payload: { selectedMethod: 7 },
                 });
 
                 api.uiResponse({
-                    type: 'ui-receive_thp_pairing_tag',
+                    type: UI_RESPONSE.RECEIVE_THP_PAIRING_TAG,
                     payload: { tag: '0000' },
                 });
 
                 api.uiResponse({
-                    type: 'ui-receive_thp_pairing_tag',
+                    type: UI_RESPONSE.RECEIVE_THP_PAIRING_TAG,
                     // @ts-expect-error invalid tag
                     payload: { tag: 1234 },
                 });
@@ -180,10 +185,10 @@ export const events = (api: TrezorConnect) => {
     api.off(UI_EVENT, () => {});
 
     // event without payload
-    api.on(UI_REQUEST.REQUEST_BUTTON, () => {});
-    api.on(UI_REQUEST.REQUEST_BUTTON, _payload => {});
+    api.on(UI_EVENTS.BUTTON_REQUEST, () => {});
+    api.on(UI_EVENTS.BUTTON_REQUEST, _payload => {});
 
-    api.on(UI_REQUEST.BUNDLE_PROGRESS, event => {
+    api.on(UI_EVENTS.BUNDLE_PROGRESS, event => {
         // event.progress as number;
         event.error?.toLowerCase();
         if (event.response?.empty === false) {
@@ -191,23 +196,23 @@ export const events = (api: TrezorConnect) => {
         }
     });
 
-    api.on(UI_REQUEST.BUNDLE_PROGRESS, event => {
+    api.on(UI_EVENTS.BUNDLE_PROGRESS, event => {
         // event.progress as number;
         event.error?.toLowerCase();
         event.response.serializedPath.toLowerCase();
         event.response.address.toLowerCase();
     });
-    api.off(UI_REQUEST.BUNDLE_PROGRESS, () => {});
-    api.removeAllListeners(UI_REQUEST.BUNDLE_PROGRESS);
+    api.off(UI_EVENTS.BUNDLE_PROGRESS, () => {});
+    api.removeAllListeners(UI_EVENTS.BUNDLE_PROGRESS);
 
-    api.on(UI_REQUEST.REQUEST_BUTTON, event => {
+    api.on(UI_EVENTS.BUTTON_REQUEST, event => {
         // @ts-expect-error
         if (event.code === 'a') {
             //
         }
     });
-    api.off(UI_REQUEST.REQUEST_BUTTON, () => {});
-    api.removeAllListeners(UI_REQUEST.BUNDLE_PROGRESS);
+    api.off(UI_EVENTS.BUTTON_REQUEST, () => {});
+    api.removeAllListeners(UI_EVENTS.BUNDLE_PROGRESS);
 
     api.on(BLOCKCHAIN_EVENT, event => {
         if (event.type === BLOCKCHAIN.CONNECT) {

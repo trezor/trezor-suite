@@ -2,8 +2,8 @@ import {
     Bundle,
     GetAddress as GetAddressSchema,
     type PermissionRequest,
-    UI_REQUEST,
-    createUiMessage,
+    UI_EVENTS,
+    createUiEventMessage,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { fromHardenedPathPart } from '@trezor/crypto-utils';
@@ -155,7 +155,7 @@ export abstract class AbstractMiscGetAddress<
 
             if (this.hasBundle) {
                 sendCoreMessage(
-                    createUiMessage(UI_REQUEST.BUNDLE_PROGRESS, {
+                    createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, {
                         total: params.length,
                         progress: i,
                         response,
