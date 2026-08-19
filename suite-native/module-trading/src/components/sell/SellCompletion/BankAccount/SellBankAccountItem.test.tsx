@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 import { unverifiedBankAccount, verifiedBankAccount } from '@suite-native/trading-fixtures';
@@ -7,7 +5,7 @@ import { unverifiedBankAccount, verifiedBankAccount } from '@suite-native/tradin
 import { BANK_ACCOUNT_ITEM_TEST_ID, SellBankAccountItem } from './SellBankAccountItem';
 
 describe('SellBankAccountItem', () => {
-    const renderSellBankAccountItem = (props = {}) =>
+    const renderBankAccountItem = (props = {}) =>
         renderWithBasicProvider(
             <SellBankAccountItem
                 bankAccount={verifiedBankAccount}
@@ -18,19 +16,19 @@ describe('SellBankAccountItem', () => {
 
     describe('Rendering', () => {
         it('should render bank account holder name', () => {
-            const { getByText } = renderSellBankAccountItem();
+            const { getByText } = renderBankAccountItem();
 
             expect(getByText('John Doe')).toBeOnTheScreen();
         });
 
         it('should render formatted IBAN', () => {
-            const { getByText } = renderSellBankAccountItem();
+            const { getByText } = renderBankAccountItem();
 
             expect(getByText('CZ65 0800 0000 1920 0014 5399')).toBeOnTheScreen();
         });
 
         it('should render verified status for verified bank account', () => {
-            const { getByText, getByTestId } = renderSellBankAccountItem({
+            const { getByText, getByTestId } = renderBankAccountItem({
                 bankAccount: verifiedBankAccount,
             });
 
@@ -41,7 +39,7 @@ describe('SellBankAccountItem', () => {
         });
 
         it('should render not verified status for unverified bank account', () => {
-            const { getByText, queryByTestId } = renderSellBankAccountItem({
+            const { getByText, queryByTestId } = renderBankAccountItem({
                 bankAccount: unverifiedBankAccount,
             });
 
@@ -54,7 +52,7 @@ describe('SellBankAccountItem', () => {
 
     describe('Accessory Types', () => {
         it('should render caret accessory', () => {
-            const { getByTestId } = renderSellBankAccountItem({
+            const { getByTestId } = renderBankAccountItem({
                 accessoryType: 'caret',
             });
 
@@ -62,7 +60,7 @@ describe('SellBankAccountItem', () => {
         });
 
         it('should render select accessory (radio button)', () => {
-            const { getByTestId } = renderSellBankAccountItem({
+            const { getByTestId } = renderBankAccountItem({
                 accessoryType: 'select',
                 isSelected: false,
             });
@@ -71,7 +69,7 @@ describe('SellBankAccountItem', () => {
         });
 
         it('should render no accessory', () => {
-            const { queryByTestId } = renderSellBankAccountItem({
+            const { queryByTestId } = renderBankAccountItem({
                 accessoryType: 'none',
             });
 
@@ -83,7 +81,7 @@ describe('SellBankAccountItem', () => {
     describe('User Interactions', () => {
         it('should call onPress when pressed', async () => {
             const mockOnPress = jest.fn();
-            const { getByTestId } = renderSellBankAccountItem({
+            const { getByTestId } = renderBankAccountItem({
                 onPress: mockOnPress,
             });
 
@@ -94,7 +92,7 @@ describe('SellBankAccountItem', () => {
 
         it('should call onPress when radio button is pressed', async () => {
             const mockOnPress = jest.fn();
-            const { getByTestId } = renderSellBankAccountItem({
+            const { getByTestId } = renderBankAccountItem({
                 accessoryType: 'select',
                 onPress: mockOnPress,
             });

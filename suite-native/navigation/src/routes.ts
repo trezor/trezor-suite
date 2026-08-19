@@ -50,6 +50,7 @@ export enum RootStackRoutes {
     TradingExchangeApproval = 'TradingExchangeApproval',
     TradingExchangeRevoke = 'TradingExchangeRevoke',
     TradingSellPreview = 'TradingSellPreview',
+    TradingSellCompletion = 'TradingSellCompletion',
     TradingConfirming = 'TradingConfirming',
     TradingSellOutputsReview = 'TradingSellOutputsReview',
     TradingExchangeOutputsReview = 'TradingExchangeOutputsReview',

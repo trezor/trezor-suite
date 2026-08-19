@@ -8,13 +8,12 @@ import { AmountEditingDoneButton } from '@suite-native/trading-atoms';
 import { SellAlert } from './SellAlert';
 import { SellCard } from './SellCard';
 import { SellConfirmation } from './SellConfirmation';
-import { SellKYCWarning } from './SellKYCWarning';
-import { SellPaymentCard } from './payment/SellPaymentCard';
 import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
 import { useSellQuotes } from '../../hooks/sell/useSellQuotes';
 import { ConciergeAlert } from '../concierge/ConciergeAlert';
+import { SellPaymentCard } from './payment/SellPaymentCard';
 
 type SellFormProps = {
     shouldAnimateEntering?: boolean;
@@ -66,7 +65,6 @@ const SellFormMemoized = memo(
                                 shouldAnimateEntering={shouldAnimateEntering}
                                 isFormMountedRecently={isFormMountedRecently}
                             />
-                            <SellKYCWarning />
                             <SellConfirmation enteringAnimation={enteringAnimation} />
                             <ConciergeAlert tradingType="sell" />
                         </>

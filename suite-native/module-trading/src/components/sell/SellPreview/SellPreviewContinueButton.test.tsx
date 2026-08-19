@@ -46,7 +46,7 @@ describe('SellPreviewContinueButton', () => {
         ).toBeOnTheScreen();
     });
 
-    it('replaces preview with awaiting screen', async () => {
+    it('replaces preview with completion screen', async () => {
         const { getByText } = renderButton();
 
         await userEvent.press(
@@ -57,7 +57,7 @@ describe('SellPreviewContinueButton', () => {
             ),
         );
 
-        expect(mockReplace).toHaveBeenCalledWith('TradingSellAwaiting');
+        expect(mockReplace).toHaveBeenCalledWith('TradingSellCompletion');
     });
 
     it('is disabled without a quote and account', () => {

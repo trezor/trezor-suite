@@ -1,12 +1,6 @@
 import { type AnimatedProps, FadeIn, FadeOutDown } from 'react-native-reanimated';
-import { useSelector } from 'react-redux';
 
-import {
-    type TradingRootState,
-    selectTradingProviderByNameAndTradeType,
-} from '@suite-common/trading';
 import { AnimatedBox, Button } from '@suite-native/atoms';
-import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
@@ -22,29 +16,12 @@ export const SellConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
     const form = useSellFormContext();
     const { canProceed, selectQuote } = useSellSelectQuote(form);
 
-    const quote = useWatch({ control: form.control, name: 'quote' });
-    const providerInfo = useSelector((state: TradingRootState) =>
-        selectTradingProviderByNameAndTradeType(state, quote?.exchange, 'sell'),
-    );
-    const providerName = providerInfo?.companyName ?? quote?.exchange;
-
     return (
         <AnimatedBox entering={enteringAnimation} exiting={FadeOutDown}>
             {canProceed && (
                 <AnimatedBox entering={FadeIn}>
-                    <Button
-                        onPress={selectQuote}
-                        testID={CONFIRMATION_TEST_ID}
-                        iconRight="arrowSquareOut"
-                    >
-                        {providerName ? (
-                            <Translation
-                                id="moduleTrading.tradingScreen.buttons.sellVia"
-                                values={{ providerName }}
-                            />
-                        ) : (
-                            <Translation id="moduleTrading.tradingScreen.buttons.continue" />
-                        )}
+                    <Button onPress={selectQuote} testID={CONFIRMATION_TEST_ID}>
+                        <Translation id="moduleTrading.tradingScreen.buttons.continue" />
                     </Button>
                 </AnimatedBox>
             )}

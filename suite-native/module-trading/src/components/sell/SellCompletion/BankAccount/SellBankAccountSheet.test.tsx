@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 import { bankAccounts, verifiedBankAccount } from '@suite-native/trading-fixtures';
 
@@ -10,7 +8,7 @@ describe('SellBankAccountSheet', () => {
     const mockCloseModal = jest.fn();
     const mockRef = { current: null };
 
-    const renderSellBankAccountSheet = (props = {}) =>
+    const renderBankAccountSheet = (props = {}) =>
         renderWithBasicProvider(
             <SellBankAccountSheet
                 ref={mockRef}
@@ -28,7 +26,7 @@ describe('SellBankAccountSheet', () => {
 
     describe('User Experience', () => {
         it('should display all bank accounts', () => {
-            const { getByText } = renderSellBankAccountSheet();
+            const { getByText } = renderBankAccountSheet();
 
             // User should see bank account holder names
             expect(getByText('John Doe')).toBeOnTheScreen();
@@ -37,7 +35,7 @@ describe('SellBankAccountSheet', () => {
         });
 
         it('should allow user to select a bank account', async () => {
-            const { getByText } = renderSellBankAccountSheet();
+            const { getByText } = renderBankAccountSheet();
 
             // User should be able to tap on a bank account to select it
             await userEvent.press(getByText('John Doe'));
@@ -46,7 +44,7 @@ describe('SellBankAccountSheet', () => {
         });
 
         it('should close the modal after user selects a bank account', async () => {
-            const { getByText } = renderSellBankAccountSheet();
+            const { getByText } = renderBankAccountSheet();
 
             // When user selects any bank account, modal should close
             await userEvent.press(getByText('Jane Smith'));

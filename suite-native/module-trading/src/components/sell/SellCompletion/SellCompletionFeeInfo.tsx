@@ -2,19 +2,20 @@ import { useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
 
+import { Box } from '@suite-native/atoms';
 import {
     selectSellSelectedSendAccount,
     selectTradingProviderConfirmationStatus,
 } from '@suite-native/trading-state';
 
-import { TradeInfo } from '../../general/TradeInfo/TradeInfo';
+import { TradeFeeInfoRow } from '../../general/TradeInfo/TradeFeeInfoRow';
 
-export type SellInfoProps = {
+export type SellCompletionFeeInfoProps = {
     quote?: SellFiatTrade;
     isTxnError: boolean;
 };
 
-export const SellInfo = ({ quote, isTxnError }: SellInfoProps) => {
+export const SellCompletionFeeInfo = ({ quote, isTxnError }: SellCompletionFeeInfoProps) => {
     const fromAccount = useSelector(selectSellSelectedSendAccount);
     const providerConfirmationStatus = useSelector(selectTradingProviderConfirmationStatus);
 
@@ -24,5 +25,9 @@ export const SellInfo = ({ quote, isTxnError }: SellInfoProps) => {
         return null;
     }
 
-    return <TradeInfo trade={quote} accountKey={fromAccount.key} tradingType="sell" />;
+    return (
+        <Box flex={1}>
+            <TradeFeeInfoRow accountKey={fromAccount.key} tradingType="sell" />
+        </Box>
+    );
 };

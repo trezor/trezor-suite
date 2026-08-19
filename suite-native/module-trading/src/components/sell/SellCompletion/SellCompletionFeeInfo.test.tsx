@@ -1,25 +1,24 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-import { getTranslation } from '@suite-native/intl';
 import { banxaCreditCardSellQuote, eth1NormalAccount } from '@suite-native/trading-fixtures';
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 
-import { SellInfo, type SellInfoProps } from './SellInfo';
+import { SellCompletionFeeInfo, type SellCompletionFeeInfoProps } from './SellCompletionFeeInfo';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
-// Mock FeeSelector to avoid deep dependency chain
-jest.mock('@suite-native/transaction-management', () => ({
-    ...jest.requireActual('@suite-native/transaction-management'),
-    FeeSelector: jest.fn(() => null),
-}));
+jest.mock('../../general/TradeInfo/TradeFeeInfoRow', () => {
+    const { View } = jest.requireActual('react-native');
 
-describe('SellInfo', () => {
-    const renderSellInfo = (
-        props: Partial<SellInfoProps> = {},
+    return { TradeFeeInfoRow: () => <View testID="fee-info-row" /> };
+});
+
+describe('SellCompletionFeeInfo', () => {
+    const renderSellCompletionFeeInfo = (
+        props: Partial<SellCompletionFeeInfoProps> = {},
         tradingAccountKey: AccountKey = eth1NormalAccount.key,
         providerConfirmationStatus: ProviderConfirmationStatus = 'confirmation_success',
     ) =>
-        renderWithTradingProvider(<SellInfo isTxnError={false} {...props} />, {
+        renderWithTradingProvider(<SellCompletionFeeInfo isTxnError={false} {...props} />, {
             tradeType: 'sell',
             overrides: {
                 wallet: {
@@ -32,7 +31,7 @@ describe('SellInfo', () => {
         });
 
     it('should render nothing when isTxnError', () => {
-        const { toJSON } = renderSellInfo({
+        const { toJSON } = renderSellCompletionFeeInfo({
             quote: banxaCreditCardSellQuote,
             isTxnError: true,
         });
@@ -41,7 +40,7 @@ describe('SellInfo', () => {
     });
 
     it('should render nothing when there is no quote', () => {
-        const { toJSON } = renderSellInfo({});
+        const { toJSON } = renderSellCompletionFeeInfo({});
 
         expect(toJSON()).toBeNull();
     });
@@ -51,13 +50,13 @@ describe('SellInfo', () => {
             ...banxaCreditCardSellQuote,
             cryptoCurrency: undefined,
         };
-        const { toJSON } = renderSellInfo({ quote: quoteWithoutCrypto });
+        const { toJSON } = renderSellCompletionFeeInfo({ quote: quoteWithoutCrypto });
 
         expect(toJSON()).toBeNull();
     });
 
     it('should render nothing when account is not found', () => {
-        const { toJSON } = renderSellInfo(
+        const { toJSON } = renderSellCompletionFeeInfo(
             { quote: banxaCreditCardSellQuote },
             mockAccountKey({ descriptor: 'unknownAccountKey' }),
         );
@@ -66,7 +65,7 @@ describe('SellInfo', () => {
     });
 
     it('should render nothing when providerConfirmationStatus is not in "confirmation_success" state', () => {
-        const { toJSON } = renderSellInfo(
+        const { toJSON } = renderSellCompletionFeeInfo(
             { quote: banxaCreditCardSellQuote },
             eth1NormalAccount.key,
             'window_closed_with_success',
@@ -75,10 +74,11 @@ describe('SellInfo', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render TradeInfo otherwise', () => {
-        const { getByText } = renderSellInfo({ quote: banxaCreditCardSellQuote });
+    it('should render fee info otherwise', () => {
+        const { getByTestId } = renderSellCompletionFeeInfo({
+            quote: banxaCreditCardSellQuote,
+        });
 
-        // 1st line of trade info is provider
-        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
+        expect(getByTestId('fee-info-row')).toBeOnTheScreen();
     });
 });

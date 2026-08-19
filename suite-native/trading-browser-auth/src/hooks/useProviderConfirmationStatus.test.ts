@@ -147,4 +147,29 @@ describe('useProviderConfirmationStatus', () => {
             'confirmation_success',
         );
     });
+
+    it('should wait for the browser to close before setting "confirmation_success"', () => {
+        renderUseProviderConfirmationStatus();
+
+        act(() => {
+            store.dispatch(tradingActions.setProviderConfirmationStatus('window_opened'));
+            store.dispatch(
+                sendFormActions.storePrecomposedTransaction({
+                    precomposedTransaction: { type: 'final' },
+                } as any),
+            );
+        });
+
+        expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
+
+        act(() => {
+            store.dispatch(
+                tradingActions.setProviderConfirmationStatus('window_closed_incomplete'),
+            );
+        });
+
+        expect(selectTradingProviderConfirmationStatus(store.getState())).toBe(
+            'confirmation_success',
+        );
+    });
 });

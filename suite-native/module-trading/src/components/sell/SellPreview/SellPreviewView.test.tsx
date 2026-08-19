@@ -70,7 +70,7 @@ describe('SellPreviewView', () => {
         ).toBeOnTheScreen();
     });
 
-    it('does not render awaiting-only bank account or fee controls', () => {
+    it('does not render completion-only bank account or fee controls', () => {
         const { queryByTestId } = renderSellPreviewView();
 
         expect(queryByTestId('@trading/sell/bank-account-item')).not.toBeOnTheScreen();

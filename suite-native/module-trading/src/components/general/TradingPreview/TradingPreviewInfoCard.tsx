@@ -54,8 +54,12 @@ export const TradingPreviewInfoCard = ({
                     )}
                 />
             </TradeInfoRow>
-            {feeRow}
             <ProviderInfoRow exchange={quote.exchange} tradingType={tradingType} />
+            {feeRow && (
+                <TradeInfoRow noHorizontalPadding noVerticalPadding>
+                    {feeRow}
+                </TradeInfoRow>
+            )}
         </Card>
     );
 };

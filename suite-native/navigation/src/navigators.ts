@@ -592,6 +592,7 @@ export type RootStackParamList = {
         shouldIncreaseLimit?: boolean;
     };
     [RootStackRoutes.TradingSellPreview]: undefined;
+    [RootStackRoutes.TradingSellCompletion]: undefined;
     [RootStackRoutes.TradingSellOutputsReview]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;

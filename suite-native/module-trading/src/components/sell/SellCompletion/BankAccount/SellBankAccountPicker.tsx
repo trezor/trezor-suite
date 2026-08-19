@@ -17,15 +17,15 @@ type SellBankAccountPickerProps = {
     onBankAccountSelect: (bankAccount: BankAccount) => void;
 };
 
-type MemoizedSellBankAccountPickerProps = {
+type SellBankAccountPickerCardProps = {
     bankAccount: BankAccount;
     onPress?: () => void;
     hasCaret: boolean;
 };
 
-// memoize the component because useWatchTrade needs useTimer and it causes re-renders
+// The trade watcher updates on a timer, so keep the displayed account from rerendering with it.
 const MemoizedSellBankAccountPicker = memo(
-    ({ bankAccount, onPress = () => {}, hasCaret }: MemoizedSellBankAccountPickerProps) => (
+    ({ bankAccount, onPress = () => {}, hasCaret }: SellBankAccountPickerCardProps) => (
         <AnimatedContainerCard noPadding>
             <TradeInfoHeader
                 title={<Translation id="moduleTrading.tradingSellPreviewScreen.bankAccount" />}
