@@ -1,8 +1,11 @@
 # Suite Desktop runtime flags
 
-Runtime flags can be used when running the Suite Desktop executable, enabling or disabling certain features. For example: `./Trezor-Suite-22.7.2.AppImage --open-devtools` will run with this flag turned on, which will result in opening DevTools on app launch.
-The table below lists only the custom flags defined by Suite. For a full list, see also flags exposed by
-[Electron](https://www.electronjs.org/docs/latest/api/command-line-switches) and [Chromium](https://peter.sh/experiments/chromium-command-line-switches/)
+Runtime flags can be used when running the Suite Desktop executable, enabling or disabling certain features. For
+example: `./Trezor-Suite-22.7.2.AppImage --open-devtools` will run with this flag turned on, which will result in
+opening DevTools on app launch. The table below lists only the custom flags defined by Suite. For a full list, see also
+flags exposed by
+[Electron](https://www.electronjs.org/docs/latest/api/command-line-switches)
+and [Chromium](https://peter.sh/experiments/chromium-command-line-switches/)
 
 Available flags:
 
@@ -25,4 +28,5 @@ Available flags:
 | `--log-no-print`              | Suppress console logs                                                                                                                                                                  |
 | `--remove-user-data-on-start` | Removes user data directory on start (used for E2E testing)                                                                                                                            |
 | `--expose-connect-ws`         | Expose Connect websocket even on production build                                                                                                                                      |
-| `--offline-mode`              | Experimental flag to disable all network connection both in Renderer and Main process. Note that it does **not** directly control subprocesses (e.g. tor, coinjoin)                    |
+| `--expose-store`              | Expose Redux store as window.store in the Renderer process.                                                                                                                            |
+| `--offline-mode`              | Experimental test-only flag to disable all network connection (both Renderer and Main process). Use at your own risk! Note it does **not** control subprocesses (e.g. tor, coinjoin).  |
