@@ -182,10 +182,7 @@ export function useAccountWithTokensOptions({
         const accountsWithTokensOptions: AccountWithTokensOption[] = [];
 
         for (const { account, tokens, nonTradableTokens } of accountsWithTokens) {
-            if (
-                supportedCryptoIds.has(getCryptoId(account.symbol)) &&
-                new BigNumber(account.balance).gt(0)
-            ) {
+            if (supportedCryptoIds.has(getCryptoId(account.symbol))) {
                 accountsWithTokensOptions.push(createAccountOption(account));
             }
 
