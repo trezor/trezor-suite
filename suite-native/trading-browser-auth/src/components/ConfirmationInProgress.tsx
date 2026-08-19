@@ -7,7 +7,8 @@ export type ConfirmationInProgressProps = {
     onConfirmationComplete?: () => void;
 };
 
-const CONFIRMATION_IN_PROGRESS_TEST_ID = '@trading/sell-preview/provider-confirmation-in-progress';
+const CONFIRMATION_IN_PROGRESS_TEST_ID =
+    '@trading/sell-completion/provider-confirmation-in-progress';
 
 export const ConfirmationInProgress = ({
     loadingState,

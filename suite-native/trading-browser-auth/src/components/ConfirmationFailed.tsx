@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AnimatedBox, BannerFull } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
-const CONFIRMATION_FAILED_TEST_ID = '@trading/sell-preview/provider-confirmation-failed';
+const CONFIRMATION_FAILED_TEST_ID = '@trading/sell-completion/provider-confirmation-failed';
 
 export const ConfirmationFailed = () => {
     const { translate } = useTranslate();

@@ -61,7 +61,7 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
 
         it('should request trezor connect before preview', async () => {
-            await tradingExchangeActions.selectSendAsset('USDC');
+            await tradingExchangeActions.selectSendAsset('USDC', undefined, 'USD Coin');
             await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum', 'Tether');
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');
@@ -100,7 +100,7 @@ describe('Trade Exchange [@androidOnly]', () => {
         });
 
         it('Basic exchange USDC to USDT', async () => {
-            await tradingExchangeActions.selectSendAsset('USDC');
+            await tradingExchangeActions.selectSendAsset('USDC', undefined, 'USD Coin');
             await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum', 'Tether');
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');

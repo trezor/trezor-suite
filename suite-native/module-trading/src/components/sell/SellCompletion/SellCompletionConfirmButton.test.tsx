@@ -48,8 +48,7 @@ describe('SellCompletionConfirmButton', () => {
         ).toBeOnTheScreen();
     });
 
-    it('does not render when there is a transaction error', () => {
-        const precomposedTx = createPrecomposedTxFinal({ totalSpent: '1100', fee: '1000' });
+    it('does not render when there is not final type', () => {
         const { toJSON } = renderWithTradingProvider(
             <SellCompletionConfirmButton quote={banxaCreditCardSellQuote} />,
             {
@@ -57,7 +56,7 @@ describe('SellCompletionConfirmButton', () => {
                 overrides: {
                     wallet: {
                         trading: { sell: { tradingAccountKey: ethAccountKey } },
-                        send: { precomposedTx },
+                        send: { precomposedTx: { type: undefined } },
                     },
                 },
             },
