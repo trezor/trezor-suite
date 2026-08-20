@@ -72,8 +72,8 @@ block), `packages/connect-examples/**` (sample code, not shipped app).
 | V1 | verify: `packages/components` + `product-components` (geometry, rAF, observers, keyframes, multi-line transitions) | `_scan/01-components.md` | **done** |
 | V2 | verify: `packages/suite` + `suite/*` + `suite-common` (geometry, rAF, framer height/width, transitions) | `_scan/02-suite.md` | **done** |
 | V3 | verify: `connect-explorer(-theme)` + `analytics-docs` + `suite-web`/`desktop` + `env-utils` | `_scan/03-satellites.md` | **done** |
-| W | write per-issue docs + README from `_scan/0[123]-*.md` | `p1-*.md`, `p2-*.md`, `p3-*.md`, `README.md` | pending |
-| F | verify every cited `file:line` mechanically, commit, push, draft PR → base `issues/perf-react-hooks` | PR | pending |
+| W | write per-issue docs + README from `_scan/0[123]-*.md` | `p1-*.md`, `p2-*.md`, `p3-*.md`, `README.md` | **done** — 2 P1, 1 P2, 2 P3 batches (9 findings), 12 findings total |
+| F | verify every cited `file:line` mechanically, commit, push, draft PR → base `issues/perf-react-hooks` | PR | **done** — 386 unique anchors checked, 0 broken |
 
 Resume rule: pick the first phase not marked **done**; each verify phase appends to its own
 `_scan/` file, so a killed session loses at most one file. The harvest regenerates with
