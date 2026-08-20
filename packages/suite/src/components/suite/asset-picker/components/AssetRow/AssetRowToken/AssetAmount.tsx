@@ -10,9 +10,10 @@ import { useSelector } from 'src/hooks/suite';
 export type AssetAmountProps = {
     symbol: string;
     amount: string;
-    contractAddress: string;
+    contractAddress?: string | null;
     fiatAmount?: BaseCurrencyAmount;
     showNoTradingPairText?: boolean;
+    isFiatPrimary?: boolean;
 };
 
 export function AssetAmount({
@@ -21,23 +22,34 @@ export function AssetAmount({
     fiatAmount,
     contractAddress,
     showNoTradingPairText = false,
+    isFiatPrimary = false,
 }: AssetAmountProps) {
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const fiatCurrency = useSelector(selectBaseCurrency);
 
-    return (
-        <Column alignItems="flex-end">
-            <Text intent="neutral" typographyStyle="body-md">
-                <FormattedCryptoAmount
-                    value={amount}
-                    symbol={symbol}
-                    contractAddress={contractAddress}
-                    isBalance
-                />
-            </Text>
+    const cryptoAmount = (
+        <Text
+            intent="neutral"
+            priority={isFiatPrimary ? 'secondary' : undefined}
+            typographyStyle={isFiatPrimary ? 'body-sm' : 'body-md'}
+        >
+            <FormattedCryptoAmount
+                value={amount}
+                symbol={symbol}
+                contractAddress={contractAddress}
+                isBalance
+            />
+        </Text>
+    );
 
+    const fiat = (
+        <>
             {fiatAmount && (
-                <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
+                <Text
+                    intent="neutral"
+                    priority={isFiatPrimary ? undefined : 'secondary'}
+                    typographyStyle={isFiatPrimary ? 'body-md' : 'body-sm'}
+                >
                     <BaseCurrencyAmountFormatter value={fiatAmount} currency={fiatCurrency} />
                 </Text>
             )}
@@ -46,6 +58,13 @@ export function AssetAmount({
                     <Translation id="TR_HIDDEN_TOKEN_WITHOUT_FIAT" />
                 </Text>
             )}
+        </>
+    );
+
+    return (
+        <Column alignItems="flex-end">
+            {isFiatPrimary ? fiat : cryptoAmount}
+            {isFiatPrimary ? cryptoAmount : fiat}
         </Column>
     );
 }
