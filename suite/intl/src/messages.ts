@@ -10942,11 +10942,11 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_BANDWIDTH: {
         id: 'TR_EARN_TRON_BANDWIDTH',
-        defaultMessage: '{count, plural, one {}=0 {Bandwidth} other {+# bandwidth}}',
+        defaultMessage: '{count, plural, =0 {Bandwidth} one {+# bandwidth} other {+# bandwidth}}',
     },
     TR_EARN_TRON_ENERGY: {
         id: 'TR_EARN_TRON_ENERGY',
-        defaultMessage: '{count, plural, one {}=0 {Energy} other {+# energy}}',
+        defaultMessage: '{count, plural, =0 {Energy} one {+# energy} other {+# energy}}',
     },
     TR_EARN_TRON_STAKE_TITLE: {
         id: 'TR_EARN_TRON_STAKE_TITLE',
@@ -11209,11 +11209,11 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_BANDWIDTH_REDUCTION: {
         id: 'TR_EARN_TRON_BANDWIDTH_REDUCTION',
-        defaultMessage: '{count, plural, one {}other {-# bandwidth}}',
+        defaultMessage: '{count, plural, =0 {} one {-# bandwidth} other {-# bandwidth}}',
     },
     TR_EARN_TRON_ENERGY_REDUCTION: {
         id: 'TR_EARN_TRON_ENERGY_REDUCTION',
-        defaultMessage: '{count, plural, one {}other {-# energy}}',
+        defaultMessage: '{count, plural, =0 {} one {-# energy} other {-# energy}}',
     },
     TR_EARN_TRON_SELECT_REPRESENTATIVE: {
         id: 'TR_EARN_TRON_SELECT_REPRESENTATIVE',
