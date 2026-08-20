@@ -139,6 +139,35 @@ echo "10. a malformed blob is refused by US, before the device is bothered"
 check "garbage refused" "not a ward_backup blob" \
     "$(timeout 150 $CLI --method=ward_restore --queue --entry=0xdeadbeef 2>&1)"
 
+echo "11. the compact form: a hash of the identity instead of the identity"
+# The device keeps ~47 bytes less per record and gives up being able to say whose the record is. The
+# property worth checking from out here is that NOTHING ELSE CHANGES: it reads, it backs up, and the
+# blob it backs up to is byte-for-byte what the full form produces -- the identity in it comes from
+# the request either way, and the MAC covers the same fields.
+check "queued compactly" "queued: true" \
+    "$(timeout 150 $CLI --method=ward_add --queue --compact --appid="$APPID" --ident=Compact1 --value=compact_secret 2>&1)"
+
+eval "$(timeout 150 $CLI --method=ward_backup --queue --appid="$APPID" --ident=Compact1 --target=CBLOB 2>/dev/null | grep -E '^CBLOB=0x[0-9a-f]+$')"
+check "a compact record still backs up" "^0x[0-9a-f]{40,}$" "${CBLOB:-}"
+
+echo "12. the same entry stored FULL backs up to the same bytes"
+check "queued fully" "queued: true" \
+    "$(timeout 150 $CLI --method=ward_add --queue --appid="$APPID" --ident=Compact1 --value=compact_secret 2>&1)"
+eval "$(timeout 150 $CLI --method=ward_backup --queue --appid="$APPID" --ident=Compact1 --target=FBLOB 2>/dev/null | grep -E '^FBLOB=0x[0-9a-f]+$')"
+check "the blob does not reveal which form the record was in" "^${CBLOB:-x}$" "${FBLOB:-y}"
+
+echo "13. restoring compactly, from the blob alone"
+check "restored" "restored: true" \
+    "$(timeout 150 $CLI --method=ward_restore --queue --compact --entry="${CBLOB:-none}" 2>&1)"
+check "and it reads back" "^0x[0-9a-f]{40,}$" \
+    "$(timeout 150 $CLI --method=ward_backup --queue --appid="$APPID" --ident=Compact1 --target=AFTER 2>/dev/null | grep -oE '0x[0-9a-f]+')"
+
+echo "14. a compact record is discarded like any other"
+check "discarded" "discarded: true" \
+    "$(timeout 150 $CLI --method=ward_delete --queue --appid="$APPID" --ident=Compact1 2>&1)"
+check "gone" "missing: true" \
+    "$(timeout 150 $CLI --method=ward_backup --queue --appid="$APPID" --ident=Compact1 2>&1)"
+
 echo
 if [ "$failures" -eq 0 ]; then
     echo "ward queue e2e: all checks passed"
