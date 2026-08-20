@@ -99,12 +99,3 @@ export const getTokenAddressTranslationId = (networkType: NetworkType): Translat
             return 'TR_CONTRACT_ADDRESS';
     }
 };
-
-export function getAccountsWithPositiveBalanceOrVisibleTokens(
-    accounts: Account[],
-    tokenDefinitions: TokenDefinitionsState,
-): Account[] {
-    return accounts.filter(account =>
-        hasVisibleTokens(account.symbol, account.tokens, tokenDefinitions),
-    );
-}
