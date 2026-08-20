@@ -204,6 +204,136 @@ ruleTester.run('no-suite-imports-in-suite-common', rules['no-suite-imports-in-su
     ],
 });
 
+ruleTester.run('no-cross-network-imports', rules['no-cross-network-imports'], {
+    valid: [
+        // Importing the shared network module is always allowed
+        {
+            code: "import { foo } from '@trezor/network-module-suite-common-types';",
+            filename: '/repo/networks/bitcoin/network-bitcoin-suite-common/src/file.ts',
+        },
+        // Importing from the package's own network is allowed
+        {
+            code: "import { foo } from '@trezor/network-cardano-suite-common';",
+            filename: '/repo/networks/cardano/network-cardano/src/file.ts',
+        },
+        // Generic (non-network) @trezor packages are allowed
+        {
+            code: "import { foo } from '@trezor/utils';",
+            filename: '/repo/networks/bitcoin/network-bitcoin-suite-common/src/file.ts',
+        },
+        // Third-party imports are allowed
+        {
+            code: "import { foo } from '@solana/kit';",
+            filename: '/repo/networks/solana/network-solana/src/file.ts',
+        },
+        // Files outside the networks tree are not restricted
+        {
+            code: "import { foo } from '@trezor/network-cardano-suite-common';",
+            filename: '/repo/suite-common/wallet-core/src/file.ts',
+        },
+        // The shared module importing generic packages is allowed
+        {
+            code: "import { foo } from '@trezor/utils';",
+            filename: '/repo/networks/network-module/network-module-suite-common-types/src/file.ts',
+        },
+        // Relative imports that stay inside the package are allowed
+        {
+            code: "import { foo } from './helper';",
+            filename: '/repo/networks/bitcoin/network-bitcoin-suite-common/src/file.ts',
+        },
+        {
+            code: "import { foo } from '../constants';",
+            filename: '/repo/networks/bitcoin/network-bitcoin-suite-common/src/sub/file.ts',
+        },
+    ],
+    invalid: [
+        // A network importing another network is forbidden
+        {
+            code: "import { foo } from '@trezor/network-cardano-suite-common';",
+            filename: '/repo/networks/bitcoin/network-bitcoin-suite-common/src/file.ts',
+            errors: [
+                {
+                    messageId: 'doNotImportOtherNetwork',
+                    data: {
+                        sourcePath: '@trezor/network-cardano-suite-common',
+                        ownNetwork: 'bitcoin',
+                    },
+                },
+            ],
+        },
+        // Dynamic import() of another network is forbidden
+        {
+            code: "const load = () => import('@trezor/network-cardano-suite-common');",
+            filename: '/repo/networks/bitcoin/network-bitcoin-suite-common/src/file.ts',
+            languageOptions: { ecmaVersion: 2020, sourceType: 'module' },
+            errors: [
+                {
+                    messageId: 'doNotImportOtherNetwork',
+                    data: {
+                        sourcePath: '@trezor/network-cardano-suite-common',
+                        ownNetwork: 'bitcoin',
+                    },
+                },
+            ],
+        },
+        // require() of another network is forbidden
+        {
+            code: "const solana = require('@trezor/network-solana');",
+            filename: '/repo/networks/bitcoin/network-bitcoin-suite-common/src/file.ts',
+            errors: [
+                {
+                    messageId: 'doNotImportOtherNetwork',
+                    data: {
+                        sourcePath: '@trezor/network-solana',
+                        ownNetwork: 'bitcoin',
+                    },
+                },
+            ],
+        },
+        // A relative import escaping the package is forbidden (a disguised cross-package/network path)
+        {
+            code: "import { foo } from '../../cardano/network-cardano-suite-common/src/foo';",
+            filename: '/repo/networks/bitcoin/network-bitcoin-suite-common/src/file.ts',
+            errors: [
+                {
+                    messageId: 'doNotEscapePackage',
+                    data: {
+                        sourcePath: '../../cardano/network-cardano-suite-common/src/foo',
+                    },
+                },
+            ],
+        },
+        // Re-exports across networks are forbidden too
+        {
+            code: "export * from '@trezor/network-solana';",
+            filename: '/repo/networks/ethereum/network-ethereum-suite-common/src/file.ts',
+            errors: [
+                {
+                    messageId: 'doNotImportOtherNetwork',
+                    data: {
+                        sourcePath: '@trezor/network-solana',
+                        ownNetwork: 'ethereum',
+                    },
+                },
+            ],
+        },
+        // The shared network module must not import a specific network
+        {
+            code: "import { foo } from '@trezor/network-tron-suite-common';",
+            filename: '/repo/networks/network-module/network-module-suite-common-types/src/file.ts',
+            errors: [
+                {
+                    messageId: 'doNotImportOtherNetwork',
+                    data: {
+                        sourcePath: '@trezor/network-tron-suite-common',
+                        ownNetwork: 'module',
+                    },
+                },
+            ],
+        },
+    ],
+});
+
 const typescriptRuleTester = new RuleTester({
     languageOptions: {
         parser,

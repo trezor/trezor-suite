@@ -119,6 +119,72 @@ const isSuiteCommonFile = (filename: string) => filename.includes('/suite-common
 const isSuiteOrSuiteNativeImport = (sourcePath: string) =>
     sourcePath.startsWith('@suite/') || sourcePath.startsWith('@suite-native/');
 
+// The shared network module is importable from every network (`networks/network-module/*`).
+const SHARED_NETWORK_KEY = 'module';
+
+// Extracts the network key of a file living under networks/<category>/network-<key>-*.
+// e.g. networks/bitcoin/network-bitcoin-suite-common/src/x.ts -> "bitcoin"
+//      networks/network-module/network-module-suite-common-types/src/x.ts -> "module"
+const getFileNetworkKey = (filename: string): string | null => {
+    const match = filename.match(/(?:^|\/)networks\/[^/]+\/network-([a-z0-9]+)/);
+
+    return match?.[1] ?? null;
+};
+
+// Extracts the network key of an imported @trezor/network-<key>* package, or null when the
+// import does not target a network package. e.g. @trezor/network-cardano-suite-common -> "cardano".
+const getImportNetworkKey = (sourcePath: string): string | null => {
+    const match = sourcePath.match(/^@trezor\/network-([a-z0-9]+)/);
+
+    return match?.[1] ?? null;
+};
+
+// Package root of a networks file: .../networks/<category>/<package>
+const getNetworkPackageRoot = (filename: string): string | null => {
+    const match = filename.match(/^(.*\/networks\/[^/]+\/[^/]+)(?:\/|$)/);
+
+    return match?.[1] ?? null;
+};
+
+const getDirName = (filename: string): string => filename.slice(0, filename.lastIndexOf('/'));
+
+// Resolves a POSIX-style relative import against the importing file's directory, collapsing
+// "." and ".." segments. Path separators are expected to be normalized to "/" beforehand.
+const resolveRelativeImport = (fromDir: string, relativePath: string): string => {
+    const isAbsolute = fromDir.startsWith('/');
+    const resolvedSegments: string[] = [];
+
+    for (const segment of `${fromDir}/${relativePath}`.split('/')) {
+        if (segment === '' || segment === '.') {
+            continue;
+        }
+
+        if (segment === '..') {
+            resolvedSegments.pop();
+        } else {
+            resolvedSegments.push(segment);
+        }
+    }
+
+    return `${isAbsolute ? '/' : ''}${resolvedSegments.join('/')}`;
+};
+
+// Extracts a static string source from a require('...') call expression, or null otherwise.
+const getRequireSourcePath = (node: Rule.Node): string | null => {
+    if (
+        'callee' in node &&
+        node.callee.type === 'Identifier' &&
+        node.callee.name === 'require' &&
+        'arguments' in node &&
+        node.arguments[0]?.type === 'Literal' &&
+        typeof node.arguments[0].value === 'string'
+    ) {
+        return node.arguments[0].value;
+    }
+
+    return null;
+};
+
 export const rules = {
     'no-override-ds-component': {
         meta: {
@@ -316,6 +382,115 @@ export const rules = {
                 ImportDeclaration: checkNode,
                 ExportAllDeclaration: checkNode,
                 ExportNamedDeclaration: checkNode,
+            };
+        },
+    },
+    'no-cross-network-imports': {
+        meta: {
+            type: 'problem',
+            docs: {
+                description:
+                    'Disallows importing one network package from another. A network package may only import the shared network module and packages from its own network.',
+                category: 'Best Practices',
+                recommended: false,
+            },
+            messages: {
+                doNotImportOtherNetwork:
+                    "Importing '{{sourcePath}}' from the '{{ownNetwork}}' network is not allowed. A network package may only import the shared network module (@trezor/network-module-*) and packages from its own network.",
+                doNotEscapePackage:
+                    "Relative import '{{sourcePath}}' escapes the package. Import other packages through their public @trezor/... entry point so cross-package and cross-network boundaries stay enforced.",
+            },
+            schema: [],
+        },
+        create(context) {
+            const filename =
+                'filename' in context && typeof context.filename === 'string'
+                    ? normalizePathSeparators(context.filename)
+                    : null;
+
+            if (filename === null) {
+                return {};
+            }
+
+            const fileNetwork = getFileNetworkKey(filename);
+
+            if (fileNetwork === null) {
+                return {};
+            }
+
+            const packageRoot = getNetworkPackageRoot(filename);
+
+            const checkSource = (node: Rule.Node, sourcePath: string) => {
+                // A relative import that resolves into a *different* network package is a
+                // disguised cross-package/cross-network reference that bypasses the
+                // @trezor/network-* checks below. Escapes into non-network locations (e.g. the
+                // repo-root jest.config.base) are left to other rules.
+                if (sourcePath.startsWith('.')) {
+                    if (packageRoot === null) {
+                        return;
+                    }
+
+                    const resolved = resolveRelativeImport(getDirName(filename), sourcePath);
+
+                    if (resolved === packageRoot || resolved.startsWith(`${packageRoot}/`)) {
+                        return;
+                    }
+
+                    if (getNetworkPackageRoot(resolved) === null) {
+                        return;
+                    }
+
+                    context.report({
+                        node,
+                        messageId: 'doNotEscapePackage',
+                        data: { sourcePath },
+                    });
+
+                    return;
+                }
+
+                const importNetwork = getImportNetworkKey(sourcePath);
+
+                if (
+                    importNetwork === null ||
+                    importNetwork === fileNetwork ||
+                    importNetwork === SHARED_NETWORK_KEY
+                ) {
+                    return;
+                }
+
+                context.report({
+                    node,
+                    messageId: 'doNotImportOtherNetwork',
+                    data: {
+                        sourcePath,
+                        ownNetwork: fileNetwork,
+                    },
+                });
+            };
+
+            // Static import/export declarations and dynamic import() all expose the specifier
+            // through `node.source`; require('...') exposes it through the first argument.
+            const checkDeclaration = (node: Rule.Node) => {
+                const sourcePath = getNodeSourcePath(node);
+
+                if (sourcePath !== null) {
+                    checkSource(node, sourcePath);
+                }
+            };
+
+            return {
+                ImportDeclaration: checkDeclaration,
+                ExportAllDeclaration: checkDeclaration,
+                ExportNamedDeclaration: checkDeclaration,
+                ImportExpression: checkDeclaration,
+                CallExpression: (node: Rule.Node) => {
+                    const sourcePath = getRequireSourcePath(node);
+
+                    if (sourcePath !== null) {
+                        checkSource(node, sourcePath);
+                    }
+                },
             };
         },
     },

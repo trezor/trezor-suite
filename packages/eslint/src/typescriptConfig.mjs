@@ -42,9 +42,9 @@ const connectDeepImportPatterns = [
 
 // Deny importing internal suite packages from outside the suite app itself.
 const suiteInternalPatterns = {
-    group: ['@suite-common/**', '@suite-native/**'],
+    group: ['@suite/**', '@suite-common/**', '@suite-native/**'],
     message:
-        '@suite-common/* and @suite-native/* packages are private to the suite apps and must not be imported by other workspace packages.',
+        '@suite/*, @suite-common/* and @suite-native/* packages are private to the suite apps and must not be imported by other workspace packages.',
 };
 
 export const restrictedImportsPatterns = [
@@ -104,8 +104,10 @@ export const typescriptConfig = [
         },
     },
     {
-        // restrict import of suite-common and suite-native packages outside of suite
-        files: ['packages/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        // restrict import of suite, suite-common and suite-native packages outside of suite.
+        // networks/* packages are @trezor/* (packages layer) and sit below suite-common,
+        // so they are subject to the same restriction.
+        files: ['packages/**/*.{js,mjs,cjs,ts,jsx,tsx}', 'networks/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
         ignores: ['packages/suite*/**/*'],
         rules: {
             '@typescript-eslint/no-restricted-imports': [

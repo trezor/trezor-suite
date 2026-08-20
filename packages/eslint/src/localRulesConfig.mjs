@@ -62,6 +62,7 @@ export const localRulesConfig = [
             'suite/**/*.{js,mjs,cjs,ts,jsx,tsx}',
             'suite-native/**/*.{js,mjs,cjs,ts,jsx,tsx}',
             'suite-common/**/*.{js,mjs,cjs,ts,jsx,tsx}',
+            'networks/**/*.{js,mjs,cjs,ts,jsx,tsx}',
         ],
         rules: {
             'local-rules/no-package-deep-imports': [
@@ -87,6 +88,15 @@ export const localRulesConfig = [
         files: ['suite-common/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
         rules: {
             'local-rules/no-suite-imports-in-suite-common': 'error',
+        },
+    },
+    {
+        // A network package may only import the shared network module and its own network's
+        // packages — never another network. (@suite*/@suite-common imports are blocked separately
+        // by the packages-layer no-restricted-imports guard in typescriptConfig.mjs.)
+        files: ['networks/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        rules: {
+            'local-rules/no-cross-network-imports': 'error',
         },
     },
 ];
