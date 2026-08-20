@@ -490,6 +490,10 @@ export const messages = defineMessages({
         defaultMessage: 'All networks',
         id: 'TR_ALL_NETWORKS',
     },
+    TR_ASSET_PICKER_NETWORK_FILTER: {
+        defaultMessage: 'Network',
+        id: 'TR_ASSET_PICKER_NETWORK_FILTER',
+    },
     TR_SELECT_TOKEN: {
         defaultMessage: 'Select asset',
         id: 'TR_SELECT_TOKEN',
