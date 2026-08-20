@@ -35,7 +35,6 @@ import {
 import { fromGwei, fromWei } from './ethConverter';
 import {
     getEvmTransactionPurpose,
-    getEvmTransactionTextSignature,
     isEvmApprovalTx,
     isEvmYieldTxByTextSignature,
     isUnwrapNativeTx,
@@ -255,8 +254,19 @@ const constructOldFlow = ({
     const isCardano = isCardanoTx(account, precomposedTx);
     const isStellar = account.networkType === 'stellar';
     const { networkType } = account;
-    const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
-    const isYieldOperation = isEvmYieldTxByTextSignature(evmTxType);
+
+    const evmTxType = getEvmTransactionPurpose({
+        networkSymbol: account.symbol,
+        to: precomposedTx.outputs.find(o => 'address' in o && typeof o.address === 'string')
+            ?.address,
+        data: precomposedForm.transactionData,
+    });
+
+    const isYieldOperation =
+        isEvmYieldTxByTextSignature(evmTxType) ||
+        evmTxType === 'wrap' ||
+        evmTxType === 'unwrap' ||
+        evmTxType === 'claim';
 
     const hasDestinationTag = 'destinationTag' in precomposedForm;
 
