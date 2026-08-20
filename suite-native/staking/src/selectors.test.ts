@@ -7,6 +7,8 @@ import {
     selectApy,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
+    selectStakedBalanceByAccountKey,
+    selectTotalStakePendingByAccountKey,
 } from './selectors';
 
 const ethSymbol = asNetworkSymbol('eth');
@@ -61,6 +63,24 @@ const solAccountWithStaking: Account = {
         solEpoch: 1,
     },
 } as unknown as Account;
+
+const createAdaAccount = ({ isActive, rewards }: { isActive: boolean; rewards: string }) =>
+    ({
+        symbol: 'ada',
+        accountLabel: 'ADA Account #1',
+        deviceState: 'device@state:1',
+        key: ada1Key,
+        visible: true,
+        networkType: 'cardano',
+        formattedBalance: '100',
+        misc: {
+            staking: {
+                isActive,
+                rewards,
+                poolId: 'pool1sysgx87cwxnqy0pqn8g97gdhd0dmre9rw3jvpn2k7apuwa7cgkn',
+            },
+        },
+    }) as unknown as Account;
 
 const etcAccount: Account = {
     symbol: 'etc',
@@ -304,6 +324,34 @@ describe('main staking selectors', () => {
             const result = selectApy(testState as any, { accountKey: etc1Key });
 
             expect(result).toBeNull();
+        });
+    });
+
+    describe('selectStakedBalanceByAccountKey', () => {
+        it('should return the whole balance for a delegated ADA account', () => {
+            const testState = getTestState([createAdaAccount({ isActive: true, rewards: '0' })]);
+
+            const result = selectStakedBalanceByAccountKey(testState as any, ada1Key);
+
+            expect(result).toBe('100');
+        });
+
+        it('should return "0" for an ADA account without a delegation', () => {
+            const testState = getTestState([createAdaAccount({ isActive: false, rewards: '0' })]);
+
+            const result = selectStakedBalanceByAccountKey(testState as any, ada1Key);
+
+            expect(result).toBe('0');
+        });
+    });
+
+    describe('selectTotalStakePendingByAccountKey', () => {
+        it('should return "0" for a delegated ADA account, which stakes the whole balance at once', () => {
+            const testState = getTestState([createAdaAccount({ isActive: true, rewards: '0' })]);
+
+            const result = selectTotalStakePendingByAccountKey(testState as any, ada1Key);
+
+            expect(result).toBe('0');
         });
     });
 

@@ -38,7 +38,7 @@ export const selectCardanoStakedBalanceByAccountKey = (
 
     const stakingData = getStakingDataForNetwork(account);
 
-    return stakingData?.autocompoundBalance ?? '0';
+    return stakingData?.autocompoundBalance || '0';
 };
 
 export const selectCardanoRewardsBalanceByAccountKey = (
@@ -51,18 +51,6 @@ export const selectCardanoRewardsBalanceByAccountKey = (
     const stakingData = getStakingDataForNetwork(account);
 
     return stakingData?.restakedReward ?? '0';
-};
-
-export const selectCardanoTotalStakePendingByAccountKey = (
-    state: AccountsRootState,
-    accountKey: AccountKey,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-    if (account?.networkType !== 'cardano') return null;
-
-    const stakingData = getStakingDataForNetwork(account);
-
-    return stakingData?.totalPendingStakeBalance ?? '0';
 };
 
 export const selectIsCardanoStakedWithFiveBinaries = (
