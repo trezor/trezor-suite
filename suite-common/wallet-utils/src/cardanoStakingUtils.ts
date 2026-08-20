@@ -46,10 +46,6 @@ export const isCardanoStakingActive = (account: Account | null) => {
     return isActive;
 };
 
-export const hasCardanoStakingRewards = (account?: Account | null) =>
-    account?.networkType === 'cardano' &&
-    new BigNumber(account.misc?.staking?.rewards ?? '0').gt(0);
-
 export const getCardanoAccountPoolId = (account?: Account) => {
     if (account?.networkType !== 'cardano') return null;
 

@@ -1,18 +1,15 @@
 import { type AdaPools } from '@suite-common/earn-staking-api';
-import { CARDANO_EVERSTAKE_STAKING_POOL, EVERSTAKE_POOLS } from '@suite-common/wallet-constants';
+import { CARDANO_EVERSTAKE_STAKING_POOL } from '@suite-common/wallet-constants';
 import { type Account } from '@suite-common/wallet-types';
 
 import * as fixtures from './__fixtures__/cardanoStakingUtils';
 import {
-    hasCardanoStakingRewards,
     isCardanoStakedOutsideEverstake,
     isCardanoStakedWithEverstake,
     isCardanoStakedWithFiveBinaries,
     poolBech32ToHex,
     selectBestCardanoPool,
 } from './cardanoStakingUtils';
-
-const [everstakePool] = EVERSTAKE_POOLS as [string];
 
 describe('cardano staking utils', () => {
     fixtures.selectBestCardanoPool.forEach(f => {
@@ -53,29 +50,6 @@ describe('cardano staking utils', () => {
     fixtures.isCardanoStakedWithFiveBinaries.forEach(f => {
         it(`isCardanoStakedWithFiveBinaries: ${f.description}`, () => {
             expect(isCardanoStakedWithFiveBinaries(f.account as Account)).toBe(f.result);
-        });
-    });
-
-    describe('hasCardanoStakingRewards', () => {
-        const adaAccount = (staking: object) =>
-            ({ networkType: 'cardano', misc: { staking } }) as unknown as Account;
-
-        it('is true with accrued rewards', () => {
-            expect(hasCardanoStakingRewards(adaAccount({ rewards: '15000000' }))).toBe(true);
-        });
-
-        it('is false when no rewards have accrued yet', () => {
-            expect(hasCardanoStakingRewards(adaAccount({ rewards: '0' }))).toBe(false);
-        });
-
-        it('is false for a delegated account before the first rewards payload arrives', () => {
-            expect(hasCardanoStakingRewards(adaAccount({ poolId: everstakePool }))).toBe(false);
-        });
-
-        it('is false for a non-cardano account', () => {
-            expect(
-                hasCardanoStakingRewards({ networkType: 'ethereum' } as unknown as Account),
-            ).toBe(false);
         });
     });
 });

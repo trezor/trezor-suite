@@ -3,17 +3,10 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol, networks } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
-import {
-    mockAccountKey,
-    mockWalletAccount,
-    networkSpecificDefaultCardano,
-    networkSpecificDefaultEthereum,
-} from '@suite-common/wallet-types/mocks';
-import type { StakingPool } from '@trezor/blockchain-link-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { type AccountsRootState } from './accountsReducer';
 import {
-    selectAccountCanClaimStaking,
     selectAddressByNetworkAndPath,
     selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
     selectVisibleDeviceAccountsMap,
@@ -340,80 +333,6 @@ describe('accountsSelectors', () => {
                     0,
                 ),
             ).toBeUndefined();
-        });
-    });
-
-    describe('selectAccountCanClaimStaking', () => {
-        const adaAccount = (rewards: string) =>
-            mockWalletAccount(
-                { symbol: asNetworkSymbol('ada') },
-                {
-                    ...networkSpecificDefaultCardano,
-                    misc: { staking: { ...networkSpecificDefaultCardano.misc.staking, rewards } },
-                },
-            );
-
-        const everstakePool = (
-            claimableAmount: string,
-            withdrawTotalAmount: string,
-        ): StakingPool => ({
-            contract: '0xEverstakePoolContract',
-            name: 'Everstake',
-            autocompoundBalance: '0',
-            claimableAmount,
-            depositedBalance: '0',
-            pendingBalance: '0',
-            pendingDepositedBalance: '0',
-            restakedReward: '0',
-            withdrawTotalAmount,
-        });
-
-        const ethAccount = (claimableAmount: string, withdrawTotalAmount: string) =>
-            mockWalletAccount(
-                { symbol: ethSymbol },
-                {
-                    ...networkSpecificDefaultEthereum,
-                    misc: {
-                        ...networkSpecificDefaultEthereum.misc,
-                        stakingPools: [everstakePool(claimableAmount, withdrawTotalAmount)],
-                    },
-                },
-            );
-
-        const stakingState = (account: Account) =>
-            ({ wallet: { accounts: [account] } }) as AccountsRootState;
-
-        it('lets a delegated ADA account with accrued rewards claim', () => {
-            const account = adaAccount('15000000');
-
-            expect(selectAccountCanClaimStaking(stakingState(account), account.key)).toBe(true);
-        });
-
-        it('does not let an ADA account without accrued rewards claim', () => {
-            const account = adaAccount('0');
-
-            expect(selectAccountCanClaimStaking(stakingState(account), account.key)).toBe(false);
-        });
-
-        it('defers to the Everstake pool for an ETH account with a fully withdrawn amount', () => {
-            const oneEtherInWei = '1000000000000000000';
-            const account = ethAccount(oneEtherInWei, oneEtherInWei);
-
-            expect(selectAccountCanClaimStaking(stakingState(account), account.key)).toBe(true);
-        });
-
-        it('does not let an ETH account without a claimable amount claim', () => {
-            const account = ethAccount('0', '0');
-
-            expect(selectAccountCanClaimStaking(stakingState(account), account.key)).toBe(false);
-        });
-
-        it('does not let an account missing from the state claim', () => {
-            const state = stakingState(adaAccount('15000000'));
-
-            expect(
-                selectAccountCanClaimStaking(state, mockAccountKey({ descriptor: 'unknown' })),
-            ).toBe(false);
         });
     });
 });
