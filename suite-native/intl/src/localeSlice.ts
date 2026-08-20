@@ -58,6 +58,10 @@ export const selectAreDebugTranslationKeysDisplayed = (state: LocaleSliceRootSta
 
 const selectSystemLocaleCode = (state: LocaleSliceRootState) => state.locale.systemLocaleCode;
 
+/**
+ * Select either the locale selected in-app, or if set to system, the preferred system one.
+ * Note that this does not guarantee app language! See selectSupportedLanguageLocale
+ */
 export const selectLocale = (state: LocaleSliceRootState) => {
     const userSelectedLocaleCode = selectAppLocaleCode(state);
     const systemLocaleCode = selectSystemLocaleCode(state);
@@ -65,6 +69,10 @@ export const selectLocale = (state: LocaleSliceRootState) => {
     return userSelectedLocaleCode === 'system' ? systemLocaleCode : userSelectedLocaleCode;
 };
 
+/**
+ * Selects the actual resolved language – either explicitely selected in-app, or if set to system,
+ * resolved from preferred locale (either it is a supported language, or fallback is used).
+ */
 export const selectSupportedLanguageLocale = (state: LocaleSliceRootState): SupportedLocaleCode => {
     const locale = selectLocale(state);
     if (isOfficiallySupportedLanguage(locale)) {
