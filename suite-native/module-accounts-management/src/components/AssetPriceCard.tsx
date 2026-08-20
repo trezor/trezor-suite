@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import {
+    getNetworkDisplaySymbol,
+    getNetworkDisplaySymbolName,
+    isWrappedNativeToken,
+} from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
@@ -74,16 +78,21 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
 
     const isErc4626Token = isErc4626(token);
 
-    const { currentValue, valuePercentageChange, isLoading } = useDayCoinPriceChange({
-        symbol,
-        tokenContract,
-        isErc4626Token,
-    });
+    const { currentValue, valuePercentageChange, isLoading, underlyingAssetContract } =
+        useDayCoinPriceChange({
+            symbol,
+            tokenContract,
+            isErc4626Token,
+        });
 
     if (!symbol) return null;
     if (!isLoading && currentValue === null) return null;
 
     const tokenName = token?.name ?? token?.symbol ?? getNetworkDisplaySymbol(symbol);
+
+    const priceContract = isErc4626Token ? underlyingAssetContract : tokenContract;
+    const isCoinPrice = !priceContract || isWrappedNativeToken(symbol, priceContract);
+    const isUnderlyingAssetResolving = isErc4626Token && underlyingAssetContract === null;
 
     return (
         <VStack marginHorizontal="sp16">
@@ -120,9 +129,10 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
                             value={currentValue}
                             variant="body-sm-strong"
                             isDiscreetText={false}
+                            isLoading={isLoading || isUnderlyingAssetResolving}
                             numberOfLines={1}
                             adjustsFontSizeToFit
-                            maximumFractionDigits={tokenContract ? 8 : 2}
+                            maximumFractionDigits={isCoinPrice ? 2 : 8}
                         />
 
                         {!isErc4626Token && (

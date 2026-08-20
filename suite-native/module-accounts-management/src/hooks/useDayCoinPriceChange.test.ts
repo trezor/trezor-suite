@@ -57,6 +57,7 @@ describe('useDayCoinPriceChange', () => {
         });
 
         expect(result.current.valuePercentageChange).toBeCloseTo(10 / 105);
+        expect(result.current.underlyingAssetContract).toBeNull();
         expect(fetchErc4626UnderlyingAssetMock).not.toHaveBeenCalled();
         expect(getFiatRatesForTimestampsMock).toHaveBeenCalledWith(
             { symbol: ethSymbol, tokenAddress: underlyingContract },
@@ -89,6 +90,7 @@ describe('useDayCoinPriceChange', () => {
         });
 
         expect(result.current.valuePercentageChange).toBeCloseTo(10 / 105);
+        expect(result.current.underlyingAssetContract).toBe(underlyingContract);
         expect(fetchErc4626UnderlyingAssetMock).toHaveBeenCalledWith({
             coin: ethSymbol,
             contract: vaultContract,
@@ -122,5 +124,6 @@ describe('useDayCoinPriceChange', () => {
 
         expect(result.current.currentValue).toBeNull();
         expect(result.current.valuePercentageChange).toBeNull();
+        expect(result.current.underlyingAssetContract).toBeNull();
     });
 });
