@@ -2663,7 +2663,29 @@ export const messages = {
             totalRewardsLabel: 'Total rewards',
             autoRestakedBadge: 'Automatically restaked',
             nextRewardLabel: 'Next reward in ~{value, plural, one {# day} other {# days}}',
-            solRewardsFrequencyLabel: 'Rewards every ~{value, plural, one {# day} other {# days}}',
+            rewardsFrequencyLabel: 'Rewards every ~{value, plural, one {# day} other {# days}}',
+            cardanoDesktopOnlyBanner:
+                'Staking {symbol} can only be managed in Trezor Suite on desktop.',
+            cardanoAutoStakedBadge: 'Auto-staked',
+            cardanoLearnMoreLink: 'learn more',
+            cardanoNotEarningBanner: {
+                title: 'Your Cardano is no longer earning',
+                description:
+                    'Use Trezor Suite on desktop to switch your provider and start earning again.',
+                button: 'Learn more',
+            },
+            cardanoDelegatedOutsideBanner: {
+                title: 'Delegated outside Trezor Suite',
+                description:
+                    "Your full balance is delegated to a pool that isn't managed in Trezor Suite.",
+            },
+            cardanoAutoStakedModal: {
+                title: 'Your whole balance earns',
+                delegationDescription:
+                    'On Cardano you delegate your entire balance, not a set amount. Everything in this account earns rewards automatically, including {symbol} you receive later.',
+                accessibilityDescription:
+                    'Nothing gets locked. You can send or spend at any time and your stake adjusts on its own.',
+            },
             unstakeButton: 'Unstake',
             stakeButton: 'Stake',
             stakeMoreButton: 'Stake more',
@@ -3542,13 +3564,6 @@ export const messages = {
         trezorDesktop: 'Trezor Suite desktop app.',
         adaStaysFullyAccessuble: 'Your ADA stays fully accessible while earning rewards.',
         infoBanner: {
-            updateProviderTitle: 'Save your ADA rewards by updating your staking provider',
-            newProviderTitle: 'Earn ~{apy}% APY with our new provider',
-            updateProviderButton: 'Update provider',
-            providerReducingRewards:
-                "You're earning nearly 0% in ADA rewards right now. Switch to Everstake to earn up to {apy}% APY. Your funds and past rewards are safe.",
-            updateToNewProvider:
-                'Update to our new provider, Everstake, and earn ~{apy}% APY. Your {symbol} with our previous provider is safe, and your rewards stay intact, though rates aren’t guaranteed.',
             rewardsReduced: 'Cardano staking rewards reduced',
         },
         notAvailable: 'Not available',

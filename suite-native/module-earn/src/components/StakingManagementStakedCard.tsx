@@ -2,11 +2,22 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectEthNextRewardPayout } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Badge, BannerInline, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import {
+    Badge,
+    BannerInline,
+    Button,
+    Card,
+    HStack,
+    PressableOpacity,
+    Text,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -14,12 +25,18 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { selectApy, selectStakedBalanceByAccountKey, useSelector } from '@suite-native/staking';
+import {
+    selectApy,
+    selectIsCardanoStakedWithFiveBinaries,
+    selectStakedBalanceByAccountKey,
+    useSelector,
+} from '@suite-native/staking';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
 import { ApyValue } from './ApyValue';
+import { CardanoAutoStakedModal } from './CardanoAutoStakedModal';
 import { useEarnPortfolioTrackerGuard } from './EarnPortfolioTrackerGuard';
 import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 import { useStakingTotalRewards } from '../hooks/useStakingTotalRewards';
@@ -29,11 +46,22 @@ type StakingManagementStakedCardProps = {
     networkSymbol: NetworkSymbol;
 };
 
-const stakedSectionStyle = prepareNativeStyle(utils => ({
-    padding: utils.spacings.sp16,
-    borderBottomWidth: utils.borders.widths.small,
-    borderBottomColor: utils.colors.borderNeutral,
-}));
+type StakedSectionStyleProps = {
+    hasBottomBorder: boolean;
+};
+
+const stakedSectionStyle = prepareNativeStyle<StakedSectionStyleProps>(
+    (utils, { hasBottomBorder }) => ({
+        padding: utils.spacings.sp16,
+        extend: {
+            condition: hasBottomBorder,
+            style: {
+                borderBottomWidth: utils.borders.widths.small,
+                borderBottomColor: utils.colors.borderNeutral,
+            },
+        },
+    }),
+);
 
 const buttonsRowStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
@@ -50,8 +78,12 @@ export const StakingManagementStakedCard = ({
     const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
     const navigation = useNavigation<NavigationProp>();
     const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { bottomSheetRef: autoStakedModalRef, openModal: openAutoStakedModal } =
+        useBottomSheetModal();
 
     const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
+    const isCardanoStaking = networkSymbol === 'ada';
+    const areStakeActionsShown = !isCardanoStaking;
 
     const handleStake = () => {
         if (isPortfolioTrackerDevice) {
@@ -95,9 +127,20 @@ export const StakingManagementStakedCard = ({
     const stakedBalance = useSelector(state => selectStakedBalanceByAccountKey(state, accountKey));
     const hasStakedBalance = new BigNumber(stakedBalance ?? '0').gt(0);
     const { totalRewards, isTotalRewardsLoading } = useStakingTotalRewards(accountKey);
+
     const apy = useSelector(state => selectApy(state, { accountKey, networkSymbol }));
-    const ethNextRewardPayout = useSelector(selectEthNextRewardPayout);
-    const nextRewardPayout = isSolanaStaking ? SOLANA_EPOCH_DAYS : ethNextRewardPayout;
+    const isAdaStakedWithFiveBinaries = useSelector(state =>
+        selectIsCardanoStakedWithFiveBinaries(state, accountKey),
+    );
+    const nextRewardPayout = useSelector(selectEthNextRewardPayout);
+    const isNotEarning = isCardanoStaking && isAdaStakedWithFiveBinaries;
+
+    let rewardsFrequencyInDays = null;
+    if (isCardanoStaking) {
+        rewardsFrequencyInDays = CARDANO_EPOCH_DAYS;
+    } else if (isSolanaStaking) {
+        rewardsFrequencyInDays = SOLANA_EPOCH_DAYS;
+    }
 
     const {
         isStakingDisabled,
@@ -107,102 +150,155 @@ export const StakingManagementStakedCard = ({
     } = useMessageSystemStaking(networkSymbol);
 
     return (
-        <Card noPadding>
-            <VStack spacing="sp4" style={applyStyle(stakedSectionStyle)}>
-                <Text variant="body-md" color="contentSecondary">
-                    <Translation id="earn.stakingManagementScreen.stakedLabel" />
-                </Text>
-                <CryptoAmountFormatter
-                    value={stakedBalance}
-                    symbol={networkSymbol}
-                    variant="headline-sm"
-                    color="contentPrimary"
-                />
-                <CryptoToFiatAmountFormatter
-                    value={stakedBalance}
-                    symbol={networkSymbol}
-                    color="contentSecondary"
-                    isBalance
-                />
-            </VStack>
-            <VStack spacing="sp4" style={applyStyle(stakedSectionStyle)}>
-                <HStack alignItems="center" spacing="sp4">
-                    <Text variant="body-md" color="contentSecondary">
-                        <Translation id="earn.stakingManagementScreen.totalRewardsLabel" />
-                    </Text>
-                    <Badge
-                        label={<Translation id="earn.stakingManagementScreen.autoRestakedBadge" />}
-                        intent="brand"
-                        size="small"
+        <>
+            <Card noPadding>
+                <VStack
+                    spacing="sp4"
+                    style={applyStyle(stakedSectionStyle, { hasBottomBorder: true })}
+                >
+                    <HStack alignItems="center" justifyContent="space-between">
+                        <HStack alignItems="center" spacing="sp8">
+                            <Text variant="body-md" color="contentSecondary">
+                                <Translation id="earn.stakingManagementScreen.stakedLabel" />
+                            </Text>
+                            {isCardanoStaking && (
+                                <Badge
+                                    label={
+                                        <Translation id="earn.stakingManagementScreen.cardanoAutoStakedBadge" />
+                                    }
+                                    intent="brand"
+                                    size="small"
+                                />
+                            )}
+                        </HStack>
+                        {isCardanoStaking && (
+                            <PressableOpacity onPress={openAutoStakedModal}>
+                                <Text variant="body-sm" color="contentBrand">
+                                    <Translation id="earn.stakingManagementScreen.cardanoLearnMoreLink" />
+                                </Text>
+                            </PressableOpacity>
+                        )}
+                    </HStack>
+                    <CryptoAmountFormatter
+                        value={stakedBalance}
+                        symbol={networkSymbol}
+                        variant="headline-sm"
+                        color="contentPrimary"
                     />
-                </HStack>
-                <CryptoAmountFormatter
-                    value={totalRewards}
-                    symbol={networkSymbol}
-                    variant="headline-sm"
-                    color="contentPrimary"
-                    isLoading={isTotalRewardsLoading}
-                />
-                <CryptoToFiatAmountFormatter
-                    value={totalRewards}
-                    symbol={networkSymbol}
-                    color="contentSecondary"
-                    isBalance
-                    isLoading={isTotalRewardsLoading}
-                />
-            </VStack>
-            <HStack justifyContent="space-between" style={applyStyle(stakedSectionStyle)}>
-                <Text variant="body-sm">
-                    {apy != null && 'APY '}
-                    <ApyValue apy={apy} />
-                </Text>
-                {nextRewardPayout != null && (
+                    <CryptoToFiatAmountFormatter
+                        value={stakedBalance}
+                        symbol={networkSymbol}
+                        color="contentSecondary"
+                        isBalance
+                    />
+                </VStack>
+                <VStack
+                    spacing="sp4"
+                    style={applyStyle(stakedSectionStyle, { hasBottomBorder: true })}
+                >
+                    <HStack alignItems="center" spacing="sp4">
+                        <Text variant="body-md" color="contentSecondary">
+                            <Translation
+                                id={
+                                    isCardanoStaking
+                                        ? 'earn.rewards'
+                                        : 'earn.stakingManagementScreen.totalRewardsLabel'
+                                }
+                            />
+                        </Text>
+                        {!isCardanoStaking && (
+                            <Badge
+                                label={
+                                    <Translation id="earn.stakingManagementScreen.autoRestakedBadge" />
+                                }
+                                intent="brand"
+                                size="small"
+                            />
+                        )}
+                    </HStack>
+                    <CryptoAmountFormatter
+                        value={totalRewards}
+                        symbol={networkSymbol}
+                        variant="headline-sm"
+                        color="contentPrimary"
+                        isLoading={isTotalRewardsLoading}
+                    />
+                    <CryptoToFiatAmountFormatter
+                        value={totalRewards}
+                        symbol={networkSymbol}
+                        color="contentSecondary"
+                        isBalance
+                        isLoading={isTotalRewardsLoading}
+                    />
+                </VStack>
+                <HStack
+                    justifyContent="space-between"
+                    style={applyStyle(stakedSectionStyle, {
+                        hasBottomBorder: areStakeActionsShown,
+                    })}
+                >
                     <Text variant="body-sm">
-                        <Translation
-                            id={
-                                isSolanaStaking
-                                    ? 'earn.stakingManagementScreen.solRewardsFrequencyLabel'
-                                    : 'earn.stakingManagementScreen.nextRewardLabel'
-                            }
-                            values={{ value: nextRewardPayout }}
-                        />
+                        {(isCardanoStaking || apy != null) && 'APY '}
+                        {isNotEarning ? '0%' : <ApyValue apy={apy} />}
                     </Text>
-                )}
-            </HStack>
-            <VStack style={applyStyle(buttonsRowStyle)}>
-                {isUnstakingDisabled && unstakingMessageContent && (
-                    <BannerInline intent="warning" title={unstakingMessageContent} />
-                )}
-                {isStakingDisabled && stakingMessageContent && (
-                    <BannerInline intent="warning" title={stakingMessageContent} />
-                )}
-                <HStack spacing="sp12">
-                    <Button
-                        flex={1}
-                        priority="secondary"
-                        onPress={handleStake}
-                        isDisabled={isStakingDisabled}
-                    >
-                        <Translation
-                            id={
-                                hasStakedBalance
-                                    ? 'earn.stakingManagementScreen.stakeMoreButton'
-                                    : 'earn.stakingManagementScreen.stakeButton'
-                            }
-                        />
-                    </Button>
-                    {hasStakedBalance && (
-                        <Button
-                            flex={1}
-                            priority="secondary"
-                            onPress={handleUnstake}
-                            isDisabled={isUnstakingDisabled}
-                        >
-                            <Translation id="earn.stakingManagementScreen.unstakeButton" />
-                        </Button>
+                    {rewardsFrequencyInDays !== null ? (
+                        <Text variant="body-sm">
+                            <Translation
+                                id="earn.stakingManagementScreen.rewardsFrequencyLabel"
+                                values={{ value: rewardsFrequencyInDays }}
+                            />
+                        </Text>
+                    ) : (
+                        nextRewardPayout != null && (
+                            <Text variant="body-sm">
+                                <Translation
+                                    id="earn.stakingManagementScreen.nextRewardLabel"
+                                    values={{ value: nextRewardPayout }}
+                                />
+                            </Text>
+                        )
                     )}
                 </HStack>
-            </VStack>
-        </Card>
+                {areStakeActionsShown && (
+                    <VStack style={applyStyle(buttonsRowStyle)}>
+                        {isUnstakingDisabled && unstakingMessageContent && (
+                            <BannerInline intent="warning" title={unstakingMessageContent} />
+                        )}
+                        {isStakingDisabled && stakingMessageContent && (
+                            <BannerInline intent="warning" title={stakingMessageContent} />
+                        )}
+                        <HStack spacing="sp12">
+                            <Button
+                                flex={1}
+                                priority="secondary"
+                                onPress={handleStake}
+                                isDisabled={isStakingDisabled}
+                            >
+                                <Translation
+                                    id={
+                                        hasStakedBalance
+                                            ? 'earn.stakingManagementScreen.stakeMoreButton'
+                                            : 'earn.stakingManagementScreen.stakeButton'
+                                    }
+                                />
+                            </Button>
+                            {hasStakedBalance && (
+                                <Button
+                                    flex={1}
+                                    priority="secondary"
+                                    onPress={handleUnstake}
+                                    isDisabled={isUnstakingDisabled}
+                                >
+                                    <Translation id="earn.stakingManagementScreen.unstakeButton" />
+                                </Button>
+                            )}
+                        </HStack>
+                    </VStack>
+                )}
+            </Card>
+            {isCardanoStaking && (
+                <CardanoAutoStakedModal ref={autoStakedModalRef} networkSymbol={networkSymbol} />
+            )}
+        </>
     );
 };
