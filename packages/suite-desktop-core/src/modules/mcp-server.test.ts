@@ -14,7 +14,7 @@ const getFreePort = (): Promise<number> =>
         srv.on('error', reject);
     });
 
-jest.mock('../typed-electron', () => ({
+jest.mock('../ipcMain', () => ({
     ipcMain: {
         handle: (channel: string, handler: (...args: any[]) => any) => {
             ipcHandlers[channel] = handler;

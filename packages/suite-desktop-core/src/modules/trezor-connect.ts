@@ -1,5 +1,3 @@
-import { ipcMain } from 'electron';
-
 import TrezorConnect, {
     type ConnectSettings,
     type ConnectSettingsTransport,
@@ -17,6 +15,7 @@ import { parseElectrumUrl } from '@trezor/utils';
 import { bluetoothModuleState } from './bluetooth';
 import { getStoredFirmwares } from './firmware';
 import { type MainThreadEmitter, type ModuleInit, type ModuleInitBackground } from './module';
+import { rawIpcMain } from '../ipcMain';
 import { APP_NAME } from '../libs/constants';
 import { getComputerName } from '../libs/info';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
@@ -196,7 +195,7 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
         }),
     };
 
-    const unregisterProxy = createIpcProxyHandler(ipcMain, 'TrezorConnect', ipcProxyOptions);
+    const unregisterProxy = createIpcProxyHandler(rawIpcMain, 'TrezorConnect', ipcProxyOptions);
 
     const onLoad = () => {
         // TODO: doing nothing for now.

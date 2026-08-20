@@ -3,10 +3,10 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { createDeferred } from '@trezor/utils';
 
-import { app, ipcMain } from '../typed-electron';
+import { ipcMain } from '../ipcMain';
+import { app } from '../typed-electron';
 import { type Store } from './store';
 
 const canUseWindowForAutoStartPrompt = (mainWindow: BrowserWindow) =>
@@ -101,12 +101,10 @@ export const promptForAutoStartBeforeQuit = async (mainWindow: BrowserWindow, st
     let modalShown = false;
     ipcMain.removeHandler('app/auto-start/popup-ack');
     ipcMain.removeHandler('app/auto-start/popup-response');
-    ipcMain.handleOnce('app/auto-start/popup-ack', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
+    ipcMain.handleOnce('app/auto-start/popup-ack', () => {
         modalShown = true;
     });
-    ipcMain.handleOnce('app/auto-start/popup-response', (ipcEvent, response) => {
-        validateIpcMessage({ ipcEvent });
+    ipcMain.handleOnce('app/auto-start/popup-response', (_, response) => {
         deferredResponse.resolve(response);
     });
 

@@ -2,9 +2,9 @@ import { nativeTheme } from 'electron';
 
 import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
-import { Store } from '../libs/store';
-import { ipcMain } from '../typed-electron';
+import { ipcMain } from '../ipcMain';
 import type { ModuleInit } from './module';
+import { Store } from '../libs/store';
 
 const setThemeManually = (theme: SuiteThemeVariant, store: Store) => {
     const { logger } = global;

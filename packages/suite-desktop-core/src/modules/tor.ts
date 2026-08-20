@@ -7,15 +7,15 @@ import path from 'path';
 
 import { TorStatus } from '@suite/tor-types';
 import TrezorConnect from '@trezor/connect';
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
 import { type BootstrapEvent } from '@trezor/request-manager';
 import { type BootstrapTorEvent, type HandshakeTorModule } from '@trezor/suite-desktop-api';
 
+import { ipcMain } from '../ipcMain';
 import { hasSwitch } from '../libs/process-switches';
 import { TorExternalProcess } from '../libs/processes/TorExternalProcess';
 import { TorProcess, type TorProcessStatus } from '../libs/processes/TorProcess';
-import { app, ipcMain } from '../typed-electron';
+import { app } from '../typed-electron';
 import type { Dependencies } from './module';
 
 const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies) => {
@@ -216,11 +216,9 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
     ipcMain.handle(
         'tor/change-settings',
         (
-            ipcEvent,
+            _,
             { useExternalTor, externalPort }: { useExternalTor: boolean; externalPort: number },
         ) => {
-            validateIpcMessage({ ipcEvent });
-
             try {
                 store.setTorSettings({
                     ...store.getTorSettings(),
@@ -239,9 +237,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
         },
     );
 
-    ipcMain.handle('tor/get-settings', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('tor/get-settings', () => {
         try {
             return { success: true, payload: store.getTorSettings() };
         } catch (error) {
@@ -249,9 +245,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
         }
     });
 
-    ipcMain.handle('tor/toggle', async (ipcEvent, shouldEnableTor: boolean) => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('tor/toggle', async (_, shouldEnableTor: boolean) => {
         logger.info('tor', `Toggling ${shouldEnableTor ? 'ON' : 'OFF'}`);
 
         try {

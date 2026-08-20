@@ -12,13 +12,12 @@ import * as http from 'http';
 import { CALL_SOURCE_MCP, type ConnectProcessInfo } from '@suite-common/connect-popup';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { convertAmountUnitsToSubunits, substituteBip43Path } from '@suite-common/wallet-utils';
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { findProcessFromIncomingPort } from '@trezor/node-utils';
 
+import { ipcMain } from '../ipcMain';
+import { type ModuleInit } from './module';
 import { addMessage } from '../libs/connect-popup-messages';
 import { getProcessIcon } from '../libs/process-icon';
-import { ipcMain } from '../typed-electron';
-import { type ModuleInit } from './module';
 
 export const SERVICE_NAME = 'mcp-server';
 
@@ -1377,9 +1376,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     };
 
     // IPC handlers for controlling the MCP server from the renderer
-    ipcMain.handle('mcp/get-settings', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('mcp/get-settings', () => {
         const settings = store.getMcpSettings();
 
         return {
@@ -1390,17 +1387,14 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         };
     });
 
-    ipcMain.handle('mcp/regenerate-token', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
+    ipcMain.handle('mcp/regenerate-token', () => {
         const newToken = generateToken();
         store.setMcpSettings({ token: newToken });
 
         return { token: newToken };
     });
 
-    ipcMain.handle('mcp/set-enabled', (ipcEvent, enabled: boolean) => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('mcp/set-enabled', (_, enabled: boolean) => {
         if (typeof enabled !== 'boolean') return;
 
         const currentSettings = store.getMcpSettings();

@@ -5,12 +5,12 @@ import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isMacOs } from '@trezor/env-utils';
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { colorVariants } from '@trezor/theme';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
 import { handshakeAndHangDetect } from './handshake-and-hang-detect';
+import { ipcMain } from './ipcMain';
 import { processStatePatch, restartApp } from './libs/app-utils';
 import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './libs/auto-start';
 import { APP_NAME } from './libs/constants';
@@ -29,7 +29,6 @@ import { initBackgroundModules, initModules } from './modules';
 import { initBioAuthModule } from './modules/bioAuthModule';
 import { mainThreadEmitter } from './modules/module';
 import { init as initTorModule } from './modules/tor';
-import { ipcMain } from './typed-electron';
 
 process.traceProcessWarnings = true;
 
@@ -294,9 +293,7 @@ const init = async () => {
             }));
 
     // repeated during app lifecycle (e.g. Ctrl+R)
-    ipcMain.handle('handshake/load-modules', (ipcEvent, payload) => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('handshake/load-modules', (_, payload) => {
         // one time back-wards compatibility migration from redux to electron store. this can be deleted after some time
         // storageLoadBioAuth should be removed as well
         if (
@@ -324,19 +321,13 @@ const init = async () => {
         store,
     });
 
-    ipcMain.handle('browser-window/reload', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('browser-window/reload', () => {
         mainWindowProxy.getInstance()?.webContents.reload();
     });
 
     loadBioAuthModule();
 
-    ipcMain.handle('handshake/load-tor-module', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
-
-        return loadTorModule();
-    });
+    ipcMain.handle('handshake/load-tor-module', () => loadTorModule());
 
     let readyToQuit = false;
     let stoppingDaemon = false;

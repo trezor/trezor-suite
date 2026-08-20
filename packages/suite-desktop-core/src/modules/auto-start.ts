@@ -1,11 +1,9 @@
 /**
  * Auto start handler
  */
-import { validateIpcMessage } from '@trezor/ipc-proxy';
-
-import { isAutoStartEnabled, linuxAutoStart, setAutoStartEnabled } from '../libs/auto-start';
-import { ipcMain } from '../typed-electron';
+import { ipcMain } from '../ipcMain';
 import type { ModuleInit } from './module';
+import { isAutoStartEnabled, linuxAutoStart, setAutoStartEnabled } from '../libs/auto-start';
 
 export const SERVICE_NAME = 'auto-start';
 
@@ -17,8 +15,7 @@ export const init: ModuleInit = () => {
         setAutoStartEnabled(enabled);
     });
 
-    ipcMain.handle('app/auto-start/is-enabled', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
+    ipcMain.handle('app/auto-start/is-enabled', () => {
         const result = isAutoStartEnabled();
 
         return { success: true, payload: result };

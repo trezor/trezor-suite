@@ -1,11 +1,10 @@
 import { systemPreferences } from 'electron';
 
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { createWinHelloManager } from '@trezor/suite-desktop-native';
 import { TypedEmitter, serializeError } from '@trezor/utils';
 
-import { ipcMain } from '../typed-electron';
+import { ipcMain } from '../ipcMain';
 import { type Dependencies } from './module';
 
 const PROMPT_REASON = 'Trezor Suite: validation BIO authentication to access the Suite UI';
@@ -248,26 +247,21 @@ export const initBioAuthModule = ({
             return;
         }
 
-        ipcMain.handle('bio-auth/is-bio-auth-available', ipcEvent => {
-            validateIpcMessage({ ipcEvent });
-
+        ipcMain.handle('bio-auth/is-bio-auth-available', () => {
             // Necessary check for race condition: UI might ask for availability before await bioAuth.init()
             if (!bioAuth) return Promise.resolve(false);
 
             return bioAuth.isAvailable();
         });
 
-        ipcMain.handle('bio-auth/set-bio-auth-settings', (ipcEvent, params) => {
-            validateIpcMessage({ ipcEvent });
-
+        ipcMain.handle('bio-auth/set-bio-auth-settings', (_, params) => {
             store.setBioAuthSettings(params);
         });
 
-        ipcMain.handle('bio-auth/get-bio-auth-settings', ipcEvent => {
-            validateIpcMessage({ ipcEvent });
-
-            return { enabled: false, ...store.getBioAuthSettings() };
-        });
+        ipcMain.handle('bio-auth/get-bio-auth-settings', () => ({
+            enabled: false,
+            ...store.getBioAuthSettings(),
+        }));
 
         store.onBioAuthSettingsChange(newSettings => {
             if (!newSettings) return;
@@ -279,9 +273,7 @@ export const initBioAuthModule = ({
             bioAuth?.setEnabled(enabled);
         });
 
-        ipcMain.handle('bio-auth/validate-bio-auth', (ipcEvent, params) => {
-            validateIpcMessage({ ipcEvent });
-
+        ipcMain.handle('bio-auth/validate-bio-auth', (_, params) => {
             if (!bioAuth?.initialized) {
                 throw new Error('BioAuth module is not initialized (calling validate-bio-auth)');
             }
@@ -289,8 +281,7 @@ export const initBioAuthModule = ({
             return bioAuth.validate(params.message ?? PROMPT_REASON);
         });
 
-        ipcMain.handle('bio-auth/get-validation-status', ipcEvent => {
-            validateIpcMessage({ ipcEvent });
+        ipcMain.handle('bio-auth/get-validation-status', () => {
             if (!bioAuth?.initialized) {
                 throw new Error(
                     'BioAuth module is not initialized (calling get-validation-status)',
