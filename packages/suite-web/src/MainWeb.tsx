@@ -26,6 +26,7 @@ import { createSuiteWebCompositionRoot } from './createSuiteWebCompositionRoot';
 import { initSentry } from './sentry';
 import { usePlaywright } from './support/usePlaywright';
 import { webComponents } from './support/webComponents';
+import { logXssWarning } from './support/xssWarning';
 
 const MainWeb = () => {
     usePlaywright();
@@ -48,6 +49,8 @@ const MainWeb = () => {
 };
 
 export const init = async (container: HTMLElement) => {
+    logXssWarning();
+
     if (!window.Playwright) {
         initSentry();
     }
