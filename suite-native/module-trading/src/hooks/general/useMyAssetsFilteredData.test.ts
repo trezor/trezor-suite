@@ -15,7 +15,8 @@ import { useMyAssetsFilteredData } from './useMyAssetsFilteredData';
 const mockUsePreferredCurrencyUsdThreshold = jest.fn();
 const mockUseTradingMyAssets = jest.fn();
 
-jest.mock('./usePreferredCurrencyUsdThreshold', () => ({
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
     usePreferredCurrencyUsdThreshold: () => mockUsePreferredCurrencyUsdThreshold(),
 }));
 

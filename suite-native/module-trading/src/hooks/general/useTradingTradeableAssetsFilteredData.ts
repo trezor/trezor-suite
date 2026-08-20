@@ -2,12 +2,12 @@ import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import { usePreferredCurrencyUsdThreshold } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type TradingRootState, selectTradeableAssetBalances } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
-import { usePreferredCurrencyUsdThreshold } from './usePreferredCurrencyUsdThreshold';
 import { useTradeableAssetsFilteredData } from './useTradeableAssetsFilteredData';
 
 type TradeableAssetsSelector = (
