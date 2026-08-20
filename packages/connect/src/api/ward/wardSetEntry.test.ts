@@ -75,6 +75,21 @@ describe('WardQueueSetEntry', () => {
         expect(typedCall).toHaveBeenCalledWith('WardQueueSetEntry', 'WardQueueSetAck', PARAMS);
     });
 
+    it('forwards `compact`, which changes how the device stores the entry', async () => {
+        const params = { ...PARAMS, compact: true };
+        const { method, typedCall } = makeMethod(
+            WardQueueSetEntry,
+            'wardQueueSetEntry',
+            params,
+            {},
+            'WardQueueSetAck',
+        );
+
+        await method.run();
+
+        expect(typedCall).toHaveBeenCalledWith('WardQueueSetEntry', 'WardQueueSetAck', params);
+    });
+
     it('forwards the restore fields, which the device MACs and must get back unchanged', async () => {
         const backup = { ...PARAMS, mac: '66'.repeat(32) };
         const { method, typedCall } = makeMethod(

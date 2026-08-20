@@ -63,6 +63,9 @@ export const HELP = `@trezor/connect CLI arguments:
     --entry=<0x...>                           A backup from ward_backup (ward_restore)
     --target=<VAR>                            ward_backup only: print VAR=0x... on stdout instead
                                                 of the blob, for eval "$(... --target=VAR)"
+    --compact                                 ward_add/ward_restore: keep a hash of the identity on
+                                                the device instead of the identity itself. Smaller
+                                                record; publishing it then needs the entry named.
                                                 Values are taken verbatim -- unlike other flags
                                                 they are NOT lowercased, because the device hashes
                                                 appid and ident.
@@ -83,6 +86,7 @@ export const HELP = `@trezor/connect CLI arguments:
 // which is fine for a method name and wrong for a value the device hashes: `--appid=TEST` lowercased
 // derives a different entry_key than the same entry written any other way, and nothing would say so.
 const VERBATIM_FLAGS = ['params', 'appid', 'ident', 'value', 'entry', 'target'];
+// --compact takes no value, so it needs no place in VERBATIM_FLAGS above.
 
 // read and parse application arguments
 const parseArgv = () => {

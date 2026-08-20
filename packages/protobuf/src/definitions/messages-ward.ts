@@ -113,7 +113,13 @@ export const WardEraseCachedEntry = Type.Object(
 );
 
 export type WardFlushQueue = Static<typeof WardFlushQueue>;
-export const WardFlushQueue = Type.Record(Type.Never(), Type.Never(), { $id: 'WardFlushQueue' });
+export const WardFlushQueue = Type.Object(
+    {
+        app_id: Type.Optional(Type.String()),
+        identifier: Type.Optional(Type.String()),
+    },
+    { $id: 'WardFlushQueue' },
+);
 
 export type WardFlushQueueAck = Static<typeof WardFlushQueueAck>;
 export const WardFlushQueueAck = Type.Object(
@@ -231,6 +237,7 @@ export const WardQueueSetEntry = Type.Object(
         identifier: Type.Optional(Type.String()),
         value: Type.Optional(Type.String()),
         mac: Type.Optional(Type.String()),
+        compact: Type.Optional(Type.Boolean()),
     },
     { $id: 'WardQueueSetEntry' },
 );

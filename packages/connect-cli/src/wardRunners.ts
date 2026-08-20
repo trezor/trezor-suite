@@ -83,6 +83,7 @@ const wardAdd = async (context: WardCommandContext, device: Device) => {
         app_id: params.appid ?? DEFAULT_APP_ID,
         identifier: toHex(params.ident),
         value: toHex(params.value),
+        compact: params.compact ? true : undefined,
     });
 
     if (!result.success) {
@@ -218,6 +219,7 @@ const wardRestore = async (context: WardCommandContext, device: Device) => {
         identifier: backup.identifier,
         value: backup.value,
         mac: backup.mac,
+        compact: params.compact ? true : undefined,
     });
 
     if (!result.success) {

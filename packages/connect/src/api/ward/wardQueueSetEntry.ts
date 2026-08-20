@@ -43,6 +43,10 @@ export default class WardQueueSetEntry extends AbstractMethod<
             // Restore only: absent means "queue this fresh". Nothing else travels, because the rest
             // of what the MAC covers is derived on the device and never accepted from a host.
             mac: payload.mac,
+            // Keep a hash of the identity on the device instead of the identity, ~40 bytes less
+            // flash per record. Such an entry still reads and still backs up; publishing it needs
+            // `WardFlushQueue` to be told which entry to publish.
+            compact: payload.compact,
         };
 
         super(message, params);
