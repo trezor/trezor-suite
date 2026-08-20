@@ -1,3 +1,5 @@
+import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -47,8 +49,10 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                 buyAsset: {
                     searchFilter: receiveTokenSymbol,
                     networkFilter: 'eth',
-                    networkSymbol: 'eth',
-                    tokenSymbol: receiveTokenSymbol,
+                    assetCryptoId: getCryptoId(
+                        asNetworkSymbol('eth'),
+                        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                    ),
                 },
                 selectReceiveAddress: async () => {
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'eth');

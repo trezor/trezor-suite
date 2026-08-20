@@ -1,3 +1,5 @@
+import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { getCompanyNameFromList } from '../../fixtures/trading';
@@ -48,8 +50,10 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                 buyAsset: {
                     searchFilter: receiveTokenSymbol,
                     networkFilter: 'sol',
-                    networkSymbol: 'sol',
-                    tokenSymbol: receiveTokenSymbol,
+                    assetCryptoId: getCryptoId(
+                        asNetworkSymbol('sol'),
+                        'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+                    ),
                 },
                 selectReceiveAddress: async () => {
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'sol');

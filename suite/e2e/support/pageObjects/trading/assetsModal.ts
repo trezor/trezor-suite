@@ -12,6 +12,7 @@ export class TradingAssetPicker {
     readonly searchInput: Locator;
     readonly displaySymbol: Locator;
     readonly networkFilterButton: Locator;
+    readonly buyNetworkFilterButton: Locator;
     readonly networkFilterOption = (tab: AssetPickerNetworkFilter) =>
         this.page.getByTestId(`@asset-picker/search/filter/select-option/${tab}`);
     readonly globalAddAccountButton: Locator;
@@ -20,10 +21,6 @@ export class TradingAssetPicker {
     readonly sellOption = (networkSymbol: NetworkSymbol, tokenSymbol?: string) =>
         this.page.getByTestId(
             `@asset-picker/sell/option/${networkSymbol}${tokenSymbol ? `/${tokenSymbol}` : ''}`,
-        );
-    readonly buyOption = (networkSymbol: NetworkSymbol, tokenSymbol?: string) =>
-        this.page.getByTestId(
-            `@asset-picker/buy/option/${networkSymbol}${tokenSymbol ? `/${tokenSymbol}` : ''}`,
         );
     readonly buyAssetOption = (assetCryptoId: CryptoId) =>
         this.page.getByTestId(`@asset-picker/buy/option/asset/${assetCryptoId}`);
@@ -55,6 +52,7 @@ export class TradingAssetPicker {
         this.searchInput = this.page.getByTestId('@asset-picker/search/input');
         this.displaySymbol = this.page.getByTestId('@asset-picker/display-symbol');
         this.networkFilterButton = this.page.getByTestId('@asset-picker/search/filter/input');
+        this.buyNetworkFilterButton = this.page.getByTestId('@asset-picker/search/filter');
         this.globalAddAccountButton = this.page.getByTestId('@global-send-receive/add-account');
     }
 
@@ -63,6 +61,15 @@ export class TradingAssetPicker {
         // use global retry helper since opening the dropdown is flaky in automation
         await this.page.selectDropdownOptionWithRetry(
             this.networkFilterButton,
+            this.networkFilterOption(networkFilter),
+        );
+    }
+
+    // buy opens the network list from a button, not a select; merges back once sell follows in 30208
+    @step()
+    async filterBuyByNetwork(networkFilter: AssetPickerNetworkFilter) {
+        await this.page.selectDropdownOptionWithRetry(
+            this.buyNetworkFilterButton,
             this.networkFilterOption(networkFilter),
         );
     }
@@ -95,29 +102,17 @@ export class TradingAssetPicker {
     }
 
     @step()
-    async selectBuyAsset({
-        searchFilter,
-        networkFilter,
-        assetCryptoId,
-        networkSymbol,
-        tokenSymbol,
-    }: BuyAsset) {
+    async selectBuyAsset({ searchFilter, networkFilter, assetCryptoId }: BuyAsset) {
         await this.openBuyModal.click();
 
         if (networkFilter) {
-            await this.filterByNetwork(networkFilter);
+            await this.filterBuyByNetwork(networkFilter);
         }
 
         if (searchFilter) {
             await this.searchAsset(searchFilter);
         }
 
-        if (assetCryptoId) {
-            await this.buyAssetOption(assetCryptoId).click();
-        } else if (networkSymbol) {
-            await this.buyOption(networkSymbol, tokenSymbol).click();
-        } else {
-            throw new Error('Either assetCryptoId or networkSymbol must be provided');
-        }
+        await this.buyAssetOption(assetCryptoId).click();
     }
 }

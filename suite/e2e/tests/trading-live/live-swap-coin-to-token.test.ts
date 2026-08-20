@@ -86,8 +86,10 @@ test.describe(
                     buyAsset: {
                         searchFilter: 'USDC',
                         networkFilter: 'base',
-                        tokenSymbol: 'USDC',
-                        networkSymbol: 'base',
+                        assetCryptoId: getCryptoId(
+                            asNetworkSymbol('base'),
+                            '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+                        ),
                     },
 
                     selectReceiveAddress: async () => {

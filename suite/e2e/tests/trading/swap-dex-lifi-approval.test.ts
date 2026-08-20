@@ -1,3 +1,6 @@
+import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+
 import { getCompanyNameFromList } from '../../fixtures/trading';
 import { countDecimalPlaces } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
@@ -49,7 +52,7 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                     accountIndex: 1,
                 },
                 buyAsset: {
-                    networkSymbol: 'eth',
+                    assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
                 },
                 selectReceiveAddress: async () => {
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, 'eth');
