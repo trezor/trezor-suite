@@ -27,9 +27,14 @@ const REFRESH_INTERVAL = 30_000;
 type CoinPriceValues = {
     currentValue: BaseCurrencyAmount | null;
     weekAgoValue: number | null;
+    underlyingAssetContract: TokenAddress | null;
 };
 
-const NULL_PRICE_VALUES: CoinPriceValues = { currentValue: null, weekAgoValue: null };
+const NULL_PRICE_VALUES: CoinPriceValues = {
+    currentValue: null,
+    weekAgoValue: null,
+    underlyingAssetContract: null,
+};
 
 interface UseDayCoinPriceChangeProps {
     symbol?: NetworkSymbol | null;
@@ -103,19 +108,23 @@ export const useDayCoinPriceChange = ({
                         ? asBaseCurrencyAmount(new BigNumber(currentRate))
                         : null;
 
-                return { currentValue, weekAgoValue };
+                return {
+                    currentValue,
+                    weekAgoValue,
+                    underlyingAssetContract: underlyingAsset?.contract ?? null,
+                };
             } catch {
                 return NULL_PRICE_VALUES;
             }
         },
     });
 
-    const { currentValue, weekAgoValue } = data ?? NULL_PRICE_VALUES;
+    const { currentValue, weekAgoValue, underlyingAssetContract } = data ?? NULL_PRICE_VALUES;
 
     const valuePercentageChange =
         currentValue !== null && weekAgoValue !== null
             ? percentageDiff(weekAgoValue, currentValue.toNumber())
             : null;
 
-    return { currentValue, valuePercentageChange, isLoading };
+    return { currentValue, valuePercentageChange, isLoading, underlyingAssetContract };
 };
