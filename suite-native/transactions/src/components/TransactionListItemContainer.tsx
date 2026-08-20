@@ -96,7 +96,7 @@ type TransactionListItemContainerProps = {
     children: ReactNode;
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
-    includedCoinsCount: number;
+    hasTokensCount: number;
     isFirst?: boolean;
     isLast?: boolean;
     tokenTransfer?: TypedTokenTransfer;
@@ -110,7 +110,7 @@ export const TransactionListItemContainer = ({
     accountKey,
     isFirst = false,
     isLast = false,
-    includedCoinsCount,
+    hasTokensCount,
     transactionType,
     stakeOperationType,
     tokenTransfer,
@@ -132,8 +132,8 @@ export const TransactionListItemContainer = ({
         });
     }, [navigation, txid, accountKey, tokenTransfer?.contract]);
 
-    const hasIncludedCoins = includedCoinsCount > 0;
-    const includedCoinsLabel = `+${includedCoinsCount} coin${includedCoinsCount > 1 ? 's' : ''}`;
+    const hasTokens = hasTokensCount > 0;
+    const tokensLabel = `+${hasTokensCount} coin${hasTokensCount > 1 ? 's' : ''}`;
 
     const { DateTimeFormatter } = useFormatters();
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
@@ -192,7 +192,7 @@ export const TransactionListItemContainer = ({
                                     />
                                 )}
                             </Box>
-                            {hasIncludedCoins && <Badge label={includedCoinsLabel} size="small" />}
+                            {hasTokens && <Badge label={tokensLabel} size="small" />}
                         </HStack>
 
                         <DateTextComponent
