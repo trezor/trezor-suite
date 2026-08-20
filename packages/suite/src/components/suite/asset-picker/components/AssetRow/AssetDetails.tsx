@@ -1,24 +1,17 @@
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getNetwork,
+    shouldShowNetworkBadge,
+} from '@suite-common/wallet-config';
 import { Badge, Column, Row, Text } from '@trezor/components';
-import { hasOwn } from '@trezor/utils';
 
 type AssetDetailsProps = {
     name: string;
     displaySymbol: string;
-} & (
-    | {
-          networkSymbol: NetworkSymbol;
-      }
-    | {
-          networkName: string;
-      }
-);
+    networkSymbol: NetworkSymbol;
+};
 
-export function AssetDetails({ name, displaySymbol, ...props }: AssetDetailsProps) {
-    const badge = hasOwn(props, 'networkSymbol')
-        ? getNetwork(props.networkSymbol).name
-        : props.networkName;
-
+export function AssetDetails({ name, displaySymbol, networkSymbol }: AssetDetailsProps) {
     return (
         <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
             <Text typographyStyle="body-md" ellipsisLineCount={1} maxWidth="100%">
@@ -28,7 +21,9 @@ export function AssetDetails({ name, displaySymbol, ...props }: AssetDetailsProp
                 <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                     {displaySymbol}
                 </Text>
-                {badge !== name && <Badge size="small">{badge}</Badge>}
+                {shouldShowNetworkBadge(networkSymbol) && (
+                    <Badge size="small">{getNetwork(networkSymbol).name}</Badge>
+                )}
             </Row>
         </Column>
     );

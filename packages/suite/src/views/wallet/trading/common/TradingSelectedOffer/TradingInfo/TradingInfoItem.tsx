@@ -5,7 +5,7 @@ import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@suite-common/trading';
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbolName, shouldShowNetworkBadge } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
@@ -61,7 +61,7 @@ export const TradingInfoItem = ({
 
     const displayName = isNativeToken ? getNetworkDisplaySymbolName(networkSymbol) : name;
 
-    const showNetwork = networkSymbol !== displaySymbol.toLowerCase();
+    const showNetwork = shouldShowNetworkBadge(networkSymbol);
 
     if (!amount || !currency) return null;
 
@@ -104,14 +104,19 @@ export const TradingInfoItem = ({
                     <Row padding={16} gap={8} justifyContent="space-between">
                         <Row gap={8} alignItems="center">
                             {isNativeToken ? (
-                                <TokenIcon size={40} symbol={symbol} showNetworkIcon />
+                                <TokenIcon
+                                    size={40}
+                                    symbol={symbol}
+                                    showNetworkIcon
+                                    showNativeNetworkBadge
+                                />
                             ) : (
                                 <TokenIcon
                                     size={40}
                                     symbol={networkSymbol}
                                     contractAddress={contractAddress}
                                     placeholder={displaySymbol}
-                                    showNetworkIcon={showNetwork}
+                                    showNetworkIcon
                                 />
                             )}
                             <Column alignItems="start">

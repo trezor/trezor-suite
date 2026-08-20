@@ -9,6 +9,7 @@ import {
     isAccountBasedNetwork,
     isAccountOfNetwork,
     isNetworkUsingExternalBackend,
+    shouldShowNetworkBadge,
 } from './utils';
 
 const { btc: bitcoin, eth: ethereum, test: testnet, regtest } = networks;
@@ -123,5 +124,31 @@ describe(getNetworksWithNativeTokenReserve.name, () => {
         expect(getNetworksWithNativeTokenReserve()).toEqual(
             'Base, Optimism, Robinhood Chain, Solana',
         );
+    });
+});
+
+describe(shouldShowNetworkBadge.name, () => {
+    it.each<NetworkSymbol>(['btc', 'ltc', 'bch', 'doge'])(
+        'returns false for single-asset network %s',
+        symbol => {
+            expect(shouldShowNetworkBadge(symbol)).toBe(false);
+        },
+    );
+
+    it.each<NetworkSymbol>([
+        'eth',
+        'pol',
+        'bsc',
+        'arb',
+        'base',
+        'op',
+        'avax',
+        'sol',
+        'trx',
+        'ada',
+        'etc',
+        'xlm',
+    ])('returns true for token-supporting network %s', symbol => {
+        expect(shouldShowNetworkBadge(symbol)).toBe(true);
     });
 });

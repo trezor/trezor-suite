@@ -1,7 +1,7 @@
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
-import { TokenIcon, shouldShowNetworkIcon } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
@@ -38,7 +38,7 @@ export function AssetRowToken({
                     symbol={account.symbol}
                     contractAddress={token.contract}
                     placeholder={getDisplaySymbol(token.symbol!, token.contract)}
-                    showNetworkIcon={shouldShowNetworkIcon(account.symbol, token.contract)}
+                    showNetworkIcon
                 />
                 <AssetDetails
                     name={token.name!}

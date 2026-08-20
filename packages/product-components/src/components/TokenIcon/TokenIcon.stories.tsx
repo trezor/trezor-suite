@@ -47,6 +47,9 @@ const meta: Meta<TokenIconProps> = {
         showNetworkIcon: {
             control: { type: 'boolean' },
         },
+        showNativeNetworkBadge: {
+            control: { type: 'boolean' },
+        },
         shouldTryToFetch: {
             control: { type: 'boolean' },
         },
@@ -84,6 +87,45 @@ export const Token: StoryObj<TokenIconProps> = {
         placeholder: 'USDC',
         shouldTryToFetch: true,
         showNetworkIcon: true,
+        isBordered: true,
+        ...getFramePropsStory(allowedTokenIconFrameProps).args,
+    },
+};
+
+export const NativeCoinWithNetworkBadge: StoryObj<TokenIconProps> = {
+    args: {
+        size: 40,
+        symbol: 'eth',
+        placeholder: 'ETH',
+        shouldTryToFetch: true,
+        showNetworkIcon: true,
+        showNativeNetworkBadge: true,
+        isBordered: true,
+        ...getFramePropsStory(allowedTokenIconFrameProps).args,
+    },
+};
+
+export const NativeCoinWithoutNetworkBadge: StoryObj<TokenIconProps> = {
+    args: {
+        size: 40,
+        symbol: 'btc',
+        placeholder: 'BTC',
+        shouldTryToFetch: true,
+        showNetworkIcon: true,
+        showNativeNetworkBadge: true,
+        isBordered: true,
+        ...getFramePropsStory(allowedTokenIconFrameProps).args,
+    },
+};
+
+export const NativeCoinLegacyNoBadge: StoryObj<TokenIconProps> = {
+    args: {
+        size: 40,
+        symbol: 'eth',
+        placeholder: 'ETH',
+        shouldTryToFetch: true,
+        showNetworkIcon: true,
+        showNativeNetworkBadge: false,
         isBordered: true,
         ...getFramePropsStory(allowedTokenIconFrameProps).args,
     },

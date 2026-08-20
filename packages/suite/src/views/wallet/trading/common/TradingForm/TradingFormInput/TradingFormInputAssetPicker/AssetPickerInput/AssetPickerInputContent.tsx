@@ -5,6 +5,7 @@ import {
     type TradingAssetOption,
     type TradingAssetSellOption,
 } from '@suite-common/trading';
+import { shouldShowNetworkBadge } from '@suite-common/wallet-config';
 import { Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
@@ -32,19 +33,19 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
         networkName,
         displaySymbolName,
     } = value;
-    const showNetwork = networkSymbol !== displaySymbol.toLowerCase();
+    const showNetwork = shouldShowNetworkBadge(networkSymbol);
 
     return (
         <Row gap={12}>
             {isNativeToken ? (
-                <TokenIcon size={32} symbol={symbol} showNetworkIcon />
+                <TokenIcon size={32} symbol={symbol} showNetworkIcon showNativeNetworkBadge />
             ) : (
                 <TokenIcon
                     size={32}
                     symbol={networkSymbol}
                     contractAddress={contractAddress}
                     placeholder={displaySymbol}
-                    showNetworkIcon={showNetwork}
+                    showNetworkIcon
                 />
             )}
             <Column alignItems="start">
