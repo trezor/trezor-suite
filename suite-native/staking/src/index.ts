@@ -3,7 +3,6 @@
 // they are always included in the bundle regardless. Selectors needed by external consumers
 // are therefore explicitly exported below rather than forcing deep imports.
 
-export * from './utils';
 export * from './selectors';
 export {
     pushStakeTransactionNativeThunk,

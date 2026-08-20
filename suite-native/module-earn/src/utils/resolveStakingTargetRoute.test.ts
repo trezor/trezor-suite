@@ -11,7 +11,11 @@ describe('resolveStakingTargetRoute', () => {
         expect(resolveStakingTargetRoute('sol')).toBe(RootStackRoutes.StakingManagement);
     });
 
-    it('routes Cardano accounts to StakingDetail', () => {
-        expect(resolveStakingTargetRoute('ada')).toBe(RootStackRoutes.StakingDetail);
+    it('routes Cardano accounts to StakingManagement', () => {
+        expect(resolveStakingTargetRoute('ada')).toBe(RootStackRoutes.StakingManagement);
+    });
+
+    it('routes Tron accounts to StakingDetail', () => {
+        expect(resolveStakingTargetRoute('trx')).toBe(RootStackRoutes.StakingDetail);
     });
 });

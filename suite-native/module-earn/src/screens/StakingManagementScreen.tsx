@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
@@ -6,6 +6,7 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 import {
     type AccountsRootState,
     fetchAllTransactionsForAccountThunk,
+    initStakeDataThunk,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { isSupportedSolStakingNetworkSymbol, parseAccountKey } from '@suite-common/wallet-utils';
@@ -35,7 +36,15 @@ export const StakingManagementScreen = () => {
         dispatch(fetchAllTransactionsForAccountThunk({ accountKey, noLoading: true }));
     }, [accountKey, dispatch]);
 
-    const listHeaderComponent = <StakingManagementListHeader accountKey={accountKey} />;
+    // Screen mounts are the only stake-data refresh path after app init.
+    useEffect(() => {
+        dispatch(initStakeDataThunk());
+    }, [dispatch]);
+
+    const listHeaderComponent = useMemo(
+        () => <StakingManagementListHeader accountKey={accountKey} />,
+        [accountKey],
+    );
 
     return (
         <EarnPortfolioTrackerGuard>

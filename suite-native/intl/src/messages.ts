@@ -3537,8 +3537,6 @@ export const messages = {
             },
         },
         staked: 'Stake',
-        stakedAutomatically: 'Staked automatically',
-        fullBalance: 'Full balance',
         rewards: 'Rewards',
         rewardsPerEpoch: 'Next estimated reward',
         rate: 'Rate',
@@ -3562,7 +3560,6 @@ export const messages = {
         },
         stakingCanBeManaged: 'Manage your staking accounts in the',
         trezorDesktop: 'Trezor Suite desktop app.',
-        adaStaysFullyAccessuble: 'Your ADA stays fully accessible while earning rewards.',
         infoBanner: {
             rewardsReduced: 'Cardano staking rewards reduced',
         },

@@ -34,13 +34,23 @@ describe('resolveStakingHomeRoute', () => {
         });
     });
 
-    it('returns StakingDetail for a Cardano account with a staked balance', () => {
+    it('returns StakingManagement for a Cardano account with a staked balance', () => {
         const account = createMockAccount({ symbol: 'ada' });
         mockGetAccountTotalStakingBalance.mockReturnValue('1000000');
 
         expect(resolveStakingHomeRoute(account)).toEqual({
-            name: RootStackRoutes.StakingDetail,
+            name: RootStackRoutes.StakingManagement,
             params: { accountKey: account.key },
+        });
+    });
+
+    it('returns HowStakeWorks for a Cardano account without a staked balance', () => {
+        const account = createMockAccount({ symbol: 'ada' });
+        mockGetAccountTotalStakingBalance.mockReturnValue('0');
+
+        expect(resolveStakingHomeRoute(account)).toEqual({
+            name: RootStackRoutes.HowStakeWorksScreen,
+            params: { symbol: account.symbol, accountKey: account.key },
         });
     });
 

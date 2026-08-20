@@ -6,14 +6,12 @@ import {
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
-    AUTO_STAKED_SYMBOLS,
     selectApy,
     selectRewardsBalanceByAccountKey,
     selectTronVotesByAccountKey,
     useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
 
-import { AutoStakedBalancesCard } from './AutoStakedBalancesCard';
 import { ManualStakedBalancesCard } from './ManualStakedBalancesCard';
 
 type StakingBalancesCardProps = {
@@ -52,18 +50,9 @@ export const StakingBalancesOverviewCard = ({
 
     if (!symbol) return null;
 
-    const isAutoStaked = AUTO_STAKED_SYMBOLS.includes(symbol);
     const apyValue = symbol === 'trx' ? tronApr : apy;
 
-    return isAutoStaked ? (
-        <AutoStakedBalancesCard
-            accountKey={accountKey}
-            symbol={symbol}
-            rewardsBalance={rewardsBalance}
-            apy={apyValue}
-            handleToggleBottomSheet={handleToggleBottomSheet}
-        />
-    ) : (
+    return (
         <ManualStakedBalancesCard
             accountKey={accountKey}
             symbol={symbol}

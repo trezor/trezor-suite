@@ -75,13 +75,40 @@ describe('navigateByAccountState', () => {
         });
     });
 
-    it('navigates to StakingDetail when a Cardano account has staked balance', () => {
+    it('navigates to StakingManagement when a Cardano account has staked balance', () => {
         const account = createMockAccount({ symbol: 'ada' });
         mockGetAccountTotalStakingBalance.mockReturnValue('1000000');
 
         navigateByAccountState(account, mockNavigate);
 
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingDetail, {
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
+            accountKey: account.key,
+        });
+    });
+
+    it('navigates a Cardano account without a staked balance to HowStakeWorks', () => {
+        const account = createMockAccount({ symbol: 'ada' });
+        mockGetAccountTotalStakingBalance.mockReturnValue('0');
+
+        navigateByAccountState(account, mockNavigate);
+
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
+            symbol: account.symbol,
+            accountKey: account.key,
+        });
+    });
+
+    it('navigates to StakingManagement when a Cardano account is delegated but emptied', () => {
+        const account = createMockAccount({
+            symbol: 'ada',
+            networkType: 'cardano',
+            misc: { staking: { isActive: true } },
+        } as Partial<Account>);
+        mockGetAccountTotalStakingBalance.mockReturnValue('0');
+
+        navigateByAccountState(account, mockNavigate);
+
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
             accountKey: account.key,
         });
     });
