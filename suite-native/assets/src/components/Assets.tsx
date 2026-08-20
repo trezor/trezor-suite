@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from 'react';
+import { FadeInDown, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { FlashList, type FlashListProps } from '@shopify/flash-list';
 
-import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
+import { AnimatedBox, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectDeviceNetworkSymbolsWithAssets, selectIsAssetListLoading } from '../assetsSelectors';
@@ -57,15 +58,19 @@ export const Assets = (props: AssetsProps) => {
 
     const renderItem = useCallback(
         ({ item }: { item: AssetListRow }) => (
-            <Box style={applyStyle(rowCardStyle, { isFirst: item.isFirst, isLast: item.isLast })}>
+            <AnimatedBox
+                entering={isAssetListLoading ? FadeInDown : undefined}
+                layout={LinearTransition}
+                style={applyStyle(rowCardStyle, { isFirst: item.isFirst, isLast: item.isLast })}
+            >
                 {item.type === 'asset' ? (
                     <AssetItem cryptoCurrencySymbol={item.symbol} />
                 ) : (
                     <DiscoveryAssetsLoader />
                 )}
-            </Box>
+            </AnimatedBox>
         ),
-        [applyStyle],
+        [applyStyle, isAssetListLoading],
     );
 
     return (
@@ -75,6 +80,7 @@ export const Assets = (props: AssetsProps) => {
             getItemType={item => item.type}
             renderItem={renderItem}
             contentContainerStyle={applyStyle(listContentStyle, { bottomInset })}
+
             {...props}
         />
     );
