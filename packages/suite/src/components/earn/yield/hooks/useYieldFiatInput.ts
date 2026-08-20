@@ -62,9 +62,7 @@ export const useYieldFiatInput = ({
     const fiatSymbol = baseCurrencyCode.toUpperCase();
 
     const currentRate = useMemo(() => {
-        if (!symbol) {
-            return undefined;
-        }
+        if (!symbol) return undefined;
 
         return getTokenFiatRate(
             currentFiatRates,
@@ -72,7 +70,7 @@ export const useYieldFiatInput = ({
         );
     }, [currentFiatRates, baseCurrencyCode, symbol, tokenAddress]);
 
-    const hasFiatRate = currentRate !== undefined;
+    const hasFiatRate = !!currentRate;
 
     const liveAmount = useWatch({ control: methods.control, name: 'amountInput' });
 
