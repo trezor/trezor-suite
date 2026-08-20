@@ -1,12 +1,11 @@
 import { type ReactNode, useMemo, useState } from 'react';
 
 import { normalizeForSearch } from '@suite-common/suite-utils';
-import { type TradingType } from '@suite-common/trading';
+import { type TradingType, usePreferredCurrencyUsdThreshold } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type MyAsset } from '@suite-native/trading-types';
 
-import { usePreferredCurrencyUsdThreshold } from './usePreferredCurrencyUsdThreshold';
 import { useTradingMyAssets } from './useTradingMyAssets';
 
 export type MyAssetsSection = {

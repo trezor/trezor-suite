@@ -43,7 +43,8 @@ jest.mock('../hooks/general/useTradingMyAssets', () => ({
     useTradingMyAssets: (tradingType: 'sell' | 'exchange') => mockUseTradingMyAssets(tradingType),
 }));
 
-jest.mock('../hooks/general/usePreferredCurrencyUsdThreshold', () => ({
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
     usePreferredCurrencyUsdThreshold: () => asBaseCurrencyAmount(new BigNumber('0.1')),
 }));
 

@@ -18,6 +18,7 @@ export * from './hooks/useApprovalStep';
 export * from './hooks/useTradingExchangeWatchApproval';
 export * from './hooks/useTradingRefetchScheduler';
 export * from './hooks/useDexExchangeTxSimulation';
+export * from './hooks/usePreferredCurrencyUsdThreshold';
 export {
     type TransactionStatus,
     type UseAllowanceTxTrackingParams,
