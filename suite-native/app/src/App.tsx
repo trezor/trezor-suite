@@ -39,11 +39,6 @@ import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { disableRTL } from './rtl';
 
-// Base time to measure app loading time.
-// The constant has to be placed at the beginning of this file to be initialized as soon as possible.
-// TODO: This method of measuring app loading time is not ideal, Should be substituted by some more sophisticated solution in the future.
-const APP_STARTED_TIMESTAMP = Date.now();
-
 markStartupJsBundleEvaluated();
 
 if (__DEV__) {
@@ -74,7 +69,7 @@ const AppComponent = () => {
     const isAppReady = useSelector(selectIsAppReady);
     const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);
 
-    useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
+    useReportAppInitToAnalytics();
 
     useEffect(() => {
         if (!isApplicationInitDispatchedRef.current) {

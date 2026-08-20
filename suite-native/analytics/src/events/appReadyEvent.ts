@@ -21,7 +21,6 @@ type Attributes = {
     osVersion: AttributeDef<string | number>;
     discreetMode: AttributeDef<boolean>;
     theme: AttributeDef<'standard' | 'dark' | 'system' | 'debug'>;
-    loadDuration: AttributeDef<number>;
     isBiometricsEnabled: AttributeDef<boolean>;
     rememberedStandardWallets: AttributeDef<number>;
     rememberedHiddenWallets: AttributeDef<number>;
@@ -46,6 +45,7 @@ export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
             notes: 'params `appLanguage` and `deviceLanguage` finally report real data.',
         },
         { version: '26.2.1', notes: 'param `labeling` added' },
+        { version: '26.8.1', notes: 'param `loadDuration` removed' },
     ],
 
     attributes: {
@@ -108,10 +108,6 @@ export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
         theme: {
             changelog: [{ version: '24.4.1', notes: 'added' }],
             description: 'The color theme of the app',
-        },
-        loadDuration: {
-            changelog: [{ version: '24.4.1', notes: 'added' }],
-            description: 'The duration of the app to load in milliseconds',
         },
         isBiometricsEnabled: {
             changelog: [{ version: '24.4.1', notes: 'added' }],
