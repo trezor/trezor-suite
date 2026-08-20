@@ -3,10 +3,9 @@ import { useMemo, useState } from 'react';
 import { type CryptoId } from 'invity-api';
 
 import { normalizeForSearch } from '@suite-common/suite-utils';
-import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
+import { type TradeableAssetBalances, cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { type TradeableAssetBalances } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 type AssetSearchFields = {
