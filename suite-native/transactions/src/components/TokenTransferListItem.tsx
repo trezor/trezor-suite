@@ -90,7 +90,7 @@ type TokenTransferListItemProps = {
     tokenTransfer: TypedTokenTransfer;
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
-    includedCoinsCount?: number;
+    hasTokensCount?: number;
     isFirst?: boolean;
     isLast?: boolean;
 };
@@ -99,7 +99,7 @@ export const TokenTransferListItem = ({
     accountKey,
     transaction,
     tokenTransfer,
-    includedCoinsCount = 0,
+    hasTokensCount = 0,
     isFirst,
     isLast,
 }: TokenTransferListItemProps) => {
@@ -110,7 +110,7 @@ export const TokenTransferListItem = ({
             tokenTransfer={tokenTransfer}
             transactionType={isFailedTxn ? 'failed' : tokenTransfer.type}
             transaction={transaction}
-            includedCoinsCount={includedCoinsCount}
+            hasTokensCount={hasTokensCount}
             accountKey={accountKey}
             isFirst={isFirst}
             isLast={isLast}

@@ -46,7 +46,7 @@ export const TransactionListItem = ({
         ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 
-    const includedCoinsCount = transaction.tokens.length;
+    const hasTokensCount = transaction.tokens.length;
 
     const firstToken = transaction.tokens[0];
 
@@ -65,7 +65,7 @@ export const TransactionListItem = ({
                 transaction={transaction}
                 transactionType={transaction.type}
                 accountKey={accountKey}
-                includedCoinsCount={includedCoinsCount}
+                hasTokensCount={hasTokensCount}
                 isFirst={isFirst}
                 isLast={isLast}
             >
@@ -82,7 +82,7 @@ export const TransactionListItem = ({
                 transaction={transaction}
                 accountKey={accountKey}
                 tokenTransfer={firstToken}
-                includedCoinsCount={transaction.tokens.length - 1}
+                hasTokensCount={transaction.tokens.length - 1}
                 isFirst={isFirst}
                 isLast={isLast}
             />
@@ -94,7 +94,7 @@ export const TransactionListItem = ({
             transactionType={transaction.type}
             stakeOperationType={stakeOperationType}
             accountKey={accountKey}
-            includedCoinsCount={includedCoinsCount}
+            hasTokensCount={hasTokensCount}
             isFirst={isFirst}
             isLast={isLast}
         >
