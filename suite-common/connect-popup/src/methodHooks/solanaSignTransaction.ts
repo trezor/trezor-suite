@@ -24,7 +24,6 @@ const preCallHook = async <M extends CallMethodKeys>({
     getState,
     dispatch,
     txSigningPrecomposed,
-    source,
 }: PreCallHookParams<M>) => {
     try {
         if (method === 'solanaSignTransaction') {
@@ -72,28 +71,25 @@ const preCallHook = async <M extends CallMethodKeys>({
                 );
             }
 
-            if (source.type !== 'desktop-ws' && source.type !== 'web') {
-                // Display simulation
-                const device = selectSelectedDevice(getState());
-                if (!device) throw new Error('No device selected');
-                const accountAddress = await TrezorConnect.solanaGetAddress({
-                    path: typedPayload.path,
-                    device: {
-                        path: device.path,
-                        instance: device.instance,
-                        state: device.state,
-                        useEmptyPassphrase: device.useEmptyPassphrase,
-                    },
-                    showOnTrezor: false,
-                });
-                if (!accountAddress.success) throw new Error(accountAddress.error.message);
-                dispatch(
-                    connectPopupActions.txSimulation({
-                        fromAddress: accountAddress.payload.address,
-                    }),
-                );
-                await getPermissionDeferred(true).promise;
-            }
+            const device = selectSelectedDevice(getState());
+            if (!device) throw new Error('No device selected');
+            const accountAddress = await TrezorConnect.solanaGetAddress({
+                path: typedPayload.path,
+                device: {
+                    path: device.path,
+                    instance: device.instance,
+                    state: device.state,
+                    useEmptyPassphrase: device.useEmptyPassphrase,
+                },
+                showOnTrezor: false,
+            });
+            if (!accountAddress.success) throw new Error(accountAddress.error.message);
+            dispatch(
+                connectPopupActions.txSimulation({
+                    fromAddress: accountAddress.payload.address,
+                }),
+            );
+            await getPermissionDeferred(true).promise;
         }
     } catch (error) {
         // If an error occurs it's not a problem, we just fall back to generic UI

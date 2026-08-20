@@ -9,7 +9,10 @@ import {
     TxSimulationTitle,
 } from '@suite/tx-simulation/src/common';
 import { EvmInsufficientGasWarning } from '@suite/tx-simulation/src/evm';
-import { connectPopupActions } from '@suite-common/connect-popup';
+import {
+    type ConnectCallSource as ConnectPopupSource,
+    connectPopupActions,
+} from '@suite-common/connect-popup';
 import {
     TX_METHODS_WITH_FEES,
     areTxSimulationMethods,
@@ -33,11 +36,13 @@ import { useEvmTxSimulationFeesForm } from '../common/hooks/useEvmTxSimulationFe
 interface ConnectPopupTxSimulationModalInnerProps {
     action: TxSimulationAction;
     account: Account;
+    source: ConnectPopupSource;
 }
 
 export function ConnectPopupTxSimulationModalInner({
     action,
     account,
+    source,
 }: ConnectPopupTxSimulationModalInnerProps) {
     const dispatch = useDispatch();
     const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
@@ -58,6 +63,11 @@ export function ConnectPopupTxSimulationModalInner({
             : undefined,
     });
 
+    // Only WalletConnect calls have the chosen fee written back into the payload; every other
+    // caller signs the fee it supplied, so a picker there would silently discard the choice.
+    const isFeeApplied = source.type === 'walletconnect';
+    const isFeeSelectable = areTxSimulationMethods(TX_METHODS_WITH_FEES, action) && isFeeApplied;
+
     const selectedFeeLevel = form.watch('selectedFee') || 'normal';
     const currentComposedLevel = composedLevels?.[selectedFeeLevel];
 
@@ -76,7 +86,7 @@ export function ConnectPopupTxSimulationModalInner({
     function confirm() {
         const selectedFee = getSelectedFee();
 
-        if (areTxSimulationMethods(TX_METHODS_WITH_FEES, action) && selectedFee) {
+        if (isFeeSelectable && selectedFee) {
             dispatch(
                 connectPopupActions.setSelectedFee({
                     selectedFee:
@@ -152,7 +162,7 @@ export function ConnectPopupTxSimulationModalInner({
                     <Column margin={{ left: 8 }} gap={16}>
                         <TxSimulationProvider />
 
-                        {areTxSimulationMethods(TX_METHODS_WITH_FEES, action) && (
+                        {isFeeSelectable && (
                             <FormProvider {...form}>
                                 <Card>
                                     <Fees

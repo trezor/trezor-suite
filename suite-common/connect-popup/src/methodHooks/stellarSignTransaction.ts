@@ -19,7 +19,6 @@ const preCallHook = async <M extends CallMethodKeys>({
     payload,
     getState,
     dispatch,
-    source,
 }: PreCallHookParams<M>) => {
     try {
         if (method !== 'stellarSignTransaction') {
@@ -55,27 +54,25 @@ const preCallHook = async <M extends CallMethodKeys>({
             }),
         );
 
-        if (source.type !== 'desktop-ws' && source.type !== 'web') {
-            const device = selectSelectedDevice(getState());
-            if (!device) throw new Error('No device selected');
-            const accountAddress = await TrezorConnect.stellarGetAddress({
-                path: typedPayload.path,
-                device: {
-                    path: device.path,
-                    instance: device.instance,
-                    state: device.state,
-                    useEmptyPassphrase: device.useEmptyPassphrase,
-                },
-                showOnTrezor: false,
-            });
-            if (!accountAddress.success) throw new Error(accountAddress.error.message);
-            dispatch(
-                connectPopupActions.txSimulation({
-                    fromAddress: accountAddress.payload.address,
-                }),
-            );
-            await getPermissionDeferred(true).promise;
-        }
+        const device = selectSelectedDevice(getState());
+        if (!device) throw new Error('No device selected');
+        const accountAddress = await TrezorConnect.stellarGetAddress({
+            path: typedPayload.path,
+            device: {
+                path: device.path,
+                instance: device.instance,
+                state: device.state,
+                useEmptyPassphrase: device.useEmptyPassphrase,
+            },
+            showOnTrezor: false,
+        });
+        if (!accountAddress.success) throw new Error(accountAddress.error.message);
+        dispatch(
+            connectPopupActions.txSimulation({
+                fromAddress: accountAddress.payload.address,
+            }),
+        );
+        await getPermissionDeferred(true).promise;
     } catch (error) {
         // If an error occurs it's not a problem, we just fall back to generic UI
         console.error(`Error in Connect Popup ${method} hook:`, error);

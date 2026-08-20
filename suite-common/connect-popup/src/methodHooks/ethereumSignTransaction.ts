@@ -109,28 +109,25 @@ const preCallHook = async <M extends CallMethodKeys>({
             }),
         );
 
-        if (source.type !== 'desktop-ws' && source.type !== 'web') {
-            // Display simulation
-            const device = selectSelectedDevice(getState());
-            if (!device) throw new Error('No device selected');
-            const accountAddress = await TrezorConnect.ethereumGetAddress({
-                path: (payload as any).path,
-                device: {
-                    path: device.path,
-                    instance: device.instance,
-                    state: device.state,
-                    useEmptyPassphrase: device.useEmptyPassphrase,
-                },
-                showOnTrezor: false,
-            });
-            if (!accountAddress.success) throw new Error(accountAddress.error.message);
-            dispatch(
-                connectPopupActions.txSimulation({
-                    fromAddress: accountAddress.payload.address,
-                }),
-            );
-            await getPermissionDeferred(true).promise;
-        }
+        const device = selectSelectedDevice(getState());
+        if (!device) throw new Error('No device selected');
+        const accountAddress = await TrezorConnect.ethereumGetAddress({
+            path: (payload as any).path,
+            device: {
+                path: device.path,
+                instance: device.instance,
+                state: device.state,
+                useEmptyPassphrase: device.useEmptyPassphrase,
+            },
+            showOnTrezor: false,
+        });
+        if (!accountAddress.success) throw new Error(accountAddress.error.message);
+        dispatch(
+            connectPopupActions.txSimulation({
+                fromAddress: accountAddress.payload.address,
+            }),
+        );
+        await getPermissionDeferred(true).promise;
 
         // Modify payload to include selected fee, if present
         if (method === 'ethereumSignTransaction' && source.type === 'walletconnect') {
