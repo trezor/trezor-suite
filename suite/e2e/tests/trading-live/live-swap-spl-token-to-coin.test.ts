@@ -71,8 +71,10 @@ test.describe(
                     buyAsset: {
                         searchFilter: sendTokenSymbol,
                         networkFilter: 'sol',
-                        networkSymbol: 'sol',
-                        tokenSymbol: sendTokenSymbol,
+                        assetCryptoId: getCryptoId(
+                            asNetworkSymbol('sol'),
+                            'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+                        ),
                     },
                     selectReceiveAddress: async () => {
                         await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, 'sol');
