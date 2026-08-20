@@ -1,14 +1,6 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState } from '@suite-common/wallet-types';
-import {
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
-} from '@suite-common/wallet-utils';
 
 import { USER_CANCELLED_ERROR_CODES } from './constants';
-
-export const isStakeFlowSupportedSymbol = (symbol: NetworkSymbol): boolean =>
-    isSupportedEthStakingNetworkSymbol(symbol) || isSupportedSolStakingNetworkSymbol(symbol);
 
 export const buildEarnComposeFormState = (
     contractAddress: string,

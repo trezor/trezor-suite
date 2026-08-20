@@ -21,8 +21,8 @@ import {
 import { useEarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
 import { type StakingEarnItem } from '../types';
 import { useStakingNavigateAnalytics } from './useStakingNavigateAnalytics';
-import { isStakeFlowSupportedSymbol } from '../utils';
 import { navigateByAccountState } from '../utils/navigateByAccountState';
+import { resolveStakingPromoAccounts } from '../utils/resolveStakingPromoAccounts';
 
 export const useStakingPromoNavigation = () => {
     const navigation =
@@ -137,13 +137,13 @@ export const useStakingPromoNavigation = () => {
 
     const handleStakingPromoPress = useCallback(
         (item: StakingEarnItem) => {
-            if (!isStakeFlowSupportedSymbol(item.symbol)) {
+            const resolution = resolveStakingPromoAccounts({ symbol: item.symbol, accounts });
+
+            if (resolution.isDesktopOnly) {
                 openInfoModal();
 
                 return;
             }
-
-            const accountsForSymbol = accounts.filter(acc => acc.symbol === item.symbol);
 
             if (isPortfolioTrackerDevice) {
                 openPortfolioTrackerSheet();
@@ -151,7 +151,9 @@ export const useStakingPromoNavigation = () => {
                 return;
             }
 
-            if (accountsForSymbol.length === 0) {
+            const { navigableAccounts } = resolution;
+
+            if (navigableAccounts.length === 0) {
                 setPendingEnableSymbol(item.symbol);
                 pendingEnableSymbolRef.current = item.symbol;
                 enableNetworkContinuedRef.current = false;
@@ -160,15 +162,15 @@ export const useStakingPromoNavigation = () => {
                 return;
             }
 
-            const singleAccount = accountsForSymbol[0];
-            if (accountsForSymbol.length === 1 && singleAccount) {
+            const singleAccount = navigableAccounts[0];
+            if (navigableAccounts.length === 1 && singleAccount) {
                 reportStakingNavigate(singleAccount);
                 navigateByAccountState(singleAccount, navigation.navigate);
 
                 return;
             }
 
-            setChosenAccounts(accountsForSymbol);
+            setChosenAccounts(navigableAccounts);
             chooseAccountSymbolRef.current = item.symbol;
             chooseAccountContinuedRef.current = false;
             openChooseAccountModal();

@@ -16,6 +16,7 @@ import {
     type EarnStakingProvidersInfoListItem,
     type StakingEarnItem,
 } from '../types';
+import { hasAccountActiveStaking } from '../utils/hasAccountActiveStaking';
 
 export const STAKING_PROVIDERS_INFO_LIST_ITEM = {
     id: 'staking-providers-info',
@@ -58,11 +59,11 @@ export const useStakingListData = () => {
                     return;
                 }
 
-                const stakedAmount = getAccountTotalStakingBalance(account);
-
-                if (stakedAmount === null || stakedAmount === '0') {
+                if (!hasAccountActiveStaking(account)) {
                     return;
                 }
+
+                const stakedAmount = getAccountTotalStakingBalance(account) ?? '0';
 
                 activeItems.push({
                     id: `${symbol}-${account.key}`,

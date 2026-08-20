@@ -6,7 +6,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 
-import { hasAccountStakedBalance } from './hasAccountStakedBalance';
+import { hasAccountActiveStaking } from './hasAccountActiveStaking';
 import { resolveStakingTargetRoute } from './resolveStakingTargetRoute';
 
 type StakingNavigateFn = StackNavigationProps<
@@ -15,7 +15,7 @@ type StakingNavigateFn = StackNavigationProps<
 >['navigate'];
 
 export const navigateByAccountState = (account: Account, navigate: StakingNavigateFn) => {
-    if (hasAccountStakedBalance(account)) {
+    if (hasAccountActiveStaking(account)) {
         navigate(resolveStakingTargetRoute(account.symbol), {
             accountKey: account.key,
         });
