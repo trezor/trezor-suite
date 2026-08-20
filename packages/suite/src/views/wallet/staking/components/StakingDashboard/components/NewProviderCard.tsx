@@ -44,7 +44,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
     return (
         <Banner
             icon
-            intent="warning"
+            intent={isStakedWithFiveBinaries ? 'warning' : 'info'}
             title={
                 <Translation
                     id={
