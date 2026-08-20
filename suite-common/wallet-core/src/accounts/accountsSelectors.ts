@@ -4,13 +4,7 @@ import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type AccountType, type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import {
-    getStakingDataForNetwork,
-    hasCardanoStakingRewards,
-    isCardanoStakingActive,
-    isTestnet,
-    isUtxoBased,
-} from '@suite-common/wallet-utils';
+import { isCardanoStakingActive, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
@@ -362,19 +356,6 @@ export const selectSolExternalStakingAccountsTotalStaked = createMemoizedSelecto
 
 export const selectAdaAccountHasStaked = createMemoizedSelector([selectAccountByKey], account =>
     isCardanoStakingActive(account),
-);
-
-export const selectAccountCanClaimStaking = createMemoizedSelector(
-    [selectAccountByKey],
-    account => {
-        if (!account) return false;
-
-        if (account.networkType === 'cardano') {
-            return hasCardanoStakingRewards(account);
-        }
-
-        return getStakingDataForNetwork(account)?.canClaim ?? false;
-    },
 );
 
 export const selectAddressByNetworkAndPath = createMemoizedSelector(

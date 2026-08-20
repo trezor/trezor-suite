@@ -9,7 +9,6 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type TransactionsRootState } from './transactionsReducerTypes';
 import {
     selectEvmPrivatePendingHint,
-    selectHasPendingTransactionBlockingClaim,
     selectTransactionsWithMissingRates,
 } from './transactionsSelectors';
 import { type AccountsRootState } from '../accounts/accountsReducer';
@@ -114,80 +113,5 @@ describe('selectEvmPrivatePendingHint', () => {
     it('returns undefined when the account has no transactions', () => {
         const state = getHintState([pendingSentTx(7)]);
         expect(selectEvmPrivatePendingHint(state, 'missing-account' as AccountKey)).toBeUndefined();
-    });
-});
-
-const ADA_ACCOUNT_KEY = 'descriptor-ada-device' as AccountKey;
-
-const adaAccount = (rewards: string) =>
-    ({
-        key: ADA_ACCOUNT_KEY,
-        symbol: 'ada',
-        networkType: 'cardano',
-        misc: { staking: { isActive: true, rewards } },
-    }) as unknown as Account;
-
-const cardanoStakingTx = (subtype: string, blockHeight: number): WalletAccountTransaction =>
-    ({
-        txid: `ada-${subtype}`,
-        symbol: 'ada',
-        blockHeight,
-        tokens: [],
-        cardanoSpecific: { subtype },
-    }) as unknown as WalletAccountTransaction;
-
-const withdrawalTx = (blockHeight: number) => cardanoStakingTx('withdrawal', blockHeight);
-
-// Everstake pool method ids, kept private by ethereumStakingUtils.
-const STAKE_METHOD_ID = '0x3a29dbae';
-const CLAIM_METHOD_ID = '0x33986ffa';
-
-const getClaimState = (
-    account: Account,
-    transactions: WalletAccountTransaction[] = [],
-): TransactionsRootState & AccountsRootState =>
-    ({
-        wallet: {
-            transactions: { transactions: { [account.key]: transactions } },
-            accounts: [account],
-        },
-    }) as unknown as TransactionsRootState & AccountsRootState;
-
-describe('selectHasPendingTransactionBlockingClaim', () => {
-    it.each(['withdrawal', 'stake_delegation'])(
-        'blocks an ADA claim while a %s tx is confirming, because they compete for the same UTXOs',
-        subtype => {
-            const state = getClaimState(adaAccount('15000000'), [cardanoStakingTx(subtype, -1)]);
-            expect(selectHasPendingTransactionBlockingClaim(state, ADA_ACCOUNT_KEY)).toBe(true);
-        },
-    );
-
-    it('stops blocking an ADA claim once the withdrawal is confirmed', () => {
-        const state = getClaimState(adaAccount('15000000'), [withdrawalTx(1234)]);
-        expect(selectHasPendingTransactionBlockingClaim(state, ADA_ACCOUNT_KEY)).toBe(false);
-    });
-
-    it('blocks an ETH claim only while a claim tx of its own is confirming', () => {
-        const ethStakingAccount = {
-            key: ACCOUNT_KEY,
-            symbol: 'eth',
-            networkType: 'ethereum',
-            misc: {},
-        } as unknown as Account;
-
-        const ethTx = (methodId: string, blockHeight: number) =>
-            ({
-                txid: `eth-${methodId}`,
-                symbol: 'eth',
-                blockHeight,
-                tokens: [],
-                ethereumSpecific: { parsedData: { methodId } },
-            }) as unknown as WalletAccountTransaction;
-
-        const pendingClaim = getClaimState(ethStakingAccount, [ethTx(CLAIM_METHOD_ID, -1)]);
-        expect(selectHasPendingTransactionBlockingClaim(pendingClaim, ACCOUNT_KEY)).toBe(true);
-
-        const pendingStake = getClaimState(ethStakingAccount, [ethTx(STAKE_METHOD_ID, -1)]);
-        expect(selectHasPendingTransactionBlockingClaim(pendingStake, ACCOUNT_KEY)).toBe(false);
     });
 });

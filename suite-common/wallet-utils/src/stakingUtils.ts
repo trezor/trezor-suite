@@ -56,7 +56,6 @@ import { asAmountSubunit } from './AmountTypes';
 import { subunitsToUnits } from './amountUtils';
 import {
     getAdaAccountTotalStakingBalance,
-    hasCardanoStakingRewards,
     isSupportedAdaStakingNetworkSymbol,
     subtypeToStakeTypeMap,
 } from './cardanoStakingUtils';
@@ -234,19 +233,19 @@ export const getStakingDataForNetwork = (
                 symbol: account.symbol,
             }).toString();
 
-            const hasRewards = hasCardanoStakingRewards(account);
-            const totalPendingStakeBalance = !hasRewards ? account.formattedBalance : '';
+            const canClaim = new BigNumber(rewards).gt(0);
+            const totalPendingStakeBalance = !canClaim ? account.formattedBalance : '';
 
             return {
                 autocompoundBalance: totalStakedBalance,
                 claimableAmount: '',
-                depositedBalance: hasRewards ? totalStakedBalance : '',
+                depositedBalance: canClaim ? totalStakedBalance : '',
                 pendingBalance: '',
                 pendingDepositedBalance: '',
                 totalPendingStakeBalance,
                 restakedReward: formattedRewards,
                 withdrawTotalAmount: '',
-                canClaim: false,
+                canClaim,
             };
         }
 
