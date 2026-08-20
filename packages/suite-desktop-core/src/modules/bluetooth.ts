@@ -1,5 +1,4 @@
 import { exec } from 'child_process';
-import { ipcMain } from 'electron';
 
 import { isMacOs } from '@trezor/env-utils';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
@@ -13,6 +12,7 @@ import {
 import { createLazy, throwError } from '@trezor/utils';
 
 import type { ModuleInit } from './module';
+import { rawIpcMain } from '../ipcMain';
 import { BluetoothProcess } from '../libs/processes/BluetoothProcess';
 
 export const SERVICE_NAME = '@trezor/transport-bluetooth';
@@ -136,7 +136,7 @@ export const init: ModuleInit = () => {
         },
     };
 
-    const unregisterProxy = createIpcProxyHandler(ipcMain, 'Bluetooth', proxyOptions);
+    const unregisterProxy = createIpcProxyHandler(rawIpcMain, 'Bluetooth', proxyOptions);
     const onLoad = () => {
         bluetoothModuleState.getTransport = getBluetoothTransport;
     };

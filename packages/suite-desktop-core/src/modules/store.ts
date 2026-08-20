@@ -1,4 +1,4 @@
-import { ipcMain } from '../typed-electron';
+import { ipcMain } from '../ipcMain';
 import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = 'store';

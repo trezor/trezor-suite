@@ -4,14 +4,14 @@
 import { captureMessage } from '@sentry/electron/main';
 
 import { isMacOs, isWindows } from '@trezor/env-utils';
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { isArrayMember } from '@trezor/utils';
 
+import { ipcMain } from '../ipcMain';
 import { restartApp } from '../libs/app-utils';
 import { initConnectPopupResponseHandler } from '../libs/connect-popup-messages';
 import { exposeConnectWs } from '../libs/connect-ws';
 import { createHttpReceiver } from '../libs/http-receiver';
-import { app, ipcMain } from '../typed-electron';
+import { app } from '../typed-electron';
 import { type ModuleInitBackground } from './module';
 
 export const SERVICE_NAME = 'http-receiver';
@@ -77,8 +77,7 @@ export const initBackground: ModuleInitBackground = ({
         });
 
         // when httpReceiver was asked to provide current address for given pathname
-        ipcMain.handle('server/request-address', (ipcEvent, pathname) => {
-            validateIpcMessage({ ipcEvent });
+        ipcMain.handle('server/request-address', (_, pathname) => {
             try {
                 // Use deeplink URLs for trading redirects on macOS/Windows only
                 if (isArrayMember(pathname, TRADING_REDIRECT_PATHS) && (isMacOs() || isWindows())) {
@@ -98,14 +97,8 @@ export const initBackground: ModuleInitBackground = ({
             }
         });
 
-        ipcMain.handle('connect-popup/enabled', ipcEvent => {
-            validateIpcMessage({ ipcEvent });
-
-            return connectPopupEnabled();
-        });
-        ipcMain.handle('connect-popup/set-enabled', (ipcEvent, enabled: boolean) => {
-            validateIpcMessage({ ipcEvent });
-
+        ipcMain.handle('connect-popup/enabled', () => connectPopupEnabled());
+        ipcMain.handle('connect-popup/set-enabled', (_, enabled: boolean) => {
             store.setConnectSettings({ disableWs: !enabled });
             restartApp();
         });

@@ -9,16 +9,16 @@ import {
 import { unlinkSync } from 'fs';
 
 import { isDevEnv, isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { type HandshakeElectron } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable, serializeError } from '@trezor/utils';
 
 import { type ModuleInit, mainThreadEmitter } from './module';
+import { ipcMain } from '../ipcMain';
 import { parseCustomFeedURL } from '../libs/parseCustomFeedURL';
 import { getSwitchValue, hasSwitch } from '../libs/process-switches';
 import { getSignatureFile, verifySignature } from '../libs/update-checker';
 import { b2t } from '../libs/utils';
-import { app, ipcMain } from '../typed-electron';
+import { app } from '../typed-electron';
 
 export const SERVICE_NAME = 'auto-updater';
 
@@ -261,8 +261,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         );
     });
 
-    ipcMain.on('update/check', (ipcEvent, { isManual }) => {
-        validateIpcMessage({ ipcEvent });
+    ipcMain.on('update/check', (_, { isManual }) => {
         if (isManual === true) {
             isManualCheck = true;
         }
@@ -271,21 +270,18 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         autoUpdater.checkForUpdates();
     });
 
-    ipcMain.on('update/download', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
+    ipcMain.on('update/download', () => {
         startDownload();
     });
 
-    ipcMain.on('update/set-auto-install-on-app-quit', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
+    ipcMain.on('update/set-auto-install-on-app-quit', () => {
         // If the update is triggered manually by the button in the app, we want to force update,
         // because it may have been disabled by the user switch the automatic update off. But because the user deliberately
         // clicked the "Update on quit" button, we want to install it.
         autoUpdater.autoInstallOnAppQuit = true;
     });
 
-    ipcMain.on('update/install', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
+    ipcMain.on('update/install', () => {
         logger.info(SERVICE_NAME, 'Restart and update request');
 
         setImmediate(() => {
@@ -300,8 +296,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         });
     });
 
-    ipcMain.on('update/cancel', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
+    ipcMain.on('update/cancel', () => {
         logger.info(
             SERVICE_NAME,
             `Cancel update request (in progress: ${b2t(!!updateCancellationToken)})`,
@@ -311,8 +306,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         }
     });
 
-    ipcMain.on('update/allow-prerelease', (ipcEvent, value = true) => {
-        validateIpcMessage({ ipcEvent });
+    ipcMain.on('update/allow-prerelease', (_, value = true) => {
         logger.info(SERVICE_NAME, `${value ? 'allow' : 'disable'} prerelease!`);
         mainWindowProxy.getInstance()?.webContents.send('update/allow-prerelease', value);
         const settings = store.getUpdateSettings();
@@ -324,8 +318,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         logger.info(SERVICE_NAME, `New feed url: ${feedURL}`);
     });
 
-    ipcMain.on('update/set-automatic-update-enabled', (ipcEvent, value = true) => {
-        validateIpcMessage({ ipcEvent });
+    ipcMain.on('update/set-automatic-update-enabled', (_, value = true) => {
         logger.info(SERVICE_NAME, `set-automatic-update-enabled: ${value ? 'true' : 'false'}`);
 
         mainWindowProxy

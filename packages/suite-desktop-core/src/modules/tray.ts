@@ -5,10 +5,10 @@ import { Menu, Tray } from 'electron';
 import path from 'path';
 
 import { DEVICE, type DeviceEvent } from '@trezor/connect';
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { type Status, type TraySettings } from '@trezor/suite-desktop-api';
 
-import { app, ipcMain } from '../typed-electron';
+import { ipcMain } from '../ipcMain';
+import { app } from '../typed-electron';
 import { type ModuleInitBackground, mainThreadEmitter } from './module';
 import { APP_NAME_BARE } from '../libs/constants';
 
@@ -131,9 +131,7 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
         renderTray();
     });
 
-    ipcMain.handle('tray/change-settings', (ipcEvent, updatedSettings: TraySettings) => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('tray/change-settings', (_, updatedSettings: TraySettings) => {
         try {
             store.setTraySettings({
                 ...store.getTraySettings(),
@@ -148,9 +146,7 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
         }
     });
 
-    ipcMain.handle('tray/get-settings', ipcEvent => {
-        validateIpcMessage({ ipcEvent });
-
+    ipcMain.handle('tray/get-settings', () => {
         try {
             return { success: true, payload: store.getTraySettings() };
         } catch (error) {

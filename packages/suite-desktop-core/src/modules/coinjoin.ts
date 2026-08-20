@@ -3,7 +3,6 @@
  */
 
 import { captureMessage, withScope } from '@sentry/electron/main';
-import { ipcMain } from 'electron';
 
 import { COINJOIN_NETWORK_TAG, COINJOIN_REPORT_TAG } from '@suite-common/sentry';
 import {
@@ -18,6 +17,7 @@ import { type InterceptedEvent } from '@trezor/request-manager';
 import { getSynchronize } from '@trezor/utils';
 
 import type { ModuleInit } from './module';
+import { ipcMain, rawIpcMain } from '../ipcMain';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
 import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { ThreadProxy } from '../libs/thread-proxy';
@@ -207,13 +207,13 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
 
     const registerProxies = () => {
         const unregisterBackendProxy = createIpcProxyHandler(
-            ipcMain,
+            rawIpcMain,
             BACKEND_CHANNEL,
             backendProxyOptions,
         );
 
         const unregisterClientProxy = createIpcProxyHandler(
-            ipcMain,
+            rawIpcMain,
             CLIENT_CHANNEL,
             clientProxyOptions,
         );

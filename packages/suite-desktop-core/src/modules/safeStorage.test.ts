@@ -16,18 +16,15 @@ jest.mock('electron', () => ({
         getSelectedStorageBackend: jest.fn(() => 'gnome_libsecret'),
         isEncryptionAvailable: jest.fn(() => true),
     },
-}));
-
-jest.mock('@trezor/ipc-proxy', () => ({
-    validateIpcMessage: jest.fn(),
-}));
-
-jest.mock('../typed-electron', () => ({
     ipcMain: {
         handle: (channel: string, handler: IpcHandler) => {
             mockIpcHandlers.set(channel, handler);
         },
     },
+}));
+
+jest.mock('@trezor/ipc-proxy', () => ({
+    validateIpcMessage: jest.fn(),
 }));
 
 const delegatedIdentityKey = '0c9d40cd155e7ddb93e7b3c7b2acd8d75e7a3ebd543a3504c8f8164fb692772b';
