@@ -70,7 +70,7 @@ block), `packages/connect-examples/**` (sample code, not shipped app).
 | --- | --- | --- | --- |
 | 0 | grep candidate harvest | [`_scan/00-candidates.md`](_scan/00-candidates.md) | **done** |
 | V1 | verify: `packages/components` + `product-components` (geometry, rAF, observers, keyframes, multi-line transitions) | `_scan/01-components.md` | **done** |
-| V2 | verify: `packages/suite` + `suite/*` + `suite-common` (geometry, rAF, framer height/width, transitions) | `_scan/02-suite.md` | pending |
+| V2 | verify: `packages/suite` + `suite/*` + `suite-common` (geometry, rAF, framer height/width, transitions) | `_scan/02-suite.md` | **done** |
 | V3 | verify: `connect-explorer(-theme)` + `analytics-docs` + `suite-web`/`desktop` + `env-utils` | `_scan/03-satellites.md` | pending |
 | W | write per-issue docs + README from `_scan/0[123]-*.md` | `p1-*.md`, `p2-*.md`, `p3-*.md`, `README.md` | pending |
 | F | verify every cited `file:line` mechanically, commit, push, draft PR → base `issues/perf-react-hooks` | PR | pending |
