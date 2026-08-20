@@ -1,9 +1,8 @@
 import { invariant } from '@suite-common/suite-utils';
-import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
+import { type TradeableAssetBalance, cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
-import { type TradeableAssetBalance } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { AssetListItem } from '../AssetListItem';
