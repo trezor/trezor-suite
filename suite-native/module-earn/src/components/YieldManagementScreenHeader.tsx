@@ -70,7 +70,7 @@ export const YieldManagementScreenHeader = ({ account }: YieldManagementScreenHe
                         intent="neutral"
                         priority="secondary"
                         size="medium"
-                        iconName="gear"
+                        iconName="info"
                         onPress={openModal}
                     />
                 }
