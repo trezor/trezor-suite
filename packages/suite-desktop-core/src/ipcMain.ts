@@ -1,5 +1,5 @@
-// This file is the one wrapper where we shall import electron.ipcMain
-// eslint-disable-next-line local-rules/no-electron-ipc-main-reference
+// This file is the central place to directly import electron.ipcMain and wrap it with security validation.
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { ipcMain as baseIpcMain } from 'electron';
 
 import { validateIpcMessage } from '@trezor/ipc-proxy';

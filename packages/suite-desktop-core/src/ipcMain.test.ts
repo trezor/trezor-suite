@@ -1,5 +1,5 @@
 import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron';
-// eslint-disable-next-line local-rules/no-electron-ipc-main-reference
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { ipcMain as electronIpcMain } from 'electron';
 
 import { validateIpcMessage } from '@trezor/ipc-proxy';

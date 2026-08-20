@@ -1,3 +1,5 @@
+// We have restricted electron.ipcMain import to wrap it with security validation, but this is not a live app, only an example.
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { BrowserWindow, app, ipcMain } from 'electron';
 import path from 'node:path';
 import url, { fileURLToPath } from 'node:url';
