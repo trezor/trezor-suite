@@ -1,4 +1,4 @@
-import { type FC, type PropsWithChildren, useEffect } from 'react';
+import { type FC, type PropsWithChildren, memo, useEffect } from 'react';
 
 import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
@@ -48,7 +48,8 @@ const getFullscreenApp = (route: AppState['router']['route']): FC | undefined =>
 
 // Preloader is a top level wrapper used in _app.tsx.
 // Decides which content should be displayed basing on route and prerequisites.
-export const Preloader = ({ children }: PropsWithChildren) => {
+// Memoised so that a re-render above it (Main) does not cascade through the whole app.
+export const Preloader = memo(function Preloader({ children }: PropsWithChildren) {
     const lifecycle = useSelector(state => state.suite.lifecycle);
     const isTransportInitialized = useSelector(selectIsTransportInitialized);
     const router = useSelector(state => state.router);
@@ -151,4 +152,4 @@ export const Preloader = ({ children }: PropsWithChildren) => {
 
     // everything is set.
     return <SuiteLayout>{children}</SuiteLayout>;
-};
+});
