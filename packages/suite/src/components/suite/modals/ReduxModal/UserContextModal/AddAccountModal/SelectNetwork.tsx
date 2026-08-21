@@ -1,15 +1,15 @@
 import { Translation } from '@suite/intl';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
-import { Button, Column, H4, Row, Text, Tooltip } from '@trezor/components';
+import { Button, Column, Row, Text, Tooltip } from '@trezor/components';
 
 import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
 
 type SelectNetworkProps = {
-    heading?: React.ReactNode;
     networks: Network[];
     enabledNetworkSymbols?: NetworkSymbol[];
     accountCounts?: Partial<Record<NetworkSymbol, number>>;
     activatingNetworkSymbols?: NetworkSymbol[];
+    addingAccountNetworkSymbol?: NetworkSymbol;
     activationErrors?: Partial<Record<NetworkSymbol, string>>;
     handleNetworkSelection?: (symbol?: NetworkSymbol) => void;
     onSettings?: (symbol: NetworkSymbol) => void;
@@ -18,11 +18,11 @@ type SelectNetworkProps = {
 };
 
 export const SelectNetwork = ({
-    heading,
     networks,
     enabledNetworkSymbols,
     accountCounts,
     activatingNetworkSymbols = [],
+    addingAccountNetworkSymbol,
     activationErrors,
     handleNetworkSelection,
     onSettings,
@@ -35,11 +35,6 @@ export const SelectNetwork = ({
 
     return (
         <Column gap={12} data-testid={dataTestId}>
-            {heading !== undefined && (
-                <H4 intent="neutral" priority="secondary" typographyStyle="body-sm">
-                    {heading}
-                </H4>
-            )}
             <NetworkList
                 onClick={handleNetworkSelection}
                 networks={networks}
@@ -55,12 +50,16 @@ export const SelectNetwork = ({
                     handleNetworkSelection
                         ? ({ network, isEnabled }) => {
                               const disabledMessage = getAddDisabledMessage?.(network);
-                              const isLoading = activatingNetworkSymbols.includes(network.symbol);
+                              const isActivating = activatingNetworkSymbols.includes(
+                                  network.symbol,
+                              );
+                              const isAdding = addingAccountNetworkSymbol === network.symbol;
+                              const isLoading = isActivating || isAdding;
                               const activationError = activationErrors?.[network.symbol];
 
                               return (
                                   <Row gap={12}>
-                                      {isEnabled && !isLoading && (
+                                      {isEnabled && !isActivating && (
                                           <Text
                                               typographyStyle="body-sm"
                                               intent="neutral"
@@ -92,9 +91,9 @@ export const SelectNetwork = ({
                                           >
                                               <Translation
                                                   id={
-                                                      isEnabled && !isLoading
-                                                          ? 'TR_ADD'
-                                                          : 'TR_ENABLE'
+                                                      isActivating || !isEnabled
+                                                          ? 'TR_ENABLE'
+                                                          : 'TR_ADD'
                                                   }
                                               />
                                           </Button>
