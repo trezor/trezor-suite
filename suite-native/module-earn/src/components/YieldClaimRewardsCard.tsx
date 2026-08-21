@@ -5,6 +5,7 @@ import { Translation } from '@suite-native/intl';
 
 import { YieldClaimRewardItem } from './YieldClaimRewardItem';
 import { type StablecoinYieldAccountRewards } from '../utils/stablecoinYieldClaimSummaryUtils';
+import { sortRewardsByClaimableFiatAmount } from '../utils/sortRewardsByClaimableFiatAmount';
 
 type YieldClaimRewardsCardProps = {
     accountRewards: StablecoinYieldAccountRewards | null;
@@ -22,14 +23,16 @@ export const YieldClaimRewardsCard = ({
     if (isLoading) {
         content = <ListItemSkeleton />;
     } else if (accountRewards) {
-        content = accountRewards.rewards.map((reward, index) => (
-            <YieldClaimRewardItem
-                key={`${reward.token.address}:${index}`}
-                isFiatLoading={isFiatLoading}
-                networkSymbol={accountRewards.account.symbol}
-                reward={reward}
-            />
-        ));
+        content = accountRewards.rewards
+            .toSorted(sortRewardsByClaimableFiatAmount)
+            .map((reward, index) => (
+                <YieldClaimRewardItem
+                    key={`${reward.token.address}:${index}`}
+                    isFiatLoading={isFiatLoading}
+                    networkSymbol={accountRewards.account.symbol}
+                    reward={reward}
+                />
+            ));
     } else {
         content = (
             <Text variant="body-sm" color="contentSecondary">
