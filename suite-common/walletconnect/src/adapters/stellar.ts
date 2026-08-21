@@ -128,7 +128,7 @@ const stellarSignXDR = createThunk<
         transaction.addSignature(account.descriptor, signature);
 
         return {
-            signedXDR: transaction.toEnvelope().toXDR('base64'),
+            signedXDR: transaction.toEnvelope().toXdr('base64'),
         };
     },
 );
