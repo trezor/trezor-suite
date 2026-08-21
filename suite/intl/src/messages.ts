@@ -12979,10 +12979,6 @@ export const messages = defineMessages({
         id: 'TR_PUBLIC_KEY',
         defaultMessage: 'Public key',
     },
-    TR_PUBLIC_KEY_FORMAT: {
-        id: 'TR_PUBLIC_KEY_FORMAT',
-        defaultMessage: 'Public key format',
-    },
     TR_PUBLIC_KEY_RAW: {
         id: 'TR_PUBLIC_KEY_RAW',
         defaultMessage: 'Raw key (default)',

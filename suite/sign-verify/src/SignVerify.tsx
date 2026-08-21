@@ -81,9 +81,6 @@ const OutcomeBadge = ({ outcome }: { outcome: Exclude<Outcome, 'idle'> }) => {
     );
 };
 
-// The design fixes the signature-format switch at this width rather than letting it stretch.
-const FORMAT_SWITCH_WIDTH = 360;
-
 // Matches the padding the form fields use inside their frame.
 const FIELD_PADDING = 16;
 
@@ -91,29 +88,57 @@ const FIELD_PADDING = 16;
 // badge floating over the strip is centred on the labels rather than on the underline.
 const TABS_LABEL_BOTTOM_SPACE = 10;
 
+// The design fixes the format switches at this width rather than letting them stretch.
+const FORMAT_SWITCH_WIDTH = 360;
+
+type FormatSwitchProps = {
+    options: { value: boolean; label: ReactNode }[];
+    selectedOption?: boolean;
+    onChange: (value: boolean) => void;
+    isDisabled?: boolean;
+    /** Only the signature format has something to explain. */
+    tooltip?: ReactNode;
+    'data-testid': string;
+};
+
 /**
- * The switch owns its width, so its label sits outside `SelectBar` and repeats the typography
+ * The switch owns its width, so the label sits outside `SelectBar` and repeats the typography
  * `SelectBar` would have given it.
  */
-const FormatLabel = () => (
-    <Tooltip
-        maxWidth={330}
-        content={
-            <Translation
-                id="TR_FORMAT_TOOLTIP"
-                values={{
-                    FormatDescription: chunks => <p>{chunks}</p>,
-                    span: chunks => <strong>{chunks}</strong>,
-                }}
-            />
-        }
-        hasIcon
-    >
+const FormatSwitch = ({
+    options,
+    tooltip,
+    isDisabled,
+    'data-testid': dataTestId,
+    ...field
+}: FormatSwitchProps) => {
+    const label = (
         <Text case="capitalize" intent="neutral" priority="secondary" typographyStyle="body-md">
             <Translation id="TR_FORMAT" />
         </Text>
-    </Tooltip>
-);
+    );
+
+    return (
+        <Row gap={12}>
+            {tooltip ? (
+                <Tooltip maxWidth={330} content={tooltip} hasIcon>
+                    {label}
+                </Tooltip>
+            ) : (
+                label
+            )}
+            <Box width={FORMAT_SWITCH_WIDTH}>
+                <SelectBar
+                    isFullWidth
+                    isDisabled={isDisabled}
+                    options={options}
+                    data-testid={dataTestId}
+                    {...field}
+                />
+            </Box>
+        </Row>
+    );
+};
 
 type SignVerifyShellProps = {
     title: 'TR_NAV_SIGN_VERIFY' | 'TR_SIGN_MESSAGE';
@@ -325,30 +350,40 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                 <form onSubmit={formSubmit(onSubmit)}>
                     <Column gap={16} margin={{ bottom: 32 }}>
                         {isSignPage && signFormatsDiffer && !isCompleted && (
-                            <Row gap={12}>
-                                <FormatLabel />
-                                {/* The switch is a fixed 360 wide, so it fills a box of that width
-                                    instead of stretching with the card. */}
-                                <Box width={FORMAT_SWITCH_WIDTH}>
-                                    <SelectBar
-                                        isFullWidth
-                                        options={[
-                                            {
-                                                value: true,
-                                                label: (
-                                                    <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />
-                                                ),
-                                            },
-                                            {
-                                                value: false,
-                                                label: <Translation id="TR_BIP_SIG_FORMAT" />,
-                                            },
-                                        ]}
-                                        data-testid="@sign-verify/format"
-                                        {...isElectrumField}
+                            <FormatSwitch
+                                options={[
+                                    {
+                                        value: true,
+                                        label: <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />,
+                                    },
+                                    { value: false, label: <Translation id="TR_BIP_SIG_FORMAT" /> },
+                                ]}
+                                tooltip={
+                                    <Translation
+                                        id="TR_FORMAT_TOOLTIP"
+                                        values={{
+                                            FormatDescription: chunks => <p>{chunks}</p>,
+                                            span: chunks => <strong>{chunks}</strong>,
+                                        }}
                                     />
-                                </Box>
-                            </Row>
+                                }
+                                data-testid="@sign-verify/format"
+                                {...isElectrumField}
+                            />
+                        )}
+                        {/* Cardano's switch decides what the signing call returns as the public
+                            key, so it stays visible as a record of what was used but cannot be
+                            touched afterwards — changing it would throw the signature away. */}
+                        {isSignPage && isCardano && (
+                            <FormatSwitch
+                                options={[
+                                    { value: false, label: <Translation id="TR_PUBLIC_KEY_RAW" /> },
+                                    { value: true, label: <Translation id="TR_PUBLIC_KEY_COSE" /> },
+                                ]}
+                                isDisabled={isCompleted}
+                                data-testid="@sign-verify/cardano-pubkey-format"
+                                {...cardanoPubKeyCoseField}
+                            />
                         )}
                         {renderAddressField()}
                         <Box position={{ type: 'relative' }}>
@@ -393,25 +428,6 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                                 )}
                             </Box>
                         </Box>
-                        {isSignPage && isCardano && (
-                            <Row gap={12}>
-                                <SelectBar
-                                    label={<Translation id="TR_PUBLIC_KEY_FORMAT" />}
-                                    options={[
-                                        {
-                                            value: false,
-                                            label: <Translation id="TR_PUBLIC_KEY_RAW" />,
-                                        },
-                                        {
-                                            value: true,
-                                            label: <Translation id="TR_PUBLIC_KEY_COSE" />,
-                                        },
-                                    ]}
-                                    data-testid="@sign-verify/cardano-pubkey-format"
-                                    {...cardanoPubKeyCoseField}
-                                />
-                            </Row>
-                        )}
                         {isSignPage && <Divider margin={{}} />}
                         <Input
                             maxLength={MAX_LENGTH_SIGNATURE}
