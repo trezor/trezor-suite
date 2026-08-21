@@ -7,8 +7,8 @@ import {
 } from '@suite-native/navigation';
 import {
     TradingHistoryDetail,
+    TradingHistoryDetailCompactHeader,
     TradingHistoryDetailHeader,
-    TradingHistoryDetailHeaderSubtitle,
 } from '@suite-native/trading-history';
 
 export const TradingHistoryDetailScreen = ({
@@ -19,8 +19,9 @@ export const TradingHistoryDetailScreen = ({
     <Screen
         header={
             <DynamicScreenHeader
-                title={<TradingHistoryDetailHeader orderId={orderId} />}
-                subtitle={<TradingHistoryDetailHeaderSubtitle orderId={orderId} />}
+                compactContent={<TradingHistoryDetailCompactHeader orderId={orderId} />}
+                expandedContent={<TradingHistoryDetailHeader orderId={orderId} />}
+                scrollThreshold={0.65}
                 closeActionType="back"
             />
         }

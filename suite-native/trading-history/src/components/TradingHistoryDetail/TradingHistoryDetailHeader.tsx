@@ -1,3 +1,4 @@
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import {
@@ -8,8 +9,12 @@ import {
     selectTradingProviderCompanyName,
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
+import { AnimatedHStack, Box, Pictogram, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
+
+import { FailCrossSvg } from '../FailCrossSvg';
+import { SuccessSvg } from '../SuccessSvg';
 
 type TradingHistoryDetailHeaderProps = {
     orderId: string;
@@ -26,6 +31,9 @@ type HeaderState =
     | 'sell-completed'
     | 'sell-failed'
     | 'sell-processing';
+
+const HEADER_ARTWORK_SIZE = 120;
+const COMPACT_HEADER_ARTWORK_SIZE = 32;
 
 const getHeaderState = (tradeType: TradingType, status: TradingTransactionStatus): HeaderState => {
     switch (tradeType) {
@@ -85,13 +93,7 @@ const useTradingHistoryDetailHeaderState = (orderId: string) => {
     };
 };
 
-export const TradingHistoryDetailHeader = ({ orderId }: TradingHistoryDetailHeaderProps) => {
-    const { headerState } = useTradingHistoryDetailHeaderState(orderId);
-
-    if (!headerState) {
-        return null;
-    }
-
+const TradingHistoryDetailHeaderTitle = ({ headerState }: { headerState: HeaderState }) => {
     switch (headerState) {
         case 'buy-processing':
             return (
@@ -132,25 +134,15 @@ export const TradingHistoryDetailHeader = ({ orderId }: TradingHistoryDetailHead
     }
 };
 
-export const TradingHistoryDetailHeaderSubtitle = ({
-    orderId,
-}: TradingHistoryDetailHeaderProps) => {
-    const { translate } = useTranslate();
-    const { exchange, headerState, tradeType } = useTradingHistoryDetailHeaderState(orderId);
-    const providerName = useSelector((state: TradingRootState) =>
-        tradeType ? selectTradingProviderCompanyName(state, exchange, tradeType) : undefined,
-    );
+type TradingHistoryDetailHeaderSubtitleProps = {
+    headerState: HeaderState;
+    providerName: string;
+};
 
-    if (!headerState) {
-        return null;
-    }
-
-    const translationValues = {
-        providerName:
-            providerName ??
-            translate('moduleTrading.tradeHistory.detail.header.unknownProviderName'),
-    };
-
+const TradingHistoryDetailHeaderSubtitle = ({
+    headerState,
+    providerName,
+}: TradingHistoryDetailHeaderSubtitleProps) => {
     switch (headerState) {
         case 'buy-processing':
             return (
@@ -188,17 +180,118 @@ export const TradingHistoryDetailHeaderSubtitle = ({
             return (
                 <Translation
                     id="moduleTrading.tradeHistory.detail.header.exchange.kyc.description"
-                    values={translationValues}
+                    values={{ providerName }}
                 />
             );
         case 'exchange-returned':
             return (
                 <Translation
                     id="moduleTrading.tradeHistory.detail.header.exchange.returned.description"
-                    values={translationValues}
+                    values={{ providerName }}
                 />
             );
         default:
             return exhaustive(headerState);
     }
+};
+
+type TradingHistoryDetailHeaderArtworkProps = {
+    headerState: HeaderState;
+    size: number;
+};
+
+const TradingHistoryDetailHeaderArtwork = ({
+    headerState,
+    size,
+}: TradingHistoryDetailHeaderArtworkProps) => {
+    switch (headerState) {
+        case 'buy-completed':
+        case 'exchange-completed':
+        case 'sell-completed':
+            return (
+                <SuccessSvg
+                    width={size}
+                    height={size}
+                    testID="@trading-history/detail/header/artwork/success"
+                />
+            );
+        case 'buy-failed':
+        case 'sell-failed':
+            return (
+                <FailCrossSvg
+                    width={size}
+                    height={size}
+                    testID="@trading-history/detail/header/artwork/fail"
+                />
+            );
+        case 'exchange-kyc':
+            return (
+                <Box testID="@trading-history/detail/header/artwork/kyc">
+                    <Pictogram variant="warning" size={size} />
+                </Box>
+            );
+        case 'buy-processing':
+        case 'exchange-processing':
+        case 'exchange-returned':
+        case 'sell-processing':
+            return null;
+        default:
+            return exhaustive(headerState);
+    }
+};
+
+export const TradingHistoryDetailHeader = ({ orderId }: TradingHistoryDetailHeaderProps) => {
+    const { translate } = useTranslate();
+    const { exchange, headerState, tradeType } = useTradingHistoryDetailHeaderState(orderId);
+    const providerName = useSelector((state: TradingRootState) =>
+        tradeType ? selectTradingProviderCompanyName(state, exchange, tradeType) : undefined,
+    );
+
+    if (!headerState) {
+        return null;
+    }
+
+    return (
+        <VStack>
+            <TradingHistoryDetailHeaderArtwork
+                headerState={headerState}
+                size={HEADER_ARTWORK_SIZE}
+            />
+            <TitleHeader
+                title={<TradingHistoryDetailHeaderTitle headerState={headerState} />}
+                subtitle={
+                    <TradingHistoryDetailHeaderSubtitle
+                        headerState={headerState}
+                        providerName={
+                            providerName ??
+                            translate(
+                                'moduleTrading.tradeHistory.detail.header.unknownProviderName',
+                            )
+                        }
+                    />
+                }
+                titleVariant="headline-md"
+            />
+        </VStack>
+    );
+};
+
+export const TradingHistoryDetailCompactHeader = ({ orderId }: TradingHistoryDetailHeaderProps) => {
+    const { headerState } = useTradingHistoryDetailHeaderState(orderId);
+
+    if (!headerState) {
+        return null;
+    }
+
+    return (
+        <AnimatedHStack alignItems="center" spacing="sp8" entering={FadeIn} exiting={FadeOut}>
+            <TradingHistoryDetailHeaderArtwork
+                headerState={headerState}
+                size={COMPACT_HEADER_ARTWORK_SIZE}
+            />
+            <Text variant="body-md-strong" numberOfLines={1} adjustsFontSizeToFit>
+                <TradingHistoryDetailHeaderTitle headerState={headerState} />
+            </Text>
+        </AnimatedHStack>
+    );
 };

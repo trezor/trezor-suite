@@ -21,6 +21,7 @@ export type PictogramVariant = (typeof PICTOGRAM_VARIANTS)[number];
 export type PictogramProps = {
     variant: PictogramVariant;
     icon?: IconName;
+    size?: number;
 };
 
 type PictogramConfig = {
@@ -57,9 +58,20 @@ const pictogramVariantsMap = {
     },
 } as const satisfies Record<PictogramVariant, PictogramConfig>;
 
-const pictogramContainerStyle = prepareNativeStyle(_ => ({
-    width: 112,
-    height: 112,
+const DEFAULT_PICTOGRAM_SIZE = 112;
+
+const pictogramContainerStyle = prepareNativeStyle<{ size: number }>((_, { size }) => ({
+    width: size,
+    height: size,
+}));
+
+const pictogramContentStyle = prepareNativeStyle<{ size: number }>((_, { size }) => ({
+    position: 'absolute',
+    width: DEFAULT_PICTOGRAM_SIZE,
+    height: DEFAULT_PICTOGRAM_SIZE,
+    top: (size - DEFAULT_PICTOGRAM_SIZE) / 2,
+    left: (size - DEFAULT_PICTOGRAM_SIZE) / 2,
+    transform: [{ scale: size / DEFAULT_PICTOGRAM_SIZE }],
 }));
 
 const iconContainerStyle = prepareNativeStyle<{ iconOffset?: number }>((_, { iconOffset }) => ({
@@ -72,19 +84,21 @@ const iconContainerStyle = prepareNativeStyle<{ iconOffset?: number }>((_, { ico
     justifyContent: 'center',
 }));
 
-export const Pictogram = ({ variant, icon }: PictogramProps) => {
+export const Pictogram = ({ variant, icon, size = DEFAULT_PICTOGRAM_SIZE }: PictogramProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const { ShapeSvg, IconSvg, iconOffset, iconColor } = pictogramVariantsMap[variant];
 
     return (
-        <Box style={applyStyle(pictogramContainerStyle)}>
-            <ShapeSvg />
-            <Box style={applyStyle(iconContainerStyle, { iconOffset })}>
-                {icon ? (
-                    <Icon name={icon} color={utils.colors[iconColor]} size={40} />
-                ) : (
-                    <IconSvg color={utils.colors[iconColor]} />
-                )}
+        <Box style={applyStyle(pictogramContainerStyle, { size })}>
+            <Box style={applyStyle(pictogramContentStyle, { size })}>
+                <ShapeSvg />
+                <Box style={applyStyle(iconContainerStyle, { iconOffset })}>
+                    {icon ? (
+                        <Icon name={icon} color={utils.colors[iconColor]} size={40} />
+                    ) : (
+                        <IconSvg color={utils.colors[iconColor]} />
+                    )}
+                </Box>
             </Box>
         </Box>
     );
