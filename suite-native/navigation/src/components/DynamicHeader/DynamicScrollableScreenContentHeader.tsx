@@ -10,6 +10,7 @@ import { type ScreenHeaderProps } from '../ScreenHeader';
 type DynamicScrollableScreenContentHeaderProps = {
     subtitle?: ReactNode;
     marginBottom?: NativeSpacing;
+    marginTop?: NativeSpacing;
     expandedContent?: ReactNode;
 } & Pick<ScreenHeaderProps, 'title'>;
 
@@ -17,6 +18,7 @@ export const DynamicScrollableScreenContentHeader = ({
     title,
     subtitle,
     marginBottom = 'sp32',
+    marginTop = 'sp16',
     expandedContent,
 }: DynamicScrollableScreenContentHeaderProps) => {
     const { setScrollableHeaderHeight } = useDynamicHeader();
@@ -29,13 +31,15 @@ export const DynamicScrollableScreenContentHeader = ({
     return (
         <VStack
             paddingHorizontal="sp16"
-            marginTop="sp16"
+            marginTop={marginTop}
             marginBottom={marginBottom}
-            onLayout={handleLayout}
+            onLayout={expandedContent ? handleLayout : undefined}
         >
-            {expandedContent ?? (
+            {expandedContent || (
                 <>
-                    <Text variant="headline-md">{title}</Text>
+                    <Text onLayout={handleLayout} variant="headline-md">
+                        {title}
+                    </Text>
                     {subtitle && <Text color="contentSecondary">{subtitle}</Text>}
                 </>
             )}

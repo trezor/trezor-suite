@@ -9,6 +9,7 @@ export type DynamicScreenHeaderProps = {
     subtitle?: ReactNode;
     isCompactOnly?: boolean;
     marginBottom?: NativeSpacing;
+    marginTop?: NativeSpacing;
     compactContent?: ReactNode;
     expandedContent?: ReactNode;
     scrollThreshold?: number;

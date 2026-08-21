@@ -22,6 +22,7 @@ export const TradingHistoryDetailScreen = ({
                 compactContent={<TradingHistoryDetailCompactHeader orderId={orderId} />}
                 expandedContent={<TradingHistoryDetailHeader orderId={orderId} />}
                 scrollThreshold={0.65}
+                marginTop="sp8"
                 closeActionType="back"
             />
         }
