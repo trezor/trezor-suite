@@ -25,6 +25,7 @@ export class CoinsTab {
     readonly coinAdvanceSettingSaveButton: Locator;
     readonly modal: Locator;
     readonly activateCoinsButton: Locator;
+    readonly addAccountNetworkSearchInput: Locator;
 
     constructor(private readonly page: Page) {
         this.coinBackendSelector = this.page.getByTestId('@settings/advance/select-type/input');
@@ -32,6 +33,9 @@ export class CoinsTab {
         this.coinAdvanceSettingSaveButton = this.page.getByTestId('@settings/advance/button/save');
         this.modal = this.page.modal;
         this.activateCoinsButton = this.page.getByTestId('@settings-coins/discovery-button');
+        this.addAccountNetworkSearchInput = this.page
+            .getByTestId('@modal/account/network-search-input')
+            .getByRole('textbox');
     }
 
     @step()

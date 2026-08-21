@@ -135,6 +135,23 @@ export const NotificationRenderer = ({
                 values: { error: notification.error },
             });
 
+        case 'account-added':
+            return renderNotificationView(render, notification, {
+                variant: 'transparent',
+                message: 'TOAST_ACCOUNT_ADDED',
+                values: { networkName: notification.networkName },
+            });
+
+        case 'accounts-discovered':
+            return renderNotificationView(render, notification, {
+                variant: 'transparent',
+                message: 'TOAST_ACCOUNTS_DISCOVERED',
+                values: {
+                    count: notification.count,
+                    networkName: notification.networkName,
+                },
+            });
+
         case 'backup-failed':
             return renderNotificationView(render, notification, {
                 variant: 'error',

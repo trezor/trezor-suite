@@ -38,7 +38,6 @@ export const TradingReceiveAccountAddSuiteOption = () => {
                 type: 'add-account',
                 device,
                 symbol,
-                noRedirect: true,
                 isCoinjoinDisabled: true,
                 isBackClickDisabled: true,
                 onConfirm: () => {

@@ -184,9 +184,30 @@ export const messages = defineMessages({
         id: 'TR_ADD',
         defaultMessage: 'Add',
     },
+    TR_ENABLE: {
+        id: 'TR_ENABLE',
+        defaultMessage: 'Enable',
+    },
     TR_ADD_ACCOUNT: {
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
+    },
+    TR_ACCOUNT_COUNT: {
+        defaultMessage: '{count, plural, one {# account} other {# accounts}}',
+        id: 'TR_ACCOUNT_COUNT',
+    },
+    TR_ADD_ACCOUNT_NETWORKS_BANNER_TITLE: {
+        defaultMessage: 'Networks power your accounts',
+        id: 'TR_ADD_ACCOUNT_NETWORKS_BANNER_TITLE',
+    },
+    TR_ADD_ACCOUNT_NETWORKS_BANNER_DESCRIPTION: {
+        defaultMessage:
+            "You'll only see accounts on networks you've already enabled. Enable more and your accounts will load automatically.",
+        id: 'TR_ADD_ACCOUNT_NETWORKS_BANNER_DESCRIPTION',
+    },
+    TR_OK_GOT_IT: {
+        defaultMessage: 'Ok, got it',
+        id: 'TR_OK_GOT_IT',
     },
     TR_SHOW_COINS_FILTER: {
         defaultMessage: 'Show filter',
@@ -203,6 +224,10 @@ export const messages = defineMessages({
     TR_SELECT_TYPE: {
         defaultMessage: 'Select type',
         id: 'TR_SELECT_TYPE',
+    },
+    TR_SELECT_ADDRESS_TYPE: {
+        defaultMessage: 'Select address type',
+        id: 'TR_SELECT_ADDRESS_TYPE',
     },
     TR_ADD_HIDDEN_WALLET: {
         defaultMessage: 'Passphrase wallet',
@@ -4175,6 +4200,15 @@ export const messages = defineMessages({
         id: 'TOAST_DISCOVERY_ERROR',
         defaultMessage: 'Account discovery error: {error}',
     },
+    TOAST_ACCOUNT_ADDED: {
+        id: 'TOAST_ACCOUNT_ADDED',
+        defaultMessage: 'New {networkName} account added',
+    },
+    TOAST_ACCOUNTS_DISCOVERED: {
+        id: 'TOAST_ACCOUNTS_DISCOVERED',
+        defaultMessage:
+            "We've found {count, plural, one {# account} other {# accounts}} on {networkName}",
+    },
     TOAST_BACKUP_FAILED: {
         id: 'TOAST_BACKUP_FAILED',
         defaultMessage: 'Wallet backup failed',
@@ -4702,14 +4736,6 @@ export const messages = defineMessages({
         id: 'TR_DRY_RUN_CHECK_ITEM_DESCRIPTION',
         defaultMessage:
             "This wallet backup check is precisely the same as the normal recovery process. You should only trust the information and instructions displayed on your Trezor's screen.",
-    },
-    TR_ACTIVATED_COINS: {
-        id: 'TR_ACTIVATED_COINS',
-        defaultMessage: 'Add account to active network',
-    },
-    TR_INACTIVE_COINS: {
-        id: 'TR_INACTIVE_COINS',
-        defaultMessage: 'Activate network and add account',
     },
     TR_ACTIVATION_IN_PROGRESS_BANNER: {
         id: 'TR_ACTIVATION_IN_PROGRESS_BANNER',

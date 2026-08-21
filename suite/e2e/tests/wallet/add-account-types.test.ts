@@ -27,7 +27,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
                 priority: TestPriority.Critical,
             }),
         },
-        async ({ page, dashboardPage, settingsPage, walletPage }) => {
+        async ({ dashboardPage, settingsPage, walletPage }) => {
             const accountTypes: { coin: NetworkSymbol; accounts: { type: string }[] }[] = [
                 {
                     coin: 'btc',
@@ -57,11 +57,14 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
 
                         await walletPage.addAccountButton.click();
                         await expect(settingsPage.modal).toBeVisible();
+                        await settingsPage.coinsTab.addAccountNetworkSearchInput.fill(coin);
+                        await expect(settingsPage.coinsTab.networkAddButton('eth')).toBeHidden();
                         await settingsPage.coinsTab.networkAddButton(coin).click();
                         await walletPage.addAccountTypeSelectInput.click();
-                        await page.waitForTimeout(500);
                         await walletPage.addAccountTypeSelectOption(type).click();
                         await walletPage.addAccountConfirmButton.click();
+                        await expect(settingsPage.modal).toBeVisible();
+                        await settingsPage.modalCloseButton.click();
 
                         const numberOfAccountsAfter = await walletPage.getAccountsInTypeCount(type);
 
@@ -103,7 +106,11 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
 
                 await walletPage.addAccountButton.click();
                 await expect(settingsPage.modal).toBeVisible();
+                await settingsPage.coinsTab.addAccountNetworkSearchInput.fill(coin.symbol);
+                await expect(settingsPage.coinsTab.networkAddButton('btc')).toBeHidden();
                 await settingsPage.coinsTab.networkAddButton(coin.symbol).click();
+                await expect(settingsPage.modal).toBeVisible();
+                await settingsPage.modalCloseButton.click();
 
                 const numberOfAccountsAfter = await walletPage.getAccountsForCoinInTypeCount(
                     'normal',

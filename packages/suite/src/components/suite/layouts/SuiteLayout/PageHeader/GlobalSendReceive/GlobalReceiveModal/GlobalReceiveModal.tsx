@@ -133,7 +133,6 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
             </Modal>
             {accountModal.open && device && (
                 <AddAccountModal
-                    noRedirect
                     device={device}
                     onCancel={accountModal.closeModal}
                     onAddAccount={account => {

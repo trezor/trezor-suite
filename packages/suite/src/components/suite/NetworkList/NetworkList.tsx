@@ -25,12 +25,20 @@ export type NetworkListProps = {
         isEnabled: boolean;
         onClick: () => void;
     }) => ReactNode;
+    getIsSettingsVisible?: (params: { network: Network; isEnabled: boolean }) => boolean;
+    showRepresentativeAssets?: boolean;
     /**
      * When `true`, toggles stay enabled regardless of device/UI lock state and the
      * "Loading accounts" tooltip is not shown. Intended for callers that only stage
      * changes locally and apply them explicitly.
      */
     ignoreDeviceLock?: boolean;
+    /**
+     * When `true`, toggles stay enabled regardless of device/UI lock state, like `ignoreDeviceLock`,
+     * and also regardless of running discovery, allowing queuing of multiple assets/networks.
+     * TODO maybe it could be unified in https://github.com/trezor/trezor-suite/issues/31779
+     */
+    ignoreDiscoveryLock?: boolean;
 };
 
 export const NetworkList = ({
@@ -40,14 +48,24 @@ export const NetworkList = ({
     onClick,
     onSettings,
     renderRightContent,
+    getIsSettingsVisible,
+    showRepresentativeAssets = true,
+    ignoreDiscoveryLock = false,
     ignoreDeviceLock = false,
 }: NetworkListProps) => {
     const { device, isLocked } = useDevice();
     const blockchain = useSelector(selectBlockchainState);
-    const isDeviceLocked = !ignoreDeviceLock && !!device && isLocked(true);
     const { isDiscoveryRunning } = useDiscovery();
+    const isDeviceLocked =
+        !ignoreDeviceLock &&
+        !!device &&
+        isLocked(true) &&
+        !(ignoreDiscoveryLock && isDiscoveryRunning);
     const lockedTooltip = isDeviceLocked ? 'TR_DISABLED_SWITCH_TOOLTIP' : null;
-    const discoveryTooltip = !ignoreDeviceLock && isDiscoveryRunning ? 'TR_LOADING_ACCOUNTS' : null;
+    const discoveryTooltip =
+        !ignoreDeviceLock && !ignoreDiscoveryLock && isDiscoveryRunning
+            ? 'TR_LOADING_ACCOUNTS'
+            : null;
 
     const deviceModelInternal = device?.features?.internal_model;
     const isBootloaderMode = isDeviceInBootloaderMode(device);
@@ -75,6 +93,7 @@ export const NetworkList = ({
                     : 'update-required';
 
                 const isEnabled = !!enabledNetworks?.includes(symbol);
+                const showSettings = getIsSettingsVisible?.({ network, isEnabled }) ?? true;
 
                 const isDisabled = isDeviceLocked;
                 const unavailabilityTooltip =
@@ -107,7 +126,8 @@ export const NetworkList = ({
                             isEnabled={isEnabled}
                             isCardClickable={isCardClickable}
                             onClick={onClick}
-                            onSettings={onSettings}
+                            onSettings={showSettings ? onSettings : undefined}
+                            showRepresentativeAssets={showRepresentativeAssets}
                             rightContent={renderRightContent?.({
                                 network,
                                 isEnabled,

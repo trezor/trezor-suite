@@ -25,6 +25,7 @@ export type FlagsState = {
     showOnboardingFeedbackBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
     activateAssetsBannerClosed: boolean;
+    addAccountNetworksBannerClosed: boolean;
     stakeEthBannerClosed: boolean;
     earnEthBannerClosed: boolean;
     stakeSolBannerClosed: boolean;
@@ -68,6 +69,7 @@ export const flagsInitialState: FlagsState = {
     showOnboardingFeedbackBanner: false,
     showSettingsDesktopAppPromoBanner: true,
     activateAssetsBannerClosed: false,
+    addAccountNetworksBannerClosed: false,
     stakeEthBannerClosed: false,
     earnEthBannerClosed: false,
     stakeSolBannerClosed: false,
@@ -149,6 +151,8 @@ export const selectIsSettingsDesktopAppPromoBannerShown = (state: FlagsRootState
     state.flags.showSettingsDesktopAppPromoBanner;
 export const selectIsActivateAssetsBannerClosed = (state: FlagsRootState) =>
     state.flags.activateAssetsBannerClosed;
+export const selectIsAddAccountNetworksBannerClosed = (state: FlagsRootState) =>
+    state.flags.addAccountNetworksBannerClosed;
 export const selectIsUnhideTokenModalShown = (state: FlagsRootState) =>
     state.flags.showUnhideTokenModal;
 export const selectIsCopyAddressModalShown = (state: FlagsRootState) =>
