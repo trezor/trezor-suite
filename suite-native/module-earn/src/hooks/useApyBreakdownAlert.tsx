@@ -47,6 +47,7 @@ export const useApyBreakdownAlert = ({ account, vault }: UseApyBreakdownAlertPro
             textAlign: 'center',
             titleSpacing: 'sp4',
             primaryButtonTitle: translate('generic.buttons.close'),
+            isClosableByOutsidePress: true,
         });
     }, [account, analytics, vault, showAlert, translate]);
 
