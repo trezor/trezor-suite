@@ -3433,15 +3433,10 @@ export const messages = defineMessages({
         defaultMessage: 'Generated after signing',
         id: 'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
     },
-    TR_SIGNED_MESSAGE: {
-        defaultMessage: 'Signed message',
-        description:
-            'Label of the field holding the whole signed message block (message, address and signature) in Sign and Verify form',
-        id: 'TR_SIGNED_MESSAGE',
-    },
-    TR_SIGNED_MESSAGE_AFTER_SIGNING_PLACEHOLDER: {
-        defaultMessage: 'Generated after signing',
-        id: 'TR_SIGNED_MESSAGE_AFTER_SIGNING_PLACEHOLDER',
+    TR_SIGNED_MESSAGE_BADGE: {
+        defaultMessage: 'Message signed',
+        description: 'Badge shown in the Sign and Verify form after a message was signed',
+        id: 'TR_SIGNED_MESSAGE_BADGE',
     },
     TR_SKIP: {
         defaultMessage: 'Skip',
@@ -5320,7 +5315,9 @@ export const messages = defineMessages({
     },
     TR_HEX_FORMAT: {
         id: 'TR_HEX_FORMAT',
-        defaultMessage: 'Hex format',
+        defaultMessage: 'Hex',
+        description:
+            'Label of the switch reading the message as hex instead of text in Sign and Verify form',
     },
     TR_YOUR_DEVICE_IS_SEEDLESS: {
         id: 'TR_YOUR_DEVICE_IS_SEEDLESS',
@@ -8773,29 +8770,31 @@ export const messages = defineMessages({
     TR_FORMAT_TOOLTIP: {
         id: 'TR_FORMAT_TOOLTIP',
         defaultMessage:
-            '<FormatDescription> <span>Trezor</span> – standard signature format according to BIP137 </FormatDescription> <FormatDescription> <span>Electrum</span> – compatibility signature format </FormatDescription>',
+            '<FormatDescription> <span>BIP-137</span> – standard signature format according to BIP137 </FormatDescription> <FormatDescription> <span>Electrum</span> – compatibility signature format </FormatDescription>',
     },
     TR_BIP_SIG_FORMAT: {
         id: 'TR_BIP_SIG_FORMAT',
-        defaultMessage: 'Trezor',
+        defaultMessage: 'BIP-137',
     },
     TR_COMPATIBILITY_SIG_FORMAT: {
         id: 'TR_COMPATIBILITY_SIG_FORMAT',
         defaultMessage: 'Electrum',
     },
-    TR_COPY_SIGNED_MESSAGE: {
-        id: 'TR_COPY_SIGNED_MESSAGE',
-        defaultMessage: 'Copy signed message',
+    TR_VERIFIED_MESSAGE_BADGE: {
+        id: 'TR_VERIFIED_MESSAGE_BADGE',
+        defaultMessage: 'Message verified',
+        description: 'Badge shown in the Sign and Verify form after a signature was verified',
     },
-    TR_COPY_SIGNATURE: {
-        id: 'TR_COPY_SIGNATURE',
-        defaultMessage: 'Copy signature',
-    },
-    TR_NOTHING_TO_COPY: {
-        id: 'TR_NOTHING_TO_COPY',
-        defaultMessage: 'This field is empty, so there is nothing to copy yet',
+    TR_VERIFICATION_FAILED_BADGE: {
+        id: 'TR_VERIFICATION_FAILED_BADGE',
+        defaultMessage: 'Verification failed',
         description:
-            'Tooltip of a disabled copy button in Sign and Verify form, explaining why it cannot be used',
+            'Badge shown in the Sign and Verify form when a signature did not match the message',
+    },
+    TR_CLEAR: {
+        id: 'TR_CLEAR',
+        defaultMessage: 'Clear',
+        description: 'Button resetting the Sign and Verify form after signing or verifying',
     },
     TR_NAV_STAKING: {
         defaultMessage: 'Staking',

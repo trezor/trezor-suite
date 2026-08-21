@@ -17,9 +17,9 @@ export const SignVerifyPage = () => {
         <SignVerify
             account={account}
             network={selectedAccount.network}
-            renderShell={({ title, isDeviceConnected, headingAction, children }) => (
+            renderShell={({ title, isDeviceConnected, children }) => (
                 <WalletLayout title={title} isSubpage account={selectedAccount}>
-                    <WalletSubpageHeading title={title}>{headingAction}</WalletSubpageHeading>
+                    <WalletSubpageHeading title={title} />
 
                     {!isDeviceConnected && <ConnectDeviceGenericPromo />}
 
