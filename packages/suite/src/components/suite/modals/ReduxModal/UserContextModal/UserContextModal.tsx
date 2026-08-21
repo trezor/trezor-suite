@@ -75,7 +75,6 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
                 <AddAccountModal
                     device={payload.device}
                     symbol={payload.symbol}
-                    noRedirect={payload.noRedirect}
                     isCoinjoinDisabled={payload.isCoinjoinDisabled}
                     isBackClickDisabled={payload.isBackClickDisabled}
                     onCancel={payload.onCancel ?? onCancel}

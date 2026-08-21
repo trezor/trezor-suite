@@ -136,7 +136,6 @@ const useTradingVerifyAccount = ({
                 type: 'add-account',
                 device,
                 symbol,
-                noRedirect: true,
                 isCoinjoinDisabled: true,
                 isBackClickDisabled: true,
             }),

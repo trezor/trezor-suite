@@ -121,6 +121,17 @@ type YieldClaimTransactionNotification = {
     type: 'tx-yield-claim';
 } & BaseTransactionNotificationPayload;
 
+type AccountAddedNotification = {
+    type: 'account-added';
+    networkName: string;
+};
+
+type AccountsDiscoveredNotification = {
+    type: 'accounts-discovered';
+    count: number;
+    networkName: string;
+};
+
 export type ErrorToastPayload = {
     type:
         | 'error'
@@ -250,6 +261,8 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | YieldDepositTransactionNotification
     | YieldWithdrawTransactionNotification
     | YieldClaimTransactionNotification
+    | AccountAddedNotification
+    | AccountsDiscoveredNotification
     | {
           type: 'cannot-open-bluetooth-settings-error';
       }

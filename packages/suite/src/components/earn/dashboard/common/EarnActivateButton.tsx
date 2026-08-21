@@ -46,7 +46,6 @@ export const EarnActivateButton = ({ symbol }: EarnActivateButtonProps) => {
                 type: 'add-account',
                 device,
                 symbol,
-                noRedirect: true,
                 isCoinjoinDisabled: true,
                 isBackClickDisabled: true,
             }),

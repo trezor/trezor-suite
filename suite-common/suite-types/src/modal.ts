@@ -36,7 +36,6 @@ export type UserContextPayload =
           type: 'add-account';
           device: TrezorDevice;
           symbol?: Account['symbol'];
-          noRedirect?: boolean;
           isCoinjoinDisabled?: boolean;
           isBackClickDisabled?: boolean;
           onCancel?: () => void;
