@@ -155,18 +155,20 @@ export const connectInitThunk = createThunk<
 
         dispatch(lockDevice(true));
 
-        const result = await synchronize(() => original(params));
-
-        dispatch(lockDevice(false));
-        dispatch(
-            deviceActions.removeButtonRequests({
-                // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                // be the same re-selected device from this line. We should reuse device from params.
-                device: selectSelectedDevice(getState()),
-            }),
-        );
-
-        return result;
+        // The lock is a counter, so a call that rejects instead of resolving an error payload would
+        // leave it raised for the rest of the session, disabling every device action in the app.
+        try {
+            return await synchronize(() => original(params));
+        } finally {
+            dispatch(lockDevice(false));
+            dispatch(
+                deviceActions.removeButtonRequests({
+                    // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
+                    // be the same re-selected device from this line. We should reuse device from params.
+                    device: selectSelectedDevice(getState()),
+                }),
+            );
+        }
     };
 
     const binFilesBaseUrl = getBinFilesBaseUrl();
