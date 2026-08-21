@@ -25,12 +25,16 @@ const isoToTimestamp = (isoDate: string): number => {
 
 const convertMemo = (memo: Memo): string | undefined => {
     switch (memo.type) {
-        case 'text':
+        // Memo.id's value is already a decimal string, not bytes; toString() is a no-op here
         case 'id':
             return memo.value?.toString();
+        // Memo.value is a Uint8Array for text/hash/return; Buffer.from() is required so
+        // toString(encoding) decodes it correctly instead of silently returning garbage
+        case 'text':
+            return memo.value === undefined ? undefined : Buffer.from(memo.value).toString('utf-8');
         case 'hash':
         case 'return':
-            return memo.value?.toString('hex');
+            return memo.value === undefined ? undefined : Buffer.from(memo.value).toString('hex');
         default:
             return undefined;
     }
@@ -45,7 +49,7 @@ export const identifyTransaction = (rawTx: Horizon.ServerApi.TransactionRecord) 
 
     let parsedTx: Transaction;
     try {
-        const envelope = TransactionBuilder.fromXDR(rawTx.envelope_xdr, Networks.PUBLIC);
+        const envelope = TransactionBuilder.fromXdr(rawTx.envelope_xdr, Networks.PUBLIC);
         parsedTx = envelope instanceof FeeBumpTransaction ? envelope.innerTransaction : envelope;
     } catch {
         // A single unparseable record must not fail the whole account history
