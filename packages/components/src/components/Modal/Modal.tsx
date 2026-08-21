@@ -78,7 +78,7 @@ const ModalBase = ({
     padding,
     shadowBottom = true,
 }: ModalProps) => {
-    const { scrollElementRef, onScroll, ShadowTop, ShadowBottom } = useScrollShadow({
+    const { scrollElementRef, ScrollSentinels, ShadowTop, ShadowBottom } = useScrollShadow({
         backgroundColor: 'surfaceFillModal',
     });
 
@@ -155,8 +155,12 @@ const ModalBase = ({
                         )}
                         <Box position={{ type: 'relative' }} overflow="hidden" flex="1">
                             <ShadowTop />
-                            <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
-                                <Column padding={padding ? padding : 16}>
+                            <ScrollContainer ref={scrollElementRef}>
+                                <Column
+                                    padding={padding ? padding : 16}
+                                    position={{ type: 'relative' }}
+                                >
+                                    <ScrollSentinels />
                                     {icon && (
                                         <Box
                                             margin={{
