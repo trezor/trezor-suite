@@ -42,28 +42,27 @@ describe(navigateByYieldAccountState.name, () => {
         isFirmwareSupported.mockReturnValue(true);
     });
 
-    it('navigates to the account detail when the account holds the receipt token', () => {
+    it('navigates to the vault detail when the account holds the receipt token', () => {
         const account = mockWalletAccount({
             symbol: ethSymbol,
             tokens: [mockAccountToken({ contract: RECEIPT_ADDRESS, balance: '1' })],
         });
 
-        expect(navigate(account)).toBe('account-detail');
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.AccountDetail, {
+        expect(navigate(account)).toBe('vault-detail');
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.YieldManagement, {
             accountKey: account.key,
             tokenContract: RECEIPT_ADDRESS,
-            closeActionType: 'back',
         });
     });
 
-    it('prefers the account detail over the deposit flow when the account holds both a receipt position and a depositable balance', () => {
+    it('prefers the vault detail over the deposit flow when the account holds both a receipt position and a depositable balance', () => {
         const account = mockWalletAccount({
             symbol: ethSymbol,
             formattedBalance: '1',
             tokens: [mockAccountToken({ contract: RECEIPT_ADDRESS, balance: '1' })],
         });
 
-        expect(navigate(account)).toBe('account-detail');
+        expect(navigate(account)).toBe('vault-detail');
     });
 
     it('routes a native-only account into the deposit flow for a wrapped-native vault', () => {

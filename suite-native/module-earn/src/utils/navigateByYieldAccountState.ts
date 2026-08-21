@@ -20,7 +20,7 @@ type YieldNavigateFn = StackNavigationProps<
 >['navigate'];
 
 export type YieldAccountNavigationDestination =
-    | 'account-detail'
+    | 'vault-detail'
     | 'deposit-in-a-nutshell-modal'
     | 'insufficient-balance-screen'
     | 'firmware-update-alert';
@@ -38,13 +38,12 @@ export const navigateByYieldAccountState = (
     const { yieldId, underlyingTokenContract, receiptTokenContract } = item;
 
     if (receiptTokenContract && hasPositiveContractTokenBalance(account, receiptTokenContract)) {
-        navigate(RootStackRoutes.AccountDetail, {
+        navigate(RootStackRoutes.YieldManagement, {
             accountKey: account.key,
             tokenContract: receiptTokenContract,
-            closeActionType: 'back',
         });
 
-        return 'account-detail';
+        return 'vault-detail';
     }
 
     // For a wrapped-native (WETH) vault the wrappable native balance counts in as depositable
