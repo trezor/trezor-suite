@@ -8,12 +8,11 @@ import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
 import { TradingDetailFeedback } from '../TradeHistoryListItem/TradingDetailFeedback';
 
-export type TradingHistoryDetail = {
+type TradingHistoryDetailProps = {
     orderId: string;
-    onOpenedBrowser?: () => void;
 };
 
-export const TradingHistoryDetail = ({ orderId }: TradingHistoryDetail) => {
+export const TradingHistoryDetail = ({ orderId }: TradingHistoryDetailProps) => {
     const trade = useSelector((state: TradingRootState) =>
         selectTradingTradeByOrderId(state, orderId),
     );
