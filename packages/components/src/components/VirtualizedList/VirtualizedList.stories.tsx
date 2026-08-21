@@ -26,7 +26,7 @@ const getData = (end: number) =>
     Array.from({ length: end }, (_, i) => ({
         id: i,
         content: <Item>content {i}</Item>,
-        height: heights[Math.floor(Math.random() * heights.length)],
+        height: heights[Math.floor(Math.random() * heights.length)] ?? 20,
     }));
 
 export const VirtualizedList: StoryFn = () => {
@@ -49,7 +49,7 @@ export const VirtualizedList: StoryFn = () => {
                 }}
                 listHeight={400}
                 listMinHeight={180}
-                renderItem={(_item: any, index: number) => <Item>content {index}</Item>}
+                renderItem={(_item, virtualItem) => <Item>content {virtualItem.index}</Item>}
             />
         </Container>
     );

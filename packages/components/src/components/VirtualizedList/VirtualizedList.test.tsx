@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 
 import { VirtualizedList } from './VirtualizedList';
 
@@ -72,6 +72,16 @@ describe('VirtualizedList', () => {
     });
 
     describe('smoke tests', () => {
+        // jsdom performs no layout, so every element reports an offsetHeight of 0. The
+        // virtualizer sizes its window from that, and would find no room for any item.
+        beforeAll(() => {
+            jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(200);
+        });
+
+        afterAll(() => {
+            jest.restoreAllMocks();
+        });
+
         it('renders without crashing with minimal props', () => {
             const mockItems = Array.from({ length: 3 }, (_, i) => ({
                 id: i,
@@ -95,6 +105,33 @@ describe('VirtualizedList', () => {
 
             // Verify the first item is rendered
             expect(screen.getByTestId('item-0')).toBeTruthy();
+            expect(screen.getByText('Test Item 0')).toBeTruthy();
+        });
+
+        it('virtualizes without being given a ref', () => {
+            const mockItems = Array.from({ length: 100 }, (_, i) => ({
+                id: i,
+                content: `Test Item ${i}`,
+                height: 40,
+            }));
+
+            render(
+                <VirtualizedList
+                    items={mockItems}
+                    listHeight={200}
+                    listMinHeight={200}
+                    renderItem={item => (
+                        <div key={item.id} data-testid="item">
+                            {item.content}
+                        </div>
+                    )}
+                />,
+            );
+
+            const renderedItems = screen.getAllByTestId('item');
+
+            expect(renderedItems.length).toBeGreaterThan(0);
+            expect(renderedItems.length).toBeLessThan(mockItems.length);
             expect(screen.getByText('Test Item 0')).toBeTruthy();
         });
 
@@ -145,6 +182,93 @@ describe('VirtualizedList', () => {
             expect(ref.current).toBeInTheDocument();
             // The container should have a specific height style
             expect(ref.current).toHaveStyle({ height: '200px' });
+        });
+    });
+    describe('paging in more items', () => {
+        const ITEM_HEIGHT = 40;
+        const LIST_HEIGHT = 200;
+
+        // jsdom performs no layout, so every element reports an offsetHeight of 0. The
+        // virtualizer sizes its window from that, and would find no room for any item.
+        beforeAll(() => {
+            jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(LIST_HEIGHT);
+        });
+
+        afterAll(() => {
+            jest.restoreAllMocks();
+        });
+
+        beforeEach(() => {
+            jest.useFakeTimers();
+        });
+
+        afterEach(() => {
+            jest.useRealTimers();
+        });
+
+        const renderList = ({
+            itemCount,
+            onScrollEnd,
+        }: {
+            itemCount: number;
+            onScrollEnd: () => void;
+        }) => {
+            const ref = React.createRef<HTMLDivElement>();
+            const items = Array.from({ length: itemCount }, (_, i) => ({
+                id: i,
+                height: ITEM_HEIGHT,
+            }));
+
+            render(
+                <VirtualizedList
+                    ref={ref}
+                    items={items}
+                    listHeight={LIST_HEIGHT}
+                    listMinHeight={LIST_HEIGHT}
+                    loadMoreBufferCount={5}
+                    onScrollEnd={onScrollEnd}
+                    renderItem={item => <div key={item.id} data-testid="item" />}
+                />,
+            );
+
+            return ref.current as HTMLDivElement;
+        };
+
+        it('asks for more items once scrolling renders the end of the list', () => {
+            const onScrollEnd = jest.fn();
+            const itemCount = 300;
+            const container = renderList({ itemCount, onScrollEnd });
+
+            expect(onScrollEnd).not.toHaveBeenCalled();
+
+            // jsdom does not scroll, so the offset the virtualizer reads has to be planted. It
+            // is planted past any possible end because the mocked offsetHeight above also
+            // reaches the measurement of the items, making their real heights meaningless here.
+            Object.defineProperty(container, 'scrollTop', {
+                value: Number.MAX_SAFE_INTEGER,
+                configurable: true,
+            });
+
+            act(() => {
+                fireEvent.scroll(container);
+            });
+
+            act(() => {
+                jest.runOnlyPendingTimers();
+            });
+
+            expect(onScrollEnd).toHaveBeenCalled();
+        });
+
+        it('does not ask for more items when the end is rendered without any scrolling', () => {
+            const onScrollEnd = jest.fn();
+            renderList({ itemCount: 3, onScrollEnd });
+
+            act(() => {
+                jest.runOnlyPendingTimers();
+            });
+
+            expect(onScrollEnd).not.toHaveBeenCalled();
         });
     });
 });
