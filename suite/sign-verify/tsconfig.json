@@ -30,6 +30,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../address" },
+        { "path": "../analytics" },
         { "path": "../device" },
         { "path": "../intl" },
         { "path": "../../packages/components" },

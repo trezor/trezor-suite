@@ -26,6 +26,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/address": "workspace:*",
+        "@suite/analytics": "workspace:*",
         "@suite/device": "workspace:*",
         "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",

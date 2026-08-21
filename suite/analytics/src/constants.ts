@@ -15,6 +15,8 @@ export enum EventType {
     AppUriHandler = 'app/uri-handler',
     // eslint-disable-next-line local-rules/analytics-event-name
     AutostartModal = 'autostart-modal',
+    CoinSignMessage = 'coin/sign-message',
+    CoinVerifyMessage = 'coin/verify-message',
     // eslint-disable-next-line local-rules/analytics-event-name
     CoinjoinAnonymityGain = 'coinjoin/anonymity-gain',
     // eslint-disable-next-line local-rules/analytics-event-name

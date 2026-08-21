@@ -1,5 +1,6 @@
 import { type Dispatch } from 'redux';
 
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -14,7 +15,7 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { asCoinSymbol, getSerializedPath } from '@trezor/connect-common';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type ErrorCode, type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Result } from '@trezor/type-utils';
 
 import * as SIGN_VERIFY from './signVerifyConstants';
@@ -22,6 +23,21 @@ import * as SIGN_VERIFY from './signVerifyConstants';
 export type SignVerifyRootState = DeviceRootState & WalletSettingsRootState;
 
 type GetState = () => SignVerifyRootState;
+
+type SignVerifyThunkDeps = { services: DesktopAnalyticsDep };
+
+// The user rejecting the request in the popup or on the device is not a failure of signing or
+// verifying, so it is reported apart from real errors and does not inflate the error rate.
+const CANCEL_ERROR_CODES: ErrorCode[] = ['Method_Cancel', 'Failure_ActionCancelled'];
+
+// Connect classifies its own failures, so the code is what is worth measuring. Errors thrown
+// outside Connect carry no code and are reported with their message instead.
+const getFailureAttributes = ({ code }: SerializedError) => ({
+    status: CANCEL_ERROR_CODES.includes(code) ? ('cancelled' as const) : ('error' as const),
+    error: code,
+});
+
+const asError = (error: unknown) => (error instanceof Error ? error : new Error(String(error)));
 
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
@@ -214,18 +230,95 @@ export const sign =
         isElectrum = false,
         isCose = false,
     ) =>
-    (dispatch: Dispatch, getState: GetState) =>
-        getStateParams(account, getState)
-            .then(signByNetwork(path, message, hex, isElectrum, isCose))
-            .then(throwWhenFailed)
-            .then(onSignSuccess(dispatch))
-            .catch(onError(dispatch, 'sign-message-error'));
+    async (dispatch: Dispatch, getState: GetState, extra: SignVerifyThunkDeps) => {
+        const { analytics } = extra.services;
+        const signatureFormat = isElectrum ? 'electrum' : 'trezor';
+
+        try {
+            const stateParams = await getStateParams(account, getState);
+            const response = await signByNetwork(
+                path,
+                message,
+                hex,
+                isElectrum,
+                isCose,
+            )(stateParams);
+
+            if (!response.success) {
+                analytics.report({
+                    type: events.coinSignMessageEvent.name,
+                    payload: {
+                        ...getFailureAttributes(response.error),
+                        symbol: account.symbol,
+                        hex,
+                        signatureFormat,
+                    },
+                });
+
+                return onError(dispatch, 'sign-message-error')(new Error(response.error.message));
+            }
+
+            analytics.report({
+                type: events.coinSignMessageEvent.name,
+                payload: { status: 'success', symbol: account.symbol, hex, signatureFormat },
+            });
+
+            return onSignSuccess(dispatch)(response.payload);
+        } catch (error) {
+            analytics.report({
+                type: events.coinSignMessageEvent.name,
+                payload: {
+                    status: 'error',
+                    error: asError(error).message,
+                    symbol: account.symbol,
+                    hex,
+                    signatureFormat,
+                },
+            });
+
+            return onError(dispatch, 'sign-message-error')(asError(error));
+        }
+    };
 
 export const verify =
     (account: Account, address: string, message: string, signature: string, hex = false) =>
-    (dispatch: Dispatch, getState: GetState) =>
-        getStateParams(account, getState)
-            .then(verifyByNetwork(address, message, signature, hex))
-            .then(throwWhenFailed)
-            .then(onVerifySuccess(dispatch))
-            .catch(onError(dispatch, 'verify-message-error'));
+    async (dispatch: Dispatch, getState: GetState, extra: SignVerifyThunkDeps) => {
+        const { analytics } = extra.services;
+
+        try {
+            const stateParams = await getStateParams(account, getState);
+            const response = await verifyByNetwork(address, message, signature, hex)(stateParams);
+
+            if (!response.success) {
+                analytics.report({
+                    type: events.coinVerifyMessageEvent.name,
+                    payload: {
+                        ...getFailureAttributes(response.error),
+                        symbol: account.symbol,
+                        hex,
+                    },
+                });
+
+                return onError(dispatch, 'verify-message-error')(new Error(response.error.message));
+            }
+
+            analytics.report({
+                type: events.coinVerifyMessageEvent.name,
+                payload: { status: 'success', symbol: account.symbol, hex },
+            });
+
+            return onVerifySuccess(dispatch)();
+        } catch (error) {
+            analytics.report({
+                type: events.coinVerifyMessageEvent.name,
+                payload: {
+                    status: 'error',
+                    error: asError(error).message,
+                    symbol: account.symbol,
+                    hex,
+                },
+            });
+
+            return onError(dispatch, 'verify-message-error')(asError(error));
+        }
+    };
