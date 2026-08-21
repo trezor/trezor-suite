@@ -14,7 +14,7 @@ import { TradeStatusBadge } from '../TradeStatusBadge';
 
 type TradeDetailHeaderProps = {
     orderId: string;
-    onOpenedBrowser: () => void;
+    onOpenedBrowser?: () => void;
 };
 
 export const TradeDetailHeader = ({ orderId, onOpenedBrowser }: TradeDetailHeaderProps) => {

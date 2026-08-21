@@ -1,4 +1,5 @@
 export * from './navigation/TradingStackNavigator';
+export { TradingHistoryDetailScreen } from './screens/TradingHistoryDetailScreen';
 export { TradingHistoryScreen } from './screens/TradingHistoryScreen';
 export * from './screens/TradingConfirmingScreen';
 export * from './screens/TradingExchangeApprovalScreen';

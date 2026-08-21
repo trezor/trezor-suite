@@ -61,6 +61,7 @@ import {
     TradingExchangeOutputsReviewScreen,
     TradingExchangePreviewScreen,
     TradingExchangeRevokeScreen,
+    TradingHistoryDetailScreen,
     TradingHistoryScreen,
     TradingMyAssetScreen,
     TradingReceiveAccountsPickerScreen,
@@ -273,6 +274,11 @@ export const RootStackNavigator = () => {
                     options={{ title: RootStackRoutes.TradingHistory }}
                     name={RootStackRoutes.TradingHistory}
                     component={TradingHistoryScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingHistoryDetail }}
+                    name={RootStackRoutes.TradingHistoryDetail}
+                    component={TradingHistoryDetailScreen}
                 />
                 <RootStack.Screen
                     options={{ title: RootStackRoutes.TradingBuyPreview }}
