@@ -84,7 +84,7 @@ test.describe('Trading - Sell BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
 
         await test.step('Initiate send', async () => {
             await tradingPage.confirmation.initiateSendConfirmation();
-            await expect(devicePrompt.headerParagraph).toContainText('Bitcoin #1');
+            await expect(devicePrompt.header.accountLabel).toHaveText('Bitcoin #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
             await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
                 formattedCryptoAmount,

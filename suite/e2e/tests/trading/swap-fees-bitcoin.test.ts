@@ -52,7 +52,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@T3T1', '@T3W1'] }, () => 
             await tradingPage.swapBestOfferButton.click();
             await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
             await tradingPage.confirmation.openConfirmAndSendModal();
-            await expect(devicePrompt.headerParagraph).toContainText('Bitcoin #1');
+            await expect(devicePrompt.header.accountLabel).toHaveText('Bitcoin #1');
             await devicePrompt.waitForPromptAndClick();
             await devicePrompt.waitForPromptAndClick();
         });
@@ -63,7 +63,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@T3T1', '@T3W1'] }, () => 
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                 `${totalAmount} BTC`,
             );
-            await expect(devicePrompt.headerFeeRate).toContainText(feeRate);
+            await expect(devicePrompt.header.feeRateValue).toHaveText(feeRate);
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Send' },
@@ -83,11 +83,11 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@T3T1', '@T3W1'] }, () => 
 
         await test.step('Verify Fee Info on emulator', async () => {
             await device.openFeeInfo({ buttonIndexT3W1: 2 });
-            const feeRateWithoutDecimals = feeRate.replace('.00\u00A0', ' ');
+            const feeRateOnDevice = `${new BigNumber(feeRate).toString()} sat/vB`;
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Fee info' },
-                    body: [['Fee rate'], [feeRateWithoutDecimals]],
+                    body: [['Fee rate'], [feeRateOnDevice]],
                 },
                 T3T1: { footer: undefined },
             });

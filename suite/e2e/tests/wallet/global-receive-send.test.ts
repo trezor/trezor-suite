@@ -17,7 +17,7 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
     test(`Global receive`, async ({ page, devicePrompt, tradingPage, walletPage }) => {
         await test.step('Open receive form', async () => {
             await page.getByTestId('@wallet/menu/wallet-global-receive').click();
-            await expect(devicePrompt.header).toHaveTranslation('TR_NAV_RECEIVE');
+            await expect(page.modalHeader).toHaveTranslation('TR_NAV_RECEIVE');
         });
 
         await test.step('Add ETH account', async () => {
@@ -61,7 +61,6 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
 
     test(`Global send`, async ({
         page,
-        devicePrompt,
         walletPage,
         tradingPage,
         settingsPage,
@@ -84,7 +83,7 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
 
         await test.step('Open send form', async () => {
             await page.getByTestId('@wallet/menu/wallet-global-send').click();
-            await expect(devicePrompt.header).toHaveTranslation('TR_NAV_SEND');
+            await expect(page.modalHeader).toHaveTranslation('TR_NAV_SEND');
         });
 
         await test.step('Bitcoin Regtest account selection', async () => {

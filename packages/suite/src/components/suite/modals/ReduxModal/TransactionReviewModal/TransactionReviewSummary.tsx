@@ -88,13 +88,16 @@ export const TransactionReviewSummary = ({
                             account={account}
                             showAccountTypeBadge
                             accountTypeBadgeSize="small"
+                            data-testid="@modal/header/account-label"
                         />
                     </Row>
 
                     {estimateTime !== undefined && (
-                        <Note icon={ClockIcon}>
+                        <Note data-testid="@modal/header/estimated-time" icon={ClockIcon}>
                             {'≈ '}
-                            {formatDurationStrict(estimateTime, locale)}
+                            <Text data-testid="@modal/header/estimated-time/value">
+                                {formatDurationStrict(estimateTime, locale)}
+                            </Text>
                         </Note>
                     )}
 
@@ -103,7 +106,7 @@ export const TransactionReviewSummary = ({
                     )}
 
                     {!['ethereum', 'solana', 'tron'].includes(networkType) && (
-                        <Note icon={ReceiptIcon}>
+                        <Note data-testid="@modal/header/fee-rate" icon={ReceiptIcon}>
                             <FeeRate feeRate={fee} networkType={network.networkType} />
                         </Note>
                     )}
@@ -113,26 +116,31 @@ export const TransactionReviewSummary = ({
                     )}
 
                     {isComposedFeeRateDifferent && network.networkType === 'bitcoin' && (
-                        <Translation id="TR_FEE_RATE_CHANGED" />
+                        <Text data-testid="@modal/header/fee-rate-changed">
+                            <Translation id="TR_FEE_RATE_CHANGED" />
+                        </Text>
                     )}
 
                     {!stakeType && !broadcast && connectPopupCall?.state !== 'ongoing' && (
-                        <Note icon={BroadcastIcon}>
+                        <Note data-testid="@modal/header/broadcast" icon={BroadcastIcon}>
                             <Translation id="BROADCAST" />
                             {': '}
-                            <Text intent="critical">
+                            <Text data-testid="@modal/header/broadcast/state" intent="critical">
                                 <Translation id="TR_OFF" />
                             </Text>
                         </Note>
                     )}
 
-                    {connectPopupCall?.state === 'ongoing' && <ConnectCallSource />}
+                    {connectPopupCall?.state === 'ongoing' && (
+                        <ConnectCallSource data-testid="@modal/header/connect-source" />
+                    )}
 
                     {tx.inputs.length > 0 && (
                         // TODO: IconButton doesn't take margin even though it should
                         <Box margin={{ left: 'auto' }}>
                             <IconButton
                                 onClick={() => onDetailsClick()}
+                                data-testid="@modal/header/details-button"
                                 intent="neutral"
                                 priority="secondary"
                                 icon={InfoIcon}
@@ -148,12 +156,12 @@ export const TransactionReviewSummary = ({
             {networkType === 'solana' && isDebug && (
                 <Row margin={{ top: 8 }} gap={8}>
                     <DebugOnlyBadge />
-                    <Note icon={ComputerTowerIcon}>
+                    <Note data-testid="@modal/header/cu-limit" icon={ComputerTowerIcon}>
                         CU Limit
                         {': '}
-                        {tx.feeLimit} CU
+                        <Text data-testid="@modal/header/cu-limit/value">{tx.feeLimit}</Text> CU
                     </Note>
-                    <Note icon={ComputerTowerIcon}>
+                    <Note data-testid="@modal/header/cu-price" icon={ComputerTowerIcon}>
                         CU Price
                         {': '}
                         <FeeRate

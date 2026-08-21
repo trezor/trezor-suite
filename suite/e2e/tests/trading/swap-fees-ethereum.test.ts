@@ -60,7 +60,7 @@ test.describe('Trading - Swap fees', { tag: ['@T3W1', '@T3T1'] }, () => {
             await tradingPage.swapBestOfferButton.click();
             await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
             await tradingPage.confirmation.openConfirmAndSendModal();
-            await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
+            await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #1');
             await devicePrompt.waitForPromptAndClick();
         });
 
@@ -71,10 +71,10 @@ test.describe('Trading - Swap fees', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
         await test.step('Verify fees on modal and emulator', async () => {
-            await expect(devicePrompt.ethereumGasLimit).toHaveText(`Gas limit: ${gasLimit}`);
-            await expect(devicePrompt.ethereumFeeRate).toHaveText(`${maxFeePerGasRounded} Gwei`);
-            await expect(devicePrompt.ethereumPriorityFeeRate).toHaveText(
-                `${maxPriorityFeePerGasRounded} Gwei`,
+            await expect(devicePrompt.header.gasLimitValue).toHaveText(gasLimit);
+            await expect(devicePrompt.header.feePerGasValue).toHaveText(`${maxFeePerGasRounded}`);
+            await expect(devicePrompt.header.priorityFeeValue).toHaveText(
+                `${maxPriorityFeePerGasRounded}`,
             );
             await expect(
                 devicePrompt.cryptoAmountWithSymbolOf('fee'),

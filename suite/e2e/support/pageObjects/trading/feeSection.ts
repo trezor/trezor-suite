@@ -15,6 +15,8 @@ export class FeeSection {
     readonly valueOnCard = (feeType: FeeTypes) =>
         this.page.getByTestId(`@fee-card/${feeType}-fiat-amount`);
     readonly rateOnCard = (feeType: FeeTypes) => this.page.getByTestId(`@fee-card/${feeType}-rate`);
+    readonly rateValueOnCard = (feeType: FeeTypes) =>
+        this.rateOnCard(feeType).getByTestId('@fee-rate/value');
     readonly collapsibleFeesToggle: Locator;
     readonly collapsibleFees: Locator;
     readonly customInput: Locator;
@@ -109,24 +111,21 @@ export class FeeSection {
 
     @step()
     async getBitcoinFeeRate(type: FeeTypes | 'custom') {
-        let feeRateText: string;
-        const nonBreakingSpace = '\u00A0';
-        const suffixForDustPreventionFee = `${nonBreakingSpace}sat/vB`;
-        const suffixForCustomFee = `.00${nonBreakingSpace}sat/vB`;
+        let feeRate: string;
 
         if (type !== 'custom') {
             await this.expectBitcoinFeeCalculated();
-            feeRateText = await this.rateOnCard(type).innerText();
+            feeRate = await this.rateValueOnCard(type).innerText();
         } else {
-            feeRateText = (await this.customInput.inputValue()) + suffixForCustomFee;
+            feeRate = new BigNumber(await this.customInput.inputValue()).toFixed(2);
         }
 
         const isDustPreventionRateApplied = await this.dustPreventionNotice.isVisible();
         if (isDustPreventionRateApplied) {
-            feeRateText = (await this.getDustPreventionFeeRate()) + suffixForDustPreventionFee;
+            feeRate = await this.getDustPreventionFeeRate();
         }
 
-        return feeRateText;
+        return feeRate;
     }
 
     calculateEthereumMaxFee({
