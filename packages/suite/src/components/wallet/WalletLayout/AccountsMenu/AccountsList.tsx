@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { type ReactNode, type RefObject, memo, useCallback, useMemo } from 'react';
 
 import { getDefaultAccountLabel } from '@suite/account';
 import { selectCoinjoinIsPreloading } from '@suite/coinjoin';
@@ -8,15 +8,12 @@ import { type RouteParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
-import {
-    type GetTokensOutputType,
-    getTokens,
-    selectAllAccountsToList,
-} from '@suite-common/wallet-core';
+import { getTokens, selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { accountSearchFn, getAccountTypeName } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
-import { Column } from '@trezor/components';
+import { type BaseItemProps, VirtualizedList } from '@trezor/components';
+import { exhaustive } from '@trezor/type-utils';
 
 import { useAccountSearch, useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
@@ -26,38 +23,35 @@ import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountSection } from './AccountSection';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 
-type AccountsProps = {
-    accountsWithTokens: {
-        account: Account;
-        tokens: GetTokensOutputType<TokenInfo>;
-    }[];
+const SECTION_GAP = 4;
+const OVERSCAN_SECTION_COUNT = 15;
+
+// The list is bled into by the negative margins of grouped sections, so it carries the
+// horizontal padding they need to bleed into.
+const LIST_PADDING = { horizontal: 8, bottom: 20 } as const;
+
+// Every section is measured once it mounts; this is only the starting guess used to size the
+// scrollbar for sections that have not been rendered yet. A plain account row is 58px tall.
+const ESTIMATED_SECTION_HEIGHT = 58;
+
+const SKELETON_ITEM_KEY = 'coinjoin-preloading-skeleton';
+
+type AccountsListItem = BaseItemProps &
+    (
+        | {
+              kind: 'account';
+              account: Account;
+              tokens: TokenInfo[];
+          }
+        | { kind: 'skeleton' }
+    );
+
+type AccountsListProps = {
+    scrollElementRef: RefObject<HTMLDivElement | null>;
+    scrollSentinels: ReactNode;
 };
 
-const Accounts = memo(({ accountsWithTokens }: AccountsProps) => {
-    const params = useSelector(selectRouterParams) as RouteParams;
-
-    return (
-        <>
-            {accountsWithTokens.map(({ account, tokens }) => {
-                const selected =
-                    account.symbol === params?.symbol &&
-                    account.accountType === params.accountType &&
-                    account.index === params.accountIndex;
-
-                return (
-                    <AccountSection
-                        key={account.key}
-                        account={account}
-                        tokens={tokens.shownWithBalance}
-                        selected={selected}
-                    />
-                );
-            })}
-        </>
-    );
-});
-
-export const AccountsList = memo(() => {
+export const AccountsList = memo(({ scrollElementRef, scrollSentinels }: AccountsListProps) => {
     const device = useSelector(selectSelectedDevice);
     const baseAccounts = useSelector(selectAllAccountsToList);
 
@@ -71,6 +65,7 @@ export const AccountsList = memo(() => {
             device?.state?.staticSessionId ?? null,
         ),
     );
+    const params = useSelector(selectRouterParams) as RouteParams;
 
     const { translationString } = useTranslation();
     const { isSidebarCollapsed } = useResponsiveContext();
@@ -134,16 +129,74 @@ export const AccountsList = memo(() => {
         ],
     );
 
+    const isPreloadingSkeletonShown = coinjoinIsPreloading && !searchString && !coinFilter;
+
+    const items = useMemo((): AccountsListItem[] => {
+        const accountItems = filteredAccounts.map(({ account, tokens }): AccountsListItem => ({
+            kind: 'account',
+            account,
+            tokens: tokens.shownWithBalance,
+            height: ESTIMATED_SECTION_HEIGHT,
+        }));
+
+        if (isPreloadingSkeletonShown) {
+            return [...accountItems, { kind: 'skeleton', height: ESTIMATED_SECTION_HEIGHT }];
+        }
+
+        return accountItems;
+    }, [filteredAccounts, isPreloadingSkeletonShown]);
+
+    // Keying by account makes a measured section height survive searching and reordering.
+    const getItemKey = useCallback(
+        (item: AccountsListItem) =>
+            item.kind === 'account' ? item.account.key : SKELETON_ITEM_KEY,
+        [],
+    );
+
+    const renderItem = useCallback(
+        (item: AccountsListItem) => {
+            switch (item.kind) {
+                case 'account': {
+                    const { account, tokens } = item;
+                    const selected =
+                        account.symbol === params?.symbol &&
+                        account.accountType === params.accountType &&
+                        account.index === params.accountIndex;
+
+                    return <AccountSection account={account} tokens={tokens} selected={selected} />;
+                }
+                case 'skeleton':
+                    return <AccountItemSkeleton />;
+                default:
+                    return exhaustive(item);
+            }
+        },
+        [params],
+    );
+
     if (!device) {
         return null;
     }
 
-    if (filteredAccounts.length > 0) {
+    if (items.length > 0) {
         return (
-            <Column gap={4} margin={{ bottom: 20, left: 8, right: 8 }}>
-                <Accounts accountsWithTokens={filteredAccounts} />
-                {coinjoinIsPreloading && !searchString && !coinFilter && <AccountItemSkeleton />}
-            </Column>
+            <VirtualizedList
+                ref={scrollElementRef}
+                items={items}
+                renderItem={renderItem}
+                getItemKey={getItemKey}
+                scrollSentinels={scrollSentinels}
+                listHeight="100%"
+                listMinHeight={0}
+                padding={LIST_PADDING}
+                gap={SECTION_GAP}
+                overscan={OVERSCAN_SECTION_COUNT}
+                // A section is measured rather than sized, and both its height and the scroll
+                // position have to survive the list changing under an open sidebar.
+                resetItemHeightsOnItemsChange={false}
+                resetScrollOnItemsChange={false}
+                measureItems
+            />
         );
     }
 

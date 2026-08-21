@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
@@ -13,19 +15,27 @@ import { AccountsList } from './AccountsList';
 import { AccountsMenuHeader } from './AccountsMenuHeader';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 
-const ScrollContainer = styled.div`
-    height: auto;
-    overflow: hidden auto;
+// The account list scrolls itself and positions its sections against its own height, so the
+// area it lives in has to be definite rather than growing with the content.
+const ListArea = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
 `;
 
 export const AccountsMenu = () => {
     const device = useSelector(selectSelectedDevice);
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
-    const { scrollElementRef, onScroll, ShadowTop, ShadowBottom, ShadowContainer } =
+    const { scrollElementRef, ScrollSentinels, ShadowTop, ShadowBottom, ShadowContainer } =
         useScrollShadow({
             backgroundColor: 'surfaceFillSunken',
         });
     const { isSidebarCollapsed } = useResponsiveContext();
+
+    // Kept referentially stable so that the shadows switching on and off cannot re-render the
+    // list itself.
+    const scrollSentinels = useMemo(() => <ScrollSentinels />, [ScrollSentinels]);
 
     const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
 
@@ -46,13 +56,16 @@ export const AccountsMenu = () => {
     return (
         <ReduxAccountSearchProvider>
             <AccountsMenuHeader />
-            <ShadowContainer>
-                <ShadowTop />
-                <ScrollContainer ref={scrollElementRef} onScroll={onScroll}>
-                    <AccountsList />
-                </ScrollContainer>
-                <ShadowBottom />
-            </ShadowContainer>
+            <ListArea>
+                <ShadowContainer>
+                    <ShadowTop />
+                    <AccountsList
+                        scrollElementRef={scrollElementRef}
+                        scrollSentinels={scrollSentinels}
+                    />
+                    <ShadowBottom />
+                </ShadowContainer>
+            </ListArea>
         </ReduxAccountSearchProvider>
     );
 };

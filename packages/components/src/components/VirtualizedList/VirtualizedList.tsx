@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { type VirtualItem, useVirtualizer } from '@tanstack/react-virtual';
 import styled from 'styled-components';
@@ -43,7 +43,10 @@ const Container = styled.div<ContainerProps>`
         typeof $minHeight === 'number' ? `${$minHeight}px` : $minHeight};
 
     width: 100%;
-    overflow-y: auto;
+
+    /* Only the vertical axis is virtualized, and leaving the horizontal one at its default would
+    compute to auto next to overflow-y: auto and let a stray scrollbar appear. */
+    overflow: hidden auto;
     position: relative;
     ${withFrameProps};
 `;
@@ -85,6 +88,21 @@ export type VirtualizedListProps<T extends BaseItemProps> = AllowedFrameProps & 
     renderItem: (item: T, virtualItem: VirtualItem) => React.ReactNode;
 
     /**
+     * Identity of an item. Worth passing for lists that measure their items, as it is what makes
+     * a measured height stay with its item when the list is filtered or reordered.
+     *
+     * @default the index of the item
+     */
+    getItemKey?: (item: T, index: number) => string | number;
+
+    /**
+     * Space between two items.
+     *
+     * @default 0
+     */
+    gap?: number;
+
+    /**
      * Items rendered above and below the visible window.
      *
      * @default 8
@@ -102,6 +120,21 @@ export type VirtualizedListProps<T extends BaseItemProps> = AllowedFrameProps & 
      * @default true
      */
     resetScrollOnItemsChange?: boolean;
+
+    /**
+     * Whether changing `items` drops the heights measured from the rendered items and falls back
+     * to their `height` again. Lists where `height` is the real height want this, lists where it
+     * is only an estimate do not — for them it would throw away every height they have measured
+     * so far on every change.
+     *
+     * @default true
+     */
+    resetItemHeightsOnItemsChange?: boolean;
+
+    /**
+     * Use ResizeObserver to measure dimensions of each item, overrides `height` property of each item.
+     */
+    measureItems?: boolean;
 };
 
 export function VirtualizedListComponent<T extends BaseItemProps>({
@@ -111,16 +144,29 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
     listHeight,
     listMinHeight,
     renderItem,
+    getItemKey,
     ref,
 
+    gap,
     overscan = 8,
     loadMoreBufferCount = 100,
 
     resetScrollOnItemsChange = true,
+    resetItemHeightsOnItemsChange = true,
+    measureItems = false,
     ...rest
 }: VirtualizedListProps<T>) {
     const internalRef = useRef<HTMLDivElement | null>(null);
     const containerRef = ref ?? internalRef;
+
+    const getVirtualItemKey = useCallback(
+        (index: number) => {
+            const item = items[index];
+
+            return item && getItemKey ? getItemKey(item, index) : index;
+        },
+        [items, getItemKey],
+    );
 
     const debouncedOnScrollEnd = useMemo(() => {
         if (!onScrollEnd) return undefined;
@@ -128,11 +174,13 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
         return debounce(onScrollEnd, SCROLL_END_DEBOUNCE_MS);
     }, [onScrollEnd]);
 
+    // eslint-disable-next-line react-hooks/incompatible-library
     const virtualizer = useVirtualizer({
         count: items.length,
         getScrollElement: () => containerRef.current,
-        // Item heights come from the caller, so no item ever needs to be measured.
         estimateSize: index => items[index]?.height ?? 0,
+        getItemKey: getVirtualItemKey,
+        gap,
         overscan,
         // The virtualizer tracks the scroll offset itself and reports here whenever the rendered
         // window moves. Asking for items only while it is scrolling keeps a list short enough to
@@ -156,12 +204,14 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
     useEffect(() => {
         // The virtualizer caches item sizes and does not watch `estimateSize`, so it has to be
         // told to recalculate them whenever the items — and with them their heights — change.
-        virtualizer.measure();
+        if (resetItemHeightsOnItemsChange) {
+            virtualizer.measure();
+        }
 
         if (resetScrollOnItemsChange && containerRef.current) {
             containerRef.current.scrollTop = 0;
         }
-    }, [items, resetScrollOnItemsChange, virtualizer, containerRef]);
+    }, [items, resetItemHeightsOnItemsChange, resetScrollOnItemsChange, virtualizer, containerRef]);
 
     const frameProps = pickAndPrepareFrameProps(
         rest,
@@ -185,7 +235,7 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
                     return (
                         <Item
                             key={virtualItem.key}
-                            ref={virtualizer.measureElement}
+                            ref={measureItems ? virtualizer.measureElement : undefined}
                             data-index={virtualItem.index}
                             style={{
                                 transform: `translateY(${virtualItem.start}px)`,

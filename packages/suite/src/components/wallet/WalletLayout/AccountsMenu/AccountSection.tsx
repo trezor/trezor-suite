@@ -2,6 +2,7 @@ import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { Row } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -32,14 +33,16 @@ export const AccountSection = ({ account, tokens, selected }: AccountSectionProp
             dataTestKey={dataTestKey}
         />
     ) : (
-        <AccountItem
-            type="coin"
-            key={`${descriptor}-${symbol}`}
-            account={account}
-            isSelected={selected}
-            formattedBalance={formattedBalance}
-            tokens={tokens}
-            dataTestKey={dataTestKey}
-        />
+        <Row>
+            <AccountItem
+                type="coin"
+                key={`${descriptor}-${symbol}`}
+                account={account}
+                isSelected={selected}
+                formattedBalance={formattedBalance}
+                tokens={tokens}
+                dataTestKey={dataTestKey}
+            />
+        </Row>
     );
 };
