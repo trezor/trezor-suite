@@ -24,7 +24,7 @@ import { AccountSection } from './AccountSection';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 
 const SECTION_GAP = 4;
-const OVERSCAN_SECTION_COUNT = 15;
+const OVERSCAN_SECTION_COUNT = 8;
 
 // The list is bled into by the negative margins of grouped sections, so it carries the
 // horizontal padding they need to bleed into.

@@ -1,10 +1,8 @@
 import { useMemo } from 'react';
 
-import styled from 'styled-components';
-
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useScrollShadow } from '@trezor/components';
+import { Column, useScrollShadow } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { ReduxAccountSearchProvider } from 'src/hooks/suite/useAccountSearch';
@@ -14,15 +12,6 @@ import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOv
 import { AccountsList } from './AccountsList';
 import { AccountsMenuHeader } from './AccountsMenuHeader';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
-
-// The account list scrolls itself and positions its sections against its own height, so the
-// area it lives in has to be definite rather than growing with the content.
-const ListArea = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-`;
 
 export const AccountsMenu = () => {
     const device = useSelector(selectSelectedDevice);
@@ -56,7 +45,7 @@ export const AccountsMenu = () => {
     return (
         <ReduxAccountSearchProvider>
             <AccountsMenuHeader />
-            <ListArea>
+            <Column minHeight={0}>
                 <ShadowContainer>
                     <ShadowTop />
                     <AccountsList
@@ -65,7 +54,7 @@ export const AccountsMenu = () => {
                     />
                     <ShadowBottom />
                 </ShadowContainer>
-            </ListArea>
+            </Column>
         </ReduxAccountSearchProvider>
     );
 };
