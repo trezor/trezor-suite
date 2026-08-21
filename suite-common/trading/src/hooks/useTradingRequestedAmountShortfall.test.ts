@@ -164,7 +164,7 @@ describe('useTradingRequestedAmountShortfall', () => {
         });
     });
 
-    it('does not return shortfall for exchange', () => {
+    it('returns crypto shortfall for exchange when the quote send amount is lower than requested', () => {
         mockQuotesRequests({
             exchangeQuotesRequest: {
                 send: BITCOIN_CRYPTO_ID,
@@ -175,7 +175,27 @@ describe('useTradingRequestedAmountShortfall', () => {
 
         const { result } = renderUseTradingRequestedAmountShortfall(exchangeQuote);
 
-        expect(result.current).toEqual(null);
+        expect(result.current).toEqual({
+            shortfallRatio: 0.25,
+            cryptoShortfall: {
+                amount: '0.5',
+                cryptoId: BITCOIN_CRYPTO_ID,
+            },
+        });
+    });
+
+    it('does not return shortfall for exchange when the quote send amount matches the request', () => {
+        mockQuotesRequests({
+            exchangeQuotesRequest: {
+                send: BITCOIN_CRYPTO_ID,
+                receive: ETHEREUM_CRYPTO_ID,
+                sendStringAmount: exchangeQuote.sendStringAmount,
+            },
+        });
+
+        const { result } = renderUseTradingRequestedAmountShortfall(exchangeQuote);
+
+        expect(result.current).toBeNull();
     });
 
     it('returns null on exact match', () => {

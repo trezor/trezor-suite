@@ -8,13 +8,12 @@ import {
     type TradingType,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
+import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { ProviderLogo } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ProviderListItemAmount } from './ProviderListItemAmount';
 import { ProviderListItemInfo } from './ProviderListItemInfo';
-import { ProviderListItemValueRow } from './ProviderListItemValueRow';
 
 export type ProviderListItemProps<T extends TradingTradeType> = {
     isSelected: boolean;
@@ -52,8 +51,6 @@ export const ProviderListItem = <T extends TradingTradeType>({
         return null;
     }
 
-    const isExchange = tradingType === 'exchange';
-
     return (
         <Pressable onPress={() => onPress(quote)} style={applyStyle(wrapperStyle)}>
             <Card>
@@ -76,19 +73,13 @@ export const ProviderListItem = <T extends TradingTradeType>({
                                 {companyName}
                             </Text>
                         </HStack>
-                        {!isExchange && <ProviderListItemAmount quote={quote} />}
+                        <ProviderListItemAmount quote={quote} />
                     </HStack>
                     <ProviderListItemInfo
                         provider={provider}
                         quote={quote}
                         shouldShowExchangeType={shouldShowExchangeType}
                     />
-                    {isExchange && (
-                        <>
-                            <CardDivider />
-                            <ProviderListItemValueRow quote={quote} />
-                        </>
-                    )}
                 </VStack>
             </Card>
         </Pressable>
