@@ -18,6 +18,7 @@ import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type OnSelectAsset } from './types';
+import { TokenYieldRateBadge } from '@suite-native/module-earn';
 
 type SectionHeaderListItem = { type: 'section-header'; id: string; translationId: TxKeyPath };
 type WarningListItem = { type: 'warning'; id: string };
@@ -132,6 +133,13 @@ export const HiddenTokensTab = ({ accountKey, onSelect }: HiddenTokensTabProps) 
                             hasBackground
                             isFirst={item.isFirst}
                             isLast={item.isLast}
+                            badges={
+                                <TokenYieldRateBadge
+                                    account={account!}
+                                    token={item.token}
+                                    variant="active"
+                                />
+                            }
                             showFiatValue={false}
                             onSelectAccount={() =>
                                 onSelect({
