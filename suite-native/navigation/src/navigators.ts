@@ -617,6 +617,7 @@ export type RootStackParamList = {
         tradingType: Exclude<TradingType, 'sell'>;
     };
     [RootStackRoutes.TradingHistory]: undefined;
+    [RootStackRoutes.TradingHistoryDetail]: { orderId: string };
     [RootStackRoutes.TradingBuyPreview]: undefined;
     [RootStackRoutes.ActivityCenterStack]: NavigatorScreenParams<ActivityCenterStackParamList>;
 };

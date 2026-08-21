@@ -36,7 +36,11 @@ const listFooterStyle = prepareNativeStyle(({ spacings }) => ({
 const keyExtractor = (item: TradingTransaction) =>
     item.key ?? item.data.orderId ?? `${item.tradeType}-${item.date}`;
 
-export const TradingHistory = () => {
+export type TradingHistoryProps = {
+    onOpenTradeDetail?: (orderId: string) => void;
+};
+
+export const TradingHistory = ({ onOpenTradeDetail }: TradingHistoryProps) => {
     const navigation = useNavigation();
     const { applyStyle, utils } = useNativeStyles();
     const dispatch = useDispatch();
@@ -57,12 +61,22 @@ export const TradingHistory = () => {
         (trade: TradingTransaction) => {
             const { orderId } = trade.data;
 
+            if (!orderId) {
+                return;
+            }
+
+            if (onOpenTradeDetail) {
+                onOpenTradeDetail(orderId);
+
+                return;
+            }
+
             setDetailOrderId(orderId);
-            if (orderId && !isSheetVisible) {
+            if (!isSheetVisible) {
                 showSheet();
             }
         },
-        [isSheetVisible, showSheet],
+        [isSheetVisible, onOpenTradeDetail, showSheet],
     );
 
     useEffect(() => {
