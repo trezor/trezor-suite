@@ -1,3 +1,5 @@
+import { type ReactElement } from 'react';
+
 import { useTranslation } from '@suite/intl';
 import { Icon, Input } from '@trezor/components';
 import { MagnifyingGlassIcon } from '@trezor/icons';
@@ -7,6 +9,7 @@ type NetworkSettingsSearchInputProps = {
     onSearchChange: (value: string) => void;
     onSearchClear: () => void;
     dataTestId?: string;
+    rightContent?: ReactElement;
 };
 
 export const NetworkSettingsSearchInput = ({
@@ -14,6 +17,7 @@ export const NetworkSettingsSearchInput = ({
     onSearchChange,
     onSearchClear,
     dataTestId = '@settings-coins/network-search-input',
+    rightContent,
 }: NetworkSettingsSearchInputProps) => {
     const { translationString } = useTranslation();
 
@@ -29,6 +33,7 @@ export const NetworkSettingsSearchInput = ({
             leftContent={
                 <Icon as={MagnifyingGlassIcon} intent="neutral" priority="secondary" size={16} />
             }
+            rightContent={rightContent}
         />
     );
 };

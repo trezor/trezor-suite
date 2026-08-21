@@ -221,10 +221,6 @@ export const messages = defineMessages({
         defaultMessage: 'Add {network} account',
         id: 'TR_ADD_NETWORK_ACCOUNT',
     },
-    TR_SELECT_TYPE: {
-        defaultMessage: 'Select type',
-        id: 'TR_SELECT_TYPE',
-    },
     TR_SELECT_ADDRESS_TYPE: {
         defaultMessage: 'Select address type',
         id: 'TR_SELECT_ADDRESS_TYPE',
