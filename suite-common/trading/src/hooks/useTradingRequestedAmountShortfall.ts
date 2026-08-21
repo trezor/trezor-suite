@@ -1,13 +1,20 @@
-import { type BuyTrade, type CryptoId, type SellFiatTrade } from 'invity-api';
+import {
+    type BuyTrade,
+    type CryptoId,
+    type ExchangeTrade,
+    type ExchangeTradeQuoteRequest,
+    type SellFiatTrade,
+} from 'invity-api';
 
 import { BigNumber } from '@trezor/utils';
 
 import {
     selectTradingBuyQuotesRequest,
+    selectTradingExchangeQuotesRequest,
     selectTradingSellQuotesRequest,
 } from '../selectors/tradingSelectors';
 import type { TradingTradeType } from '../types';
-import { isBuyTrade, isSellFiatTrade } from '../utils';
+import { isBuyTrade, isExchangeTrade, isSellFiatTrade } from '../utils';
 import { useSelector } from './useSelector';
 
 type UseTradingRequestedAmountShortfallProps = {
@@ -107,14 +114,35 @@ const getSellRequestedAndQuoteAmounts = (
     };
 };
 
+const getExchangeRequestedAndQuoteAmounts = (
+    quote: ExchangeTrade,
+    quotesRequest: ExchangeTradeQuoteRequest | undefined,
+): RequestedAndQuoteAmounts | null => {
+    if (!quotesRequest) {
+        return null;
+    }
+
+    if (!quotesRequest.sendStringAmount || !quote.sendStringAmount || !quote.send) {
+        return null;
+    }
+
+    return {
+        requestedAmount: quotesRequest.sendStringAmount,
+        quoteAmount: quote.sendStringAmount,
+        cryptoId: quote.send,
+    };
+};
+
 const getRequestedAndQuoteAmounts = ({
     quote,
     buyQuotesRequest,
     sellQuotesRequest,
+    exchangeQuotesRequest,
 }: {
     quote: TradingTradeType;
     buyQuotesRequest: ReturnType<typeof selectTradingBuyQuotesRequest>;
     sellQuotesRequest: ReturnType<typeof selectTradingSellQuotesRequest>;
+    exchangeQuotesRequest: ReturnType<typeof selectTradingExchangeQuotesRequest>;
 }) => {
     if (isBuyTrade(quote)) {
         return getBuyRequestedAndQuoteAmounts(quote, buyQuotesRequest);
@@ -122,6 +150,10 @@ const getRequestedAndQuoteAmounts = ({
 
     if (isSellFiatTrade(quote)) {
         return getSellRequestedAndQuoteAmounts(quote, sellQuotesRequest);
+    }
+
+    if (isExchangeTrade(quote)) {
+        return getExchangeRequestedAndQuoteAmounts(quote, exchangeQuotesRequest);
     }
 
     return null;
@@ -132,12 +164,14 @@ export const useTradingRequestedAmountShortfall = ({
 }: UseTradingRequestedAmountShortfallProps): TradingRequestedAmountShortfallResult | null => {
     const buyQuotesRequest = useSelector(selectTradingBuyQuotesRequest);
     const sellQuotesRequest = useSelector(selectTradingSellQuotesRequest);
+    const exchangeQuotesRequest = useSelector(selectTradingExchangeQuotesRequest);
 
     const requestedAndQuoteAmounts = quote
         ? getRequestedAndQuoteAmounts({
               quote,
               buyQuotesRequest,
               sellQuotesRequest,
+              exchangeQuotesRequest,
           })
         : null;
 

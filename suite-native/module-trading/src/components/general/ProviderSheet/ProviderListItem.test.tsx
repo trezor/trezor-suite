@@ -57,12 +57,12 @@ describe('ProviderListItem', () => {
         expect(queryByText('€9,998.32 / 1 BTC')).toBeNull();
     });
 
-    it('should render the rate row for an exchange quote', () => {
+    it('should render the received amount in the header for an exchange quote', () => {
         const { getByText } = renderProviderListItem(cexdirectFloatingQuote, {
             tradingType: 'exchange',
         });
 
-        expect(getByText('112,210.7767229964765816 USDC / 1 BTC')).toBeOnTheScreen();
+        expect(getByText('0.00089118 BTC')).toBeOnTheScreen();
     });
 
     it('should render centralized exchange information for CEX providers when enabled', () => {
