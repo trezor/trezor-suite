@@ -85,7 +85,7 @@ const manageTrustline = async (
         asset,
         isTestnet: testnet,
     });
-    const xdrBase64 = transaction.toXDR();
+    const xdrBase64 = transaction.toXdr();
 
     const response = await TrezorConnect.stellarSignTransaction({
         device: {
@@ -108,7 +108,7 @@ const manageTrustline = async (
 
     const signature = Buffer.from(response.payload.signature, 'hex').toString('base64');
     transaction.addSignature(account.descriptor, signature);
-    const serializedTx = transaction.toEnvelope().toXDR('hex');
+    const serializedTx = transaction.toEnvelope().toXdr('hex');
 
     // Submit transaction to the network
     const pushResponse = await TrezorConnect.pushTransaction({

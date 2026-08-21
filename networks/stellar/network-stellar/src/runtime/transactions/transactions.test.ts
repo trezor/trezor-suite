@@ -23,7 +23,7 @@ const NONCE = '6216415363851494999';
 
 const buildSorobanData = () =>
     new xdr.SorobanTransactionData({
-        ext: new xdr.SorobanTransactionDataExt(0),
+        ext: xdr.SorobanTransactionDataExt.v0(),
         resources: new xdr.SorobanResources({
             footprint: new xdr.LedgerFootprint({ readOnly: [], readWrite: [] }),
             instructions: 0,
@@ -168,8 +168,8 @@ describe('transactions', () => {
         });
 
         it('exposes the SorobanTransactionData as hex', () => {
-            const ext = tx.tx.ext();
-            const expected = 'sorobanData' in ext ? ext.sorobanData().toXDR('hex') : undefined;
+            const { ext } = tx.tx;
+            const expected = ext.type === 'sorobanData' ? ext.sorobanData.toXdr('hex') : undefined;
             expect(result.sorobanData).toBe(expected);
         });
     });
