@@ -75,7 +75,7 @@ const OutcomeBadge = ({ outcome }: { outcome: Exclude<Outcome, 'idle'> }) => {
     const { intent, icon, labelId } = outcomeBadges[outcome];
 
     return (
-        <Badge intent={intent} iconLeft={icon} data-testid={`@sign-verify/outcome/${outcome}`}>
+        <Badge intent={intent} iconRight={icon} data-testid={`@sign-verify/outcome/${outcome}`}>
             <Translation id={labelId} />
         </Badge>
     );
@@ -174,9 +174,11 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
     const { ref: signatureRef, ...signatureField } = register('signature');
     const { ref: pubKeyRef, ...pubKeyField } = register('pubKey');
 
+    const hasFailedVerification = outcome === 'failed';
+
     const signatureProps = {
         label: translationString('TR_SIGNATURE'),
-        hasError: !!formErrors.signature || outcome === 'failed',
+        hasError: !!formErrors.signature || hasFailedVerification,
         bottomText: signatureError,
         'data-testid': '@sign-verify/signature',
         innerRef: signatureRef,
@@ -244,7 +246,7 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                 name="address"
                 label={<Translation id="TR_ADDRESS" />}
                 type="text"
-                hasError={!!formErrors.address}
+                hasError={!!formErrors.address || hasFailedVerification}
                 bottomText={addressError || null}
                 data-testid="@sign-verify/select-address"
                 {...addressField}
@@ -353,7 +355,7 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                             <Textarea
                                 label={<Translation id="TR_MESSAGE" />}
                                 readOnly={isCompleted}
-                                hasError={!!formErrors.message}
+                                hasError={!!formErrors.message || hasFailedVerification}
                                 characterCount={
                                     isCompleted
                                         ? undefined
@@ -411,36 +413,28 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                             </Row>
                         )}
                         {isSignPage && <Divider margin={{}} />}
-                        {isSignPage || isCompleted ? (
-                            <Input
-                                maxLength={MAX_LENGTH_SIGNATURE}
-                                type="text"
-                                readOnly={isSignPage || isCompleted}
-                                isDisabled={!formValues.signature?.length}
-                                placeholder={translationString(
-                                    'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
-                                )}
-                                rightContent={
-                                    isCompleted ? (
-                                        <CopyFieldButton
-                                            onClick={() => copyValue(formValues.signature || '')}
-                                            data-testid="@sign-verify/copy-signature"
-                                        />
-                                    ) : undefined
-                                }
-                                {...signatureProps}
-                            />
-                        ) : (
-                            <Textarea
-                                maxLength={MAX_LENGTH_SIGNATURE}
-                                characterCount={{
-                                    current: formValues.signature?.length,
-                                    max: MAX_LENGTH_SIGNATURE,
-                                }}
-                                rows={4}
-                                {...signatureProps}
-                            />
-                        )}
+                        <Input
+                            maxLength={MAX_LENGTH_SIGNATURE}
+                            type="text"
+                            readOnly={isSignPage || isCompleted}
+                            // Signing fills this field in, so until it does there is nothing to
+                            // read; verifying is the other way round and needs it from the start.
+                            isDisabled={isSignPage && !formValues.signature?.length}
+                            placeholder={
+                                isSignPage
+                                    ? translationString('TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER')
+                                    : undefined
+                            }
+                            rightContent={
+                                isCompleted ? (
+                                    <CopyFieldButton
+                                        onClick={() => copyValue(formValues.signature || '')}
+                                        data-testid="@sign-verify/copy-signature"
+                                    />
+                                ) : undefined
+                            }
+                            {...signatureProps}
+                        />
                         {isSignPage && isCardano && (
                             <Input
                                 type="text"
