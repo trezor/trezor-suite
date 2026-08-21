@@ -4,8 +4,8 @@ import { Card, ListItemSkeleton, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { YieldClaimRewardItem } from './YieldClaimRewardItem';
-import { type StablecoinYieldAccountRewards } from '../utils/stablecoinYieldClaimSummaryUtils';
 import { sortRewardsByClaimableFiatAmount } from '../utils/sortRewardsByClaimableFiatAmount';
+import { type StablecoinYieldAccountRewards } from '../utils/stablecoinYieldClaimSummaryUtils';
 
 type YieldClaimRewardsCardProps = {
     accountRewards: StablecoinYieldAccountRewards | null;

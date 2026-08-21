@@ -38,7 +38,9 @@ export const YieldManagementScreen = () => {
     return (
         <EarnPortfolioTrackerGuard>
             <Screen
-                header={<YieldManagementScreenHeader account={account} />}
+                header={
+                    <YieldManagementScreenHeader account={account} tokenContract={tokenContract} />
+                }
                 noHorizontalPadding
                 noBottomPadding
                 hasBottomInset={false}

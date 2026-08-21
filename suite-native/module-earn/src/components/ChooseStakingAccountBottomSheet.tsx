@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { FlashList } from '@shopify/flash-list';
 
 import { type Account } from '@suite-common/wallet-types';
-import { BottomSheetModal, VStack, type BottomSheetModalRef } from '@suite-native/atoms';
+import { BottomSheetModal, type BottomSheetModalRef, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { ChooseAccountItem } from './ChooseAccountItem';

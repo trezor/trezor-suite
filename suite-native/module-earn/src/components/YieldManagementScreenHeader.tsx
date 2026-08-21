@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import {
     AccountLabel,
@@ -13,7 +13,8 @@ import { TokenIcon } from '@suite-native/icons';
 import { ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { TokenSettingsBottomSheet } from './TokenSettingsBottomSheet';
+import { YieldDepositInfoBottomSheet } from './YieldDepositInfoBottomSheet';
+import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 
 const headerStyle = prepareNativeStyle(utils => ({
     flexShrink: 1,
@@ -27,9 +28,13 @@ const textColumnStyle = prepareNativeStyle(() => ({
 
 type YieldManagementScreenHeaderProps = {
     account: Account;
+    tokenContract: TokenAddress;
 };
 
-export const YieldManagementScreenHeader = ({ account }: YieldManagementScreenHeaderProps) => {
+export const YieldManagementScreenHeader = ({
+    account,
+    tokenContract,
+}: YieldManagementScreenHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
     const { networkSymbol, deviceStaticSessionId } = parseAccountKey(account.key);
@@ -37,6 +42,19 @@ export const YieldManagementScreenHeader = ({ account }: YieldManagementScreenHe
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
         selectAccountFiatBalance(state, account.key),
     );
+
+    const {
+        apy,
+        bonusRewardTokenSymbol,
+        tokenSymbol,
+        vault,
+        vaultTokenSymbol,
+        wrappedNativeSymbol,
+    } = useResolvedYieldFlowData({
+        accountKey: account.key,
+        tokenContract,
+        displayError: false,
+    });
 
     const { bottomSheetRef, closeModal, openModal } = useBottomSheetModal();
 
@@ -66,22 +84,32 @@ export const YieldManagementScreenHeader = ({ account }: YieldManagementScreenHe
                     </HStack>
                 }
                 rightIcon={
-                    <IconButton
-                        intent="neutral"
-                        priority="secondary"
-                        size="medium"
-                        iconName="info"
-                        onPress={openModal}
-                    />
+                    vault && (
+                        <IconButton
+                            intent="neutral"
+                            priority="secondary"
+                            size="medium"
+                            iconName="info"
+                            onPress={openModal}
+                        />
+                    )
                 }
                 closeActionType="back"
             />
 
-            <TokenSettingsBottomSheet
-                ref={bottomSheetRef}
-                accountKey={account.key}
-                onNavigateAway={closeModal}
-            />
+            {vault && tokenSymbol && vaultTokenSymbol && (
+                <YieldDepositInfoBottomSheet
+                    ref={bottomSheetRef}
+                    apy={apy}
+                    bonusRewardTokenSymbol={bonusRewardTokenSymbol}
+                    onClose={closeModal}
+                    tokenSymbol={tokenSymbol}
+                    vaultTokenSymbol={vaultTokenSymbol}
+                    account={account}
+                    vault={vault}
+                    wrappedNativeSymbol={wrappedNativeSymbol}
+                />
+            )}
         </>
     );
 };

@@ -1,5 +1,5 @@
 import { sortRewardsByClaimableFiatAmount } from './sortRewardsByClaimableFiatAmount';
-import { StablecoinYieldAccountRewards } from './stablecoinYieldClaimSummaryUtils';
+import type { StablecoinYieldAccountRewards } from './stablecoinYieldClaimSummaryUtils';
 
 type Reward = StablecoinYieldAccountRewards['rewards'][number];
 

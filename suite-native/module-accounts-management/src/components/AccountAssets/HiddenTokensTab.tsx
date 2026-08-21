@@ -15,10 +15,10 @@ import { type AccountKey, type TokenInfoBranded } from '@suite-common/wallet-typ
 import { AccountsListTokenItem } from '@suite-native/accounts';
 import { BannerInline, Card, PictogramTitleHeader, Text } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { TokenYieldRateBadge } from '@suite-native/module-earn';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type OnSelectAsset } from './types';
-import { TokenYieldRateBadge } from '@suite-native/module-earn';
 
 type SectionHeaderListItem = { type: 'section-header'; id: string; translationId: TxKeyPath };
 type WarningListItem = { type: 'warning'; id: string };
