@@ -49,7 +49,7 @@ describe(navigateByYieldAccountState.name, () => {
         });
 
         expect(navigate(account)).toBe('vault-detail');
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.YieldManagement, {
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.YieldVaultDetail, {
             accountKey: account.key,
             tokenContract: RECEIPT_ADDRESS,
         });

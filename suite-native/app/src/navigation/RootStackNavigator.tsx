@@ -41,8 +41,8 @@ import {
     UnstakeTransactionDataReviewScreen,
     WrappedNativeTokenStackNavigator,
     YieldInsufficientBalanceScreen,
-    YieldManagementScreen,
     YieldStackNavigator,
+    YieldVaultDetailScreen,
 } from '@suite-native/module-earn';
 import { FeatureFeedbackModalScreen } from '@suite-native/module-home';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
@@ -140,9 +140,9 @@ export const RootStackNavigator = () => {
                 component={StakingManagementScreen}
             />
             <RootStack.Screen
-                options={{ title: RootStackRoutes.YieldManagement }}
-                name={RootStackRoutes.YieldManagement}
-                component={YieldManagementScreen}
+                options={{ title: RootStackRoutes.YieldVaultDetail }}
+                name={RootStackRoutes.YieldVaultDetail}
+                component={YieldVaultDetailScreen}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.UnstakeFlow }}

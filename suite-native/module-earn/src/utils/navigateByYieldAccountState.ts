@@ -38,7 +38,7 @@ export const navigateByYieldAccountState = (
     const { yieldId, underlyingTokenContract, receiptTokenContract } = item;
 
     if (receiptTokenContract && hasPositiveContractTokenBalance(account, receiptTokenContract)) {
-        navigate(RootStackRoutes.YieldManagement, {
+        navigate(RootStackRoutes.YieldVaultDetail, {
             accountKey: account.key,
             tokenContract: receiptTokenContract,
         });

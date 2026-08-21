@@ -46,15 +46,15 @@ const stakedSectionStyleWithBorder = prepareNativeStyle(utils => ({
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>;
 
-interface YieldManagementScreenContentProps {
+interface YieldVaultDetailScreenContentProps {
     account: Account;
     yieldToken: TokenInfoBranded;
 }
 
-export const YieldManagementScreenContent = ({
+export const YieldVaultDetailScreenContent = ({
     account,
     yieldToken,
-}: YieldManagementScreenContentProps) => {
+}: YieldVaultDetailScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
     const { analytics } = useServices(selectNativeAnalyticsDep);

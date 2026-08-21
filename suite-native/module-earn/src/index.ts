@@ -24,7 +24,7 @@ export { EarnTransactionDataReviewScreen } from './screens/EarnTransactionDataRe
 export { HowStakeWorksScreen } from './screens/HowStakeWorksScreen';
 export { StakingDetailScreen } from './screens/StakingDetailScreen';
 export { StakingManagementScreen } from './screens/StakingManagementScreen';
-export { YieldManagementScreen } from './screens/YieldManagementScreen';
+export { YieldVaultDetailScreen } from './screens/YieldVaultDetailScreen';
 export { UnstakeFlowScreen } from './screens/UnstakeFlowScreen';
 export { UnstakeTransactionDataReviewScreen } from './screens/UnstakeTransactionDataReviewScreen';
 export { YieldInsufficientBalanceScreen } from './screens/YieldInsufficientBalanceScreen';
