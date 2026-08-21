@@ -1,4 +1,3 @@
-import { messages } from '@suite/intl';
 import { getCryptoId } from '@suite-common/trading';
 import { fromGwei, localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -12,8 +11,6 @@ const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 const accountLabel = 'Ethereum #1';
 const usdcCryptoId = getCryptoId('eth', '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 const dexProvider = getCompanyNameFromList('lifi', 'swapList');
-
-const gasLimitPattern = new RegExp(`^${messages.TR_GAS_LIMIT.defaultMessage}: (\\d+)$`);
 
 // A DEX swap broadcasts the swap itself, so there is no CONFIRMING deposit phase.
 const dexStatusFlow = swapStatusFlow.filter(phase => phase.status !== 'CONFIRMING');
@@ -73,6 +70,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             });
         });
 
+        let reviewedGasLimit: string;
         let maxFeePerGas: string;
         let feeRate: string;
         let priorityFeeRate: string;
@@ -148,8 +146,6 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             await tradingPage.confirmation.openConfirmAndSendModal();
         });
 
-        let gasLimitWithLabel: string;
-
         await test.step('Confirm the DEX transaction on device', async () => {
             await devicePrompt.confirmOnDevicePromptIsShown();
 
@@ -185,6 +181,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             await expect(devicePrompt.assetsReceiveAddress).toHaveText(
                 tradingMockNew.liveTrade.receiveAddress!,
             );
+            const minimumReceivedOnDevice = `${new BigNumber(minimumReceived.toFixed(6)).toFixed()} USDC`;
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: deviceReview.contractTitle },
@@ -192,23 +189,16 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                         [deviceReview.sendLabel],
                         device.wrapText(formattedSendAmount, { isAmount: true }),
                         [deviceReview.receiveLabel],
-                        device.wrapText(`${minimumReceived.toFixed(6)} USDC`, { isAmount: true }),
+                        device.wrapText(minimumReceivedOnDevice, { isAmount: true }),
                     ],
                     actions: { right_button: deviceReview.confirmButton },
                 },
             });
             await devicePrompt.waitForPromptAndConfirm();
 
-            await expect(devicePrompt.ethereumFeeRate).toHaveText(feeRate);
-            await expect(devicePrompt.ethereumPriorityFeeRate).toHaveText(priorityFeeRate);
-
-            await expect(devicePrompt.ethereumGasLimit).toHaveText(gasLimitPattern);
-            gasLimitWithLabel = await devicePrompt.ethereumGasLimit.innerText();
-            const reviewedGasLimit = gasLimitWithLabel.match(gasLimitPattern)?.[1];
-            if (!reviewedGasLimit) {
-                throw new Error(`Unexpected gas limit format: ${gasLimitWithLabel}`);
-            }
-
+            await expect(devicePrompt.header.feePerGasRate).toHaveText(feeRate);
+            await expect(devicePrompt.header.priorityFeeRate).toHaveText(priorityFeeRate);
+            reviewedGasLimit = await devicePrompt.header.gasLimitValue.innerText();
             const maximumFeeInGwei = new BigNumber(maxFeePerGas).times(reviewedGasLimit).toFixed();
             const maximumFee = `${localizeNumber(fromGwei(maximumFeeInGwei).toEther())} ETH`;
             await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(maximumFee);
@@ -239,7 +229,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             await expect(devicePrompt.assetsReceiveAddress).toHaveText(
                 tradingMockNew.liveTrade.receiveAddress!,
             );
-            await expect(devicePrompt.ethereumGasLimit).toHaveText(gasLimitWithLabel);
+            await expect(devicePrompt.header.gasLimitValue).toHaveText(reviewedGasLimit);
         });
 
         await test.step('Send the DEX transaction (broadcast blocked by mock)', async () => {

@@ -127,7 +127,7 @@ test.describe(
                 await tradingPage.confirmation.initiateSendConfirmation({
                     confirmAlsoToken: true,
                 });
-                await expect(devicePrompt.headerParagraph).toContainText(accountLabel);
+                await expect(devicePrompt.header.accountLabel).toHaveText(accountLabel);
                 await expect(devicePrompt.outputValueOf('address')).toHaveValidAddress('sol');
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                     formattedSendAmount,

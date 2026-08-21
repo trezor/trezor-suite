@@ -74,7 +74,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             await liveTradePromise;
             providerName = getCompanyNameFromList(tradingMockNew.liveTrade.exchange, 'swapList');
 
-            await expect(devicePrompt.headerParagraph).toContainText(accountLabel);
+            await expect(devicePrompt.header.accountLabel).toHaveText(accountLabel);
             await expect(devicePrompt.outputValueOf('address')).toHaveText(
                 formatAddressWithNewlines(tradingMockNew.liveTrade.sendAddress),
             );

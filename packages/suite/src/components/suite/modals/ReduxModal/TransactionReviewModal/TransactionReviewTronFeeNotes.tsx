@@ -44,7 +44,7 @@ export const TransactionReviewTronFeeNotes = ({
     return (
         <>
             {totalTrxBurned && !totalTrxBurned.isZero() && (
-                <Note icon={ReceiptIcon}>
+                <Note data-testid="@modal/header/tron-burned" icon={ReceiptIcon}>
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={totalTrxBurned.toString()}
@@ -53,14 +53,14 @@ export const TransactionReviewTronFeeNotes = ({
                 </Note>
             )}
             {coveredBandwidth?.gt(0) && (
-                <Note icon={ReceiptIcon}>
+                <Note data-testid="@modal/header/tron-bandwidth" icon={ReceiptIcon}>
                     {translationString('TR_TRON_FEE_BANDWIDTH', {
                         count: coveredBandwidth.toNumber(),
                     })}
                 </Note>
             )}
             {coveredEnergy?.gt(0) && (
-                <Note icon={ReceiptIcon}>
+                <Note data-testid="@modal/header/tron-energy" icon={ReceiptIcon}>
                     {translationString('TR_TRON_FEE_ENERGY', {
                         count: coveredEnergy.toNumber(),
                     })}

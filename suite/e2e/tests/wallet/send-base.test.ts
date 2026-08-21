@@ -1,4 +1,3 @@
-import { messages } from '@suite/intl';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -75,7 +74,7 @@ test.describe(
 
             await test.step('Verify Recipient address', async () => {
                 await tradingPage.sendButton.click();
-                await expect(devicePrompt.headerParagraph).toContainText(networkName);
+                await expect(devicePrompt.header.accountLabel).toHaveText(networkName);
                 await expect(devicePrompt.outputValueOf('address')).toHaveText(
                     formattedSendAddress,
                 );
@@ -90,13 +89,12 @@ test.describe(
 
             await test.step('Verify Total including fee', async () => {
                 await devicePrompt.waitForPromptAndClick();
-                const gasLimitTranslation = `${messages['TR_GAS_LIMIT'].defaultMessage}: ${gasLimit}`;
-                await expect(devicePrompt.ethereumGasLimit).toHaveText(gasLimitTranslation);
-                await expect(devicePrompt.ethereumFeeRate).toHaveText(
-                    `${maxFeePerGasRounded} Gwei`,
+                await expect(devicePrompt.header.gasLimitValue).toHaveText(gasLimit);
+                await expect(devicePrompt.header.feePerGasValue).toHaveText(
+                    `${maxFeePerGasRounded}`,
                 );
-                await expect(devicePrompt.ethereumPriorityFeeRate).toHaveText(
-                    `${maxPriorityFeePerGasRounded} Gwei`,
+                await expect(devicePrompt.header.priorityFeeValue).toHaveText(
+                    `${maxPriorityFeePerGasRounded}`,
                 );
                 await expect(devicePrompt.cryptoAmountOf('amount')).toHaveText(sendAmount);
                 await expect(
@@ -164,7 +162,7 @@ test.describe(
 
             await test.step('Verify Recipient address', async () => {
                 await tradingPage.sendButton.click();
-                await expect(devicePrompt.headerParagraph).toContainText(networkName);
+                await expect(devicePrompt.header.accountLabel).toHaveText(networkName);
                 await expect(devicePrompt.outputValueOf('address')).toHaveText(
                     formattedSendAddress,
                 );
@@ -179,13 +177,12 @@ test.describe(
 
             await test.step('Verify Total including fee', async () => {
                 await devicePrompt.waitForPromptAndClick();
-                const gasLimitTranslation = `${messages['TR_GAS_LIMIT'].defaultMessage}: ${gasLimit}`;
-                await expect(devicePrompt.ethereumGasLimit).toHaveText(gasLimitTranslation);
-                await expect(devicePrompt.ethereumFeeRate).toHaveText(
-                    `${maxFeePerGasRounded} Gwei`,
+                await expect(devicePrompt.header.gasLimitValue).toHaveText(gasLimit);
+                await expect(devicePrompt.header.feePerGasValue).toHaveText(
+                    `${maxFeePerGasRounded}`,
                 );
-                await expect(devicePrompt.ethereumPriorityFeeRate).toHaveText(
-                    `${maxPriorityFeePerGasRounded} Gwei`,
+                await expect(devicePrompt.header.priorityFeeValue).toHaveText(
+                    `${maxPriorityFeePerGasRounded}`,
                 );
                 await expect(devicePrompt.cryptoAmountOf('amount')).toHaveText(sendAmount);
                 await expect(
