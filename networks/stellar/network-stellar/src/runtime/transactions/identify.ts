@@ -24,13 +24,26 @@ const isoToTimestamp = (isoDate: string): number => {
 };
 
 const convertMemo = (memo: Memo): string | undefined => {
+    // Memo<T>'s `value` getter type is keyed by T, but T isn't narrowed by switching on
+    // `memo.type` here (it's a generic class, not a discriminated union), so `.value`'s static
+    // type is still the full union across all memo types (including null, for MemoNone). The
+    // case-specific `as` casts below reflect the real runtime type for each memo type (see
+    // stellar-sdk's own memo.d.ts); `== null` covers both undefined and null defensively.
     switch (memo.type) {
-        case 'text':
+        // Memo.id's value is already a decimal string, not bytes; toString() is a no-op here
         case 'id':
-            return memo.value?.toString();
+            return memo.value == null ? undefined : (memo.value as string);
+        // Memo.value is a Uint8Array for text/hash/return; Buffer.from() is required so
+        // toString(encoding) decodes it correctly instead of silently returning garbage
+        case 'text':
+            return memo.value == null
+                ? undefined
+                : Buffer.from(memo.value as Uint8Array).toString('utf-8');
         case 'hash':
         case 'return':
-            return memo.value?.toString('hex');
+            return memo.value == null
+                ? undefined
+                : Buffer.from(memo.value as Uint8Array).toString('hex');
         default:
             return undefined;
     }
@@ -45,7 +58,7 @@ export const identifyTransaction = (rawTx: Horizon.ServerApi.TransactionRecord) 
 
     let parsedTx: Transaction;
     try {
-        const envelope = TransactionBuilder.fromXDR(rawTx.envelope_xdr, Networks.PUBLIC);
+        const envelope = TransactionBuilder.fromXdr(rawTx.envelope_xdr, Networks.PUBLIC);
         parsedTx = envelope instanceof FeeBumpTransaction ? envelope.innerTransaction : envelope;
     } catch {
         // A single unparseable record must not fail the whole account history
