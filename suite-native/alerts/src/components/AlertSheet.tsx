@@ -96,7 +96,18 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         },
         appendix,
         testID,
+        isClosableByOutsidePress = false,
     } = alert;
+
+    const handlePressOutside = async () => {
+        if (!isClosableByOutsidePress) {
+            runShakeAnimation();
+
+            return;
+        }
+
+        await closeSheetAnimated();
+    };
 
     const handlePressPrimaryButton = async () => {
         onPressPrimaryButton?.();
@@ -112,7 +123,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         <Modal transparent visible={!!alert} testID={testID}>
             <Animated.View style={[applyStyle(sheetOverlayStyle), animatedSheetWithOverlayStyle]} />
             <AnimatedPressable
-                onPress={runShakeAnimation}
+                onPress={handlePressOutside}
                 style={[animatedSheetWrapperStyle, applyStyle(shakeTriggerStyle)]}
             >
                 <Animated.View

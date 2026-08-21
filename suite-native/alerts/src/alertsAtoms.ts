@@ -27,6 +27,7 @@ export type Alert = {
     appendix?: ReactNode;
     testID?: string;
     titleSpacing?: NativeSpacing;
+    isClosableByOutsidePress?: boolean;
 };
 
 export const alertAtom = atom<Alert | null>(null);
