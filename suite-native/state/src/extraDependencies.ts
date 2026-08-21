@@ -32,6 +32,7 @@ import {
     selectShouldRetryFirmwareRevisionCheckError,
 } from '@suite-native/device';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
+import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import { type NativeServices } from '@suite-native/services';
@@ -103,10 +104,14 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
     });
     const addressValidator = createAddressValidator({ networkModuleRepository });
 
-    const createLogger: ConnectSettings['createLogger'] = (prefix: string) =>
-        initLog(prefix, false);
+    // Gate connect's component loggers (Core/Device/DeviceCommands/@trezor/transport) and the
+    // native transport logger below on a persisted debug flag. Read at call time so a connect
+    // (re)init picks up the current toggle; RN routes the enabled logs to console/Metro.
+    const isConnectLoggingEnabled = () =>
+        selectIsFeatureFlagEnabled(deps.getState(), FeatureFlag.IsConnectLoggingEnabled);
 
-    const logger = createLogger('native-transport');
+    const createLogger: ConnectSettings['createLogger'] = (prefix: string) =>
+        initLog(prefix, isConnectLoggingEnabled());
 
     return {
         networkModuleRepository,
@@ -138,8 +143,10 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         createLogger,
         // Native constructs its per-device-type transports directly (single platform, no
         // web/desktop split) and returns the enabled ones as ready-made instances.
-        createTransports: () =>
-            (transports ?? []).map(name => {
+        createTransports: () => {
+            const logger = createLogger('native-transport');
+
+            return (transports ?? []).map(name => {
                 switch (name) {
                     case 'BridgeTransport':
                         return new BridgeTransport({ port: 21328, id: 'bridge', logger });
@@ -148,14 +155,18 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
                     case 'NativeBluetoothTransport':
                         return new NativeBluetoothTransport({ id: 'native-bluetooth', logger });
                 }
-            }),
+            });
+        },
         accountRefreshThrottle: createAccountRefreshThrottle(deps.getState),
         getLanguage: toGetter(deps.getState, selectSupportedLanguageLocale),
         getTokenDefinitionsEnabledNetworks: toGetter(
             deps.getState,
             selectTokenDefinitionsEnabledNetworks,
         ),
-        getDebugSettings: toGetter(deps.getState, () => ({ transports })),
+        getDebugSettings: toGetter(deps.getState, state => ({
+            transports,
+            showConnectLogs: selectIsFeatureFlagEnabled(state, FeatureFlag.IsConnectLoggingEnabled),
+        })),
         getTradingEnvironment: toGetter(deps.getState, selectTradingEnvironment),
         getTradedAccountKeys: toGetter(deps.getState, selectTradedAccountKeys),
         // This getter is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk.
