@@ -26,9 +26,9 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { getAvailableAccountTypes, prepareNewAccountPayload } from '@suite-common/wallet-utils';
-import { Banner, Box, Column, Modal } from '@trezor/components';
+import { Banner, Box, Column, Icon, Modal, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { GraduationCapIcon } from '@trezor/icons';
+import { GraduationCapIcon, InfoIcon } from '@trezor/icons';
 
 import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
@@ -582,6 +582,22 @@ export const AddAccountModal = ({
                               onSearchChange={handleSearchChange}
                               onSearchClear={handleSearchClear}
                               dataTestId="@modal/account/network-search-input"
+                              rightContent={
+                                  <Tooltip
+                                      tooltipMaxWidth={285}
+                                      content={
+                                          <Translation id="TR_ADD_ACCOUNT_NETWORKS_BANNER_DESCRIPTION" />
+                                      }
+                                      placement="bottom"
+                                  >
+                                      <Icon
+                                          as={InfoIcon}
+                                          size={20}
+                                          intent="neutral"
+                                          priority="secondary"
+                                      />
+                                  </Tooltip>
+                              }
                           />
                           <Column>
                               <AnimatePresence>
