@@ -222,8 +222,8 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
     // and puts the submit button back. Signing itself writes into the signature field, which is why
     // the Sign page must not watch it — it would wipe the outcome it has just been given.
     const outcomeInputs = isSignPage
-        ? [formValues.message, formValues.address]
-        : [formValues.message, formValues.address, formValues.signature];
+        ? [formValues.message, formValues.address, formValues.hex]
+        : [formValues.message, formValues.address, formValues.signature, formValues.hex];
 
     useEffect(() => {
         setOutcome('idle');
