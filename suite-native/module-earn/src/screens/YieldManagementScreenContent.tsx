@@ -17,7 +17,7 @@ import {
 } from '@suite-common/wallet-types';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Box, Button, Card, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -29,6 +29,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
+import { ApyDottedUnderline } from '../components/ApyDottedUnderline';
 import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../hooks/useStablecoinYieldFirmwareUpdateAlert';
@@ -41,12 +42,6 @@ const stakedSectionStyleWithBorder = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
     borderBottomWidth: utils.borders.widths.small,
     borderBottomColor: utils.colors.borderNeutral,
-}));
-
-const abbrStyle = prepareNativeStyle(({ colors }) => ({
-    borderStyle: 'dotted',
-    borderBottomWidth: 1,
-    borderColor: colors.contentSecondary,
 }));
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>;
@@ -359,8 +354,8 @@ export const YieldManagementScreenContent = ({
                         style={applyStyle(stakedSectionStyleWithBorder)}
                     >
                         {apyValue ? (
-                            <PressableOpacity onPress={apyBreakdownAlert.onPress}>
-                                <Text variant="body-sm" style={applyStyle(abbrStyle)}>
+                            <ApyDottedUnderline onPress={apyBreakdownAlert.onPress}>
+                                <Text variant="body-sm">
                                     <Translation
                                         id={
                                             bonusRewardTokenSymbol
@@ -370,9 +365,9 @@ export const YieldManagementScreenContent = ({
                                         values={{ apy: apyValue }}
                                     />
                                 </Text>
-                            </PressableOpacity>
+                            </ApyDottedUnderline>
                         ) : (
-                            <Text variant="body-sm" style={applyStyle(abbrStyle)}>
+                            <Text variant="body-sm">
                                 <Translation id="earn.apyNotAvailable" />
                             </Text>
                         )}

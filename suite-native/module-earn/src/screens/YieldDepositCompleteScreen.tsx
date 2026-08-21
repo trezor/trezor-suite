@@ -21,20 +21,14 @@ import {
     useNavigateToInitialScreen,
     useOverrideBackNavigation,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { ApyDottedUnderline } from '../components/ApyDottedUnderline';
 import { ApyValue } from '../components/ApyValue';
 import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenContent';
 import { getYieldDepositCompleteRows } from '../components/YieldCompleteScreenPresets';
 import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
-
-const abbrStyle = prepareNativeStyle(({ colors }) => ({
-    borderStyle: 'dotted',
-    borderBottomWidth: 1,
-    borderColor: colors.contentSecondary,
-}));
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositComplete>;
 type NavigationProps = StackNavigationProps<
@@ -45,7 +39,6 @@ type NavigationProps = StackNavigationProps<
 export const YieldDepositCompleteScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { applyStyle } = useNativeStyles();
     const dispatch = useDispatch();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const locale = useSelector(selectSupportedLanguageLocale);
@@ -116,11 +109,12 @@ export const YieldDepositCompleteScreen = () => {
         return getYieldDepositCompleteRows({
             accountSymbol: account.symbol,
             apyValue: (
-                <Text variant="body-md" color="contentPrimary" style={applyStyle(abbrStyle)}>
-                    <ApyValue apy={apy} />
-                </Text>
+                <ApyDottedUnderline onPress={apyBreakdownAlert.onPress}>
+                    <Text variant="body-md" color="contentPrimary">
+                        <ApyValue apy={apy} />
+                    </Text>
+                </ApyDottedUnderline>
             ),
-            onApyPress: apyBreakdownAlert.onPress,
             receivedAmount,
             receivedTokenContract: flowData.receiptToken.contractAddress ?? undefined,
             sentAmount,
@@ -129,7 +123,6 @@ export const YieldDepositCompleteScreen = () => {
                 : (flowData.token.contractAddress ?? undefined),
         });
     }, [
-        applyStyle,
         apyBreakdownAlert.onPress,
         account,
         apy,
