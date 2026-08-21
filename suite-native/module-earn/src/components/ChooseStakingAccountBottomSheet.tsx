@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { FlashList } from '@shopify/flash-list';
 
 import { type Account } from '@suite-common/wallet-types';
-import { BottomSheetModal, type BottomSheetModalRef } from '@suite-native/atoms';
+import { BottomSheetModal, VStack, type BottomSheetModalRef } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { ChooseAccountItem } from './ChooseAccountItem';
@@ -50,7 +50,13 @@ export const ChooseStakingAccountBottomSheet = ({
             onClose={onClose}
             onDismiss={onDismiss}
         >
-            <FlashList data={accounts} keyExtractor={item => item.key} renderItem={renderItem} />
+            <VStack marginTop="sp16">
+                <FlashList
+                    data={accounts}
+                    keyExtractor={item => item.key}
+                    renderItem={renderItem}
+                />
+            </VStack>
         </BottomSheetModal>
     );
 };
