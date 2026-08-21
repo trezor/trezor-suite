@@ -1,12 +1,17 @@
-import { type ReactNode, type RefObject, memo, useCallback, useState } from 'react';
+import { type RefObject, memo, useMemo } from 'react';
 
-import { type BaseItemProps, VirtualizedList, useScrollShadow } from '@trezor/components';
+import {
+    type BaseItemProps,
+    VirtualizedList,
+    type VirtualizedListProps,
+    useScrollShadow,
+} from '@trezor/components';
 
-export interface AssetsListProps<T> {
+export interface AssetsListProps<T extends BaseItemProps> {
     items: T[];
-    renderItem: (item: T, index: number) => ReactNode;
-    height: string | number;
-    minHeight?: string | number;
+    renderItem: VirtualizedListProps<T>['renderItem'];
+    height: VirtualizedListProps<T>['listHeight'];
+    minHeight?: VirtualizedListProps<T>['listMinHeight'];
     ref?: RefObject<HTMLDivElement | null>;
 }
 
@@ -19,13 +24,15 @@ function AssetsListInner<T extends BaseItemProps>({
     minHeight = LIST_MIN_HEIGHT,
     ref,
 }: AssetsListProps<T>) {
-    const { onScroll, ShadowTop, ShadowBottom, ShadowContainer } = useScrollShadow({
-        externalRef: ref,
-        backgroundColor: 'surfaceFillModal',
-    });
+    const { scrollElementRef, ScrollSentinels, ShadowTop, ShadowBottom, ShadowContainer } =
+        useScrollShadow({
+            externalRef: ref,
+            backgroundColor: 'surfaceFillModal',
+        });
 
-    const [end, setEnd] = useState(items.length);
-    const onScrollEnd = useCallback(() => setEnd(end + 1000), [end]);
+    // Kept referentially stable so that the shadows switching on and off cannot re-render the
+    // list itself.
+    const scrollSentinels = useMemo(() => <ScrollSentinels />, [ScrollSentinels]);
 
     return (
         <ShadowContainer>
@@ -33,15 +40,11 @@ function AssetsListInner<T extends BaseItemProps>({
             <VirtualizedList
                 items={items}
                 padding={8}
-                ref={ref}
-                onScroll={onScroll}
+                ref={scrollElementRef}
+                scrollSentinels={scrollSentinels}
                 renderItem={renderItem}
-                onScrollEnd={onScrollEnd}
                 listHeight={height}
                 listMinHeight={minHeight}
-                visibleItemsCount={20}
-                beforeAfterBufferCount={30}
-                loadMoreBufferCount={5}
                 resetScrollOnItemsChange={false}
             />
             <ShadowBottom />
