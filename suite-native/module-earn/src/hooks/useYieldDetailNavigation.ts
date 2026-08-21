@@ -9,7 +9,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.YieldManagement>;
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.YieldVaultDetail>;
 
 export type NavigateToYieldDetail = (params: {
     accountKey: AccountKey;
@@ -21,7 +21,7 @@ export const useYieldDetailNavigation = () => {
 
     const navigateToYieldDetail = useCallback<NavigateToYieldDetail>(
         ({ accountKey, tokenContract }) => {
-            navigation.navigate(RootStackRoutes.YieldManagement, { accountKey, tokenContract });
+            navigation.navigate(RootStackRoutes.YieldVaultDetail, { accountKey, tokenContract });
         },
         [navigation],
     );

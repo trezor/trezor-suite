@@ -26,15 +26,15 @@ const textColumnStyle = prepareNativeStyle(() => ({
     flexShrink: 1,
 }));
 
-type YieldManagementScreenHeaderProps = {
+interface YieldVaultDetailScreenHeaderProps {
     account: Account;
     tokenContract: TokenAddress;
-};
+}
 
-export const YieldManagementScreenHeader = ({
+export const YieldVaultDetailScreenHeader = ({
     account,
     tokenContract,
-}: YieldManagementScreenHeaderProps) => {
+}: YieldVaultDetailScreenHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
     const { networkSymbol, deviceStaticSessionId } = parseAccountKey(account.key);

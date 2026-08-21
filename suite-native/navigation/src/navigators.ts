@@ -515,7 +515,7 @@ export type RootStackParamList = {
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };
-    [RootStackRoutes.YieldManagement]: { accountKey: AccountKey; tokenContract: TokenAddress };
+    [RootStackRoutes.YieldVaultDetail]: { accountKey: AccountKey; tokenContract: TokenAddress };
     [RootStackRoutes.HowStakeWorksScreen]: {
         accountKey?: AccountKey;
         symbol: NetworkSymbol;

@@ -12,12 +12,12 @@ import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-na
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { TransactionList } from '@suite-native/transactions';
 
-import { YieldManagementScreenContent } from './YieldManagementScreenContent';
+import { YieldVaultDetailScreenContent } from './YieldVaultDetailScreenContent';
 import { EarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
-import { YieldManagementScreenHeader } from '../components/YieldManagementScreenHeader';
+import { YieldVaultDetailScreenHeader } from '../components/YieldVaultDetailScreenHeader';
 
-export const YieldManagementScreen = () => {
-    const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.YieldManagement>>();
+export const YieldVaultDetailScreen = () => {
+    const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.YieldVaultDetail>>();
     const { accountKey, tokenContract } = route.params;
     const dispatch = useDispatch();
 
@@ -39,7 +39,7 @@ export const YieldManagementScreen = () => {
         <EarnPortfolioTrackerGuard>
             <Screen
                 header={
-                    <YieldManagementScreenHeader account={account} tokenContract={tokenContract} />
+                    <YieldVaultDetailScreenHeader account={account} tokenContract={tokenContract} />
                 }
                 noHorizontalPadding
                 noBottomPadding
@@ -49,7 +49,7 @@ export const YieldManagementScreen = () => {
                 <TransactionList
                     account={account}
                     listHeaderComponent={
-                        <YieldManagementScreenContent account={account} yieldToken={yieldToken} />
+                        <YieldVaultDetailScreenContent account={account} yieldToken={yieldToken} />
                     }
                     filter="yield"
                 />
