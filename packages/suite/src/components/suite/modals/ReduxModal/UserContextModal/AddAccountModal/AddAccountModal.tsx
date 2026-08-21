@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -151,8 +151,25 @@ export const AddAccountModal = ({
     const [advancedSettingsSymbol, setAdvancedSettingsSymbol] = useState<
         NetworkSymbol | undefined
     >();
+    // TODO after this refactoring, no need to track it here, it will be a selector https://github.com/trezor/trezor-suite/issues/31779
+    const [addingAccountNetworkSymbol, setAddingAccountNetworkSymbol] = useState<NetworkSymbol>();
+    const addingAccountNetworkSymbolRef = useRef<NetworkSymbol | undefined>(undefined);
 
     const closeAdvancedSettings = () => setAdvancedSettingsSymbol(undefined);
+    const shouldStartAddingAccount = (networkSymbol: NetworkSymbol) => {
+        if (addingAccountNetworkSymbolRef.current) {
+            return false;
+        }
+
+        addingAccountNetworkSymbolRef.current = networkSymbol;
+        setAddingAccountNetworkSymbol(networkSymbol);
+
+        return true;
+    };
+    const finishAddingAccount = () => {
+        addingAccountNetworkSymbolRef.current = undefined;
+        setAddingAccountNetworkSymbol(undefined);
+    };
     const closeNetworkInfoBanner = () => {
         dispatch(setFlag({ key: 'addAccountNetworksBannerClosed', value: true }));
     };
@@ -286,6 +303,10 @@ export const AddAccountModal = ({
             accountTypes?: NetworkAccount[];
         } = {},
     ) {
+        if (addingAccountNetworkSymbolRef.current) {
+            return;
+        }
+
         if (shouldKeepModalOpen) {
             dispatch(preserveModal());
         }
@@ -321,30 +342,38 @@ export const AddAccountModal = ({
             return;
         }
 
-        const newAccount = await prepareNewAccountPayload({
-            accountType: account.accountType,
-            networkSymbol: account.symbol,
-            index: account.index + 1,
-            backendType: account.backendType != 'coinjoin' ? account.backendType : undefined,
-            selectedAccount: nextSelectedAccount,
-            accountTypes: nextAccountTypes,
-            device,
-        });
-
-        if (newAccount instanceof Error) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'discovery-error',
-                    error: newAccount.message,
-                }),
-            );
-
+        if (!shouldStartAddingAccount(account.symbol)) {
             return;
         }
 
-        const createAccountAction = accountsActions.createAccount(newAccount);
-        dispatch(createAccountAction);
-        finishEnableAccount(createAccountAction.payload);
+        try {
+            const newAccount = await prepareNewAccountPayload({
+                accountType: account.accountType,
+                networkSymbol: account.symbol,
+                index: account.index + 1,
+                backendType: account.backendType != 'coinjoin' ? account.backendType : undefined,
+                selectedAccount: nextSelectedAccount,
+                accountTypes: nextAccountTypes,
+                device,
+            });
+
+            if (newAccount instanceof Error) {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'discovery-error',
+                        error: newAccount.message,
+                    }),
+                );
+
+                return;
+            }
+
+            const createAccountAction = accountsActions.createAccount(newAccount);
+            dispatch(createAccountAction);
+            finishEnableAccount(createAccountAction.payload);
+        } finally {
+            finishAddingAccount();
+        }
     }
 
     async function addNewAccount({
@@ -356,54 +385,62 @@ export const AddAccountModal = ({
         account: NetworkAccount;
         accountTypes: NetworkAccount[];
     }) {
+        if (!shouldStartAddingAccount(network.symbol)) {
+            return;
+        }
+
         if (shouldKeepModalOpen) {
             dispatch(preserveModal());
         }
 
-        const newAccount = await prepareNewAccountPayload({
-            accountType: account.accountType,
-            networkSymbol: network.symbol,
-            index: 0,
-            backendType: account.backendType != 'coinjoin' ? account.backendType : undefined,
-            selectedAccount: account,
-            accountTypes: nextAccountTypes,
-            device,
-        });
+        try {
+            const newAccount = await prepareNewAccountPayload({
+                accountType: account.accountType,
+                networkSymbol: network.symbol,
+                index: 0,
+                backendType: account.backendType != 'coinjoin' ? account.backendType : undefined,
+                selectedAccount: account,
+                accountTypes: nextAccountTypes,
+                device,
+            });
 
-        if (newAccount instanceof Error) {
+            if (newAccount instanceof Error) {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'discovery-error',
+                        error: newAccount.message,
+                    }),
+                );
+
+                return;
+            }
+
+            const createAccountAction = accountsActions.createAccount(newAccount);
+            dispatch(createAccountAction);
+            const addedAccount = createAccountAction.payload;
+            resetAccountSearch(addedAccount.symbol);
+            reportNewAccountAnalytics(addedAccount);
+            dispatch(reportWalletBalanceThunk());
             dispatch(
                 notificationsActions.addToast({
-                    type: 'discovery-error',
-                    error: newAccount.message,
+                    type: 'account-added',
+                    networkName: getNetwork(addedAccount.symbol).name,
                 }),
             );
 
-            return;
+            if (shouldKeepModalOpen) {
+                setAccountTypeSelectionNetwork(undefined);
+                setSelectedAccount(undefined);
+
+                return;
+            }
+
+            onCancel();
+            onConfirm?.();
+            onAddAccount?.(addedAccount);
+        } finally {
+            finishAddingAccount();
         }
-
-        const createAccountAction = accountsActions.createAccount(newAccount);
-        dispatch(createAccountAction);
-        const addedAccount = createAccountAction.payload;
-        resetAccountSearch(addedAccount.symbol);
-        reportNewAccountAnalytics(addedAccount);
-        dispatch(reportWalletBalanceThunk());
-        dispatch(
-            notificationsActions.addToast({
-                type: 'account-added',
-                networkName: getNetwork(addedAccount.symbol).name,
-            }),
-        );
-
-        if (shouldKeepModalOpen) {
-            setAccountTypeSelectionNetwork(undefined);
-            setSelectedAccount(undefined);
-
-            return;
-        }
-
-        onCancel();
-        onConfirm?.();
-        onAddAccount?.(addedAccount);
     }
 
     const handleNetworkSelection = async (networkSymbol?: NetworkSymbol) => {
@@ -501,6 +538,9 @@ export const AddAccountModal = ({
                           network={accountTypeSelectionNetwork}
                           selectedAccount={selectedAccount}
                           scopedAccounts={scopedAccounts}
+                          isLoading={
+                              addingAccountNetworkSymbol === accountTypeSelectionNetwork.symbol
+                          }
                           onEnableAccount={account => {
                               void enableAccount(account, {
                                   selectedAccount,
@@ -529,6 +569,7 @@ export const AddAccountModal = ({
                               networks={visibleNetworks}
                               enabledNetworkSymbols={enabledNetworkSymbols}
                               accountCounts={accountCounts}
+                              addingAccountNetworkSymbol={addingAccountNetworkSymbol}
                               handleNetworkSelection={handleNetworkSelection}
                               onSettings={setAdvancedSettingsSymbol}
                               getAddDisabledMessage={getAddDisabledMessage}
@@ -580,6 +621,7 @@ export const AddAccountModal = ({
                                       enabledNetworkSymbols={enabledNetworkSymbols}
                                       accountCounts={accountCounts}
                                       activatingNetworkSymbols={activatingNetworkSymbols}
+                                      addingAccountNetworkSymbol={addingAccountNetworkSymbol}
                                       activationErrors={activationErrors}
                                       handleNetworkSelection={handleNetworkSelection}
                                       onSettings={setAdvancedSettingsSymbol}

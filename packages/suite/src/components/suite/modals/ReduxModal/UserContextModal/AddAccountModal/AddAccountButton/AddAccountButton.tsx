@@ -17,6 +17,7 @@ interface AddAccountButtonProps {
     scopedAccounts: Account[];
     onEnableAccount: (account: Account) => void;
     onAddNewAccount: () => void;
+    isLoading?: boolean;
 }
 
 const AddDefaultAccountButton = ({
@@ -25,6 +26,7 @@ const AddDefaultAccountButton = ({
     onAddNewAccount,
     network,
     selectedAccount,
+    isLoading,
 }: AddAccountButtonProps) => {
     const defaultAccount = scopedAccounts.at(-1);
     const device = useSelector(selectSelectedDevice);
@@ -52,6 +54,7 @@ const AddDefaultAccountButton = ({
             disabledMessage={disabledMessage && <Translation id={disabledMessage} />}
             networkName={network.name}
             onClick={handleClick}
+            isLoading={isLoading}
         />
     );
 };
@@ -62,6 +65,7 @@ export const AddAccountButton = ({
     scopedAccounts,
     onEnableAccount,
     onAddNewAccount,
+    isLoading,
 }: AddAccountButtonProps) => {
     switch (selectedAccount?.accountType) {
         case 'coinjoin':
@@ -74,6 +78,7 @@ export const AddAccountButton = ({
                     scopedAccounts={scopedAccounts}
                     onEnableAccount={onEnableAccount}
                     onAddNewAccount={onAddNewAccount}
+                    isLoading={isLoading}
                 />
             );
     }
