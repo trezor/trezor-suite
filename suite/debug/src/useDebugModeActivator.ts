@@ -24,9 +24,7 @@ export const useToggleDebugMode = () => {
                 shouldEnableDebugMode
                     ? {
                           level: 'debug',
-                          options: {
-                              writeToDisk: true,
-                          },
+                          writeToDisk: true,
                       }
                     : {},
             );

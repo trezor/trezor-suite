@@ -81,18 +81,9 @@ export type HandshakeElectron = {
     };
 };
 
-interface LoggerOptions {
-    colors?: boolean;
-    writeToConsole?: boolean;
-    writeToDisk?: boolean;
-    outputFile?: string;
-    outputPath?: string;
-    logFormat?: string;
-}
-
 export interface LoggerConfig {
     level?: 'mute' | 'error' | 'warn' | 'info' | 'debug';
-    options?: LoggerOptions;
+    writeToDisk?: boolean;
 }
 
 export interface UpdateInfo {
