@@ -129,7 +129,7 @@ export const Screen = ({
         isScreenHeaderPropDynamic(header) && !dynamicHeaderProps?.isCompactOnly;
 
     return (
-        <DynamicHeaderProvider>
+        <DynamicHeaderProvider scrollThreshold={dynamicHeaderProps?.scrollThreshold}>
             <View
                 accessible
                 style={[

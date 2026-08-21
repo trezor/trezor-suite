@@ -9,11 +9,15 @@ export type DynamicScreenHeaderProps = {
     subtitle?: ReactNode;
     isCompactOnly?: boolean;
     marginBottom?: NativeSpacing;
+    compactContent?: ReactNode;
+    expandedContent?: ReactNode;
+    scrollThreshold?: number;
 } & ScreenHeaderProps;
 
 export const DynamicScreenHeader = ({
     title,
     isCompactOnly = false,
+    compactContent,
     ...screenHeaderProps
 }: DynamicScreenHeaderProps) => {
     const { isScrollableHeaderScrolled } = useDynamicHeader();
@@ -23,7 +27,8 @@ export const DynamicScreenHeader = ({
     return (
         <ScreenHeader
             {...screenHeaderProps}
-            title={shouldRenderScreenHeaderContent ? title : undefined}
+            title={shouldRenderScreenHeaderContent && !compactContent ? title : undefined}
+            customContent={shouldRenderScreenHeaderContent ? compactContent : undefined}
         />
     );
 };

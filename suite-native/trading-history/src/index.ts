@@ -3,8 +3,8 @@ export { TradingHistory, type TradingHistoryProps } from './components/TradingHi
 export { TradingHistoryExportButton } from './components/TradingHistoryExportButton';
 export { TradeStatusBadge, getBadgeIconName, getBadgeVariant } from './components/TradeStatusBadge';
 export {
+    TradingHistoryDetailCompactHeader,
     TradingHistoryDetailHeader,
-    TradingHistoryDetailHeaderSubtitle,
 } from './components/TradingHistoryDetail/TradingHistoryDetailHeader';
 export {
     TradeDetailTransactionInfo,
