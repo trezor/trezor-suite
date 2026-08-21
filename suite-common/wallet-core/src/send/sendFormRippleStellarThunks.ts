@@ -335,7 +335,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 isTestnet: testnet,
             });
 
-            const xdrBase64 = transaction.toXDR();
+            const xdrBase64 = transaction.toXdr();
 
             response = await TrezorConnect.stellarSignTransaction({
                 device: {
@@ -354,7 +354,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 const signature = Buffer.from(response.payload.signature, 'hex').toString('base64');
                 transaction.addSignature(selectedAccount.descriptor, signature);
 
-                return { serializedTx: transaction.toEnvelope().toXDR('hex') };
+                return { serializedTx: transaction.toEnvelope().toXdr('hex') };
             }
         } else {
             return rejectWithValue({

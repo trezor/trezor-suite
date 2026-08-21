@@ -22,7 +22,7 @@ const transformSigner = (signer: Signer) => {
 
     if ('ed25519PublicKey' in signer) {
         const keyPair = Keypair.fromPublicKey(signer.ed25519PublicKey);
-        const key = keyPair.rawPublicKey().toString('hex');
+        const key = Buffer.from(keyPair.rawPublicKey()).toString('hex');
 
         return { type: 0, key, weight };
     }
@@ -64,15 +64,16 @@ const transformAsset = (asset: Asset) => {
 const transformMemo = (memo: Memo) => {
     switch (memo.type) {
         case MemoText:
-            return { type: 1, text: memo.value!.toString('utf-8') };
+            return { type: 1, text: Buffer.from(memo.value!).toString('utf-8') };
         case MemoID:
+            // Memo.id's value is already a decimal string, not bytes
             return { type: 2, id: memo.value!.toString('utf-8') };
         case MemoHash:
             // stringify is not necessary, Buffer is also accepted
-            return { type: 3, hash: memo.value!.toString('hex') };
+            return { type: 3, hash: Buffer.from(memo.value!).toString('hex') };
         case MemoReturn:
             // stringify is not necessary, Buffer is also accepted
-            return { type: 4, hash: memo.value!.toString('hex') };
+            return { type: 4, hash: Buffer.from(memo.value!).toString('hex') };
         default:
             return { type: 0 };
     }
@@ -131,12 +132,14 @@ export const transformTransaction = (transaction: Transaction) => {
         }
 
         // transform "price" field to { n: number, d: number }
+        // Note: @stellar/stellar-sdk 17 rebuilt the xdr namespace so union/struct fields
+        // (body, value, price, n, d) are plain readonly properties, not accessor methods
         if (typeof operation.price === 'string') {
-            const xdrOperationBody = transaction.tx.operations()[i]?.body().value();
+            const xdrOperationBody = transaction.tx.operations[i]?.body?.value;
             if (xdrOperationBody && 'price' in xdrOperationBody) {
                 operation.price = {
-                    n: xdrOperationBody.price().n(),
-                    d: xdrOperationBody.price().d(),
+                    n: xdrOperationBody.price.n,
+                    d: xdrOperationBody.price.d,
                 };
             }
         }
@@ -163,7 +166,7 @@ export const transformTransaction = (transaction: Transaction) => {
 
         if (operation.type === 'manageData' && operation.value) {
             // stringify is not necessary, Buffer is also accepted
-            operation.value = operation.value.toString('hex');
+            operation.value = Buffer.from(operation.value).toString('hex');
         }
         if (operation.type === 'manageBuyOffer') {
             operation.amount = operation.buyAmount;
