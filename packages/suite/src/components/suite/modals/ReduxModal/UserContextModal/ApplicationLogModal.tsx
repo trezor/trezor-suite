@@ -21,16 +21,11 @@ import {
 
 import { useApplicationLogs } from 'src/utils/suite/logsUtils';
 
+// The height sits on the scrolling element rather than on the log, so that the log spans the
+// whole scrollable content and the scroll shadow sentinels inside it land on its very edges.
 const ScrollContainer = styled.div`
     overflow: auto;
-`;
-
-const LogWrapper = styled.pre`
-    padding: 16px;
     height: 350px;
-    width: 100%;
-    text-align: left;
-    word-break: break-all;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         height: 320px;
@@ -41,13 +36,21 @@ const LogWrapper = styled.pre`
     }
 `;
 
+const LogWrapper = styled.pre`
+    position: relative;
+    padding: 16px;
+    width: 100%;
+    text-align: left;
+    word-break: break-all;
+`;
+
 type ApplicationLogModalProps = { onCancel: () => void };
 
 export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
     const applicationLogs = useApplicationLogs({ hideSensitiveInfo });
-    const { ShadowTop, ShadowBottom, ShadowContainer, onScroll, scrollElementRef } =
+    const { ShadowTop, ShadowBottom, ShadowContainer, ScrollSentinels, scrollElementRef } =
         useScrollShadow();
 
     const download = () => {
@@ -93,8 +96,9 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
             <Card paddingType="none" margin={{ top: 12 }} overflow="hidden">
                 <ShadowContainer>
                     <ShadowTop />
-                    <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
+                    <ScrollContainer ref={scrollElementRef}>
                         <LogWrapper data-testid="@log/content">
+                            <ScrollSentinels />
                             <Text typographyStyle="body-xs">{applicationLogs}</Text>
                         </LogWrapper>
                     </ScrollContainer>
