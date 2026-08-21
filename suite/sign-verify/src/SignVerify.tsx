@@ -8,6 +8,7 @@ import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/rec
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
+    Badge,
     Box,
     Button,
     Card,
@@ -18,14 +19,15 @@ import {
     SelectBar,
     Switch,
     Tabs,
+    Text,
     Textarea,
     Tooltip,
 } from '@trezor/components';
-import { CheckIcon, CopyIcon } from '@trezor/icons';
+import { CheckCircleIcon, CopyIcon, WarningCircleIcon } from '@trezor/icons';
 
 import { SignAddressInput } from './SignAddressInput';
 import { isVerifySupported, sign, verify } from './signVerifyActions';
-import { useCopySignedMessage } from './useCopySignedMessage';
+import { useCopyValue } from './useCopyValue';
 import {
     MAX_LENGTH_MESSAGE,
     MAX_LENGTH_SIGNATURE,
@@ -34,44 +36,88 @@ import {
 } from './useSignVerifyForm';
 
 type CopyFieldButtonProps = {
-    labelId: TranslationKey;
     onClick: () => void;
-    isDisabled: boolean;
     'data-testid': string;
 };
 
-const CopyFieldButton = ({
-    labelId,
-    onClick,
-    isDisabled,
-    'data-testid': dataTestId,
-}: CopyFieldButtonProps) => (
-    <Tooltip
-        content={isDisabled ? <Translation id="TR_NOTHING_TO_COPY" /> : undefined}
-        cursor={isDisabled ? 'not-allowed' : undefined}
+const CopyFieldButton = ({ onClick, 'data-testid': dataTestId }: CopyFieldButtonProps) => (
+    <Button
+        type="button"
+        intent="brand"
+        priority="secondary"
+        size="small"
+        iconLeft={CopyIcon}
+        onClick={onClick}
+        data-testid={dataTestId}
     >
-        {/* A disabled button dispatches no mouse events, so the pointer has to reach the tooltip. */}
-        <Box pointerEvents={isDisabled ? 'none' : undefined}>
-            <Button
-                type="button"
-                intent="neutral"
-                priority="secondary"
-                size="small"
-                iconLeft={CopyIcon}
-                onClick={onClick}
-                isDisabled={isDisabled}
-                data-testid={dataTestId}
-            >
-                <Translation id={labelId} />
-            </Button>
-        </Box>
+        <Translation id="TR_COPY_TO_CLIPBOARD" />
+    </Button>
+);
+
+/**
+ * `idle` covers a form that was never submitted and one whose fields changed since, because both
+ * are waiting for the same submit. A failed signing stays `idle`: the toast already explains it and
+ * there is nothing signed to show.
+ */
+type Outcome = 'idle' | 'signed' | 'verified' | 'failed';
+
+const outcomeBadges = {
+    signed: { intent: 'brand', icon: CheckCircleIcon, labelId: 'TR_SIGNED_MESSAGE_BADGE' },
+    verified: { intent: 'brand', icon: CheckCircleIcon, labelId: 'TR_VERIFIED_MESSAGE_BADGE' },
+    failed: {
+        intent: 'critical',
+        icon: WarningCircleIcon,
+        labelId: 'TR_VERIFICATION_FAILED_BADGE',
+    },
+} as const satisfies Record<Exclude<Outcome, 'idle'>, unknown>;
+
+const OutcomeBadge = ({ outcome }: { outcome: Exclude<Outcome, 'idle'> }) => {
+    const { intent, icon, labelId } = outcomeBadges[outcome];
+
+    return (
+        <Badge intent={intent} iconLeft={icon} data-testid={`@sign-verify/outcome/${outcome}`}>
+            <Translation id={labelId} />
+        </Badge>
+    );
+};
+
+// The design fixes the signature-format switch at this width rather than letting it stretch.
+const FORMAT_SWITCH_WIDTH = 360;
+
+// Matches the padding the form fields use inside their frame.
+const FIELD_PADDING = 16;
+
+// `Tabs` at size `large` keeps this much room between its labels and the underline it draws, so the
+// badge floating over the strip is centred on the labels rather than on the underline.
+const TABS_LABEL_BOTTOM_SPACE = 10;
+
+/**
+ * The switch owns its width, so its label sits outside `SelectBar` and repeats the typography
+ * `SelectBar` would have given it.
+ */
+const FormatLabel = () => (
+    <Tooltip
+        maxWidth={330}
+        content={
+            <Translation
+                id="TR_FORMAT_TOOLTIP"
+                values={{
+                    FormatDescription: chunks => <p>{chunks}</p>,
+                    span: chunks => <strong>{chunks}</strong>,
+                }}
+            />
+        }
+        hasIcon
+    >
+        <Text case="capitalize" intent="neutral" priority="secondary" typographyStyle="body-md">
+            <Translation id="TR_FORMAT" />
+        </Text>
     </Tooltip>
 );
 
 type SignVerifyShellProps = {
     title: 'TR_NAV_SIGN_VERIFY' | 'TR_SIGN_MESSAGE';
     isDeviceConnected: boolean | undefined;
-    headingAction: ReactNode;
     children: ReactNode;
 };
 
@@ -83,7 +129,7 @@ type SignVerifyProps = {
 
 export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) => {
     const [page, setPage] = useState<'sign' | 'verify'>('sign');
-    const [isCompleted, setIsCompleted] = useState(false);
+    const [outcome, setOutcome] = useState<Outcome>('idle');
 
     const touchedAddresses = useSelector((state: ReceiveRootState) =>
         selectTouchedAddresses(state, account.key),
@@ -94,7 +140,6 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
 
     const {
         register,
-        isFormDirty,
         isSubmitting,
         resetForm,
         formSubmit,
@@ -110,8 +155,11 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
 
     const { isLocked, device } = useDevice();
     const { translationString } = useTranslation();
-    const { canCopy, signedMessage, copyValue, copySignature, copySignedMessage } =
-        useCopySignedMessage(formValues, network);
+    const copyValue = useCopyValue();
+
+    // Signing and verifying both end in the same read-only layout: the values that were submitted,
+    // each with a copy button, and nothing left to edit until the form is cleared.
+    const isCompleted = outcome === 'signed' || outcome === 'verified';
 
     const getErrorMessage = (error?: FieldError) =>
         error ? translationString(error.message as TranslationKey) : undefined;
@@ -128,7 +176,7 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
 
     const signatureProps = {
         label: translationString('TR_SIGNATURE'),
-        hasError: !!formErrors.signature,
+        hasError: !!formErrors.signature || outcome === 'failed',
         bottomText: signatureError,
         'data-testid': '@sign-verify/signature',
         innerRef: signatureRef,
@@ -143,11 +191,66 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
         ...pubKeyField,
     };
 
-    useEffect(() => {
-        if (isSignPage && formValues.signature) return;
+    // The outcome belongs to the values that produced it, so any edit takes the form back to `idle`
+    // and puts the submit button back. Signing itself writes into the signature field, which is why
+    // the Sign page must not watch it — it would wipe the outcome it has just been given.
+    const outcomeInputs = isSignPage
+        ? [formValues.message, formValues.address]
+        : [formValues.message, formValues.address, formValues.signature];
 
-        setIsCompleted(false);
-    }, [isSignPage, formValues.message, formValues.address, formValues.signature]);
+    useEffect(() => {
+        setOutcome('idle');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isSignPage, outcomeInputs.join('\u0000')]);
+
+    // Three shapes for one field: the submitted address once there is nothing left to change, the
+    // account's address picker while signing, and a plain input to paste into while verifying.
+    const renderAddressField = () => {
+        if (isCompleted) {
+            return (
+                <Input
+                    label={<Translation id="TR_ADDRESS" />}
+                    type="text"
+                    readOnly
+                    value={formValues.address ?? ''}
+                    rightContent={
+                        <CopyFieldButton
+                            onClick={() => copyValue(formValues.address || '')}
+                            data-testid="@sign-verify/copy-address"
+                        />
+                    }
+                    data-testid="@sign-verify/submitted-address"
+                />
+            );
+        }
+
+        if (isSignPage) {
+            return (
+                <SignAddressInput
+                    name="path"
+                    label={<Translation id="TR_ADDRESS" />}
+                    account={account}
+                    touchedAddresses={touchedAddresses}
+                    hasError={!!formErrors.path}
+                    bottomText={pathError || null}
+                    data-testid="@sign-verify/sign-address"
+                    {...pathField}
+                />
+            );
+        }
+
+        return (
+            <Input
+                name="address"
+                label={<Translation id="TR_ADDRESS" />}
+                type="text"
+                hasError={!!formErrors.address}
+                bottomText={addressError || null}
+                data-testid="@sign-verify/select-address"
+                {...addressField}
+            />
+        );
+    };
 
     const onSubmit = async (data: SignVerifyFields) => {
         const { address, path, message, signature, hex, isElectrum, cardanoPubKeyCose } = data;
@@ -159,12 +262,12 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
 
             if (result) {
                 formSetSignature(result);
-                setIsCompleted(true);
+                setOutcome('signed');
             }
         } else if (signature !== undefined) {
             const result = await dispatch(verify(account, address, message, signature, hex));
 
-            if (result) setIsCompleted(true);
+            setOutcome(result ? 'verified' : 'failed');
         }
     };
 
@@ -181,251 +284,206 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
     return renderShell({
         title: canVerify ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE',
         isDeviceConnected,
-        headingAction: isFormDirty ? (
-            <Button
-                type="button"
-                size="small"
-                intent="neutral"
-                priority="secondary"
-                onClick={resetForm}
-            >
-                <Translation id="TR_CLEAR_ALL" />
-            </Button>
-        ) : null,
         children: (
             <Card>
-                <Tabs activeItemId={page} size="large" margin={{ bottom: 20 }}>
-                    <Tabs.Item
-                        id="sign"
-                        onClick={() => setPage('sign')}
-                        data-testid="@sign-verify/navigation/sign"
-                    >
-                        <Translation id="TR_SIGN" />
-                    </Tabs.Item>
-                    {canVerify && (
+                {/* The tabs draw their underline across the whole width, so the badge floats over
+                    its right end instead of sharing a row that would cut the line short. */}
+                <Box position={{ type: 'relative' }} margin={{ bottom: 20 }}>
+                    <Tabs activeItemId={page} size="large">
                         <Tabs.Item
-                            id="verify"
-                            onClick={() => setPage('verify')}
-                            data-testid="@sign-verify/navigation/verify"
+                            id="sign"
+                            onClick={() => setPage('sign')}
+                            data-testid="@sign-verify/navigation/sign"
                         >
-                            <Translation id="TR_VERIFY" />
+                            <Translation id="TR_SIGN" />
                         </Tabs.Item>
+                        {canVerify && (
+                            <Tabs.Item
+                                id="verify"
+                                onClick={() => setPage('verify')}
+                                data-testid="@sign-verify/navigation/verify"
+                            >
+                                <Translation id="TR_VERIFY" />
+                            </Tabs.Item>
+                        )}
+                    </Tabs>
+                    {outcome !== 'idle' && (
+                        <Row
+                            position={{
+                                type: 'absolute',
+                                top: 0,
+                                right: 0,
+                                bottom: TABS_LABEL_BOTTOM_SPACE,
+                            }}
+                        >
+                            <OutcomeBadge outcome={outcome} />
+                        </Row>
                     )}
-                </Tabs>
+                </Box>
                 <form onSubmit={formSubmit(onSubmit)}>
                     <Column gap={16} margin={{ bottom: 32 }}>
-                        <Textarea
-                            labelLeft={<Translation id="TR_MESSAGE" />}
-                            labelRight={
-                                <Row gap={12}>
+                        {isSignPage && signFormatsDiffer && !isCompleted && (
+                            <Row gap={12}>
+                                <FormatLabel />
+                                {/* The switch is a fixed 360 wide, so it fills a box of that width
+                                    instead of stretching with the card. */}
+                                <Box width={FORMAT_SWITCH_WIDTH}>
+                                    <SelectBar
+                                        isFullWidth
+                                        options={[
+                                            {
+                                                value: true,
+                                                label: (
+                                                    <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />
+                                                ),
+                                            },
+                                            {
+                                                value: false,
+                                                label: <Translation id="TR_BIP_SIG_FORMAT" />,
+                                            },
+                                        ]}
+                                        data-testid="@sign-verify/format"
+                                        {...isElectrumField}
+                                    />
+                                </Box>
+                            </Row>
+                        )}
+                        {renderAddressField()}
+                        <Box position={{ type: 'relative' }}>
+                            <Textarea
+                                label={<Translation id="TR_MESSAGE" />}
+                                readOnly={isCompleted}
+                                hasError={!!formErrors.message}
+                                characterCount={
+                                    isCompleted
+                                        ? undefined
+                                        : {
+                                              current: formValues.message?.length,
+                                              max: MAX_LENGTH_MESSAGE,
+                                          }
+                                }
+                                bottomText={messageError || null}
+                                rows={4}
+                                data-testid="@sign-verify/message"
+                                innerRef={messageRef}
+                                {...messageField}
+                            />
+                            {/* Textarea has no slot inside its frame, and the design puts these in
+                                its top right corner, level with the floating label. */}
+                            <Box
+                                position={{
+                                    type: 'absolute',
+                                    top: FIELD_PADDING,
+                                    right: FIELD_PADDING,
+                                }}
+                            >
+                                {isCompleted ? (
+                                    <CopyFieldButton
+                                        onClick={() => copyValue(formValues.message || '')}
+                                        data-testid="@sign-verify/copy-message"
+                                    />
+                                ) : (
                                     <Switch
                                         label={<Translation id="TR_HEX_FORMAT" />}
                                         labelPosition="start"
-                                        size="small"
                                         {...hexField}
                                     />
-                                    {isSignPage && (
-                                        <CopyFieldButton
-                                            labelId="TR_COPY_TO_CLIPBOARD"
-                                            onClick={() => copyValue(formValues.message || '')}
-                                            isDisabled={!formValues.message}
-                                            data-testid="@sign-verify/copy-message"
-                                        />
-                                    )}
-                                </Row>
-                            }
-                            hasError={!!formErrors.message}
-                            characterCount={{
-                                current: formValues.message?.length,
-                                max: MAX_LENGTH_MESSAGE,
-                            }}
-                            bottomText={messageError || null}
-                            rows={4}
-                            data-testid="@sign-verify/message"
-                            innerRef={messageRef}
-                            {...messageField}
-                        />
-                        {isSignPage ? (
-                            <>
-                                <Row gap={40} alignItems="flex-start">
-                                    <Box flex="1" minWidth={0}>
-                                        <SignAddressInput
-                                            name="path"
-                                            label={<Translation id="TR_ADDRESS" />}
-                                            labelRight={
-                                                <CopyFieldButton
-                                                    labelId="TR_COPY_TO_CLIPBOARD"
-                                                    onClick={() =>
-                                                        copyValue(formValues.address || '')
-                                                    }
-                                                    isDisabled={!formValues.address}
-                                                    data-testid="@sign-verify/copy-address"
-                                                />
-                                            }
-                                            account={account}
-                                            touchedAddresses={touchedAddresses}
-                                            hasError={!!formErrors.path}
-                                            bottomText={pathError || null}
-                                            data-testid="@sign-verify/sign-address"
-                                            {...pathField}
-                                        />
-                                    </Box>
-                                    {signFormatsDiffer && (
-                                        <SelectBar
-                                            label={
-                                                <Tooltip
-                                                    maxWidth={330}
-                                                    content={
-                                                        <Translation
-                                                            id="TR_FORMAT_TOOLTIP"
-                                                            values={{
-                                                                FormatDescription: chunks => (
-                                                                    <p>{chunks}</p>
-                                                                ),
-                                                                span: chunks => (
-                                                                    <strong>{chunks}</strong>
-                                                                ),
-                                                            }}
-                                                        />
-                                                    }
-                                                    hasIcon
-                                                >
-                                                    <Translation id="TR_FORMAT" />
-                                                </Tooltip>
-                                            }
-                                            options={[
-                                                {
-                                                    value: false,
-                                                    label: <Translation id="TR_BIP_SIG_FORMAT" />,
-                                                },
-                                                {
-                                                    value: true,
-                                                    label: (
-                                                        <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />
-                                                    ),
-                                                },
-                                            ]}
-                                            data-testid="@sign-verify/format"
-                                            {...isElectrumField}
-                                        />
-                                    )}
-                                </Row>
-                                {isCardano && (
-                                    <SelectBar
-                                        label={<Translation id="TR_PUBLIC_KEY_FORMAT" />}
-                                        options={[
-                                            {
-                                                value: false,
-                                                label: <Translation id="TR_PUBLIC_KEY_RAW" />,
-                                            },
-                                            {
-                                                value: true,
-                                                label: <Translation id="TR_PUBLIC_KEY_COSE" />,
-                                            },
-                                        ]}
-                                        data-testid="@sign-verify/cardano-pubkey-format"
-                                        {...cardanoPubKeyCoseField}
-                                    />
                                 )}
-                                <Divider margin={{}} />
-                                <Input
-                                    maxLength={MAX_LENGTH_SIGNATURE}
-                                    type="text"
-                                    readOnly={isSignPage}
-                                    isDisabled={!formValues.signature?.length}
-                                    placeholder={translationString(
-                                        'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
-                                    )}
-                                    rightContent={
+                            </Box>
+                        </Box>
+                        {isSignPage && isCardano && (
+                            <Row gap={12}>
+                                <SelectBar
+                                    label={<Translation id="TR_PUBLIC_KEY_FORMAT" />}
+                                    options={[
+                                        {
+                                            value: false,
+                                            label: <Translation id="TR_PUBLIC_KEY_RAW" />,
+                                        },
+                                        {
+                                            value: true,
+                                            label: <Translation id="TR_PUBLIC_KEY_COSE" />,
+                                        },
+                                    ]}
+                                    data-testid="@sign-verify/cardano-pubkey-format"
+                                    {...cardanoPubKeyCoseField}
+                                />
+                            </Row>
+                        )}
+                        {isSignPage && <Divider margin={{}} />}
+                        {isSignPage || isCompleted ? (
+                            <Input
+                                maxLength={MAX_LENGTH_SIGNATURE}
+                                type="text"
+                                readOnly={isSignPage || isCompleted}
+                                isDisabled={!formValues.signature?.length}
+                                placeholder={translationString(
+                                    'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
+                                )}
+                                rightContent={
+                                    isCompleted ? (
                                         <CopyFieldButton
-                                            labelId="TR_COPY_SIGNATURE"
-                                            onClick={copySignature}
-                                            isDisabled={!formValues.signature}
+                                            onClick={() => copyValue(formValues.signature || '')}
                                             data-testid="@sign-verify/copy-signature"
                                         />
-                                    }
-                                    {...signatureProps}
-                                />
-                                {signedMessage !== null && (
-                                    <Textarea
-                                        labelLeft={<Translation id="TR_SIGNED_MESSAGE" />}
-                                        labelRight={
-                                            <CopyFieldButton
-                                                labelId="TR_COPY_SIGNED_MESSAGE"
-                                                onClick={copySignedMessage}
-                                                isDisabled={!canCopy}
-                                                data-testid="@sign-verify/copy-signed-message"
-                                            />
-                                        }
-                                        readOnly
-                                        isDisabled={!canCopy}
-                                        value={canCopy ? signedMessage : ''}
-                                        placeholder={translationString(
-                                            'TR_SIGNED_MESSAGE_AFTER_SIGNING_PLACEHOLDER',
-                                        )}
-                                        rows={7}
-                                        data-testid="@sign-verify/signed-message"
-                                    />
-                                )}
-                                {isCardano && (
-                                    <Input
-                                        type="text"
-                                        readOnly={isSignPage}
-                                        isDisabled={!formValues.pubKey?.length}
-                                        placeholder={translationString(
-                                            'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
-                                        )}
-                                        rightContent={
-                                            <CopyFieldButton
-                                                labelId="TR_COPY_TO_CLIPBOARD"
-                                                onClick={() => copyValue(formValues.pubKey || '')}
-                                                isDisabled={!formValues.pubKey}
-                                                data-testid="@sign-verify/copy-pubkey"
-                                            />
-                                        }
-                                        {...pubKeyProps}
-                                    />
-                                )}
-                            </>
+                                    ) : undefined
+                                }
+                                {...signatureProps}
+                            />
                         ) : (
-                            <>
-                                <Input
-                                    name="address"
-                                    label={<Translation id="TR_ADDRESS" />}
-                                    type="text"
-                                    hasError={!!formErrors.address}
-                                    bottomText={addressError || null}
-                                    data-testid="@sign-verify/select-address"
-                                    {...addressField}
-                                />
-                                <Textarea
-                                    maxLength={MAX_LENGTH_SIGNATURE}
-                                    characterCount={{
-                                        current: formValues.signature?.length,
-                                        max: MAX_LENGTH_SIGNATURE,
-                                    }}
-                                    rows={4}
-                                    {...signatureProps}
-                                />
-                            </>
+                            <Textarea
+                                maxLength={MAX_LENGTH_SIGNATURE}
+                                characterCount={{
+                                    current: formValues.signature?.length,
+                                    max: MAX_LENGTH_SIGNATURE,
+                                }}
+                                rows={4}
+                                {...signatureProps}
+                            />
+                        )}
+                        {isSignPage && isCardano && (
+                            <Input
+                                type="text"
+                                readOnly
+                                isDisabled={!formValues.pubKey?.length}
+                                placeholder={translationString(
+                                    'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
+                                )}
+                                rightContent={
+                                    isCompleted ? (
+                                        <CopyFieldButton
+                                            onClick={() => copyValue(formValues.pubKey || '')}
+                                            data-testid="@sign-verify/copy-pubkey"
+                                        />
+                                    ) : undefined
+                                }
+                                {...pubKeyProps}
+                            />
                         )}
                     </Column>
-                    <Button
-                        type="submit"
-                        intent="brand"
-                        iconLeft={isCompleted ? CheckIcon : undefined}
-                        priority={isCompleted ? 'secondary' : 'primary'}
-                        isDisabled={isLocked()}
-                        isLoading={isSubmitting}
-                        data-testid="@sign-verify/submit"
-                        minWidth={200}
-                    >
-                        {isSignPage ? (
-                            <Translation id={isCompleted ? 'TR_SIGNED' : 'TR_SIGN'} />
-                        ) : (
-                            <Translation id={isCompleted ? 'TR_VERIFIED' : 'TR_VERIFY'} />
-                        )}
-                    </Button>
+                    {outcome === 'signed' || outcome === 'verified' ? (
+                        <Button
+                            type="button"
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={resetForm}
+                            data-testid="@sign-verify/clear"
+                            minWidth={200}
+                        >
+                            <Translation id="TR_CLEAR" />
+                        </Button>
+                    ) : (
+                        <Button
+                            type="submit"
+                            intent="brand"
+                            isDisabled={isLocked()}
+                            isLoading={isSubmitting}
+                            data-testid="@sign-verify/submit"
+                            minWidth={200}
+                        >
+                            <Translation id={isSignPage ? 'TR_SIGN' : 'TR_VERIFY'} />
+                        </Button>
+                    )}
                 </form>
             </Card>
         ),

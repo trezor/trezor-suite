@@ -9,7 +9,10 @@ const ELECTRUM_SIGNATURE =
     'HxpInbBQH8LYgBBnRt4/QCV+HBW3hL1o1Yg85biWX1DdBTbfN96pyLL7tLQdYn+VtjvuZWJhEYbUCasjZLmih6w=';
 
 test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+    test.use({
+        deviceSetup: { mnemonic: 'mnemonic_all' },
+        contextOptions: { permissions: ['clipboard-read', 'clipboard-write'] },
+    });
 
     test.beforeEach(async ({ page, walletPage, onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
@@ -50,6 +53,9 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
         await devicePrompt.waitForPromptAndConfirm(); // Confirm message
 
         await expect(page.getByTestId('@sign-verify/signature')).toHaveValue(SIGNATURE);
+        await expect(page.getByTestId('@sign-verify/outcome/signed')).toBeVisible();
+        // Signing is done, so the submit button gives way to the reset button.
+        await expect(page.getByTestId('@sign-verify/clear')).toBeVisible();
     });
 
     test('Signs message with Electrum-compatible signature format', async ({
@@ -75,6 +81,23 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
         await devicePrompt.waitForPromptAndConfirm(); // Confirm signing address
         await devicePrompt.waitForPromptAndConfirm(); // Confirm message
         await expect(page.getByTestId('@sign-verify/signature')).toHaveValue(ELECTRUM_SIGNATURE);
+
+        await page.evaluate(() => {
+            const clipboard = navigator.clipboard as any;
+            const original = clipboard.writeText.bind(clipboard);
+            clipboard.writeText = (text: string) => {
+                (window as any).__clipboardCapture = text;
+
+                return original(text).catch(() => undefined);
+            };
+        });
+
+        // Regression guard for #20504: the copy button must hand over the Electrum signature the
+        // field shows, not a Trezor-format block built around it.
+        await page.getByTestId('@sign-verify/copy-signature').click();
+        await expect
+            .poll(() => page.evaluate(() => (window as any).__clipboardCapture as string))
+            .toBe(ELECTRUM_SIGNATURE);
     });
 
     test('Verify message signed with standard Bitcoin signature format', async ({
@@ -92,5 +115,6 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
         await devicePrompt.waitForPromptAndConfirm(); // Confirmation that signature is valid
 
         await expect(page.getByTestId('@toast/verify-message-success')).toBeVisible();
+        await expect(page.getByTestId('@sign-verify/outcome/verified')).toBeVisible();
     });
 });
