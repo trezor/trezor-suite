@@ -1,16 +1,10 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle } from '@trezor/styles-native';
 
 import { type HowEarnWorksBenefitItem } from './HowEarnWorksBenefitsSection';
 import { type HowEarnWorksScreenPreset, type HowEarnWorksTimelineSectionPreset } from './types';
-
-const abbrStyle = prepareNativeStyle(({ colors }) => ({
-    borderStyle: 'dotted',
-    borderBottomWidth: 1,
-    borderColor: colors.contentSecondary,
-}));
+import { ApyDottedUnderline } from '../ApyDottedUnderline';
 
 type UseHowYieldWorksPresetProps = {
     tokenSymbol: string;
@@ -213,8 +207,9 @@ export const useHowYieldWorksPreset = ({
                             ) : (
                                 <Translation id="earn.notAvailableShort" />
                             ),
-                        style: abbrStyle,
-                        onPress: onApyPress,
+                        descriptionContainer: ({ children }) => (
+                            <ApyDottedUnderline onPress={onApyPress}>{children}</ApyDottedUnderline>
+                        ),
                     },
                 ],
             },

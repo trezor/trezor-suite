@@ -1,5 +1,4 @@
 import { type ReactNode } from 'react';
-import { Pressable } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -52,7 +51,6 @@ const footerStyle = prepareNativeStyle(utils => ({
 export type YieldCompleteSummaryRow = {
     key: string;
     label: ReactNode;
-    onPress?: () => void;
 } & (
     | {
           value: ReactNode;
@@ -170,20 +168,19 @@ export const YieldCompleteScreenContent = ({
                         }
 
                         return (
-                            <Pressable onPress={row.onPress} key={row.key}>
-                                <HStack
-                                    spacing="sp16"
-                                    style={applyStyle(summaryRowStyle, {
-                                        hasBorder: index > 0,
-                                        hasContent: false,
-                                    })}
-                                >
-                                    <Text variant="body-md">{row.label}</Text>
-                                    <Box flexShrink={1} alignItems="flex-end">
-                                        {row.value}
-                                    </Box>
-                                </HStack>
-                            </Pressable>
+                            <HStack
+                                key={row.key}
+                                spacing="sp16"
+                                style={applyStyle(summaryRowStyle, {
+                                    hasBorder: index > 0,
+                                    hasContent: false,
+                                })}
+                            >
+                                <Text variant="body-md">{row.label}</Text>
+                                <Box flexShrink={1} alignItems="flex-end">
+                                    {row.value}
+                                </Box>
+                            </HStack>
                         );
                     })}
                 </Card>

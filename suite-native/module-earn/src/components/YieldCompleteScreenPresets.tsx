@@ -38,7 +38,6 @@ const getYieldCompleteAmountValue = ({
 type GetYieldDepositCompleteRowsParams = {
     accountSymbol: NetworkSymbol;
     apyValue: ReactNode;
-    onApyPress?: () => void;
     receivedAmount: string;
     receivedTokenContract?: string;
     sentAmount: string;
@@ -61,7 +60,6 @@ const getYieldCompleteStatusRow = (): YieldCompleteSummaryRow => ({
 export const getYieldDepositCompleteRows = ({
     accountSymbol,
     apyValue,
-    onApyPress,
     receivedAmount,
     receivedTokenContract,
     sentAmount,
@@ -72,7 +70,6 @@ export const getYieldDepositCompleteRows = ({
         key: 'apy',
         label: <Translation id="earn.yieldCompleteScreen.apy" />,
         value: apyValue,
-        onPress: onApyPress,
     },
     {
         key: 'sent',
