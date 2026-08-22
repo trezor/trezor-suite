@@ -27,7 +27,7 @@ import { ApyValue } from '../components/ApyValue';
 import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenContent';
 import { getYieldDepositCompleteRows } from '../components/YieldCompleteScreenPresets';
 import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositComplete>;
@@ -42,8 +42,10 @@ export const YieldDepositCompleteScreen = () => {
     const dispatch = useDispatch();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const locale = useSelector(selectSupportedLanguageLocale);
-    const { vault, account, apy, flowData, flowKey, resolutionStatus, tokenSymbol } =
-        useResolvedYieldFlowData(route.params);
+
+    const yieldFlowData = useYieldFlowData(route.params);
+    const { vault, account, apy, flowData, flowKey, resolutionStatus, tokenSymbol } = yieldFlowData;
+
     const session = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldSessionByFlowKey(state, 'deposit', flowKey),
     );

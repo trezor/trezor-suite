@@ -31,8 +31,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { ApyDottedUnderline } from '../components/ApyDottedUnderline';
 import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../hooks/useStablecoinYieldFirmwareUpdateAlert';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 
 const stakedSectionStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
@@ -63,6 +63,11 @@ export const YieldVaultDetailScreenContent = ({
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
 
+    const yieldFlowData = useYieldFlowData({
+        accountKey: account.key,
+        tokenContract: yieldToken.contract,
+    });
+
     const {
         vault,
         apy,
@@ -70,10 +75,7 @@ export const YieldVaultDetailScreenContent = ({
         token,
         wrappedNativeSymbol,
         bonusRewardTokenSymbol,
-    } = useResolvedYieldFlowData({
-        accountKey: account.key,
-        tokenContract: yieldToken.contract,
-    });
+    } = yieldFlowData;
 
     const apyValue = apy && isApyAvailable(apy) ? apy.toFixed(2) : null;
 

@@ -22,13 +22,16 @@ import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.HowYieldWorks>;
 
 export const HowYieldWorksScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const route = useRoute<RouteProp<YieldStackParamList, YieldStackRoutes.HowYieldWorks>>();
+
+    const yieldFlowData = useYieldFlowData(route.params);
+
     const {
         account,
         apy,
@@ -38,7 +41,7 @@ export const HowYieldWorksScreen = () => {
         bonusRewardTokenSymbol,
         resolutionStatus,
         wrappedNativeSymbol,
-    } = useResolvedYieldFlowData(route.params);
+    } = yieldFlowData;
 
     const apyBreakdownAlert = useApyBreakdownAlert({ account, vault });
     const { analytics } = useServices(selectNativeAnalyticsDep);

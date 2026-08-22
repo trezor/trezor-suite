@@ -38,8 +38,8 @@ import { YieldWrappedNativeReceivingCard } from '../components/YieldWrappedNativ
 import { YieldWrappedNativeStepFooter } from '../components/YieldWrappedNativeStepFooter';
 import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldCurrencyToggleAnalytics } from '../hooks/useYieldCurrencyToggleAnalytics';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 import { useYieldWrappedNativeStep } from '../hooks/useYieldWrappedNativeStep';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositWrap>;
@@ -57,7 +57,8 @@ export const YieldDepositWrapScreen = () => {
         openModal: openInfoBottomSheet,
     } = useBottomSheetModal();
 
-    const resolvedFlowData = useResolvedYieldFlowData(route.params);
+    const yieldFlowData = useYieldFlowData(route.params);
+
     const {
         account,
         apy,
@@ -71,7 +72,7 @@ export const YieldDepositWrapScreen = () => {
         vaultTokenName,
         resolutionStatus,
         wrappedNativeSymbol,
-    } = resolvedFlowData;
+    } = yieldFlowData;
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
     const reportCurrencyToggle = useYieldCurrencyToggleAnalytics({

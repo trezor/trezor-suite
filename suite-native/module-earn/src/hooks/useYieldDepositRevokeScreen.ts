@@ -18,7 +18,6 @@ import {
 } from '@suite-native/navigation';
 
 import { useRefreshYieldDepositAllowanceOnIdle } from './useRefreshYieldDepositAllowanceOnIdle';
-import { useResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useShowYieldAlert } from './useShowYieldAlert';
 import { useShowYieldTransactionFailureAlert } from './useShowYieldTransactionFailureAlert';
 import { type YieldAllowanceFeeTransaction, useYieldAllowanceFees } from './useYieldAllowanceFees';
@@ -28,6 +27,7 @@ import { useYieldPendingTransactionTracking } from './useYieldPendingTransaction
 import { useYieldSession } from './useYieldSession';
 import { prepareYieldAllowanceReviewTransactionThunk } from '../yieldApprovalThunks';
 import { isYieldApprovalAllowanceUnlimited } from '../yieldApprovalUtils';
+import { useYieldFlowData } from './useYieldFlowData';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositRevoke>;
 type NavigationProps = StackNavigationProps<
@@ -41,7 +41,7 @@ export const useYieldDepositRevokeScreen = () => {
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
     const showYieldAlert = useShowYieldAlert();
-    const resolvedFlowData = useResolvedYieldFlowData(route.params);
+    const yieldFlowData = useYieldFlowData(route.params);
     const {
         account,
         flowData,
@@ -51,7 +51,7 @@ export const useYieldDepositRevokeScreen = () => {
         tokenSymbol,
         vaultTokenName,
         resolutionStatus,
-    } = resolvedFlowData;
+    } = yieldFlowData;
     const session = useYieldSession({
         flowKey,
         flowType: 'deposit',
@@ -182,12 +182,12 @@ export const useYieldDepositRevokeScreen = () => {
         isScreenFocused: isFocused,
         onRevokeConfirmed: handleRevokeConfirmed,
         pendingTransaction: revokePendingTransaction,
-        vault: resolvedFlowData.vault,
+        vault: yieldFlowData.vault,
     });
 
     useRefreshYieldDepositAllowanceOnIdle({
         allowanceStatus,
-        resolvedFlowData,
+        yieldFlowData,
     });
 
     useEffect(() => {

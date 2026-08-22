@@ -22,7 +22,7 @@ import {
 
 import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenContent';
 import { getYieldWithdrawCompleteRows } from '../components/YieldCompleteScreenPresets';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawComplete>;
@@ -37,8 +37,10 @@ export const YieldWithdrawCompleteScreen = () => {
     const dispatch = useDispatch();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const locale = useSelector(selectSupportedLanguageLocale);
-    const { account, flowKey, receiptToken, resolutionStatus, token, vault } =
-        useResolvedYieldFlowData(route.params);
+
+    const yieldFlowData = useYieldFlowData(route.params);
+    const { account, flowKey, receiptToken, resolutionStatus, token, vault } = yieldFlowData;
+
     const flowType = route.params.withdrawFlowType ?? 'withdraw';
     const session = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldSessionByFlowKey(state, flowType, flowKey),

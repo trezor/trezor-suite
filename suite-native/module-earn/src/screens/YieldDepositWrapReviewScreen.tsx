@@ -15,8 +15,8 @@ import {
 } from '@suite-native/navigation';
 
 import { WrappedNativeTokenReviewContent } from '../components/WrappedNativeTokenReviewContent';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useWrappedNativeReviewPreview } from '../hooks/useWrappedNativeReviewPreview';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 import { type YieldBroadcastTransaction } from '../types';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositWrapReview>;
@@ -30,7 +30,9 @@ export const YieldDepositWrapReviewScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
 
-    const { account, flowKey, resolutionStatus } = useResolvedYieldFlowData(route.params);
+    const yieldFlowData = useYieldFlowData(route.params);
+    const { account, flowKey, resolutionStatus } = yieldFlowData;
+
     const session = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldSessionByFlowKey(state, 'deposit', flowKey),
     );

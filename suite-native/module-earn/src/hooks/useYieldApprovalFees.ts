@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
 
-import { getApprovalContractAddress } from '@suite-common/wallet-core';
+import { type ResolvedYieldFlowData, getApprovalContractAddress } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 
-import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { type YieldAllowanceFeeTransaction, useYieldAllowanceFees } from './useYieldAllowanceFees';
 import { type YieldApprovalLimitType } from '../types';
 import { getYieldApprovalAllowanceAmount } from '../yieldApprovalUtils';

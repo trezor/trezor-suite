@@ -1,33 +1,35 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { type YieldAllowanceStatus, initYieldAllowanceThunk } from '@suite-common/wallet-core';
+import {
+    type ResolvedYieldFlowData,
+    type YieldAllowanceStatus,
+    initYieldAllowanceThunk,
+} from '@suite-common/wallet-core';
 
-import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
-
-type UseRefreshYieldDepositAllowanceOnIdleParams = {
+interface UseRefreshYieldDepositAllowanceOnIdleParams {
     allowanceStatus: YieldAllowanceStatus | undefined;
-    resolvedFlowData: ResolvedYieldFlowData;
-};
+    yieldFlowData: ResolvedYieldFlowData;
+}
 
 export const useRefreshYieldDepositAllowanceOnIdle = ({
     allowanceStatus,
-    resolvedFlowData,
+    yieldFlowData,
 }: UseRefreshYieldDepositAllowanceOnIdleParams) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (resolvedFlowData.resolutionStatus !== 'resolved' || allowanceStatus !== 'idle') {
+        if (yieldFlowData.resolutionStatus !== 'resolved' || allowanceStatus !== 'idle') {
             return;
         }
 
         void dispatch(
             initYieldAllowanceThunk({
-                flowData: resolvedFlowData.flowData,
-                flowKey: resolvedFlowData.flowKey,
+                flowData: yieldFlowData.flowData,
+                flowKey: yieldFlowData.flowKey,
                 flowType: 'deposit',
                 shouldSkipApprovalStep: false,
             }),
         );
-    }, [allowanceStatus, dispatch, resolvedFlowData]);
+    }, [allowanceStatus, dispatch, yieldFlowData]);
 };

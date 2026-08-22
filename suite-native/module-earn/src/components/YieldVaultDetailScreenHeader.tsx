@@ -14,7 +14,7 @@ import { ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { YieldDepositInfoBottomSheet } from './YieldDepositInfoBottomSheet';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 
 const headerStyle = prepareNativeStyle(utils => ({
     flexShrink: 1,
@@ -50,7 +50,7 @@ export const YieldVaultDetailScreenHeader = ({
         vault,
         vaultTokenSymbol,
         wrappedNativeSymbol,
-    } = useResolvedYieldFlowData({
+    } = useYieldFlowData({
         accountKey: account.key,
         tokenContract,
         displayError: false,

@@ -62,8 +62,8 @@ import {
 } from '../constants';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 import { useYieldPendingSheet } from '../hooks/useYieldPendingSheet';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../hooks/useYieldSession';
@@ -123,6 +123,7 @@ export const YieldWithdrawScreen = () => {
         openModal: openPendingBottomSheet,
     } = useBottomSheetModal();
 
+    const yieldFlowData = useYieldFlowData(route.params);
     const {
         account,
         apy,
@@ -131,12 +132,13 @@ export const YieldWithdrawScreen = () => {
         flowKey,
         isWrappedNativeVault,
         resolutionStatus,
-        depositedSharesAmount: resolvedDepositedSharesAmount,
+        depositedAmount,
+        depositedSharesAmount,
         vault,
         vaultTokenSymbol: resolvedVaultTokenSymbol,
         vaultTokenName,
         wrappedNativeSymbol,
-    } = useResolvedYieldFlowData(route.params);
+    } = yieldFlowData;
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
     const {
@@ -166,27 +168,6 @@ export const YieldWithdrawScreen = () => {
 
     const isAmountValidationErrorDisplayed = !!amountValidationError;
 
-    const depositedAmount = useMemo(() => {
-        if (resolutionStatus !== 'resolved') {
-            return null;
-        }
-
-        return getConvertedOutputTokenBalanceToInputTokenAmount({
-            networkSymbol: account.symbol,
-            token: vault.token,
-            outputToken: vault.outputToken,
-            outputTokenBalance: resolvedDepositedSharesAmount,
-            pricePerShareState: vault.state?.pricePerShareState,
-        });
-    }, [account, resolutionStatus, resolvedDepositedSharesAmount, vault]);
-
-    const depositedSharesAmount = useMemo(() => {
-        if (resolutionStatus !== 'resolved') {
-            return null;
-        }
-
-        return resolvedDepositedSharesAmount;
-    }, [resolutionStatus, resolvedDepositedSharesAmount]);
     const maxAmount = isSharesInput ? depositedSharesAmount : depositedAmount;
     const isAmountTooHigh = useMemo(
         () => !!amount && !!maxAmount && new BigNumber(amount).gt(maxAmount),

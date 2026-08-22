@@ -15,15 +15,14 @@ import {
 
 import { EarnInsufficientBalanceContent } from '../components/EarnInsufficientBalanceContent';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.YieldInsufficientBalance>;
 
 export const YieldInsufficientBalanceScreen = () => {
     const route = useRoute<RouteProps>();
-    const { account, resolutionStatus, tokenSymbol, vault } = useResolvedYieldFlowData(
-        route.params,
-    );
+    const yieldFlowData = useYieldFlowData(route.params);
+    const { account, resolutionStatus, tokenSymbol, vault } = yieldFlowData;
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.yieldNavigateEvent.name,

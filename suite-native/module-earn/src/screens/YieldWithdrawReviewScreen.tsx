@@ -21,7 +21,7 @@ import {
 } from '@suite-native/navigation';
 
 import { YieldWithdrawReviewContent } from '../components/YieldWithdrawReviewContent';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 import { buildYieldReviewPreview } from '../utils/yieldReviewOutputUtils';
 import { getSelectedEvmFeeFromFormDraft } from '../utils/yieldSelectedFeeUtils';
 import { getYieldWithdrawFormDraftKey } from '../utils/yieldWithdrawUtils';
@@ -43,9 +43,10 @@ const isYieldWithdrawScreenReview = (
 export const YieldWithdrawReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { flowData, flowKey, resolutionStatus, vaultName } = useResolvedYieldFlowData(
-        route.params,
-    );
+
+    const yieldFlowData = useYieldFlowData(route.params);
+    const { flowData, flowKey, resolutionStatus, vaultName } = yieldFlowData;
+
     const device = useSelector(selectSelectedDevice);
     const flowType = route.params.withdrawFlowType ?? 'withdraw';
     const session = useSelector((state: StablecoinYieldRootState) =>

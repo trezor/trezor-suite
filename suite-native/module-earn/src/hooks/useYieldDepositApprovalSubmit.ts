@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import {
+    type ResolvedYieldFlowData,
     type StablecoinYieldRootState,
     getYieldApprovalAction,
     initYieldAllowanceThunk,
@@ -19,7 +20,6 @@ import {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 
-import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useShowYieldAlert } from './useShowYieldAlert';
 import { type YieldApprovalLimitType } from '../types';
 import { prepareYieldAllowanceReviewTransactionThunk } from '../yieldApprovalThunks';

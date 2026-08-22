@@ -79,6 +79,7 @@ export * from './stablecoin-yield/thunks/stablecoinYieldDepositThunks';
 export * from './stablecoin-yield/utils/stablecoinYieldDeviceUtils';
 export * from './stablecoin-yield/utils/stablecoinYieldFeeEstimation';
 export * from './stablecoin-yield/stablecoinYieldTypes';
+export * from './stablecoin-yield/utils/getResolvedYieldFlowData';
 export * from './stablecoin-yield/utils/stablecoinYieldUtils';
 export * from './stablecoin-yield/utils/stablecoinYieldWithdrawCompletedValues';
 export * from './stablecoin-yield/thunks/stablecoinYieldWrapThunks';
