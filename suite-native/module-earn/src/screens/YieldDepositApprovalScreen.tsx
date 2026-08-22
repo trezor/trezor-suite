@@ -38,7 +38,6 @@ import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useRefreshYieldDepositAllowanceOnIdle } from '../hooks/useRefreshYieldDepositAllowanceOnIdle';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useReturnToYieldDepositWrapStep } from '../hooks/useReturnToYieldDepositWrapStep';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
 import { useYieldApprovalFees } from '../hooks/useYieldApprovalFees';
@@ -47,6 +46,7 @@ import { useYieldApprovedAmountDisplay } from '../hooks/useYieldApprovedAmountDi
 import { useYieldCurrencyToggleAnalytics } from '../hooks/useYieldCurrencyToggleAnalytics';
 import { useYieldDepositApprovalSubmit } from '../hooks/useYieldDepositApprovalSubmit';
 import { useYieldDepositForm } from '../hooks/useYieldDepositForm';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 import { useYieldPendingTransaction } from '../hooks/useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../hooks/useYieldSession';
@@ -77,7 +77,9 @@ export const YieldDepositApprovalScreen = () => {
         closeModal: closeApprovalLimitBottomSheet,
         openModal: openApprovalLimitBottomSheet,
     } = useBottomSheetModal();
-    const resolvedFlowData = useResolvedYieldFlowData(route.params);
+
+    const yieldFlowData = useYieldFlowData(route.params);
+
     const {
         account,
         flowData,
@@ -91,7 +93,7 @@ export const YieldDepositApprovalScreen = () => {
         vaultTokenName,
         resolutionStatus,
         wrappedNativeSymbol,
-    } = resolvedFlowData;
+    } = yieldFlowData;
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
     const reportCurrencyToggle = useYieldCurrencyToggleAnalytics({
@@ -106,7 +108,7 @@ export const YieldDepositApprovalScreen = () => {
     const session = useYieldSession({
         flowKey,
         flowType: 'deposit',
-        isWrappedNativeVault: resolvedFlowData.isWrappedNativeVault,
+        isWrappedNativeVault: yieldFlowData.isWrappedNativeVault,
         shouldDisposeOnGoBack: true,
     });
     const isAllowanceAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
@@ -209,7 +211,7 @@ export const YieldDepositApprovalScreen = () => {
 
     useRefreshYieldDepositAllowanceOnIdle({
         allowanceStatus,
-        resolvedFlowData,
+        yieldFlowData,
     });
 
     const returnToWrapStep = useReturnToYieldDepositWrapStep({
@@ -243,7 +245,7 @@ export const YieldDepositApprovalScreen = () => {
                 action: 'continue',
                 type: 'approve-skipped',
                 networkSymbol: account?.symbol,
-                vaultId: resolvedFlowData.vault?.id,
+                vaultId: yieldFlowData.vault?.id,
             },
         });
 
@@ -264,7 +266,7 @@ export const YieldDepositApprovalScreen = () => {
         flowKey,
         isApprovalPending,
         navigation,
-        resolvedFlowData.vault?.id,
+        yieldFlowData.vault?.id,
         route.params,
     ]);
 
@@ -279,7 +281,7 @@ export const YieldDepositApprovalScreen = () => {
                 action: 'continue',
                 type: 'revoke',
                 networkSymbol: account?.symbol,
-                vaultId: resolvedFlowData.vault?.id,
+                vaultId: yieldFlowData.vault?.id,
             },
         });
 
@@ -308,7 +310,7 @@ export const YieldDepositApprovalScreen = () => {
         flowKey,
         isApprovalPending,
         navigation,
-        resolvedFlowData.vault?.id,
+        yieldFlowData.vault?.id,
         route.params,
     ]);
 
@@ -319,7 +321,7 @@ export const YieldDepositApprovalScreen = () => {
         isScreenFocused: isFocused,
         onApprovalConfirmed: handleApprovalConfirmed,
         pendingTransaction: approvalPendingTransaction,
-        vault: resolvedFlowData.vault,
+        vault: yieldFlowData.vault,
     });
 
     const handleCloseInfoBottomSheet = useCallback(() => {
@@ -338,7 +340,7 @@ export const YieldDepositApprovalScreen = () => {
                 action: 'continue',
                 type: footerApprovalAction === 'revoke' ? 'revoke' : 'approve',
                 networkSymbol: account?.symbol,
-                vaultId: resolvedFlowData.vault?.id,
+                vaultId: yieldFlowData.vault?.id,
                 approvalType: getYieldApprovalAnalyticsType(approvalLimitType),
             },
         });
@@ -353,11 +355,11 @@ export const YieldDepositApprovalScreen = () => {
                 element: 'in-a-nutshell-process-tab',
                 value: 'deposit',
                 networkSymbol: account?.symbol,
-                vaultId: resolvedFlowData.vault?.id,
+                vaultId: yieldFlowData.vault?.id,
             },
         });
         openInfoBottomSheet();
-    }, [account?.symbol, analytics, openInfoBottomSheet, resolvedFlowData.vault?.id]);
+    }, [account?.symbol, analytics, openInfoBottomSheet, yieldFlowData.vault?.id]);
 
     if (resolutionStatus !== 'resolved') {
         return null;
@@ -417,7 +419,7 @@ export const YieldDepositApprovalScreen = () => {
                         )}
                         <YieldDepositStepCard
                             currentStepId="approval"
-                            hasWrapStep={resolvedFlowData.isWrappedNativeVault}
+                            hasWrapStep={yieldFlowData.isWrappedNativeVault}
                             isWrapStepSkipped={!hasWrappedAmount}
                             networkSymbol={account.symbol}
                             onEditStep={{ wrap: returnToWrapStep }}
@@ -510,7 +512,7 @@ export const YieldDepositApprovalScreen = () => {
                 tokenSymbol={tokenSymbol}
                 vaultTokenSymbol={vaultTokenSymbol}
                 account={account}
-                vault={resolvedFlowData.vault}
+                vault={yieldFlowData.vault}
                 wrappedNativeSymbol={wrappedNativeSymbol}
             />
             <YieldDepositApprovalLimitBottomSheet

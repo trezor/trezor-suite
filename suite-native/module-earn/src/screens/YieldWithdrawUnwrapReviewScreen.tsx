@@ -16,8 +16,8 @@ import {
 } from '@suite-native/navigation';
 
 import { WrappedNativeTokenReviewContent } from '../components/WrappedNativeTokenReviewContent';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useWrappedNativeReviewPreview } from '../hooks/useWrappedNativeReviewPreview';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 import { type YieldBroadcastTransaction } from '../types';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawUnwrapReview>;
@@ -33,7 +33,9 @@ export const YieldWithdrawUnwrapReviewScreen = () => {
 
     const flowType: YieldWithdrawFlowType = route.params.withdrawFlowType ?? 'withdraw';
 
-    const { account, flowKey, resolutionStatus } = useResolvedYieldFlowData(route.params);
+    const yieldFlowData = useYieldFlowData(route.params);
+    const { account, flowKey, resolutionStatus } = yieldFlowData;
+
     const session = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldSessionByFlowKey(state, flowType, flowKey),
     );

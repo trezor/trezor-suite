@@ -5,7 +5,7 @@ import { type AccountKey, type TokenAddress, toTokenAddress } from '@suite-commo
 import { Box, Button, Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { useResolvedYieldFlowData, useYieldDetailNavigation } from '@suite-native/module-earn';
+import { useYieldDetailNavigation, useYieldFlowData } from '@suite-native/module-earn';
 
 type YieldVaultBannerProps = {
     accountKey: AccountKey;
@@ -13,11 +13,13 @@ type YieldVaultBannerProps = {
 };
 
 export const YieldVaultBanner = ({ accountKey, tokenContract }: YieldVaultBannerProps) => {
-    const { account, resolutionStatus, vault } = useResolvedYieldFlowData({
+    const yieldFlowData = useYieldFlowData({
         accountKey,
         tokenContract,
         displayError: false,
     });
+
+    const { account, resolutionStatus, vault } = yieldFlowData;
 
     const { navigateToYieldDetail } = useYieldDetailNavigation();
 

@@ -8,6 +8,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     type FeesRootState,
     type FormDraftRootState,
+    type ResolvedYieldFlowData,
     type YieldFeeEstimationError,
     type YieldWithdrawFlowType,
     buildEvmSelectedFee,
@@ -42,7 +43,6 @@ import { useDebounce } from '@trezor/react-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import { EARN_MODULE_PREFIX } from '../constants';
-import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import { getYieldWithdrawFormDraftKey } from '../utils/yieldWithdrawUtils';
 

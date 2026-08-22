@@ -6,7 +6,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldStackParamList, YieldStackRoutes } from '@suite-native/navigation';
 
 import { YieldDepositApprovalReviewContent } from '../components/YieldDepositApprovalReviewContent';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 
 type ApprovalReviewRouteProps = RouteProp<
     YieldStackParamList,
@@ -20,10 +20,11 @@ type RouteProps = ApprovalReviewRouteProps | RevokeReviewRouteProps;
 
 export const YieldDepositApprovalTransactionDataReviewScreen = () => {
     const route = useRoute<RouteProps>();
-    const { flowData, flowKey, resolutionStatus, vaultTokenName } = useResolvedYieldFlowData(
-        route.params,
-    );
     const device = useSelector(selectSelectedDevice);
+
+    const yieldFlowData = useYieldFlowData(route.params);
+    const { flowData, flowKey, resolutionStatus, vaultTokenName } = yieldFlowData;
+
     const isRevokeReview = route.name === YieldStackRoutes.YieldDepositRevokeReview;
     const transactionType = isRevokeReview ? 'revoke' : 'approve';
     const approvalLimitType = isRevokeReview ? undefined : route.params.approvalLimitType;

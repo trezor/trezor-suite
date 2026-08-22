@@ -41,8 +41,8 @@ import { submitWrapNativeTokenThunk } from 'src/actions/wallet/wrapNativeTokenTh
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { useEnsureYieldDeviceSession } from './useEnsureYieldDeviceSession';
-import { useResolvedYieldFlowData } from './useResolvedYieldFlowData';
 import { useYieldFiatInput } from './useYieldFiatInput';
+import { useYieldFlowData } from './useYieldFlowData';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
 import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {
@@ -150,11 +150,13 @@ export const useYieldFlow = ({
     const initAllowancePromiseRef = useRef<{ abort: () => void } | null>(null);
     const unwrapDefaultAmountRef = useRef<string | null>(null);
 
-    const { token, receiptToken, apy, depositedAmount, depositedSharesAmount, flowKey } =
-        useResolvedYieldFlowData({
-            account,
-            vault,
-        });
+    const yieldFlowData = useYieldFlowData({ account, vault });
+    const { token, receiptToken, apy } = yieldFlowData;
+
+    const depositedAmount = yieldFlowData.depositedAmount ?? '0';
+    const depositedSharesAmount = yieldFlowData.depositedSharesAmount ?? '0';
+    const flowKey = yieldFlowData.flowKey ?? '';
+
     const allowanceFlowDataRef = useCurrentRef({
         account,
         vault,

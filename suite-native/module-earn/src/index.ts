@@ -9,7 +9,7 @@ export { TokenYieldRateBadge } from './components/TokenYieldRateBadge';
 export { useApyBreakdownAlert } from './hooks/useApyBreakdownAlert';
 export { useMessageSystemWrappedNative } from './hooks/useMessageSystemWrappedNative';
 export { useMessageSystemYield } from './hooks/useMessageSystemYield';
-export { useResolvedYieldFlowData } from './hooks/useResolvedYieldFlowData';
+export { useYieldFlowData } from './hooks/useYieldFlowData';
 export { useStablecoinYieldFirmwareUpdateAlert } from './hooks/useStablecoinYieldFirmwareUpdateAlert';
 export { useStakingDetailNavigation } from './hooks/useStakingDetailNavigation';
 export { useWrappedNativeFirmwareUpdateAlert } from './hooks/useWrappedNativeFirmwareUpdateAlert';

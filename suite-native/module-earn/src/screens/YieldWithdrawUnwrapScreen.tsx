@@ -32,8 +32,8 @@ import { YieldWithdrawStepCard } from '../components/YieldWithdrawStepCard';
 import { YieldWrappedNativeReceivingCard } from '../components/YieldWrappedNativeReceivingCard';
 import { YieldWrappedNativeStepFooter } from '../components/YieldWrappedNativeStepFooter';
 import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useYieldCurrencyToggleAnalytics } from '../hooks/useYieldCurrencyToggleAnalytics';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 import { useYieldWrappedNativeStep } from '../hooks/useYieldWrappedNativeStep';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawUnwrap>;
@@ -50,7 +50,8 @@ export const YieldWithdrawUnwrapScreen = () => {
 
     const flowType: YieldWithdrawFlowType = route.params.withdrawFlowType ?? 'withdraw';
 
-    const resolvedFlowData = useResolvedYieldFlowData(route.params);
+    const yieldFlowData = useYieldFlowData(route.params);
+
     const {
         account,
         flowKey,
@@ -59,7 +60,7 @@ export const YieldWithdrawUnwrapScreen = () => {
         vault,
         vaultTokenName,
         resolutionStatus,
-    } = resolvedFlowData;
+    } = yieldFlowData;
 
     const {
         isDisabled: isUnwrapDisabled,

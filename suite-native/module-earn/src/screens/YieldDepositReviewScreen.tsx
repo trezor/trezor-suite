@@ -15,7 +15,7 @@ import {
 } from '@suite-native/navigation';
 
 import { YieldDepositReviewContent } from '../components/YieldDepositReviewContent';
-import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
+import { useYieldFlowData } from '../hooks/useYieldFlowData';
 import { buildYieldReviewPreview } from '../utils/yieldReviewOutputUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositReview>;
@@ -27,9 +27,8 @@ type NavigationProps = StackNavigationProps<
 export const YieldDepositReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { flowData, flowKey, resolutionStatus, vaultName } = useResolvedYieldFlowData(
-        route.params,
-    );
+    const yieldFlowData = useYieldFlowData(route.params);
+    const { flowData, flowKey, resolutionStatus, vaultName } = yieldFlowData;
     const device = useSelector(selectSelectedDevice);
     const session = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldSessionByFlowKey(state, 'deposit', flowKey),
