@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
@@ -81,6 +81,7 @@ export const useEarnTransactionReview = <TSigned, TPushed>({
     const handleReviewError = useHandleEarnReviewError(formType, navigation);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const [actionStatus, setActionStatus] = useState<YieldReviewActionStatus>('idle');
+    const isPushingRef = useRef(false);
 
     const status: YieldReviewStatus = actionStatus === 'idle' && isSigned ? 'signed' : actionStatus;
 
@@ -155,35 +156,41 @@ export const useEarnTransactionReview = <TSigned, TPushed>({
     ]);
 
     const handleSubmitted = useCallback(async () => {
-        if (status !== 'signed') {
+        if (status !== 'signed' || isPushingRef.current) {
             return;
         }
 
-        const pushPromise = pushAction();
+        isPushingRef.current = true;
 
-        if (!pushPromise) {
-            return;
+        try {
+            const pushPromise = pushAction();
+
+            if (!pushPromise) {
+                return;
+            }
+
+            setActionStatus('sending');
+
+            const pushResponse = await pushPromise;
+
+            setActionStatus('idle');
+
+            if (isRejectedThunkResult(pushResponse)) {
+                reportError?.('push-failed');
+                showReviewAlert(
+                    pushResponse.payload?.error === 'push-transaction-pending-conflict'
+                        ? 'pendingConflict'
+                        : 'pushFailed',
+                );
+
+                return;
+            }
+
+            markReviewNavigationSuccess();
+            onPushSuccess(pushResponse.payload);
+        } finally {
+            isPushingRef.current = false;
         }
-
-        setActionStatus('sending');
-
-        const pushResponse = await pushPromise;
-
-        setActionStatus('idle');
-
-        if (isRejectedThunkResult(pushResponse)) {
-            reportError?.('push-failed');
-            showReviewAlert(
-                pushResponse.payload?.error === 'push-transaction-pending-conflict'
-                    ? 'pendingConflict'
-                    : 'pushFailed',
-            );
-
-            return;
-        }
-
-        markReviewNavigationSuccess();
-        onPushSuccess(pushResponse.payload);
     }, [
         markReviewNavigationSuccess,
         onPushSuccess,

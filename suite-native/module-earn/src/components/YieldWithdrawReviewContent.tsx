@@ -38,34 +38,27 @@ export const YieldWithdrawReviewContent = ({
         markReviewLeave,
         revealConfirmOnTrezorSheet,
     } = useYieldReviewScreenControls();
-    const {
-        withdrawStatus,
-        handleWithdrawSubmitted,
-        leaveReviewFromDeviceCancel,
-        startWithdrawReview,
-    } = useYieldWithdrawReview({
+
+    const review = useYieldWithdrawReview({
         flowData,
         flowKey,
         flowType,
         onReviewLeave: markReviewLeave,
         reviewToken,
     });
-    const isWithdrawSigned = withdrawStatus === 'signed' || withdrawStatus === 'sending';
-    const isSendingWithdraw = withdrawStatus === 'sending';
+
+    const isSigned = review.status === 'signed' || review.status === 'sending';
+    const isSending = review.status === 'sending';
     const activeStep = useYieldReviewActiveStep(flowData.account.symbol);
-    const submitButtonTranslationId =
-        flowType === 'redeem'
-            ? 'earn.yieldWithdrawReviewScreen.redeemSubmitButton'
-            : 'earn.yieldWithdrawReviewScreen.submitButton';
 
     useYieldReviewSheetAutoStart({
         closeSheet,
         hasLeftReview,
-        isSigned: isWithdrawSigned,
-        leaveReviewFromDeviceCancel,
+        isSigned,
+        leaveReviewFromDeviceCancel: review.leaveReviewFromDeviceCancel,
         revealConfirmOnTrezorSheet,
-        shouldAutoStartReview: withdrawStatus === 'idle',
-        startReview: startWithdrawReview,
+        shouldAutoStartReview: review.status === 'idle',
+        startReview: review.startReview,
     });
 
     return (
@@ -73,17 +66,23 @@ export const YieldWithdrawReviewContent = ({
             confirmOnTrezorRef={confirmOnTrezorRef}
             titleTranslationId="earn.yieldWithdrawReviewScreen.title"
             submitButton={
-                isWithdrawSigned ? (
-                    <Button isLoading={isSendingWithdraw} onPress={handleWithdrawSubmitted}>
-                        <Translation id={submitButtonTranslationId} />
+                isSigned && (
+                    <Button isLoading={isSending} onPress={review.submit}>
+                        <Translation
+                            id={
+                                flowType === 'redeem'
+                                    ? 'earn.yieldWithdrawReviewScreen.redeemSubmitButton'
+                                    : 'earn.yieldWithdrawReviewScreen.submitButton'
+                            }
+                        />
                     </Button>
-                ) : undefined
+                )
             }
         >
             <YieldTransactionReviewOutputList
                 accountKey={flowData.account.key}
                 activeStep={activeStep}
-                isSigned={isWithdrawSigned}
+                isSigned={isSigned}
                 preview={preview}
             />
         </YieldReviewScreenLayout>

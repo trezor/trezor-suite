@@ -163,6 +163,52 @@ describe('useEarnTransactionReview', () => {
             expect(mockMarkReviewNavigationSuccess).not.toHaveBeenCalled();
         });
 
+        it('ignores a second submit while the first push is still pending', async () => {
+            const params = createParams({ isSigned: true });
+            let resolvePush: (value: unknown) => void = () => {};
+            params.pushAction.mockReturnValue(
+                new Promise(resolve => {
+                    resolvePush = resolve;
+                }),
+            );
+            const { result } = renderReview(params);
+
+            await act(async () => {
+                const firstSubmit = result.current.handleSubmitted();
+                const secondSubmit = result.current.handleSubmitted();
+
+                resolvePush(fulfilled(PUSHED_PAYLOAD));
+
+                await Promise.all([firstSubmit, secondSubmit]);
+            });
+
+            expect(params.pushAction).toHaveBeenCalledTimes(1);
+            expect(params.onPushSuccess).toHaveBeenCalledTimes(1);
+            expect(mockShowReviewAlert).not.toHaveBeenCalled();
+        });
+
+        it('allows a deliberate retry after a failed push', async () => {
+            const params = createParams({ isSigned: true });
+            params.pushAction
+                .mockResolvedValueOnce(rejected({ error: 'push-transaction-failed' }))
+                .mockResolvedValueOnce(fulfilled(PUSHED_PAYLOAD));
+            const { result } = renderReview(params);
+
+            await act(async () => {
+                await result.current.handleSubmitted();
+            });
+
+            expect(mockShowReviewAlert).toHaveBeenCalledWith('pushFailed');
+            expect(params.onPushSuccess).not.toHaveBeenCalled();
+
+            await act(async () => {
+                await result.current.handleSubmitted();
+            });
+
+            expect(params.pushAction).toHaveBeenCalledTimes(2);
+            expect(params.onPushSuccess).toHaveBeenCalledWith(PUSHED_PAYLOAD);
+        });
+
         it('does nothing when pushAction returns null and never switches to sending', async () => {
             const params = createParams({ isSigned: true });
             params.pushAction.mockReturnValue(null);

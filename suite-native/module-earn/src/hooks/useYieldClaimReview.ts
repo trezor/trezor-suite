@@ -2,73 +2,53 @@ import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import { isRejected } from '@reduxjs/toolkit';
 
-import { selectIsDeviceConnected } from '@suite-common/device';
 import {
     type StablecoinYieldRootState,
     isYieldTxReviewForFlow,
     selectStablecoinYieldTxReview,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import type {
     StackNavigationProps,
     YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
 
-import {
-    type YieldReviewActionStatus,
-    type YieldReviewSigningResult,
-    type YieldReviewStatus,
-} from '../types';
-import { isUserCancelledSignError } from '../utils';
 import { pushYieldClaimReviewThunk, signYieldClaimReviewThunk } from '../yieldClaimThunks';
-import { useHandleEarnReviewError } from './useHandleEarnReviewError';
-import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
-import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
-import { useYieldActionReviewBackNavigation } from './useYieldActionReviewBackNavigation';
+import { useEarnTransactionReview } from './useEarnTransactionReview';
 import { useYieldReviewAnalytics } from './useYieldReviewAnalytics';
 
-type UseYieldClaimReviewParams = {
+type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldClaimReview>;
+
+interface UseYieldClaimReviewProps {
     account: Account;
     flowKey: string;
     onReviewLeave?: () => void;
-};
-
-type UseYieldClaimReviewResult = {
-    claimStatus: YieldReviewStatus;
-    handleClaimSubmitted: () => Promise<void>;
-    leaveReviewFromDeviceCancel: () => void;
-    startClaimReview: () => Promise<YieldReviewSigningResult>;
-};
-
-type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldClaimReview>;
+}
 
 export const useYieldClaimReview = ({
     account,
     flowKey,
     onReviewLeave,
-}: UseYieldClaimReviewParams): UseYieldClaimReviewResult => {
+}: UseYieldClaimReviewProps) => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const { showReviewAlert } = useShowPushTransactionFailedDuringReviewAlert('yield-claim');
-    const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
-    const handleReviewError = useHandleEarnReviewError('yield-claim', navigation);
+
     const { reportError: reportClaimError, reportCancel: reportClaimCancel } =
         useYieldReviewAnalytics({
             flow: 'claim',
             networkSymbol: account.symbol,
         });
-    const [claimActionStatus, setClaimActionStatus] = useState<YieldReviewActionStatus>('idle');
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+
     const txReview = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldTxReview(state),
     );
+
     // A leftover signed tx from a previous review of the same account must not appear
     // as signed here, hence the flow identity and `notBefore` guard.
     const [reviewOpenedAt] = useState(() => Date.now());
+
     const isClaimSigned =
         isYieldTxReviewForFlow(txReview, {
             accountKey: account.key,
@@ -76,133 +56,35 @@ export const useYieldClaimReview = ({
             flowType: 'claim',
             notBefore: reviewOpenedAt,
         }) && !!txReview.serializedTx;
-    const claimStatus: YieldReviewStatus =
-        claimActionStatus === 'idle' && isClaimSigned ? 'signed' : claimActionStatus;
-    const { leaveReviewFromDeviceCancel, markReviewNavigationSuccess } =
-        useYieldActionReviewBackNavigation({
-            onReviewLeave,
-            reviewStatus: claimStatus,
-        });
 
-    const startClaimReview = useCallback(async (): Promise<YieldReviewSigningResult> => {
-        if (claimStatus === 'signed') {
-            return 'signed';
-        }
+    const signAction = useCallback(
+        () => dispatch(signYieldClaimReviewThunk({ account, flowKey })),
+        [account, dispatch, flowKey],
+    );
 
-        if (claimStatus === 'signing' || claimStatus === 'sending') {
-            return 'already-running';
-        }
+    const pushAction = useCallback(
+        () => dispatch(pushYieldClaimReviewThunk({ account, flowKey })),
+        [account, dispatch, flowKey],
+    );
 
-        if (claimStatus !== 'idle') {
-            return 'not-ready';
-        }
+    const onPushSuccess = useCallback(() => navigation.goBack(), [navigation]);
 
-        if (!isDeviceConnected) {
-            showDeviceDisconnectedAlert();
-
-            return 'failed';
-        }
-
-        setClaimActionStatus('signing');
-
-        const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
-            dispatch(
-                signYieldClaimReviewThunk({
-                    account,
-                    flowKey,
-                }),
-            ),
-        );
-
-        setClaimActionStatus('idle');
-
-        if (!deviceAccessResponse.success) {
-            reportClaimError('submit-failed');
-            handleReviewError({
-                error: 'sign-transaction-failed',
-                message: 'Prioritized device access failed.',
-            });
-
-            return 'failed';
-        }
-
-        const signResponse = deviceAccessResponse.payload;
-        const isSignRejected = isRejected(signResponse);
-
-        if (isSignRejected && isUserCancelledSignError(signResponse.payload)) {
-            reportClaimCancel();
-
-            return 'cancelled';
-        }
-
-        if (isSignRejected) {
-            reportClaimError('submit-failed');
-            handleReviewError(signResponse.payload);
-
-            return 'failed';
-        }
-
-        return 'signed';
-    }, [
-        account,
-        claimStatus,
-        dispatch,
-        flowKey,
-        handleReviewError,
-        isDeviceConnected,
-        reportClaimCancel,
-        reportClaimError,
-        showDeviceDisconnectedAlert,
-    ]);
-
-    const handleClaimSubmitted = useCallback(async () => {
-        if (claimStatus !== 'signed') {
-            return;
-        }
-
-        setClaimActionStatus('sending');
-
-        const pushResponse = await dispatch(
-            pushYieldClaimReviewThunk({
-                account,
-                flowKey,
-            }),
-        );
-
-        setClaimActionStatus('idle');
-        const isPushRejected = isRejected(pushResponse);
-
-        if (isPushRejected) {
-            reportClaimError('push-failed');
-
-            if (pushResponse.payload?.error === 'push-transaction-pending-conflict') {
-                showReviewAlert('pendingConflict');
-
-                return;
-            }
-
-            showReviewAlert('pushFailed');
-
-            return;
-        }
-
-        markReviewNavigationSuccess();
-        navigation.goBack();
-    }, [
-        account,
-        claimStatus,
-        dispatch,
-        flowKey,
-        markReviewNavigationSuccess,
+    const review = useEarnTransactionReview({
+        formType: 'yield-claim',
+        isSigned: isClaimSigned,
         navigation,
-        reportClaimError,
-        showReviewAlert,
-    ]);
+        onPushSuccess,
+        onReviewLeave,
+        reportCancel: reportClaimCancel,
+        reportError: reportClaimError,
+        signAction,
+        pushAction,
+    });
 
     return {
-        claimStatus,
-        handleClaimSubmitted,
-        leaveReviewFromDeviceCancel,
-        startClaimReview,
+        status: review.status,
+        submit: review.handleSubmitted,
+        startReview: review.startReview,
+        leaveReviewFromDeviceCancel: review.leaveReviewFromDeviceCancel,
     };
 };
