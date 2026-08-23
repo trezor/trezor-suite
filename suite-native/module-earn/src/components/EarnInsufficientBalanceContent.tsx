@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -11,6 +12,7 @@ import {
     type StackNavigationProps,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { selectIsTradingEnabled } from '@suite-native/trading-state';
 
 type EarnInsufficientBalanceContentProps = {
     title: ReactNode;
@@ -28,6 +30,7 @@ export const EarnInsufficientBalanceContent = ({
     onPrimaryButtonPress,
 }: EarnInsufficientBalanceContentProps) => {
     const navigation = useNavigation<NavigationProp>();
+    const isTradingEnabled = useSelector(selectIsTradingEnabled);
 
     const handleGetCoin = () => {
         onPrimaryButtonPress?.();
@@ -60,7 +63,9 @@ export const EarnInsufficientBalanceContent = ({
                 </VStack>
             </Box>
             <VStack spacing="sp12">
-                <Button onPress={handleGetCoin}>{primaryButtonContent}</Button>
+                {isTradingEnabled && (
+                    <Button onPress={handleGetCoin}>{primaryButtonContent}</Button>
+                )}
                 <Button intent="neutral" priority="secondary" onPress={handleCancel}>
                     <Translation id="generic.buttons.cancel" />
                 </Button>
