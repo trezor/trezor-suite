@@ -12,13 +12,18 @@ import {
     type Operation,
     type Signer,
     type Transaction,
-    type xdr,
+    xdr,
 } from '@stellar/stellar-sdk';
 
 import { toStroops } from '../../constants';
 
 // The protobuf Soroban enums mirror the Stellar XDR enums, so the XDR discriminant
-// (`x.switch().value`) is used directly as the protobuf `type`.
+// (`XxxType.fromName(x.type).value`) is used directly as the protobuf `type`.
+//
+// @stellar/stellar-sdk 17 rebuilt the xdr namespace: unions are now discriminated on a
+// string `.type` (e.g. `'scvBool'`) rather than a `.switch()` accessor, and their arms are
+// plain readonly properties (`val.u32`) instead of accessor methods (`val.u32()`). 64-bit
+// integers surface as native `bigint`.
 
 /**
  * Reads an SCAddress (account or contract) into its Stellar string form (G.../C...).
@@ -30,70 +35,64 @@ const readScAddress = (address: xdr.ScAddress) => Address.fromScAddress(address)
  * bytes-typed fields (bytes, string) are hex strings; 64-bit ints are decimal strings.
  */
 const readScVal = (val: xdr.ScVal): any => {
-    const type = val.switch().value;
+    const type = xdr.ScValType.fromName(val.type).value;
 
-    switch (val.switch().name) {
+    switch (val.type) {
         case 'scvBool':
-            return { type, b: val.b() };
+            return { type, b: val.b };
         case 'scvVoid':
             return { type };
         case 'scvU32':
-            return { type, u32: val.u32() };
+            return { type, u32: val.u32 };
         case 'scvI32':
-            return { type, i32: val.i32() };
+            return { type, i32: val.i32 };
         case 'scvU64':
-            return { type, u64: val.u64().toString() };
+            return { type, u64: val.u64.toString() };
         case 'scvI64':
-            return { type, i64: val.i64().toString() };
+            return { type, i64: val.i64.toString() };
         case 'scvTimepoint':
-            return { type, timepoint: val.timepoint().toString() };
+            return { type, timepoint: val.timepoint.toString() };
         case 'scvDuration':
-            return { type, duration: val.duration().toString() };
-        case 'scvU128': {
-            const parts = val.u128();
-
-            return { type, u128: { hi: parts.hi().toString(), lo: parts.lo().toString() } };
-        }
-        case 'scvI128': {
-            const parts = val.i128();
-
-            return { type, i128: { hi: parts.hi().toString(), lo: parts.lo().toString() } };
-        }
-        case 'scvU256': {
-            const parts = val.u256();
-
+            return { type, duration: val.duration.toString() };
+        case 'scvU128':
+            return {
+                type,
+                u128: { hi: val.u128.hi.toString(), lo: val.u128.lo.toString() },
+            };
+        case 'scvI128':
+            return {
+                type,
+                i128: { hi: val.i128.hi.toString(), lo: val.i128.lo.toString() },
+            };
+        case 'scvU256':
             return {
                 type,
                 u256: {
-                    hi_hi: parts.hiHi().toString(),
-                    hi_lo: parts.hiLo().toString(),
-                    lo_hi: parts.loHi().toString(),
-                    lo_lo: parts.loLo().toString(),
+                    hi_hi: val.u256.hiHi.toString(),
+                    hi_lo: val.u256.hiLo.toString(),
+                    lo_hi: val.u256.loHi.toString(),
+                    lo_lo: val.u256.loLo.toString(),
                 },
             };
-        }
-        case 'scvI256': {
-            const parts = val.i256();
-
+        case 'scvI256':
             return {
                 type,
                 i256: {
-                    hi_hi: parts.hiHi().toString(),
-                    hi_lo: parts.hiLo().toString(),
-                    lo_hi: parts.loHi().toString(),
-                    lo_lo: parts.loLo().toString(),
+                    hi_hi: val.i256.hiHi.toString(),
+                    hi_lo: val.i256.hiLo.toString(),
+                    lo_hi: val.i256.loHi.toString(),
+                    lo_lo: val.i256.loLo.toString(),
                 },
             };
-        }
         case 'scvBytes':
-            return { type, bytes: val.bytes().toString('hex') };
+            return { type, bytes: Buffer.from(val.bytes.value).toString('hex') };
         case 'scvString':
             // The bytes in an SCString are not necessarily valid UTF-8, so keep them as hex.
-            return { type, string: val.str().toString('hex') };
+            return { type, string: Buffer.from(val.str.bytes).toString('hex') };
         case 'scvSymbol':
-            return { type, symbol: val.sym().toString() };
+            return { type, symbol: val.sym.toString() };
         case 'scvVec': {
-            const vec = val.vec();
+            const { vec } = val;
             // A null vector is not a valid Soroban value; rejecting it avoids signing bytes
             // that differ from the input XDR (the firmware always encodes the vector as present).
             if (!vec) {
@@ -103,7 +102,7 @@ const readScVal = (val: xdr.ScVal): any => {
             return { type, vec: vec.map(readScVal) };
         }
         case 'scvMap': {
-            const map = val.map();
+            const { map } = val;
             if (!map) {
                 throw new Error('SCV_MAP with a null map is not supported');
             }
@@ -111,15 +110,15 @@ const readScVal = (val: xdr.ScVal): any => {
             return {
                 type,
                 map: map.map(entry => ({
-                    key: readScVal(entry.key()),
-                    value: readScVal(entry.val()),
+                    key: readScVal(entry.key),
+                    value: readScVal(entry.val),
                 })),
             };
         }
         case 'scvAddress':
-            return { type, address: readScAddress(val.address()) };
+            return { type, address: readScAddress(val.address) };
         default:
-            throw new Error(`Unsupported SCVal type: ${val.switch().name}`);
+            throw new Error(`Unsupported SCVal type: ${val.type}`);
     }
 };
 
@@ -127,22 +126,22 @@ const readScVal = (val: xdr.ScVal): any => {
  * Reads InvokeContractArgs (contract address, function name and arguments) from XDR.
  */
 const readInvokeContractArgs = (data: xdr.InvokeContractArgs) => ({
-    contract_address: readScAddress(data.contractAddress()),
-    function_name: data.functionName().toString(),
-    args: data.args().map(readScVal),
+    contract_address: readScAddress(data.contractAddress),
+    function_name: data.functionName.toString(),
+    args: data.args.map(readScVal),
 });
 
 /**
  * Reads a HostFunction from XDR. Only the invoke-contract host function is supported.
  */
 const readHostFunction = (hostFunction: xdr.HostFunction) => {
-    if (hostFunction.switch().name !== 'hostFunctionTypeInvokeContract') {
-        throw new Error(`Unsupported host function type: ${hostFunction.switch().name}`);
+    if (hostFunction.type !== 'hostFunctionTypeInvokeContract') {
+        throw new Error(`Unsupported host function type: ${hostFunction.type}`);
     }
 
     return {
-        type: hostFunction.switch().value,
-        invoke_contract: readInvokeContractArgs(hostFunction.invokeContract()),
+        type: xdr.HostFunctionType.fromName(hostFunction.type).value,
+        invoke_contract: readInvokeContractArgs(hostFunction.invokeContract),
     };
 };
 
@@ -150,13 +149,13 @@ const readHostFunction = (hostFunction: xdr.HostFunction) => {
  * Reads a SorobanAuthorizedFunction from XDR. Only the contract-fn variant is supported.
  */
 const readAuthorizedFunction = (fn: xdr.SorobanAuthorizedFunction) => {
-    if (fn.switch().name !== 'sorobanAuthorizedFunctionTypeContractFn') {
-        throw new Error(`Unsupported SorobanAuthorizedFunction type: ${fn.switch().name}`);
+    if (fn.type !== 'sorobanAuthorizedFunctionTypeContractFn') {
+        throw new Error(`Unsupported SorobanAuthorizedFunction type: ${fn.type}`);
     }
 
     return {
-        type: fn.switch().value,
-        contract_fn: readInvokeContractArgs(fn.contractFn()),
+        type: xdr.SorobanAuthorizedFunctionType.fromName(fn.type).value,
+        contract_fn: readInvokeContractArgs(fn.contractFn),
     };
 };
 
@@ -164,19 +163,19 @@ const readAuthorizedFunction = (fn: xdr.SorobanAuthorizedFunction) => {
  * Reads a SorobanAuthorizedInvocation tree from XDR (recurses into sub-invocations).
  */
 const readAuthorizedInvocation = (invocation: xdr.SorobanAuthorizedInvocation): any => ({
-    function: readAuthorizedFunction(invocation.function()),
-    sub_invocations: invocation.subInvocations().map(readAuthorizedInvocation),
+    function: readAuthorizedFunction(invocation.function),
+    sub_invocations: invocation.subInvocations.map(readAuthorizedInvocation),
 });
 
 /**
  * Reads SorobanAddressCredentials from XDR.
  */
 const readAddressCredentials = (credentials: xdr.SorobanAddressCredentials) => ({
-    address: readScAddress(credentials.address()),
+    address: readScAddress(credentials.address),
     // Nonce is a random sint64; keep it as a string to preserve full precision.
-    nonce: credentials.nonce().toString(),
-    signature_expiration_ledger: credentials.signatureExpirationLedger(),
-    signature: readScVal(credentials.signature()),
+    nonce: credentials.nonce.toString(),
+    signature_expiration_ledger: credentials.signatureExpirationLedger,
+    signature: readScVal(credentials.signature),
 });
 
 /**
@@ -184,16 +183,16 @@ const readAddressCredentials = (credentials: xdr.SorobanAddressCredentials) => (
  * supported; the legacy (to-be-deprecated) address credentials are intentionally rejected.
  */
 const readCredentials = (credentials: xdr.SorobanCredentials) => {
-    switch (credentials.switch().name) {
+    switch (credentials.type) {
         case 'sorobanCredentialsSourceAccount':
-            return { type: credentials.switch().value };
+            return { type: xdr.SorobanCredentialsType.fromName(credentials.type).value };
         case 'sorobanCredentialsAddressV2':
             return {
-                type: credentials.switch().value,
-                address_v2: readAddressCredentials(credentials.addressV2()),
+                type: xdr.SorobanCredentialsType.fromName(credentials.type).value,
+                address_v2: readAddressCredentials(credentials.addressV2),
             };
         default:
-            throw new Error(`Unsupported SorobanCredentials type: ${credentials.switch().name}`);
+            throw new Error(`Unsupported SorobanCredentials type: ${credentials.type}`);
     }
 };
 
@@ -201,8 +200,8 @@ const readCredentials = (credentials: xdr.SorobanCredentials) => {
  * Reads a SorobanAuthorizationEntry from XDR.
  */
 const readAuthorizationEntry = (entry: xdr.SorobanAuthorizationEntry) => ({
-    credentials: readCredentials(entry.credentials()),
-    root_invocation: readAuthorizedInvocation(entry.rootInvocation()),
+    credentials: readCredentials(entry.credentials),
+    root_invocation: readAuthorizedInvocation(entry.rootInvocation),
 });
 
 /**
@@ -263,18 +262,23 @@ const transformAsset = (asset: Asset) => {
  * Transforms Memo to TrezorConnect.StellarTransaction.Memo
  */
 const transformMemo = (memo: Memo) => {
+    // Memo<T>'s `value` getter type is keyed by T, but T isn't narrowed by switching on
+    // `memo.type` here (it's a generic class, not a discriminated union), so `.value`'s static
+    // type is still the full union across all memo types. Buffer.from()'s overloads don't accept
+    // that union directly; the case-specific `as` casts below reflect the real runtime type for
+    // each memo type (see stellar-sdk's own memo.d.ts).
     switch (memo.type) {
         case MemoText:
-            return { type: 1, text: Buffer.from(memo.value!).toString('utf-8') };
+            return { type: 1, text: Buffer.from(memo.value! as Uint8Array).toString('utf-8') };
         case MemoID:
             // Memo.id's value is already a decimal string, not bytes
-            return { type: 2, id: memo.value!.toString('utf-8') };
+            return { type: 2, id: memo.value! as string };
         case MemoHash:
             // stringify is not necessary, Buffer is also accepted
-            return { type: 3, hash: Buffer.from(memo.value!).toString('hex') };
+            return { type: 3, hash: Buffer.from(memo.value! as Uint8Array).toString('hex') };
         case MemoReturn:
             // stringify is not necessary, Buffer is also accepted
-            return { type: 4, hash: Buffer.from(memo.value!).toString('hex') };
+            return { type: 4, hash: Buffer.from(memo.value! as Uint8Array).toString('hex') };
         default:
             return { type: 0 };
     }
@@ -371,9 +375,12 @@ export const transformTransaction = (transaction: Transaction) => {
             operation.assetType = transformAsset(allowTrustAsset).type;
         }
 
-        if (operation.type === 'manageData' && operation.value) {
+        if (operation.type === 'manageData') {
+            // stellar-sdk 17 returns undefined here for a "remove data" operation (no value =
+            // delete the entry), where 16 returned null; normalize back to null so the
+            // null-means-removal contract noted above (re: setOptions) still holds.
             // stringify is not necessary, Buffer is also accepted
-            operation.value = Buffer.from(operation.value).toString('hex');
+            operation.value = operation.value ? Buffer.from(operation.value).toString('hex') : null;
         }
         if (operation.type === 'manageBuyOffer') {
             operation.amount = operation.buyAmount;
@@ -387,9 +394,8 @@ export const transformTransaction = (transaction: Transaction) => {
     // Soroban transactions carry a transaction extension (SorobanTransactionData) that the
     // device signs over; expose it as raw XDR (hex) for the StellarTxExt message. Only the v1
     // envelope (TransactionExt) has it; the legacy v0 envelope never does.
-    const ext = transaction.tx.ext();
-    const sorobanData =
-        'sorobanData' in ext && ext.switch() === 1 ? ext.sorobanData().toXDR('hex') : undefined;
+    const { ext } = transaction.tx;
+    const sorobanData = ext.type === 'sorobanData' ? ext.sorobanData.toXdr('hex') : undefined;
 
     return {
         source: transaction.source,
