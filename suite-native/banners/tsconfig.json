@@ -10,6 +10,9 @@
         },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/earn-stablecoin"
+        },
+        {
             "path": "../../suite-common/message-system"
         },
         {

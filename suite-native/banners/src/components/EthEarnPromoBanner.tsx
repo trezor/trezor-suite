@@ -1,6 +1,7 @@
+import { useNativeYieldVault } from '@suite-common/earn-stablecoin';
 import { type Account } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
-import { useNativeYieldVault, useStakingRate } from '@suite-native/module-earn';
+import { useStakingRate } from '@suite-native/module-earn';
 
 import { EarnPromoBanner } from './EarnPromoBanner';
 

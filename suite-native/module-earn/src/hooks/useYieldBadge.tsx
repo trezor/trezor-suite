@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { selectBestEnabledYieldVault } from '@suite-common/earn-stablecoin';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type EnhancedTokenInfo } from '@suite-common/token-definitions';
@@ -13,8 +14,6 @@ import {
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
-
-import { selectBestEnabledYieldVault } from '../selectors';
 
 interface YieldBadgeData {
     apy: number;

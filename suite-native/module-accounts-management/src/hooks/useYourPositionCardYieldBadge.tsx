@@ -1,3 +1,4 @@
+import { useNativeYieldVault } from '@suite-common/earn-stablecoin';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
@@ -5,7 +6,6 @@ import { isErc4626 } from '@suite-common/wallet-utils';
 import {
     getBestPromotedRate,
     isEarnPromoSymbol,
-    useNativeYieldVault,
     useStakingRate,
     useYieldBadge,
 } from '@suite-native/module-earn';
