@@ -8,11 +8,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
-import {
-    compareEarnByAmountDesc,
-    compareEarnByApyDesc,
-    compareEarnByNetwork,
-} from '@suite-common/wallet-utils';
+import { compareEarnByApyDesc, compareEarnByNetworkTokenOrder } from '@suite-common/wallet-utils';
 
 import {
     type EarnPromoListDataItem,
@@ -170,10 +166,21 @@ export const useStablecoinYieldListData = () => {
         // without an APY are pushed to the end.
         const sortedPromoItems = [...promoItems].sort(compareEarnByApyDesc(item => item.apy));
 
-        // Active positions are grouped by network (canonical coin order), highest balance first.
-        const sortedActiveItems = [...activeItems]
-            .sort(compareEarnByAmountDesc(item => item.tokenBalance ?? '0'))
-            .sort(compareEarnByNetwork(item => item.networkSymbol));
+        // Active positions follow the account order used across the app (network → token →
+        // account type → account index), matching the desktop DeFi table.
+        const accountByKey = new Map(accounts.map(account => [account.key, account]));
+        const sortedActiveItems = [...activeItems].sort(
+            compareEarnByNetworkTokenOrder(item => {
+                const account = item.accountKey ? accountByKey.get(item.accountKey) : undefined;
+
+                return {
+                    symbol: item.networkSymbol,
+                    tokenSymbol: item.tokenSymbol,
+                    accountType: account?.accountType,
+                    index: account?.index,
+                };
+            }),
+        );
 
         const promoListData: EarnPromoListDataItem[] = [
             ...DEFAULT_STABLECOIN_YIELD_PROMO_LIST_DATA,

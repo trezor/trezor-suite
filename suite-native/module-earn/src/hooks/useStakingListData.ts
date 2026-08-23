@@ -8,6 +8,7 @@ import {
     getAccountTotalStakingBalance,
     isCardanoStakedWithFiveBinaries,
     isStakingSymbol,
+    sortByCoin,
 } from '@suite-common/wallet-utils';
 import { selectAreTestnetsEnabled } from '@suite-native/settings';
 
@@ -34,7 +35,7 @@ export const useStakingListData = () => {
     const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
 
     return useMemo<UseStakingListDataReturn>(() => {
-        const stakingAccounts = accounts.filter(acc => isStakingSymbol(acc.symbol));
+        const stakingAccounts = sortByCoin(accounts.filter(acc => isStakingSymbol(acc.symbol)));
         const stakingSymbols = areTestnetsEnabled ? STAKING_SYMBOLS : PROD_STAKING_SYMBOLS;
 
         const accountStakedWithFiveBinaries = stakingAccounts.find(

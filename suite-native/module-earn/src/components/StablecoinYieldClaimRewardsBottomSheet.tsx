@@ -31,7 +31,7 @@ export const StablecoinYieldClaimRewardsBottomSheet = ({
     return (
         <BottomSheetModal
             ref={ref}
-            title={<Translation id="earn.earnScreen.activeSheet.stablecoinYieldTitle" />}
+            title={<Translation id="earn.earnScreen.activeSheet.yieldPositionsTitle" />}
             isCloseDisplayed
             onClose={onClose}
         >

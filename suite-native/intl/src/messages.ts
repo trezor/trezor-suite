@@ -2957,8 +2957,8 @@ export const messages = {
                 incompleteFiatTotal: 'Some fiat rates couldn’t load. Total may be incomplete.',
             },
             activeSheet: {
-                stakingTitle: 'Your stakes',
-                stablecoinYieldTitle: 'Your yields',
+                stakingPositionsTitle: 'Your staking positions',
+                yieldPositionsTitle: 'Your yield positions',
             },
             stablecoinYieldLoadError: {
                 title: 'Unable to load yield opportunities',

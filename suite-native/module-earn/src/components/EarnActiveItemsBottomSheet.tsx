@@ -48,9 +48,9 @@ export const EarnActiveItemsBottomSheet = ({
     const title = useMemo(
         () =>
             type === 'staking' ? (
-                <Translation id="earn.earnScreen.activeSheet.stakingTitle" />
+                <Translation id="earn.earnScreen.activeSheet.stakingPositionsTitle" />
             ) : (
-                <Translation id="earn.earnScreen.activeSheet.stablecoinYieldTitle" />
+                <Translation id="earn.earnScreen.activeSheet.yieldPositionsTitle" />
             ),
         [type],
     );

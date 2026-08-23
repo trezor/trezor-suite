@@ -14,14 +14,18 @@ const ethSymbol = asNetworkSymbol('eth');
 const accountKey = mockAccountKey();
 const fiatAmount = asBaseCurrencyAmount(new BigNumber(0));
 
-const stablecoinYieldItem = (balance: string, tokenSymbol: string): EarnDepositsCardActiveItem => ({
+const stablecoinYieldItem = (
+    balance: string,
+    tokenSymbol: string,
+    tokenContractAddress = toTokenAddress('0x2'),
+): EarnDepositsCardActiveItem => ({
     id: 'stablecoin-yield-item',
     type: 'stablecoin-yield',
     title: 'Vault',
     networkSymbol: ethSymbol,
     tokenSymbol: toTokenSymbol(tokenSymbol),
     contractAddress: toTokenAddress('0x1'),
-    tokenContractAddress: toTokenAddress('0x2'),
+    tokenContractAddress,
     accountKey,
     balance,
     fiatAmount,
@@ -105,6 +109,19 @@ describe(formatEarnActiveItemBalance.name, () => {
                 locale: 'en-US',
             }),
         ).toBe('0.000000000123456789 WETH');
+    });
+
+    it('displays a wrapped-native vault balance in the native coin, regardless of address casing', () => {
+        expect(
+            formatEarnActiveItemBalance({
+                item: stablecoinYieldItem(
+                    '0.01000077',
+                    'WETH',
+                    toTokenAddress('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
+                ),
+                locale: 'en-US',
+            }),
+        ).toBe('0.01000077 ETH');
     });
 
     it('caps a staking balance to CRYPTO_BALANCE_DECIMALS and upper-cases the symbol', () => {
