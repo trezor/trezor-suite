@@ -30,28 +30,21 @@ export const YieldDepositReviewContent = ({
         markReviewLeave,
         revealConfirmOnTrezorSheet,
     } = useYieldReviewScreenControls();
-    const {
-        depositStatus,
-        handleDepositSubmitted,
-        leaveReviewFromDeviceCancel,
-        startDepositReview,
-    } = useYieldDepositReview({
-        flowData,
-        flowKey,
-        onReviewLeave: markReviewLeave,
-    });
-    const isDepositSigned = depositStatus === 'signed' || depositStatus === 'sending';
-    const isSendingDeposit = depositStatus === 'sending';
+
+    const review = useYieldDepositReview({ flowData, flowKey, onReviewLeave: markReviewLeave });
+
+    const isSigned = review.status === 'signed' || review.status === 'sending';
+    const isSending = review.status === 'sending';
     const activeStep = useYieldReviewActiveStep(flowData.account.symbol);
 
     useYieldReviewSheetAutoStart({
         closeSheet,
         hasLeftReview,
-        isSigned: isDepositSigned,
-        leaveReviewFromDeviceCancel,
+        isSigned,
+        leaveReviewFromDeviceCancel: review.leaveReviewFromDeviceCancel,
         revealConfirmOnTrezorSheet,
-        shouldAutoStartReview: depositStatus === 'idle',
-        startReview: startDepositReview,
+        shouldAutoStartReview: review.status === 'idle',
+        startReview: review.startReview,
     });
 
     return (
@@ -59,17 +52,17 @@ export const YieldDepositReviewContent = ({
             confirmOnTrezorRef={confirmOnTrezorRef}
             titleTranslationId="earn.yieldDepositReviewScreen.title"
             submitButton={
-                isDepositSigned ? (
-                    <Button isLoading={isSendingDeposit} onPress={handleDepositSubmitted}>
+                isSigned && (
+                    <Button isLoading={isSending} onPress={review.submit}>
                         <Translation id="earn.yieldDepositReviewScreen.submitButton" />
                     </Button>
-                ) : undefined
+                )
             }
         >
             <YieldTransactionReviewOutputList
                 accountKey={flowData.account.key}
                 activeStep={activeStep}
-                isSigned={isDepositSigned}
+                isSigned={isSigned}
                 preview={preview}
             />
         </YieldReviewScreenLayout>

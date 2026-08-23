@@ -30,24 +30,21 @@ export const YieldClaimReviewContent = ({
         markReviewLeave,
         revealConfirmOnTrezorSheet,
     } = useYieldReviewScreenControls();
-    const { claimStatus, handleClaimSubmitted, leaveReviewFromDeviceCancel, startClaimReview } =
-        useYieldClaimReview({
-            account,
-            flowKey,
-            onReviewLeave: markReviewLeave,
-        });
-    const isClaimSigned = claimStatus === 'signed' || claimStatus === 'sending';
-    const isSendingClaim = claimStatus === 'sending';
+
+    const review = useYieldClaimReview({ account, flowKey, onReviewLeave: markReviewLeave });
+
+    const isSigned = review.status === 'signed' || review.status === 'sending';
+    const isSending = review.status === 'sending';
     const activeStep = useYieldReviewActiveStep(account.symbol);
 
     useYieldReviewSheetAutoStart({
         closeSheet,
         hasLeftReview,
-        isSigned: isClaimSigned,
-        leaveReviewFromDeviceCancel,
+        isSigned,
+        leaveReviewFromDeviceCancel: review.leaveReviewFromDeviceCancel,
         revealConfirmOnTrezorSheet,
-        shouldAutoStartReview: claimStatus === 'idle',
-        startReview: startClaimReview,
+        shouldAutoStartReview: review.status === 'idle',
+        startReview: review.startReview,
     });
 
     return (
@@ -55,17 +52,17 @@ export const YieldClaimReviewContent = ({
             confirmOnTrezorRef={confirmOnTrezorRef}
             titleTranslationId="earn.yieldClaimReviewScreen.title"
             submitButton={
-                isClaimSigned ? (
-                    <Button isLoading={isSendingClaim} onPress={handleClaimSubmitted}>
+                isSigned && (
+                    <Button isLoading={isSending} onPress={review.submit}>
                         <Translation id="earn.yieldClaimReviewScreen.submitButton" />
                     </Button>
-                ) : undefined
+                )
             }
         >
             <YieldTransactionReviewOutputList
                 accountKey={account.key}
                 activeStep={activeStep}
-                isSigned={isClaimSigned}
+                isSigned={isSigned}
                 preview={preview}
             />
         </YieldReviewScreenLayout>
