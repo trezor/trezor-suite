@@ -31,6 +31,7 @@ import type {
     AccountKey,
     BackendSettings,
     FormState,
+    GraphFiatResolutionEntry,
     RatesByTimestamps,
     WalletSettings,
 } from '@suite-common/wallet-types';
@@ -161,6 +162,10 @@ export interface SuiteDBSchema extends DBSchema {
             accountKey: string[]; // descriptor, symbol, deviceState
             deviceState: string;
         };
+    };
+    graphFiatRates: {
+        key: string;
+        value: GraphFiatResolutionEntry;
     };
     tradingTrades: {
         key: string;

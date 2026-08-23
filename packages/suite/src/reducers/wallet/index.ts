@@ -43,6 +43,7 @@ import { type Action } from 'src/types/suite';
 
 import accountSearchReducer, { type AccountSearchState } from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
+import { type GraphFiatState, graphFiatReducer } from './graphFiatReducer';
 import graphReducer, { type GraphState } from './graphReducer';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
@@ -60,6 +61,7 @@ export const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenc
 export type WalletState = {
     fiat: FiatRatesState;
     graph: GraphState;
+    graphFiat: GraphFiatState;
     transactions: TransactionsState;
     phishing: PhishingState;
     discovery: Discovery;
@@ -83,10 +85,11 @@ export type WalletState = {
 export const walletReducers: Reducer<
     WalletState,
     Action | UnknownAction | CoinjoinAction,
-    Partial<Omit<WalletState, 'graph' | 'coinjoin'>>
+    Partial<Omit<WalletState, 'graph' | 'graphFiat' | 'coinjoin'>>
 > = combineReducers({
     fiat: fiatRatesReducer,
     graph: graphReducer,
+    graphFiat: graphFiatReducer,
     transactions: transactionsReducer,
     phishing: phishingReducer,
     discovery: discoveryReducer,

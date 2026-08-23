@@ -379,14 +379,14 @@ export const getGraphDataForInterval = ({
             : true;
 
         if (accountFilter && deviceFilter) {
-            if (selectedRange.startDate && selectedRange.endDate) {
+            if (selectedRange.label !== 'all') {
                 data.push({
                     ...accountGraph,
                     data:
                         accountGraph.data?.filter(d =>
                             isWithinInterval(fromUnixTime(d.time), {
-                                start: selectedRange.startDate,
-                                end: selectedRange.endDate,
+                                start: new Date(selectedRange.startDate),
+                                end: new Date(selectedRange.endDate),
                             }),
                         ) ?? [],
                 });

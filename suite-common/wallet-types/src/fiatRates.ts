@@ -22,6 +22,22 @@ export interface HistoricRates {
     ts: number;
 }
 
+export type GraphFiatResolution = 'day' | 'month' | 'max';
+
+export type GraphFiatPoint = {
+    time: number;
+    price: number;
+};
+
+export type GraphFiatResolutionEntry = {
+    points: GraphFiatPoint[];
+    fetchedAt: Timestamp | null;
+    failedAt: Timestamp | null;
+    lastPointTimestamp: number | null;
+    isLoading: boolean;
+    error: string | null;
+};
+
 export type CryptoBaseCurrencyPair = string & Branded<'CryptoBaseCurrencyCode'>;
 export const asCryptoBaseCurrencyCode = (value: string) => value as CryptoBaseCurrencyPair;
 

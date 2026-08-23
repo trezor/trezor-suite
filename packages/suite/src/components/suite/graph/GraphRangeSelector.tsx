@@ -11,6 +11,7 @@ import {
 } from 'date-fns';
 
 import { Translation } from '@suite/intl';
+import { asTimestamp } from '@suite-common/wallet-types';
 import {
     Popover,
     type PopoverPlacement,
@@ -27,26 +28,26 @@ const END_OF_TODAY = endOfToday();
 const RANGES = [
     {
         label: 'day',
-        startDate: startOfToday(),
-        endDate: END_OF_TODAY,
+        startDate: asTimestamp(startOfToday().getTime()),
+        endDate: asTimestamp(END_OF_TODAY.getTime()),
         groupBy: 'day',
     },
     {
         label: 'week',
-        startDate: startOfDay(subDays(END_OF_TODAY, 7)),
-        endDate: END_OF_TODAY,
+        startDate: asTimestamp(startOfDay(subDays(END_OF_TODAY, 7)).getTime()),
+        endDate: asTimestamp(END_OF_TODAY.getTime()),
         groupBy: 'day',
     },
     {
         label: 'month',
-        startDate: startOfDay(subMonths(END_OF_TODAY, 1)),
-        endDate: END_OF_TODAY,
+        startDate: asTimestamp(startOfDay(subMonths(END_OF_TODAY, 1)).getTime()),
+        endDate: asTimestamp(END_OF_TODAY.getTime()),
         groupBy: 'day',
     },
     {
         label: 'year',
-        startDate: startOfDay(subYears(END_OF_TODAY, 1)),
-        endDate: END_OF_TODAY,
+        startDate: asTimestamp(startOfDay(subYears(END_OF_TODAY, 1)).getTime()),
+        endDate: asTimestamp(END_OF_TODAY.getTime()),
         groupBy: 'month',
     },
     { label: 'all', startDate: null, endDate: null, groupBy: 'month' },
@@ -102,8 +103,8 @@ export const GraphRangeSelector = ({
 
         const range: GraphRange = {
             label: CUSTOM_RANGE_LABEL,
-            startDate,
-            endDate,
+            startDate: asTimestamp(startDate.getTime()),
+            endDate: asTimestamp(endDate.getTime()),
             groupBy: differenceInMonths(startDate, endDate) <= 1 ? 'day' : 'month',
         };
 

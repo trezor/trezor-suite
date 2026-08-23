@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.9.0
+
+- create `graphFiatRates` object store for historical balance graph price caches
+
 ## 26.8.0.2
 
 - convert `walletSettings.hideSuspiciousTransactions` from a single boolean to a per-network record

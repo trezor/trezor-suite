@@ -1,23 +1,31 @@
+import { useState } from 'react';
+
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectHasExperimentalFeature } from '@suite/settings';
+import { getGraphFiatCoinId } from '@suite-common/fiat-services';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { Button, Card, Column, Row } from '@trezor/components';
+import { Button, Card, Column, Flex, Row, Switch, Text } from '@trezor/components';
 import { RepeatIcon } from '@trezor/icons';
-import { typography } from '@trezor/theme';
+import { breakpoints, typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector, HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 import {
     aggregateBalanceHistory,
     getGraphDataForInterval,
     getMinMaxValueFromData,
+    isNetworkWithGraphFeature,
 } from 'src/utils/wallet/graph';
+import { AccountHistoricalFiatGraph } from 'src/views/dashboard/PortfolioCard/AccountHistoricalFiatGraph';
 
 import { SummaryCards } from './SummaryCards';
 
@@ -38,9 +46,14 @@ interface TransactionSummaryProps {
     account: Account;
 }
 
+const selectGraph = (state: AppState) => state.wallet.graph;
+
 export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
-    const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
-    const graph = useSelector(state => state.wallet.graph);
+    const graph = useSelector(selectGraph);
+    const { selectedRange } = graph;
+    const isNewBalanceGraphEnabled = useSelector(selectHasExperimentalFeature('new-balance-graph'));
+    const isBelowLaptop = useIsContentBelowBreakpoint(breakpoints.laptop);
+    const [showMarkers, setShowMarkers] = useState(true);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
@@ -66,7 +79,9 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const xTicks =
         selectedRange.label === 'all'
             ? calcTicksFromData(data).map(getUnixTime)
-            : calcTicks(selectedRange.startDate, selectedRange.endDate).map(getUnixTime);
+            : calcTicks(new Date(selectedRange.startDate), new Date(selectedRange.endDate)).map(
+                  getUnixTime,
+              );
 
     // Interval shown in InfoCard below the graph
     // For 'all' range pick first and last datapoint's timestamps
@@ -77,7 +92,10 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                   intervalGraphData[0]?.data[0]?.time,
                   intervalGraphData[0]?.data[(intervalGraphData[0]?.data.length ?? 1) - 1]?.time,
               ]
-            : [getUnixTime(selectedRange.startDate), getUnixTime(selectedRange.endDate)];
+            : [
+                  getUnixTime(new Date(selectedRange.startDate)),
+                  getUnixTime(new Date(selectedRange.endDate)),
+              ];
 
     const onRefresh = (abortSignal?: AbortSignal) =>
         dispatch(
@@ -92,6 +110,26 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                 accounts: [account],
             }),
         );
+    const useNewBalanceGraph =
+        isNewBalanceGraphEnabled &&
+        getGraphFiatCoinId(account.symbol) !== undefined &&
+        isNetworkWithGraphFeature(account.symbol, account.backendType);
+    const legacyGraph = (
+        <TransactionsGraph
+            variant="one-asset"
+            xTicks={xTicks}
+            account={account}
+            isLoading={isLoading}
+            data={data}
+            minMaxValues={[minMaxValues[0].toNumber(), minMaxValues[1].toNumber()]}
+            localCurrency={baseCurrencyCode}
+            onRefresh={onRefresh}
+            selectedRange={selectedRange}
+            receivedValueFn={entry => entry.received}
+            sentValueFn={entry => entry.sent}
+            balanceValueFn={entry => entry.balance}
+        />
+    );
 
     return (
         <Column alignItems="stretch" gap={20}>
@@ -122,28 +160,45 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                     <Card overflow="visible" paddingType="none">
                         <Column alignItems="stretch" padding={24} gap={16}>
                             <Row height={320} overflow="visible" alignItems="stretch">
-                                <TransactionsGraph
-                                    variant="one-asset"
-                                    xTicks={xTicks}
-                                    account={account}
-                                    isLoading={isLoading}
-                                    data={data}
-                                    minMaxValues={[
-                                        minMaxValues[0].toNumber(),
-                                        minMaxValues[1].toNumber(),
-                                    ]}
-                                    localCurrency={baseCurrencyCode}
-                                    onRefresh={onRefresh}
-                                    selectedRange={selectedRange}
-                                    receivedValueFn={entry => entry.received}
-                                    sentValueFn={entry => entry.sent}
-                                    balanceValueFn={entry => entry.balance}
-                                />
+                                {useNewBalanceGraph ? (
+                                    <AccountHistoricalFiatGraph
+                                        account={account}
+                                        fallback={legacyGraph}
+                                        isGraphLoading={isLoading}
+                                        showMarkers={showMarkers}
+                                    />
+                                ) : (
+                                    legacyGraph
+                                )}
                             </Row>
-                            <GraphRangeSelector
-                                onSelectedRange={onSelectedRange}
-                                isLoading={isLoading}
-                            />
+                            <Flex
+                                gap={16}
+                                direction={isBelowLaptop ? 'column' : 'row'}
+                                justifyContent="space-between"
+                                alignItems={isBelowLaptop ? 'flex-start' : 'center'}
+                            >
+                                <GraphRangeSelector
+                                    onSelectedRange={onSelectedRange}
+                                    isLoading={isLoading}
+                                />
+                                {useNewBalanceGraph && (
+                                    <Switch
+                                        isChecked={showMarkers}
+                                        size="small"
+                                        onChange={() => setShowMarkers(value => !value)}
+                                        labelPosition={isBelowLaptop ? 'end' : 'start'}
+                                        label={
+                                            <Text
+                                                typographyStyle="body-sm"
+                                                priority="secondary"
+                                                intent="neutral"
+                                            >
+                                                <Translation id="TR_GRAPH_SHOW_TRANSACTIONS" />
+                                            </Text>
+                                        }
+                                    />
+                                )}
+                            </Flex>
                         </Column>
                     </Card>
                 </HiddenPlaceholder>

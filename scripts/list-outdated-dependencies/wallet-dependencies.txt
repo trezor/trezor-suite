@@ -4,6 +4,7 @@
 @hookform/resolvers
 @noble/hashes
 @reduxjs/toolkit
+@seibei-iguchi/liveline
 @solana-program/compute-budget
 @solana-program/stake
 @solana-program/system

@@ -18,6 +18,8 @@ import type {
     AccountKey,
     FormDraftKeyPrefix,
     FormState,
+    GraphFiatResolution,
+    GraphFiatResolutionEntry,
     RatesByTimestamps,
     SuccessfulAccount,
 } from '@suite-common/wallet-types';
@@ -26,12 +28,14 @@ import {
     isAccountSuccessful,
     selectHistoricRatesByTransactions,
 } from '@suite-common/wallet-utils';
+import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { db } from 'src/storage';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
+import { getGraphFiatEntryKey } from 'src/support/wallet/graphFiatUtils';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 import { type GraphData } from 'src/types/wallet/graph';
@@ -342,6 +346,24 @@ export const saveAccountHistoricRates =
 
         return db.addItem('historicRates', accHistoricRates, accountKey, true);
     };
+
+export const saveGraphFiatRates = ({
+    baseCurrencyCode,
+    coinId,
+    graphFiatResolutionEntry,
+    resolution,
+}: {
+    baseCurrencyCode: BaseCurrencyCode;
+    coinId: string;
+    graphFiatResolutionEntry: GraphFiatResolutionEntry;
+    resolution: GraphFiatResolution;
+}) => {
+    if (!db.isAccessible()) return;
+
+    const key = getGraphFiatEntryKey({ baseCurrencyCode, coinId, resolution });
+
+    return db.addItem('graphFiatRates', graphFiatResolutionEntry, key, true);
+};
 
 export const saveAccountTransactions =
     (account: Account) => (_dispatch: Dispatch, getState: GetState) => {

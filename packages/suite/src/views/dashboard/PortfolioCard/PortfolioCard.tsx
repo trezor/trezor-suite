@@ -3,6 +3,7 @@ import { memo, useMemo } from 'react';
 import { useDevice } from '@suite/device';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
@@ -47,6 +48,7 @@ export const PortfolioCard = memo(() => {
     const { discovery, isDiscoveryRunning } = useDiscovery();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const enabledNetworks = useSelector(selectEnabledNetworks);
+    const isNewBalanceGraphEnabled = useSelector(selectHasExperimentalFeature('new-balance-graph'));
 
     const accounts = useSelector(selectAllAccountsToList);
     const { dashboardGraphHidden } = useSelector(selectFlags);
@@ -99,7 +101,12 @@ export const PortfolioCard = memo(() => {
         if (isDeviceEmpty) {
             body = <EmptyWalletSkeleton />;
         } else if (hasLoadedNonEmptyAccount && hasNetworkWithEnabledGraph) {
-            body = <DashboardGraph accounts={accounts} />;
+            body = (
+                <DashboardGraph
+                    accounts={accounts}
+                    isNewBalanceGraphEnabled={isNewBalanceGraphEnabled}
+                />
+            );
         } else if (hasNetworkWithEnabledGraph) {
             body = (
                 <Column height={320}>
@@ -110,7 +117,12 @@ export const PortfolioCard = memo(() => {
     } else if (isDeviceEmpty) {
         body = <EmptyWallet />;
     } else if (hasNetworkWithEnabledGraph) {
-        body = <DashboardGraph accounts={accounts} />;
+        body = (
+            <DashboardGraph
+                accounts={accounts}
+                isNewBalanceGraphEnabled={isNewBalanceGraphEnabled}
+            />
+        );
     }
 
     const isWalletEmpty = !discoveryStatus && isDeviceEmpty;

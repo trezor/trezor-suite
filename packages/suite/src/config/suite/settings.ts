@@ -1,5 +1,10 @@
+import { endOfToday, startOfDay, subMonths } from 'date-fns';
+
 import { settingsCommonConfig } from '@suite-common/suite-config';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
+import { asTimestamp } from '@suite-common/wallet-types';
+
+const graphRangeEnd = endOfToday();
 
 const IMPORTANT_NOTIFICATION_TYPES: Array<NotificationEntry['type']> = [
     'tx-sent',
@@ -17,10 +22,10 @@ const IMPORTANT_NOTIFICATION_TYPES: Array<NotificationEntry['type']> = [
 export default {
     ...settingsCommonConfig,
     DEFAULT_GRAPH_RANGE: {
-        label: 'all',
-        startDate: null,
-        endDate: null,
-        groupBy: 'month',
+        label: 'month',
+        startDate: asTimestamp(startOfDay(subMonths(graphRangeEnd, 1)).getTime()),
+        endDate: asTimestamp(graphRangeEnd.getTime()),
+        groupBy: 'day',
     },
     IMPORTANT_NOTIFICATION_TYPES,
 } as const;
