@@ -283,7 +283,16 @@ export const networks = {
         decimals: 18,
         testnet: false,
         explorer: getExplorerUrls('https://robinscan.io', 'ethereum'),
-        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'coin-definitions', 'eip1559', 'graph'],
+        features: [
+            'rbf',
+            'sign-verify',
+            'tokens',
+            'nfts',
+            'coin-definitions',
+            'eip1559',
+            'mev-protection',
+            'graph',
+        ],
         backendOptions: [{ type: 'blockbook', isExternalBackend: true }, { type: 'evm-rpc' }],
         accountTypes: {
             ledger: {

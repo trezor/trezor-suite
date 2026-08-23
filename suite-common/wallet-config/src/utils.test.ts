@@ -113,7 +113,7 @@ describe(isNetworkUsingExternalBackend.name, () => {
 describe(getNetworksWithMevProtection.name, () => {
     it('returns string with all networks with MEV protection', () => {
         expect(getNetworksWithMevProtection()).toEqual(
-            'Ethereum, BNB Smart Chain, Arbitrum One, Base',
+            'Ethereum, BNB Smart Chain, Arbitrum One, Base, Robinhood Chain',
         );
     });
 });
