@@ -89,6 +89,7 @@
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../tokens" },
+        { "path": "../trading-state" },
         { "path": "../transaction-management" },
         { "path": "../transactions" },
         { "path": "../tx-simulation" },
