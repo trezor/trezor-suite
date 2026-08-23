@@ -86,6 +86,13 @@ export type StablecoinYieldTxReviewState = {
 export type StablecoinYieldSessionState = {
     step: YieldFlowStepId;
     isWrappedNativeVault: boolean;
+    /**
+     * Set once the session broadcasts a transaction and never cleared while the flow runs.
+     * `action.pendingTransaction` only marks a transaction still in flight — every resolution
+     * (`completeApproval`, `resolveWrappedNativeStep`, `completeAction`, …) clears it — so this is
+     * what tells a session that already moved on-chain apart from an untouched one.
+     */
+    hasBroadcastTransaction: boolean;
     error: StablecoinYieldTranslationKey | null;
     approval: {
         allowanceAmount: string | null;
@@ -131,6 +138,7 @@ type StablecoinYieldSessionActionPayload = {
 export const initialStablecoinYieldSessionState: StablecoinYieldSessionState = {
     step: 'approve',
     isWrappedNativeVault: false,
+    hasBroadcastTransaction: false,
     error: null,
     approval: {
         allowanceAmount: null,
@@ -193,6 +201,24 @@ const createInitialStablecoinYieldSessionState = (
 
 export const getStablecoinYieldSessionKey = (flowKey: string) => `yield-session:${flowKey}`;
 
+/**
+ * Whether re-entering the flow should pick this session up instead of starting it over.
+ *
+ * A session becomes resumable the moment it broadcasts a transaction and stays that way until the
+ * flow completes: leaving the page must not throw away on-chain progress the user cannot redo (a
+ * granted approval, a finished wrap, an amount already withdrawn and waiting to be unwrapped), and
+ * a transaction still in flight has to stay tracked — the pending panel, the duplicate-submit
+ * guard, the completion into the next step and `replaceTransaction` following an RBF all read it.
+ */
+export const isStablecoinYieldSessionResumable = (
+    session: StablecoinYieldSessionState | undefined,
+): boolean => {
+    if (!session) return false;
+    if (session.action.pendingTransaction) return true;
+
+    return session.hasBroadcastTransaction && session.step !== 'complete';
+};
+
 const withSession = (
     state: StablecoinYieldState,
     { flowType, flowKey }: StablecoinYieldSessionActionPayload,
@@ -236,6 +262,42 @@ const stablecoinYieldSlice = createSlice({
                 );
             }
         },
+        /** Opens the flow: resumes a session that is still mid-flow, otherwise starts a fresh one. */
+        enterSession(
+            state: StablecoinYieldState,
+            action: PayloadAction<
+                StablecoinYieldSessionActionPayload & {
+                    isWrappedNativeVault?: boolean;
+                    hasWrappedTokenBalance?: boolean;
+                }
+            >,
+        ) {
+            const { flowType, flowKey, isWrappedNativeVault, hasWrappedTokenBalance } =
+                action.payload;
+
+            if (!isSafeObjectKey(flowKey)) {
+                return;
+            }
+
+            const sessionKey = getStablecoinYieldSessionKey(flowKey);
+
+            if (isStablecoinYieldSessionResumable(state[flowType][sessionKey])) {
+                return;
+            }
+
+            const session = createInitialStablecoinYieldSessionState(
+                flowType,
+                isWrappedNativeVault,
+            );
+
+            // Only a wrapped-native deposit opens on the wrap step, and there is nothing to wrap
+            // when the wrapped token is already held — mirrors `resolveWrappedNativeStep`.
+            if (session.step === 'wrap' && hasWrappedTokenBalance) {
+                session.step = getNextYieldFlowStep(flowType, 'wrap', session.isWrappedNativeVault);
+            }
+
+            state[flowType][sessionKey] = session;
+        },
         disposeSession(
             state: StablecoinYieldState,
             action: PayloadAction<StablecoinYieldSessionActionPayload>,
@@ -248,11 +310,10 @@ const stablecoinYieldSlice = createSlice({
 
             const sessionKey = getStablecoinYieldSessionKey(flowKey);
 
-            // A session tracking a pending transaction must survive its page unmounting:
-            // re-entering the flow resumes/reconciles it (pending panel, duplicate-submit guard,
-            // completion into the next step), and the `replaceTransaction` extraReducer needs it
-            // to follow an RBF. It is dropped once the transaction resolves.
-            if (state[flowType][sessionKey]?.action.pendingTransaction) {
+            // A session that is mid-flow must survive its page unmounting so re-entering the flow
+            // resumes it (see `isStablecoinYieldSessionResumable`); it is dropped once the flow
+            // completes, or never stored beyond the page when nothing was broadcast.
+            if (isStablecoinYieldSessionResumable(state[flowType][sessionKey])) {
                 return;
             }
 
@@ -613,6 +674,7 @@ const stablecoinYieldSlice = createSlice({
             >,
         ) {
             withSession(state, action.payload, session => {
+                session.hasBroadcastTransaction = true;
                 session.action.pendingTransaction = action.payload.tx;
                 session.action.pendingReceiptAmount =
                     action.payload.receiptAmount ?? session.action.pendingReceiptAmount;
