@@ -22,6 +22,7 @@ import {
     handleYieldApproveCancelThunk,
     handleYieldApproveSuccessTxidThunk,
     initYieldAllowanceThunk,
+    isStablecoinYieldSessionResumable,
     isYieldWithdrawFlow,
     selectStablecoinYieldSession,
     stablecoinYieldActions,
@@ -30,7 +31,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isWrappedNativeToken } from '@suite-common/wallet-utils';
-import { useCurrentRef } from '@trezor/react-utils';
+import { useCurrentRef, useFreshRef } from '@trezor/react-utils';
 
 import {
     submitYieldDepositThunk,
@@ -166,7 +167,9 @@ export const useYieldFlow = ({
 
     const ensureDeviceSession = useEnsureYieldDeviceSession({ flowType, flowKey });
     const session = useSelector(state => selectStablecoinYieldSession(state, flowType, flowKey));
-    const sessionRef = useCurrentRef(session);
+    // Fresh rather than commit-lagging: the entry effect below reads the session to decide whether
+    // the flow resumes, and a value one commit behind would restart a session it should keep.
+    const sessionRef = useFreshRef(session);
 
     const isWrappedNativeVault = isWrappedNativeToken(account.symbol, vault.token.address);
     const hasWrappedTokenBalance = isAmountGreaterThan({
@@ -223,44 +226,34 @@ export const useYieldFlow = ({
         : (receiptToken?.symbol ?? '');
 
     useEffect(() => {
-        if (!flowKey) {
-            return;
-        }
+        if (!flowKey) return;
 
-        // A session left with an pending transaction survives disposal (see `disposeSession`),
-        // so re-entering the flow rehydrates it: keep its step and pending state so tracking can
-        // resume/reconcile the transaction, instead of starting the flow over.
-        const preservedPendingTransaction = sessionRef.current.action.pendingTransaction;
+        // A session that is mid-flow survives disposal (see `isStablecoinYieldSessionResumable`),
+        // so re-entering the flow resumes it — step, approval and pending state included — instead
+        // of starting over. `enterSession` makes that call on the live state, including the wrap
+        // step a fresh wrapped-native deposit can open past.
+        const resumedSession = isStablecoinYieldSessionResumable(sessionRef.current)
+            ? sessionRef.current
+            : null;
 
-        dispatch(stablecoinYieldActions.initSession({ flowType, flowKey, isWrappedNativeVault }));
+        dispatch(
+            stablecoinYieldActions.enterSession({
+                flowType,
+                flowKey,
+                isWrappedNativeVault,
+                hasWrappedTokenBalance: hasWrappedTokenBalanceRef.current,
+            }),
+        );
 
-        if (preservedPendingTransaction) {
-            // The amount card is disabled while a transaction is pending — show its amount.
-            methodsRef.current.reset({
-                amountInput: preservedPendingTransaction.amount,
-                fiatInput: '',
-            });
-        } else {
-            dispatch(
-                stablecoinYieldActions.resetSession({ flowType, flowKey, isWrappedNativeVault }),
-            );
-
-            if (
-                flowType === 'deposit' &&
-                isWrappedNativeVault &&
-                hasWrappedTokenBalanceRef.current
-            ) {
-                dispatch(
-                    stablecoinYieldActions.resolveWrappedNativeStep({
-                        flowType,
-                        flowKey,
-                        step: 'wrap',
-                    }),
-                );
-            }
-
-            methodsRef.current.reset({ amountInput: '', fiatInput: '' });
-        }
+        // A resumed flow shows the amount it was left with: the one locked by the transaction in
+        // flight, or the one its confirmed transaction moved on to the next step.
+        resetAmountsRef.current(
+            resumedSession
+                ? (resumedSession.action.pendingTransaction?.amount ??
+                      resumedSession.action.amount ??
+                      '')
+                : '',
+        );
 
         return () => {
             dispatch(stablecoinYieldActions.disposeSession({ flowType, flowKey }));
@@ -271,7 +264,7 @@ export const useYieldFlow = ({
         dispatch,
         isWrappedNativeVault,
         hasWrappedTokenBalanceRef,
-        methodsRef,
+        resetAmountsRef,
         sessionRef,
     ]);
 
