@@ -9,7 +9,6 @@ import {
     selectCurrentFiatRates,
     useMissingRateTickersQuery,
 } from '@suite-common/wallet-core';
-import { compareEarnByAmountDesc } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 
 import {
@@ -107,22 +106,18 @@ export const useEarnDepositsCardData = ({
 
     const stakingRows = useMemo(
         () =>
-            calculatedStakingDeposits
-                .map(
-                    ({ deposit, balance, fiatAmount }) =>
-                        ({
-                            id: deposit.id,
-                            type: 'staking',
-                            title:
-                                deposit.accountLabel ?? getNetworkDisplaySymbolName(deposit.symbol),
-                            symbol: deposit.symbol,
-                            accountKey: deposit.accountKey,
-                            balance,
-                            fiatAmount,
-                        }) satisfies EarnDepositsCardActiveItem,
-                )
-                // Active positions are ordered by fiat value, highest first (matches desktop).
-                .sort(compareEarnByAmountDesc(row => row.fiatAmount)),
+            calculatedStakingDeposits.map(
+                ({ deposit, balance, fiatAmount }) =>
+                    ({
+                        id: deposit.id,
+                        type: 'staking',
+                        title: deposit.accountLabel ?? getNetworkDisplaySymbolName(deposit.symbol),
+                        symbol: deposit.symbol,
+                        accountKey: deposit.accountKey,
+                        balance,
+                        fiatAmount,
+                    }) satisfies EarnDepositsCardActiveItem,
+            ),
         [calculatedStakingDeposits],
     );
 

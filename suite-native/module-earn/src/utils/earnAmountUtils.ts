@@ -1,4 +1,5 @@
 import { type Locale } from '@suite-common/suite-types';
+import { getNetworkDisplaySymbol, isWrappedNativeToken } from '@suite-common/wallet-config';
 import { formatCoinBalance, localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -49,5 +50,10 @@ export const formatEarnActiveItemBalance = ({
         return `${balance} ${item.symbol.toUpperCase()}`;
     }
 
-    return formatEarnTokenAmount({ amount: item.balance, locale, symbol: item.tokenSymbol });
+    // Wrapped-native vaults are communicated in the native coin (ETH, not WETH) across the app.
+    const symbol = isWrappedNativeToken(item.networkSymbol, item.tokenContractAddress)
+        ? getNetworkDisplaySymbol(item.networkSymbol)
+        : item.tokenSymbol;
+
+    return formatEarnTokenAmount({ amount: item.balance, locale, symbol });
 };
