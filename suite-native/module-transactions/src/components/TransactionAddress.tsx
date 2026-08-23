@@ -16,7 +16,7 @@ import { selectIsLabellingAllowed } from '@suite-native/labeling';
 import { TransactionOutputLabelEditable } from '@suite-native/transactions';
 import type { StaticSessionId } from '@trezor/connect';
 
-type TransactionUtxoAddressProps = {
+type TransactionAddressProps = {
     address: string;
     txTargetId: TxTargetId;
     txId: string;
@@ -26,7 +26,7 @@ type TransactionUtxoAddressProps = {
     networkSymbol: NetworkSymbol;
 };
 
-export const TransactionUtxoAddress = ({
+export const TransactionAddress = ({
     deviceStaticSessionId,
     txId,
     txTargetId,
@@ -34,7 +34,7 @@ export const TransactionUtxoAddress = ({
     accountDescriptor,
     networkSymbol,
     showLabels,
-}: TransactionUtxoAddressProps) => {
+}: TransactionAddressProps) => {
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
 
     const account = useSelector((state: AccountsRootState & DeviceRootState) =>
