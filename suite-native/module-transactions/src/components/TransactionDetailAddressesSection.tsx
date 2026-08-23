@@ -7,9 +7,9 @@ import { type VinVoutAddress } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ChangeAddressesHeader } from './ChangeAddressesHeader';
+import { TransactionAddress } from './TransactionAddress';
 import { TransactionDetailStepper } from './TransactionDetailStepper';
 import { SummaryRow } from './TransactionSummaryRow';
-import { TransactionUtxoAddress } from './TransactionUtxoAddress';
 
 type TransactionDetailAddressesSectionProps = {
     transaction: WalletAccountTransaction;
@@ -70,7 +70,7 @@ export const TransactionDetailAddressesSection = ({
                         />
                     </Text>
                     {targetAddresses.slice(0, 2).map(({ address, txTargetId }) => (
-                        <TransactionUtxoAddress
+                        <TransactionAddress
                             key={`target-${txTargetId}`}
                             address={address}
                             txTargetId={txTargetId}
@@ -105,7 +105,7 @@ export const TransactionDetailAddressesSection = ({
                         <Box>
                             <ChangeAddressesHeader addressesCount={changeAddresses.length} />
                             {changeAddresses.map(({ address, txTargetId }) => (
-                                <TransactionUtxoAddress
+                                <TransactionAddress
                                     key={`change-${addressesType}:${txTargetId}`}
                                     address={address}
                                     txTargetId={txTargetId}
