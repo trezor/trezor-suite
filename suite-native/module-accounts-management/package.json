@@ -23,6 +23,7 @@
         "@suite-common/bip329": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/earn-stablecoin": "workspace:*",
         "@suite-common/earn-stablecoin-api": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/graph": "workspace:*",

@@ -7,7 +7,9 @@ import {
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { getApyPercent, isApyAvailable } from '@suite-common/wallet-utils';
 
-const selectIsYieldVaultDepositEnabled = (
+// Each vault can be remotely killed on its own via the message system — a killed vault
+// must not be advertised.
+export const selectIsYieldVaultDepositEnabled = (
     state: MessageSystemRootState,
     vault: Pick<YieldDtoV2, 'id' | 'outputToken'>,
 ) =>
@@ -17,6 +19,11 @@ const selectIsYieldVaultDepositEnabled = (
         getYieldVaultContractAddress(vault),
     );
 
+/**
+ * Picks the not-killed vault with the highest available APY. Returns one of the passed
+ * vault objects, so when used in a selector its identity is stable across unrelated
+ * store updates.
+ */
 export const selectBestEnabledYieldVault = (
     state: MessageSystemRootState,
     vaults: YieldDtoV2[],

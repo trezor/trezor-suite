@@ -2,7 +2,6 @@ export { FiveBinariesHomeBanner } from './components/FiveBinariesHomeBanner';
 export { YieldBadge } from './components/YieldBadge';
 export { useYieldBadge } from './hooks/useYieldBadge';
 export { useStakingRate } from './hooks/useStakingRate';
-export { useNativeYieldVault } from './hooks/useNativeYieldVault';
 export { TokenSettingsBottomSheet } from './components/TokenSettingsBottomSheet';
 export { YieldDisabledAlert } from './components/YieldDisabledAlert';
 export { TokenYieldRateBadge } from './components/TokenYieldRateBadge';

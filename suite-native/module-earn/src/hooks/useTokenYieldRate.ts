@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import {
+    getWrappedNativeYieldVaults,
+    selectBestEnabledYieldVault,
+} from '@suite-common/earn-stablecoin';
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
@@ -12,8 +16,6 @@ import { getApyPercent } from '@suite-common/wallet-utils';
 
 import { useMessageSystemYield } from './useMessageSystemYield';
 import { useStakingRate } from './useStakingRate';
-import { selectBestEnabledYieldVault } from '../selectors';
-import { getWrappedNativeYieldVaults } from '../utils/getWrappedNativeYieldVaults';
 import { type YieldRateLabelType, getYieldRateLabelType } from '../utils/getYieldRateLabelType';
 import { getBestPromotedRate, isEarnPromoSymbol } from '../utils/promotedRateUtils';
 

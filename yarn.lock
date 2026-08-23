@@ -10637,13 +10637,16 @@ __metadata:
   dependencies:
     "@suite-common/calldata": "workspace:^"
     "@suite-common/earn-stablecoin-api": "workspace:^"
+    "@suite-common/message-system": "workspace:^"
     "@suite-common/schemas": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
+    "@suite-common/wallet-core": "workspace:^"
     "@suite-common/wallet-types": "workspace:^"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/connect-common": "workspace:^"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
+    react-redux: "npm:9.3.0"
     zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
@@ -10860,7 +10863,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/message-system@workspace:*, @suite-common/message-system@workspace:suite-common/message-system":
+"@suite-common/message-system@workspace:*, @suite-common/message-system@workspace:^, @suite-common/message-system@workspace:suite-common/message-system":
   version: 0.0.0-use.local
   resolution: "@suite-common/message-system@workspace:suite-common/message-system"
   dependencies:
@@ -11452,7 +11455,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/wallet-core@workspace:*, @suite-common/wallet-core@workspace:suite-common/wallet-core":
+"@suite-common/wallet-core@workspace:*, @suite-common/wallet-core@workspace:^, @suite-common/wallet-core@workspace:suite-common/wallet-core":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-core@workspace:suite-common/wallet-core"
   dependencies:
@@ -12057,6 +12060,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/earn-stablecoin": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -12894,6 +12898,7 @@ __metadata:
     "@suite-common/bip329": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/earn-stablecoin": "workspace:*"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/graph": "workspace:*"
