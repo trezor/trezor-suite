@@ -24,17 +24,26 @@ const isoToTimestamp = (isoDate: string): number => {
 };
 
 const convertMemo = (memo: Memo): string | undefined => {
+    // Memo<T>'s `value` getter type is keyed by T, but T isn't narrowed by switching on
+    // `memo.type` here (it's a generic class, not a discriminated union), so `.value`'s static
+    // type is still the full union across all memo types (including null, for MemoNone). The
+    // case-specific `as` casts below reflect the real runtime type for each memo type (see
+    // stellar-sdk's own memo.d.ts); `== null` covers both undefined and null defensively.
     switch (memo.type) {
         // Memo.id's value is already a decimal string, not bytes; toString() is a no-op here
         case 'id':
-            return memo.value?.toString();
+            return memo.value == null ? undefined : (memo.value as string);
         // Memo.value is a Uint8Array for text/hash/return; Buffer.from() is required so
         // toString(encoding) decodes it correctly instead of silently returning garbage
         case 'text':
-            return memo.value === undefined ? undefined : Buffer.from(memo.value).toString('utf-8');
+            return memo.value == null
+                ? undefined
+                : Buffer.from(memo.value as Uint8Array).toString('utf-8');
         case 'hash':
         case 'return':
-            return memo.value === undefined ? undefined : Buffer.from(memo.value).toString('hex');
+            return memo.value == null
+                ? undefined
+                : Buffer.from(memo.value as Uint8Array).toString('hex');
         default:
             return undefined;
     }

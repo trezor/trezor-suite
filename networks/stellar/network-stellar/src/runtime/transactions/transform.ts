@@ -62,18 +62,23 @@ const transformAsset = (asset: Asset) => {
  * Transforms Memo to TrezorConnect.StellarTransaction.Memo
  */
 const transformMemo = (memo: Memo) => {
+    // Memo<T>'s `value` getter type is keyed by T, but T isn't narrowed by switching on
+    // `memo.type` here (it's a generic class, not a discriminated union), so `.value`'s static
+    // type is still the full union across all memo types. Buffer.from()'s overloads don't accept
+    // that union directly; the case-specific `as` casts below reflect the real runtime type for
+    // each memo type (see stellar-sdk's own memo.d.ts).
     switch (memo.type) {
         case MemoText:
-            return { type: 1, text: Buffer.from(memo.value!).toString('utf-8') };
+            return { type: 1, text: Buffer.from(memo.value! as Uint8Array).toString('utf-8') };
         case MemoID:
             // Memo.id's value is already a decimal string, not bytes
-            return { type: 2, id: memo.value!.toString('utf-8') };
+            return { type: 2, id: memo.value! as string };
         case MemoHash:
             // stringify is not necessary, Buffer is also accepted
-            return { type: 3, hash: Buffer.from(memo.value!).toString('hex') };
+            return { type: 3, hash: Buffer.from(memo.value! as Uint8Array).toString('hex') };
         case MemoReturn:
             // stringify is not necessary, Buffer is also accepted
-            return { type: 4, hash: Buffer.from(memo.value!).toString('hex') };
+            return { type: 4, hash: Buffer.from(memo.value! as Uint8Array).toString('hex') };
         default:
             return { type: 0 };
     }
@@ -164,9 +169,12 @@ export const transformTransaction = (transaction: Transaction) => {
             operation.assetType = transformAsset(allowTrustAsset).type;
         }
 
-        if (operation.type === 'manageData' && operation.value) {
+        if (operation.type === 'manageData') {
+            // stellar-sdk 17 returns undefined here for a "remove data" operation (no value =
+            // delete the entry), where 16 returned null; normalize back to null so the
+            // null-means-removal contract noted above (re: setOptions) still holds.
             // stringify is not necessary, Buffer is also accepted
-            operation.value = Buffer.from(operation.value).toString('hex');
+            operation.value = operation.value ? Buffer.from(operation.value).toString('hex') : null;
         }
         if (operation.type === 'manageBuyOffer') {
             operation.amount = operation.buyAmount;
