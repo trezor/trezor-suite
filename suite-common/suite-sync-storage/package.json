@@ -7,6 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -14,6 +15,7 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/type-utils": "workspace:*"
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
     }
 }

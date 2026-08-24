@@ -7,11 +7,17 @@
             "path": "../../suite-common/connect-popup"
         },
         {
+            "path": "../../suite-common/delegated-identity-key"
+        },
+        {
             "path": "../../suite-common/platform-encryption"
         },
         { "path": "../../suite-common/sentry" },
         {
             "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-sync-storage"
         },
         {
             "path": "../../suite-common/suite-utils"

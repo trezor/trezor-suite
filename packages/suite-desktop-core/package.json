@@ -16,9 +16,11 @@
     "dependencies": {
         "@sentry/electron": "^7.16.0",
         "@suite-common/connect-popup": "workspace:*",
+        "@suite-common/delegated-identity-key": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-constants": "workspace:^",
+        "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
