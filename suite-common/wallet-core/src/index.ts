@@ -73,6 +73,7 @@ export * from './stablecoin-yield/stablecoinYieldReducer';
 export * from './stablecoin-yield/stablecoinYieldSelectors';
 export * from './stablecoin-yield/utils/fetchWrappedNativeTokenInfo';
 export * from './stablecoin-yield/utils/stablecoinYieldApprovalActionUtils';
+export * from './stablecoin-yield/utils/stablecoinYieldClaimRewards';
 export * from './stablecoin-yield/thunks/stablecoinYieldApprovalThunks';
 export * from './stablecoin-yield/stablecoinYieldConstants';
 export * from './stablecoin-yield/thunks/stablecoinYieldDepositThunks';

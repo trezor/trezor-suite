@@ -3,15 +3,12 @@ import {
     type MerklRewardsParams,
 } from '@suite-common/earn-stablecoin-api';
 import { getNetwork } from '@suite-common/wallet-config';
-import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
 import {
     type Account,
     type AccountKey,
     type BaseCurrencyAmount,
     asBaseCurrencyAmount,
-    toTokenAddress,
 } from '@suite-common/wallet-types';
-import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { type YieldClaimVaultParams } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
@@ -124,24 +121,6 @@ export const getStablecoinYieldAccountRewards = ({
         account,
         getChainsRewardsByAccountKey(chainsRewardsWithFiat),
     );
-
-export const getStablecoinYieldClaimRewardsSnapshot = ({
-    account,
-    rewards,
-}: Pick<StablecoinYieldAccountRewards, 'account' | 'rewards'>): YieldFlowCompleteRewardItem[] =>
-    rewards.map(reward => ({
-        token: {
-            networkSymbol: account.symbol,
-            symbol: reward.token.symbol,
-            decimals: reward.token.decimals,
-            contractAddress: toTokenAddress(reward.token.address),
-        },
-        value: subunitsToUnits({
-            value: asAmountSubunit(new BigNumber(reward.claimable)),
-            decimals: reward.token.decimals,
-        }).toString(),
-        fiatValue: reward.fiat.claimable?.toString() ?? null,
-    }));
 
 export const buildStablecoinYieldClaimSummaries = ({
     accounts,

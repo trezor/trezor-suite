@@ -7,7 +7,7 @@ type YieldRewardItemProps = {
     formattedAmount: string;
     formattedFiatAmount: string | null;
     tokenSymbol: string;
-    tokenAddress: string;
+    tokenAddress?: string | null;
     networkSymbol: NetworkSymbol;
 };
 
