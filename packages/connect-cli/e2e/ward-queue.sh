@@ -10,9 +10,17 @@
 #
 # On a service build it then does two more things, which are opposites and only mean something
 # together: it holds a daemon on the WARD interface for the whole run and asserts that the offline
-# arc asked it NOTHING, and it then makes one ONLINE read and asserts that the same daemon served
-# the sync and the fetch it takes. The first says the queue depends on no backend; the second says
-# the separate channel actually works, and rules out a daemon nobody could reach.
+# arc asked it NOTHING, and it then goes ONLINE against that same daemon and asserts what it served.
+# The first says the queue depends on no backend; the second says the separate channel actually
+# works, and rules out a daemon nobody could reach.
+#
+# THE ONLINE HALF IS MOSTLY ABOUT WRITING, because that is what the dedicated channel is for and what
+# no host can check for itself. A read that fails, fails on the device. A write is a conversation the
+# wallet host is not part of: the device pulls the current leaf from its daemon, seals a mutation,
+# hands it over, and moves its head only when the WM's attestation for THAT counter comes back. From
+# out here the only evidence is the daemon's log and what the NEXT operation no longer has to do, so
+# both are asserted -- exchange by exchange, in order, and once inside a single session where the
+# absence of a second sync is what proves the device adopted the head it published to.
 #
 # Run it against both builds to cover both; it says at the end which one it just covered and how to
 # build the other.
@@ -120,6 +128,15 @@ fi
 APPID="Example.COM"
 IDENT="Addr1"
 VALUE="queued_secret"
+# The online arcs write their own entries rather than reusing the one the offline arc moves around:
+# a step that published over a key the queue steps also touch would leave "which store answered
+# this?" ambiguous exactly where the two stores have to stay distinguishable.
+IDENT2="Addr2"
+VALUE2="published_secret"
+FIDENT1="Flush1"
+FVALUE1="flushed_first"
+FIDENT2="Flush2"
+FVALUE2="flushed_second"
 
 CLI="yarn workspace @trezor/connect-cli cli --udp --debuglink --pairing=skip"
 failures=0
@@ -160,7 +177,12 @@ check_not() {
 # assertion, and it needs this same daemon to answer for real.
 DAEMON_LOG=""
 DAEMON_KEY=""
+DAEMON_STATE=""
 DAEMON_PID=""
+# How many times the daemon has bound, because `start_daemon` waits for a COUNT of BOUND lines in an
+# appended log and every restart raises it. Tracked here rather than passed in at each call site: the
+# number is a property of the run, and a hardcoded one at the third restart is a hang.
+BINDS=0
 
 # The daemon holds the interface for as long as it runs, and a stray one would keep the NEXT run
 # from binding -- the device tracks one channel per interface. So it is torn down on every exit
@@ -177,6 +199,7 @@ stop_daemon() {
 cleanup() {
     stop_daemon
     [ -n "$DAEMON_KEY" ] && rm -f "$DAEMON_KEY"
+    [ -n "$DAEMON_STATE" ] && rm -f "$DAEMON_STATE"
 }
 trap cleanup EXIT
 
@@ -190,7 +213,7 @@ trap cleanup EXIT
 # back with a fresh one is refused rather than merely unrecognised.
 start_daemon() {
     python3 "$HERE/ward-service-daemon.py" --port "$WIRE_PORT" --debug-port "$DEBUG_PORT" \
-        --key-file "$DAEMON_KEY" >>"$DAEMON_LOG" 2>&1 &
+        --key-file "$DAEMON_KEY" --state-file "$DAEMON_STATE" >>"$DAEMON_LOG" 2>&1 &
     DAEMON_PID=$!
 
     # Waited for rather than slept on: the handshake, the pairing and the announce take an
@@ -210,12 +233,57 @@ start_daemon() {
     return 1
 }
 
+# STOP AND COME BACK, as the same daemon, with the same replica. Called between the online arcs
+# below and NOT as a repair: THP keeps ten app-data channels (MAX_CHANNELS_APPDATA in
+# core/embed/rust/src/thp/mod.rs) and every CLI invocation here opens one, so a daemon that stays
+# bound for a dozen of them is displaced part way through an arc -- and the failure lands on whatever
+# step was unlucky rather than on the cause. Restarting on purpose, at boundaries this script
+# chooses, keeps each arc inside the budget.
+#
+# WHAT MAKES IT LEGITIMATE is the state file: --key-file brings back the same IDENTITY (the device
+# pinned that key) and --state-file brings back the same REPLICA and the same WM heads. A daemon that
+# came back empty would be offering a wallet at genesis to a device that has published, which is not
+# a restart but a different daemon wearing the same key.
+refresh_daemon() {
+    stop_daemon
+    BINDS=$((BINDS + 1))
+    if start_daemon "$BINDS"; then
+        return 0
+    fi
+
+    echo "  FAIL the daemon did not come back:"
+    sed 's/^/         /' "$DAEMON_LOG" | tail -8
+    failures=$((failures + 1))
+
+    return 1
+}
+
+# WHERE THE LOG IS NOW, so an arc can assert on ITS OWN exchanges. The log is appended to across
+# restarts on purpose -- step 21 needs the whole offline arc's evidence -- which means a bare grep
+# from here on would also match everything before it, and "the write did a sync" would pass on a
+# sync some earlier step performed.
+mark_log() {
+    grep -c "" "$DAEMON_LOG" 2>/dev/null || echo 0
+}
+
+# The exchanges served since a mark, as `Request -> Reply` joined by commas: one line, so a whole
+# sequence can be asserted EXACTLY rather than by checking that each part appears somewhere. Order
+# and count are half of what these arcs are about -- "it fetched once" and "it fetched twice" are
+# different claims, and only an exact match separates them.
+served_since() {
+    tail -n +"$(($1 + 1))" "$DAEMON_LOG" |
+        sed -nE 's/^SERVED [0-9?]+ ([A-Za-z]+) -> ([A-Za-z]+).*/\1 -> \2/p' |
+        paste -sd, -
+}
+
 if [ "$VARIANT" = service ]; then
     echo "0. this is a SERVICE build -- bind a daemon to the WARD interface (udp $WARD_PORT)"
     DAEMON_LOG="$(mktemp "${TMPDIR:-/tmp}/ward-service-daemon.XXXXXX.log")"
     DAEMON_KEY="$(mktemp -u "${TMPDIR:-/tmp}/ward-service-daemon.XXXXXX.key")"
+    DAEMON_STATE="$(mktemp -u "${TMPDIR:-/tmp}/ward-service-daemon.XXXXXX.state")"
 
-    if ! start_daemon 1; then
+    BINDS=1
+    if ! start_daemon "$BINDS"; then
         cat >&2 <<MSG
 The daemon never bound the WARD interface, so the service variant cannot be checked. Its log:
 
@@ -372,18 +440,13 @@ if [ "$VARIANT" = service ]; then
     check_not "the offline arc asked the daemon nothing" "^SERVED " "$(cat "$DAEMON_LOG")"
 
     echo "22. reconnect the daemon, whose channel the arc has displaced by now"
-    # NOT A WORKAROUND -- THE THING A REAL DAEMON MUST DO. THP keeps a bounded number of app-data
-    # channels (MAX_CHANNELS_APPDATA in core/embed/rust/src/thp/mod.rs), and every CLI invocation
-    # above opened one; roughly twenty of them displace the daemon's, after which the device finds
-    # its bound channel gone and a fetch fails with "THP channel is no longer open". A wardd that
-    # is up for days meets this constantly, and the answer is to come back -- as THE SAME daemon,
-    # which is what --key-file is for: the device pinned that key in flash and refuses any other.
-    stop_daemon
-    if ! start_daemon 2; then
-        echo "  FAIL the daemon did not come back:"
-        sed 's/^/         /' "$DAEMON_LOG" | tail -8
-        failures=$((failures + 1))
-    else
+    # NOT A WORKAROUND -- THE THING A REAL DAEMON MUST DO. THP keeps TEN app-data channels
+    # (MAX_CHANNELS_APPDATA in core/embed/rust/src/thp/mod.rs) and every CLI invocation above opened
+    # one, so the arc has displaced the daemon's several times over, after which the device finds its
+    # bound channel gone and a fetch fails with "THP channel is no longer open". A wardd that is up
+    # for days meets this constantly, and the answer is to come back -- as THE SAME daemon, which is
+    # what --key-file is for: the device pinned that key in flash and refuses any other.
+    if refresh_daemon; then
         echo "  ok   rebound with the same pinned key"
     fi
 
@@ -397,31 +460,194 @@ if [ "$VARIANT" = service ]; then
     # THE REPLICA IS EMPTY, so the honest answer is "no such entry" -- and that answer is a
     # NON-MEMBERSHIP PROOF the device checks against the root, not a word the daemon is trusted
     # on. A broken channel, a daemon of the wrong wallet or a forged proof all fail here.
+    MARK="$(mark_log)"
     ONLINE="$(timeout 150 $CLI --method=ward_display --service --appid="$APPID" --ident="$IDENT" 2>&1)"
     check "the device performed the read" "onDevice: true" "$ONLINE"
 
-    echo "24. the daemon's own log says what it was asked"
-    SERVED_LOG="$(cat "$DAEMON_LOG")"
-    # The sync comes first: on this build the device drives it itself when a WARD operation needs
-    # one, rather than failing and telling the host to go and sync.
-    check "the device synced with the daemon" "^SERVED [0-9]+ WardSyncRequest -> WardSyncResponse" "$SERVED_LOG"
-    check "and fetched the entry over the service channel" "^SERVED [0-9]+ WardServiceFetch -> WardEntryAck" "$SERVED_LOG"
+    echo "24. the daemon's own log says what it was asked, and in what order"
+    # THE SEQUENCE, NOT A SET. The sync comes FIRST because on this build the device drives it itself
+    # when a WARD operation needs one, rather than failing and telling the host to go and sync -- and
+    # asserting the whole line at once is what makes that an assertion about order. Two exchanges and
+    # no more: a read is one fetch, and a second one would mean the first came back unusable.
+    check "sync, then fetch, and nothing else" \
+        "^WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck$" \
+        "$(served_since "$MARK")"
 
-    echo "25. stop the daemon"
+    # ---------------------------------------------------------------------------------------------
+    # PUBLICATION. Everything above this line reads -- the device's own store, or the daemon's
+    # replica -- and reading is the half of the service channel that cannot go wrong quietly: a
+    # broken proof fails on the device. What follows WRITES, which is the behaviour the dedicated
+    # channel exists for and the one no host can check for itself, because the whole exchange happens
+    # out of this host's sight: the device pulls the current leaf from its daemon, seals a mutation,
+    # hands it over, and moves its head only when the WM's attestation for THAT counter comes back.
+    #
+    # Each arc restarts the daemon first. See `refresh_daemon`: the channel budget is ten and this
+    # script spends one per CLI invocation, so the restarts are how each arc gets a channel that
+    # survives it. The replica and the WM heads carry over in the state file, which is what makes a
+    # restart a restart rather than a new daemon.
+
+    echo "25. an ONLINE WRITE: the device publishes to the daemon and waits to hear it stuck"
+    refresh_daemon
+    MARK="$(mark_log)"
+    WROTE="$(timeout 150 $CLI --method=ward_add --service --appid="$APPID" --ident="$IDENT" --value="$VALUE" 2>&1)"
+    check "the device applied it" "applied: true" "$WROTE"
+    # COUNTER 1, from a device that has published nothing before: the head moves exactly once per
+    # publication, and it moves because the WM attested this counter -- not because the daemon
+    # acknowledged receipt. A fresh emulator profile is what makes the number itself checkable, and
+    # this script assumes one throughout.
+    check "the head moved to 1" "counter: 1" "$WROTE"
+    # NO LEAF CAME BACK, and this is the assertion the message split exists for: on this build the
+    # wallet host does not own the replica, so a leaf here would be a second copy going stale from
+    # the next write on -- and `apply` reads an absent content body as a DELETION, so an emptied
+    # WardLeafAck would have erased the entry it just wrote.
+    check_not "and handed back no leaf to store" "identity:|content:|mac:" "$WROTE"
+    check "sync, fetch the current leaf, publish -- exactly that" \
+        "^WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck$" \
+        "$(served_since "$MARK")"
+
+    echo "26. write and read in ONE session: the second read needs no second sync"
+    # WHAT THIS PROVES THAT STEP 25 CANNOT. A publication is only real once the device ADOPTS the
+    # attested head, and adoption is invisible from out here -- the write reports success either way.
+    # What gives it away is what the NEXT operation does not have to do: a device that adopted the
+    # head is still online and reads straight from the daemon, while one that did not would have to
+    # sync again.
+    #
+    # ONE SESSION, WHICH IS WHY --then EXISTS. The online latch is SESSION state on the device
+    # (APP_WARD_ONLINE, in the THP session cache), so two CLI invocations legitimately sync twice and
+    # the absence of a second sync could not be observed across them. Both operations in one process
+    # make it observable.
+    refresh_daemon
+    MARK="$(mark_log)"
+    PAIR="$(timeout 200 $CLI --method=ward_add --service --appid="$APPID" --ident="$IDENT2" --value="$VALUE2" --then=ward_display 2>&1)"
+    check "the write applied" "applied: true" "$PAIR"
+    check "the head moved again" "counter: 2" "$PAIR"
+    # The read is the device's, and it verified what came back against the root it had just adopted.
+    # A daemon serving the entry it was handed a moment ago is the only way this proof exists at all.
+    check "and the read that followed it went through" "onDevice: true" "$PAIR"
+    check "one sync, the write's fetch, the publish, then the read's fetch -- no second sync" \
+        "^WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck,WardServiceFetch -> WardEntryAck$" \
+        "$(served_since "$MARK")"
+
+    echo "27. a LATER session syncs again -- from the head the device kept"
+    # THE OTHER HALF OF ADOPTION, and the one that is about flash rather than about a session cache.
+    # A fresh session must sync, and what it says is where it is asking FROM: a device that adopted
+    # both publications above asks from counter 2, and the daemon answers with no links because there
+    # is nothing to fold. A device that had merely reported success and kept its old head would ask
+    # from 0, and this is the only step that would notice.
+    refresh_daemon
+    MARK="$(mark_log)"
+    LATER="$(timeout 150 $CLI --method=ward_display --service --appid="$APPID" --ident="$IDENT2" 2>&1)"
+    check "the read went through" "onDevice: true" "$LATER"
+    check "and the device asked from the head it had published to" \
+        "^SERVED [0-9]+ WardSyncRequest -> WardSyncResponse.* from counter=2$" \
+        "$(tail -n +"$((MARK + 1))" "$DAEMON_LOG")"
+
+    echo "28. the queue, published: what was held offline reaches the tree"
+    # THE ARC THE OTHER TWO CANNOT COVER. Steps 1-20 proved the queue is the device's own store and
+    # depends on no backend; step 25 proved a write can reach the daemon. This is the join: a change
+    # made with no backend at all, published later, one round trip at a time.
+    #
+    # A QUEUED CHANGE IS NOT A REPLAYED REQUEST. It has no path, no proof material and no root -- it
+    # is an intent, and an intent formed while the tree was at one state is not applicable at
+    # another. The device re-derives it against current state on the way out, which is why each flush
+    # below costs a fetch as well as a publish.
+    #
+    # NOTHING BELOW ASSERTS WHICH OF THE TWO GOES FIRST, deliberately. An unnamed flush takes the
+    # oldest un-offered record, and "oldest" is a slot order the device reuses as records are
+    # discarded -- so an order asserted from out here would be pinning an implementation detail. What
+    # is asserted is what a draining host actually depends on: one change per round trip, the counter
+    # advancing by one each time, and `remaining` counting down to zero.
+    #
+    # First the leftover: step 7 restored a queued change for this very key and nothing since has
+    # discarded it. An unnamed flush would take THAT one, and every count below would be off by one.
+    check "the leftover queued change is cleared out first" "discarded: true|missing: true" \
+        "$(timeout 150 $CLI --method=ward_delete --queue --appid="$APPID" --ident="$IDENT" 2>&1)"
+    check "queue A" "queued: true" \
+        "$(timeout 150 $CLI --method=ward_add --queue --appid="$APPID" --ident="$FIDENT1" --value="$FVALUE1" 2>&1)"
+    check "queue B" "queued: true" \
+        "$(timeout 150 $CLI --method=ward_add --queue --appid="$APPID" --ident="$FIDENT2" --value="$FVALUE2" 2>&1)"
+
+    refresh_daemon
+    MARK="$(mark_log)"
+    FLUSH1="$(timeout 150 $CLI --method=ward_flush --service 2>&1)"
+    check "the first queued change was published" "published: true" "$FLUSH1"
+    check "at the next counter" "counter: 3" "$FLUSH1"
+    # `remaining` IS THE LOOP, and the reason it is asserted rather than glanced at: a host drains
+    # its queue by flushing while this is non-zero, so a value dropped in transit would strand every
+    # queued change after the first -- silently, since the first one really was published.
+    check "and one is still waiting" "remaining: 1" "$FLUSH1"
+    check "re-derived against current state, then published" \
+        "^WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck$" \
+        "$(served_since "$MARK")"
+
+    MARK="$(mark_log)"
+    FLUSH2="$(timeout 150 $CLI --method=ward_flush --service 2>&1)"
+    check "the second was published too" "published: true" "$FLUSH2"
+    check "at the counter after that" "counter: 4" "$FLUSH2"
+    check "and the queue is drained" "remaining: 0" "$FLUSH2"
+    check "the same three exchanges again -- one change per round trip" \
+        "^WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck$" \
+        "$(served_since "$MARK")"
+
+    refresh_daemon
+    MARK="$(mark_log)"
+    # AN EMPTY DRAIN PUBLISHES NOTHING, and says so rather than failing: there is no transition, so
+    # no claim and nothing to settle. The device still syncs, because it cannot know the queue is
+    # empty without being able to publish -- so the log shows the sync and nothing after it, which is
+    # the sharpest available statement that no phantom fetch or publish happened.
+    check "an empty queue is an answer" "empty: true" \
+        "$(timeout 150 $CLI --method=ward_flush --service 2>&1)"
+    check "and it touched neither the replica nor the WM" \
+        "^WardSyncRequest -> WardSyncResponse$" "$(served_since "$MARK")"
+
+    echo "29. the published records were SETTLED, not deleted"
+    # WHERE A QUEUE INTEGRATION QUIETLY BREAKS. Publication does not remove the record -- nothing in
+    # WARD deletes one except the user saying so -- it stops being PENDING and stays as the device's
+    # cached copy of the value now in the tree. So the check is not "it is gone" but "it is no longer
+    # a change waiting to happen": a record still marked pending would be offered again by the next
+    # flush and published twice, and one reported missing would mean settlement threw the value away.
+    SETTLED="$(timeout 150 $CLI --method=ward_display --queue --appid="$APPID" --ident="$FIDENT1" 2>&1)"
+    check "the record is still there" "displayed: true" "$SETTLED"
+    check "with the value that was published" "value: '$FVALUE1'" "$SETTLED"
+    check "and it is no longer pending" "pending: false" "$SETTLED"
+    check "there is nothing left to restore, because there is no intent left" "restorable: false" \
+        "$(timeout 150 $CLI --method=ward_backup --queue --appid="$APPID" --ident="$FIDENT1" 2>&1)"
+
+    echo "30. stop the daemon"
     stop_daemon
     check "it served the exchanges above and nothing was left hanging" "^STOPPED [1-9][0-9]*$" "$(cat "$DAEMON_LOG")"
-    # Printed rather than only asserted: when this arc fails, WHICH exchange came back wrong is
-    # the whole diagnosis, and it is one line.
+    # Printed rather than only asserted: when an arc fails, WHICH exchange came back wrong is the
+    # whole diagnosis, and it is one line per life of the daemon.
     grep -E "^NOTE .* exchanges in order:" "$DAEMON_LOG" | sed 's/^/  /'
+else
+    echo "21. --service against a CONNECT build must FAIL, not quietly do something else"
+    # THE ASSERTION THE FLAG IS, SEEN FROM THE OTHER SIDE. `--service` is the caller stating that
+    # this firmware serves WARD over an interface of its own, and the device does not report whether
+    # that is true -- so the only way the claim can be wrong is here, and what must happen is
+    # nothing. Both directions, because they fail for different reasons and both reasons matter: the
+    # read pulls from a host store this CLI does not have, and the write additionally would have been
+    # handed a leaf with nowhere to keep it.
+    READ_FAIL="$(timeout 150 $CLI --method=ward_display --service --appid="$APPID" --ident="$IDENT" 2>&1)"
+    check_not "the read did not report success" "displayed: true|onDevice: true" "$READ_FAIL"
+    # IDENT2, which nothing in this script has queued: the point of the next check is that a refused
+    # write left NOTHING behind, and asking about a key the offline arc has been moving around would
+    # find that arc's queued change and report it as a fallback that never happened.
+    WRITE_FAIL="$(timeout 150 $CLI --method=ward_add --service --appid="$APPID" --ident="$IDENT2" --value="$VALUE2" 2>&1)"
+    check_not "the write did not report success" "applied: true" "$WRITE_FAIL"
+    # FAILED CLOSED means the entry is not in the tree AND is not in the queue either: a fallback
+    # that quietly held the change would look like a success from a user's point of view and would
+    # leave a change nobody asked to queue.
+    check "and it queued nothing behind our back" "missing: true" \
+        "$(timeout 150 $CLI --method=ward_backup --queue --appid="$APPID" --ident="$IDENT2" 2>&1)"
 fi
 
 echo
 if [ "$VARIANT" = service ]; then
-    echo "variant covered: SERVICE (queue never touched the daemon; the online read went through it)"
+    echo "variant covered: SERVICE (queue never touched the daemon; reads, writes and flushes did)"
     echo "the other one needs a build without the interface:"
     echo "  xtask build firmware -e -d --pyopt false --model t3w1 --debug-link"
 else
-    echo "variant covered: CONNECT (WARD over the wallet channel)"
+    echo "variant covered: CONNECT (WARD over the wallet channel; --service fails closed)"
     echo "the other one needs a build with the interface:"
     echo "  xtask build firmware -e -d --pyopt false --model t3w1 --debug-link --ward-service-channel"
 fi
