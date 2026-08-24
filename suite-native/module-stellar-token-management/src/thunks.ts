@@ -56,8 +56,7 @@ export const updateStellarTokenSelectedFeeLevelThunk = createThunk<
         }
 
         const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
-            | FormState
-            | undefined;
+            FormState | undefined;
 
         if (!formDraft) {
             return;
