@@ -43,7 +43,11 @@ declare global {
 
     type TestCase = {
         // method: keyof typeof TrezorConnect;
+        // CI grouping id and suite title. Usually the method name; a variant needing its own group
+        // uses a distinct id plus `apiMethod`.
         method: string;
+        // TrezorConnect method to call; defaults to `method`.
+        apiMethod?: string;
         /** Coin symbols enabled for every test in this case. Cardano fixtures set `['ada']`
          *  here so the whole file opts into Connect's guard; individual tests can add more via
          *  their own `enabledCoins`. */

@@ -8,12 +8,14 @@ import { ParamsTable } from '../../../components/ParamsTable';
 import signTransaction_erc20_known from '../../../data/methods/ethereum/signTransaction-erc20-known.ts';
 import signTransaction_erc20_unknown from '../../../data/methods/ethereum/signTransaction-erc20-unknown.ts';
 import signTransaction from '../../../data/methods/ethereum/signTransaction.ts';
+import signTransaction7702 from '../../../data/methods/ethereum/signTransaction7702.ts';
 
 <ApiPlayground
     options={[
         { title: 'ERC20 known token', legacyConfig: signTransaction_erc20_known[0] },
         { title: 'ERC20 unknown token', legacyConfig: signTransaction_erc20_unknown[0] },
         { title: 'Regular', legacyConfig: signTransaction[0] },
+        { title: 'EIP-7702', legacyConfig: signTransaction7702[0] },
         {
             title: 'Advanced schema',
             method: 'ethereumSignTransaction',
@@ -91,6 +93,47 @@ TrezorConnect.ethereumSignTransaction({
 });
 ```
 
+#### EIP-7702 ([set code for EOAs](https://eips.ethereum.org/EIPS/eip-7702))
+
+<Callout type="warning">
+    **Experimental feature**, opted into by passing `__experimental: true`. It may change without a
+    major version bump. Requires Core firmware 2.12.5 or newer; T1B1 does not support it at all.
+</Callout>
+
+Adding an `authorizationList` to an EIP-1559 transaction turns it into a type-4 (set-code)
+transaction. The device signs one authorization for the signing account, deriving its `chainId`
+from the transaction and setting its `nonce` to the transaction `nonce + 1`, and embeds the
+signed authorization into the returned `serializedTx`. Firmware currently supports at most one
+authorization per transaction. Delegating to the zero address revokes an existing delegation.
+
+The device also has to be configured up front, using
+[trezorctl](https://trezor.io/guides/trezorctl):
+
+```bash
+# Required for every call - the underlying protobuf field is experimental.
+trezorctl set experimental-features on
+
+# Required to authorize a delegate. Revocation works under the default strict checks.
+trezorctl set safety-checks prompt
+```
+
+```javascript
+TrezorConnect.ethereumSignTransaction({
+    path: "m/44'/60'/0'/0/0",
+    transaction: {
+        to: '0x14495e5ef84823170b62176913d798b26a1a1a69',
+        value: '0x0',
+        chainId: 1,
+        nonce: '0x0',
+        maxFeePerGas: '0x7ea8163',
+        maxPriorityFeePerGas: '0x186a0',
+        gasLimit: '0x10fc5',
+        authorizationList: [{ address: '0x63c0c19a282a1b52b07dd5a65b58948a07dae32b' }],
+    },
+    __experimental: true,
+});
+```
+
 ### Result
 
 [EthereumSignedTx type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/ethereum/common.ts)
@@ -103,6 +146,15 @@ TrezorConnect.ethereumSignTransaction({
         r: string, // hexadecimal string with "0x" prefix
         s: string, // hexadecimal string with "0x" prefix
         serializedTx: string, // signed and serialized transaction ready to broadcast
+        // present only for EIP-7702 transactions (when `authorizationList` was provided):
+        authorizationList?: Array<{
+            chainId: number,
+            address: string, // delegate address
+            nonce: number,
+            yParity: number, // 0 or 1
+            r: string, // hexadecimal string with "0x" prefix
+            s: string, // hexadecimal string with "0x" prefix
+        }>,
     }
 }
 ```

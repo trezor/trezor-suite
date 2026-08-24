@@ -252,3 +252,49 @@ export const signTypedData = async (api: TrezorConnect) => {
         domain_separator_hash: '0x',
     });
 };
+
+export const signEip7702Transaction = async (api: TrezorConnect) => {
+    const signed = await api.ethereumSignTransaction({
+        path: "m/44'/60'/0'/0/0",
+        transaction: {
+            nonce: '0x0',
+            maxFeePerGas: '0x14',
+            maxPriorityFeePerGas: '0x0',
+            gasLimit: '0x14',
+            to: '0xd0d6d6c5fe4a677d343cc433536bb717bae167dd',
+            chainId: 1,
+            value: '0x0',
+            authorizationList: [{ address: '0x63c0c19a282a1b52b07dd5a65b58948a07dae32b' }],
+        },
+        __experimental: true,
+    });
+
+    if (signed.success) {
+        const { payload } = signed;
+        payload.serializedTx.toLowerCase();
+        payload.authorizationList?.forEach(auth => {
+            auth.chainId.toFixed();
+            auth.address.toLowerCase();
+            auth.nonce.toFixed();
+            auth.yParity.toFixed();
+            auth.r.toLowerCase();
+            auth.s.toLowerCase();
+        });
+    }
+
+    api.ethereumSignTransaction({
+        path: "m/44'/60'/0'/0/0",
+        transaction: {
+            nonce: '0x0',
+            maxFeePerGas: '0x14',
+            maxPriorityFeePerGas: '0x0',
+            gasLimit: '0x14',
+            to: '0xd0d6d6c5fe4a677d343cc433536bb717bae167dd',
+            chainId: 1,
+            value: '0x0',
+            // @ts-expect-error: authorization entry requires an `address`
+            authorizationList: [{ delegate: '0x63c0c19a282a1b52b07dd5a65b58948a07dae32b' }],
+        },
+        __experimental: true,
+    });
+};

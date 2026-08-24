@@ -24,14 +24,20 @@ export const EthereumAddress = Type.Object(
     { $id: 'EthereumAddress' },
 );
 
-export type EthereumAuth7702Signature = Static<typeof EthereumAuth7702Signature>;
-export const EthereumAuth7702Signature = Type.Object(
+export type EthereumAuth7702 = Static<typeof EthereumAuth7702>;
+export const EthereumAuth7702 = Type.Object(
     {
-        signature_v: Type.Number(),
-        signature_r: Type.String(),
-        signature_s: Type.String(),
+        delegate: Type.String(),
     },
-    { $id: 'EthereumAuth7702Signature' },
+    { $id: 'EthereumAuth7702' },
+);
+
+export type EthereumAuth7702Tuple = Static<typeof EthereumAuth7702Tuple>;
+export const EthereumAuth7702Tuple = Type.Object(
+    {
+        items: Type.Array(Type.String()),
+    },
+    { $id: 'EthereumAuth7702Tuple' },
 );
 
 export type EthereumDefinitions = Static<typeof EthereumDefinitions>;
@@ -100,18 +106,6 @@ export const EthereumPublicKey = Type.Object(
     { $id: 'EthereumPublicKey' },
 );
 
-export type EthereumSignAuth7702 = Static<typeof EthereumSignAuth7702>;
-export const EthereumSignAuth7702 = Type.Object(
-    {
-        address_n: Type.Array(Type.Number()),
-        chain_id: Type.Number(),
-        delegate: Type.String(),
-        nonce: Type.Number(),
-        definitions: Type.Optional(EthereumDefinitions),
-    },
-    { $id: 'EthereumSignAuth7702' },
-);
-
 export type EthereumSignMessage = Static<typeof EthereumSignMessage>;
 export const EthereumSignMessage = Type.Object(
     {
@@ -162,6 +156,7 @@ export const EthereumSignTxEIP1559 = Type.Object(
         chunkify: Type.Optional(Type.Boolean()),
         payment_req: Type.Optional(PaymentRequest),
         supports_definition_request: Type.Optional(Type.Boolean()),
+        auth7702: Type.Optional(EthereumAuth7702),
     },
     { $id: 'EthereumSignTxEIP1559' },
 );
@@ -192,6 +187,7 @@ export const EthereumTxRequest = Type.Object(
         signature_v: Type.Optional(Type.Number()),
         signature_r: Type.Optional(Type.String()),
         signature_s: Type.Optional(Type.String()),
+        auth7702_list: Type.Array(EthereumAuth7702Tuple),
     },
     { $id: 'EthereumTxRequest' },
 );

@@ -1,6 +1,7 @@
 import type { EthereumSignTransaction, EthereumSignedTx } from './common';
-import type { Params, Response } from '../../params';
+import type { ExperimentalMethod, Params, Response } from '../../params';
 
 export declare function ethereumSignTransaction(
-    params: Params<EthereumSignTransaction>,
+    // `__experimental` is optional; it is required at runtime only for EIP-7702 (`authorizationList`).
+    params: Params<EthereumSignTransaction & Partial<ExperimentalMethod>>,
 ): Response<EthereumSignedTx>;

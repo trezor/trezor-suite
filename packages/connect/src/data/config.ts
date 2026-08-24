@@ -80,6 +80,23 @@ export const config: Config = {
             comment: ['new eth transaction pricing mechanism (EIP1559) since 1.10.4/2.4.2'],
         },
         {
+            capabilities: ['eip7702'],
+            // T1B1 min '0' marks it unsupported; Core signs EIP-7702 authorizations since 2.12.5.
+            min: {
+                T1B1: '0',
+                T2T1: '2.12.5',
+                T2B1: '2.12.5',
+                T3B1: '2.12.5',
+                T3T1: '2.12.5',
+                T3W1: '2.12.5',
+            },
+            comment: [
+                'EIP-7702 (set-code) authorization signing added to Core in 2.12.5; T1B1 unsupported.',
+                'Required so older firmware, which would ignore the experimental auth7702 field and',
+                'sign a plain EIP-1559 transaction, is rejected before signing.',
+            ],
+        },
+        {
             capabilities: ['taproot', 'signMessageNoScriptType'],
             min: { T1B1: '1.10.4', T2T1: '2.4.3' },
             comment: [
