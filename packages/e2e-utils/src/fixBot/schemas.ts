@@ -53,24 +53,6 @@ export const FixResultSchema = z.object({
     prTitle: z.string(),
 });
 
-export const ClaudeUsageSchema = z.object({
-    input_tokens: z.number().optional(),
-    output_tokens: z.number().optional(),
-    cache_creation_input_tokens: z.number().optional(),
-    cache_read_input_tokens: z.number().optional(),
-});
-
-export const ClaudeResultSchema = z.object({
-    type: z.string().optional(),
-    subtype: z.string().optional(),
-    result: z.string().optional(),
-    structured_output: z.unknown().optional(),
-    num_turns: z.number().optional(),
-    usage: ClaudeUsageSchema.optional(),
-    total_cost_usd: z.number().optional(),
-    duration_ms: z.number().optional(),
-});
-
 export const SlackFixSummarySchema = FixResultSchema.extend({
     prUrl: z.string().nullable().default(null),
     costUsd: z.number().nullable().default(null),
@@ -98,7 +80,6 @@ export const LedgerSchema = z.object({
 export type AnalysisReport = z.infer<typeof AnalysisReportSchema>;
 export type FixResult = z.infer<typeof FixResultSchema>;
 export type SlackFixSummary = z.infer<typeof SlackFixSummarySchema>;
-export type ClaudeResult = z.infer<typeof ClaudeResultSchema>;
 export type SkipReason = z.infer<typeof SkipReasonSchema>;
 export type LedgerEntry = z.infer<typeof LedgerEntrySchema>;
 export type Ledger = z.infer<typeof LedgerSchema>;

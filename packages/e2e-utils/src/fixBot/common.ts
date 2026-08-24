@@ -1,21 +1,17 @@
-import { spawnSync } from 'node:child_process';
 import {
-    closeSync,
-    existsSync,
-    openSync,
-    readFileSync,
-    readdirSync,
-    unlinkSync,
-    writeFileSync,
-} from 'node:fs';
-import { tmpdir } from 'node:os';
+    AbortError,
+    type Options,
+    type SDKMessage,
+    type SDKResultMessage,
+    query,
+} from '@anthropic-ai/claude-agent-sdk';
+import { formatMessage } from 'claude-pretty-printer';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { log, warn } from '../logger';
 import {
     type AgentName,
-    type ClaudeResult,
-    ClaudeResultSchema,
     type Ledger,
     LedgerSchema,
     type SlackFixSummary,
@@ -63,73 +59,75 @@ export function readSummaries(summariesDir: string | undefined): SlackFixSummary
     return parsedSummaries;
 }
 
-export interface ClaudeRunResult {
-    output: string;
-    status: number | null;
-    signal: NodeJS.Signals | null;
-    spawnError: Error | undefined;
+/** Prefers subprocess stderr, which usually holds the real cause, over the wrapper message. */
+export function getErrorText(err: unknown): string {
+    const stderr = (err as { stderr?: unknown })?.stderr;
+    let detail = '';
+    if (typeof stderr === 'string') {
+        detail = stderr.trim();
+    } else if (Buffer.isBuffer(stderr)) {
+        detail = stderr.toString('utf-8').trim();
+    }
+
+    if (detail) return detail;
+
+    return err instanceof Error ? err.message : String(err);
 }
 
-export function runClaude(opts: {
+export interface AgentRunResult {
+    result: SDKResultMessage | null;
+    timedOut: boolean;
+    error: string | undefined;
+}
+
+export interface RunAgentOptions {
     root: string;
-    args: string[];
-    input: string;
-    tmpPrefix: string;
-    timeoutMs?: number;
-}): ClaudeRunResult {
-    const { root, args, input, tmpPrefix, timeoutMs } = opts;
+    agent: AgentName;
+    prompt: string;
+    model: string;
+    outputSchema: Record<string, unknown>;
+    maxBudgetUsd: number;
+    timeoutMs: number;
+    mcpServers?: Options['mcpServers'];
+    allowedTools?: string[];
+}
 
-    const env = { ...process.env };
-    // Prevents an internal Claude Code setting from accidentally being inherited
-    delete env['MCP_CONNECTION_NONBLOCKING'];
+const MAX_LOGGED_ERROR_CHARS = 400;
 
-    const tmpFile = join(tmpdir(), `${tmpPrefix}-${Date.now()}.json`);
-    const stdoutFd = openSync(tmpFile, 'w');
+// Keeps only truncated error content for tool_result blocks
+function summarizeToolResults(message: SDKMessage): SDKMessage {
+    if (message.type !== 'user' || typeof message.message.content === 'string') {
+        return message;
+    }
 
-    const result = spawnSync(join(root, 'node_modules/.bin/claude'), args, {
-        input,
-        cwd: root,
-        env,
-        stdio: ['pipe', stdoutFd, 'inherit'],
-        timeout: timeoutMs,
-        killSignal: 'SIGTERM',
+    const toolContent = message.message.content.map(block => {
+        if (block.type !== 'tool_result') {
+            return block;
+        }
+
+        const body =
+            typeof block.content === 'string' ? block.content : JSON.stringify(block.content ?? []);
+
+        if (!block.is_error) {
+            return { ...block, content: `[${body.length} chars]` };
+        }
+
+        const truncated = body.length > MAX_LOGGED_ERROR_CHARS;
+
+        return {
+            ...block,
+            content: truncated ? `${body.slice(0, MAX_LOGGED_ERROR_CHARS)}…` : body,
+        };
     });
 
-    closeSync(stdoutFd);
-    const output = readFileSync(tmpFile, 'utf-8');
-    unlinkSync(tmpFile);
-
-    return { output, status: result.status, signal: result.signal, spawnError: result.error };
+    return { ...message, message: { ...message.message, content: toolContent } };
 }
 
-function parseEnvelopeEntries(rawOutput: string): unknown[] | null {
+function logAgentMessage(message: SDKMessage) {
     try {
-        const parsed: unknown = JSON.parse(rawOutput.trim());
-
-        return Array.isArray(parsed) ? parsed : [parsed];
+        log(formatMessage(summarizeToolResults(message), false));
     } catch {
-        return null;
-    }
-}
-
-function findResultEntry(entries: unknown[]): ClaudeResult | null {
-    const resultEntry = entries
-        .map(entry => ClaudeResultSchema.safeParse(entry))
-        .find(parsed => parsed.success && parsed.data.type === 'result');
-
-    return resultEntry?.success ? resultEntry.data : null;
-}
-
-function logResultToTerminal(agentName: AgentName, claudeResult: ClaudeResult): void {
-    const RESULT_PREVIEW_LIMIT = 800;
-    const { total_cost_usd: totalCostUsd } = claudeResult;
-    log(`[${agentName}] subtype=${claudeResult.subtype ?? 'N/A'}`);
-    log(
-        `[${agentName}] total cost: ${totalCostUsd !== undefined ? `$${totalCostUsd.toFixed(4)}` : 'n/a'}`,
-    );
-
-    if (claudeResult.result) {
-        log(`${claudeResult.result.slice(0, RESULT_PREVIEW_LIMIT)}`);
+        log(`[${message.type} message could not be rendered]`);
     }
 }
 
@@ -146,24 +144,64 @@ function writeCostFile(totalCostUsd: number | undefined): void {
     }
 }
 
-export function processAgentOutput(rawOutput: string, agent: AgentName): ClaudeResult | null {
-    const entries = parseEnvelopeEntries(rawOutput);
-    if (!entries) {
-        warn(`[${agent}] agent output unparsable (${rawOutput.length} bytes)`);
+/**
+ * Runs one agent to completion, logging each message as it arrives and reporting
+ * final cost as it finishes.
+ */
+export async function runAgent({
+    root,
+    agent,
+    prompt,
+    model,
+    outputSchema,
+    maxBudgetUsd,
+    timeoutMs,
+    mcpServers,
+    allowedTools,
+}: RunAgentOptions): Promise<AgentRunResult> {
+    const env = { ...process.env };
+    // Prevents an internal Claude Code setting from accidentally being inherited
+    delete env['MCP_CONNECTION_NONBLOCKING'];
 
-        return null;
+    const abortController = new AbortController();
+    const timeout = setTimeout(() => abortController.abort(), timeoutMs);
+
+    let result: SDKResultMessage | null = null;
+    let error: string | undefined;
+
+    try {
+        for await (const message of query({
+            prompt,
+            options: {
+                cwd: root,
+                env,
+                abortController,
+                model,
+                permissionMode: 'auto',
+                maxBudgetUsd,
+                outputFormat: { type: 'json_schema', schema: outputSchema },
+                pathToClaudeCodeExecutable: join(root, 'node_modules/.bin/claude'),
+                strictMcpConfig: true,
+                mcpServers,
+                allowedTools,
+            },
+        })) {
+            logAgentMessage(message);
+
+            if (message.type === 'result') result = message;
+        }
+    } catch (e) {
+        // An abort surfaces as a thrown AbortError rather than a result message.
+        if (!(e instanceof AbortError)) error = getErrorText(e);
+    } finally {
+        clearTimeout(timeout);
     }
 
-    const result = findResultEntry(entries);
-    if (!result) {
-        warn(`[${agent}] no result entry found in agent output`);
+    const totalCostUsd = result?.total_cost_usd;
+    log(
+        `[${agent}] total cost: ${totalCostUsd !== undefined ? `$${totalCostUsd.toFixed(4)}` : 'n/a'}`,
+    );
+    writeCostFile(totalCostUsd);
 
-        return null;
-    }
-
-    logResultToTerminal(agent, result);
-
-    writeCostFile(result.total_cost_usd);
-
-    return result;
+    return { result, timedOut: abortController.signal.aborted, error };
 }

@@ -52,74 +52,167 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@anthropic-ai/claude-code-darwin-arm64@npm:2.1.216":
-  version: 2.1.216
-  resolution: "@anthropic-ai/claude-code-darwin-arm64@npm:2.1.216"
+"@anthropic-ai/claude-agent-sdk-darwin-arm64@npm:0.3.218":
+  version: 0.3.218
+  resolution: "@anthropic-ai/claude-agent-sdk-darwin-arm64@npm:0.3.218"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@anthropic-ai/claude-code-darwin-x64@npm:2.1.216":
-  version: 2.1.216
-  resolution: "@anthropic-ai/claude-code-darwin-x64@npm:2.1.216"
+"@anthropic-ai/claude-agent-sdk-darwin-x64@npm:0.3.218":
+  version: 0.3.218
+  resolution: "@anthropic-ai/claude-agent-sdk-darwin-x64@npm:0.3.218"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@anthropic-ai/claude-code-linux-arm64-musl@npm:2.1.216":
-  version: 2.1.216
-  resolution: "@anthropic-ai/claude-code-linux-arm64-musl@npm:2.1.216"
+"@anthropic-ai/claude-agent-sdk-linux-arm64-musl@npm:0.3.218":
+  version: 0.3.218
+  resolution: "@anthropic-ai/claude-agent-sdk-linux-arm64-musl@npm:0.3.218"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@anthropic-ai/claude-code-linux-arm64@npm:2.1.216":
-  version: 2.1.216
-  resolution: "@anthropic-ai/claude-code-linux-arm64@npm:2.1.216"
+"@anthropic-ai/claude-agent-sdk-linux-arm64@npm:0.3.218":
+  version: 0.3.218
+  resolution: "@anthropic-ai/claude-agent-sdk-linux-arm64@npm:0.3.218"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@anthropic-ai/claude-code-linux-x64-musl@npm:2.1.216":
-  version: 2.1.216
-  resolution: "@anthropic-ai/claude-code-linux-x64-musl@npm:2.1.216"
+"@anthropic-ai/claude-agent-sdk-linux-x64-musl@npm:0.3.218":
+  version: 0.3.218
+  resolution: "@anthropic-ai/claude-agent-sdk-linux-x64-musl@npm:0.3.218"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@anthropic-ai/claude-code-linux-x64@npm:2.1.216":
-  version: 2.1.216
-  resolution: "@anthropic-ai/claude-code-linux-x64@npm:2.1.216"
+"@anthropic-ai/claude-agent-sdk-linux-x64@npm:0.3.218":
+  version: 0.3.218
+  resolution: "@anthropic-ai/claude-agent-sdk-linux-x64@npm:0.3.218"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@anthropic-ai/claude-code-win32-arm64@npm:2.1.216":
-  version: 2.1.216
-  resolution: "@anthropic-ai/claude-code-win32-arm64@npm:2.1.216"
+"@anthropic-ai/claude-agent-sdk-win32-arm64@npm:0.3.218":
+  version: 0.3.218
+  resolution: "@anthropic-ai/claude-agent-sdk-win32-arm64@npm:0.3.218"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@anthropic-ai/claude-code-win32-x64@npm:2.1.216":
-  version: 2.1.216
-  resolution: "@anthropic-ai/claude-code-win32-x64@npm:2.1.216"
+"@anthropic-ai/claude-agent-sdk-win32-x64@npm:0.3.218":
+  version: 0.3.218
+  resolution: "@anthropic-ai/claude-agent-sdk-win32-x64@npm:0.3.218"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@anthropic-ai/claude-code@npm:2.1.216":
-  version: 2.1.216
-  resolution: "@anthropic-ai/claude-code@npm:2.1.216"
+"@anthropic-ai/claude-agent-sdk@npm:0.3.218":
+  version: 0.3.218
+  resolution: "@anthropic-ai/claude-agent-sdk@npm:0.3.218"
   dependencies:
-    "@anthropic-ai/claude-code-darwin-arm64": "npm:2.1.216"
-    "@anthropic-ai/claude-code-darwin-x64": "npm:2.1.216"
-    "@anthropic-ai/claude-code-linux-arm64": "npm:2.1.216"
-    "@anthropic-ai/claude-code-linux-arm64-musl": "npm:2.1.216"
-    "@anthropic-ai/claude-code-linux-x64": "npm:2.1.216"
-    "@anthropic-ai/claude-code-linux-x64-musl": "npm:2.1.216"
-    "@anthropic-ai/claude-code-win32-arm64": "npm:2.1.216"
-    "@anthropic-ai/claude-code-win32-x64": "npm:2.1.216"
+    "@anthropic-ai/claude-agent-sdk-darwin-arm64": "npm:0.3.218"
+    "@anthropic-ai/claude-agent-sdk-darwin-x64": "npm:0.3.218"
+    "@anthropic-ai/claude-agent-sdk-linux-arm64": "npm:0.3.218"
+    "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "npm:0.3.218"
+    "@anthropic-ai/claude-agent-sdk-linux-x64": "npm:0.3.218"
+    "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "npm:0.3.218"
+    "@anthropic-ai/claude-agent-sdk-win32-arm64": "npm:0.3.218"
+    "@anthropic-ai/claude-agent-sdk-win32-x64": "npm:0.3.218"
+  peerDependencies:
+    "@anthropic-ai/sdk": ">=0.93.0"
+    "@modelcontextprotocol/sdk": ^1.29.0
+    zod: ^4.0.0
+  dependenciesMeta:
+    "@anthropic-ai/claude-agent-sdk-darwin-arm64":
+      optional: true
+    "@anthropic-ai/claude-agent-sdk-darwin-x64":
+      optional: true
+    "@anthropic-ai/claude-agent-sdk-linux-arm64":
+      optional: true
+    "@anthropic-ai/claude-agent-sdk-linux-arm64-musl":
+      optional: true
+    "@anthropic-ai/claude-agent-sdk-linux-x64":
+      optional: true
+    "@anthropic-ai/claude-agent-sdk-linux-x64-musl":
+      optional: true
+    "@anthropic-ai/claude-agent-sdk-win32-arm64":
+      optional: true
+    "@anthropic-ai/claude-agent-sdk-win32-x64":
+      optional: true
+  checksum: 10/bc53928f649de6ed405a984fc66683651c0130c6e1326faec5c4acfb718d678c986cb0b64257317cb760fbfba65b3e2489da96030fc6a2b8fa16a2e2f28adcd1
+  languageName: node
+  linkType: hard
+
+"@anthropic-ai/claude-code-darwin-arm64@npm:2.1.218":
+  version: 2.1.218
+  resolution: "@anthropic-ai/claude-code-darwin-arm64@npm:2.1.218"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@anthropic-ai/claude-code-darwin-x64@npm:2.1.218":
+  version: 2.1.218
+  resolution: "@anthropic-ai/claude-code-darwin-x64@npm:2.1.218"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@anthropic-ai/claude-code-linux-arm64-musl@npm:2.1.218":
+  version: 2.1.218
+  resolution: "@anthropic-ai/claude-code-linux-arm64-musl@npm:2.1.218"
+  conditions: os=linux & cpu=arm64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@anthropic-ai/claude-code-linux-arm64@npm:2.1.218":
+  version: 2.1.218
+  resolution: "@anthropic-ai/claude-code-linux-arm64@npm:2.1.218"
+  conditions: os=linux & cpu=arm64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@anthropic-ai/claude-code-linux-x64-musl@npm:2.1.218":
+  version: 2.1.218
+  resolution: "@anthropic-ai/claude-code-linux-x64-musl@npm:2.1.218"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@anthropic-ai/claude-code-linux-x64@npm:2.1.218":
+  version: 2.1.218
+  resolution: "@anthropic-ai/claude-code-linux-x64@npm:2.1.218"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@anthropic-ai/claude-code-win32-arm64@npm:2.1.218":
+  version: 2.1.218
+  resolution: "@anthropic-ai/claude-code-win32-arm64@npm:2.1.218"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@anthropic-ai/claude-code-win32-x64@npm:2.1.218":
+  version: 2.1.218
+  resolution: "@anthropic-ai/claude-code-win32-x64@npm:2.1.218"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@anthropic-ai/claude-code@npm:2.1.218":
+  version: 2.1.218
+  resolution: "@anthropic-ai/claude-code@npm:2.1.218"
+  dependencies:
+    "@anthropic-ai/claude-code-darwin-arm64": "npm:2.1.218"
+    "@anthropic-ai/claude-code-darwin-x64": "npm:2.1.218"
+    "@anthropic-ai/claude-code-linux-arm64": "npm:2.1.218"
+    "@anthropic-ai/claude-code-linux-arm64-musl": "npm:2.1.218"
+    "@anthropic-ai/claude-code-linux-x64": "npm:2.1.218"
+    "@anthropic-ai/claude-code-linux-x64-musl": "npm:2.1.218"
+    "@anthropic-ai/claude-code-win32-arm64": "npm:2.1.218"
+    "@anthropic-ai/claude-code-win32-x64": "npm:2.1.218"
   dependenciesMeta:
     "@anthropic-ai/claude-code-darwin-arm64":
       optional: true
@@ -139,7 +232,7 @@ __metadata:
       optional: true
   bin:
     claude: bin/claude.exe
-  checksum: 10/f1b6cfcbf398b3b045090d9c1dbe937400026dd47e9f84ec48a975d82101627ce139af3fcca1ea279ae5203a0193b4fa92544a350e09819f77330bbb2f6186c9
+  checksum: 10/7e4b15c0bc12de65f21fd0330ee70895b5f9a5a5ed50a9ac9f838755841bd6ad55a8fd4e97d521657a7495d82b0e3b4c3ab06aa337ede4d0987a0c8d690985ad
   languageName: node
   linkType: hard
 
@@ -16971,15 +17064,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/e2e-utils@workspace:packages/e2e-utils"
   dependencies:
-    "@anthropic-ai/claude-code": "npm:2.1.216"
+    "@anthropic-ai/claude-agent-sdk": "npm:0.3.218"
+    "@anthropic-ai/claude-code": "npm:2.1.218"
     "@anthropic-ai/sdk": "npm:0.100.0"
     "@currents/mcp": "npm:^2.3.3"
     "@currents/playwright": "npm:^2.5.0"
     "@octokit/rest": "npm:^21.1.1"
     "@playwright/test": "npm:1.62.1"
+    "@trezor/eslint": "workspace:*"
     "@trezor/node-utils": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
+    claude-pretty-printer: "npm:1.5.0"
     dotenv: "npm:17.2.3"
     express: "npm:^5.2.1"
     tsx: "npm:^4.21.0"
@@ -23263,6 +23359,20 @@ __metadata:
   version: 2.5.1
   resolution: "classnames@npm:2.5.1"
   checksum: 10/58eb394e8817021b153bb6e7d782cfb667e4ab390cb2e9dac2fc7c6b979d1cc2b2a733093955fc5c94aa79ef5c8c89f11ab77780894509be6afbb91dddd79d15
+  languageName: node
+  linkType: hard
+
+"claude-pretty-printer@npm:1.5.0":
+  version: 1.5.0
+  resolution: "claude-pretty-printer@npm:1.5.0"
+  dependencies:
+    mri: "npm:^1.2.0"
+    picocolors: "npm:^1.1.1"
+  peerDependencies:
+    "@anthropic-ai/claude-agent-sdk": ">=0.1.0"
+  bin:
+    claude-pretty-printer: dist/cli.js
+  checksum: 10/e1e4849e52c1494652d8d8590307f56660d29bb3c38d1de5903b8196ed375eb0ba5d6c0aa72e33388056800b0dc928cda64c1ada4b89fe23140d0114a92dfc5d
   languageName: node
   linkType: hard
 
@@ -37253,7 +37363,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mri@npm:^1.1.0":
+"mri@npm:^1.1.0, mri@npm:^1.2.0":
   version: 1.2.0
   resolution: "mri@npm:1.2.0"
   checksum: 10/6775a1d2228bb9d191ead4efc220bd6be64f943ad3afd4dcb3b3ac8fc7b87034443f666e38805df38e8d047b29f910c3cc7810da0109af83e42c82c73bd3f6bc

@@ -4,13 +4,14 @@ import { join } from 'node:path';
 import { prettifyError } from 'zod';
 
 import { error, log } from '../logger';
-import { processAgentOutput, runClaude } from './common';
+import { runAgent } from './common';
 import { AnalysisReportSchema, FixResultJsonSchema, FixResultSchema } from './schemas';
 
-const MAX_BUDGET_USD = '10';
+const MODEL = 'claude-opus-5';
+const MAX_BUDGET_USD = 10;
 const TIMEOUT_MS = 3 * 60 * 60 * 1000; // 3 hours
 
-function main(): void {
+async function main(): Promise<void> {
     const reportPath = process.env.REPORT_PATH;
     const taskId = process.env.TASK_ID;
 
@@ -46,53 +47,41 @@ function main(): void {
 
     const prompt = `${readFileSync(join(fixAgentDir, 'FIX_AGENT.md'), 'utf-8')}\n\n---\n\n## Fix Task\n\n\`\`\`json\n${JSON.stringify(task, null, 2)}\n\`\`\`\n`;
 
-    const { output, status, spawnError } = runClaude({
+    const {
+        result,
+        timedOut,
+        error: runError,
+    } = await runAgent({
         root,
-        args: [
-            '--print',
-            '--verbose',
-            '--output-format',
-            'json',
-            '--json-schema',
-            JSON.stringify(FixResultJsonSchema),
-            '--settings',
-            join(fixAgentDir, 'settings.json'),
-            '--max-budget-usd',
-            MAX_BUDGET_USD,
-        ],
-        input: prompt,
-        tmpPrefix: `claude-fix-${task.id}`,
+        agent: 'nightlyFixer',
+        prompt,
+        model: MODEL,
+        outputSchema: FixResultJsonSchema,
+        maxBudgetUsd: MAX_BUDGET_USD,
         timeoutMs: TIMEOUT_MS,
     });
 
-    const agentResult = processAgentOutput(output, 'nightlyFixer');
-
-    if (spawnError) {
-        const timedOut = (spawnError as NodeJS.ErrnoException).code === 'ETIMEDOUT';
+    if (timedOut) {
         error(
-            timedOut
-                ? `Fix agent exceeded the ${TIMEOUT_MS / 60000}-minute timeout and was killed; no result produced.`
-                : `Failed to run claude: ${spawnError.message}`,
+            `Fix agent exceeded the ${TIMEOUT_MS / 60000}-minute timeout and was killed; no result produced.`,
         );
         process.exit(1);
     }
 
-    if (!agentResult) {
-        error('Could not parse Claude result envelope from fix agent output.');
+    if (runError) {
+        error(`Failed to run the fix agent: ${runError}`);
         process.exit(1);
     }
 
-    if (agentResult.subtype === 'error_max_structured_output_retries') {
-        error(
-            `Fix agent could not produce schema-conformant output after retries. Raw envelope:\n${output}`,
-        );
+    if (result?.subtype !== 'success') {
+        error(`Fix agent ended with '${result?.subtype ?? 'no result'}'; no result produced.`);
         process.exit(1);
     }
 
-    const fixResult = FixResultSchema.safeParse(agentResult.structured_output);
+    const fixResult = FixResultSchema.safeParse(result.structured_output);
     if (!fixResult.success) {
         error(
-            `structured output failed schema validation: ${prettifyError(fixResult.error)} \nRaw structured output:\n${JSON.stringify(agentResult.structured_output, null, 2)}`,
+            `structured output failed schema validation: ${prettifyError(fixResult.error)} \nRaw structured output:\n${JSON.stringify(result.structured_output, null, 2)}`,
         );
         process.exit(1);
     }
@@ -107,7 +96,9 @@ function main(): void {
     }
 
     log('Agent done.');
-    process.exit(status ?? 1);
 }
 
-main();
+main().catch(e => {
+    error(`Fix run failed: ${e instanceof Error ? e.message : e}`);
+    process.exit(1);
+});

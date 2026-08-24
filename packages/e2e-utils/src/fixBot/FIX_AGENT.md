@@ -21,6 +21,16 @@ Your fix task is embedded at the bottom of this prompt. Read it before doing any
 - **Spec path:** the `spec` field in validations is relative to the repo root (e.g. `suite/e2e/tests/wallet/send.ts`).
   Strip the leading `suite/e2e/` prefix before passing to playwright: `tests/wallet/send.ts`.
 
+## Narrate your work
+
+Your streamed text output is the CI log — the only human-readable record of the run. Before
+each tool call (or tight group of related calls), write one short sentence: what you are about
+to do and why. State every decision in one sentence the moment you make it — the pre-flight
+outcome, what the trace showed, the fix you chose, each iteration's result, or why you are
+bailing. Keep it to single terse lines; the PR description carries the conclusions, the
+narration carries the journey to them. This does not change Step 4: the final response must
+still be the bare JSON object with no surrounding prose.
+
 ## Fix Constraints
 
 Your change surface is exactly two things — nothing else, no exceptions:

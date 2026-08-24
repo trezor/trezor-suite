@@ -26,7 +26,7 @@ aggregate      → LLM usage dashboard
 
 ### Fix Agent Output Contract
 
-The harness captures each agent's structured JSON final answer (validated by `--json-schema`) and writes it to disk — the agents never write JSON themselves:
+Both agents run through `runAgent()` in `common.ts`, which drives the `@anthropic-ai/claude-agent-sdk` `query()` in-process (no `claude` CLI subprocess). It captures each agent's structured JSON final answer (validated against the schema passed as `outputFormat`) and writes it to disk — the agents never write JSON themselves:
 
 - **`fix-result.json`** — fix result, written by `fix.ts`:
     ```json
@@ -47,7 +47,7 @@ Neither file is committed. Each matrix job is self-contained: run agent → `pub
 
 ---
 
-Prompt: `ANALYSIS_AGENT.md` (self-contained, Steps 1–8). Steps 1–6 diagnose each failure; Step 7 clusters failures by shared root cause into **fix tasks**; Step 8 returns the structured report. The analysis agent has Currents MCP access (`mcp.json`); the fix agent does not.
+Prompt: `ANALYSIS_AGENT.md` (self-contained, Steps 1–8). Steps 1–6 diagnose each failure; Step 7 clusters failures by shared root cause into **fix tasks**; Step 8 returns the structured report. The analysis agent has Currents MCP access — the `currents` stdio server is declared inline in `analyze.ts` and passed to `runAgent()` as `mcpServers`; the fix agent gets none.
 
 **Outputs:** `report.md` (written by the agent, Step 6) and `report.json` (harness-captured structured output, Step 8).
 
@@ -113,7 +113,7 @@ Fix tasks are grouped by root cause, not by test or platform. The agent judges w
 
 ## Phase 2: Fix Agent (per fix task)
 
-One Claude Code invocation per fix task. Receives a single fix task entry from `report.json`.
+One `runAgent()` call per fix task. Receives a single fix task entry from `report.json`.
 
 ### Loop
 
