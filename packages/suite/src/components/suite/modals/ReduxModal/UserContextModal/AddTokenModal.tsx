@@ -106,7 +106,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 payload: {
                     networkSymbol: account.symbol,
                     addedNth: account.tokens ? account.tokens.length + 1 : 0,
-                    token: tokenInfo[0]?.symbol?.toLowerCase() || '',
+                    token: tokenInfo[0]?.symbol || '',
                 },
             });
         }
