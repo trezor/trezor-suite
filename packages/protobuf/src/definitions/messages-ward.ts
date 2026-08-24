@@ -95,14 +95,6 @@ export const WardEntryAck = Type.Object(
     { $id: 'WardEntryAck' },
 );
 
-export type WardEntryRequest = Static<typeof WardEntryRequest>;
-export const WardEntryRequest = Type.Object(
-    {
-        entry_key: Type.Optional(Type.String()),
-    },
-    { $id: 'WardEntryRequest' },
-);
-
 export type WardEraseCachedEntry = Static<typeof WardEraseCachedEntry>;
 export const WardEraseCachedEntry = Type.Object(
     {
@@ -121,21 +113,6 @@ export const WardFlushQueue = Type.Object(
     { $id: 'WardFlushQueue' },
 );
 
-export type WardFlushQueueAck = Static<typeof WardFlushQueueAck>;
-export const WardFlushQueueAck = Type.Object(
-    {
-        entry_key: Type.Optional(Type.String()),
-        identity: Type.Optional(WardLeafIdentity),
-        content: Type.Optional(WardLeafContent),
-        counter: Type.Optional(Type.Number()),
-        mac: Type.Optional(Type.String()),
-        auth_commit: Type.Optional(Type.String()),
-        auth_sig: Type.Optional(Type.String()),
-        remaining: Type.Number(),
-    },
-    { $id: 'WardFlushQueueAck' },
-);
-
 export type WardGetEntry = Static<typeof WardGetEntry>;
 export const WardGetEntry = Type.Object(
     {
@@ -143,39 +120,6 @@ export const WardGetEntry = Type.Object(
         identifier: Type.Optional(Type.String()),
     },
     { $id: 'WardGetEntry' },
-);
-
-export type WardIngestAttestation = Static<typeof WardIngestAttestation>;
-export const WardIngestAttestation = Type.Object(
-    {
-        counter: Type.Optional(Type.Number()),
-        mac: Type.Optional(Type.String()),
-        wm_signature: Type.Optional(Type.String()),
-        timestamp: Type.Optional(Type.Number()),
-    },
-    { $id: 'WardIngestAttestation' },
-);
-
-export type WardIngestAttestationAck = Static<typeof WardIngestAttestationAck>;
-export const WardIngestAttestationAck = Type.Object(
-    {
-        counter: Type.Optional(Type.Number()),
-    },
-    { $id: 'WardIngestAttestationAck' },
-);
-
-export type WardLeafAck = Static<typeof WardLeafAck>;
-export const WardLeafAck = Type.Object(
-    {
-        entry_key: Type.String(),
-        identity: Type.Optional(WardLeafIdentity),
-        content: Type.Optional(WardLeafContent),
-        counter: Type.Optional(Type.Number()),
-        mac: Type.Optional(Type.String()),
-        auth_commit: Type.Optional(Type.String()),
-        auth_sig: Type.Optional(Type.String()),
-    },
-    { $id: 'WardLeafAck' },
 );
 
 export type WardPinCachedEntry = Static<typeof WardPinCachedEntry>;
@@ -242,65 +186,6 @@ export const WardQueueSetEntry = Type.Object(
     { $id: 'WardQueueSetEntry' },
 );
 
-export type WardReconcile = Static<typeof WardReconcile>;
-export const WardReconcile = Type.Object(
-    {
-        root: Type.Optional(Type.String()),
-    },
-    { $id: 'WardReconcile' },
-);
-
-export type WardReconcileAck = Static<typeof WardReconcileAck>;
-export const WardReconcileAck = Type.Object(
-    {
-        counter: Type.Optional(Type.Number()),
-        new_root: Type.Optional(Type.String()),
-    },
-    { $id: 'WardReconcileAck' },
-);
-
-export type WardRecoverCounter = Static<typeof WardRecoverCounter>;
-export const WardRecoverCounter = Type.Object(
-    {
-        counter: Type.Optional(Type.Number()),
-        mac: Type.Optional(Type.String()),
-        wm_signature: Type.Optional(Type.String()),
-        timestamp: Type.Optional(Type.Number()),
-    },
-    { $id: 'WardRecoverCounter' },
-);
-
-export type WardRecoverCounterAck = Static<typeof WardRecoverCounterAck>;
-export const WardRecoverCounterAck = Type.Object(
-    {
-        counter: Type.Optional(Type.Number()),
-    },
-    { $id: 'WardRecoverCounterAck' },
-);
-
-export type WardRollback = Static<typeof WardRollback>;
-export const WardRollback = Type.Object(
-    {
-        to_root: Type.Optional(Type.String()),
-        auth_commit: Type.Optional(Type.String()),
-        from_counter: Type.Optional(Type.Number()),
-        from_root: Type.Optional(Type.String()),
-        to_counter: Type.Optional(Type.Number()),
-    },
-    { $id: 'WardRollback' },
-);
-
-export type WardRollbackAck = Static<typeof WardRollbackAck>;
-export const WardRollbackAck = Type.Object(
-    {
-        counter: Type.Optional(Type.Number()),
-        new_root: Type.Optional(Type.String()),
-        auth_commit: Type.Optional(Type.String()),
-        auth_sig: Type.Optional(Type.String()),
-    },
-    { $id: 'WardRollbackAck' },
-);
-
 export type WardSetEntry = Static<typeof WardSetEntry>;
 export const WardSetEntry = Type.Object(
     {
@@ -309,34 +194,4 @@ export const WardSetEntry = Type.Object(
         value: Type.Optional(Type.String()),
     },
     { $id: 'WardSetEntry' },
-);
-
-export type WardSync = Static<typeof WardSync>;
-export const WardSync = Type.Record(Type.Never(), Type.Never(), { $id: 'WardSync' });
-
-export type WardSyncAck = Static<typeof WardSyncAck>;
-export const WardSyncAck = Type.Object(
-    {
-        nonce: Type.Optional(Type.String()),
-        ward_id: Type.Optional(Type.String()),
-        counter: Type.Optional(Type.Number()),
-    },
-    { $id: 'WardSyncAck' },
-);
-
-export type WardVerifyChain = Static<typeof WardVerifyChain>;
-export const WardVerifyChain = Type.Object(
-    {
-        links: Type.Array(WardChainLink),
-    },
-    { $id: 'WardVerifyChain' },
-);
-
-export type WardVerifyChainAck = Static<typeof WardVerifyChainAck>;
-export const WardVerifyChainAck = Type.Object(
-    {
-        counter: Type.Optional(Type.Number()),
-        new_root: Type.Optional(Type.String()),
-    },
-    { $id: 'WardVerifyChainAck' },
 );

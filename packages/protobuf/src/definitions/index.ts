@@ -318,14 +318,9 @@ import {
 import {
     WardDeleteEntry,
     WardEntryAck,
-    WardEntryRequest,
     WardEraseCachedEntry,
     WardFlushQueue,
-    WardFlushQueueAck,
     WardGetEntry,
-    WardIngestAttestation,
-    WardIngestAttestationAck,
-    WardLeafAck,
     WardPinCachedEntry,
     WardQueueDeleteAck,
     WardQueueDeleteEntry,
@@ -333,18 +328,40 @@ import {
     WardQueueGetEntry,
     WardQueueSetAck,
     WardQueueSetEntry,
+    WardSetEntry,
+} from './messages-ward';
+import {
+    WardEntryRequest,
+    WardFlushQueueAck,
+    WardIngestAttestation,
+    WardIngestAttestationAck,
+    WardLeafAck,
     WardReconcile,
     WardReconcileAck,
     WardRecoverCounter,
     WardRecoverCounterAck,
     WardRollback,
     WardRollbackAck,
-    WardSetEntry,
     WardSync,
     WardSyncAck,
     WardVerifyChain,
     WardVerifyChainAck,
-} from './messages-ward';
+} from './messages-ward-connect';
+import {
+    WardFlushQueueApplied,
+    WardMutationApplied,
+    WardPublish,
+    WardPublishAck,
+    WardPublishConflict,
+    WardResetService,
+    WardResetServiceAck,
+    WardServiceFetch,
+    WardServiceOpen,
+    WardServiceOpenAck,
+    WardSyncRequest,
+    WardSyncRequired,
+    WardSyncResponse,
+} from './messages-ward-service';
 
 export type * from './options';
 export * from './messages-common';
@@ -371,6 +388,8 @@ export * from './messages-tezos';
 export * from './messages-thp';
 export * from './messages-tron';
 export * from './messages-ward';
+export * from './messages-ward-connect';
+export * from './messages-ward-service';
 export type * from './messages';
 
 export type MessageType = Static<typeof MessageType>;
@@ -670,15 +689,18 @@ export const MessageType = Type.Object(
         WardGetEntry,
         WardSetEntry,
         WardDeleteEntry,
-        WardEntryRequest,
         WardEntryAck,
-        WardLeafAck,
         WardQueueSetEntry,
         WardQueueSetAck,
         WardQueueDeleteEntry,
         WardQueueDeleteAck,
         WardQueueGetEntry,
         WardQueueGetAck,
+        WardPinCachedEntry,
+        WardEraseCachedEntry,
+        WardFlushQueue,
+        WardEntryRequest,
+        WardLeafAck,
         WardFlushQueueAck,
         WardVerifyChain,
         WardVerifyChainAck,
@@ -692,9 +714,19 @@ export const MessageType = Type.Object(
         WardRollbackAck,
         WardRecoverCounter,
         WardRecoverCounterAck,
-        WardPinCachedEntry,
-        WardEraseCachedEntry,
-        WardFlushQueue,
+        WardServiceOpen,
+        WardServiceOpenAck,
+        WardSyncRequest,
+        WardSyncResponse,
+        WardServiceFetch,
+        WardSyncRequired,
+        WardPublish,
+        WardPublishAck,
+        WardPublishConflict,
+        WardMutationApplied,
+        WardFlushQueueApplied,
+        WardResetService,
+        WardResetServiceAck,
     },
     { $id: 'MessageType' },
 );
@@ -883,15 +915,21 @@ export type WireInMessage =
     | 'WardQueueSetEntry'
     | 'WardQueueDeleteEntry'
     | 'WardQueueGetEntry'
+    | 'WardPinCachedEntry'
+    | 'WardEraseCachedEntry'
+    | 'WardFlushQueue'
     | 'WardVerifyChain'
     | 'WardSync'
     | 'WardIngestAttestation'
     | 'WardReconcile'
     | 'WardRollback'
     | 'WardRecoverCounter'
-    | 'WardPinCachedEntry'
-    | 'WardEraseCachedEntry'
-    | 'WardFlushQueue';
+    | 'WardServiceOpen'
+    | 'WardSyncResponse'
+    | 'WardSyncRequired'
+    | 'WardPublishAck'
+    | 'WardPublishConflict'
+    | 'WardResetService';
 
 export type WireOutMessage =
     | 'Success'
@@ -997,18 +1035,25 @@ export type WireOutMessage =
     | 'TronAddress'
     | 'TronContractRequest'
     | 'TronSignature'
-    | 'WardEntryRequest'
-    | 'WardLeafAck'
     | 'WardQueueSetAck'
     | 'WardQueueDeleteAck'
     | 'WardQueueGetAck'
+    | 'WardEntryRequest'
+    | 'WardLeafAck'
     | 'WardFlushQueueAck'
     | 'WardVerifyChainAck'
     | 'WardSyncAck'
     | 'WardIngestAttestationAck'
     | 'WardReconcileAck'
     | 'WardRollbackAck'
-    | 'WardRecoverCounterAck';
+    | 'WardRecoverCounterAck'
+    | 'WardServiceOpenAck'
+    | 'WardSyncRequest'
+    | 'WardServiceFetch'
+    | 'WardPublish'
+    | 'WardMutationApplied'
+    | 'WardFlushQueueApplied'
+    | 'WardResetServiceAck';
 
 export type MessageKey = keyof MessageType;
 
