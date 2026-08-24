@@ -1,6 +1,7 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
+import type { wardGetEntry } from './wardGetEntry';
 import type { wardQueueDeleteEntry } from './wardQueueDeleteEntry';
 import type { wardQueueGetEntry } from './wardQueueGetEntry';
 import type { wardQueueSetEntry } from './wardQueueSetEntry';
@@ -10,6 +11,7 @@ import type { wardSetEntry } from './wardSetEntry';
 // that applies now and a write the device merely holds are different operations with different
 // results, and one method returning either would put that distinction beyond the caller's reach.
 export const TrezorConnectWard = Type.Object({
+    wardGetEntry: Type.Unsafe<typeof wardGetEntry>(),
     wardSetEntry: Type.Unsafe<typeof wardSetEntry>(),
     wardQueueSetEntry: Type.Unsafe<typeof wardQueueSetEntry>(),
     wardQueueGetEntry: Type.Unsafe<typeof wardQueueGetEntry>(),
