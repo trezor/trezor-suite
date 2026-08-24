@@ -54,7 +54,6 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await expect(page.getByTestId('@sign-verify/signature')).toHaveValue(SIGNATURE);
         await expect(page.getByTestId('@sign-verify/outcome/signed')).toBeVisible();
-        // Signing is done, so the submit button gives way to the reset button.
         await expect(page.getByTestId('@sign-verify/clear')).toBeVisible();
     });
 
@@ -92,8 +91,7 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
             };
         });
 
-        // Regression guard for #20504: the copy button must hand over the Electrum signature the
-        // field shows, not a Trezor-format block built around it.
+        // Regression guard for #20504.
         await page.getByTestId('@sign-verify/copy-signature').click();
         await expect
             .poll(() => page.evaluate(() => (window as any).__clipboardCapture as string))

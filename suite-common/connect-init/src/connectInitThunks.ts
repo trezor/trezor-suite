@@ -155,8 +155,7 @@ export const connectInitThunk = createThunk<
 
         dispatch(lockDevice(true));
 
-        // The lock is a counter, so a call that rejects instead of resolving an error payload would
-        // leave it raised for the rest of the session, disabling every device action in the app.
+        // The lock is a counter: leaving it raised disables every device action until a reload.
         try {
             return await synchronize(() => original(params));
         } finally {
