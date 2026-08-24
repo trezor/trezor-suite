@@ -1,13 +1,15 @@
+import { config } from 'dotenv';
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { prettifyError } from 'zod';
 
 import { error, log } from '../logger';
-import { loadLedger, processAgentOutput, runClaude } from './common';
+import { loadLedger, runAgent } from './common';
 import { AnalysisReportJsonSchema, AnalysisReportSchema } from './schemas';
 
-const MAX_BUDGET_USD = '10';
+const MODEL = 'claude-opus-4-8';
+const MAX_BUDGET_USD = 10;
 const TIMEOUT_MS = 45 * 60 * 1000;
 
 function buildLedgerPromptSection(ledgerPath: string): string {
@@ -20,10 +22,12 @@ function buildLedgerPromptSection(ledgerPath: string): string {
     return `\n\n---\n\n## Known-failures ledger\n\nFailures seen on previous runs. Follow the matching rules in the prompt.\n\n\`\`\`json\n${JSON.stringify(ledger.entries, null, 2)}\n\`\`\`\n`;
 }
 
-function main(): void {
+async function main(): Promise<void> {
     const root = execFileSync('git', ['rev-parse', '--show-toplevel'], {
         encoding: 'utf-8',
     }).trim();
+
+    config({ path: join(root, 'packages/e2e-utils/.env') });
 
     if (!process.env.CURRENTS_API_KEY) {
         error('CURRENTS_API_KEY is not set. It must be provided via the workflow environment.');
@@ -42,66 +46,48 @@ function main(): void {
     log('Starting nightly test failure analysis...');
 
     const {
-        output: claudeOutput,
-        status,
-        spawnError,
-    } = runClaude({
+        result,
+        timedOut,
+        error: runError,
+    } = await runAgent({
         root,
-        args: [
-            '--print',
-            '--verbose',
-            '--output-format',
-            'json',
-            '--json-schema',
-            JSON.stringify(AnalysisReportJsonSchema),
-            '--settings',
-            join(botDir, 'settings.json'),
-            '--mcp-config',
-            join(botDir, 'mcp.json'),
-            '--strict-mcp-config',
-            '--max-budget-usd',
-            MAX_BUDGET_USD,
-        ],
-        input: analysisPromptWithLedger,
-        tmpPrefix: 'claude-analyze',
+        agent: 'nightlyAnalyzer',
+        prompt: analysisPromptWithLedger,
+        model: MODEL,
+        outputSchema: AnalysisReportJsonSchema,
+        maxBudgetUsd: MAX_BUDGET_USD,
         timeoutMs: TIMEOUT_MS,
+        mcpServers: {
+            currents: {
+                command: 'npx',
+                args: ['-y', '@currents/mcp'],
+                env: { CURRENTS_API_KEY: process.env.CURRENTS_API_KEY },
+            },
+        },
+        allowedTools: ['mcp__currents__*'],
     });
 
-    const agentResult = processAgentOutput(claudeOutput, 'nightlyAnalyzer');
-
-    if (spawnError) {
-        const timedOut = (spawnError as NodeJS.ErrnoException).code === 'ETIMEDOUT';
+    if (timedOut) {
         error(
-            timedOut
-                ? `Analysis agent exceeded the ${TIMEOUT_MS / 60000}-minute timeout and was killed; no report produced.`
-                : `Failed to run claude: ${spawnError.message}`,
+            `Analysis agent exceeded the ${TIMEOUT_MS / 60000}-minute timeout and was killed; no report produced.`,
         );
         process.exit(1);
     }
 
-    if (!agentResult) {
-        error('Could not parse Claude result envelope from analysis agent output.');
+    if (runError) {
+        error(`Failed to run the analysis agent: ${runError}`);
         process.exit(1);
     }
 
-    if (agentResult.subtype === 'error_max_structured_output_retries') {
-        // Persist the raw CLI envelope for troubleshooting
-        const envelopePath = join(reportDir, 'analyze-envelope.json');
-        writeFileSync(envelopePath, claudeOutput);
-        error(
-            `Analysis agent could not produce schema-conformant output after retries. Raw envelope saved to ${envelopePath}.`,
-        );
+    if (result?.subtype !== 'success') {
+        error(`Analysis agent ended with '${result?.subtype ?? 'no result'}'; no report produced.`);
         process.exit(1);
     }
 
     const reportJsonPath = join(reportDir, 'report.json');
-    const report = AnalysisReportSchema.safeParse(agentResult.structured_output);
+    const report = AnalysisReportSchema.safeParse(result.structured_output);
     if (!report.success) {
-        // Persist the raw structured output anyway for troubleshooting
-        writeFileSync(
-            reportJsonPath,
-            `${JSON.stringify(agentResult.structured_output, null, 2)}\n`,
-        );
+        writeFileSync(reportJsonPath, `${JSON.stringify(result.structured_output, null, 2)}\n`);
         error(`structured output failed schema validation: ${prettifyError(report.error)}`);
         process.exit(1);
     }
@@ -109,8 +95,9 @@ function main(): void {
     writeFileSync(reportJsonPath, `${JSON.stringify(report.data, null, 2)}\n`);
 
     log('Agent done.');
-
-    process.exit(status ?? 1);
 }
 
-main();
+main().catch(e => {
+    error(`Analysis run failed: ${e instanceof Error ? e.message : e}`);
+    process.exit(1);
+});

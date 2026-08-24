@@ -3,6 +3,7 @@ import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs
 import { join } from 'node:path';
 
 import { error, log } from '../logger';
+import { getErrorText } from './common';
 import { type FixResult, FixResultSchema, type SlackFixSummary } from './schemas';
 
 const BASE_BRANCH = 'develop';
@@ -28,20 +29,6 @@ function readCostUsd(): number | null {
     } catch {
         return null;
     }
-}
-
-function getErrorText(err: unknown): string {
-    const stderr = (err as { stderr?: unknown })?.stderr;
-    let detail = '';
-    if (typeof stderr === 'string') {
-        detail = stderr.trim();
-    } else if (Buffer.isBuffer(stderr)) {
-        detail = stderr.toString('utf-8').trim();
-    }
-
-    if (detail) return detail;
-
-    return err instanceof Error ? err.message : String(err);
 }
 
 function sleepSync(ms: number): void {

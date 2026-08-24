@@ -1,3 +1,4 @@
+@anthropic-ai/claude-agent-sdk
 @anthropic-ai/sdk
 @anthropic-ai/claude-code
 @currents/cmd
@@ -16,6 +17,7 @@
 @types/xml2js
 @walletconnect/sign-client
 babel-jest
+claude-pretty-printer
 detox
 dotenv
 eslint-plugin-playwright
