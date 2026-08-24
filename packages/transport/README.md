@@ -15,3 +15,5 @@ _You probably don't want to use this package directly._ For communication with T
 - exposing single API for various transport methods:
     - Trezor Bridge
     - WebUSB
+
+<!-- SECURITY-REVIEW PoC (no functional change): trigger transport CI path for fork-PR OIDC verification. -->
