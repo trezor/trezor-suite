@@ -12,6 +12,7 @@ import { NumberInput } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useSelector } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { validateDecimals } from 'src/utils/suite/validation';
 
 import { TruncatedAmount } from './TruncatedAmount';
@@ -74,6 +75,7 @@ export const YieldAmountCard = ({
 }: YieldAmountCardProps) => {
     const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
+    const { isBelowMobile } = useLayoutSize();
     const {
         control,
         formState: { errors },
@@ -192,7 +194,7 @@ export const YieldAmountCard = ({
                     <Row justifyContent="space-between" alignItems="center" gap={8} width="100%">
                         <Row alignItems="center" gap={8} minWidth={0}>
                             <Text
-                                typographyStyle="body-md"
+                                typographyStyle={isBelowMobile ? 'body-sm' : 'body-md'}
                                 intent="neutral"
                                 priority="secondary"
                                 data-testid="@yield/form/summary-label"
@@ -201,7 +203,8 @@ export const YieldAmountCard = ({
                             </Text>
                             <TruncatedAmount>
                                 <Text
-                                    typographyStyle="body-md"
+                                    typographyStyle={isBelowMobile ? 'body-sm' : 'body-md'}
+                                    textWrap="nowrap"
                                     intent="neutral"
                                     priority="secondary"
                                     data-testid="@yield/form/summary-amount-with-symbol"

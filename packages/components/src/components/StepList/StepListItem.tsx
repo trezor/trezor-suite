@@ -155,6 +155,12 @@ const Line = styled.div<{
     $bulletGap: SpacingValue;
     $lineWidth: StepLineWidth;
 }>`
+    ${({ $lineWidth }) =>
+        $lineWidth === 0 &&
+        css`
+            display: none;
+        `}
+
     ${({ $direction, $bulletGap, $lineWidth }) =>
         $direction === 'horizontal'
             ? css`
@@ -181,7 +187,17 @@ const Line = styled.div<{
               `}
 `;
 
-const Content = styled.div<{ $itemGap: SpacingValue; $titleGap: SpacingValue }>`
+const Content = styled.div<{
+    $itemGap: SpacingValue;
+    $titleGap: SpacingValue;
+    $isFullWidth: boolean;
+}>`
+    ${({ $isFullWidth }) =>
+        $isFullWidth &&
+        css`
+            grid-column: 1 / -1;
+        `}
+
     padding-bottom: ${({ $itemGap }) => `${$itemGap}px`};
 
     &:not(:empty) {
@@ -208,8 +224,16 @@ export const StepListItem = ({
     'data-testid': dataTestId,
     children,
 }: StepListItemProps) => {
-    const { itemGap, bulletGap, titleGap, bulletSize, isOrdered, direction, lineWidth } =
-        useStepList();
+    const {
+        itemGap,
+        bulletGap,
+        titleGap,
+        bulletSize,
+        isOrdered,
+        isContentFullWidth,
+        direction,
+        lineWidth,
+    } = useStepList();
     const isClickable = !!onClick;
 
     const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -270,7 +294,11 @@ export const StepListItem = ({
                 </Title>
                 <Line $direction={direction} $bulletGap={bulletGap} $lineWidth={lineWidth} />
                 {direction === 'vertical' && (
-                    <Content $itemGap={itemGap} $titleGap={titleGap}>
+                    <Content
+                        $itemGap={itemGap}
+                        $titleGap={titleGap}
+                        $isFullWidth={isContentFullWidth}
+                    >
                         {children && (
                             <Text as="div" typographyStyle="body-sm">
                                 {children}
