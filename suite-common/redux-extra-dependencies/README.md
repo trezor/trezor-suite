@@ -2,8 +2,8 @@
 
 Suite-specific Redux extra-dependency contracts shared by the desktop and mobile composition roots.
 
-This package owns the legacy `ExtraDependencies` and `CustomThunkAPI` types. New thunks should
-declare their state and dependency requirements explicitly instead of depending on the global type.
+This package owns the legacy `ExtraDependencies` composition-root contract. Thunks declare their
+state and dependency requirements explicitly instead of depending on this global type.
 
 ## Extra dependencies concept
 

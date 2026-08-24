@@ -149,16 +149,19 @@ export const recoverWalletThunk = createThunk<
 /**
  * Connect call to rerun FW authenticity checks (getFeatures used as the most basic no-op device call).
  */
-export const rerunFwAuthenticityChecksThunk = createThunk(
-    `${NATIVE_DEVICE_MODULE_PREFIX}/rerunFwAuthenticityChecksThunk`,
-    (_, { getState }) => {
-        const device = selectSelectedDevice(getState());
-        if (device === undefined) return;
-        // refrain from scheduling multiple tasks (since this runs in a loop)
-        if (deviceAccessMutex.taskQueue.length === 0) {
-            void requestDeviceAccess(() =>
-                TrezorConnect.getFeatures({ device: { path: device.path } }),
-            );
-        }
-    },
-);
+type RerunFwAuthenticityChecksThunkState = DeviceRootState;
+
+export const rerunFwAuthenticityChecksThunk = createThunk<
+    void,
+    void,
+    { state: RerunFwAuthenticityChecksThunkState }
+>(`${NATIVE_DEVICE_MODULE_PREFIX}/rerunFwAuthenticityChecksThunk`, (_, { getState }) => {
+    const device = selectSelectedDevice(getState());
+    if (device === undefined) return;
+    // refrain from scheduling multiple tasks (since this runs in a loop)
+    if (deviceAccessMutex.taskQueue.length === 0) {
+        void requestDeviceAccess(() =>
+            TrezorConnect.getFeatures({ device: { path: device.path } }),
+        );
+    }
+});

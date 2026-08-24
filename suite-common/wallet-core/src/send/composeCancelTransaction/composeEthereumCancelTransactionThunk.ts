@@ -10,10 +10,13 @@ import {
 } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
 
-import { selectConvertedNetworkFeeInfo } from '../../fees/feesReducer';
+import { type FeesRootState, selectConvertedNetworkFeeInfo } from '../../fees/feesReducer';
 import { SEND_MODULE_PREFIX } from '../sendFormConstants';
 import { getEthereumRbfFeeInfo } from '../sendFormEthereumThunks';
-import { composeSendFormTransactionFeeLevelsThunk } from '../sendFormThunks';
+import {
+    type ComposeSendFormTransactionFeeLevelsThunkState,
+    composeSendFormTransactionFeeLevelsThunk,
+} from '../sendFormThunks';
 import { type ComposeFeeLevelsError } from '../sendFormTypes';
 
 export type ComposeEthereumCancelTransactionThunkParams = {
@@ -26,6 +29,9 @@ export type ComposedEthereumCancelTransaction = {
     cancelFormState: FormState;
 };
 
+type ComposeEthereumCancelTransactionThunkState = FeesRootState &
+    ComposeSendFormTransactionFeeLevelsThunkState;
+
 /**
  * Composes an EVM cancel transaction: a 0-value transfer to the account's own address reusing the
  * original tx's nonce (via `rbfParams`, applied at signing time) with a fee bumped above the
@@ -34,7 +40,7 @@ export type ComposedEthereumCancelTransaction = {
 export const composeEthereumCancelTransactionThunk = createThunk<
     ComposedEthereumCancelTransaction,
     ComposeEthereumCancelTransactionThunkParams,
-    { rejectValue: ComposeFeeLevelsError }
+    { state: ComposeEthereumCancelTransactionThunkState; rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeEthereumCancelTransactionThunk`,
     async ({ account, tx }, { dispatch, getState, rejectWithValue }) => {

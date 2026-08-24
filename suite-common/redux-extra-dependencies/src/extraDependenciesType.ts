@@ -158,16 +158,6 @@ export type ExtraDependenciesStatic = {
 
 export type ExtraDependencies = ExtraDependenciesStatic & { services: CommonServices };
 
-export type ExtraDependenciesForReducer = Pick<
-    ExtraDependencies,
-    'actionTypes' | 'actions' | 'reducers'
->;
-
 export type ExtraDependenciesPartial = {
     [K in keyof ExtraDependencies]?: Partial<ExtraDependencies[K]>;
-};
-
-export type CustomThunkAPI = {
-    state: any;
-    extra: ExtraDependencies;
 };
