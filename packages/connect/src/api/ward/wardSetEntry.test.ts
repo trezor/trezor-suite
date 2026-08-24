@@ -22,7 +22,7 @@ const makeMethod = (
 const PARAMS = { app_id: 'example.com', identifier: 'aabb', value: 'ccdd' };
 
 describe('WardSetEntry', () => {
-    it('sends exactly app_id, identifier and value, expecting a leaf', async () => {
+    it("sends exactly app_id, identifier and value, accepting either build's ack", async () => {
         const { method, typedCall } = makeMethod(WardSetEntry, 'wardSetEntry', PARAMS, {
             entry_key: '00'.repeat(32),
             counter: 4,
@@ -30,9 +30,15 @@ describe('WardSetEntry', () => {
 
         await method.run();
 
-        // ONE expected type: the device refuses an unsynced write rather than answering a
-        // receipt, so there is no second shape to accept here.
-        expect(typedCall).toHaveBeenCalledWith('WardSetEntry', 'WardLeafAck', PARAMS);
+        // TWO expected types, and they are the two BUILDS rather than two outcomes: a device that
+        // serves WARD over its own channel answers WardMutationApplied, and which transport a
+        // firmware uses is not something it reports. An unsynced write is refused either way, so
+        // there is still no third shape.
+        expect(typedCall).toHaveBeenCalledWith(
+            'WardSetEntry',
+            ['WardLeafAck', 'WardMutationApplied'],
+            PARAMS,
+        );
     });
 
     it('returns the leaf ack verbatim, counter and authenticators included', async () => {
@@ -47,7 +53,46 @@ describe('WardSetEntry', () => {
         };
         const { method } = makeMethod(WardSetEntry, 'wardSetEntry', PARAMS, ack);
 
-        await expect(method.run()).resolves.toEqual(ack);
+        // TAGGED WITH THE TYPE, because the payload alone cannot say whether it must be stored.
+        await expect(method.run()).resolves.toEqual({ type: 'WardLeafAck', message: ack });
+    });
+
+    it("returns the service build's receipt tagged as such, with no leaf invented", async () => {
+        // A device that serves WARD over its own channel has ALREADY published this mutation and
+        // heard it attested. There is nothing for a wallet host to store -- it owns no replica --
+        // and the fields say only what happened.
+        const applied = { entry_key: '77'.repeat(32), counter: 9 };
+        const { method } = makeMethod(
+            WardSetEntry,
+            'wardSetEntry',
+            PARAMS,
+            applied,
+            'WardMutationApplied',
+        );
+
+        await expect(method.run()).resolves.toEqual({
+            type: 'WardMutationApplied',
+            message: applied,
+        });
+    });
+
+    it('never turns one ack into the other', async () => {
+        // THE FAILURE THIS GUARDS is a host that flattens the two: `apply` reads an absent content
+        // body as a DELETION, so a receipt reshaped into a leaf would erase the entry the user just
+        // wrote. Asserted as an absence, because that is how it would arrive.
+        const { method } = makeMethod(
+            WardSetEntry,
+            'wardSetEntry',
+            PARAMS,
+            { entry_key: '88'.repeat(32), counter: 2 },
+            'WardMutationApplied',
+        );
+
+        const result = (await method.run()) as { message: Record<string, unknown> };
+
+        expect(result.message).not.toHaveProperty('identity');
+        expect(result.message).not.toHaveProperty('content');
+        expect(result.message).not.toHaveProperty('mac');
     });
 
     it('rejects a non-string identifier before anything reaches the device', () => {
