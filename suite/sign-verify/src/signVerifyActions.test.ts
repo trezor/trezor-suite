@@ -1,11 +1,14 @@
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { deviceInitialState } from '@suite-common/device';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { showAddress, sign, verify } from './signVerifyActions';
+import { type SignVerifyRootState, showAddress, sign, verify } from './signVerifyActions';
 
 const PATH = 'PATH';
 const ADDRESS = 'ADDRESS';
@@ -13,21 +16,26 @@ const MESSAGE = 'MESSAGE';
 const SIGNATURE = 'SIGNATURE';
 const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 
+const CONNECTED_DEVICE = mockSuiteDevice({ connected: true, available: true });
+
+const createState = (selectedDevice: TrezorDevice | undefined): SignVerifyRootState => ({
+    device: { ...deviceInitialState, selectedDevice },
+    wallet: { settings: initialWalletSettingsState },
+});
+
 describe('Sign/Verify actions', () => {
-    let store: any;
+    let dispatch: jest.Mock;
     let report: jest.Mock;
+    let deps: { services: DesktopAnalyticsDep };
+
+    // The thunks only read the selected device and the address display type, so a state literal
+    // is enough — no store, no middleware.
+    const getState = () => createState(CONNECTED_DEVICE);
 
     beforeEach(() => {
+        dispatch = jest.fn();
         report = jest.fn();
-        store = configureMockStore({
-            extra: { services: { analytics: mockDesktopAnalytics(report) } },
-            preloadedState: {
-                wallet: {
-                    settings: { addressDisplayType: 'chunked' },
-                },
-                device: { selectedDevice: mockSuiteDevice({ connected: true, available: true }) },
-            },
-        });
+        deps = { services: { analytics: mockDesktopAnalytics(report) } };
     });
 
     it('showAddress', async () => {
@@ -35,7 +43,7 @@ describe('Sign/Verify actions', () => {
             success: true,
             payload: { address: ADDRESS },
         });
-        const res = await store.dispatch(showAddress(ACCOUNT, ADDRESS, PATH));
+        const res = await showAddress(ACCOUNT, ADDRESS, PATH)(dispatch, getState);
         expect(res).toStrictEqual({ address: ADDRESS });
     });
 
@@ -47,9 +55,8 @@ describe('Sign/Verify actions', () => {
                 signature: SIGNATURE,
             },
         });
-        const res = await store.dispatch(sign(ACCOUNT, PATH, MESSAGE));
-        expect(res.address).toStrictEqual(ADDRESS);
-        expect(res.signature).toStrictEqual(SIGNATURE);
+        const res = await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+        expect(res).toStrictEqual({ address: ADDRESS, signature: SIGNATURE });
     });
 
     it('verify', async () => {
@@ -57,7 +64,7 @@ describe('Sign/Verify actions', () => {
             success: true,
             payload: { message: MESSAGE },
         });
-        const res = await store.dispatch(verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE));
+        const res = await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
         expect(res).toStrictEqual(true);
     });
 
@@ -70,7 +77,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await store.dispatch(sign(ACCOUNT, PATH, MESSAGE, true));
+            await sign(ACCOUNT, PATH, MESSAGE, true)(dispatch, getState, deps);
 
             expect(connect().signMessage).toHaveBeenLastCalledWith(
                 expect.objectContaining({ message: MESSAGE, hex: true, no_script_type: false }),
@@ -83,7 +90,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await store.dispatch(sign(ACCOUNT, PATH, MESSAGE));
+            await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
 
             expect(connect().signMessage).toHaveBeenLastCalledWith(
                 expect.objectContaining({ message: MESSAGE, hex: false }),
@@ -93,7 +100,7 @@ describe('Sign/Verify actions', () => {
         it('verifies against the same reading of the message', async () => {
             testMocks.setTrezorConnectFixtures({ success: true, payload: { message: MESSAGE } });
 
-            await store.dispatch(verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true));
+            await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true)(dispatch, getState, deps);
 
             expect(connect().verifyMessage).toHaveBeenLastCalledWith(
                 expect.objectContaining({
@@ -111,7 +118,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await store.dispatch(sign(ACCOUNT, PATH, MESSAGE, true));
+            await sign(ACCOUNT, PATH, MESSAGE, true)(dispatch, getState, deps);
 
             expect(report).toHaveBeenCalledWith(
                 expect.objectContaining({ payload: expect.objectContaining({ hex: true }) }),
@@ -126,7 +133,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await store.dispatch(sign(ACCOUNT, PATH, MESSAGE, true, true));
+            await sign(ACCOUNT, PATH, MESSAGE, true, true)(dispatch, getState, deps);
 
             expect(report).toHaveBeenCalledTimes(1);
             expect(report).toHaveBeenCalledWith({
@@ -146,7 +153,7 @@ describe('Sign/Verify actions', () => {
                 error: { message: 'Signing failed', code: 'Failure_DataError' },
             });
 
-            await store.dispatch(sign(ACCOUNT, PATH, MESSAGE));
+            await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
 
             expect(report).toHaveBeenCalledTimes(1);
             expect(report).toHaveBeenCalledWith({
@@ -169,7 +176,7 @@ describe('Sign/Verify actions', () => {
                     error: { message: 'Cancelled', code },
                 });
 
-                await store.dispatch(sign(ACCOUNT, PATH, MESSAGE));
+                await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
 
                 expect(report).toHaveBeenCalledTimes(1);
                 expect(report).toHaveBeenCalledWith(
@@ -182,15 +189,9 @@ describe('Sign/Verify actions', () => {
         );
 
         it('reports a sign that never reached the device as an error', async () => {
-            store = configureMockStore({
-                extra: { services: { analytics: mockDesktopAnalytics(report) } },
-                preloadedState: {
-                    wallet: { settings: { addressDisplayType: 'chunked' } },
-                    device: { selectedDevice: undefined },
-                },
-            });
+            const getStateWithoutDevice = () => createState(undefined);
 
-            await store.dispatch(sign(ACCOUNT, PATH, MESSAGE));
+            await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getStateWithoutDevice, deps);
 
             expect(report).toHaveBeenCalledTimes(1);
             expect(report).toHaveBeenCalledWith({
@@ -211,7 +212,7 @@ describe('Sign/Verify actions', () => {
                 payload: { message: MESSAGE },
             });
 
-            await store.dispatch(verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true));
+            await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true)(dispatch, getState, deps);
 
             expect(report).toHaveBeenCalledTimes(1);
             expect(report).toHaveBeenCalledWith({
@@ -226,7 +227,7 @@ describe('Sign/Verify actions', () => {
                 error: { message: 'Invalid signature', code: 'Failure_DataError' },
             });
 
-            await store.dispatch(verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE));
+            await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
 
             expect(report).toHaveBeenCalledTimes(1);
             expect(report).toHaveBeenCalledWith({
@@ -246,7 +247,7 @@ describe('Sign/Verify actions', () => {
                 error: { message: 'Cancelled', code: 'Failure_ActionCancelled' },
             });
 
-            await store.dispatch(verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE));
+            await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
 
             expect(report).toHaveBeenCalledTimes(1);
             expect(report).toHaveBeenCalledWith(
@@ -262,8 +263,8 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await store.dispatch(sign(ACCOUNT, PATH, MESSAGE));
-            await store.dispatch(verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE));
+            await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+            await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
 
             const reported = JSON.stringify(report.mock.calls);
 
