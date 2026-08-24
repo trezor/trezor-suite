@@ -27,10 +27,10 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
         title: isVerifySupported(account) ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE',
         isDeviceConnected: device?.connected && device?.available,
         children: (
-            // Each tab is a form of its own: keying it on the page throws away everything the
-            // other one was in the middle of, including the outcome it had reached.
+            // Each tab of each account is a form of its own: keying it throws away everything the
+            // previous one was in the middle of, including the outcome it had reached.
             <SignVerifyForm
-                key={page}
+                key={`${page}-${account.key}`}
                 account={account}
                 network={network}
                 page={page}

@@ -61,6 +61,64 @@ describe('Sign/Verify actions', () => {
         expect(res).toStrictEqual(true);
     });
 
+    describe('hex format', () => {
+        const connect = () => testMocks.getTrezorConnectMock();
+
+        it('hands the message to the device as hex when the switch is on', async () => {
+            testMocks.setTrezorConnectFixtures({
+                success: true,
+                payload: { address: ADDRESS, signature: SIGNATURE },
+            });
+
+            await store.dispatch(sign(ACCOUNT, PATH, MESSAGE, true));
+
+            expect(connect().signMessage).toHaveBeenLastCalledWith(
+                expect.objectContaining({ message: MESSAGE, hex: true, no_script_type: false }),
+            );
+        });
+
+        it('hands it over as text when the switch is off', async () => {
+            testMocks.setTrezorConnectFixtures({
+                success: true,
+                payload: { address: ADDRESS, signature: SIGNATURE },
+            });
+
+            await store.dispatch(sign(ACCOUNT, PATH, MESSAGE));
+
+            expect(connect().signMessage).toHaveBeenLastCalledWith(
+                expect.objectContaining({ message: MESSAGE, hex: false }),
+            );
+        });
+
+        it('verifies against the same reading of the message', async () => {
+            testMocks.setTrezorConnectFixtures({ success: true, payload: { message: MESSAGE } });
+
+            await store.dispatch(verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true));
+
+            expect(connect().verifyMessage).toHaveBeenLastCalledWith(
+                expect.objectContaining({
+                    address: ADDRESS,
+                    message: MESSAGE,
+                    signature: SIGNATURE,
+                    hex: true,
+                }),
+            );
+        });
+
+        it('reports which reading was used', async () => {
+            testMocks.setTrezorConnectFixtures({
+                success: true,
+                payload: { address: ADDRESS, signature: SIGNATURE },
+            });
+
+            await store.dispatch(sign(ACCOUNT, PATH, MESSAGE, true));
+
+            expect(report).toHaveBeenCalledWith(
+                expect.objectContaining({ payload: expect.objectContaining({ hex: true }) }),
+            );
+        });
+    });
+
     describe('analytics', () => {
         it('reports a successful sign with the input format and the signature format', async () => {
             testMocks.setTrezorConnectFixtures({
