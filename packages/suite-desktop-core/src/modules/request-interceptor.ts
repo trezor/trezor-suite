@@ -21,14 +21,24 @@ import {
 
 export const SERVICE_NAME = 'request-interceptor';
 
+const warn = (message: string) => logger.warn(SERVICE_NAME, message);
+
+type CustomBackendsPerNetworkSymbol = Record<string, string[]>;
+type CoinjoinCoordinatorPerNetworkSymbol = Record<string, string | undefined>;
+type MainThreadAllowedDomain = {
+    general: string[];
+    customBackends: CustomBackendsPerNetworkSymbol;
+    coinjoinCoordinatorDomains: CoinjoinCoordinatorPerNetworkSymbol;
+};
+
 /**
  * Main reason for this whitelist is to mitigate potential dependency attack,
  * where malicious dependency could send requests and potentially spy on the user, etc...
  */
-const mainThreadAllowedDomain = {
+const mainThreadAllowedDomain: MainThreadAllowedDomain = {
     general: [...allowedDomains],
-    customBackends: {} as Record<string, string[]>,
-    coinjoinCoordinatorUrl: undefined as string | undefined,
+    customBackends: {},
+    coinjoinCoordinatorDomains: {},
 };
 
 /**
@@ -74,17 +84,28 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
             case 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS': {
                 mainThreadAllowedDomain.customBackends[event.coin] = validateWhitelistedHostnames({
                     hostnames: event.domains,
-                    warn: message => logger.warn(SERVICE_NAME, message),
+                    warn,
                 });
 
                 return;
             }
 
+            case 'SET_WHITELISTED_DOMAIN_FOR_COINJOIN_COORDINATOR': {
+                const hostname = event.domain;
+                if (hostname === null) {
+                    delete mainThreadAllowedDomain.coinjoinCoordinatorDomains[event.coin];
+
+                    return;
+                }
+                const validatedHostname = validateWhitelistedHostname({ hostname, warn });
+                mainThreadAllowedDomain.coinjoinCoordinatorDomains[event.coin] = validatedHostname;
+
+                return;
+            }
+
             case 'ADD_WHITELISTED_DOMAIN': {
-                const validatedHostname = validateWhitelistedHostname({
-                    hostname: event.domain,
-                    warn: message => logger.warn(SERVICE_NAME, message),
-                });
+                const hostname = event.domain;
+                const validatedHostname = validateWhitelistedHostname({ hostname, warn });
 
                 if (validatedHostname !== undefined) {
                     mainThreadAllowedDomain.general.push(validatedHostname);
@@ -101,7 +122,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
     // handle event sent from modules/coinjoin (background thread)
     mainThreadEmitter.on('module/request-interceptor', requestInterceptorEventHandler);
 
-    // Allow only the configured list of domains (static config), plus custom backends (variable config by user).
+    // Allow only the configured list of domains (static config), plus variable custom backends and
+    // active coinjoin coordinator domains.
     // In offline mode, block all requests from Electron Main process (except localhost).
     const getWhitelistedDomains = () => {
         if (hasSwitch('offline-mode')) return localhostDomains;
@@ -109,6 +131,9 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
         return [
             ...mainThreadAllowedDomain.general,
             ...Object.values(mainThreadAllowedDomain.customBackends).flat(),
+            ...Object.values(mainThreadAllowedDomain.coinjoinCoordinatorDomains).filter(
+                (domain): domain is string => domain !== undefined,
+            ),
         ];
     };
 
