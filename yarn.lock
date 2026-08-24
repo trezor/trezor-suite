@@ -11003,6 +11003,7 @@ __metadata:
   resolution: "@suite-common/redux-utils@workspace:suite-common/redux-utils"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@trezor/requirements": "workspace:*"
     lodash: "npm:^4.18.1"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
