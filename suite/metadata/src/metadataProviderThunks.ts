@@ -99,11 +99,15 @@ type DisconnectProviderParams = {
     removeMetadata?: boolean;
 };
 
-export type MetadataThunkDeps = { services: DesktopAnalyticsDep };
+type DisconnectProviderDeps = { services: DesktopAnalyticsDep };
 
 export const disconnectProvider =
     ({ clientId, dataType, removeMetadata = true }: DisconnectProviderParams) =>
-    async (dispatch: Dispatch, _getState: () => MetadataRootState, extra: MetadataThunkDeps) => {
+    async (
+        dispatch: Dispatch,
+        _getState: () => MetadataRootState,
+        extra: DisconnectProviderDeps,
+    ) => {
         typedObjectKeys(fetchIntervals).forEach((id: FetchIntervalTrackingId) => {
             const [trackedDataType, trackedClientId] = id.split('-');
             if (trackedDataType === dataType && trackedClientId === clientId) {
@@ -238,9 +242,11 @@ type ConnectProviderParams = {
     clientId?: string;
 };
 
+export type ConnectProviderDeps = { services: DesktopAnalyticsDep };
+
 export const connectProvider =
     ({ type, dataType = 'labels', clientId }: ConnectProviderParams) =>
-    async (dispatch: Dispatch, getState: () => MetadataRootState, extra: MetadataThunkDeps) => {
+    async (dispatch: Dispatch, getState: () => MetadataRootState, extra: ConnectProviderDeps) => {
         const providerInstance = createProviderInstance(
             type,
             {},

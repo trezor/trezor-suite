@@ -4,6 +4,7 @@ export * as metadataThunks from './metadataThunks';
 export { default as GoogleClient } from './google';
 export * from './metadataProviderThunks';
 export * as metadataLabelingActions from './metadataLabelingActions';
+export { type InitMetadataDeps } from './metadataLabelingActions';
 export * as metadataLabelingConstants from './metadataLabelingConstants';
 export * as METADATA from './metadataConstants';
 export {

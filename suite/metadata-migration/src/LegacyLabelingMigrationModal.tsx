@@ -5,9 +5,10 @@ import type { ThunkDispatch } from 'redux-thunk';
 
 import { Translation } from '@suite/intl';
 import {
+    type ConnectProviderDeps,
+    type InitMetadataDeps,
     MetadataProviderSelectionModal,
     type MetadataRootState,
-    type MetadataThunkDeps,
     connectProvider,
     metadataActions,
     metadataLabelingActions,
@@ -35,7 +36,8 @@ type LegacyLabelingMigrationModalProps = {
     }) => void;
 };
 
-type MetadataDispatch = ThunkDispatch<MetadataRootState, MetadataThunkDeps, AnyAction>;
+type MetadataDispatchDeps = ConnectProviderDeps & InitMetadataDeps;
+type MetadataDispatch = ThunkDispatch<MetadataRootState, MetadataDispatchDeps, AnyAction>;
 
 export const LegacyLabelingMigrationModal = ({
     onCancel,
