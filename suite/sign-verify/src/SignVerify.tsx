@@ -54,11 +54,6 @@ const CopyFieldButton = ({ onClick, 'data-testid': dataTestId }: CopyFieldButton
     </Button>
 );
 
-/**
- * `idle` covers a form that was never submitted and one whose fields changed since, because both
- * are waiting for the same submit. A failed signing stays `idle`: the toast already explains it and
- * there is nothing signed to show.
- */
 type Outcome = 'idle' | 'signed' | 'verified' | 'failed';
 
 const outcomeBadges = {
@@ -81,14 +76,10 @@ const OutcomeBadge = ({ outcome }: { outcome: Exclude<Outcome, 'idle'> }) => {
     );
 };
 
-// Matches the padding the form fields use inside their frame.
 const FIELD_PADDING = 16;
 
-// `Tabs` at size `large` keeps this much room between its labels and the underline it draws, so the
-// badge floating over the strip is centred on the labels rather than on the underline.
 const TABS_LABEL_BOTTOM_SPACE = 10;
 
-// The design fixes the format switches at this width rather than letting them stretch.
 const FORMAT_SWITCH_WIDTH = 360;
 
 type FormatSwitchProps = {
@@ -96,15 +87,10 @@ type FormatSwitchProps = {
     selectedOption?: boolean;
     onChange: (value: boolean) => void;
     isDisabled?: boolean;
-    /** Only the signature format has something to explain. */
     tooltip?: ReactNode;
     'data-testid': string;
 };
 
-/**
- * The switch owns its width, so the label sits outside `SelectBar` and repeats the typography
- * `SelectBar` would have given it.
- */
 const FormatSwitch = ({
     options,
     tooltip,
@@ -182,8 +168,6 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
     const { translationString } = useTranslation();
     const copyValue = useCopyValue();
 
-    // Signing and verifying both end in the same read-only layout: the values that were submitted,
-    // each with a copy button, and nothing left to edit until the form is cleared.
     const isCompleted = outcome === 'signed' || outcome === 'verified';
 
     const getErrorMessage = (error?: FieldError) =>
@@ -218,9 +202,7 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
         ...pubKeyField,
     };
 
-    // The outcome belongs to the values that produced it, so any edit takes the form back to `idle`
-    // and puts the submit button back. Signing itself writes into the signature field, which is why
-    // the Sign page must not watch it — it would wipe the outcome it has just been given.
+    // Signing writes the signature itself, so the Sign page must not watch it.
     const outcomeInputs = isSignPage
         ? [formValues.message, formValues.address, formValues.hex]
         : [formValues.message, formValues.address, formValues.signature, formValues.hex];
@@ -230,8 +212,6 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSignPage, outcomeInputs.join('\u0000')]);
 
-    // Three shapes for one field: the submitted address once there is nothing left to change, the
-    // account's address picker while signing, and a plain input to paste into while verifying.
     const renderAddressField = () => {
         if (isCompleted) {
             return (
@@ -313,8 +293,6 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
         isDeviceConnected,
         children: (
             <Card>
-                {/* The tabs draw their underline across the whole width, so the badge floats over
-                    its right end instead of sharing a row that would cut the line short. */}
                 <Box position={{ type: 'relative' }} margin={{ bottom: 20 }}>
                     <Tabs activeItemId={page} size="large">
                         <Tabs.Item
@@ -371,9 +349,6 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                                 {...isElectrumField}
                             />
                         )}
-                        {/* Cardano's switch decides what the signing call returns as the public
-                            key, so it stays visible as a record of what was used but cannot be
-                            touched afterwards — changing it would throw the signature away. */}
                         {isSignPage && isCardano && (
                             <FormatSwitch
                                 options={[
@@ -405,8 +380,6 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                                 innerRef={messageRef}
                                 {...messageField}
                             />
-                            {/* Textarea has no slot inside its frame, and the design puts these in
-                                its top right corner, level with the floating label. */}
                             <Box
                                 position={{
                                     type: 'absolute',
@@ -433,8 +406,6 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
                             maxLength={MAX_LENGTH_SIGNATURE}
                             type="text"
                             readOnly={isSignPage || isCompleted}
-                            // Signing fills this field in, so until it does there is nothing to
-                            // read; verifying is the other way round and needs it from the start.
                             isDisabled={isSignPage && !formValues.signature?.length}
                             placeholder={
                                 isSignPage

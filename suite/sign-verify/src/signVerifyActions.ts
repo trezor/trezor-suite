@@ -26,12 +26,8 @@ type GetState = () => SignVerifyRootState;
 
 type SignVerifyThunkDeps = { services: DesktopAnalyticsDep };
 
-// The user rejecting the request in the popup or on the device is not a failure of signing or
-// verifying, so it is reported apart from real errors and does not inflate the error rate.
 const CANCEL_ERROR_CODES: ErrorCode[] = ['Method_Cancel', 'Failure_ActionCancelled'];
 
-// Connect classifies its own failures, so the code is what is worth measuring. Errors thrown
-// outside Connect carry no code and are reported with their message instead.
 const getFailureAttributes = ({ code }: SerializedError) => ({
     status: CANCEL_ERROR_CODES.includes(code) ? ('cancelled' as const) : ('error' as const),
     error: code,
