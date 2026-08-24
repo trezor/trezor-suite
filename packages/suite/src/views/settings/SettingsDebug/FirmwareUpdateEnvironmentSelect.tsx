@@ -20,6 +20,7 @@ export const FirmwareUpdateEnvironmentSelect = () => {
         { label: 'Production Early Access', value: 'production-early-access' },
         { label: 'Test Unsigned', value: 'test-unsigned' },
         { label: 'Test Unsigned Stable', value: 'test-unsigned-stable' },
+        { label: 'Test Unsigned Nightly', value: 'test-unsigned-nightly' },
         { label: 'Test Signed', value: 'test-signed' },
         { label: 'Localhost Signed', value: 'localhost-signed' },
         { label: 'Localhost Unsigned', value: 'localhost-unsigned' },
