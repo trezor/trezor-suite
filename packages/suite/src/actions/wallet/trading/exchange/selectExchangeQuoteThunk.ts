@@ -1,6 +1,6 @@
 import { type ExchangeTrade } from 'invity-api';
 
-import { type DesktopAnalyticsDep, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
 import { createThunk } from '@suite-common/redux-utils';
 import {
@@ -47,7 +47,7 @@ export const selectExchangeQuoteThunk = createThunk<
             contractAddress: receiveCryptoContractAddress,
         } = cryptoIdToNetworkSymbolAndContractAddress(quotesRequest.receive);
 
-        asTypedDesktopAnalytics(extra.services.analytics).report({
+        extra.services.analytics.report({
             type: events.tradeExchangeEvent.name,
             payload: {
                 action: 'continue',

@@ -7,6 +7,7 @@ import { Translation } from '@suite/intl';
 import {
     MetadataProviderSelectionModal,
     type MetadataRootState,
+    type MetadataThunkDeps,
     connectProvider,
     metadataActions,
     metadataLabelingActions,
@@ -15,7 +16,6 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
-import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import { type AnyAction } from '@suite-common/redux-utils';
 import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -35,7 +35,7 @@ type LegacyLabelingMigrationModalProps = {
     }) => void;
 };
 
-type MetadataDispatch = ThunkDispatch<MetadataRootState, ExtraDependencies, AnyAction>;
+type MetadataDispatch = ThunkDispatch<MetadataRootState, MetadataThunkDeps, AnyAction>;
 
 export const LegacyLabelingMigrationModal = ({
     onCancel,

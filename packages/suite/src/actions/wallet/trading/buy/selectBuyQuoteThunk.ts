@@ -1,6 +1,6 @@
 import { type BuyTrade } from 'invity-api';
 
-import { type DesktopAnalyticsDep, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
 import { createThunk } from '@suite-common/redux-utils';
 import {
@@ -52,7 +52,7 @@ export const selectBuyQuoteThunk = createThunk<
         quotesRequest.receiveCurrency,
     )?.name;
 
-    asTypedDesktopAnalytics(extra.services.analytics).report({
+    extra.services.analytics.report({
         type: events.tradeBuyEvent.name,
         payload: {
             action: 'continue',

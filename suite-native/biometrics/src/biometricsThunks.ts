@@ -5,7 +5,7 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import type { LocalAuthenticationResult } from 'expo-local-authentication';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { type NativeAnalyticsDep, asTypedNativeAnalytics, events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 
 import {
     selectGoneToBackgroundAtTimestamp,
@@ -90,7 +90,7 @@ export const toggleBiometricsSettingsThunk = createThunk<
         const isBiometricsEnabled = selectIsBiometricsEnabled(getState());
 
         if (isBiometricsEnabled) {
-            asTypedNativeAnalytics(services.analytics).report({
+            services.analytics.report({
                 type: events.biometricsChangeEvent.name,
                 payload: { enabled: false, origin: 'settingsToggle' },
             });
@@ -98,7 +98,7 @@ export const toggleBiometricsSettingsThunk = createThunk<
             return BiometricsToggleResult.Disabled;
         }
 
-        asTypedNativeAnalytics(services.analytics).report({
+        services.analytics.report({
             type: events.biometricsChangeEvent.name,
             payload: { enabled: true, origin: 'settingsToggle' },
         });

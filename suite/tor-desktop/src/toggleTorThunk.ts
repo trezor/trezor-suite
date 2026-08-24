@@ -1,26 +1,26 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type ModalRootState, openDeferredModal, selectModalType } from '@suite/modal';
 import { type RouterRootState, selectRouterUrl } from '@suite/router';
 import { type TorRootState, isOnionUrl, selectTorBootstrap, torActions } from '@suite/tor';
 import { TorStatus } from '@suite/tor-types';
-import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type BlockchainRootState, selectBlockchainState } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 type ToggleTorRootState = TorRootState & ModalRootState & RouterRootState & BlockchainRootState;
+type ToggleTorDeps = { services: DesktopAnalyticsDep };
 
-export type ToggleTorDispatch = ThunkDispatch<ToggleTorRootState, ExtraDependencies, UnknownAction>;
+export type ToggleTorDispatch = ThunkDispatch<ToggleTorRootState, ToggleTorDeps, UnknownAction>;
 
 export const toggleTor =
     (shouldEnable: boolean) =>
     async (
         dispatch: ToggleTorDispatch,
         getState: () => ToggleTorRootState,
-        extra: ExtraDependencies,
+        extra: ToggleTorDeps,
     ) => {
         const modal = selectModalType(getState());
         const torBootstrap = selectTorBootstrap(getState());
@@ -51,7 +51,7 @@ export const toggleTor =
         const ipcResponse = await desktopApi.toggleTor(shouldEnable);
 
         if (ipcResponse.success) {
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.settingsTorEvent.name,
                 payload: {
                     value: shouldEnable,
