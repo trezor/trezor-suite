@@ -328,6 +328,8 @@ import {
     WardQueueGetEntry,
     WardQueueSetAck,
     WardQueueSetEntry,
+    WardResetApp,
+    WardResetAppAck,
     WardSetEntry,
 } from './messages-ward';
 import {
@@ -699,6 +701,8 @@ export const MessageType = Type.Object(
         WardPinCachedEntry,
         WardEraseCachedEntry,
         WardFlushQueue,
+        WardResetApp,
+        WardResetAppAck,
         WardEntryRequest,
         WardLeafAck,
         WardFlushQueueAck,
@@ -918,6 +922,7 @@ export type WireInMessage =
     | 'WardPinCachedEntry'
     | 'WardEraseCachedEntry'
     | 'WardFlushQueue'
+    | 'WardResetApp'
     | 'WardVerifyChain'
     | 'WardSync'
     | 'WardIngestAttestation'
@@ -1038,6 +1043,7 @@ export type WireOutMessage =
     | 'WardQueueSetAck'
     | 'WardQueueDeleteAck'
     | 'WardQueueGetAck'
+    | 'WardResetAppAck'
     | 'WardEntryRequest'
     | 'WardLeafAck'
     | 'WardFlushQueueAck'

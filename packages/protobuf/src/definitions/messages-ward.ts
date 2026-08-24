@@ -186,6 +186,17 @@ export const WardQueueSetEntry = Type.Object(
     { $id: 'WardQueueSetEntry' },
 );
 
+export type WardResetApp = Static<typeof WardResetApp>;
+export const WardResetApp = Type.Record(Type.Never(), Type.Never(), { $id: 'WardResetApp' });
+
+export type WardResetAppAck = Static<typeof WardResetAppAck>;
+export const WardResetAppAck = Type.Object(
+    {
+        was_bound: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'WardResetAppAck' },
+);
+
 export type WardSetEntry = Static<typeof WardSetEntry>;
 export const WardSetEntry = Type.Object(
     {
