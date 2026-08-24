@@ -42,8 +42,8 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=ward_backup    (wired, --queue only)
                                                 --method=ward_restore   (wired, --queue only)
                                                 --method=ward_delete     (wired, --queue only)
+                                                --method=ward_display   (wired; --queue, or --service)
                                                 --method=ward_update    (not wired yet)
-                                                --method=ward_display   (not wired yet)
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
 
@@ -69,6 +69,27 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 Values are taken verbatim -- unlike other flags
                                                 they are NOT lowercased, because the device hashes
                                                 appid and ident.
+
+  Showing an entry
+    --method=ward_display --queue --appid=example.com --ident=addr1
+                                              Shows on the DEVICE what the device itself holds for
+                                                that key, and reports the value plus whether it is
+                                                a change still QUEUED here (pending) or a copy of
+                                                something WARD already holds. Never prints the
+                                                restore MAC -- exporting one is ward_backup.
+                                                Without --queue the read is pulled and verified
+                                                against a synced session. That needs a host store
+                                                this CLI does not have -- unless the device serves
+                                                WARD over its own channel and asks a daemon, which
+                                                is what --service says. So: --queue, or --service,
+                                                and neither means it refuses rather than guessing.
+
+    --service                                 ward_display without --queue: this device serves WARD
+                                                over an interface of its OWN, so the read needs no
+                                                host store -- the device asks its daemon. Which
+                                                transport a firmware uses is a build option it does
+                                                not report, so it is asserted here rather than
+                                                detected.
 
   Backing the queue up (both --queue only)
     --method=ward_backup --queue --appid=example.com --ident=addr1

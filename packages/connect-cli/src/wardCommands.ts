@@ -81,9 +81,12 @@ export const wardCommands: Record<WardCommandName, WardCommand> = {
     },
     ward_display: {
         name: 'ward_display',
-        description: 'Look up a WARD entry and display it on the device',
-        requiredParams: [],
-        optionalParams: ['ident', 'appid', 'ward_id'],
+        description: "Show what the device holds for an entry (--queue: the device's own store)",
+        // Named in full, like ward_backup: the offline read is a lookup in the device's store, and
+        // a store keyed by (app_id, identifier) cannot answer half a key. The registry used to
+        // require neither, which made a missing --appid present as "nothing kept for this path".
+        requiredParams: ['appid', 'ident'],
+        optionalParams: ['ward_id', 'service'],
         supportsQueue: true,
         run: notWired('ward_display'),
     },

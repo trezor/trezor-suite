@@ -166,6 +166,86 @@ const wardBackup = async (context: WardCommandContext, device: Device) => {
     return { entry };
 };
 
+/**
+ * `ward_display`: show the user what the DEVICE holds for (app_id, identifier).
+ *
+ * OFFLINE ONLY TODAY, and the flag says so rather than the mode being inferred. `WardGetEntry` --
+ * the online read -- pulls the entry from the host and refuses without a synced session, and this
+ * CLI has neither a host store to serve it from nor the sync round that would make the session
+ * count as synced. So the offline read is asked for by name, exactly as the device asks for it:
+ * `WardQueueGetEntry`, which reads the device's own store and emits no pull at all.
+ *
+ * THE SAME REQUEST AS ward_backup, A DIFFERENT ANSWER. Both read the device's store, because there
+ * is one message for that; what separates them is what they hand back. A backup returns the opaque
+ * blob and never the value; a display returns the VALUE and never the MAC. Printing the MAC here
+ * would turn every look at an entry into an export of a restorable intent, which is a different act
+ * and one the screen the device shows does not describe.
+ *
+ * WHAT THE SCREEN SAYS IS THE POINT. The device distinguishes a change the user queued that no host
+ * has taken yet from a copy it merely keeps, and warns that neither has been checked against a
+ * host. That distinction is reported here as `pending`, so a caller never has to guess which of the
+ * two it just showed the user.
+ */
+const wardDisplay = async (context: WardCommandContext, device: Device) => {
+    const { queue, params } = context;
+
+    if (!queue) {
+        // THE ONE BUILD WHERE AN ONLINE READ NEEDS NOTHING FROM US. A firmware that serves WARD
+        // over its own interface asks its daemon, not its wallet host, so there is no leaf for
+        // this CLI to hold and no pull for it to answer -- the call is simply forwarded and the
+        // device does the rest. `--service` is how the caller says that is the build in front of
+        // it, because the device does not report it: which transport WARD is served over is a
+        // build option, and a host that could be TOLD could be lied to about it.
+        if (!params.service) {
+            throw new Error(
+                'an online WARD read pulls the entry from the host and needs a registered wardProvider and a synced session; not wired yet — pass --queue to show what the DEVICE holds, or --service if this device serves WARD over its own channel',
+            );
+        }
+
+        const online = await TrezorConnect.wardGetEntry({
+            device,
+            app_id: params.appid,
+            identifier: toHex(params.ident),
+        });
+
+        if (!online.success) {
+            throw new Error(`${online.error.code}: ${online.error.message}`);
+        }
+
+        // `Success` and nothing else, by design: the device SHOWED the entry and kept the value.
+        // What is worth reporting is that the read completed -- which on this build means the
+        // device synced with its daemon, pulled the leaf and verified it against the root it
+        // trusts, all of it out of this host's sight.
+        return { displayed: true, onDevice: true, note: online.payload.message };
+    }
+
+    const result = await TrezorConnect.wardQueueGetEntry({
+        device,
+        app_id: params.appid,
+        identifier: toHex(params.ident),
+    });
+
+    if (!result.success) {
+        throw new Error(`${result.error.code}: ${result.error.message}`);
+    }
+
+    const ack = result.payload as Record<string, any>;
+
+    if (ack.missing) {
+        return { missing: true, note: 'nothing queued or kept on the device for this key' };
+    }
+
+    // `pending` is reported rather than folded into a single "found": a queued change is what THIS
+    // device believes and no host has taken, while a pinned copy is a value WARD already holds. The
+    // device shows those as two different screens, and a caller that collapsed them would describe
+    // the user's own unpublished change as an established fact.
+    return {
+        displayed: true,
+        pending: !!ack.pending,
+        value: ack.value !== undefined && ack.value !== null ? fromHex(ack.value) : undefined,
+    };
+};
+
 const wardDelete = async (context: WardCommandContext, device: Device) => {
     const { queue, params } = context;
 
@@ -244,6 +324,10 @@ export const runWardCommand = (
 
     if (name === 'ward_restore') {
         return wardRestore(context, device);
+    }
+
+    if (name === 'ward_display') {
+        return wardDisplay(context, device);
     }
 
     if (name === 'ward_delete') {

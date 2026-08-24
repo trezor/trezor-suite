@@ -123,6 +123,7 @@ const runTestCase = async (device: Device) => {
             ...(args.entry !== undefined ? { entry: args.entry } : {}),
             ...(args.target !== undefined ? { target: args.target } : {}),
             ...(args.compact !== undefined ? { compact: args.compact } : {}),
+            ...(args.service !== undefined ? { service: args.service } : {}),
         };
         // `scope` was the JSON name for what the flags call `ident`. Aliasing it here means one
         // vocabulary reaches the registry and the runners, so neither has to know both spellings.
