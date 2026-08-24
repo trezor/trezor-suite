@@ -202,15 +202,29 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
         ...pubKeyField,
     };
 
-    // Signing writes the signature itself, so the Sign page must not watch it.
-    const outcomeInputs = isSignPage
-        ? [formValues.message, formValues.address, formValues.hex]
-        : [formValues.message, formValues.address, formValues.signature, formValues.hex];
+    const verificationInputs = [
+        formValues.message,
+        formValues.address,
+        formValues.signature,
+        formValues.hex,
+    ].join('\u0000');
 
+    // Switching tab resets the form, so no outcome describes it any more.
     useEffect(() => {
         setOutcome('idle');
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isSignPage, outcomeInputs.join('\u0000')]);
+    }, [page]);
+
+    // A failed verification is the only outcome that leaves the form editable, and it comes with no
+    // Clear button, so editing the values it was about is the only way out of it.
+    useEffect(() => {
+        setOutcome(prev => {
+            if (prev === 'failed') {
+                return 'idle';
+            }
+
+            return prev;
+        });
+    }, [verificationInputs]);
 
     const renderAddressField = () => {
         if (isCompleted) {
