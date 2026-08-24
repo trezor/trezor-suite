@@ -13,7 +13,6 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
-        "@suite-common/redux-extra-dependencies": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

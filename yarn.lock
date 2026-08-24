@@ -15425,7 +15425,6 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
-    "@suite-common/redux-extra-dependencies": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations-types": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
@@ -15757,7 +15756,6 @@ __metadata:
   resolution: "@suite/tor-desktop@workspace:suite/tor-desktop"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
-    "@suite-common/redux-extra-dependencies": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"

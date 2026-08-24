@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/redux-extra-dependencies"
-        },
-        {
             "path": "../../suite-common/suite-config"
         },
         {
