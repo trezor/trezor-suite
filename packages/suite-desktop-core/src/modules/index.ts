@@ -10,6 +10,7 @@ import * as bridge from './bridge';
 import * as coinjoin from './coinjoin';
 import * as crashRecover from './crash-recover';
 import * as customProtocols from './custom-protocols';
+import * as dappBrowser from './dapp-browser';
 import * as devTools from './dev-tools';
 import * as eventLogging from './event-logging';
 import { type MainWindowProxy } from '../libs/main-window-proxy';
@@ -79,6 +80,7 @@ const MODULES: Module[] = [
     powerMonitor,
     mcpServer,
     responseHeaders,
+    dappBrowser,
 ];
 
 const MODULES_BACKGROUND: ModuleBackground[] = [bridge, trezorConnect, httpReceiverModule, tray];

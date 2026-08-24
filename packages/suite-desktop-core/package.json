@@ -24,6 +24,7 @@
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
+        "@suite/dapp-browser": "workspace:*",
         "@suite/sentry": "workspace:*",
         "@suite/tor-types": "workspace:*",
         "@trezor/coinjoin": "workspace:*",

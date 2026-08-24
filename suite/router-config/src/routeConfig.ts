@@ -179,6 +179,11 @@ export const routes = [
         app: 'password-manager',
     },
     {
+        name: 'dapp-browser-index',
+        pattern: '/dapp-browser',
+        app: 'dapp-browser',
+    },
+    {
         name: 'settings-index',
         pattern: '/settings',
         app: 'settings',

@@ -53,3 +53,17 @@ export const allowedDesktopUpdateRemoteDomains = [
     'trezor.io', // Production server
     'sldev.cz', // Test environment, available only with VPN
 ];
+/**
+ * Per-chain JSON-RPC endpoints used by the dApp browser's `node` lane (§10).
+ * Reads are forwarded raw to a Suite-bundled endpoint — never to an RPC URL the
+ * dApp supplies. PoC ships Ethereum mainnet only (chainId 1).
+ *
+ * NOTE (prod hardening): these requests should be routed through Tor and the
+ * request interceptor; for the PoC they go out over the main-process `fetch`.
+ */
+export const dappBrowserRpcEndpoints: Record<number, string> = {
+    // cloudflare-eth.com was sunset and now answers every call with a JSON-RPC
+    // error, which silently breaks dApp reads (e.g. revoke.cash's allowance
+    // scan). publicnode is a working keyless mainnet endpoint with eth_getLogs.
+    1: 'https://ethereum-rpc.publicnode.com',
+};

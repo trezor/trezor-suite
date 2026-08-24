@@ -5652,6 +5652,79 @@ export const messages = defineMessages({
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
         defaultMessage: 'Migrate Dropbox passwords',
     },
+    TR_EXPERIMENTAL_DAPP_BROWSER: {
+        id: 'TR_EXPERIMENTAL_DAPP_BROWSER',
+        defaultMessage: 'dApp browser',
+    },
+    TR_EXPERIMENTAL_DAPP_BROWSER_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_DAPP_BROWSER_DESCRIPTION',
+        defaultMessage:
+            'Open a curated set of EVM applications inside Suite and connect them to your Trezor account. Every signature is confirmed on your device.',
+    },
+    TR_DAPP_BROWSER: {
+        id: 'TR_DAPP_BROWSER',
+        defaultMessage: 'dApp browser',
+    },
+    TR_DAPP_BROWSER_DESKTOP_ONLY: {
+        id: 'TR_DAPP_BROWSER_DESKTOP_ONLY',
+        defaultMessage: 'The dApp browser is available only in Trezor Suite for desktop.',
+    },
+    TR_DAPP_BROWSER_CLOSE: {
+        id: 'TR_DAPP_BROWSER_CLOSE',
+        defaultMessage: 'Close',
+    },
+    TR_DAPP_BROWSER_BACK: {
+        id: 'TR_DAPP_BROWSER_BACK',
+        defaultMessage: 'Back',
+    },
+    TR_DAPP_BROWSER_FORWARD: {
+        id: 'TR_DAPP_BROWSER_FORWARD',
+        defaultMessage: 'Forward',
+    },
+    TR_DAPP_BROWSER_RELOAD: {
+        id: 'TR_DAPP_BROWSER_RELOAD',
+        defaultMessage: 'Reload',
+    },
+    TR_DAPP_BROWSER_DEVTOOLS: {
+        id: 'TR_DAPP_BROWSER_DEVTOOLS',
+        defaultMessage: 'Toggle developer tools',
+    },
+    TR_DAPP_BROWSER_WALLETCONNECT: {
+        id: 'TR_DAPP_BROWSER_WALLETCONNECT',
+        defaultMessage: 'WalletConnect',
+    },
+    TR_DAPP_BROWSER_WALLETCONNECT_NO_URI: {
+        id: 'TR_DAPP_BROWSER_WALLETCONNECT_NO_URI',
+        defaultMessage:
+            'Copy the WalletConnect link from the dApp first, then click WalletConnect.',
+    },
+    TR_DAPP_BROWSER_CONSENT_HEADING: {
+        id: 'TR_DAPP_BROWSER_CONSENT_HEADING',
+        defaultMessage: 'Open {dappName}?',
+    },
+    TR_DAPP_BROWSER_CONSENT_DISCLAIMER: {
+        id: 'TR_DAPP_BROWSER_CONSENT_DISCLAIMER',
+        defaultMessage:
+            "This application isn't operated by Trezor. Trezor is not responsible for any loss of funds or quality of service of such application.",
+    },
+    TR_DAPP_BROWSER_CONSENT_VERIFY: {
+        id: 'TR_DAPP_BROWSER_CONSENT_VERIFY',
+        defaultMessage:
+            'Always make sure to carefully verify with information displayed on your Trezor device.',
+    },
+    TR_DAPP_BROWSER_CONSENT_CONTINUE: {
+        id: 'TR_DAPP_BROWSER_CONSENT_CONTINUE',
+        defaultMessage: 'I understand, continue',
+    },
+    TR_DAPP_BROWSER_CONSENT_CANCEL: {
+        id: 'TR_DAPP_BROWSER_CONSENT_CANCEL',
+        defaultMessage: 'Cancel',
+    },
+    TR_DAPP_BROWSER_NO_ACCOUNT: {
+        id: 'TR_DAPP_BROWSER_NO_ACCOUNT',
+        defaultMessage:
+            'No Ethereum account is available to connect. Add one in your wallet first.',
+    },
     TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
         defaultMessage:

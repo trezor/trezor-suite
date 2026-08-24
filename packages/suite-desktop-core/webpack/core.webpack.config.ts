@@ -83,6 +83,7 @@ const config: webpack.Configuration = {
         // NOTE: in DEV ONLY pick app with react dev tools installed
         { app: isDev ? 'app-with-devtools' : 'app' },
         { preload: 'preload' },
+        { 'dapp-provider-preload': 'dapp-provider-preload' },
         ...threads.map(thread => ({ [String(thread)]: thread })),
     ].reduce(
         (prev, cur) => ({

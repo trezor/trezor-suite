@@ -177,6 +177,7 @@
         },
         { "path": "../../suite/backup" },
         { "path": "../../suite/coinjoin" },
+        { "path": "../../suite/dapp-browser" },
         { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/device" },

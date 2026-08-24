@@ -222,5 +222,19 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
 
         // Browser Window
         reloadBrowserWindow: () => ipcRenderer.invoke('browser-window/reload'),
+
+        // dApp browser
+        dappBrowserOpen: params => ipcRenderer.invoke('dapp-browser/open', params),
+        dappBrowserClose: () => ipcRenderer.invoke('dapp-browser/close'),
+        dappBrowserSetBounds: bounds => ipcRenderer.invoke('dapp-browser/set-bounds', bounds),
+        dappBrowserSetVisible: params => ipcRenderer.invoke('dapp-browser/set-visible', params),
+        dappBrowserSetGrant: grant => ipcRenderer.invoke('dapp-browser/set-grant', grant),
+        dappBrowserReload: () => ipcRenderer.invoke('dapp-browser/reload'),
+        dappBrowserGoBack: () => ipcRenderer.invoke('dapp-browser/go-back'),
+        dappBrowserGoForward: () => ipcRenderer.invoke('dapp-browser/go-forward'),
+        dappBrowserToggleDevTools: () => ipcRenderer.invoke('dapp-browser/toggle-devtools'),
+        dappBrowserDispatchResponse: response =>
+            ipcRenderer.invoke('dapp-browser/dispatch-response', response),
+        dappBrowserReadClipboard: () => ipcRenderer.invoke('dapp-browser/read-clipboard'),
     };
 };

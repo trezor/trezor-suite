@@ -101,6 +101,7 @@
         "@suite/authenticity-checks": "workspace:*",
         "@suite/backup": "workspace:*",
         "@suite/coinjoin": "workspace:*",
+        "@suite/dapp-browser": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/desktop-update": "workspace:*",
         "@suite/device": "workspace:*",
