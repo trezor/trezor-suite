@@ -177,6 +177,7 @@ export const EarnYieldTable = () => {
                 heading={<Translation id="TR_EARN_DEFI_YIELD_TITLE" />}
                 subheading={<Translation id="TR_EARN_DEFI_YIELD_DASHBOARD_TEXT" />}
                 actions={<PoweredByBadge provider="morpho" />}
+                areActionsBelowSubheading={isCardLayout}
                 ref={anchorRef}
             >
                 <Column gap={16} alignItems="center">
