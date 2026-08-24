@@ -20,6 +20,7 @@
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-rbf-labels-migrations-types": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-types": "workspace:*",

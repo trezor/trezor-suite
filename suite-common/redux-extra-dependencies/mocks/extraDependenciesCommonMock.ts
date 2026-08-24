@@ -1,7 +1,6 @@
 import type { AddressValidator } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329 } from '@suite-common/bip329-types';
-import { type ConnectInitSettings } from '@suite-common/connect-init';
 import type { NetworkModuleRepository, NetworkSymbol } from '@suite-common/networks';
 import {
     mockFindNetworkSymbolForProtocol,
@@ -14,7 +13,11 @@ import {
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
-import { type ReportSecurityCheckParams, asDelegatedIdentityKey } from '@suite-common/suite-types';
+import {
+    type ConnectInitSettings,
+    type ReportSecurityCheckParams,
+    asDelegatedIdentityKey,
+} from '@suite-common/suite-types';
 import { type SelectedAccountLoaded, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';

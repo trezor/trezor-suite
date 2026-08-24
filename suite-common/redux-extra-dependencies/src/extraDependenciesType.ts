@@ -1,9 +1,4 @@
-import {
-    type Action,
-    type ActionCreatorWithPreparedPayload,
-    type AsyncThunk,
-    type ThunkAction,
-} from '@reduxjs/toolkit';
+import { type ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
 
 import type { AddressValidatorDep } from '@suite-common/address';
 import type { AnalyticsDep } from '@suite-common/analytics';
@@ -20,6 +15,7 @@ import type {
     NetworkModuleRepositoryDep,
 } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { type SuiteCompatibleThunk } from '@suite-common/redux-utils';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
@@ -45,23 +41,6 @@ import {
     type SelectedAccountStatus,
 } from '@suite-common/wallet-types';
 import { type BluetoothDeviceId, type CreateLoggerDep, type ThpSettings } from '@trezor/connect';
-
-// TODO: Replace with a generic shared `Thunk` type from @suite-common/redux-utils after
-// https://github.com/trezor/trezor-suite/issues/30770 is completed.
-interface AnyAction extends Action {
-    [extraProps: string]: any;
-}
-
-// TODO: Replace with a generic shared `Thunk` type from @suite-common/redux-utils after
-// https://github.com/trezor/trezor-suite/issues/30770 is completed.
-type OriginalReduxThunk<TPayload, TReturn = void> = (
-    payload: TPayload,
-) => ThunkAction<TReturn, any, any, AnyAction>;
-
-// TODO: Replace with a generic shared `Thunk` type from @suite-common/redux-utils after
-// https://github.com/trezor/trezor-suite/issues/30770 is completed.
-type SuiteCompatibleThunk<TPayload, TReturn = void> =
-    AsyncThunk<TReturn, TPayload, Record<never, never>> | OriginalReduxThunk<TPayload, TReturn>;
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
