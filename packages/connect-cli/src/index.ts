@@ -157,6 +157,43 @@ const runTestCase = async (device: Device) => {
 
         console.warn(wardResult);
 
+        // `--then`: A SECOND WARD COMMAND IN THE SAME SESSION, which is a different thing from
+        // running this CLI twice and the difference is the point. Sync state is SESSION state on the
+        // device (`APP_WARD_ONLINE` lives in the THP session cache), so two invocations legitimately
+        // sync twice, and "the device adopted the head its daemon attested" cannot be observed
+        // across them -- the second run would have synced anyway, whether or not the first one's
+        // publication stuck. Both operations inside one session make the absence of that second sync
+        // the evidence it is supposed to be. See `e2e/ward-queue.sh`.
+        //
+        // The same inputs are reused deliberately: the pair worth running this way is a write and
+        // then a read of the entry just written, and re-typing the key would be one more thing that
+        // could differ between them.
+        const thenCommand = getWardCommand(args.then);
+        if (args.then !== undefined && !thenCommand) {
+            console.error(`--then names no WARD command: ${args.then}`);
+            process.exit(1);
+        }
+
+        if (thenCommand) {
+            const thenMissing = missingWardParams(thenCommand, wardParams);
+            if (thenMissing.length) {
+                console.error(`--then=${thenCommand.name} needs: ${thenMissing.join(', ')}`);
+                process.exit(1);
+            }
+
+            const thenResult = await runWardCommand(
+                thenCommand.name,
+                // NOT `args.queue`: the flag belongs to the first command. A chained read of a
+                // change that was just published is an ONLINE read, and inheriting --queue would
+                // have it answer from the device's own store instead -- the exact confusion the
+                // two request types exist to prevent.
+                { queue: false, params: wardParams },
+                device,
+            );
+
+            console.warn(thenResult);
+        }
+
         process.exit(1);
     }
 

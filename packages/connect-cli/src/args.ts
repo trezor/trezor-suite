@@ -95,6 +95,13 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 nowhere to keep it, and that is reported rather than
                                                 treated as success.
 
+    --then=<ward method>                      Run a second WARD command in the SAME session, on the
+                                                same --appid/--ident, once the first has finished.
+                                                Sync state is session state on the device, so a
+                                                write and the read that follows it only share a
+                                                synced session when they share a process.
+                                                --method=ward_add --service ... --then=ward_display
+
   Publishing what the device is holding
     --method=ward_flush --service             Publishes ONE queued change and reports how many are
                                                 left. The device re-derives the change against
