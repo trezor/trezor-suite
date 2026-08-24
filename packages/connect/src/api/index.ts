@@ -65,5 +65,6 @@ export { default as wardGetEntry } from './ward/wardGetEntry';
 export { default as wardQueueDeleteEntry } from './ward/wardQueueDeleteEntry';
 export { default as wardQueueGetEntry } from './ward/wardQueueGetEntry';
 export { default as wardQueueSetEntry } from './ward/wardQueueSetEntry';
+export { default as wardResetApp } from './ward/wardResetApp';
 export { default as wardSetEntry } from './ward/wardSetEntry';
 export { default as wipeDevice } from './wipeDevice';

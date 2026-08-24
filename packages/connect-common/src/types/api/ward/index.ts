@@ -6,6 +6,7 @@ import type { wardGetEntry } from './wardGetEntry';
 import type { wardQueueDeleteEntry } from './wardQueueDeleteEntry';
 import type { wardQueueGetEntry } from './wardQueueGetEntry';
 import type { wardQueueSetEntry } from './wardQueueSetEntry';
+import type { wardResetApp } from './wardResetApp';
 import type { wardSetEntry } from './wardSetEntry';
 
 // WARD entry operations. The queue has its own calls, as it has its own wire messages: a write
@@ -18,5 +19,6 @@ export const TrezorConnectWard = Type.Object({
     wardQueueGetEntry: Type.Unsafe<typeof wardQueueGetEntry>(),
     wardQueueDeleteEntry: Type.Unsafe<typeof wardQueueDeleteEntry>(),
     wardFlushQueue: Type.Unsafe<typeof wardFlushQueue>(),
+    wardResetApp: Type.Unsafe<typeof wardResetApp>(),
 });
 export type TrezorConnectWard = Static<typeof TrezorConnectWard>;
