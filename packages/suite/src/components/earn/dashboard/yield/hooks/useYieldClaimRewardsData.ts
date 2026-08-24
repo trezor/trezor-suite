@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountWithNetworkType,
     type BaseCurrencyAmount,
@@ -28,6 +29,8 @@ export type AccountRewards = AccountReward[];
 
 interface TokenReward {
     symbol: string;
+    networkSymbol: NetworkSymbol;
+    contractAddress: string;
     crypto: AmountUnit;
     fiat: BaseCurrencyAmount;
 }
@@ -35,14 +38,24 @@ interface TokenReward {
 export type TokenRewards = TokenReward[];
 
 type TokenMap = {
-    [key: string]: { symbol: string; decimals: number; crypto: BigNumber; fiat: BigNumber };
+    [key: string]: {
+        symbol: string;
+        networkSymbol: NetworkSymbol;
+        contractAddress: string;
+        decimals: number;
+        crypto: BigNumber;
+        fiat: BigNumber;
+    };
 };
 
 export const useYieldClaimRewardsData = ({
     rewards,
 }: UseYieldClaimRewardsDataProps): UseYieldClaimRewardsDataResult => {
     const allRewards = useMemo(
-        () => rewards.data.accountsRewards.flatMap(accountRewards => accountRewards.rewards),
+        () =>
+            rewards.data.accountsRewards.flatMap(({ account, rewards: accountRewards }) =>
+                accountRewards.map(reward => ({ reward, networkSymbol: account.symbol })),
+            ),
         [rewards.data.accountsRewards],
     );
 
@@ -58,9 +71,13 @@ export const useYieldClaimRewardsData = ({
     const tokenRewards = useMemo(() => {
         const tokenMap: TokenMap = {};
 
-        for (const reward of allRewards) {
-            const entry = tokenMap[reward.token.address] ?? {
+        for (const { reward, networkSymbol } of allRewards) {
+            const contractAddress = reward.token.address;
+            const tokenKey = `${networkSymbol}-${contractAddress.toLowerCase()}`;
+            const entry = tokenMap[tokenKey] ?? {
                 symbol: reward.token.symbol,
+                networkSymbol,
+                contractAddress,
                 decimals: reward.token.decimals,
                 crypto: new BigNumber(0),
                 fiat: new BigNumber(0),
@@ -69,18 +86,18 @@ export const useYieldClaimRewardsData = ({
             entry.crypto = entry.crypto.plus(reward.claimable);
             entry.fiat = entry.fiat.plus(reward.fiat.claimable ?? '0');
 
-            tokenMap[reward.token.address] = { ...entry };
+            tokenMap[tokenKey] = { ...entry };
         }
 
-        return Object.entries(tokenMap).map(([_, { symbol, decimals, ...entry }]) => {
+        return Object.values(tokenMap).map(({ decimals, crypto: cryptoSubunits, ...entry }) => {
             const crypto = subunitsToUnits({
-                value: asAmountSubunit(entry.crypto),
+                value: asAmountSubunit(cryptoSubunits),
                 decimals,
             });
 
             const fiat = asBaseCurrencyAmount(entry.fiat);
 
-            return { symbol, crypto, fiat };
+            return { ...entry, crypto, fiat };
         }) satisfies TokenRewards;
     }, [allRewards]);
 
