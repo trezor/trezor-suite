@@ -2,6 +2,8 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { type SpacingValue } from '@trezor/theme';
+
 import { BannerButton } from './BannerButton';
 import { BannerContext } from './BannerContext';
 import { BannerIconButton } from './BannerIconButton';
@@ -27,16 +29,17 @@ import { Paragraph } from '../typography/Paragraph/Paragraph';
 
 const CONTAINER_BREAKPOINT = '440px';
 
-const Layout = styled.div`
+const Layout = styled.div<{ $contentGap: SpacingValue }>`
     container-type: inline-size;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
+    row-gap: ${({ $contentGap }) => $contentGap}px;
     align-items: center;
 `;
 
-const IconCell = styled.div`
+const IconCell = styled.div<{ $isVerticallyCentered: boolean }>`
     grid-column: 1;
-    grid-row: 1;
+    grid-row: ${({ $isVerticallyCentered }) => ($isVerticallyCentered ? '1 / span 2' : '1')};
     margin-right: 12px;
 `;
 
@@ -71,6 +74,8 @@ export type BannerProps = AllowedFrameProps & {
     icon?: IconComponent | true;
     'data-testid'?: string;
     isLoading?: boolean;
+    isIconVerticallyCentered?: boolean;
+    contentGap?: SpacingValue;
 } & ({ title: ReactNode; description?: ReactNode } | { title?: ReactNode; description: ReactNode });
 
 export const Banner = ({
@@ -81,6 +86,8 @@ export const Banner = ({
     rightContent,
     'data-testid': dataTest,
     isLoading = false,
+    isIconVerticallyCentered = false,
+    contentGap = 0,
     width = '100%',
     ...rest
 }: BannerProps) => {
@@ -101,9 +108,9 @@ export const Banner = ({
             {...frameProps}
             width={width}
         >
-            <Layout>
+            <Layout $contentGap={contentGap}>
                 {(isLoading || withIcon) && (
-                    <IconCell>
+                    <IconCell $isVerticallyCentered={isIconVerticallyCentered}>
                         {isLoading && <Spinner size={20} isDisabled={true} />}
                         {!isLoading && withIcon && (
                             <Icon

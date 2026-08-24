@@ -87,11 +87,15 @@ const renderUseYieldClaimRewardsData = (accountsRewards: AccountsRewards) => {
             accountKey: account.key,
             fiat: fiat.toString(),
         })),
-        tokenRewards: result.current.tokenRewards.map(({ symbol, crypto, fiat }) => ({
-            symbol,
-            crypto: crypto.toString(),
-            fiat: fiat.toString(),
-        })),
+        tokenRewards: result.current.tokenRewards.map(
+            ({ symbol, networkSymbol, contractAddress, crypto, fiat }) => ({
+                symbol,
+                networkSymbol,
+                contractAddress,
+                crypto: crypto.toString(),
+                fiat: fiat.toString(),
+            }),
+        ),
     };
 };
 
@@ -113,7 +117,15 @@ describe(useYieldClaimRewardsData.name, () => {
         ]);
 
         expect(accountRewards).toEqual([{ accountKey: account.key, fiat: '12.5' }]);
-        expect(tokenRewards).toEqual([{ symbol: 'USDC', crypto: '12.5', fiat: '12.5' }]);
+        expect(tokenRewards).toEqual([
+            {
+                symbol: 'USDC',
+                networkSymbol: 'eth',
+                contractAddress: USDC.address,
+                crypto: '12.5',
+                fiat: '12.5',
+            },
+        ]);
     });
 
     it('sums rewards of the same token of a single account and keeps other tokens separate', () => {
@@ -133,8 +145,20 @@ describe(useYieldClaimRewardsData.name, () => {
 
         expect(accountRewards).toEqual([{ accountKey: account.key, fiat: '1512.5' }]);
         expect(tokenRewards).toEqual([
-            { symbol: 'USDC', crypto: '12.5', fiat: '12.5' },
-            { symbol: 'WETH', crypto: '0.5', fiat: '1500' },
+            {
+                symbol: 'USDC',
+                networkSymbol: 'eth',
+                contractAddress: USDC.address,
+                crypto: '12.5',
+                fiat: '12.5',
+            },
+            {
+                symbol: 'WETH',
+                networkSymbol: 'eth',
+                contractAddress: WETH.address,
+                crypto: '0.5',
+                fiat: '1500',
+            },
         ]);
     });
 
@@ -149,7 +173,15 @@ describe(useYieldClaimRewardsData.name, () => {
         ]);
 
         expect(accountRewards).toEqual([{ accountKey: account.key, fiat: '10' }]);
-        expect(tokenRewards).toEqual([{ symbol: 'USDC', crypto: '12.5', fiat: '10' }]);
+        expect(tokenRewards).toEqual([
+            {
+                symbol: 'USDC',
+                networkSymbol: 'eth',
+                contractAddress: USDC.address,
+                crypto: '12.5',
+                fiat: '10',
+            },
+        ]);
     });
 
     it('sums rewards per token across accounts and keeps the fiat total per account', () => {
@@ -180,8 +212,20 @@ describe(useYieldClaimRewardsData.name, () => {
             { accountKey: secondAccount.key, fiat: '755' },
         ]);
         expect(tokenRewards).toEqual([
-            { symbol: 'USDC', crypto: '15', fiat: '15' },
-            { symbol: 'WETH', crypto: '0.75', fiat: '2250' },
+            {
+                symbol: 'USDC',
+                networkSymbol: 'eth',
+                contractAddress: USDC.address,
+                crypto: '15',
+                fiat: '15',
+            },
+            {
+                symbol: 'WETH',
+                networkSymbol: 'eth',
+                contractAddress: WETH.address,
+                crypto: '0.75',
+                fiat: '2250',
+            },
         ]);
     });
 });

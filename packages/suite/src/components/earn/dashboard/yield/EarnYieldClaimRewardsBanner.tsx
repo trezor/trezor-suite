@@ -17,6 +17,7 @@ import { type useMerklRewards } from '../../yield/claim/hooks';
 
 type EarnYieldClaimRewardsBannerProps = {
     rewards: ReturnType<typeof useMerklRewards>['merklRewardsQuery'];
+    isFiatRateLoading?: boolean;
     isClaimDisabled?: boolean;
     claimDisabledTooltip?: React.ReactNode;
     onClaim?: () => void;
@@ -24,6 +25,7 @@ type EarnYieldClaimRewardsBannerProps = {
 
 export const EarnYieldClaimRewardsBanner = ({
     rewards,
+    isFiatRateLoading,
     isClaimDisabled,
     claimDisabledTooltip,
     onClaim,
@@ -37,6 +39,7 @@ export const EarnYieldClaimRewardsBanner = ({
     const { isLoading } = rewards;
 
     const { accountRewards, tokenRewards } = useYieldClaimRewardsData({ rewards });
+    const areRewardsLoading = isLoading || isFiatRateLoading || isDiscoveryRunning;
 
     const handleOnClaim = () => {
         analytics.report({
@@ -55,42 +58,44 @@ export const EarnYieldClaimRewardsBanner = ({
         <Banner
             intent="neutral"
             icon={HandCoinsIcon}
-            description={
-                <Row gap={12} alignItems="center">
+            isIconVerticallyCentered
+            contentGap={8}
+            title={
+                <Row gap={8} flexWrap="wrap">
                     <Text intent="neutral" priority="secondary">
-                        <Translation id="TR_EARN_CLAIM_REWARDS_LABEL" />:
+                        <Translation id="TR_EARN_CLAIM_REWARDS_LABEL" />
                     </Text>
 
-                    {isLoading || isDiscoveryRunning ? (
+                    {areRewardsLoading ? (
                         <Skeleton width={50} height={16} animate />
                     ) : (
-                        <>
-                            <HiddenPlaceholder>
-                                <Text typographyStyle="body-sm-strong">
-                                    {!isClaimDisabled && '≈ '}
-                                    <BaseCurrencyAmountFormatter
-                                        value={value}
-                                        currency={currency}
-                                    />
-                                </Text>
-                            </HiddenPlaceholder>
-
-                            {tokenRewards.length > 0 && (
-                                <EarnYieldClaimRewardsBannerTokensTooltip
-                                    rewards={tokenRewards}
-                                    currency={currency}
-                                />
-                            )}
-
-                            {accountRewards.length > 1 && (
-                                <EarnYieldClaimRewardsBannerAccountsTooltip
-                                    rewards={accountRewards}
-                                    currency={currency}
-                                />
-                            )}
-                        </>
+                        <HiddenPlaceholder>
+                            <Text typographyStyle="body-md-strong">
+                                {!isClaimDisabled && '≈ '}
+                                <BaseCurrencyAmountFormatter value={value} currency={currency} />
+                            </Text>
+                        </HiddenPlaceholder>
                     )}
                 </Row>
+            }
+            description={
+                !areRewardsLoading && (
+                    <Row gap={16} alignItems="center" flexWrap="wrap">
+                        {tokenRewards.length > 1 && (
+                            <EarnYieldClaimRewardsBannerTokensTooltip
+                                rewards={tokenRewards}
+                                currency={currency}
+                            />
+                        )}
+
+                        {accountRewards.length > 1 && (
+                            <EarnYieldClaimRewardsBannerAccountsTooltip
+                                rewards={accountRewards}
+                                currency={currency}
+                            />
+                        )}
+                    </Row>
+                )
             }
             rightContent={
                 <Tooltip content={claimDisabledTooltip}>

@@ -185,6 +185,7 @@ export const EarnYieldTable = () => {
                         <>
                             <EarnYieldClaimRewardsBanner
                                 rewards={merklRewardsQuery}
+                                isFiatRateLoading={missingRateTickersQuery.isLoading}
                                 isClaimDisabled={isClaimDisabled}
                                 claimDisabledTooltip={
                                     claimMessageSystem.isDisabled
