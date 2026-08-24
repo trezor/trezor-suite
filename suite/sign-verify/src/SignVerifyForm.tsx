@@ -217,6 +217,11 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
         });
     }, [verificationInputs]);
 
+    const clearForm = () => {
+        resetForm();
+        setOutcome('idle');
+    };
+
     const renderAddressField = () => {
         if (isCompleted) {
             return (
@@ -447,7 +452,7 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
                         type="button"
                         intent="neutral"
                         priority="secondary"
-                        onClick={resetForm}
+                        onClick={clearForm}
                         data-testid="@sign-verify/clear"
                         minWidth={200}
                     >
