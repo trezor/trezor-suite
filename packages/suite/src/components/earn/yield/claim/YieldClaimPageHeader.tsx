@@ -12,6 +12,7 @@ import { TokenIcon } from '@trezor/product-components';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
 import { useDispatch } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 type YieldClaimPageHeaderProps = {
     account?: Account;
@@ -20,6 +21,7 @@ type YieldClaimPageHeaderProps = {
 export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { isBelowMobile } = useLayoutSize();
 
     const onBackClick = () => {
         analytics.report({
@@ -37,24 +39,29 @@ export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => 
 
     return (
         <PageHeader>
-            <Row width="100%" gap={16} alignItems="center">
+            <Row width="100%" gap={isBelowMobile ? 12 : 16} alignItems="center">
                 <IconButton
                     icon={CaretLeftIcon}
                     intent="neutral"
                     priority="secondary"
-                    size="large"
+                    size={isBelowMobile ? 'medium' : 'large'}
                     onClick={onBackClick}
                     data-testid="@account-subpage/back"
                     tooltip={{ content: <Translation id="TR_BACK" /> }}
                 />
                 {account ? (
-                    <Row gap={12} alignItems="center" flex="1" overflow="hidden">
-                        <TokenIcon symbol={account.symbol} size={32} />
+                    <Row
+                        gap={isBelowMobile ? 8 : 12}
+                        alignItems="center"
+                        flex="1"
+                        overflow="hidden"
+                    >
+                        <TokenIcon symbol={account.symbol} size={isBelowMobile ? 24 : 32} />
                         <AccountLabel
                             account={account}
                             showAccountTypeBadge
                             accountTypeBadgeSize="small"
-                            typographyStyle="headline-md"
+                            typographyStyle={isBelowMobile ? 'headline-sm' : 'headline-md'}
                             rowProps={{ flex: '1', overflow: 'hidden' }}
                         />
                     </Row>
