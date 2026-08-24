@@ -121,6 +121,7 @@ const connectPublicCallableMethodGroups = {
         'wardQueueSetEntry',
         'wardQueueGetEntry',
         'wardQueueDeleteEntry',
+        'wardFlushQueue',
     ],
 } as const;
 

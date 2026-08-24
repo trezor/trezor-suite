@@ -60,6 +60,7 @@ export { default as telemetryGet } from './telemetryGet';
 export { default as thpGetCredentials } from './thpGetCredentials';
 export { default as thpRemoveCredentials } from './thpRemoveCredentials';
 export { default as verifyMessage } from './verifyMessage';
+export { default as wardFlushQueue } from './ward/wardFlushQueue';
 export { default as wardGetEntry } from './ward/wardGetEntry';
 export { default as wardQueueDeleteEntry } from './ward/wardQueueDeleteEntry';
 export { default as wardQueueGetEntry } from './ward/wardQueueGetEntry';
