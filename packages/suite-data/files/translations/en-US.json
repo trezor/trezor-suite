@@ -2439,7 +2439,7 @@
   "TR_STAKE_RESTAKED_BADGE": "Restaked",
   "TR_STAKE_RETURNED_TO_ACCOUNT_WHEN_UNSTAKE": "Returned to account when you unstake",
   "TR_STAKE_REWARDS": "Rewards",
-  "TR_STAKE_REWARDS_BADGE": "Epoch number {count}",
+  "TR_STAKE_REWARDS_BADGE": "{count} Epoch",
   "TR_STAKE_SEND_SWAP_SPEND_ANYTIME": "Send, swap, or spend your {symbol} whenever you want—even while staking.",
   "TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT": "Due to recent Solana blockchain changes, this amount can't be unstaked. Try {higher} {symbol}{higherFiat}, or {lower} {symbol}{lowerFiat}.",
   "TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY": "Due to recent Solana blockchain changes, this amount can't be unstaked. Try {higher} {symbol}{higherFiat}.",
