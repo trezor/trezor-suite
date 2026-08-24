@@ -3,8 +3,8 @@ import { type ReactNode } from 'react';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Translation } from '@suite-native/intl';
 
+import { type EarnCompleteSummaryRow } from './EarnCompleteScreenContent';
 import { TransactionCompleteAmountValue } from './TransactionCompleteAmountValue';
-import { type YieldCompleteSummaryRow } from './YieldCompleteScreenContent';
 import { getYieldCompleteStatusRow } from './YieldCompleteScreenPresets';
 
 type GetTransactionCompleteRowsParams = {
@@ -19,7 +19,7 @@ export const getTransactionCompleteRows = ({
     amountInBaseUnits,
     amountLabel,
     apyValue,
-}: GetTransactionCompleteRowsParams): YieldCompleteSummaryRow[] => [
+}: GetTransactionCompleteRowsParams): EarnCompleteSummaryRow[] => [
     getYieldCompleteStatusRow(),
     {
         key: 'amount',

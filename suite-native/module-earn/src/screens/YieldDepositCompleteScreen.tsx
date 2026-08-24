@@ -24,7 +24,7 @@ import {
 
 import { ApyDottedUnderline } from '../components/ApyDottedUnderline';
 import { ApyValue } from '../components/ApyValue';
-import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenContent';
+import { EarnCompleteScreenContent } from '../components/EarnCompleteScreenContent';
 import { getYieldDepositCompleteRows } from '../components/YieldCompleteScreenPresets';
 import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
@@ -138,7 +138,7 @@ export const YieldDepositCompleteScreen = () => {
     }
 
     return (
-        <YieldCompleteScreenContent
+        <EarnCompleteScreenContent
             type="deposit"
             vaultId={vault.id}
             buttonTranslationId="earn.yieldCompleteScreen.backToOverview"

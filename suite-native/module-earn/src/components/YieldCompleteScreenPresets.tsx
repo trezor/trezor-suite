@@ -6,8 +6,8 @@ import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
+import { type EarnCompleteSummaryRow } from './EarnCompleteScreenContent';
 import { YieldClaimRewardRow, getYieldClaimRewardFiatAmount } from './YieldClaimRewardRow';
-import { type YieldCompleteSummaryRow } from './YieldCompleteScreenContent';
 
 type YieldCompleteAmountValueParams = {
     accountSymbol: NetworkSymbol;
@@ -44,7 +44,7 @@ type GetYieldDepositCompleteRowsParams = {
     sentTokenContract?: string;
 };
 
-export const getYieldCompleteStatusRow = (): YieldCompleteSummaryRow => ({
+export const getYieldCompleteStatusRow = (): EarnCompleteSummaryRow => ({
     key: 'status',
     label: <Translation id="earn.yieldCompleteScreen.status" />,
     value: (
@@ -64,7 +64,7 @@ export const getYieldDepositCompleteRows = ({
     receivedTokenContract,
     sentAmount,
     sentTokenContract,
-}: GetYieldDepositCompleteRowsParams): YieldCompleteSummaryRow[] => [
+}: GetYieldDepositCompleteRowsParams): EarnCompleteSummaryRow[] => [
     getYieldCompleteStatusRow(),
     {
         key: 'apy',
@@ -105,7 +105,7 @@ export const getYieldWithdrawCompleteRows = ({
     receivedTokenContract,
     withdrawalAmount,
     withdrawalTokenContract,
-}: GetYieldWithdrawCompleteRowsParams): YieldCompleteSummaryRow[] => [
+}: GetYieldWithdrawCompleteRowsParams): EarnCompleteSummaryRow[] => [
     getYieldCompleteStatusRow(),
     {
         key: 'sent',
@@ -148,7 +148,7 @@ export const getWrappedNativeCompleteRows = ({
     receivedTokenContract,
     sentAmount,
     sentTokenContract,
-}: GetWrappedNativeCompleteRowsParams): YieldCompleteSummaryRow[] => [
+}: GetWrappedNativeCompleteRowsParams): EarnCompleteSummaryRow[] => [
     getYieldCompleteStatusRow(),
     {
         key: 'sent',
@@ -172,7 +172,7 @@ export const getWrappedNativeCompleteRows = ({
 
 export const getYieldClaimCompleteRows = (
     rewards: YieldFlowCompleteRewardItem[],
-): YieldCompleteSummaryRow[] => [
+): EarnCompleteSummaryRow[] => [
     getYieldCompleteStatusRow(),
     {
         key: 'rewards',

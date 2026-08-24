@@ -38,19 +38,21 @@ const stakeTypeCompleteRoute: Record<EarnFormDraftPrefix, RootStackRoutes> = {
     claim: RootStackRoutes.ClaimTransactionComplete,
 };
 
+interface NavigateToPushedTransactionActionProps {
+    accountKey: AccountKey;
+    amountInBaseUnits: string;
+    failedTxid?: string;
+    stakeType: EarnFormDraftPrefix;
+    symbol: NetworkSymbol;
+}
+
 const navigateToPushedTransactionAction = ({
     accountKey,
     amountInBaseUnits,
     failedTxid,
     stakeType,
     symbol,
-}: {
-    accountKey: AccountKey;
-    amountInBaseUnits: string;
-    failedTxid?: string;
-    stakeType: EarnFormDraftPrefix;
-    symbol: NetworkSymbol;
-}) =>
+}: NavigateToPushedTransactionActionProps) =>
     CommonActions.reset({
         index: 2,
         routes: [

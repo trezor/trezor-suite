@@ -22,7 +22,7 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
-import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenContent';
+import { EarnCompleteScreenContent } from '../components/EarnCompleteScreenContent';
 import { getYieldClaimCompleteRows } from '../components/YieldCompleteScreenPresets';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldClaimComplete>;
@@ -81,7 +81,7 @@ export const YieldClaimCompleteScreen = () => {
     const rows = getYieldClaimCompleteRows(session.result.completedRewards);
 
     return (
-        <YieldCompleteScreenContent
+        <EarnCompleteScreenContent
             type="claim"
             buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
             onButtonPress={handleExit}
