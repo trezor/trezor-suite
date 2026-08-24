@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -14,8 +15,8 @@ import {
 } from '@suite-native/staking';
 
 import { ApyValue } from '../components/ApyValue';
+import { EarnCompleteScreenContent } from '../components/EarnCompleteScreenContent';
 import { getTransactionCompleteRows } from '../components/TransactionCompleteScreenPresets';
-import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenContent';
 
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.EarnTransactionComplete>;
 
@@ -36,40 +37,41 @@ export const EarnTransactionCompleteScreen = () => {
         selectApy(state, { accountKey, networkSymbol: account?.symbol }),
     );
 
-    const handleDone = () => {
-        navigation.goBack();
-    };
+    const rows = useMemo(() => {
+        if (!account) return [];
 
-    if (!account) {
-        return null;
-    }
+        const apyValue = isApyAvailable(apy) && (
+            <Text variant="body-md" color="contentBrand">
+                <ApyValue apy={apy} />
+            </Text>
+        );
 
-    const subtitle =
-        entryPeriodInDays !== undefined ? (
-            <Translation
-                id="earn.transactionCompleteScreen.stakeDescription"
-                values={{ days: entryPeriodInDays }}
-            />
-        ) : undefined;
+        return getTransactionCompleteRows({
+            accountSymbol: account.symbol,
+            amountInBaseUnits,
+            amountLabel: <Translation id="earn.transactionCompleteScreen.stakeAmountLabel" />,
+            apyValue,
+        });
+    }, [account, amountInBaseUnits, apy]);
+
+    if (!account) return null;
 
     return (
-        <YieldCompleteScreenContent
+        <EarnCompleteScreenContent
             type="stake"
             feedbackCategory="staking"
             buttonTranslationId="earn.transactionCompleteScreen.doneButton"
-            onButtonPress={handleDone}
-            rows={getTransactionCompleteRows({
-                accountSymbol: account.symbol,
-                amountInBaseUnits,
-                amountLabel: <Translation id="earn.transactionCompleteScreen.stakeAmountLabel" />,
-                apyValue: isApyAvailable(apy) ? (
-                    <Text variant="body-md" color="contentBrand">
-                        <ApyValue apy={apy} />
-                    </Text>
-                ) : undefined,
-            })}
+            onButtonPress={navigation.goBack}
+            rows={rows}
             title={<Translation id="earn.transactionCompleteScreen.stakeTitle" />}
-            subtitle={subtitle}
+            subtitle={
+                entryPeriodInDays && (
+                    <Translation
+                        id="earn.transactionCompleteScreen.stakeDescription"
+                        values={{ days: entryPeriodInDays }}
+                    />
+                )
+            }
         />
     );
 };

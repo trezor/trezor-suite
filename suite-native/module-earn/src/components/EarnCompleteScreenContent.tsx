@@ -55,7 +55,7 @@ const footerStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.sp36,
 }));
 
-export type YieldCompleteSummaryRow = {
+export type EarnCompleteSummaryRow = {
     key: string;
     label: ReactNode;
 } & (
@@ -69,22 +69,22 @@ export type YieldCompleteSummaryRow = {
       }
 );
 
-type YieldCompleteScreenType = YieldFlowType | WrappedNativeFlowType | EarnFormDraftPrefix;
+type EarnCompleteScreenType = YieldFlowType | WrappedNativeFlowType | EarnFormDraftPrefix;
 
-type YieldCompleteFeedbackCategory = Extract<FeedbackCategory, 'yield' | 'staking'>;
+type EarnCompleteFeedbackCategory = Extract<FeedbackCategory, 'yield' | 'staking'>;
 
-type YieldCompleteScreenContentProps = {
+type EarnCompleteScreenContentProps = {
     buttonTranslationId: TxKeyPath;
     onButtonPress: () => void;
-    rows: YieldCompleteSummaryRow[];
+    rows: EarnCompleteSummaryRow[];
     subtitle?: ReactNode;
     title: ReactNode;
-    type: YieldCompleteScreenType;
-    feedbackCategory?: YieldCompleteFeedbackCategory;
+    type: EarnCompleteScreenType;
+    feedbackCategory?: EarnCompleteFeedbackCategory;
     vaultId?: string;
 };
 
-export const YieldCompleteScreenContent = ({
+export const EarnCompleteScreenContent = ({
     buttonTranslationId,
     onButtonPress,
     rows,
@@ -93,7 +93,7 @@ export const YieldCompleteScreenContent = ({
     type,
     feedbackCategory = 'yield',
     vaultId,
-}: YieldCompleteScreenContentProps) => {
+}: EarnCompleteScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const device = useSelector(selectSelectedDevice);

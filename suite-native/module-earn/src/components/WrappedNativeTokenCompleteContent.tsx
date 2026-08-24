@@ -14,7 +14,7 @@ import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 
-import { YieldCompleteScreenContent } from './YieldCompleteScreenContent';
+import { EarnCompleteScreenContent } from './EarnCompleteScreenContent';
 import { getWrappedNativeCompleteRows } from './YieldCompleteScreenPresets';
 import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
 import { wrappedNativeFlowMessages } from '../utils/wrappedNativeFlowMessages';
@@ -81,7 +81,7 @@ export const WrappedNativeTokenCompleteContent = ({
     const messages = wrappedNativeFlowMessages[flowType].complete;
 
     return (
-        <YieldCompleteScreenContent
+        <EarnCompleteScreenContent
             type={flowType}
             buttonTranslationId={messages.closeButton}
             onButtonPress={handleClose}

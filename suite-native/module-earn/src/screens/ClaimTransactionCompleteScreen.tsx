@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -6,8 +7,8 @@ import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet
 import { Translation } from '@suite-native/intl';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 
+import { EarnCompleteScreenContent } from '../components/EarnCompleteScreenContent';
 import { getTransactionCompleteRows } from '../components/TransactionCompleteScreenPresets';
-import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenContent';
 
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.ClaimTransactionComplete>;
 
@@ -20,25 +21,25 @@ export const ClaimTransactionCompleteScreen = () => {
         selectAccountByKey(state, accountKey),
     );
 
-    const handleDone = () => {
-        navigation.goBack();
-    };
+    const rows = useMemo(() => {
+        if (!account) return [];
 
-    if (!account) {
-        return null;
-    }
+        return getTransactionCompleteRows({
+            accountSymbol: account.symbol,
+            amountInBaseUnits,
+            amountLabel: <Translation id="earn.transactionCompleteScreen.claimAmountLabel" />,
+        });
+    }, [account, amountInBaseUnits]);
+
+    if (!account) return null;
 
     return (
-        <YieldCompleteScreenContent
+        <EarnCompleteScreenContent
             type="claim"
             feedbackCategory="staking"
             buttonTranslationId="earn.transactionCompleteScreen.doneButton"
-            onButtonPress={handleDone}
-            rows={getTransactionCompleteRows({
-                accountSymbol: account.symbol,
-                amountInBaseUnits,
-                amountLabel: <Translation id="earn.transactionCompleteScreen.claimAmountLabel" />,
-            })}
+            onButtonPress={navigation.goBack}
+            rows={rows}
             title={<Translation id="earn.transactionCompleteScreen.claimTitle" />}
         />
     );

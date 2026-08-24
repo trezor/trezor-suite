@@ -20,7 +20,7 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
-import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenContent';
+import { EarnCompleteScreenContent } from '../components/EarnCompleteScreenContent';
 import { getYieldWithdrawCompleteRows } from '../components/YieldCompleteScreenPresets';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
@@ -127,7 +127,7 @@ export const YieldWithdrawCompleteScreen = () => {
     }
 
     return (
-        <YieldCompleteScreenContent
+        <EarnCompleteScreenContent
             type="withdraw"
             vaultId={vault.id}
             buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
