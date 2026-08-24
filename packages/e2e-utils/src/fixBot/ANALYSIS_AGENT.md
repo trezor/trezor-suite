@@ -20,8 +20,6 @@ Do not write code.
 
 ## Step 1 — Find the latest nightly runs
 
-_Cost marker: run `echo fixagent-stage-discovery` before starting this step._
-
 For **each** platform (Web `Og0NOQ`, Desktop `4ytF0E`):
 
 Use `currents-get-runs` with `projectId`, `branches=["develop"]`, `tags=["nightly"]`, `limit=2`.
@@ -62,8 +60,6 @@ or the skipped list — omit them entirely from the report.
 
 ## Step 3 — Get full debugging data per instance
 
-_Cost marker: run `echo fixagent-stage-investigate` before starting this step._
-
 For each failed or pending `instanceId`, use `currents-get-spec-instance` and extract:
 
 - Per-test error messages and stack traces
@@ -95,8 +91,6 @@ instance. Read the full file and any page objects, fixtures, or helpers it uses.
 > (visible earlier in the stack trace or error message) and diagnose that as the root cause.
 
 ## Step 6 — Produce the diagnosis report
-
-_Cost marker: run `echo fixagent-stage-report` before starting this step._
 
 Write the report to `packages/e2e-utils/src/fixBot/reports/report.md`.
 
@@ -139,8 +133,6 @@ After all test entries, append a **Prompt gaps** section:
 If nothing was unclear, write `## Prompt gaps\n\n_None._`
 
 ## Step 7 — Cluster and route each failure
-
-_Cost marker: run `echo fixagent-stage-cluster` before starting this step._
 
 Group the diagnosed failures into clusters by shared root cause — failures needing the same code
 change belong together, regardless of platform, device group, or spec file.  

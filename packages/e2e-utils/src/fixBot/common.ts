@@ -13,6 +13,7 @@ import { join } from 'node:path';
 
 import { log, warn } from '../logger';
 import {
+    type AgentName,
     type ClaudeResult,
     ClaudeResultSchema,
     type Ledger,
@@ -20,7 +21,6 @@ import {
     type SlackFixSummary,
     SlackFixSummarySchema,
 } from './schemas';
-import { type AgentName, formatStageBreakdown } from './stageCost';
 
 export const EMPTY_LEDGER: Ledger = { version: 1, updatedAt: '1970-01-01', entries: [] };
 
@@ -122,7 +122,11 @@ function findResultEntry(entries: unknown[]): ClaudeResult | null {
 
 function logResultToTerminal(agentName: AgentName, claudeResult: ClaudeResult): void {
     const RESULT_PREVIEW_LIMIT = 800;
+    const { total_cost_usd: totalCostUsd } = claudeResult;
     log(`[${agentName}] subtype=${claudeResult.subtype ?? 'N/A'}`);
+    log(
+        `[${agentName}] total cost: ${totalCostUsd !== undefined ? `$${totalCostUsd.toFixed(4)}` : 'n/a'}`,
+    );
 
     if (claudeResult.result) {
         log(`${claudeResult.result.slice(0, RESULT_PREVIEW_LIMIT)}`);
@@ -160,9 +164,6 @@ export function processAgentOutput(rawOutput: string, agent: AgentName): ClaudeR
     logResultToTerminal(agent, result);
 
     writeCostFile(result.total_cost_usd);
-
-    const breakdown = formatStageBreakdown(agent, entries, result);
-    log(breakdown ?? `[${agent}] no stage breakdown available`);
 
     return result;
 }
