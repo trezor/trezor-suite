@@ -11087,9 +11087,8 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
+    "@trezor/requirements": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -11353,15 +11352,24 @@ __metadata:
   resolution: "@suite-common/test-utils@workspace:suite-common/test-utils"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/address": "workspace:*"
+    "@suite-common/analytics": "workspace:*"
+    "@suite-common/bip329-types": "workspace:*"
+    "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/networks": "workspace:*"
+    "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/redux-extra-dependencies": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/react": "npm:^16.3.2"
+    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     core-js: "npm:^3.49.0"
     fake-indexeddb: "npm:^6.2.5"
@@ -11568,7 +11576,6 @@ __metadata:
     "@suite-common/firmware": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/react-query": "workspace:*"
-    "@suite-common/redux-extra-dependencies": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/schemas": "workspace:*"
     "@suite-common/staking": "workspace:*"
@@ -12755,7 +12762,6 @@ __metadata:
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/react-native-graph": "workspace:*"
-    "@suite-native/services": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@suite-native/tokens": "workspace:*"
@@ -14167,8 +14173,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/services@workspace:suite-native/services"
   dependencies:
-    "@suite-common/redux-extra-dependencies": "workspace:*"
-    "@suite-native/analytics": "workspace:*"
     react-native-mmkv: "npm:~4.3.2"
   languageName: unknown
   linkType: soft
@@ -15231,7 +15235,6 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/device": "workspace:*"
-    "@suite-common/redux-extra-dependencies": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -15689,7 +15692,6 @@ __metadata:
   resolution: "@suite/router@workspace:suite/router"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
-    "@suite-common/redux-extra-dependencies": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/validators": "workspace:*"

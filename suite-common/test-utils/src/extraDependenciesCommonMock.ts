@@ -12,6 +12,7 @@ import {
     type PlatformEncryption,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
+import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
 import {
     type ConnectInitSettings,
@@ -23,14 +24,13 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { err, ok } from '@trezor/type-utils';
 
-import { type ExtraDependencies } from '../src/extraDependenciesType';
 import {
     notImplementedAction,
     notImplementedActionType,
     notImplementedGetter,
     notImplementedReducer,
     notImplementedThunk,
-} from '../src/notImplemented';
+} from './notImplementedMock';
 
 const suiteSyncMock: SuiteSync = {
     changeRelayUrl: () => Promise.resolve(),

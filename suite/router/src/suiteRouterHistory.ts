@@ -1,7 +1,5 @@
 import { type History } from 'history';
 
-import type { CommonServices } from '@suite-common/redux-extra-dependencies';
-
 import type { RouterPath } from './router';
 
 type LocationPushState = Record<string, unknown>;
@@ -32,5 +30,5 @@ export type HistoryDep = {
     history: History;
 };
 
-export const asSuiteRouterHistoryService = (services: CommonServices) =>
-    services as CommonServices & SuiteRouterHistoryDep;
+export const asSuiteRouterHistoryService = <TServices>(services: TServices) =>
+    services as TServices & SuiteRouterHistoryDep;

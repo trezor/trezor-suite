@@ -1,18 +1,18 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { type WalletSettingsRootState } from '@suite-common/wallet-core';
 
-import type { SuiteExtra } from 'src/support/extraDependencies';
-import type { AppState } from 'src/types/suite';
+import type { SuiteServices } from 'src/support/extraDependencies';
 
 import type { useDispatch } from './useDispatch';
 
-type AvailableState = Pick<AppState, 'wallet'>;
+type AvailableState = WalletSettingsRootState;
 type UnavailableState = {
     unavailable: {
         value: string;
     };
 };
 type AvailableExtraDependencies = {
-    services: Pick<SuiteExtra['services'], 'getLanguage'>;
+    services: Pick<SuiteServices, 'getLanguage'>;
 };
 type UnavailableExtraDependencies = {
     services: {
@@ -39,7 +39,7 @@ const incompatibleExtraDependenciesThunk = createThunk<
     { extra: UnavailableExtraDependencies }
 >('test/incompatibleExtraDependenciesThunk', () => {});
 
-declare const dispatch: ReturnType<typeof useDispatch>;
+declare const dispatch: ReturnType<typeof useDispatch<AvailableState, AvailableExtraDependencies>>;
 
 dispatch(compatibleStateThunk());
 

@@ -13,7 +13,6 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
-        "@suite-common/redux-extra-dependencies": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/validators": "workspace:*",

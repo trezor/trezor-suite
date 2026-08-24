@@ -7,12 +7,18 @@ import {
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
-import type { ExtraDependenciesStatic } from '@suite-common/redux-extra-dependencies';
+import {
+    type CommonServices,
+    type ExtraDependencies,
+} from '@suite-common/redux-extra-dependencies';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import type { NativeServices } from '@suite-native/services';
+import { type MMKVStorageDep } from '@suite-native/services';
 
-type ExtraDependenciesNativeMock = ExtraDependenciesStatic & { services: NativeServices };
+// Importing NativeServices from @suite-native/state would create a package cycle: state depends on
+// feature packages whose tests depend on test-utils. Keep the same explicit service contract here.
+type NativeServices = CommonServices & NativeAnalyticsDep & MMKVStorageDep;
 
 const networkModules = createNetworksCompositionRoot();
 const networkModuleRepository = createNetworkModuleRepository({ networkModules });
@@ -23,7 +29,7 @@ const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({
 });
 const addressValidator = createAddressValidator({ networkModuleRepository });
 
-export const extraDependenciesNativeMock: ExtraDependenciesNativeMock = {
+export const extraDependenciesNativeMock: ExtraDependencies & { services: NativeServices } = {
     ...extraDependenciesCommonMock,
     services: {
         ...extraDependenciesCommonMock.services,

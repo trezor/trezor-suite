@@ -12,6 +12,7 @@ import {
     configureStore,
 } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
+import { type ThunkDispatch } from 'redux-thunk';
 
 import { type BackupState, backupMiddleware, backupReducer } from '@suite/backup';
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
@@ -60,7 +61,7 @@ import {
 import { type CreateConnectLoggerFactoryDep } from '../support/createConnectLoggerFactory';
 import { type CreateGetBinFilesBaseUrlDep } from '../support/createGetBinFilesBaseUrl';
 import {
-    type SuiteExtra,
+    type ExtraDependenciesSuite,
     type SuiteServices,
     createSuiteServicesCompositionRoot,
     extraDependencies,
@@ -174,7 +175,7 @@ export type SuiteStoreDeps = HistoryDep &
     GetTransportsFactoriesDep;
 
 export type SuiteStore = ReturnType<
-    typeof castExtraStore<SuiteExtra, EnhancedStore<AppState, UnknownAction>>
+    typeof castExtraStore<ExtraDependenciesSuite, EnhancedStore<AppState, UnknownAction>>
 > & {
     services: SuiteServices;
 };
@@ -199,7 +200,12 @@ export const initStore = (
               )
             : preloadedState;
 
-    const extraFactory = (api: MiddlewareAPI) => ({
+    const extraFactory = (
+        api: MiddlewareAPI<
+            ThunkDispatch<AppState, ExtraDependenciesSuite, UnknownAction>,
+            AppState
+        >,
+    ) => ({
         ...extraDependencies,
         services: createSuiteServicesCompositionRoot({
             getState: api.getState,

@@ -1,9 +1,12 @@
 import type React from 'react';
 import type { FieldPath, UseFormReturn } from 'react-hook-form';
 
+import { type UnknownAction } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
+import { type ThunkDispatch } from 'redux-thunk';
 
 import type { TranslationKey } from '@suite/intl';
+import { type OpenModalDep } from '@suite-common/suite-types';
 import type {
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
@@ -18,6 +21,7 @@ import type {
     TradingExchangeFormProps,
     TradingExchangeType,
     TradingPaymentMethodType,
+    TradingRootState,
     TradingSellFormProps,
     TradingSellType,
     TradingTradeType,
@@ -25,7 +29,11 @@ import type {
     TradingVerifiedAddress,
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
-import { type AccountsState } from '@suite-common/wallet-core';
+import {
+    type AccountsState,
+    type ConfirmAddressOnDeviceThunkState,
+    type WalletSettingsRootState,
+} from '@suite-common/wallet-core';
 import {
     type FeeInfo,
     type PrecomposedLevels,
@@ -34,8 +42,6 @@ import {
 import { type FeeLevel } from '@trezor/connect';
 
 import { type useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
-import { type AppState } from 'src/reducers/store';
-import { type Dispatch, type GetState } from 'src/types/suite';
 import {
     type TradingGetCryptoQuoteAmountProps,
     type TradingGetProvidersInfoProps,
@@ -82,7 +88,14 @@ type TradingVerifyAccountProps = (
     account: Account,
     address?: string,
     path?: string,
-) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+) => (
+    dispatch: ThunkDispatch<
+        ConfirmAddressOnDeviceThunkState & TradingRootState & WalletSettingsRootState,
+        { actions: OpenModalDep },
+        UnknownAction
+    >,
+    getState: () => ConfirmAddressOnDeviceThunkState & TradingRootState & WalletSettingsRootState,
+) => Promise<void>;
 
 export interface TradingBuyFormContextProps
     extends
@@ -110,7 +123,7 @@ export interface TradingSellFormContextProps
     isComposing: boolean;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     feeInfo: FeeInfo;
-    suiteReceiveAccounts?: AppState['wallet']['accounts'];
+    suiteReceiveAccounts?: AccountsState;
     // form - additional helpers for form
     form: {
         state: TradingFormStateProps;

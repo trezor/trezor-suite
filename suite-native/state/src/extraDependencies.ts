@@ -15,6 +15,7 @@ import {
 } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import {
+    type CommonServices,
     type ExtraDependenciesStatic,
     notImplementedAction,
     notImplementedActionType,
@@ -24,7 +25,7 @@ import {
 } from '@suite-common/redux-extra-dependencies';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { analytics } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, analytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import {
     rerunFwAuthenticityChecksThunk,
@@ -33,8 +34,11 @@ import {
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
-import { type NativeServices } from '@suite-native/services';
-import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
+import type { MMKVStorageDep } from '@suite-native/services';
+import type {
+    EnsureEncryptionKeyDep,
+    MMKVStorageDep as NativeStorageDep,
+} from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-state';
 import TrezorConnect, { type ConnectSettings, initLog } from '@trezor/connect';
@@ -62,7 +66,11 @@ type NativeAppDeps = {
     getState: () => any;
     dispatch: any;
 } & EnsureEncryptionKeyDep &
-    MMKVStorageDep;
+    NativeStorageDep;
+
+export type NativeServices = CommonServices & NativeAnalyticsDep & MMKVStorageDep;
+
+export type ExtraDependenciesNative = ExtraDependenciesStatic & { services: NativeServices };
 
 export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices => {
     const platformEncryption = createNativePlatformEncryption({

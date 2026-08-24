@@ -1,8 +1,10 @@
-import { createAction } from '@reduxjs/toolkit';
+import { type UnknownAction, createAction } from '@reduxjs/toolkit';
+import { type ThunkDispatch } from 'redux-thunk';
 
 import type { DesktopAnalyticsDep } from '@suite/analytics';
 import {
     type AnchorSettingSection,
+    type GotoThunkState,
     SettingsAnchor,
     type SuiteRouterHistoryDep,
     goto,
@@ -12,6 +14,10 @@ import {
 import { handleCoinProtocolUri } from '@suite/transfer-uri';
 import type { FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import {
+    type WalletConnectInitThunkDeps,
+    type WalletConnectInitThunkState,
+} from '@suite-common/walletconnect';
 import * as walletConnectActions from '@suite-common/walletconnect';
 import {
     SUITE_ANCHOR_DEEPLINK_PREFIX,
@@ -22,7 +28,6 @@ import {
 import { isArrayMember, safeParseUrl } from '@trezor/utils';
 
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
-import { type Dispatch } from 'src/types/suite';
 
 import { PROTOCOL } from './constants';
 
@@ -39,8 +44,20 @@ export type HandleProtocolRequestDeps = {
     services: DesktopAnalyticsDep & FindNetworkSymbolForProtocolDep & SuiteRouterHistoryDep;
 };
 
+export type HandleProtocolRequestState = GotoThunkState & WalletConnectInitThunkState;
+type HandleProtocolRequestDispatchDeps = HandleProtocolRequestDeps & WalletConnectInitThunkDeps;
+
 export const handleProtocolRequest =
-    (uri: string) => (dispatch: Dispatch, _getState: unknown, extra: HandleProtocolRequestDeps) => {
+    (uri: string) =>
+    (
+        dispatch: ThunkDispatch<
+            HandleProtocolRequestState,
+            HandleProtocolRequestDispatchDeps,
+            UnknownAction
+        >,
+        _getState: () => HandleProtocolRequestState,
+        extra: HandleProtocolRequestDeps,
+    ) => {
         dispatch(handleCoinProtocolUri(uri, saveCoinProtocol));
 
         if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {

@@ -136,7 +136,3 @@ export type ExtraDependenciesStatic = {
 };
 
 export type ExtraDependencies = ExtraDependenciesStatic & { services: CommonServices };
-
-export type ExtraDependenciesPartial = {
-    [K in keyof ExtraDependencies]?: Partial<ExtraDependencies[K]>;
-};

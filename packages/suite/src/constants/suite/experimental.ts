@@ -1,3 +1,5 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+
 import type { ExperimentalFeature } from '@suite/experimental';
 import { type ExtendedMessageDescriptor } from '@suite/intl';
 import { type Route } from '@suite/router';
@@ -13,7 +15,6 @@ import {
 } from '@trezor/urls';
 
 import { type SuiteServices } from '../../support/extraDependencies';
-import { type Dispatch } from '../../types/suite';
 
 const experimentalNetworks = networksCollection.filter(
     network => network.isExperimentalOnlyNetwork,
@@ -33,7 +34,7 @@ export type ExperimentalFeatureConfig = {
     }: {
         newValue: boolean;
         services: SuiteServices;
-        dispatch: Dispatch;
+        dispatch: Dispatch<UnknownAction>;
     }) => void;
 };
 

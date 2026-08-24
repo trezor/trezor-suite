@@ -3,7 +3,6 @@ import { withExtraArgument } from 'redux-thunk';
 
 import { type RouterState, routerReducer } from '@suite/router';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
-import type { ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import { extraDependenciesCommonMock, filterThunkActionTypes } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 
@@ -32,15 +31,10 @@ const getInitialState = (state?: {
     } as RouterState,
 });
 
-const configureStore = <S, DispatchExts = Record<never, never>>(
-    additionalExtraDeps: Partial<ExtraDependencies> = {},
-): MockStoreCreator<S, DispatchExts> =>
-    reduxMockStore([
-        withExtraArgument({
-            ...extraDependenciesCommonMock,
-            ...additionalExtraDeps,
-        }) as any,
-    ]);
+const configureStore = <S, DispatchExts = Record<never, never>>(): MockStoreCreator<
+    S,
+    DispatchExts
+> => reduxMockStore([withExtraArgument(extraDependenciesCommonMock) as any]);
 
 const mockStore = configureStore<State, any>();
 

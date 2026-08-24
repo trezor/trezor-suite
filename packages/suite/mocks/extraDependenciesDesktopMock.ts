@@ -6,13 +6,10 @@ import {
     createNetworkModuleRepository,
     createNetworksCompositionRoot,
 } from '@suite-common/networks';
-import { type ExtraDependenciesStatic } from '@suite-common/redux-extra-dependencies';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { ok } from '@trezor/type-utils';
 
-import { type SuiteServices, extraDependencies } from '../src/support/extraDependencies';
-
-type ExtraDependenciesSuiteMock = ExtraDependenciesStatic & { services: SuiteServices };
+import { type ExtraDependenciesSuite, extraDependencies } from '../src/support/extraDependencies';
 
 const networkModules = createNetworksCompositionRoot();
 const networkModuleRepository = createNetworkModuleRepository({ networkModules });
@@ -23,7 +20,7 @@ const findNetworkSymbolForProtocol = createFindNetworkSymbolForProtocol({
 });
 const addressValidator = createAddressValidator({ networkModuleRepository });
 
-export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
+export const extraDependenciesDesktopMock: ExtraDependenciesSuite = {
     ...extraDependenciesCommonMock,
     ...extraDependencies,
     services: {
