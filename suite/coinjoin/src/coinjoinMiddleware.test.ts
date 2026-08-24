@@ -6,7 +6,7 @@ import { routerReducer } from '@suite/router';
 import { torReducer } from '@suite/tor';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { createTestStore, testMocks } from '@suite-common/test-utils';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import '@suite-common/test-utils/globalOverrides';
@@ -82,7 +82,7 @@ const initStore = ({ device, router, suite, tor, wallet }: Partial<State> = {}) 
         };
     }
 
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         reducer: rootReducer,
         preloadedState,

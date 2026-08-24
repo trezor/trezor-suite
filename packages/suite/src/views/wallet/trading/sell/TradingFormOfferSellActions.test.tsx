@@ -3,7 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -57,8 +57,9 @@ const account = mockWalletAccount({
 });
 
 const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
-    const store = configureMockStore({
-        extra: undefined,
+    const services = { analytics: mockDesktopAnalytics() };
+    const root = createTestCompositionRoot({
+        extra: { services },
         preloadedState: {
             ...mockInitialAppState,
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
@@ -72,12 +73,7 @@ const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
             },
         } as unknown as AppState,
     });
-
-    renderWithProviders(
-        store,
-        { analytics: mockDesktopAnalytics() },
-        <TradingFormOfferSellActions />,
-    );
+    renderWithProviders(root, <TradingFormOfferSellActions />);
 };
 
 describe('TradingFormOfferSellActions', () => {

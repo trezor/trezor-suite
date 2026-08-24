@@ -1,4 +1,4 @@
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { transactionsActions } from './transactionsActions';
@@ -15,7 +15,7 @@ const account = {
 const BLOCK_HEIGHT = 100;
 
 const initStore = () =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         preloadedState: {
             wallet: {

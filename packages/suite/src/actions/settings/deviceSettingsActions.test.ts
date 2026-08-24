@@ -4,7 +4,7 @@ import { mockForgetBluetoothDevice } from '@suite-common/bluetooth/mocks';
 import { deviceActions } from '@suite-common/device';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockReportSecurityCheck, mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, filterThunkActionTypes } from '@suite-common/test-utils';
+import { createTestStore, filterThunkActionTypes } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
@@ -43,7 +43,7 @@ const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
 });
 
 const mockStore = (preloadedState: DeviceSettingsFixtureState) =>
-    configureMockStore({
+    createTestStore({
         extra: {
             actions: { openModal },
             services: { reportSecurityCheck: mockReportSecurityCheck() },

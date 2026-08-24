@@ -2,7 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { explorerInitialState } from '@suite-common/wallet-core';
@@ -48,11 +48,13 @@ const getInitialState = (): AppState => ({
 
 describe('FormattedNftAmount', () => {
     it('opens a token in the explorer of its own network, not of the selected account', () => {
-        const store = configureMockStore({ extra: undefined, preloadedState: getInitialState() });
+        const root = createTestCompositionRoot({
+            extra: { services: {} },
+            preloadedState: getInitialState(),
+        });
 
         renderWithProviders(
-            store,
-            {},
+            root,
             <FormattedNftAmount transfer={nftTransfer} networkSymbol="pol" isWithLink />,
         );
 

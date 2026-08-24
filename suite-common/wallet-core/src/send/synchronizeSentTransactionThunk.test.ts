@@ -1,6 +1,6 @@
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { asGetter } from '@suite-common/dependency-injection';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
@@ -37,7 +37,7 @@ describe('synchronizeSentTransactionThunk – RBF eviction (#28147)', () => {
     afterEach(() => jest.restoreAllMocks());
 
     it('evicts the replaced pending tx when the precomposed tx has prevTxid', () => {
-        const store = configureMockStore({ extra });
+        const store = createTestStore({ extra });
 
         store.dispatch(
             synchronizeSentTransactionThunk({
@@ -57,7 +57,7 @@ describe('synchronizeSentTransactionThunk – RBF eviction (#28147)', () => {
     });
 
     it('does not evict for a normal (non-RBF) transaction', () => {
-        const store = configureMockStore({ extra });
+        const store = createTestStore({ extra });
 
         store.dispatch(
             synchronizeSentTransactionThunk({
@@ -99,14 +99,14 @@ describe('synchronizeSentTransactionThunk – EVM fake pending tx nonce', () => 
             maxPriorityFeePerGas: '1',
         });
 
-    const getAddedFakeTx = (store: ReturnType<typeof configureMockStore>) => {
+    const getAddedFakeTx = (store: ReturnType<typeof createTestStore>) => {
         const added = store.getActions().filter(transactionsActions.addTransaction.match);
 
         return added[0]?.payload.transactions[0];
     };
 
     it('stamps the fake pending tx with the signed nonce passed in, not the re-derived one', () => {
-        const store = configureMockStore({ extra, preloadedState });
+        const store = createTestStore({ extra, preloadedState });
 
         store.dispatch(
             synchronizeSentTransactionThunk({
@@ -127,7 +127,7 @@ describe('synchronizeSentTransactionThunk – periodic sync kick', () => {
     // notification can be missed, so a send must (re)start the self-re-arming per-symbol
     // sync — otherwise the freshly added pending tx may never flip to confirmed.
     it('dispatches syncAccountsWithBlockchainThunk for the sent EVM account', () => {
-        const store = configureMockStore({ extra });
+        const store = createTestStore({ extra });
 
         store.dispatch(
             synchronizeSentTransactionThunk({

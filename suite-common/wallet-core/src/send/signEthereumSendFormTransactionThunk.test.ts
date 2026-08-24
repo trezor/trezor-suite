@@ -1,4 +1,4 @@
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import {
     AddressDisplayOptions,
     type FormState,
@@ -32,7 +32,7 @@ const formState = (overrides?: Partial<FormState>): FormState =>
     }) as unknown as FormState;
 
 const initStore = (txs = confirmedNonces(6)) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         preloadedState: {
             wallet: {

@@ -1,4 +1,4 @@
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -44,8 +44,8 @@ const renderTransactionsGraph = ({
     data: AggregatedAccountHistory[];
     isLoading: boolean;
 }) => {
-    const store = configureMockStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
+        extra: { services: {} },
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -54,10 +54,8 @@ const renderTransactionsGraph = ({
             },
         } as AppState,
     });
-
     const { container } = renderWithProviders(
-        store,
-        {},
+        root,
         <TransactionsGraph
             variant="one-asset"
             account={ACCOUNT}

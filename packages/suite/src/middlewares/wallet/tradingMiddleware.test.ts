@@ -11,7 +11,7 @@ import {
     routerReducer,
 } from '@suite/router';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import {
     type TradingState,
     initialState,
@@ -104,7 +104,7 @@ const initStore = (state: State) => {
     const { settings } = state.suite;
     const { trading, selectedAccount } = state.wallet;
 
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({

@@ -3,7 +3,7 @@ import { type BuyTrade, type BuyTradeQuoteRequest, type CryptoId } from 'invity-
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { type GotoThunkDeps } from '@suite/router';
 import { type WithServices } from '@suite-common/redux-utils';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -105,7 +105,7 @@ describe('selectBuyQuoteThunk', () => {
 
     it('reports analytics derived from the redux quotesRequest, not form values', async () => {
         const report = jest.fn();
-        const store = configureMockStore({
+        const store = createTestStore({
             preloadedState: buildState(),
             extra: createExtra(report),
         });
@@ -134,7 +134,7 @@ describe('selectBuyQuoteThunk', () => {
 
     it('returns early without reporting analytics when the quotes request is missing', async () => {
         const report = jest.fn();
-        const store = configureMockStore({
+        const store = createTestStore({
             preloadedState: buildState({ quotesRequest: undefined }),
             extra: createExtra(report),
         });

@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type BuyTradeResponse } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/buyUtils';
@@ -36,7 +36,7 @@ describe('confirmBuyTradeThunk', () => {
     tradeApi.createApiKey = () => {};
 
     const getMocks = (initialBuyState?: Partial<TradingBuyState>) => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({

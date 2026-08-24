@@ -7,7 +7,7 @@ import {
     analyticsInitialState,
 } from '@suite-common/analytics-redux';
 import { type WithServices } from '@suite-common/redux-utils';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import { init } from 'src/actions/suite/analyticsActions';
 
@@ -27,7 +27,7 @@ const getInitialState = ({ analytics }: InitialState): AnalyticsRootState => ({
 });
 
 const mockStore = (preloadedState: AnalyticsRootState) =>
-    configureMockStore({
+    createTestStore({
         extra,
         preloadedState,
     });

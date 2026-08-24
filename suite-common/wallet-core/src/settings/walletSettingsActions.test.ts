@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { configureMockStore, wireEnabledNetworksMock } from '@suite-common/test-utils';
+import { createTestStore, wireEnabledNetworksMock } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { walletSettingsFixtures } from './__fixtures__/walletSettingsActions.fixtures';
@@ -17,7 +17,7 @@ const settingsReducer = prepareWalletSettingsReducer({
 });
 
 const initStore = (state: any) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         reducer: {
             wallet: combineReducers({

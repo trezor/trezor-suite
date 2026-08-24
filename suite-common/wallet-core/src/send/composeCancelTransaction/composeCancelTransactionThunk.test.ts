@@ -1,4 +1,4 @@
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, { type PrecomposeResultFinal } from '@trezor/connect';
@@ -9,7 +9,7 @@ import {
     composeCancelTransactionThunk,
 } from './composeCancelTransactionThunk';
 
-const initStore = () => configureMockStore({ extra: undefined });
+const initStore = () => createTestStore({ extra: undefined });
 
 const FIRST_ACCOUNT_CHANGE_ADDRESS = 'bcrt1qte33uyyfzrdrm9nqk0uwlq9dqr6ezu2gurhree';
 

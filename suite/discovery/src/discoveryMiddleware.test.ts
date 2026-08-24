@@ -29,7 +29,7 @@ import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { type ThpState, initialThpState, prepareThpReducer, thpActions } from '@suite-common/thp';
 import * as walletCore from '@suite-common/wallet-core';
 import { discoveryInitialState, prepareDiscoveryReducer } from '@suite-common/wallet-core';
@@ -327,7 +327,7 @@ const getInitialState = (state: FixtureState = {}): State => ({
 });
 
 const initStore = (state?: FixtureState) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         middleware: [prepareDiscoveryMiddleware(() => ({}))],
         reducer: {

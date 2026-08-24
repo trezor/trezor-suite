@@ -6,7 +6,7 @@ import { modalReducer } from '@suite/modal';
 import { TorStatus, torActions, torReducer } from '@suite/tor';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
+import { createTestStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { prepareAccountsReducer, prepareWalletSettingsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
@@ -82,7 +82,7 @@ type Wallet = Partial<State['wallet']> & {
 
 const initStore = ({ accounts, coinjoin, device, selectedAccount, suite, locks }: Wallet = {}) => {
     // State != suite AppState, therefore <any>
-    const store = configureMockStore<void, any, UnknownAction>({
+    const store = createTestStore<void, any, UnknownAction>({
         extra: undefined,
         reducer: rootReducer,
         preloadedState: initPreloadedState({

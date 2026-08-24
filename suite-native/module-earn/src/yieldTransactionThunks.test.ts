@@ -2,7 +2,7 @@ import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import {
     type YieldFlowResolvedData,
     type YieldFlowToken,
@@ -119,7 +119,7 @@ const synchronizeSentTransactionThunkMock = synchronizeSentTransactionThunk as u
 const selectSelectedDeviceMock = selectSelectedDevice as jest.Mock;
 
 const buildStore = () =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({

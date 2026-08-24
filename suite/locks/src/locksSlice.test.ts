@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import {
     LOCK_TYPE,
@@ -16,7 +16,7 @@ import {
 } from './locksSlice';
 
 const getStore = (overrides: Partial<typeof locksInitialState> = {}) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         reducer: combineReducers({ locks: locksReducer }),
         preloadedState: { locks: { ...locksInitialState, ...overrides } },

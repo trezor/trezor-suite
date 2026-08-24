@@ -34,12 +34,8 @@ import {
 } from '@suite-native/trading-state';
 import { type DeepPartial } from '@trezor/type-utils';
 
-import {
-    type ExtraDependenciesNative,
-    type NativeServices,
-    createNativeCompositionRoot,
-    extraDependencies,
-} from './extraDependencies';
+import { type NativeServices, createNativeCompositionRoot } from './createNativeCompositionRoot';
+import { type ExtraDependenciesNative, extraDependencies } from './createNativeExtraDependencies';
 import { prepareRootReducers } from './reducers';
 
 type RootReducerShape = ReturnType<typeof prepareRootReducers>;

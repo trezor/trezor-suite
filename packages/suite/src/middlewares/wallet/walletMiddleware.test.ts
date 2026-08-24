@@ -3,7 +3,7 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type RouterState } from '@suite/router';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
-import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { createTestStore, testMocks } from '@suite-common/test-utils';
 import {
     type SendState,
     accountsRefreshTimeReducer,
@@ -92,7 +92,7 @@ const getInitialState = ({
 type State = ReturnType<typeof getInitialState>;
 
 const mockStore = (preloadedState: State) =>
-    configureMockStore({
+    createTestStore({
         extra: {
             services: {
                 analytics: mockDesktopAnalytics(),

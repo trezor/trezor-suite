@@ -3,7 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
@@ -37,19 +37,15 @@ const buildState = (): AppState => ({
     } as AppState['router'],
 });
 
-const mockStore = (preloadedState: AppState) =>
-    configureMockStore({
-        extra: undefined,
-        preloadedState,
-    });
-
 describe('TradingLayout', () => {
     it('always renders children regardless of visible accounts or device state', () => {
-        const store = mockStore(buildState());
+        const root = createTestCompositionRoot({
+            extra: { services: { analytics: mockDesktopAnalytics() } },
+            preloadedState: buildState(),
+        });
 
         renderWithProviders(
-            store,
-            { analytics: mockDesktopAnalytics() },
+            root,
             <TradingLayout>
                 <div data-testid="trading-content" />
             </TradingLayout>,

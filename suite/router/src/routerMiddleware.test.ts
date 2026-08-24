@@ -1,4 +1,4 @@
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import { getRoute } from './router';
 import { routerMiddleware } from './routerMiddleware';
@@ -20,7 +20,7 @@ const getRequiredRoute = <TName extends NonNullable<LocationChangePayload['route
 };
 
 const initStore = (router?: Partial<RouterState>) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         middleware: [routerMiddleware(() => ({}))],
         reducer: { router: routerReducer },

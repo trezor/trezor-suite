@@ -5,7 +5,7 @@ import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { buildStakeData } from '@suite-common/staking';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockGetIsWindowVisible, mockOnModalCancel } from '@suite-common/suite-types/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import { prepareSendFormReducer } from '@suite-common/wallet-core';
@@ -150,7 +150,7 @@ const buildStore = ({
     formDrafts?: Record<string, FormState>;
     blockchain?: Record<string, unknown>;
 } = {}) =>
-    configureMockStore({
+    createTestStore({
         extra,
         reducer: combineReducers({
             device: (): { selectedDevice: TrezorDevice } => ({

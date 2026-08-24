@@ -259,53 +259,43 @@ export const closeDialogThunk = createThunk<void, CloseDialogParams, void>(
 );
 ```
 
-### Testing thunks without a Redux store
+### Test at the correct boundary
+
+Follow the full [`@suite-common/test-utils` guide](../../docs/tests/suite-common-test-utils.md).
 
 Unit-test a thunk as a function. Redux thunk middleware ultimately calls a thunk with three
-arguments: `dispatch`, `getState`, and `extra`. A unit test can provide those arguments directly; it
-does not need `configureMockStore`, application reducers, or the global dependency graph.
+arguments: `dispatch`, `getState`, and `extra`, so a unit test can provide those arguments directly.
+Do not create a store or an application root merely to obtain them.
 
 Use `createMockDispatch` from `@suite-common/redux-utils/mocks`. It stores every plain dispatched
 action in an array and recursively executes function actions with the same test dependencies. Build
-`getState` and `extra` from the thunk's exported contracts, and keep the fixture local to the test.
-Mock external I/O at its own boundary; a Redux store is not needed for that either. For example,
-`connectInitThunk` is tested with this shape. Its concrete state and dependency values are ordinary
-local fixtures typed as `ConnectInitThunkState` and `ConnectInitThunkDeps`; they are omitted here so
-the example focuses on running the thunk:
+`getState` and `extra` from the thunk's exported contracts, and keep the fixture local to the test:
 
 ```ts
-type ConnectInitThunkTestDeps = {
-    actions: unknown[];
-    dispatch: ConnectInitThunkDispatch;
-    getState: () => ConnectInitThunkState;
-    extra: ConnectInitThunkDeps;
+const state: XyzThunkState = {
+    // Only the state required by xyzThunk.
 };
-
-const createThunkDeps = (
-    state: ConnectInitThunkState,
-    extra: ConnectInitThunkDeps,
-): ConnectInitThunkTestDeps => {
-    const getState = (): ConnectInitThunkState => state;
-    const { actions, dispatch } = createMockDispatch({ getState, extra });
-
-    return { actions, dispatch, getState, extra };
+const extra: XyzThunkDeps = {
+    services: {
+        // Only the services required by xyzThunk.
+    },
 };
+const getState = () => state;
+const { actions, dispatch } = createMockDispatch({ getState, extra });
 
-it('dispatches its lifecycle actions', async () => {
-    const { actions, dispatch, getState, extra } = createThunkDeps(
-        connectInitState,
-        connectInitExtra,
-    );
+await xyzThunk()(dispatch, getState, extra);
 
-    // The first call supplies the thunk payload; the second call runs the returned thunk directly.
-    await connectInitThunk()(dispatch, getState, extra);
-
-    expect(actions).toEqual([
-        expect.objectContaining({ type: connectInitThunk.pending.type }),
-        expect.objectContaining({ type: connectInitThunk.fulfilled.type }),
-    ]);
-});
+expect(extra.services.someService).toHaveBeenCalled();
+expect(actions).toEqual([
+    expect.objectContaining({ type: xyzThunk.pending.type }),
+    expect.objectContaining({ type: xyzThunk.fulfilled.type }),
+]);
 ```
+
+Use `createTestCompositionRoot` only when the test intentionally covers Redux integration and
+should verify the resulting state or rendered UI. Do not call `createTestStore` directly by default;
+reserve it for low-level store or middleware infrastructure tests where an application service
+container is deliberately outside the test boundary.
 
 Global application state and dependency contracts are wiring details. Application code may refer to
 them only in these composition-root files, where the final stores and service graphs are assembled:

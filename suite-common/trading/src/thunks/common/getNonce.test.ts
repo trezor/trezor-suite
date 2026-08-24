@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState, selectSelectedDevice } from '@suite-common/device';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { getNonce } from './getNonce';
@@ -34,7 +34,7 @@ describe('getNonce thunk', () => {
     });
 
     const createMockStore = () =>
-        configureMockStore({
+        createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 device: () => deviceInitialState,

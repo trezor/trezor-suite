@@ -3,7 +3,7 @@ import { type SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -59,7 +59,7 @@ describe('sendSellTransactionThunk', () => {
         }) as SellFiatTrade;
 
     const getMocks = (initialSellState?: Partial<TradingSellState>) => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({

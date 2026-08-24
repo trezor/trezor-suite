@@ -6,7 +6,7 @@ import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type ExchangeIssue,
     type TradingExchangeStepType,
@@ -146,8 +146,10 @@ const renderOfferExchange = ({
     });
     mockGetSimulatedReceiveAmount.mockReturnValue(simulatedReceiveAmount);
 
-    const store = configureMockStore({
-        extra: undefined,
+    const report = jest.fn();
+    const services: DesktopAnalyticsDep = { analytics: mockDesktopAnalytics(report) };
+    const root = createTestCompositionRoot({
+        extra: { services },
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -159,11 +161,7 @@ const renderOfferExchange = ({
             },
         } satisfies AppState,
     });
-
-    const report = jest.fn();
-    const services: DesktopAnalyticsDep = { analytics: mockDesktopAnalytics(report) };
-
-    renderWithProviders(store, services, <TradingOfferExchange />);
+    renderWithProviders(root, <TradingOfferExchange />);
 
     return { report };
 };

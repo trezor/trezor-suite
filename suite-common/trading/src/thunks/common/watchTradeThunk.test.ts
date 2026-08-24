@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import { watchTradeThunk } from './watchTradeThunk';
@@ -26,7 +26,7 @@ describe('watchTradeThunk', () => {
     const refreshCount = 1;
 
     const getStore = (updatedState: Partial<TradingState>) =>
-        configureMockStore({
+        createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({

@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 
@@ -9,7 +9,7 @@ import { useGapLimitForm } from './useGapLimitForm';
 const SYMBOL = asNetworkSymbol('btc');
 
 const renderGapLimitForm = (savedGapLimit?: number) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         preloadedState: {
             wallet: {

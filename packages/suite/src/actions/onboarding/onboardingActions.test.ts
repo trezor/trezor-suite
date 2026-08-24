@@ -6,7 +6,7 @@ import { type SuiteRouterHistoryDep } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { asGetter } from '@suite-common/dependency-injection';
 import { type WithServices } from '@suite-common/redux-utils';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { type StartDiscoveryThunkDeps } from '@suite-common/wallet-core';
 
 import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
@@ -68,7 +68,7 @@ const getInitialState = (custom?: any) => {
 };
 
 const createStore = (initialState: ReturnType<typeof getInitialState>) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra,
         reducer: (state = initialState, action) => ({
             ...state,

@@ -3,7 +3,8 @@ import { type Resolver, useForm } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingAssetSellOption,
     type TradingSellFormProps,
@@ -40,11 +41,6 @@ const mockHandleRequest = jest.fn((payload: unknown) => {
     return Object.assign(thunk, { payload });
 });
 const mockClearQuotes = jest.fn();
-
-jest.mock('@suite-common/dependency-injection', () => ({
-    ...jest.requireActual('@suite-common/dependency-injection'),
-    useServices: () => ({ analytics: { report: jest.fn() } }),
-}));
 
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
@@ -135,9 +131,10 @@ const renderSellQuotes = (
     const initialProps: { currentNetwork: Network | undefined } = {
         currentNetwork: getNetwork(btcSymbol),
     };
+    const services = { analytics: mockDesktopAnalytics() };
 
-    const store = configureMockStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
+        extra: { services },
         preloadedState: {
             wallet: {
                 trading: {
@@ -164,7 +161,7 @@ const renderSellQuotes = (
 
             return methods;
         },
-        { store, initialProps },
+        { root, initialProps },
     );
 };
 

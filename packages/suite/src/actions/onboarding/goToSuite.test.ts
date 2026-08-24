@@ -4,7 +4,7 @@ import { type SuiteRouterHistoryDep } from '@suite/router';
 import { asGetter } from '@suite-common/dependency-injection';
 import { type WithServices } from '@suite-common/redux-utils';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { type StartDiscoveryThunkDeps } from '@suite-common/wallet-core';
 import { type DeepPartial } from '@trezor/type-utils';
 
@@ -43,7 +43,7 @@ const setup = () => {
         wallet: { settings: { enabledNetworks: ['btc'] } },
     };
 
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: createExtra(report),
         preloadedState,
     });

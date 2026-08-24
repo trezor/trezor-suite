@@ -1,7 +1,7 @@
 import { modalReducer } from '@suite/modal';
 import { routerAppChanged, routerReducer } from '@suite/router';
 import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import onboardingReducer from 'src/reducers/onboarding/index';
@@ -39,7 +39,7 @@ const getInitialState = (
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         middleware: [...middlewares],
         reducer: (currentState = state, action) => ({

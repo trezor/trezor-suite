@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import * as fixtures from './__fixtures__/messageSystemActions';
 
@@ -26,7 +26,7 @@ const getInitialState = (state?: MessageSystemState) => ({
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (preloadedState: State) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         preloadedState,
         reducer: combineReducers({ messageSystem: messageSystemReducer }),

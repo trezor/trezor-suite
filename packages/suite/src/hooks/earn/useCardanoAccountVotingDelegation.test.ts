@@ -1,7 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { act, renderHook } from '@testing-library/react';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import { DEFAULT_VOTING_OPTION, stakeActions, stakeInitialState } from '@suite-common/wallet-core';
@@ -110,8 +110,8 @@ describe('useSeededCardanoVotingDelegation', () => {
             wallet: { ...mockInitialAppState.wallet, stake: stakeInitialState },
         };
 
-        const store = configureMockStore({
-            extra: undefined,
+        const root = createTestCompositionRoot({
+            extra: { services: {} },
             preloadedState,
             // The real stake reducer, so that seeding reads back the selection it just wrote.
             reducer: (state = preloadedState, action: UnknownAction) => ({
@@ -122,20 +122,19 @@ describe('useSeededCardanoVotingDelegation', () => {
         });
 
         const { rerender } = renderHookWithProviders(
-            store,
-            {},
+            root,
             ({ account: renderedAccount }: { account: Account }) =>
                 useSeededCardanoVotingDelegation(renderedAccount),
             { initialProps: { account } },
         );
 
-        return { store, rerender };
+        return { root, rerender };
     };
 
     it('seeds the selection with the delegation the account already has', () => {
-        const { store } = renderSeededHook(createCardanoAccount(CUSTOM_DREP_ID));
+        const { root } = renderSeededHook(createCardanoAccount(CUSTOM_DREP_ID));
 
-        expect(store.getActions()).toEqual([
+        expect(root.services.getActions()).toEqual([
             stakeActions.setAccountVotingDelegation({
                 accountKey: ACCOUNT_KEY,
                 option: { type: 'current' },
@@ -144,11 +143,11 @@ describe('useSeededCardanoVotingDelegation', () => {
     });
 
     it('seeds an account only once, so a later backend update cannot overwrite a user selection', () => {
-        const { store, rerender } = renderSeededHook(createCardanoAccount(null));
+        const { root, rerender } = renderSeededHook(createCardanoAccount(null));
 
         rerender({ account: createCardanoAccount(CUSTOM_DREP_ID) });
 
-        expect(store.getActions()).toHaveLength(1);
+        expect(root.services.getActions()).toHaveLength(1);
     });
 
     it('seeds again once the selection is cleared while still mounted', () => {
@@ -156,13 +155,13 @@ describe('useSeededCardanoVotingDelegation', () => {
             accountKey: ACCOUNT_KEY,
             option: { type: 'current' },
         });
-        const { store } = renderSeededHook(createCardanoAccount(CUSTOM_DREP_ID));
+        const { root } = renderSeededHook(createCardanoAccount(CUSTOM_DREP_ID));
 
         act(() => {
-            store.dispatch(stakeActions.clearAccountVotingDelegation());
+            root.store.dispatch(stakeActions.clearAccountVotingDelegation());
         });
 
-        expect(store.getActions()).toEqual([
+        expect(root.services.getActions()).toEqual([
             seedCurrent,
             stakeActions.clearAccountVotingDelegation(),
             seedCurrent,
@@ -170,11 +169,11 @@ describe('useSeededCardanoVotingDelegation', () => {
     });
 
     it('seeds again for a different account', () => {
-        const { store, rerender } = renderSeededHook(createCardanoAccount(null));
+        const { root, rerender } = renderSeededHook(createCardanoAccount(null));
 
         rerender({ account: createCardanoAccount(CUSTOM_DREP_ID, true, OTHER_ACCOUNT_KEY) });
 
-        expect(store.getActions()).toEqual([
+        expect(root.services.getActions()).toEqual([
             stakeActions.setAccountVotingDelegation({
                 accountKey: ACCOUNT_KEY,
                 option: DEFAULT_VOTING_OPTION,

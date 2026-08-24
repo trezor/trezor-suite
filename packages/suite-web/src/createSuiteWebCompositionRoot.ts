@@ -25,7 +25,7 @@ export const createSuiteWebCompositionRoot = (preloadStoreAction?: PreloadStoreA
     const getTransportsFactories = () => {
         // Pure DI: connect expects ready-made Transport instances, so the host constructs
         // them here. `id` becomes the Bridge session owner shown to the user; it mirrors
-        // the web manifest's `appName` (see packages/suite/src/support/extraDependencies.ts).
+        // the web manifest's `appName` (see packages/suite/src/support/services.ts).
         const TRANSPORT_ID = 'Trezor Suite web';
 
         return {

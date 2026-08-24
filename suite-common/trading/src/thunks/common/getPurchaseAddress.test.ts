@@ -3,7 +3,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { deviceInitialState } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import {
     confirmAddressOnDeviceThunk,
     prepareWalletSettingsReducer,
@@ -58,7 +58,7 @@ describe('getPurchaseAddress thunk', () => {
     });
 
     const createMockStore = (preloadedState = {}) =>
-        configureMockStore({
+        createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 device: () => deviceInitialState,
@@ -123,7 +123,7 @@ describe('getPurchaseAddress thunk', () => {
                 })),
             );
 
-            const storeWithNonChunked = configureMockStore({
+            const storeWithNonChunked = createTestStore({
                 extra: undefined,
                 reducer: combineReducers({
                     device: () => deviceInitialState,

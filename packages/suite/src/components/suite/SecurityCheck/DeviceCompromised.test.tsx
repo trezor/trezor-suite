@@ -6,7 +6,7 @@ import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { type AppState } from 'src/reducers/store';
@@ -32,11 +32,9 @@ global.ResizeObserver = class MockedResizeObserver {
     disconnect = jest.fn();
 };
 
-const initStore = (preloadedState: AppState) =>
-    configureMockStore({
-        extra: undefined,
-        preloadedState,
-    });
+const services: SuiteRouterHistoryDep = {
+    suiteRouterHistory: mockSuiteRouterHistory(),
+};
 
 const getInitialState = (device: DeviceReducerState): AppState =>
     ({
@@ -59,10 +57,6 @@ const matchingDevicePersistentData = {
     device_id: defaultDevice.features.device_id,
     unit_color: defaultDevice.features.unit_color,
     internal_model: defaultDevice.features.internal_model,
-};
-
-const services: SuiteRouterHistoryDep = {
-    suiteRouterHistory: mockSuiteRouterHistory(),
 };
 
 const deviceCompromisedFixtures: Array<{
@@ -187,12 +181,11 @@ const deviceCompromisedFixtures: Array<{
 describe(`${DeviceCompromised.name} component`, () => {
     deviceCompromisedFixtures.forEach(({ description, device, result }) => {
         it(description, () => {
-            const store = initStore(getInitialState(device));
-            const { getByText, unmount } = renderWithProviders(
-                store,
-                services,
-                <DeviceCompromised />,
-            );
+            const root = createTestCompositionRoot({
+                extra: { services },
+                preloadedState: getInitialState(device),
+            });
+            const { getByText, unmount } = renderWithProviders(root, <DeviceCompromised />);
             expect(getByText(result)).not.toBeNull();
             unmount();
         });

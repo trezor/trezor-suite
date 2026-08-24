@@ -1,7 +1,7 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { asGetter } from '@suite-common/dependency-injection';
 import { type WithServices } from '@suite-common/redux-utils';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type YieldFlowDisplayToken } from '@suite-common/wallet-core';
@@ -52,7 +52,7 @@ const token: YieldFlowDisplayToken & { contractAddress: string } = {
 };
 
 const buildStore = (report: jest.Mock) =>
-    configureMockStore({
+    createTestStore({
         extra: createExtra(report),
         preloadedState: {},
     });
@@ -98,7 +98,7 @@ describe('submitUnwrapNativeTokenThunk', () => {
     });
 
     it('uses the parent yield flow identity when provided', async () => {
-        const store = configureMockStore({ extra: createExtra(), preloadedState: {} });
+        const store = createTestStore({ extra: createExtra(), preloadedState: {} });
         mockOpenDeferredModal.mockImplementation(
             () => () => Promise.resolve({ value: true, resolve: jest.fn() }),
         );

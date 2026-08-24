@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import {
     act,
-    configureMockStore,
+    createTestStore,
     renderHookWithStoreProvider,
     testMocks,
 } from '@suite-common/test-utils';
@@ -26,7 +26,7 @@ const createPreloadedState = (transactions: WalletAccountTransaction[] = []) => 
 });
 
 const renderUseAllowanceTxTracking = (preloadedState = createPreloadedState()) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({

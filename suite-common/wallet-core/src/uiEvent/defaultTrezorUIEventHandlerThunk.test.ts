@@ -1,5 +1,5 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 import { createUiEventMessage, createUiRequestMessage } from '@trezor/connect-common';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
@@ -26,7 +26,7 @@ const firmwareDownloadedEvent = createUiEventMessage(UI_EVENTS.FIRMWARE_DOWNLOAD
 });
 
 const setupStore = (uiEventHooks: Record<string, () => void>) =>
-    configureMockStore({
+    createTestStore({
         extra: { services: { connectInitHooks: { deviceEvent: {}, uiEvent: uiEventHooks } } },
     });
 

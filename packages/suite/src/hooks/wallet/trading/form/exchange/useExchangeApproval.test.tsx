@@ -1,7 +1,7 @@
 import { act } from '@testing-library/react';
 import { type ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -38,7 +38,7 @@ const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth'), formattedBal
 const TRADE: ExchangeTrade = { exchange: 'provider-1', status: 'CONFIRM' };
 
 const renderExchangeApproval = (receiveAddress?: string) => {
-    const store = configureMockStore({ extra: undefined });
+    const store = createTestStore({ extra: undefined });
 
     const utils = renderHookWithStoreProvider(
         () => useExchangeApproval({ account: ACCOUNT, receiveAddress, extraField: undefined }),

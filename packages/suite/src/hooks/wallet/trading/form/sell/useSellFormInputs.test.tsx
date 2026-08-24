@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingAssetSellOption, type TradingSellFormProps } from '@suite-common/trading';
 import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -93,7 +93,7 @@ const DEFAULTS: TradingSellFormProps = {
 const mockComposeRequest = jest.fn();
 
 const renderSellFormInputs = () => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         preloadedState: {
             wallet: {

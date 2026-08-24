@@ -3,7 +3,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { deviceActions } from '@suite-common/device';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import type { TrezorDevice } from '@suite-common/suite-types';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { type Device, asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -49,7 +49,7 @@ const pairingErrorDevice: BluetoothDeviceCommon = {
 
 describe('bluetoothReducer', () => {
     it('sets the bluetooth adapter as enabled/disabled when powered/unpowered', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({ bluetooth: bluetoothReducer }),
             preloadedState: { bluetooth: initialState },
@@ -63,7 +63,7 @@ describe('bluetoothReducer', () => {
     });
 
     it('changes the status of the given device during pairing process', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({ bluetooth: bluetoothReducer }),
             preloadedState: {
@@ -88,7 +88,7 @@ describe('bluetoothReducer', () => {
     });
 
     it('updates and removes known devices', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({ bluetooth: bluetoothReducer }),
             preloadedState: { bluetooth: initialState },
@@ -107,7 +107,7 @@ describe('bluetoothReducer', () => {
     });
 
     it('removes device from nearbyDevices when the device is disconnected by TrezorConnect', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({ bluetooth: bluetoothReducer }),
             preloadedState: {
@@ -129,7 +129,7 @@ describe('bluetoothReducer', () => {
             connectionStatus: { type: 'connected' },
         };
 
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({ bluetooth: bluetoothReducer }),
             preloadedState: {
@@ -150,7 +150,7 @@ describe('bluetoothReducer', () => {
     });
 
     it('filters the error device from nearbyDevices, odds the other', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({ bluetooth: bluetoothReducer }),
             preloadedState: { bluetooth: initialState },

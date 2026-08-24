@@ -4,7 +4,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type ExchangeIssue } from '@suite-common/trading';
 
 import { type AppState } from 'src/reducers/store';
@@ -53,14 +53,13 @@ const renderIssueBanner = ({
     issue: ExchangeIssue;
     isSimulationEnabled?: boolean;
 }) => {
-    const store = configureMockStore({
-        extra: undefined,
+    const services = { analytics: mockDesktopAnalytics() };
+    const root = createTestCompositionRoot({
+        extra: { services },
         preloadedState: mockInitialAppState satisfies AppState,
     });
-
     renderWithProviders(
-        store,
-        { analytics: mockDesktopAnalytics() },
+        root,
         <TradingOfferExchangeIssueBanner
             issue={issue}
             isSimulationEnabled={isSimulationEnabled}

@@ -3,7 +3,8 @@ import { type Resolver, useForm } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingAssetOption,
     type TradingBuyFormProps,
@@ -39,11 +40,6 @@ const mockHandleRequest = jest.fn((payload: unknown) => {
 
     return Object.assign(thunk, { payload });
 });
-
-jest.mock('@suite-common/dependency-injection', () => ({
-    ...jest.requireActual('@suite-common/dependency-injection'),
-    useServices: () => ({ analytics: { report: jest.fn() } }),
-}));
 
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
@@ -85,8 +81,9 @@ const renderBuyQuotes = (
     options: { resolver?: Resolver<TradingBuyFormProps> } = {},
 ) => {
     const { resolver } = options;
-    const store = configureMockStore({
-        extra: undefined,
+    const services = { analytics: mockDesktopAnalytics() };
+    const root = createTestCompositionRoot({
+        extra: { services },
         preloadedState: {
             wallet: {
                 trading: {
@@ -108,7 +105,7 @@ const renderBuyQuotes = (
 
             return methods;
         },
-        { store },
+        { root },
     );
 };
 

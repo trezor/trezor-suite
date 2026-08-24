@@ -1,4 +1,4 @@
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingType,
     tradingBuyActions,
@@ -28,7 +28,7 @@ const renderClearStaleQuotes = (
     state: ReturnType<typeof getState>,
     props: { type: TradingType; isAmountEmpty: boolean },
 ) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         preloadedState: state,
     });

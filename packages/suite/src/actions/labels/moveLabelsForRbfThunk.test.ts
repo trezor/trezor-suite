@@ -6,7 +6,7 @@ import { prepareSuiteSettingsReducer } from '@suite/settings';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations-types/mocks';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
-import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
+import { createTestStore, initPreloadedState } from '@suite-common/test-utils';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accountsReducer, transactionsReducer } from 'src/reducers/wallet';
@@ -55,7 +55,7 @@ const initStore = ({
             migrateSuiteSyncLabelsForRbfTransaction: mockMigrateSuiteSyncLabelsForRbfTransaction(),
         },
     };
-    const store = configureMockStore<MoveLabelsForRbfThunkDeps, any, UnknownAction>({
+    const store = createTestStore<MoveLabelsForRbfThunkDeps, any, UnknownAction>({
         extra,
         reducer: rootReducer,
         preloadedState: initPreloadedState({

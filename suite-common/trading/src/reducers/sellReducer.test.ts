@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { sellTradingFixtures } from './__fixtures__/sellTradingReducer';
@@ -9,7 +9,7 @@ import { tradingSellActions, tradingSellReducer } from './sellReducer';
 describe('tradingSellReducer', () => {
     sellTradingFixtures.forEach(fixture => {
         it(fixture.description, () => {
-            const store = configureMockStore({
+            const store = createTestStore({
                 extra: undefined,
                 reducer: combineReducers({
                     wallet: combineReducers({

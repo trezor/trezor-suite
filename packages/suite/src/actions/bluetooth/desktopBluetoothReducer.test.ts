@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { type BluetoothManufacturerData } from '@suite-common/bluetooth';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -35,7 +35,7 @@ const disconnectedDeviceB: DesktopBluetoothDevice = {
 
 describe('desktopBluetoothReducer', () => {
     it('starts and stops the auto-connection of the device', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({ bluetooth: bluetoothReducer }),
             preloadedState: {

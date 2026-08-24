@@ -4,7 +4,7 @@ import { deviceInitialState } from '@suite-common/device';
 import { mockLockDevice } from '@suite-common/device/mocks';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { accountsInitialState } from '@suite-common/wallet-core';
 import * as walletUtils from '@suite-common/wallet-utils';
 
@@ -70,7 +70,7 @@ const connectPopupReducer = prepareConnectPopupReducer({
 const extra = { actions: { lockDevice: mockLockDevice() } };
 
 const initStore = () =>
-    configureMockStore({
+    createTestStore({
         extra,
         reducer: combineReducers({
             connectPopup: connectPopupReducer,

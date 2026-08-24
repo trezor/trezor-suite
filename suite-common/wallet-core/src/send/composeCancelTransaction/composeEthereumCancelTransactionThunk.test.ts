@@ -1,4 +1,4 @@
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import {
     type FeeInfo,
     type RbfTransactionParamsBitcoin,
@@ -77,7 +77,7 @@ const cancellableTx = (
     }) as WalletAccountTransactionWithRequiredRbfParams;
 
 const initStore = (levels?: FeeInfo['levels']) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         preloadedState: {
             device: { selectedDevice: undefined },

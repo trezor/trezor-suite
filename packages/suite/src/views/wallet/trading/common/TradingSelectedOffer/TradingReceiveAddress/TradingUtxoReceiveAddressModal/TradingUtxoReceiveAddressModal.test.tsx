@@ -6,7 +6,7 @@ import { initialMetadataState } from '@suite/metadata';
 import { mockAddressValidator } from '@suite-common/address/mocks';
 import { createSuiteSyncAddressId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { type Address } from '@trezor/blockchain-link-types';
@@ -138,13 +138,13 @@ const buildState = () => ({
 });
 
 const renderModal = () => {
-    const store = configureMockStore({ extra: undefined, preloadedState: buildState() });
+    const services = { addressValidator: mockAddressValidator() };
+    const root = createTestCompositionRoot({
+        extra: { services },
+        preloadedState: buildState(),
+    });
 
-    return renderWithProviders(
-        store,
-        { addressValidator: mockAddressValidator() },
-        <TradingUtxoReceiveAddressModal />,
-    );
+    return renderWithProviders(root, <TradingUtxoReceiveAddressModal />);
 };
 
 const search = (value: string) => {

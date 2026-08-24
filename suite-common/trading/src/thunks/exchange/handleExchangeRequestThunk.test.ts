@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
@@ -50,7 +50,7 @@ describe('handleExchangeRequestThunk', () => {
 
     const getMocks = () => {
         const validEthAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: {
                 services: {
                     addressValidator: {

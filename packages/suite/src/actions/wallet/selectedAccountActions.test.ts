@@ -1,5 +1,5 @@
 import { selectedAccountReducer } from '@suite/account';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import fixtures from './__fixtures__/selectedAccountActions';
 import { syncSelectedAccount } from './selectedAccountActions';
@@ -30,7 +30,7 @@ const getInitialState = (initialState: any = {}) => ({
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = (preloadedState: State) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         reducer: (state = preloadedState, action) => ({
             ...state,

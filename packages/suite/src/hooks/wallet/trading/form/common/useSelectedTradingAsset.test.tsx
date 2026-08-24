@@ -1,6 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -47,7 +47,7 @@ const buildState = (
 
 describe('useSelectedTradingAsset', () => {
     it('returns undefined when no eligible account is selected', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             preloadedState: buildState([INELIGIBLE_ACCOUNT]),
         });
@@ -59,7 +59,7 @@ describe('useSelectedTradingAsset', () => {
     });
 
     it('returns the native asset view-model when a native account is selected', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             preloadedState: buildState([ELIGIBLE_ACCOUNT], ELIGIBLE_ACCOUNT.key),
         });
@@ -79,7 +79,7 @@ describe('useSelectedTradingAsset', () => {
     });
 
     it('flags a prefilled token as a token asset', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             preloadedState: buildState([ELIGIBLE_ACCOUNT], ELIGIBLE_ACCOUNT.key, {
                 key: ELIGIBLE_ACCOUNT.key,

@@ -3,7 +3,7 @@ import { IntlProvider } from 'react-intl';
 
 import { act } from '@testing-library/react';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type ComposeActionContext, type StakeFormState } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
@@ -32,7 +32,10 @@ const composeActionContext = (): ComposeActionContext => ({
 });
 
 const renderStakeCompose = () => {
-    const store = configureMockStore({ extra: undefined, preloadedState: {} });
+    const root = createTestCompositionRoot({
+        extra: { services: {} },
+        preloadedState: {},
+    });
 
     return renderHookWithStoreProvider(
         () => {
@@ -41,7 +44,7 @@ const renderStakeCompose = () => {
             return useStakeCompose({ ...methods, state: composeActionContext() });
         },
         {
-            store,
+            root,
             wrapper: ({ children }) => <IntlProvider locale="en">{children}</IntlProvider>,
         },
     );

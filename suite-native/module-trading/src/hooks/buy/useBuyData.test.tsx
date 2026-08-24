@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { tradingBuyActions, tradingThunks } from '@suite-common/trading';
 import { mockGetSelectedAccount, mockGetTradingEnvironment } from '@suite-common/trading/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
@@ -60,7 +60,7 @@ describe('useBuyData', () => {
         };
         preloadedState.wallet.trading.buy.tradingAccountKey = tradingAccountKey;
 
-        return configureMockStore({ extra, reducer, preloadedState });
+        return createTestStore({ extra, reducer, preloadedState });
     };
 
     const renderUseBuyData = async (reloadRequestOrdinalInitialValue: number, store: TestStore) => {
@@ -99,7 +99,7 @@ describe('useBuyData', () => {
                     }, 100);
                 }),
         );
-        const store = configureMockStore({ extra, reducer });
+        const store = createTestStore({ extra, reducer });
         const { result } = await renderUseBuyData(0, store);
 
         expect(result.current.isLoading).toBe(true);
@@ -107,7 +107,7 @@ describe('useBuyData', () => {
     });
 
     it('should settle after API queries are resolved', async () => {
-        const store = configureMockStore({ extra, reducer });
+        const store = createTestStore({ extra, reducer });
         const { result } = await renderUseBuyData(0, store);
 
         expect(result.current.isLoading).toBe(false);
@@ -119,7 +119,7 @@ describe('useBuyData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const store = configureMockStore({ extra, reducer });
+        const store = createTestStore({ extra, reducer });
         const { rerender } = await renderUseBuyData(0, store);
         await rerender({ reloadRequestOrdinal: 0 });
 
@@ -131,7 +131,7 @@ describe('useBuyData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const store = configureMockStore({ extra, reducer });
+        const store = createTestStore({ extra, reducer });
         const { rerender } = await renderUseBuyData(0, store);
         await rerender({ reloadRequestOrdinal: 1 });
 

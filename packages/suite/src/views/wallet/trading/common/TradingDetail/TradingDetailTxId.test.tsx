@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { openModal } from '@suite/modal';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { transactionsInitialState } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -45,11 +45,14 @@ const getInitialState = (): AppState => ({
 
 describe('TradingDetailTxId', () => {
     it('opens the transaction detail of the account holding the transaction', async () => {
-        const store = configureMockStore({ extra: undefined, preloadedState: getInitialState() });
+        const services = { analytics: mockDesktopAnalytics() };
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState(),
+        });
 
         const { container } = renderWithProviders(
-            store,
-            { analytics: mockDesktopAnalytics() },
+            root,
             <TradingDetailTxId
                 value={payoutTxid}
                 account={sendAccount}
@@ -62,7 +65,7 @@ describe('TradingDetailTxId', () => {
 
         await userEvent.click(link);
 
-        expect(store.getActions()).toContainEqual(
+        expect(root.services.getActions()).toContainEqual(
             openModal({
                 type: 'transaction-detail',
                 txid: payoutTxid,
@@ -75,11 +78,14 @@ describe('TradingDetailTxId', () => {
     });
 
     it('falls back to the send account when the transaction is not on the receive account', async () => {
-        const store = configureMockStore({ extra: undefined, preloadedState: getInitialState() });
+        const services = { analytics: mockDesktopAnalytics() };
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState(),
+        });
 
         const { container } = renderWithProviders(
-            store,
-            { analytics: mockDesktopAnalytics() },
+            root,
             <TradingDetailTxId
                 value="signedSendTxid"
                 account={sendAccount}
@@ -92,7 +98,7 @@ describe('TradingDetailTxId', () => {
 
         await userEvent.click(link);
 
-        expect(store.getActions()).toContainEqual(
+        expect(root.services.getActions()).toContainEqual(
             openModal({
                 type: 'transaction-detail',
                 txid: 'signedSendTxid',

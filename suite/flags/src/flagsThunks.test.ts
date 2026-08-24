@@ -1,5 +1,5 @@
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import { type FlagsState, flagsInitialState, prepareFlagsReducer } from './flagsSlice';
 import { initialRunCompleted } from './flagsThunks';
@@ -10,7 +10,7 @@ const flagsReducer = prepareFlagsReducer({
 });
 
 const initStore = (flags?: Partial<FlagsState>) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         reducer: { flags: flagsReducer },
         preloadedState: { flags: { ...flagsInitialState, ...flags } },

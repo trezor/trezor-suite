@@ -1,6 +1,6 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { exchangeInitialState, initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -101,7 +101,7 @@ const buildState = (overrides: StateOverrides = {}) => {
 const renderConfirm = (overrides?: StateOverrides) => {
     const state = buildState(overrides);
 
-    const store = configureMockStore({ extra: undefined, preloadedState: state });
+    const store = createTestStore({ extra: undefined, preloadedState: state });
     const { result } = renderHookWithStoreProvider(() => useTradingExchangeConfirm(), { store });
 
     return { store, result };

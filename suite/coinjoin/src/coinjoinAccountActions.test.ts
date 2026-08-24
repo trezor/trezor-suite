@@ -5,7 +5,7 @@ import { locksReducer } from '@suite/locks';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
+import { createTestStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 
@@ -59,7 +59,7 @@ type Wallet = Partial<State['wallet']> & { devices?: State['device']['devices'] 
 
 const initStore = ({ accounts, coinjoin, devices }: Wallet = {}) =>
     // State != suite AppState, therefore <any>
-    configureMockStore<void, any, UnknownAction>({
+    createTestStore<void, any, UnknownAction>({
         extra: undefined,
         reducer: rootReducer,
         preloadedState: initPreloadedState({

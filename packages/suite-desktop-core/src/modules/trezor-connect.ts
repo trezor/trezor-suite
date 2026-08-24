@@ -22,7 +22,7 @@ import { PowerSaveBlocker } from '../libs/power-save-blocker';
 export const SERVICE_NAME = '@trezor/connect';
 
 // `id` becomes the Bridge session owner shown to the user; it mirrors the desktop
-// manifest's `appName` (see packages/suite/src/support/extraDependencies.ts).
+// manifest's `appName` (see packages/suite/src/support/services.ts).
 const TRANSPORT_ID = 'Trezor Suite desktop';
 type CreateLogger = NonNullable<ConnectSettings['createLogger']>;
 

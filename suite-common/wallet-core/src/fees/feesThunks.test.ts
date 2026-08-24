@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState, prepareDeviceReducer } from '@suite-common/device';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, type FeesState } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
@@ -60,7 +60,7 @@ const ethFeeInfo: FeeInfo = {
 };
 
 const initStore = (fees: FeesState = {}) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         reducer: combineReducers({
             device: deviceReducer,

@@ -2,15 +2,15 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { type WithServices } from '@suite-common/redux-utils';
 
-import { configureMockStore } from './configureMockStore';
+import { createTestStore } from './createTestStore';
 
 // @ts-expect-error Every test must provide a config with an explicit dependency value.
-configureMockStore();
+createTestStore();
 
 // @ts-expect-error A test must explicitly declare that it has no dependencies.
-configureMockStore({});
+createTestStore({});
 
-const dependencyFreeStore = configureMockStore({
+const dependencyFreeStore = createTestStore({
     extra: undefined,
     preloadedState: { value: 1 },
 });
@@ -30,7 +30,7 @@ const platformExtraDependencies: PlatformExtraDependencies = {
     },
 };
 
-const store = configureMockStore({
+const store = createTestStore({
     extra: platformExtraDependencies,
     preloadedState: { value: 1 },
 });
@@ -38,6 +38,6 @@ const store = configureMockStore({
 void store;
 
 // @ts-expect-error A non-void dependency contract must be backed by an explicit value.
-configureMockStore<PlatformExtraDependencies, { value: number }, UnknownAction>({
+createTestStore<PlatformExtraDependencies, { value: number }, UnknownAction>({
     preloadedState: { value: 1 },
 });

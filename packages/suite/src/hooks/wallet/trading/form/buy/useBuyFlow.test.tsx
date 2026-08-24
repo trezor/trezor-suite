@@ -1,4 +1,4 @@
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { useBuyFlow } from './useBuyFlow';
 
@@ -30,7 +30,7 @@ const renderBuyFlow = ({
     quotesRequest = undefined,
     isAmountEmpty = false,
 }: Props = {}) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         preloadedState: {
             wallet: { trading: { buy: { quotes: [] } } },

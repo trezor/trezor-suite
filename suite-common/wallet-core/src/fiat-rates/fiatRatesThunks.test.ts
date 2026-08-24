@@ -1,5 +1,5 @@
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import {
     type Account,
     type AccountKey,
@@ -40,7 +40,7 @@ const tokenTransaction = (contract: TokenAddress): WalletAccountTransaction =>
     }) as unknown as WalletAccountTransaction;
 
 const initStore = () =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         preloadedState: {
             wallet: {

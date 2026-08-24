@@ -2,7 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { explorerInitialState } from '@suite-common/wallet-core';
@@ -52,13 +52,12 @@ const getInitialState = (): AppState => ({
 
 describe('IOGroup', () => {
     it('opens an address in the explorer of the transaction network, not of the selected account', () => {
-        const store = configureMockStore({ extra: undefined, preloadedState: getInitialState() });
+        const root = createTestCompositionRoot({
+            extra: { services: {} },
+            preloadedState: getInitialState(),
+        });
 
-        renderWithProviders(
-            store,
-            {},
-            <IOGroup tx={bitcoinTransaction} inputs={inputs} outputs={[]} />,
-        );
+        renderWithProviders(root, <IOGroup tx={bitcoinTransaction} inputs={inputs} outputs={[]} />);
 
         const bitcoinAddressUrl = getExplorerUrl(explorerInitialState.btc.default, 'address');
         const ethereumAddressUrl = getExplorerUrl(explorerInitialState.eth.default, 'address');

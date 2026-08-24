@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { tradingExchangeActions, tradingThunks } from '@suite-common/trading';
 import { mockGetSelectedAccount, mockGetTradingEnvironment } from '@suite-common/trading/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
@@ -56,7 +56,7 @@ describe('useExchangeData', () => {
         const tradingState = getInitializedTradingState('exchange');
         tradingState.exchange.tradingAccountKey = tradingAccountKey as any;
 
-        return configureMockStore({
+        return createTestStore({
             extra,
             reducer,
             preloadedState: {
@@ -71,7 +71,7 @@ describe('useExchangeData', () => {
         reloadRequestOrdinalInitialValue: number = 0,
         store?: TestStore,
     ) => {
-        const effectiveStore = store ?? configureMockStore({ extra, reducer });
+        const effectiveStore = store ?? createTestStore({ extra, reducer });
 
         const ret = await renderHookWithStoreProvider(
             ({ reloadRequestOrdinal }) => useExchangeData(reloadRequestOrdinal),

@@ -1,6 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingAssetSellOption } from '@suite-common/trading';
 import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { type BaseCurrencyOption } from '@suite-common/wallet-types';
@@ -55,7 +55,7 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
 const OUTPUT_CURRENCY: BaseCurrencyOption = { value: 'usd', label: 'USD' };
 
 const renderSendAssetBalance = (account = ACCOUNT, tokenAddress: string | null = null) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         preloadedState: { wallet: { accounts: [account] } },
     });

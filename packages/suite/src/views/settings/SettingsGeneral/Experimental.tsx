@@ -19,7 +19,7 @@ import { typedObjectKeys } from '@trezor/utils';
 
 import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
 import { useSelector } from 'src/hooks/suite';
-import { selectSuiteServices } from 'src/support/extraDependencies';
+import { selectSuiteServices } from 'src/support/createSuiteCompositionRoot';
 
 type FeatureLineProps = {
     feature: ExperimentalFeature;

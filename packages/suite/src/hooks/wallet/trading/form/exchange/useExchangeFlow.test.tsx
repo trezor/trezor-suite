@@ -1,6 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingTransactionExchange, tradingExchangeActions } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -41,7 +41,7 @@ const renderExchangeFlow = ({
     transactionId = undefined,
     isAmountEmpty = false,
 }: Props = {}) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         preloadedState: {
             wallet: { trading: { exchange: { quotes: [] } } },

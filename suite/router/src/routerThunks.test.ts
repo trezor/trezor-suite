@@ -2,7 +2,7 @@ import { createMemoryHistory } from 'history';
 
 import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import * as fixtures from './__fixtures__/routerThunks';
 import { createSuiteRouterHistory } from './createSuiteRouterHistory';
@@ -47,7 +47,7 @@ const getInitialState = (state?: any) => {
 
 const initStore = (state: ReturnType<typeof getInitialState>) => {
     const suiteRouterHistory = createSuiteRouterHistory({ history: createMemoryHistory() });
-    const store = configureMockStore({
+    const store = createTestStore({
         reducer: {
             router: routerReducer,
             modal: modalReducer,

@@ -1,4 +1,4 @@
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -45,7 +45,7 @@ function assertComposed(
 }
 
 const dispatchCompose = (feeEstimationRecipient?: string, assumeNewAccount?: boolean) =>
-    configureMockStore({ extra: undefined })
+    createTestStore({ extra: undefined })
         .dispatch(
             composeTronTransactionFeeLevelsThunk({
                 formState,

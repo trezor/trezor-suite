@@ -1,6 +1,6 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import {
     type YieldClaimUnsignedTransaction,
     type YieldFlowCompleteRewardItem,
@@ -111,7 +111,7 @@ const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
 const synchronizeSentTransactionThunkMock = synchronizeSentTransactionThunk as unknown as jest.Mock;
 
 const buildStore = () =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({

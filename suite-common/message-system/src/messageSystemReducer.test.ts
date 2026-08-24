@@ -1,7 +1,7 @@
 import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import { fixtures, timestamp } from './__fixtures__/messageSystemReducer';
 import { prepareMessageSystemReducer } from './messageSystemReducer';
@@ -17,7 +17,7 @@ describe('Message system reducer', () => {
         });
 
         it(f.description, () => {
-            const store = configureMockStore({
+            const store = createTestStore({
                 extra: undefined,
                 reducer: combineReducers({ messageSystem: messageSystemReducer }),
                 preloadedState: { messageSystem: f.initialState },

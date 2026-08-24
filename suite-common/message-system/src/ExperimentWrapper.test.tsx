@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore, render, screen } from '@suite-common/test-utils';
+import { createTestStore, render, screen } from '@suite-common/test-utils';
 
 import { ExperimentWrapper } from './ExperimentWrapper';
 import { createMessageSystemState } from './__fixtures__/createMessageSystemState';
@@ -15,7 +15,7 @@ const messageSystemReducer = prepareMessageSystemReducer({
 });
 
 const createStore = (messageSystem: MessageSystemState) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         reducer: combineReducers({
             messageSystem: messageSystemReducer,

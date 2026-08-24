@@ -3,7 +3,7 @@ import {
     type StakingBatchErrorsItem,
     getStakingBatch,
 } from '@suite-common/earn-staking-api';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { stakeDataActions, stakeDataInitialState } from './stakeDataSlice';
@@ -60,7 +60,7 @@ const initStore = ({
     enabledNetworks?: NetworkSymbol[];
     stake?: StakeState;
 } = {}) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         preloadedState: {
             wallet: {

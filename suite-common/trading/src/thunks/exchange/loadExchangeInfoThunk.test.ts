@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type ExchangeListResponse } from 'invity-api';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import { exchange } from '../../reducers/__fixtures__/exchangeTradingReducer';
 import { exchangeInitialState, tradingExchangeReducer } from '../../reducers/exchangeReducer';
@@ -15,7 +15,7 @@ describe('loadExchangeInfoThunk', () => {
     tradeApi.setServersEnvironment = () => {};
     tradeApi.createApiKey = () => {};
 
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({

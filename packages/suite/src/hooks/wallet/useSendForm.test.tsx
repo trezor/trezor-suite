@@ -28,7 +28,7 @@ import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { type GetIsWindowVisibleDep, type OnModalCancelDep } from '@suite-common/suite-types';
 import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
 import {
-    configureMockStore,
+    createTestCompositionRoot,
     filterThunkActionTypes,
     initPreloadedState,
     testMocks,
@@ -122,7 +122,7 @@ const services: SendFormTestServices = {
 };
 const extraActions: OnModalCancelDep = { onModalCancel: closeModal };
 
-const initStore = ({
+const buildTestCompositionRootParams = ({
     send,
     fees,
     selectedAccount,
@@ -147,13 +147,13 @@ const initStore = ({
         },
     });
 
-    return configureMockStore({
+    return {
         extra: { actions: extraActions, services },
         reducer: rootReducer,
         preloadedState,
         // NOTE: this action contains `decision` callback which is not serializable
         serializableCheck: { ignoredActions: ['@modal/open-user-context'] },
-    });
+    };
 };
 
 interface TestCallback {
@@ -305,19 +305,21 @@ describe('useSendForm hook', () => {
             const protocolAddress = '1BoatSLRHtKNngkdXEeobR76b53LETtpyT';
             const protocolAmount = '0.1';
             const protocolLabel = 'Trezor donation';
-            const store = initStore({
-                protocol: {
-                    sendForm: {
-                        shouldFill: true,
-                        scheme: 'bitcoin',
-                        address: protocolAddress,
-                        amount: protocolAmount,
-                        label: protocolLabel,
+            const root = createTestCompositionRoot(
+                buildTestCompositionRootParams({
+                    protocol: {
+                        sendForm: {
+                            shouldFill: true,
+                            scheme: 'bitcoin',
+                            address: protocolAddress,
+                            amount: protocolAmount,
+                            label: protocolLabel,
+                        },
                     },
-                },
-            });
-            const state = store.getState();
-            const { result, unmount } = renderHookWithProviders(store, services, () =>
+                }),
+            );
+            const state = root.store.getState();
+            const { result, unmount } = renderHookWithProviders(root, () =>
                 useSendForm({
                     selectedAccount: state.wallet.selectedAccount,
                     localCurrency: 'usd',
@@ -348,11 +350,10 @@ describe('useSendForm hook', () => {
         it(
             f.description,
             async () => {
-                const store = initStore(f.store);
+                const root = createTestCompositionRoot(buildTestCompositionRootParams(f.store));
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
-                    store,
-                    services,
+                    root,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -390,11 +391,10 @@ describe('useSendForm hook', () => {
             f.description,
             async () => {
                 testMocks.setTrezorConnectFixtures(f.connect);
-                const store = initStore(f.store);
+                const root = createTestCompositionRoot(buildTestCompositionRootParams(f.store));
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
-                    store,
-                    services,
+                    root,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -431,11 +431,10 @@ describe('useSendForm hook', () => {
             f.description,
             async () => {
                 testMocks.setTrezorConnectFixtures(f.connect);
-                const store = initStore();
+                const root = createTestCompositionRoot(buildTestCompositionRootParams());
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
-                    store,
-                    services,
+                    root,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -460,11 +459,10 @@ describe('useSendForm hook', () => {
             f.description,
             async () => {
                 testMocks.setTrezorConnectFixtures(f.connect);
-                const store = initStore(f.store);
+                const root = createTestCompositionRoot(buildTestCompositionRootParams(f.store));
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
-                    store,
-                    services,
+                    root,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -472,8 +470,8 @@ describe('useSendForm hook', () => {
 
                 // wait for first render
                 await waitForLoader();
-                store.subscribe(() => {
-                    const actions = filterThunkActionTypes(store.getActions());
+                root.store.subscribe(() => {
+                    const actions = filterThunkActionTypes(root.services.getActions());
                     const lastAction = actions[actions.length - 1];
                     if (
                         openModal.match(lastAction) &&
@@ -486,7 +484,7 @@ describe('useSendForm hook', () => {
                 });
 
                 await actionSequence([{ type: 'click', element: '@send/review-button' }], () => {
-                    const actions = store.getActions();
+                    const actions = root.services.getActions();
                     f.result.actions.forEach((action: any) => {
                         expect(actions.find(a => a.type === action.type)).toMatchObject(action);
                     });
@@ -507,11 +505,12 @@ describe('useSendForm hook', () => {
             async () => {
                 testMocks.setTrezorConnectFixtures(f.connect);
 
-                const store = initStore(f.store as Args);
+                const root = createTestCompositionRoot(
+                    buildTestCompositionRootParams(f.store as Args),
+                );
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
-                    store,
-                    services,
+                    root,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -538,12 +537,11 @@ describe('useSendForm hook', () => {
             f.description,
             async () => {
                 testMocks.setTrezorConnectFixtures(f.connect);
-                const store = initStore(f.store);
+                const root = createTestCompositionRoot(buildTestCompositionRootParams(f.store));
                 const callback: TestCallback = {};
 
                 const { unmount } = renderWithProviders(
-                    store,
-                    services,
+                    root,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,

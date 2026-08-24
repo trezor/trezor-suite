@@ -23,7 +23,7 @@ import {
     mockSuiteDevice,
 } from '@suite-common/suite-types/mocks';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TransportInfo } from '@trezor/connect';
 import { isLinux } from '@trezor/env-utils';
 import { type DeepPartial } from '@trezor/type-utils';
@@ -147,12 +147,6 @@ const services: PreloaderTestServices = {
     suiteRouterHistory: mockSuiteRouterHistory(),
 };
 
-const initStore = (preloadedState: AppState) =>
-    configureMockStore({
-        extra: { services },
-        preloadedState,
-    });
-
 const Index = ({ app }: any) => <Preloader>{app || 'foo'}</Preloader>;
 
 describe(`${Preloader.name} component`, () => {
@@ -175,19 +169,19 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Loading: suite is loading', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     lifecycle: {
                         status: 'loading',
                     },
                 },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
         expect(findByTestId('@suite/loading')).not.toBeNull();
 
@@ -195,17 +189,17 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Loading: router is loading', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 router: {
                     loaded: false,
                 },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
         expect(findByTestId('@suite/loading')).not.toBeNull();
 
@@ -213,17 +207,17 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Loading: transport is not set yet', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: undefined,
                 },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
         expect(findByTestId('@suite/loading')).not.toBeNull();
 
@@ -231,11 +225,13 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('No transport', () => {
-        const store = initStore(getInitialState());
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState(),
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId('TR_NO_TRANSPORT')).not.toBeNull();
@@ -244,17 +240,17 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Bridge transport, no device', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -263,17 +259,17 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('WebUSB transport, no device', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'WebUsbTransport' })] },
                 },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -283,8 +279,9 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Unacquired device', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
@@ -295,11 +292,10 @@ describe(`${Preloader.name} component`, () => {
                     }),
                 },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -310,8 +306,9 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Unreadable device: webusb HID', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'WebUsbTransport' })] },
                 },
@@ -323,11 +320,10 @@ describe(`${Preloader.name} component`, () => {
                     }),
                 },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -339,8 +335,9 @@ describe(`${Preloader.name} component`, () => {
     it('Unreadable device: missing udev on Linux', () => {
         (isLinux as jest.Mock).mockImplementation(() => true);
 
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
@@ -351,11 +348,10 @@ describe(`${Preloader.name} component`, () => {
                     }),
                 },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -368,8 +364,9 @@ describe(`${Preloader.name} component`, () => {
     it('Unreadable device: missing udev on non-Linux os (should never happen)', () => {
         (isLinux as jest.Mock).mockImplementation(() => false);
 
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
@@ -380,11 +377,10 @@ describe(`${Preloader.name} component`, () => {
                     }),
                 },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -394,8 +390,9 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Unreadable device: unknown error', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
@@ -406,11 +403,10 @@ describe(`${Preloader.name} component`, () => {
                     }),
                 },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -420,8 +416,9 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Unknown device (should never happen)', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
@@ -432,11 +429,10 @@ describe(`${Preloader.name} component`, () => {
                     }),
                 },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -447,18 +443,18 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Seedless device', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
                 device: { selectedDevice: mockSuiteDevice({ mode: 'seedless' }) },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -469,18 +465,18 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Recovery mode device', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
                 device: { selectedDevice: mockSuiteDevice({}, { recovery_status: 'Recovery' }) },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -491,18 +487,18 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Not initialized device', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
                 device: { selectedDevice: mockSuiteDevice({ mode: 'initialize' }) },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -513,8 +509,9 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Bootloader device with installed firmware', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
@@ -525,11 +522,10 @@ describe(`${Preloader.name} component`, () => {
                     ),
                 },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -541,8 +537,9 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Bootloader device without firmware', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
@@ -553,11 +550,10 @@ describe(`${Preloader.name} component`, () => {
                     ),
                 },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -568,11 +564,15 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('displays DeviceCompromised when shouldDisplayDeviceCompromised is true', () => {
-        const store = initStore(getInitialState({ device: { selectedDevice: compromisedDevice } }));
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
+                device: { selectedDevice: compromisedDevice },
+            }),
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
         expect(findByTestId('@device-compromised')).not.toBeNull();
 
@@ -580,18 +580,18 @@ describe(`${Preloader.name} component`, () => {
     });
 
     it('Required FW update device', () => {
-        const store = initStore(
-            getInitialState({
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
                 device: { selectedDevice: mockSuiteDevice({ firmware: 'required' }) },
             }),
-        );
+        });
         const { unmount } = renderWithProviders(
-            store,
-            services,
-            <Index app={store.getState().router.app} />,
+            root,
+            <Index app={root.store.getState().router.app} />,
         );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();

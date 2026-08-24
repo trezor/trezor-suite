@@ -28,7 +28,7 @@ import {
     mockGetBinFilesBaseUrl,
     mockSuiteDevice,
 } from '@suite-common/suite-types/mocks';
-import { configureMockStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
+import { createTestStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
     acquireDevice,
     forgetDisconnectedDevices,
@@ -133,7 +133,7 @@ const getInitialState = (
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = (preloadedState: State) =>
-    configureMockStore({
+    createTestStore({
         extra,
         reducer: (state = preloadedState, action) => ({
             ...state,

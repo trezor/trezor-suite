@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
@@ -48,7 +48,7 @@ const initStore = (
     localInitialState?: Partial<TradingState>,
     selectedAccount: SelectedAccountStatus = defaultSelectedAccount,
 ) =>
-    configureMockStore({
+    createTestStore({
         extra: {
             services: {
                 getSelectedAccount: () => selectedAccount,

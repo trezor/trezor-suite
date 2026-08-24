@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { getIntegerInRangeFromString } from '@trezor/utils';
 
 jest.mock('@trezor/utils', () => ({
@@ -30,7 +30,7 @@ const createStore = (
     // distinguish an explicit `instanceId: undefined` from an absent key
     const instanceId = 'instanceId' in overrides ? overrides.instanceId : 'test-instance-id';
 
-    return configureMockStore({
+    return createTestStore({
         extra: undefined,
         reducer: combineReducers({
             messageSystem: messageSystemReducer,
