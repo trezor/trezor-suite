@@ -169,7 +169,7 @@ export const useTradingTransaction = ({
             );
 
             if (isFulfilled(result)) {
-                return result.payload as TradingFulfillValue;
+                return result.payload;
             }
 
             return result.error as TradingFulfillValue;

@@ -44,9 +44,6 @@
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {
-            "path": "../../suite-common/redux-extra-dependencies"
-        },
-        {
             "path": "../../suite-common/test-utils"
         },
         { "path": "../trading-fixtures" },
