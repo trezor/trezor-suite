@@ -569,17 +569,22 @@ if [ "$VARIANT" = service ]; then
         "^WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck$" \
         "$(served_since "$MARK")"
 
-    echo "26. write and read in ONE session: the second read needs no second sync"
-    # WHAT THIS PROVES THAT STEP 25 CANNOT. A publication is only real once the device ADOPTS the
-    # attested head, and adoption is invisible from out here -- the write reports success either way.
-    # What gives it away is what the NEXT operation does not have to do: a device that adopted the
-    # head is still online and reads straight from the daemon, while one that did not would have to
-    # sync again.
+    echo "26. write, then read the entry just written -- back to back, one daemon"
+    # THE PAIR THAT MATTERS: a value published to the daemon is immediately readable through it, and
+    # the read verifies the leaf against the root the write established. Nothing but a real
+    # publication makes that proof exist.
     #
-    # ONE SESSION, WHICH IS WHY --then EXISTS. The online latch is SESSION state on the device
-    # (APP_WARD_ONLINE, in the THP session cache), so two CLI invocations legitimately sync twice and
-    # the absence of a second sync could not be observed across them. Both operations in one process
-    # make it observable.
+    # WHY THIS DOES NOT ASSERT "NO SECOND SYNC". The device's online latch is SESSION state
+    # (APP_WARD_ONLINE, in the THP session cache), so a second operation in the same session needs no
+    # sync -- and the firmware proves exactly that, in
+    # `tests/device_tests/thp/test_ward_service_publish.py::test_a_write_is_published_and_adopted`,
+    # which pins the sequence Sync/Fetch/Publish/Fetch with no fourth round trip.
+    #
+    # IT CANNOT BE OBSERVED FROM HERE, because @trezor/connect opens a NEW device session per method
+    # call -- `ThpCreateNewSession` goes out before each one, measured with --debug -- so even inside
+    # a single process the second operation starts from an empty session cache. `--then` still buys
+    # the back-to-back pair against one daemon and one channel; the sequence below is what that
+    # actually produces, and the sync it contains says `from counter=2`, which is step 27's subject.
     refresh_daemon
     MARK="$(mark_log)"
     PAIR="$(timeout 200 $CLI --method=ward_add --service --appid="$APPID" --ident="$IDENT2" --value="$VALUE2" --then=ward_display 2>&1)"
@@ -588,8 +593,8 @@ if [ "$VARIANT" = service ]; then
     # The read is the device's, and it verified what came back against the root it had just adopted.
     # A daemon serving the entry it was handed a moment ago is the only way this proof exists at all.
     check "and the read that followed it went through" "onDevice: true" "$PAIR"
-    check "one sync, the write's fetch, the publish, then the read's fetch -- no second sync" \
-        "^WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck,WardServiceFetch -> WardEntryAck$" \
+    check "sync, fetch, publish -- then the read, which syncs again because its session is new" \
+        "^WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck,WardPublish -> WardPublishAck,WardSyncRequest -> WardSyncResponse,WardServiceFetch -> WardEntryAck$" \
         "$(served_since "$MARK")"
 
     echo "27. a LATER session syncs again -- from the head the device kept"

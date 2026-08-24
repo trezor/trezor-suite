@@ -157,13 +157,17 @@ const runTestCase = async (device: Device) => {
 
         console.warn(wardResult);
 
-        // `--then`: A SECOND WARD COMMAND IN THE SAME SESSION, which is a different thing from
-        // running this CLI twice and the difference is the point. Sync state is SESSION state on the
-        // device (`APP_WARD_ONLINE` lives in the THP session cache), so two invocations legitimately
-        // sync twice, and "the device adopted the head its daemon attested" cannot be observed
-        // across them -- the second run would have synced anyway, whether or not the first one's
-        // publication stuck. Both operations inside one session make the absence of that second sync
-        // the evidence it is supposed to be. See `e2e/ward-queue.sh`.
+        // `--then`: A SECOND WARD COMMAND IN THE SAME PROCESS, once the first has finished. What it
+        // buys is a write and the read of what that write produced against ONE connection, one
+        // channel and one daemon -- which is how a real app uses this and is awkward to arrange from
+        // a shell, since each invocation otherwise costs a channel.
+        //
+        // IT DOES NOT SHARE THE DEVICE'S WARD SYNC LATCH, and it was written believing it would.
+        // That latch is SESSION state (`APP_WARD_ONLINE`, in the THP session cache), and connect
+        // opens a NEW device session per method call -- `ThpCreateNewSession` goes out before each
+        // one -- so the second operation starts offline and syncs again. The firmware's own
+        // `test_a_write_is_published_and_adopted` is where the in-session property is pinned; it
+        // cannot be observed through this host. See `e2e/ward-queue.sh` step 26.
         //
         // The same inputs are reused deliberately: the pair worth running this way is a write and
         // then a read of the entry just written, and re-typing the key would be one more thing that
