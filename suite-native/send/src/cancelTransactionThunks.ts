@@ -1,11 +1,18 @@
 import { isRejected } from '@reduxjs/toolkit';
 
-import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import {
+    type MevProtectionRootState,
+    selectIsMevProtectionFeatureEnabled,
+} from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    type AccountsRootState,
+    type PushSendFormTransactionThunkDeps,
+    type PushSendFormTransactionThunkState,
     type PushTransactionError,
     type SignTransactionError,
     type SignTransactionTimeoutError,
+    type WalletSettingsRootState,
     pushSendFormTransactionThunk,
     selectAccountByKey,
     selectIsMevProtectionEnabled,
@@ -18,7 +25,12 @@ import {
 import { type Ok } from '@trezor/type-utils';
 
 import { SEND_MODULE_PREFIX } from './constants';
-import { cleanupSendFormThunk, signTransactionNativeThunk } from './sendFormThunks';
+import {
+    type CleanupSendFormThunkState,
+    type SignTransactionNativeThunkState,
+    cleanupSendFormThunk,
+    signTransactionNativeThunk,
+} from './sendFormThunks';
 
 type SignAndPushEvmCancelTransactionThunkParams = {
     accountKey: AccountKey;
@@ -29,6 +41,14 @@ type SignAndPushEvmCancelTransactionThunkParams = {
 export type SignAndPushEvmCancelTransactionError =
     SignTransactionError | SignTransactionTimeoutError | PushTransactionError | undefined;
 
+type SignAndPushEvmCancelTransactionThunkState = AccountsRootState &
+    WalletSettingsRootState &
+    MevProtectionRootState &
+    SignTransactionNativeThunkState &
+    PushSendFormTransactionThunkState &
+    CleanupSendFormThunkState;
+type SignAndPushEvmCancelTransactionThunkDeps = PushSendFormTransactionThunkDeps;
+
 /**
  * Signs and broadcasts a composed EVM cancel transaction (see
  * composeEthereumCancelTransactionThunk) through the regular native signing pipeline; the send
@@ -37,7 +57,11 @@ export type SignAndPushEvmCancelTransactionError =
 export const signAndPushEvmCancelTransactionThunk = createThunk<
     Ok<{ txid: string }>,
     SignAndPushEvmCancelTransactionThunkParams,
-    { rejectValue: SignAndPushEvmCancelTransactionError }
+    {
+        rejectValue: SignAndPushEvmCancelTransactionError;
+        state: SignAndPushEvmCancelTransactionThunkState;
+        extra: SignAndPushEvmCancelTransactionThunkDeps;
+    }
 >(
     `${SEND_MODULE_PREFIX}/signAndPushEvmCancelTransactionThunk`,
     async (

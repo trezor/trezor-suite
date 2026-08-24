@@ -8,40 +8,32 @@ import {
     createAsyncThunk as createAsyncThunkReduxToolkit,
 } from '@reduxjs/toolkit';
 
-// TODO: This dependency on the global ExtraDependencies type is bad, temporary, terrible, and
-// disastrous. Remove it in follow-ups tracked by https://github.com/trezor/trezor-suite/issues/30770.
-import { type CustomThunkAPI } from '@suite-common/redux-extra-dependencies';
-
-type DefaultThunkAPI = { readonly __defaultThunkAPI: unique symbol };
 type CreateThunkDispatch = ThunkDispatch<any, any, UnknownAction>;
 
 /**
- * Resolves the thunk API while thunks are migrated away from the global `CustomThunkAPI`:
- * - omitted config keeps the complete global API;
- * - `void` provides unknown state and no extra dependencies;
- * - config with `state` opts into selective state and either explicit or no extra dependencies;
- * - config without `state` overrides only its declared fields and keeps the remaining global API.
+ * Turns the small config declared by a thunk into the complete config Redux Toolkit needs.
  *
- * Dispatch is always replaced with a broad thunk dispatch so selectively typed parent and child
- * thunks remain composable during the migration.
+ * `void` means the thunk declared no state or injected dependencies. State becomes `unknown`, so it
+ * cannot be passed to a selector, and `extra` becomes an object with no known keys. An omitted third
+ * generic uses this same safe default.
+ *
+ * A supplied config keeps the fields the thunk declared. We replace `dispatch` with a broad thunk
+ * dispatch so a parent can dispatch child thunks with their own state and dependency contracts. We
+ * also make a missing `extra` explicitly empty instead of silently giving the thunk global tools.
  */
-type ResolveThunkAPI<TThunkAPI> = [TThunkAPI] extends [DefaultThunkAPI]
-    ? CustomThunkAPI & { dispatch: CreateThunkDispatch }
-    : [TThunkAPI] extends [void]
-      ? { state: unknown; extra: Record<never, never>; dispatch: CreateThunkDispatch }
-      : TThunkAPI extends { state: unknown }
-        ? Omit<CustomThunkAPI, keyof TThunkAPI | 'dispatch' | 'extra'> &
-              TThunkAPI & {
-                  extra: TThunkAPI extends { extra: infer TExtra } ? TExtra : Record<never, never>;
-                  dispatch: CreateThunkDispatch;
-              }
-        : Omit<CustomThunkAPI, keyof TThunkAPI | 'dispatch'> &
-              TThunkAPI & { dispatch: CreateThunkDispatch };
+type ResolveThunkAPI<TThunkAPI> = [TThunkAPI] extends [void]
+    ? { state: unknown; extra: Record<never, never>; dispatch: CreateThunkDispatch }
+    : TThunkAPI extends AsyncThunkConfig
+      ? Omit<TThunkAPI, 'dispatch' | 'extra'> & {
+            extra: TThunkAPI extends { extra: infer TExtra } ? TExtra : Record<never, never>;
+            dispatch: CreateThunkDispatch;
+        }
+      : never;
 
 type CreateThunk = <
     TReturned = void,
     TThunkArg = void,
-    TThunkAPI extends AsyncThunkConfig | void | DefaultThunkAPI = DefaultThunkAPI,
+    TThunkAPI extends AsyncThunkConfig | void = void,
 >(
     typePrefix: string,
     thunk: AsyncThunkPayloadCreator<TReturned, TThunkArg, ResolveThunkAPI<TThunkAPI>>,

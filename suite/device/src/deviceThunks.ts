@@ -1,4 +1,4 @@
-import { selectIsDeviceLocked } from '@suite/locks';
+import { type LocksRootState, selectIsDeviceLocked } from '@suite/locks';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import type { TrezorDevice } from '@suite-common/suite-types';
@@ -25,12 +25,15 @@ export const disconnectDeviceThunk = createThunk<
 /**
  * Connect call to rerun FW authenticity checks (getFeatures used as the most basic no-op device call).
  */
-export const rerunFwAuthenticityChecksThunk = createThunk(
-    `${DEVICE_MODULE_PREFIX}/rerunFwAuthenticityChecksThunk`,
-    (_, { getState }) => {
-        const device = selectSelectedDevice(getState());
-        if (device === undefined) return;
-        if (selectIsDeviceLocked(getState())) return;
-        void TrezorConnect.getFeatures({ device: { path: device.path } });
-    },
-);
+type RerunFwAuthenticityChecksThunkState = DeviceRootState & LocksRootState;
+
+export const rerunFwAuthenticityChecksThunk = createThunk<
+    void,
+    void,
+    { state: RerunFwAuthenticityChecksThunkState }
+>(`${DEVICE_MODULE_PREFIX}/rerunFwAuthenticityChecksThunk`, (_, { getState }) => {
+    const device = selectSelectedDevice(getState());
+    if (device === undefined) return;
+    if (selectIsDeviceLocked(getState())) return;
+    void TrezorConnect.getFeatures({ device: { path: device.path } });
+});

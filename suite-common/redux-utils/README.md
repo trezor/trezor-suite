@@ -3,31 +3,33 @@
 Shared Redux and Redux Toolkit utilities such as `createThunk`, reducer helpers, middleware helpers,
 and selector utilities.
 
-This package temporarily depends on `@suite-common/redux-extra-dependencies` because `createThunk`
-still uses the legacy `CustomThunkAPI` default. Once every thunk declares its own dependencies,
-`CustomThunkAPI` and this temporary dependency can be removed.
-
 ## createThunk
 
 This function has the same signature as `createAsyncThunk`, but it injects extra dependencies as the
-`extra` parameter. It also has predefined recommended types, so it should be used instead of
-`createAsyncThunk` from Redux Toolkit.
+`extra` parameter. A thunk can access only the state and dependencies declared in its third generic.
+Omitting that generic gives it no state or injected dependencies.
 
 ```typescript
-export const exportTransactionsToFileThunk = createThunk(
-    'exportAccountsToFileThunk',
-    (payload: string, { dispatch, extra }) => {
-        const fileName = payload;
-        const {
-            services: { getTransactions },
-            utils: { saveFile },
-        } = extra;
+type ExportTransactionsToFileThunkDeps = {
+    services: { getTransactions: () => unknown };
+    utils: { saveFile: (content: string, fileName: string) => void };
+};
 
-        const transactions = getTransactions();
+export const exportTransactionsToFileThunk = createThunk<
+    void,
+    string,
+    { extra: ExportTransactionsToFileThunkDeps }
+>('exportAccountsToFileThunk', (payload, { extra }) => {
+    const fileName = payload;
+    const {
+        services: { getTransactions },
+        utils: { saveFile },
+    } = extra;
 
-        return saveFile(JSON.stringify(transactions), fileName);
-    },
-);
+    const transactions = getTransactions();
+
+    return saveFile(JSON.stringify(transactions), fileName);
+});
 ```
 
 ## createReducerWithExtraDeps

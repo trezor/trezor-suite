@@ -41,13 +41,21 @@ createThunk<void, void, { state: SelectedState }>(
     },
 );
 
-createThunk('test/defaultDependencies', (_, { extra }) => {
+createThunk('test/omittedConfigHasNoDependencies', (_, { extra, getState }) => {
+    // @ts-expect-error An omitted config does not grant access to state.
+    selectSelectedValue(getState());
+
+    // @ts-expect-error An omitted config does not grant access to extra dependencies.
     void extra.services.analytics;
 });
 
 createThunk<void, void, { rejectValue: string }>(
-    'test/defaultDependenciesWithThunkConfig',
-    (_, { extra }) => {
+    'test/configWithoutStateOrDependencies',
+    (_, { extra, getState }) => {
+        // @ts-expect-error The config does not declare a state dependency.
+        selectSelectedValue(getState());
+
+        // @ts-expect-error The config does not declare extra dependencies.
         void extra.services.analytics;
     },
 );
