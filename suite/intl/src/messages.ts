@@ -10811,7 +10811,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_REWARDS_BADGE: {
         id: 'TR_STAKE_REWARDS_BADGE',
-        defaultMessage: 'Epoch number {count}',
+        defaultMessage: '{count} Epoch',
     },
     TR_EARN_REWARDS_ARE_EMPTY: {
         id: 'TR_EARN_REWARDS_ARE_EMPTY',
