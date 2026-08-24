@@ -21,6 +21,7 @@ export const WARD_COMMAND_NAMES = [
     'ward_display',
     'ward_backup',
     'ward_restore',
+    'ward_flush',
 ] as const;
 
 export type WardCommandName = (typeof WARD_COMMAND_NAMES)[number];
@@ -57,9 +58,9 @@ const notWired =
 export const wardCommands: Record<WardCommandName, WardCommand> = {
     ward_add: {
         name: 'ward_add',
-        description: 'Insert a new WARD entry',
+        description: 'Insert a new WARD entry (--queue to hold it, --service to publish it)',
         requiredParams: ['ident', 'value'],
-        optionalParams: ['appid', 'ward_id'],
+        optionalParams: ['appid', 'ward_id', 'service'],
         supportsQueue: true,
         run: notWired('ward_add'),
     },
@@ -105,6 +106,21 @@ export const wardCommands: Record<WardCommandName, WardCommand> = {
         optionalParams: [],
         supportsQueue: true,
         run: notWired('ward_restore'),
+    },
+    ward_flush: {
+        name: 'ward_flush',
+        description: 'Publish ONE change the device is holding, and say how many are left',
+        // NOTHING IS REQUIRED, and that is the command's shape rather than an omission: unnamed, the
+        // device publishes whatever is next in its own queue, which is the ordinary way to drain
+        // one. Naming an entry is for the case the device cannot resolve itself -- a COMPACT record
+        // keeps a hash of its identity, and a hash cannot be turned back into a keyed path.
+        requiredParams: [],
+        optionalParams: ['appid', 'ident', 'service'],
+        // `--queue` IS THE OPPOSITE OF THIS COMMAND. Every other command here can operate on the
+        // device's own store alone; publishing is the act of leaving it, so there is no offline
+        // form to ask for and the flag is rejected rather than ignored.
+        supportsQueue: false,
+        run: notWired('ward_flush'),
     },
 };
 

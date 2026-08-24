@@ -70,12 +70,66 @@ const wardAdd = async (context: WardCommandContext, device: Device) => {
     const { queue, params } = context;
 
     if (!queue) {
-        // Said plainly here rather than letting the stub provider's "serveEntry is not
-        // implemented" be what the user sees: an applying write needs a host store to pull the
-        // current leaf from and prove it against the trusted root, and no provider is wired yet.
-        throw new Error(
-            'an applying WARD write needs a registered wardProvider (host store) and a synced session; not wired yet — pass --queue to hold the change on the device',
-        );
+        // THE ONE BUILD WHERE AN APPLYING WRITE NEEDS NOTHING FROM US, and it is the same argument
+        // `ward_display` makes for reads. A firmware that serves WARD over its own interface pulls
+        // the current leaf from its daemon, publishes the mutation there and waits to hear it
+        // attested -- all of it out of this host's sight. `--service` is how the caller says that is
+        // the build in front of it, because the device does not report which transport it uses: a
+        // host that could be TOLD could be lied to about it.
+        //
+        // Without the flag this is still refused, and refused plainly rather than by letting the
+        // stub provider's "serveEntry is not implemented" be what the user sees: an applying write
+        // on an ordinary build needs a host store to pull from and prove against, and no provider is
+        // wired yet.
+        if (!params.service) {
+            throw new Error(
+                'an applying WARD write needs a registered wardProvider (host store) and a synced session; not wired yet — pass --queue to hold the change on the device, or --service if this device serves WARD over its own channel',
+            );
+        }
+
+        // `--compact` IS A PROPERTY OF A QUEUED RECORD, not of a write. It says the DEVICE should
+        // keep a hash of the identity instead of the identity, which is a choice about what sits in
+        // flash while the change waits; an applied write leaves nothing in flash to be compact
+        // about. Refused rather than ignored, because a silently dropped flag here would read as
+        // "the entry was stored compactly" and nothing would say otherwise.
+        if (params.compact) {
+            throw new Error(
+                '--compact describes how the DEVICE keeps a queued change; an applying write keeps nothing, so it means nothing here',
+            );
+        }
+
+        const online = await TrezorConnect.wardSetEntry({
+            device,
+            app_id: params.appid ?? DEFAULT_APP_ID,
+            identifier: toHex(params.ident),
+            value: toHex(params.value),
+        });
+
+        if (!online.success) {
+            throw new Error(`${online.error.code}: ${online.error.message}`);
+        }
+
+        // THE ACK'S TYPE IS THE FIRMWARE ANSWERING A QUESTION IT WAS NOT ASKED. `WardLeafAck` means
+        // WARD is served over THIS connection, so the device has handed back a leaf for a host store
+        // to keep -- and this CLI has none, so the change is in no replica anywhere. That is a
+        // failure and is reported as one: the alternative is a command that prints success for a
+        // write nobody stored, which is the one outcome `--service` must never be able to produce.
+        if (online.payload.type !== 'WardMutationApplied') {
+            throw new Error(
+                `--service was asserted, but this firmware answered ${online.payload.type}: it serves WARD over this connection and handed back a leaf for a host store to keep. This CLI has no store, so nothing was published — drop --service and use --queue`,
+            );
+        }
+
+        // WHAT THE DEVICE ACTUALLY DID, and every word of it is the device's: it derived the root,
+        // sealed the parts, published to its daemon and heard the WM attest THIS counter. `counter`
+        // is the head the device now holds, which is why it is worth printing -- a caller reading it
+        // twice sees the tree move.
+        return {
+            applied: true,
+            onDevice: true,
+            counter: online.payload.message.counter,
+            entry_key: online.payload.message.entry_key,
+        };
     }
 
     const result = await TrezorConnect.wardQueueSetEntry({
@@ -309,6 +363,81 @@ const wardRestore = async (context: WardCommandContext, device: Device) => {
     return { queued: true, restored: true };
 };
 
+/**
+ * `ward_flush`: publish ONE change the device has been holding, and say how many are left.
+ *
+ * THE OTHER END OF THE QUEUE, and the only command here that both reads the device's store and
+ * leaves it. Everything else in this file either puts a change into that store or takes one out of
+ * it; this one applies a change to the TREE, which is why it needs a backend and why `--queue` is
+ * refused rather than ignored.
+ *
+ * NOT A REPLAY OF THE QUEUED REQUEST. A change made offline has no path, no proof material and no
+ * root -- it is an intent, and an intent formed while the tree was at one state is not applicable at
+ * another. The device re-derives it against current state on the way out, which is the whole reason
+ * this is a request of its own rather than the host re-sending what it queued.
+ *
+ * ONE PER CALL, AND THE CALLER LOOPS ON `remaining`. There is no transaction to apply a batch under,
+ * so one change per round trip is what bounds a partial application to a single retryable step. A
+ * caller that ignores `remaining` publishes the first queued change and strands the rest -- which is
+ * exactly why it is reported here rather than folded into a boolean.
+ */
+const wardFlush = async (context: WardCommandContext, device: Device) => {
+    const { queue, params } = context;
+
+    if (queue) {
+        throw new Error(
+            "ward_flush publishes a queued change to the tree, which is the opposite of --queue (the device's own store); drop the flag",
+        );
+    }
+
+    if (!params.service) {
+        throw new Error(
+            "publishing a queued change pulls the entry's current leaf and proves it against a synced session, which needs a registered wardProvider (host store); not wired yet — pass --service if this device serves WARD over its own channel",
+        );
+    }
+
+    // BOTH OR NEITHER, and the device is the one that says so: it reads a half-named request as
+    // unnamed and publishes whatever is next, which is not what a caller who typed one flag meant.
+    // Refused here, because the device cannot tell the difference and this is the only place that
+    // still can.
+    const named = params.appid !== undefined || params.ident !== undefined;
+    if (named && (params.appid === undefined || params.ident === undefined)) {
+        throw new Error(
+            'name a queued change with BOTH --appid and --ident, or neither to publish the next one',
+        );
+    }
+
+    const result = await TrezorConnect.wardFlushQueue({
+        device,
+        app_id: named ? params.appid : undefined,
+        identifier: named ? toHex(params.ident) : undefined,
+    });
+
+    if (!result.success) {
+        throw new Error(`${result.error.code}: ${result.error.message}`);
+    }
+
+    // As `ward_add`: a leaf coming back means WARD is served over THIS connection and the change was
+    // handed to a host store this CLI does not have. Nothing was published, and saying so is the
+    // point -- a success line here would describe a change that reached no replica.
+    if (result.payload.type !== 'WardFlushQueueApplied') {
+        throw new Error(
+            `--service was asserted, but this firmware answered ${result.payload.type}: it serves WARD over this connection and handed back a leaf for a host store to keep. This CLI has no store, so nothing was published`,
+        );
+    }
+
+    const { counter, remaining, entry_key } = result.payload.message;
+
+    // AN EMPTY QUEUE IS AN ANSWER, and it is told apart from a publication by the ABSENT counter
+    // rather than by `remaining` being zero: the last change in a queue also reports zero remaining,
+    // and confusing the two would make a drain look like it never published anything.
+    if (counter === undefined || counter === null) {
+        return { empty: true, remaining: 0, note: 'nothing was queued -- nothing was published' };
+    }
+
+    return { published: true, counter, entry_key, remaining: remaining ?? 0 };
+};
+
 export const runWardCommand = (
     name: WardCommandName,
     context: WardCommandContext,
@@ -328,6 +457,10 @@ export const runWardCommand = (
 
     if (name === 'ward_display') {
         return wardDisplay(context, device);
+    }
+
+    if (name === 'ward_flush') {
+        return wardFlush(context, device);
     }
 
     if (name === 'ward_delete') {

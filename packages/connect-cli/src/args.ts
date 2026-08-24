@@ -38,11 +38,12 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=authenticate-device
                                                 --method=nostr-get-public-key
                                                 --method=nostr-sign-event
-                                                --method=ward_add        (wired, --queue only)
+                                                --method=ward_add       (wired; --queue, or --service)
                                                 --method=ward_backup    (wired, --queue only)
                                                 --method=ward_restore   (wired, --queue only)
                                                 --method=ward_delete     (wired, --queue only)
                                                 --method=ward_display   (wired; --queue, or --service)
+                                                --method=ward_flush     (wired, --service only)
                                                 --method=ward_update    (not wired yet)
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
@@ -84,12 +85,29 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 is what --service says. So: --queue, or --service,
                                                 and neither means it refuses rather than guessing.
 
-    --service                                 ward_display without --queue: this device serves WARD
-                                                over an interface of its OWN, so the read needs no
+    --service                                 An ONLINE operation without --queue: this device serves
+                                                WARD over an interface of its OWN, so it needs no
                                                 host store -- the device asks its daemon. Which
                                                 transport a firmware uses is a build option it does
                                                 not report, so it is asserted here rather than
-                                                detected.
+                                                detected. Asserted WRONGLY it fails: a firmware that
+                                                answers with a leaf is answering a host that has
+                                                nowhere to keep it, and that is reported rather than
+                                                treated as success.
+
+  Publishing what the device is holding
+    --method=ward_flush --service             Publishes ONE queued change and reports how many are
+                                                left. The device re-derives the change against
+                                                current state on the way out -- a queued intent is
+                                                not applicable at a state the tree has moved past --
+                                                so this needs a backend, and --queue is refused.
+                                                Loop while remaining is non-zero; an empty queue
+                                                answers empty rather than failing.
+    --method=ward_flush --service --appid=example.com --ident=addr1
+                                              Publishes THAT queued change. The only way to publish
+                                                a --compact record, which keeps a hash of its
+                                                identity that the device cannot turn back into a
+                                                path.
 
   Backing the queue up (both --queue only)
     --method=ward_backup --queue --appid=example.com --ident=addr1

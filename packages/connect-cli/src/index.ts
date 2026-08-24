@@ -134,6 +134,15 @@ const runTestCase = async (device: Device) => {
             wardParams.appid = wardParams.app_id;
         }
 
+        // The registry says whether `--queue` means anything for a command, and now that is
+        // enforced rather than merely declared: `ward_flush` PUBLISHES, which is the opposite of
+        // operating on the device's own store, and a silently ignored flag there would look like a
+        // queue operation and behave like a write to the tree.
+        if (args.queue && !wardCommand.supportsQueue) {
+            console.error(`${wardCommand.name} has no --queue form`);
+            process.exit(1);
+        }
+
         const missing = missingWardParams(wardCommand, wardParams);
         if (missing.length) {
             console.error(`${wardCommand.name} needs: ${missing.join(', ')}`);
@@ -147,6 +156,7 @@ const runTestCase = async (device: Device) => {
         );
 
         console.warn(wardResult);
+
         process.exit(1);
     }
 
