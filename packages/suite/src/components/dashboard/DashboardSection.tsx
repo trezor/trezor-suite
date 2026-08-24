@@ -16,6 +16,7 @@ type DashboardSectionProps = HTMLAttributes<HTMLDivElement> & {
     heading?: ReactElement;
     subheading?: ReactElement;
     actions?: ReactElement;
+    areActionsBelowSubheading?: boolean;
     collapsible?: boolean;
     defaultCollapsed?: boolean;
     onCollapseChange?: (collapsed: boolean) => void;
@@ -28,6 +29,7 @@ export const DashboardSection = forwardRef(
             heading,
             subheading,
             actions,
+            areActionsBelowSubheading = false,
             collapsible = false,
             defaultCollapsed = false,
             onCollapseChange,
@@ -45,6 +47,7 @@ export const DashboardSection = forwardRef(
         }, [collapseChangeRef, collapsed]);
 
         const renderHeader = heading || subheading || actions || collapsible;
+        const actionsNode = actions ? <div>{actions}</div> : null;
 
         return (
             <div ref={ref} {...rest}>
@@ -70,7 +73,7 @@ export const DashboardSection = forwardRef(
                                     )}
 
                                     <Row gap={8}>
-                                        {actions && <div>{actions}</div>}
+                                        {!areActionsBelowSubheading && actionsNode}
                                         {collapsible && (
                                             <Collapsible.Toggle
                                                 onClick={() => setCollapsed(prev => !prev)}
@@ -100,6 +103,7 @@ export const DashboardSection = forwardRef(
                                         {subheading}
                                     </Text>
                                 )}
+                                {areActionsBelowSubheading && actionsNode}
                             </Column>
                         )}
                         <Collapsible.Content overflow="unset">{children}</Collapsible.Content>
