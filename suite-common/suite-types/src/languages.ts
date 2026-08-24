@@ -8,7 +8,13 @@ export type LocaleInfo = {
     nameInOsStartsWith?: string;
 };
 
-// If you are adding language, add it to suite/package.json translations:download script too
+/**
+ * Source of truth for available languages in Suite Web/Desktop.
+ * Note that Suite Native does not yet have full parity, so it has its own list: suite-native/intl/src/languages.ts
+ * Meanwhile, Firmware is sourced remotely, and so are its lists of available languages (see trezor/data repository).
+ *
+ * If you are adding language, add it to suite/intl/package.json translations:download script too
+ */
 export const LANGUAGES = {
     'en-US': { icon: '🇬🇧', name: 'English', en: 'English', type: 'official' },
     'es-ES': { icon: '🇪🇸', name: 'Español', en: 'Spanish', type: 'official' },
