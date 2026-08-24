@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { copyToClipboard } from '@trezor/dom-utils';
 
-export const useCopyValue = () => {
+export const useSignVerifyCopyValue = () => {
     const dispatch = useDispatch();
 
     return async (value: string) => {
