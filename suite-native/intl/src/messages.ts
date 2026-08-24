@@ -3542,6 +3542,7 @@ export const messages = {
         apy: 'Annual Percentage Yield',
         apr: 'Annual Percentage Return',
         apyAbbr: 'APY',
+        apyValueWithLabel: '{value} APY',
         aprAbbr: 'APR',
         tron: {
             votes: 'Votes',
