@@ -106,14 +106,12 @@ import {
 } from './messages-eos';
 import {
     EthereumAddress,
-    EthereumAuth7702Signature,
     EthereumDefinitionAck,
     EthereumDefinitionRequest,
     EthereumGetAddress,
     EthereumGetPublicKey,
     EthereumMessageSignature,
     EthereumPublicKey,
-    EthereumSignAuth7702,
     EthereumSignMessage,
     EthereumSignTx,
     EthereumSignTxEIP1559,
@@ -503,8 +501,6 @@ export const MessageType = Type.Object(
         EthereumVerifyMessage,
         EthereumSignTypedHash,
         EthereumTypedDataSignature,
-        EthereumSignAuth7702,
-        EthereumAuth7702Signature,
         EthereumSignTypedData,
         EthereumTypedDataStructRequest,
         EthereumTypedDataStructAck,
@@ -737,7 +733,6 @@ export type WireInMessage =
     | 'EthereumSignMessage'
     | 'EthereumVerifyMessage'
     | 'EthereumSignTypedHash'
-    | 'EthereumSignAuth7702'
     | 'EthereumSignTypedData'
     | 'EthereumTypedDataStructAck'
     | 'EthereumTypedDataValueAck'
@@ -864,7 +859,6 @@ export type WireOutMessage =
     | 'EthereumDefinitionRequest'
     | 'EthereumMessageSignature'
     | 'EthereumTypedDataSignature'
-    | 'EthereumAuth7702Signature'
     | 'EthereumTypedDataStructRequest'
     | 'EthereumTypedDataValueRequest'
     | 'EvoluNode'

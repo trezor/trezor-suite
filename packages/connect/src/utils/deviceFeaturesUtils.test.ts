@@ -155,6 +155,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 xrp: 'no-support',
                 xtz: 'no-support',
                 xvg: 'update-required',
+                eip7702: 'no-support',
                 chunkify: 'no-support',
                 evmApproval: 'no-support',
                 evmClearSigning: 'no-support',
@@ -176,6 +177,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 hype: 'update-required',
                 monero: 'update-required',
                 nostr: 'no-capability',
+                eip7702: 'update-required',
                 pol: 'update-required',
                 rhc: 'update-required',
                 op: 'update-required',
@@ -209,6 +211,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 tropicDeviceAuthentication: 'no-support',
                 mcuDeviceAuthentication: 'no-support',
                 authenticityProofChunk: 'no-support',
+                eip7702: 'update-required',
                 trx: 'no-capability',
                 ttrx: 'no-capability',
                 tsep: 'update-required',
@@ -292,6 +295,7 @@ describe('utils/deviceFeaturesUtils', () => {
             expect(result).toEqual({
                 eth: 'no-support',
                 bsc: 'update-required',
+                eip7702: 'update-required',
                 chunkify: 'update-required',
                 evmApproval: 'update-required',
                 evmClearSigning: 'update-required',
@@ -322,6 +326,7 @@ describe('utils/deviceFeaturesUtils', () => {
             expect(result).toEqual({
                 eth: 'no-support',
                 chunkify: 'no-support',
+                eip7702: 'no-support',
                 evmApproval: 'no-support',
                 evmClearSigning: 'no-support',
                 evolu: 'no-support',
@@ -351,6 +356,7 @@ describe('utils/deviceFeaturesUtils', () => {
             expect(result).toEqual({
                 eth: 'no-support',
                 bsc: 'no-support',
+                eip7702: 'no-support',
                 chunkify: 'no-support',
                 evmApproval: 'no-support',
                 evmClearSigning: 'no-support',

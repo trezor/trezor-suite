@@ -87,7 +87,7 @@ const groups = {
     experimental: {
         name: 'experimental',
         pattern: 'methods',
-        includeFilter: 'nostrGetPublicKey,nostrSignEvent',
+        includeFilter: 'nostrGetPublicKey,nostrSignEvent,ethereumSignTransactionEip7702',
     },
 };
 

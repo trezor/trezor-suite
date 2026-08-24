@@ -135,7 +135,9 @@ describe(`TrezorConnect methods`, () => {
                         });
 
                         // @ts-expect-error, string + params union
-                        const result = await TrezorConnect[testCase.method](t.params);
+                        const result = await TrezorConnect[testCase.apiMethod ?? testCase.method](
+                            t.params,
+                        );
                         let expected = t.result
                             ? { success: true, payload: t.result, error: undefined }
                             : { success: false };
