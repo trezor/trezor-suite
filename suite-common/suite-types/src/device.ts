@@ -43,9 +43,8 @@ export type ButtonRequest = Omit<DeviceEvent['payload'], 'device' | 'code'> & {
  * some signing capabilities to the Suite (for example the Suite Sync).
  */
 export type DelegatedIdentityKey = string & Branded<'DelegatedIdentityKey'>; // hex-encoded P-256 private key string
-export const asDelegatedIdentityKey = (
-    privateKey: Uint8Array<ArrayBufferLike> | string,
-): DelegatedIdentityKey => String(privateKey) as DelegatedIdentityKey;
+export const asDelegatedIdentityKey = (privateKey: string): DelegatedIdentityKey =>
+    privateKey as DelegatedIdentityKey;
 
 export interface ExtendedDevice {
     useEmptyPassphrase?: boolean;
