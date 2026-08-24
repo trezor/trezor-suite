@@ -7,6 +7,8 @@ import { type YieldFlowStepId } from '@suite-common/wallet-core';
 import { Column, IconCircle, Row, StepList, Text } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';
 
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+
 import { type YieldFlowStepView, getYieldFlowSteps } from '../yieldFlowUtils';
 
 const EditableTitle = styled.span`
@@ -65,6 +67,8 @@ export const YieldFlowStepList = <TSequence extends readonly YieldFlowStepId[]>(
     steps,
     hasStepList = false,
 }: YieldFlowStepListProps<TSequence>) => {
+    const { isBelowMobile } = useLayoutSize();
+
     // Widened — the prop is keyed by the flow's own steps, but we index it with generic step ids.
     const stepDefinitions: Partial<Record<YieldFlowStepId, YieldFlowStepDefinition>> = steps;
     const listSteps = sequence.filter(stepId => stepDefinitions[stepId]?.isListItem !== false);
@@ -93,7 +97,15 @@ export const YieldFlowStepList = <TSequence extends readonly YieldFlowStepId[]>(
     }
 
     return (
-        <StepList isOrdered bulletSize="large" bulletGap={12} gap={24} titleGap={16}>
+        <StepList
+            isOrdered
+            isContentFullWidth={isBelowMobile}
+            bulletSize="large"
+            bulletGap={12}
+            gap={24}
+            titleGap={16}
+            lineWidth={isBelowMobile ? 0 : 2}
+        >
             {listSteps.map(stepId => {
                 const view = views[stepId];
                 const definition = stepDefinitions[stepId];
