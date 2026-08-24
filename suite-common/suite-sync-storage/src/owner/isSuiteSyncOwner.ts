@@ -1,12 +1,9 @@
-import { typedObjectKeys } from '@trezor/utils';
+import { hasProp, typedObjectKeys } from '@trezor/utils';
 
 import { type SuiteSyncOwnerSerialized } from './suiteSyncOwner';
 
 const SUITE_SYNC_OWNER_ID_PATTERN = /^[A-Za-z0-9_-]{22}$/;
 const SUITE_SYNC_OWNER_SECRET_PATTERN = /^[0-9a-f]{128}$/i;
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-    typeof value === 'object' && value !== null && !Array.isArray(value);
 
 export const isSuiteSyncOwner = (value: string): value is SuiteSyncOwnerSerialized => {
     let parsedValue: unknown;
@@ -17,12 +14,12 @@ export const isSuiteSyncOwner = (value: string): value is SuiteSyncOwnerSerializ
         return false;
     }
 
-    if (!isRecord(parsedValue)) {
+    if (!hasProp(parsedValue, 'ownerId') || !hasProp(parsedValue, 'ownerSecret')) {
         return false;
     }
 
     const keys = typedObjectKeys(parsedValue);
-    if (keys.length !== 2 || !keys.includes('ownerId') || !keys.includes('ownerSecret')) {
+    if (keys.length !== 2) {
         return false;
     }
 
