@@ -22,6 +22,7 @@ import {
     type WalletSettingsRootState,
     type YieldEstimatedFeeLevel,
     estimateYieldFeeLevel,
+    getStablecoinYieldClaimRewardsSnapshot,
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
     stablecoinYieldActions,
@@ -203,6 +204,22 @@ export const claimMerklRewardsThunk = createThunk<
                     selectedFee: userAcceptedTxSimulation?.selectedFee,
                     rewards,
                 });
+
+            // The completion screen renders this snapshot instead of the live Merkl query: Merkl
+            // stops returning the rewards once it has processed the claim. It is built from the
+            // same frozen rewards the calldata was built from, so it cannot diverge from the
+            // signed transaction when Merkl data refreshes in the background.
+            dispatch(
+                stablecoinYieldActions.storeActionReviewData({
+                    flowType: 'claim',
+                    flowKey,
+                    rewards: getStablecoinYieldClaimRewardsSnapshot({
+                        networkSymbol: account.symbol,
+                        rewards,
+                    }),
+                    unsignedTransaction: unsignedClaimTx,
+                }),
+            );
 
             dispatch(
                 stablecoinYieldActions.storePrecomposedTransaction({

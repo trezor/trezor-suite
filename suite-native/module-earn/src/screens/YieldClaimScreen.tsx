@@ -9,6 +9,7 @@ import { Context } from '@suite-common/message-system';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    getStablecoinYieldClaimRewardsSnapshot,
     selectAccountByKey,
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
@@ -42,7 +43,6 @@ import { useYieldClaimRewards } from '../hooks/useYieldClaimRewards';
 import { useYieldPendingTransaction } from '../hooks/useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../hooks/useYieldSession';
-import { getStablecoinYieldClaimRewardsSnapshot } from '../utils/stablecoinYieldClaimSummaryUtils';
 import { getClaimFeeWarning } from '../utils/yieldClaimFeeWarningUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldClaim>;
@@ -215,7 +215,7 @@ export const YieldClaimScreen = () => {
         // calldata was built from, so the review cannot diverge from the
         // signed transaction when Merkl data refreshes in the background.
         const rewardsSnapshot = getStablecoinYieldClaimRewardsSnapshot({
-            account,
+            networkSymbol: account.symbol,
             rewards: simulationPreparedAction.rewards,
         });
 
