@@ -23,7 +23,7 @@ import { AbstractMethod } from '../../core/AbstractMethod';
  *
  *   `WardMutationApplied`   a build that serves WARD over its own channel. The device has already
  *                           published the mutation to its daemon and heard it attested, so there is
- *                           nothing for this host to store and nothing it could usefully keep: it
+ *                           nothing for this caller to store and nothing it could usefully keep: it
  *                           does not own the replica, and a copy would be stale from the next
  *                           write on. `entry_key` and `counter` say what happened, and that is all.
  *
@@ -32,11 +32,15 @@ import { AbstractMethod } from '../../core/AbstractMethod';
  * and `counter`, so a caller left to guess from the fields would be sniffing the shape of a message
  * whose meaning is "store this" in one case and "nothing to store" in the other. The wire keeps
  * them apart as two messages precisely so that nobody has to: an emptied `WardLeafAck` would have
- * been worse than unhelpful, since a host's `apply` reads an absent content body as a DELETION and
- * a service build's receipt would then have erased the entry it just wrote.
+ * been worse than unhelpful, since a replica owner's `apply` reads an absent content body as a
+ * DELETION and a service build's receipt would then have erased the entry it just wrote.
  *
  * WHICH TRANSPORT A FIRMWARE USES IS NOT REPORTED, deliberately -- a host that had to be told could
  * be lied to about it -- so this method accepts both and lets the ack speak.
+ *
+ * THE CALLER HERE IS THE WARD APP, never a wallet. WARD's user-facing operations belong to the
+ * application the user reaches WARD through; a wallet on the same connection is not part of the
+ * protocol and proxies none of it. See `docs/core/misc/ward-channels.md` in trezor-firmware.
  *
  * NO PULL HANDLING IS NEEDED HERE. When the session IS synced the device interrupts this call
  * with a `WardEntryRequest`; `DeviceCurrentSession` answers it from the registered

@@ -59,7 +59,7 @@ describe('WardSetEntry', () => {
 
     it("returns the service build's receipt tagged as such, with no leaf invented", async () => {
         // A device that serves WARD over its own channel has ALREADY published this mutation and
-        // heard it attested. There is nothing for a wallet host to store -- it owns no replica --
+        // heard it attested. There is nothing for the calling app to store -- it owns no replica --
         // and the fields say only what happened.
         const applied = { entry_key: '77'.repeat(32), counter: 9 };
         const { method } = makeMethod(

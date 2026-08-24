@@ -20,8 +20,9 @@ import type { Params, Response } from '../../params';
  * cannot turn a hash back into a keyed path -- and the device says so rather than skipping it.
  *
  * TWO POSSIBLE ACKS, AND THE `type` SAYS WHICH, as `wardSetEntry`: `WardFlushQueueAck` carries a
- * leaf this host must store, `WardFlushQueueApplied` is the receipt from a device that serves WARD
- * over its own channel and has already published there. Both carry `remaining`.
+ * leaf the caller must store, because on that build the WARD app owns the replica;
+ * `WardFlushQueueApplied` is the receipt from a device that serves WARD over its own channel and has
+ * already published there. Both carry `remaining`.
  */
 export declare function wardFlushQueue(
     params: Params<PROTO.WardFlushQueue>,

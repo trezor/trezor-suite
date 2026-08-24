@@ -25,6 +25,9 @@ import type { Params, Response } from '../../params';
  *                          and a copy kept here would be stale from the next write on. `entry_key`
  *                          and `counter` are the whole receipt.
  *
+ * The caller of these operations is the WARD app -- the application the user reaches WARD through --
+ * never a wallet sharing the connection.
+ *
  * Branch on `type`, never on the fields: both payloads carry `entry_key` and `counter`, and the
  * difference between "store this leaf" and "there is no leaf" is exactly what the type carries.
  */

@@ -27,9 +27,10 @@ import { AbstractMethod } from '../../core/AbstractMethod';
  * supply it.
  *
  * TWO POSSIBLE ACKS, AND THE `type` SAYS WHICH -- exactly as `wardSetEntry`, and for the same
- * reason. `WardFlushQueueAck` carries the leaf a wallet host must store; `WardFlushQueueApplied`
- * comes from a build that serves WARD over its own channel, where the device has already published
- * to its daemon and this host owns no replica to store anything in. Both carry `remaining`, so the
+ * reason. `WardFlushQueueAck` carries the leaf the replica owner must store -- on that build the
+ * WARD app is the replica owner; `WardFlushQueueApplied` comes from a build that serves WARD over
+ * its own channel, where the device has already published to its daemon and the caller owns no
+ * replica to store anything in. Both carry `remaining`, so the
  * draining loop is written once either way.
  *
  * NO CONFIRMATION SCREEN, on the device's side. The user held to confirm when the change was queued,
