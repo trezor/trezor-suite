@@ -19,16 +19,22 @@ import {
 } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { useQueryClient } from '@suite-common/react-query';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { useResolveNamedAddress } from '@suite-common/wallet-core';
+import {
+    NAMED_ADDRESS_RESOLVE_DEBOUNCE_MS,
+    getResolveNamedAddressQueryOptions,
+    useResolveNamedAddress,
+} from '@suite-common/wallet-core';
 import type { Output } from '@suite-common/wallet-types';
 import {
     checkIsAddressNotUsedNotChecksummed,
     convertAmountSubunitsToUnits,
     isProgramDerivedAccount,
     isSymbolSupportingNamedAddress,
+    looksLikeEvmAddress,
     looksLikeNamedAddress,
 } from '@suite-common/wallet-utils';
 import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
@@ -83,6 +89,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         formState: { errors },
         setValue,
         watch,
+        getValues,
         setDraftSaveRequest,
         trigger,
         clearErrors,
@@ -119,7 +126,16 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     );
 
     const shouldShowLabelAction = suiteSyncInteraction === null || !!device?.connected;
-    const resolveNamedAddressQuery = useResolveNamedAddress(address, symbol);
+    const queryClient = useQueryClient();
+    const {
+        mode: namedAddressMode,
+        isResolving,
+        resolvedAddress: resolvedNamedAddress,
+        reverseResolvedName,
+    } = useResolveNamedAddress(address, symbol);
+    // Reverse resolution runs for every hex address typed; it is a bonus lookup, so it must not
+    // announce itself or occupy the bottom text the way a name the user typed does.
+    const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
 
     const [isExternalAddressCheckWarningDismissed, setIsExternalAddressCheckWarningDismissed] =
         useState(false);
@@ -262,8 +278,25 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 return {
                     learnMoreUrl: addressDeprecatedUrl ? ALL_URLS[addressDeprecatedUrl] : undefined,
                 };
-            case 'evmChecks':
-                if (networkType === 'ethereum' && !checkAddressChecksum(address)) {
+            case 'evmChecks': {
+                // A name that did not resolve offers nothing to remediate: it is not a
+                // mis-checksummed address to convert, and it is not a risk to knowingly
+                // accept — dismissing the error would compose a transaction to nothing.
+                const isUnresolvedName =
+                    isSymbolSupportingNamedAddress(symbol) &&
+                    looksLikeNamedAddress(address) &&
+                    !resolvedNamedAddress;
+
+                if (isUnresolvedName) {
+                    return {};
+                }
+
+                // Only a hex address can be converted; `toChecksumAddress` throws on anything else.
+                if (
+                    networkType === 'ethereum' &&
+                    looksLikeEvmAddress(address) &&
+                    !checkAddressChecksum(address)
+                ) {
                     return {
                         buttonProps: {
                             onClick: () => {
@@ -293,6 +326,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
 
                 return {};
+            }
             case 'solAssociatedAccountCheck':
                 if (!isExternalAddressCheckWarningDismissed) {
                     return {
@@ -391,32 +425,59 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
                 }
 
+                if (isNamedInput) {
+                    // Last batch decides if should validate.
+                    await new Promise(resolve =>
+                        setTimeout(resolve, NAMED_ADDRESS_RESOLVE_DEBOUNCE_MS),
+                    );
+
+                    if (getValues(inputName) !== address) return;
+                }
+
+                // Named inputs resolve through the same query the bottom text reads, so
+                // validating and displaying the hint share a single request.
+                const resolvedAddress = isNamedInput
+                    ? await queryClient
+                          .ensureQueryData(getResolveNamedAddressQueryOptions(address, symbol))
+                          .catch(() => null)
+                    : null;
+
+                if (isNamedInput && !resolvedAddress) {
+                    return translationString('TR_ENS_RESOLVE_FAILED');
+                }
+
                 const result = await TrezorConnect.getAccountInfo({
-                    descriptor: checkedAddress,
+                    descriptor: resolvedAddress ?? address,
                     coin: asCoinSymbol(symbol),
                 });
 
                 if (!result.success) {
-                    return isNamedInput
-                        ? translationString('TR_ENS_RESOLVE_FAILED')
-                        : translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
+                    return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
                 }
+
+                // The awaits above can outlive the field. Writing now would attach this run's
+                // resolution to whatever the user typed since — and signing prefers
+                // `resolvedAddress` over `address`, so the transaction would go to the previous
+                // recipient. The newer run started its awaits later and settles last.
+                if (getValues(inputName) !== address) return;
 
                 const { payload } = result;
 
-                if (isNamedInput) {
-                    // For dotted inputs, payload.descriptor is Blockbook's resolved hex
-                    // (see @trezor/connect getAccountInfo descriptor override).
-                    // Recompose now that the onchain address is known.
-                    setValue(resolvedAddressInputName, payload.descriptor);
+                if (resolvedAddress) {
+                    // Recompose now that the onchain address is known. The checksum branch is
+                    // skipped on purpose: resolver output is already canonical, and rewriting
+                    // the input would replace the name the user typed.
+                    setValue(resolvedAddressInputName, resolvedAddress);
                     composeTransaction(amountInputName);
-
-                    return;
                 }
 
                 // 1. Validate address checksum.
                 // Eth addresses are valid without checksum but Trezor displays them as checksummed.
-                if (networkType === 'ethereum' && !checkAddressChecksum(checkedAddress)) {
+                if (
+                    networkType === 'ethereum' &&
+                    !resolvedAddress &&
+                    !checkAddressChecksum(address)
+                ) {
                     const checksumAndUsageValidationResult = checkIsAddressNotUsedNotChecksummed(
                         checkedAddress,
                         payload.history,
@@ -479,18 +540,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         knownOnly: true,
     });
 
-    const isResolvingNamedAddress =
-        isSymbolSupportingNamedAddress(symbol) &&
-        looksLikeNamedAddress(address) &&
-        resolveNamedAddressQuery.isFetching;
-
-    const resolvedNamedAddress =
-        isSymbolSupportingNamedAddress(symbol) &&
-        looksLikeNamedAddress(address) &&
-        resolveNamedAddressQuery.isSuccess
-            ? resolveNamedAddressQuery.data
-            : undefined;
-
     const getBottomText = () => {
         if (addressError) {
             return <InputError message={addressError.message} {...getInputErrorProps()} />;
@@ -524,6 +573,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             );
         }
 
+        if (reverseResolvedName) {
+            return <Translation id="TR_ENS_PRIMARY_NAME" values={{ name: reverseResolvedName }} />;
+        }
+
         return isAddressWithLabel ? addressLabelComponent : null;
     };
 
@@ -538,6 +591,13 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
         if (autocorrectMessage) {
             return <Icon as={InfoIcon} size={16} intent="info" />;
+        }
+
+        // The label icon belongs to the label text, and every ENS state outranks it in
+        // `getBottomText`. Without this the icon keeps rendering underneath an ENS message —
+        // an account-label icon beside a primary name, for any own address that has one.
+        if (isResolvingNamedAddress || resolvedNamedAddress || reverseResolvedName) {
+            return undefined;
         }
 
         if (isAddressWithLabel) {

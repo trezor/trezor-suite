@@ -21,3 +21,8 @@ export const looksLikeNamedAddress = (value: string) => {
 
     return true;
 };
+
+const EVM_ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
+
+// Shape check only — checksums are not enforced, so a lowercase paste still qualifies.
+export const looksLikeEvmAddress = (value: string) => EVM_ADDRESS_REGEX.test(value.trim());
