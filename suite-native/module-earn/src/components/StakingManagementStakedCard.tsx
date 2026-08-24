@@ -238,8 +238,11 @@ export const StakingManagementStakedCard = ({
                     })}
                 >
                     <Text variant="body-sm">
-                        {(isCardanoStaking || apy != null) && 'APY '}
-                        {isNotEarning ? '0%' : <ApyValue apy={apy} />}
+                        <ApyValue
+                            apy={apy}
+                            isNotEarning={isNotEarning}
+                            withLabel={isCardanoStaking || apy != null}
+                        />
                     </Text>
                     {rewardsFrequencyInDays !== null ? (
                         <Text variant="body-sm">
