@@ -10899,7 +10899,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/metadata-types@workspace:suite-common/metadata-types"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/redux-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -10986,6 +10986,7 @@ __metadata:
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations-types": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"

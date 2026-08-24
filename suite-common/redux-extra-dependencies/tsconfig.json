@@ -12,6 +12,7 @@
         { "path": "../metadata-types" },
         { "path": "../networks" },
         { "path": "../platform-encryption" },
+        { "path": "../redux-utils" },
         {
             "path": "../suite-rbf-labels-migrations-types"
         },

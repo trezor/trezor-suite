@@ -1,15 +1,8 @@
-import { type AnyAction, type AsyncThunk, type ThunkAction } from '@reduxjs/toolkit';
-
+import { type SuiteCompatibleThunk } from '@suite-common/redux-utils';
 import type { StaticSessionId, WalletDescriptor } from '@trezor/device-utils';
 
-// TODO: Replace with a generic shared `Thunk` type from @suite-common/redux-utils after
-// https://github.com/trezor/trezor-suite/issues/30770 is completed.
-type MetadataThunk<TPayload> =
-    | AsyncThunk<void, TPayload, Record<never, never>>
-    | ((payload: TPayload) => ThunkAction<void, any, any, AnyAction>);
-
 export type FetchAndSaveMetadataDep = {
-    fetchAndSaveMetadata: MetadataThunk<StaticSessionId>;
+    fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
 };
 
 export interface LabelableEntityKeys {
