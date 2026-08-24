@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """A WARD service daemon for the e2e script beside it: a replica, a WM, and a log of both.
 
-WHAT IT IS FOR. On a `--ward-service-channel` build the device does not ask its wallet host for
-WARD data: it opens an interface of its own and asks a daemon. This is that daemon, held open for
+WHAT IT IS FOR. On a `--ward-service-channel` build the device does not ask the app that called it
+for WARD data: it opens an interface of its own and asks a daemon. This is that daemon, held open for
 the length of an e2e run, and it exists to make two OPPOSITE statements checkable from a shell:
 
   * the queue never touches it -- offline requests read the device's own store, so a run of them
@@ -302,7 +302,7 @@ class Daemon(MockWardService):
             # daemon: the pin is in flash, and a fresh key is not merely unrecognised but locked
             # out. Left None on a first run, where the library picks one and the caller stores it.
             static_privkey=static_privkey,
-            # `wardd-e2e`, not the wallet host's manifest: the device PINS the daemon's static key,
+            # `wardd-e2e`, not the calling app's manifest: the device PINS the daemon's static key,
             # and borrowing the CLI's identity would make the two channels indistinguishable to it.
             # The BUTTON CALLBACK is the one thing worth borrowing from a test client: pairing puts
             # a screen in front of the user, and here the answer is "press it over debuglink".

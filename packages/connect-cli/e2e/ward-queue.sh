@@ -2,8 +2,22 @@
 #
 # The WARD queue, end to end: queue a change, show it, back it up, discard it, put it back.
 #
+# ONE APP, PINNED. The device grants the WARD role to the first app that asks and refuses every
+# other host from then on, so this script pairs once at step 0 and reuses that credential for every
+# call -- the host static key is what the device pins, and it comes from the credential. Step 1b
+# checks the other half by asking WITHOUT it. A run interrupted part way leaves the pin in place; the
+# next run pairs afresh and would be refused, so wipe the emulator profile between runs (as this
+# script already assumes) or clear the pin with `--method=ward_reset_app`.
+#
+# THIS SCRIPT STANDS IN FOR THE WARD APP, and `ward-service-daemon.py` beside it stands in for
+# wardd. WARD has three parties: the app that invokes the user-facing operations -- over the WALLET
+# channel, which is where they belong, since that app stands in for what a wallet will do itself --
+# the device, and the replica owner behind the service channel. What the second channel keeps off the
+# wallet connection is the replica traffic, not these calls. See `docs/core/misc/ward-channels.md` in
+# trezor-firmware.
+#
 # BOTH VARIANTS LIVE HERE, and which one runs is decided by the binary rather than by a flag.
-# Where a device gets WARD data from is a BUILD OPTION -- a CONNECT build asks its wallet host over
+# Where a device gets WARD data from is a BUILD OPTION -- a CONNECT build asks the calling app over
 # the channel it is already answering on, a SERVICE build asks a daemon on a dedicated interface,
 # and no firmware does both. The queue is supposed to be indifferent to that: it is the device's OWN
 # store. So this script detects the build it is talking to and runs the identical arc either way.
@@ -16,7 +30,7 @@
 #
 # THE ONLINE HALF IS MOSTLY ABOUT WRITING, because that is what the dedicated channel is for and what
 # no host can check for itself. A read that fails, fails on the device. A write is a conversation the
-# wallet host is not part of: the device pulls the current leaf from its daemon, seals a mutation,
+# calling app is not part of: the device pulls the current leaf from its daemon, seals a mutation,
 # hands it over, and moves its head only when the WM's attestation for THAT counter comes back. From
 # out here the only evidence is the daemon's log and what the NEXT operation no longer has to do, so
 # both are asserted -- exchange by exchange, in order, and once inside a single session where the
@@ -138,7 +152,26 @@ FVALUE1="flushed_first"
 FIDENT2="Flush2"
 FVALUE2="flushed_second"
 
-CLI="yarn workspace @trezor/connect-cli cli --udp --debuglink --pairing=skip"
+# ONE IDENTITY FOR THE WHOLE RUN, and it is not optional any more. The device PINS the first app to
+# send it a WARD message and refuses every other host from then on (apps/ward/app_role.py) -- so a
+# script whose every invocation presented a fresh key would grant the role to step 1 and be refused
+# by step 2.
+#
+# THE PIN FOLLOWS THE HOST STATIC KEY, and that key comes from a stored credential: connect uses
+# `credentials.host_static_key` when it has one and `randomBytes(32)` when it does not (see
+# `handleHandshakeInit` in packages/protocol). So the run pairs ONCE below, keeps the credential in
+# `src/thp-state.dat`, and passes --autoconnect everywhere -- which is also what a real app does.
+#
+# --pairing=skip STAYS, and it is not in conflict: it decides how a channel PAIRS, while the static
+# key is chosen before that from whatever credential was loaded. Skipping keeps the run headless
+# after the one real pairing below.
+CLI="yarn workspace @trezor/connect-cli cli --udp --debuglink --pairing=skip --autoconnect"
+# The pairing run itself, which cannot skip -- skipped pairing issues no credential.
+CLI_PAIR="yarn workspace @trezor/connect-cli cli --udp --debuglink --pairing=code"
+# Where connect-cli keeps what it is told to remember. Wiped before pairing, because a credential
+# from a previous emulator names a Trezor static key this one does not have: the handshake would not
+# match it, would fall back to a random host key, and the pin would refuse the second call in.
+CLI_STATE="$SUITE/packages/connect-cli/src/thp-state.dat"
 failures=0
 
 # Greps the WHOLE output and only trims for display: a thrown error puts its message above Node's
@@ -276,8 +309,26 @@ served_since() {
         paste -sd, -
 }
 
+echo "0. pair once, so every call below is the SAME app to the device"
+# THE ROLE IS GRANTED ONCE AND HELD FOR THE RUN. The first WARD request pins this app after a held
+# confirmation (--debuglink presses it), and every later request is silent -- so nothing below has to
+# know the pin exists. What would go wrong without this step is not subtle: step 2 would be refused
+# as "another application".
+rm -f "$CLI_STATE"
+PAIRED="$(timeout 150 $CLI_PAIR --method=get-credentials 2>&1)"
+if [ ! -s "$CLI_STATE" ]; then
+    cat >&2 <<MSG
+Pairing produced no credential, so every invocation below would present a different host key and the
+device would refuse all but the first. Its output:
+
+$(grep -vE "^\s*at |^\s*$" <<<"$PAIRED" | tail -8 | sed 's/^/  /')
+MSG
+    exit 1
+fi
+echo "  ok   credential stored in src/thp-state.dat -- the run is one app from here on"
+
 if [ "$VARIANT" = service ]; then
-    echo "0. this is a SERVICE build -- bind a daemon to the WARD interface (udp $WARD_PORT)"
+    echo "0b. this is a SERVICE build -- bind a daemon to the WARD interface (udp $WARD_PORT)"
     DAEMON_LOG="$(mktemp "${TMPDIR:-/tmp}/ward-service-daemon.XXXXXX.log")"
     DAEMON_KEY="$(mktemp -u "${TMPDIR:-/tmp}/ward-service-daemon.XXXXXX.key")"
     DAEMON_STATE="$(mktemp -u "${TMPDIR:-/tmp}/ward-service-daemon.XXXXXX.state")"
@@ -300,6 +351,19 @@ fi
 echo "1. queue a change"
 check "queued" "queued: true" \
     "$(timeout 150 $CLI --method=ward_add --queue --appid="$APPID" --ident="$IDENT" --value="$VALUE" 2>&1)"
+
+echo "1b. a DIFFERENT app is refused, now that this one holds the role"
+# THE PIN, SEEN FROM THE OUTSIDE, and it needs step 1 to have happened first: the role is granted on
+# the first WARD request, so before that a credential-less caller would simply be granted it. Run
+# without --autoconnect the CLI has no credential to take a static key from and generates a fresh
+# one, which is exactly what another application looks like to the device.
+#
+# REFUSED, NOT ASKED. If the device offered a takeover screen here, any host could summon it by
+# asking -- so what is asserted is a failure naming the role, and no queued change appearing behind
+# our back.
+OTHER="$(timeout 150 yarn workspace @trezor/connect-cli cli --udp --debuglink --pairing=skip --method=ward_display --queue --appid="$APPID" --ident="$IDENT" 2>&1)"
+check "the other app was refused by name" "another application holds the WARD app role" "$OTHER"
+check_not "and it read nothing" "displayed: true" "$OTHER"
 
 echo "2. back it up into a variable"
 # --target prints `BLOB=0x...` on stdout, which is exactly what makes it capturable -- but the CLI
@@ -497,7 +561,7 @@ if [ "$VARIANT" = service ]; then
     # this script assumes one throughout.
     check "the head moved to 1" "counter: 1" "$WROTE"
     # NO LEAF CAME BACK, and this is the assertion the message split exists for: on this build the
-    # wallet host does not own the replica, so a leaf here would be a second copy going stale from
+    # calling app does not own the replica, so a leaf here would be a second copy going stale from
     # the next write on -- and `apply` reads an absent content body as a DELETION, so an emptied
     # WardLeafAck would have erased the entry it just wrote.
     check_not "and handed back no leaf to store" "identity:|content:|mac:" "$WROTE"
