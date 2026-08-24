@@ -26,21 +26,24 @@
         "reporter-watchdog:verify": "tsx src/githubReporter/watchdog/verify.ts"
     },
     "dependencies": {
-        "@anthropic-ai/sdk": "0.100.0",
         "@octokit/rest": "^21.1.1",
+        "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "dotenv": "17.2.3",
         "express": "^5.2.1",
-        "ws": "^8.20.0",
-        "zod": "4.3.6"
+        "ws": "^8.20.0"
     },
     "devDependencies": {
-        "@anthropic-ai/claude-code": "2.1.216",
+        "@anthropic-ai/claude-agent-sdk": "0.3.218",
+        "@anthropic-ai/claude-code": "2.1.218",
+        "@anthropic-ai/sdk": "0.100.0",
         "@currents/mcp": "^2.3.3",
         "@currents/playwright": "^2.5.0",
         "@playwright/test": "1.62.1",
-        "@trezor/node-utils": "workspace:*",
-        "tsx": "^4.21.0"
+        "@trezor/eslint": "workspace:*",
+        "claude-pretty-printer": "1.5.0",
+        "dotenv": "17.2.3",
+        "tsx": "^4.21.0",
+        "zod": "4.3.6"
     }
 }

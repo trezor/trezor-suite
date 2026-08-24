@@ -188,6 +188,12 @@ Return a JSON object (validated against a matching JSON Schema) with:
 
 ## Rules
 
+- **Narrate your work.** Your streamed text output is the CI log — the only human-readable
+  record of the run. Before each tool call (or tight group of related calls), write one short
+  sentence: what you are about to do and why. State every decision in one sentence the moment
+  you make it — which run you selected, which instance you are investigating, what the trace
+  showed, why a cluster is FIXABLE or skipped. Keep it to single terse lines; the report
+  carries the conclusions, the narration carries the journey to them.
 - **Visual evidence is mandatory.** Do not write a diagnosis for any test until you have
   fetched and read its trace. Every **Root cause** must cite something you actually
   observed — an action's selector or result, a DOM snapshot, a failed request, or a stack
