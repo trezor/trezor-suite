@@ -245,8 +245,8 @@ const wardDisplay = async (context: WardCommandContext, device: Device) => {
 
     if (!queue) {
         // THE ONE BUILD WHERE AN ONLINE READ NEEDS NOTHING FROM US. A firmware that serves WARD
-        // over its own interface asks its daemon, not its wallet host, so there is no leaf for
-        // this CLI to hold and no pull for it to answer -- the call is simply forwarded and the
+        // over its own interface asks its daemon, not the app that called it, so there is no leaf
+        // for this CLI to hold and no pull for it to answer -- the call is simply forwarded and the
         // device does the rest. `--service` is how the caller says that is the build in front of
         // it, because the device does not report it: which transport WARD is served over is a
         // build option, and a host that could be TOLD could be lied to about it.
@@ -438,6 +438,46 @@ const wardFlush = async (context: WardCommandContext, device: Device) => {
     return { published: true, counter, entry_key, remaining: remaining ?? 0 };
 };
 
+/**
+ * `ward_reset_app`: retire the pinned WARD app.
+ *
+ * THE DEVICE PINS ONE APP. The first host to send a user-facing WARD message is recorded in flash by
+ * its static key, on a held confirmation, and every other host is refused from then on -- so a device
+ * has one party operating WARD, chosen by the user, rather than every host that ever paired. This is
+ * how that choice is undone.
+ *
+ * THE ONLY WARD COMMAND HERE THAT NEEDS NEITHER --queue NOR --service, and the only one that works
+ * when nothing else does: the reason to run it is that the pinned app cannot ask any more. It does
+ * not read the tree, so it needs no backend; it does not touch the queue, so --queue means nothing.
+ *
+ * NOTHING IS DISCARDED -- every entry, queued change and root survives -- and `was_bound` says
+ * whether a pin was actually retired, which the absence of an error does not.
+ */
+const wardResetApp = async (context: WardCommandContext, device: Device) => {
+    const { queue } = context;
+
+    if (queue) {
+        throw new Error(
+            "ward_reset_app is about which app may operate WARD, not about the device's queue; drop --queue",
+        );
+    }
+
+    const result = await TrezorConnect.wardResetApp({ device });
+
+    if (!result.success) {
+        throw new Error(`${result.error.code}: ${result.error.message}`);
+    }
+
+    // Reported rather than flattened into "reset: true": a device nobody had claimed answers just as
+    // happily, and a caller that could not tell the two apart would report having taken the role away
+    // from an app that was never there.
+    if (!result.payload.was_bound) {
+        return { reset: true, wasBound: false, note: 'no app held the WARD role' };
+    }
+
+    return { reset: true, wasBound: true, note: 'the next app to make a WARD request claims it' };
+};
+
 export const runWardCommand = (
     name: WardCommandName,
     context: WardCommandContext,
@@ -461,6 +501,10 @@ export const runWardCommand = (
 
     if (name === 'ward_flush') {
         return wardFlush(context, device);
+    }
+
+    if (name === 'ward_reset_app') {
+        return wardResetApp(context, device);
     }
 
     if (name === 'ward_delete') {

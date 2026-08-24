@@ -22,6 +22,7 @@ export const WARD_COMMAND_NAMES = [
     'ward_backup',
     'ward_restore',
     'ward_flush',
+    'ward_reset_app',
 ] as const;
 
 export type WardCommandName = (typeof WARD_COMMAND_NAMES)[number];
@@ -121,6 +122,17 @@ export const wardCommands: Record<WardCommandName, WardCommand> = {
         // form to ask for and the flag is rejected rather than ignored.
         supportsQueue: false,
         run: notWired('ward_flush'),
+    },
+    ward_reset_app: {
+        name: 'ward_reset_app',
+        description: 'Retire the pinned WARD app, so the next one to ask may claim the role',
+        // NOTHING AT ALL, and that is the shape of the request: it names no entry, because its
+        // subject is who may operate WARD rather than what they may reach. It is also the one WARD
+        // command that does not need the role it is about -- see the runner.
+        requiredParams: [],
+        optionalParams: [],
+        supportsQueue: false,
+        run: notWired('ward_reset_app'),
     },
 };
 

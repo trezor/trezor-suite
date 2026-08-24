@@ -44,6 +44,7 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=ward_delete     (wired, --queue only)
                                                 --method=ward_display   (wired; --queue, or --service)
                                                 --method=ward_flush     (wired, --service only)
+                                                --method=ward_reset_app (wired, no flags)
                                                 --method=ward_update    (not wired yet)
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
@@ -115,6 +116,17 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 a --compact record, which keeps a hash of its
                                                 identity that the device cannot turn back into a
                                                 path.
+
+  Who may use WARD at all
+    --method=ward_reset_app                   The device PINS the first app to send it a WARD
+                                                message, on a held confirmation, and refuses every
+                                                other host from then on -- one app per device,
+                                                chosen by the user. This retires that pin, so the
+                                                next app to ask claims the role. Needs no --queue
+                                                and no --service: it reads nothing and publishes
+                                                nothing, and it is the one WARD command that still
+                                                works when the pinned app cannot ask. Discards no
+                                                entry, queued change or root.
 
   Backing the queue up (both --queue only)
     --method=ward_backup --queue --appid=example.com --ident=addr1
