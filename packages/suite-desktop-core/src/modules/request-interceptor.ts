@@ -103,17 +103,6 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
                 return;
             }
 
-            case 'ADD_WHITELISTED_DOMAIN': {
-                const hostname = event.domain;
-                const validatedHostname = validateWhitelistedHostname({ hostname, warn });
-
-                if (validatedHostname !== undefined) {
-                    mainThreadAllowedDomain.general.push(validatedHostname);
-                }
-
-                return;
-            }
-
             default:
                 return exhaustive(event);
         }
