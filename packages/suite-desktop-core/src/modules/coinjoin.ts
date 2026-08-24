@@ -180,6 +180,16 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
                             clients.splice(clientIndex, 1);
                         }
 
+                        // There should be only one client per network (expected `undefined`), but duplicates are only
+                        // guarded by the Renderer process (CoinjoinService), not Main process, so let's be defensive:
+                        const sameNetworkClient = clients.find(
+                            otherClient => otherClient.settings.network === client.settings.network,
+                        );
+                        emitWhitelistedCoinjoinCoordinatorDomain({
+                            coin: client.settings.network,
+                            coordinatorUrl: sameNetworkClient?.settings.coordinatorUrl ?? null,
+                        });
+
                         if (clients.length === 0) {
                             logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} binary stop`);
                             synchronize(killCoinjoinProcess);
