@@ -80,6 +80,8 @@ createThunk<void, void, { state: SelectedState; extra: SelectedExtraDependencies
     },
 );
 
+// A dispatched child thunk does not inherit the parent's permissions. Giving it a separate state
+// and dependency contract lets these tests verify that the parent covers the entire dispatch chain.
 type ChildThunkState = {
     child: {
         value: number;
@@ -104,6 +106,8 @@ const childThunk = createThunk<void, void, { state: ChildThunkState; extra: Chil
     },
 );
 
+// The parent can execute the child, so its public contract must contain everything required by both
+// thunks. These intersections describe that combined contract.
 type ParentThunkState = SelectedState & ChildThunkState;
 type ParentThunkDeps = SelectedExtraDependencies & ChildThunkDeps;
 
@@ -121,9 +125,12 @@ const parentThunk = createThunk<void, void, { state: ParentThunkState; extra: Pa
     },
 );
 
+// A store satisfying the complete parent-and-child contract must be able to dispatch the parent.
 declare const compatibleDispatch: ThunkDispatch<ParentThunkState, ParentThunkDeps, UnknownAction>;
 compatibleDispatch(parentThunk());
 
+// Conversely, dispatching the parent must fail when the store is missing either part of the
+// child's contract, even though the missing requirement is used only by the nested child thunk.
 declare const dispatchWithoutChildState: ThunkDispatch<
     SelectedState,
     ParentThunkDeps,
