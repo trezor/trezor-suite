@@ -148,7 +148,9 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
             ...DEFAULT_VALUES,
             ...overrideValues,
         });
-    }, [reset, account, isSignPage]);
+        // Watching the account itself would empty the form every time its object was replaced —
+        // a balance or a nonce arriving is not a reason to throw away what is being typed.
+    }, [reset, isSignPage, account?.key, account?.networkType, account?.path, account?.descriptor]);
 
     return {
         isFormDirty: isDirty,
