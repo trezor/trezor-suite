@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingSellFormProps } from '@suite-common/trading';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -78,7 +78,7 @@ const buildDefaults = (): TradingSellFormProps =>
     }) as unknown as TradingSellFormProps;
 
 const renderComposeTransaction = () => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         preloadedState: {
             wallet: {

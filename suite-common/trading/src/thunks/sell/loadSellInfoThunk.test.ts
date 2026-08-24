@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type SellListResponse, type SellProviderInfo } from 'invity-api';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import { sellInitialState, tradingSellReducer } from '../../reducers/sellReducer';
 import { regional } from '../../regional';
@@ -29,7 +29,7 @@ describe('loadSellInfoThunk', () => {
         supportedSubdivisions: {},
     };
 
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({

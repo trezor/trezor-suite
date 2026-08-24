@@ -6,7 +6,7 @@ import {
 } from '@suite-common/bluetooth';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { configureMockStore, filterThunkActionTypes } from '@suite-common/test-utils';
+import { createTestStore, filterThunkActionTypes } from '@suite-common/test-utils';
 import { prepareThpReducer } from '@suite-common/thp';
 import { DEVICE } from '@trezor/connect';
 
@@ -43,7 +43,7 @@ const extra: ForgetDevicePersistentDataThunkDeps = {
 };
 
 const initStore = () =>
-    configureMockStore({
+    createTestStore({
         extra,
         reducer: combineReducers({
             bluetooth: bluetoothReducer,
@@ -118,7 +118,7 @@ const getDisconnectInitialState = (state?: {
 });
 
 const initDisconnectStore = (state: DisconnectState) =>
-    configureMockStore({
+    createTestStore({
         extra,
         reducer: combineReducers({
             device: deviceReducer,

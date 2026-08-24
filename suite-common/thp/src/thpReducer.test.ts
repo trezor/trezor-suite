@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { mockConnectDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { DEVICE, createDeviceMessage } from '@trezor/connect';
 
 import { createCredential, createDeviceThp } from '../mocks';
@@ -32,7 +32,7 @@ const credential3 = createCredential({ credential: '3' });
 
 describe('thpReducer', () => {
     test('finishThpFlow', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({ thp: thpReduce }),
             preloadedState: { thp: { ...initialState, step: 'ConfirmOnlyConnection' } },
@@ -54,7 +54,7 @@ describe('thpReducer', () => {
             ['finished (connection counter incremented, autoconnect set)', 2, 3, 'AutoconnectInfo'],
             ['finished (connection counter not changed)', 3, 3, null],
         ])('%s', (_, initialCounter, expectedCounter, expectedAutoconnectStep) => {
-            const store = configureMockStore({
+            const store = createTestStore({
                 extra: undefined,
                 reducer: combineReducers({ thp: thpReduce }),
                 preloadedState: {
@@ -88,7 +88,7 @@ describe('thpReducer', () => {
         });
 
         test('canceled', () => {
-            const store = configureMockStore({
+            const store = createTestStore({
                 extra: undefined,
                 reducer: combineReducers({ thp: thpReduce }),
                 preloadedState: {
@@ -109,7 +109,7 @@ describe('thpReducer', () => {
         });
 
         test('failed', () => {
-            const store = configureMockStore({
+            const store = createTestStore({
                 extra: undefined,
                 reducer: combineReducers({ thp: thpReduce }),
                 preloadedState: {
@@ -131,7 +131,7 @@ describe('thpReducer', () => {
         });
 
         test('invalid-tag', () => {
-            const store = configureMockStore({
+            const store = createTestStore({
                 extra: undefined,
                 reducer: combineReducers({ thp: thpReduce }),
                 preloadedState: {
@@ -154,7 +154,7 @@ describe('thpReducer', () => {
     });
 
     it('filters out the credentials to be removed', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({ thp: thpReduce }),
             preloadedState: {

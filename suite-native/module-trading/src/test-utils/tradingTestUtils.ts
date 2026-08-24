@@ -7,7 +7,7 @@ import { geolocationInitialState } from '@suite-common/geolocation';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import {
     formDraftReducer,
@@ -72,7 +72,7 @@ type TradingLightStoreState = Omit<TradingTestPreloadedState, 'wallet'> & {
 };
 
 type TradingLightStore = ReturnType<
-    typeof configureMockStore<void, TradingLightStoreState, UnknownAction>
+    typeof createTestStore<void, TradingLightStoreState, UnknownAction>
 >;
 
 export const createTradingFeatureFlags = (
@@ -139,7 +139,7 @@ export const createTradingLightStore = (args?: {
         }),
     } as const;
 
-    return configureMockStore({
+    return createTestStore({
         extra: undefined,
         reducer,
         preloadedState: {

@@ -1,5 +1,5 @@
 import { type TranslationKey } from '@suite/intl';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import {
     type NotificationEntry,
     createNotificationsReducer,
@@ -31,7 +31,7 @@ const getInitialState = (
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         middleware: [...middlewares],
         reducer: (currentState = state, action) => ({

@@ -1,6 +1,6 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exchangeInitialState, initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -135,7 +135,7 @@ const renderActions = (overrides?: StateOverrides) => {
         cryptoId: ETHEREUM_CRYPTO_ID,
     });
 
-    const store = configureMockStore({ extra: undefined, preloadedState: state });
+    const store = createTestStore({ extra: undefined, preloadedState: state });
     const { result } = renderHookWithStoreProvider(() => useTradingExchangeTradeActions(), {
         store,
     });

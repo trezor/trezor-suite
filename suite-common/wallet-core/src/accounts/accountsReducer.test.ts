@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -25,7 +25,7 @@ interface InitStoreArgs {
 }
 
 const initStore = ({ preloadedState }: InitStoreArgs = {}) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         reducer: { wallet: combineReducers({ accounts: accountsReducer }) },
         preloadedState,

@@ -10,7 +10,7 @@ import {
 } from '@suite-common/message-system/src/messageSystemUtils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type Action } from '@suite-common/suite-types';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import { type AppState } from 'src/reducers/store';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -93,7 +93,7 @@ const reducer = combineReducers({
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (preloadedState: State) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         reducer,
         preloadedState,

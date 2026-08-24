@@ -81,7 +81,7 @@ import { tradingInitialState, tradingSlice } from '@suite-native/trading-state';
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
 import { appReducer } from './appSlice';
-import { extraDependencies } from './extraDependencies';
+import { extraDependencies } from './createNativeExtraDependencies';
 import { receivePersistTransform } from './receivePersistTransform';
 
 const transactionsReducer = prepareTransactionsReducer(extraDependencies);

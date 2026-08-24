@@ -5,7 +5,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { QueryClient, QueryClientProvider } from '@suite-common/react-query';
 import {
     act,
-    configureMockStore,
+    createTestStore,
     renderHookWithStoreProvider,
     testMocks,
     waitFor,
@@ -63,7 +63,7 @@ const renderTransactionGraphUpdater = ({
     transactions?: WalletAccountTransaction[];
     hasAccount?: boolean;
 } = {}) => {
-    const store = configureMockStore({ extra: undefined, reducer: { wallet: walletReducer } });
+    const store = createTestStore({ extra: undefined, reducer: { wallet: walletReducer } });
     store.dispatch(setTransactions(transactions));
 
     const abortSignals: AbortSignal[] = [];

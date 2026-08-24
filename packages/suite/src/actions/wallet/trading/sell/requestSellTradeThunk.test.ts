@@ -1,6 +1,6 @@
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -68,7 +68,7 @@ const QUOTE: SellFiatTrade = {
 };
 
 const buildStore = (accounts: Account[] = [ACCOUNT]) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         preloadedState: {
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },

@@ -7,7 +7,7 @@ import { deviceInitialState } from '@suite-common/device';
 import { type WithServices } from '@suite-common/redux-utils';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
+import { createTestStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
     createNotificationsReducer,
     notificationsActions,
@@ -111,7 +111,7 @@ const extra: BlockchainActionsTestDeps = {
     },
 };
 const mockStore = (preloadedState: State) =>
-    configureMockStore<BlockchainActionsTestDeps, State, UnknownAction>({
+    createTestStore<BlockchainActionsTestDeps, State, UnknownAction>({
         extra,
         reducer: (currentState = preloadedState, action) => {
             const state = currentState as State;

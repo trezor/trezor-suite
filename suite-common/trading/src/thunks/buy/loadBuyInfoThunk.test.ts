@@ -6,7 +6,7 @@ import {
     type FiatCurrenciesProps,
 } from 'invity-api';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import { buyInitialState, tradingBuyReducer } from '../../reducers/buyReducer';
 import { regional } from '../../regional';
@@ -20,7 +20,7 @@ describe('loadBuyInfoThunk', () => {
     tradeApi.setServersEnvironment = () => {};
     tradeApi.createApiKey = () => {};
 
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({

@@ -3,7 +3,7 @@ import { type CryptoId } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
@@ -60,7 +60,7 @@ describe('sendDexTransactionThunk', () => {
     };
 
     const getMocks = (initialExchangeState?: Partial<TradingExchangeState>) => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({

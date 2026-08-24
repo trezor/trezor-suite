@@ -2,7 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type ExchangeIssue } from '@suite-common/trading';
 
 import { type AppState } from 'src/reducers/store';
@@ -33,12 +33,13 @@ const renderIssueAnalytics = (initialProps: IssueAnalyticsProps) => {
     const report = jest.fn();
     const services: DesktopAnalyticsDep = { analytics: mockDesktopAnalytics(report) };
 
+    const root = createTestCompositionRoot({
+        extra: { services },
+        preloadedState: mockInitialAppState satisfies AppState,
+    });
+
     const { rerender } = renderHookWithProviders(
-        configureMockStore({
-            extra: undefined,
-            preloadedState: mockInitialAppState satisfies AppState,
-        }),
-        services,
+        root,
         (props: IssueAnalyticsProps) => useExchangeIssueAnalytics(props),
         { initialProps },
     );

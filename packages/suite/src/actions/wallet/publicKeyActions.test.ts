@@ -16,7 +16,7 @@ import {
     mockGetBinFilesBaseUrl,
     mockSuiteDevice,
 } from '@suite-common/suite-types/mocks';
-import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { createTestStore, testMocks } from '@suite-common/test-utils';
 import { noopCreateLogger } from '@trezor/connect-common';
 
 import fixtures from './__fixtures__/publicKeyActions';
@@ -88,7 +88,7 @@ const initStore = (stateOverrides?: StateOverrides) => {
         preloadedState.wallet.selectedAccount.account.networkType = stateOverrides.networkType;
     }
 
-    return configureMockStore<ConnectInitThunkDeps, any, UnknownAction>({
+    return createTestStore<ConnectInitThunkDeps, any, UnknownAction>({
         extra,
         reducer: rootReducer,
         preloadedState,

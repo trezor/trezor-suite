@@ -14,7 +14,7 @@ import {
     type Url,
 } from '@trezor/urls';
 
-import { type SuiteServices } from '../../support/extraDependencies';
+import { type SuiteServices } from '../../support/createSuiteCompositionRoot';
 
 const experimentalNetworks = networksCollection.filter(
     network => network.isExperimentalOnlyNetwork,

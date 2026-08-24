@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../constants';
@@ -84,7 +84,7 @@ describe('selectExchangeQuoteThunk', () => {
         initialExchangeState?: Partial<TradingExchangeState>,
         refetchQuotesOverride?: Partial<QuoteRefetchingState>,
     ) => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({

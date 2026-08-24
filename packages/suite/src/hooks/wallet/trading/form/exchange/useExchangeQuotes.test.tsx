@@ -3,7 +3,8 @@ import { type Resolver, useForm } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     TRADING_EXCHANGE_FORM_CEX,
     TRADING_EXCHANGE_FORM_DEX,
@@ -42,14 +43,6 @@ const mockAddressValidator = {
 
 let mockDexQuotes: ExchangeTrade[] = [];
 let mockCexQuotes: ExchangeTrade[] = [];
-
-jest.mock('@suite-common/dependency-injection', () => ({
-    ...jest.requireActual('@suite-common/dependency-injection'),
-    useServices: () => ({
-        addressValidator: mockAddressValidator,
-        analytics: { report: jest.fn() },
-    }),
-}));
 
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
@@ -152,9 +145,13 @@ const renderExchangeQuotes = (
 ) => {
     const { receiveAddress, receiveAccountKey, receiveAccountSymbol, resolver } = options;
     const network = 'network' in options ? options.network : getNetwork(btcSymbol);
+    const services = {
+        addressValidator: mockAddressValidator,
+        analytics: mockDesktopAnalytics(),
+    };
 
-    const store = configureMockStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
+        extra: { services },
         preloadedState: {
             wallet: {
                 trading: {
@@ -185,7 +182,7 @@ const renderExchangeQuotes = (
             return { methods, quotes };
         },
         {
-            store,
+            root,
             initialProps: {
                 currentNetwork: network,
                 currentReceiveAccountKey: receiveAccountKey,

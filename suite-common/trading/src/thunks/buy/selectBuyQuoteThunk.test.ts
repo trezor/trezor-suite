@@ -9,7 +9,7 @@ import {
 } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/buyUtils';
 import { type BuyInfo, type TradingBuyState } from '../../reducers/buyReducer';
@@ -109,7 +109,7 @@ describe('selectBuyQuoteThunk', () => {
     };
 
     const getMocks = (initialBuyState?: Partial<TradingBuyState>) => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({

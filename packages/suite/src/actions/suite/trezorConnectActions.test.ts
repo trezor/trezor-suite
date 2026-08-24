@@ -15,7 +15,7 @@ import { deviceReducerInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
-import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { createTestStore, testMocks } from '@suite-common/test-utils';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 import { noopCreateLogger } from '@trezor/connect-common';
 
@@ -75,7 +75,7 @@ const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesSt
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = (preloadedState: State) =>
-    configureMockStore({
+    createTestStore({
         extra,
         reducer: (state = preloadedState, action) => ({
             ...state,

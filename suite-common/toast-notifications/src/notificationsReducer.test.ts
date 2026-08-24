@@ -1,4 +1,4 @@
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { notificationsActions } from './notificationsActions';
@@ -16,7 +16,7 @@ interface InitStoreArgs {
 }
 
 const initStore = ({ preloadedState }: InitStoreArgs = {}) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         reducer: { notifications: notificationsReducer },
         preloadedState,

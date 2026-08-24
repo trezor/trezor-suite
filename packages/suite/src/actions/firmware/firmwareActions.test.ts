@@ -7,7 +7,7 @@ import {
     mockGetLanguage,
     mockReportSecurityCheck,
 } from '@suite-common/suite-types/mocks';
-import { configureMockStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
+import { createTestStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -67,7 +67,7 @@ const getInitialState = (override?: InitialState): any => {
 };
 
 const mockStore = (preloadedState: ReturnType<typeof getInitialState>) =>
-    configureMockStore({
+    createTestStore({
         extra,
         reducer: (state = preloadedState, action) => ({
             ...state,

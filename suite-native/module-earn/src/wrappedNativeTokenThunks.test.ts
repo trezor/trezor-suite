@@ -1,5 +1,5 @@
 import { asGetter } from '@suite-common/dependency-injection';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import {
@@ -56,7 +56,7 @@ const extra: PushWrappedNativeTokenThunkDeps = {
 };
 
 const buildStore = (storeAccount: Account) =>
-    configureMockStore({
+    createTestStore({
         extra,
         preloadedState: {
             wallet: { accounts: [storeAccount], settings: { mevProtection: false } },

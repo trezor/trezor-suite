@@ -4,7 +4,7 @@ import { deviceInitialState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockOpenModal } from '@suite-common/suite-types/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import {
     confirmAddressOnDeviceThunk,
     prepareWalletSettingsReducer,
@@ -32,7 +32,7 @@ const verifyAddressThunkDeps = {
 };
 
 const createMockStore = () =>
-    configureMockStore({
+    createTestStore({
         extra: verifyAddressThunkDeps,
         reducer: combineReducers({
             device: () => deviceInitialState,

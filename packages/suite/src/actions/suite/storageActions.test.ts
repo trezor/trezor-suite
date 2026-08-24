@@ -19,7 +19,7 @@ import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, testMocks, wireEnabledNetworksMock } from '@suite-common/test-utils';
+import { createTestStore, testMocks, wireEnabledNetworksMock } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { changeCoinVisibility, transactionsActions } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
@@ -204,7 +204,7 @@ type State = ReturnType<typeof getInitialState>;
 const middlewares = [storageMiddleware];
 
 const mockStore = (preloadedState: State) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         middleware: middlewares,
         reducer: (state = preloadedState, action) => {

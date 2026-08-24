@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import {
     changellyExchangeQuote,
@@ -11,7 +11,7 @@ import { tradingExchangeActions, tradingExchangeReducer } from './exchangeReduce
 describe('tradingExchangeReducer', () => {
     exchangeTradingFixtures.forEach(fixture => {
         it(fixture.description, () => {
-            const store = configureMockStore({
+            const store = createTestStore({
                 extra: undefined,
                 reducer: combineReducers({
                     wallet: combineReducers({

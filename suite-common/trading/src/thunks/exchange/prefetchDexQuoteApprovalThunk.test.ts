@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import type { Account } from '@suite-common/wallet-types';
 import { type AccountAddresses } from '@trezor/connect';
 
@@ -33,7 +33,7 @@ const getExchangeTrade = (quoteId: string): ExchangeTrade =>
     }) as ExchangeTrade;
 
 const getStore = (quotes: ExchangeTrade[]) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({

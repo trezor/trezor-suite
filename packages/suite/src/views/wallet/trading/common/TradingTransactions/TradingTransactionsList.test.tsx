@@ -4,7 +4,7 @@ import { screen } from '@testing-library/react';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -128,33 +128,25 @@ const buildState = ({
 
 describe('TradingTransactionsList', () => {
     it('renders nothing when selectedAccount is not loaded', () => {
-        const store = configureMockStore({
-            extra: undefined,
+        const services = { analytics: mockDesktopAnalytics() };
+        const root = createTestCompositionRoot({
+            extra: { services },
             preloadedState: buildState({
                 selectedAccountStatus: { status: 'loading', loader: 'account-loading' },
             }),
         });
-
-        const { container } = renderWithProviders(
-            store,
-            { analytics: mockDesktopAnalytics() },
-            <TradingTransactionsList />,
-        );
+        const { container } = renderWithProviders(root, <TradingTransactionsList />);
 
         expect(container).toBeEmptyDOMElement();
     });
 
     it('renders empty state when there are no trades', () => {
-        const store = configureMockStore({
-            extra: undefined,
+        const services = { analytics: mockDesktopAnalytics() };
+        const root = createTestCompositionRoot({
+            extra: { services },
             preloadedState: buildState({ trades: [] }),
         });
-
-        renderWithProviders(
-            store,
-            { analytics: mockDesktopAnalytics() },
-            <TradingTransactionsList />,
-        );
+        renderWithProviders(root, <TradingTransactionsList />);
 
         expect(screen.getByTestId('@trading/transactions/list')).toBeInTheDocument();
         expect(screen.getByTestId('@trading/transactions/no-transaction')).toBeInTheDocument();
@@ -162,16 +154,12 @@ describe('TradingTransactionsList', () => {
     });
 
     it('renders correct transaction counts and trade rows when there are trades', () => {
-        const store = configureMockStore({
-            extra: undefined,
+        const services = { analytics: mockDesktopAnalytics() };
+        const root = createTestCompositionRoot({
+            extra: { services },
             preloadedState: buildState({ trades: [BUY_TRADE, SELL_TRADE, EXCHANGE_TRADE] }),
         });
-
-        renderWithProviders(
-            store,
-            { analytics: mockDesktopAnalytics() },
-            <TradingTransactionsList />,
-        );
+        renderWithProviders(root, <TradingTransactionsList />);
 
         expect(
             screen.queryByTestId('@trading/transactions/no-transaction'),

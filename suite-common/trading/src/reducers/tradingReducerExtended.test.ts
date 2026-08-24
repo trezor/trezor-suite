@@ -1,7 +1,7 @@
 import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { getProviderMetadataFixture } from './__fixtures__/providerMetadata';
@@ -22,7 +22,7 @@ const tradingReducer = prepareTradingReducer({
 describe('Testing trading reducer', () => {
     tradingFixtures.forEach(f => {
         it(f.description, () => {
-            const store = configureMockStore({
+            const store = createTestStore({
                 extra: undefined,
                 reducer: combineReducers({
                     wallet: combineReducers({
@@ -39,7 +39,7 @@ describe('Testing trading reducer', () => {
     });
 
     it('buyThunks.handleRequestThunk.rejected should clear quotes and amountLimits and set isLoading to false', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({
@@ -74,7 +74,7 @@ describe('Testing trading reducer', () => {
     });
 
     it('sellThunks.handleRequestThunk.rejected should clear quotes, amountLimits and set isLoading to false', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({
@@ -109,7 +109,7 @@ describe('Testing trading reducer', () => {
     });
 
     it('exchangeThunks.handleRequestThunk.rejected should clear quotes, amountLimits and set isLoading to false', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({
@@ -149,7 +149,7 @@ describe('Testing trading reducer', () => {
     });
 
     it('sellThunks.handleRequestThunk.pending should set isLoading to true', () => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({
@@ -180,7 +180,7 @@ describe('Testing trading reducer', () => {
 
     describe('action delegation', () => {
         let store: ReturnType<
-            typeof configureMockStore<
+            typeof createTestStore<
                 void,
                 { wallet: { trading: typeof initialState } },
                 UnknownAction
@@ -188,7 +188,7 @@ describe('Testing trading reducer', () => {
         >;
 
         beforeEach(() => {
-            store = configureMockStore({
+            store = createTestStore({
                 extra: undefined,
                 reducer: combineReducers({
                     wallet: combineReducers({

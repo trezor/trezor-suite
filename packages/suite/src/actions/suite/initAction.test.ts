@@ -45,7 +45,7 @@ import { validJws } from '@suite-common/message-system/src/__fixtures__/messageS
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import {
     initTokenDefinitionsThunk,
     periodicCheckTokenDefinitionsThunk,
@@ -343,7 +343,7 @@ type State = ReturnType<typeof getInitialState>;
 const initStore = (state: State) => {
     const memoryHistory = createMemoryHistory();
     const suiteRouterHistory = createSuiteRouterHistory({ history: memoryHistory });
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: {
             actions: { lockDevice },
             services: {

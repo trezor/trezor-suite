@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 
@@ -23,7 +23,7 @@ const walletSettingsReducer = prepareWalletSettingsReducer({
 const electrumUrl = '127.0.0.1:50001:t';
 
 const initStore = (enabledNetworks: NetworkSymbol[]) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({

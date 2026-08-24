@@ -3,7 +3,7 @@ import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { prepareSendFormReducer } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -113,7 +113,7 @@ const buildStore = ({
     accounts?: Account[];
     blockchain?: Partial<Record<'sol' | 'dsol', { url: string }>>;
 } = {}) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         reducer: combineReducers({
             device: (): { selectedDevice: TrezorDevice } => ({

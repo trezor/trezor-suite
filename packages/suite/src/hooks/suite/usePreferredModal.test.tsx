@@ -4,7 +4,7 @@ import { render } from '@testing-library/react';
 
 import { MODAL_CONTEXT_NONE, MODAL_CONTEXT_USER, type State as ModalState } from '@suite/modal';
 import { type PathString, getAppWithParams } from '@suite/router';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import { usePreferredModal } from './usePreferredModal';
 
@@ -27,7 +27,7 @@ const renderPreferredModal = ({
     hash?: '' | `#${string}`;
     modal?: ModalState;
 }) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         preloadedState: {
             router: { loaded: true, ...getAppWithParams({ pathname, hash }) },

@@ -8,7 +8,7 @@ import {
     buildUnstakeData,
 } from '@suite-common/staking';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import { prepareSendFormReducer } from '@suite-common/wallet-core';
 import {
@@ -143,7 +143,7 @@ const buildStore = ({
     accounts?: Account[];
     formDrafts?: Record<string, FormState>;
 } = {}) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         reducer: combineReducers({
             device: (): { selectedDevice: TrezorDevice } => ({

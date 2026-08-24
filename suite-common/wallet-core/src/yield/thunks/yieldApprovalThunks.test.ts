@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -51,7 +51,7 @@ const WRAPPED_AMOUNT = '0.2';
 const toSubunits = (weth: string) => new BigNumber(weth).shiftedBy(18);
 
 const initStore = () =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({ stablecoinYield: yieldReducer }),

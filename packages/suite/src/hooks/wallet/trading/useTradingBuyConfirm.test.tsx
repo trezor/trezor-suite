@@ -1,6 +1,7 @@
 import type { BuyTrade, CryptoId, FiatCurrencyCode } from 'invity-api';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -10,11 +11,6 @@ import { useTradingBuyConfirm } from './useTradingBuyConfirm';
 jest.mock('@suite/router', () => ({
     ...jest.requireActual('@suite/router'),
     goto: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
-}));
-
-jest.mock('@suite-common/dependency-injection', () => ({
-    ...jest.requireActual('@suite-common/dependency-injection'),
-    useServices: () => ({ analytics: { report: jest.fn() } }),
 }));
 
 const mockConfirmTradeThunk = jest.fn((args: unknown) => {
@@ -104,14 +100,20 @@ const buildState = (overrides: StateOverrides = {}) => {
 };
 
 const renderConfirm = (overrides?: StateOverrides) => {
-    const store = configureMockStore({ extra: undefined, preloadedState: buildState(overrides) });
-    const { result } = renderHookWithStoreProvider(() => useTradingBuyConfirm(), { store });
+    const services = { analytics: mockDesktopAnalytics() };
+    const root = createTestCompositionRoot({
+        extra: { services },
+        preloadedState: buildState(overrides),
+    });
+    const { result } = renderHookWithStoreProvider(() => useTradingBuyConfirm(), {
+        root,
+    });
 
-    return { store, result };
+    return { root, result };
 };
 
-const gotoActions = (store: ReturnType<typeof renderConfirm>['store']) =>
-    store.getActions().filter(action => action.type === '@router/goto');
+const gotoActions = (root: ReturnType<typeof renderConfirm>['root']) =>
+    root.services.getActions().filter(action => action.type === '@router/goto');
 
 describe('useTradingBuyConfirm', () => {
     beforeEach(() => {
@@ -144,15 +146,15 @@ describe('useTradingBuyConfirm', () => {
 
     describe('readiness guard', () => {
         it('does not redirect when every requirement is satisfied', () => {
-            const { store } = renderConfirm();
+            const { root } = renderConfirm();
 
-            expect(gotoActions(store)).toHaveLength(0);
+            expect(gotoActions(root)).toHaveLength(0);
         });
 
         it('redirects to the buy form when a requirement is missing', () => {
-            const { store } = renderConfirm({ selectedQuote: undefined });
+            const { root } = renderConfirm({ selectedQuote: undefined });
 
-            expect(gotoActions(store)).toEqual([
+            expect(gotoActions(root)).toEqual([
                 { type: '@router/goto', payload: { routeName: 'wallet-trading-buy' } },
             ]);
         });

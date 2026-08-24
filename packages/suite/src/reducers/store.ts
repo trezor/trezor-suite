@@ -61,11 +61,10 @@ import {
 import { type CreateConnectLoggerFactoryDep } from '../support/createConnectLoggerFactory';
 import { type CreateGetBinFilesBaseUrlDep } from '../support/createGetBinFilesBaseUrl';
 import {
-    type ExtraDependenciesSuite,
     type SuiteServices,
     createSuiteServicesCompositionRoot,
-    extraDependencies,
-} from '../support/extraDependencies';
+} from '../support/createSuiteCompositionRoot';
+import { type ExtraDependenciesSuite, extraDependencies } from '../support/extraDependencies';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);

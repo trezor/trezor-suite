@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react';
 
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { stakeInitialState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -50,8 +50,8 @@ const mockNeverStakedAccount = (): Account =>
     );
 
 const renderCardanoStaking = (account: Account) => {
-    const store = configureMockStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
+        extra: { services: {} },
         preloadedState: {
             wallet: {
                 selectedAccount: { account },
@@ -61,7 +61,7 @@ const renderCardanoStaking = (account: Account) => {
         },
     });
 
-    return renderHookWithStoreProvider(() => useCardanoStaking(), { store });
+    return renderHookWithStoreProvider(() => useCardanoStaking(), { root });
 };
 
 describe('useCardanoStaking', () => {

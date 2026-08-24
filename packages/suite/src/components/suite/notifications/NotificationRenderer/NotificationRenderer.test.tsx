@@ -6,7 +6,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { type FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { mockFindNetworkSymbolForProtocol } from '@suite-common/networks/mocks';
-import { configureMockStore, fireEvent, screen } from '@suite-common/test-utils';
+import { createTestCompositionRoot, fireEvent, screen } from '@suite-common/test-utils';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { PiggyBankIcon } from '@trezor/icons';
@@ -56,8 +56,8 @@ const NotificationViewProbe = ({
 );
 
 const renderNotification = (notification: LocalizedNotificationEntry) => {
-    const store = configureMockStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
+        extra: { services },
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -74,36 +74,33 @@ const renderNotification = (notification: LocalizedNotificationEntry) => {
     });
 
     return renderWithProviders(
-        store,
-        services,
+        root,
         <NotificationRenderer render={NotificationViewProbe} notification={notification} />,
     );
 };
 const renderTradingError = (payload: Omit<TradingErrorNotification, 'context' | 'id'>) => {
     const notification: TradingErrorNotification = { context: 'toast', id: 0, ...payload };
-    const store = configureMockStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
+        extra: { services },
         preloadedState: mockInitialAppState,
         serializableCheck: { ignoredActions: [] },
     });
 
     return renderWithProviders(
-        store,
-        services,
+        root,
         <NotificationRenderer render={MessageView} notification={notification} />,
     );
 };
 
 const renderWrapToast = (payload: Omit<WrapNotification, 'context' | 'id'>) => {
     const notification = { context: 'toast', id: 0, ...payload } as WrapNotification;
-    const store = configureMockStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
+        extra: { services },
         preloadedState: mockInitialAppState,
         serializableCheck: { ignoredActions: [] },
     });
     renderWithProviders(
-        store,
-        services,
+        root,
         <NotificationRenderer render={DismissableView} notification={notification} />,
     );
 

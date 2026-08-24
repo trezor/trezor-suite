@@ -1,9 +1,9 @@
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import { recoveryActions, recoveryReducer } from './index';
 
 const initStore = () =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         preloadedState: {
             recovery: recoveryReducer(undefined, { type: 'foo' }),

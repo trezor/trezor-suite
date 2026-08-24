@@ -4,7 +4,7 @@ import path from 'path';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { initialWalletSettingsState, prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import TrezorConnect from '@trezor/connect';
@@ -120,7 +120,7 @@ const getInitialState = (state?: InitialState) => {
 
 type State = ReturnType<typeof getInitialState>;
 const initStore = (state: State) => {
-    const store = configureMockStore<typeof extra, State, any>({
+    const store = createTestStore<typeof extra, State, any>({
         extra,
         reducer: (s = state, action: any): State => {
             // the reducer may also receive the empty PreloadedState ({}), fall back to the initial state

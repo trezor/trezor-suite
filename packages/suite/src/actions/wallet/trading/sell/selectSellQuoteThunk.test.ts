@@ -3,7 +3,7 @@ import { type CryptoId, type SellFiatTrade, type SellFiatTradeQuoteRequest } fro
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { type GotoThunkDeps } from '@suite/router';
 import { type WithServices } from '@suite-common/redux-utils';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -73,7 +73,7 @@ const buildStore = (
         quotesRequest: DEFAULT_QUOTES_REQUEST,
     },
 ) =>
-    configureMockStore({
+    createTestStore({
         extra: createExtra(report),
         preloadedState: {
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },

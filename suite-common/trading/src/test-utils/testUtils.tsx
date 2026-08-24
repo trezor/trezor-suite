@@ -9,7 +9,7 @@ import {
 } from '@suite-common/networks';
 import {
     type RenderHookOptions,
-    configureMockStore,
+    createTestStore,
     renderHookWithStoreProvider,
 } from '@suite-common/test-utils';
 import {
@@ -194,7 +194,7 @@ export const renderHookWithTradingStore = <Result, Props = unknown>(
     callback: (props: Props) => Result,
     { preloadedState, wrapper: Wrapper, ...options }: RenderHookWithTradingStoreOptions<Props> = {},
 ) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({

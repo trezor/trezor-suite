@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { tradingSellActions, tradingThunks } from '@suite-common/trading';
 import { mockGetSelectedAccount, mockGetTradingEnvironment } from '@suite-common/trading/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
@@ -56,7 +56,7 @@ describe('useSellData', () => {
         const tradingState = getInitializedTradingState('sell');
         tradingState.sell!.tradingAccountKey = tradingAccountKey;
 
-        return configureMockStore({
+        return createTestStore({
             extra,
             reducer,
             preloadedState: {
@@ -67,7 +67,7 @@ describe('useSellData', () => {
         });
     };
 
-    const getDefaultStore = () => configureMockStore({ extra, reducer });
+    const getDefaultStore = () => createTestStore({ extra, reducer });
 
     const renderUseSellData = async (
         reloadRequestOrdinalInitialValue: number = 0,

@@ -2,7 +2,7 @@ import { createAction, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { asGetter } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import {
     type PushSendFormTransactionThunkDeps,
     pushSendFormTransactionThunk,
@@ -81,7 +81,7 @@ const extra: PushSendFormTransactionThunkDeps = {
 };
 
 const dispatchCancel = () =>
-    configureMockStore({ extra }).dispatch(
+    createTestStore({ extra }).dispatch(
         signAndPushEvmCancelTransactionThunk({ accountKey, composedCancelTx, cancelFormState }),
     );
 

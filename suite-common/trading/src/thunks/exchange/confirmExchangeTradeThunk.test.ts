@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
@@ -45,7 +45,7 @@ describe('confirmExchangeTradeThunk', () => {
             send: quoteNotTyped.send as CryptoId,
             receive: quoteNotTyped.receive as CryptoId,
         };
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({

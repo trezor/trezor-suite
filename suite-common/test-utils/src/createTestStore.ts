@@ -20,7 +20,7 @@ import { mergeDeepObject } from '@trezor/utils';
 export const filterThunkActionTypes = <Action extends UnknownAction>(actions: Action[]) =>
     actions.filter(action => !isPending(action) && !isFulfilled(action));
 
-type MockStoreConfig<S, A extends UnknownAction, Extra> = {
+export type CreateTestStoreParams<S, A extends UnknownAction, Extra> = {
     middleware?: any[];
     extra: Extra;
     // The third generic (PreloadedState) sits in a contravariant position in redux's Reducer
@@ -50,18 +50,22 @@ export const initPreloadedState = ({
     );
 
 /**
- * A mock store for testing Redux async action creators and middleware.
+ * A Redux store for testing async action creators and middleware.
  *
  * `extra` is required so every test declares its thunk dependencies. Pass `undefined` when the
  * tested code has none.
+ *
+ * @deprecated This is a low-level internal utility. Use `createTestCompositionRoot` for application
+ * tests. Call `createTestStore` directly only in special cases that intentionally test store or
+ * middleware infrastructure without an application composition root.
  */
-export function configureMockStore<Extra, S = any, A extends UnknownAction = UnknownAction>({
+export function createTestStore<Extra, S = any, A extends UnknownAction = UnknownAction>({
     middleware = [],
     extra,
     reducer = (state: any) => state,
     preloadedState,
     serializableCheck = {},
-}: MockStoreConfig<S, A, Extra>) {
+}: CreateTestStoreParams<S, A, Extra>) {
     let actions: A[] = [];
 
     const actionLoggerMiddleware = createMiddleware((action, { next }) => {
@@ -94,3 +98,5 @@ export function configureMockStore<Extra, S = any, A extends UnknownAction = Unk
         },
     };
 }
+
+export type TestStoreResult = ReturnType<typeof createTestStore>;

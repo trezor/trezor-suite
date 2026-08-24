@@ -1,6 +1,6 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import {
     checkIsActiveRouteAnyOf,
     checkIsDeviceOnboardingFocused,
@@ -40,7 +40,7 @@ jest.mock('@suite-native/navigation', () => {
 });
 
 const createMockStoreAndDispatch = (initialState: any, action: UnknownAction) => {
-    const mockStore = configureMockStore({
+    const mockStore = createTestStore({
         extra: undefined,
         middleware: [deviceConnectionMiddleware.middleware],
         preloadedState: initialState,

@@ -8,7 +8,7 @@ import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 
 import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
@@ -68,7 +68,7 @@ const middlewares = [
 ];
 
 const initStore = (state: State) => {
-    const store = configureMockStore<void, State, UnknownAction>({
+    const store = createTestStore<void, State, UnknownAction>({
         extra: undefined,
         middleware: middlewares,
         reducer: (currentState = state, action) => {

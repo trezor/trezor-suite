@@ -52,8 +52,9 @@ import {
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
 
-// If you are looking where connectInitSettings is defined, it is defined in packages/suite/src/support/extraDependencies.ts
-// or in suite-native/state/src/extraDependencies.ts depends on which platform this connectInitThunk runs.
+// connectInitSettings is defined in the platform composition root:
+// packages/suite/src/support/createSuiteCompositionRoot.ts or
+// suite-native/state/src/createNativeCompositionRoot.ts.
 
 export type ConnectInitThunkState = DeviceRootState &
     FirmwareRootState &

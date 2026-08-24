@@ -19,7 +19,7 @@ import {
     mockGetBinFilesBaseUrl,
     mockSuiteDevice,
 } from '@suite-common/suite-types/mocks';
-import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { createTestStore, testMocks } from '@suite-common/test-utils';
 import { defaultTrezorUIEventHandlerThunk, observeSelectedDevice } from '@suite-common/wallet-core';
 import { UI_EVENT, UI_EVENTS, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
 import { noopCreateLogger } from '@trezor/connect-common';
@@ -69,7 +69,7 @@ const connectInitThunkDeps: ConnectInitThunkDeps = {
 };
 
 const initStore = (state: State) => {
-    const store = configureMockStore({
+    const store = createTestStore({
         extra: {
             ...connectInitThunkDeps,
             actions: { lockDevice },

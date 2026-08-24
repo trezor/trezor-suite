@@ -1,6 +1,6 @@
 import '@suite-common/test-utils/globalOverrides';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import { DEFAULT_VOTING_OPTION, stakeActions, stakeInitialState } from '@suite-common/wallet-core';
@@ -27,8 +27,8 @@ const createCardanoAccount = (drepId: string | null): Account =>
     }) as unknown as Account;
 
 const renderVotingDelegations = (account: Account) => {
-    const store = configureMockStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
+        extra: { services: {} },
         preloadedState: {
             ...mockInitialAppState,
             wallet: { ...mockInitialAppState.wallet, stake: stakeInitialState },
@@ -36,16 +36,16 @@ const renderVotingDelegations = (account: Account) => {
         serializableCheck: { ignoredActions: [] },
     });
 
-    renderWithProviders(store, {}, <VotingDelegations account={account} />);
+    renderWithProviders(root, <VotingDelegations account={account} />);
 
-    return store;
+    return root;
 };
 
 describe('VotingDelegations', () => {
     it('keeps a custom DRep the account already votes for instead of resetting it to Everstake', () => {
-        const store = renderVotingDelegations(createCardanoAccount(CUSTOM_DREP_ID));
+        const root = renderVotingDelegations(createCardanoAccount(CUSTOM_DREP_ID));
 
-        expect(store.getActions()).toContainEqual(
+        expect(root.services.getActions()).toContainEqual(
             stakeActions.setAccountVotingDelegation({
                 accountKey: ACCOUNT_KEY,
                 option: { type: 'current' },
@@ -54,9 +54,9 @@ describe('VotingDelegations', () => {
     });
 
     it('keeps the Everstake DRep without re-delegating to it', () => {
-        const store = renderVotingDelegations(createCardanoAccount(CARDANO_EVERSTAKE_DREP.bech32));
+        const root = renderVotingDelegations(createCardanoAccount(CARDANO_EVERSTAKE_DREP.bech32));
 
-        expect(store.getActions()).toContainEqual(
+        expect(root.services.getActions()).toContainEqual(
             stakeActions.setAccountVotingDelegation({
                 accountKey: ACCOUNT_KEY,
                 option: { type: 'current' },
@@ -65,9 +65,9 @@ describe('VotingDelegations', () => {
     });
 
     it('keeps a predefined DRep, which no vote delegation certificate can express', () => {
-        const store = renderVotingDelegations(createCardanoAccount(PREDEFINED_DREP_ID));
+        const root = renderVotingDelegations(createCardanoAccount(PREDEFINED_DREP_ID));
 
-        expect(store.getActions()).toContainEqual(
+        expect(root.services.getActions()).toContainEqual(
             stakeActions.setAccountVotingDelegation({
                 accountKey: ACCOUNT_KEY,
                 option: { type: 'current' },
@@ -76,9 +76,9 @@ describe('VotingDelegations', () => {
     });
 
     it('offers Everstake to an account with no vote delegation', () => {
-        const store = renderVotingDelegations(createCardanoAccount(null));
+        const root = renderVotingDelegations(createCardanoAccount(null));
 
-        expect(store.getActions()).toContainEqual(
+        expect(root.services.getActions()).toContainEqual(
             stakeActions.setAccountVotingDelegation({
                 accountKey: ACCOUNT_KEY,
                 option: DEFAULT_VOTING_OPTION,

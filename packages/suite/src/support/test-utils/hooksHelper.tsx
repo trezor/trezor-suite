@@ -16,6 +16,7 @@ import userEvent from '@testing-library/user-event';
 
 import { ServicesProvider } from '@suite-common/dependency-injection';
 import { MockedFormatterProvider } from '@suite-common/formatters/mocks';
+import { type TestAppRoot } from '@suite-common/test-utils';
 
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 
@@ -25,18 +26,15 @@ const testQueryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
 });
 
-const SuiteProviders = ({
-    store,
-    services,
-    children,
-}: {
-    store: any;
-    services: object;
+type SuiteProvidersProps = {
+    root: TestAppRoot;
     children: ReactNode;
-}) => (
+};
+
+const SuiteProviders = ({ root, children }: SuiteProvidersProps) => (
     <QueryClientProvider client={testQueryClient}>
-        <Provider store={store}>
-            <ServicesProvider services={services}>
+        <Provider store={root.store}>
+            <ServicesProvider services={root.services}>
                 <ConnectedThemeProvider>
                     <ResponsiveContextProvider>
                         <IntlProvider locale="en">
@@ -50,29 +48,16 @@ const SuiteProviders = ({
 );
 
 // used in hooks tests
-export const renderWithProviders = (
-    store: any,
-    services: object,
-    children: ReactNode,
-): RenderResult =>
-    render(
-        <SuiteProviders store={store} services={services}>
-            {children}
-        </SuiteProviders>,
-    );
+export const renderWithProviders = (root: TestAppRoot, children: ReactNode): RenderResult =>
+    render(<SuiteProviders root={root}>{children}</SuiteProviders>);
 
 export const renderHookWithProviders = <Result, Props>(
-    store: any,
-    services: object,
+    root: TestAppRoot,
     callback: (props: Props) => Result,
     options?: Omit<RenderHookOptions<Props>, 'wrapper'>,
 ) =>
     renderHook(callback, {
-        wrapper: ({ children }) => (
-            <SuiteProviders store={store} services={services}>
-                {children}
-            </SuiteProviders>
-        ),
+        wrapper: ({ children }) => <SuiteProviders root={root}>{children}</SuiteProviders>,
         ...options,
     });
 

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { act, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -74,8 +74,8 @@ const pendingAtNonce6 = {
 } as any;
 
 const render = (props: Props) => {
-    const store = configureMockStore({
-        extra: undefined,
+    const root = createTestCompositionRoot({
+        extra: { services: {} },
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -88,7 +88,7 @@ const render = (props: Props) => {
         },
     });
 
-    return renderWithProviders(store, {}, <Harness {...props} />);
+    return renderWithProviders(root, <Harness {...props} />);
 };
 
 const typeNonce = async (text: string) => {

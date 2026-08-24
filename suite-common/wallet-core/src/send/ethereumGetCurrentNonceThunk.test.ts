@@ -1,4 +1,4 @@
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { type EthAccount, ethAccount, evmTx } from './__fixtures__/evmFixtures';
@@ -8,7 +8,7 @@ const accountWithNonce = (nonce: number): EthAccount =>
     ({ ...ethAccount, misc: { nonce: nonce.toString() } }) as EthAccount;
 
 const storeWithTxs = (accountTransactions: ReturnType<typeof evmTx>[]) =>
-    configureMockStore({
+    createTestStore({
         extra: undefined,
         preloadedState: {
             wallet: {

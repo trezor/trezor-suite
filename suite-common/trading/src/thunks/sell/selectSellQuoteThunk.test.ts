@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { configureMockStore } from '@suite-common/test-utils';
+import { createTestStore } from '@suite-common/test-utils';
 
 import { type SellInfo, type TradingSellState } from '../../reducers/sellReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
@@ -73,7 +73,7 @@ describe('selectSellQuoteThunk', () => {
     };
 
     const getMocks = (initialSellState?: Partial<TradingSellState>) => {
-        const store = configureMockStore({
+        const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({
