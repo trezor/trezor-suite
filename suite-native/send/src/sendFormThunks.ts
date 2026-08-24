@@ -33,7 +33,7 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { type NativeAnalyticsDep, asTypedNativeAnalytics, events } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 import {
@@ -263,7 +263,7 @@ export const sendTransactionThunk = createThunk<
                 tokenContract,
             );
 
-            asTypedNativeAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.sendTransactionDispatchedEvent.name,
                 payload: {
                     symbol: selectedAccount.symbol,

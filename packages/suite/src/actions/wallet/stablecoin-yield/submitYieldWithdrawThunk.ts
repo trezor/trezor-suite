@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, asTypedDesktopAnalytics } from '@suite/analytics';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { openDeferredModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
@@ -43,7 +43,7 @@ export const submitYieldWithdrawThunk = createThunk<
     `${STABLECOIN_YIELD_PREFIX}/thunk/submitWithdraw`,
     async ({ flowKey, flowData, amount, flowType }, { dispatch, getState, extra }) => {
         const reportSubmitError = (errorMessage = 'submit-failed') =>
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.yieldWithdrawEvent.name,
                 payload: {
                     type: 'error',
@@ -98,7 +98,7 @@ export const submitYieldWithdrawThunk = createThunk<
                 }),
             );
 
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.yieldWithdrawEvent.name,
                 payload: {
                     type: 'tx-simulation-modal',
@@ -131,7 +131,7 @@ export const submitYieldWithdrawThunk = createThunk<
             userAcceptedTxSimulation?.resolve();
 
             if (!result) {
-                asTypedDesktopAnalytics(extra.services.analytics).report({
+                extra.services.analytics.report({
                     type: events.yieldWithdrawEvent.name,
                     payload: {
                         type: 'error',

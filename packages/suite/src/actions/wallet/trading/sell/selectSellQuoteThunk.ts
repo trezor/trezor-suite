@@ -1,6 +1,6 @@
 import { type SellFiatTrade } from 'invity-api';
 
-import { type DesktopAnalyticsDep, asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
 import { createThunk } from '@suite-common/redux-utils';
 import {
@@ -43,7 +43,7 @@ export const selectSellQuoteThunk = createThunk<
             quotesRequest.cryptoCurrency,
         );
 
-        asTypedDesktopAnalytics(extra.services.analytics).report({
+        extra.services.analytics.report({
             type: events.tradeSellEvent.name,
             payload: {
                 action: 'continue',

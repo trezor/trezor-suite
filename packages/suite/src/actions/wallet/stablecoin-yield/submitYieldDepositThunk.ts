@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, asTypedDesktopAnalytics } from '@suite/analytics';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { openDeferredModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
@@ -95,7 +95,7 @@ export const submitYieldDepositThunk = createThunk<
                 }),
             );
 
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.yieldDepositEvent.name,
                 payload: {
                     type: 'tx-simulation-modal',
@@ -126,7 +126,7 @@ export const submitYieldDepositThunk = createThunk<
             userAcceptedTxSimulation?.resolve();
 
             if (!sendResult) {
-                asTypedDesktopAnalytics(extra.services.analytics).report({
+                extra.services.analytics.report({
                     type: events.yieldDepositEvent.name,
                     payload: {
                         type: 'error',
@@ -163,7 +163,7 @@ export const submitYieldDepositThunk = createThunk<
             );
         } catch (error) {
             console.error(error);
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.yieldDepositEvent.name,
                 payload: {
                     type: 'error',

@@ -9,7 +9,6 @@ export {
     type FirmwareSource,
     AppUpdateEventStatus,
 } from './definitions';
-export { asTypedDesktopAnalytics } from './asTypedDesktopAnalytics';
 export type {
     AnalyticsDesktopEvents,
     StakingCardanoPoolDelegationPayload,

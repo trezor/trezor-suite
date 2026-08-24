@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, asTypedDesktopAnalytics } from '@suite/analytics';
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
@@ -106,7 +106,7 @@ export const claimMerklRewardsThunk = createThunk<
         }
 
         const reportSubmitError = (errorMessage = 'submit-failed') =>
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.yieldClaimEvent.name,
                 payload: {
                     type: 'error',
@@ -183,7 +183,7 @@ export const claimMerklRewardsThunk = createThunk<
                 }),
             );
 
-            asTypedDesktopAnalytics(extra.services.analytics).report({
+            extra.services.analytics.report({
                 type: events.yieldClaimEvent.name,
                 payload: {
                     type: 'tx-simulation-modal',

@@ -1,11 +1,6 @@
 import { type JSX, useCallback, useEffect } from 'react';
 
-import {
-    AppUpdateEventStatus,
-    asTypedDesktopAnalytics,
-    events,
-    selectDesktopAnalyticsDep,
-} from '@suite/analytics';
+import { AppUpdateEventStatus, events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import {
     UpdateState,
     availableThunk,
@@ -99,7 +94,7 @@ export const DesktopUpdater = () => {
             updateInfo: desktopUpdate.latest,
         });
 
-        asTypedDesktopAnalytics(analytics).report({
+        analytics.report({
             type: events.appUpdateEvent.name,
             payload,
         });

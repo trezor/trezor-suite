@@ -14,7 +14,7 @@ import {
     selectAccountsByDeviceState,
     selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
-import { type NativeAnalyticsDep, asTypedNativeAnalytics } from '@suite-native/analytics';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import {
     type NativeBluetoothRootState,
     selectIsBluetoothDeviceOsUnpairingRequired,
@@ -85,10 +85,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps<
 
     switch (action.type) {
         case DEVICE.CONNECT: {
-            reportDeviceConnectionAnalytics(
-                action.payload.device,
-                asTypedNativeAnalytics(extra.services.analytics),
-            );
+            reportDeviceConnectionAnalytics(action.payload.device, extra.services.analytics);
             break;
         }
         case DEVICE.DISCONNECT:
