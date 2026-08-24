@@ -34,6 +34,20 @@ export const getBitcoinNetwork = (
     return bitcoinNetworks.find(n => n.slip44 === slip44);
 };
 
+// Bitcoin-family variant of `getCoinInfoOrThrow`: keeps the search scoped to bitcoin
+// networks (rejecting eth/misc symbols) and preserves the `CoinSymbol | number[]` input,
+// so it can replace the repeated `getBitcoinNetwork(x)` + manual `Method_UnknownCoin` throw.
+export const getBitcoinNetworkOrThrow = (
+    symbolOrPath: CoinSymbol | number[],
+): Readonly<BitcoinNetworkInfo> => {
+    const coinInfo = getBitcoinNetwork(symbolOrPath);
+    if (!coinInfo) {
+        throw ERRORS.TypedError('Method_UnknownCoin');
+    }
+
+    return coinInfo;
+};
+
 export const getEthereumNetwork = (
     symbolOrPath: CoinSymbol | number[],
 ): Readonly<EthereumNetworkInfo> | undefined => {

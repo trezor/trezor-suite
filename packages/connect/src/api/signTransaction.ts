@@ -33,7 +33,7 @@ import type { Blockchain } from '../backend/BlockchainLink';
 import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getBitcoinNetwork } from '../data/coinInfo';
+import { getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';
 import { PAYMENT_REQUEST_AMOUNT_BYTES, encodePaymentRequestAmount } from '../utils/paymentRequest';
 import { getTransactionVbytes } from './bitcoin/transactionBytes';
@@ -89,10 +89,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             ]);
         }
 
-        const coinInfo = getBitcoinNetwork(payload.coin);
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getBitcoinNetworkOrThrow(payload.coin);
 
         const inputs = validateTrezorInputs(payload.inputs, coinInfo);
         const outputs = validateTrezorOutputs(payload.outputs, coinInfo);

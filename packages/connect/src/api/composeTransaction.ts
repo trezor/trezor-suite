@@ -3,7 +3,6 @@
 import {
     type BitcoinNetworkInfo,
     DEFAULT_SORTING_STRATEGY,
-    ERRORS,
     type PermissionRequest,
     type PrecomposeParams,
     type PrecomposedResult,
@@ -12,7 +11,7 @@ import type { ComposeOutput } from '@trezor/utxo-lib';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getBitcoinNetwork } from '../data/coinInfo';
+import { getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import * as pathUtils from '../utils/pathUtils';
 import { createComposer } from './bitcoin/TransactionComposer';
 import { inputToTrezor } from './bitcoin/inputs';
@@ -38,10 +37,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             { name: 'sortingStrategy', type: 'string' },
         ]);
 
-        const coinInfo = getBitcoinNetwork(payload.coin);
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getBitcoinNetworkOrThrow(payload.coin);
 
         // validate each output and transform into @trezor/utxo-lib/compose format
         const outputs = payload.outputs.map(out => validateHDOutput(out, coinInfo));

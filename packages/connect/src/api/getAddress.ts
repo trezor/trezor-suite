@@ -14,7 +14,12 @@ import { Assert } from '@trezor/schema-utils';
 import { bundlify, validateCoinPath } from './common/paramsValidator';
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
+import {
+    fixCoinInfoNetwork,
+    getBitcoinNetwork,
+    getBitcoinNetworkOrThrow,
+    getUniqueNetworks,
+} from '../data/coinInfo';
 import { getLabel, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 type Params = {
@@ -52,11 +57,8 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             if (coinInfo && !batch.crossChain) {
                 validateCoinPath(path, coinInfo);
             } else if (!coinInfo) {
-                coinInfo = getBitcoinNetwork(path);
-            }
-
-            if (!coinInfo) {
-                throw ERRORS.TypedError('Method_UnknownCoin');
+                // coin not provided (or not bitcoin-like), derive the network from the path
+                coinInfo = getBitcoinNetworkOrThrow(path);
             }
 
             // fix coinInfo network values (segwit/legacy)

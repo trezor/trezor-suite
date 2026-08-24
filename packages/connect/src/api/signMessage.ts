@@ -2,14 +2,13 @@
 
 import type { BitcoinNetworkInfo, PermissionRequest } from '@trezor/connect-common';
 import { SignMessage as SignMessageSchema } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateCoinPath } from './common/paramsValidator';
-import { getBitcoinNetwork } from '../data/coinInfo';
+import { getBitcoinNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { validateModelOneMessageSize } from '../device/validateMessageSize';
 import { hexToText, messageToHex } from '../utils/formatUtils';
 import { getLabel, getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
@@ -26,10 +25,7 @@ export default class SignMessage extends AbstractMethod<'signMessage', Params> {
         const path = validatePath(payload.path);
         let coinInfo;
         if (payload.coin) {
-            coinInfo = getBitcoinNetwork(payload.coin);
-            if (!coinInfo) {
-                throw ERRORS.TypedError('Method_UnknownCoin');
-            }
+            coinInfo = getBitcoinNetworkOrThrow(payload.coin);
             validateCoinPath(path, coinInfo);
         } else {
             coinInfo = getBitcoinNetwork(path);
