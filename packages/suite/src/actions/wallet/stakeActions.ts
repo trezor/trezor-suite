@@ -1,14 +1,28 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type ThunkDispatch } from 'redux-thunk';
+
+import { type SelectedAccountRootState } from '@suite/account';
 import {
     type DesktopAnalyticsDep,
     type StakingCardanoPoolDelegationPayload,
     events,
 } from '@suite/analytics';
 import { closeModal, openDeferredModal, openModal, preserveModal } from '@suite/modal';
-import { selectSelectedDevice } from '@suite-common/device';
-import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import {
+    type MevProtectionRootState,
+    selectIsMevProtectionFeatureEnabled,
+} from '@suite-common/mev';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    type BlockchainRootState,
+    type EthereumGetCurrentNonceThunkState,
+    type ReplaceTransactionThunkState,
+    type StakeRootState,
+    type SyncAccountsWithBlockchainThunkDeps,
+    type SyncAccountsWithBlockchainThunkState,
+    type WalletSettingsRootState,
     addFakePendingCardanoTxThunk,
     replaceTransactionThunk,
     selectIsMevProtectionEnabled,
@@ -38,14 +52,15 @@ import { type SerializedError } from '@trezor/connect-common/src/constants/error
 import { type Err } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type Dispatch, type GetState } from 'src/types/suite';
-
 import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
 import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
 
+type ComposeTransactionThunkState = BlockchainRootState & SelectedAccountRootState & StakeRootState;
+
 export const composeTransaction =
-    (formValues: StakeFormState, formState: ComposeActionContext) => (dispatch: Dispatch) => {
+    (formValues: StakeFormState, formState: ComposeActionContext) =>
+    (dispatch: ThunkDispatch<ComposeTransactionThunkState, unknown, UnknownAction>) => {
         const { account } = formState;
 
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
@@ -64,8 +79,11 @@ export const composeTransaction =
     };
 
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
+type CancelSignTxThunkState = StakeRootState;
+
 export const cancelSignTx =
-    (isSuccessTx?: boolean, account?: Account) => (dispatch: Dispatch, getState: GetState) => {
+    (isSuccessTx?: boolean, account?: Account) =>
+    (dispatch: Dispatch<UnknownAction>, getState: () => CancelSignTxThunkState) => {
         const { serializedTx, precomposedForm } = getState().wallet.stake;
         dispatch(stakeActions.requestSignTransaction());
         dispatch(stakeActions.requestPushTransaction());
@@ -91,12 +109,25 @@ export const cancelSignTx =
         }
     };
 
-type PushTransactionThunkDeps = { services: DesktopAnalyticsDep };
+type PushTransactionThunkState = DeviceRootState &
+    MevProtectionRootState &
+    ReplaceTransactionThunkState &
+    SelectedAccountRootState &
+    StakeRootState &
+    SyncAccountsWithBlockchainThunkState &
+    WalletSettingsRootState;
+type PushTransactionThunkDeps = {
+    services: DesktopAnalyticsDep;
+} & SyncAccountsWithBlockchainThunkDeps;
 
 // private, called from signTransaction only
 const pushTransaction =
     (stakeType: StakeType, cardanoPoolDelegation?: StakingCardanoPoolDelegationPayload) =>
-    async (dispatch: Dispatch, getState: GetState, extra: PushTransactionThunkDeps) => {
+    async (
+        dispatch: ThunkDispatch<PushTransactionThunkState, PushTransactionThunkDeps, UnknownAction>,
+        getState: () => PushTransactionThunkState,
+        extra: PushTransactionThunkDeps,
+    ) => {
         const { serializedTx, precomposedTx } = getState().wallet.stake;
         const { account } = getState().wallet.selectedAccount;
         const device = selectSelectedDevice(getState());
@@ -243,9 +274,22 @@ const pushTransaction =
         return sentTx;
     };
 
+type SignTransactionThunkState = DeviceRootState &
+    EthereumGetCurrentNonceThunkState &
+    MevProtectionRootState &
+    ReplaceTransactionThunkState &
+    SelectedAccountRootState &
+    StakeRootState &
+    SyncAccountsWithBlockchainThunkState &
+    WalletSettingsRootState;
+type SignTransactionThunkDeps = PushTransactionThunkDeps;
+
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (
+        dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,
+        getState: () => SignTransactionThunkState,
+    ) => {
         const device = selectSelectedDevice(getState());
         const { account } = getState().wallet.selectedAccount;
 

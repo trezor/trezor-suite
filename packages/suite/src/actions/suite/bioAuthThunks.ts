@@ -1,8 +1,8 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { desktopApi } from '@trezor/suite-desktop-api';
-
-import { type Dispatch } from 'src/types/suite';
 
 import { bioAuthActions } from './bioAuthActions';
 
@@ -10,7 +10,7 @@ const BIO_AUTH_PREFIX = '@suite/bioAuth';
 
 const KNOWN_ERROR_MESSAGES = ['Authentication canceled.', 'Authentication cancelled.'];
 
-const handleError = (error: string, dispatch: Dispatch, message: string) => {
+const handleError = (error: string, dispatch: Dispatch<UnknownAction>, message: string) => {
     if (KNOWN_ERROR_MESSAGES.some(knownErrorMessage => error.includes(knownErrorMessage))) {
         // NOTE: known error message
         return;

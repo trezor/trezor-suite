@@ -18,7 +18,6 @@ import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActio
 import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { type Dispatch } from 'src/types/suite';
 
 import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
 
@@ -62,7 +61,7 @@ const initStore = (state: State) => {
 describe('buttonRequest middleware', () => {
     it('see what happens on pin change call', async () => {
         const store = initStore(getInitialState());
-        const dispatch = store.dispatch as Dispatch;
+        const { dispatch } = store;
         await dispatch(connectInitThunk());
         const call = dispatch(deviceSettingsActions.changePin({ remove: false }));
         const { emitTestEvent } = testMocks.getTrezorConnectMock();

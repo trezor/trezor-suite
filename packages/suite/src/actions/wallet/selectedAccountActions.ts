@@ -1,15 +1,19 @@
-import { type UnknownAction } from '@reduxjs/toolkit';
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
+import { type SelectedAccountRootState } from '@suite/account';
 import { metadataActions } from '@suite/metadata';
 import {
+    type RouterRootState,
     routerLocationChange,
     selectRouteName,
     selectRouterApp,
     selectRouterParams,
 } from '@suite/router';
-import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    type DiscoveryRootState,
+    type WalletSettingsRootState,
     accountsActions,
     blockchainActions,
     discoveryActions,
@@ -22,11 +26,21 @@ import { type SelectedAccountStatus, type WalletParams } from '@suite-common/wal
 import { isChanged } from '@trezor/utils';
 
 import { accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
-import { type AppState, type Dispatch, type GetState } from 'src/types/suite';
+import { type AccountSearchState } from 'src/reducers/wallet/accountSearchReducer';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 
+type SelectedAccountState = DeviceRootState &
+    DiscoveryRootState &
+    RouterRootState &
+    SelectedAccountRootState &
+    WalletSettingsRootState & {
+        wallet: {
+            accountSearch: AccountSearchState;
+        };
+    };
+
 // move to selector!!!!
-export const getAccountState = (state: AppState): SelectedAccountStatus => {
+export const getAccountState = (state: SelectedAccountState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
 
     // waiting for device
@@ -185,7 +199,8 @@ const actions = new Set<UnknownAction['type']>([
  * Called from WalletMiddleware
  */
 export const syncSelectedAccount =
-    (action: UnknownAction) => (dispatch: Dispatch, getState: GetState) => {
+    (action: UnknownAction) =>
+    (dispatch: Dispatch<UnknownAction>, getState: () => SelectedAccountState) => {
         // ignore not listed actions
         if (!actions.has(action.type)) return;
         const state = getState();

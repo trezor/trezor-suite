@@ -281,7 +281,7 @@ export const updateFiatRatesThunk = createThunk<
     },
 );
 
-type UpdateMissingTxFiatRatesThunkState = FiatRatesRootState &
+export type UpdateMissingTxFiatRatesThunkState = FiatRatesRootState &
     TransactionsRootState &
     UpdateTxsFiatRatesThunkState;
 type UpdateMissingTxFiatRatesThunkParams = {

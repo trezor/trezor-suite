@@ -1,6 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { type ExtraDependenciesPartial } from '@suite-common/redux-extra-dependencies';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -16,13 +15,11 @@ const btcSymbol = asNetworkSymbol('btc');
 const ltcSymbol = asNetworkSymbol('ltc');
 
 interface InitStoreArgs {
-    extra?: ExtraDependenciesPartial;
     preloadedState?: AccountsRootState;
 }
 
-const initStore = ({ extra = {}, preloadedState }: InitStoreArgs = {}) => {
+const initStore = ({ preloadedState }: InitStoreArgs = {}) => {
     const store = configureMockStore({
-        extra,
         reducer: { wallet: combineReducers({ accounts: accountsReducer }) },
         preloadedState,
     });

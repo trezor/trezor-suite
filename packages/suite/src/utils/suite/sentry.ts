@@ -1,14 +1,23 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import * as Sentry from '@sentry/core';
 
 import { setAnalyticsConfirmedAndEnabled } from '@suite/sentry';
-import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
-import { selectSelectedDevice } from '@suite-common/device';
-import { redactDevice, redactDiscovery, selectRedactedActionsLog } from '@suite-common/logger';
+import { type AnalyticsRootState, selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import {
+    type LogsSliceRootState,
+    redactDevice,
+    redactDiscovery,
+    selectRedactedActionsLog,
+} from '@suite-common/logger';
 import { ALLOW_REPORT_TAG } from '@suite-common/sentry';
 import { type ReportSecurityCheckParams } from '@suite-common/suite-types';
-import { selectDiscoveryForSelectedDevice, selectEnabledNetworks } from '@suite-common/wallet-core';
-
-import { type Dispatch, type GetState } from 'src/types/suite';
+import {
+    type DiscoveryRootState,
+    type WalletSettingsRootState,
+    selectDiscoveryForSelectedDevice,
+    selectEnabledNetworks,
+} from '@suite-common/wallet-core';
 
 export const setSentryContext = Sentry.setContext;
 
@@ -35,24 +44,31 @@ export const setSentryUser = (instanceId: string) => {
     Sentry.setUser({ id: instanceId });
 };
 
-export const reportToSentry = (error: any) => (_: Dispatch, getState: GetState) => {
-    const instanceId = selectAnalyticsInstanceId(getState());
-    const enabledNetworks = selectEnabledNetworks(getState());
-    const device = selectSelectedDevice(getState());
-    const discovery = selectDiscoveryForSelectedDevice(getState());
-    const redactedActionsLog = selectRedactedActionsLog(getState(), true);
+type ReportToSentryThunkState = AnalyticsRootState &
+    DeviceRootState &
+    DiscoveryRootState &
+    LogsSliceRootState &
+    WalletSettingsRootState;
 
-    Sentry.withScope(scope => {
-        scope.setUser({ id: instanceId });
-        scope.setContext('suiteState', {
-            device: redactDevice(device) ?? null,
-            discovery: redactDiscovery(discovery) ?? null,
-            enabledCoins: enabledNetworks,
-            suiteLog: redactedActionsLog?.slice(-30), // send only the last 30 actions to avoid "413 Request Entity Too Large" response from Sentry
+export const reportToSentry =
+    (error: any) => (_: Dispatch<UnknownAction>, getState: () => ReportToSentryThunkState) => {
+        const instanceId = selectAnalyticsInstanceId(getState());
+        const enabledNetworks = selectEnabledNetworks(getState());
+        const device = selectSelectedDevice(getState());
+        const discovery = selectDiscoveryForSelectedDevice(getState());
+        const redactedActionsLog = selectRedactedActionsLog(getState(), true);
+
+        Sentry.withScope(scope => {
+            scope.setUser({ id: instanceId });
+            scope.setContext('suiteState', {
+                device: redactDevice(device) ?? null,
+                discovery: redactDiscovery(discovery) ?? null,
+                enabledCoins: enabledNetworks,
+                suiteLog: redactedActionsLog?.slice(-30), // send only the last 30 actions to avoid "413 Request Entity Too Large" response from Sentry
+            });
+            Sentry.captureException(error);
         });
-        Sentry.captureException(error);
-    });
-};
+    };
 
 export const reportSecurityCheck = ({
     level,

@@ -1,17 +1,34 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
 import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
+import { type ThunkDispatch } from 'redux-thunk';
 
+import { type OpenModalDep } from '@suite-common/suite-types';
 import { exchangeThunks, tradingExchangeActions, tradingThunks } from '@suite-common/trading';
+import { type TradingRootState } from '@suite-common/trading';
+import {
+    type ConfirmAddressOnDeviceThunkState,
+    type WalletSettingsRootState,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingExchangeTradeRequest } from 'src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
-import { type Dispatch } from 'src/types/suite';
 
 interface UseExchangeApprovalProps {
     account: Account | undefined;
     receiveAddress?: string;
     extraField?: string;
 }
+
+type VerifyAddressThunkState = ConfirmAddressOnDeviceThunkState &
+    TradingRootState &
+    WalletSettingsRootState;
+type VerifyAddressThunkDeps = { actions: OpenModalDep };
+type VerifyAddressThunkDispatch = ThunkDispatch<
+    VerifyAddressThunkState,
+    VerifyAddressThunkDeps,
+    UnknownAction
+>;
 
 /**
  * Device-touching exchange trade actions that are not quote-refresh: address
@@ -22,12 +39,12 @@ export const useExchangeApproval = ({
     receiveAddress,
     extraField,
 }: UseExchangeApprovalProps) => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<VerifyAddressThunkState, VerifyAddressThunkDeps>();
     const { getTradeRequestParams } = useTradingExchangeTradeRequest(account);
 
     const verifyAddress =
         (verifiedAccount: Account, address: string | undefined, path: string | undefined) =>
-        async (innerDispatch: Dispatch) => {
+        async (innerDispatch: VerifyAddressThunkDispatch) => {
             await innerDispatch(
                 tradingThunks.verifyAddressThunk({
                     account: verifiedAccount,

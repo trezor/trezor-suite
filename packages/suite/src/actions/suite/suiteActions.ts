@@ -1,11 +1,9 @@
-import { createAction } from '@reduxjs/toolkit';
+import { type Dispatch, type UnknownAction, createAction } from '@reduxjs/toolkit';
 
 import { suiteSettingsActions } from '@suite/settings';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type HandshakeElectron } from '@trezor/suite-desktop-api';
-
-import { type Dispatch } from 'src/types/suite';
 
 import { SUITE } from './constants';
 
@@ -49,17 +47,19 @@ export const closeEvmExplanationBanner = createAction<NetworkSymbol>(
     SUITE.EVM_CLOSE_EXPLANATION_BANNER,
 );
 
-export const hideCoinjoinReceiveWarning = () => (dispatch: Dispatch) =>
+export const hideCoinjoinReceiveWarning = () => (dispatch: Dispatch<UnknownAction>) =>
     dispatch(suiteSettingsActions.setCoinjoinReceiveWarningHidden(true));
 
-export const toggleDeviceAuthenticityCheck = (enable: boolean) => (dispatch: Dispatch) => {
-    dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
-    dispatch(suiteSettingsActions.toggleDeviceAuthenticityCheck(enable));
-};
+export const toggleDeviceAuthenticityCheck =
+    (enable: boolean) => (dispatch: Dispatch<UnknownAction>) => {
+        dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
+        dispatch(suiteSettingsActions.toggleDeviceAuthenticityCheck(enable));
+    };
 
-export const toggleFirmwareAuthenticityChecks = (enable: boolean) => (dispatch: Dispatch) => {
-    dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
-    dispatch(suiteSettingsActions.toggleFirmwareRevisionCheck(enable));
-    dispatch(suiteSettingsActions.toggleFirmwareHashCheck(enable));
-    dispatch(suiteSettingsActions.toggleDeviceMetaChecks(enable));
-};
+export const toggleFirmwareAuthenticityChecks =
+    (enable: boolean) => (dispatch: Dispatch<UnknownAction>) => {
+        dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
+        dispatch(suiteSettingsActions.toggleFirmwareRevisionCheck(enable));
+        dispatch(suiteSettingsActions.toggleFirmwareHashCheck(enable));
+        dispatch(suiteSettingsActions.toggleDeviceMetaChecks(enable));
+    };

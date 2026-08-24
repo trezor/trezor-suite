@@ -1,13 +1,21 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type ThunkDispatch } from 'redux-thunk';
+
 import { openModal } from '@suite/modal';
-import { selectIsEntropyCheckEnabled } from '@suite/settings';
+import { type SuiteSettingsRootState, selectIsEntropyCheckEnabled } from '@suite/settings';
 import {
     type DeviceRootState,
     selectSelectedDevice,
     selectSimulatedEntropyCheckFail,
 } from '@suite-common/device';
 import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
-import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
+import {
+    Feature,
+    type MessageSystemRootState,
+    selectIsFeatureDisabled,
+} from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
+import { type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
@@ -18,11 +26,12 @@ import {
     DEFAULT_SKIP_BACKUP,
     DEFAULT_STRENGTH,
 } from 'src/constants/suite/device';
-import { type Dispatch, type GetState } from 'src/types/suite';
+
+type ApplySettingsThunkState = DeviceRootState;
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch<UnknownAction>, getState: () => ApplySettingsThunkState) => {
         const device = selectSelectedDevice(getState());
         if (!device) return;
         const result = await TrezorConnect.applySettings({
@@ -40,9 +49,11 @@ export const applySettings =
         return result;
     };
 
+type ChangePinThunkState = DeviceRootState;
+
 export const changePin =
     (params: Parameters<typeof TrezorConnect.changePin>[0] = {}, skipSuccessToast?: boolean) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch<UnknownAction>, getState: () => ChangePinThunkState) => {
         const device = selectSelectedDevice(getState());
 
         if (!device) return;
@@ -73,9 +84,11 @@ export const changePin =
         }
     };
 
+type ChangeWipeCodeThunkState = DeviceRootState;
+
 export const changeWipeCode =
     ({ remove }: Parameters<typeof TrezorConnect.changeWipeCode>[0] = {}) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch<UnknownAction>, getState: () => ChangeWipeCodeThunkState) => {
         const device = selectSelectedDevice(getState());
 
         if (!device) return;
@@ -99,9 +112,15 @@ export const changeWipeCode =
         }
     };
 
+type ResetDeviceThunkState = DeviceRootState & SuiteSettingsRootState & MessageSystemRootState;
+type ResetDeviceThunkDeps = { services: ReportSecurityCheckDep };
+
 export const resetDevice =
     (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (
+        dispatch: ThunkDispatch<ResetDeviceThunkState, ResetDeviceThunkDeps, UnknownAction>,
+        getState: () => ResetDeviceThunkState,
+    ) => {
         const device = selectSelectedDevice(getState());
         const isEntropyCheckEnabledInSettings = selectIsEntropyCheckEnabled(getState());
         const isEntropyCheckDisabledByMessageSystem = selectIsFeatureDisabled(

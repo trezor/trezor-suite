@@ -1,4 +1,3 @@
-import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -9,11 +8,11 @@ import {
 } from '@suite-common/wallet-types';
 
 import { sendFormActions } from './sendFormActions';
-import { initialState, prepareSendFormReducer } from './sendFormReducer';
+import { type SendFormReducerDeps, initialState, prepareSendFormReducer } from './sendFormReducer';
 import { type SerializedTx } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
 
-const extraDependencies: ExtraDependencies = {
+const extraDependencies: SendFormReducerDeps = {
     ...extraDependenciesCommonMock,
     reducers: {
         ...extraDependenciesCommonMock.reducers,

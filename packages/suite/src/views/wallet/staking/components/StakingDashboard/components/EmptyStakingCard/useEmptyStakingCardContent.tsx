@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { type DesktopAnalyticsDep, events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { goto } from '@suite/router';
+import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
@@ -48,7 +48,7 @@ export interface EmptyStakingCardContent {
 
 interface UseNetworkContentProps {
     data: EmptyStakingCardData;
-    dispatch: ReturnType<typeof useDispatch>;
+    dispatch: ReturnType<typeof useDispatch<GotoThunkState, GotoThunkDeps>>;
 }
 
 const getTronContent = ({
@@ -290,7 +290,7 @@ export const useStakingCardContent = ({
     variant,
     data,
 }: UseStakingCardContentProps): EmptyStakingCardContent => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<GotoThunkState, GotoThunkDeps>();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     switch (variant) {

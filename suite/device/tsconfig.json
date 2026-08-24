@@ -16,9 +16,6 @@
         { "path": "../router" },
         { "path": "../../packages/connect" },
         {
-            "path": "../../suite-common/redux-extra-dependencies"
-        },
-        {
             "path": "../../suite-common/test-utils"
         }
     ]

@@ -62,7 +62,6 @@
         },
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" },
-        { "path": "../redux-extra-dependencies" }
+        { "path": "../../packages/utils" }
     ]
 }

@@ -1,6 +1,6 @@
-import { tradingActions } from '@suite-common/trading';
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import { type Dispatch } from 'src/types/suite';
+import { tradingActions } from '@suite-common/trading';
 
 import { ConfirmUnverifiedModal } from './ConfirmUnverifiedModal';
 
@@ -9,7 +9,7 @@ interface ConfirmUnverifiedProceedModalProps {
 }
 
 export const ConfirmUnverifiedProceedModal = ({ value }: ConfirmUnverifiedProceedModalProps) => {
-    const proceedWithUnverifiedAddress = () => (dispatch: Dispatch) => {
+    const proceedWithUnverifiedAddress = () => (dispatch: Dispatch<UnknownAction>) => {
         dispatch(
             tradingActions.setVerifiedAddress({
                 address: value,

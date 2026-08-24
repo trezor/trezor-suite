@@ -1,17 +1,31 @@
-import { createAction } from '@reduxjs/toolkit';
+import { type Dispatch, type UnknownAction, createAction } from '@reduxjs/toolkit';
+import { type ThunkDispatch } from 'redux-thunk';
 
 import { type DesktopAnalyticsDep, type OnboardingAnalytics, events } from '@suite/analytics';
 import { initialRunCompleted } from '@suite/flags';
 import { closeModal } from '@suite/modal';
-import { recoveryRerunThunk } from '@suite/recovery';
-import { closeModalApp, goto } from '@suite/router';
+import { type RecoveryState, recoveryRerunThunk } from '@suite/recovery';
+import {
+    type GotoThunkState,
+    type SuiteRouterHistoryDep,
+    closeModalApp,
+    goto,
+} from '@suite/router';
+import { type SuiteSettingsRootState } from '@suite/settings';
 import {
     selectIsDeviceAuthenticityCheckEnabled,
     selectIsUnlockedBootloaderAllowed,
 } from '@suite/settings';
-import { selectHasBitcoinOnlyFirmware, selectSelectedDevice } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    selectHasBitcoinOnlyFirmware,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
 import {
+    type StartDiscoveryThunkDeps,
+    type StartDiscoveryThunkState,
+    type WalletSettingsRootState,
     changeCoinVisibility,
     selectEnabledNetworks,
     startDiscoveryThunk,
@@ -21,9 +35,9 @@ import TrezorConnect from '@trezor/connect';
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
+import { type OnboardingRootState } from 'src/reducers/onboarding/onboardingReducer';
 import { selectOnboardingAnalytics } from 'src/selectors/onboarding/onboardingSelectors';
 import { type AnyPath, type AnyStepId, type BackupMedium } from 'src/types/onboarding';
-import { type Dispatch, type GetState } from 'src/types/suite';
 import {
     findNextStep,
     findPrevStep,
@@ -37,7 +51,9 @@ const addPath = createAction<AnyPath>(ONBOARDING.ADD_PATH);
 
 const removePath = createAction<AnyPath[]>(ONBOARDING.REMOVE_PATH);
 
-const getAllStepsInPath = (getState: GetState) => {
+type GetAllStepsInPathState = DeviceRootState & OnboardingRootState & SuiteSettingsRootState;
+
+const getAllStepsInPath = (getState: () => GetAllStepsInPathState) => {
     const allSteps = stepCategories.flatMap(({ steps }) => steps);
 
     const isStepUsedProps = {
@@ -50,33 +66,44 @@ const getAllStepsInPath = (getState: GetState) => {
     return allSteps.filter(step => isStepUsed(step, isStepUsedProps));
 };
 
-const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
-    if (stepId) {
-        return dispatch(goToStep(stepId));
-    }
-    const stepsInPath = getAllStepsInPath(getState);
-    const prevStep = findPrevStep(getState().onboarding.activeStepId, stepsInPath);
+type GoToPreviousStepThunkState = DeviceRootState & OnboardingRootState & SuiteSettingsRootState;
 
-    if (!prevStep) {
-        return;
-    }
+const goToPreviousStep =
+    (stepId?: AnyStepId) =>
+    (dispatch: Dispatch<UnknownAction>, getState: () => GoToPreviousStepThunkState) => {
+        if (stepId) {
+            return dispatch(goToStep(stepId));
+        }
+        const stepsInPath = getAllStepsInPath(getState);
+        const prevStep = findPrevStep(getState().onboarding.activeStepId, stepsInPath);
 
-    // steps listed in case statements contain path decisions, so we need
-    // to remove saved paths from reducers to let user change it again.
-    switch (prevStep.id) {
-        case STEP.ID_CREATE_OR_RECOVER:
-            dispatch(removePath([STEP.PATH_CREATE, STEP.PATH_RECOVERY]));
-            break;
-        default:
-        // nothing
-    }
+        if (!prevStep) {
+            return;
+        }
 
-    dispatch(goToStep(prevStep.id));
-};
+        // steps listed in case statements contain path decisions, so we need
+        // to remove saved paths from reducers to let user change it again.
+        switch (prevStep.id) {
+            case STEP.ID_CREATE_OR_RECOVER:
+                dispatch(removePath([STEP.PATH_CREATE, STEP.PATH_RECOVERY]));
+                break;
+            default:
+            // nothing
+        }
+
+        dispatch(goToStep(prevStep.id));
+    };
 
 const resetOnboarding = createAction(ONBOARDING.RESET_ONBOARDING);
 
-type GoToSuiteDeps = { services: DesktopAnalyticsDep };
+type GoToSuiteState = DeviceRootState &
+    GotoThunkState &
+    OnboardingRootState &
+    StartDiscoveryThunkState &
+    WalletSettingsRootState;
+type GoToSuiteDeps = {
+    services: DesktopAnalyticsDep & SuiteRouterHistoryDep;
+} & StartDiscoveryThunkDeps;
 
 export type GoToSuiteOptions = {
     skipDeviceSetupCompletedEvent?: boolean;
@@ -84,7 +111,11 @@ export type GoToSuiteOptions = {
 
 const goToSuite =
     ({ skipDeviceSetupCompletedEvent }: GoToSuiteOptions = {}) =>
-    (dispatch: Dispatch, getState: GetState, extra: GoToSuiteDeps) => {
+    (
+        dispatch: ThunkDispatch<GoToSuiteState, GoToSuiteDeps, UnknownAction>,
+        getState: () => GoToSuiteState,
+        extra: GoToSuiteDeps,
+    ) => {
         const device = selectSelectedDevice(getState());
         const onboardingAnalytics = selectOnboardingAnalytics(getState());
         // Clear modals that might block navigation. They aren't relevant anyway, as there is no <ModalSwitcher /> in onboarding.
@@ -149,21 +180,40 @@ const goToSuite =
         }
     };
 
-const goToNextStep = (nextStepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
-    if (nextStepId) {
-        return dispatch(goToStep(nextStepId));
-    }
-    const device = selectSelectedDevice(getState());
-    const stepsInPath = getAllStepsInPath(getState);
-    const nextStep = findNextStep(getState().onboarding.activeStepId, stepsInPath, device ?? null);
-    // we are at last step, so go to Suite
-    if (nextStep === null) {
-        dispatch(goToSuite());
+type GoToNextStepThunkState = DeviceRootState &
+    GotoThunkState &
+    OnboardingRootState &
+    StartDiscoveryThunkState &
+    SuiteSettingsRootState &
+    WalletSettingsRootState;
+type GoToNextStepThunkDeps = {
+    services: DesktopAnalyticsDep & SuiteRouterHistoryDep;
+} & StartDiscoveryThunkDeps;
 
-        return;
-    }
-    dispatch(goToStep(nextStep.id));
-};
+const goToNextStep =
+    (nextStepId?: AnyStepId) =>
+    (
+        dispatch: ThunkDispatch<GoToNextStepThunkState, GoToNextStepThunkDeps, UnknownAction>,
+        getState: () => GoToNextStepThunkState,
+    ) => {
+        if (nextStepId) {
+            return dispatch(goToStep(nextStepId));
+        }
+        const device = selectSelectedDevice(getState());
+        const stepsInPath = getAllStepsInPath(getState);
+        const nextStep = findNextStep(
+            getState().onboarding.activeStepId,
+            stepsInPath,
+            device ?? null,
+        );
+        // we are at last step, so go to Suite
+        if (nextStep === null) {
+            dispatch(goToSuite());
+
+            return;
+        }
+        dispatch(goToStep(nextStep.id));
+    };
 
 const enableOnboardingReducer = createAction<boolean>(ONBOARDING.ENABLE_ONBOARDING_REDUCER);
 
@@ -173,16 +223,40 @@ const updateBackupType = createAction<BackupType>(ONBOARDING.SELECT_BACKUP_TYPE)
 
 const updateBackupMedium = createAction<BackupMedium>(ONBOARDING.SELECT_BACKUP_MEDIUM);
 
-const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetState) => {
-    const device = selectSelectedDevice(getState());
-    if (!device) return;
+type BeginOnboardingTutorialThunkState = DeviceRootState &
+    GotoThunkState &
+    OnboardingRootState &
+    StartDiscoveryThunkState &
+    SuiteSettingsRootState &
+    WalletSettingsRootState;
+type BeginOnboardingTutorialThunkDeps = {
+    services: DesktopAnalyticsDep & SuiteRouterHistoryDep;
+} & StartDiscoveryThunkDeps;
 
-    await TrezorConnect.showDeviceTutorial({ device });
-    dispatch(goToNextStep());
-};
+const beginOnboardingTutorial =
+    () =>
+    async (
+        dispatch: ThunkDispatch<
+            BeginOnboardingTutorialThunkState,
+            BeginOnboardingTutorialThunkDeps,
+            UnknownAction
+        >,
+        getState: () => BeginOnboardingTutorialThunkState,
+    ) => {
+        const device = selectSelectedDevice(getState());
+        if (!device) return;
+
+        await TrezorConnect.showDeviceTutorial({ device });
+        dispatch(goToNextStep());
+    };
+
+type ResolveNextAfterSkippedThunkState = DeviceRootState &
+    OnboardingRootState &
+    SuiteSettingsRootState;
 
 const resolveNextAfterSkipped =
-    (skippedToStepId: AnyStepId) => (_dispatch: Dispatch, getState: GetState) => {
+    (skippedToStepId: AnyStepId) =>
+    (_dispatch: Dispatch<UnknownAction>, getState: () => ResolveNextAfterSkippedThunkState) => {
         const device = selectSelectedDevice(getState());
         const stepsInPath = getAllStepsInPath(getState);
         const resolvedNextStep = resolveNextAvailableStep(
@@ -194,26 +268,34 @@ const resolveNextAfterSkipped =
         return resolvedNextStep?.id;
     };
 
-const recoveryRerun = () => async (dispatch: Dispatch, getState: GetState) => {
-    const result = await dispatch(recoveryRerunThunk());
+type RecoveryRerunState = DeviceRootState & GotoThunkState & { recovery: RecoveryState };
+type RecoveryRerunDeps = { services: DesktopAnalyticsDep & SuiteRouterHistoryDep };
 
-    if (!recoveryRerunThunk.fulfilled.match(result)) {
-        return;
-    }
+const recoveryRerun =
+    () =>
+    async (
+        dispatch: ThunkDispatch<RecoveryRerunState, RecoveryRerunDeps, UnknownAction>,
+        getState: () => RecoveryRerunState,
+    ) => {
+        const result = await dispatch(recoveryRerunThunk());
 
-    const { initialized } = result.payload;
-    const { router } = getState();
-
-    if (initialized) {
-        dispatch(goto({ routeName: 'recovery-index' }));
-    } else {
-        if (router.app !== 'onboarding') {
-            dispatch(goto({ routeName: 'onboarding-index' }));
+        if (!recoveryRerunThunk.fulfilled.match(result)) {
+            return;
         }
-        dispatch(goToStep('recovery'));
-        dispatch(addPath('recovery'));
-    }
-};
+
+        const { initialized } = result.payload;
+        const { router } = getState();
+
+        if (initialized) {
+            dispatch(goto({ routeName: 'recovery-index' }));
+        } else {
+            if (router.app !== 'onboarding') {
+                dispatch(goto({ routeName: 'onboarding-index' }));
+            }
+            dispatch(goToStep('recovery'));
+            dispatch(addPath('recovery'));
+        }
+    };
 
 export {
     enableOnboardingReducer,

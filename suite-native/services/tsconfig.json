@@ -1,10 +1,5 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": [
-        {
-            "path": "../../suite-common/redux-extra-dependencies"
-        },
-        { "path": "../analytics" }
-    ]
+    "references": []
 }
