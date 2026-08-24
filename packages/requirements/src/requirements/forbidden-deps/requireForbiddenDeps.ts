@@ -57,10 +57,18 @@ const createForbiddenDepsMap = (
     forbiddenDeps: NonNullable<ForbiddenDepsConfig['forbidden-deps']>,
 ) =>
     new Map(
-        forbiddenDeps.map(forbiddenDependency => [
-            forbiddenDependency.packageName,
-            forbiddenDependency,
-        ]),
+        forbiddenDeps.flatMap(forbiddenDependency =>
+            forbiddenDependency.packageName === undefined
+                ? []
+                : [[forbiddenDependency.packageName, forbiddenDependency] as const],
+        ),
+    );
+
+const getForbiddenDependencyPrefixes = (
+    forbiddenDeps: NonNullable<ForbiddenDepsConfig['forbidden-deps']>,
+) =>
+    forbiddenDeps.flatMap(forbiddenDependency =>
+        forbiddenDependency.packageNamePrefix === undefined ? [] : [forbiddenDependency],
     );
 
 const formatAllowedOnlyInPackages = (allowedOnlyInRule: AllowedOnlyInRule) =>
@@ -101,6 +109,10 @@ const getInvalidConfiguredPackagesErrors = ({
     const errors: string[] = [];
 
     for (const forbiddenDependency of dependencyRule?.['forbidden-deps'] ?? []) {
+        if (forbiddenDependency.packageName === undefined) {
+            continue;
+        }
+
         if (workspaceDirectories.has(forbiddenDependency.packageName)) {
             continue;
         }
@@ -129,15 +141,22 @@ type ForbiddenDependencyErrorsParams = {
     readonly workspaceName: string;
 };
 
-const getForbiddenDependencyErrors = ({
+export const getForbiddenDependencyErrors = ({
     dependencyOccurrences,
     dependencyRule,
     workspaceName,
 }: ForbiddenDependencyErrorsParams): ReadonlyArray<string> => {
     const forbiddenDepsMap = createForbiddenDepsMap(dependencyRule?.['forbidden-deps'] ?? []);
+    const forbiddenDependencyPrefixes = getForbiddenDependencyPrefixes(
+        dependencyRule?.['forbidden-deps'] ?? [],
+    );
 
     return dependencyOccurrences.flatMap(dependencyOccurrence => {
-        const forbiddenDependency = forbiddenDepsMap.get(dependencyOccurrence.name);
+        const forbiddenDependency =
+            forbiddenDepsMap.get(dependencyOccurrence.name) ??
+            forbiddenDependencyPrefixes.find(({ packageNamePrefix }) =>
+                dependencyOccurrence.name.startsWith(packageNamePrefix),
+            );
 
         if (forbiddenDependency === undefined) {
             return [];
