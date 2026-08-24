@@ -23,6 +23,10 @@ const UNSIGNED_STABLE_URL_REMOTE_BASE = {
     BASE_URL: 'https://data.trezor.io',
     MIDDLE_PATH: 'dev/firmware/releases/unsigned-stable',
 };
+const UNSIGNED_NIGHTLY_URL_REMOTE_BASE = {
+    BASE_URL: 'https://data.trezor.io',
+    MIDDLE_PATH: 'dev/firmware/firmware-nightly',
+};
 const SIGNED_URL_REMOTE_BASE = {
     BASE_URL: 'https://suite.corp.sldev.cz',
     MIDDLE_PATH: 'firmware/signed',
@@ -40,6 +44,7 @@ const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareChannel, RemoteBaseInfo> = {
     'production-early-access': RELEASES_URL_REMOTE_BASE,
     'test-unsigned': UNSIGNED_URL_REMOTE_BASE,
     'test-unsigned-stable': UNSIGNED_STABLE_URL_REMOTE_BASE,
+    'test-unsigned-nightly': UNSIGNED_NIGHTLY_URL_REMOTE_BASE,
     'test-signed': SIGNED_URL_REMOTE_BASE,
     'localhost-unsigned': UNSIGNED_LOCALHOST,
     'localhost-signed': SIGNED_LOCALHOST,
@@ -88,7 +93,7 @@ const CONFIG_PATH_BY_CHANNEL: Partial<Record<FirmwareChannel, string>> = {
     'production-early-access': 'config-early-access/',
 };
 
-const fetchRemoteJws = async (firmwareChannel?: FirmwareChannel): Promise<JwsInfo> => {
+const fetchRemoteFwConfig = async (firmwareChannel?: FirmwareChannel) => {
     const {
         BASE_URL,
         MIDDLE_PATH,
@@ -112,19 +117,29 @@ const fetchRemoteJws = async (firmwareChannel?: FirmwareChannel): Promise<JwsInf
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        // Assuming the response JSON has a 'jws' property.
         const data = await response.json();
-        if (typeof data.jws !== 'string') {
-            throw new Error('Invalid response format: "jws" property missing or not a string.');
-        }
 
-        return { jws: data.jws, firmwareChannel: resolvedChannel };
+        return { data, firmwareChannel: resolvedChannel };
     } catch (error) {
         throw new Error(
-            `Failed to fetch remote JWS: ${error instanceof Error ? error.message : String(error)}`,
+            `Failed to fetch remote: ${error instanceof Error ? error.message : String(error)}`,
             { cause: error },
         );
     }
+};
+
+const fetchRemoteJws = async (firmwareChannel?: FirmwareChannel): Promise<JwsInfo> => {
+    const { data, firmwareChannel: resolvedChannel } = await fetchRemoteFwConfig(firmwareChannel);
+
+    // Assuming the response JSON has a 'jws' property.
+    if (typeof data.jws !== 'string') {
+        throw new Error('Invalid response format: "jws" property missing or not a string.');
+    }
+
+    return {
+        jws: data.jws,
+        firmwareChannel: resolvedChannel,
+    };
 };
 
 const verifyAndDecodeJws = (jws: string, publicKey: string): FirmwareReleaseConfig => {
@@ -153,6 +168,13 @@ const verifyAndDecodeJws = (jws: string, publicKey: string): FirmwareReleaseConf
 
 export const getFirmwareReleaseConfig = async (firmwareChannel?: FirmwareChannel) => {
     try {
+        if (firmwareChannel === 'test-unsigned-nightly') {
+            // Nightly does not use JWS signing
+            const remoteConfig = await fetchRemoteFwConfig(firmwareChannel);
+
+            return { config: remoteConfig.data, isRemote: true };
+        }
+
         const { jws, firmwareChannel: resolvedChannel } = await fetchRemoteJws(firmwareChannel);
 
         const useProductionKey = ['test-signed', 'production-early-access', 'production'].includes(

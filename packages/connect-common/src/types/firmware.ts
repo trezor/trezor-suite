@@ -97,6 +97,7 @@ export type FirmwareChannel =
     | 'production-early-access'
     | 'test-unsigned'
     | 'test-unsigned-stable'
+    | 'test-unsigned-nightly'
     | 'test-signed'
     | 'localhost-unsigned'
     | 'localhost-signed';
