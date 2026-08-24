@@ -155,19 +155,18 @@ export const connectInitThunk = createThunk<
 
         dispatch(lockDevice(true));
 
-        // The lock is a counter: leaving it raised disables every device action until a reload.
-        try {
-            return await synchronize(() => original(params));
-        } finally {
-            dispatch(lockDevice(false));
-            dispatch(
-                deviceActions.removeButtonRequests({
-                    // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                    // be the same re-selected device from this line. We should reuse device from params.
-                    device: selectSelectedDevice(getState()),
-                }),
-            );
-        }
+        const result = await synchronize(() => original(params));
+
+        dispatch(lockDevice(false));
+        dispatch(
+            deviceActions.removeButtonRequests({
+                // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
+                // be the same re-selected device from this line. We should reuse device from params.
+                device: selectSelectedDevice(getState()),
+            }),
+        );
+
+        return result;
     };
 
     const binFilesBaseUrl = getBinFilesBaseUrl();
