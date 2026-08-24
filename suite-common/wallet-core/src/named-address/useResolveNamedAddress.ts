@@ -1,31 +1,9 @@
-import { commonQueryKeys, useQuery } from '@suite-common/react-query';
+import { useQuery } from '@suite-common/react-query';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { isSymbolSupportingNamedAddress, looksLikeNamedAddress } from '@suite-common/wallet-utils';
 import { useDebouncedValue } from '@trezor/react-utils';
 
-import { resolveViaBlockbook } from './resolveNamedAddresBB';
+import { getResolveMode, getResolveNamedAddressQueryOptions } from './namedAddressQuery';
 
-const STALE_TIME_MS = 10 * 60 * 1000;
-const GC_TIME_MS = 60 * 60 * 1000;
-
-type ResolveMode = 'forward' | 'idle'; // | 'reverse'
-
-const getResolveMode = (value: string, symbol: NetworkSymbol | null | undefined): ResolveMode => {
-    if (!symbol || !isSymbolSupportingNamedAddress(symbol)) return 'idle';
-    if (looksLikeNamedAddress(value)) return 'forward';
-    // if (isAddressValid(value, symbol)) return 'reverse';
-
-    return 'idle';
-};
-
-export const getResolveFn = (debouncedMode: ResolveMode) => {
-    if (debouncedMode === 'forward') return resolveViaBlockbook;
-    throw new Error(`Unsupported resolve mode: ${debouncedMode}`);
-};
-
-/**
- * As blockbook API only works in forward mode, we return 'forward' for now.
- */
 export const useResolveNamedAddress = (value: string, symbol: NetworkSymbol | null | undefined) => {
     // Normalize at the entry so the queryKey, debounce comparison and queryable check
     // all agree on a single canonical form — "test.eth" and "test.eth " must share cache.
@@ -38,17 +16,10 @@ export const useResolveNamedAddress = (value: string, symbol: NetworkSymbol | nu
     // to resolve this" signal even before the debounce window elapses.
     const liveMode = getResolveMode(trimmedValue, symbol);
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- debouncedMode is derived from debouncedValue + symbol, both already part of the key
     const query = useQuery({
-        queryKey: commonQueryKeys.resolveNamedAddress(symbol ?? 'unknown', debouncedValue),
-        // `enabled` guarantees a supported symbol whenever the query runs (forward mode).
-        queryFn: () => getResolveFn(debouncedMode)(debouncedValue, symbol as NetworkSymbol),
+        ...getResolveNamedAddressQueryOptions(debouncedValue, symbol),
+        // `enabled` guarantees a supported symbol whenever the query runs.
         enabled: !isDebouncing && debouncedMode !== 'idle',
-        staleTime: STALE_TIME_MS,
-        gcTime: GC_TIME_MS,
-        retry: 3,
-        retryDelay: 200,
-        refetchOnWindowFocus: false,
     });
 
     const isFetching = isDebouncing ? liveMode !== 'idle' : query.isFetching;
@@ -72,10 +43,10 @@ export const useResolveNamedAddress = (value: string, symbol: NetworkSymbol | nu
         mode: liveMode,
         isResolving: liveMode !== 'idle' && isFetching,
         resolvedAddress: liveMode === 'forward' && hasResolvedString ? data : undefined,
-        // reverseResolvedName:
-        //     liveMode === 'reverse' && hasResolvedString ? (data as string) : undefined,
+        reverseResolvedName: liveMode === 'reverse' && hasResolvedString ? data : undefined,
         // Forward-only error: a successful query that returned `null` (no record) is also
         // an error from the user's POV, since they typed a name expecting a hex address.
+        // An address with no primary name is not an error — nothing should block on it.
         isResolveError: liveMode === 'forward' && (isError || (isSuccess && data === null)),
     };
 };

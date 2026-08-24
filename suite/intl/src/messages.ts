@@ -2236,6 +2236,10 @@ export const messages = defineMessages({
         defaultMessage: 'Wallet address: {address}',
         id: 'TR_ENS_WALLET_ADDRESS',
     },
+    TR_ENS_PRIMARY_NAME: {
+        defaultMessage: 'Wallet: {name}',
+        id: 'TR_ENS_PRIMARY_NAME',
+    },
     TR_ENS_RESOLVE_FAILED: {
         defaultMessage: 'Could not resolve name. Check that the name is correct.',
         id: 'TR_ENS_RESOLVE_FAILED',

@@ -8,9 +8,6 @@ type VerifyAddressProps = {
     deadline?: number;
     onTryAgain: (close: boolean) => void;
     isSending?: boolean;
-    // When the user typed an ENS name, both the original input ("vitalik.eth") and the
-    // resolved hex are surfaced so the user can cross-check them against the resolved
-    // address shown on the Trezor device.
     ensName?: string;
     resolvedAddress?: string;
 };

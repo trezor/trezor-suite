@@ -38,9 +38,17 @@ const failedByDefaultMethods = [
     'rippleSignTransaction',
 ];
 
+// Background reads fired by display features rather than by the sequence a test scripts. Taking a
+// positional fixture would shift every later call, so adding one such feature would break every
+// test that scripts a device interaction. They are answered from DEFAULT_PAYLOAD alone.
+const unscriptedMethods = ['blockchainEvmRpcCall'];
+
 // Override connect methods with specific expected payload
 const DEFAULT_PAYLOAD: Record<string, any> = {
     blockchainEstimateFee: { payload: { levels: [{}] } },
+    // A revert is how a resolver declines: it reads as "no record" rather than a transport
+    // failure, so a name lookup settles on it instead of retrying.
+    blockchainEvmRpcCall: { success: false, error: { message: 'execution reverted' } },
     blockchainGetTransactions: { payload: { txid: 'foo' } },
     pushTransaction: { payload: { txid: 'txid' } },
     unlockPath: { payload: { address_n: [2147493673], mac: '0MaC' } },
@@ -52,7 +60,7 @@ const mockResponse = (method: string, params: any) =>
         success: true,
         payload: { _comment: 'Default mock payload' },
         ...(failedByDefaultMethods.includes(method) ? ERROR_RESULT : DEFAULT_PAYLOAD[method]),
-        ...getNextFixture(),
+        ...(unscriptedMethods.includes(method) ? undefined : getNextFixture()),
         _method: method,
         _fixtures: fixtures,
         _params: params,
