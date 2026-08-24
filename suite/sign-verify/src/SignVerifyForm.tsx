@@ -47,7 +47,11 @@ const CopyFieldButton = ({ onClick, 'data-testid': dataTestId }: CopyFieldButton
         priority="secondary"
         size="small"
         iconLeft={CopyIcon}
-        onClick={onClick}
+        // Every button inside the form has to cancel the click, otherwise it submits the form.
+        onClick={event => {
+            event.preventDefault();
+            onClick();
+        }}
         data-testid={dataTestId}
     >
         <Translation id="TR_COPY_TO_CLIPBOARD" />
@@ -217,7 +221,9 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
         });
     }, [verificationInputs]);
 
-    const clearForm = () => {
+    // Every button inside the form has to cancel the click, otherwise it submits the form.
+    const clearForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
         resetForm();
         setOutcome('idle');
     };
