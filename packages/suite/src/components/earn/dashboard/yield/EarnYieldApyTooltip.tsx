@@ -88,7 +88,7 @@ export const EarnYieldApyTooltip = ({
                     underlyingToken={vault.token}
                 />
             }
-            maxWidth={600}
+            tooltipMaxWidth={600}
             placement="top"
         >
             <Text typographyStyle="body-sm-strong" intent="neutral" priority="primary">

@@ -1,3 +1,5 @@
+import styled from 'styled-components';
+
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
     type RewardDtoV2,
@@ -6,9 +8,49 @@ import {
 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getApyPercent, isWrappedNativeToken } from '@suite-common/wallet-utils';
-import { Column, Icon, Row, Text } from '@trezor/components';
+import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { ChartLineIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
+import { belowBreakpoint, breakpoints } from '@trezor/theme';
+
+const RewardList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    @media ${belowBreakpoint(breakpoints.mobile)} {
+        gap: 0;
+
+        & > *:not(:first-child) {
+            border-top: 1px solid ${({ theme }) => theme.borderNeutral};
+            padding-top: 16px;
+        }
+
+        & > *:not(:last-child) {
+            padding-bottom: 16px;
+        }
+    }
+`;
+
+const RewardRow = styled.div`
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+
+    @media ${belowBreakpoint(breakpoints.mobile)} {
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: start;
+    }
+`;
+
+const RewardRate = styled.div`
+    white-space: nowrap;
+
+    @media ${belowBreakpoint(breakpoints.mobile)} {
+        grid-column: 2;
+    }
+`;
 
 type EarnYieldApyBreakdownProps = {
     rewards: RewardDtoV2[];
@@ -68,69 +110,74 @@ export const EarnYieldApyBreakdown = ({
 
     return (
         <Column gap={16} padding={{ vertical: 10, horizontal: 8 }}>
-            {sortedRewards.map((reward, index) => {
-                const ratePercent = getApyPercent(reward.rate);
-                const hasRatePercent = ratePercent !== null && ratePercent > 0;
-                const descriptionId = getYieldSourceDescriptionId(reward.yieldSource);
-                const rateTranslationId = getRateTranslationId(reward.yieldSource);
-                // A wrapped-native reward (e.g. WETH in an ETH vault) is presented as its native
-                // asset (#29881), matching how the vault itself is labelled across the earn UI.
-                const displaySymbol = isWrappedNativeToken(networkSymbol, reward.token.address)
-                    ? getNetworkDisplaySymbol(networkSymbol)
-                    : reward.token.symbol;
+            <RewardList>
+                {sortedRewards.map((reward, index) => {
+                    const ratePercent = getApyPercent(reward.rate);
+                    const hasRatePercent = ratePercent !== null && ratePercent > 0;
+                    const descriptionId = getYieldSourceDescriptionId(reward.yieldSource);
+                    const rateTranslationId = getRateTranslationId(reward.yieldSource);
+                    // A wrapped-native reward (e.g. WETH in an ETH vault) is presented as its native
+                    // asset (#29881), matching how the vault itself is labelled across the earn UI.
+                    const displaySymbol = isWrappedNativeToken(networkSymbol, reward.token.address)
+                        ? getNetworkDisplaySymbol(networkSymbol)
+                        : reward.token.symbol;
 
-                let rateNode;
-                if (!hasRatePercent) {
-                    rateNode = <Translation id="TR_EARN_APY_N_A" />;
-                } else if (rateTranslationId) {
-                    rateNode = (
-                        <Translation id={rateTranslationId} values={{ rate: ratePercent }} />
-                    );
-                } else {
-                    rateNode = <>+{ratePercent}%</>;
-                }
+                    let rateNode;
+                    if (!hasRatePercent) {
+                        rateNode = <Translation id="TR_EARN_APY_N_A" />;
+                    } else if (rateTranslationId) {
+                        rateNode = (
+                            <Translation id={rateTranslationId} values={{ rate: ratePercent }} />
+                        );
+                    } else {
+                        rateNode = <>+{ratePercent}%</>;
+                    }
 
-                return (
-                    <Row key={index} gap={8} alignItems="center">
-                        <TokenIcon
-                            placeholder={displaySymbol || reward.token.name || 'token'}
-                            symbol={networkSymbol}
-                            contractAddress={reward.token.address}
-                            showNetworkIcon
-                            wrappedTokenIcon="network"
-                            size={20}
-                            isBordered={false}
-                        />
-                        <Column flex="1">
-                            <Text
-                                data-testid="@earn/dashboard/apy-breakdown/symbol"
-                                typographyStyle="body-sm"
-                            >
-                                {displaySymbol}
-                            </Text>
-                            {descriptionId && (
+                    return (
+                        <RewardRow key={index}>
+                            <TokenIcon
+                                placeholder={displaySymbol || reward.token.name || 'token'}
+                                symbol={networkSymbol}
+                                contractAddress={reward.token.address}
+                                showNetworkIcon
+                                wrappedTokenIcon="network"
+                                size={20}
+                                isBordered={false}
+                            />
+                            <Column flex="1">
+                                <Text
+                                    data-testid="@earn/dashboard/apy-breakdown/symbol"
+                                    typographyStyle="body-sm"
+                                >
+                                    {displaySymbol}
+                                </Text>
+                                {descriptionId && (
+                                    <Text
+                                        typographyStyle="body-sm"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        data-testid="@earn/dashboard/apy-breakdown/description"
+                                    >
+                                        <Translation id={descriptionId} />
+                                    </Text>
+                                )}
+                            </Column>
+                            <RewardRate>
                                 <Text
                                     typographyStyle="body-sm"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    data-testid="@earn/dashboard/apy-breakdown/description"
+                                    intent={hasRatePercent ? 'brand' : 'neutral'}
+                                    priority={hasRatePercent ? 'primary' : 'secondary'}
+                                    data-testid="@earn/dashboard/apy-breakdown/rate-percent"
                                 >
-                                    <Translation id={descriptionId} />
+                                    {rateNode}
                                 </Text>
-                            )}
-                        </Column>
-                        <Text
-                            typographyStyle="body-sm"
-                            intent={hasRatePercent ? 'brand' : 'neutral'}
-                            priority={hasRatePercent ? 'primary' : 'secondary'}
-                            data-testid="@earn/dashboard/apy-breakdown/rate-percent"
-                        >
-                            {rateNode}
-                        </Text>
-                    </Row>
-                );
-            })}
-            <Row gap={4} alignItems="center" margin={{ top: 4 }}>
+                            </RewardRate>
+                        </RewardRow>
+                    );
+                })}
+            </RewardList>
+            <Divider margin={0} />
+            <Row gap={4} alignItems="center">
                 <Icon as={ChartLineIcon} size={14} intent="neutral" priority="secondary" />
                 <Text
                     data-testid="@earn/dashboard/apy-breakdown/footer"
