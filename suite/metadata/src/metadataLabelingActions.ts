@@ -1,6 +1,6 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import {
     selectDeviceByStaticSessionId,
     selectDevices,
@@ -561,6 +561,8 @@ export const addMetadata =
         return result.success;
     };
 
+export type InitMetadataDeps = { services: DesktopAnalyticsDep };
+
 /**
  * init - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method
  * consists of number of steps of which not all have to necessarily happen. For example
@@ -572,11 +574,7 @@ export const addMetadata =
  */
 export const init =
     (force: boolean, deviceStateArg?: StaticSessionId) =>
-    async (
-        dispatch: Dispatch,
-        getState: () => MetadataRootState,
-        extra: metadataProviderActions.MetadataThunkDeps,
-    ) => {
+    async (dispatch: Dispatch, getState: () => MetadataRootState, extra: InitMetadataDeps) => {
         let device = deviceStateArg
             ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
             : selectSelectedDevice(getState());
