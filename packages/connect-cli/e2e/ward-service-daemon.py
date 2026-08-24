@@ -7,12 +7,15 @@ the length of an e2e run, and it exists to make two OPPOSITE statements checkabl
 
   * the queue never touches it -- offline requests read the device's own store, so a run of them
     must leave this log without a single SERVED line;
-  * the channel really works -- an online read makes the device sync with this daemon, fetch a
-    leaf from it and verify what came back against the root it just adopted, and the log names
-    every one of those exchanges as it happens.
+  * the channel really works -- an online operation makes the device sync with this daemon, fetch a
+    leaf from it and verify what came back against the root it just adopted, and a WRITE goes
+    further: the device hands over a sealed mutation and moves its head only once the WM's
+    attestation for that counter comes back. The log names every one of those exchanges as it
+    happens, in order, which is the only place the write half is visible from outside the device.
 
 A daemon that quietly answered nothing could support the first claim and not the second, which is
-why this one serves for real rather than recording.
+why this one serves for real rather than recording -- it stores what it is handed, has its WM attest
+it, and proves it back.
 
 WHAT IT IS NOT. The replica and the WM are the device tests' -- `tests.ward_trie.WardTrie` and
 `tests.ward_wm.MockWM` -- and so is the protocol logic, taken from `tests.ward_service` rather than
@@ -25,6 +28,15 @@ THE WM SIGNS FRESHNESS, NEVER A ROOT MAC. The mac over (ward_id, counter, root) 
 WALLET SEED, so only a device of that wallet can produce one -- and this daemon reproduces the
 emulator's, because the e2e drives a default-setup device (the "all all ..." mnemonic, empty
 passphrase). A daemon standing in front of any other wallet would be refused, correctly.
+
+THE REPLICA OUTLIVES THE PROCESS, if `--state-file` says where to keep it. That is not a
+convenience: THP holds a bounded number of channels (MAX_CHANNELS_APPDATA), every wallet-side call
+opens one, and a daemon that has been displaced has to come back -- see `--key-file`. Coming back
+with an EMPTY replica would be worse than not coming back at all, because the device has meanwhile
+advanced its head: it would offer a wallet at genesis to a device that is past it, and every read
+would fail for a reason that has nothing to do with what is being tested. A real wardd owns a
+database; this pickles the same three things it would keep -- the trie, the WM's heads, and the
+wallet the two are about.
 
 Usage, under emu.py (the e2e starts it this way and needs no environment of its own -- emu.py
 exports TREZOR_SRC, which names the checkout the running emulator was built from):
@@ -50,6 +62,7 @@ import argparse
 import importlib
 import logging
 import os
+import pickle
 import signal
 import sys
 import time
@@ -275,7 +288,14 @@ class Daemon(MockWardService):
     the device tests, which is the whole reason not to write a daemon from scratch in this file.
     """
 
-    def __init__(self, transport, log, button_callback=None, static_privkey=None) -> None:
+    def __init__(
+        self,
+        transport,
+        log,
+        button_callback=None,
+        static_privkey=None,
+        state_file=None,
+    ) -> None:
         self.service = WardServiceClient(
             transport,
             # THE IDENTITY THE DEVICE PINS. Passed in so a daemon that comes back is the SAME
@@ -294,11 +314,17 @@ class Daemon(MockWardService):
         # What this daemon knows. An EMPTY replica is the honest starting point for the e2e: the
         # device has published nothing to it, so a read must come back "no such entry" -- and that
         # answer is a non-membership PROOF the device checks, not a word this daemon is trusted on.
+        #
+        # UNLESS A PREVIOUS LIFE LEFT SOMETHING BEHIND. Once the device has published, empty stops
+        # being honest and becomes wrong: the device's head has moved, and a daemon claiming genesis
+        # is claiming a state that no longer exists. See `_load_state`.
         self.store = WardTrie()
         self.wm = MockWM()
         self.k_mac = DEFAULT_K_MAC
         self.ward_id = None
         self.timestamp_base = 1_700_000_000
+        self._state_file = state_file
+        self._load_state()
 
         # The parent's failure-mode knobs. All off: this daemon is the honest case, and the e2e
         # asserts on what a working channel does.
@@ -308,6 +334,63 @@ class Daemon(MockWardService):
 
         self.error = None
         self._stop = False
+
+    def _load_state(self) -> None:
+        """Resume the replica, the WM's heads and the wallet they are about, if any were kept.
+
+        THE THREE TOGETHER OR NOT AT ALL. A trie without the WM's head describes a state nothing
+        attests; a WM head without the trie attests a state nothing can be proved against. Restoring
+        one and not the other would produce a daemon that fails in a way no test could attribute, so
+        this is one file and one decision.
+
+        A MISSING FILE IS THE FIRST RUN, and is silent. An UNREADABLE one is not: it means state was
+        kept and then lost, which is exactly the situation where starting from genesis is wrong, so
+        it says so and carries on from genesis anyway -- the run will fail, and it will fail with a
+        line saying why.
+        """
+        if not self._state_file or not os.path.isfile(self._state_file):
+            return
+
+        try:
+            with open(self._state_file, "rb") as handle:
+                state = pickle.load(handle)
+            self.store = state["store"]
+            self.wm = state["wm"]
+            self.ward_id = state["ward_id"]
+        except Exception as exc:  # noqa: B902
+            self._log(
+                f"NOTE could not resume the replica from {self._state_file} ({exc!r}); "
+                "starting from genesis, which the device will disagree with if it has published"
+            )
+
+            return
+
+        self._log(
+            f"NOTE resumed the replica at counter {self.store.counter} "
+            f"({len(self.store.blobs)} entr{'y' if len(self.store.blobs) == 1 else 'ies'})"
+        )
+
+    def _save_state(self) -> None:
+        """Persist after every exchange, rather than after the ones that look like they matter.
+
+        A publication moves the trie AND the WM's head AND, on a first write, settles which wallet
+        this daemon is serving; a sync can mint the WM's first head from what the device supplied.
+        Deciding per message which of those happened is a judgement that only has to be wrong once,
+        and the state is three dicts -- so this writes unconditionally and keeps the judgement out.
+        """
+        if not self._state_file:
+            return
+
+        try:
+            with open(self._state_file, "wb") as handle:
+                pickle.dump(
+                    {"store": self.store, "wm": self.wm, "ward_id": self.ward_id}, handle
+                )
+        except Exception as exc:  # noqa: B902
+            # Logged, not raised: the exchange itself succeeded and the device has been answered.
+            # Turning a bookkeeping failure into a refused request would break the run at a point
+            # that has nothing to do with the cause.
+            self._log(f"NOTE could not save the replica to {self._state_file}: {exc!r}")
 
     def handle(self, request):
         """One device request in, one reply out -- logged on the way through.
@@ -345,6 +428,7 @@ class Daemon(MockWardService):
 
         served = len(self.server.served) if self.server is not None else 0
         self._log(f"SERVED {served} {name} -> {type(reply).__name__}{detail}")
+        self._save_state()
 
         return reply
 
@@ -371,6 +455,15 @@ def main() -> int:
         help=(
             "where to keep this daemon's static key. Read if it exists, written after the first "
             "bind -- the device PINS the key, so a restart without it is refused"
+        ),
+    )
+    parser.add_argument(
+        "--state-file",
+        default=None,
+        help=(
+            "where to keep the replica, the WM's heads and the wallet id. Without it the daemon "
+            "serves an empty replica every time it starts, which is only correct before the device "
+            "has published anything"
         ),
     )
     parser.add_argument(
@@ -412,6 +505,7 @@ def main() -> int:
         log,
         button_callback=confirmer.press,
         static_privkey=static_privkey,
+        state_file=args.state_file,
     )
 
     stopping = False
@@ -446,7 +540,10 @@ def main() -> int:
         log(f"NOTE stored the daemon key in {args.key_file}")
 
     log(f"BOUND {_now()}")
-    log(f"NOTE serving an EMPTY replica at counter {daemon.store.counter}")
+    log(
+        f"NOTE serving a replica at counter {daemon.store.counter} "
+        f"with {len(daemon.store.blobs)} entries"
+    )
     try:
         daemon.server.serve_forever(stop=lambda: stopping)
     except Exception as exc:  # noqa: B902
