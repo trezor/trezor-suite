@@ -3415,10 +3415,6 @@ export const messages = defineMessages({
         description: 'Sign button in Sign and Verify form',
         id: 'TR_SIGN',
     },
-    TR_SIGNED: {
-        defaultMessage: 'Signed',
-        id: 'TR_SIGNED',
-    },
     TR_SIGN_MESSAGE: {
         defaultMessage: 'Sign message',
         description: 'Header for the Sign and Verify form',
