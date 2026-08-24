@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export type AgentName = 'nightlyAnalyzer' | 'nightlyFixer';
+
 export const TestToValidateSchema = z.object({
     platform: z.enum(['web', 'desktop']),
     group: z.string(),
@@ -67,21 +69,6 @@ export const ClaudeResultSchema = z.object({
     usage: ClaudeUsageSchema.optional(),
     total_cost_usd: z.number().optional(),
     duration_ms: z.number().optional(),
-});
-
-export const AgentMessageEntrySchema = z.object({
-    type: z.literal('assistant'),
-    parent_tool_use_id: z.string().nullish(),
-    message: z.object({
-        id: z.string(),
-        content: z.array(
-            z.object({
-                type: z.string(),
-                input: z.record(z.string(), z.unknown()).optional(),
-            }),
-        ),
-        usage: ClaudeUsageSchema.optional(),
-    }),
 });
 
 export const SlackFixSummarySchema = FixResultSchema.extend({
