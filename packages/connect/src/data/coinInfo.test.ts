@@ -1,6 +1,13 @@
 import type { CoinSymbol } from '@trezor/connect-common/src/types/coinInfo';
+import { toHardenedPathPart } from '@trezor/crypto-utils';
 
-import { getAllNetworks, getCoinInfoOrThrow, getMiscNetwork, getUniqueNetworks } from './coinInfo';
+import {
+    getAllNetworks,
+    getBitcoinNetworkOrThrow,
+    getCoinInfoOrThrow,
+    getMiscNetwork,
+    getUniqueNetworks,
+} from './coinInfo';
 
 describe('data/coinInfo', () => {
     it('resolves a coin string by shortcut only (network name / label no longer accepted)', () => {
@@ -24,6 +31,21 @@ describe('data/coinInfo', () => {
         expect(() => getCoinInfoOrThrow('bitcoin')).toThrow('Coin not found');
         expect(() => getCoinInfoOrThrow('Bitcoin Cash')).toThrow('Coin not found');
         expect(() => getCoinInfoOrThrow('cardano')).toThrow('Coin not found');
+    });
+
+    it('getBitcoinNetworkOrThrow resolves bitcoin networks and rejects everything else', () => {
+        // resolves a bitcoin-family shortcut
+        expect(getBitcoinNetworkOrThrow('btc').shortcut).toBe('BTC');
+        expect(getBitcoinNetworkOrThrow('ltc').shortcut).toBe('LTC');
+
+        // resolves by BIP32 path via slip44 ([44', 0'] -> slip44 0 -> BTC)
+        expect(
+            getBitcoinNetworkOrThrow([toHardenedPathPart(44), toHardenedPathPart(0)]).shortcut,
+        ).toBe('BTC');
+
+        // eth/misc symbols resolve via getCoinInfoOrThrow but are rejected here (bitcoin-only guard)
+        expect(() => getBitcoinNetworkOrThrow('eth')).toThrow('Coin not found');
+        expect(() => getBitcoinNetworkOrThrow('ada')).toThrow('Coin not found');
     });
 
     it('uses the production Robinhood Blockbook', () => {

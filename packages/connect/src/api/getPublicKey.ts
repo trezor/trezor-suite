@@ -7,13 +7,12 @@ import {
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getBitcoinNetwork } from '../data/coinInfo';
+import { getBitcoinNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { bundlify, validateCoinPath } from './common/paramsValidator';
 import { getPublicKeyLabel } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
@@ -42,16 +41,13 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             if (coinInfo && !batch.crossChain) {
                 validateCoinPath(address_n, coinInfo);
             } else if (!coinInfo) {
-                // coin not provided (or not bitcoin-like), try to derive network from the path
-                coinInfo = getBitcoinNetwork(address_n);
-            }
-
-            if (!coinInfo) {
+                // If coin is omitted or does not resolve to a bitcoin-like network,
+                // derive the network from the path.
                 // Non-bitcoin-like networks (e.g. "eth") used to be silently accepted here and
                 // fall back to btc for backward compatibility. Since connect 10 getPublicKey only
                 // supports bitcoin-like coins, so a network that resolves via neither the coin nor
                 // the path is rejected.
-                throw ERRORS.TypedError('Method_UnknownCoin');
+                coinInfo = getBitcoinNetworkOrThrow(address_n);
             }
 
             const proto = {

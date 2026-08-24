@@ -25,7 +25,7 @@ import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLin
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { requestExistingAccounts } from './common/requestExistingAccounts';
-import { fixCoinInfoNetwork, getBitcoinNetwork } from '../data/coinInfo';
+import { fixCoinInfoNetwork, getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { formatAmount } from '../utils/formatUtils';
 import { createComposer } from './bitcoin/TransactionComposer';
 import { enhanceSignTx } from './bitcoin/enhanceSignTx';
@@ -66,10 +66,7 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
             { name: 'sortingStrategy', type: 'string' },
         ]);
 
-        const coinInfo = getBitcoinNetwork(payload.coin);
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getBitcoinNetworkOrThrow(payload.coin);
         // validate backend
         assertBackendSupported(coinInfo);
 
