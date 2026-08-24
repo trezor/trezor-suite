@@ -27,7 +27,7 @@ import { CheckCircleIcon, CopyIcon, WarningCircleIcon } from '@trezor/icons';
 
 import { SignAddressInput } from './SignAddressInput';
 import { isVerifySupported, sign, verify } from './signVerifyActions';
-import { useCopyValue } from './useCopyValue';
+import { useSignVerifyCopyValue } from './useSignVerifyCopyValue';
 import {
     MAX_LENGTH_MESSAGE,
     MAX_LENGTH_SIGNATURE,
@@ -166,7 +166,7 @@ export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) =
 
     const { isLocked, device } = useDevice();
     const { translationString } = useTranslation();
-    const copyValue = useCopyValue();
+    const copyValue = useSignVerifyCopyValue();
 
     const isCompleted = outcome === 'signed' || outcome === 'verified';
 
