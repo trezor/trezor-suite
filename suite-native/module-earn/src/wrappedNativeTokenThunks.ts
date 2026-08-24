@@ -6,10 +6,10 @@ import {
 } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    type WrappedNativeFlowType,
     type SynchronizeSentTransactionThunkDeps,
     type SynchronizeSentTransactionThunkState,
     type WalletSettingsRootState,
+    type WrappedNativeFlowType,
     type YieldFlowDisplayToken,
     isWrappedNativeFlowSupported,
     selectAddressDisplayType,
