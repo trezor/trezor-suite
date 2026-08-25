@@ -9,7 +9,6 @@ import {
 } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     type TransactionsRootState,
     type WalletSettingsRootState,
@@ -21,6 +20,7 @@ import { type Account } from '@suite-common/wallet-types';
 import {
     fromIntegerString,
     getAccountIdentity,
+    getGasLimitWithBuffer,
     getMevProtectedTxData,
     sanitizeHex,
 } from '@suite-common/wallet-utils';
@@ -172,11 +172,15 @@ const ethereumRequestThunk = createThunk<
                     throw new Error(`eth_sendTransaction invalid ${field}`);
                 }
             }
-            if (
+            if (!transaction.value) {
+                transaction.value = '0x0';
+            }
+
+            const isFeeRateMissing =
                 !transaction.gasPrice &&
-                (!transaction.maxFeePerGas || !transaction.maxPriorityFeePerGas)
-            ) {
-                // Fee not provided, estimate it
+                (!transaction.maxFeePerGas || !transaction.maxPriorityFeePerGas);
+
+            if (isFeeRateMissing || !transaction.gas) {
                 const feeLevels = await TrezorConnect.blockchainEstimateFee({
                     coin: asCoinSymbol(account.symbol),
                     identity: getAccountIdentity(account),
@@ -184,33 +188,41 @@ const ethereumRequestThunk = createThunk<
                         blocks: [2],
                         specific: {
                             from: account.descriptor,
+                            to: transaction.to,
+                            data: transaction.data,
+                            value: transaction.value,
                         },
                     },
                 });
-                if (!feeLevels.success) {
+
+                if (!feeLevels.success && isFeeRateMissing) {
                     throw new Error('eth_sendTransaction cannot estimate fee');
                 }
-                // Fee levels are decimal strings in wei. Connect reads all values as hex.
-                const toHex = (value?: string) =>
-                    value ? fromIntegerString(value).toHex() : undefined;
-                const eip1559Fee = feeLevels.payload.levels[0]?.eip1559?.medium;
-                // Both values are optional. Use the legacy gas price if one of them is missing.
-                if (eip1559Fee?.maxFeePerGas && eip1559Fee.maxPriorityFeePerGas) {
-                    transaction.maxFeePerGas = toHex(eip1559Fee.maxFeePerGas);
-                    transaction.maxPriorityFeePerGas = toHex(eip1559Fee.maxPriorityFeePerGas);
-                } else {
-                    transaction.gasPrice = toHex(feeLevels.payload.levels[0]?.feePerUnit);
-                    if (!transaction.gasPrice) {
-                        throw new Error('eth_sendTransaction cannot estimate fee');
+
+                const feeLevel = feeLevels.success ? feeLevels.payload.levels[0] : undefined;
+
+                if (isFeeRateMissing) {
+                    // Fee levels are decimal strings in wei. Connect reads all values as hex.
+                    const toHex = (value?: string) =>
+                        value ? fromIntegerString(value).toHex() : undefined;
+                    const eip1559Fee = feeLevel?.eip1559?.medium;
+                    // Both values are optional. Use the legacy gas price if one of them is missing.
+                    if (eip1559Fee?.maxFeePerGas && eip1559Fee.maxPriorityFeePerGas) {
+                        transaction.maxFeePerGas = toHex(eip1559Fee.maxFeePerGas);
+                        transaction.maxPriorityFeePerGas = toHex(eip1559Fee.maxPriorityFeePerGas);
+                    } else {
+                        transaction.gasPrice = toHex(feeLevel?.feePerUnit);
+                        if (!transaction.gasPrice) {
+                            throw new Error('eth_sendTransaction cannot estimate fee');
+                        }
                     }
                 }
-            }
-            if (!transaction.gas) {
-                // Placeholder, will be replaced by estimate from TX simulation response
-                transaction.gas = fromIntegerString(ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT).toHex();
-            }
-            if (!transaction.value) {
-                transaction.value = '0x0';
+
+                if (!transaction.gas) {
+                    transaction.gas = fromIntegerString(
+                        getGasLimitWithBuffer(feeLevel?.feeLimit),
+                    ).toHex();
+                }
             }
             const { nonce } = await dispatch(
                 ethereumGetCurrentNonceThunk({

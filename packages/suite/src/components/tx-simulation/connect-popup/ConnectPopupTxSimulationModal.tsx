@@ -9,7 +9,7 @@ export const ConnectPopupTxSimulationModal = () => {
         return null;
     }
 
-    const { action, account } = txSimulationCallWithAccount;
+    const { action, account, source } = txSimulationCallWithAccount;
 
-    return <ConnectPopupTxSimulationModalInner action={action} account={account} />;
+    return <ConnectPopupTxSimulationModalInner action={action} account={account} source={source} />;
 };
