@@ -16,11 +16,12 @@ import {
     ExpandableAssetRowTokens,
 } from 'src/components/suite/asset-picker/components';
 import {
-    type AssetPickerListItem,
     useExpandableAccountGroups,
     useFilterAccountsWithTokens,
     useListScrollReset,
 } from 'src/components/suite/asset-picker/hooks';
+import { type AssetPickerListItem } from 'src/components/suite/asset-picker/types';
+import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
 import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
@@ -172,7 +173,6 @@ export function SelectTokenAssetModal({
                             account={item.account}
                             tokens={item.tokens}
                             expanded={item.expanded}
-                            height={item.height}
                             onExpandToggle={updateExpandableAccountGroups}
                             onTokenClick={handleSelectChange}
                             dataTestId={`@asset-picker/send-token/option/hidden-tokens/${item.account.symbol}`}
@@ -213,6 +213,7 @@ export function SelectTokenAssetModal({
                 <AssetsList
                     items={filteredOptions}
                     renderItem={renderItem}
+                    getItemHeight={getAssetPickerItemHeight}
                     height={LIST_HEIGHT}
                     ref={listRef}
                 />

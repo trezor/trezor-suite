@@ -96,7 +96,6 @@ describe('buildGroupedAssetOptions', () => {
                 account,
                 items: [accountRow],
                 expanded: false,
-                height: 50,
             },
         ]);
     });
@@ -116,7 +115,6 @@ describe('buildGroupedAssetOptions', () => {
                 account,
                 items: [accountRow],
                 expanded: false,
-                height: 50,
             },
         ]);
     });
@@ -154,19 +152,17 @@ describe('buildGroupedAssetOptions', () => {
                 account,
                 items: [accountRow],
                 expanded: false,
-                height: 50,
             },
             {
                 type: 'non-tradable-group',
                 account,
                 items: [nonTradableTokenRow],
                 expanded: false,
-                height: 50,
             },
         ]);
     });
 
-    it('expands only the group whose key is expanded and grows its height', () => {
+    it('expands only the group whose key is expanded', () => {
         const account = createEthAccount('dustEthAccount', '0.00000001');
         const accountRow = createAccountOption(account);
         const nonTradableTokenRow = createTokenOption(account, createToken());
@@ -181,12 +177,10 @@ describe('buildGroupedAssetOptions', () => {
             expect.objectContaining({
                 type: 'low-balance-group',
                 expanded: true,
-                height: 110,
             }),
             expect.objectContaining({
                 type: 'non-tradable-group',
                 expanded: false,
-                height: 50,
             }),
         ]);
     });

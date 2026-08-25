@@ -1,11 +1,14 @@
 import { type ReactNode, memo, useRef } from 'react';
 
 import { AssetsList, AssetsListEmpty } from 'src/components/suite/asset-picker/components';
+import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
 import { useListScrollReset } from 'src/components/suite/asset-picker/hooks';
 
 import { type TradingAssetListItem } from './hooks/useBuildTradingAssetOptions';
 
 const LIST_HEIGHT = 530;
+
+const getItemHeight = () => ASSET_ROW_HEIGHT;
 
 export interface AssetListWrapperProps {
     renderItem: (item: TradingAssetListItem) => ReactNode;
@@ -32,6 +35,7 @@ export const AssetListWrapper = memo(function AssetListWrapperInner({
             <AssetsList
                 items={listItems}
                 renderItem={renderItem}
+                getItemHeight={getItemHeight}
                 height={LIST_HEIGHT}
                 ref={listRef}
             />

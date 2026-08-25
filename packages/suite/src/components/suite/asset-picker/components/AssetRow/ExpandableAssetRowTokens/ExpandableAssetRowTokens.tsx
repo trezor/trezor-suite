@@ -8,7 +8,10 @@ import { TokenIconSet } from '@trezor/product-components';
 
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
-import { getExpandableTokensContentHeight } from '../../../utils';
+import {
+    getExpandableGroupContentHeight,
+    getExpandableGroupHeight,
+} from '../../../utils/assetPickerItemHeights';
 import { AssetRowToken } from '../AssetRowToken/AssetRowToken';
 
 // Don't use `Collapsible.Content`, it's not optimized for larger content.
@@ -29,7 +32,6 @@ export interface ExpandableAssetRowTokensProps {
     expanded: boolean;
     onExpandToggle: (accountKey: AccountKey, expanded: boolean) => void;
     onTokenClick?: (token: TokensWithRates, account: Account) => void;
-    height: number;
     dataTestId?: string;
     showTokensPreview?: boolean;
     showNoTradingPairText?: boolean;
@@ -42,16 +44,15 @@ export function ExpandableAssetRowTokens({
     expanded,
     onExpandToggle,
     onTokenClick,
-    height,
     dataTestId,
     showTokensPreview = false,
     showNoTradingPairText = false,
 }: ExpandableAssetRowTokensProps) {
-    const tokensContentHeight = expanded ? getExpandableTokensContentHeight(tokens.length) : 0;
+    const tokensContentHeight = expanded ? getExpandableGroupContentHeight(tokens.length) : 0;
 
     return (
         <Collapsible isOpen={expanded} data-testid={dataTestId}>
-            <Box padding={2} height={height}>
+            <Box padding={2} height={getExpandableGroupHeight(expanded, tokens.length)}>
                 <Card type="contrast" paddingType="none">
                     <Collapsible.Toggle
                         onClick={() => {

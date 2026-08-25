@@ -17,7 +17,6 @@ import {
     type AssetPickerOption,
     type AssetRowOption,
 } from 'src/components/suite/asset-picker/types';
-import { calculateExpandableTokensHeight } from 'src/components/suite/asset-picker/utils';
 
 export type AssetGroupKey = `${AccountKey}:${AssetGroupOption['type']}`;
 
@@ -96,30 +95,24 @@ export const buildGroupedAssetOptions = ({
         options.push(...assets);
 
         if (lowBalanceAssets.length > 0) {
-            const expanded = expandedGroupKeys.includes(
-                getAssetGroupKey(account.key, 'low-balance-group'),
-            );
-
             options.push({
                 type: 'low-balance-group',
                 account,
                 items: lowBalanceAssets,
-                expanded,
-                height: calculateExpandableTokensHeight(expanded, lowBalanceAssets.length),
+                expanded: expandedGroupKeys.includes(
+                    getAssetGroupKey(account.key, 'low-balance-group'),
+                ),
             });
         }
 
         if (nonTradableAssets.length > 0) {
-            const expanded = expandedGroupKeys.includes(
-                getAssetGroupKey(account.key, 'non-tradable-group'),
-            );
-
             options.push({
                 type: 'non-tradable-group',
                 account,
                 items: nonTradableAssets,
-                expanded,
-                height: calculateExpandableTokensHeight(expanded, nonTradableAssets.length),
+                expanded: expandedGroupKeys.includes(
+                    getAssetGroupKey(account.key, 'non-tradable-group'),
+                ),
             });
         }
     }

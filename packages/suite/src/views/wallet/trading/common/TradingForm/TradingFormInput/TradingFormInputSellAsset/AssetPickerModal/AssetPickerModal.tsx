@@ -12,11 +12,13 @@ import {
     ExpandableAssetRowGroup,
 } from 'src/components/suite/asset-picker/components';
 import {
-    type AssetPickerListItem,
     useExpandableAccountGroups,
     useSearchFilter,
 } from 'src/components/suite/asset-picker/hooks';
-import { type AssetRowOption } from 'src/components/suite/asset-picker/types';
+import {
+    type AssetPickerListItem,
+    type AssetRowOption,
+} from 'src/components/suite/asset-picker/types';
 
 import { AssetListWrapper } from './AssetListWrapper';
 import { useBuildTradingAssetOptions } from './hooks/useBuildTradingAssetOptions';
@@ -117,7 +119,6 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                                     expanded,
                                 );
                             }}
-                            height={item.height}
                             dataTestId={`@asset-picker/sell/option/${
                                 isLowBalance ? 'low-balance' : 'non-tradable'
                             }/${item.account.symbol}`}

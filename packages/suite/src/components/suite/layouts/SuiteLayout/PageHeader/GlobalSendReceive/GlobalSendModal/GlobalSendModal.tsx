@@ -19,11 +19,12 @@ import {
     ExpandableAssetRowTokens,
 } from 'src/components/suite/asset-picker/components';
 import {
-    type AssetPickerListItem,
     useExpandableAccountGroups,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
 } from 'src/components/suite/asset-picker/hooks';
+import { type AssetPickerListItem } from 'src/components/suite/asset-picker/types';
+import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
 
@@ -113,7 +114,6 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
                             account={item.account}
                             tokens={item.tokens}
                             expanded={item.expanded}
-                            height={item.height}
                             onExpandToggle={updateExpandableAccountGroups}
                             onTokenClick={handleTokenClick}
                         />
@@ -143,6 +143,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
                 <AssetsList
                     items={globalSendListItems}
                     renderItem={renderItem}
+                    getItemHeight={getAssetPickerItemHeight}
                     height={LIST_HEIGHT}
                     ref={listRef}
                 />

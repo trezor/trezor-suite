@@ -9,7 +9,6 @@ import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-util
 import { useSelector } from 'src/hooks/suite';
 
 import { type AccountWithTokensOption } from '../types';
-import { calculateExpandableTokensHeight } from '../utils';
 
 export function useFilterAccountsWithTokens(
     accountsWithTokens: AccountWithTokensOption[],
@@ -87,18 +86,9 @@ export function useFilterAccountsWithTokens(
             })
             .map(item => {
                 if (item.type === 'hidden-tokens' && !matchedAccountKeys.has(item.account.key)) {
-                    const matchedTokens = item.tokens.filter(token =>
-                        isTokenMatchesSearch(token, search),
-                    );
-
                     return {
                         ...item,
-                        tokens: matchedTokens,
-                        // Update height based on matched tokens count
-                        height: calculateExpandableTokensHeight(
-                            item.expanded,
-                            matchedTokens.length,
-                        ),
+                        tokens: item.tokens.filter(token => isTokenMatchesSearch(token, search)),
                     };
                 }
 

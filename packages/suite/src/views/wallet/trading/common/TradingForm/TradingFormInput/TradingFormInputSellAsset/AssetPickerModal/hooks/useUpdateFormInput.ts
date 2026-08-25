@@ -7,7 +7,7 @@ import {
 } from '@suite-common/trading';
 import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
 
-import { type AssetPickerListItem } from 'src/components/suite/asset-picker/hooks';
+import { type AssetPickerListItem } from 'src/components/suite/asset-picker/types';
 
 export interface UseUpdateFormInputProps {
     closeModal: () => void;

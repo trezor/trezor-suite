@@ -74,7 +74,6 @@ describe('useAccountsWithTokenDisplayNames', () => {
     const accountOption: AccountWithTokensOption = {
         type: 'account',
         account: ethereumAccount,
-        height: 1,
     };
     const token = createToken('0x1', 'Discovered One');
     const hiddenToken = createToken('0x2', 'Discovered Two');
@@ -86,20 +85,17 @@ describe('useAccountsWithTokenDisplayNames', () => {
             type: 'token',
             account: ethereumAccount,
             token,
-            height: 1,
         },
         {
             type: 'hidden-tokens',
             account: ethereumAccount,
             tokens: [hiddenToken],
-            height: 1,
             expanded: true,
         },
         {
             type: 'hidden-tokens',
             account: polygonAccount,
             tokens: [unknownNameToken],
-            height: 1,
             expanded: false,
         },
     ];
