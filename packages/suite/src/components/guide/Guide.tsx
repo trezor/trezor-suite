@@ -61,7 +61,7 @@ export const Guide = () => {
                                             />
                                         }
                                     >
-                                        <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
+                                        <Translation id="TR_GUIDE_HELP_AND_FEEDBACK" />
                                     </GuideItem>
                                 </Column>
                             </Box>

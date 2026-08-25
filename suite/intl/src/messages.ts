@@ -7984,9 +7984,15 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_FORUM',
         defaultMessage: 'Trezor Forum',
     },
-    TR_GUIDE_SUPPORT_AND_FEEDBACK: {
-        id: 'TR_GUIDE_SUPPORT_AND_FEEDBACK',
+    TR_GUIDE_HELP_AND_SUPPORT: {
+        id: 'TR_GUIDE_HELP_AND_SUPPORT',
         defaultMessage: 'Help & Support',
+        description: 'Tooltip and aria-label of the Guide icon in the bottom-right corner.',
+    },
+    TR_GUIDE_HELP_AND_FEEDBACK: {
+        id: 'TR_GUIDE_HELP_AND_FEEDBACK',
+        defaultMessage: 'Help & Feedback',
+        description: 'Title of the card inside the Guide panel that opens support and feedback.',
     },
     TR_GUIDE_SEARCH_MIN_QUERY_LENGTH: {
         id: 'TR_GUIDE_SEARCH_MIN_QUERY_LENGTH',
