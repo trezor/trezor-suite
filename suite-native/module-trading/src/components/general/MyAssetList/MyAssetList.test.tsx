@@ -22,7 +22,7 @@ const createAsset = (name: string, isEnabled = true): MyAsset => ({
 
 const regularAsset = createAsset('Regular');
 const lowBalanceAsset = createAsset('Low');
-const nonTradeableAsset = createAsset('Disabled', false);
+const nonTradableAsset = createAsset('Disabled', false);
 
 const section: MyAssetsSection = {
     key: eth1NormalAccount.key,
@@ -30,7 +30,7 @@ const section: MyAssetsSection = {
     sectionData: eth1NormalAccount,
     assets: [regularAsset],
     lowBalanceAssets: [lowBalanceAsset],
-    nonTradeableAssets: [nonTradeableAsset],
+    nonTradableAssets: [nonTradableAsset],
 };
 
 describe('MyAssetList', () => {

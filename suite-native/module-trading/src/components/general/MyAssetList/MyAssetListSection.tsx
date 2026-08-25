@@ -21,7 +21,7 @@ export const MyAssetListSection = ({
     testID,
 }: MyAssetListSectionProps) => {
     const hasLowBalanceAssets = section.lowBalanceAssets.length > 0;
-    const hasNonTradeableAssets = section.nonTradeableAssets.length > 0;
+    const hasNonTradableAssets = section.nonTradableAssets.length > 0;
 
     return (
         <VStack spacing="sp8" paddingTop={index === 0 ? undefined : 'sp32'}>
@@ -37,7 +37,7 @@ export const MyAssetListSection = ({
                     onPress={() => onAssetSelect(asset, section.sectionData)}
                 />
             ))}
-            {(hasLowBalanceAssets || hasNonTradeableAssets) && (
+            {(hasLowBalanceAssets || hasNonTradableAssets) && (
                 <VStack
                     spacing={0}
                     testID={testID ? `${testID}/${section.sectionData.key}/groups` : undefined}
@@ -45,7 +45,7 @@ export const MyAssetListSection = ({
                     {hasLowBalanceAssets && (
                         <MyAssetGroup
                             assets={section.lowBalanceAssets}
-                            isLast={!hasNonTradeableAssets}
+                            isLast={!hasNonTradableAssets}
                             onAssetSelect={asset => onAssetSelect(asset, section.sectionData)}
                             title={<Translation id="moduleTrading.myAssetScreen.lowBalance" />}
                             testID={
@@ -55,9 +55,9 @@ export const MyAssetListSection = ({
                             }
                         />
                     )}
-                    {hasNonTradeableAssets && (
+                    {hasNonTradableAssets && (
                         <MyAssetGroup
-                            assets={section.nonTradeableAssets}
+                            assets={section.nonTradableAssets}
                             isFirst={!hasLowBalanceAssets}
                             onAssetSelect={asset => onAssetSelect(asset, section.sectionData)}
                             title={<Translation id="moduleTrading.myAssetScreen.nonTradeable" />}

@@ -5,7 +5,7 @@ import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 
 import { type TradeableAssetBalances } from './tradeableAssetBalanceUtils';
 
-export const FEATURED_ASSET_CRYPTO_IDS = [
+const FEATURED_ASSET_CRYPTO_IDS = [
     'bitcoin',
     'ethereum',
     'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7',

@@ -55,7 +55,7 @@ const unknownFiatAsset = createAsset({
     cryptoId: 'ethereum--unknown' as CryptoId,
     fiatBalance: null,
 });
-const nonTradeableLowBalanceAsset = createAsset({
+const nonTradableLowBalanceAsset = createAsset({
     name: 'Disabled low token',
     cryptoId: 'ethereum--disabled' as CryptoId,
     fiatBalance: asBaseCurrencyAmount(new BigNumber('0.01')),
@@ -78,7 +78,7 @@ const sections = [
             lowBalanceAsset,
             thresholdAsset,
             unknownFiatAsset,
-            nonTradeableLowBalanceAsset,
+            nonTradableLowBalanceAsset,
         ],
     },
 ];
@@ -104,7 +104,7 @@ describe('useMyAssetsFilteredData', () => {
             unknownFiatAsset,
         ]);
         expect(ethSection?.lowBalanceAssets).toEqual([lowBalanceAsset]);
-        expect(ethSection?.nonTradeableAssets).toEqual([nonTradeableLowBalanceAsset]);
+        expect(ethSection?.nonTradableAssets).toEqual([nonTradableLowBalanceAsset]);
     });
 
     it('keeps all tradeable assets in the main list when the threshold is unavailable', () => {
@@ -113,7 +113,7 @@ describe('useMyAssetsFilteredData', () => {
 
         expect(ethSection?.lowBalanceAssets).toEqual([]);
         expect(ethSection?.assets).toHaveLength(4);
-        expect(ethSection?.nonTradeableAssets).toEqual([nonTradeableLowBalanceAsset]);
+        expect(ethSection?.nonTradableAssets).toEqual([nonTradableLowBalanceAsset]);
     });
 
     it('uses the supplied preferred-currency threshold', () => {
@@ -132,8 +132,8 @@ describe('useMyAssetsFilteredData', () => {
         expect(result.current.filteredSections).toHaveLength(1);
         expect(result.current.filteredSections[0]?.assets).toEqual([]);
         expect(result.current.filteredSections[0]?.lowBalanceAssets).toEqual([]);
-        expect(result.current.filteredSections[0]?.nonTradeableAssets).toEqual([
-            nonTradeableLowBalanceAsset,
+        expect(result.current.filteredSections[0]?.nonTradableAssets).toEqual([
+            nonTradableLowBalanceAsset,
         ]);
     });
 

@@ -1,9 +1,13 @@
 import { type ReactNode, useMemo, useState } from 'react';
 
 import { normalizeForSearch } from '@suite-common/suite-utils';
-import { type TradingType, usePreferredCurrencyUsdThreshold } from '@suite-common/trading';
+import {
+    type TradingType,
+    groupTradeableAssetsByTradability,
+    usePreferredCurrencyUsdThreshold,
+} from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { type MyAsset } from '@suite-native/trading-types';
 
 import { useTradingMyAssets } from './useTradingMyAssets';
@@ -13,7 +17,7 @@ export type MyAssetsSection = {
     key: string;
     label: ReactNode;
     lowBalanceAssets: MyAsset[];
-    nonTradeableAssets: MyAsset[];
+    nonTradableAssets: MyAsset[];
     sectionData: Account;
 };
 
@@ -36,37 +40,6 @@ const getSortWeight = (asset: MyAsset, normalizedFilterValue: string): number =>
     if (symbol.includes(normalizedFilterValue)) return 5;
 
     return 6;
-};
-
-const groupAssets = (
-    assets: MyAsset[],
-    preferredCurrencyUsdThreshold: BaseCurrencyAmount | null,
-) => {
-    const regularAssets: MyAsset[] = [];
-    const lowBalanceAssets: MyAsset[] = [];
-    const nonTradeableAssets: MyAsset[] = [];
-
-    assets.forEach(asset => {
-        if (!asset.isEnabled) {
-            nonTradeableAssets.push(asset);
-
-            return;
-        }
-
-        if (
-            asset.fiatBalance !== null &&
-            preferredCurrencyUsdThreshold !== null &&
-            asset.fiatBalance.lt(preferredCurrencyUsdThreshold)
-        ) {
-            lowBalanceAssets.push(asset);
-
-            return;
-        }
-
-        regularAssets.push(asset);
-    });
-
-    return { assets: regularAssets, lowBalanceAssets, nonTradeableAssets };
 };
 
 export const useMyAssetsFilteredData = (tradingType: TradingType) => {
@@ -93,14 +66,19 @@ export const useMyAssetsFilteredData = (tradingType: TradingType) => {
 
                 return {
                     ...section,
-                    ...groupAssets(matchingAssets, preferredCurrencyUsdThreshold),
+                    ...groupTradeableAssetsByTradability({
+                        assets: matchingAssets,
+                        threshold: preferredCurrencyUsdThreshold,
+                        getFiatBalance: asset => asset.fiatBalance,
+                        getIsTradable: asset => asset.isEnabled,
+                    }),
                 };
             })
             .filter(
                 section =>
                     section.assets.length > 0 ||
                     section.lowBalanceAssets.length > 0 ||
-                    section.nonTradeableAssets.length > 0,
+                    section.nonTradableAssets.length > 0,
             );
     }, [filterSymbol, filterValue, preferredCurrencyUsdThreshold, sections]);
 
