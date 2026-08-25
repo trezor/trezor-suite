@@ -1,6 +1,7 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type BreakpointFlags, initialBreakpointFlags } from '@trezor/theme';
 
 import { updateBreakpoints, updateWindowVisibility } from 'src/actions/suite/windowActions';
@@ -29,10 +30,13 @@ const windowReducer = (state: WindowState = initialState, action: UnknownAction)
 
 export default windowReducer;
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<WindowRootState>();
+
 export const selectIsWindowVisible = (state: WindowRootState) => state.window.isVisible;
 
-export const selectBreakpointFlags = (state: WindowRootState): BreakpointFlags => {
-    const { isVisible, ...breakpointFlags } = state.window;
-
-    return breakpointFlags;
-};
+// Memoized because it builds a new object: without it every consumer would re-render on every
+// action instead of only when a breakpoint is actually crossed.
+export const selectBreakpointFlags = createMemoizedSelector(
+    [state => state.window],
+    ({ isVisible, ...breakpointFlags }): BreakpointFlags => breakpointFlags,
+);
