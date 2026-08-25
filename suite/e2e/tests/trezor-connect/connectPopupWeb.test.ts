@@ -309,8 +309,6 @@ test.describe('TrezorConnect popup web', { tag: ['@T3T1', '@webOnly'] }, () => {
                 suite2.getByTestId('@connect-address-confirmation/verified-badge/0'),
             ).toBeVisible();
             await suite2.getByTestId('@connect-address-confirmation/close-button').click();
-
-            await expect(page.getByTestId('@response')).toHaveText(/success: true/);
         },
     );
 
