@@ -13,7 +13,8 @@ type TokenMetadata = {
 };
 
 // Immutable per token, while account info is refetched on every mined block: cache it per
-// connection so a refresh only costs the balance read.
+// connection so a refresh only costs the balance read. Keyed weakly, so the entries go away with
+// the client when the connection is torn down.
 const metadataCaches = new WeakMap<PublicClient, Map<string, TokenMetadata>>();
 
 const getMetadataCache = (client: PublicClient) => {
