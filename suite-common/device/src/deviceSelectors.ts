@@ -168,7 +168,7 @@ export const selectSupportedDeviceLanguages = createMemoizedSelector(
                 value: code as Locale,
                 icon,
                 label: name,
-                isBeta: true, // TODO: This will need tweaking in the future.
+                isBeta: availableDeviceTranslations[code]?.status === 'beta',
             }))
             .sort((a, b) => a.label.localeCompare(b.label));
 
