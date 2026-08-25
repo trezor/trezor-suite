@@ -2,23 +2,21 @@ import { type ReactNode, memo, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { ScrollContext } from '@suite/router';
 import { Modal, variables } from '@trezor/components';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { DiscoveryProgress } from 'src/components/wallet';
-import { HEADER_HEIGHT_NUMERIC, SUBPAGE_NAV_HEIGHT_NUMERIC } from 'src/constants/suite/layout';
-import { useLayoutSize } from 'src/hooks/suite';
-import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
-import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 
 import { ContentContainer } from '../ContentContainer';
 import { AddPassphraseWalletFlow } from './AddPassphraseWalletFlow';
+import { AnchorHighlightHandler } from './AnchorHighlightHandler';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 import { LayoutPayloadProvider } from './LayoutPayloadProvider';
+import { AboveTabletOnly, BelowTabletOnly } from './LayoutSizeOnly';
 import { LayoutFooterSlot, LayoutHeaderSlot, LayoutMetadata } from './LayoutSlots';
 import { PowerMonitorManager } from './PowerMonitor/PowerMonitor';
+import { ScrollProvider } from './ScrollProvider';
 import { Sidebar } from './Sidebar/Sidebar';
 import { SwitchDeviceLayer } from './SwitchDeviceLayer';
 import { useResponsiveContextOnChange } from './useResponsiveContextOnChange';
@@ -83,8 +81,6 @@ type MainContentProps = {
     children: ReactNode;
 };
 
-const ANCHOR_SCROLL_OFFSET = 30;
-
 export const MainContent = ({ children }: MainContentProps) => {
     const ref = useRef<HTMLDivElement>(null);
 
@@ -104,20 +100,14 @@ interface SuiteLayoutProps {
  * layout — sidebar, banners, page. `children` comes from `Preloader`'s own props, so it stays
  * referentially stable and React can bail out here.
  */
-export const SuiteLayout = memo(function SuiteLayout({
-    children,
-    'data-testid': dataTest,
-}: SuiteLayoutProps) {
-    const { isBelowTablet } = useLayoutSize();
+export const SuiteLayout = memo(({ children, 'data-testid': dataTest }: SuiteLayoutProps) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
-    const { scrollRef } = useResetScrollOnUrl();
-    const topOffset = HEADER_HEIGHT_NUMERIC + SUBPAGE_NAV_HEIGHT_NUMERIC + ANCHOR_SCROLL_OFFSET;
-
-    useClearAnchorHighlightOnClick(wrapperRef);
+    const scrollRef = useRef<HTMLDivElement>(null);
 
     return (
-        <ScrollContext.Provider value={{ scrollRef, topOffset }}>
+        <ScrollProvider scrollRef={scrollRef}>
             <Wrapper ref={wrapperRef} data-testid="@suite-layout">
+                <AnchorHighlightHandler elementRef={wrapperRef} />
                 <PageWrapper>
                     <Modal.Provider>
                         <LayoutPayloadProvider>
@@ -129,7 +119,9 @@ export const SuiteLayout = memo(function SuiteLayout({
 
                             <PowerMonitorManager />
 
-                            {isBelowTablet && <CoinjoinBars />}
+                            <BelowTabletOnly>
+                                <CoinjoinBars />
+                            </BelowTabletOnly>
 
                             <DiscoveryProgress />
 
@@ -137,7 +129,9 @@ export const SuiteLayout = memo(function SuiteLayout({
                                 <Columns>
                                     <Sidebar />
                                     <MainContent>
-                                        {!isBelowTablet && <CoinjoinBars />}
+                                        <AboveTabletOnly>
+                                            <CoinjoinBars />
+                                        </AboveTabletOnly>
                                         <SuiteBanners />
                                         <AppWrapper data-testid="@app" ref={scrollRef}>
                                             <LayoutHeaderSlot />
@@ -156,13 +150,17 @@ export const SuiteLayout = memo(function SuiteLayout({
                                     </MainContent>
                                 </Columns>
                             </Body>
-                            {!isBelowTablet && <GuideButton />}
+                            <AboveTabletOnly>
+                                <GuideButton />
+                            </AboveTabletOnly>
                         </LayoutPayloadProvider>
                     </Modal.Provider>
                 </PageWrapper>
 
                 <GuideRouter />
             </Wrapper>
-        </ScrollContext.Provider>
+        </ScrollProvider>
     );
 });
+
+SuiteLayout.displayName = 'SuiteLayout';
