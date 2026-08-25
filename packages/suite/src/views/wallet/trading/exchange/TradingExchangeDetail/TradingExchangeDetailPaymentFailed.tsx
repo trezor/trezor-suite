@@ -13,6 +13,7 @@ import { TradingDetailSupportBanner } from 'src/views/wallet/trading/common/Trad
 type TradingExchangeDetailPaymentFailedProps = {
     trade: ExchangeTrade;
     account?: Account;
+    receiveAccount?: Account;
     provider?: ExchangeProviderInfo;
 };
 
@@ -20,6 +21,7 @@ export const TradingExchangeDetailPaymentFailed = ({
     trade,
     provider,
     account,
+    receiveAccount,
 }: TradingExchangeDetailPaymentFailedProps) => {
     const dispatch = useDispatch();
 
@@ -44,6 +46,7 @@ export const TradingExchangeDetailPaymentFailed = ({
                     {provider && (
                         <TradingDetailProviderInfo
                             account={account}
+                            receiveAccount={receiveAccount}
                             orderId={trade.orderId}
                             provider={provider}
                             trade={trade}

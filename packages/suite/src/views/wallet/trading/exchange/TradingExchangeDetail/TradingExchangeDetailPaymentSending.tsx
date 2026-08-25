@@ -14,7 +14,7 @@ import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail
 import { TradingDetailTxId } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTxId';
 import { getTxEstimatedTimeSeconds } from 'src/views/wallet/trading/common/TradingDetail/utils';
 
-const getState = (trade: ExchangeTrade): StepListItemState => {
+const getStepState = (trade: ExchangeTrade): StepListItemState => {
     switch (trade.status) {
         case 'CONVERTING':
         case 'SUCCESS':
@@ -36,12 +36,14 @@ const getTitleId = (state: StepListItemState): TranslationKey => {
 type TradingExchangeDetailPaymentSendingProps = {
     trade: ExchangeTrade;
     account?: Account;
+    receiveAccount?: Account;
     composedTransaction?: TradingComposedTransactionInfo;
 };
 
 export const TradingExchangeDetailPaymentSending = ({
     trade,
     account,
+    receiveAccount,
     composedTransaction,
 }: TradingExchangeDetailPaymentSendingProps) => {
     const locale = useLocales();
@@ -49,7 +51,7 @@ export const TradingExchangeDetailPaymentSending = ({
         account ? selectRawNetworkFeeInfo(state, account.symbol) : undefined,
     );
 
-    const state = getState(trade);
+    const stepState = getStepState(trade);
     const networkType = account ? networks[account.symbol]?.networkType : undefined;
     const estimatedTimeSeconds = getTxEstimatedTimeSeconds(
         networkType,
@@ -64,17 +66,18 @@ export const TradingExchangeDetailPaymentSending = ({
         trade.receiveTxHash && account ? (
             <TradingDetailTxId
                 intent="neutral"
-                priority={state === 'done' ? 'secondary' : 'primary'}
+                priority={stepState === 'done' ? 'secondary' : 'primary'}
                 value={trade.receiveTxHash}
                 account={account}
+                receiveAccount={receiveAccount}
             />
         ) : null;
 
     return (
         <TradingDetailStep
             doneContent={txId}
-            state={state}
-            title={<Translation id={getTitleId(state)} />}
+            state={stepState}
+            title={<Translation id={getTitleId(stepState)} />}
         >
             {txId || estimatedTime ? (
                 <Card>
