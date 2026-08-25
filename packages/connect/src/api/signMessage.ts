@@ -37,7 +37,7 @@ export default class SignMessage extends AbstractMethod<'signMessage', Params> {
 
         const readableMessage = payload.hex ? hexToText(payload.message) : payload.message;
 
-        const scriptType = getScriptType(path);
+        const scriptType = payload.scriptType || getScriptType(path);
         const proto = {
             address_n: path,
             message: messageHex,
