@@ -34,7 +34,7 @@ const getIconSetToken = (item: AssetRowOption): TokenIconSetToken =>
 const getItemKey = (item: AssetRowOption) =>
     item.type === 'token' ? `${item.account.key}/${item.token.contract}` : item.account.key;
 
-export interface ExpandableAssetRowGroupProps {
+export type ExpandableAssetRowGroupProps = {
     label: TranslationKey;
     account: AccountWithOptionalLabel;
     items: AssetRowOption[];
@@ -42,7 +42,7 @@ export interface ExpandableAssetRowGroupProps {
     expanded: boolean;
     onExpandToggle: (expanded: boolean) => void;
     dataTestId?: string;
-}
+};
 
 export function ExpandableAssetRowGroup({
     label,

@@ -19,14 +19,14 @@ import {
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
 
-export interface BuildSellAssetRowsProps {
+export type BuildSellAssetRowsProps = {
     accounts: readonly AccountWithOptionalLabel[];
     networkSymbolFilter: NetworkSymbol | undefined;
     excludedCryptoIds: Set<CryptoId>;
     tokenDefinitions: TokenDefinitionsState | undefined;
     baseCurrencyCode: BaseCurrencyCode;
     fiatRates: RatesByKey;
-}
+};
 
 export const buildSellAssetRows = ({
     accounts,

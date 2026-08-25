@@ -11,10 +11,7 @@ import {
     AssetsModal,
     ExpandableAssetRowGroup,
 } from 'src/components/suite/asset-picker/components';
-import {
-    useExpandableGroups,
-    useSearchFilter,
-} from 'src/components/suite/asset-picker/hooks';
+import { useExpandableGroups, useSearchFilter } from 'src/components/suite/asset-picker/hooks';
 import {
     type AccountWithOptionalLabel,
     type AssetPickerListItem,
@@ -24,11 +21,11 @@ import {
     type AssetGroupKey,
     getAssetGroupKey,
 } from 'src/components/suite/asset-picker/utils/assetGroupKey';
+import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
 
-import { AssetListWrapper } from './AssetListWrapper';
 import { useBuildTradingAssetOptions } from './hooks/useBuildTradingAssetOptions';
 import { type UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
-import { AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
+import { AssetListWrapper, AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
 
 const MODAL_WIDTH = 480;
 
@@ -57,16 +54,17 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
         expandedGroupKeys,
     });
 
-    const handleAssetClick = useUpdateFormInput({ closeModal, onAssetSelect });
+    const { handleAccountClick, handleTokenClick } = useUpdateFormInput({
+        closeModal,
+        onAssetSelect,
+    });
 
     const renderAssetRow = useCallback(
-        (item: AssetRowOption, { isInsideGroup = false, isSelectable = true } = {}) => {
-            const onClick = isSelectable ? () => handleAssetClick(item) : undefined;
-
-            return item.type === 'account' ? (
+        (item: AssetRowOption, { isInsideGroup = false, isSelectable = true } = {}) =>
+            item.type === 'account' ? (
                 <AssetRowAccountWithBalance
                     account={item.account}
-                    onClick={onClick}
+                    onClick={isSelectable ? handleAccountClick : undefined}
                     isFiatPrimary
                     isInsideGroup={isInsideGroup}
                     dataTestId={getAccountTestId(item.account)}
@@ -75,15 +73,14 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                 <AssetRowToken
                     token={item.token}
                     account={item.account}
-                    onClick={onClick}
+                    onClick={isSelectable ? handleTokenClick : undefined}
                     isFiatPrimary
                     isInsideGroup={isInsideGroup}
                     showNoTradingPairText={!isSelectable}
                     dataTestId={`${getAccountTestId(item.account)}/token/${item.token.symbol}`}
                 />
-            );
-        },
-        [handleAssetClick],
+            ),
+        [handleAccountClick, handleTokenClick],
     );
 
     const renderItem = useCallback(
@@ -152,10 +149,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
             <AssetListWrapper
                 listItems={listItems}
                 renderItem={renderItem}
-                /**
-                 * The listItems` contain fiat rates which are being frequently updated causing unwanted scroll position to be reset.
-                 * Instead, hint the `useListScrollReset` hook to reset scroll position when network filter, search, or list items size changes.
-                 */
+                getItemHeight={getAssetPickerItemHeight}
                 resetScrollTrigger={`${networkFilter}${search}${listItems.length}`}
             />
         </AssetsModal>

@@ -41,14 +41,14 @@ const groupRowsByAccount = (rows: readonly AssetRowOption[]) => {
     return rowsByAccount;
 };
 
-export interface BuildGroupedAssetOptionsProps {
+export type BuildGroupedAssetOptionsProps = {
     assetRows: readonly AccountWithTokensOption[];
     tradableCryptoIds: Set<CryptoId>;
     threshold: BaseCurrencyAmount | null;
     fiatRates: RatesByKey | undefined;
     baseCurrencyCode: BaseCurrencyCode;
     expandedGroupKeys: readonly AssetGroupKey[];
-}
+};
 
 export const buildGroupedAssetOptions = ({
     assetRows,

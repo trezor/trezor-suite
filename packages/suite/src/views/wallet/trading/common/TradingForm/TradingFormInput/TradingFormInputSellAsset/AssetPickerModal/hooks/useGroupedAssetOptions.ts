@@ -8,7 +8,7 @@ import { type AccountWithTokensOption } from 'src/components/suite/asset-picker/
 import { type AssetGroupKey } from 'src/components/suite/asset-picker/utils/assetGroupKey';
 import { useSelector } from 'src/hooks/suite';
 
-import { useAssetsContext } from '../../AssetOptionsContext';
+import { useAssetsContext } from '../../../TradingFormInputAssetPicker';
 import { buildGroupedAssetOptions } from '../utils/buildGroupedAssetOptions';
 
 export function useGroupedAssetOptions(
