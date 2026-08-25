@@ -1,1 +1,1 @@
-export { mockAnalytics } from './mockAnalytics';
+export { type MockedAnalytics, mockAnalytics } from './mockAnalytics';

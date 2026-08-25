@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { deviceInitialState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -25,8 +25,7 @@ const createState = (selectedDevice: TrezorDevice | undefined): SignVerifyRootSt
 
 describe('Sign/Verify actions', () => {
     let dispatch: jest.Mock;
-    let report: jest.Mock;
-    let deps: { services: DesktopAnalyticsDep };
+    let deps: { services: { analytics: ReturnType<typeof mockDesktopAnalytics> } };
 
     // The thunks only read the selected device and the address display type, so a state literal
     // is enough — no store, no middleware.
@@ -34,8 +33,7 @@ describe('Sign/Verify actions', () => {
 
     beforeEach(() => {
         dispatch = jest.fn();
-        report = jest.fn();
-        deps = { services: { analytics: mockDesktopAnalytics(report) } };
+        deps = { services: { analytics: mockDesktopAnalytics() } };
     });
 
     it('showAddress', async () => {
@@ -120,7 +118,7 @@ describe('Sign/Verify actions', () => {
 
             await sign(ACCOUNT, PATH, MESSAGE, true)(dispatch, getState, deps);
 
-            expect(report).toHaveBeenCalledWith(
+            expect(deps.services.analytics.report).toHaveBeenCalledWith(
                 expect.objectContaining({ payload: expect.objectContaining({ hex: true }) }),
             );
         });
@@ -135,8 +133,8 @@ describe('Sign/Verify actions', () => {
 
             await sign(ACCOUNT, PATH, MESSAGE, true, true)(dispatch, getState, deps);
 
-            expect(report).toHaveBeenCalledTimes(1);
-            expect(report).toHaveBeenCalledWith({
+            expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
+            expect(deps.services.analytics.report).toHaveBeenCalledWith({
                 type: events.coinSignMessageEvent.name,
                 payload: {
                     status: 'success',
@@ -155,8 +153,8 @@ describe('Sign/Verify actions', () => {
 
             await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
 
-            expect(report).toHaveBeenCalledTimes(1);
-            expect(report).toHaveBeenCalledWith({
+            expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
+            expect(deps.services.analytics.report).toHaveBeenCalledWith({
                 type: events.coinSignMessageEvent.name,
                 payload: {
                     status: 'error',
@@ -178,8 +176,8 @@ describe('Sign/Verify actions', () => {
 
                 await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
 
-                expect(report).toHaveBeenCalledTimes(1);
-                expect(report).toHaveBeenCalledWith(
+                expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
+                expect(deps.services.analytics.report).toHaveBeenCalledWith(
                     expect.objectContaining({
                         type: events.coinSignMessageEvent.name,
                         payload: expect.objectContaining({ status: 'cancelled', error: code }),
@@ -193,8 +191,8 @@ describe('Sign/Verify actions', () => {
 
             await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getStateWithoutDevice, deps);
 
-            expect(report).toHaveBeenCalledTimes(1);
-            expect(report).toHaveBeenCalledWith({
+            expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
+            expect(deps.services.analytics.report).toHaveBeenCalledWith({
                 type: events.coinSignMessageEvent.name,
                 payload: {
                     status: 'error',
@@ -214,8 +212,8 @@ describe('Sign/Verify actions', () => {
 
             await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true)(dispatch, getState, deps);
 
-            expect(report).toHaveBeenCalledTimes(1);
-            expect(report).toHaveBeenCalledWith({
+            expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
+            expect(deps.services.analytics.report).toHaveBeenCalledWith({
                 type: events.coinVerifyMessageEvent.name,
                 payload: { status: 'success', symbol: 'btc', hex: true },
             });
@@ -229,8 +227,8 @@ describe('Sign/Verify actions', () => {
 
             await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
 
-            expect(report).toHaveBeenCalledTimes(1);
-            expect(report).toHaveBeenCalledWith({
+            expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
+            expect(deps.services.analytics.report).toHaveBeenCalledWith({
                 type: events.coinVerifyMessageEvent.name,
                 payload: {
                     status: 'error',
@@ -249,8 +247,8 @@ describe('Sign/Verify actions', () => {
 
             await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
 
-            expect(report).toHaveBeenCalledTimes(1);
-            expect(report).toHaveBeenCalledWith(
+            expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
+            expect(deps.services.analytics.report).toHaveBeenCalledWith(
                 expect.objectContaining({
                     payload: expect.objectContaining({ status: 'cancelled' }),
                 }),
@@ -266,7 +264,7 @@ describe('Sign/Verify actions', () => {
             await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
             await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
 
-            const reported = JSON.stringify(report.mock.calls);
+            const reported = JSON.stringify(deps.services.analytics.report.mock.calls);
 
             expect(reported).not.toContain(MESSAGE);
             expect(reported).not.toContain(ADDRESS);
