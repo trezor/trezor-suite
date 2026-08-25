@@ -417,7 +417,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             evmChecks: async (checkedAddress: string) => {
                 if (networkType !== 'ethereum' && networkType !== 'tron') return;
 
-                const isNamedInput = looksLikeNamedAddress(address);
+                // Every check below reads `checkedAddress`, never the `address` watch value:
+                // `watch` is scoped to the last render, while validation runs with the value the
+                // field holds now. Validating one value while querying the previous one sent an
+                // empty descriptor to the backend on the first paste.
+                const isNamedInput = looksLikeNamedAddress(checkedAddress);
                 // Unsupported symbol + named input: let `valid:` surface the error.
                 if (isNamedInput && !isSymbolSupportingNamedAddress(symbol)) return;
 
@@ -431,14 +435,16 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         setTimeout(resolve, NAMED_ADDRESS_RESOLVE_DEBOUNCE_MS),
                     );
 
-                    if (getValues(inputName) !== address) return;
+                    if (getValues(inputName) !== checkedAddress) return;
                 }
 
                 // Named inputs resolve through the same query the bottom text reads, so
                 // validating and displaying the hint share a single request.
                 const resolvedAddress = isNamedInput
                     ? await queryClient
-                          .ensureQueryData(getResolveNamedAddressQueryOptions(address, symbol))
+                          .ensureQueryData(
+                              getResolveNamedAddressQueryOptions(checkedAddress, symbol),
+                          )
                           .catch(() => null)
                     : null;
 
@@ -447,7 +453,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
 
                 const result = await TrezorConnect.getAccountInfo({
-                    descriptor: resolvedAddress ?? address,
+                    descriptor: resolvedAddress ?? checkedAddress,
                     coin: asCoinSymbol(symbol),
                 });
 
@@ -459,7 +465,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 // resolution to whatever the user typed since — and signing prefers
                 // `resolvedAddress` over `address`, so the transaction would go to the previous
                 // recipient. The newer run started its awaits later and settles last.
-                if (getValues(inputName) !== address) return;
+                if (getValues(inputName) !== checkedAddress) return;
 
                 const { payload } = result;
 
@@ -476,7 +482,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 if (
                     networkType === 'ethereum' &&
                     !resolvedAddress &&
-                    !checkAddressChecksum(address)
+                    !checkAddressChecksum(checkedAddress)
                 ) {
                     const checksumAndUsageValidationResult = checkIsAddressNotUsedNotChecksummed(
                         checkedAddress,
@@ -573,11 +579,17 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             );
         }
 
+        // The own-account label outranks a primary name: it tells the user whose address they
+        // are sending to, while reverse resolution is a bonus lookup they never asked for.
+        if (isAddressWithLabel) {
+            return addressLabelComponent;
+        }
+
         if (reverseResolvedName) {
             return <Translation id="TR_ENS_PRIMARY_NAME" values={{ name: reverseResolvedName }} />;
         }
 
-        return isAddressWithLabel ? addressLabelComponent : null;
+        return null;
     };
 
     const getBottomTextIconComponent = () => {
@@ -593,10 +605,9 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             return <Icon as={InfoIcon} size={16} intent="info" />;
         }
 
-        // The label icon belongs to the label text, and every ENS state outranks it in
-        // `getBottomText`. Without this the icon keeps rendering underneath an ENS message —
-        // an account-label icon beside a primary name, for any own address that has one.
-        if (isResolvingNamedAddress || resolvedNamedAddress || reverseResolvedName) {
+        // The label icon belongs to the label text, so it must not linger under a forward
+        // resolution message that took the label's place in `getBottomText`.
+        if (isResolvingNamedAddress || resolvedNamedAddress) {
             return undefined;
         }
 
