@@ -6,8 +6,8 @@ import {
     useInsertGroupLabelsAndSpaces,
 } from 'src/components/suite/asset-picker/hooks';
 
-import { useAccountWithTokensOptions } from './useAccountWithTokensOptions';
 import { useGroupedAssetOptions } from './useGroupedAssetOptions';
+import { useSellAssetRows } from './useSellAssetRows';
 import { useAssetsContext } from '../../AssetOptionsContext';
 import { type AssetGroupKey } from '../utils/buildGroupedAssetOptions';
 
@@ -24,7 +24,7 @@ export function useBuildTradingAssetOptions({
 }: UseBuildTradingAssetOptionsProps) {
     const { excludedCryptoIds } = useAssetsContext();
 
-    const { networks, assetRows } = useAccountWithTokensOptions({
+    const { networks, assetRows } = useSellAssetRows({
         networkSymbolFilter: networkSymbol,
         excludedCryptoIds,
     });
