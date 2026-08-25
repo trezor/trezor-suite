@@ -1,56 +1,90 @@
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { type AccountKey, type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { parseAccountKey } from '@suite-common/wallet-utils';
-import { selectAccountLabel } from '@suite-native/accounts';
-import { AddressFormatter, BaseCurrencyAmountFormatter } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
-import { type CombinedLabelingState } from '@suite-native/labeling';
+import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { AccountLabel } from '@suite-native/accounts';
+import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
+import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
+import { Icon, TokenIcon } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { EarnAccountCardLayout } from './EarnAccountCardLayout';
+import { EarnClaimTokenIconSet } from './EarnClaimTokenIconSet';
+import { type StablecoinYieldClaimSummary } from '../types';
+
+const rowStyle = prepareNativeStyle(utils => ({
+    minHeight: 80,
+    paddingLeft: utils.spacings.sp16,
+    paddingRight: utils.spacings.sp12,
+    paddingVertical: utils.spacings.sp12,
+    flexDirection: 'row',
+    alignItems: 'center',
+}));
+
+const contentStyle = prepareNativeStyle(_ => ({
+    flex: 1,
+    overflow: 'hidden',
+}));
 
 type StablecoinYieldClaimAccountCardProps = {
-    accountKey: AccountKey;
-    fiatClaimableAmount: BaseCurrencyAmount | null;
-    networkSymbol: NetworkSymbol;
+    summary: StablecoinYieldClaimSummary;
     onPress: () => void;
 };
 
 export const StablecoinYieldClaimAccountCard = ({
-    accountKey,
-    fiatClaimableAmount,
-    networkSymbol,
+    summary,
     onPress,
 }: StablecoinYieldClaimAccountCardProps) => {
-    const { accountDescriptor, deviceStaticSessionId } = parseAccountKey(accountKey);
-    const customAccountLabel = useSelector((state: CombinedLabelingState) =>
-        selectAccountLabel(state, deviceStaticSessionId, accountDescriptor, networkSymbol),
+    const { applyStyle } = useNativeStyles();
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, summary.accountKey),
     );
+    const tokenSymbols = summary.tokens.map(({ symbol }) => symbol).join(', ');
 
     return (
-        <EarnAccountCardLayout
-            accountKey={accountKey}
-            icon={<TokenIcon symbol={networkSymbol} size="extraSmall" />}
-            title={customAccountLabel ?? getNetworkDisplaySymbolName(networkSymbol)}
-            description={
-                <AddressFormatter
-                    value={accountDescriptor}
-                    format="short"
-                    variant="body-sm"
-                    color="contentSecondary"
-                    numberOfLines={1}
-                />
-            }
-            value={
+        <PressableOpacity
+            onPress={onPress}
+            style={applyStyle(rowStyle)}
+            testID={`@earn/claim-account/${summary.accountKey}`}
+        >
+            <Box marginRight="sp12">
+                <TokenIcon symbol={summary.networkSymbol} size="small" />
+            </Box>
+
+            <VStack spacing="sp4" style={applyStyle(contentStyle)}>
+                {account ? (
+                    <AccountLabel
+                        account={account}
+                        showAccountTypeBadge
+                        variant="body-md-strong"
+                        numberOfLines={1}
+                    />
+                ) : (
+                    <Text variant="body-md-strong" numberOfLines={1}>
+                        {getNetworkDisplaySymbolName(summary.networkSymbol)}
+                    </Text>
+                )}
+                <HStack spacing="sp6" alignItems="center">
+                    <EarnClaimTokenIconSet tokens={summary.tokens} />
+                    <Text
+                        variant="body-sm"
+                        color="contentSecondary"
+                        numberOfLines={1}
+                        style={{ flexShrink: 1 }}
+                    >
+                        {tokenSymbols}
+                    </Text>
+                </HStack>
+            </VStack>
+
+            <HStack spacing="sp8" alignItems="center" marginLeft="sp8">
                 <BaseCurrencyAmountFormatter
-                    value={fiatClaimableAmount}
-                    variant="body-md"
+                    value={summary.fiatClaimableAmount}
+                    variant="body-md-strong"
                     isDiscreetText={false}
                     numberOfLines={1}
                 />
-            }
-            onPress={onPress}
-        />
+                <Icon name="caretRight" size="mediumLarge" color="contentSecondary" />
+            </HStack>
+        </PressableOpacity>
     );
 };

@@ -7,9 +7,8 @@ import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { TitleHeader, VStack } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
-import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
 
@@ -216,14 +215,7 @@ const EarnScreenContent = () => {
 
     return (
         <Screen header={<DeviceManagerScreenHeader />}>
-            <VStack spacing="sp32" marginTop="sp16">
-                <TitleHeader
-                    titleSpacing="sp4"
-                    titleVariant="headline-md"
-                    title={<Translation id="earn.earnScreen.title" />}
-                    subtitleVariant="body-sm"
-                />
-
+            <VStack spacing="sp32">
                 <FlashList
                     data={earnListData}
                     getItemType={getEarnListItemType}

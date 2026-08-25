@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, CardDivider, HStack, PressableOpacity, Text } from '@suite-native/atoms';
+import { Box, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -57,44 +57,39 @@ export const EarnDepositsCardRow = React.memo(({ row, onPress }: EarnDepositsCar
     const visibleIcons = getVisibleRowIcons(row);
 
     return (
-        <Box>
-            <CardDivider />
-            <PressableOpacity
-                onPress={onPress}
-                style={applyStyle(rowStyle)}
-                testID={`@earn/deposits-card/${row.type}`}
-            >
-                <Box style={applyStyle(rowTextContainerStyle)}>
-                    <Text variant="body-md">{row.title}</Text>
+        <PressableOpacity
+            onPress={onPress}
+            style={applyStyle(rowStyle)}
+            testID={`@earn/deposits-card/${row.type}`}
+        >
+            <Box style={applyStyle(rowTextContainerStyle)}>
+                <Text variant="body-md">{row.title}</Text>
+            </Box>
+            <HStack spacing="sp12" alignItems="center">
+                <Box style={applyStyle(rowIconsContainerStyle)}>
+                    {visibleIcons.slice(0, MAX_VISIBLE_ROW_ICONS).map((item, index) => (
+                        <Box
+                            key={`${getRowItemIconKey(item)}-${index}`}
+                            style={applyStyle(rowIconWrapperStyle, { index })}
+                        >
+                            <TokenIcon
+                                symbol={item.type === 'staking' ? item.symbol : item.networkSymbol}
+                                contractAddress={
+                                    item.type === 'stablecoin-yield'
+                                        ? item.tokenContractAddress
+                                        : undefined
+                                }
+                                size="extraSmall"
+                                showNetworkIcon
+                                wrappedTokenIcon={
+                                    item.type === 'stablecoin-yield' ? 'network' : 'token'
+                                }
+                            />
+                        </Box>
+                    ))}
                 </Box>
-                <HStack spacing="sp12" alignItems="center">
-                    <Box style={applyStyle(rowIconsContainerStyle)}>
-                        {visibleIcons.slice(0, MAX_VISIBLE_ROW_ICONS).map((item, index) => (
-                            <Box
-                                key={`${getRowItemIconKey(item)}-${index}`}
-                                style={applyStyle(rowIconWrapperStyle, { index })}
-                            >
-                                <TokenIcon
-                                    symbol={
-                                        item.type === 'staking' ? item.symbol : item.networkSymbol
-                                    }
-                                    contractAddress={
-                                        item.type === 'stablecoin-yield'
-                                            ? item.tokenContractAddress
-                                            : undefined
-                                    }
-                                    size="extraSmall"
-                                    showNetworkIcon
-                                    wrappedTokenIcon={
-                                        item.type === 'stablecoin-yield' ? 'network' : 'token'
-                                    }
-                                />
-                            </Box>
-                        ))}
-                    </Box>
-                    <Icon name="caretRight" size="mediumLarge" color="contentSecondary" />
-                </HStack>
-            </PressableOpacity>
-        </Box>
+                <Icon name="caretRight" size="mediumLarge" color="contentSecondary" />
+            </HStack>
+        </PressableOpacity>
     );
 });

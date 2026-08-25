@@ -15,6 +15,7 @@ import {
     buildStablecoinYieldClaimSummaries,
     getStablecoinYieldAccountRewards,
     getTotalFiatClaimableAmount,
+    getUniqueStablecoinYieldClaimTokens,
 } from './stablecoinYieldClaimSummaryUtils';
 import { type StablecoinYieldPositionItem } from '../types';
 
@@ -124,6 +125,13 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
                 networkSymbol: ethereumAccount.symbol,
                 claimableRewardsCount: 1,
                 fiatClaimableAmount: null,
+                tokens: [
+                    {
+                        networkSymbol: ethereumAccount.symbol,
+                        contractAddress: underlyingTokenContract,
+                        symbol: toTokenSymbol('USDC'),
+                    },
+                ],
             },
         ]);
         expect(getTotalFiatClaimableAmount(summaries)).toBeNull();
@@ -155,6 +163,13 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
             }),
         ]);
         expect(getTotalFiatClaimableAmount(summaries)?.toString()).toBe('3.75');
+        expect(getUniqueStablecoinYieldClaimTokens(summaries)).toEqual([
+            {
+                networkSymbol: ethereumAccount.symbol,
+                contractAddress: underlyingTokenContract,
+                symbol: toTokenSymbol('USDC'),
+            },
+        ]);
     });
 
     it('sums fiat values only when all claimable rewards have fiat values', () => {

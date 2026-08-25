@@ -1,9 +1,14 @@
-import { useCallback } from 'react';
+import { Fragment, useCallback } from 'react';
 
-import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    type BottomSheetModalRef,
+    Box,
+    Card,
+    Divider,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { EarnAccountCard } from './EarnAccountCard';
 import { StablecoinYieldClaimAccountCard } from './StablecoinYieldClaimAccountCard';
 import { type StablecoinYieldClaimItem } from '../utils/stablecoinYieldClaimSummaryUtils';
 
@@ -31,30 +36,23 @@ export const StablecoinYieldClaimRewardsBottomSheet = ({
     return (
         <BottomSheetModal
             ref={ref}
-            title={<Translation id="earn.earnScreen.activeSheet.yieldPositionsTitle" />}
+            title={<Translation id="earn.earnScreen.claimRewards.title" />}
+            subtitle={<Translation id="earn.earnScreen.claimRewards.subtitle" />}
             isCloseDisplayed
             onClose={onClose}
         >
             <Box paddingTop="sp16">
-                {claimItems.map(claimItem =>
-                    claimItem.positions.length > 0 ? (
-                        claimItem.positions.map(position => (
-                            <EarnAccountCard
-                                key={position.id}
-                                item={position}
+                <Card borderColor="borderNeutral" noPadding>
+                    {claimItems.map((claimItem, index) => (
+                        <Fragment key={claimItem.summary.accountKey}>
+                            {index > 0 && <Divider />}
+                            <StablecoinYieldClaimAccountCard
+                                summary={claimItem.summary}
                                 onPress={() => handleClaimRewardsSelect(claimItem)}
                             />
-                        ))
-                    ) : (
-                        <StablecoinYieldClaimAccountCard
-                            key={claimItem.summary.accountKey}
-                            accountKey={claimItem.summary.accountKey}
-                            fiatClaimableAmount={claimItem.summary.fiatClaimableAmount}
-                            networkSymbol={claimItem.summary.networkSymbol}
-                            onPress={() => handleClaimRewardsSelect(claimItem)}
-                        />
-                    ),
-                )}
+                        </Fragment>
+                    ))}
+                </Card>
             </Box>
         </BottomSheetModal>
     );
