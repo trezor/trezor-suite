@@ -2,7 +2,7 @@ import { RedactNumericalValue } from '@suite/discreet-mode';
 import { TrezorLink } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { type SignValue } from '@suite-common/suite-types';
-import { type NetworkSymbol, getExplorerUrl, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getExplorerUrl, getNetworkType } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { isNftMultitokenTransfer } from '@suite-common/wallet-utils';
 import { Box, Column, Row, Text } from '@trezor/components';
@@ -33,7 +33,7 @@ export const FormattedNftAmount = ({
     linkTypographyStyle,
 }: FormattedNftAmountProps) => {
     const { translationString } = useTranslation();
-    const network = getNetwork(networkSymbol);
+    const networkType = getNetworkType(networkSymbol);
     const explorer = useSelector(state => selectExplorer(state, networkSymbol));
 
     const symbolComponent = transfer.symbol ? (
@@ -69,7 +69,7 @@ export const FormattedNftAmount = ({
                                 </Row>
                             )}
                         </Row>
-                        {isWithLink && network.networkType === 'ethereum' ? (
+                        {isWithLink && networkType === 'ethereum' ? (
                             <TrezorLink
                                 href={`${getExplorerUrl(explorer, 'nft')}${transfer.contract}/${token.id}`}
                                 typographyStyle={linkTypographyStyle}
@@ -98,7 +98,7 @@ export const FormattedNftAmount = ({
             {isWithLink ? (
                 <TrezorLink
                     href={
-                        network.networkType === 'ethereum'
+                        networkType === 'ethereum'
                             ? `${getExplorerUrl(explorer, 'nft')}${transfer.contract}/${transfer.amount}`
                             : undefined
                     }

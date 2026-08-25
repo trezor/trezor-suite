@@ -1,6 +1,5 @@
 import { Translation } from '@suite/intl';
-import { getNetwork } from '@suite-common/wallet-config';
-import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
+import { selectAccountNetworkType, selectIsPhishingTransaction } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
 import { Column, Divider } from '@trezor/components';
 
@@ -15,18 +14,18 @@ type IODetailsProps = {
 };
 
 export const IODetails = ({ tx }: IODetailsProps) => {
-    const network = getNetwork(tx.symbol);
     const accountKey = createAccountKey({
         accountDescriptor: tx.descriptor,
         networkSymbol: tx.symbol,
         deviceStaticSessionId: tx.deviceState,
     });
+    const networkType = useSelector(state => selectAccountNetworkType(state, accountKey));
     const { isPhishing: isPhishingTransaction } = useSelector(state =>
         selectIsPhishingTransaction(state, tx.txid, accountKey),
     );
 
     const getContent = () => {
-        if (network.networkType === 'ethereum' || network.networkType === 'tron') {
+        if (networkType === 'ethereum' || networkType === 'tron') {
             return (
                 <>
                     <IOGroup
@@ -41,7 +40,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
                     />
                 </>
             );
-        } else if (network.networkType === 'solana' || network.networkType === 'stellar') {
+        } else if (networkType === 'solana' || networkType === 'stellar') {
             return (
                 <>
                     <IOGroup
@@ -77,7 +76,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
                     />
                 </>
             );
-        } else if (network.networkType === 'cardano') {
+        } else if (networkType === 'cardano') {
             return (
                 <>
                     <IOGroup
