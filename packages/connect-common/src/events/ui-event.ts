@@ -253,29 +253,16 @@ export type UiEvent =
 
 export type UiEventMessage = UiEvent & {
     event: typeof UI_EVENT;
-    requestId?: string;
-    callId?: string;
+    callId?: string; // callId is added by connect core/index when the event is emitted, see createSendCoreMessageWithCallId
 };
 
 export const isUiEventOfType = createTypeGuardByType<UiEvent>();
 
-// type CreateUiMessageOptions = {
-//     requestId?: string;
-//     callId?: string;
-// };
-
 export const createUiEventMessage = ((
     type: UiEvent['type'],
     payload?: UiEvent extends { payload: infer P } ? P : undefined,
-    options?: { requestId?: string; callId?: string },
-) => {
-    const { requestId, callId } = options ?? {};
-
-    return {
-        event: UI_EVENT,
-        type,
-        payload,
-        requestId,
-        callId,
-    };
-}) as MessageFactoryFn<typeof UI_EVENT, UiEvent>;
+) => ({
+    event: UI_EVENT,
+    type,
+    payload,
+})) as MessageFactoryFn<typeof UI_EVENT, UiEvent>;
