@@ -10,6 +10,7 @@ import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/Tradi
 type TradingExchangeDetailPaymentKYCProps = {
     trade: ExchangeTrade;
     account?: Account;
+    receiveAccount?: Account;
     provider?: ExchangeProviderInfo;
     supportUrl?: string;
 };
@@ -17,6 +18,7 @@ type TradingExchangeDetailPaymentKYCProps = {
 export const TradingExchangeDetailPaymentKYC = ({
     trade,
     account,
+    receiveAccount,
     provider,
     supportUrl,
 }: TradingExchangeDetailPaymentKYCProps) => (
@@ -44,6 +46,7 @@ export const TradingExchangeDetailPaymentKYC = ({
             {provider && (
                 <TradingDetailProviderInfo
                     account={account}
+                    receiveAccount={receiveAccount}
                     orderId={trade.orderId}
                     provider={provider}
                     trade={trade}

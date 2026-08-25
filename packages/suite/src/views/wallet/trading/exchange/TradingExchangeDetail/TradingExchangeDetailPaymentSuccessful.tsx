@@ -12,12 +12,14 @@ import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/Tradi
 type TradingExchangeDetailPaymentSuccessfulProps = {
     trade: ExchangeTrade;
     account?: Account;
+    receiveAccount?: Account;
     provider?: ExchangeProviderInfo;
 };
 
 export const TradingExchangeDetailPaymentSuccessful = ({
     trade,
     account,
+    receiveAccount,
     provider,
 }: TradingExchangeDetailPaymentSuccessfulProps) => {
     const dispatch = useDispatch();
@@ -42,6 +44,7 @@ export const TradingExchangeDetailPaymentSuccessful = ({
                 <Card>
                     <TradingDetailProviderInfo
                         account={account}
+                        receiveAccount={receiveAccount}
                         orderId={trade.orderId}
                         provider={provider}
                         trade={trade}

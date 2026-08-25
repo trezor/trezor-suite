@@ -23,6 +23,7 @@ type TradingExchangeDetailPaymentConvertingProps = {
     trade: ExchangeTrade;
     provider?: ExchangeProviderInfo;
     account?: Account;
+    receiveAccount?: Account;
     isDex?: boolean;
 };
 
@@ -30,6 +31,7 @@ export const TradingExchangeDetailPaymentConverting = ({
     trade,
     provider,
     account,
+    receiveAccount,
     isDex,
 }: TradingExchangeDetailPaymentConvertingProps) => {
     const { translationString } = useTranslation();
@@ -54,6 +56,7 @@ export const TradingExchangeDetailPaymentConverting = ({
                     {provider && (
                         <TradingDetailProviderInfo
                             account={account}
+                            receiveAccount={receiveAccount}
                             orderId={trade.orderId}
                             provider={provider}
                             trade={trade}

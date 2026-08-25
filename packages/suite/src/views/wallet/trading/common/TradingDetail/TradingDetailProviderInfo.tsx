@@ -15,6 +15,7 @@ import { TradingProviderInfo } from '../TradingProviderInfo';
 
 type TradingDetailProviderInfoProps = {
     account?: Account;
+    receiveAccount?: Account;
     estimatedTime?: string;
     orderId?: string;
     provider: TradingProviderInfoType;
@@ -24,6 +25,7 @@ type TradingDetailProviderInfoProps = {
 
 export const TradingDetailProviderInfo = ({
     account,
+    receiveAccount,
     estimatedTime,
     orderId,
     provider,
@@ -49,7 +51,11 @@ export const TradingDetailProviderInfo = ({
                 )}
                 {account && txId && (
                     <InfoItem label={<Translation id="TR_TXID" />} direction="row">
-                        <TradingDetailTxId value={txId} account={account} />
+                        <TradingDetailTxId
+                            value={txId}
+                            account={account}
+                            receiveAccount={receiveAccount}
+                        />
                     </InfoItem>
                 )}
                 <InfoItem label={<Translation id="TR_BUY_PROVIDER" />} direction="row">

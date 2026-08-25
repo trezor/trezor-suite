@@ -115,6 +115,7 @@ export const TradingExchangeDetailContent = () => {
                     <TradingExchangeDetailPaymentSuccessful
                         trade={trade.data}
                         account={sendAccount}
+                        receiveAccount={receiveAccount}
                         provider={provider}
                     />
                 );
@@ -123,6 +124,7 @@ export const TradingExchangeDetailContent = () => {
                     <TradingExchangeDetailPaymentFailed
                         trade={trade.data}
                         account={sendAccount}
+                        receiveAccount={receiveAccount}
                         provider={provider}
                     />
                 );
@@ -131,6 +133,7 @@ export const TradingExchangeDetailContent = () => {
                     <TradingExchangeDetailPaymentKYC
                         trade={trade.data}
                         account={sendAccount}
+                        receiveAccount={receiveAccount}
                         provider={provider}
                         supportUrl={provider?.supportUrl}
                     />
@@ -149,6 +152,7 @@ export const TradingExchangeDetailContent = () => {
                                     <TradingExchangeDetailPaymentSending
                                         trade={trade.data}
                                         account={sendAccount}
+                                        receiveAccount={receiveAccount}
                                         composedTransaction={composedTransaction}
                                     />
                                 )}
@@ -156,6 +160,7 @@ export const TradingExchangeDetailContent = () => {
                                     trade={trade.data}
                                     provider={provider}
                                     account={trade.data.isDex ? sendAccount : undefined}
+                                    receiveAccount={receiveAccount}
                                     isDex={trade.data.isDex}
                                 />
                                 <StepList.Item
