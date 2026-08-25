@@ -8,6 +8,8 @@ import {
     type AccountKey,
     type BaseCurrencyAmount,
     asBaseCurrencyAmount,
+    toTokenAddress,
+    toTokenSymbol,
 } from '@suite-common/wallet-types';
 import { type YieldClaimVaultParams } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
@@ -15,6 +17,7 @@ import { BigNumber } from '@trezor/utils';
 import {
     type EarnDepositsCardActiveItem,
     type StablecoinYieldClaimSummary,
+    type StablecoinYieldClaimToken,
     type StablecoinYieldPositionItem,
 } from '../types';
 
@@ -138,6 +141,19 @@ export const buildStablecoinYieldClaimSummaries = ({
             return [];
         }
 
+        const tokensByContract = new Map<string, StablecoinYieldClaimToken>();
+
+        for (const reward of accountRewards.rewards) {
+            const contractAddress = toTokenAddress(reward.token.address);
+            const tokenKey = `${account.symbol}:${contractAddress.toLowerCase()}`;
+
+            tokensByContract.set(tokenKey, {
+                networkSymbol: account.symbol,
+                contractAddress,
+                symbol: toTokenSymbol(reward.token.symbol),
+            });
+        }
+
         return [
             {
                 type: 'stablecoin-yield',
@@ -145,9 +161,25 @@ export const buildStablecoinYieldClaimSummaries = ({
                 networkSymbol: account.symbol,
                 claimableRewardsCount: accountRewards.rewards.length,
                 fiatClaimableAmount: accountRewards.totalFiatClaimableAmount,
+                tokens: [...tokensByContract.values()],
             },
         ];
     });
+};
+
+export const getUniqueStablecoinYieldClaimTokens = (
+    summaries: StablecoinYieldClaimSummary[],
+): StablecoinYieldClaimToken[] => {
+    const tokensByContract = new Map<string, StablecoinYieldClaimToken>();
+
+    for (const summary of summaries) {
+        for (const token of summary.tokens) {
+            const tokenKey = `${token.networkSymbol}:${token.contractAddress.toLowerCase()}`;
+            tokensByContract.set(tokenKey, token);
+        }
+    }
+
+    return [...tokensByContract.values()];
 };
 
 export type StablecoinYieldClaimItem = {

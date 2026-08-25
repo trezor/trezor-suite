@@ -100,6 +100,8 @@ describe('useEarnDepositsCardData', () => {
         });
 
         expect(result.current.totalDepositedFiatAmount.toFixed()).toBe('4');
+        expect(result.current.stakingFiatAmount.toFixed()).toBe('0');
+        expect(result.current.stablecoinYieldFiatAmount.toFixed()).toBe('4');
         expect(result.current.isFiatRatesLoading).toBe(false);
     });
 
@@ -185,5 +187,20 @@ describe('useEarnDepositsCardData', () => {
         });
         expect(result.current.isFiatTotalIncomplete).toBe(true);
         expect(result.current.isFiatTotalUnavailable).toBe(true);
+    });
+
+    it('returns separate staking and DeFi totals for the earning balance breakdown', () => {
+        const { result } = renderDepositsCardData({
+            items: [createYieldItem(USDC_CONTRACT_LOWERCASE)],
+            stakingItems: [stakingItem],
+            currentRates: {
+                [getFiatRateKey('eth', 'usd')]: { rate: 3_000 },
+                [getFiatRateKey('eth', 'usd', USDC_CONTRACT_LOWERCASE)]: { rate: 1 },
+            },
+        });
+
+        expect(result.current.stakingFiatAmount.toFixed()).toBe('6000');
+        expect(result.current.stablecoinYieldFiatAmount.toFixed()).toBe('4');
+        expect(result.current.totalDepositedFiatAmount.toFixed()).toBe('6004');
     });
 });

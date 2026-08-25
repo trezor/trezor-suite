@@ -9,7 +9,9 @@ import {
     selectCurrentFiatRates,
     useMissingRateTickersQuery,
 } from '@suite-common/wallet-core';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
+import { BigNumber } from '@trezor/utils';
 
 import {
     type EarnDepositsCardActiveItem,
@@ -143,6 +145,28 @@ export const useEarnDepositsCardData = ({
         [calculatedStablecoinYieldDeposits],
     );
 
+    const stakingFiatAmount = useMemo(
+        () =>
+            asBaseCurrencyAmount(
+                calculatedStakingDeposits.reduce(
+                    (total, { fiatAmount }) => total.plus(fiatAmount),
+                    new BigNumber(0),
+                ),
+            ),
+        [calculatedStakingDeposits],
+    );
+
+    const stablecoinYieldFiatAmount = useMemo(
+        () =>
+            asBaseCurrencyAmount(
+                calculatedStablecoinYieldDeposits.reduce(
+                    (total, { fiatAmount }) => total.plus(fiatAmount),
+                    new BigNumber(0),
+                ),
+            ),
+        [calculatedStablecoinYieldDeposits],
+    );
+
     const missingRateTickersQuery = useMissingRateTickersQuery({
         missingRateTickers,
         baseCurrencyCode: fiatCurrency,
@@ -160,7 +184,7 @@ export const useEarnDepositsCardData = ({
         () =>
             createSummaryRow({
                 activeItems: stakingRows,
-                title: translate('earn.staking'),
+                title: translate('earn.earnScreen.depositsCard.stakingPositions'),
             }),
         [stakingRows, translate],
     );
@@ -169,7 +193,7 @@ export const useEarnDepositsCardData = ({
         () =>
             createSummaryRow({
                 activeItems: stablecoinRows,
-                title: translate('earn.defiYield'),
+                title: translate('earn.earnScreen.depositsCard.defiYieldPositions'),
             }),
         [stablecoinRows, translate],
     );
@@ -178,6 +202,8 @@ export const useEarnDepositsCardData = ({
         stakingRow,
         stablecoinYieldRow,
         totalDepositedFiatAmount,
+        stakingFiatAmount,
+        stablecoinYieldFiatAmount,
         isFiatRatesLoading,
         isFiatTotalIncomplete,
         isFiatTotalUnavailable,

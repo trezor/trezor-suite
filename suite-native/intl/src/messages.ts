@@ -2961,18 +2961,22 @@ export const messages = {
                 'Due to Solana transaction size restrictions, you can unstake from {limit} accounts at once. In the next transaction you can unstake up to {amount} {symbol}. To unstake more, repeat the process.',
         },
         earnScreen: {
-            title: 'Earn',
             otherOpportunities: 'Other opportunities',
             depositsCard: {
-                title: 'Your deposits',
+                title: 'Earning balance',
                 networkStaking: '{networkName} staking',
+                stakingPositions: 'Staking positions',
+                defiYieldPositions: 'DeFi Yield positions',
                 availableRewards: 'Bonus rewards',
-                claimRewardsButton: 'Claim rewards',
+                claimRewardsButton: 'Claim',
+                in: 'in',
+                tokens: '{count, plural, one {# token} other {# tokens}}',
+                accounts: '{count, plural, one {# account} other {# accounts}}',
                 incompleteFiatTotal: 'Some fiat rates couldn’t load. Total may be incomplete.',
             },
             activeSheet: {
-                stakingPositionsTitle: 'Your staking positions',
-                yieldPositionsTitle: 'Your yield positions',
+                stakingPositionsTitle: 'Staking positions',
+                yieldPositionsTitle: 'Yield positions',
             },
             stablecoinYieldLoadError: {
                 title: 'Unable to load yield opportunities',
@@ -3011,7 +3015,8 @@ export const messages = {
             },
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
             claimRewards: {
-                title: 'Claim rewards from an account',
+                title: 'Bonus rewards to claim',
+                subtitle: 'Select an account to claim bonus rewards.',
             },
         },
         howStakeWorksScreen: {
