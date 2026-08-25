@@ -22,29 +22,30 @@ const ethereumAccount = mockWalletAccount({
     descriptor: asAccountDescriptor('ethDescriptor'),
 });
 
-const nftTransfer = {
+const nftTransfer: TokenTransfer = {
     type: 'sent',
     standard: 'ERC721',
     contract: '0xnftcontract',
+    from: '0xsender',
+    to: '0xrecipient',
     amount: '1234',
     symbol: 'NFT',
     decimals: 0,
-} as TokenTransfer;
+};
 
-const getInitialState = (): AppState =>
-    ({
-        ...mockInitialAppState,
-        wallet: {
-            ...mockInitialAppState.wallet,
-            accounts: [ethereumAccount],
-            explorer: explorerInitialState,
-            selectedAccount: {
-                status: 'loaded',
-                account: ethereumAccount,
-                network: getNetwork(ethereumAccount.symbol),
-            },
+const getInitialState = (): AppState => ({
+    ...mockInitialAppState,
+    wallet: {
+        ...mockInitialAppState.wallet,
+        explorer: explorerInitialState,
+        selectedAccount: {
+            status: 'loaded',
+            account: ethereumAccount,
+            network: getNetwork(ethereumAccount.symbol),
+            params: undefined,
         },
-    }) as AppState;
+    },
+});
 
 describe('FormattedNftAmount', () => {
     it('opens a token in the explorer of its own network, not of the selected account', () => {

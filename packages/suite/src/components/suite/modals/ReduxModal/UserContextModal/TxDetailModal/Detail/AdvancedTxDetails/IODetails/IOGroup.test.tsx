@@ -36,20 +36,20 @@ const bitcoinTransaction = {
 const inputAddress = 'bc1qtestinputaddress';
 const inputs: IODetailsType[] = [{ addresses: [inputAddress] } as IODetailsType];
 
-const getInitialState = (): AppState =>
-    ({
-        ...mockInitialAppState,
-        wallet: {
-            ...mockInitialAppState.wallet,
-            accounts: [bitcoinAccount, ethereumAccount],
-            explorer: explorerInitialState,
-            selectedAccount: {
-                status: 'loaded',
-                account: ethereumAccount,
-                network: getNetwork(ethereumAccount.symbol),
-            },
+const getInitialState = (): AppState => ({
+    ...mockInitialAppState,
+    wallet: {
+        ...mockInitialAppState.wallet,
+        accounts: [bitcoinAccount, ethereumAccount],
+        explorer: explorerInitialState,
+        selectedAccount: {
+            status: 'loaded',
+            account: ethereumAccount,
+            network: getNetwork(ethereumAccount.symbol),
+            params: undefined,
         },
-    }) as AppState;
+    },
+});
 
 describe('IOGroup', () => {
     it('opens an address in the explorer of the transaction network, not of the selected account', () => {
