@@ -10,6 +10,7 @@ import {
 } from '@suite/tx-simulation/src/common';
 import { EvmInsufficientGasWarning } from '@suite/tx-simulation/src/evm';
 import { connectPopupActions } from '@suite-common/connect-popup';
+import { type ConnectCallSource as ConnectCallSourceType } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
@@ -36,11 +37,13 @@ import { useEvmTxSimulationFeesForm } from '../common/hooks/useEvmTxSimulationFe
 interface ConnectPopupTxSimulationModalInnerProps {
     action: TxSimulationAction;
     account: Account;
+    source: ConnectCallSourceType;
 }
 
 export function ConnectPopupTxSimulationModalInner({
     action,
     account,
+    source,
 }: ConnectPopupTxSimulationModalInnerProps) {
     const { dispatch } = useServices(selectDispatch);
     const [acceptedDisclaimerKey, setAcceptedDisclaimerKey] = useState<string | null>(null);
@@ -61,6 +64,7 @@ export function ConnectPopupTxSimulationModalInner({
         defaultGasLimit: areTxSimulationMethods(TX_METHODS_WITH_FEES, action)
             ? action.payload.transaction.gasLimit
             : undefined,
+        isGasLimitFinal: source.type === 'walletconnect',
     });
 
     const selectedFeeLevel = form.watch('selectedFee') || 'normal';
