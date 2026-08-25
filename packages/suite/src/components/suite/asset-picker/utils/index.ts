@@ -37,28 +37,6 @@ export function createHiddenTokensOption({
     } satisfies Extract<AccountWithTokensOption, { type: 'hidden-tokens' }>;
 }
 
-interface CreateNonradableTokensOptionProps {
-    account: AccountWithOptionalLabel;
-    nonTradableTokens: TokensWithRates[];
-    expandedNonTradableTokensGroups: AccountKey[];
-}
-
-export function createNonTradableTokensOption({
-    account,
-    nonTradableTokens,
-    expandedNonTradableTokensGroups,
-}: CreateNonradableTokensOptionProps) {
-    const expanded = expandedNonTradableTokensGroups.includes(account.key);
-
-    return {
-        type: 'non-tradable-tokens',
-        account,
-        tokens: nonTradableTokens,
-        height: calculateExpandableTokensHeight(expanded, nonTradableTokens.length),
-        expanded,
-    } satisfies Extract<AccountWithTokensOption, { type: 'non-tradable-tokens' }>;
-}
-
 export const createAccountOption = (account: AccountWithOptionalLabel) =>
     ({
         type: 'account',

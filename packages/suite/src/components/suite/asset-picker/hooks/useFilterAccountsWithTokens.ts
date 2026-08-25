@@ -60,7 +60,6 @@ export function useFilterAccountsWithTokens(
                     break;
 
                 case 'hidden-tokens':
-                case 'non-tradable-tokens':
                     if (item.tokens.some(token => isTokenMatchesSearch(token, search))) {
                         accountKeysWithMatchedToken.add(item.account.key);
                     }
@@ -80,7 +79,6 @@ export function useFilterAccountsWithTokens(
                         return accountMatched || isTokenMatchesSearch(item.token, search);
 
                     case 'hidden-tokens':
-                    case 'non-tradable-tokens':
                         return (
                             accountMatched ||
                             item.tokens.some(token => isTokenMatchesSearch(token, search))
@@ -88,10 +86,7 @@ export function useFilterAccountsWithTokens(
                 }
             })
             .map(item => {
-                if (
-                    (item.type === 'hidden-tokens' || item.type === 'non-tradable-tokens') &&
-                    !matchedAccountKeys.has(item.account.key)
-                ) {
+                if (item.type === 'hidden-tokens' && !matchedAccountKeys.has(item.account.key)) {
                     const matchedTokens = item.tokens.filter(token =>
                         isTokenMatchesSearch(token, search),
                     );
