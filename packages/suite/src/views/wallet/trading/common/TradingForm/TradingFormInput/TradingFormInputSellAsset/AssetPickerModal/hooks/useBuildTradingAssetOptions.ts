@@ -9,7 +9,7 @@ import { type AssetGroupKey } from 'src/components/suite/asset-picker/utils/asse
 
 import { useGroupedAssetOptions } from './useGroupedAssetOptions';
 import { useSellAssetRows } from './useSellAssetRows';
-import { useAssetsContext } from '../../AssetOptionsContext';
+import { useAssetsContext } from '../../../TradingFormInputAssetPicker';
 
 export interface UseBuildTradingAssetOptionsProps {
     search: string;

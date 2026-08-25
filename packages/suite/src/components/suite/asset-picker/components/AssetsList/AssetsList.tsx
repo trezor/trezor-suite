@@ -9,14 +9,14 @@ import {
 
 type MeasuredItem<T> = T & BaseItemProps;
 
-export interface AssetsListProps<T> {
+export type AssetsListProps<T> = {
     items: T[];
     renderItem: VirtualizedListProps<MeasuredItem<T>>['renderItem'];
     getItemHeight: (item: T) => number;
     height: VirtualizedListProps<MeasuredItem<T>>['listHeight'];
     minHeight?: VirtualizedListProps<MeasuredItem<T>>['listMinHeight'];
     ref?: RefObject<HTMLDivElement | null>;
-}
+};
 
 export const LIST_MIN_HEIGHT = 200;
 

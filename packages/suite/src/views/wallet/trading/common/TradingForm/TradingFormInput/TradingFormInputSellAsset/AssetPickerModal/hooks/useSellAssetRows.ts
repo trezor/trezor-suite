@@ -14,10 +14,10 @@ import { useSelector } from 'src/hooks/suite';
 
 import { buildSellAssetRows } from '../utils/buildSellAssetRows';
 
-export interface UseSellAssetRowsProps {
+export type UseSellAssetRowsProps = {
     networkSymbolFilter: NetworkSymbol | undefined;
     excludedCryptoIds: Set<CryptoId>;
-}
+};
 
 export function useSellAssetRows({
     networkSymbolFilter,

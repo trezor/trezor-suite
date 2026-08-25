@@ -144,6 +144,8 @@ export function SelectTokenAssetModal({
         ],
     );
 
+    const handleAccountClick = useCallback(() => handleSelectChange(), [handleSelectChange]);
+
     const renderItem = useCallback(
         (item: AssetPickerListItem) => {
             switch (item.type) {
@@ -152,7 +154,7 @@ export function SelectTokenAssetModal({
                         <AssetRowAccountWithBalance
                             dataTestId={`@asset-picker/send-token/option/${item.account.symbol}`}
                             account={item.account}
-                            onClick={() => handleSelectChange()}
+                            onClick={handleAccountClick}
                         />
                     );
 
@@ -197,7 +199,7 @@ export function SelectTokenAssetModal({
                     return null;
             }
         },
-        [handleSelectChange, toggleGroup],
+        [handleAccountClick, handleSelectChange, toggleGroup],
     );
 
     return (

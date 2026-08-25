@@ -5,14 +5,16 @@ import { type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { AssetRowAsset, AssetsModal } from 'src/components/suite/asset-picker/components';
+import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
 import { useSearchFilter } from 'src/components/suite/asset-picker/hooks';
 
-import { AssetListWrapper } from './AssetListWrapper';
 import {
     type TradingAssetListItem,
     useBuildTradingAssetOptions,
 } from './hooks/useBuildTradingAssetOptions';
-import { AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
+import { AssetListWrapper, AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
+
+const getItemHeight = () => ASSET_ROW_HEIGHT;
 
 export type AssetPickerModalProps = {
     closeModal: () => void;
@@ -69,6 +71,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
             <AssetListWrapper
                 renderItem={renderItem}
                 listItems={listItems}
+                getItemHeight={getItemHeight}
                 resetScrollTrigger={`${networkSymbol}${throttledSearch}${listItems.length}`}
             />
         </AssetsModal>

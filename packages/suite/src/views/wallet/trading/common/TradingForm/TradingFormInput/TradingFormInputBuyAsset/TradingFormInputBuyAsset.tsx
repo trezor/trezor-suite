@@ -4,8 +4,11 @@ import { type CryptoId } from 'invity-api';
 
 import { useModal } from 'src/components/suite/asset-picker/hooks';
 
-import { AssetOptionsProvider } from './AssetOptionsContext';
-import { AssetPickerInput, type AssetPickerInputProps } from '../TradingFormInputAssetPicker';
+import {
+    AssetOptionsProvider,
+    AssetPickerInput,
+    type AssetPickerInputProps,
+} from '../TradingFormInputAssetPicker';
 import { AssetPickerModal, type AssetPickerModalProps } from './AssetPickerModal/AssetPickerModal';
 
 export interface TradingFormInputBuyAssetProps {
