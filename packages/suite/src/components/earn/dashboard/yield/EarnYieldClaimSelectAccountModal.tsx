@@ -1,5 +1,4 @@
 import { AccountLabel } from '@suite/account';
-import { Address } from '@suite/address';
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
@@ -10,8 +9,9 @@ import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { compareAccountsByCoin } from '@suite-common/wallet-utils';
-import { CardList, Column, Modal, Row, Text, Tooltip } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
+import { CardList, Column, Icon, Modal, Row, Text, Tooltip } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
+import { TokenIcon, TokenIconSet } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -20,6 +20,15 @@ type EarnYieldClaimSelectAccountModalProps = {
     onSelect: (account: YieldAccountsRewards[number]) => void;
     onClose: () => void;
 };
+
+const getRewardTokens = ({ rewards }: YieldAccountsRewards[number]) => [
+    ...new Map(
+        rewards.map(({ token }) => [
+            token.address.toLowerCase(),
+            { symbol: token.symbol, contract: token.address },
+        ]),
+    ).values(),
+];
 
 export const EarnYieldClaimSelectAccountModal = ({
     accountsRewards,
@@ -69,52 +78,74 @@ export const EarnYieldClaimSelectAccountModal = ({
             onCancel={handleOnCancel}
         >
             <CardList>
-                {sortedAccountsRewards.map(accountRewards => (
-                    <CardList.Item
-                        key={accountRewards.account.key}
-                        onClick={() => handleOnSelect(accountRewards)}
-                    >
-                        <Row gap={16} flex="1" overflow="hidden">
-                            <TokenIcon symbol={accountRewards.account.symbol} size={32} />
-                            <Column flex="1" overflow="hidden" gap={2} alignItems="flex-start">
-                                <AccountLabel
-                                    account={accountRewards.account}
-                                    showAccountTypeBadge
-                                    accountTypeBadgeSize="small"
-                                    typographyStyle="body-md-strong"
-                                />
-                                <Address
-                                    value={accountRewards.account.descriptor}
-                                    typographyStyle="body-sm"
+                {sortedAccountsRewards.map(accountRewards => {
+                    const rewardTokens = getRewardTokens(accountRewards);
+
+                    return (
+                        <CardList.Item
+                            key={accountRewards.account.key}
+                            onClick={() => handleOnSelect(accountRewards)}
+                        >
+                            <Row gap={16} flex="1" overflow="hidden">
+                                <TokenIcon symbol={accountRewards.account.symbol} size={32} />
+                                <Column flex="1" overflow="hidden" gap={2} alignItems="flex-start">
+                                    <AccountLabel
+                                        account={accountRewards.account}
+                                        showAccountTypeBadge
+                                        accountTypeBadgeSize="small"
+                                        typographyStyle="body-md-strong"
+                                    />
+                                    <Row gap={6} width="100%" overflow="hidden">
+                                        <TokenIconSet
+                                            symbol={accountRewards.account.symbol}
+                                            tokens={rewardTokens}
+                                            size={16}
+                                            gap={12}
+                                        />
+                                        <Text
+                                            typographyStyle="body-sm"
+                                            intent="neutral"
+                                            priority="secondary"
+                                            maxWidth="100%"
+                                            ellipsisLineCount={1}
+                                        >
+                                            {rewardTokens.map(({ symbol }) => symbol).join(', ')}
+                                        </Text>
+                                    </Row>
+                                </Column>
+                            </Row>
+                            <Row gap={8} alignItems="center" flex="none">
+                                <Tooltip
+                                    content={
+                                        isDebugModeActive ? (
+                                            <Column gap={8} alignItems="flex-start">
+                                                <DebugOnlyBadge />
+                                                <Text>
+                                                    {accountRewards.totalClaimableFiatAmount.toFixed()}{' '}
+                                                    {baseCurrency.toUpperCase()}
+                                                </Text>
+                                            </Column>
+                                        ) : undefined
+                                    }
+                                >
+                                    <HiddenPlaceholder>
+                                        <Text typographyStyle="body-md-strong">
+                                            {BaseCurrencyAmountFormatter.format(
+                                                accountRewards.totalClaimableFiatAmount,
+                                            )}
+                                        </Text>
+                                    </HiddenPlaceholder>
+                                </Tooltip>
+                                <Icon
+                                    as={CaretRightIcon}
+                                    size={16}
                                     intent="neutral"
                                     priority="secondary"
-                                    isTruncated
                                 />
-                            </Column>
-                        </Row>
-                        <Tooltip
-                            content={
-                                isDebugModeActive ? (
-                                    <Column gap={8} alignItems="flex-start">
-                                        <DebugOnlyBadge />
-                                        <Text>
-                                            {accountRewards.totalClaimableFiatAmount.toFixed()}{' '}
-                                            {baseCurrency.toUpperCase()}
-                                        </Text>
-                                    </Column>
-                                ) : undefined
-                            }
-                        >
-                            <HiddenPlaceholder>
-                                <Text typographyStyle="body-md-strong">
-                                    {BaseCurrencyAmountFormatter.format(
-                                        accountRewards.totalClaimableFiatAmount,
-                                    )}
-                                </Text>
-                            </HiddenPlaceholder>
-                        </Tooltip>
-                    </CardList.Item>
-                ))}
+                            </Row>
+                        </CardList.Item>
+                    );
+                })}
             </CardList>
         </Modal>
     );

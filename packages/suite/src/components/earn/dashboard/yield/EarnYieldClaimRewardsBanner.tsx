@@ -61,38 +61,47 @@ export const EarnYieldClaimRewardsBanner = ({
             isIconVerticallyCentered
             contentGap={8}
             title={
-                <Row gap={8} flexWrap="wrap">
-                    <Text intent="neutral" priority="secondary">
-                        <Translation id="TR_EARN_CLAIM_REWARDS_LABEL" />
-                    </Text>
-
-                    {areRewardsLoading ? (
-                        <Skeleton width={50} height={16} animate />
-                    ) : (
-                        <HiddenPlaceholder>
-                            <Text typographyStyle="body-md-strong">
-                                {!isClaimDisabled && '≈ '}
-                                <BaseCurrencyAmountFormatter value={value} currency={currency} />
-                            </Text>
-                        </HiddenPlaceholder>
-                    )}
-                </Row>
+                <Text intent="neutral" priority="secondary">
+                    <Translation id="TR_EARN_CLAIM_REWARDS_LABEL" />
+                </Text>
             }
             description={
-                !areRewardsLoading && (
-                    <Row gap={16} alignItems="center" flexWrap="wrap">
-                        {tokenRewards.length > 1 && (
+                areRewardsLoading ? (
+                    <Skeleton width={140} height={20} animate />
+                ) : (
+                    <Row gap={8} alignItems="center" flexWrap="wrap">
+                        <Row gap={8} alignItems="center">
+                            <HiddenPlaceholder>
+                                <Text typographyStyle="body-md-strong">
+                                    {!isClaimDisabled && '≈ '}
+                                    <BaseCurrencyAmountFormatter
+                                        value={value}
+                                        currency={currency}
+                                    />
+                                </Text>
+                            </HiddenPlaceholder>
+
+                            <Text intent="neutral" priority="secondary">
+                                <Translation id="TR_EARN_CLAIM_REWARDS_IN" />
+                            </Text>
+
                             <EarnYieldClaimRewardsBannerTokensTooltip
                                 rewards={tokenRewards}
                                 currency={currency}
                             />
-                        )}
+                        </Row>
 
                         {accountRewards.length > 1 && (
-                            <EarnYieldClaimRewardsBannerAccountsTooltip
-                                rewards={accountRewards}
-                                currency={currency}
-                            />
+                            <Row gap={8} alignItems="center">
+                                <Text intent="neutral" priority="secondary">
+                                    <Translation id="TR_EARN_CLAIM_REWARDS_IN" />
+                                </Text>
+
+                                <EarnYieldClaimRewardsBannerAccountsTooltip
+                                    rewards={accountRewards}
+                                    currency={currency}
+                                />
+                            </Row>
                         )}
                     </Row>
                 )

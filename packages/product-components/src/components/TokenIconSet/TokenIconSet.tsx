@@ -8,11 +8,13 @@ import { TokenIcon } from '../TokenIcon/TokenIcon';
 export type TokenIconSetToken = {
     contract?: string | null;
     symbol?: string;
+    networkSymbol?: NetworkSymbol;
 };
 
 export type TokenIconSetProps = CommonIconSetProps & {
     symbol: NetworkSymbol;
     tokens: readonly TokenIconSetToken[];
+    isTransparent?: boolean;
 };
 
 export const TokenIconSet = ({
@@ -24,6 +26,7 @@ export const TokenIconSet = ({
     isCountVisible = false,
     isCentered = false,
     isReversed = false,
+    isTransparent = false,
 }: TokenIconSetProps) => {
     const { length } = tokens;
 
@@ -31,20 +34,23 @@ export const TokenIconSet = ({
         const visibleTokens = maxVisibleIcons !== null ? tokens.slice(0, maxVisibleIcons) : tokens;
 
         return visibleTokens.map(token => {
-            const key = token.contract ?? token.symbol ?? symbol;
-            const nativeCoinSymbol = getNetwork(symbol).settlementLayer ?? symbol;
+            const tokenNetworkSymbol = token.networkSymbol ?? symbol;
+            const key = `${tokenNetworkSymbol}-${token.contract ?? token.symbol ?? symbol}`;
+            const nativeCoinSymbol =
+                getNetwork(tokenNetworkSymbol).settlementLayer ?? tokenNetworkSymbol;
 
             return (
                 <IconWrapper key={key} $size={size} $gap={gap} $length={length}>
                     {token.contract ? (
                         <TokenIcon
                             size={size}
-                            symbol={symbol}
+                            symbol={tokenNetworkSymbol}
                             contractAddress={token.contract ?? null}
                             placeholder={token.symbol ?? ''}
                             placeholderWithTooltip={false}
                             shouldTryToFetch
                             isBordered={false}
+                            isTransparent={isTransparent}
                         />
                     ) : (
                         <TokenIcon size={size} symbol={nativeCoinSymbol} />
@@ -52,7 +58,7 @@ export const TokenIconSet = ({
                 </IconWrapper>
             );
         });
-    }, [tokens, maxVisibleIcons, symbol, size, gap, length]);
+    }, [tokens, maxVisibleIcons, symbol, size, gap, length, isTransparent]);
 
     return (
         <IconSetBase
