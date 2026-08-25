@@ -11,19 +11,19 @@ import {
     AssetsModal,
     ExpandableAssetRowGroup,
 } from 'src/components/suite/asset-picker/components';
-import {
-    useExpandableAccountGroups,
-    useSearchFilter,
-} from 'src/components/suite/asset-picker/hooks';
+import { useExpandableGroups, useSearchFilter } from 'src/components/suite/asset-picker/hooks';
 import {
     type AssetPickerListItem,
     type AssetRowOption,
 } from 'src/components/suite/asset-picker/types';
+import {
+    type AssetGroupKey,
+    getAssetGroupKey,
+} from 'src/components/suite/asset-picker/utils/assetGroupKey';
 import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
 
 import { useBuildTradingAssetOptions } from './hooks/useBuildTradingAssetOptions';
 import { type UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
-import { type AssetGroupKey, getAssetGroupKey } from './utils/buildGroupedAssetOptions';
 import { AssetListWrapper, AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
 
 const MODAL_WIDTH = 480;
@@ -42,13 +42,12 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
     const { search, throttledSearch, setSearch } = useSearchFilter();
 
     const [networkFilter, setNetworkFilter] = useState<NetworkSymbol | undefined>(undefined);
-    const { expandedAccountTokensGroups, updateExpandableAccountGroups } =
-        useExpandableAccountGroups<AssetGroupKey>();
+    const { expandedGroupKeys, toggleGroup } = useExpandableGroups<AssetGroupKey>();
 
     const { listItems, networks } = useBuildTradingAssetOptions({
         search: throttledSearch,
         networkSymbol: networkFilter,
-        expandedGroupKeys: expandedAccountTokensGroups,
+        expandedGroupKeys,
     });
 
     const handleAssetClick = useUpdateFormInput({ closeModal, onAssetSelect });
@@ -114,7 +113,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                             }
                             expanded={item.expanded}
                             onExpandToggle={expanded => {
-                                updateExpandableAccountGroups(
+                                toggleGroup(
                                     getAssetGroupKey(item.account.key, item.type),
                                     expanded,
                                 );
@@ -127,7 +126,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                 }
             }
         },
-        [renderAssetRow, updateExpandableAccountGroups],
+        [renderAssetRow, toggleGroup],
     );
 
     return (

@@ -5,11 +5,11 @@ import {
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
 } from 'src/components/suite/asset-picker/hooks';
+import { type AssetGroupKey } from 'src/components/suite/asset-picker/utils/assetGroupKey';
 
 import { useGroupedAssetOptions } from './useGroupedAssetOptions';
 import { useSellAssetRows } from './useSellAssetRows';
 import { useAssetsContext } from '../../../TradingFormInputAssetPicker';
-import { type AssetGroupKey } from '../utils/buildGroupedAssetOptions';
 
 export interface UseBuildTradingAssetOptionsProps {
     search: string;

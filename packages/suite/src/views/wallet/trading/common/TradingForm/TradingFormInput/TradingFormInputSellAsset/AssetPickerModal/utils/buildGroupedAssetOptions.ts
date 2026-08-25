@@ -2,7 +2,6 @@ import { type CryptoId } from 'invity-api';
 
 import { getCryptoId, groupTradeableAssetsByTradability } from '@suite-common/trading';
 import {
-    type AccountKey,
     type BaseCurrencyAmount,
     type RatesByKey,
     asBaseCurrencyAmount,
@@ -13,17 +12,13 @@ import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
     type AccountWithOptionalLabel,
     type AccountWithTokensOption,
-    type AssetGroupOption,
     type AssetPickerOption,
     type AssetRowOption,
 } from 'src/components/suite/asset-picker/types';
-
-export type AssetGroupKey = `${AccountKey}:${AssetGroupOption['type']}`;
-
-export const getAssetGroupKey = (
-    accountKey: AccountKey,
-    groupType: AssetGroupOption['type'],
-): AssetGroupKey => `${accountKey}:${groupType}`;
+import {
+    type AssetGroupKey,
+    getAssetGroupKey,
+} from 'src/components/suite/asset-picker/utils/assetGroupKey';
 
 const isAssetRowOption = (option: AccountWithTokensOption): option is AssetRowOption =>
     option.type === 'account' || option.type === 'token';

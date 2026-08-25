@@ -19,7 +19,7 @@ import {
     ExpandableAssetRowGroup,
 } from 'src/components/suite/asset-picker/components';
 import {
-    useExpandableAccountGroups,
+    useExpandableGroups,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
 } from 'src/components/suite/asset-picker/hooks';
@@ -44,13 +44,12 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
     const networkSymbolFilter = useSelector(globalSendReceiveFiltersSelectors.selectNetworkSymbol);
     const searchFilter = useSelector(globalSendReceiveFiltersSelectors.selectSearch);
-    const { expandedAccountTokensGroups, updateExpandableAccountGroups } =
-        useExpandableAccountGroups();
+    const { expandedGroupKeys, toggleGroup } = useExpandableGroups();
     const device = useSelector(selectSelectedDevice);
 
     const accountsWithTokens = useAccountWithTokensOptions({
         networkSymbolFilter,
-        expandedHiddenTokensGroups: expandedAccountTokensGroups,
+        expandedHiddenTokensGroups: expandedGroupKeys,
         staticSessionId: device?.state?.staticSessionId ?? null,
     });
 
@@ -126,13 +125,13 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
                             }
                             expanded={item.expanded}
                             onExpandToggle={expanded => {
-                                updateExpandableAccountGroups(item.account.key, expanded);
+                                toggleGroup(item.account.key, expanded);
                             }}
                         />
                     );
             }
         },
-        [handleAccountClick, handleTokenClick, updateExpandableAccountGroups],
+        [handleAccountClick, handleTokenClick, toggleGroup],
     );
 
     return (

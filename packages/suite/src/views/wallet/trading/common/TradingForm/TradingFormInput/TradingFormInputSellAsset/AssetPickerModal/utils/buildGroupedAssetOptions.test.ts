@@ -13,9 +13,10 @@ import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { createAccountOption, createTokenOption } from 'src/components/suite/asset-picker/utils';
+import { getAssetGroupKey } from 'src/components/suite/asset-picker/utils/assetGroupKey';
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
-import { buildGroupedAssetOptions, getAssetGroupKey } from './buildGroupedAssetOptions';
+import { buildGroupedAssetOptions } from './buildGroupedAssetOptions';
 
 const ETH_CRYPTO_ID = 'ethereum' as CryptoId;
 const USDT_CONTRACT = toTokenAddress('0xdac17f958d2ee523a2206206994597c13d831ec7');

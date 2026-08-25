@@ -5,10 +5,11 @@ import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { type AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
+import { type AssetGroupKey } from 'src/components/suite/asset-picker/utils/assetGroupKey';
 import { useSelector } from 'src/hooks/suite';
 
 import { useAssetsContext } from '../../../TradingFormInputAssetPicker';
-import { type AssetGroupKey, buildGroupedAssetOptions } from '../utils/buildGroupedAssetOptions';
+import { buildGroupedAssetOptions } from '../utils/buildGroupedAssetOptions';
 
 export function useGroupedAssetOptions(
     assetRows: AccountWithTokensOption[],
