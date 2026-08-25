@@ -12,7 +12,7 @@ type Params = {
     chainId: number;
 };
 
-type ValidateEvmRpc = ResponseTypes.ValidateEvmRpc;
+type ValidateEvmRpc = ResponseTypes.GetEvmChainId;
 
 export default class BlockchainValidateEvmRpcUrl extends AbstractMethod<
     'blockchainValidateEvmRpcUrl',
@@ -53,15 +53,14 @@ export default class BlockchainValidateEvmRpcUrl extends AbstractMethod<
         });
 
         try {
-            const response = await link.sendMessage<ValidateEvmRpc['payload']>({
-                type: MESSAGES.VALIDATE_EVM_RPC,
-                payload: {
-                    url: this.params.url,
-                    chainId: this.params.chainId,
-                },
+            const actualChainId = await link.sendMessage<ValidateEvmRpc['payload']>({
+                type: MESSAGES.GET_EVM_CHAIN_ID,
+                payload: { url: this.params.url },
             });
 
-            return response;
+            const valid = actualChainId === this.params.chainId;
+
+            return { valid, actualChainId: Number(actualChainId) };
         } finally {
             link.dispose();
         }
