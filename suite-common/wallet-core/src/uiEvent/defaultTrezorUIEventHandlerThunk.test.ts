@@ -8,10 +8,14 @@ import { defaultTrezorUIEventHandlerThunk } from './defaultTrezorUIEventHandlerT
 
 const device = mockSuiteDevice();
 
-const requestWordEvent = createUiRequestMessage(UI_REQUESTS.REQUEST_WORD, {
-    device,
-    type: 'WordRequestType_Plain',
-});
+const requestWordEvent = createUiRequestMessage(
+    UI_REQUESTS.REQUEST_WORD,
+    {
+        device,
+        type: 'WordRequestType_Plain',
+    },
+    { requestId: 'abcd' },
+);
 
 const pinDepletedEvent = createUiEventMessage(UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED, {
     device,
