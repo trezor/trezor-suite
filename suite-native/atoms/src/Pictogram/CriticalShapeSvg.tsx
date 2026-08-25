@@ -1,15 +1,15 @@
-import Svg, { Defs, Path, Use } from 'react-native-svg';
+import Svg, { Defs, Path, type SvgProps, Use } from 'react-native-svg';
 
 import { useNativeStyles } from '@trezor/styles-native';
 
-export const CriticalShapeSvg = () => {
+export const CriticalShapeSvg = (props: SvgProps) => {
     const { utils } = useNativeStyles();
     const borderColor = utils.colors.illustrationFillCritical;
     const underlayColor = utils.colors.surfaceFillRaised;
     const backgroundColor = utils.colors.elementFillCriticalSofter;
 
     return (
-        <Svg width={112} height={112} fill="none">
+        <Svg width={112} height={112} viewBox="0 0 112 112" fill="none" {...props}>
             <Path
                 d="M105 36.6798C105 31.309 102.128 26.348 97.4713 23.6729L63.7306 4.29171C59.1042 1.63422 53.4143 1.63422 48.7879 4.29171L15.0472 23.6729C10.3901 26.348 7.51855 31.3089 7.51855 36.6797V75.3203C7.51855 80.6911 10.3901 85.652 15.0472 88.3272L48.7879 107.708C53.4143 110.366 59.1042 110.366 63.7306 107.708L97.4713 88.3272C102.128 85.652 105 80.6911 105 75.3203V36.6798Z"
                 fill={borderColor}
