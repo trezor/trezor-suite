@@ -180,11 +180,20 @@ export const calculateEarnDepositsFiatData = <
         ...missingStakingRateTickers,
         ...missingStablecoinYieldRateTickers,
     ]);
-    const totalDepositedFiatAmount = asBaseCurrencyAmount(
-        [...calculatedStakingDeposits, ...calculatedStablecoinYieldDeposits].reduce(
+    const stakingFiatAmount = asBaseCurrencyAmount(
+        calculatedStakingDeposits.reduce(
             (sum, deposit) => sum.plus(deposit.fiatAmount),
             new BigNumber(0),
         ),
+    );
+    const stablecoinYieldFiatAmount = asBaseCurrencyAmount(
+        calculatedStablecoinYieldDeposits.reduce(
+            (sum, deposit) => sum.plus(deposit.fiatAmount),
+            new BigNumber(0),
+        ),
+    );
+    const totalDepositedFiatAmount = asBaseCurrencyAmount(
+        stakingFiatAmount.plus(stablecoinYieldFiatAmount),
     );
 
     return {
@@ -193,6 +202,8 @@ export const calculateEarnDepositsFiatData = <
         missingStakingRateTickers,
         missingStablecoinYieldRateTickers,
         missingRateTickers,
+        stakingFiatAmount,
+        stablecoinYieldFiatAmount,
         totalDepositedFiatAmount,
         hasStakingFiatRate: calculatedStakingDeposits.some(({ hasFiatRate }) => hasFiatRate),
         hasStablecoinYieldFiatRate: calculatedStablecoinYieldDeposits.some(

@@ -9,7 +9,7 @@ import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Card, ListItemSkeleton, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { Card, Divider, ListItemSkeleton, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -198,11 +198,7 @@ export const EarnDepositsCard = ({
 
                 {stakingRow && (
                     <Card borderColor="borderNeutral" noPadding testID="@earn/staking-card">
-                        <EarnDepositsCardRow
-                            key={stakingRow.type}
-                            row={stakingRow}
-                            onPress={handleStakingRowPress}
-                        />
+                        <EarnDepositsCardRow row={stakingRow} onPress={handleStakingRowPress} />
                     </Card>
                 )}
 
@@ -210,20 +206,25 @@ export const EarnDepositsCard = ({
                     <Card borderColor="borderNeutral" noPadding testID="@earn/defi-yield-card">
                         {stablecoinYieldRow && (
                             <EarnDepositsCardRow
-                                key={stablecoinYieldRow.type}
                                 row={stablecoinYieldRow}
                                 onPress={openStablecoinYieldSheet}
                             />
                         )}
                         {isStablecoinYieldLoading && !stablecoinYieldRow && <ListItemSkeleton />}
                         {shouldShowClaimRewardsSection && (
-                            <StablecoinYieldClaimRewardsCardSection
-                                claimRewards={stablecoinYieldClaimSummaries}
-                                totalFiatClaimableAmount={stablecoinYieldTotalFiatClaimableAmount}
-                                isLoading={isStablecoinYieldClaimSummariesLoading}
-                                hasTopDivider={stablecoinYieldRow !== null}
-                                onPress={handleStablecoinYieldClaimRewardsPress}
-                            />
+                            <>
+                                {(stablecoinYieldRow !== null || isStablecoinYieldLoading) && (
+                                    <Divider />
+                                )}
+                                <StablecoinYieldClaimRewardsCardSection
+                                    claimRewards={stablecoinYieldClaimSummaries}
+                                    totalFiatClaimableAmount={
+                                        stablecoinYieldTotalFiatClaimableAmount
+                                    }
+                                    isLoading={isStablecoinYieldClaimSummariesLoading}
+                                    onPress={handleStablecoinYieldClaimRewardsPress}
+                                />
+                            </>
                         )}
                     </Card>
                 )}

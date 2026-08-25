@@ -130,6 +130,8 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
                         networkSymbol: ethereumAccount.symbol,
                         contractAddress: underlyingTokenContract,
                         symbol: toTokenSymbol('USDC'),
+                        claimableAmount: '1',
+                        decimals: 6,
                     },
                 ],
             },
@@ -250,7 +252,6 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
             expect(items).toEqual([
                 {
                     summary: expect.objectContaining({ accountKey: ethereumAccount.key }),
-                    positions: [position],
                     vaults: [
                         {
                             name: 'Spark USDC Vault',
@@ -260,7 +261,6 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
                 },
                 {
                     summary: expect.objectContaining({ accountKey: exitedEthereumAccount.key }),
-                    positions: [],
                     vaults: [],
                 },
             ]);
@@ -285,16 +285,12 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
 
             expect(items).toEqual([
                 expect.objectContaining({
-                    positions: [
-                        expect.objectContaining({ title: 'Spark USDC Vault' }),
-                        expect.objectContaining({ title: 'Steakhouse USDT Vault' }),
-                    ],
                     vaults: [
                         expect.objectContaining({ name: 'Spark USDC Vault' }),
                         expect.objectContaining({ name: 'Steakhouse USDT Vault' }),
                     ],
                 }),
-                expect.objectContaining({ positions: [], vaults: [] }),
+                expect.objectContaining({ vaults: [] }),
             ]);
         });
 
@@ -356,10 +352,10 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
                 ethereumAccount.key,
                 exitedEthereumAccount.key,
             ]);
-            expect(items.every(item => item.positions.length === 0)).toBe(true);
+            expect(items.every(item => item.vaults.length === 0)).toBe(true);
         });
 
-        it('keeps a position row without a vault name, but does not attach it as a vault', () => {
+        it('does not attach a position without a vault name as a vault', () => {
             const items = buildStablecoinYieldClaimItems({
                 stablecoinYieldClaimSummaries: claimSummaries,
                 earnDepositsActiveItems: [
@@ -367,7 +363,6 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
                 ],
             });
 
-            expect(items[0]?.positions).toHaveLength(1);
             expect(items[0]?.vaults).toEqual([]);
         });
     });
