@@ -36,8 +36,6 @@ const bitcoinTransaction = {
 const inputAddress = 'bc1qtestinputaddress';
 const inputs: IODetailsType[] = [{ addresses: [inputAddress] } as IODetailsType];
 
-// An account of another network is selected, as it is when the transaction detail is opened from
-// the trade history of a swap.
 const getInitialState = (): AppState =>
     ({
         ...mockInitialAppState,

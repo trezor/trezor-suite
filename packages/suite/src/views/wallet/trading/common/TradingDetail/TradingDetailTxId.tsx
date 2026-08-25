@@ -12,9 +12,9 @@ type TradingDetailTxIdProps = {
     value: string;
     account: Account;
     /**
-     * The other side of a swap. `receiveTxHash` holds the signed send transaction until the trade
-     * status is refreshed, after which the provider replaces it with its payout transaction on the
-     * receive network — so which account the transaction belongs to is only known from the store.
+     * The other side of a swap. `receiveTxHash` holds the signed send transaction until a status
+     * refresh replaces it with the provider's payout on the receive network, so only the store says
+     * which account the transaction belongs to.
      */
     receiveAccount?: Account;
     intent?: TextProps['intent'];

@@ -14,10 +14,7 @@ import { type AddressOwnership, IOItem } from './IOItem';
 
 export type IOGroupProps = {
     tx: WalletAccountTransaction;
-    /**
-     * Symbol the amounts are displayed in, set for a token transfer. The transaction keeps its own
-     * network symbol, which is what the addresses are looked up in the explorer with.
-     */
+    /** Symbol the amounts are displayed in; the addresses still use the transaction's network. */
     tokenSymbol?: NetworkSymbolExtended;
     contractAddress?: string;
     inputs: IODetailsType[];
@@ -37,8 +34,6 @@ export const IOGroup = ({
     isUtxoBased = false,
     isPhishingTransaction,
 }: IOGroupProps) => {
-    // The account the transaction belongs to, which is not necessarily the selected one: the
-    // transaction detail is opened from places such as the trade history as well.
     const accountKey = createAccountKey({
         accountDescriptor: tx.descriptor,
         networkSymbol: tx.symbol,

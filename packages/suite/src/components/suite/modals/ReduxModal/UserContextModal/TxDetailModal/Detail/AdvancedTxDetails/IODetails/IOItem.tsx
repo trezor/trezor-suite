@@ -30,9 +30,7 @@ export type AddressOwnership = keyof typeof ownershipIcon;
 
 type IOItem = {
     anonymitySet?: AnonymitySet;
-    /** Network of the transaction, which decides the explorer the address is opened in. */
     networkSymbol: NetworkSymbol;
-    /** Symbol the amount is displayed in, a token symbol for a token transfer. */
     symbol?: NetworkSymbolExtended;
     contractAddress?: string;
     value?: string;

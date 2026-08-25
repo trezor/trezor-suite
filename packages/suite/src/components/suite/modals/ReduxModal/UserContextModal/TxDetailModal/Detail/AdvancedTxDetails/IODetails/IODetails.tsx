@@ -15,8 +15,6 @@ type IODetailsProps = {
 };
 
 export const IODetails = ({ tx }: IODetailsProps) => {
-    // The transaction's own network, which is not necessarily the one of the selected account: the
-    // transaction detail is opened from places such as the trade history as well.
     const network = getNetwork(tx.symbol);
     const accountKey = createAccountKey({
         accountDescriptor: tx.descriptor,

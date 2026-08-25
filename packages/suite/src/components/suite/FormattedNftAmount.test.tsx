@@ -31,8 +31,6 @@ const nftTransfer = {
     decimals: 0,
 } as TokenTransfer;
 
-// An account of another network is selected, as it is when the transaction detail is opened from
-// the trade history of a swap.
 const getInitialState = (): AppState =>
     ({
         ...mockInitialAppState,
