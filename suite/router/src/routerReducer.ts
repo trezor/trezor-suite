@@ -108,6 +108,9 @@ export const selectIsAccountTabPage = (state: RouterRootState) =>
     isAccountTabRoute(selectRouteName(state));
 
 export const selectRouterApp = (state: RouterRootState) => state.router.app;
+export const selectHasRoute = (state: RouterRootState) => state.router.route !== undefined;
+export const selectIsForegroundApp = (state: RouterRootState) =>
+    state.router.route?.isForegroundApp === true;
 
 export const selectCanNavigate = (state: LocksRootState & ModalRootState) =>
     !selectIsRouterOrUiLocked(state) && !selectHasActiveModal(state);

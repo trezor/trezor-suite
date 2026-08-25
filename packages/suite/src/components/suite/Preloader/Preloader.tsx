@@ -3,6 +3,13 @@ import { type FC, type PropsWithChildren, memo, useEffect } from 'react';
 import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
 import { KillswitchMessageScreen } from '@suite/message-system';
+import {
+    type RouterAppWithParams,
+    selectHasRoute,
+    selectIsForegroundApp,
+    selectRouterApp,
+    selectRouterLoaded,
+} from '@suite/router';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import {
     useReportDeviceCompromised,
@@ -20,7 +27,6 @@ import {
     selectIsTransportInitialized,
     selectPrerequisite,
 } from 'src/selectors/suite/suiteSelectors';
-import type { AppState } from 'src/types/suite';
 import { Onboarding } from 'src/views/onboarding';
 import { AnalyticsConsentScreen } from 'src/views/start/AnalyticsConsentScreen';
 import { SuiteStart } from 'src/views/start/SuiteStart';
@@ -35,8 +41,8 @@ import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceComp
 import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
-const getFullscreenApp = (route: AppState['router']['route']): FC | undefined => {
-    switch (route?.app) {
+const getFullscreenApp = (app: RouterAppWithParams['app']): FC | undefined => {
+    switch (app) {
         case 'start':
             return SuiteStart;
         case 'onboarding':
@@ -52,7 +58,12 @@ const getFullscreenApp = (route: AppState['router']['route']): FC | undefined =>
 export const Preloader = memo(function Preloader({ children }: PropsWithChildren) {
     const lifecycle = useSelector(state => state.suite.lifecycle);
     const isTransportInitialized = useSelector(selectIsTransportInitialized);
-    const router = useSelector(state => state.router);
+    // Only the flags the render needs, so that navigating within the same app does not re-render
+    // this component and with it the layout below it.
+    const isRouterLoaded = useSelector(selectRouterLoaded);
+    const routerApp = useSelector(selectRouterApp);
+    const isForegroundApp = useSelector(selectIsForegroundApp);
+    const hasRoute = useSelector(selectHasRoute);
     const prerequisite = useSelector(selectPrerequisite);
     const shouldDisplayDeviceCompromisedOnRoute = useSelector(
         selectShouldDisplayDeviceCompromisedOnRoute,
@@ -111,7 +122,7 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
 
     // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     // display Loader as full page view
-    if (lifecycle.status !== 'ready' || !router.loaded || !isTransportInitialized) {
+    if (lifecycle.status !== 'ready' || !isRouterLoaded || !isTransportInitialized) {
         // TODO: multiplied by 5, temporarily. Now initActions incorrectly awaits altcoin specific logic which can trigger this timeout easily for bigger accounts
         return <InitialLoading timeout={90 * 5} />;
     }
@@ -123,12 +134,12 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
     // TODO: murder the fullscreen app logic, there must be a better way
     // i don't like how it's not clear which layout is used
     // and that the prerequisite screen is handled multiple times
-    const FullscreenApp = getFullscreenApp(router.route);
+    const FullscreenApp = getFullscreenApp(routerApp);
     if (FullscreenApp !== undefined) {
         return <FullscreenApp />;
     }
 
-    if (router.route?.isForegroundApp) {
+    if (isForegroundApp) {
         return <SuiteLayout>{children}</SuiteLayout>;
     }
 
@@ -146,7 +157,7 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
 
     // route does not exist, display error page in fullscreen mode
     // because if it is handled by Router it is wrapped in SuiteLayout
-    if (!router.route) {
+    if (!hasRoute) {
         return <ErrorPage />;
     }
 
