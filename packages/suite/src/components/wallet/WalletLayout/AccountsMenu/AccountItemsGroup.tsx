@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import styled from 'styled-components';
 
 import { selectRouteName } from '@suite/router';
@@ -66,9 +68,15 @@ export const AccountItemsGroup = ({
     const rates = useSelector(selectCurrentFiatRates);
 
     const isFiatLoading = areTokenFiatRatesLoading(account, baseCurrencyCode, rates ?? {});
-    const tokensFiatBalance = isFiatLoading
-        ? BASE_CURRENCY_ZERO
-        : getAccountTokensFiatBalance(account, baseCurrencyCode, rates, tokens);
+    // Memoized because it is a new BigNumber every time, which would keep the memoized tokens row
+    // re-rendering with the rest of the sidebar.
+    const tokensFiatBalance = useMemo(
+        () =>
+            isFiatLoading
+                ? BASE_CURRENCY_ZERO
+                : getAccountTokensFiatBalance(account, baseCurrencyCode, rates, tokens),
+        [isFiatLoading, account, baseCurrencyCode, rates, tokens],
+    );
 
     const tokensRoutes = [
         'wallet-tokens',
