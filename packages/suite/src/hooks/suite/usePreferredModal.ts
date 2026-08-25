@@ -1,55 +1,67 @@
 import { MODAL_CONTEXT_NONE } from '@suite/modal';
-import { type ModalAppParams, type Route, selectRoute, selectRouterParams } from '@suite/router';
+import {
+    type ModalAppParams,
+    type RouterAppWithParams,
+    selectForegroundAppParams,
+    selectIsForegroundApp,
+    selectIsFullscreenApp,
+    selectRouterApp,
+} from '@suite/router';
 
 import { useSelector } from 'src/hooks/suite';
 import type { ForegroundAppRoute } from 'src/types/suite';
 
-const isForegroundApp = (route: Route): route is ForegroundAppRoute =>
-    !route.isFullscreenApp && !!route.isForegroundApp;
+const HAS_PRIORITY_OVER_REDUX_MODAL: Record<ForegroundAppRoute['app'], boolean> = {
+    // Firmware, FirmwareCustom, Bridge, Udev, Version, Create New Multi-share Backup - always beats redux modals
+    firmware: true,
+    'firmware-type': true,
+    'firmware-custom': true,
+    bridge: true,
+    'bridge-requested': true,
+    'bridge-deprecated': true,
+    udev: true,
+    version: true,
+    'create-multi-share-backup': true,
+    'create-wallet-backup': true,
 
-const hasPriority = (route: ForegroundAppRoute) => {
-    const map: Record<ForegroundAppRoute['app'], boolean> = {
-        // Firmware, FirmwareCustom, Bridge, Udev, Version, Create New Multi-share Backup - always beats redux modals
-        firmware: true,
-        'firmware-type': true,
-        'firmware-custom': true,
-        bridge: true,
-        'bridge-requested': true,
-        'bridge-deprecated': true,
-        udev: true,
-        version: true,
-        'create-multi-share-backup': true,
-        'create-wallet-backup': true,
+    // Recovery - beats redux modals with some exceptions (raw-rendered)
+    recovery: true,
 
-        // Recovery - beats redux modals with some exceptions (raw-rendered)
-        recovery: true,
-
-        // Backup, SwitchDevice - always get beaten by redux modals
-        'switch-device': false,
-        backup: false,
-    };
-
-    return map[route.app];
+    // Backup, SwitchDevice - always get beaten by redux modals
+    'switch-device': false,
+    backup: false,
 };
 
-const getForegroundAppAction = (route: ForegroundAppRoute, params: Partial<ModalAppParams>) =>
+const isForegroundApp = (app: RouterAppWithParams['app']): app is ForegroundAppRoute['app'] =>
+    app in HAS_PRIORITY_OVER_REDUX_MODAL;
+
+const getForegroundAppAction = (app: ForegroundAppRoute['app'], params: Partial<ModalAppParams>) =>
     ({
         type: 'foreground-app',
         payload: {
             ...params,
-            app: route.app,
+            app,
             // params are undefined when the user goes directly to the URL
             cancelable: !!params?.cancelable,
         },
     }) as const;
 
 export const usePreferredModal = () => {
-    const route = useSelector(selectRoute);
-    const params = useSelector(selectRouterParams) as Partial<ModalAppParams>;
+    // Only the flags the decision needs, so that navigating between regular routes does not
+    // re-render every consumer of this hook.
+    const routerApp = useSelector(selectRouterApp);
+    const isForegroundAppRoute = useSelector(selectIsForegroundApp);
+    const isFullscreenAppRoute = useSelector(selectIsFullscreenApp);
+    const params = useSelector(selectForegroundAppParams) as Partial<ModalAppParams>;
     const modal = useSelector(state => state.modal);
 
-    if (route && isForegroundApp(route) && hasPriority(route)) {
-        return getForegroundAppAction(route, params);
+    const foregroundApp =
+        isForegroundAppRoute && !isFullscreenAppRoute && isForegroundApp(routerApp)
+            ? routerApp
+            : undefined;
+
+    if (foregroundApp !== undefined && HAS_PRIORITY_OVER_REDUX_MODAL[foregroundApp]) {
+        return getForegroundAppAction(foregroundApp, params);
     }
 
     if (modal.context !== MODAL_CONTEXT_NONE) {
@@ -59,8 +71,8 @@ export const usePreferredModal = () => {
         } as const;
     }
 
-    if (route && isForegroundApp(route)) {
-        return getForegroundAppAction(route, params);
+    if (foregroundApp !== undefined) {
+        return getForegroundAppAction(foregroundApp, params);
     }
 
     return {

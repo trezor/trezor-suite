@@ -111,6 +111,12 @@ export const selectRouterApp = (state: RouterRootState) => state.router.app;
 export const selectHasRoute = (state: RouterRootState) => state.router.route !== undefined;
 export const selectIsForegroundApp = (state: RouterRootState) =>
     state.router.route?.isForegroundApp === true;
+export const selectIsFullscreenApp = (state: RouterRootState) =>
+    state.router.route?.isFullscreenApp === true;
+// The params are only ever read by the modal apps, so they are hidden from everyone else to keep
+// their identity stable while navigating between regular routes.
+export const selectForegroundAppParams = (state: RouterRootState) =>
+    state.router.route?.isForegroundApp === true ? state.router.params : undefined;
 
 export const selectCanNavigate = (state: LocksRootState & ModalRootState) =>
     !selectIsRouterOrUiLocked(state) && !selectHasActiveModal(state);
