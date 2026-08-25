@@ -19,12 +19,12 @@ import {
     type AssetPickerListItem,
     type AssetRowOption,
 } from 'src/components/suite/asset-picker/types';
+import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
 
-import { AssetListWrapper } from './AssetListWrapper';
 import { useBuildTradingAssetOptions } from './hooks/useBuildTradingAssetOptions';
 import { type UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
 import { type AssetGroupKey, getAssetGroupKey } from './utils/buildGroupedAssetOptions';
-import { AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
+import { AssetListWrapper, AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
 
 const MODAL_WIDTH = 480;
 
@@ -146,10 +146,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
             <AssetListWrapper
                 listItems={listItems}
                 renderItem={renderItem}
-                /**
-                 * The listItems` contain fiat rates which are being frequently updated causing unwanted scroll position to be reset.
-                 * Instead, hint the `useListScrollReset` hook to reset scroll position when network filter, search, or list items size changes.
-                 */
+                getItemHeight={getAssetPickerItemHeight}
                 resetScrollTrigger={`${networkFilter}${search}${listItems.length}`}
             />
         </AssetsModal>

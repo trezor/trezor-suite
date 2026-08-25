@@ -8,7 +8,7 @@ import {
 
 import { useGroupedAssetOptions } from './useGroupedAssetOptions';
 import { useSellAssetRows } from './useSellAssetRows';
-import { useAssetsContext } from '../../AssetOptionsContext';
+import { useAssetsContext } from '../../../TradingFormInputAssetPicker';
 import { type AssetGroupKey } from '../utils/buildGroupedAssetOptions';
 
 export interface UseBuildTradingAssetOptionsProps {
