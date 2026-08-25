@@ -139,7 +139,7 @@ else
 fi
 
 # Mixed case on purpose: these two are hashed into the entry_key and must survive verbatim.
-APPID="Example.COM"
+APPID="btc_app"
 IDENT="Addr1"
 VALUE="queued_secret"
 # The online arcs write their own entries rather than reusing the one the offline arc moves around:
@@ -246,7 +246,8 @@ trap cleanup EXIT
 # back with a fresh one is refused rather than merely unrecognised.
 start_daemon() {
     python3 "$HERE/ward-service-daemon.py" --port "$WIRE_PORT" --debug-port "$DEBUG_PORT" \
-        --key-file "$DAEMON_KEY" --state-file "$DAEMON_STATE" >>"$DAEMON_LOG" 2>&1 &
+        --key-file "$DAEMON_KEY" --state-file "$DAEMON_STATE" \
+        > >(tee -a "$DAEMON_LOG") 2>&1 &
     DAEMON_PID=$!
 
     # Waited for rather than slept on: the handshake, the pairing and the announce take an
