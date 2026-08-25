@@ -54,7 +54,9 @@ export const useYieldClaimRewardsData = ({
     const allRewards = useMemo(
         () =>
             rewards.data.accountsRewards.flatMap(({ account, rewards: accountRewards }) =>
-                accountRewards.map(reward => ({ reward, networkSymbol: account.symbol })),
+                accountRewards
+                    .filter(reward => reward.claimable.gt(0))
+                    .map(reward => ({ reward, networkSymbol: account.symbol })),
             ),
         [rewards.data.accountsRewards],
     );

@@ -184,6 +184,28 @@ describe(useYieldClaimRewardsData.name, () => {
         ]);
     });
 
+    it('omits tokens without a claimable amount', () => {
+        const account = createAccount('0xaccounta');
+
+        const { accountRewards, tokenRewards } = renderUseYieldClaimRewardsData([
+            createAccountRewards(account, [
+                createReward({ token: USDC, claimable: '10000000', fiatClaimable: '10' }),
+                createReward({ token: WETH, claimable: '0', fiatClaimable: '0' }),
+            ]),
+        ]);
+
+        expect(accountRewards).toEqual([{ accountKey: account.key, fiat: '10' }]);
+        expect(tokenRewards).toEqual([
+            {
+                symbol: 'USDC',
+                networkSymbol: 'eth',
+                contractAddress: USDC.address,
+                crypto: '10',
+                fiat: '10',
+            },
+        ]);
+    });
+
     it('sums rewards per token across accounts and keeps the fiat total per account', () => {
         const firstAccount = createAccount('0xaccounta');
         const secondAccount = createAccount('0xaccountb');

@@ -1,3 +1,5 @@
+import styled from 'styled-components';
+
 import { AccountLabel } from '@suite/account';
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
@@ -5,30 +7,123 @@ import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
-import { useFormatters } from '@suite-common/formatters';
+import {
+    type YieldAccountRewards,
+    type YieldAccountsRewards,
+} from '@suite-common/earn-stablecoin-api';
+import { getCompactAmount, useFormatters } from '@suite-common/formatters';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { compareAccountsByCoin } from '@suite-common/wallet-utils';
+import { toTokenSymbol } from '@suite-common/wallet-types';
+import {
+    asAmountSubunit,
+    compareAccountsByCoin,
+    subunitsToUnits,
+} from '@suite-common/wallet-utils';
 import { CardList, Column, Icon, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
-import { TokenIcon, TokenIconSet } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
+import { typography } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
+
+const getRewardTokenAmounts = ({ rewards }: YieldAccountRewards) => {
+    const tokenAmounts = new Map<string, { amount: BigNumber; decimals: number; symbol: string }>();
+
+    for (const reward of rewards) {
+        const claimableAmount = new BigNumber(reward.claimable);
+
+        if (claimableAmount.lte(0)) continue;
+
+        const tokenKey = reward.token.address.toLowerCase();
+        const previousTokenAmount = tokenAmounts.get(tokenKey);
+
+        tokenAmounts.set(tokenKey, {
+            amount: previousTokenAmount
+                ? previousTokenAmount.amount.plus(claimableAmount)
+                : claimableAmount,
+            decimals: reward.token.decimals,
+            symbol: reward.token.symbol,
+        });
+    }
+
+    return [...tokenAmounts.values()].map(({ amount, decimals, symbol }) => ({
+        amount: subunitsToUnits({ value: asAmountSubunit(amount), decimals }).toString(),
+        decimals,
+        symbol: toTokenSymbol(symbol),
+    }));
+};
+
+type RewardTokenAmount = ReturnType<typeof getRewardTokenAmounts>[number];
+
+const COMPACT_REWARD_AMOUNT_OPTIONS = {
+    maximumSignificantDigits: 4,
+    minimumDisplayedValue: '0.0001',
+} as const;
+
+const RewardAmountsContainer = styled.span`
+    display: block;
+    width: 100%;
+`;
+
+const RewardAmountsText = styled.span`
+    ${typography['body-xs']}
+    display: block;
+    max-width: 100%;
+    color: ${({ theme }) => theme.contentSecondary};
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+    white-space: pre-line;
+`;
+
+type RewardTokenAmountsProps = {
+    rewardTokenAmounts: RewardTokenAmount[];
+};
+
+const RewardTokenAmounts = ({ rewardTokenAmounts }: RewardTokenAmountsProps) => {
+    const { CryptoAmountFormatter } = useFormatters();
+
+    const formatAmount = ({ amount, decimals, symbol }: RewardTokenAmount, isCompact: boolean) => {
+        const compactAmount = isCompact
+            ? getCompactAmount({ value: amount, ...COMPACT_REWARD_AMOUNT_OPTIONS })
+            : null;
+        const formattedAmount = CryptoAmountFormatter.format(compactAmount?.value ?? amount, {
+            symbol,
+            isBalance: true,
+            maxDisplayedDecimals: decimals,
+            isEllipsisAppended: false,
+        });
+
+        return compactAmount?.isLessThanMinimum ? `<${formattedAmount}` : formattedAmount;
+    };
+
+    const compactRewardAmounts = rewardTokenAmounts
+        .map(rewardTokenAmount => formatAmount(rewardTokenAmount, true))
+        .join('\n');
+    const fullRewardAmounts = rewardTokenAmounts
+        .map(rewardTokenAmount => formatAmount(rewardTokenAmount, false))
+        .join('\n');
+
+    return (
+        <Tooltip
+            as="span"
+            display="inline-flex"
+            width="100%"
+            isActive={compactRewardAmounts !== fullRewardAmounts}
+            content={fullRewardAmounts}
+        >
+            <RewardAmountsContainer>
+                <RewardAmountsText>{compactRewardAmounts}</RewardAmountsText>
+            </RewardAmountsContainer>
+        </Tooltip>
+    );
+};
 
 type EarnYieldClaimSelectAccountModalProps = {
     accountsRewards: YieldAccountsRewards;
     onSelect: (account: YieldAccountsRewards[number]) => void;
     onClose: () => void;
 };
-
-const getRewardTokens = ({ rewards }: YieldAccountsRewards[number]) => [
-    ...new Map(
-        rewards.map(({ token }) => [
-            token.address.toLowerCase(),
-            { symbol: token.symbol, contract: token.address },
-        ]),
-    ).values(),
-];
 
 export const EarnYieldClaimSelectAccountModal = ({
     accountsRewards,
@@ -79,7 +174,7 @@ export const EarnYieldClaimSelectAccountModal = ({
         >
             <CardList>
                 {sortedAccountsRewards.map(accountRewards => {
-                    const rewardTokens = getRewardTokens(accountRewards);
+                    const rewardTokenAmounts = getRewardTokenAmounts(accountRewards);
 
                     return (
                         <CardList.Item
@@ -95,23 +190,7 @@ export const EarnYieldClaimSelectAccountModal = ({
                                         accountTypeBadgeSize="small"
                                         typographyStyle="body-md-strong"
                                     />
-                                    <Row gap={6} width="100%" overflow="hidden">
-                                        <TokenIconSet
-                                            symbol={accountRewards.account.symbol}
-                                            tokens={rewardTokens}
-                                            size={16}
-                                            gap={12}
-                                        />
-                                        <Text
-                                            typographyStyle="body-sm"
-                                            intent="neutral"
-                                            priority="secondary"
-                                            maxWidth="100%"
-                                            ellipsisLineCount={1}
-                                        >
-                                            {rewardTokens.map(({ symbol }) => symbol).join(', ')}
-                                        </Text>
-                                    </Row>
+                                    <RewardTokenAmounts rewardTokenAmounts={rewardTokenAmounts} />
                                 </Column>
                             </Row>
                             <Row gap={8} alignItems="center" flex="none">
@@ -129,7 +208,7 @@ export const EarnYieldClaimSelectAccountModal = ({
                                     }
                                 >
                                     <HiddenPlaceholder>
-                                        <Text typographyStyle="body-md-strong">
+                                        <Text typographyStyle="body-md-strong" isTabular>
                                             {BaseCurrencyAmountFormatter.format(
                                                 accountRewards.totalClaimableFiatAmount,
                                             )}
