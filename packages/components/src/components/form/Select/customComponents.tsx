@@ -79,8 +79,6 @@ export const Control = ({
             >
                 {label && !isLoading && !isClean && (
                     <SelectFloatingLabel
-                        // A searchable select is typed into while focused, so the label gets out of
-                        // the way then. Until it is focused, an empty one has to look empty.
                         $isActive={hasValue || !!placeholder || isFocused}
                         $isDisabled={isDisabled}
                         $size={size}
