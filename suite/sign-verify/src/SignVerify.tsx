@@ -4,8 +4,9 @@ import { useDevice } from '@suite/device';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
-import { SignVerifyForm, type SignVerifyPage } from './SignVerifyForm';
+import { SignVerifyForm } from './SignVerifyForm';
 import { isVerifySupported } from './signVerifyActions';
+import { type SignVerifyPage } from './types';
 
 type SignVerifyShellProps = {
     title: 'TR_NAV_SIGN_VERIFY' | 'TR_SIGN_MESSAGE';
