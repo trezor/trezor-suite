@@ -1,0 +1,43 @@
+{
+    "name": "@suite/component-tests",
+    "version": "0.0.0",
+    "private": true,
+    "license": "SEE LICENSE IN LICENSE.md",
+    "sideEffects": false,
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,mts}'",
+        "build:gallery": "vite build --config vite.config.mts",
+        "test:component": "yarn build:gallery && playwright test",
+        "test:component:ui": "COMPONENT_TESTS_DEV=1 playwright test --ui"
+    },
+    "devDependencies": {
+        "@playwright/browser-chromium": "1.62.1",
+        "@playwright/test": "1.62.1",
+        "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/formatters": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@suite/intl": "workspace:^",
+        "@suite/test-utils": "workspace:*",
+        "@tanstack/react-query": "5.101.2",
+        "@trezor/eslint": "workspace:*",
+        "@trezor/product-components": "workspace:*",
+        "@trezor/suite": "workspace:*",
+        "@trezor/suite-build": "workspace:*",
+        "@trezor/suite-data": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "@types/node": "22.13.10",
+        "@vitejs/plugin-react": "^6.0.1",
+        "buffer": "^6.0.3",
+        "react": "19.2.3",
+        "react-dom": "19.2.3",
+        "react-intl": "^8.1.3",
+        "react-redux": "9.3.0",
+        "vite": "^8.0.7"
+    }
+}

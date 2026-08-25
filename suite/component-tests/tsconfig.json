@@ -1,0 +1,51 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "jsx": "react-jsx",
+        "types": ["node", "vite/client"],
+        "paths": {
+            "@trezor/suite/src/*": [
+                "../../packages/suite/src/*"
+            ]
+        }
+    },
+    "include": [
+        "gallery",
+        "mocks",
+        "stories",
+        "support",
+        "tests",
+        "*.ts",
+        "*.mts"
+    ],
+    "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
+        {
+            "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../intl" },
+        { "path": "../test-utils" },
+        { "path": "../../packages/eslint" },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/suite" },
+        { "path": "../../packages/suite-build" },
+        { "path": "../../packages/suite-data" },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" }
+    ]
+}

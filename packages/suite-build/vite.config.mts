@@ -2,7 +2,7 @@ import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import babel from '@rolldown/plugin-babel';
 import react from '@vitejs/plugin-react';
 import { execSync } from 'child_process';
-import fs, { readdirSync } from 'fs';
+import fs from 'fs';
 import { createRequire } from 'module';
 import { resolve } from 'path';
 import { Plugin, ViteDevServer, build, defineConfig } from 'vite';
@@ -15,6 +15,7 @@ import {
     project,
     transportBrowserPing,
 } from './utils/env';
+import { sharedAliases as alias, noopCoreJsPlugin, requireAssetPlugin } from './viteShared';
 
 const require = createRequire(import.meta.url);
 
@@ -78,31 +79,6 @@ const flagsPlugin = (): Plugin => {
     };
 };
 
-const trezorLogosRequirePlugin = (): Plugin => ({
-    name: 'trezor-logos-require',
-    enforce: 'pre',
-    transform(code, id) {
-        const cleanId = id.split('?')[0] ?? id;
-        if (
-            !cleanId.includes(
-                'packages/product-components/src/components/TrezorLogo/trezorLogos.ts',
-            )
-        ) {
-            return null;
-        }
-
-        const transformed = code.replace(
-            /require\((['"`])([^'"`]+\.svg)\1\)/g,
-            'new URL($1$2$1, import.meta.url).href',
-        );
-
-        return {
-            code: transformed,
-            map: null,
-        };
-    },
-});
-
 // Function to process the HTML template with template variables
 const processTemplate = (template: string): string =>
     template
@@ -122,62 +98,6 @@ const htmlTemplatePlugin = (): Plugin => ({
         handler: (html: string) => processTemplate(html),
     },
 });
-
-// This helper creates aliases for all workspace packages
-const createWorkspaceAliases = () => {
-    const suiteCommonAliases = readdirSync(resolve(__dirname, '../../suite-common'), {
-        withFileTypes: true,
-    })
-        .filter(dirent => dirent.isDirectory())
-        .map(dirent => ({
-            find: `@suite-common/${dirent.name}`,
-            replacement: resolve(__dirname, '../../suite-common', dirent.name),
-        }));
-
-    const trezorPackagesAliases = readdirSync(resolve(__dirname, '../'), { withFileTypes: true })
-        .filter(dirent => dirent.isDirectory() && dirent.name !== 'suite-web')
-        .map(dirent => ({
-            find: `@trezor/${dirent.name}`,
-            replacement: resolve(__dirname, '../', dirent.name),
-        }));
-
-    const suiteAliases = readdirSync(resolve(__dirname, '../../suite'), { withFileTypes: true })
-        .filter(dirent => dirent.isDirectory())
-        .map(dirent => ({
-            find: `@suite/${dirent.name}`,
-            replacement: resolve(__dirname, '../../suite', dirent.name),
-        }));
-
-    return [...suiteCommonAliases, ...trezorPackagesAliases, ...suiteAliases];
-};
-
-const alias = [
-    {
-        find: 'core-js/actual',
-        replacement: 'noop-core-js-actual',
-    },
-    {
-        find: 'src',
-        replacement: resolve(__dirname, '../suite/src'),
-    },
-    {
-        find: 'crypto',
-        replacement: require.resolve('crypto-browserify'),
-    },
-    {
-        find: 'buffer',
-        replacement: require.resolve('buffer'),
-    },
-    {
-        find: 'stream',
-        replacement: require.resolve('stream-browserify'),
-    },
-    {
-        find: 'vm',
-        replacement: require.resolve('vm-browserify'),
-    },
-    ...createWorkspaceAliases(),
-];
 
 // Plugin to serve sessions-background-sharedworker.js as a complete bundle to be used directly as a web worker
 const sessionsSharedWorkerPlugin = () => {
@@ -425,114 +345,16 @@ const resolveWorkerUrlsPlugin = (): Plugin => ({
 
 const commitId = execSync('git rev-parse HEAD').toString().trim();
 
-// Plugin to provide a no-op replacement for core-js/actual as a virtual module
-const noopCoreJsPlugin = (): Plugin => {
-    const virtualModuleId = 'noop-core-js-actual';
-    const resolvedVirtualModuleId = '\0' + virtualModuleId;
-
-    return {
-        name: 'noop-core-js-actual',
-        resolveId(id) {
-            if (id === virtualModuleId) {
-                return resolvedVirtualModuleId;
-            }
-        },
-        load(id) {
-            if (id === resolvedVirtualModuleId) {
-                return '// No-op replacement for core-js/actual\nexport default {};';
-            }
-        },
-    };
-};
-
 // Plugin to provide Buffer polyfill via a virtual module
 const bufferPolyfillPlugin = (): Plugin => {
     const virtualModuleId = 'virtual:buffer-polyfill';
     const resolvedVirtualModuleId = '\0' + virtualModuleId;
 
+    // The implementation lives in browserPolyfills.ts so the component-test gallery installs the
+    // exact same polyfills; the package specifier resolves through the workspace aliases.
     const polyfillCode = `
-// Ensure Buffer is available globally
-import { Buffer as ImportedBuffer } from 'buffer';
-
-const base64UrlToBase64 = (input) => {
-    const base64 = input.replace(/-/g, '+').replace(/_/g, '/');
-    const pad = base64.length % 4;
-    if (pad === 0) return base64;
-    return base64 + '='.repeat(4 - pad);
-};
-
-const base64ToBase64Url = (input) => input.replace(/\\+/g, '-').replace(/\\//g, '_').replace(/=+$/g, '');
-
-const patchBase64Url = (BufferCtor) => {
-    if (!BufferCtor?.prototype?.toString) return;
-
-    const originalToString = BufferCtor.prototype.toString;
-    if (!BufferCtor.prototype.__trezorPatchedBase64UrlToString) {
-        Object.defineProperty(BufferCtor.prototype, '__trezorPatchedBase64UrlToString', {
-            value: true,
-            enumerable: false,
-        });
-        BufferCtor.prototype.toString = function (encoding, start, end) {
-            if (encoding === 'base64url') {
-                return base64ToBase64Url(originalToString.call(this, 'base64', start, end));
-            }
-            return originalToString.call(this, encoding, start, end);
-        };
-    }
-
-    const originalFrom = BufferCtor.from;
-    if (!BufferCtor.__trezorPatchedBase64UrlFrom) {
-        Object.defineProperty(BufferCtor, '__trezorPatchedBase64UrlFrom', {
-            value: true,
-            enumerable: false,
-        });
-        BufferCtor.from = function (value, encodingOrOffset, length) {
-            if (encodingOrOffset === 'base64url' && typeof value === 'string') {
-                return originalFrom.call(this, base64UrlToBase64(value), 'base64');
-            }
-            return originalFrom.call(this, value, encodingOrOffset, length);
-        };
-    }
-};
-
-// Define Buffer in all possible global scopes
-if (typeof window !== 'undefined') {
-    window.Buffer = window.Buffer || ImportedBuffer;
-};
-
-if (typeof global !== 'undefined') {
-    global.Buffer = global.Buffer || ImportedBuffer;
-};
-
-if (typeof globalThis !== 'undefined') {
-    globalThis.Buffer = globalThis.Buffer || ImportedBuffer;
-};
-
-patchBase64Url(ImportedBuffer);
-if (typeof window !== 'undefined' && window.Buffer) patchBase64Url(window.Buffer);
-if (typeof global !== 'undefined' && global.Buffer) patchBase64Url(global.Buffer);
-if (typeof globalThis !== 'undefined' && globalThis.Buffer) patchBase64Url(globalThis.Buffer);
-
-// Make sure global is defined
-if (typeof window !== 'undefined' && typeof global === 'undefined') {
-    window.global = window;
-};
-
-// Make sure globalThis is defined
-if (typeof window !== 'undefined' && typeof globalThis === 'undefined') {
-    window.globalThis = window;
-};
-// Polyfill process.nextTick for jws.createVerify
-if (
-    typeof window !== 'undefined' &&
-    typeof window.process !== 'undefined' &&
-    typeof window.process.nextTick === 'undefined'
-) {
-    window.process.nextTick = cb => Promise.resolve().then(cb);
-}
-
-// Export nothing - this module is only for side effects
-export {};
+import { installBrowserPolyfills } from '@trezor/suite-build/browserPolyfills';
+installBrowserPolyfills();
 `;
 
     return {
@@ -602,7 +424,7 @@ export default defineConfig({
         bufferPolyfillPlugin(),
         noopCoreJsPlugin(),
         guideMarkdownPlugin(),
-        trezorLogosRequirePlugin(),
+        requireAssetPlugin(),
         flagsPlugin(),
         staticAliasPlugin(),
         sessionsSharedWorkerPlugin(),
