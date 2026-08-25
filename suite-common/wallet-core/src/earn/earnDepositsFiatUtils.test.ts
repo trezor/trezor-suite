@@ -38,6 +38,8 @@ describe(calculateEarnDepositsFiatData.name, () => {
 
         expect(result.stakingDeposits[0]?.fiatAmount.toFixed()).toBe('6000');
         expect(result.stablecoinYieldDeposits[0]?.fiatAmount.toFixed()).toBe('4');
+        expect(result.stakingFiatAmount.toFixed()).toBe('6000');
+        expect(result.stablecoinYieldFiatAmount.toFixed()).toBe('4');
         expect(result.totalDepositedFiatAmount.toFixed()).toBe('6004');
         expect(result.missingRateTickers).toEqual([]);
     });

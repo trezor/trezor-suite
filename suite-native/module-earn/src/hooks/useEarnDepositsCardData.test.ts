@@ -189,8 +189,8 @@ describe('useEarnDepositsCardData', () => {
         expect(result.current.isFiatTotalUnavailable).toBe(true);
     });
 
-    it('returns separate staking and DeFi totals for the earning balance breakdown', () => {
-        const { result } = renderDepositsCardData({
+    it('returns separate staking and DeFi totals for the earning balance breakdown', async () => {
+        const { result } = await renderDepositsCardData({
             items: [createYieldItem(USDC_CONTRACT_LOWERCASE)],
             stakingItems: [stakingItem],
             currentRates: {

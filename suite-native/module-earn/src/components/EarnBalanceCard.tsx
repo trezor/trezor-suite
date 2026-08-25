@@ -86,6 +86,11 @@ export const EarnBalanceCard = ({
               MIN_BALANCE_SEGMENT_FLEX,
           )
         : 1;
+    const isBreakdownAvailable =
+        shouldShowBreakdown &&
+        !isFiatRatesLoading &&
+        !isFiatTotalIncomplete &&
+        !isFiatTotalUnavailable;
 
     return (
         <Card borderColor="borderNeutral" testID="@earn/balance-card">
@@ -111,7 +116,7 @@ export const EarnBalanceCard = ({
                     )}
                 </VStack>
 
-                {shouldShowBreakdown && (
+                {isBreakdownAvailable && (
                     <VStack spacing="sp12" testID="@earn/balance-card/breakdown">
                         <Box style={applyStyle(balanceBarStyle)}>
                             <Box

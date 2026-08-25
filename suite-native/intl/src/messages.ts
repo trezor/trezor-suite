@@ -2967,11 +2967,10 @@ export const messages = {
                 networkStaking: '{networkName} staking',
                 stakingPositions: 'Staking positions',
                 defiYieldPositions: 'DeFi Yield positions',
-                availableRewards: 'Bonus rewards',
+                availableRewards: 'Available bonus rewards',
                 claimRewardsButton: 'Claim',
-                in: 'in',
-                tokens: '{count, plural, one {# token} other {# tokens}}',
-                accounts: '{count, plural, one {# account} other {# accounts}}',
+                rewardsSummary:
+                    '{tokenCount, plural, one {<text>in</text><tokenIcons></tokenIcons><text>{tokenSymbol}</text>} other {<text>in</text><tokenIcons></tokenIcons><text># tokens</text>}}{accountCount, plural, one {} other {<text>across</text><accountIcon></accountIcon><text># accounts</text>}}',
                 incompleteFiatTotal: 'Some fiat rates couldn’t load. Total may be incomplete.',
             },
             activeSheet: {

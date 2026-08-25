@@ -66,13 +66,18 @@ export type StablecoinYieldClaimSummary = {
     networkSymbol: NetworkSymbol;
     claimableRewardsCount: number;
     fiatClaimableAmount: BaseCurrencyAmount | null;
-    tokens: StablecoinYieldClaimToken[];
+    tokens: StablecoinYieldClaimRewardToken[];
 };
 
 export type StablecoinYieldClaimToken = {
     networkSymbol: NetworkSymbol;
     contractAddress: TokenAddress;
     symbol: TokenSymbol;
+};
+
+export type StablecoinYieldClaimRewardToken = StablecoinYieldClaimToken & {
+    claimableAmount: string;
+    decimals: number;
 };
 
 export type StablecoinYieldNavigationItem = Pick<

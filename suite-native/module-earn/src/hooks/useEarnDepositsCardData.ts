@@ -9,9 +9,7 @@ import {
     selectCurrentFiatRates,
     useMissingRateTickersQuery,
 } from '@suite-common/wallet-core';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
-import { BigNumber } from '@trezor/utils';
 
 import {
     type EarnDepositsCardActiveItem,
@@ -92,6 +90,8 @@ export const useEarnDepositsCardData = ({
         missingStakingRateTickers,
         missingStablecoinYieldRateTickers,
         missingRateTickers,
+        stakingFiatAmount,
+        stablecoinYieldFiatAmount,
         totalDepositedFiatAmount,
         hasStakingFiatRate,
         hasStablecoinYieldFiatRate: hasStablecoinFiatRate,
@@ -141,28 +141,6 @@ export const useEarnDepositsCardData = ({
                         fiatAmount,
                         apy: deposit.apy,
                     }) satisfies EarnDepositsCardActiveItem,
-            ),
-        [calculatedStablecoinYieldDeposits],
-    );
-
-    const stakingFiatAmount = useMemo(
-        () =>
-            asBaseCurrencyAmount(
-                calculatedStakingDeposits.reduce(
-                    (total, { fiatAmount }) => total.plus(fiatAmount),
-                    new BigNumber(0),
-                ),
-            ),
-        [calculatedStakingDeposits],
-    );
-
-    const stablecoinYieldFiatAmount = useMemo(
-        () =>
-            asBaseCurrencyAmount(
-                calculatedStablecoinYieldDeposits.reduce(
-                    (total, { fiatAmount }) => total.plus(fiatAmount),
-                    new BigNumber(0),
-                ),
             ),
         [calculatedStablecoinYieldDeposits],
     );

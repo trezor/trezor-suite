@@ -4,7 +4,8 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type StablecoinYieldClaimToken } from '../types';
 
-const MAX_VISIBLE_ICONS = 2;
+const MAX_ICONS_WITHOUT_OVERFLOW = 3;
+const MAX_VISIBLE_ICONS_WITH_OVERFLOW = 2;
 const ICON_SIZE = 20;
 
 const iconWrapperStyle = prepareNativeStyle<{ index: number }>((utils, { index }) => ({
@@ -26,11 +27,15 @@ type EarnClaimTokenIconSetProps = {
 
 export const EarnClaimTokenIconSet = ({ tokens }: EarnClaimTokenIconSetProps) => {
     const { applyStyle } = useNativeStyles();
-    const overflowCount = tokens.length - MAX_VISIBLE_ICONS;
+    const hasOverflow = tokens.length > MAX_ICONS_WITHOUT_OVERFLOW;
+    const visibleIconCount = hasOverflow
+        ? MAX_VISIBLE_ICONS_WITH_OVERFLOW
+        : MAX_ICONS_WITHOUT_OVERFLOW;
+    const overflowCount = tokens.length - visibleIconCount;
 
     return (
         <Box flexDirection="row" alignItems="center" testID="@earn/claim-token-icons">
-            {tokens.slice(0, MAX_VISIBLE_ICONS).map((token, index) => (
+            {tokens.slice(0, visibleIconCount).map((token, index) => (
                 <Box
                     key={`${token.networkSymbol}:${token.contractAddress}`}
                     style={applyStyle(iconWrapperStyle, { index })}
@@ -45,7 +50,7 @@ export const EarnClaimTokenIconSet = ({ tokens }: EarnClaimTokenIconSetProps) =>
             {overflowCount > 0 && (
                 <Box
                     style={[
-                        applyStyle(iconWrapperStyle, { index: MAX_VISIBLE_ICONS }),
+                        applyStyle(iconWrapperStyle, { index: visibleIconCount }),
                         applyStyle(overflowBadgeStyle),
                     ]}
                     testID="@earn/claim-token-icons/overflow"
