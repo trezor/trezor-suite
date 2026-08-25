@@ -1097,10 +1097,7 @@ export const connectPopupCancelThunk = createThunk<void, { error?: string; callI
         // todo: probably not needed to call explicitly anymore
         dispatch(deviceActions.removeButtonRequests({}));
 
-        const cancelError = TypedError('Method_Interrupted');
-        // Show the cancellation error modal immediately so the user sees
-        // feedback in the Suite popup ("Request was canceled by the user").
-        dispatch(connectPopupActions.setError(serializeError(cancelError)));
+        dispatch(connectPopupActions.finishCall());
 
         // Resolve the popup-call deferred directly so the cancel response
         // reaches the caller immediately.  Without this, the response
@@ -1112,7 +1109,7 @@ export const connectPopupCancelThunk = createThunk<void, { error?: string; callI
         // before RESPONSE_EVENT is sent).
         getPopupCallDeferred().resolve({
             success: false,
-            error: serializeError(cancelError),
+            error: serializeError(TypedError('Method_Interrupted')),
         });
     },
 );
