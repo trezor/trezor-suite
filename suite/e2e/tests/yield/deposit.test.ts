@@ -157,17 +157,17 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 },
             });
             await devicePrompt.waitForFinalPromptAndConfirm();
-            blockbookMock.updateAccountState({
-                txs: 2,
-                transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
-            });
-            blockbookMock.updateAllowance('10000000'); // 10 USDC
             await devicePrompt.sendButton.click();
             await expect(toastSection.approved).toBeVisible();
             await expect(toastSection.approvedAmount).toHaveText('10USDC');
             await expect(yieldFlowSection.pendingTransactionLabel).toHaveTranslation(
                 'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL',
             );
+            blockbookMock.updateAccountState({
+                txs: 2,
+                transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
+            });
+            blockbookMock.updateAllowance('10000000'); // 10 USDC
             await page.clock.fastForward('01:00');
         });
 
