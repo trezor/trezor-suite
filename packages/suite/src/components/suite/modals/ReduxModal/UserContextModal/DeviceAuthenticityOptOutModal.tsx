@@ -43,7 +43,7 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
             intent="warning"
         >
             <H3>
-                <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE" />
+                <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_TITLE" />
             </H3>
             <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                 <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3" />

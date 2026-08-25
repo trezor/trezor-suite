@@ -8524,6 +8524,10 @@ export const messages = defineMessages({
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_BUTTON_DISABLED',
         defaultMessage: 'Turn on',
     },
+    TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_TITLE: {
+        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_TITLE',
+        defaultMessage: 'Device authenticity check',
+    },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_BUTTON: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_BUTTON',
         defaultMessage: 'Turn off',
@@ -8572,6 +8576,10 @@ export const messages = defineMessages({
     TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON_DISABLED: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON_DISABLED',
         defaultMessage: 'Turn on',
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_TITLE: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_TITLE',
+        defaultMessage: 'Firmware authenticity check',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_BUTTON: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_BUTTON',
