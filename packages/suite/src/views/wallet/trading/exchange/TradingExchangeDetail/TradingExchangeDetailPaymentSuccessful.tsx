@@ -2,6 +2,7 @@ import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 import { CheckIcon } from '@trezor/icons';
 
@@ -12,14 +13,14 @@ import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/Tradi
 type TradingExchangeDetailPaymentSuccessfulProps = {
     trade: ExchangeTrade;
     account?: Account;
-    receiveAccount?: Account;
+    receiveAccountKey?: AccountKey;
     provider?: ExchangeProviderInfo;
 };
 
 export const TradingExchangeDetailPaymentSuccessful = ({
     trade,
     account,
-    receiveAccount,
+    receiveAccountKey,
     provider,
 }: TradingExchangeDetailPaymentSuccessfulProps) => {
     const dispatch = useDispatch();
@@ -44,7 +45,7 @@ export const TradingExchangeDetailPaymentSuccessful = ({
                 <Card>
                     <TradingDetailProviderInfo
                         account={account}
-                        receiveAccount={receiveAccount}
+                        receiveAccountKey={receiveAccountKey}
                         orderId={trade.orderId}
                         provider={provider}
                         trade={trade}

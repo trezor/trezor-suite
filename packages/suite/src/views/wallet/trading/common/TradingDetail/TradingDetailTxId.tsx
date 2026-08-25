@@ -2,7 +2,11 @@ import { useDispatch } from 'react-redux';
 
 import { Address } from '@suite/address';
 import { openModal } from '@suite/modal';
-import { selectTransactionByAccountKeyAndTxid } from '@suite-common/wallet-core';
+import {
+    selectAccountByKey,
+    selectTransactionByAccountKeyAndTxid,
+} from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Link, type TextProps } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -16,7 +20,7 @@ type TradingDetailTxIdProps = {
      * refresh replaces it with the provider's payout on the receive network, so only the store says
      * which account the transaction belongs to.
      */
-    receiveAccount?: Account;
+    receiveAccountKey?: AccountKey;
     intent?: TextProps['intent'];
     priority?: TextProps['priority'];
     isDisabled?: TextProps['isDisabled'];
@@ -25,18 +29,19 @@ type TradingDetailTxIdProps = {
 export const TradingDetailTxId = ({
     value,
     account,
-    receiveAccount,
+    receiveAccountKey,
     intent,
     priority,
     isDisabled,
 }: TradingDetailTxIdProps) => {
     const dispatch = useDispatch();
-    const isTxOnReceiveAccount = useSelector(state =>
-        receiveAccount
-            ? !!selectTransactionByAccountKeyAndTxid(state, receiveAccount.key, value)
-            : false,
+
+    const payoutAccount = useSelector(state =>
+        receiveAccountKey && selectTransactionByAccountKeyAndTxid(state, receiveAccountKey, value)
+            ? selectAccountByKey(state, receiveAccountKey)
+            : null,
     );
-    const txAccount = isTxOnReceiveAccount && receiveAccount ? receiveAccount : account;
+    const txAccount = payoutAccount ?? account;
 
     return (
         <Link

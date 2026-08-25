@@ -50,7 +50,7 @@ describe('TradingDetailTxId', () => {
             <TradingDetailTxId
                 value={payoutTxid}
                 account={sendAccount}
-                receiveAccount={receiveAccount}
+                receiveAccountKey={receiveAccount.key}
             />,
         );
 
@@ -80,7 +80,7 @@ describe('TradingDetailTxId', () => {
             <TradingDetailTxId
                 value="signedSendTxid"
                 account={sendAccount}
-                receiveAccount={receiveAccount}
+                receiveAccountKey={receiveAccount.key}
             />,
         );
 

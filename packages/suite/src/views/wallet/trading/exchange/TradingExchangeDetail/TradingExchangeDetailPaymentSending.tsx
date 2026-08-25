@@ -5,6 +5,7 @@ import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Card, Column, InfoItem, type StepListItemState } from '@trezor/components';
 
 import { useLocales } from 'src/hooks/suite';
@@ -36,14 +37,14 @@ const getTitleId = (state: StepListItemState): TranslationKey => {
 type TradingExchangeDetailPaymentSendingProps = {
     trade: ExchangeTrade;
     account?: Account;
-    receiveAccount?: Account;
+    receiveAccountKey?: AccountKey;
     composedTransaction?: TradingComposedTransactionInfo;
 };
 
 export const TradingExchangeDetailPaymentSending = ({
     trade,
     account,
-    receiveAccount,
+    receiveAccountKey,
     composedTransaction,
 }: TradingExchangeDetailPaymentSendingProps) => {
     const locale = useLocales();
@@ -69,7 +70,7 @@ export const TradingExchangeDetailPaymentSending = ({
                 priority={stepState === 'done' ? 'secondary' : 'primary'}
                 value={trade.receiveTxHash}
                 account={account}
-                receiveAccount={receiveAccount}
+                receiveAccountKey={receiveAccountKey}
             />
         ) : null;
 

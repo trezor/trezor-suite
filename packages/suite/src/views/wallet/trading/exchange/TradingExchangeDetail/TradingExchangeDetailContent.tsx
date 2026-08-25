@@ -115,7 +115,7 @@ export const TradingExchangeDetailContent = () => {
                     <TradingExchangeDetailPaymentSuccessful
                         trade={trade.data}
                         account={sendAccount}
-                        receiveAccount={receiveAccount}
+                        receiveAccountKey={trade.receiveAccountKey}
                         provider={provider}
                     />
                 );
@@ -124,7 +124,7 @@ export const TradingExchangeDetailContent = () => {
                     <TradingExchangeDetailPaymentFailed
                         trade={trade.data}
                         account={sendAccount}
-                        receiveAccount={receiveAccount}
+                        receiveAccountKey={trade.receiveAccountKey}
                         provider={provider}
                     />
                 );
@@ -133,7 +133,7 @@ export const TradingExchangeDetailContent = () => {
                     <TradingExchangeDetailPaymentKYC
                         trade={trade.data}
                         account={sendAccount}
-                        receiveAccount={receiveAccount}
+                        receiveAccountKey={trade.receiveAccountKey}
                         provider={provider}
                         supportUrl={provider?.supportUrl}
                     />
@@ -152,7 +152,7 @@ export const TradingExchangeDetailContent = () => {
                                     <TradingExchangeDetailPaymentSending
                                         trade={trade.data}
                                         account={sendAccount}
-                                        receiveAccount={receiveAccount}
+                                        receiveAccountKey={trade.receiveAccountKey}
                                         composedTransaction={composedTransaction}
                                     />
                                 )}
@@ -160,7 +160,7 @@ export const TradingExchangeDetailContent = () => {
                                     trade={trade.data}
                                     provider={provider}
                                     account={trade.data.isDex ? sendAccount : undefined}
-                                    receiveAccount={receiveAccount}
+                                    receiveAccountKey={trade.receiveAccountKey}
                                     isDex={trade.data.isDex}
                                 />
                                 <StepList.Item
