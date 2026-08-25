@@ -100,12 +100,19 @@ const calculateTransaction = (
     );
 };
 
-export const prepareTxPlan = async (
-    account: Account,
-    action: CardanoAction,
-    cardanoPools: AdaPools['pools'],
-    votingDelegation?: VotingDelegationOption,
-) => {
+type PrepareTxPlanParams = {
+    account: Account;
+    action: CardanoAction;
+    cardanoPools: AdaPools['pools'];
+    votingDelegation?: VotingDelegationOption;
+};
+
+export const prepareTxPlan = async ({
+    account,
+    action,
+    cardanoPools,
+    votingDelegation,
+}: PrepareTxPlanParams) => {
     if (account?.networkType !== 'cardano') return;
 
     const changeAddress = getUnusedChangeAddress(account);
@@ -206,19 +213,19 @@ const getTransactionData = (
     const { account } = selectedAccount;
 
     if (stakeType === 'stake') {
-        return prepareTxPlan(account, 'delegate', cardanoPools, votingDelegation);
+        return prepareTxPlan({ account, action: 'delegate', cardanoPools, votingDelegation });
     }
 
     if (stakeType === 'unstake') {
-        return prepareTxPlan(account, 'deregister', cardanoPools, votingDelegation);
+        return prepareTxPlan({ account, action: 'deregister', cardanoPools, votingDelegation });
     }
 
     if (stakeType === 'claim') {
-        return prepareTxPlan(account, 'withdrawal', cardanoPools, votingDelegation);
+        return prepareTxPlan({ account, action: 'withdrawal', cardanoPools, votingDelegation });
     }
 
     if (stakeType === 'change-delegate') {
-        return prepareTxPlan(account, 'voteDelegate', cardanoPools, votingDelegation);
+        return prepareTxPlan({ account, action: 'voteDelegate', cardanoPools, votingDelegation });
     }
 };
 
