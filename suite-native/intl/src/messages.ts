@@ -2496,6 +2496,12 @@ export const messages = {
             recipients: {
                 title: 'Recipient & amount',
                 addressLabel: 'Recipient address',
+                addressOrEnsLabel: 'Recipient address or ENS',
+                ens: {
+                    resolving: 'Resolving name…',
+                    walletAddress: 'Wallet address: {address}',
+                    primaryName: 'Wallet: {name}',
+                },
                 autocorrect: {
                     convertedToLowercase: 'The address has been converted to lowercase.',
                     addedBitcoincashPrefix:
@@ -2610,6 +2616,8 @@ export const messages = {
                 step1: 'Go to the app or website where you originally got the address.',
                 step2: "Compare the original address with what's on your Trezor.",
                 step3: 'If they match exactly, confirm on your Trezor.',
+                ensSendingTo: 'Sending to {ensName}',
+                ensWalletAddress: 'Wallet address: {address}',
                 originBottomSheet: {
                     title: "What's the place of origin?",
                     subtitle: 'Think how you initially retrieved the address.',

@@ -21,6 +21,7 @@ import {
     selectIsTransactionReviewInProgress,
 } from '@suite-native/transaction-management';
 
+import { AddressReviewEnsPreview } from '../components/AddressReviewEnsPreview';
 import { AddressReviewStepList } from '../components/AddressReviewStepList';
 
 export const SendAddressReviewScreen = ({
@@ -69,6 +70,13 @@ export const SendAddressReviewScreen = ({
                     <Text variant="headline-sm">
                         <Translation id="moduleSend.review.address.title" />
                     </Text>
+                    {/* Kept outside AddressReviewStepList: its sliding footer overlay is positioned
+                        from the measured step heights, so anything added above the steps there
+                        would leave the overlay misaligned. */}
+                    <AddressReviewEnsPreview
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                    />
                     <AddressReviewStepList />
                 </VStack>
             </Box>

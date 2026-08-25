@@ -7,7 +7,7 @@ import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { selectAddressValidatorDep } from '@suite-common/address';
+import { selectAddressValidatorDep, selectGetNamedAddressSupportDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import {
     selectDeviceUnavailableCapabilities,
@@ -30,6 +30,10 @@ import {
     sendFormActions,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
+// Omitted from the wallet-core barrel on purpose: that barrel is bundled into the Electron main
+// process, whose webpack resolves .ts/.js only, and this hook reaches a .tsx file.
+// eslint-disable-next-line local-rules/no-package-deep-imports
+import { useResolveNamedAddress } from '@suite-common/wallet-core/src/named-address/useResolveNamedAddress';
 import {
     type Account,
     type AccountKey,
@@ -117,7 +121,10 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const navigation = useNavigation<SendFormNavigationProp>();
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const { addressValidator, getNamedAddressSupport } = useServices(
+        selectAddressValidatorDep,
+        selectGetNamedAddressSupportDep,
+    );
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
 
@@ -160,6 +167,8 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     const network = account ? getNetwork(account.symbol) : null;
 
+    const namedAddress = getNamedAddressSupport(account?.symbol);
+
     const networkReserve = account
         ? getNetworkReserve({
               symbol: account.symbol,
@@ -189,6 +198,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             accountNativeAvailableBalance: account?.availableBalance,
             networkReserve,
             rippleReserve,
+            namedAddress,
         },
         defaultValues: getDefaultValues({
             tokenContract,
@@ -200,6 +210,15 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const { handleSubmit, control, getValues, trigger, setError } = form;
     const watchedFormValues = useWatch({ control });
     const watchedAddress = useWatch({ name: 'outputs.0.address', control });
+
+    const { mode: namedAddressMode, isResolving } = useResolveNamedAddress(
+        watchedAddress ?? '',
+        account?.symbol,
+    );
+    // A name that has not finished resolving has no onchain address yet, so submitting now would
+    // compose against the name itself, or against fee levels left over from a previous recipient.
+    // Reverse lookups are excluded: those run on an address that is already valid to send to.
+    const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
 
     const updateFormState = useCallback(async () => {
         if (account && network && networkFeeInfo) {
@@ -522,5 +541,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         network,
         amount,
         feeLevelsMaxAmount,
+        isResolvingNamedAddress,
     };
 };
