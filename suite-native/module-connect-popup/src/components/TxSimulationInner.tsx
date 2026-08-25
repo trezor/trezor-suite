@@ -28,6 +28,7 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
             : ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
     const [gasLimit, setGasLimit] = useState(defaultGasLimit);
     const isSigningTransaction = action.method === 'ethereumSignTransaction';
+    const isGasLimitFinal = source.type === 'walletconnect';
 
     const onConfirm = () => {
         if (isSigningTransaction) {
@@ -126,12 +127,20 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                 }}
                 onConfirm={onConfirm}
                 onSuccess={({ method, payload }) => {
+                    if (isGasLimitFinal) {
+                        return;
+                    }
+
                     switch (method) {
                         case 'ethereumSignTransaction':
                         case 'ethereumSignTypedData': {
-                            const { simulation: evmSimulation, gas_estimation } = payload;
+                            const {
+                                simulation: evmSimulation,
+                                gas_estimation,
+                                isChainSupported,
+                            } = payload;
                             const newFeeLimit =
-                                gas_estimation?.status === 'Success'
+                                isChainSupported && gas_estimation?.status === 'Success'
                                     ? Number(gas_estimation.estimate).toString()
                                     : null;
 

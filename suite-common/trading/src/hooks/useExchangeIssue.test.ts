@@ -43,7 +43,13 @@ const defaultParams = {
 
 const createSimulationResult = (scan: SimulationPayload): SimulationResult => ({
     method: 'ethereumSignTransaction',
-    payload: { block: '123', chain: 'ethereum', needsDisclaimer: false, ...scan },
+    payload: {
+        block: '123',
+        chain: 'ethereum',
+        needsDisclaimer: false,
+        isChainSupported: true,
+        ...scan,
+    },
 });
 
 const maliciousResult = createSimulationResult({

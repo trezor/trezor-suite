@@ -18,6 +18,8 @@ import {
     DEFAULT_PAYMENT,
     DEFAULT_VALUES,
     ERC20_TRANSFER,
+    ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+    ETH_ESTIMATED_GAS_LIMIT_MULTIPLIER,
 } from '@suite-common/wallet-constants';
 import type {
     Account,
@@ -167,6 +169,19 @@ export const getEthereumEstimateFeeParams = (
         value: getSerializedAmount(amount),
         data: data || '',
     };
+};
+
+export const getGasLimitWithBuffer = (estimatedGasLimit: string | undefined) => {
+    const estimate = estimatedGasLimit ? new BigNumber(estimatedGasLimit) : null;
+
+    if (!estimate || estimate.isNaN() || estimate.lte(0)) {
+        return ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
+    }
+
+    return estimate
+        .multipliedBy(ETH_ESTIMATED_GAS_LIMIT_MULTIPLIER)
+        .integerValue(BigNumber.ROUND_CEIL)
+        .toFixed();
 };
 
 export const prepareEthereumTransaction = (

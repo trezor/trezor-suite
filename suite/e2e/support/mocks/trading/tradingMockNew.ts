@@ -10,7 +10,10 @@ import { step } from '../../common';
 
 type TxSimulationResult = NonNullable<Parameters<typeof getSimulatedReceiveAmount>[0]>;
 type EvmTxSimulationResult = Extract<TxSimulationResult, { method: 'ethereumSignTransaction' }>;
-type TxSimulationScan = Omit<EvmTxSimulationResult['payload'], 'needsDisclaimer'>;
+type TxSimulationScan = Omit<
+    EvmTxSimulationResult['payload'],
+    'needsDisclaimer' | 'isChainSupported'
+>;
 
 type TradeFlow = 'buy' | 'sell' | 'swap';
 type TradeEndpoints = {
@@ -166,7 +169,7 @@ export class TradingMockNew {
 
             this.capturedTxSimulation = {
                 method: 'ethereumSignTransaction',
-                payload: { ...scan, needsDisclaimer: false },
+                payload: { ...scan, needsDisclaimer: false, isChainSupported: true },
             };
 
             await route.fulfill({ response });
