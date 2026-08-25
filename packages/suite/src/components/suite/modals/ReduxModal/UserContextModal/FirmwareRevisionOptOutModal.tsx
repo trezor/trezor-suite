@@ -43,7 +43,7 @@ export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptO
             intent="warning"
         >
             <H3>
-                <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE" />
+                <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_TITLE" />
             </H3>
             <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                 <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_3" />
