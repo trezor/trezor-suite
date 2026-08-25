@@ -651,6 +651,13 @@ export const signMessage = async (api: TrezorConnect) => {
         payload.address.toLowerCase();
         payload.signature.toLowerCase();
     }
+
+    // optional scriptType override
+    api.signMessage({ path: 'm/44', coin: 'btc', message: 'foo', scriptType: 'SPENDTAPROOT' });
+
+    // @ts-expect-error unknown scriptType
+    api.signMessage({ path: 'm/44', coin: 'btc', message: 'foo', scriptType: 'NOT_A_SCRIPT_TYPE' });
+
     const verify = await api.verifyMessage({
         address: 'a',
         signature: 'a',
