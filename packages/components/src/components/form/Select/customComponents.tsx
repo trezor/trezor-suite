@@ -65,7 +65,8 @@ export const Control = ({
     const {
         isDisabled,
         hasValue,
-        selectProps: { isLoading, placeholder, isSearchable },
+        isFocused,
+        selectProps: { isLoading, placeholder },
     } = props;
 
     return (
@@ -78,7 +79,9 @@ export const Control = ({
             >
                 {label && !isLoading && !isClean && (
                     <SelectFloatingLabel
-                        $isActive={hasValue || !!placeholder || !!isSearchable}
+                        // A searchable select is typed into while focused, so the label gets out of
+                        // the way then. Until it is focused, an empty one has to look empty.
+                        $isActive={hasValue || !!placeholder || isFocused}
                         $isDisabled={isDisabled}
                         $size={size}
                     >
