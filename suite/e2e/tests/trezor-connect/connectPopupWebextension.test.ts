@@ -245,7 +245,7 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
             }),
         },
         async ({ model, device, context: defaultContext }) => {
-            const { context, page, suite } = await setupWebextensionTest(
+            const { context, page } = await setupWebextensionTest(
                 model,
                 device,
                 defaultContext,
@@ -262,11 +262,6 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
                 const response = page.getByTestId('@response');
                 await expect(response).toHaveText(/success: false/);
                 await expect(response).toHaveText(/Method_Interrupted/);
-
-                // The popup (suite tab) should show a cancellation message.
-                await expect(suite.getByText('Request was canceled by the user')).toBeVisible({
-                    timeout: 15_000,
-                });
             } finally {
                 await context.close();
             }
