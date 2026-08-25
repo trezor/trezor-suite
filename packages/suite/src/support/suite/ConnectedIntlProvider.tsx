@@ -8,6 +8,8 @@ import enMessages from '@trezor/suite-data/files/translations/en-US.json';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 
+import { getEffectiveIntlMessages } from './getEffectiveIntlMessages';
+
 const useFetchMessages = (locale: Locale) => {
     const [messages, setMessages] = useState<{ [key: string]: any }>({});
 
@@ -43,11 +45,10 @@ export const ConnectedIntlProvider = ({ children }: ConnectedIntlProviderProps) 
     const locale = useSelector(selectLanguage);
     const showTranslationKeys = useSelector(selectShowTranslationKeys);
     const messages = useFetchMessages(locale);
-    const effectiveMessages = useMemo(() => {
-        if (!showTranslationKeys) return messages;
-
-        return Object.fromEntries(Object.keys(messages).map(id => [id, id]));
-    }, [messages, showTranslationKeys]);
+    const effectiveMessages = useMemo(
+        () => getEffectiveIntlMessages(messages, showTranslationKeys),
+        [messages, showTranslationKeys],
+    );
 
     return (
         <IntlProvider
