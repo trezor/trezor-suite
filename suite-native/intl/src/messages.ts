@@ -4105,6 +4105,63 @@ export const messages = {
             },
             transactionId: 'Trans. ID: {orderId}',
             detail: {
+                actionButton: {
+                    contactProvider: 'Contact {providerName}',
+                    startNew: {
+                        buy: 'Start new buy',
+                        sell: 'Start new sell',
+                        exchange: 'Start new swap',
+                    },
+                },
+                paymentInterruptionBanner: {
+                    title: "Left the provider's website before paying?",
+                    description:
+                        "No worries – you haven't been charged. Just go back and create a new trade.",
+                },
+                statusStepper: {
+                    estimatedTime: 'Estimated time',
+                    transactionId: 'Transaction ID',
+                    customer: {
+                        buy: {
+                            processingTitle: 'Waiting for payment',
+                            processingDescription:
+                                'Payment confirmations reach us through the provider, so this can take a while.',
+                            completedTitle: 'Payment received',
+                        },
+                        sell: {
+                            processingTitle: 'Sending transaction',
+                            completedTitle: 'Transaction sent',
+                        },
+                        exchange: {
+                            processingTitle: 'Sending transaction',
+                            dex: {
+                                processingTitle: 'Swapping on {providerName}',
+                                completedTitle: 'Swapped on {providerName}',
+                            },
+                        },
+                    },
+                    provider: {
+                        label: 'Provider',
+                        buy: {
+                            pendingTitle: '{providerName} will process your buy',
+                            processingTitle: '{providerName} is processing your buy',
+                            completedTitle: '{providerName} has processed your buy',
+                        },
+                        sell: {
+                            pendingTitle: '{providerName} will process your sell',
+                            processingTitle: '{providerName} is processing your sell',
+                            completedTitle: '{providerName} has processed your sell',
+                            description:
+                                'Your rate is locked—you’ll get exactly what you see. Once your sell is processed, {providerName} will send the funds to your account. You can check your account to see if they’ve arrived.',
+                        },
+                        exchange: {
+                            pendingTitle: '{providerName} will process your swap',
+                            processingTitle: '{providerName} is processing your swap',
+                            completedTitle: '{providerName} has processed your swap',
+                        },
+                        checkStatus: 'Check status on {providerName}',
+                    },
+                },
                 header: {
                     unknownProviderName: 'the provider',
                     buy: {

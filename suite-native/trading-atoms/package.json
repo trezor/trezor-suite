@@ -25,6 +25,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/link": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
