@@ -531,33 +531,20 @@ export type RootStackParamList = {
         amount: string;
         account: Account;
     };
-    [RootStackRoutes.StakeTransactionDataReview]: {
+    [RootStackRoutes.StakingTransactionDataReview]: {
         accountKey: AccountKey;
-        amount: string;
+        stakeType: 'stake' | 'unstake' | 'claim';
+        amount?: string;
     };
-    [RootStackRoutes.StakeTransactionComplete]: {
+    [RootStackRoutes.StakingTransactionComplete]: {
         accountKey: AccountKey;
+        stakeType: 'stake' | 'unstake' | 'claim';
         amountInBaseUnits: string;
     };
     [RootStackRoutes.UnstakeFlow]: { accountKey: AccountKey };
-    [RootStackRoutes.UnstakeTransactionDataReview]: {
-        accountKey: AccountKey;
-        amount: string;
-    };
-    [RootStackRoutes.UnstakeTransactionComplete]: {
-        accountKey: AccountKey;
-        amountInBaseUnits: string;
-    };
     [RootStackRoutes.ClaimReview]: {
         accountKey: AccountKey;
         symbol: NetworkSymbol;
-    };
-    [RootStackRoutes.ClaimTransactionDataReview]: {
-        accountKey: AccountKey;
-    };
-    [RootStackRoutes.ClaimTransactionComplete]: {
-        accountKey: AccountKey;
-        amountInBaseUnits: string;
     };
     [RootStackRoutes.DeviceSettingsStack]: NavigatorScreenParams<DeviceSettingsStackParamList>;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;

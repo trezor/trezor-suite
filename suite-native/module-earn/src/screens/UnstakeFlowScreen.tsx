@@ -91,6 +91,7 @@ export const UnstakeFlowScreen = () => {
 
     const handleReviewAndSign = form.handleSubmit(() => {
         registerNavigateBackAnalytics();
+
         analytics.report({
             type: events.stakingUnstakeEvent.name,
             payload: {
@@ -100,7 +101,9 @@ export const UnstakeFlowScreen = () => {
                 currency: currencyRef.current,
             },
         });
-        navigation.navigate(RootStackRoutes.UnstakeTransactionDataReview, {
+
+        navigation.navigate(RootStackRoutes.StakingTransactionDataReview, {
+            stakeType: 'unstake',
             accountKey,
             amount: amountValue,
         });

@@ -1,9 +1,7 @@
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey } from '@suite-common/wallet-types';
-import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import { type Account } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import {
     LIST_VERTICAL_SPACING,
@@ -14,30 +12,28 @@ import {
     useActiveStepOffset,
 } from '@suite-native/transaction-management';
 
-import { StakeOutputItem } from './StakeOutputItem';
 import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
+import { StakingTransactionDataReviewOutputItem } from './StakingTransactionDataReviewOutputItem';
 import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
-import { getAmountInBaseUnits } from '../utils/getAmountInBaseUnits';
-import { getEarnPendingAmountInBaseUnits } from '../utils/getEarnPendingAmountInBaseUnits';
 
-type StakeTransactionDataReviewStepListProps = {
-    accountKey: AccountKey;
-    amount: string;
-    accountSymbol: NetworkSymbol;
-};
+interface StakingTransactionDataReviewStepListProps {
+    account: Account;
+    stakeType: 'stake' | 'unstake' | 'claim';
+    amountInBaseUnits: string;
+}
 
-export const StakeTransactionDataReviewStepList = ({
-    accountKey,
-    amount,
-    accountSymbol,
-}: StakeTransactionDataReviewStepListProps) => {
+export const StakingTransactionDataReviewStepList = ({
+    account,
+    stakeType,
+    amountInBaseUnits,
+}: StakingTransactionDataReviewStepListProps) => {
     const isSigned = useSelector(selectIsTransactionAlreadySigned);
 
     const summaryOutput = useSelector((state: TransactionReviewOutputsState) =>
-        selectReviewSummaryOutput(state, 'stake', accountKey),
+        selectReviewSummaryOutput(state, stakeType, account.key),
     );
 
-    const selectedPrecomposed = useEarnSelectedPrecomposedTransaction('stake', accountKey);
+    const precomposedTransaction = useEarnSelectedPrecomposedTransaction(stakeType, account.key);
 
     // The Trezor reveals the staking step first, then the summary. The summary card only unlocks once every
     // device output has been confirmed, which is exactly when selectReviewSummaryOutput exposes a state.
@@ -46,31 +42,26 @@ export const StakeTransactionDataReviewStepList = ({
 
     const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(activeStep);
 
-    const isSolanaStake = isSupportedSolStakingNetworkSymbol(accountSymbol);
-    const displayedAmountInBaseUnits = getEarnPendingAmountInBaseUnits({
-        fallbackAmountInBaseUnits: getAmountInBaseUnits(amount, accountSymbol),
-        isSolanaStaking: isSolanaStake,
-        precomposedTransaction: selectedPrecomposed,
-    });
-
     return (
         <View>
             <VStack spacing={LIST_VERTICAL_SPACING}>
-                <StakeOutputItem
-                    symbol={accountSymbol}
+                <StakingTransactionDataReviewOutputItem
+                    stakeType={stakeType}
+                    symbol={account.symbol}
                     outputState={isSigned || isSummaryActive ? 'success' : 'active'}
                     onLayout={event => handleReadListItemHeight(event, 0)}
                 />
 
                 <EarnSummaryOutputItem
-                    accountKey={accountKey}
-                    stakeType="stake"
-                    amount={displayedAmountInBaseUnits}
-                    fee={summaryOutput?.fee ?? selectedPrecomposed?.fee ?? '0'}
+                    accountKey={account.key}
+                    stakeType={stakeType}
+                    amount={amountInBaseUnits}
+                    fee={summaryOutput?.fee ?? precomposedTransaction?.fee ?? '0'}
                     outputState={summaryOutput?.state}
                     onLayout={event => handleReadListItemHeight(event, 1)}
                 />
             </VStack>
+
             {!isSigned && <SlidingFooterOverlay activeStepOffset={activeStepBottomOffset} />}
         </View>
     );
