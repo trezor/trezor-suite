@@ -100,6 +100,7 @@ const createSimulationResult = (
         block: '123',
         chain: 'ethereum',
         needsDisclaimer: false,
+        isChainSupported: true,
         ...payload,
     },
 });

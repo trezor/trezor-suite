@@ -9,7 +9,6 @@ import {
 } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     type TransactionsRootState,
     type WalletSettingsRootState,
@@ -18,7 +17,12 @@ import {
     selectIsMevProtectionEnabled,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-common/wallet-utils';
+import {
+    getAccountIdentity,
+    getGasLimitWithBuffer,
+    getMevProtectedTxData,
+    sanitizeHex,
+} from '@suite-common/wallet-utils';
 import TrezorConnect, {
     type CallMethodResponse,
     type EthereumSignTypedData,
@@ -150,11 +154,15 @@ const ethereumRequestThunk = createThunk<
             if (account.networkType !== 'ethereum') {
                 throw new Error('Account is not Ethereum');
             }
-            if (
+            if (!transaction.value) {
+                transaction.value = '0x0';
+            }
+
+            const isFeeRateMissing =
                 !transaction.gasPrice &&
-                (!transaction.maxFeePerGas || !transaction.maxPriorityFeePerGas)
-            ) {
-                // Fee not provided, estimate it
+                (!transaction.maxFeePerGas || !transaction.maxPriorityFeePerGas);
+
+            if (isFeeRateMissing || !transaction.gas) {
                 const feeLevels = await TrezorConnect.blockchainEstimateFee({
                     coin: asCoinSymbol(account.symbol),
                     identity: getAccountIdentity(account),
@@ -162,27 +170,32 @@ const ethereumRequestThunk = createThunk<
                         blocks: [2],
                         specific: {
                             from: account.descriptor,
+                            to: transaction.to,
+                            data: transaction.data,
+                            value: transaction.value,
                         },
                     },
                 });
-                if (!feeLevels.success) {
+
+                if (!feeLevels.success && isFeeRateMissing) {
                     throw new Error('eth_sendTransaction cannot estimate fee');
                 }
-                if (feeLevels.payload.levels[0]?.eip1559) {
-                    transaction.maxFeePerGas =
-                        feeLevels.payload.levels[0]?.eip1559?.medium?.maxFeePerGas;
-                    transaction.maxPriorityFeePerGas =
-                        feeLevels.payload.levels[0]?.eip1559?.medium?.maxPriorityFeePerGas;
-                } else {
-                    transaction.gasPrice = feeLevels.payload.levels[0]?.feePerUnit;
+
+                const feeLevel = feeLevels.success ? feeLevels.payload.levels[0] : undefined;
+
+                if (isFeeRateMissing) {
+                    if (feeLevel?.eip1559) {
+                        transaction.maxFeePerGas = feeLevel.eip1559.medium?.maxFeePerGas;
+                        transaction.maxPriorityFeePerGas =
+                            feeLevel.eip1559.medium?.maxPriorityFeePerGas;
+                    } else {
+                        transaction.gasPrice = feeLevel?.feePerUnit;
+                    }
                 }
-            }
-            if (!transaction.gas) {
-                // Placeholder, will be replaced by estimate from TX simulation response
-                transaction.gas = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
-            }
-            if (!transaction.value) {
-                transaction.value = '0x0';
+
+                if (!transaction.gas) {
+                    transaction.gas = getGasLimitWithBuffer(feeLevel?.feeLimit);
+                }
             }
             const { nonce } = await dispatch(
                 ethereumGetCurrentNonceThunk({

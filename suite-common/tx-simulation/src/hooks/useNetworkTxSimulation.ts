@@ -5,7 +5,7 @@ import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 import { client } from '../client';
 import { type GetTxSimulationParams } from '../utils';
 
-type TxSimulationCommonResult = { needsDisclaimer: boolean };
+type TxSimulationCommonResult = { needsDisclaimer: boolean; isChainSupported: boolean };
 export type TxSimulationEVMResult = TransactionScanResponse & TxSimulationCommonResult;
 
 export type NetworkTxSimulationResult = {
@@ -22,6 +22,7 @@ async function handleTxScan(input: GetTxSimulationParams): Promise<NetworkTxSimu
     switch (input?.method) {
         case 'ethereumSignTransaction':
         case 'ethereumSignTypedData': {
+            const isChainSupported = Boolean(input.params.chain);
             const scanResult = await client.evm.jsonRpc.scan(input.params);
 
             if (scanResult.simulation?.status === 'Success') {
@@ -42,6 +43,7 @@ async function handleTxScan(input: GetTxSimulationParams): Promise<NetworkTxSimu
             const result: TxSimulationEVMResult = {
                 ...scanResult,
                 needsDisclaimer: getEVMNeedsDisclaimer(scanResult),
+                isChainSupported,
             };
 
             return { method: input.method, payload: result } as const;
