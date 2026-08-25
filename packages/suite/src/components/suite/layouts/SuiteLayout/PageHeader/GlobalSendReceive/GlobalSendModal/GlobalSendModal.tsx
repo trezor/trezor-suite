@@ -16,7 +16,7 @@ import {
     AssetsList,
     AssetsListEmpty,
     AssetsModal,
-    ExpandableAssetRowTokens,
+    ExpandableAssetRowGroup,
 } from 'src/components/suite/asset-picker/components';
 import {
     useExpandableAccountGroups,
@@ -24,6 +24,7 @@ import {
     useInsertGroupLabelsAndSpaces,
 } from 'src/components/suite/asset-picker/hooks';
 import { type AssetPickerListItem } from 'src/components/suite/asset-picker/types';
+import { createTokenOption } from 'src/components/suite/asset-picker/utils';
 import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
@@ -109,13 +110,24 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
                 case 'hidden-tokens':
                     return (
-                        <ExpandableAssetRowTokens
+                        <ExpandableAssetRowGroup
                             label="TR_HIDDEN_TOKENS"
                             account={item.account}
-                            tokens={item.tokens}
+                            items={item.tokens.map(token => createTokenOption(item.account, token))}
+                            renderItem={groupItem =>
+                                groupItem.type === 'token' && (
+                                    <AssetRowToken
+                                        token={groupItem.token}
+                                        account={groupItem.account}
+                                        onClick={handleTokenClick}
+                                        isInsideGroup
+                                    />
+                                )
+                            }
                             expanded={item.expanded}
-                            onExpandToggle={updateExpandableAccountGroups}
-                            onTokenClick={handleTokenClick}
+                            onExpandToggle={expanded => {
+                                updateExpandableAccountGroups(item.account.key, expanded);
+                            }}
                         />
                     );
             }

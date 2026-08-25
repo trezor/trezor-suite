@@ -7,4 +7,3 @@ export * from './AssetRow/AssetGroupSpace';
 export * from './AssetRow/AssetRowToken/AssetRowToken';
 export * from './AssetRow/AssetRowAsset/AssetRowAsset';
 export * from './AssetRow/ExpandableAssetRowGroup/ExpandableAssetRowGroup';
-export * from './AssetRow/ExpandableAssetRowTokens/ExpandableAssetRowTokens';

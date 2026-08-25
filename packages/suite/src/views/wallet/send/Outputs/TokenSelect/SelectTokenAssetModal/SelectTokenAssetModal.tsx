@@ -13,7 +13,7 @@ import {
     AssetsList,
     AssetsListEmpty,
     AssetsModal,
-    ExpandableAssetRowTokens,
+    ExpandableAssetRowGroup,
 } from 'src/components/suite/asset-picker/components';
 import {
     useExpandableAccountGroups,
@@ -21,6 +21,7 @@ import {
     useListScrollReset,
 } from 'src/components/suite/asset-picker/hooks';
 import { type AssetPickerListItem } from 'src/components/suite/asset-picker/types';
+import { createTokenOption } from 'src/components/suite/asset-picker/utils';
 import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
 import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -168,15 +169,25 @@ export function SelectTokenAssetModal({
 
                 case 'hidden-tokens':
                     return (
-                        <ExpandableAssetRowTokens
+                        <ExpandableAssetRowGroup
                             label="TR_HIDDEN_TOKENS"
                             account={item.account}
-                            tokens={item.tokens}
+                            items={item.tokens.map(token => createTokenOption(item.account, token))}
+                            renderItem={groupItem =>
+                                groupItem.type === 'token' && (
+                                    <AssetRowToken
+                                        token={groupItem.token}
+                                        account={groupItem.account}
+                                        onClick={handleSelectChange}
+                                        isInsideGroup
+                                    />
+                                )
+                            }
                             expanded={item.expanded}
-                            onExpandToggle={updateExpandableAccountGroups}
-                            onTokenClick={handleSelectChange}
+                            onExpandToggle={expanded => {
+                                updateExpandableAccountGroups(item.account.key, expanded);
+                            }}
                             dataTestId={`@asset-picker/send-token/option/hidden-tokens/${item.account.symbol}`}
-                            showTokensPreview
                         />
                     );
 
