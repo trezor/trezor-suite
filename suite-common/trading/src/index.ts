@@ -44,6 +44,7 @@ export * from './utils/tradingAccountUtils';
 export * from './utils/buy/buyUtils';
 export * from './utils/receiveAccountUtils';
 export * from './utils/tradeableAssetBalanceUtils';
+export * from './utils/tradeableAssetGroupUtils';
 export * from './utils/tradeableAssetListUtils';
 export * from './utils/tradeOperationUtils';
 export * from './utils/tradeHistoryExportUtils';
