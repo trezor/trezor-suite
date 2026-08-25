@@ -160,20 +160,26 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
             composed.transactions.set(level.label, tx);
         }
 
+        const uiPromise = context.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice());
         if (!composed.levels.length) {
             const feePerUnit = String(coinInfo.minFee);
             const minFeeTx = compose(feePerUnit);
 
             if (minFeeTx.type === 'final') {
                 context.sendCoreMessage(
-                    createUiRequestMessage(UI_REQUESTS.REQUEST_FEE, {
-                        feeLevels: [{ label: 'custom', blocks: -1, feePerUnit }],
-                        coinInfo: this.params.coinInfo,
-                    }),
+                    createUiRequestMessage(
+                        UI_REQUESTS.REQUEST_FEE,
+                        {
+                            feeLevels: [{ label: 'custom', blocks: -1, feePerUnit }],
+                            coinInfo: this.params.coinInfo,
+                        },
+                        { requestId: uiPromise.requestId },
+                    ),
                 );
             } else {
                 // show error view
                 context.sendCoreMessage(createUiEventMessage(UI_EVENTS.ACCOUNT_INSUFFICIENT_FUNDS));
+                uiPromise.reject(new Error(UI_EVENTS.ACCOUNT_INSUFFICIENT_FUNDS));
                 // wait few seconds...
                 await resolveAfter(2000);
 
@@ -184,16 +190,19 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
             // set select account view
             // this view will be updated from discovery events
             context.sendCoreMessage(
-                createUiRequestMessage(UI_REQUESTS.REQUEST_FEE, {
-                    feeLevels: composed.levels,
-                    coinInfo: this.params.coinInfo,
-                }),
+                createUiRequestMessage(
+                    UI_REQUESTS.REQUEST_FEE,
+                    {
+                        feeLevels: composed.levels,
+                        coinInfo: this.params.coinInfo,
+                    },
+                    { requestId: uiPromise.requestId },
+                ),
             );
         }
 
         // wait for fee selection
-        const resp = await context.createUiPromise(UI_RESPONSE.RECEIVE_FEE, this.getDevice())
-            .promise;
+        const resp = await uiPromise.promise;
 
         if (resp.payload.type === 'change-account') {
             // check for interruption
@@ -262,12 +271,16 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         const dfd = context.createUiPromise(UI_RESPONSE.RECEIVE_ACCOUNT, this.getDevice());
 
         context.sendCoreMessage(
-            createUiRequestMessage(UI_REQUESTS.REQUEST_ACCOUNT, {
-                type: 'complete',
-                accountTypes: unique(accounts.map(a => a.type)),
-                coinInfo,
-                accounts,
-            }),
+            createUiRequestMessage(
+                UI_REQUESTS.REQUEST_ACCOUNT,
+                {
+                    type: 'complete',
+                    accountTypes: unique(accounts.map(a => a.type)),
+                    coinInfo,
+                    accounts,
+                },
+                { requestId: dfd.requestId },
+            ),
         );
 
         const uiResp = await dfd.promise;

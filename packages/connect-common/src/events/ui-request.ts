@@ -9,7 +9,6 @@ import type { DiscoveryAccount, DiscoveryAccountType } from '../types/account';
 import type { BitcoinNetworkInfo, CoinInfo } from '../types/coinInfo';
 import type { Device } from '../types/device';
 import type { FeeLevel } from '../types/fees';
-import { type MessageFactoryFn } from '../types/utils';
 
 export const UI_REQUEST = 'UI_REQUEST';
 export const UI_REQUESTS = {
@@ -123,22 +122,18 @@ export const isUiRequestOfType = createTypeGuardByType<UiRequestEvent>();
 
 export type UiRequestMessage = UiRequestEvent & {
     event: typeof UI_REQUEST;
-    requestId?: string;
-    callId?: string;
+    requestId: string;
+    callId?: string; // callId is added by connect core/index when the event is emitted, see createSendCoreMessageWithCallId
 };
 
-export const createUiRequestMessage = ((
-    type: UiRequestEvent['type'],
-    payload?: UiRequestEvent extends { payload: infer P } ? P : undefined,
-    options?: { requestId?: string; callId?: string },
-) => {
-    const { requestId, callId } = options ?? {};
-
-    return {
+export const createUiRequestMessage = <T extends UiRequestEvent['type']>(
+    type: T,
+    payload: Extract<UiRequestEvent, { type: T }>['payload'],
+    options: { requestId: string },
+) =>
+    ({
         event: UI_REQUEST,
         type,
         payload,
-        requestId,
-        callId,
-    };
-}) as MessageFactoryFn<typeof UI_REQUEST, UiRequestEvent>;
+        requestId: options.requestId,
+    }) as UiRequestMessage;
