@@ -121,6 +121,7 @@ export const TransactionTarget = ({
                 return (
                     <AmountComponent
                         transfer={payload}
+                        networkSymbol={transaction.symbol}
                         withLink={false}
                         withSign
                         alignMultitoken="flex-end"
