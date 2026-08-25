@@ -4,7 +4,8 @@ import userEvent from '@testing-library/user-event';
 
 import { openModal } from '@suite/modal';
 import { configureMockStore } from '@suite-common/test-utils';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { transactionsInitialState } from '@suite-common/wallet-core';
+import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { type AppState } from 'src/reducers/store';
@@ -25,20 +26,22 @@ const receiveAccount = mockWalletAccount({
 
 const payoutTxid = 'payoutTxid';
 
-const getInitialState = (): AppState =>
-    ({
-        ...mockInitialAppState,
-        wallet: {
-            ...mockInitialAppState.wallet,
-            accounts: [sendAccount, receiveAccount],
+const getInitialState = (): AppState => ({
+    ...mockInitialAppState,
+    wallet: {
+        ...mockInitialAppState.wallet,
+        accounts: [sendAccount, receiveAccount],
+        transactions: {
+            ...transactionsInitialState,
             transactions: {
-                transactions: {
-                    [receiveAccount.key]: [{ txid: payoutTxid, symbol: receiveAccount.symbol }],
-                    [sendAccount.key]: [],
-                },
+                [receiveAccount.key]: [
+                    { txid: payoutTxid, symbol: receiveAccount.symbol } as WalletAccountTransaction,
+                ],
+                [sendAccount.key]: [],
             },
         },
-    }) as AppState;
+    },
+});
 
 describe('TradingDetailTxId', () => {
     it('opens the transaction detail of the account holding the transaction', async () => {

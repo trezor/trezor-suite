@@ -96,8 +96,6 @@ export const TokenSpecificBalanceDetailsRow = ({
                                 <IOGroup
                                     key={index}
                                     tx={tx}
-                                    // Empty, not undefined: undefined falls back to the network
-                                    // symbol and would convert this amount a second time.
                                     tokenSymbol={transfer.symbol || ''}
                                     contractAddress={transfer.contract}
                                     inputs={

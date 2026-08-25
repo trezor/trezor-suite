@@ -15,11 +15,6 @@ import { type Account } from 'src/types/wallet';
 type TradingDetailTxIdProps = {
     value: string;
     account: Account;
-    /**
-     * The other side of a swap. `receiveTxHash` holds the signed send transaction until a status
-     * refresh replaces it with the provider's payout on the receive network, so only the store says
-     * which account the transaction belongs to.
-     */
     receiveAccountKey?: AccountKey;
     intent?: TextProps['intent'];
     priority?: TextProps['priority'];

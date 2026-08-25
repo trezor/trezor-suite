@@ -14,7 +14,6 @@ import { type AddressOwnership, IOItem } from './IOItem';
 
 export type IOGroupProps = {
     tx: WalletAccountTransaction;
-    /** Symbol the amounts are displayed in; the addresses still use the transaction's network. */
     tokenSymbol?: NetworkSymbolExtended;
     contractAddress?: string;
     inputs: IODetailsType[];
