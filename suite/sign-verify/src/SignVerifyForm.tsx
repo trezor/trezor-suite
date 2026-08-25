@@ -13,7 +13,6 @@ import {
     Button,
     Card,
     Column,
-    Divider,
     Input,
     Row,
     SelectBar,
@@ -412,7 +411,6 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
                             )}
                         </Box>
                     </Box>
-                    {isSignPage && <Divider margin={{}} />}
                     <Input
                         maxLength={MAX_LENGTH_SIGNATURE}
                         type="text"
