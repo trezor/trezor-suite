@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -39,89 +41,93 @@ export interface AccountItemProps {
     onClick?: (account: Account, type: AccountItemType) => void;
 }
 
-export const AccountItem = ({
-    account,
-    forceOnlyItemClick,
-    type,
-    isSelected,
-    formattedBalance,
-    customFiatValue,
-    dataTestKey,
-    isFiatLoading,
-    onClick,
-}: AccountItemProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const { accountType, index, symbol } = account;
+export const AccountItem = memo(
+    ({
+        account,
+        forceOnlyItemClick,
+        type,
+        isSelected,
+        formattedBalance,
+        customFiatValue,
+        dataTestKey,
+        isFiatLoading,
+        onClick,
+    }: AccountItemProps) => {
+        const { analytics } = useServices(selectDesktopAnalyticsDep);
+        const { accountType, index, symbol } = account;
 
-    const goToWithAnalytics = useGoToWithAnalytics(account);
+        const goToWithAnalytics = useGoToWithAnalytics(account);
 
-    const handleHeaderClick = () => {
-        onClick?.(account, type);
+        const handleHeaderClick = () => {
+            onClick?.(account, type);
 
-        // NOTE: disable default behavior useful eg in global send modal - when picking account
-        // from which to send
-        if (forceOnlyItemClick) {
-            return;
-        }
+            // NOTE: disable default behavior useful eg in global send modal - when picking account
+            // from which to send
+            if (forceOnlyItemClick) {
+                return;
+            }
 
-        goToWithAnalytics({
-            routeName: getRoute(type),
-            params: {
-                symbol,
-                accountIndex: index,
-                accountType,
-            },
-        });
-
-        if (type === 'staking') {
-            analytics.report({
-                type: events.stakingNavigateEvent.name,
-                payload: {
-                    action: 'navigate',
-                    from: 'sidebar',
-                    networkSymbol: symbol,
+            goToWithAnalytics({
+                routeName: getRoute(type),
+                params: {
+                    symbol,
+                    accountIndex: index,
+                    accountType,
                 },
             });
-        }
-    };
 
-    const commonProps = {
-        isFiatLoading: Boolean(isFiatLoading),
-        formattedBalance,
-        dataTestKey,
-        type,
-        account,
-        customFiatValue,
-    };
+            if (type === 'staking') {
+                analytics.report({
+                    type: events.stakingNavigateEvent.name,
+                    payload: {
+                        action: 'navigate',
+                        from: 'sidebar',
+                        networkSymbol: symbol,
+                    },
+                });
+            }
+        };
 
-    return (
-        <>
-            <ExpandedSidebarOnly>
-                <AccountRow
-                    {...commonProps}
-                    isSelected={isSelected}
-                    handleHeaderClick={handleHeaderClick}
-                />
-            </ExpandedSidebarOnly>
-            <CollapsedSidebarOnly>
-                <Tooltip
-                    delayShow={TOOLTIP_DELAY_NORMAL}
-                    cursor="pointer"
-                    content={
-                        <Box padding={4}>
-                            <AccountItemContent {...commonProps} showAccountTypeBadge />
-                        </Box>
-                    }
-                    placement="right"
-                >
+        const commonProps = {
+            isFiatLoading: Boolean(isFiatLoading),
+            formattedBalance,
+            dataTestKey,
+            type,
+            account,
+            customFiatValue,
+        };
+
+        return (
+            <>
+                <ExpandedSidebarOnly>
                     <AccountRow
                         {...commonProps}
                         isSelected={isSelected}
                         handleHeaderClick={handleHeaderClick}
-                        isCollapsed
                     />
-                </Tooltip>
-            </CollapsedSidebarOnly>
-        </>
-    );
-};
+                </ExpandedSidebarOnly>
+                <CollapsedSidebarOnly>
+                    <Tooltip
+                        delayShow={TOOLTIP_DELAY_NORMAL}
+                        cursor="pointer"
+                        content={
+                            <Box padding={4}>
+                                <AccountItemContent {...commonProps} showAccountTypeBadge />
+                            </Box>
+                        }
+                        placement="right"
+                    >
+                        <AccountRow
+                            {...commonProps}
+                            isSelected={isSelected}
+                            handleHeaderClick={handleHeaderClick}
+                            isCollapsed
+                        />
+                    </Tooltip>
+                </CollapsedSidebarOnly>
+            </>
+        );
+    },
+);
+
+AccountItem.displayName = 'AccountItem';
