@@ -10,7 +10,7 @@ import Animated, {
 import type { RequireAtLeastOne } from 'type-fest';
 
 import { HStack } from '@suite-native/atoms';
-import { type CSSColor, Icon } from '@suite-native/icons';
+import { type CSSColor, Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import type { Color, TypographyStyle } from '@trezor/theme';
 
@@ -23,6 +23,7 @@ type LinkProps = RequireAtLeastOne<
         onPress?: () => void;
         isUnderlined?: boolean;
         showExternalIcon?: boolean;
+        externalIconName?: IconName;
         textColor?: Color;
         textPressedColor?: Color;
         textVariant?: TypographyStyle;
@@ -56,6 +57,7 @@ export const Link = ({
     label,
     isUnderlined = false,
     showExternalIcon = false,
+    externalIconName = 'arrowLineUpRight',
     textColor = 'contentBrand',
     textPressedColor = 'contentBrandPressed',
     textVariant = 'body-md',
@@ -108,7 +110,7 @@ export const Link = ({
                     {label}
                 </Animated.Text>
                 {showExternalIcon && (
-                    <Icon.Animated name="arrowLineUpRight" color={animatedColor} size="medium" />
+                    <Icon.Animated name={externalIconName} color={animatedColor} size="medium" />
                 )}
             </HStack>
         </Pressable>
