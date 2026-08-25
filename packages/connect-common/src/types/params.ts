@@ -118,7 +118,7 @@ export const PublicKey = Type.Object({
      * Canonical user-facing representation of the public key for the given coin.
      * - Bitcoin: `xpubSegwit ?? xpub` (SLIP-132 form matching the requested
      *   scriptType, e.g. ypub/zpub for SegWit, `tr(...)` descriptor for Taproot)
-     * - Ethereum: `xpub`
+     * - Ethereum: hex-encoded compressed public key (same value as `publicKey`)
      * - Cardano: extended public key (xpub)
      * - Solana: base58-encoded address (same value as `publicKeyBase58`)
      * - Tezos: base58check-encoded public key, `edpk…` (same value as `publicKey`)
@@ -138,11 +138,8 @@ export const PublicKey = Type.Object({
      *   while this field is the BIP-389 multipath descriptor with `'`-notation
      *   and trailing `/<0;1>/*` used to derive both external and change
      *   addresses (e.g. `tr([fp/86'/0'/0']xpub…/<0;1>/*)`).
-     * - Ethereum: firmware shows the raw compressed public key (`publicKey`,
-     *   33 bytes hex); this field is the `xpub` because that's the more useful
-     *   identifier in host-side UIs. Suite displays the xpub, the device shows
-     *   the compressed key — both are correct representations of the same
-     *   underlying secp256k1 point at the requested path.
+     * - Ethereum: byte-identical to the raw compressed public key (`publicKey`,
+     *   33 bytes hex) shown by firmware.
      */
     displayablePublicKey: Type.String(),
 });

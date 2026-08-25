@@ -13,7 +13,7 @@ const generatedTests = commonFixtures.tests.flatMap(({ parameters, result }) => 
         chainCode: result.chain_code,
         publicKey: result.public_key,
         xpub: result.xpub,
-        displayablePublicKey: result.xpub,
+        displayablePublicKey: result.public_key,
     },
 }));
 
