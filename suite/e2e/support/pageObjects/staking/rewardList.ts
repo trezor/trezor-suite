@@ -40,7 +40,7 @@ export class RewardsList {
             .toHaveText(this.formatDate(reward.time));
         await expect
             .soft(item.getByTestId('@staking/rewards-item/epoch'))
-            .toHaveText(`Epoch number ${reward.epoch}`);
+            .toHaveTranslation('TR_STAKE_REWARDS_BADGE', { values: { count: reward.epoch } });
         await expect
             .soft(item.getByTestId('@staking/rewards-item/crypto-amount'))
             .toHaveText(this.formatSolana(reward.amount));
