@@ -34,6 +34,8 @@ export const EarnYieldClaimRewardsBannerAccountsTooltip = ({
 
     return (
         <Tooltip
+            as="span"
+            display="inline-flex"
             width="auto"
             content={
                 <Grid columns="auto auto" rowGap={4} columnGap={24}>
@@ -56,12 +58,12 @@ export const EarnYieldClaimRewardsBannerAccountsTooltip = ({
                 </Grid>
             }
         >
-            <Row gap={6} cursor="help">
+            <Row as="span" display="inline-flex" gap={6} cursor="help">
                 <Icon as={WalletIcon} size={16} intent="neutral" priority="secondary" />
                 <TooltipLabel>
                     <Text intent="neutral" priority="secondary">
                         <Translation
-                            id="TR_EARN_CLAIM_REWARDS_ACCOUNTS_LABEL"
+                            id="TR_EARN_CLAIM_REWARDS_ACCOUNTS_COUNT"
                             values={{
                                 accounts: rewards.length,
                             }}

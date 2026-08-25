@@ -8937,17 +8937,21 @@ export const messages = defineMessages({
         id: 'TR_EARN_CLAIM_REWARDS_BUTTON',
         defaultMessage: 'Claim',
     },
-    TR_EARN_CLAIM_REWARDS_IN: {
-        id: 'TR_EARN_CLAIM_REWARDS_IN',
-        defaultMessage: 'in',
+    TR_EARN_CLAIM_REWARDS_SUMMARY: {
+        id: 'TR_EARN_CLAIM_REWARDS_SUMMARY',
+        defaultMessage: '{amount}<text>in</text>{tokens}',
     },
-    TR_EARN_CLAIM_REWARDS_TOKENS_LABEL: {
-        id: 'TR_EARN_CLAIM_REWARDS_TOKENS_LABEL',
-        defaultMessage: 'in {tokens} tokens',
+    TR_EARN_CLAIM_REWARDS_SUMMARY_WITH_ACCOUNTS: {
+        id: 'TR_EARN_CLAIM_REWARDS_SUMMARY_WITH_ACCOUNTS',
+        defaultMessage: '{amount}<text>in</text>{tokens}<text>across</text>{accounts}',
     },
-    TR_EARN_CLAIM_REWARDS_ACCOUNTS_LABEL: {
-        id: 'TR_EARN_CLAIM_REWARDS_ACCOUNTS_LABEL',
-        defaultMessage: 'on {accounts} accounts',
+    TR_EARN_CLAIM_REWARDS_TOKENS_COUNT: {
+        id: 'TR_EARN_CLAIM_REWARDS_TOKENS_COUNT',
+        defaultMessage: '{tokens, plural, one {# token} other {# tokens}}',
+    },
+    TR_EARN_CLAIM_REWARDS_ACCOUNTS_COUNT: {
+        id: 'TR_EARN_CLAIM_REWARDS_ACCOUNTS_COUNT',
+        defaultMessage: '{accounts, plural, one {# account} other {# accounts}}',
     },
     TR_EARN_ENTER_AMOUNT_IN: {
         id: 'TR_EARN_ENTER_AMOUNT_IN',
