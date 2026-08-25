@@ -1,135 +1,23 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    Badge,
-    Box,
-    Button,
-    Card,
-    Column,
-    Input,
-    Row,
-    SelectBar,
-    Switch,
-    Tabs,
-    Text,
-    Textarea,
-    Tooltip,
-} from '@trezor/components';
-import { CheckCircleIcon, CopyIcon, WarningCircleIcon } from '@trezor/icons';
+import { Button, Card, Column } from '@trezor/components';
 
-import { SignAddressInput } from './SignAddressInput';
+import { FormatSwitch } from './FormatSwitch';
+import { SignVerifyAddressField } from './SignVerifyAddressField';
+import { SignVerifyMessageField } from './SignVerifyMessageField';
+import { SignVerifyPubKeyField } from './SignVerifyPubKeyField';
+import { SignVerifySignatureField } from './SignVerifySignatureField';
+import { SignVerifyTabs } from './SignVerifyTabs';
 import { isVerifySupported, sign, verify } from './signVerifyActions';
+import { type SignVerifyOutcome, type SignVerifyPage } from './types';
 import { useSignVerifyCopyValue } from './useSignVerifyCopyValue';
-import {
-    MAX_LENGTH_MESSAGE,
-    MAX_LENGTH_SIGNATURE,
-    type SignVerifyFields,
-    useSignVerifyForm,
-} from './useSignVerifyForm';
-
-type CopyFieldButtonProps = {
-    onClick: () => void;
-    'data-testid': string;
-};
-
-const CopyFieldButton = ({ onClick, 'data-testid': dataTestId }: CopyFieldButtonProps) => (
-    <Button
-        type="button"
-        intent="brand"
-        priority="secondary"
-        size="small"
-        iconLeft={CopyIcon}
-        // Every button inside the form has to cancel the click, otherwise it submits the form.
-        onClick={event => {
-            event.preventDefault();
-            onClick();
-        }}
-        data-testid={dataTestId}
-    >
-        <Translation id="TR_COPY_TO_CLIPBOARD" />
-    </Button>
-);
-
-type Outcome = 'idle' | 'signed' | 'verified' | 'failed';
-
-const outcomeBadges = {
-    signed: { intent: 'brand', icon: CheckCircleIcon, labelId: 'TR_SIGNED_MESSAGE_BADGE' },
-    verified: { intent: 'brand', icon: CheckCircleIcon, labelId: 'TR_VERIFIED_MESSAGE_BADGE' },
-    failed: {
-        intent: 'critical',
-        icon: WarningCircleIcon,
-        labelId: 'TR_VERIFICATION_FAILED_BADGE',
-    },
-} as const satisfies Record<Exclude<Outcome, 'idle'>, unknown>;
-
-const OutcomeBadge = ({ outcome }: { outcome: Exclude<Outcome, 'idle'> }) => {
-    const { intent, icon, labelId } = outcomeBadges[outcome];
-
-    return (
-        <Badge intent={intent} iconRight={icon} data-testid={`@sign-verify/outcome/${outcome}`}>
-            <Translation id={labelId} />
-        </Badge>
-    );
-};
-
-const FIELD_PADDING = 16;
-
-const TABS_LABEL_BOTTOM_SPACE = 10;
-
-const FORMAT_SWITCH_WIDTH = 360;
-
-type FormatSwitchProps = {
-    options: { value: boolean; label: ReactNode }[];
-    selectedOption?: boolean;
-    onChange: (value: boolean) => void;
-    isDisabled?: boolean;
-    tooltip?: ReactNode;
-    'data-testid': string;
-};
-
-const FormatSwitch = ({
-    options,
-    tooltip,
-    isDisabled,
-    'data-testid': dataTestId,
-    ...field
-}: FormatSwitchProps) => {
-    const label = (
-        <Text case="capitalize" intent="neutral" priority="secondary" typographyStyle="body-md">
-            <Translation id="TR_FORMAT" />
-        </Text>
-    );
-
-    return (
-        <Row gap={12}>
-            {tooltip ? (
-                <Tooltip maxWidth={330} content={tooltip} hasIcon>
-                    {label}
-                </Tooltip>
-            ) : (
-                label
-            )}
-            <Box width={FORMAT_SWITCH_WIDTH}>
-                <SelectBar
-                    isFullWidth
-                    isDisabled={isDisabled}
-                    options={options}
-                    data-testid={dataTestId}
-                    {...field}
-                />
-            </Box>
-        </Row>
-    );
-};
-
-export type SignVerifyPage = 'sign' | 'verify';
+import { type SignVerifyFields, useSignVerifyForm } from './useSignVerifyForm';
 
 type SignVerifyFormProps = {
     account: Account;
@@ -139,11 +27,8 @@ type SignVerifyFormProps = {
 };
 
 export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVerifyFormProps) => {
-    const [outcome, setOutcome] = useState<Outcome>('idle');
+    const [outcome, setOutcome] = useState<SignVerifyOutcome>('idle');
 
-    const touchedAddresses = useSelector((state: ReceiveRootState) =>
-        selectTouchedAddresses(state, account.key),
-    );
     const dispatch = useDispatch();
 
     const isSignPage = page === 'sign';
@@ -168,38 +53,10 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
     const copyValue = useSignVerifyCopyValue();
 
     const isCompleted = outcome === 'signed' || outcome === 'verified';
+    const hasFailedVerification = outcome === 'failed';
 
     const getErrorMessage = (error?: FieldError) =>
         error ? translationString(error.message as TranslationKey) : undefined;
-
-    const messageError = getErrorMessage(formErrors.message);
-    const pathError = getErrorMessage(formErrors.path);
-    const addressError = getErrorMessage(formErrors.address);
-    const signatureError = getErrorMessage(formErrors.signature);
-    const pubKeyError = getErrorMessage(formErrors.pubKey);
-
-    const { ref: messageRef, ...messageField } = register('message');
-    const { ref: signatureRef, ...signatureField } = register('signature');
-    const { ref: pubKeyRef, ...pubKeyField } = register('pubKey');
-
-    const hasFailedVerification = outcome === 'failed';
-
-    const signatureProps = {
-        label: translationString('TR_SIGNATURE'),
-        hasError: !!formErrors.signature || hasFailedVerification,
-        bottomText: signatureError,
-        'data-testid': '@sign-verify/signature',
-        innerRef: signatureRef,
-        ...signatureField,
-    };
-    const pubKeyProps = {
-        label: translationString('TR_PUBLIC_KEY'),
-        hasError: !!formErrors.pubKey,
-        bottomText: pubKeyError,
-        'data-testid': '@sign-verify/pubKey',
-        innerRef: pubKeyRef,
-        ...pubKeyField,
-    };
 
     const verificationInputs = [
         formValues.message,
@@ -225,53 +82,6 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
         event.preventDefault();
         resetForm();
         setOutcome('idle');
-    };
-
-    const renderAddressField = () => {
-        if (isCompleted) {
-            return (
-                <Input
-                    label={<Translation id="TR_ADDRESS" />}
-                    type="text"
-                    readOnly
-                    value={formValues.address ?? ''}
-                    rightContent={
-                        <CopyFieldButton
-                            onClick={() => copyValue(formValues.address || '')}
-                            data-testid="@sign-verify/copy-address"
-                        />
-                    }
-                    data-testid="@sign-verify/submitted-address"
-                />
-            );
-        }
-
-        if (isSignPage) {
-            return (
-                <SignAddressInput
-                    name="path"
-                    label={<Translation id="TR_ADDRESS" />}
-                    account={account}
-                    touchedAddresses={touchedAddresses}
-                    hasError={!!formErrors.path}
-                    bottomText={pathError || null}
-                    data-testid="@sign-verify/sign-address"
-                    {...pathField}
-                />
-            );
-        }
-
-        return (
-            <Input
-                name="address"
-                label={<Translation id="TR_ADDRESS" />}
-                type="text"
-                hasError={!!formErrors.address || hasFailedVerification}
-                bottomText={addressError || null}
-                data-testid="@sign-verify/select-address"
-                {...addressField}
-            />
-        );
     };
 
     const onSubmit = async (data: SignVerifyFields) => {
@@ -303,38 +113,12 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
 
     return (
         <Card>
-            <Box position={{ type: 'relative' }} margin={{ bottom: 20 }}>
-                <Tabs activeItemId={page} size="large">
-                    <Tabs.Item
-                        id="sign"
-                        onClick={() => onPageChange('sign')}
-                        data-testid="@sign-verify/navigation/sign"
-                    >
-                        <Translation id="TR_SIGN" />
-                    </Tabs.Item>
-                    {canVerify && (
-                        <Tabs.Item
-                            id="verify"
-                            onClick={() => onPageChange('verify')}
-                            data-testid="@sign-verify/navigation/verify"
-                        >
-                            <Translation id="TR_VERIFY" />
-                        </Tabs.Item>
-                    )}
-                </Tabs>
-                {outcome !== 'idle' && (
-                    <Row
-                        position={{
-                            type: 'absolute',
-                            top: 0,
-                            right: 0,
-                            bottom: TABS_LABEL_BOTTOM_SPACE,
-                        }}
-                    >
-                        <OutcomeBadge outcome={outcome} />
-                    </Row>
-                )}
-            </Box>
+            <SignVerifyTabs
+                page={page}
+                canVerify={canVerify}
+                outcome={outcome}
+                onPageChange={onPageChange}
+            />
             <form onSubmit={formSubmit(onSubmit)}>
                 <Column gap={16} margin={{ bottom: 32 }}>
                     {isSignPage && signFormatsDiffer && !isCompleted && (
@@ -370,88 +154,49 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
                             {...cardanoPubKeyCoseField}
                         />
                     )}
-                    {renderAddressField()}
-                    <Box position={{ type: 'relative' }}>
-                        <Textarea
-                            label={<Translation id="TR_MESSAGE" />}
-                            readOnly={isCompleted}
-                            hasError={!!formErrors.message || hasFailedVerification}
-                            characterCount={
-                                isCompleted
-                                    ? undefined
-                                    : {
-                                          current: formValues.message?.length,
-                                          max: MAX_LENGTH_MESSAGE,
-                                      }
-                            }
-                            bottomText={messageError || null}
-                            rows={4}
-                            data-testid="@sign-verify/message"
-                            innerRef={messageRef}
-                            {...messageField}
-                        />
-                        <Box
-                            position={{
-                                type: 'absolute',
-                                top: FIELD_PADDING,
-                                right: FIELD_PADDING,
-                            }}
-                        >
-                            {isCompleted ? (
-                                <CopyFieldButton
-                                    onClick={() => copyValue(formValues.message || '')}
-                                    data-testid="@sign-verify/copy-message"
-                                />
-                            ) : (
-                                <Switch
-                                    label={<Translation id="TR_HEX_FORMAT" />}
-                                    labelPosition="start"
-                                    {...hexField}
-                                />
-                            )}
-                        </Box>
-                    </Box>
-                    <Input
-                        maxLength={MAX_LENGTH_SIGNATURE}
-                        type="text"
-                        readOnly={isSignPage || isCompleted}
-                        isDisabled={isSignPage && !formValues.signature?.length}
-                        placeholder={
-                            isSignPage
-                                ? translationString('TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER')
-                                : undefined
-                        }
-                        rightContent={
-                            isCompleted ? (
-                                <CopyFieldButton
-                                    onClick={() => copyValue(formValues.signature || '')}
-                                    data-testid="@sign-verify/copy-signature"
-                                />
-                            ) : undefined
-                        }
-                        {...signatureProps}
+                    <SignVerifyAddressField
+                        account={account}
+                        isSignPage={isSignPage}
+                        isCompleted={isCompleted}
+                        address={formValues.address}
+                        pathField={pathField}
+                        addressField={addressField}
+                        pathError={getErrorMessage(formErrors.path)}
+                        addressError={getErrorMessage(formErrors.address)}
+                        hasPathError={!!formErrors.path}
+                        hasAddressError={!!formErrors.address || hasFailedVerification}
+                        onCopy={copyValue}
+                    />
+                    <SignVerifyMessageField
+                        message={formValues.message}
+                        isCompleted={isCompleted}
+                        hasError={!!formErrors.message || hasFailedVerification}
+                        errorMessage={getErrorMessage(formErrors.message)}
+                        hexField={hexField}
+                        registration={register('message')}
+                        onCopy={copyValue}
+                    />
+                    <SignVerifySignatureField
+                        signature={formValues.signature}
+                        isSignPage={isSignPage}
+                        isCompleted={isCompleted}
+                        hasError={!!formErrors.signature || hasFailedVerification}
+                        errorMessage={getErrorMessage(formErrors.signature)}
+                        registration={register('signature')}
+                        onCopy={copyValue}
                     />
                     {isSignPage && isCardano && (
-                        <Input
-                            type="text"
-                            readOnly
-                            isDisabled={!formValues.pubKey?.length}
-                            placeholder={translationString(
-                                'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
-                            )}
-                            rightContent={
-                                isCompleted ? (
-                                    <CopyFieldButton
-                                        onClick={() => copyValue(formValues.pubKey || '')}
-                                        data-testid="@sign-verify/copy-pubkey"
-                                    />
-                                ) : undefined
-                            }
-                            {...pubKeyProps}
+                        <SignVerifyPubKeyField
+                            pubKey={formValues.pubKey}
+                            isCompleted={isCompleted}
+                            hasError={!!formErrors.pubKey}
+                            errorMessage={getErrorMessage(formErrors.pubKey)}
+                            registration={register('pubKey')}
+                            onCopy={copyValue}
                         />
                     )}
                 </Column>
-                {outcome === 'signed' || outcome === 'verified' ? (
+                {isCompleted ? (
                     <Button
                         type="button"
                         intent="neutral"
