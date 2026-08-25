@@ -35,7 +35,7 @@ export function AssetRowToken({
             onClick={() => {
                 onClick?.(token, account);
             }}
-            padding={isInsideGroup ? { left: 16, vertical: 8, right: 16 } : undefined}
+            padding={isInsideGroup ? { left: 16, vertical: 12, right: 16 } : undefined}
             isDisabled={isDisabled}
         >
             <Row data-testid={dataTestId} gap={12} overflow="hidden" flex="1" minWidth={0}>

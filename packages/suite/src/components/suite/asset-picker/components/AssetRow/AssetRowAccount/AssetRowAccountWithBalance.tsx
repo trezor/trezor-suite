@@ -28,7 +28,7 @@ export function AssetRowAccountWithBalance({
             onClick={() => {
                 onClick?.(account);
             }}
-            padding={isInsideGroup ? { left: 16, vertical: 8, right: 16 } : undefined}
+            padding={isInsideGroup ? { left: 16, vertical: 12, right: 16 } : undefined}
             isDisabled={isDisabled}
         >
             <Row data-testid={dataTestId} gap={12} alignItems="center" overflow="hidden">

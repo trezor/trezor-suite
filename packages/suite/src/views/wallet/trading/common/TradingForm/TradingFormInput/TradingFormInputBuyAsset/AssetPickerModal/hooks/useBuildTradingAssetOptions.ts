@@ -11,7 +11,6 @@ import {
 } from '@suite-common/trading';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 
-import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
 import { useSelector } from 'src/hooks/suite';
 import { selectTradeableAssetBalances } from 'src/selectors/wallet/tradeableAssetBalancesSelectors';
 
@@ -20,7 +19,6 @@ import { useAssetsContext } from '../../AssetOptionsContext';
 export type TradingAssetListItem = {
     asset: TradingAssetOption;
     balance: TradeableAssetBalance | undefined;
-    height: number;
 };
 
 const getAssetCryptoId = (asset: TradingAssetOption) => asset.id;
@@ -89,7 +87,6 @@ export function useBuildTradingAssetOptions({
         }).map((asset): TradingAssetListItem => ({
             asset,
             balance: balances.get(asset.id),
-            height: ASSET_ROW_HEIGHT,
         }));
     }, [orderedAssets, networkSymbol, searchIndex, search, balances]);
 

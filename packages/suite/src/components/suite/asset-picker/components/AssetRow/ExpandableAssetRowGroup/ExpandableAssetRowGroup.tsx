@@ -8,7 +8,10 @@ import { CaretUpDownIcon, CaretUpDownReverseIcon } from '@trezor/icons';
 import { TokenIconSet, type TokenIconSetToken } from '@trezor/product-components';
 
 import { type AccountWithOptionalLabel, type AssetRowOption } from '../../../types';
-import { getExpandableTokensContentHeight } from '../../../utils';
+import {
+    getExpandableGroupContentHeight,
+    getExpandableGroupHeight,
+} from '../../../utils/assetPickerItemHeights';
 
 const GROUP_VISIBLE_ICON_COUNT = 2;
 
@@ -38,7 +41,6 @@ export interface ExpandableAssetRowGroupProps {
     renderItem: (item: AssetRowOption) => ReactNode;
     expanded: boolean;
     onExpandToggle: (expanded: boolean) => void;
-    height: number;
     dataTestId?: string;
 }
 
@@ -49,14 +51,13 @@ export function ExpandableAssetRowGroup({
     renderItem,
     expanded,
     onExpandToggle,
-    height,
     dataTestId,
 }: ExpandableAssetRowGroupProps) {
-    const contentHeight = expanded ? getExpandableTokensContentHeight(items.length) : 0;
+    const contentHeight = expanded ? getExpandableGroupContentHeight(items.length) : 0;
 
     return (
         <Collapsible isOpen={expanded} data-testid={dataTestId}>
-            <Box padding={2} height={height}>
+            <Box padding={2} height={getExpandableGroupHeight(expanded, items.length)}>
                 <Card type="contrast" paddingType="none">
                     <Collapsible.Toggle
                         onClick={() => {
