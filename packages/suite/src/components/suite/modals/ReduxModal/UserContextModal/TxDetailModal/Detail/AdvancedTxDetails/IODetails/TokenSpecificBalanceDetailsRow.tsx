@@ -94,7 +94,8 @@ export const TokenSpecificBalanceDetailsRow = ({
                             return (
                                 <IOGroup
                                     key={index}
-                                    tx={{ ...tx, symbol: transfer.symbol || '' }}
+                                    tx={tx}
+                                    tokenSymbol={transfer.symbol || ''}
                                     contractAddress={transfer.contract}
                                     inputs={
                                         [{ addresses: [transfer.from], value }] as IODetailsType[]
