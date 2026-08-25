@@ -12,7 +12,7 @@ export class TradingAssetPicker {
     readonly searchInput: Locator;
     readonly displaySymbol: Locator;
     readonly networkFilterButton: Locator;
-    readonly buyNetworkFilterButton: Locator;
+    readonly sendReceiveNetworkFilterSelect: Locator;
     readonly networkFilterOption = (tab: AssetPickerNetworkFilter | NetworkSymbol) =>
         this.page.getByTestId(`@asset-picker/search/filter/select-option/${tab}`);
     readonly globalAddAccountButton: Locator;
@@ -51,8 +51,10 @@ export class TradingAssetPicker {
         this.openBuyModal = this.page.getByTestId('@trading/buy/asset-picker');
         this.searchInput = this.page.getByTestId('@asset-picker/search/input');
         this.displaySymbol = this.page.getByTestId('@asset-picker/display-symbol');
-        this.networkFilterButton = this.page.getByTestId('@asset-picker/search/filter/input');
-        this.buyNetworkFilterButton = this.page.getByTestId('@asset-picker/search/filter');
+        this.networkFilterButton = this.page.getByTestId('@asset-picker/search/filter');
+        this.sendReceiveNetworkFilterSelect = this.page.getByTestId(
+            '@asset-picker/search/filter/input',
+        );
         this.globalAddAccountButton = this.page.getByTestId('@global-send-receive/add-account');
     }
 
@@ -65,11 +67,10 @@ export class TradingAssetPicker {
         );
     }
 
-    // buy opens the network list from a button, not a select; merges back once sell follows in 30208
     @step()
-    async filterBuyByNetwork(networkFilter: AssetPickerNetworkFilter) {
+    async filterSendReceiveByNetwork(networkFilter: AssetPickerNetworkFilter | NetworkSymbol) {
         await this.page.selectDropdownOptionWithRetry(
-            this.buyNetworkFilterButton,
+            this.sendReceiveNetworkFilterSelect,
             this.networkFilterOption(networkFilter),
         );
     }
@@ -106,7 +107,7 @@ export class TradingAssetPicker {
         await this.openBuyModal.click();
 
         if (networkFilter) {
-            await this.filterBuyByNetwork(networkFilter);
+            await this.filterByNetwork(networkFilter);
         }
 
         if (searchFilter) {
