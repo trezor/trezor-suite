@@ -4,6 +4,7 @@ import type {
     TradingProviderInfo as TradingProviderInfoType,
     TradingTradeType,
 } from '@suite-common/trading';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Column, InfoItem, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 
@@ -15,7 +16,7 @@ import { TradingProviderInfo } from '../TradingProviderInfo';
 
 type TradingDetailProviderInfoProps = {
     account?: Account;
-    receiveAccount?: Account;
+    receiveAccountKey?: AccountKey;
     estimatedTime?: string;
     orderId?: string;
     provider: TradingProviderInfoType;
@@ -25,7 +26,7 @@ type TradingDetailProviderInfoProps = {
 
 export const TradingDetailProviderInfo = ({
     account,
-    receiveAccount,
+    receiveAccountKey,
     estimatedTime,
     orderId,
     provider,
@@ -54,7 +55,7 @@ export const TradingDetailProviderInfo = ({
                         <TradingDetailTxId
                             value={txId}
                             account={account}
-                            receiveAccount={receiveAccount}
+                            receiveAccountKey={receiveAccountKey}
                         />
                     </InfoItem>
                 )}

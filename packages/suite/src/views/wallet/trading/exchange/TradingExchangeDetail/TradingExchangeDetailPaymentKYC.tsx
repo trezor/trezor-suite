@@ -1,6 +1,7 @@
 import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
@@ -10,7 +11,7 @@ import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/Tradi
 type TradingExchangeDetailPaymentKYCProps = {
     trade: ExchangeTrade;
     account?: Account;
-    receiveAccount?: Account;
+    receiveAccountKey?: AccountKey;
     provider?: ExchangeProviderInfo;
     supportUrl?: string;
 };
@@ -18,7 +19,7 @@ type TradingExchangeDetailPaymentKYCProps = {
 export const TradingExchangeDetailPaymentKYC = ({
     trade,
     account,
-    receiveAccount,
+    receiveAccountKey,
     provider,
     supportUrl,
 }: TradingExchangeDetailPaymentKYCProps) => (
@@ -46,7 +47,7 @@ export const TradingExchangeDetailPaymentKYC = ({
             {provider && (
                 <TradingDetailProviderInfo
                     account={account}
-                    receiveAccount={receiveAccount}
+                    receiveAccountKey={receiveAccountKey}
                     orderId={trade.orderId}
                     provider={provider}
                     trade={trade}

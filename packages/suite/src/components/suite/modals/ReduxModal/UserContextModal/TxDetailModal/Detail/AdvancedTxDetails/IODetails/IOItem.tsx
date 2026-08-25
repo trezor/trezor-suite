@@ -28,7 +28,7 @@ const ownershipIcon = {
 
 export type AddressOwnership = keyof typeof ownershipIcon;
 
-type IOItem = {
+type IOItemProps = {
     anonymitySet?: AnonymitySet;
     networkSymbol: NetworkSymbol;
     symbol?: NetworkSymbolExtended;
@@ -48,7 +48,7 @@ export const IOItem = ({
     amount,
     isPhishingTransaction,
     ownership,
-}: IOItem) => {
+}: IOItemProps) => {
     const explorer = useSelector(state => selectExplorer(state, networkSymbol));
     const explorerUrl = getExplorerUrl(explorer, 'address');
     const explorerLink = useExternalLink(`${explorerUrl}${value}${explorer?.queryString ?? ''}`);

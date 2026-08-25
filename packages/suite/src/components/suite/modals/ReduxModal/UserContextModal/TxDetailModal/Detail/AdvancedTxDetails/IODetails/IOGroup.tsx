@@ -42,6 +42,7 @@ export const IOGroup = ({
     const account = useSelector(state => selectAccountByKey(state, accountKey));
     const accountAddresses = account?.addresses;
     const accountDescriptor = account?.descriptor;
+
     const displaySymbol = tokenSymbol ?? tx.symbol;
 
     const ownershipByAddress = useMemo(() => {
