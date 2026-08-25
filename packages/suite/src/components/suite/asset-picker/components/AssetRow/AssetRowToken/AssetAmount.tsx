@@ -14,6 +14,7 @@ export type AssetAmountProps = {
     fiatAmount?: BaseCurrencyAmount;
     showNoTradingPairText?: boolean;
     isFiatPrimary?: boolean;
+    isDisabled?: boolean;
 };
 
 export function AssetAmount({
@@ -23,6 +24,7 @@ export function AssetAmount({
     contractAddress,
     showNoTradingPairText = false,
     isFiatPrimary = false,
+    isDisabled = false,
 }: AssetAmountProps) {
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const fiatCurrency = useSelector(selectBaseCurrency);
@@ -32,6 +34,7 @@ export function AssetAmount({
             intent="neutral"
             priority={isFiatPrimary ? 'secondary' : undefined}
             typographyStyle={isFiatPrimary ? 'body-sm' : 'body-md'}
+            isDisabled={isDisabled}
         >
             <FormattedCryptoAmount
                 value={amount}
@@ -49,12 +52,18 @@ export function AssetAmount({
                     intent="neutral"
                     priority={isFiatPrimary ? undefined : 'secondary'}
                     typographyStyle={isFiatPrimary ? 'body-md' : 'body-sm'}
+                    isDisabled={isDisabled}
                 >
                     <BaseCurrencyAmountFormatter value={fiatAmount} currency={fiatCurrency} />
                 </Text>
             )}
             {!fiatAmount && showNoTradingPairText && (
-                <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
+                <Text
+                    intent="neutral"
+                    priority="secondary"
+                    typographyStyle="body-sm"
+                    isDisabled={isDisabled}
+                >
                     <Translation id="TR_HIDDEN_TOKEN_WITHOUT_FIAT" />
                 </Text>
             )}

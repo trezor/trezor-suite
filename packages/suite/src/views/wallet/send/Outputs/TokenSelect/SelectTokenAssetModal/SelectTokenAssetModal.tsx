@@ -182,7 +182,8 @@ export function SelectTokenAssetModal({
 
                 case 'group-label':
                 case 'group-space':
-                case 'non-tradable-tokens':
+                case 'low-balance-group':
+                case 'non-tradable-group':
                     return null;
             }
         },

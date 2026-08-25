@@ -2,23 +2,18 @@ import { useCallback, useState } from 'react';
 
 import { type AccountKey } from '@suite-common/wallet-types';
 
-export function useExpandableAccountGroups() {
-    const [expandedAccountTokensGroups, setExpandedAccountTokensGroups] = useState<AccountKey[]>(
-        [],
-    );
+export function useExpandableAccountGroups<TGroupKey extends string = AccountKey>() {
+    const [expandedAccountTokensGroups, setExpandedAccountTokensGroups] = useState<TGroupKey[]>([]);
 
-    const updateExpandableAccountGroups = useCallback(
-        (accountKey: AccountKey, expanded: boolean) => {
-            setExpandedAccountTokensGroups(prev => {
-                if (expanded) {
-                    return prev.concat(accountKey);
-                }
+    const updateExpandableAccountGroups = useCallback((groupKey: TGroupKey, expanded: boolean) => {
+        setExpandedAccountTokensGroups(prev => {
+            if (expanded) {
+                return prev.concat(groupKey);
+            }
 
-                return prev.filter(key => key !== accountKey);
-            });
-        },
-        [],
-    );
+            return prev.filter(key => key !== groupKey);
+        });
+    }, []);
 
     return {
         expandedAccountTokensGroups,
