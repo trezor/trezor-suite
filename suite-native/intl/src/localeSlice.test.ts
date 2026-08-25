@@ -47,6 +47,15 @@ describe('selectSupportedLanguageLocale', () => {
             },
             expectedResultLocale: 'de-DE',
         },
+        {
+            description: 'should return Indonesian when it is an official system locale',
+            localeState: {
+                appLocaleCode: 'system',
+                systemLocaleCode: 'id-ID',
+                areDebugTranslationKeysDisplayed: false,
+            },
+            expectedResultLocale: 'id-ID',
+        },
     ] as const satisfies {
         description: string;
         localeState: LocaleState;
