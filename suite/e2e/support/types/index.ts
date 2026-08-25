@@ -69,5 +69,6 @@ export type SellAsset = {
     networkFilter?: AssetPickerNetworkFilter;
     networkSymbol: NetworkSymbol;
     tokenSymbol?: string;
+    accountType?: 'normal' | 'legacy' | 'segwit' | 'ledger';
     accountIndex?: number;
 };

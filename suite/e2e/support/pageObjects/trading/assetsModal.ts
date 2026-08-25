@@ -18,9 +18,16 @@ export class TradingAssetPicker {
     readonly globalAddAccountButton: Locator;
 
     // buy and sell options
-    readonly sellOption = (networkSymbol: NetworkSymbol, tokenSymbol?: string) =>
+    readonly sellOption = (params: {
+        accountSymbol: NetworkSymbol;
+        accountType: string;
+        index: number;
+        tokenSymbol?: string;
+    }) =>
         this.page.getByTestId(
-            `@asset-picker/sell/option/${networkSymbol}${tokenSymbol ? `/${tokenSymbol}` : ''}`,
+            `@asset-picker/sell/option/${params.accountType}/${params.accountSymbol}/${params.index}${
+                params.tokenSymbol ? `/token/${params.tokenSymbol}` : ''
+            }`,
         );
     readonly buyAssetOption = (assetCryptoId: CryptoId) =>
         this.page.getByTestId(`@asset-picker/buy/option/asset/${assetCryptoId}`);
@@ -87,6 +94,7 @@ export class TradingAssetPicker {
         networkFilter,
         networkSymbol,
         tokenSymbol,
+        accountType = 'normal',
         accountIndex = 0,
     }: SellAsset) {
         await this.openSellModal.click();
@@ -99,7 +107,12 @@ export class TradingAssetPicker {
             await this.searchAsset(searchFilter);
         }
 
-        await this.sellOption(networkSymbol, tokenSymbol).nth(accountIndex).click();
+        await this.sellOption({
+            accountSymbol: networkSymbol,
+            accountType,
+            index: accountIndex,
+            tokenSymbol,
+        }).click();
     }
 
     @step()

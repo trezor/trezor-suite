@@ -13,6 +13,7 @@ import {
 } from 'src/components/suite/asset-picker/components';
 import { useExpandableGroups, useSearchFilter } from 'src/components/suite/asset-picker/hooks';
 import {
+    type AccountWithOptionalLabel,
     type AssetPickerListItem,
     type AssetRowOption,
 } from 'src/components/suite/asset-picker/types';
@@ -27,6 +28,9 @@ import { type UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpd
 import { AssetListWrapper, AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
 
 const MODAL_WIDTH = 480;
+
+const getAccountTestId = (account: AccountWithOptionalLabel) =>
+    `@asset-picker/sell/option/${account.accountType}/${account.symbol}/${account.index}`;
 
 export type AssetPickerModalProps = {
     closeModal: () => void;
@@ -62,7 +66,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                     onClick={onClick}
                     isFiatPrimary
                     isInsideGroup={isInsideGroup}
-                    dataTestId={`@asset-picker/sell/option/${item.account.symbol}`}
+                    dataTestId={getAccountTestId(item.account)}
                 />
             ) : (
                 <AssetRowToken
@@ -72,7 +76,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                     isFiatPrimary
                     isInsideGroup={isInsideGroup}
                     showNoTradingPairText={!isSelectable}
-                    dataTestId={`@asset-picker/sell/option/${item.account.symbol}/${item.token.symbol}`}
+                    dataTestId={`${getAccountTestId(item.account)}/token/${item.token.symbol}`}
                 />
             );
         },
@@ -118,9 +122,9 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                                     expanded,
                                 );
                             }}
-                            dataTestId={`@asset-picker/sell/option/${
+                            dataTestId={`${getAccountTestId(item.account)}/${
                                 isLowBalance ? 'low-balance' : 'non-tradable'
-                            }/${item.account.symbol}`}
+                            }`}
                         />
                     );
                 }
