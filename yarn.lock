@@ -12011,7 +12011,6 @@ __metadata:
     "@types/node": "npm:22.13.10"
     "@types/xml2js": "npm:^0.4.14"
     "@walletconnect/react-native-compat": "npm:^2.23.10"
-    "@whatwg-node/events": "npm:0.1.2"
     abortcontroller-polyfill: "npm:1.7.8"
     babel-jest: "npm:29.7.0"
     babel-plugin-inline-import: "npm:^3.0.0"
@@ -12022,7 +12021,6 @@ __metadata:
     crypto-browserify: "npm:3.12.1"
     detox: "npm:20.45.1"
     dotenv: "npm:17.2.3"
-    event-target-shim: "npm:6.0.2"
     expo: "npm:~57.0.8"
     expo-atlas: "npm:0.4.3"
     expo-build-properties: "npm:~57.0.6"
@@ -20669,15 +20667,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@whatwg-node/events@npm:0.1.2":
-  version: 0.1.2
-  resolution: "@whatwg-node/events@npm:0.1.2"
-  dependencies:
-    tslib: "npm:^2.6.3"
-  checksum: 10/0848ad52aa2ae3f7ef8a17940d5590516fce0276179cc097ac3bc4390943aa90b4dbd300764c3b7b4f8ccfa1177d22e3df4982103875d16349de163ca0116dd0
-  languageName: node
-  linkType: hard
-
 "@wix-pilot/core@npm:^3.4.2":
   version: 3.4.2
   resolution: "@wix-pilot/core@npm:3.4.2"
@@ -27771,13 +27760,6 @@ __metadata:
   version: 4.3.0
   resolution: "event-pubsub@npm:4.3.0"
   checksum: 10/8a1af789f85050c263eb102d5bd724065bbdc60e3be693fa90efe21d407c0eeb242a79139207a9488289f9f97458e369bfde3294328f21d49addb202439ced20
-  languageName: node
-  linkType: hard
-
-"event-target-shim@npm:6.0.2":
-  version: 6.0.2
-  resolution: "event-target-shim@npm:6.0.2"
-  checksum: 10/aa69fc4193cad3f1e4dc0c2d3f2689ea2d477f5ff2fbee8b65f866035b15658e1985932b06ba2190c3d2cc9cc6802c26facd6c60487590c1a05f44545ec24f42
   languageName: node
   linkType: hard
 
@@ -45920,7 +45902,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0, tslib@npm:^2.5.3, tslib@npm:^2.6.2, tslib@npm:^2.6.3, tslib@npm:^2.8.0, tslib@npm:^2.8.1":
+"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0, tslib@npm:^2.5.3, tslib@npm:^2.6.2, tslib@npm:^2.8.0, tslib@npm:^2.8.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10/3e2e043d5c2316461cb54e5c7fe02c30ef6dccb3384717ca22ae5c6b5bc95232a6241df19c622d9c73b809bea33b187f6dbc73030963e29950c2141bc32a79f7

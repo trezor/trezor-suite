@@ -15,11 +15,9 @@
 @solana/rpc-api
 @solana/rpc-types
 @stellar/stellar-sdk
-@whatwg-node/events
 abortcontroller-polyfill
 ajv
 bignumber.js
-event-target-shim
 react-native-tcp-socket # needed byElectrumWorker
 toml
 viem
