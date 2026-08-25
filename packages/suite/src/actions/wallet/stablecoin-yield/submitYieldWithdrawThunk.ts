@@ -5,16 +5,15 @@ import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stabl
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    type ComposeYieldWithdrawTransactionThunkState,
     STABLECOIN_YIELD_PREFIX,
     type YieldFlowResolvedData,
     type YieldWithdrawFlowType,
+    composeYieldWithdrawTransactionThunk,
+    isYieldWithdrawFeeError,
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 
-import {
-    type ComposeYieldWithdrawTransactionState,
-    composeYieldWithdrawTransaction,
-} from './composeYieldWithdrawTransaction';
 import {
     type SendYieldTransactionDeps,
     type SendYieldTransactionState,
@@ -29,7 +28,7 @@ type SubmitYieldWithdrawPayload = {
     amount: string;
     flowType: YieldWithdrawFlowType;
 };
-type SubmitYieldWithdrawThunkState = ComposeYieldWithdrawTransactionState &
+type SubmitYieldWithdrawThunkState = ComposeYieldWithdrawTransactionThunkState &
     SendYieldTransactionState;
 type SubmitYieldWithdrawThunkDeps = SendYieldTransactionDeps & {
     services: DesktopAnalyticsDep;
@@ -64,28 +63,28 @@ export const submitYieldWithdrawThunk = createThunk<
 
             const { account } = flowData;
 
-            const composeResult = await composeYieldWithdrawTransaction({
-                account,
-                flowData,
-                amount,
-                flowType,
-                dispatch,
-            });
+            const composeResult = await dispatch(
+                composeYieldWithdrawTransactionThunk({ flowData, amount, flowType }),
+            ).unwrap();
 
-            if (!composeResult.success) {
-                reportSubmitError(composeResult.error);
+            if (composeResult.type === 'error') {
+                const isFeeError = isYieldWithdrawFeeError(composeResult.reason);
+
+                reportSubmitError(isFeeError ? 'fee-estimation-failed' : 'submit-failed');
                 dispatch(
                     stablecoinYieldActions.setError({
                         flowType,
                         flowKey,
-                        error: 'TR_EARN_YIELD_ERROR_FEE_ESTIMATION',
+                        error: isFeeError
+                            ? 'TR_EARN_YIELD_ERROR_FEE_ESTIMATION'
+                            : 'TR_EARN_YIELD_ERROR_GENERIC',
                     }),
                 );
 
                 return;
             }
 
-            const unsignedTransaction = composeResult.payload;
+            const { unsignedTransaction } = composeResult;
 
             const userAcceptedTxSimulation = await dispatch(
                 openDeferredModal({

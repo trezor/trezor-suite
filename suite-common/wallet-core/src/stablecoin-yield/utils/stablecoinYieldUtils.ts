@@ -696,5 +696,5 @@ export const hasYieldVaultPosition = ({
             new BigNumber(accountToken.balance ?? '0').gt(0),
     );
 
-export const getAllowanceSpender = (flowData: YieldFlowResolvedData) =>
+export const getYieldVaultAddress = (flowData: YieldFlowResolvedData) =>
     flowData.receiptToken.contractAddress ?? getYieldVaultContractAddress(flowData.vault);

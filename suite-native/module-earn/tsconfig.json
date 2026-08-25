@@ -6,7 +6,6 @@
         {
             "path": "../../suite-common/analytics"
         },
-        { "path": "../../suite-common/calldata" },
         {
             "path": "../../suite-common/dependency-injection"
         },

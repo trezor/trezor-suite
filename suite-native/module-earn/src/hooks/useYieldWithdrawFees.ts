@@ -1,21 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 
-import { asEvmAddress } from '@suite-common/calldata';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type FeesRootState,
     type FormDraftRootState,
     type ResolvedYieldFlowData,
-    type YieldFeeEstimationError,
     type YieldWithdrawFlowType,
     buildEvmSelectedFee,
-    buildYieldUnsignedTransaction,
-    buildYieldWithdrawCalldata,
-    estimateYieldFeeLevel,
-    ethereumGetCurrentNonceThunk,
+    composeYieldWithdrawTransactionThunk,
     formDraftActions,
     getYieldWithdrawInputToken,
     selectConvertedNetworkFeeInfo,
@@ -31,7 +25,6 @@ import {
     type PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import { getAccountIdentity } from '@suite-common/wallet-utils';
 import {
     type NativeSendRootState,
     type UpdateSelectedFeeLevelThunkParams,
@@ -40,7 +33,6 @@ import {
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
-import { type Result, err, ok } from '@trezor/type-utils';
 
 import { EARN_MODULE_PREFIX } from '../constants';
 import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
@@ -80,14 +72,6 @@ type ComposeWithdrawFeeParams = {
     amount: string;
     flowType: YieldWithdrawFlowType;
     formDraftKey: string;
-};
-
-type ComposeYieldWithdrawTransactionParams = {
-    amount: string;
-    dispatch: ReturnType<typeof useDispatch>;
-    feeInfo: FeeInfo;
-    flowData: WithdrawFlowData;
-    flowType: YieldWithdrawFlowType;
 };
 
 type BuildYieldWithdrawFeeLevelsParams = {
@@ -173,11 +157,6 @@ export const updateYieldWithdrawSelectedFeeLevelThunk = createThunk<
     },
 );
 
-const getFeeLevelForUnsignedTransaction = (feeInfo: FeeInfo) =>
-    FEE_LEVEL_LABELS_BY_PRICE.map(label =>
-        feeInfo.levels.find(level => level.label === label),
-    ).find(level => level !== undefined) ?? feeInfo.levels[0];
-
 const getYieldWithdrawFeeState = (formDraft: FormState | null | undefined) => {
     const selectedFee: FeeLevelLabel =
         formDraft?.selectedFee === 'custom' && (!formDraft.feeLimit || !formDraft.feePerUnit)
@@ -200,71 +179,6 @@ const getYieldWithdrawFeeState = (formDraft: FormState | null | undefined) => {
         },
         selectedFee,
     };
-};
-
-const composeYieldWithdrawTransaction = async ({
-    amount,
-    dispatch,
-    feeInfo,
-    flowData,
-    flowType,
-}: ComposeYieldWithdrawTransactionParams): Promise<Result<string, YieldFeeEstimationError>> => {
-    const { account, receiptToken, vault } = flowData;
-
-    if (account.networkType !== 'ethereum') {
-        throw new Error('Yield withdraw supports only EVM accounts.');
-    }
-
-    const vaultAddress = receiptToken.contractAddress ?? vault.outputToken?.address;
-    const network = getNetwork(account.symbol);
-
-    if (!vaultAddress || !network.chainId || vault.chainId !== network.chainId) {
-        throw new Error('Yield withdraw cannot be composed for this vault.');
-    }
-
-    const ownerAddress = asEvmAddress(account.descriptor);
-    const calldata = buildYieldWithdrawCalldata({
-        amount,
-        flowData,
-        ownerAddress,
-        receiverAddress: ownerAddress,
-        flowType,
-    });
-
-    const [{ nonce }, estimatedFeeLevel] = await Promise.all([
-        dispatch(
-            ethereumGetCurrentNonceThunk({ selectedAccount: account, fetchConfirmedNonce: true }),
-        ).unwrap(),
-        estimateYieldFeeLevel({
-            coin: account.symbol,
-            identity: getAccountIdentity(account),
-            from: account.descriptor,
-            to: vaultAddress,
-            data: calldata,
-        }),
-    ]);
-
-    if (!estimatedFeeLevel.success) {
-        return err(estimatedFeeLevel.error);
-    }
-
-    const feeLevel = getFeeLevelForUnsignedTransaction(feeInfo);
-
-    if (!feeLevel) {
-        throw new Error('Fee info is not available.');
-    }
-
-    const unsignedTransaction = buildYieldUnsignedTransaction({
-        chainId: network.chainId,
-        data: calldata,
-        feeLevel,
-        from: account.descriptor,
-        gasLimit: estimatedFeeLevel.payload.feeLimit,
-        nonce: Number(nonce),
-        to: vaultAddress,
-    });
-
-    return ok(JSON.stringify(unsignedTransaction));
 };
 
 const buildYieldWithdrawFeeLevels = ({
@@ -375,19 +289,19 @@ export const useYieldWithdrawFees = ({
                     throw new Error('Fee info is not available.');
                 }
 
-                const composeResult = await composeYieldWithdrawTransaction({
-                    amount: withdrawAmount,
-                    dispatch,
-                    feeInfo: withdrawFeeInfo,
-                    flowData: withdrawFlowData,
-                    flowType: currentFlowType,
-                });
+                const composeResult = await dispatch(
+                    composeYieldWithdrawTransactionThunk({
+                        flowData: withdrawFlowData,
+                        amount: withdrawAmount,
+                        flowType: currentFlowType,
+                    }),
+                ).unwrap();
 
                 if (requestId !== requestIdRef.current) {
                     return;
                 }
 
-                if (!composeResult.success) {
+                if (composeResult.type === 'error') {
                     setHasFeeEstimationError(true);
                     dispatch(formDraftActions.removeDraft({ key: withdrawFormDraftKey }));
                     setPreparedAction(null);
@@ -395,7 +309,7 @@ export const useYieldWithdrawFees = ({
                     return;
                 }
 
-                const unsignedTransaction = composeResult.payload;
+                const { unsignedTransaction } = composeResult;
 
                 const reviewToken = getYieldWithdrawInputToken({
                     flowData: withdrawFlowData,
