@@ -68,8 +68,6 @@ export const AccountItemsGroup = ({
     const rates = useSelector(selectCurrentFiatRates);
 
     const isFiatLoading = areTokenFiatRatesLoading(account, baseCurrencyCode, rates ?? {});
-    // Memoized because it is a new BigNumber every time, which would keep the memoized tokens row
-    // re-rendering with the rest of the sidebar.
     const tokensFiatBalance = useMemo(
         () =>
             isFiatLoading

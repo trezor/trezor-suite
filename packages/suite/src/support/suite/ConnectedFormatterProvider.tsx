@@ -8,8 +8,6 @@ interface ConnectedFormatterProviderProps {
     children: ReactNode;
 }
 
-// The config is read from the store here rather than in Main, so that a settings change re-renders
-// only this component instead of the whole app.
 export const ConnectedFormatterProvider = memo(({ children }: ConnectedFormatterProviderProps) => {
     const formattersConfig = useFormattersConfig();
 

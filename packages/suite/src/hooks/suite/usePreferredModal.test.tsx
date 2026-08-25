@@ -92,7 +92,6 @@ describe('usePreferredModal', () => {
     it('passes the route params through and reads cancelable out of them', () => {
         expect(renderPreferredModal({ pathname: '/firmware', hash: '#/false' })).toEqual({
             type: 'foreground-app',
-            // an unset param out of a non-empty hash parses to an empty string, not to its default
             payload: { cancelable: false, variant: '', app: 'firmware' },
         });
     });
