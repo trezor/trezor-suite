@@ -18,7 +18,6 @@
         "@reduxjs/toolkit": "2.12.0",
         "@shopify/flash-list": "2.3.0",
         "@suite-common/analytics": "workspace:*",
-        "@suite-common/calldata": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/earn-stablecoin": "workspace:*",

@@ -3,40 +3,32 @@ import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     asAmountUnit,
-    getAccountIdentity,
-    getConvertedOrDefaultFeeInfo,
     tokenSupportsIncreasingAllowance,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { getApprovalRequestAmount } from './stablecoinYieldApprovalThunks';
-import { type AccountsRootState } from '../../accounts/accountsReducer';
-import { fetchAllowance } from '../../allowance/fetchAllowance';
 import {
-    type GetOrFetchRawFeeInfoThunkState,
-    getOrFetchRawFeeInfoThunk,
-} from '../../fees/feesThunks';
-import { ethereumGetCurrentNonceThunk } from '../../send/sendFormEthereumThunks';
-import { type TransactionsRootState } from '../../transactions/transactionsReducerTypes';
+    type ComposeYieldEvmTransactionErrorReason,
+    type ComposeYieldEvmTransactionThunkState,
+    composeYieldEvmTransactionThunk,
+} from './composeYieldEvmTransactionThunk';
+import { getApprovalRequestAmount } from './stablecoinYieldApprovalThunks';
+import { fetchAllowance } from '../../allowance/fetchAllowance';
 import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
 import type { YieldFlowResolvedData } from '../stablecoinYieldTypes';
-import { estimateYieldFeeLevel } from '../utils/stablecoinYieldFeeEstimation';
 import {
     buildYieldDepositCalldata,
-    buildYieldUnsignedTransaction,
-    getAllowanceSpender,
     getWithdrawRequestAmount,
+    getYieldVaultAddress,
 } from '../utils/stablecoinYieldUtils';
 
 const YIELD_DEPOSIT_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
 
 export type YieldDepositErrorReason =
-    | 'unsupported-network'
+    | ComposeYieldEvmTransactionErrorReason
     | 'missing-deposit-params'
     | 'vault-chain-mismatch'
-    | 'missing-fee-level'
-    | 'fee-estimation-failed'
     | 'compose-failed';
 
 export const getYieldDepositErrorTranslationKey = (reason: YieldDepositErrorReason) =>
@@ -67,9 +59,7 @@ type ComposeYieldDepositTransactionPayload = {
     flowData: YieldFlowResolvedData;
     amount: string;
 };
-export type ComposeYieldDepositTransactionThunkState = AccountsRootState &
-    GetOrFetchRawFeeInfoThunkState &
-    TransactionsRootState;
+export type ComposeYieldDepositTransactionThunkState = ComposeYieldEvmTransactionThunkState;
 
 export const composeYieldDepositTransactionThunk = createThunk<
     PrepareYieldDepositResult,
@@ -91,7 +81,7 @@ export const composeYieldDepositTransactionThunk = createThunk<
             amount,
             flowData,
         });
-        const spender = getAllowanceSpender(flowData);
+        const spender = getYieldVaultAddress(flowData);
         const tokenContractAddress = token.contractAddress;
 
         if (!requestAmount || !spender || !tokenContractAddress) {
@@ -132,52 +122,17 @@ export const composeYieldDepositTransactionThunk = createThunk<
             receiverAddress: ownerAddress,
         });
 
-        const [{ nonce }, estimatedFeeLevel] = await Promise.all([
-            dispatch(
-                ethereumGetCurrentNonceThunk({
-                    selectedAccount: account,
-                    fetchConfirmedNonce: true,
-                }),
-            ).unwrap(),
-            estimateYieldFeeLevel({
-                coin: account.symbol,
-                identity: getAccountIdentity(account),
-                from: account.descriptor,
+        const composeResult = await dispatch(
+            composeYieldEvmTransactionThunk({
+                account,
                 to: spender,
                 data: calldata,
             }),
-        ]);
-
-        if (!estimatedFeeLevel.success) {
-            return { type: 'error', reason: 'fee-estimation-failed' } as const;
-        }
-
-        const rawFeeInfo = await dispatch(
-            getOrFetchRawFeeInfoThunk({ networkSymbol: account.symbol }),
         ).unwrap();
 
-        const feeInfo = getConvertedOrDefaultFeeInfo({
-            networkType: account.networkType,
-            feeInfo: rawFeeInfo,
-        });
-        const normalLevel =
-            feeInfo.levels.find(level => level.label === 'normal') ?? feeInfo.levels[0];
-
-        if (!normalLevel) {
-            return { type: 'error', reason: 'missing-fee-level' } as const;
+        if (composeResult.type === 'error') {
+            return composeResult;
         }
-
-        const unsignedTransaction = JSON.stringify(
-            buildYieldUnsignedTransaction({
-                chainId: network.chainId,
-                data: calldata,
-                feeLevel: normalLevel,
-                from: account.descriptor,
-                gasLimit: estimatedFeeLevel.payload.feeLimit,
-                nonce: Number(nonce),
-                to: spender,
-            }),
-        );
 
         const receiptAmount =
             getWithdrawRequestAmount({
@@ -190,7 +145,7 @@ export const composeYieldDepositTransactionThunk = createThunk<
 
         return {
             type: 'action-ready',
-            unsignedTransaction,
+            unsignedTransaction: composeResult.unsignedTransaction,
             receiptAmount,
         };
     },

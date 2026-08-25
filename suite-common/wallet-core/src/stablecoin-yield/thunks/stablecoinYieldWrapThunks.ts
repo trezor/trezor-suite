@@ -1,31 +1,23 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { WRAPPED_NATIVE, getNetwork, getWrappedNativeAddress } from '@suite-common/wallet-config';
+import { WRAPPED_NATIVE, getWrappedNativeAddress } from '@suite-common/wallet-config';
 import { WETH_DEPOSIT_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import {
-    enhanceTokens,
-    getAccountIdentity,
-    getConvertedOrDefaultFeeInfo,
-    isWrappedNativeToken,
-} from '@suite-common/wallet-utils';
+import { enhanceTokens, isWrappedNativeToken } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
+import {
+    type ComposeYieldEvmTransactionErrorReason,
+    type ComposeYieldEvmTransactionThunkState,
+    composeYieldEvmTransactionThunk,
+} from './composeYieldEvmTransactionThunk';
 import { accountsActions } from '../../accounts/accountsActions';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey } from '../../accounts/accountsSelectors';
-import {
-    type GetOrFetchRawFeeInfoThunkState,
-    getOrFetchRawFeeInfoThunk,
-} from '../../fees/feesThunks';
-import { ethereumGetCurrentNonceThunk } from '../../send/sendFormEthereumThunks';
-import { type TransactionsRootState } from '../../transactions/transactionsReducerTypes';
 import { STABLECOIN_YIELD_PREFIX } from '../stablecoinYieldConstants';
 import type { YieldFlowDisplayToken } from '../stablecoinYieldTypes';
 import { fetchWrappedNativeTokenInfo } from '../utils/fetchWrappedNativeTokenInfo';
-import { estimateYieldFeeLevel } from '../utils/stablecoinYieldFeeEstimation';
 import {
-    buildYieldUnsignedTransaction,
     buildYieldUnwrapTransactionData,
     buildYieldWrapTransactionData,
 } from '../utils/stablecoinYieldUtils';
@@ -33,11 +25,7 @@ import {
 const YIELD_WRAP_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
 
 export type ComposeYieldWrapErrorReason =
-    | 'unsupported-network'
-    | 'not-wrapped-native'
-    | 'missing-chain-id'
-    | 'missing-fee-level'
-    | 'fee-estimation-failed';
+    ComposeYieldEvmTransactionErrorReason | 'not-wrapped-native';
 
 export type ComposeYieldWrapResult =
     | {
@@ -60,9 +48,7 @@ type ComposeYieldUnwrapTransactionPayload = {
     token: Pick<YieldFlowDisplayToken, 'contractAddress' | 'decimals'>;
     unwrapAmount: string;
 };
-export type ComposeYieldWrapTransactionThunkState = AccountsRootState &
-    GetOrFetchRawFeeInfoThunkState &
-    TransactionsRootState;
+export type ComposeYieldWrapTransactionThunkState = ComposeYieldEvmTransactionThunkState;
 
 /**
  * Composes an unsigned WETH `deposit()` (wrap) transaction that carries `wrapAmount` in its value.
@@ -88,69 +74,24 @@ export const composeYieldWrapTransactionThunk = createThunk<
             return { type: 'error', reason: 'not-wrapped-native' } as const;
         }
 
-        const network = getNetwork(account.symbol);
-
-        if (!network.chainId) {
-            return { type: 'error', reason: 'missing-chain-id' } as const;
-        }
-
         const { data, value } = buildYieldWrapTransactionData({
             wrapAmount,
             decimals: token.decimals,
         });
 
-        const [{ nonce }, estimatedFeeLevel] = await Promise.all([
-            dispatch(
-                ethereumGetCurrentNonceThunk({
-                    selectedAccount: account,
-                    fetchConfirmedNonce: true,
-                }),
-            ).unwrap(),
-            estimateYieldFeeLevel({
-                coin: account.symbol,
-                identity: getAccountIdentity(account),
-                from: account.descriptor,
+        return await dispatch(
+            composeYieldEvmTransactionThunk({
+                account,
                 to: wethAddress,
                 data,
                 value,
+                // WETH deposit() is a fixed ~45k-gas call, so a failed estimation falls back to a
+                // known backup limit rather than blocking the wrap. Unwrapping has no such
+                // fallback: withdraw(uint256) can revert on an insufficient balance, and a wrong
+                // guess would spend the gas discovering that.
+                gasLimitFallback: WETH_DEPOSIT_BACKUP_GAS_LIMIT,
             }),
-        ]);
-
-        // WETH deposit() is a fixed ~45k-gas call, so fall back to a known backup limit when
-        // estimation fails rather than blocking the wrap.
-        const gasLimit = estimatedFeeLevel.success
-            ? estimatedFeeLevel.payload.feeLimit
-            : WETH_DEPOSIT_BACKUP_GAS_LIMIT;
-
-        const rawFeeInfo = await dispatch(
-            getOrFetchRawFeeInfoThunk({ networkSymbol: account.symbol }),
         ).unwrap();
-
-        const feeInfo = getConvertedOrDefaultFeeInfo({
-            networkType: account.networkType,
-            feeInfo: rawFeeInfo,
-        });
-        const normalLevel =
-            feeInfo.levels.find(level => level.label === 'normal') ?? feeInfo.levels[0];
-
-        if (!normalLevel) {
-            return { type: 'error', reason: 'missing-fee-level' } as const;
-        }
-
-        const unsignedTransaction = JSON.stringify(
-            buildYieldUnsignedTransaction({
-                chainId: network.chainId,
-                data,
-                feeLevel: normalLevel,
-                from: account.descriptor,
-                gasLimit,
-                nonce: Number(nonce),
-                to: wethAddress,
-                value,
-            }),
-        );
-
-        return { type: 'action-ready', unsignedTransaction } as const;
     },
 );
 
@@ -263,9 +204,7 @@ export const trackWrappedNativeTokenThunk = createThunk<
     },
 );
 
-export type ComposeYieldUnwrapTransactionThunkState = AccountsRootState &
-    GetOrFetchRawFeeInfoThunkState &
-    TransactionsRootState;
+export type ComposeYieldUnwrapTransactionThunkState = ComposeYieldEvmTransactionThunkState;
 
 /**
  * Composes an unsigned WETH `withdraw(uint256)` (unwrap) transaction — the standalone WETH→ETH
@@ -290,64 +229,17 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
             return { type: 'error', reason: 'not-wrapped-native' } as const;
         }
 
-        const network = getNetwork(account.symbol);
-
-        if (!network.chainId) {
-            return { type: 'error', reason: 'missing-chain-id' } as const;
-        }
-
         const { data } = buildYieldUnwrapTransactionData({
             unwrapAmount,
             decimals: token.decimals,
         });
 
-        const [{ nonce }, estimatedFeeLevel] = await Promise.all([
-            dispatch(
-                ethereumGetCurrentNonceThunk({
-                    selectedAccount: account,
-                    fetchConfirmedNonce: true,
-                }),
-            ).unwrap(),
-            estimateYieldFeeLevel({
-                coin: account.symbol,
-                identity: getAccountIdentity(account),
-                from: account.descriptor,
+        return await dispatch(
+            composeYieldEvmTransactionThunk({
+                account,
                 to: wethAddress,
                 data,
             }),
-        ]);
-
-        if (!estimatedFeeLevel.success) {
-            return { type: 'error', reason: 'fee-estimation-failed' } as const;
-        }
-
-        const rawFeeInfo = await dispatch(
-            getOrFetchRawFeeInfoThunk({ networkSymbol: account.symbol }),
         ).unwrap();
-
-        const feeInfo = getConvertedOrDefaultFeeInfo({
-            networkType: account.networkType,
-            feeInfo: rawFeeInfo,
-        });
-        const normalLevel =
-            feeInfo.levels.find(level => level.label === 'normal') ?? feeInfo.levels[0];
-
-        if (!normalLevel) {
-            return { type: 'error', reason: 'missing-fee-level' } as const;
-        }
-
-        const unsignedTransaction = JSON.stringify(
-            buildYieldUnsignedTransaction({
-                chainId: network.chainId,
-                data,
-                feeLevel: normalLevel,
-                from: account.descriptor,
-                gasLimit: estimatedFeeLevel.payload.feeLimit,
-                nonce: Number(nonce),
-                to: wethAddress,
-            }),
-        );
-
-        return { type: 'action-ready', unsignedTransaction } as const;
     },
 );
