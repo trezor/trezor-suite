@@ -165,9 +165,9 @@ FVALUE2="flushed_second"
 # --pairing=skip STAYS, and it is not in conflict: it decides how a channel PAIRS, while the static
 # key is chosen before that from whatever credential was loaded. Skipping keeps the run headless
 # after the one real pairing below.
-CLI="yarn workspace @trezor/connect-cli cli --udp --debuglink --pairing=skip --autoconnect"
+CLI="yarn workspace @trezor/connect-cli cli --udp --debuglink --debuglink-delay=5000ms --pairing=skip --autoconnect"
 # The pairing run itself, which cannot skip -- skipped pairing issues no credential.
-CLI_PAIR="yarn workspace @trezor/connect-cli cli --udp --debuglink --pairing=code"
+CLI_PAIR="yarn workspace @trezor/connect-cli cli --udp --debuglink --debuglink-delay=5000ms --pairing=code"
 # Where connect-cli keeps what it is told to remember. Wiped before pairing, because a credential
 # from a previous emulator names a Trezor static key this one does not have: the handshake would not
 # match it, would fall back to a random host key, and the pin would refuse the second call in.

@@ -11,6 +11,8 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --debuglink           All decisions resolved
                                                 --debuglink=pairing   THP pairing resolved
                                                 --debuglink=button    Button_Request resolved
+    --debuglink-delay=<delay>                 Delay automatic DebugLink button confirmation
+                                                Examples: 5000, 5000ms
 
   THP Credentials options (default: none)
     --credentials                             Use THP credentials no autoconnect
