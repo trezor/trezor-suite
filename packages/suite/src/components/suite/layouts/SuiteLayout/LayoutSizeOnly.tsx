@@ -6,8 +6,6 @@ interface LayoutSizeOnlyProps {
     children: ReactNode;
 }
 
-// The breakpoints are read here rather than in the layout, so that crossing one re-renders only
-// these two components instead of everything the layout renders.
 export const BelowTabletOnly = memo(({ children }: LayoutSizeOnlyProps) => {
     const { isBelowTablet } = useLayoutSize();
 

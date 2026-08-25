@@ -8,8 +8,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useGoToWithAnalytics = (account?: Account) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
-    // Only the symbol is reported, so the fallback selects it instead of the whole account: the
-    // sidebar renders this hook once per row and the account object would re-render them all.
     const selectedAccountSymbol = useSelector(selectSelectedAccountSymbol);
     const symbol = account?.symbol ?? selectedAccountSymbol;
     const dispatch = useDispatch();

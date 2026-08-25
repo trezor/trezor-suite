@@ -27,8 +27,6 @@ export const Main = ({
     // <StrictMode>
     <HelmetProvider>
         {trafficLightOffset ?? null}
-        {/* Outside the ErrorBoundary: a caught render error must not unmount the connect popup
-            state machine, or a pending Connect call would never be cancelled. */}
         <ConnectPopupModals />
         <ConnectedThemeProvider>
             <ResponsiveContextProvider>

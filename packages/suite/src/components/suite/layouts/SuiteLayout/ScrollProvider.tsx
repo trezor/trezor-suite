@@ -13,11 +13,6 @@ interface ScrollProviderProps {
     children: ReactNode;
 }
 
-/**
- * Resetting the scroll requires subscribing to the route. That subscription lives here rather than
- * in `SuiteLayout` so that a navigation re-renders only this component: the context value stays the
- * same and `children` is the very same element, so React bails out of the layout below it.
- */
 export const ScrollProvider = memo(({ scrollRef, children }: ScrollProviderProps) => {
     useResetScrollOnUrl(scrollRef);
 

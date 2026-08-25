@@ -11,7 +11,6 @@ export const useFormattersConfig = (): FormatterProviderConfig => {
     const bitcoinAmountUnit = useSelector(selectBitcoinAmountUnit);
     const baseCurrency = useSelector(selectBaseCurrency);
 
-    // FormatterProvider rebuilds every formatter whenever the config identity changes.
     return useMemo(
         () => ({
             locale,

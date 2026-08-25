@@ -47,8 +47,6 @@ const getForegroundAppAction = (app: ForegroundAppRoute['app'], params: Partial<
     }) as const;
 
 export const usePreferredModal = () => {
-    // Only the flags the decision needs, so that navigating between regular routes does not
-    // re-render every consumer of this hook.
     const routerApp = useSelector(selectRouterApp);
     const isForegroundAppRoute = useSelector(selectIsForegroundApp);
     const isFullscreenAppRoute = useSelector(selectIsFullscreenApp);

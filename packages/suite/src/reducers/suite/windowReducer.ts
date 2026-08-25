@@ -31,7 +31,6 @@ export default windowReducer;
 
 export const selectIsWindowVisible = (state: WindowRootState) => state.window.isVisible;
 
-// Builds a new object on every call, so read it through `useLayoutSize`, which compares by value.
 export const selectBreakpointFlags = (state: WindowRootState): BreakpointFlags => {
     const { isVisible, ...breakpointFlags } = state.window;
 

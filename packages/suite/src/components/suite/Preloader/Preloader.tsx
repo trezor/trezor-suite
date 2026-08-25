@@ -58,8 +58,6 @@ const getFullscreenApp = (app: RouterAppWithParams['app']): FC | undefined => {
 export const Preloader = memo(function Preloader({ children }: PropsWithChildren) {
     const lifecycle = useSelector(state => state.suite.lifecycle);
     const isTransportInitialized = useSelector(selectIsTransportInitialized);
-    // Only the flags the render needs, so that navigating within the same app does not re-render
-    // this component and with it the layout below it.
     const isRouterLoaded = useSelector(selectRouterLoaded);
     const routerApp = useSelector(selectRouterApp);
     const isForegroundApp = useSelector(selectIsForegroundApp);
