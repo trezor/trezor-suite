@@ -25,7 +25,6 @@ const receiveAccount = mockWalletAccount({
 
 const payoutTxid = 'payoutTxid';
 
-// The provider's payout lands on the receive account, which is the only account holding it.
 const getInitialState = (): AppState =>
     ({
         ...mockInitialAppState,

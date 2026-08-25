@@ -15,7 +15,6 @@ import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 export interface FormattedNftAmountProps {
     transfer: TokenTransfer;
-    /** Network of the transfer, which decides the explorer the token is opened in. */
     networkSymbol: NetworkSymbol;
     signValue?: SignValue;
     signGrayscale?: boolean;
