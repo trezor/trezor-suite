@@ -1,4 +1,4 @@
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
@@ -34,17 +34,18 @@ const defaultState: BackupDeviceThunkState = {
 
 const createThunkDependencies = (
     state: BackupDeviceThunkState,
-    analyticsReport?: DesktopAnalyticsDep['analytics']['report'],
 ): {
     dispatch: jest.Mock;
     getState: jest.Mock<BackupDeviceThunkState, []>;
-    extra: BackupDeviceThunkDeps;
+    extra: BackupDeviceThunkDeps & {
+        services: { analytics: ReturnType<typeof mockDesktopAnalytics> };
+    };
 } => ({
     dispatch: jest.fn(),
     getState: jest.fn(() => state),
     extra: {
         services: {
-            analytics: mockDesktopAnalytics(analyticsReport),
+            analytics: mockDesktopAnalytics(),
         },
     },
 });
@@ -59,8 +60,7 @@ describe('Backup Thunks', () => {
 
     it('backup success', async () => {
         testMocks.setTrezorConnectFixtures({ success: true });
-        const report = jest.fn();
-        const { dispatch, getState, extra } = createThunkDependencies(defaultState, report);
+        const { dispatch, getState, extra } = createThunkDependencies(defaultState);
 
         await backupDeviceThunk({ params: {} })(dispatch, getState, extra);
 
@@ -82,8 +82,8 @@ describe('Backup Thunks', () => {
                 payload: false,
             }),
         );
-        expect(report).toHaveBeenCalledTimes(1);
-        expect(report).toHaveBeenCalledWith({
+        expect(extra.services.analytics.report).toHaveBeenCalledTimes(1);
+        expect(extra.services.analytics.report).toHaveBeenCalledWith({
             type: events.createBackupEvent.name,
             payload: {
                 status: 'finished',
