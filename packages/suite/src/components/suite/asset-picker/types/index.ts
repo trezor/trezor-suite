@@ -23,13 +23,6 @@ export type AccountWithTokensOption =
           tokens: TokensWithRates[];
           height: number;
           expanded: boolean;
-      }
-    | {
-          type: 'non-tradable-tokens';
-          account: AccountWithOptionalLabel;
-          tokens: TokensWithRates[];
-          height: number;
-          expanded: boolean;
       };
 
 export type AssetRowOption = Extract<AccountWithTokensOption, { type: 'account' | 'token' }>;
