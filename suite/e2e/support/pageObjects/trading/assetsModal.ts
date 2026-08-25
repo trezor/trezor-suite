@@ -4,7 +4,16 @@ import type { CryptoId } from 'invity-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../../common';
-import { AssetPickerNetworkFilter, BuyAsset, SellAsset } from '../../types';
+import { AssetPickerNetworkFilter, BuyAsset, SellAsset, SellAssetGroup } from '../../types';
+
+type SellAccountParams = {
+    accountSymbol: NetworkSymbol;
+    accountType: string;
+    index: number;
+};
+
+const getSellOptionTestId = ({ accountType, accountSymbol, index }: SellAccountParams) =>
+    `@asset-picker/sell/option/${accountType}/${accountSymbol}/${index}`;
 
 export class TradingAssetPicker {
     readonly openSellModal: Locator;
@@ -18,17 +27,16 @@ export class TradingAssetPicker {
     readonly globalAddAccountButton: Locator;
 
     // buy and sell options
-    readonly sellOption = (params: {
-        accountSymbol: NetworkSymbol;
-        accountType: string;
-        index: number;
-        tokenSymbol?: string;
-    }) =>
+    readonly sellOption = (params: SellAccountParams & { tokenSymbol?: string }) =>
         this.page.getByTestId(
-            `@asset-picker/sell/option/${params.accountType}/${params.accountSymbol}/${params.index}${
+            `${getSellOptionTestId(params)}${
                 params.tokenSymbol ? `/token/${params.tokenSymbol}` : ''
             }`,
         );
+    readonly sellGroup = (params: SellAccountParams & { group: SellAssetGroup }) =>
+        this.page.getByTestId(`${getSellOptionTestId(params)}/${params.group}`);
+    readonly sellGroupToggle = (params: SellAccountParams & { group: SellAssetGroup }) =>
+        this.page.getByTestId(`${getSellOptionTestId(params)}/${params.group}/toggle`);
     readonly buyAssetOption = (assetCryptoId: CryptoId) =>
         this.page.getByTestId(`@asset-picker/buy/option/asset/${assetCryptoId}`);
 
@@ -96,6 +104,7 @@ export class TradingAssetPicker {
         tokenSymbol,
         accountType = 'normal',
         accountIndex = 0,
+        group,
     }: SellAsset) {
         await this.openSellModal.click();
 
@@ -107,12 +116,13 @@ export class TradingAssetPicker {
             await this.searchAsset(searchFilter);
         }
 
-        await this.sellOption({
-            accountSymbol: networkSymbol,
-            accountType,
-            index: accountIndex,
-            tokenSymbol,
-        }).click();
+        const account = { accountSymbol: networkSymbol, accountType, index: accountIndex };
+
+        if (group) {
+            await this.sellGroupToggle({ ...account, group }).click();
+        }
+
+        await this.sellOption({ ...account, tokenSymbol }).click();
     }
 
     @step()
