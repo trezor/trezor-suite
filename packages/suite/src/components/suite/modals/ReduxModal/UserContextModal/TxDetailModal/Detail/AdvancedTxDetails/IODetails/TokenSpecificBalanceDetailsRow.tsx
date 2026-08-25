@@ -83,6 +83,7 @@ export const TokenSpecificBalanceDetailsRow = ({
                             const value = isNftTokenTransfer(transfer) ? (
                                 <FormattedNftAmount
                                     transfer={transfer}
+                                    networkSymbol={tx.symbol}
                                     isWithLink
                                     alignMultitoken="flex-start"
                                     linkTypographyStyle="body-xs"

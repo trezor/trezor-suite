@@ -49,7 +49,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const amount = new BigNumber(formatNetworkAmount(tx.amount, tx.symbol));
     const cardanoWithdrawal = formatCardanoWithdrawal(tx);
     const cardanoDeposit = formatCardanoDeposit(tx);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const txSignature = tx.ethereumSpecific?.parsedData?.methodId;
     const isStakeType = isStakeTypeTx(txSignature) || tx?.solanaSpecific?.stakeOperation?.type; // ethereum or solana staking tx
@@ -218,6 +217,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                     <Text intent="neutral">
                                         <AmountComponent
                                             transfer={transfer}
+                                            networkSymbol={tx.symbol}
                                             withLink={true}
                                             withSign={true}
                                             alignMultitoken="flex-start"
@@ -226,34 +226,30 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                     </Text>
                                 </Table.Cell>
                                 <Table.Cell align="end">
-                                    {selectedAccount.account && (
-                                        <Text intent="neutral">
-                                            <BaseCurrencyValue
-                                                amount={convertAmountSubunitsToUnits(
-                                                    transfer.amount,
-                                                    transfer.decimals,
-                                                )}
-                                                symbol={selectedAccount.account?.symbol}
-                                                tokenAddress={transfer.contract as TokenAddress}
-                                                historicRate={historicTokenRate}
-                                                useHistoricRate
-                                            />
-                                        </Text>
-                                    )}
+                                    <Text intent="neutral">
+                                        <BaseCurrencyValue
+                                            amount={convertAmountSubunitsToUnits(
+                                                transfer.amount,
+                                                transfer.decimals,
+                                            )}
+                                            symbol={tx.symbol}
+                                            tokenAddress={transfer.contract as TokenAddress}
+                                            historicRate={historicTokenRate}
+                                            useHistoricRate
+                                        />
+                                    </Text>
                                 </Table.Cell>
                                 <Table.Cell align="end">
-                                    {selectedAccount.account && (
-                                        <Text intent="neutral">
-                                            <BaseCurrencyValue
-                                                amount={convertAmountSubunitsToUnits(
-                                                    transfer.amount,
-                                                    transfer.decimals,
-                                                )}
-                                                symbol={selectedAccount.account.symbol}
-                                                tokenAddress={transfer.contract as TokenAddress}
-                                            />
-                                        </Text>
-                                    )}
+                                    <Text intent="neutral">
+                                        <BaseCurrencyValue
+                                            amount={convertAmountSubunitsToUnits(
+                                                transfer.amount,
+                                                transfer.decimals,
+                                            )}
+                                            symbol={tx.symbol}
+                                            tokenAddress={transfer.contract as TokenAddress}
+                                        />
+                                    </Text>
                                 </Table.Cell>
                                 <Table.Cell align="end">
                                     {tx.blockTime && (
