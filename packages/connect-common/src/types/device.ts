@@ -1,4 +1,9 @@
-import type { FeaturesNarrowing, FirmwareType, StaticSessionId } from '@trezor/device-utils';
+import {
+    type FeaturesNarrowing,
+    type FirmwareType,
+    type StaticSessionId,
+    type TranslationMetadata,
+} from '@trezor/device-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { ThpStateSerialized } from '@trezor/protocol';
 import type { Descriptor } from '@trezor/transport-common';
@@ -151,7 +156,7 @@ export type KnownDevice = BaseDevice & {
     features: PROTO.Features;
     thp?: DeviceThpState;
     unavailableCapabilities: UnavailableCapabilities;
-    availableTranslations: Record<string, string>;
+    availableTranslations: Record<string, TranslationMetadata>;
     authenticityChecks: {
         firmwareRevision: FirmwareRevisionCheckResult | null;
         firmwareHash: FirmwareHashCheckResult | null;
