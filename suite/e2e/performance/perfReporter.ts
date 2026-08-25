@@ -16,6 +16,7 @@ import {
 } from '@trezor/perf-e2e';
 
 import { BASELINES, LIMITS } from './budgets';
+import { publishPerfReport } from './perfReportPublisher';
 
 const BUDGETS_MODULE_PATH = 'suite/e2e/performance/budgets.ts';
 
@@ -105,7 +106,7 @@ class PerfReporter implements Reporter {
         this.reports.push(...runs);
     }
 
-    onEnd(_result: FullResult) {
+    async onEnd(_result: FullResult) {
         if (this.reports.length === 0) {
             return;
         }
@@ -227,6 +228,22 @@ class PerfReporter implements Reporter {
         console.log(lines.join('\n'));
 
         annotateOverLimit(overLimit.map(entry => measurementKey(entry.scenario, entry.project)));
+
+        await publishPerfReport({
+            measurements: measured.map(entry => ({
+                key: entry.key,
+                runs: entry.runs,
+                report: entry.report,
+            })),
+            budgetsSnippet: {
+                path: BUDGETS_MODULE_PATH,
+                contents: formatBudgetsModule(updatedBaselines, updatedLimits),
+            },
+            log: message => {
+                // eslint-disable-next-line no-console
+                console.log(message);
+            },
+        });
     }
 }
 
