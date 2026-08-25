@@ -12,12 +12,12 @@ import {
     ExpandableAssetRowGroup,
 } from 'src/components/suite/asset-picker/components';
 import {
-    type AssetPickerListItem,
     useExpandableGroups,
     useSearchFilter,
 } from 'src/components/suite/asset-picker/hooks';
 import {
     type AccountWithOptionalLabel,
+    type AssetPickerListItem,
     type AssetRowOption,
 } from 'src/components/suite/asset-picker/types';
 import {
@@ -125,7 +125,6 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                                     expanded,
                                 );
                             }}
-                            height={item.height}
                             dataTestId={`${getAccountTestId(item.account)}/${
                                 isLowBalance ? 'low-balance' : 'non-tradable'
                             }`}

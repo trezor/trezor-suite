@@ -7,19 +7,23 @@ import {
     useScrollShadow,
 } from '@trezor/components';
 
-export interface AssetsListProps<T extends BaseItemProps> {
+type MeasuredItem<T> = T & BaseItemProps;
+
+export interface AssetsListProps<T> {
     items: T[];
-    renderItem: VirtualizedListProps<T>['renderItem'];
-    height: VirtualizedListProps<T>['listHeight'];
-    minHeight?: VirtualizedListProps<T>['listMinHeight'];
+    renderItem: VirtualizedListProps<MeasuredItem<T>>['renderItem'];
+    getItemHeight: (item: T) => number;
+    height: VirtualizedListProps<MeasuredItem<T>>['listHeight'];
+    minHeight?: VirtualizedListProps<MeasuredItem<T>>['listMinHeight'];
     ref?: RefObject<HTMLDivElement | null>;
 }
 
 export const LIST_MIN_HEIGHT = 200;
 
-function AssetsListInner<T extends BaseItemProps>({
+function AssetsListInner<T>({
     items,
     renderItem,
+    getItemHeight,
     height,
     minHeight = LIST_MIN_HEIGHT,
     ref,
@@ -34,11 +38,16 @@ function AssetsListInner<T extends BaseItemProps>({
     // list itself.
     const scrollSentinels = useMemo(() => <ScrollSentinels />, [ScrollSentinels]);
 
+    const measuredItems = useMemo(
+        () => items.map(item => ({ ...item, height: getItemHeight(item) })),
+        [items, getItemHeight],
+    );
+
     return (
         <ShadowContainer>
             <ShadowTop />
             <VirtualizedList
-                items={items}
+                items={measuredItems}
                 padding={8}
                 ref={scrollElementRef}
                 scrollSentinels={scrollSentinels}

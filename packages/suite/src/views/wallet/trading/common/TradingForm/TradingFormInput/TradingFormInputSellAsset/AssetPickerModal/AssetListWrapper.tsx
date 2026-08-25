@@ -1,10 +1,9 @@
 import { type ReactNode, useRef } from 'react';
 
 import { AssetsList, AssetsListEmpty } from 'src/components/suite/asset-picker/components';
-import {
-    type AssetPickerListItem,
-    useListScrollReset,
-} from 'src/components/suite/asset-picker/hooks';
+import { useListScrollReset } from 'src/components/suite/asset-picker/hooks';
+import { type AssetPickerListItem } from 'src/components/suite/asset-picker/types';
+import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
 
 const LIST_HEIGHT = 530;
 
@@ -36,6 +35,7 @@ export function AssetListWrapper({
             <AssetsList
                 items={listItems}
                 renderItem={renderItem}
+                getItemHeight={getAssetPickerItemHeight}
                 height={LIST_HEIGHT}
                 ref={listRef}
             />
