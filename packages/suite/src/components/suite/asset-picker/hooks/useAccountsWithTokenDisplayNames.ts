@@ -20,7 +20,6 @@ export const getTokenDisplayNameSources = (accountsWithTokens: AccountWithTokens
                 tokens.push({ account: item.account, token: item.token });
                 break;
             case 'hidden-tokens':
-            case 'non-tradable-tokens':
                 item.tokens.forEach(token => {
                     tokens.push({ account: item.account, token });
                 });
@@ -54,7 +53,6 @@ export const getAccountsWithTokenDisplayNames = (
                     },
                 };
             case 'hidden-tokens':
-            case 'non-tradable-tokens':
                 return {
                     ...item,
                     tokens: item.tokens.map(token => ({
