@@ -6,10 +6,10 @@ import type { MessageTypes, ResponseTypes as Responses } from '@trezor/blockchai
 import type { Request } from '../types';
 import { getTransportType } from '../utils/transportType';
 
-export const validateRpcUrl = async (
-    request: Request<MessageTypes.ValidateEvmRpc>,
-): Promise<Responses.ValidateEvmRpc> => {
-    const { url, chainId: expectedChainId } = request.payload;
+export const getEvmChainId = async (
+    request: Request<MessageTypes.GetEvmChainId>,
+): Promise<Responses.GetEvmChainId> => {
+    const { url } = request.payload;
 
     const transportType = getTransportType(url);
 
@@ -23,15 +23,10 @@ export const validateRpcUrl = async (
         }),
     });
 
-    const actualChainId = await client.getChainId();
-
-    const valid = Number(actualChainId) === expectedChainId;
+    const chainId = await client.getChainId();
 
     return {
-        type: RESPONSES.VALIDATE_EVM_RPC,
-        payload: {
-            valid,
-            actualChainId: Number(actualChainId),
-        },
+        type: RESPONSES.GET_EVM_CHAIN_ID,
+        payload: Number(chainId),
     };
 };
