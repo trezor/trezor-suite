@@ -278,6 +278,13 @@ def _hexlead(value: object, length: int = 8) -> str:
     return bytes(value)[:length].hex() + ("…" if len(value) > length else "")
 
 
+def _proof_bit(key: object, bit: int) -> str | int:
+    if not isinstance(key, (bytes, bytearray)) or len(key) != 32:
+        return "-"
+
+    return (key[bit // 8] >> (7 - (bit % 8))) & 1
+
+
 class Daemon(MockWardService):
     """`MockWardService`'s business logic, without its pytest fixture.
 
@@ -295,6 +302,7 @@ class Daemon(MockWardService):
         button_callback=None,
         static_privkey=None,
         state_file=None,
+        verbose=False,
     ) -> None:
         self.service = WardServiceClient(
             transport,
@@ -310,6 +318,7 @@ class Daemon(MockWardService):
         )
         self.server: WardServiceServer | None = None  # set by `open`, below
         self._log = log
+        self._verbose = verbose
 
         # What this daemon knows. An EMPTY replica is the honest starting point for the e2e: the
         # device has published nothing to it, so a read must come back "no such entry" -- and that
@@ -334,6 +343,62 @@ class Daemon(MockWardService):
 
         self.error = None
         self._stop = False
+
+    def _fetch_response(self, request):
+        entry_key = request.entry_key
+
+        if self._verbose:
+            root = self.store.root()
+            self._log(
+                "PROOF build"
+                f" entry_key={entry_key.hex()}"
+                f" present={entry_key in self.store}"
+                f" entries={len(self.store.blobs)}"
+                f" counter={self.store.counter}"
+                f" root={root.hex() if root else 'EMPTY'}"
+            )
+
+        reply = super()._fetch_response(request)
+
+        if not self._verbose or type(reply).__name__ != "WardEntryAck":
+            return reply
+
+        proof = reply.proof or []
+        witness_key = reply.witness_entry_key
+        witness_commit = reply.witness_commit
+
+        if entry_key in self.store:
+            kind = "membership"
+            path_key = entry_key
+        elif witness_key is not None:
+            kind = "non-membership"
+            path_key = witness_key
+        else:
+            kind = "empty-tree"
+            path_key = entry_key
+
+        self._log(
+            "PROOF send"
+            f" kind={kind}"
+            f" elements={len(proof)}"
+            f" bytes={sum(len(element) for element in proof)}"
+            f" witness_entry_key={witness_key.hex() if witness_key else '-'}"
+            f" witness_commit={witness_commit.hex() if witness_commit else '-'}"
+        )
+
+        for index, element in enumerate(proof):
+            split_bit = int.from_bytes(element[:2], "big")
+            sibling = element[2:]
+
+            self._log(
+                f"PROOF   [{index}]"
+                f" split_bit={split_bit}"
+                f" path_bit={_proof_bit(path_key, split_bit)}"
+                f" target_bit={_proof_bit(entry_key, split_bit)}"
+                f" sibling={sibling.hex()}"
+            )
+
+        return reply
 
     def _load_state(self) -> None:
         """Resume the replica, the WM's heads and the wallet they are about, if any were kept.
@@ -506,6 +571,7 @@ def main() -> int:
         button_callback=confirmer.press,
         static_privkey=static_privkey,
         state_file=args.state_file,
+        verbose=args.verbose,
     )
 
     stopping = False
