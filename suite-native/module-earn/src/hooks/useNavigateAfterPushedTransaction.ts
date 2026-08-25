@@ -33,7 +33,7 @@ import { resolveStakingTargetRoute } from '../utils/resolveStakingTargetRoute';
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
 const stakeTypeCompleteRoute: Record<EarnFormDraftPrefix, RootStackRoutes> = {
-    stake: RootStackRoutes.EarnTransactionComplete,
+    stake: RootStackRoutes.StakeTransactionComplete,
     unstake: RootStackRoutes.UnstakeTransactionComplete,
     claim: RootStackRoutes.ClaimTransactionComplete,
 };

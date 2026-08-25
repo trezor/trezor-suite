@@ -3,9 +3,9 @@ import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type ReviewSummaryOutput } from '@suite-native/transaction-management';
 
-import { EarnTransactionDataReviewStepList } from './EarnTransactionDataReviewStepList';
+import { StakeTransactionDataReviewStepList } from './StakeTransactionDataReviewStepList';
 
-const mockEarnStakeOutputItem = jest.fn();
+const mockStakeOutputItem = jest.fn();
 const mockEarnSummaryOutputItem = jest.fn();
 
 let mockIsTransactionAlreadySigned: boolean;
@@ -17,9 +17,9 @@ jest.mock('@suite-native/transaction-management', () => ({
     selectReviewSummaryOutput: () => mockSummaryOutput,
 }));
 
-jest.mock('./EarnStakeOutputItem', () => ({
-    EarnStakeOutputItem: (props: { outputState?: string }) => {
-        mockEarnStakeOutputItem(props);
+jest.mock('./StakeOutputItem', () => ({
+    StakeOutputItem: (props: { outputState?: string }) => {
+        mockStakeOutputItem(props);
 
         return null;
     },
@@ -41,7 +41,7 @@ const accountKey = mockAccountKey({ symbol: 'eth', descriptor: 'ethAccount' });
 
 const renderStepList = () =>
     renderWithStoreProvider(
-        <EarnTransactionDataReviewStepList
+        <StakeTransactionDataReviewStepList
             accountKey={accountKey}
             amount="1"
             accountSymbol="eth"
@@ -58,7 +58,7 @@ describe('EarnTransactionDataReviewStepList', () => {
     it('renders the stake and summary cards without a Next button', () => {
         const { queryByText, queryByTestId } = renderStepList();
 
-        expect(mockEarnStakeOutputItem).toHaveBeenCalledTimes(1);
+        expect(mockStakeOutputItem).toHaveBeenCalledTimes(1);
         expect(mockEarnSummaryOutputItem).toHaveBeenCalledTimes(1);
         expect(queryByText(getTranslation('generic.buttons.next'))).toBeNull();
         expect(queryByTestId('@earn/address-review-continue')).toBeNull();
@@ -69,7 +69,7 @@ describe('EarnTransactionDataReviewStepList', () => {
 
         renderStepList();
 
-        expect(mockEarnStakeOutputItem).toHaveBeenCalledWith(
+        expect(mockStakeOutputItem).toHaveBeenCalledWith(
             expect.objectContaining({ outputState: 'active' }),
         );
         expect(mockEarnSummaryOutputItem).toHaveBeenCalledWith(
@@ -82,7 +82,7 @@ describe('EarnTransactionDataReviewStepList', () => {
 
         renderStepList();
 
-        expect(mockEarnStakeOutputItem).toHaveBeenCalledWith(
+        expect(mockStakeOutputItem).toHaveBeenCalledWith(
             expect.objectContaining({ outputState: 'success' }),
         );
         expect(mockEarnSummaryOutputItem).toHaveBeenCalledWith(
@@ -96,7 +96,7 @@ describe('EarnTransactionDataReviewStepList', () => {
 
         const { queryByTestId } = renderStepList();
 
-        expect(mockEarnStakeOutputItem).toHaveBeenCalledWith(
+        expect(mockStakeOutputItem).toHaveBeenCalledWith(
             expect.objectContaining({ outputState: 'success' }),
         );
         expect(mockEarnSummaryOutputItem).toHaveBeenCalledWith(

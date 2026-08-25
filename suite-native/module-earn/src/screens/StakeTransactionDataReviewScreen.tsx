@@ -22,7 +22,7 @@ import {
     selectIsTransactionAlreadySigned,
 } from '@suite-native/transaction-management';
 
-import { EarnTransactionDataReviewStepList } from '../components/EarnTransactionDataReviewStepList';
+import { StakeTransactionDataReviewStepList } from '../components/StakeTransactionDataReviewStepList';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { useEarnAccountLabel } from '../hooks/useEarnAccountLabel';
 import { useEarnPendingTransactionSheet } from '../hooks/useEarnPendingTransactionSheet';
@@ -34,9 +34,9 @@ import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPush
 import { getAmountInBaseUnits } from '../utils/getAmountInBaseUnits';
 import { getEarnPendingAmountInBaseUnits } from '../utils/getEarnPendingAmountInBaseUnits';
 
-export const EarnTransactionDataReviewScreen = ({
+export const StakeTransactionDataReviewScreen = ({
     route,
-}: StackProps<RootStackParamList, RootStackRoutes.EarnTransactionDataReview>) => {
+}: StackProps<RootStackParamList, RootStackRoutes.StakeTransactionDataReview>) => {
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
     const { accountKey, amount } = route.params;
@@ -147,7 +147,7 @@ export const EarnTransactionDataReviewScreen = ({
                         />
                     )}
                     {account && (
-                        <EarnTransactionDataReviewStepList
+                        <StakeTransactionDataReviewStepList
                             accountKey={accountKey}
                             amount={amount}
                             accountSymbol={account.symbol}

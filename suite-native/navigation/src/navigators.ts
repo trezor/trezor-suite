@@ -531,11 +531,11 @@ export type RootStackParamList = {
         amount: string;
         account: Account;
     };
-    [RootStackRoutes.EarnTransactionDataReview]: {
+    [RootStackRoutes.StakeTransactionDataReview]: {
         accountKey: AccountKey;
         amount: string;
     };
-    [RootStackRoutes.EarnTransactionComplete]: {
+    [RootStackRoutes.StakeTransactionComplete]: {
         accountKey: AccountKey;
         amountInBaseUnits: string;
     };

@@ -14,23 +14,23 @@ import {
     useActiveStepOffset,
 } from '@suite-native/transaction-management';
 
-import { EarnStakeOutputItem } from './EarnStakeOutputItem';
+import { StakeOutputItem } from './StakeOutputItem';
 import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
 import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
 import { getAmountInBaseUnits } from '../utils/getAmountInBaseUnits';
 import { getEarnPendingAmountInBaseUnits } from '../utils/getEarnPendingAmountInBaseUnits';
 
-type EarnTransactionDataReviewStepListProps = {
+type StakeTransactionDataReviewStepListProps = {
     accountKey: AccountKey;
     amount: string;
     accountSymbol: NetworkSymbol;
 };
 
-export const EarnTransactionDataReviewStepList = ({
+export const StakeTransactionDataReviewStepList = ({
     accountKey,
     amount,
     accountSymbol,
-}: EarnTransactionDataReviewStepListProps) => {
+}: StakeTransactionDataReviewStepListProps) => {
     const isSigned = useSelector(selectIsTransactionAlreadySigned);
 
     const summaryOutput = useSelector((state: TransactionReviewOutputsState) =>
@@ -56,7 +56,7 @@ export const EarnTransactionDataReviewStepList = ({
     return (
         <View>
             <VStack spacing={LIST_VERTICAL_SPACING}>
-                <EarnStakeOutputItem
+                <StakeOutputItem
                     symbol={accountSymbol}
                     outputState={isSigned || isSummaryActive ? 'success' : 'active'}
                     onLayout={event => handleReadListItemHeight(event, 0)}

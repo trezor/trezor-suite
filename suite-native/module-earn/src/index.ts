@@ -20,8 +20,8 @@ export { ClaimTransactionCompleteScreen } from './screens/ClaimTransactionComple
 export { ClaimTransactionDataReviewScreen } from './screens/ClaimTransactionDataReviewScreen';
 export { EarnConsentsScreen } from './screens/EarnConsentsScreen';
 export { EarnFormScreen } from './screens/EarnFormScreen';
-export { EarnTransactionCompleteScreen } from './screens/EarnTransactionCompleteScreen';
-export { EarnTransactionDataReviewScreen } from './screens/EarnTransactionDataReviewScreen';
+export { StakeTransactionCompleteScreen } from './screens/StakeTransactionCompleteScreen';
+export { StakeTransactionDataReviewScreen } from './screens/StakeTransactionDataReviewScreen';
 export { HowStakeWorksScreen } from './screens/HowStakeWorksScreen';
 export { StakingDetailScreen } from './screens/StakingDetailScreen';
 export { StakingManagementScreen } from './screens/StakingManagementScreen';
