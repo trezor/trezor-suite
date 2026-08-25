@@ -6,6 +6,11 @@ import { EVERSTAKE_ACCOUNTING_ABI } from './abi';
 import { STAKING_POOL_CONTRACTS } from './constants';
 import { type BatchCall, batchRead, getChainId } from '../utils/multicall';
 
+type EverstakeAccountingFunctionName = Extract<
+    (typeof EVERSTAKE_ACCOUNTING_ABI)[number],
+    { type: 'function' }
+>['name'];
+
 const ACCOUNTING_FUNCTIONS = [
     'pendingBalanceOf',
     'pendingDepositedBalanceOf',
@@ -13,7 +18,7 @@ const ACCOUNTING_FUNCTIONS = [
     'withdrawRequest',
     'restakedRewardOf',
     'autocompoundBalanceOf',
-] as const;
+] as const satisfies readonly EverstakeAccountingFunctionName[];
 
 const readAccountingBalances = async (
     client: PublicClient,
