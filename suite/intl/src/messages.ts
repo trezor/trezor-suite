@@ -8937,6 +8937,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_CLAIM_REWARDS_BUTTON',
         defaultMessage: 'Claim',
     },
+    TR_EARN_CLAIM_REWARDS_IN: {
+        id: 'TR_EARN_CLAIM_REWARDS_IN',
+        defaultMessage: 'in',
+    },
     TR_EARN_CLAIM_REWARDS_TOKENS_LABEL: {
         id: 'TR_EARN_CLAIM_REWARDS_TOKENS_LABEL',
         defaultMessage: 'in {tokens} tokens',

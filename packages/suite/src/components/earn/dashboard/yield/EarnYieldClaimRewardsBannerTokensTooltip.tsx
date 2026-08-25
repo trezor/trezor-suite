@@ -19,6 +19,8 @@ const TooltipLabel = styled.span`
     text-underline-offset: 3px;
 `;
 
+const MAX_VISIBLE_TOKEN_ICONS = 2;
+
 interface EarnYieldClaimRewardsBannerTokensTooltipProps {
     rewards: TokenRewards;
     currency: BaseCurrencyCode;
@@ -30,9 +32,34 @@ export const EarnYieldClaimRewardsBannerTokensTooltip = ({
 }: EarnYieldClaimRewardsBannerTokensTooltipProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
-    if (rewards.length === 0) return null;
+    const firstReward = rewards[0];
 
-    const networkSymbols = [...new Set(rewards.map(({ networkSymbol }) => networkSymbol))];
+    if (!firstReward) return null;
+
+    if (rewards.length === 1) {
+        return (
+            <Row gap={6}>
+                <TokenIconSet
+                    symbol={firstReward.networkSymbol}
+                    tokens={[
+                        {
+                            symbol: firstReward.symbol,
+                            networkSymbol: firstReward.networkSymbol,
+                            contract: firstReward.contractAddress,
+                        },
+                    ]}
+                    size={20}
+                    gap={14}
+                    maxVisibleIcons={MAX_VISIBLE_TOKEN_ICONS}
+                    isCountVisible
+                    isTransparent
+                />
+                <Text intent="neutral" priority="secondary">
+                    {firstReward.symbol}
+                </Text>
+            </Row>
+        );
+    }
 
     return (
         <Tooltip
@@ -59,22 +86,19 @@ export const EarnYieldClaimRewardsBannerTokensTooltip = ({
             }
         >
             <Row gap={6} cursor="help">
-                <Row gap={2}>
-                    {networkSymbols.map(networkSymbol => (
-                        <TokenIconSet
-                            key={networkSymbol}
-                            symbol={networkSymbol}
-                            tokens={rewards
-                                .filter(reward => reward.networkSymbol === networkSymbol)
-                                .map(({ symbol, contractAddress }) => ({
-                                    symbol,
-                                    contract: contractAddress,
-                                }))}
-                            size={20}
-                            gap={14}
-                        />
-                    ))}
-                </Row>
+                <TokenIconSet
+                    symbol={firstReward.networkSymbol}
+                    tokens={rewards.map(({ symbol, networkSymbol, contractAddress }) => ({
+                        symbol,
+                        networkSymbol,
+                        contract: contractAddress,
+                    }))}
+                    size={20}
+                    gap={14}
+                    maxVisibleIcons={MAX_VISIBLE_TOKEN_ICONS}
+                    isCountVisible
+                    isTransparent
+                />
                 <TooltipLabel>
                     <Text intent="neutral" priority="secondary">
                         <Translation
