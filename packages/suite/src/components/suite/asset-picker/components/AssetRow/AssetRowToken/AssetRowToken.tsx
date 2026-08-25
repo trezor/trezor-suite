@@ -14,8 +14,9 @@ export type AssetRowTokenProps = {
     account: Account;
     onClick?: (token: TokensWithRates, account: Account) => void;
     dataTestId?: string;
-    isHiddenToken?: boolean;
+    isInsideGroup?: boolean;
     showNoTradingPairText?: boolean;
+    isFiatPrimary?: boolean;
 };
 
 export function AssetRowToken({
@@ -23,15 +24,16 @@ export function AssetRowToken({
     account,
     dataTestId,
     onClick,
-    isHiddenToken = false,
+    isInsideGroup = false,
     showNoTradingPairText = false,
+    isFiatPrimary = false,
 }: AssetRowTokenProps) {
     return (
         <ItemClickableContainer
             onClick={() => {
                 onClick?.(token, account);
             }}
-            padding={isHiddenToken ? { left: 16, vertical: 8, right: 16 } : undefined}
+            padding={isInsideGroup ? { left: 16, vertical: 8, right: 16 } : undefined}
             isDisabled={!onClick}
         >
             <Row data-testid={dataTestId} gap={12} overflow="hidden" flex="1" minWidth={0}>
@@ -58,6 +60,7 @@ export function AssetRowToken({
                         contractAddress={token.contract}
                         amount={token.balance}
                         showNoTradingPairText={showNoTradingPairText}
+                        isFiatPrimary={isFiatPrimary}
                     />
                 </Row>
             )}

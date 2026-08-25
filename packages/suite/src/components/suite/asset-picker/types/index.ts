@@ -31,3 +31,18 @@ export type AccountWithTokensOption =
           height: number;
           expanded: boolean;
       };
+
+export type AssetRowOption = Extract<AccountWithTokensOption, { type: 'account' | 'token' }>;
+
+type AssetGroupOptionShape = {
+    account: AccountWithOptionalLabel;
+    items: AssetRowOption[];
+    height: number;
+    expanded: boolean;
+};
+
+export type AssetGroupOption =
+    | ({ type: 'low-balance-group' } & AssetGroupOptionShape)
+    | ({ type: 'non-tradable-group' } & AssetGroupOptionShape);
+
+export type AssetPickerOption = AccountWithTokensOption | AssetGroupOption;
