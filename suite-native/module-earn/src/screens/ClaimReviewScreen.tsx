@@ -104,6 +104,7 @@ export const ClaimReviewScreen = () => {
 
     const handleReviewAndSign = () => {
         registerNavigateBackAnalytics();
+
         analytics.report({
             type: events.stakingClaimEvent.name,
             payload: {
@@ -112,7 +113,11 @@ export const ClaimReviewScreen = () => {
                 networkSymbol: symbol,
             },
         });
-        navigation.navigate(RootStackRoutes.ClaimTransactionDataReview, { accountKey });
+
+        navigation.navigate(RootStackRoutes.StakingTransactionDataReview, {
+            stakeType: 'claim',
+            accountKey,
+        });
     };
 
     return (

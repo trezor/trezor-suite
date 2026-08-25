@@ -74,6 +74,7 @@ export const EarnConsentsScreen = () => {
 
     const handleConfirm = () => {
         registerNavigateBackAnalytics();
+
         analytics.report({
             type: events.stakingStakeEvent.name,
             payload: {
@@ -82,7 +83,12 @@ export const EarnConsentsScreen = () => {
                 networkSymbol,
             },
         });
-        navigation.navigate(RootStackRoutes.StakeTransactionDataReview, { accountKey, amount });
+
+        navigation.navigate(RootStackRoutes.StakingTransactionDataReview, {
+            stakeType: 'stake',
+            accountKey,
+            amount,
+        });
     };
 
     const entryPeriodInDays = useSelector((state: NativeStakingRootState) =>

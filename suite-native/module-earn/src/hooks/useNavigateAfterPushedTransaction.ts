@@ -32,12 +32,6 @@ import { resolveStakingTargetRoute } from '../utils/resolveStakingTargetRoute';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
-const stakeTypeCompleteRoute: Record<EarnFormDraftPrefix, RootStackRoutes> = {
-    stake: RootStackRoutes.StakeTransactionComplete,
-    unstake: RootStackRoutes.UnstakeTransactionComplete,
-    claim: RootStackRoutes.ClaimTransactionComplete,
-};
-
 interface NavigateToPushedTransactionActionProps {
     accountKey: AccountKey;
     amountInBaseUnits: string;
@@ -79,8 +73,8 @@ const navigateToPushedTransactionAction = ({
                       },
                   }
                 : {
-                      name: stakeTypeCompleteRoute[stakeType],
-                      params: { accountKey, amountInBaseUnits },
+                      name: RootStackRoutes.StakingTransactionComplete,
+                      params: { stakeType, accountKey, amountInBaseUnits },
                   },
         ],
     });
