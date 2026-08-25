@@ -82,7 +82,7 @@ export const EarnConsentsScreen = () => {
                 networkSymbol,
             },
         });
-        navigation.navigate(RootStackRoutes.EarnTransactionDataReview, { accountKey, amount });
+        navigation.navigate(RootStackRoutes.StakeTransactionDataReview, { accountKey, amount });
     };
 
     const entryPeriodInDays = useSelector((state: NativeStakingRootState) =>

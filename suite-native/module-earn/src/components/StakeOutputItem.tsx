@@ -6,17 +6,13 @@ import { Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { ReviewOutputCard } from '@suite-native/transaction-management';
 
-type EarnStakeOutputItemProps = {
+type StakeOutputItemProps = {
     symbol: NetworkSymbol;
     outputState: ReviewOutputState;
     onLayout: (event: LayoutChangeEvent) => void;
 };
 
-export const EarnStakeOutputItem = ({
-    symbol,
-    outputState,
-    onLayout,
-}: EarnStakeOutputItemProps) => {
+export const StakeOutputItem = ({ symbol, outputState, onLayout }: StakeOutputItemProps) => {
     const { translate } = useTranslate();
     const displaySymbol = getNetworkDisplaySymbol(symbol);
 

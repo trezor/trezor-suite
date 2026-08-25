@@ -18,9 +18,9 @@ import { ApyValue } from '../components/ApyValue';
 import { EarnCompleteScreenContent } from '../components/EarnCompleteScreenContent';
 import { getTransactionCompleteRows } from '../components/TransactionCompleteScreenPresets';
 
-type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.EarnTransactionComplete>;
+type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.StakeTransactionComplete>;
 
-export const EarnTransactionCompleteScreen = () => {
+export const StakeTransactionCompleteScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation();
     const { accountKey, amountInBaseUnits } = route.params;

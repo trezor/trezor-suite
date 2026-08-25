@@ -34,8 +34,8 @@ import {
     ClaimTransactionDataReviewScreen,
     EarnConsentsScreen,
     EarnFormScreen,
-    EarnTransactionCompleteScreen,
-    EarnTransactionDataReviewScreen,
+    StakeTransactionCompleteScreen,
+    StakeTransactionDataReviewScreen,
     HowStakeWorksScreen,
     StakingDetailScreen,
     StakingManagementScreen,
@@ -186,14 +186,14 @@ export const RootStackNavigator = () => {
                 component={EarnConsentsScreen}
             />
             <RootStack.Screen
-                options={{ title: RootStackRoutes.EarnTransactionDataReview }}
-                name={RootStackRoutes.EarnTransactionDataReview}
-                component={EarnTransactionDataReviewScreen}
+                options={{ title: RootStackRoutes.StakeTransactionDataReview }}
+                name={RootStackRoutes.StakeTransactionDataReview}
+                component={StakeTransactionDataReviewScreen}
             />
             <RootStack.Screen
-                options={{ title: RootStackRoutes.EarnTransactionComplete }}
-                name={RootStackRoutes.EarnTransactionComplete}
-                component={EarnTransactionCompleteScreen}
+                options={{ title: RootStackRoutes.StakeTransactionComplete }}
+                name={RootStackRoutes.StakeTransactionComplete}
+                component={StakeTransactionCompleteScreen}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.UnstakeTransactionDataReview }}
