@@ -1,6 +1,6 @@
 import type { AccountAddresses } from '@trezor/blockchain-link';
 import type { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import type { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 import type {
@@ -22,6 +22,7 @@ export const SignMessage = Type.Object({
     message: Type.String(),
     hex: Type.Optional(Type.Boolean()),
     no_script_type: Type.Optional(Type.Boolean()),
+    scriptType: Type.Optional(PROTO.InternalInputScriptType),
 });
 
 // signTransaction
