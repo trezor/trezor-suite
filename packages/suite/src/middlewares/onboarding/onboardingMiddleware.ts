@@ -1,3 +1,4 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
 import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
@@ -5,15 +6,15 @@ import { routerAppChanged } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { firmwareActions } from '@suite-common/firmware';
 import { forgetDisconnectedDevices } from '@suite-common/wallet-core';
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_REQUEST, isUiEventOfType } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import { type Action, type AppState, type Dispatch } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 const onboardingMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: Dispatch) =>
-    (action: Action): Action => {
+    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
+    (next: Dispatch<UnknownAction>) =>
+    (action: UnknownAction): UnknownAction => {
         const isFwInstallationDone =
             firmwareActions.setStatus.match(action) && action.payload === 'done';
 
@@ -31,7 +32,7 @@ const onboardingMiddleware =
         }
 
         // seed is wiped when switching firmware type so we need to forget all device instances as well
-        if (action.type === UI_REQUEST.FIRMWARE_TYPE_CHANGED) {
+        if (isUiEventOfType(action, UI_REQUEST.FIRMWARE_TYPE_CHANGED)) {
             api.dispatch(
                 forgetDisconnectedDevices({
                     device: firmware.cachedDevice || action.payload.device,
@@ -40,7 +41,7 @@ const onboardingMiddleware =
             );
         }
 
-        if (action.type === routerAppChanged.type) {
+        if (routerAppChanged.match(action)) {
             // here middleware detects that onboarding app is loaded, do following:
             //  1. make reducer to accept actions (enableReducer) and apply changes
             if (action.payload === 'onboarding') {

@@ -1,5 +1,7 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
+
 import { type DeviceRootState } from '@suite-common/device';
-import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -15,6 +17,7 @@ import TrezorConnect, {
     type DiscoveryAccountType,
     UI_REQUEST,
     UI_RESPONSE,
+    isUiEventOfType,
 } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
@@ -89,7 +92,7 @@ type ConnectPopupMiddlewareState = AccountsRootState & DeviceRootState & Discove
 
 export const prepareConnectPopupMiddleware = createMiddlewareWithExtraDeps<
     void,
-    AnyAction,
+    UnknownAction,
     ConnectPopupMiddlewareState
 >(async (action, { dispatch, next, getState }) => {
     await next(action);
@@ -102,7 +105,7 @@ export const prepareConnectPopupMiddleware = createMiddlewareWithExtraDeps<
         );
     }
 
-    if (action.type === UI_REQUEST.REQUEST_DISCOVERY_ACCOUNTS) {
+    if (isUiEventOfType(action, UI_REQUEST.REQUEST_DISCOVERY_ACCOUNTS)) {
         const discovery = selectDiscoveryForSelectedDevice(getState());
 
         if (discovery && discovery.status !== 'complete') {

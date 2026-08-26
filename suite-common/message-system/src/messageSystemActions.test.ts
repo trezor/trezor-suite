@@ -65,9 +65,11 @@ describe('Message system actions', () => {
             const actions = store.getActions();
             expect(actions.length).toBe(5);
             const action = actions[2];
-            expect(action?.type).toBe(messageSystemActions.fetchSuccessUpdate.type);
-            expect(action?.payload.config).not.toBe(undefined);
-            expect(action?.payload.timestamp).toBe(timestamp);
+            expect(messageSystemActions.fetchSuccessUpdate.match(action)).toBe(true);
+            if (messageSystemActions.fetchSuccessUpdate.match(action)) {
+                expect(action.payload.config).not.toBe(undefined);
+                expect(action.payload.timestamp).toBe(timestamp);
+            }
         });
 
         it("does not store the fetched config if it's sequence number is the same as the current one", async () => {
@@ -124,10 +126,12 @@ describe('Message system actions', () => {
             const actions = store.getActions();
             expect(actions.length).toBe(5);
             const action = actions[2];
-            expect(action?.type).toBe(messageSystemActions.fetchSuccessUpdate.type);
-            expect(action?.payload.config).not.toBe(undefined);
-            expect(action?.payload.config.sequence).toBe(10);
-            expect(action?.payload.timestamp).toBe(0);
+            expect(messageSystemActions.fetchSuccessUpdate.match(action)).toBe(true);
+            if (messageSystemActions.fetchSuccessUpdate.match(action)) {
+                expect(action.payload.config).not.toBe(undefined);
+                expect(action.payload.config.sequence).toBe(10);
+                expect(action.payload.timestamp).toBe(0);
+            }
 
             expect(console.error).toHaveBeenCalled();
         });

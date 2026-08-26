@@ -1,14 +1,12 @@
-import { type ThunkDispatch } from '@reduxjs/toolkit';
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type Action, type Dispatch, type Middleware, type MiddlewareAPI } from 'redux';
-
-import { type AnyAction } from './types';
 
 // Reading state and dispatching a thunk are two different permissions. A middleware may be banned
 // from reading state itself (`TState` is `void`) and still dispatch a thunk that reads the state it
 // declared for itself. Think of it like asking another student to open a book you are not allowed
 // to open: your restriction does not become their restriction. Keeping dispatch broad makes that
 // composition possible, while `getState()` below stays limited to `TState`.
-type CreateMiddlewareDispatch = ThunkDispatch<any, any, AnyAction>;
+type CreateMiddlewareDispatch = ThunkDispatch<any, any, UnknownAction>;
 
 // Redux middleware normally has several nested functions. `SimpleMiddleware` is the smaller
 // callback shape that this file exposes to application code. Its three important inputs are:
@@ -26,13 +24,15 @@ interface SimpleMiddleware<
     (
         action: TAction,
         api: MiddlewareAPI<CreateMiddlewareDispatch, TState> &
-            TExtraMiddlewareAPI & { next: Dispatch<AnyAction> },
-    ): AnyAction | Promise<AnyAction>;
+            TExtraMiddlewareAPI & { next: Dispatch<UnknownAction> },
+    ): UnknownAction | Promise<UnknownAction>;
 }
 
 export const createMiddleware =
-    <TAction extends Action = AnyAction>(simpleMiddleware: SimpleMiddleware<TAction>): Middleware =>
-    (middlewareAPI: MiddlewareAPI<ThunkDispatch<any, unknown, AnyAction>>) =>
+    <TAction extends Action = UnknownAction>(
+        simpleMiddleware: SimpleMiddleware<TAction>,
+    ): Middleware =>
+    (middlewareAPI: MiddlewareAPI<ThunkDispatch<any, unknown, UnknownAction>>) =>
     next =>
     action => {
         try {
@@ -112,7 +112,7 @@ export function createMiddlewareWithExtraDeps<TExtra, TAction extends Action, TS
     simpleMiddleware: ExplicitlyTypedSimpleMiddleware<TExtra, TAction, TState>,
 ) {
     return (getExtra: () => MiddlewareExtra<TExtra> | null): Middleware =>
-        (middlewareAPI: MiddlewareAPI<ThunkDispatch<any, unknown, AnyAction>>) =>
+        (middlewareAPI: MiddlewareAPI<ThunkDispatch<any, unknown, UnknownAction>>) =>
         next =>
         action => {
             const extra = getExtra();
@@ -132,7 +132,7 @@ export function createMiddlewareWithExtraDeps<TExtra, TAction extends Action, TS
                     extra,
                     next: next as Dispatch,
                 } as MiddlewareAPI<CreateMiddlewareDispatch, TState> &
-                    ExtraMiddlewareAPI<TExtra> & { next: Dispatch<AnyAction> };
+                    ExtraMiddlewareAPI<TExtra> & { next: Dispatch<UnknownAction> };
 
                 return simpleMiddleware(action as TAction, simpleMiddlewareAPI);
             } catch (error) {

@@ -1,5 +1,6 @@
 import { events } from '@suite-common/analytics';
 import { configureMockStore } from '@suite-common/test-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
@@ -122,7 +123,7 @@ describe('submitWrapNativeTokenThunk', () => {
     const getTrackedTokenUpdates = (store: ReturnType<typeof configureMockStore>) =>
         store
             .getActions()
-            .filter(action => action.type === accountsActions.updateAccount.type)
+            .filter(accountsActions.updateAccount.match)
             .filter(action =>
                 action.payload.tokens?.some(
                     (accountToken: { contract: string }) =>
@@ -145,7 +146,10 @@ describe('submitWrapNativeTokenThunk', () => {
             .dispatch(submitWrapNativeTokenThunk({ account, token, wrapAmount: '1.5' }))
             .unwrap();
 
-        const wrapToast = store.getActions().find(action => action.payload?.type === 'tx-wrap');
+        const wrapToast = store
+            .getActions()
+            .filter(notificationsActions.addToast.match)
+            .find(action => action.payload.type === 'tx-wrap');
 
         expect(wrapToast?.payload).toMatchObject({
             type: 'tx-wrap',
@@ -279,7 +283,8 @@ describe('submitWrapNativeTokenThunk', () => {
 
             const signErrorToast = store
                 .getActions()
-                .find(action => action.payload?.type === 'sign-tx-error');
+                .filter(notificationsActions.addToast.match)
+                .find(action => action.payload.type === 'sign-tx-error');
 
             expect(signErrorToast?.payload).toMatchObject({ error: 'boom' });
         });

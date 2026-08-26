@@ -5,7 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { SUITE } from 'src/actions/suite/constants';
+import { confirmEvmExplanationModal } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export interface ConfirmNetworkExplanationModalProps {
@@ -23,11 +23,7 @@ export const ConfirmEvmExplanationModal = ({
         if (!account?.symbol) {
             return;
         }
-        dispatch({
-            type: SUITE.EVM_CONFIRM_EXPLANATION_MODAL,
-            symbol: account?.symbol,
-            route,
-        });
+        dispatch(confirmEvmExplanationModal({ symbol: account.symbol, route }));
     };
     const confirmExplanationModalClosed = useSelector(
         state => state.suite.evmSettings.confirmExplanationModalClosed,

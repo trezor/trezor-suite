@@ -10,7 +10,11 @@ import {
 } from '@suite-common/metadata-types';
 import { selectAccounts } from '@suite-common/wallet-core';
 
-import { setAccountAdd } from './metadataActions';
+import {
+    disableMetadata as disableMetadataAction,
+    setAccountAdd,
+    setDeviceMetadata,
+} from './metadataActions';
 import * as METADATA from './metadataConstants';
 import * as METADATA_LABELING from './metadataLabelingConstants';
 import { type MetadataRootState, selectSelectedProviderForLabels } from './metadataReducer';
@@ -50,21 +54,18 @@ export const disposeMetadataKeys =
         devices.forEach(device => {
             if (device.state?.staticSessionId) {
                 // set metadata as disabled for this device, remove all metadata related information
-                dispatch({
-                    type: METADATA.SET_DEVICE_METADATA,
-                    payload: {
+                dispatch(
+                    setDeviceMetadata({
                         deviceState: device.state.staticSessionId,
                         metadata: {},
-                    },
-                });
+                    }),
+                );
             }
         });
     };
 
 export const disableMetadata = () => (dispatch: Dispatch) => {
-    dispatch({
-        type: METADATA.DISABLE,
-    });
+    dispatch(disableMetadataAction());
 
     // dispose metadata values and keys
     dispatch(disposeMetadata());

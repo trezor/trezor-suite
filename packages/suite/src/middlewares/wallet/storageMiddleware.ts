@@ -1,17 +1,27 @@
-import { isAnyOf } from '@reduxjs/toolkit';
+import { type Dispatch, type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
-import { COINJOIN } from '@suite/coinjoin';
+import {
+    clientOnPrisonEvent,
+    isCoinjoinAccountPersistenceAction,
+    setDebugSettings,
+} from '@suite/coinjoin';
 import { debugActions } from '@suite/debug';
 import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/feature-feedback';
-import { markNewContentIndicatorAsSeen, setFlag, setNewContentIndicatorSeen } from '@suite/flags';
-import { METADATA, metadataActions } from '@suite/metadata';
-import { suiteSettingsActions } from '@suite/settings';
+import {
+    type FlagsRootState,
+    markNewContentIndicatorAsSeen,
+    setFlag,
+    setNewContentIndicatorSeen,
+} from '@suite/flags';
+import { metadataActions } from '@suite/metadata';
+import { type SuiteSettingsRootState, suiteSettingsActions } from '@suite/settings';
 import { dismissUnsupportedDeviceBanner } from '@suite/suite-sync';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { connectPopupActions } from '@suite-common/connect-popup';
 import {
+    type DeviceRootState,
     deviceActions,
     selectDeviceByState,
     selectDeviceByStaticSessionId,
@@ -22,7 +32,7 @@ import { discreetModeActions } from '@suite-common/discreet-mode';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
 import { receiveActions } from '@suite-common/receive';
-import { type ActionFromMatcher, createLegacyActionTypeMatcher } from '@suite-common/redux-utils';
+import { type ActionFromMatcher, type TypeGuard } from '@suite-common/redux-utils';
 import {
     setSuiteSyncOwner,
     setSuiteSyncRelayUrl,
@@ -37,7 +47,9 @@ import { TokenManagementAction } from '@suite-common/token-definitions';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 import { tradingActions } from '@suite-common/trading';
 import {
-    WALLET_SETTINGS,
+    type AccountsRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
     accountsActions,
     blockchainActions,
     changeNetworks,
@@ -47,26 +59,45 @@ import {
     selectAccountsByDeviceState,
     selectHistoricFiatRates,
     selectIsDeviceAutoEjectEnabled,
+    setAddressDisplayType,
+    setAutoEjectEnabled,
     setBaseCurrency,
+    setBitcoinAmountUnits,
+    setMevProtection,
+    setNetworkReserve,
+    setSuspiciousTransactionsFilter,
     transactionsActions,
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { findAccountDevice, isAccountSuccessful } from '@suite-common/wallet-utils';
 import { walletConnectActions } from '@suite-common/walletconnect';
+import { DEVICE, isDeviceEventOfType } from '@trezor/connect';
 
-import { STORAGE, SUITE } from 'src/actions/suite/constants';
 import * as storageActions from 'src/actions/suite/storageActions';
-import { GRAPH } from 'src/actions/wallet/constants';
+import { storageError } from 'src/actions/suite/storageLifecycleActions';
+import {
+    closeEvmExplanationBanner,
+    confirmEvmExplanationModal,
+} from 'src/actions/suite/suiteActions';
+import { accountGraphFail, accountGraphSuccess } from 'src/actions/wallet/graphActions';
+import { type SuiteState } from 'src/reducers/suite/suiteReducer';
+import { type GraphState } from 'src/reducers/wallet/graphReducer';
 import { db } from 'src/storage';
-import type { AppState, Dispatch, GetState, Action as SuiteAction } from 'src/types/suite';
-import type { WalletAction } from 'src/types/wallet';
 
-type StorageAction = SuiteAction | WalletAction;
+type StorageMiddlewareState = AccountsRootState &
+    DeviceRootState &
+    FiatRatesRootState &
+    WalletSettingsRootState &
+    FlagsRootState &
+    SuiteSettingsRootState & {
+        suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
+        wallet: {
+            graph: GraphState;
+        };
+    };
 
-const matchLegacyActionType = createLegacyActionTypeMatcher<StorageAction>();
-
-const getDeviceByAccountKey = (accountKey: AccountKey, state: AppState) => {
+const getDeviceByAccountKey = (accountKey: AccountKey, state: StorageMiddlewareState) => {
     const account = selectAccountByKey(state, accountKey);
 
     return account ? findAccountDevice(account, selectDevices(state)) : undefined;
@@ -78,23 +109,21 @@ type RememberedDeviceSaveParams<TAction> = {
 };
 
 type RememberedDeviceSaveDeps = {
-    dispatch: Dispatch;
-    getState: GetState;
+    dispatch: Dispatch<UnknownAction>;
+    getState: () => StorageMiddlewareState;
 };
 
 type RememberedDeviceHandler = {
-    match: ReadonlyArray<(action: StorageAction) => boolean>;
-    getDevice: (action: any, state: AppState) => TrezorDevice | undefined;
+    match: ReadonlyArray<(action: UnknownAction) => boolean>;
+    getDevice: (action: any, state: StorageMiddlewareState) => TrezorDevice | undefined;
     save: (params: RememberedDeviceSaveParams<any>, deps: RememberedDeviceSaveDeps) => void;
 };
 
-const defineRememberedDeviceHandler = <
-    Matchers extends ReadonlyArray<(action: StorageAction) => boolean>,
->(handler: {
+const defineRememberedDeviceHandler = <Matchers extends ReadonlyArray<TypeGuard<any>>>(handler: {
     match: readonly [...Matchers];
     getDevice: (
         action: ActionFromMatcher<Matchers[number]>,
-        state: AppState,
+        state: StorageMiddlewareState,
     ) => TrezorDevice | undefined;
     save: (
         params: RememberedDeviceSaveParams<ActionFromMatcher<Matchers[number]>>,
@@ -239,7 +268,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         },
     }),
     defineRememberedDeviceHandler({
-        match: [matchLegacyActionType(GRAPH.ACCOUNT_GRAPH_SUCCESS, GRAPH.ACCOUNT_GRAPH_FAIL)],
+        match: [accountGraphSuccess.match, accountGraphFail.match],
         getDevice: (action, state) =>
             selectDevices(state).find(
                 device => device.state?.staticSessionId === action.payload.account.deviceState,
@@ -258,7 +287,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         },
     }),
     defineRememberedDeviceHandler({
-        match: [matchLegacyActionType(METADATA.SET_ERROR_FOR_DEVICE)],
+        match: [metadataActions.setErrorForDevice.match],
         getDevice: (action, state) =>
             selectDeviceByStaticSessionId(state, action.payload.deviceState),
         save: ({ device }, { dispatch }) => {
@@ -268,7 +297,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
     defineRememberedDeviceHandler({
         // Au, this hurts, I need to call saveDevice manually. Saved device should be updated
         // automatically anytime any of its properties change.
-        match: [matchLegacyActionType(METADATA.SET_DEVICE_METADATA)],
+        match: [metadataActions.setDeviceMetadata.match],
         getDevice: (action, state) =>
             selectDeviceByStaticSessionId(state, action.payload.deviceState),
         save: ({ action, device }) => {
@@ -279,18 +308,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         },
     }),
     defineRememberedDeviceHandler({
-        match: [
-            matchLegacyActionType(
-                COINJOIN.ACCOUNT_DISCOVERY_RESET,
-                COINJOIN.ACCOUNT_DISCOVERY_PROGRESS,
-                COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS,
-                COINJOIN.ACCOUNT_UNREGISTER,
-                COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION,
-                COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY,
-                COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE,
-                COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS,
-            ),
-        ],
+        match: [isCoinjoinAccountPersistenceAction],
         getDevice: (action, state) =>
             getDeviceByAccountKey(action.payload.accountKey as AccountKey, state),
         save: ({ action }, { dispatch }) => {
@@ -299,12 +317,14 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
     }),
 ];
 
-export const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
-    db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
-    db.onBlocked = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocked' });
+export const storageMiddleware = (
+    api: MiddlewareAPI<Dispatch<UnknownAction>, StorageMiddlewareState>,
+) => {
+    db.onBlocking = () => api.dispatch(storageError('blocking'));
+    db.onBlocked = () => api.dispatch(storageError('blocked'));
 
-    return (next: Dispatch) =>
-        (action: SuiteAction | WalletAction): SuiteAction | WalletAction => {
+    return (next: Dispatch<UnknownAction>) =>
+        (action: UnknownAction): UnknownAction => {
             // pass action
             next(action);
 
@@ -472,8 +492,8 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (
                 thpActions.removeCredentials.match(action) ||
-                action.type === 'device-thp_credentials_changed' ||
-                (action.type === 'device-thp_pairing_status_changed' &&
+                isDeviceEventOfType(action, DEVICE.THP_CREDENTIALS_CHANGED) ||
+                (isDeviceEventOfType(action, DEVICE.THP_PAIRING_STATUS_CHANGED) &&
                     action.payload.status === 'finished')
             ) {
                 api.dispatch(storageActions.saveThpCredentials());
@@ -497,71 +517,67 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 api.dispatch(storageActions.saveDiscreetMode());
             }
 
-            switch (action.type) {
-                case setBaseCurrency.type:
-                case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
-                case WALLET_SETTINGS.SET_MEV_PROTECTION:
-                case WALLET_SETTINGS.SET_NETWORK_RESERVE:
-                case WALLET_SETTINGS.SET_AUTO_EJECT:
-                case WALLET_SETTINGS.SET_ADDRESS_DISPLAY_TYPE:
-                case WALLET_SETTINGS.SET_SUSPICIOUS_TRANSACTIONS_FILTER:
-                    api.dispatch(storageActions.saveWalletSettings());
-
-                    break;
-                case suiteSettingsActions.setLanguage.type:
-                case setFlag.type:
-                case markNewContentIndicatorAsSeen.type:
-                case setNewContentIndicatorSeen.type:
-                case suiteSettingsActions.setDebugMode.type:
-                case suiteSettingsActions.setExperimentalFeatures.type:
-                case suiteSettingsActions.setOnionLinks.type:
-                case suiteSettingsActions.setTheme.type:
-                case suiteSettingsActions.setAutodetect.type:
-                case suiteSettingsActions.setSidebarWidth.type:
-                case suiteSettingsActions.toggleDeviceAuthenticityCheck.type:
-                case suiteSettingsActions.toggleFirmwareRevisionCheck.type:
-                case suiteSettingsActions.toggleFirmwareHashCheck.type:
-                case suiteSettingsActions.toggleDeviceMetaChecks.type:
-                case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:
-                case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
-                case suiteSettingsActions.setIsCoinsFilterVisible.type:
-                    api.dispatch(storageActions.saveSuiteSettings());
-                    break;
-                case debugActions.setShowDebugMenu.type:
-                    api.dispatch(storageActions.saveDebugSettings());
-                    break;
-                case tradingActions.saveTrade.type: {
-                    const { type, ...trade } = action;
-                    storageActions.saveTradingTrade(trade.payload);
-                    break;
-                }
-                case METADATA.ENABLE:
-                case METADATA.DISABLE:
-                case METADATA.ADD_PROVIDER:
-                case METADATA.REMOVE_PROVIDER:
-                    api.dispatch(storageActions.saveMetadataSettings());
-                    break;
-                case COINJOIN.SET_DEBUG_SETTINGS:
-                    api.dispatch(storageActions.saveCoinjoinDebugSettings());
-                    break;
-
+            if (
+                isAnyOf(
+                    setBaseCurrency,
+                    setBitcoinAmountUnits,
+                    setMevProtection,
+                    setNetworkReserve,
+                    setAutoEjectEnabled,
+                    setAddressDisplayType,
+                    setSuspiciousTransactionsFilter,
+                )(action)
+            ) {
+                api.dispatch(storageActions.saveWalletSettings());
+            } else if (
+                isAnyOf(
+                    suiteSettingsActions.setLanguage,
+                    setFlag,
+                    markNewContentIndicatorAsSeen,
+                    setNewContentIndicatorSeen,
+                    suiteSettingsActions.setDebugMode,
+                    suiteSettingsActions.setExperimentalFeatures,
+                    suiteSettingsActions.setOnionLinks,
+                    suiteSettingsActions.setTheme,
+                    suiteSettingsActions.setAutodetect,
+                    suiteSettingsActions.setSidebarWidth,
+                    suiteSettingsActions.toggleDeviceAuthenticityCheck,
+                    suiteSettingsActions.toggleFirmwareRevisionCheck,
+                    suiteSettingsActions.toggleFirmwareHashCheck,
+                    suiteSettingsActions.toggleDeviceMetaChecks,
+                    suiteSettingsActions.setIsCoinsFilterVisible,
+                    closeEvmExplanationBanner,
+                    confirmEvmExplanationModal,
+                )(action)
+            ) {
+                api.dispatch(storageActions.saveSuiteSettings());
+            } else if (debugActions.setShowDebugMenu.match(action)) {
+                api.dispatch(storageActions.saveDebugSettings());
+            } else if (tradingActions.saveTrade.match(action)) {
+                storageActions.saveTradingTrade(action.payload);
+            } else if (
+                metadataActions.enableMetadata.match(action) ||
+                metadataActions.disableMetadata.match(action) ||
+                metadataActions.addMetadataProvider.match(action) ||
+                metadataActions.removeMetadataProvider.match(action)
+            ) {
+                api.dispatch(storageActions.saveMetadataSettings());
+            } else if (setDebugSettings.match(action)) {
+                api.dispatch(storageActions.saveCoinjoinDebugSettings());
+            } else if (clientOnPrisonEvent.match(action)) {
                 // Not a rememberedDeviceHandlers entry: unlike those handlers (one action ->
                 // one device), this one action affects multiple accounts on potentially
                 // different devices, so the remembered-device check must be applied per account.
-                case COINJOIN.CLIENT_PRISON_EVENT: {
-                    const affectedAccounts = action.payload.map(inmate => inmate.accountKey);
-                    const state = api.getState();
-                    affectedAccounts.forEach(key => {
-                        const device = getDeviceByAccountKey(key as AccountKey, state);
-                        if (device && getIsDeviceRemembered(device)) {
-                            api.dispatch(storageActions.saveCoinjoinAccount(key as AccountKey));
-                        }
-                    });
-                    break;
-                }
-
-                default:
-                    break;
+                const affectedAccounts = action.payload.map(
+                    inmate => inmate.accountKey as AccountKey,
+                );
+                const state = api.getState();
+                affectedAccounts.forEach(key => {
+                    const device = getDeviceByAccountKey(key, state);
+                    if (device && getIsDeviceRemembered(device)) {
+                        api.dispatch(storageActions.saveCoinjoinAccount(key));
+                    }
+                });
             }
 
             return action;

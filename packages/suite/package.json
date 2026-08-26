@@ -129,6 +129,7 @@
         "@suite/sentry": "workspace:*",
         "@suite/settings": "workspace:*",
         "@suite/sign-verify": "workspace:*",
+        "@suite/suite-lifecycle": "workspace:*",
         "@suite/suite-sync": "workspace:*",
         "@suite/thp": "workspace:*",
         "@suite/tor": "workspace:*",

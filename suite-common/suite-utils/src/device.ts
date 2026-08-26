@@ -535,13 +535,14 @@ export const getIsDeviceDescriptorApiTypeBluetooth = (device: Device | TrezorDev
 export const getIsDeviceConnectedViaBluetooth = (device?: TrezorDevice): boolean =>
     !!device?.connected && getIsDeviceDescriptorApiTypeBluetooth(device);
 
-export const getIsDevicePinProtected = (device?: TrezorDevice): boolean | null =>
+export const getIsDevicePinProtected = (device?: Device | TrezorDevice): boolean | null =>
     device?.features?.pin_protection ?? null;
 
-export const getDeviceLanguage = (device?: TrezorDevice): string | null =>
+export const getDeviceLanguage = (device?: Device | TrezorDevice): string | null =>
     device?.features?.language ?? null;
 
-export const getDeviceMode = (device?: TrezorDevice): DeviceMode | null => device?.mode ?? null;
+export const getDeviceMode = (device?: Device | TrezorDevice): DeviceMode | null =>
+    device?.mode ?? null;
 
 type DeviceComparisonParams = { prevDevice: TrezorDevice; nextDevice: TrezorDevice };
 

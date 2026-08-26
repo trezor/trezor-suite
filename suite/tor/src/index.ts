@@ -11,4 +11,4 @@ export {
     selectTorBootstrap,
     selectTorStatus,
 } from './torSelectors';
-export { type TorAction, type TorRootState, torActions, torReducer } from './torSlice';
+export { type TorRootState, torActions, torReducer } from './torSlice';

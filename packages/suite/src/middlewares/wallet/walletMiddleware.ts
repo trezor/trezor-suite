@@ -1,4 +1,4 @@
-import { isAnyOf } from '@reduxjs/toolkit';
+import { type Dispatch, type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 import type { MiddlewareAPI } from 'redux';
 
 import { selectSelectedAccountKey } from '@suite/account';
@@ -25,12 +25,12 @@ import {
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
-import type { Action, AppState, Dispatch } from 'src/types/suite';
+import type { AppState } from 'src/types/suite';
 
 const walletMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: Dispatch) =>
-    (action: Action): Action => {
+    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
+    (next: Dispatch<UnknownAction>) =>
+    (action: UnknownAction): UnknownAction => {
         const prevState = api.getState();
 
         if (deviceActions.forgetDevice.match(action)) {

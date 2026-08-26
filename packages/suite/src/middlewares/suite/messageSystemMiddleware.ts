@@ -14,7 +14,7 @@ import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { selectMessageSystemValidationParams } from 'src/selectors/suite/selectMessageSystemValidationParams';
 
 // actions which can affect message system messages
-const actions = [
+const actions: string[] = [
     deviceActions.selectDevice.type,
     torActions.setTorStatus.type,
     messageSystemActions.fetchSuccessUpdate.type,

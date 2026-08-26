@@ -1,4 +1,4 @@
-import { type AnyAction } from '@suite-common/redux-utils';
+import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { configureMockStore } from './configureMockStore';
 
@@ -11,7 +11,7 @@ type PlatformExtraDependencies = {
     };
 };
 
-const store = configureMockStore<{ value: number }, AnyAction, PlatformExtraDependencies>({
+const store = configureMockStore<{ value: number }, UnknownAction, PlatformExtraDependencies>({
     extra: {
         services: {
             platformOnlyService: () => {},

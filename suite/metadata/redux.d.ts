@@ -1,10 +1,8 @@
-import type { AsyncThunkAction } from '@reduxjs/toolkit';
+import type { AsyncThunkAction, UnknownAction } from '@reduxjs/toolkit';
 import type { ThunkAction } from 'redux-thunk';
 
-import { AnyAction } from '@suite-common/redux-utils';
-
 declare module 'redux' {
-    export interface Dispatch<A extends Action = AnyAction> {
+    export interface Dispatch<A extends Action = UnknownAction> {
         <TThunk extends AsyncThunkAction<any, any, any>>(thunk: TThunk): ReturnType<TThunk>;
 
         <ReturnType = any, State = any, ExtraThunkArg = any>(
@@ -18,7 +16,7 @@ declare module 'redux' {
         type: T;
     }
 
-    export interface MiddlewareAPI<D extends Dispatch = Dispatch<AnyAction>, S = any> {
+    export interface MiddlewareAPI<D extends Dispatch = Dispatch<UnknownAction>, S = any> {
         dispatch: D;
         getState(): S;
     }
@@ -26,9 +24,9 @@ declare module 'redux' {
     export interface Middleware<
         _DispatchExt = Record<never, never>,
         S = any,
-        D extends Dispatch = Dispatch<AnyAction>,
+        D extends Dispatch = Dispatch<UnknownAction>,
     > {
-        (api: MiddlewareAPI<D, S>): (next: Dispatch<AnyAction>) => (action: any) => any;
+        (api: MiddlewareAPI<D, S>): (next: Dispatch<UnknownAction>) => (action: any) => any;
     }
 }
 

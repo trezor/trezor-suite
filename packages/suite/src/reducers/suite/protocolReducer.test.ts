@@ -1,7 +1,8 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
+
 import { asProtocol } from '@trezor/network-module-suite-common-types';
 
-import { PROTOCOL } from 'src/actions/suite/constants';
-import type { Action } from 'src/types/suite';
+import { fillSendForm } from 'src/actions/suite/protocolActions';
 
 import fixtures from './__fixtures__/protocolReducer';
 import protocolReducer, { type ProtocolState } from './protocolReducer';
@@ -10,11 +11,6 @@ type FillSendFormCase = {
     description: string;
     sendForm: ProtocolState['sendForm'];
 };
-
-const fillSendForm = (shouldFill: boolean): Action => ({
-    type: PROTOCOL.FILL_SEND_FORM,
-    payload: shouldFill,
-});
 
 const fillSendFormCases: FillSendFormCase[] = [
     {
@@ -58,7 +54,7 @@ describe('Protocol reducer', () => {
         it(f.description, () => {
             let state: ProtocolState = f.initialState as ProtocolState;
             f.actions.forEach(a => {
-                state = protocolReducer(state, a as Action);
+                state = protocolReducer(state, a as UnknownAction);
             });
             expect(state).toEqual(f.result);
         });

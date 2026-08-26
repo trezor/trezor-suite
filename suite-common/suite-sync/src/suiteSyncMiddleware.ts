@@ -1,8 +1,8 @@
-import { isAnyOf } from '@reduxjs/toolkit';
+import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { selectDeviceThunk } from '@suite-common/wallet-core';
 
@@ -17,7 +17,7 @@ type SuiteSyncMiddlewareState = WithSuiteSyncAndDeviceState & MessageSystemRootS
 
 export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps<
     SuiteSyncMiddlewareDeps,
-    AnyAction,
+    UnknownAction,
     SuiteSyncMiddlewareState
 >((action, { next, getState, extra }) => {
     if (

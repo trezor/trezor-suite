@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkAction } from 'redux-thunk';
 
 import { useDevice } from '@suite/device';
@@ -12,7 +13,7 @@ import { ShieldWarningIcon } from '@trezor/icons';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type SuiteExtra } from 'src/support/extraDependencies';
-import { type Action, type AppState, type Dispatch } from 'src/types/suite';
+import { type AppState, type Dispatch } from 'src/types/suite';
 
 interface ConfirmUnverifiedModalProps {
     action: {
@@ -20,7 +21,7 @@ interface ConfirmUnverifiedModalProps {
         title: TranslationKey;
         closeAfterEventTriggered?: boolean;
     };
-    verifyProcess?: () => ThunkAction<Promise<void>, AppState, SuiteExtra, Action>;
+    verifyProcess?: () => ThunkAction<Promise<void>, AppState, SuiteExtra, UnknownAction>;
     warningText: TranslationKey;
 }
 

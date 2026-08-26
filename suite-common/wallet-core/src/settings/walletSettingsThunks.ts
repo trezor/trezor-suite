@@ -5,7 +5,11 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
-import { changeNetworks, setBitcoinAmountUnits } from './walletSettingsActions';
+import {
+    changeCoinVisibilityEvent,
+    changeNetworks,
+    setBitcoinAmountUnits,
+} from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
 import {
     type WalletSettingsRootState,
@@ -54,10 +58,7 @@ export const changeCoinVisibility = createThunk<
 
         // this seems to be only for analyticsMiddleware
         // TODO: why does it fire an action with the same type as the thunk??
-        dispatch({
-            type: WALLET_SETTINGS.CHANGE_COIN_VISIBILITY,
-            payload: { symbol, shouldBeVisible },
-        });
+        dispatch(changeCoinVisibilityEvent({ symbol, shouldBeVisible }));
     },
 );
 

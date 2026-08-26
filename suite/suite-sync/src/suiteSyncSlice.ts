@@ -1,7 +1,7 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type SuiteSyncInteraction,
     type SuiteSyncState,
@@ -30,6 +30,19 @@ export type DesktopSuiteSyncRootState = {
     suiteSync: DesktopSuiteSyncState;
 };
 
+type StorageLoadSuiteSyncAction = PayloadAction<
+    {
+        suiteSyncSettings?: Partial<SuiteSyncState['settings']> & {
+            isUnsupportedDeviceBannerDismissed?: boolean;
+        };
+        suiteSyncOwners?: Array<{
+            key: StaticSessionId;
+            value: SuiteSyncState['suiteSyncOwners'][StaticSessionId];
+        }>;
+    },
+    '@storage/load'
+>;
+
 const suiteSyncSlice = createSliceWithExtraDeps({
     name: 'suiteSync',
     initialState: initialSuiteSyncDesktopState,
@@ -47,7 +60,7 @@ const suiteSyncSlice = createSliceWithExtraDeps({
     extraReducers: builder => {
         builder
             .addCase('@storage/load', (state, action) => {
-                const actionWithPayload = action as AnyAction;
+                const actionWithPayload = action as StorageLoadSuiteSyncAction;
 
                 if (
                     actionWithPayload.type === '@storage/load' && // hack: to prevent dependency
@@ -71,12 +84,9 @@ const suiteSyncSlice = createSliceWithExtraDeps({
                             ...state.suiteSyncOwners,
                             // We need to transform array of { key, value } from storage to the Record
                             ...typedObjectFromEntries(
-                                (
-                                    (actionWithPayload.payload.suiteSyncOwners ?? []) as {
-                                        key: string;
-                                        value: any;
-                                    }[]
-                                ).map(({ key, value }) => [key, value]),
+                                (actionWithPayload.payload.suiteSyncOwners ?? []).map(
+                                    ({ key, value }) => [key, value],
+                                ),
                             ),
                         },
                     } satisfies DesktopSuiteSyncState;

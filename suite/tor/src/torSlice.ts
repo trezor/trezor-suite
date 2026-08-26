@@ -30,5 +30,4 @@ export type TorRootState = {
 };
 
 export const torActions = torSlice.actions;
-export type TorAction = ReturnType<(typeof torActions)[keyof typeof torActions]>;
 export const torReducer = torSlice.reducer;

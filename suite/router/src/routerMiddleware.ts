@@ -1,4 +1,6 @@
-import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { type UnknownAction } from '@reduxjs/toolkit';
+
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 
 import {
     type RouterRootState,
@@ -11,7 +13,7 @@ type RouterMiddlewareState = RouterRootState;
 
 const createRouterMiddleware = createMiddlewareWithExtraDeps<
     void,
-    AnyAction,
+    UnknownAction,
     RouterMiddlewareState
 >;
 

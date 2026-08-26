@@ -1,6 +1,6 @@
-import { isAnyOf } from '@reduxjs/toolkit';
+import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import {
     tradingBuyActions,
     tradingExchangeActions,
@@ -19,7 +19,7 @@ type TradingLastErrorSentryMiddlewareState = void;
 
 export const prepareTradingLastErrorSentryMiddleware = createMiddlewareWithExtraDeps<
     void,
-    AnyAction,
+    UnknownAction,
     TradingLastErrorSentryMiddlewareState
 >((action, { next }) => {
     const isLastErrorMessageAction = isAnyOf(

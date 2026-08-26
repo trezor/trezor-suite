@@ -1,5 +1,6 @@
 import { events } from '@suite-common/analytics';
 import { configureMockStore } from '@suite-common/test-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -123,7 +124,10 @@ describe('submitUnwrapNativeTokenThunk', () => {
             .dispatch(submitUnwrapNativeTokenThunk({ account, token, unwrapAmount: '1.5' }))
             .unwrap();
 
-        const unwrapToast = store.getActions().find(action => action.payload?.type === 'tx-unwrap');
+        const unwrapToast = store
+            .getActions()
+            .filter(notificationsActions.addToast.match)
+            .find(action => action.payload.type === 'tx-unwrap');
 
         expect(unwrapToast?.payload).toMatchObject({
             type: 'tx-unwrap',

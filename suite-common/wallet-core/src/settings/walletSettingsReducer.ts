@@ -80,12 +80,9 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
                 );
             },
         );
-        builder.addCase(
-            WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,
-            (state, action: walletSettingsActions.SetBitcoinAmountUnitsAction) => {
-                state.bitcoinAmountUnit = action.payload;
-            },
-        );
+        builder.addCase(walletSettingsActions.setBitcoinAmountUnits, (state, action) => {
+            state.bitcoinAmountUnit = action.payload;
+        });
         builder.addCase(
             WALLET_SETTINGS.SET_MEV_PROTECTION,
             (state, action: ReturnType<typeof walletSettingsActions.setMevProtection>) => {

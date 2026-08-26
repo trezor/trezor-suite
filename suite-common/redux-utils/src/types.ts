@@ -1,14 +1,16 @@
-import { type Action, type AsyncThunk, type Reducer, type ThunkAction } from '@reduxjs/toolkit';
-export interface AnyAction extends Action {
-    [extraProps: string]: any;
-}
+import {
+    type AsyncThunk,
+    type Reducer,
+    type ThunkAction,
+    type UnknownAction,
+} from '@reduxjs/toolkit';
 
 /**
  * Original thunk type in Redux before redux-toolkit
  */
 export type OriginalReduxThunk<TPayload, TReturn = void> = (
     payload: TPayload,
-) => ThunkAction<TReturn, any, any, AnyAction>;
+) => ThunkAction<TReturn, any, any, UnknownAction>;
 
 // This SuiteCompatible types should be used only in places where you need support
 // for both redux-toolkit and legacy redux stuff like it is in externalDependencies.
@@ -16,16 +18,14 @@ export type OriginalReduxThunk<TPayload, TReturn = void> = (
 export type SuiteCompatibleThunk<TPayload, TReturn = void> =
     AsyncThunk<TReturn, TPayload, Record<never, never>> | OriginalReduxThunk<TPayload, TReturn>;
 
-export type ActionType = string;
-
-interface TypeGuard<T> {
+export interface TypeGuard<T> {
     (value: any): value is T;
 }
 interface HasMatchFunction<T> {
     match: TypeGuard<T>;
 }
 type Matcher<T> = HasMatchFunction<T> | TypeGuard<T>;
-type ActionFromMatcher<M extends Matcher<any>> = M extends Matcher<infer T> ? T : never;
+export type ActionFromMatcher<M extends Matcher<any>> = M extends Matcher<infer T> ? T : never;
 
 type AnyAsyncThunk = {
     pending: {

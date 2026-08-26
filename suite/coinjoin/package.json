@@ -27,6 +27,7 @@
         "@suite/locks": "workspace:*",
         "@suite/modal": "workspace:*",
         "@suite/router": "workspace:*",
+        "@suite/suite-lifecycle": "workspace:*",
         "@suite/tor": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/coinjoin": "workspace:*",

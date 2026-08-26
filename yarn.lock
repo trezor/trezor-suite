@@ -15063,6 +15063,7 @@ __metadata:
     "@suite/locks": "workspace:*"
     "@suite/modal": "workspace:*"
     "@suite/router": "workspace:*"
+    "@suite/suite-lifecycle": "workspace:*"
     "@suite/tor": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
@@ -15398,7 +15399,6 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
@@ -15474,6 +15474,7 @@ __metadata:
   resolution: "@suite/modal@workspace:suite/modal"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/device": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/thp": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -15674,6 +15675,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/suite-lifecycle@workspace:*, @suite/suite-lifecycle@workspace:suite/suite-lifecycle":
+  version: 0.0.0-use.local
+  resolution: "@suite/suite-lifecycle@workspace:suite/suite-lifecycle"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/suite-sync@workspace:*, @suite/suite-sync@workspace:suite/suite-sync":
   version: 0.0.0-use.local
   resolution: "@suite/suite-sync@workspace:suite/suite-sync"
@@ -15820,6 +15829,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/trading@workspace:suite/trading"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/flags": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/icons": "workspace:*"
@@ -17830,6 +17840,7 @@ __metadata:
     "@suite/sentry": "workspace:*"
     "@suite/settings": "workspace:*"
     "@suite/sign-verify": "workspace:*"
+    "@suite/suite-lifecycle": "workspace:*"
     "@suite/suite-sync": "workspace:*"
     "@suite/thp": "workspace:*"
     "@suite/tor": "workspace:*"

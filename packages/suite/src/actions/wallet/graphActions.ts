@@ -1,4 +1,4 @@
-import { type Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch, createAction } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { resetTime } from '@suite-common/suite-utils';
@@ -52,34 +52,12 @@ const selectAccountGraphData = (state: GraphRootState, account: Account) =>
     )?.data;
 const selectGraph = (state: GraphRootState) => state.wallet.graph;
 
-export type GraphAction =
-    | {
-          type: typeof ACCOUNT_GRAPH_SUCCESS;
-          payload: GraphData;
-      }
-    | {
-          type: typeof ACCOUNT_GRAPH_START;
-          payload: Omit<GraphData, 'data'>;
-      }
-    | {
-          type: typeof ACCOUNT_GRAPH_FAIL;
-          payload: Omit<GraphData, 'data'>;
-      }
-    | {
-          type: typeof AGGREGATED_GRAPH_START;
-      }
-    | {
-          type: typeof AGGREGATED_GRAPH_SUCCESS;
-      }
-    | {
-          type: typeof SET_SELECTED_RANGE;
-          payload: GraphRange;
-      };
-
-export const setSelectedRange = (range: GraphRange): GraphAction => ({
-    type: SET_SELECTED_RANGE,
-    payload: range,
-});
+export const accountGraphSuccess = createAction<GraphData>(ACCOUNT_GRAPH_SUCCESS);
+export const accountGraphFail = createAction<Omit<GraphData, 'data'>>(ACCOUNT_GRAPH_FAIL);
+export const accountGraphStart = createAction<Omit<GraphData, 'data'>>(ACCOUNT_GRAPH_START);
+export const aggregatedGraphStart = createAction(AGGREGATED_GRAPH_START);
+export const aggregatedGraphSuccess = createAction(AGGREGATED_GRAPH_SUCCESS);
+export const setSelectedRange = createAction<GraphRange>(SET_SELECTED_RANGE);
 
 /**
  * Fetch the account history (received, sent amounts, num of txs) for the given `startDate`, `endDate`.
@@ -91,10 +69,9 @@ export const setSelectedRange = (range: GraphRange): GraphAction => ({
  */
 export const fetchAccountGraphData =
     (account: Account, options: { abortSignal?: AbortSignal }) =>
-    async (dispatch: Dispatch<GraphAction>, getState: () => FetchAccountGraphDataThunkState) => {
-        dispatch({
-            type: ACCOUNT_GRAPH_START,
-            payload: {
+    async (dispatch: Dispatch, getState: () => FetchAccountGraphDataThunkState) => {
+        dispatch(
+            accountGraphStart({
                 account: {
                     deviceState: account.deviceState,
                     descriptor: account.descriptor,
@@ -102,8 +79,8 @@ export const fetchAccountGraphData =
                 },
                 isLoading: true,
                 error: false,
-            },
-        });
+            }),
+        );
 
         const baseCurrencyCode = selectBaseCurrency(getState());
 
@@ -158,9 +135,8 @@ export const fetchAccountGraphData =
             };
             const data = getData();
 
-            dispatch({
-                type: ACCOUNT_GRAPH_SUCCESS,
-                payload: {
+            dispatch(
+                accountGraphSuccess({
                     account: {
                         deviceState: account.deviceState,
                         descriptor: account.descriptor,
@@ -169,12 +145,11 @@ export const fetchAccountGraphData =
                     data,
                     isLoading: false,
                     error: false,
-                },
-            });
+                }),
+            );
         } else {
-            dispatch({
-                type: ACCOUNT_GRAPH_FAIL,
-                payload: {
+            dispatch(
+                accountGraphFail({
                     account: {
                         deviceState: account.deviceState,
                         descriptor: account.descriptor,
@@ -182,8 +157,8 @@ export const fetchAccountGraphData =
                     },
                     isLoading: false,
                     error: true,
-                },
-            });
+                }),
+            );
         }
     };
 
@@ -232,9 +207,7 @@ export const updateGraphData = createThunk<
     }
 
     try {
-        dispatch({
-            type: AGGREGATED_GRAPH_START,
-        });
+        dispatch(aggregatedGraphStart());
         const promises = accountsToFetch.map(a =>
             dispatch(
                 fetchAccountGraphData(a, {
@@ -246,14 +219,10 @@ export const updateGraphData = createThunk<
 
         abortSignal?.throwIfAborted();
 
-        dispatch({
-            type: AGGREGATED_GRAPH_SUCCESS,
-        });
+        dispatch(aggregatedGraphSuccess());
     } catch (error) {
         if (error.name === 'AbortError') {
-            dispatch({
-                type: AGGREGATED_GRAPH_SUCCESS,
-            });
+            dispatch(aggregatedGraphSuccess());
         }
     }
 });

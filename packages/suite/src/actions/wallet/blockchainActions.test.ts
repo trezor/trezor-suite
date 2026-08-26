@@ -169,18 +169,18 @@ describe('Blockchain Actions', () => {
                     expect(clearTimeoutSpy).toHaveBeenCalledWith(fixtures.MOCK_SYNC_TIMEOUT);
                 }
                 if (f.armsTimer) {
-                    expect(actions[0]?.payload.timeout).toBeDefined();
+                    expect(blockchainActions.synced.match(actions[0])).toBe(true);
+                    if (blockchainActions.synced.match(actions[0])) {
+                        expect(actions[0].payload.timeout).toBeDefined();
+                    }
                     // The armed timer must actually continue the chain, not just exist: firing
                     // it has to run syncAccountsWithBlockchainThunk, which re-arms via a second
                     // synced action.
                     await jest.advanceTimersByTimeAsync(DEFAULT_NETWORK_SYNC_INTERVAL);
                     const syncedActions = store
                         .getActions()
-                        .filter(
-                            a =>
-                                a.type === blockchainActions.synced.type &&
-                                a.payload.symbol === f.symbol,
-                        );
+                        .filter(blockchainActions.synced.match)
+                        .filter(a => a.payload.symbol === f.symbol);
                     expect(syncedActions.length).toBeGreaterThanOrEqual(2);
                 }
             } finally {

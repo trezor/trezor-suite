@@ -2,6 +2,7 @@ import {
     type Middleware as RTKMiddleware,
     type Reducer,
     type ReducersMapObject,
+    type UnknownAction,
     configureStore,
     isFulfilled,
     isPending,
@@ -10,7 +11,7 @@ import { type ThunkDispatch } from 'redux-thunk';
 
 import { type ExtraDependenciesPartial } from '@suite-common/redux-extra-dependencies';
 import { extraDependenciesCommonMock } from '@suite-common/redux-extra-dependencies/mocks';
-import { type AnyAction, createMiddleware } from '@suite-common/redux-utils';
+import { createMiddleware } from '@suite-common/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
 /*
@@ -18,10 +19,14 @@ import { mergeDeepObject } from '@trezor/utils';
  * dispatched everytime. This will filter out these action so we don't need to fix fixtures everywhere.
  * It should be used only in /packages/suite everything migrated to suite-common/ should be adjusted to work with new thunk API!!!
  */
-export const filterThunkActionTypes = (actions: AnyAction[]) =>
+export const filterThunkActionTypes = <Action extends UnknownAction>(actions: Action[]) =>
     actions.filter(action => !isPending(action) && !isFulfilled(action));
 
-type MockStoreConfig<S = any, A extends AnyAction = AnyAction, Extra = ExtraDependenciesPartial> = {
+type MockStoreConfig<
+    S = any,
+    A extends UnknownAction = UnknownAction,
+    Extra = ExtraDependenciesPartial,
+> = {
     middleware?: any[];
     extra?: Extra;
     // The third generic (PreloadedState) sits in a contravariant position in redux's Reducer
@@ -51,7 +56,7 @@ export const initPreloadedState = ({
  */
 export function configureMockStore<
     S = any,
-    A extends AnyAction = AnyAction,
+    A extends UnknownAction = UnknownAction,
     Extra = ExtraDependenciesPartial,
 >({
     middleware = [],
@@ -85,7 +90,7 @@ export function configureMockStore<
     return {
         ...store,
         dispatch: store.dispatch as ThunkDispatch<S, any, A>,
-        getActions: () => actions as AnyAction[],
+        getActions: () => actions,
 
         clearActions: () => {
             actions = [];

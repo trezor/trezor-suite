@@ -1,12 +1,16 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
 import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 
-import { PROTOCOL } from 'src/actions/suite/constants';
-import type { Action, AppState, Dispatch } from 'src/types/suite';
+import { saveCoinProtocol } from 'src/actions/suite/protocolActions';
+import type { AppState } from 'src/types/suite';
 
 // close custom protocol notification of given type
-const closeNotifications = (api: MiddlewareAPI<Dispatch, AppState>, type: ToastPayload['type']) => {
+const closeNotifications = (
+    api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>,
+    type: ToastPayload['type'],
+) => {
     api.getState()
         .notifications.filter(notification => notification.type === type && !notification.closed)
         .forEach(protocolNotification =>
@@ -15,17 +19,13 @@ const closeNotifications = (api: MiddlewareAPI<Dispatch, AppState>, type: ToastP
 };
 
 const protocolMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: Dispatch) =>
-    (action: Action): Action => {
+    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
+    (next: Dispatch<UnknownAction>) =>
+    (action: UnknownAction): UnknownAction => {
         next(action);
 
-        switch (action.type) {
-            case PROTOCOL.SAVE_COIN_PROTOCOL:
-                closeNotifications(api, 'coin-scheme-protocol');
-                break;
-            default:
-                break;
+        if (saveCoinProtocol.match(action)) {
+            closeNotifications(api, 'coin-scheme-protocol');
         }
 
         return action;

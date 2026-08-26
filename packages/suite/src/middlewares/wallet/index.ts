@@ -5,7 +5,10 @@ import { prepareDiscoveryMiddleware } from '@suite/discovery';
 import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
-import { prepareTokenDefinitionsMiddleware } from '@suite-common/token-definitions';
+import {
+    type TokenDefinitionsMiddlewareDeps,
+    prepareTokenDefinitionsMiddleware,
+} from '@suite-common/token-definitions';
 import {
     prepareAccountsMiddleware,
     prepareBlockchainMiddleware,
@@ -23,9 +26,10 @@ import { storageMiddleware } from './storageMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
 import walletMiddleware from './walletMiddleware';
 
-export type GetWalletMiddlewaresDeps = WalletConnectMiddlewareDeps & {
-    services: SuiteSyncDep;
-};
+export type GetWalletMiddlewaresDeps = WalletConnectMiddlewareDeps &
+    TokenDefinitionsMiddlewareDeps & {
+        services: SuiteSyncDep;
+    };
 
 export const getWalletMiddlewares = (
     getExtra: () => GetWalletMiddlewaresDeps | null,

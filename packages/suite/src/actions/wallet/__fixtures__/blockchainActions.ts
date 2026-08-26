@@ -1,4 +1,5 @@
-import { type AnyAction } from '@suite-common/redux-utils';
+import { type UnknownAction } from '@reduxjs/toolkit';
+
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type AccountsState,
@@ -255,7 +256,7 @@ type OnConnectFixture = {
     connect?: ConnectFixtures;
     initialState?: FixtureState;
     symbol: string;
-    actions: AnyAction[];
+    actions: UnknownAction[];
     blockchainEstimateFee: number;
     blockchainSubscribe: number;
 };
@@ -274,14 +275,14 @@ type OnDisconnectFixture = {
     keepsTimer?: boolean;
     // The seeded MOCK_SYNC_TIMEOUT handle must be cleared.
     clearsTimer?: boolean;
-    actions: AnyAction[];
+    actions: UnknownAction[];
 };
 
 type OnNotificationFixture = {
     description: string;
     initialState?: FixtureState;
     params: DeepPartial<BlockchainNotification>;
-    actions: AnyAction[];
+    actions: UnknownAction[];
     getAccountInfo: number;
 };
 
@@ -451,7 +452,7 @@ type InitFixture = {
         accounts?: DeepPartial<AccountsState>;
         blockchain?: DeepPartial<BlockchainState>;
     };
-    actions: AnyAction[];
+    actions: UnknownAction[];
     blockchainSetCustomBackend: number;
 };
 

@@ -1,3 +1,5 @@
+import { type UnknownAction } from 'redux';
+
 import {
     type AuthenticityChecksRootState,
     selectShouldDisplayDeviceCompromised,
@@ -6,7 +8,7 @@ import { type LocksRootState } from '@suite/locks';
 import { type RouterRootState, routerAppChanged } from '@suite/router';
 import { connectPopupCallThunkInner } from '@suite-common/connect-popup';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type ThpRootState, selectThpAutoconnectStep, thpActions } from '@suite-common/thp';
 import {
     type WalletCoreCompoundRootState,
@@ -30,9 +32,9 @@ type DiscoveryMiddlewareState = AuthenticityChecksRootState &
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     void,
-    AnyAction,
+    UnknownAction,
     DiscoveryMiddlewareState
->(async (action, { dispatch, next, getState }): Promise<AnyAction> => {
+>(async (action, { dispatch, next, getState }): Promise<UnknownAction> => {
     // Pass action to next middleware, meaning that the code below runs *only after* the action has been completely processed in Redux.
     // Note: TS says next(action) generally isn't async, but the action may return anything; sometimes it's a Promise → needs to be awaited
     await next(action);

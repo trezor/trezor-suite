@@ -7,7 +7,7 @@ import {
     prepareInitialState,
 } from '@suite-common/bluetooth';
 import { deviceActions } from '@suite-common/device';
-import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 
@@ -88,7 +88,7 @@ const bluetoothSlice = createSliceWithExtraDeps({
                 });
             })
             .addDefaultCase((state, action) => {
-                commonReducer(state, action as AnyAction);
+                commonReducer(state, action);
             });
     },
 });

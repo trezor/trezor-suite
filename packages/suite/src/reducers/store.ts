@@ -50,7 +50,6 @@ import {
     globalSendReceiveFiltersReducer,
 } from 'src/slices/wallet/globalSendReceiveFilters';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
-import { type Action } from 'src/types/suite';
 
 import { type BioAuthState, prepareBioAuthReducer } from './bioAuth';
 import { type DesktopState, desktopReducer } from './desktop';
@@ -175,7 +174,7 @@ export type SuiteStoreDeps = HistoryDep &
     GetTransportsFactoriesDep;
 
 export type SuiteStore = ReturnType<
-    typeof castExtraStore<SuiteExtra, EnhancedStore<AppState, Action | UnknownAction>>
+    typeof castExtraStore<SuiteExtra, EnhancedStore<AppState, UnknownAction>>
 > & {
     services: SuiteServices;
 };

@@ -7,7 +7,7 @@ import { useDispatch } from 'src/hooks/suite';
 export const AutoEjectRenderer = ({ render: View, notification }: NotificationRendererProps) => {
     const dispatch = useDispatch();
 
-    const onCancel = () => dispatch(resetProtocol);
+    const onCancel = () => dispatch(resetProtocol());
 
     const handleActionClick = () => {
         dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.AutoEject }));

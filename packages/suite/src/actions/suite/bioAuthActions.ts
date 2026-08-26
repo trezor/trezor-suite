@@ -25,5 +25,3 @@ export const bioAuthActions = {
     setIsBioAuthValidationRequired,
     setCancelled,
 } as const;
-
-export type BioAuthAction = ReturnType<(typeof bioAuthActions)[keyof typeof bioAuthActions]>;

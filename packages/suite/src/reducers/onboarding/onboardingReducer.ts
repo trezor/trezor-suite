@@ -1,19 +1,26 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
+import { deviceActions } from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
-import { DEVICE } from '@trezor/connect';
 
-import { ONBOARDING } from 'src/actions/onboarding/constants';
+import {
+    addPath,
+    enableOnboardingReducer,
+    goToStep,
+    removePath,
+    resetOnboarding,
+    updateAnalytics,
+    updateBackupMedium,
+    updateBackupType,
+} from 'src/actions/onboarding/onboardingActions';
 import * as STEP from 'src/constants/onboarding/steps';
-import type { AnyPath, AnyStepId } from 'src/types/onboarding';
-import { type Action } from 'src/types/suite';
+import type { AnyPath, AnyStepId, BackupMedium } from 'src/types/onboarding';
 
 export interface OnboardingRootState {
     onboarding: OnboardingState;
 }
-
-export type BackupMedium = 'nfc' | 'wordlist';
 
 export interface OnboardingState {
     backupType: BackupType;
@@ -40,7 +47,7 @@ const initialState: OnboardingState = {
     backupMedium: null,
 };
 
-const addPath = (path: AnyPath, state: OnboardingState) => {
+const addPathToState = (path: AnyPath, state: OnboardingState) => {
     if (!state.path.includes(path)) {
         return [...state.path, path];
     }
@@ -48,57 +55,43 @@ const addPath = (path: AnyPath, state: OnboardingState) => {
     return [...state.path];
 };
 
-const removePath = (paths: AnyPath[], state: OnboardingState) =>
+const removePathsFromState = (paths: AnyPath[], state: OnboardingState) =>
     state.path.filter(p => !paths.includes(p));
 
-const ALLOWED_ACTION_TYPES = new Set<Action['type']>([
-    ONBOARDING.RESET_ONBOARDING,
-    ONBOARDING.ENABLE_ONBOARDING_REDUCER,
-    ONBOARDING.ANALYTICS,
+const ALLOWED_ACTION_TYPES = new Set<UnknownAction['type']>([
+    resetOnboarding.type,
+    enableOnboardingReducer.type,
+    updateAnalytics.type,
 ]);
 
-const onboarding = (state: OnboardingState = initialState, action: Action) => {
+const onboarding = (state: OnboardingState = initialState, action: UnknownAction) => {
     if (!state.isActive && !ALLOWED_ACTION_TYPES.has(action.type)) {
         return state;
     }
 
     return produce(state, draft => {
-        switch (action.type) {
-            case ONBOARDING.ENABLE_ONBOARDING_REDUCER:
-                draft.isActive = action.payload;
-                break;
-            case ONBOARDING.SET_STEP_ACTIVE:
-                draft.activeStepId = action.stepId;
-                break;
-            case ONBOARDING.ADD_PATH:
-                draft.path = addPath(action.payload, state);
-                break;
-            case ONBOARDING.REMOVE_PATH:
-                draft.path = removePath(action.payload, state);
-                break;
-            case DEVICE.DISCONNECT:
-                draft.prevDeviceId = action.payload.id ?? null;
-                break;
-            case ONBOARDING.ANALYTICS:
-                draft.onboardingAnalytics = { ...state.onboardingAnalytics, ...action.payload };
-                break;
-            case ONBOARDING.SELECT_BACKUP_TYPE:
-                draft.backupType = action.payload;
-                break;
-            case ONBOARDING.SELECT_BACKUP_MEDIUM:
-                draft.backupMedium = action.payload;
-                break;
-
-            case ONBOARDING.RESET_ONBOARDING:
-                return initialState;
-            //  no default
+        if (enableOnboardingReducer.match(action)) {
+            draft.isActive = action.payload;
+        } else if (goToStep.match(action)) {
+            draft.activeStepId = action.payload;
+        } else if (addPath.match(action)) {
+            draft.path = addPathToState(action.payload, state);
+        } else if (removePath.match(action)) {
+            draft.path = removePathsFromState(action.payload, state);
+        } else if (deviceActions.deviceDisconnect.match(action)) {
+            draft.prevDeviceId = action.payload.id ?? null;
+        } else if (updateAnalytics.match(action)) {
+            draft.onboardingAnalytics = { ...state.onboardingAnalytics, ...action.payload };
+        } else if (updateBackupType.match(action)) {
+            draft.backupType = action.payload;
+        } else if (updateBackupMedium.match(action)) {
+            draft.backupMedium = action.payload;
+        } else if (resetOnboarding.match(action)) {
+            return initialState;
         }
     });
 };
 
 export const selectIsOnboardingActive = (state: OnboardingRootState) => state.onboarding.isActive;
-
-export const selectOnboardingAnalytics = (state: OnboardingRootState) =>
-    state.onboarding.onboardingAnalytics;
 
 export default onboarding;

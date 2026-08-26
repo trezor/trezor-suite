@@ -1,6 +1,7 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
+
 import { createMiddlewareWithExtraDeps } from './createMiddleware';
 import { createThunk } from './createThunk';
-import { type AnyAction } from './types';
 
 type SelectedExtraDependencies = {
     services: {
@@ -28,9 +29,9 @@ createMiddlewareWithExtraDeps(action => action);
 createMiddlewareWithExtraDeps<void>(action => action);
 
 // @ts-expect-error State type must always be specified explicitly.
-createMiddlewareWithExtraDeps<void, AnyAction>(action => action);
+createMiddlewareWithExtraDeps<void, UnknownAction>(action => action);
 
-createMiddlewareWithExtraDeps<void, AnyAction, void>((action, api) => {
+createMiddlewareWithExtraDeps<void, UnknownAction, void>((action, api) => {
     // @ts-expect-error Dependency-free middleware cannot access injected dependencies.
     void api.extra;
 
@@ -43,16 +44,18 @@ createMiddlewareWithExtraDeps<void, AnyAction, void>((action, api) => {
     return action;
 })(() => ({}));
 
-createMiddlewareWithExtraDeps<SelectedExtraDependencies, AnyAction, void>((action, { extra }) => {
-    extra.services.selectedDependency();
+createMiddlewareWithExtraDeps<SelectedExtraDependencies, UnknownAction, void>(
+    (action, { extra }) => {
+        extra.services.selectedDependency();
 
-    // @ts-expect-error Middleware can access only its explicitly declared dependencies.
-    void extra.services.unselectedDependency;
+        // @ts-expect-error Middleware can access only its explicitly declared dependencies.
+        void extra.services.unselectedDependency;
 
-    return action;
-})(() => ({ services: { selectedDependency: () => {} } }));
+        return action;
+    },
+)(() => ({ services: { selectedDependency: () => {} } }));
 
-createMiddlewareWithExtraDeps<SelectedExtraDependencies, AnyAction, SelectedState>(
+createMiddlewareWithExtraDeps<SelectedExtraDependencies, UnknownAction, SelectedState>(
     (action, { getState }) => {
         const getSelectedState: () => SelectedState = getState;
         const { selectedState } = getSelectedState();

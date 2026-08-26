@@ -1,7 +1,7 @@
 import { AsyncThunkAction, ThunkAction } from '@reduxjs/toolkit';
 
 declare module 'redux' {
-    export interface Dispatch<A extends Action = AnyAction> {
+    export interface Dispatch<A extends Action = UnknownAction> {
         <TThunk extends AsyncThunkAction<any, any, any>>(thunk: TThunk): ReturnType<TThunk>;
 
         <ReturnType = any, State = any, ExtraThunkArg = any>(

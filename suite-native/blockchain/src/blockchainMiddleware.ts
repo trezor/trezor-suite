@@ -6,7 +6,10 @@ import {
     selectNetworksWithPendingTxs,
     setCustomBackendThunk,
 } from '@suite-common/wallet-core';
-import { BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS } from '@trezor/connect';
+import {
+    BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
+    isBlockchainEventOfType,
+} from '@trezor/connect';
 
 import {
     onBlockchainConnectThunk,
@@ -16,29 +19,19 @@ import {
 
 // Be very careful when adding new stuff here, it could affect performance a lot on mobile
 export const blockchainMiddleware = createMiddleware((action, { dispatch, next, getState }) => {
-    switch (action.type) {
-        case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT:
-            dispatch(onBlockchainConnectThunk({ symbol: action.payload.coin.shortcut }));
+    if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT)) {
+        dispatch(onBlockchainConnectThunk({ symbol: action.payload.coin.shortcut }));
+    } else if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK)) {
+        const networksWithPendingTransactions = selectNetworksWithPendingTxs(getState());
+        const symbol = action.payload.coin.shortcut.toLowerCase();
 
-            break;
-        case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK: {
-            const networksWithPendingTransactions = selectNetworksWithPendingTxs(getState());
-            const symbol = action.payload.coin.shortcut.toLowerCase();
-
-            if (isNetworkSymbol(symbol) && networksWithPendingTransactions.has(symbol)) {
-                dispatch(syncAccountsWithBlockchainThunk({ symbol }));
-            }
-
-            break;
+        if (isNetworkSymbol(symbol) && networksWithPendingTransactions.has(symbol)) {
+            dispatch(syncAccountsWithBlockchainThunk({ symbol }));
         }
-        case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.NOTIFICATION:
-            dispatch(onBlockchainNotificationThunk(action.payload));
-            break;
-        case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR:
-            dispatch(onBlockchainDisconnectThunk(action.payload));
-            break;
-        default:
-            break;
+    } else if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.NOTIFICATION)) {
+        dispatch(onBlockchainNotificationThunk(action.payload));
+    } else if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR)) {
+        dispatch(onBlockchainDisconnectThunk(action.payload));
     }
 
     next(action);

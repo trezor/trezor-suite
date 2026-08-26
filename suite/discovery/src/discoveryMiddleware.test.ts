@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { type UnknownAction, combineReducers } from 'redux';
 
 import { type LocksState, locksInitialState, locksReducer } from '@suite/locks';
 import {
@@ -25,7 +25,6 @@ import {
     messageSystemInitialState,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
-import { type AnyAction } from '@suite-common/redux-utils';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
@@ -74,7 +73,7 @@ type FixtureState = {
 };
 
 type FixtureStep = {
-    action: AnyAction;
+    action: UnknownAction;
     expectedCallCount: number;
 };
 

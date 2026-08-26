@@ -1,4 +1,4 @@
-import { type AnyAction, combineReducers } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
@@ -20,7 +20,7 @@ describe('Message system reducer', () => {
                 preloadedState: { messageSystem: f.initialState },
             });
             f.actions.forEach(a => {
-                store.dispatch(a as AnyAction);
+                store.dispatch(a as UnknownAction);
             });
             expect(store.getState().messageSystem).toEqual(f.result);
         });

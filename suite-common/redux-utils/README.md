@@ -136,7 +136,7 @@ type SomeMiddlewareDeps = {
 
 export const prepareSomeMiddleware = createMiddlewareWithExtraDeps<
     SomeMiddlewareDeps,
-    AnyAction,
+    UnknownAction,
     SomeMiddlewareState
 >((action, { getState, extra, next }) => {
     const {
@@ -157,9 +157,11 @@ All three types are mandatory. Use `void` explicitly when a middleware has no de
 not read state:
 
 ```typescript
-export const prepareDependencyFreeMiddleware = createMiddlewareWithExtraDeps<void, AnyAction, void>(
-    (action, { next }) => next(action),
-);
+export const prepareDependencyFreeMiddleware = createMiddlewareWithExtraDeps<
+    void,
+    UnknownAction,
+    void
+>((action, { next }) => next(action));
 ```
 
 Inject the dependencies when constructing the middleware list:

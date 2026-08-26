@@ -1,4 +1,4 @@
-import { type Reducer, combineReducers, createReducer } from '@reduxjs/toolkit';
+import { type Reducer, type UnknownAction, combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { torReducer } from '@suite/tor';
 import { prepareDeviceReducer } from '@suite-common/device';
@@ -8,7 +8,6 @@ import {
     getValidExperimentIds,
     getValidMessages,
 } from '@suite-common/message-system/src/messageSystemUtils';
-import { type AnyAction } from '@suite-common/redux-utils';
 import { type Action } from '@suite-common/suite-types';
 import { configureMockStore } from '@suite-common/test-utils';
 
@@ -26,7 +25,7 @@ jest.mock('@suite-common/message-system/src/messageSystemUtils', () => ({
 }));
 const messageSystemReducer: Reducer<
     ReturnType<ReturnType<typeof prepareMessageSystemReducer>>,
-    AnyAction
+    UnknownAction
 > = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 

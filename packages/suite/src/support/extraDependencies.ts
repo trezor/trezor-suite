@@ -62,6 +62,7 @@ import {
 import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
 import { type ThpHostNameDep } from '@suite-common/thp';
 import {
+    type TokenDefinitionsMiddlewareDeps,
     type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
@@ -75,6 +76,7 @@ import {
     type SendState,
     type TransactionsState,
     type WalletSettingsState,
+    changeNetworks,
     selectAccountsByDeviceState,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
@@ -123,7 +125,8 @@ export type SuiteServices = CommonServices &
     SuiteRouterHistoryDep &
     TransportsDep;
 
-export type SuiteExtra = ExtraDependenciesStatic & { services: SuiteServices };
+export type SuiteExtra = ExtraDependenciesStatic &
+    TokenDefinitionsMiddlewareDeps & { services: SuiteServices };
 
 export const selectSuiteServices = (services: any): SuiteServices => services;
 
@@ -269,7 +272,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     };
 };
 
-export const extraDependencies: ExtraDependenciesStatic = {
+export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddlewareDeps = {
     thunks: {
         initMetadata: metadataLabelingActions.init,
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
@@ -281,6 +284,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
         lockDevice,
         onModalCancel: closeModal,
         openModal,
+        changeNetworks,
     },
     actionTypes: {
         storageLoad: '@storage/load',

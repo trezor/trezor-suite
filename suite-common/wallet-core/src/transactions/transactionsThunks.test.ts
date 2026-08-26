@@ -35,7 +35,7 @@ describe('addFakePendingCardanoTxThunk', () => {
 
         const addTransactionAction = store
             .getActions()
-            .find(action => action.type === transactionsActions.addTransaction.type);
+            .find(transactionsActions.addTransaction.match);
 
         expect(addTransactionAction?.payload.transactions).toEqual([
             expect.objectContaining({

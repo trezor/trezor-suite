@@ -1,4 +1,4 @@
-import { type ThunkDispatch } from '@reduxjs/toolkit';
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep } from '@suite-common/analytics';
 import {
@@ -11,7 +11,7 @@ import {
     shouldDeviceBeRemembered,
 } from '@suite-common/device';
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
-import { type AnyAction, type SuiteCompatibleThunk, createThunk } from '@suite-common/redux-utils';
+import { type SuiteCompatibleThunk, createThunk } from '@suite-common/redux-utils';
 import {
     type AcquiredDevice,
     type AuthorizedDevice,
@@ -271,7 +271,11 @@ const completeDiscovery = (
         getState,
     }: {
         getState: () => DiscoveryReportingThunkState;
-        dispatch: ThunkDispatch<DiscoveryReportingThunkState, DiscoveryReportingDeps, AnyAction>;
+        dispatch: ThunkDispatch<
+            DiscoveryReportingThunkState,
+            DiscoveryReportingDeps,
+            UnknownAction
+        >;
         fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
     },
 ) => {

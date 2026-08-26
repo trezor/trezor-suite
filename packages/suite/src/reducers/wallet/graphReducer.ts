@@ -1,12 +1,19 @@
+import type { UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
 import { accountsActions } from '@suite-common/wallet-core';
 
-import { STORAGE } from 'src/actions/suite/constants';
-import { GRAPH } from 'src/actions/wallet/constants';
+import { storageLoad } from 'src/actions/suite/storageLifecycleActions';
+import {
+    accountGraphFail,
+    accountGraphStart,
+    accountGraphSuccess,
+    aggregatedGraphStart,
+    aggregatedGraphSuccess,
+    setSelectedRange,
+} from 'src/actions/wallet/graphActions';
 import { SETTINGS } from 'src/config/suite';
-import { type Action as SuiteAction } from 'src/types/suite';
-import { type Account, type WalletAction } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 import { type AccountIdentifier, type GraphData, type GraphRange } from 'src/types/wallet/graph';
 
 export interface GraphState {
@@ -104,40 +111,22 @@ const remove = (draft: GraphState, accounts: Account[]) => {
     updateError(draft);
 };
 
-const graphReducer = (
-    state: GraphState = initialState,
-    action: WalletAction | SuiteAction,
-): GraphState =>
+const graphReducer = (state: GraphState = initialState, action: UnknownAction): GraphState =>
     produce(state, draft => {
-        switch (action.type) {
-            case STORAGE.LOAD:
-                loadFromStorage(draft, action.payload.graph);
-                break;
-            case GRAPH.ACCOUNT_GRAPH_START:
-                updateProgress(draft, action.payload);
-                break;
-            case GRAPH.ACCOUNT_GRAPH_SUCCESS:
-                update(draft, action.payload);
-                break;
-            case GRAPH.ACCOUNT_GRAPH_FAIL:
-                updateProgress(draft, action.payload);
-                break;
-            case GRAPH.AGGREGATED_GRAPH_START:
-                draft.isLoading = true;
-                break;
-            case GRAPH.AGGREGATED_GRAPH_SUCCESS:
-                draft.isLoading = false;
-                break;
-            case GRAPH.SET_SELECTED_RANGE:
-                draft.selectedRange = action.payload;
-                break;
-            case accountsActions.removeAccount.type: {
-                if (accountsActions.removeAccount.match(action)) {
-                    remove(draft, action.payload);
-                }
-                break;
-            }
-            // no default
+        if (storageLoad.match(action)) {
+            loadFromStorage(draft, action.payload.graph);
+        } else if (accountGraphStart.match(action) || accountGraphFail.match(action)) {
+            updateProgress(draft, action.payload);
+        } else if (accountGraphSuccess.match(action)) {
+            update(draft, action.payload);
+        } else if (aggregatedGraphStart.match(action)) {
+            draft.isLoading = true;
+        } else if (aggregatedGraphSuccess.match(action)) {
+            draft.isLoading = false;
+        } else if (setSelectedRange.match(action)) {
+            draft.selectedRange = action.payload;
+        } else if (accountsActions.removeAccount.match(action)) {
+            remove(draft, action.payload);
         }
     });
 
