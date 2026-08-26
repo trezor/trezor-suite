@@ -79,6 +79,7 @@ export type YieldPendingTransactionState = {
     fee?: string;
     submittedAt?: number;
     isAmountUnlimited?: boolean;
+    nonce?: number;
 };
 
 export type YieldFlowCompleteRewardItem = {

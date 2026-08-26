@@ -1,10 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type WrappedNativeFlowType,
-    type WrappedNativePendingTxStatus,
-} from '@suite-common/wallet-core';
+import { type EvmPendingTxStatus, type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useWrappedNativeFlowReport } from './useWrappedNativeFlowReport';
@@ -13,7 +10,7 @@ import { getWrappedNativeResolutionPayload } from '../utils/wrappedNativeAnalyti
 type UseWrappedNativeFlowResolutionAnalyticsParams = {
     flowType: WrappedNativeFlowType;
     networkSymbol: NetworkSymbol | undefined;
-    status: WrappedNativePendingTxStatus | null;
+    status: EvmPendingTxStatus | null;
     txid: string | null;
 };
 

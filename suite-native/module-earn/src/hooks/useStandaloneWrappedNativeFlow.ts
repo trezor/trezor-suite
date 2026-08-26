@@ -5,7 +5,7 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import {
     type WrappedNativeFlowType,
     type YieldPendingTransactionState,
-    useWrappedNativePendingTx,
+    useEvmPendingTxStatus,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -57,7 +57,11 @@ export const useStandaloneWrappedNativeFlow = ({
         networkSymbol,
     });
 
-    const pendingStatus = useWrappedNativePendingTx(account, pendingParam?.txid ?? null, flowType);
+    const { status: pendingStatus } = useEvmPendingTxStatus(
+        account,
+        pendingParam?.txid ?? null,
+        flowType,
+    );
 
     useWrappedNativeFlowResolutionAnalytics({
         flowType,

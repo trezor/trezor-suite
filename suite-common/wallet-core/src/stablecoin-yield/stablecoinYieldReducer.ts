@@ -680,6 +680,25 @@ const stablecoinYieldSlice = createSlice({
                     action.payload.receiptAmount ?? session.action.pendingReceiptAmount;
             });
         },
+        /**
+         * Records the nonce of the pending transaction once the account lists it, so the session
+         * can follow an RBF replacement even after the original transaction is dropped from the
+         * account and the page tracking it has been left and reopened.
+         */
+        setPendingTxNonce(
+            state: StablecoinYieldState,
+            action: PayloadAction<
+                StablecoinYieldSessionActionPayload & { txid: string; nonce: number }
+            >,
+        ) {
+            withSession(state, action.payload, session => {
+                if (session.action.pendingTransaction?.txid !== action.payload.txid) {
+                    return;
+                }
+
+                session.action.pendingTransaction.nonce = action.payload.nonce;
+            });
+        },
         completeAction(
             state: StablecoinYieldState,
             action: PayloadAction<
