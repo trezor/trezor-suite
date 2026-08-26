@@ -63,9 +63,9 @@ export const ProviderListItem = <T extends TradingTradeType>({
                         paddingBottom="sp2"
                         spacing="sp4"
                     >
-                        <HStack alignItems="center" flex={1} flexShrink={1} spacing="sp12">
+                        <HStack alignItems="center" flex={1} flexShrink={1} spacing="sp8">
                             <ProviderLogo logo={logo} size="headline-sm" />
-                            <VStack spacing="sp2" flex={1} flexShrink={1}>
+                            <VStack spacing={0} flex={1} flexShrink={1}>
                                 <Text
                                     variant="body-md"
                                     color="contentPrimary"

@@ -3,6 +3,7 @@ import { LinearTransition } from 'react-native-reanimated';
 
 import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { AnimatedBox, Card, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { type NativeTypographyStyle } from '@trezor/theme';
 
 import { EmojiRatingButton } from './EmojiRatingButton';
 import { FeedbackFormSheet } from './FeedbackFormSheet';
@@ -12,6 +13,7 @@ type FeedbackCardView = 'form' | 'success';
 
 export type FeedbackCardProps = {
     heading: ReactNode;
+    headingVariant?: NativeTypographyStyle;
     description?: ReactNode;
     submitLabel: ReactNode;
     successHeading: ReactNode;
@@ -24,6 +26,7 @@ export type FeedbackCardProps = {
 
 export const FeedbackCard = ({
     heading,
+    headingVariant = 'headline-sm',
     description,
     submitLabel,
     successHeading,
@@ -74,7 +77,7 @@ export const FeedbackCard = ({
                     />
                 ) : (
                     <VStack spacing="sp16">
-                        <Text variant="headline-sm">{heading}</Text>
+                        <Text variant={headingVariant}>{heading}</Text>
                         <HStack spacing="sp8" justifyContent="space-between">
                             {ratingOptions.map(({ id, emoji }) => (
                                 <EmojiRatingButton

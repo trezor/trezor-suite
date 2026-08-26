@@ -7,12 +7,15 @@ import { selectTradingBuyIsLoading } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
+import {
+    OverviewRow,
+    OverviewValueSkeleton,
+    PaymentMethodDisplay,
+} from '@suite-native/trading-atoms';
 import { selectBuyBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
-import { PaymentMethodPickerValue } from '../general/PaymentMethodPickerValue';
 import { PaymentMethodSheet } from '../general/PaymentMethodSheet/PaymentMethodSheet';
 
 const PAYMENT_METHOD_PICKER_TEST_ID = '@trading/buy/payment-method-picker';
@@ -34,7 +37,7 @@ const BuyPaymentMethodPickerRight = ({
 
     if (selectedValue) {
         return (
-            <PaymentMethodPickerValue
+            <PaymentMethodDisplay
                 paymentMethod={selectedValue.paymentMethod}
                 paymentMethodName={selectedValue.paymentMethodName}
                 accessibilityLabel={translate('moduleTrading.tradingScreen.selectedPaymentMethod')}

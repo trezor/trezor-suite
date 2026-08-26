@@ -12,7 +12,7 @@ export type FiatCurrencyIconProps = {
 const fiatIconSizes: Record<FiatCurrencyIconProps['size'], RoundedIconSize> = {
     extraSmall: 20,
     small: 32,
-    medium: 48,
+    medium: 40,
 };
 
 export const FiatCurrencyIcon = ({ size, value }: FiatCurrencyIconProps) => {

@@ -7,9 +7,8 @@ import {
     type TradingRootState as TradingRootStateCommon,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
+import { OverviewRow, OverviewValueSkeleton, ProviderDisplay } from '@suite-native/trading-atoms';
 
 type ExchangeProviderPickerRightProps = {
     isLoading: boolean;
@@ -40,16 +39,11 @@ const ExchangeProviderPickerRight = ({
     const { companyName, logo } = provider;
 
     return (
-        <HStack>
-            <ProviderLogo logo={logo} />
-            <Text
-                color="contentPrimary"
-                variant="body-sm"
-                accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
-            >
-                {companyName}
-            </Text>
-        </HStack>
+        <ProviderDisplay
+            accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
+            logo={logo}
+            providerName={companyName}
+        />
     );
 };
 
