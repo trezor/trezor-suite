@@ -12,7 +12,7 @@ import type { Address, Signature, SolanaTokenAccountInfo } from '@trezor/network
 import { createDeferred, isNotNullOrUndefined } from '@trezor/utils';
 
 import type { Request } from '../types';
-import { fetchTransactionPage, getAllSignatures, isValidTransaction } from '../utils';
+import { fetchTransactionPage, getSignaturesForAddresses, isValidTransaction } from '../utils';
 
 export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
@@ -66,11 +66,7 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
             details === 'txs' || details === 'txids'
                 ? Array.from(
                       new Set(
-                          (
-                              await Promise.all(
-                                  allAccounts.map(account => getAllSignatures(api, account)),
-                              )
-                          )
+                          (await getSignaturesForAddresses(api, allAccounts, request.state.cache))
                               .flat()
                               .sort((a, b) => Number(b.slot - a.slot))
                               .map(it => it.signature),

@@ -6,7 +6,7 @@ import type {
     SolanaAPI,
     SolanaValidParsedTxWithMeta,
 } from '@trezor/network-solana/types';
-import { isNotNullOrUndefined } from '@trezor/utils';
+import { type Cache, isNotNullOrUndefined } from '@trezor/utils';
 
 import type { SignatureWithSlot } from './types';
 
@@ -39,6 +39,70 @@ export const getAllSignatures = async (
     }
 
     return allSignatures;
+};
+
+// getMultipleAccounts accepts at most 100 addresses per call
+const MULTIPLE_ACCOUNTS_LIMIT = 100;
+// Bounds how long an unchanged address may reuse its cached signatures. A transaction can mention
+// an address without altering its state, and only a refetch discovers those.
+const SIGNATURES_CACHE_TTL = 10 * 60 * 1000;
+// Unfunded addresses do not exist on chain. Cannot collide with a real fingerprint, which always
+// contains a separator.
+const NONEXISTENT_ACCOUNT_FINGERPRINT = 'nonexistent';
+
+type CachedSignatures = { fingerprint: string; signatures: SignatureWithSlot[] };
+
+const getAccountFingerprints = async (api: SolanaAPI, descriptors: string[]) => {
+    const { address } = await solana();
+    const fingerprints = new Map<string, string>();
+
+    for (let i = 0; i < descriptors.length; i += MULTIPLE_ACCOUNTS_LIMIT) {
+        const chunk = descriptors.slice(i, i + MULTIPLE_ACCOUNTS_LIMIT);
+        const { value } = await api.rpc
+            .getMultipleAccounts(chunk.map(address), { encoding: 'base64' })
+            .send();
+
+        chunk.forEach((descriptor, index) => {
+            const account = value[index];
+            fingerprints.set(
+                descriptor,
+                account
+                    ? `${account.lamports}:${account.data[0]}`
+                    : NONEXISTENT_ACCOUNT_FINGERPRINT,
+            );
+        });
+    }
+
+    return fingerprints;
+};
+
+// A single getMultipleAccounts call reveals which addresses moved, so the signature fan-out — by
+// far the most expensive part of a sync — only runs for those.
+export const getSignaturesForAddresses = async (
+    api: SolanaAPI,
+    descriptors: string[],
+    cache: Cache,
+) => {
+    const fingerprints = await getAccountFingerprints(api, descriptors);
+
+    return Promise.all(
+        descriptors.map(async descriptor => {
+            const fingerprint = fingerprints.get(descriptor);
+            const cacheKey = `signatures/${descriptor}`;
+            const cached: CachedSignatures | undefined = cache.get(cacheKey);
+
+            if (fingerprint && cached?.fingerprint === fingerprint) {
+                return cached.signatures;
+            }
+
+            const signatures = await getAllSignatures(api, descriptor);
+            if (fingerprint) {
+                cache.set(cacheKey, { fingerprint, signatures }, SIGNATURES_CACHE_TTL);
+            }
+
+            return signatures;
+        }),
+    );
 };
 
 export const fetchTransactionPage = async (
