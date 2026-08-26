@@ -51,6 +51,7 @@ export const ProviderSheet = <
         <BottomSheetSectionList<T, QuotesCategory>
             isVisible={isVisible}
             onClose={onClose}
+            scrollResetKey={selectedFilter}
             renderItem={(item, _config, { closeSheet }) => (
                 <ProviderListItem
                     onPress={quote => {

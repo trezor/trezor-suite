@@ -5,8 +5,36 @@ import { useTranslate } from '@suite-native/intl';
 import type { FilterItem, SectionListData } from '@suite-native/trading-atoms';
 import { type QuotesByCategories, type QuotesCategory } from '@suite-native/trading-types';
 import { exhaustive } from '@trezor/type-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 export type FilterValue = 'all' | 'cex' | 'dex';
+
+const EXCHANGE_RATE_CATEGORIES: Exclude<QuotesCategory, 'dex'>[] = ['float', 'fixed'];
+
+const isDexQuote = <T extends TradingTradeType>(quote: T): boolean =>
+    'isDex' in quote && quote.isDex === true;
+
+const getQuoteRate = <T extends TradingTradeType>(quote: T): number =>
+    'rate' in quote && typeof quote.rate === 'number' ? quote.rate : 0;
+
+const sortByBestOffer = <T extends TradingTradeType>(items: T[]): T[] =>
+    [...items].sort((a, b) => getQuoteRate(b) - getQuoteRate(a));
+
+const filterQuotesByProviderType = <T extends TradingTradeType>(
+    items: T[],
+    filter: FilterValue,
+): T[] => {
+    switch (filter) {
+        case 'all':
+            return items;
+        case 'cex':
+            return items.filter(item => !isDexQuote(item));
+        case 'dex':
+            return items.filter(item => isDexQuote(item));
+        default:
+            return exhaustive(filter);
+    }
+};
 
 export const useProviderFilters = <T extends TradingTradeType>(
     quotes: QuotesByCategories<T>,
@@ -17,41 +45,46 @@ export const useProviderFilters = <T extends TradingTradeType>(
 
     const filterItems: FilterItem<FilterValue>[] = useMemo(
         () => [
-            { label: translate('moduleTrading.providerSheet.filters.all'), value: 'all' },
-            { label: translate('moduleTrading.providerSheet.filters.cex'), value: 'cex' },
-            { label: translate('moduleTrading.providerSheet.filters.dex'), value: 'dex' },
+            {
+                label: translate('moduleTrading.providerSheet.filters.allProviders'),
+                value: 'all',
+            },
+            {
+                label: translate('moduleTrading.providerSheet.filters.centralized'),
+                value: 'cex',
+            },
+            {
+                label: translate('moduleTrading.providerSheet.filters.decentralized'),
+                value: 'dex',
+            },
         ],
         [translate],
     );
 
     const filteredSections: SectionListData<T, QuotesCategory> = useMemo(() => {
-        const allSections = Object.entries(quotes).map(([category, items]) => {
-            const typedCategory = category as QuotesCategory;
-
-            return {
+        if (!shouldShowFilters) {
+            return typedObjectKeys(quotes).map(category => ({
                 key: category,
-                data: items,
+                data: quotes[category] ?? [],
                 label: '',
-                sectionData: typedCategory,
-            };
-        });
-
-        if (!shouldShowFilters || selectedFilter === 'all') {
-            return allSections;
+                sectionData: category,
+            }));
         }
 
-        switch (selectedFilter) {
-            case 'cex':
-                return allSections.filter(
-                    section => section.key === 'fixed' || section.key === 'float',
-                );
+        // DEX quotes are shown inside fixed/float rate sections (no dedicated DEX section).
+        const quotesByRateCategory: Record<'fixed' | 'float', T[]> = {
+            fixed: quotes.fixed ?? [],
+            float: [...(quotes.float ?? []), ...(quotes.dex ?? [])],
+        };
 
-            case 'dex':
-                return allSections.filter(section => section.key === 'dex');
-
-            default:
-                return exhaustive(selectedFilter, 'Unexpected filter value');
-        }
+        return EXCHANGE_RATE_CATEGORIES.map(category => ({
+            key: category,
+            data: sortByBestOffer(
+                filterQuotesByProviderType(quotesByRateCategory[category], selectedFilter),
+            ),
+            label: '',
+            sectionData: category,
+        }));
     }, [quotes, selectedFilter, shouldShowFilters]);
 
     return {
