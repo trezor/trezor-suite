@@ -12,9 +12,9 @@ import {
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
+import { AnimatedBox } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
+import { OverviewRow, OverviewValueSkeleton, ProviderDisplay } from '@suite-native/trading-atoms';
 import {
     type TradingRootState,
     selectBuyQuotesByPaymentMethodNative,
@@ -47,17 +47,12 @@ const BuyProviderPickerRight = ({ isLoading, selectedValue }: BuyProviderPickerR
     const { companyName, logo } = provider;
 
     return (
-        <HStack>
-            <ProviderLogo logo={logo} />
-            <Text
-                color="contentPrimary"
-                variant="body-sm"
-                accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
-                testID={PROVIDER_PICKER_TEST_ID + '/value'}
-            >
-                {companyName}
-            </Text>
-        </HStack>
+        <ProviderDisplay
+            accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
+            logo={logo}
+            providerName={companyName}
+            testID={PROVIDER_PICKER_TEST_ID + '/value'}
+        />
     );
 };
 

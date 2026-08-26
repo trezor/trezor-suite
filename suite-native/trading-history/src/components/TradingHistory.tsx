@@ -11,12 +11,11 @@ import {
     type TradingTransaction,
     selectDeviceTradingTradesOrderedByDate,
 } from '@suite-common/trading';
-import { Box, EdgeFades, useBottomSheetControls } from '@suite-native/atoms';
+import { Box, EdgeFades } from '@suite-native/atoms';
 import { Footer } from '@suite-native/trading-provider-utils';
 import { selectTradeToBeOpened, tradingActions } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { TradeDetailSheet } from './TradeDetailSheet/TradeDetailSheet';
 import { TradeHistoryListItem } from './TradeHistoryListItem/TradeHistoryListItem';
 import { TradeTypeEmptyState } from './TradeTypeEmptyState';
 import { TradingHistoryEmptyState } from './TradingHistoryEmptyState';
@@ -38,7 +37,7 @@ const keyExtractor = (item: TradingTransaction) =>
     item.key ?? item.data.orderId ?? `${item.tradeType}-${item.date}`;
 
 export type TradingHistoryProps = {
-    onOpenTradeDetail?: (orderId: string) => void;
+    onOpenTradeDetail: (orderId: string) => void;
 };
 
 export const TradingHistory = ({ onOpenTradeDetail }: TradingHistoryProps) => {
@@ -47,10 +46,8 @@ export const TradingHistory = ({ onOpenTradeDetail }: TradingHistoryProps) => {
     const dispatch = useDispatch();
     const { bottom: insetBottom } = useSafeAreaInsets();
     const tradeToBeOpened = useSelector(selectTradeToBeOpened);
-    const [detailOrderId, setDetailOrderId] = useState<string | undefined>(undefined);
     const flashListRef = useRef<FlashListRef<TradingTransaction>>(null);
     const [activeFilter, setActiveFilter] = useState<TradingHistoryFilter>('all');
-    const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
     const trades = useSelector((state: TradingRootStateWithDeviceAndAccounts) =>
         selectDeviceTradingTradesOrderedByDate(state),
     );
@@ -66,18 +63,9 @@ export const TradingHistory = ({ onOpenTradeDetail }: TradingHistoryProps) => {
                 return;
             }
 
-            if (onOpenTradeDetail) {
-                onOpenTradeDetail(orderId);
-
-                return;
-            }
-
-            setDetailOrderId(orderId);
-            if (!isSheetVisible) {
-                showSheet();
-            }
+            onOpenTradeDetail(orderId);
         },
-        [isSheetVisible, onOpenTradeDetail, showSheet],
+        [onOpenTradeDetail],
     );
 
     useEffect(() => {
@@ -133,11 +121,6 @@ export const TradingHistory = ({ onOpenTradeDetail }: TradingHistoryProps) => {
                     endSize={Math.max(insetBottom, utils.spacings.sp24)}
                 />
             </Box>
-            <TradeDetailSheet
-                isVisible={isSheetVisible}
-                orderId={detailOrderId}
-                onDismiss={hideSheet}
-            />
         </Box>
     );
 };

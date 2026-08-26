@@ -5,9 +5,9 @@ import {
     type TradingType,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { HStack, Text } from '@suite-native/atoms';
+import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { ProviderLogo, TradeInfoRow } from '@suite-native/trading-atoms';
+import { ProviderDisplay, TradeInfoRow } from '@suite-native/trading-atoms';
 
 export type ProviderInfoRowProps = {
     exchange: string | undefined;
@@ -29,10 +29,7 @@ export const ProviderInfoRow = ({ exchange, noBorder, tradingType }: ProviderInf
             <Text variant="body-sm" color="contentSecondary">
                 <Translation id="moduleTrading.tradingScreen.provider" />
             </Text>
-            <HStack alignItems="center">
-                {!!providerInfo.logo && <ProviderLogo logo={providerInfo.logo} size="body-sm" />}
-                <Text variant="body-sm">{providerInfo.companyName}</Text>
-            </HStack>
+            <ProviderDisplay logo={providerInfo.logo} providerName={providerInfo.companyName} />
         </TradeInfoRow>
     );
 };
