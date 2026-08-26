@@ -576,6 +576,48 @@ describe('recomposeAndSignTxThunk', () => {
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
     });
 
+    it('should reject as cancelled when the signing flow returns no result', async () => {
+        const { store, account, tradingFormState } = getMocks();
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce(undefined);
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            outputs: [
+                                {
+                                    amount: '10000000',
+                                },
+                            ],
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account,
+                address: 'address',
+                amount: '0.1',
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('rejected');
+        expect(response.payload).toEqual({
+            type: 'sign-cancelled',
+            error: {
+                id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
+            },
+        });
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+    });
+
     it('should return successful recomposed and signed transaction using custom fees', async () => {
         const { store, account, tradingFormState } = getMocks({
             composedTransactionInfo: {

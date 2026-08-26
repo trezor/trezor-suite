@@ -1,6 +1,7 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { exchangeInitialState, initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -171,6 +172,41 @@ describe('useTradingExchangeTradeActions', () => {
 
             expect(args.account).toBe(ACCOUNT);
             expect(args.setMaxOutputId).toBeUndefined();
+        });
+
+        const rejectSendWith = (rejection: unknown) => {
+            mockSendTransactionThunk.mockImplementationOnce((args: unknown) =>
+                Object.assign(() => ({ unwrap: () => Promise.reject(rejection) }), { args }),
+            );
+        };
+
+        const toastsOf = (actions: { type: string }[]) =>
+            actions.filter(action => action.type === notificationsActions.addToast.type);
+
+        it('adds no toast of its own when the signing was cancelled', async () => {
+            rejectSendWith({
+                type: 'sign-cancelled',
+                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+            });
+            const { store, result } = renderActions();
+
+            const success = await result.current.sendTransaction();
+
+            expect(success).toBe(false);
+            expect(toastsOf(store.getActions())).toHaveLength(0);
+        });
+
+        it('reports an error nothing else has reported', async () => {
+            rejectSendWith({
+                type: 'sign-tx-error',
+                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+            });
+            const { store, result } = renderActions();
+
+            const success = await result.current.sendTransaction();
+
+            expect(success).toBe(false);
+            expect(toastsOf(store.getActions())).toHaveLength(1);
         });
 
         it('returns false without dispatching when the account is missing', async () => {

@@ -9,6 +9,7 @@ import {
     type TradingSignAndPushSendFormTransactionProps,
     exchangeThunks,
     isSendRejectedError,
+    isSilentSendRejection,
     selectTradingExchange,
     selectTradingExchangeActiveTrade,
     selectTradingExchangeSelectedQuote,
@@ -148,7 +149,7 @@ export const useTradingExchangeTradeActions = () => {
                 return false;
             }
 
-            if (e.type !== 'sign-transaction-timeout') {
+            if (!isSilentSendRejection(e.type)) {
                 dispatch(
                     notificationsActions.addToast({
                         type: e.type,
