@@ -267,14 +267,6 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
         misc: { ...misc, owner: accountInfo?.owner },
     };
 
-    // Update token accounts of account stored by the worker since new accounts
-    // might have been created. We otherwise would not get proper updates for new
-    // token accounts.
-    const workerAccount = request.state.getAccount(payload.descriptor);
-    if (workerAccount) {
-        request.state.addAccounts([{ ...workerAccount, tokens }]);
-    }
-
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
         payload: account,
