@@ -61,7 +61,9 @@
 # emu.py exports TREZOR_SRC, which names the checkout the emulator was built from. Only a run that
 # does NOT go through emu.py has to say where the checkout is, with TREZOR_FIRMWARE.
 #
-# t3w1 rather than t3t1 because the multi-session parts of the WARD suite need THP, and --debug-link
+# Either model works. t3w1 gives a THP wallet channel and t3t1 a codec one; the WARD interface
+# speaks codec v1 on both, so the wallet protocol is a separate axis and this script probes it. What
+# it changes is only pairing and the app pin, which are THP mechanisms. --debug-link either way,
 # because every step here shows a screen that has to be confirmed.
 #
 # NOTE the CLI exits 1 on success (pre-existing behaviour: it prints the result and exits), so this
@@ -122,8 +124,8 @@ screens this script walks through -- every step that shows one would fail. Rebui
 
   xtask build firmware -e -d --pyopt false --model t3w1 --debug-link
 
-(plain \`make build_unix\` binds no debug port; t3w1 rather than t3t1 because the multi-session parts
-of the WARD suite need THP.)
+(plain \`make build_unix\` binds no debug port. Either model works: t3w1 gives a THP wallet channel
+and t3t1 a codec one, and this script probes which it got -- see \`wallet_protocol\`.)
 MSG
     exit 1
 fi
@@ -136,6 +138,74 @@ if port_bound "$WARD_PORT"; then
     VARIANT=service
 else
     VARIANT=connect
+fi
+
+# WHICH PROTOCOL THE WALLET INTERFACE SPEAKS, which is a SEPARATE AXIS from the variant above and
+# has to be asked separately now that it is. The WARD interface speaks codec v1 on every build, so
+# "this is a service build" says nothing about the wallet side: a t3w1 has a THP wallet channel and
+# a codec service endpoint, and a t3t1 has codec on both.
+#
+# What the answer decides is only whether this run has a HOST IDENTITY to keep. Pairing and the app
+# pin are THP mechanisms; on v1 the device cannot tell one connected application from another at
+# all, and asks the user per operation instead.
+#
+# THE FRAMING OF THE REPLY IS NOT THE ANSWER, which is the trap here. A THP device answers
+# protocol-v1 framing with a protocol-v1 `Failure(InvalidProtocol)` on purpose -- that is how it
+# tells a v1 host what it is -- so both kinds of device answer with `?##`. The failure CODE is what
+# separates them.
+wallet_protocol() {
+    python3 - "$WIRE_PORT" <<'PROBE'
+import socket
+import struct
+import sys
+
+_INVALID_PROTOCOL = 17  # FailureType.InvalidProtocol
+_REPORT_LEN = 64
+
+header = b"?##" + struct.pack(">HL", 0xFEFE, 0)  # a wire type registered nowhere
+report = header + b"\x00" * (_REPORT_LEN - len(header))
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.settimeout(1.0)
+sock.connect(("127.0.0.1", int(sys.argv[1])))
+
+answer = "unknown"
+for _attempt in range(3):
+    try:
+        sock.send(report)
+        reply = sock.recv(_REPORT_LEN)
+    except OSError:
+        continue
+    if len(reply) < 9 or reply[:3] != b"?##":
+        continue
+    _mtype, msize = struct.unpack(">HL", reply[3:9])
+    payload = reply[9 : 9 + msize]
+    # A `Failure` puts `code` in field 1, so the payload begins with the varint key 0x08. Every
+    # code involved here is a single byte.
+    if len(payload) < 2 or payload[0] != 0x08:
+        continue
+    answer = "thp" if payload[1] == _INVALID_PROTOCOL else "v1"
+    break
+
+print(answer)
+PROBE
+}
+
+WALLET="$(wallet_protocol)"
+# Only for the hints printed at the end: suggest a model that keeps the wallet side as it is, so
+# switching variant does not silently switch protocol too.
+if [ "$WALLET" = v1 ]; then
+    MODEL_HINT=t3t1
+else
+    MODEL_HINT=t3w1
+fi
+if [ "$WALLET" = unknown ]; then
+    cat >&2 <<MSG
+The wallet interface on udp $WIRE_PORT answered nothing that says which protocol it speaks, so this
+run cannot tell whether to pair. That is a setup problem rather than a device one -- try again, and
+if it persists check that nothing else is talking to the emulator.
+MSG
+    exit 1
 fi
 
 # Mixed case on purpose: these two are hashed into the entry_key and must survive verbatim.
@@ -310,23 +380,32 @@ served_since() {
         paste -sd, -
 }
 
-echo "0. pair once, so every call below is the SAME app to the device"
-# THE ROLE IS GRANTED ONCE AND HELD FOR THE RUN. The first WARD request pins this app after a held
-# confirmation (--debuglink presses it), and every later request is silent -- so nothing below has to
-# know the pin exists. What would go wrong without this step is not subtle: step 2 would be refused
-# as "another application".
-rm -f "$CLI_STATE"
-PAIRED="$(timeout 150 $CLI_PAIR --method=get-credentials 2>&1)"
-if [ ! -s "$CLI_STATE" ]; then
-    cat >&2 <<MSG
+if [ "$WALLET" = thp ]; then
+    echo "0. pair once, so every call below is the SAME app to the device"
+    # THE ROLE IS GRANTED ONCE AND HELD FOR THE RUN. The first WARD request pins this app after a
+    # held confirmation (--debuglink presses it), and every later request is silent -- so nothing
+    # below has to know the pin exists. What would go wrong without this step is not subtle: step 2
+    # would be refused as "another application".
+    rm -f "$CLI_STATE"
+    PAIRED="$(timeout 150 $CLI_PAIR --method=get-credentials 2>&1)"
+    if [ ! -s "$CLI_STATE" ]; then
+        cat >&2 <<MSG
 Pairing produced no credential, so every invocation below would present a different host key and the
 device would refuse all but the first. Its output:
 
 $(grep -vE "^\s*at |^\s*$" <<<"$PAIRED" | tail -8 | sed 's/^/  /')
 MSG
-    exit 1
+        exit 1
+    fi
+    echo "  ok   credential stored in src/thp-state.dat -- the run is one app from here on"
+else
+    # NOTHING TO PAIR, AND NOTHING TO PIN. A codec transport carries no handshake, so the device
+    # cannot tell one connected application from another by any means -- not weakly, not at all --
+    # and the app pin does not exist here. What replaces it is what v1 has always used instead of
+    # identity: the user, per operation, on the device's own screen. Every step below that shows a
+    # screen is therefore unchanged; only this one and 1b have nothing to assert.
+    echo "0. no pairing on a v1 wallet channel -- there is no host identity to keep"
 fi
-echo "  ok   credential stored in src/thp-state.dat -- the run is one app from here on"
 
 if [ "$VARIANT" = service ]; then
     echo "0b. this is a SERVICE build -- bind a daemon to the WARD interface (udp $WARD_PORT)"
@@ -353,6 +432,7 @@ echo "1. queue a change"
 check "queued" "queued: true" \
     "$(timeout 150 $CLI --method=ward_add --queue --appid="$APPID" --ident="$IDENT" --value="$VALUE" 2>&1)"
 
+if [ "$WALLET" = thp ]; then
 echo "1b. a DIFFERENT app is refused, now that this one holds the role"
 # THE PIN, SEEN FROM THE OUTSIDE, and it needs step 1 to have happened first: the role is granted on
 # the first WARD request, so before that a credential-less caller would simply be granted it. Run
@@ -365,6 +445,12 @@ echo "1b. a DIFFERENT app is refused, now that this one holds the role"
 OTHER="$(timeout 150 yarn workspace @trezor/connect-cli cli --udp --debuglink --pairing=skip --method=ward_display --queue --appid="$APPID" --ident="$IDENT" 2>&1)"
 check "the other app was refused by name" "another application holds the WARD app role" "$OTHER"
 check_not "and it read nothing" "displayed: true" "$OTHER"
+else
+    # SKIPPED RATHER THAN INVERTED. There is no second app to be, because there is no first: the
+    # device pins nobody on v1, so a caller with a fresh key is not "another application" but the
+    # same anonymous one. Asserting the opposite here would pin behaviour this build does not have.
+    echo "1b. no app pin on a v1 wallet channel -- every caller is equally anonymous"
+fi
 
 echo "2. back it up into a variable"
 # --target prints `BLOB=0x...` on stdout, which is exactly what makes it capturable -- but the CLI
@@ -715,18 +801,18 @@ echo
 if [ "$VARIANT" = service ]; then
     echo "variant covered: SERVICE (queue never touched the daemon; reads, writes and flushes did)"
     echo "the other one needs a build without the interface:"
-    echo "  xtask build firmware -e -d --pyopt false --model t3w1 --debug-link"
+    echo "  xtask build firmware -e -d --pyopt false --model $MODEL_HINT --debug-link"
 else
     echo "variant covered: CONNECT (WARD over the wallet channel; --service fails closed)"
     echo "the other one needs a build with the interface:"
-    echo "  xtask build firmware -e -d --pyopt false --model t3w1 --debug-link --ward-service-channel"
+    echo "  xtask build firmware -e -d --pyopt false --model $MODEL_HINT --debug-link --ward-service-channel"
 fi
 
 echo
 if [ "$failures" -eq 0 ]; then
-    echo "ward queue e2e ($VARIANT): all checks passed"
+    echo "ward queue e2e ($VARIANT, $WALLET wallet): all checks passed"
 else
-    echo "ward queue e2e ($VARIANT): $failures check(s) FAILED"
+    echo "ward queue e2e ($VARIANT, $WALLET wallet): $failures check(s) FAILED"
     [ -n "$DAEMON_LOG" ] && echo "daemon log: $DAEMON_LOG"
 fi
 exit "$failures"
