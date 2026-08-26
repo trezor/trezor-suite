@@ -16270,9 +16270,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/eslint-plugin-query@npm:5.101.0":
-  version: 5.101.0
-  resolution: "@tanstack/eslint-plugin-query@npm:5.101.0"
+"@tanstack/eslint-plugin-query@npm:5.101.4":
+  version: 5.101.4
+  resolution: "@tanstack/eslint-plugin-query@npm:5.101.4"
   dependencies:
     "@typescript-eslint/utils": "npm:^8.58.1"
   peerDependencies:
@@ -16281,7 +16281,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/f0b4abc774631c5ead7c33b139cb3f28782c2690f273ead4792a02c3733bdf4c4b14556aaf221bf1017116de2310302096ae8b9ff1667edcb2e801ddc86b6e36
+  checksum: 10/93f499c2d9a99187019462891896750103abfffcc1ffe11f675f2d9fa5125ffef643c389d47ee74c9a7fc7bcf288ec96ee5b10eac37f82b31041700080a3c4c0
   languageName: node
   linkType: hard
 
@@ -17011,7 +17011,7 @@ __metadata:
   resolution: "@trezor/eslint@workspace:packages/eslint"
   dependencies:
     "@eslint/js": "npm:^9.39.4"
-    "@tanstack/eslint-plugin-query": "npm:5.101.0"
+    "@tanstack/eslint-plugin-query": "npm:5.101.4"
     eslint: "npm:^9.39.4"
     eslint-plugin-import: "npm:^2.32.0"
     eslint-plugin-jest: "npm:^29.16.0"
