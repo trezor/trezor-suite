@@ -271,7 +271,7 @@ export type MinimalExchangeFormProps = {
 export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SIGN_DATA';
 
 export type TradingSendRejectedProps<TranslationKey extends string = string> = {
-    type: 'error' | 'sign-tx-error' | 'sign-transaction-timeout';
+    type: 'error' | 'sign-tx-error' | 'sign-transaction-timeout' | 'sign-cancelled';
     error: {
         id: TranslationKey;
         values?: Record<string, PrimitiveType>;

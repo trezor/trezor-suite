@@ -1,4 +1,4 @@
-import { isSendRejectedError } from './typeGuards';
+import { isSendRejectedError, isSilentSendRejection } from './typeGuards';
 
 describe('typeGuards', () => {
     describe('isSendRejectedError', () => {
@@ -9,6 +9,17 @@ describe('typeGuards', () => {
                     error: {
                         id: 'TR_GENERIC_ERROR',
                         values: { foo: 'bar' },
+                    },
+                }),
+            ).toBe(true);
+        });
+
+        it('returns true for a cancelled signing', () => {
+            expect(
+                isSendRejectedError({
+                    type: 'sign-cancelled',
+                    error: {
+                        id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
                     },
                 }),
             ).toBe(true);
@@ -57,6 +68,18 @@ describe('typeGuards', () => {
                     },
                 }),
             ).toBe(false);
+        });
+    });
+
+    describe('isSilentSendRejection', () => {
+        it('is silent for a cancelled signing and for a signing timeout', () => {
+            expect(isSilentSendRejection('sign-cancelled')).toBe(true);
+            expect(isSilentSendRejection('sign-transaction-timeout')).toBe(true);
+        });
+
+        it('is not silent for errors that nothing else reports', () => {
+            expect(isSilentSendRejection('error')).toBe(false);
+            expect(isSilentSendRejection('sign-tx-error')).toBe(false);
         });
     });
 });

@@ -10,6 +10,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingSignAndPushSendFormTransactionProps,
     isSendRejectedError,
+    isSilentSendRejection,
     selectTradingComposedTransactionInfo,
     selectTradingIsSlip24Allowed,
     selectTradingSellActiveTrade,
@@ -148,7 +149,7 @@ export const useTradingSellTradeActions = () => {
                 return false;
             }
 
-            if (e.type !== 'sign-transaction-timeout') {
+            if (!isSilentSendRejection(e.type)) {
                 dispatch(
                     notificationsActions.addToast({
                         type: e.type,

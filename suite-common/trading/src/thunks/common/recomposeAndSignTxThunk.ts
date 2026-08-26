@@ -315,6 +315,13 @@ export const recomposeAndSignTxThunk = createThunk<
             paymentRequests,
         });
 
+        if (!resultOfSignedTransaction) {
+            return rejectWithValue({
+                type: 'sign-cancelled',
+                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+            });
+        }
+
         return fulfillWithValue(resultOfSignedTransaction);
     },
 );
