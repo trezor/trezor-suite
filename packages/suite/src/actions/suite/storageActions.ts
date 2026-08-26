@@ -1,5 +1,6 @@
 import { selectCoinjoinAccountByKey } from '@suite/coinjoin';
-import { selectSuiteSettings } from '@suite/settings';
+import { type FlagsRootState } from '@suite/flags';
+import { type SuiteSettingsRootState, selectSuiteSettings } from '@suite/settings';
 import { type WithBluetoothState, selectKnownDevices } from '@suite-common/bluetooth';
 import { deviceActions, selectDevices, selectPersistentDeviceData } from '@suite-common/device';
 import { type MetadataState } from '@suite-common/metadata-types';
@@ -30,9 +31,14 @@ import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
+import {
+    type storageCorrupted,
+    type storageError,
+    type storageLoad,
+} from 'src/actions/suite/storageLifecycleActions';
+import { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { db } from 'src/storage';
-import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
-import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
+import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 import { type GraphData } from 'src/types/wallet/graph';
 import { serializeCoinjoinAccount, serializeDevice } from 'src/utils/suite/storage';
@@ -41,8 +47,10 @@ import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 import { STORAGE } from './constants';
 import { type DesktopBluetoothDevice } from '../bluetooth/DesktopBluetoothDevice';
 
-export type StorageAction = NonNullable<PreloadStoreAction>;
-export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
+export type StorageAction = ReturnType<
+    typeof storageLoad | typeof storageError | typeof storageCorrupted
+>;
+export type StorageLoadAction = ReturnType<typeof storageLoad>;
 
 export const saveExplorer = ({
     symbol,
@@ -106,7 +114,12 @@ export const saveCoinjoinAccount =
         return db.addItem('coinjoinAccounts', serializedAccount, accountKey, true);
     };
 
-const removeCoinjoinRelatedSetting = (state: AppState) => {
+type RemoveCoinjoinRelatedSettingState = FlagsRootState &
+    SuiteSettingsRootState & {
+        suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
+    };
+
+const removeCoinjoinRelatedSetting = (state: RemoveCoinjoinRelatedSettingState) => {
     const settings = { ...selectSuiteSettings(state) };
 
     settings.isCoinjoinReceiveWarningHidden = false;
@@ -125,7 +138,15 @@ const removeCoinjoinRelatedSetting = (state: AppState) => {
     );
 };
 
-export const removeCoinjoinAccount = async (accountKey: string, state: AppState) => {
+type RemoveCoinjoinAccountState = FlagsRootState &
+    SuiteSettingsRootState & {
+        suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
+    };
+
+export const removeCoinjoinAccount = async (
+    accountKey: AccountKey,
+    state: RemoveCoinjoinAccountState,
+) => {
     if (!db.isAccessible()) return;
 
     await db.removeItemByPK('coinjoinAccounts', accountKey);
@@ -246,18 +267,24 @@ export const removeAccountPhishing = (accountKey: AccountKey) => {
     return db.removeItemByPK('phishing', accountKey);
 };
 
-export const removeAccountWithDependencies = (getState: GetState) => (account: Account) =>
-    Promise.all([
-        ...FormDraftPrefixKeyValues.map(prefix => removeAccountFormDraft(prefix, account.key)),
-        removeAccountDraft(account),
-        db.removeItemByPK('receive', account.key),
-        removeAccountTransactions(account),
-        removeAccountGraph(account),
-        removeCoinjoinAccount(account.key, getState()),
-        removeAccount(account),
-        removeAccountHistoricRates(account.key),
-        removeAccountPhishing(account.key),
-    ]);
+type RemoveAccountWithDependenciesState = FlagsRootState &
+    SuiteSettingsRootState & {
+        suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
+    };
+
+export const removeAccountWithDependencies =
+    (getState: () => RemoveAccountWithDependenciesState) => (account: Account) =>
+        Promise.all([
+            ...FormDraftPrefixKeyValues.map(prefix => removeAccountFormDraft(prefix, account.key)),
+            removeAccountDraft(account),
+            db.removeItemByPK('receive', account.key),
+            removeAccountTransactions(account),
+            removeAccountGraph(account),
+            removeCoinjoinAccount(account.key, getState()),
+            removeAccount(account),
+            removeAccountHistoricRates(account.key),
+            removeAccountPhishing(account.key),
+        ]);
 
 export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: GetState) => {
     if (!db.isAccessible()) return;

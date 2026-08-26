@@ -1,4 +1,4 @@
-import { type Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch, createAction } from '@reduxjs/toolkit';
 
 import { selectIsDeviceLocked } from '@suite/locks';
 import { closeModal, openModal } from '@suite/modal';
@@ -42,154 +42,116 @@ import {
 } from './coinjoinUtils';
 import { type CoinjoinSymbol, getCoinjoinConfig } from './config';
 
-const clientEnable = (symbol: Account['symbol']) =>
-    ({
-        type: COINJOIN.CLIENT_ENABLE,
-        payload: {
-            symbol,
-        },
-    }) as const;
+const clientEnable = createAction(COINJOIN.CLIENT_ENABLE, (symbol: Account['symbol']) => ({
+    payload: { symbol },
+}));
 
-export const clientDisable = (symbol: Account['symbol']) =>
-    ({
-        type: COINJOIN.CLIENT_DISABLE,
-        payload: {
-            symbol,
-        },
-    }) as const;
+export const clientDisable = createAction(COINJOIN.CLIENT_DISABLE, (symbol: Account['symbol']) => ({
+    payload: { symbol },
+}));
 
-const clientEnableSuccess = (
-    symbol: Account['symbol'],
-    { version, ...status }: CoinjoinStatusEvent & { version: CoinjoinClientVersion },
-) =>
-    ({
-        type: COINJOIN.CLIENT_ENABLE_SUCCESS,
-        payload: {
-            symbol,
-            status,
-            version,
-        },
-    }) as const;
+const clientEnableSuccess = createAction(
+    COINJOIN.CLIENT_ENABLE_SUCCESS,
+    (
+        symbol: Account['symbol'],
+        { version, ...status }: CoinjoinStatusEvent & { version: CoinjoinClientVersion },
+    ) => ({ payload: { symbol, status, version } }),
+);
 
-const clientEnableFailed = (symbol: Account['symbol']) =>
-    ({
-        type: COINJOIN.CLIENT_ENABLE_FAILED,
-        payload: {
-            symbol,
-        },
-    }) as const;
+const clientEnableFailed = createAction(
+    COINJOIN.CLIENT_ENABLE_FAILED,
+    (symbol: Account['symbol']) => ({ payload: { symbol } }),
+);
 
-const clientOnStatusEvent = (symbol: Account['symbol'], status: CoinjoinStatusEvent) =>
-    ({
-        type: COINJOIN.CLIENT_STATUS,
-        payload: {
-            symbol,
-            status,
-        },
-    }) as const;
+const clientOnStatusEvent = createAction(
+    COINJOIN.CLIENT_STATUS,
+    (symbol: Account['symbol'], status: CoinjoinStatusEvent) => ({
+        payload: { symbol, status },
+    }),
+);
 
-const clientOnPrisonEvent = (event: CoinjoinClientEvents['prison']) =>
-    ({
-        type: COINJOIN.CLIENT_PRISON_EVENT,
-        payload: event.prison,
-    }) as const;
+export const clientOnPrisonEvent = createAction(
+    COINJOIN.CLIENT_PRISON_EVENT,
+    (event: CoinjoinClientEvents['prison']) => ({ payload: event.prison }),
+);
 
-const clientSessionRoundChanged = (
-    accountKey: string,
-    round: SerializedCoinjoinRound,
-    sessionDeadline: number,
-) =>
-    ({
-        type: COINJOIN.SESSION_ROUND_CHANGED,
-        payload: {
-            accountKey,
-            round,
-            sessionDeadline,
-        },
-    }) as const;
+export const clientSessionRoundChanged = createAction(
+    COINJOIN.SESSION_ROUND_CHANGED,
+    (accountKey: string, round: SerializedCoinjoinRound, sessionDeadline: number) => ({
+        payload: { accountKey, round, sessionDeadline },
+    }),
+);
 
-const clientSessionCompleted = (accountKey: string) =>
-    ({
-        type: COINJOIN.SESSION_COMPLETED,
-        payload: {
-            accountKey,
-        },
-    }) as const;
+export const coinjoinSessionCompleted = createAction(
+    COINJOIN.SESSION_COMPLETED,
+    (accountKey: string) => ({ payload: { accountKey } }),
+);
 
-const clientSessionTxSigned = (payload: {
-    accountKey: string;
-    roundId: string;
-    rawLiquidityClue: CoinjoinAccount['rawLiquidityClue'];
-}) =>
-    ({
-        type: COINJOIN.SESSION_TX_SIGNED,
-        payload,
-    }) as const;
+const clientSessionTxSigned = createAction(
+    COINJOIN.SESSION_TX_SIGNED,
+    (payload: {
+        accountKey: string;
+        roundId: string;
+        rawLiquidityClue: CoinjoinAccount['rawLiquidityClue'];
+    }) => ({ payload }),
+);
 
-const clientSessionTxCandidate = (accountKey: string, roundId: string) =>
-    ({
-        type: COINJOIN.SESSION_TX_CANDIDATE,
-        payload: {
-            accountKey,
-            roundId,
-        },
-    }) as const;
+const clientSessionTxCandidate = createAction(
+    COINJOIN.SESSION_TX_CANDIDATE,
+    (accountKey: string, roundId: string) => ({ payload: { accountKey, roundId } }),
+);
 
-const clientSessionTxBroadcasted = (accountKeys: string[], round: SerializedCoinjoinRound) =>
-    ({
-        type: COINJOIN.SESSION_TX_BROADCASTED,
-        payload: {
-            accountKeys,
-            round,
-        },
-    }) as const;
+export const clientSessionTxBroadcasted = createAction(
+    COINJOIN.SESSION_TX_BROADCASTED,
+    (accountKeys: string[], round: SerializedCoinjoinRound) => ({
+        payload: { accountKeys, round },
+    }),
+);
 
-const clientSessionTxFailed = (accountKeys: string[], round: SerializedCoinjoinRound) =>
-    ({
-        type: COINJOIN.SESSION_TX_FAILED,
-        payload: {
-            accountKeys,
-            round,
-        },
-    }) as const;
+const clientSessionTxFailed = createAction(
+    COINJOIN.SESSION_TX_FAILED,
+    (accountKeys: string[], round: SerializedCoinjoinRound) => ({
+        payload: { accountKeys, round },
+    }),
+);
 
-const clientSessionPhase = (payload: CoinjoinClientEvents['session-phase']) =>
-    ({
-        type: COINJOIN.CLIENT_SESSION_PHASE,
-        payload,
-    }) as const;
+export const clientSessionPhase = createAction(
+    COINJOIN.CLIENT_SESSION_PHASE,
+    (payload: CoinjoinClientEvents['session-phase']) => ({ payload }),
+);
 
-export const setDebugSettings = (payload: CoinjoinDebugSettings) =>
-    ({
-        type: COINJOIN.SET_DEBUG_SETTINGS,
-        payload,
-    }) as const;
+export const setDebugSettings = createAction(
+    COINJOIN.SET_DEBUG_SETTINGS,
+    (payload: CoinjoinDebugSettings) => ({ payload }),
+);
 
-export const coinjoinSessionPause = (accountKey: string) =>
-    ({
-        type: COINJOIN.SESSION_PAUSE,
-        payload: {
-            accountKey,
-        },
-    }) as const;
+export const coinjoinSessionPause = createAction(COINJOIN.SESSION_PAUSE, (accountKey: string) => ({
+    payload: { accountKey },
+}));
 
-export type CoinjoinClientAction =
-    | ReturnType<typeof setDebugSettings>
-    | ReturnType<typeof clientEnable>
-    | ReturnType<typeof clientDisable>
-    | ReturnType<typeof clientEnableSuccess>
-    | ReturnType<typeof clientEnableFailed>
-    | ReturnType<typeof clientOnStatusEvent>
-    | ReturnType<typeof clientOnPrisonEvent>
-    | ReturnType<typeof clientSessionRoundChanged>
-    | ReturnType<typeof clientSessionCompleted>
-    | ReturnType<typeof clientSessionPhase>
-    | ReturnType<typeof clientSessionTxSigned>
-    | ReturnType<typeof clientSessionTxCandidate>
-    | ReturnType<typeof clientSessionTxBroadcasted>
-    | ReturnType<typeof clientSessionTxFailed>
-    | ReturnType<typeof clientSessionPhase>
-    | ReturnType<typeof coinjoinSessionPause>;
+export const coinjoinAccountUnregister = createAction(
+    COINJOIN.ACCOUNT_UNREGISTER,
+    (accountKey: string) => ({ payload: { accountKey } }),
+);
+
+export type CoinjoinClientAction = ReturnType<
+    | typeof setDebugSettings
+    | typeof clientEnable
+    | typeof clientDisable
+    | typeof clientEnableSuccess
+    | typeof clientEnableFailed
+    | typeof clientOnStatusEvent
+    | typeof clientOnPrisonEvent
+    | typeof clientSessionRoundChanged
+    | typeof coinjoinSessionCompleted
+    | typeof clientSessionPhase
+    | typeof clientSessionTxSigned
+    | typeof clientSessionTxCandidate
+    | typeof clientSessionTxBroadcasted
+    | typeof clientSessionTxFailed
+    | typeof coinjoinSessionPause
+    | typeof coinjoinAccountUnregister
+>;
 
 // return only active instances
 export const getCoinjoinClient = (symbol: CoinjoinSymbol) =>
@@ -211,7 +173,7 @@ export const unregisterByAccountKey =
     };
 
 export const endCoinjoinSession = (accountKey: string) => (dispatch: Dispatch) => {
-    dispatch(clientSessionCompleted(accountKey));
+    dispatch(coinjoinSessionCompleted(accountKey));
     dispatch(unregisterByAccountKey(accountKey));
 };
 
@@ -352,12 +314,7 @@ export const stopCoinjoinSession =
         }
 
         // dispatch data to reducer
-        dispatch({
-            type: COINJOIN.ACCOUNT_UNREGISTER,
-            payload: {
-                accountKey,
-            },
-        });
+        dispatch(coinjoinAccountUnregister(accountKey));
     };
 
 export const onCoinjoinRoundChanged =

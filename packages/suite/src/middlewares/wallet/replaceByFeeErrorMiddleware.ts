@@ -1,16 +1,17 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
 import { transactionsActions } from '@suite-common/wallet-core/';
 import { isRbfTransaction } from '@suite-common/wallet-utils';
 
-import { type Action, type AppState, type Dispatch } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 import { replaceByFeeErrorThunk } from '../../actions/wallet/send/replaceByFeeErrorThunk';
 
 export const replaceByFeeErrorMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: Dispatch) =>
-    (action: Action): Action => {
+    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
+    (next: Dispatch<UnknownAction>) =>
+    (action: UnknownAction): UnknownAction => {
         next(action);
 
         if (!transactionsActions.addTransaction.match(action)) {

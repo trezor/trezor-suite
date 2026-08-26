@@ -87,9 +87,7 @@ describe('synchronizeSentTransactionThunk – EVM fake pending tx nonce', () => 
         });
 
     const getAddedFakeTx = (store: ReturnType<typeof configureMockStore>) => {
-        const added = store
-            .getActions()
-            .filter(action => action.type === transactionsActions.addTransaction.type);
+        const added = store.getActions().filter(transactionsActions.addTransaction.match);
 
         return added[0]?.payload.transactions[0];
     };
@@ -128,7 +126,7 @@ describe('synchronizeSentTransactionThunk – periodic sync kick', () => {
 
         const syncActions = store
             .getActions()
-            .filter(action => action.type === syncAccountsWithBlockchainThunk.pending.type);
+            .filter(syncAccountsWithBlockchainThunk.pending.match);
         expect(syncActions).toHaveLength(1);
         expect(syncActions[0]!.meta.arg).toBe(ethAccount.symbol);
     });

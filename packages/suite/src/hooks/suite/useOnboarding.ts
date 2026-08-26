@@ -7,8 +7,7 @@ import { UI_REQUEST } from '@trezor/connect';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { type GoToSuiteOptions } from 'src/actions/onboarding/onboardingActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { type BackupMedium } from 'src/reducers/onboarding/onboardingReducer';
-import { type AnyPath, type AnyStepId } from 'src/types/onboarding';
+import { type AnyPath, type AnyStepId, type BackupMedium } from 'src/types/onboarding';
 
 import { parseStepId } from '../../utils/onboarding/steps';
 

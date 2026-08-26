@@ -2,6 +2,7 @@ import { selectFlags, setFlag } from '@suite/flags';
 import { metadataLabelingActions } from '@suite/metadata';
 import { initialRedirection, routerInit } from '@suite/router';
 import { selectEarnYieldWorkerBaseUrl, suiteSettingsActions } from '@suite/settings';
+import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { earnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-api';
 import {
@@ -24,8 +25,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
 import type { Dispatch, GetState } from 'src/types/suite';
 
-import { SUITE } from './constants';
-import { onSuiteReady } from './suiteActions';
+import { setSuiteError } from './suiteActions';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {
@@ -41,7 +41,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (status !== 'initial') return;
 
-    dispatch({ type: SUITE.INIT });
+    dispatch(onSuiteInit());
 
     // apply the earn yield worker base url from debug settings (or the default for this build)
     earnYieldWorkerBaseUrl.set(selectEarnYieldWorkerBaseUrl(getState()));
@@ -84,7 +84,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
         await dispatch(trezorConnectActions.connectInitThunk()).unwrap();
     } catch (err) {
-        dispatch({ type: SUITE.ERROR, error: err.message });
+        dispatch(setSuiteError(err.message));
 
         return;
     }

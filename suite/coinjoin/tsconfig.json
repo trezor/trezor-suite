@@ -36,6 +36,7 @@
         { "path": "../locks" },
         { "path": "../modal" },
         { "path": "../router" },
+        { "path": "../suite-lifecycle" },
         { "path": "../tor" },
         {
             "path": "../../packages/blockchain-link"

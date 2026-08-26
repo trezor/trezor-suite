@@ -1,10 +1,12 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
+
 import { routerLocationChange } from '@suite/router';
 import {
     type GeolocationRootState,
     fetchCountryCodeThunk,
     selectCountryCode,
 } from '@suite-common/geolocation';
-import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 
 import { shouldFetchCountryCode } from './geolocation';
 
@@ -12,7 +14,7 @@ type TradingMiddlewareState = GeolocationRootState;
 
 export const tradingMiddleware = createMiddlewareWithExtraDeps<
     void,
-    AnyAction,
+    UnknownAction,
     TradingMiddlewareState
 >((action, { dispatch, next, getState }) => {
     if (

@@ -1,3 +1,5 @@
+import { createAction } from '@reduxjs/toolkit';
+
 import { type DesktopAnalyticsDep, type OnboardingAnalytics, events } from '@suite/analytics';
 import { initialRunCompleted } from '@suite/flags';
 import { closeModal } from '@suite/modal';
@@ -19,7 +21,8 @@ import TrezorConnect from '@trezor/connect';
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
-import { type AnyPath, type AnyStepId } from 'src/types/onboarding';
+import { selectOnboardingAnalytics } from 'src/selectors/onboarding/onboardingSelectors';
+import { type AnyPath, type AnyStepId, type BackupMedium } from 'src/types/onboarding';
 import { type Dispatch, type GetState } from 'src/types/suite';
 import {
     findNextStep,
@@ -28,58 +31,11 @@ import {
     resolveNextAvailableStep,
 } from 'src/utils/onboarding/steps';
 
-import {
-    type BackupMedium,
-    selectOnboardingAnalytics,
-} from '../../reducers/onboarding/onboardingReducer';
+const goToStep = createAction<AnyStepId>(ONBOARDING.SET_STEP_ACTIVE);
 
-export type OnboardingAction =
-    | {
-          type: typeof ONBOARDING.ENABLE_ONBOARDING_REDUCER;
-          payload: boolean;
-      }
-    | {
-          type: typeof ONBOARDING.RESET_ONBOARDING;
-      }
-    | {
-          type: typeof ONBOARDING.REMOVE_PATH;
-          payload: AnyPath[];
-      }
-    | {
-          type: typeof ONBOARDING.ADD_PATH;
-          payload: AnyPath;
-      }
-    | {
-          type: typeof ONBOARDING.SET_STEP_ACTIVE;
-          stepId: AnyStepId;
-      }
-    | {
-          type: typeof ONBOARDING.ANALYTICS;
-          payload: Partial<OnboardingAnalytics>;
-      }
-    | {
-          type: typeof ONBOARDING.SELECT_BACKUP_TYPE;
-          payload: BackupType;
-      }
-    | {
-          type: typeof ONBOARDING.SELECT_BACKUP_MEDIUM;
-          payload: BackupMedium;
-      };
+const addPath = createAction<AnyPath>(ONBOARDING.ADD_PATH);
 
-const goToStep = (stepId: AnyStepId): OnboardingAction => ({
-    type: ONBOARDING.SET_STEP_ACTIVE,
-    stepId,
-});
-
-const addPath = (payload: AnyPath): OnboardingAction => ({
-    type: ONBOARDING.ADD_PATH,
-    payload,
-});
-
-const removePath = (payload: AnyPath[]): OnboardingAction => ({
-    type: ONBOARDING.REMOVE_PATH,
-    payload,
-});
+const removePath = createAction<AnyPath[]>(ONBOARDING.REMOVE_PATH);
 
 const getAllStepsInPath = (getState: GetState) => {
     const allSteps = stepCategories.flatMap(({ steps }) => steps);
@@ -118,12 +74,7 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
     dispatch(goToStep(prevStep.id));
 };
 
-/**
- * Set onboarding reducer to initial state.
- */
-const resetOnboarding = (): OnboardingAction => ({
-    type: ONBOARDING.RESET_ONBOARDING,
-});
+const resetOnboarding = createAction(ONBOARDING.RESET_ONBOARDING);
 
 type GoToSuiteDeps = { services: DesktopAnalyticsDep };
 
@@ -214,30 +165,13 @@ const goToNextStep = (nextStepId?: AnyStepId) => (dispatch: Dispatch, getState: 
     dispatch(goToStep(nextStep.id));
 };
 
-/**
- * Make onboarding reducer listen to actions.
- * @param payload,
- */
+const enableOnboardingReducer = createAction<boolean>(ONBOARDING.ENABLE_ONBOARDING_REDUCER);
 
-const enableOnboardingReducer = (payload: boolean): OnboardingAction => ({
-    type: ONBOARDING.ENABLE_ONBOARDING_REDUCER,
-    payload,
-});
+const updateAnalytics = createAction<Partial<OnboardingAnalytics>>(ONBOARDING.ANALYTICS);
 
-const updateAnalytics = (payload: Partial<OnboardingAnalytics>): OnboardingAction => ({
-    type: ONBOARDING.ANALYTICS,
-    payload,
-});
+const updateBackupType = createAction<BackupType>(ONBOARDING.SELECT_BACKUP_TYPE);
 
-const updateBackupType = (payload: BackupType): OnboardingAction => ({
-    type: ONBOARDING.SELECT_BACKUP_TYPE,
-    payload,
-});
-
-const updateBackupMedium = (payload: BackupMedium): OnboardingAction => ({
-    type: ONBOARDING.SELECT_BACKUP_MEDIUM,
-    payload,
-});
+const updateBackupMedium = createAction<BackupMedium>(ONBOARDING.SELECT_BACKUP_MEDIUM);
 
 const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetState) => {
     const device = selectSelectedDevice(getState());

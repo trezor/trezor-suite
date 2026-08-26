@@ -27,7 +27,6 @@ import {
 import { type WalletConnectState, prepareWalletConnectReducer } from '@suite-common/walletconnect';
 
 import { extraDependencies } from 'src/support/extraDependencies';
-import { type Action } from 'src/types/suite';
 
 import guide, { type GuideState } from './guideReducer';
 import protocol, { type ProtocolState } from './protocolReducer';
@@ -68,7 +67,7 @@ export type SuiteReducersState = {
     walletConnect: WalletConnectState;
 };
 
-export const suiteReducers: ReducersMapObject<SuiteReducersState, Action & UnknownAction> = {
+export const suiteReducers: ReducersMapObject<SuiteReducersState, UnknownAction> = {
     suite,
     discreetMode: discreetModeReducer,
     tor: torReducer,

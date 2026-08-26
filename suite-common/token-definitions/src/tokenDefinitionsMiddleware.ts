@@ -1,4 +1,6 @@
-import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { type ActionCreatorWithPreparedPayload, type UnknownAction } from '@reduxjs/toolkit';
+
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
@@ -6,19 +8,26 @@ import { getTokenDefinitionThunk } from './tokenDefinitionsThunks';
 import { type TokenDefinitionsRootState } from './tokenDefinitionsTypes';
 import { getSupportedDefinitionTypes } from './tokenDefinitionsUtils';
 
-const CHANGE_NETWORKS = '@wallet-settings/change-networks'; // from walletSettings.ts
-
 type TokenDefinitionsMiddlewareState = TokenDefinitionsRootState;
 
+export type TokenDefinitionsMiddlewareDeps = {
+    actions: {
+        changeNetworks: ActionCreatorWithPreparedPayload<
+            [payload: NetworkSymbol[]],
+            NetworkSymbol[]
+        >;
+    };
+};
+
 export const prepareTokenDefinitionsMiddleware = createMiddlewareWithExtraDeps<
-    void,
-    AnyAction,
+    TokenDefinitionsMiddlewareDeps,
+    UnknownAction,
     TokenDefinitionsMiddlewareState
->((action, { dispatch, next, getState }) => {
+>((action, { dispatch, next, getState, extra }) => {
     next(action);
 
-    if (action.type === CHANGE_NETWORKS) {
-        action.payload.forEach((symbol: NetworkSymbol) => {
+    if (extra.actions.changeNetworks.match(action)) {
+        action.payload.forEach(symbol => {
             const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 
             if (!tokenDefinitions) {

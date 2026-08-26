@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
-import { updateOnlineStatus } from 'src/actions/suite/suiteActions';
+import { updateOnlineStatus } from '@suite/suite-lifecycle';
+
 import { useDispatch } from 'src/hooks/suite';
 
 /**

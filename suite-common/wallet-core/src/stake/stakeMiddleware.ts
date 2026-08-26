@@ -1,19 +1,20 @@
-import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { type UnknownAction } from '@reduxjs/toolkit';
+
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 
 import { initStakeDataThunk } from './stakeThunks';
-
-const CHANGE_NETWORKS = '@wallet-settings/change-networks'; // from walletSettings.ts
+import { changeNetworks } from '../settings/walletSettingsActions';
 
 type StakeMiddlewareState = void;
 
 export const prepareStakeMiddleware = createMiddlewareWithExtraDeps<
     void,
-    AnyAction,
+    UnknownAction,
     StakeMiddlewareState
 >((action, { dispatch, next }) => {
     next(action);
 
-    if (action.type === CHANGE_NETWORKS) {
+    if (changeNetworks.match(action)) {
         dispatch(initStakeDataThunk());
     }
 

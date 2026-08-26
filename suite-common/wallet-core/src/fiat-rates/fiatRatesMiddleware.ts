@@ -1,6 +1,6 @@
-import { isAnyOf } from '@reduxjs/toolkit';
+import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type TickerId, type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { isNative } from '@trezor/env-utils';
 
@@ -24,7 +24,7 @@ type FiatRatesMiddlewareState = WalletSettingsRootState;
 
 export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps<
     void,
-    AnyAction,
+    UnknownAction,
     FiatRatesMiddlewareState
 >((action, { dispatch, next, getState }) => {
     next(action); //next must be at the beginning, othervise tickers are not going to be updated and fiat rates wont fetch (the user will have to wait for 1m timeout)

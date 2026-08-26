@@ -1,3 +1,4 @@
+import { onSuiteInit, onSuiteReady, updateOnlineStatus } from '@suite/suite-lifecycle';
 import { deviceActions } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -5,10 +6,9 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectNewlyConnectedDeviceThunk } from '@suite-common/wallet-core';
 import { DEVICE, type Device, TRANSPORT } from '@trezor/connect';
 
-import { SUITE } from 'src/actions/suite/constants';
 import { type AppState } from 'src/types/suite';
 
-import * as suiteActions from '../suiteActions';
+import { setSuiteError } from '../suiteActions';
 
 const SUITE_DEVICE = mockSuiteDevice({ path: '1' });
 const SUITE_DEVICE_UNACQUIRED = mockSuiteDevice({
@@ -22,11 +22,7 @@ const CONNECT_DEVICE = mockConnectDevice({ path: '1' });
 const reducerActions = [
     {
         description: `SUITE.READY`,
-        actions: [
-            {
-                type: SUITE.READY,
-            },
-        ],
+        actions: [onSuiteReady()],
         result: [
             {
                 lifecycle: {
@@ -37,12 +33,7 @@ const reducerActions = [
     },
     {
         description: `SUITE.ERROR`,
-        actions: [
-            {
-                type: SUITE.ERROR,
-                error: 'Error',
-            },
-        ],
+        actions: [setSuiteError('Error')],
         result: [
             {
                 lifecycle: {
@@ -54,11 +45,7 @@ const reducerActions = [
     },
     {
         description: `SUITE.INIT`,
-        actions: [
-            {
-                type: SUITE.INIT,
-            },
-        ],
+        actions: [onSuiteInit()],
         result: [
             {
                 lifecycle: {
@@ -69,7 +56,7 @@ const reducerActions = [
     },
     {
         description: `updateOnlineStatus (true/false)`,
-        actions: [suiteActions.updateOnlineStatus(true), suiteActions.updateOnlineStatus(false)],
+        actions: [updateOnlineStatus(true), updateOnlineStatus(false)],
         result: [
             {
                 online: true,

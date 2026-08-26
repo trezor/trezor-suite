@@ -5,7 +5,6 @@ import { configureMockStore } from '@suite-common/test-utils';
 
 import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { type Action } from 'src/types/suite';
 
 import fixtures from './__fixtures__/onboardingActions';
 
@@ -27,7 +26,7 @@ const getInitialState = (custom?: any) => {
 
     return {
         onboarding: {
-            ...onboardingReducer(undefined, {} as Action),
+            ...onboardingReducer(undefined, { type: 'test-init' }),
             isActive: true,
             ...onboarding,
             recovery: {
@@ -35,7 +34,7 @@ const getInitialState = (custom?: any) => {
             },
         },
         suite: {
-            ...suiteReducer(undefined, {} as Action),
+            ...suiteReducer(undefined, { type: 'test-init' }),
             ...suite,
         },
         suiteSettings: suiteSettingsInitialState,

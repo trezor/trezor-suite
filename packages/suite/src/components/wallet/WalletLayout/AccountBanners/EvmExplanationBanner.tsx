@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { selectRouteName } from '@suite/router';
 import { networks } from '@suite-common/wallet-config';
 
-import { SUITE } from 'src/actions/suite/constants';
+import { closeEvmExplanationBanner } from 'src/actions/suite/suiteActions';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { type Account } from 'src/types/wallet';
@@ -34,11 +34,7 @@ export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => 
 
     const network = networks[account.symbol];
 
-    const close = () =>
-        dispatch({
-            type: SUITE.EVM_CLOSE_EXPLANATION_BANNER,
-            symbol: account?.symbol,
-        });
+    const close = () => dispatch(closeEvmExplanationBanner(account.symbol));
 
     const points = [
         <Translation id="TR_EVM_EXPLANATION_DESCRIPTION" key="TR_EVM_EXPLANATION_DESCRIPTION" />,

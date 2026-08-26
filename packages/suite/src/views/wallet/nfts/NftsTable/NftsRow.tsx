@@ -41,7 +41,7 @@ import {
     PictureFrameIcon,
 } from '@trezor/icons';
 
-import { SUITE } from 'src/actions/suite/constants';
+import { setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { HiddenPlaceholder } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
@@ -159,10 +159,7 @@ const NftsRow = ({
                                     label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
                                     icon: NewspaperIcon,
                                     onClick: () => {
-                                        dispatch({
-                                            type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
-                                            payload: nft.contract || '',
-                                        });
+                                        dispatch(setTransactionHistoryPrefill(nft.contract || ''));
                                         if (account) {
                                             dispatch(
                                                 goto({

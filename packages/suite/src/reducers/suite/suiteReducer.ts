@@ -1,11 +1,26 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
+import { onSuiteInit, onSuiteReady, updateOnlineStatus } from '@suite/suite-lifecycle';
 import type { CountryCode } from '@suite-common/geolocation';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { TRANSPORT, type TransportInfo } from '@trezor/connect';
+import { TRANSPORT, type TransportInfo, isTransportEventOfType } from '@trezor/connect';
 
-import { STORAGE, SUITE } from 'src/actions/suite/constants';
-import { type Action } from 'src/types/suite';
+import {
+    storageCorrupted,
+    storageError,
+    storageLoad,
+} from 'src/actions/suite/storageLifecycleActions';
+import {
+    addDeviceIdToSeenDisconnectNotification,
+    closeEvmExplanationBanner,
+    confirmEvmExplanationModal,
+    setRecentlyConnectedDevicePath,
+    setRecentlyDisconnectedDevice,
+    setSendFormPrefill,
+    setSuiteError,
+    setTransactionHistoryPrefill,
+} from 'src/actions/suite/suiteActions';
 
 export type SuiteRootState = {
     suite: SuiteState;
@@ -69,103 +84,76 @@ const initialState: SuiteState = {
 
 export const suiteInitialState = initialState;
 
-const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteState =>
+const suiteReducer = (state: SuiteState = initialState, action: UnknownAction): SuiteState =>
     produce(state, draft => {
-        switch (action.type) {
-            case STORAGE.LOAD:
-                draft.evmSettings = {
-                    ...draft.evmSettings,
-                    ...action.payload.suiteSettings?.evmSettings,
-                };
-                draft.seenDisconnectNotificationForDeviceIds = [
-                    ...draft.seenDisconnectNotificationForDeviceIds,
-                    ...(action.payload.suiteSettings?.seenDisconnectNotificationForDeviceIds ?? []),
-                ];
-                break;
-            case STORAGE.ERROR:
-                draft.lifecycle = { status: 'db-error', error: action.payload };
-                break;
-            case STORAGE.CORRUPTED:
-                draft.lifecycle = { status: 'db-corrupted', error: action.payload };
-                break;
-            case SUITE.INIT:
-                draft.lifecycle = { status: 'loading' };
-                break;
-            case SUITE.READY:
-                draft.lifecycle = { status: 'ready' };
-                break;
-
-            case SUITE.ERROR:
-                draft.lifecycle = { status: 'error', error: action.error };
-                break;
-
-            case SUITE.SET_RECENTLY_CONNECTED_DEVICE:
-                draft.recentlyConnectedDeviceRef = action.payload;
-                break;
-            case SUITE.SET_RECENTLY_DISCONNECTED_DEVICE:
-                draft.recentlyDisconnectedDevice = action.payload;
-                break;
-            case SUITE.ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION:
-                draft.seenDisconnectNotificationForDeviceIds = [
-                    ...draft.seenDisconnectNotificationForDeviceIds,
-                    action.payload.deviceId,
-                ];
-                break;
-
-            case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:
-                draft.evmSettings = {
-                    ...draft.evmSettings,
-                    confirmExplanationModalClosed: {
-                        ...draft.evmSettings.confirmExplanationModalClosed,
-                        [action.symbol]: {
-                            ...draft.evmSettings.confirmExplanationModalClosed[action.symbol],
-                            [action.route]: true,
-                        },
+        if (storageLoad.match(action)) {
+            draft.evmSettings = {
+                ...draft.evmSettings,
+                ...action.payload.suiteSettings?.evmSettings,
+            };
+            draft.seenDisconnectNotificationForDeviceIds = [
+                ...draft.seenDisconnectNotificationForDeviceIds,
+                ...(action.payload.suiteSettings?.seenDisconnectNotificationForDeviceIds ?? []),
+            ];
+        } else if (storageError.match(action)) {
+            draft.lifecycle = { status: 'db-error', error: action.payload };
+        } else if (storageCorrupted.match(action)) {
+            draft.lifecycle = { status: 'db-corrupted', error: action.payload };
+        } else if (onSuiteInit.match(action)) {
+            draft.lifecycle = { status: 'loading' };
+        } else if (onSuiteReady.match(action)) {
+            draft.lifecycle = { status: 'ready' };
+        } else if (setSuiteError.match(action)) {
+            draft.lifecycle = { status: 'error', error: action.payload };
+        } else if (setRecentlyConnectedDevicePath.match(action)) {
+            draft.recentlyConnectedDeviceRef = action.payload;
+        } else if (setRecentlyDisconnectedDevice.match(action)) {
+            draft.recentlyDisconnectedDevice = action.payload;
+        } else if (addDeviceIdToSeenDisconnectNotification.match(action)) {
+            draft.seenDisconnectNotificationForDeviceIds = [
+                ...draft.seenDisconnectNotificationForDeviceIds,
+                action.payload.deviceId,
+            ];
+        } else if (confirmEvmExplanationModal.match(action)) {
+            const { symbol, route } = action.payload;
+            draft.evmSettings = {
+                ...draft.evmSettings,
+                confirmExplanationModalClosed: {
+                    ...draft.evmSettings.confirmExplanationModalClosed,
+                    [symbol]: {
+                        ...draft.evmSettings.confirmExplanationModalClosed[symbol],
+                        [route]: true,
                     },
-                };
-                break;
-
-            case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
-                draft.evmSettings = {
-                    ...draft.evmSettings,
-                    explanationBannerClosed: {
-                        ...draft.evmSettings.explanationBannerClosed,
-                        [action.symbol]: true,
-                    },
-                };
-                break;
-
-            case SUITE.SET_SEND_FORM_PREFILL:
-                draft.prefillFields.sendForm = action.payload.contractAddress;
-                break;
-
-            case SUITE.SET_TRANSACTION_HISTORY_PREFILL:
-                draft.prefillFields.transactionHistory = action.payload;
-                break;
-
-            case TRANSPORT.START: {
-                const { ...transport } = action.payload;
-                const transports = draft.transport?.transports ?? [];
-                const index = transports.findIndex(t => t.apiType === transport.apiType);
-                if (index >= 0) transports[index] = transport;
-                else transports.push(transport);
-                draft.transport = { transports };
-                break;
-            }
-            case TRANSPORT.ERROR: {
-                const { apiType, error } = action.payload;
-                const transports =
-                    !draft.transport || !apiType
-                        ? (draft.transport?.transports ?? [])
-                        : draft.transport.transports?.filter(t => t.apiType !== apiType);
-                draft.transport = { transports, error };
-                break;
-            }
-            case SUITE.ONLINE_STATUS:
-                draft.online = action.payload;
-                break;
-
-            // no default
+                },
+            };
+        } else if (closeEvmExplanationBanner.match(action)) {
+            draft.evmSettings = {
+                ...draft.evmSettings,
+                explanationBannerClosed: {
+                    ...draft.evmSettings.explanationBannerClosed,
+                    [action.payload]: true,
+                },
+            };
+        } else if (setSendFormPrefill.match(action)) {
+            draft.prefillFields.sendForm = action.payload.contractAddress;
+        } else if (setTransactionHistoryPrefill.match(action)) {
+            draft.prefillFields.transactionHistory = action.payload;
+        } else if (isTransportEventOfType(action, TRANSPORT.START)) {
+            const { ...transport } = action.payload;
+            const transports = draft.transport?.transports ?? [];
+            const index = transports.findIndex(t => t.apiType === transport.apiType);
+            if (index >= 0) transports[index] = transport;
+            else transports.push(transport);
+            draft.transport = { transports };
+        } else if (isTransportEventOfType(action, TRANSPORT.ERROR)) {
+            const { apiType, error } = action.payload;
+            const transports =
+                !draft.transport || !apiType
+                    ? (draft.transport?.transports ?? [])
+                    : draft.transport.transports?.filter(t => t.apiType !== apiType);
+            draft.transport = { transports, error };
+        } else if (updateOnlineStatus.match(action)) {
+            draft.online = action.payload;
         }
     });
 

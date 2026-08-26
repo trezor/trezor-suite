@@ -1,5 +1,7 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
+
 import { deviceActions } from '@suite-common/device';
-import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { TrezorPushNotificationType } from '@trezor/connect';
 
 import { deviceWipedFromDeviceThunk, forgetDeviceThunk } from './deviceThunks';
@@ -9,7 +11,7 @@ type PushNotificationMiddlewareState = void;
 // We need extra.thunks.forgetBluetoothDevice in forgetSingleDevicePersistentDataThunk.
 export const preparePushNotificationMiddleware = createMiddlewareWithExtraDeps<
     void,
-    AnyAction,
+    UnknownAction,
     PushNotificationMiddlewareState
 >((action, { next, dispatch }) => {
     if (deviceActions.devicePushNotification.match(action)) {

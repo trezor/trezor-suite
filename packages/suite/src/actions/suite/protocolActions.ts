@@ -1,3 +1,5 @@
+import { createAction } from '@reduxjs/toolkit';
+
 import type { DesktopAnalyticsDep } from '@suite/analytics';
 import {
     type AnchorSettingSection,
@@ -7,7 +9,7 @@ import {
     mapAnchorToRoute,
     onLocationChange,
 } from '@suite/router';
-import { type CoinProtocol, handleCoinProtocolUri } from '@suite/transfer-uri';
+import { handleCoinProtocolUri } from '@suite/transfer-uri';
 import type { FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as walletConnectActions from '@suite-common/walletconnect';
@@ -24,26 +26,14 @@ import { type Dispatch } from 'src/types/suite';
 
 import { PROTOCOL } from './constants';
 
-export type ProtocolAction =
-    | {
-          type: typeof PROTOCOL.FILL_SEND_FORM;
-          payload: boolean;
-      }
-    | {
-          type: typeof PROTOCOL.SAVE_COIN_PROTOCOL;
-          payload: SendFormState;
-      }
-    | { type: typeof PROTOCOL.RESET };
+export const saveCoinProtocol = createAction(
+    PROTOCOL.SAVE_COIN_PROTOCOL,
+    (payload: SendFormState) => ({ payload }),
+);
 
-export const fillSendForm = (shouldFill: boolean): ProtocolAction => ({
-    type: PROTOCOL.FILL_SEND_FORM,
-    payload: shouldFill,
-});
+export const fillSendForm = createAction<boolean>(PROTOCOL.FILL_SEND_FORM);
 
-const saveCoinProtocol = (coinProtocol: CoinProtocol): ProtocolAction => ({
-    type: PROTOCOL.SAVE_COIN_PROTOCOL,
-    payload: coinProtocol,
-});
+export const resetProtocol = createAction(PROTOCOL.RESET);
 
 export type HandleProtocolRequestDeps = {
     services: DesktopAnalyticsDep & FindNetworkSymbolForProtocolDep & SuiteRouterHistoryDep;
@@ -95,7 +85,3 @@ export const handleProtocolRequest =
             }
         }
     };
-
-export const resetProtocol = (): ProtocolAction => ({
-    type: PROTOCOL.RESET,
-});

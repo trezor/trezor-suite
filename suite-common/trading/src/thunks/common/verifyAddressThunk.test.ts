@@ -290,10 +290,13 @@ describe('verifyAddressThunk', () => {
             .getActions()
             .find(action => action.type === 'mockedLogErrorThunk');
 
-        expect(actionToast?.payload).toEqual({
-            tradingType: 'buy',
-            toastType: 'verify-address-error',
-            errorMessage: error,
+        expect(actionToast).toEqual({
+            type: 'mockedLogErrorThunk',
+            payload: {
+                tradingType: 'buy',
+                toastType: 'verify-address-error',
+                errorMessage: error,
+            },
         });
 
         expect(store.getState().wallet.trading.verifiedAddress).toEqual(undefined);

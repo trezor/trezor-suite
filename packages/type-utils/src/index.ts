@@ -1,5 +1,6 @@
 export type * from './array';
 export * from './branded';
+export * from './createTypeGuardByType';
 export * from './exhaustive';
 export type * from './object';
 export type * from './overloads';

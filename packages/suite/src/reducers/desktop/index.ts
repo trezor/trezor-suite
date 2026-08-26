@@ -1,7 +1,8 @@
+import type { UnknownAction } from '@reduxjs/toolkit';
+
 import type { HandshakeElectron } from '@trezor/suite-desktop-api';
 
-import { SUITE } from 'src/actions/suite/constants';
-import { type Action } from 'src/types/suite';
+import { desktopHandshake } from 'src/actions/suite/suiteActions';
 
 export type DesktopState = null | Pick<HandshakeElectron, 'paths' | 'urls'>;
 
@@ -9,16 +10,14 @@ const initialState: DesktopState = null;
 
 export const desktopReducer = (
     state: DesktopState = initialState,
-    action: Action,
+    action: UnknownAction,
 ): DesktopState => {
-    switch (action.type) {
-        case SUITE.DESKTOP_HANDSHAKE:
-            return {
-                ...state,
-                ...action.payload,
-            };
-
-        default:
-            return state;
+    if (desktopHandshake.match(action)) {
+        return {
+            ...state,
+            ...action.payload,
+        };
     }
+
+    return state;
 };

@@ -20,10 +20,8 @@ export const setBaseCurrency = createAction(
 );
 
 export const changeNetworks = createAction(
-    WALLET_SETTINGS.CHANGE_NETWORKS,
-    (payload: NetworkSymbol[]) => ({
-        payload,
-    }),
+    '@wallet-settings/change-networks',
+    (payload: NetworkSymbol[]) => ({ payload }),
 );
 
 export const setMevProtection = createAction(
@@ -53,31 +51,12 @@ export const setAddressDisplayType = createAction(
     (value: AddressDisplayOptions) => ({ payload: value }),
 );
 
-export type ChangeCoinVisibilityAction = {
-    type: typeof WALLET_SETTINGS.CHANGE_COIN_VISIBILITY;
-    payload: {
-        symbol: NetworkSymbol;
-        shouldBeVisible: boolean;
-    };
-};
+export const changeCoinVisibilityEvent = createAction(
+    WALLET_SETTINGS.CHANGE_COIN_VISIBILITY,
+    (payload: { symbol: NetworkSymbol; shouldBeVisible: boolean }) => ({ payload }),
+);
 
-export type SetBitcoinAmountUnitsAction = {
-    type: typeof WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS;
-    payload: PROTO.AmountUnit;
-};
-
-export type WalletSettingsAction =
-    | ReturnType<typeof changeNetworks>
-    | ReturnType<typeof setBaseCurrency>
-    | ReturnType<typeof setSuspiciousTransactionsFilter>
-    | ReturnType<typeof setAutoEjectEnabled>
-    | ReturnType<typeof setMevProtection>
-    | ReturnType<typeof setNetworkReserve>
-    | ReturnType<typeof setAddressDisplayType>
-    | ChangeCoinVisibilityAction
-    | SetBitcoinAmountUnitsAction;
-
-export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): SetBitcoinAmountUnitsAction => ({
-    type: WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,
-    payload: units,
-});
+export const setBitcoinAmountUnits = createAction(
+    WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,
+    (payload: PROTO.AmountUnit) => ({ payload }),
+);

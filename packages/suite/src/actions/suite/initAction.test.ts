@@ -22,6 +22,7 @@ import {
     suiteSettingsActions,
     suiteSettingsInitialState,
 } from '@suite/settings';
+import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareDeviceReducer } from '@suite-common/device';
@@ -123,7 +124,7 @@ const fixtures: Fixture[] = [
             expectedApp: 'start',
         },
         actions: [
-            SUITE.INIT,
+            onSuiteInit.type,
             initDevices.pending.type,
             initDevices.fulfilled.type,
             suiteSettingsActions.setLanguage.type,
@@ -167,7 +168,7 @@ const fixtures: Fixture[] = [
             initStakeDataThunk.pending.type,
             stakeDataActions.fetchStakeDataRequest.type,
             walletConnectInitThunk.pending.type,
-            SUITE.READY,
+            onSuiteReady.type,
             stakeDataActions.fetchStakeDataFailure.type,
         ],
     },
@@ -179,7 +180,7 @@ const fixtures: Fixture[] = [
             initialRun: false,
         },
         actions: [
-            SUITE.INIT,
+            onSuiteInit.type,
             initDevices.pending.type,
             initDevices.fulfilled.type,
             suiteSettingsActions.setLanguage.type,
@@ -219,7 +220,7 @@ const fixtures: Fixture[] = [
             initStakeDataThunk.pending.type,
             stakeDataActions.fetchStakeDataRequest.type,
             walletConnectInitThunk.pending.type,
-            SUITE.READY,
+            onSuiteReady.type,
             stakeDataActions.fetchStakeDataFailure.type,
         ],
     },
@@ -230,7 +231,7 @@ const fixtures: Fixture[] = [
             expectedApp: 'unknown',
         },
         actions: [
-            SUITE.INIT,
+            onSuiteInit.type,
             initDevices.pending.type,
             initDevices.fulfilled.type,
             suiteSettingsActions.setLanguage.type,
@@ -269,7 +270,7 @@ const fixtures: Fixture[] = [
             initStakeDataThunk.pending.type,
             stakeDataActions.fetchStakeDataRequest.type,
             walletConnectInitThunk.pending.type,
-            SUITE.READY,
+            onSuiteReady.type,
             stakeDataActions.fetchStakeDataFailure.type,
         ],
     },
@@ -281,7 +282,7 @@ const fixtures: Fixture[] = [
             expectedApp: 'version',
         },
         actions: [
-            SUITE.INIT,
+            onSuiteInit.type,
             initDevices.pending.type,
             initDevices.fulfilled.type,
             suiteSettingsActions.setLanguage.type,

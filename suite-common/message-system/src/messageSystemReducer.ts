@@ -1,4 +1,4 @@
-import { type AnyAction } from '@reduxjs/toolkit';
+import { type PayloadAction, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
@@ -28,6 +28,10 @@ const initialState: MessageSystemState = {
 };
 
 export const messageSystemInitialState = initialState;
+
+type StorageLoadMessageSystemAction = PayloadAction<{
+    messageSystem?: Partial<MessageSystemState>;
+}>;
 
 export const messageSystemPersistedWhitelist: Array<keyof MessageSystemState> = [
     'config',
@@ -172,8 +176,9 @@ export const prepareMessageSystemReducer = createReducerWithExtraDeps(
                 },
             )
             .addMatcher(
-                action => action.type === extra.actionTypes.storageLoad,
-                (state, action: AnyAction) => ({
+                (action: UnknownAction): action is StorageLoadMessageSystemAction =>
+                    action.type === extra.actionTypes.storageLoad,
+                (state, action) => ({
                     ...state,
                     ...action.payload.messageSystem,
                 }),

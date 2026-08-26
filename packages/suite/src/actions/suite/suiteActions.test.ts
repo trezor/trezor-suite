@@ -148,7 +148,10 @@ describe('Suite Actions', () => {
             actions.forEach((a, i) => {
                 const result = f.result[i];
                 if (!result) throw new Error(`Missing expected result at index ${i}`);
-                expect(a.payload.device).toMatchObject(result);
+                expect(deviceActions.forgetDevice.match(a)).toBe(true);
+                if (deviceActions.forgetDevice.match(a)) {
+                    expect(a.payload.device).toMatchObject(result);
+                }
             });
         });
     });

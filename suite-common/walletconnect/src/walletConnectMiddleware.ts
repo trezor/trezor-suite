@@ -1,6 +1,10 @@
-import { type ActionCreatorWithPayload, type ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
+import {
+    type ActionCreatorWithPayload,
+    type ActionCreatorWithoutPayload,
+    type UnknownAction,
+} from '@reduxjs/toolkit';
 
-import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type UserContextPayload } from '@suite-common/suite-types';
 
 import { walletConnectActions } from './walletConnectActions';
@@ -17,7 +21,7 @@ type WalletConnectMiddlewareState = void;
 
 export const prepareWalletConnectMiddleware = createMiddlewareWithExtraDeps<
     WalletConnectMiddlewareDeps,
-    AnyAction,
+    UnknownAction,
     WalletConnectMiddlewareState
 >(async (action, { dispatch, next, extra }) => {
     await next(action);
@@ -36,7 +40,7 @@ export const prepareWalletConnectMiddleware = createMiddlewareWithExtraDeps<
 
     // TODO: remove after feature is out of experimental
     if (
-        action.type === '@suite/set-experimental-features' &&
+        walletConnectActions.setExperimentalFeatures.match(action) &&
         Array.isArray(action.payload.enabledFeatures) &&
         action.payload.enabledFeatures.includes('walletconnect')
     ) {

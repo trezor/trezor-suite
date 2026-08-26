@@ -6,6 +6,7 @@ import { type DeepPartial } from 'react-hook-form';
 import { waitFor } from '@testing-library/react';
 
 import { debugInitialState } from '@suite/debug';
+import { openModal } from '@suite/modal';
 import { suiteSettingsInitialState } from '@suite/settings';
 import {
     configureMockStore,
@@ -431,7 +432,12 @@ describe('useSendForm hook', () => {
                 store.subscribe(() => {
                     const actions = filterThunkActionTypes(store.getActions());
                     const lastAction = actions[actions.length - 1];
-                    if (lastAction?.payload?.decision) {
+                    if (
+                        openModal.match(lastAction) &&
+                        lastAction.payload.type === 'review-transaction' &&
+                        'decision' in lastAction.payload &&
+                        lastAction.payload.decision
+                    ) {
                         lastAction.payload.decision.resolve(true); // always resolve push tx request
                     }
                 });

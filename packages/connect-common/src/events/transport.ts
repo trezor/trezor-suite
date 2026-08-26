@@ -2,6 +2,7 @@
 // usb dependencies for example. so maybe we are going to split this package into transport-types and transport-rest
 
 import type { TRANSPORT, Transport } from '@trezor/transport-common';
+import { createTypeGuardByType } from '@trezor/type-utils';
 
 import { serializeError } from '../constants/errors';
 import type { ConnectSettingsTransport } from '../types/settings';
@@ -24,6 +25,8 @@ export interface TransportError {
 export type TransportEvent =
     | { type: typeof TRANSPORT.START; payload: TransportInfo }
     | { type: typeof TRANSPORT.ERROR; payload: TransportError };
+
+export const isTransportEventOfType = createTypeGuardByType<TransportEvent>();
 
 export interface TransportSetTransports {
     type: typeof TRANSPORT.SET_TRANSPORTS;

@@ -3,6 +3,7 @@
  */
 import type { DeviceModelInternal, FirmwareRelease, FirmwareType } from '@trezor/device-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { createTypeGuardByType } from '@trezor/type-utils';
 import type { VersionArray } from '@trezor/utils';
 
 import type { DeviceButtonRequest, DeviceThpPairingPayload } from './device';
@@ -305,6 +306,8 @@ export type UiEvent =
     | FirmwareDisconnect
     | UiRequestFirmwareDownloaded
     | UiRequestDiscoveryAccounts;
+
+export const isUiEventOfType = createTypeGuardByType<UiEvent>();
 
 export type UiEventMessage = UiEvent & {
     event: typeof UI_EVENT;

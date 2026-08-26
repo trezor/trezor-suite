@@ -21,7 +21,6 @@ import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { cloneObject, throwError } from '@trezor/utils';
 
-import type { MetadataAction } from './metadataActions';
 import * as metadataActions from './metadataActions';
 import * as METADATA from './metadataConstants';
 import * as metadataDataThunks from './metadataDataThunks';
@@ -483,9 +482,7 @@ export const setDeviceMetadataKey =
 
         if (result.success) {
             if (!getState().metadata.enabled) {
-                dispatch({
-                    type: METADATA.ENABLE,
-                });
+                dispatch(metadataActions.enableMetadata());
             }
 
             const { walletDescriptor } = parseStaticSessionId(device.state.staticSessionId);
@@ -493,9 +490,8 @@ export const setDeviceMetadataKey =
             const fileName = metadataUtils.deriveFilenameForLabeling(metaKey, encryptionVersion);
             const aesKey = metadataUtils.deriveAesKey(metaKey);
 
-            dispatch({
-                type: METADATA.SET_DEVICE_METADATA,
-                payload: {
+            dispatch(
+                metadataActions.setDeviceMetadata({
                     deviceState: device.state?.staticSessionId,
                     metadata: {
                         ...device.metadata,
@@ -505,8 +501,8 @@ export const setDeviceMetadataKey =
                             key: result.payload.value,
                         },
                     },
-                },
-            });
+                }),
+            );
 
             return { success: true };
         }
@@ -590,13 +586,12 @@ export const init =
         dispatch({ type: METADATA.SET_INITIATING, payload: true });
         if (getState().metadata.error?.[device.state.staticSessionId]) {
             // remove error note about failed migration potentially set in a previous run
-            dispatch({
-                type: METADATA.SET_ERROR_FOR_DEVICE,
-                payload: {
+            dispatch(
+                metadataActions.setErrorForDevice({
                     deviceState: device.state.staticSessionId,
                     failed: false,
-                },
-            });
+                }),
+            );
         }
 
         // 1. set metadata enabled globally
@@ -612,13 +607,12 @@ export const init =
             if (!result?.success) {
                 dispatch({ type: METADATA.SET_INITIATING, payload: false });
                 dispatch({ type: METADATA.SET_EDITING, payload: undefined });
-                dispatch({
-                    type: METADATA.SET_ERROR_FOR_DEVICE,
-                    payload: {
+                dispatch(
+                    metadataActions.setErrorForDevice({
                         deviceState: device.state.staticSessionId,
                         failed: true,
-                    },
-                });
+                    }),
+                );
 
                 // NOTE: when the request for the device fails / is cancelled on the device
                 // disable metadata labeling for all but only when it was off before this invocation
@@ -702,8 +696,3 @@ export const init =
 
         return true;
     };
-
-export const setEditing = (payload: string | undefined): MetadataAction => ({
-    type: METADATA.SET_EDITING,
-    payload,
-});

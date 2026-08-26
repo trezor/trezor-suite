@@ -9,7 +9,7 @@ import { Icon, Input } from '@trezor/components';
 import { Row } from '@trezor/components/src/components/Flex/Flex';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 
-import { SUITE } from 'src/actions/suite/constants';
+import { setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { ExportAction } from './ExportAction';
@@ -78,10 +78,7 @@ export const TransactionListActions = ({
         if (transactionHistoryPrefill) {
             onSearch(transactionHistoryPrefill);
             setSearch(transactionHistoryPrefill);
-            dispatch({
-                type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
-                payload: '',
-            });
+            dispatch(setTransactionHistoryPrefill(''));
         }
     }, [transactionHistoryPrefill, setSearch, onSearch, account, dispatch]);
 

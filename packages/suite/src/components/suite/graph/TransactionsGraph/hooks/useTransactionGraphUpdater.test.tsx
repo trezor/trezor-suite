@@ -1,7 +1,8 @@
 import { type PropsWithChildren } from 'react';
 
+import { type UnknownAction } from '@reduxjs/toolkit';
+
 import { QueryClient, QueryClientProvider } from '@suite-common/react-query';
-import { type AnyAction } from '@suite-common/redux-utils';
 import {
     act,
     configureMockStore,
@@ -35,9 +36,18 @@ const setTransactions = (transactions: WalletAccountTransaction[]) => ({
     payload: transactions,
 });
 
-const walletReducer = (state: WalletState = initialWalletState, action: AnyAction): WalletState =>
+const walletReducer = (
+    state: WalletState = initialWalletState,
+    action: UnknownAction,
+): WalletState =>
     action.type === SET_TRANSACTIONS
-        ? { transactions: { transactions: { [ACCOUNT_KEY]: action.payload } } }
+        ? {
+              transactions: {
+                  transactions: {
+                      [ACCOUNT_KEY]: (action as ReturnType<typeof setTransactions>).payload,
+                  },
+              },
+          }
         : state;
 
 const confirmedTransaction = (txid: string) =>

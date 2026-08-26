@@ -1,4 +1,4 @@
-import { type Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch, createAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { selectIsDeviceLocked } from '@suite/locks';
 import { openModal } from '@suite/modal';
@@ -52,183 +52,135 @@ import {
 } from './coinjoinUtils';
 import { COORDINATOR_FEE_RATE_MULTIPLIER, type CoinjoinSymbol } from './config';
 
-export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymity: number) =>
-    ({
-        type: COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY,
-        payload: {
-            accountKey,
-            targetAnonymity,
-        },
-    }) as const;
+export const coinjoinAccountUpdateAnonymity = createAction(
+    COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY,
+    (accountKey: string, targetAnonymity: number) => ({
+        payload: { accountKey, targetAnonymity },
+    }),
+);
 
-export const coinjoinAccountUpdateMaxMiningFee = (accountKey: string, maxFeePerVbyte: number) =>
-    ({
-        type: COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE,
-        payload: {
-            accountKey,
-            maxFeePerVbyte,
-        },
-    }) as const;
+export const coinjoinAccountUpdateMaxMiningFee = createAction(
+    COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE,
+    (accountKey: string, maxFeePerVbyte: number) => ({
+        payload: { accountKey, maxFeePerVbyte },
+    }),
+);
 
-export const coinjoinAccountToggleSkipRounds = (accountKey: string) =>
-    ({
-        type: COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS,
-        payload: {
-            accountKey,
-        },
-    }) as const;
+export const coinjoinAccountToggleSkipRounds = createAction(
+    COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS,
+    (accountKey: string) => ({ payload: { accountKey } }),
+);
 
-export const coinjoinAccountUpdateSetupOption = (accountKey: string, isRecommended: boolean) =>
-    ({
-        type: COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION,
-        payload: {
-            accountKey,
-            isRecommended,
-        },
-    }) as const;
+export const coinjoinAccountUpdateSetupOption = createAction(
+    COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION,
+    (accountKey: string, isRecommended: boolean) => ({
+        payload: { accountKey, isRecommended },
+    }),
+);
 
-export const coinjoinAccountSetLiquidityClue = (
-    accountKey: string,
-    rawLiquidityClue: CoinjoinAccount['rawLiquidityClue'],
-) =>
-    ({
-        type: COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE,
-        payload: {
-            accountKey,
-            rawLiquidityClue,
-        },
-    }) as const;
+export const coinjoinAccountSetLiquidityClue = createAction(
+    COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE,
+    (accountKey: string, rawLiquidityClue: CoinjoinAccount['rawLiquidityClue']) => ({
+        payload: { accountKey, rawLiquidityClue },
+    }),
+);
 
-const coinjoinAccountAuthorize = (accountKey: string) =>
-    ({
-        type: COINJOIN.ACCOUNT_AUTHORIZE,
-        payload: {
-            accountKey,
-        },
-    }) as const;
+const coinjoinAccountAuthorize = createAction(COINJOIN.ACCOUNT_AUTHORIZE, (accountKey: string) => ({
+    payload: { accountKey },
+}));
 
-const coinjoinAccountAuthorizeSuccess = (accountKey: string, params: CoinjoinSessionParameters) =>
-    ({
-        type: COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS,
-        payload: {
-            accountKey,
-            params,
-        },
-    }) as const;
+const coinjoinAccountAuthorizeSuccess = createAction(
+    COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS,
+    (accountKey: string, params: CoinjoinSessionParameters) => ({
+        payload: { accountKey, params },
+    }),
+);
 
-const coinjoinAccountAuthorizeFailed = (accountKey: string, error: string) =>
-    ({
-        type: COINJOIN.ACCOUNT_AUTHORIZE_FAILED,
-        payload: {
-            accountKey,
-            error,
-        },
-    }) as const;
+const coinjoinAccountAuthorizeFailed = createAction(
+    COINJOIN.ACCOUNT_AUTHORIZE_FAILED,
+    (accountKey: string, error: string) => ({ payload: { accountKey, error } }),
+);
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const coinjoinAccountUnregister = (accountKey: string) =>
-    ({
-        type: COINJOIN.ACCOUNT_UNREGISTER,
-        payload: {
-            accountKey,
-        },
-    }) as const;
+const coinjoinAccountPreloading = createAction(
+    COINJOIN.ACCOUNT_PRELOADING,
+    (isPreloading: boolean) => ({ payload: { isPreloading } }),
+);
 
-const coinjoinAccountPreloading = (isPreloading: boolean) =>
-    ({
-        type: COINJOIN.ACCOUNT_PRELOADING,
-        payload: {
-            isPreloading,
-        },
-    }) as const;
+const coinjoinSessionRestore = createAction(COINJOIN.SESSION_RESTORE, (accountKey: string) => ({
+    payload: { accountKey },
+}));
 
-const coinjoinSessionRestore = (accountKey: string) =>
-    ({
-        type: COINJOIN.SESSION_RESTORE,
-        payload: {
-            accountKey,
-        },
-    }) as const;
+const coinjoinAccountDiscoveryReset = createAction(
+    COINJOIN.ACCOUNT_DISCOVERY_RESET,
+    (accountKey: string, checkpoint?: CoinjoinDiscoveryCheckpoint) => ({
+        payload: { accountKey, checkpoint },
+    }),
+);
 
-const coinjoinAccountDiscoveryReset = (
-    accountKey: string,
-    checkpoint?: CoinjoinDiscoveryCheckpoint,
-) =>
-    ({
-        type: COINJOIN.ACCOUNT_DISCOVERY_RESET,
-        payload: {
-            accountKey,
-            checkpoint,
-        },
-    }) as const;
+const coinjoinAccountDiscoveryProgress = createAction(
+    COINJOIN.ACCOUNT_DISCOVERY_PROGRESS,
+    (accountKey: string, progress: ScanAccountProgress) => ({
+        payload: { accountKey, progress },
+    }),
+);
 
-const coinjoinAccountDiscoveryProgress = (accountKey: string, progress: ScanAccountProgress) =>
-    ({
-        type: COINJOIN.ACCOUNT_DISCOVERY_PROGRESS,
-        payload: {
-            accountKey,
-            progress,
-        },
-    }) as const;
+const coinjoinSessionStarting = createAction(
+    COINJOIN.SESSION_STARTING,
+    (accountKey: string, isStarting: boolean) => ({ payload: { accountKey, isStarting } }),
+);
 
-const coinjoinSessionStarting = (accountKey: string, isStarting: boolean) =>
-    ({
-        type: COINJOIN.SESSION_STARTING,
-        payload: {
-            accountKey,
-            isStarting,
-        },
-    }) as const;
+export const coinjoinSessionAutostop = createAction(
+    COINJOIN.SESSION_AUTOSTOP,
+    (accountKey: string, isAutostopped: boolean) => ({
+        payload: { accountKey, isAutostopped },
+    }),
+);
 
-export const coinjoinSessionAutostop = (accountKey: string, isAutostopped: boolean) =>
-    ({
-        type: COINJOIN.SESSION_AUTOSTOP,
-        payload: {
-            accountKey,
-            isAutostopped,
-        },
-    }) as const;
+const coinjoinAccountUpdateAnonymityLevels = createAction(
+    COINJOIN.ACCOUNT_ADD_ANONYMITY_LEVEL,
+    (accountKey: string, level: number) => ({ payload: { accountKey, level } }),
+);
 
-const coinjoinAccountUpdateAnonymityLevels = (accountKey: string, level: number) =>
-    ({
-        type: COINJOIN.ACCOUNT_ADD_ANONYMITY_LEVEL,
-        payload: {
-            accountKey,
-            level,
-        },
-    }) as const;
+export const updateLastAnonymityReportTimestamp = createAction(
+    COINJOIN.ACCOUNT_UPDATE_LAST_REPORT_TIMESTAMP,
+    (accountKey: string) => ({ payload: { accountKey } }),
+);
 
-export const updateLastAnonymityReportTimestamp = (accountKey: string) =>
-    ({
-        type: COINJOIN.ACCOUNT_UPDATE_LAST_REPORT_TIMESTAMP,
-        payload: { accountKey },
-    }) as const;
+export const updateCoinjoinConfig = createAction(
+    COINJOIN.UPDATE_CONFIG,
+    (payload: Partial<CoinjoinConfig>) => ({ payload }),
+);
 
-export const updateCoinjoinConfig = (payload: Partial<CoinjoinConfig>) =>
-    ({
-        type: COINJOIN.UPDATE_CONFIG,
-        payload,
-    }) as const;
+export const isCoinjoinAccountPersistenceAction = isAnyOf(
+    coinjoinAccountDiscoveryReset,
+    coinjoinAccountDiscoveryProgress,
+    coinjoinAccountAuthorizeSuccess,
+    coinjoinClientActions.coinjoinAccountUnregister,
+    coinjoinAccountUpdateSetupOption,
+    coinjoinAccountUpdateAnonymity,
+    coinjoinAccountUpdateMaxMiningFee,
+    coinjoinAccountToggleSkipRounds,
+);
 
-export type CoinjoinAccountAction =
-    | ReturnType<typeof coinjoinAccountUpdateAnonymity>
-    | ReturnType<typeof coinjoinAccountUpdateMaxMiningFee>
-    | ReturnType<typeof coinjoinAccountToggleSkipRounds>
-    | ReturnType<typeof coinjoinAccountUpdateSetupOption>
-    | ReturnType<typeof coinjoinAccountSetLiquidityClue>
-    | ReturnType<typeof coinjoinAccountAuthorize>
-    | ReturnType<typeof coinjoinAccountAuthorizeSuccess>
-    | ReturnType<typeof coinjoinAccountAuthorizeFailed>
-    | ReturnType<typeof coinjoinAccountUnregister>
-    | ReturnType<typeof coinjoinAccountDiscoveryReset>
-    | ReturnType<typeof coinjoinAccountDiscoveryProgress>
-    | ReturnType<typeof updateCoinjoinConfig>
-    | ReturnType<typeof coinjoinAccountPreloading>
-    | ReturnType<typeof coinjoinSessionRestore>
-    | ReturnType<typeof coinjoinSessionStarting>
-    | ReturnType<typeof coinjoinSessionAutostop>
-    | ReturnType<typeof updateLastAnonymityReportTimestamp>
-    | ReturnType<typeof coinjoinAccountUpdateAnonymityLevels>;
+export type CoinjoinAccountAction = ReturnType<
+    | typeof coinjoinAccountUpdateAnonymity
+    | typeof coinjoinAccountUpdateMaxMiningFee
+    | typeof coinjoinAccountToggleSkipRounds
+    | typeof coinjoinAccountUpdateSetupOption
+    | typeof coinjoinAccountSetLiquidityClue
+    | typeof coinjoinAccountAuthorize
+    | typeof coinjoinAccountAuthorizeSuccess
+    | typeof coinjoinAccountAuthorizeFailed
+    | typeof coinjoinAccountDiscoveryReset
+    | typeof coinjoinAccountDiscoveryProgress
+    | typeof updateCoinjoinConfig
+    | typeof coinjoinAccountPreloading
+    | typeof coinjoinSessionRestore
+    | typeof coinjoinSessionStarting
+    | typeof coinjoinSessionAutostop
+    | typeof updateLastAnonymityReportTimestamp
+    | typeof coinjoinAccountUpdateAnonymityLevels
+>;
 
 const EMPTY_ACCOUNT_INFO = {
     addresses: { change: [], used: [], unused: [] },

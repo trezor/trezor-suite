@@ -1,4 +1,4 @@
-import { type AnyAction } from '@reduxjs/toolkit';
+import { type PayloadAction, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { type ThpSuiteCredentials } from '@suite-common/suite-types';
@@ -7,6 +7,7 @@ import {
     type DeviceThpCredentialsChanged,
     type DeviceThpPairingStatusChanged,
     UI_REQUEST,
+    isUiEventOfType,
 } from '@trezor/connect';
 import type { ThpCredentials } from '@trezor/protocol';
 
@@ -52,6 +53,9 @@ const addCredential = (credentials: ThpSuiteCredentials[], credential: ThpCreden
         .concat([{ ...credential, connectionCounter: 0 }]);
 
 type ThpReducerDeps = ActionTypesDep<'storageLoad'>;
+type StorageLoadThpAction = PayloadAction<{
+    thp?: { credentials?: ThpSuiteCredentials[] };
+}>;
 
 export const prepareThpReducer = createReducerWithExtraDeps<ThpState, ThpReducerDeps>(
     initialThpState,
@@ -131,9 +135,9 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState, ThpReducer
                 },
             )
             .addMatcher(
-                action => action.type === UI_REQUEST.REQUEST_BUTTON,
-                (state, action: AnyAction) => {
-                    const actionName: THPButtonRequestName = action.payload.name;
+                action => isUiEventOfType(action, UI_REQUEST.REQUEST_BUTTON),
+                (state, action) => {
+                    const actionName = action.payload.name as THPButtonRequestName;
                     switch (actionName) {
                         case 'thp_pairing_request':
                             state.step = 'ConfirmConnectionBeforePairing';
@@ -158,8 +162,9 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState, ThpReducer
                 },
             )
             .addMatcher(
-                action => action.type === extra.actionTypes.storageLoad,
-                (state, action: AnyAction) => {
+                (action: UnknownAction): action is StorageLoadThpAction =>
+                    action.type === extra.actionTypes.storageLoad,
+                (state, action) => {
                     state.credentials = action.payload.thp?.credentials ?? [];
                 },
             ),

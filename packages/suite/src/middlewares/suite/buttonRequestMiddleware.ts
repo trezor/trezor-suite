@@ -1,10 +1,11 @@
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
 import { PAYMENT_REQUEST_BUTTON_NAMES, selectAccountByKey } from '@suite-common/wallet-core';
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_REQUEST, isUiEventOfType } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
-import { type Action, type AppState, type Dispatch } from 'src/types/suite';
+import { type AppState } from 'src/types/suite';
 
 const SIGN_TX_NETWORK_TYPES = ['cardano', 'ethereum', 'stellar', 'tron'] as const;
 
@@ -87,11 +88,11 @@ const shouldRemapToSignTx = (
 };
 
 const buttonRequest =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: Dispatch) =>
-    (action: Action): Action => {
+    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
+    (next: Dispatch<UnknownAction>) =>
+    (action: UnknownAction): UnknownAction => {
         if (
-            action.type === UI_REQUEST.FIRMWARE_DISCONNECT &&
+            isUiEventOfType(action, UI_REQUEST.FIRMWARE_DISCONNECT) &&
             action.payload.device.descriptor.apiType === 'bluetooth' &&
             action.payload.device.descriptor.id
         ) {
@@ -106,7 +107,7 @@ const buttonRequest =
         // ugly hack to make Cardano review modal work
         // ugly hack to make Ethereum staking and bump fee review modal on specific devices work
         // root cause of this bug is wrong button request ButtonRequest_Other from CardanoSignTx - should be ButtonRequest_SignTx
-        if (action.type === UI_REQUEST.REQUEST_BUTTON) {
+        if (isUiEventOfType(action, UI_REQUEST.REQUEST_BUTTON)) {
             if (shouldRemapToSignTx(action.payload.code, action.payload.name, api.getState())) {
                 api.dispatch({
                     ...action,

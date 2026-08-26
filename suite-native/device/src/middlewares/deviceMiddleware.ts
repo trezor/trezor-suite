@@ -1,4 +1,4 @@
-import { type AnyAction, isAnyOf } from '@reduxjs/toolkit';
+import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
@@ -22,11 +22,11 @@ import {
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import { setShouldShowAutoEjectAlert } from '@suite-native/settings';
-import { DEVICE } from '@trezor/connect';
+import { DEVICE, isDeviceEventOfType } from '@trezor/connect';
 
-import { isDeviceEventAction, reportDeviceConnectionAnalytics } from '../utils';
+import { reportDeviceConnectionAnalytics } from '../utils';
 
-const isActionDeviceRelated = (action: AnyAction): boolean => {
+const isActionDeviceRelated = (action: UnknownAction): boolean => {
     if (
         isAnyOf(
             deviceActions.selectDevice,
@@ -48,10 +48,10 @@ type DeviceMiddlewareState = AccountsRootState & DiscoveryRootState & NativeBlue
 
 export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps<
     DeviceMiddlewareDeps,
-    AnyAction,
+    UnknownAction,
     DeviceMiddlewareState
 >((action, { dispatch, next, getState, extra }) => {
-    if (isDeviceEventAction(action, DEVICE.DISCONNECT)) {
+    if (deviceActions.deviceDisconnect.match(action)) {
         dispatch(
             forgetDisconnectedDevices({
                 device: action.payload,
@@ -83,36 +83,26 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps<
         }
     }
 
-    switch (action.type) {
-        case DEVICE.CONNECT: {
-            reportDeviceConnectionAnalytics(action.payload.device, extra.services.analytics);
-            break;
-        }
-        case DEVICE.DISCONNECT:
-            dispatch(handleDeviceDisconnect(action.payload));
+    if (deviceActions.connectDevice.match(action)) {
+        reportDeviceConnectionAnalytics(action.payload.device, extra.services.analytics);
+    } else if (deviceActions.deviceDisconnect.match(action)) {
+        dispatch(handleDeviceDisconnect(action.payload));
 
-            clearAndUnlockDeviceAccessQueue();
-            break;
-
-        case DEVICE.FIRMWARE_VERSION_CHANGED: {
-            const { device, oldVersion, newVersion } = action.payload;
-            reportSecurityCheck({
-                level: 'error',
-                checkType: 'Firmware version',
-                contextData: {
-                    model: device?.features?.internal_model,
-                    revision: device?.features?.revision,
-                    oldVersion,
-                    newVersion,
-                    vendor: device?.features?.fw_vendor,
-                    error: 'Firmware version changed unexpectedly.',
-                },
-            });
-            break;
-        }
-
-        default:
-            break;
+        clearAndUnlockDeviceAccessQueue();
+    } else if (isDeviceEventOfType(action, DEVICE.FIRMWARE_VERSION_CHANGED)) {
+        const { device, oldVersion, newVersion } = action.payload;
+        reportSecurityCheck({
+            level: 'error',
+            checkType: 'Firmware version',
+            contextData: {
+                model: device?.features?.internal_model,
+                revision: device?.features?.revision,
+                oldVersion,
+                newVersion,
+                vendor: device?.features?.fw_vendor,
+                error: 'Firmware version changed unexpectedly.',
+            },
+        });
     }
 
     if (isActionDeviceRelated(action)) {

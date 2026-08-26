@@ -1,4 +1,6 @@
-import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { type UnknownAction } from '@reduxjs/toolkit';
+
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 
 import { accountsActions } from './accountsActions';
 import {
@@ -11,7 +13,7 @@ type AccountsMiddlewareState = AccountsRefreshTimeRootState;
 
 export const prepareAccountsMiddleware = createMiddlewareWithExtraDeps<
     void,
-    AnyAction,
+    UnknownAction,
     AccountsMiddlewareState
 >((action, { dispatch, next, getState }) => {
     // propagate action to reducers (the accountsRefreshTime slice records the refresh timestamp

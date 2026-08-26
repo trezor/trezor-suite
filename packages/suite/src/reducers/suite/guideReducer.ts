@@ -1,9 +1,18 @@
+import type { UnknownAction } from '@reduxjs/toolkit';
+
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
 import { variables } from '@trezor/components';
 import * as indexNodeJSON from '@trezor/suite-data/files/guide/index.json';
 
-import { GUIDE } from 'src/actions/suite/constants';
-import { type Action } from 'src/types/suite';
+import {
+    close,
+    open,
+    openGuideNode,
+    setGuideView,
+    setIndexNode,
+    setWidth,
+    unsetNode,
+} from 'src/actions/suite/guideActions';
 
 export interface GuideState {
     open: boolean;
@@ -24,47 +33,30 @@ export const initialState: GuideState = {
 };
 
 // NOTE: we cannot use immer in this reducer, because GuideCategory mimics the react node and immer uses Object.freeze()
-const guideReducer = (state: GuideState = initialState, action: Action): GuideState => {
-    switch (action.type) {
-        case GUIDE.OPEN:
-            return {
-                ...state,
-                open: true,
-            };
-        case GUIDE.CLOSE:
-            return {
-                ...state,
-                open: false,
-                view: 'GUIDE_DEFAULT',
-            };
-        case GUIDE.SET_VIEW:
-            return {
-                ...state,
-                view: action.payload,
-            };
-        case GUIDE.SET_INDEX_NODE:
-            return {
-                ...state,
-                indexNode: action.payload,
-            };
-        case GUIDE.UNSET_NODE:
-            return {
-                ...state,
-                currentNode: null,
-            };
-        case GUIDE.OPEN_NODE:
-            return {
-                ...state,
-                currentNode: action.payload,
-            };
-        case GUIDE.SET_WIDTH:
-            return {
-                ...state,
-                width: action.payload,
-            };
-        default:
-            return state;
+const guideReducer = (state: GuideState = initialState, action: UnknownAction): GuideState => {
+    if (open.match(action)) {
+        return { ...state, open: true };
     }
+    if (close.match(action)) {
+        return { ...state, open: false, view: 'GUIDE_DEFAULT' };
+    }
+    if (setGuideView.match(action)) {
+        return { ...state, view: action.payload };
+    }
+    if (setIndexNode.match(action)) {
+        return { ...state, indexNode: action.payload };
+    }
+    if (unsetNode.match(action)) {
+        return { ...state, currentNode: null };
+    }
+    if (openGuideNode.match(action)) {
+        return { ...state, currentNode: action.payload };
+    }
+    if (setWidth.match(action)) {
+        return { ...state, width: action.payload };
+    }
+
+    return state;
 };
 
 export default guideReducer;

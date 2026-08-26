@@ -16,6 +16,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { exhaustive } from '@trezor/type-utils';
 import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
 
+import * as metadataActions from './metadataActions';
 import * as METADATA from './metadataConstants';
 import { disposeMetadata } from './metadataDataThunks';
 import * as METADATA_PROVIDER from './metadataProviderConstants';
@@ -128,10 +129,7 @@ export const disconnectProvider =
             providerInstance[dataType] = undefined;
 
             // flush reducer
-            dispatch({
-                type: METADATA.REMOVE_PROVIDER,
-                payload: { clientId },
-            });
+            dispatch(metadataActions.removeMetadataProvider({ clientId }));
             dispatch({
                 type: METADATA.SET_SELECTED_PROVIDER,
                 payload: { dataType, clientId: undefined },
@@ -275,13 +273,12 @@ export const connectProvider =
             return;
         }
 
-        dispatch({
-            type: METADATA.ADD_PROVIDER,
-            payload: {
+        dispatch(
+            metadataActions.addMetadataProvider({
                 ...providerDetails.payload,
                 data: {},
-            },
-        });
+            }),
+        );
 
         extra.services.analytics.report({
             type: events.settingsGeneralLabelingProviderEvent.name,

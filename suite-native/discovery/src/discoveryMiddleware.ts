@@ -1,5 +1,7 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
+
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { type AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import {
@@ -38,7 +40,7 @@ type DiscoveryMiddlewareState = NativeDeviceRootState &
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     void,
-    AnyAction,
+    UnknownAction,
     DiscoveryMiddlewareState
 >((action, { dispatch, next, getState }) => {
     if (deviceActions.forgetDevice.match(action) && action.payload.device.state?.staticSessionId) {
