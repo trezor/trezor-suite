@@ -10,13 +10,14 @@ import {
     AssetRowAccountWithBalance,
     AssetRowToken,
     AssetsModal,
-    ExpandableAssetRowTokens,
+    ExpandableAssetRowGroup,
 } from 'src/components/suite/asset-picker/components';
 import {
     type AssetPickerListItem,
     useExpandableAccountGroups,
     useSearchFilter,
 } from 'src/components/suite/asset-picker/hooks';
+import { createTokenOption } from 'src/components/suite/asset-picker/utils';
 
 import { AssetListWrapper } from './AssetListWrapper';
 import { useBuildTradingAssetOptions } from './hooks/useBuildTradingAssetOptions';
@@ -78,16 +79,26 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
 
                 case 'non-tradable-tokens':
                     return (
-                        <ExpandableAssetRowTokens
+                        <ExpandableAssetRowGroup
                             label="TR_NON_TRADABLE_TOKENS"
                             account={item.account}
-                            tokens={item.tokens}
+                            items={item.tokens.map(token => createTokenOption(item.account, token))}
+                            renderItem={groupItem =>
+                                groupItem.type === 'token' && (
+                                    <AssetRowToken
+                                        token={groupItem.token}
+                                        account={groupItem.account}
+                                        isInsideGroup
+                                        showNoTradingPairText
+                                    />
+                                )
+                            }
                             expanded={item.expanded}
-                            onExpandToggle={updateExpandableAccountGroups}
+                            onExpandToggle={expanded => {
+                                updateExpandableAccountGroups(item.account.key, expanded);
+                            }}
                             height={item.height}
                             dataTestId={`@asset-picker/sell/option/non-tradable-tokens/${item.account.symbol}`}
-                            showTokensPreview
-                            showNoTradingPairText
                         />
                     );
             }

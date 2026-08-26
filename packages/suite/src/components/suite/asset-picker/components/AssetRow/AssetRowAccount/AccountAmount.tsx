@@ -8,29 +8,46 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 
 interface AccountAmountProps {
     account: Account;
+    isFiatPrimary?: boolean;
 }
 
-export function AccountAmount({ account }: AccountAmountProps) {
+export function AccountAmount({ account, isFiatPrimary = false }: AccountAmountProps) {
     const accountBalance = subunitsToUnits({
         value: asAmountSubunit(new BigNumber(account.balance)),
         symbol: account.symbol,
     });
 
+    const cryptoAmount = (
+        <Text
+            intent="neutral"
+            priority={isFiatPrimary ? 'secondary' : undefined}
+            typographyStyle={isFiatPrimary ? 'body-sm' : 'body-md'}
+        >
+            <FormattedCryptoAmount symbol={account.symbol} value={accountBalance} isBalance />
+        </Text>
+    );
+
+    const fiat = (
+        <Text
+            intent="neutral"
+            priority={isFiatPrimary ? undefined : 'secondary'}
+            typographyStyle={isFiatPrimary ? 'body-md' : 'body-sm'}
+        >
+            <BaseCurrencyValue
+                symbol={account.symbol}
+                amount={accountBalance}
+                fiatAmountFormatterOptions={{
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                }}
+            />
+        </Text>
+    );
+
     return (
         <Column alignItems="flex-end">
-            <Text intent="neutral" typographyStyle="body-md">
-                <FormattedCryptoAmount symbol={account.symbol} value={accountBalance} isBalance />
-            </Text>
-            <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
-                <BaseCurrencyValue
-                    symbol={account.symbol}
-                    amount={accountBalance}
-                    fiatAmountFormatterOptions={{
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 0,
-                    }}
-                />
-            </Text>
+            {isFiatPrimary ? fiat : cryptoAmount}
+            {isFiatPrimary ? cryptoAmount : fiat}
         </Column>
     );
 }
