@@ -95,7 +95,33 @@ describe('backend/BackendManager', () => {
         await delay(1000);
         expectExactMessages('blockchain-error', 'blockchain-reconnecting');
 
-        await delay(2000);
+        await delay(2500);
         expectExactMessages('blockchain-error', 'blockchain-reconnecting');
+    });
+
+    it('grows the reconnect delay while a backend keeps dropping, and resets it once one holds', async () => {
+        const delays: number[] = [];
+        postMessage = jest.fn((message: CoreEventMessage) => {
+            if (message.type === 'blockchain-reconnecting') {
+                delays.push(message.payload.time - Date.now());
+            }
+        });
+
+        let backend = await manager.getOrConnect({ coinInfo, postMessage });
+
+        for (const expectedDelay of [1000, 2500, 5000]) {
+            await backend.subscribeBlocks();
+            backend.link.emit('disconnected');
+            expect(delays.at(-1)).toBe(expectedDelay);
+
+            await delay(expectedDelay);
+            backend = await manager.getOrConnect({ coinInfo, postMessage });
+        }
+
+        await backend.subscribeBlocks();
+        await delay(30000);
+        backend.link.emit('disconnected');
+
+        expect(delays.at(-1)).toBe(1000);
     });
 });
