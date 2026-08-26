@@ -55,7 +55,7 @@ export const YieldDepositWrapScreen = () => {
         bottomSheetRef: infoBottomSheetRef,
         closeModal: closeInfoBottomSheet,
         openModal: openInfoBottomSheet,
-    } = useBottomSheetModal();
+    } = useBottomSheetModal({ isNestedSheet: true });
 
     const yieldFlowData = useYieldFlowData(route.params);
 
@@ -167,11 +167,6 @@ export const YieldDepositWrapScreen = () => {
             navigation.replace(YieldStackRoutes.YieldDeposit, route.params);
         }
     }, [isFocused, navigation, route.params, session]);
-
-    const handleCloseInfoBottomSheet = useCallback(() => {
-        closeInfoBottomSheet();
-        step.reopenPendingBottomSheet();
-    }, [closeInfoBottomSheet, step]);
 
     if (resolutionStatus !== 'resolved' || !isWrappedNativeVault) {
         return null;
@@ -339,7 +334,7 @@ export const YieldDepositWrapScreen = () => {
                 ref={infoBottomSheetRef}
                 apy={apy}
                 bonusRewardTokenSymbol={bonusRewardTokenSymbol}
-                onClose={handleCloseInfoBottomSheet}
+                onClose={closeInfoBottomSheet}
                 tokenSymbol={tokenSymbol}
                 vaultTokenSymbol={vaultTokenSymbol}
                 account={account}

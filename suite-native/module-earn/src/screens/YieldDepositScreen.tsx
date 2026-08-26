@@ -71,7 +71,7 @@ export const YieldDepositScreen = () => {
         bottomSheetRef: infoBottomSheetRef,
         closeModal: closeInfoBottomSheet,
         openModal: openInfoBottomSheet,
-    } = useBottomSheetModal();
+    } = useBottomSheetModal({ isNestedSheet: true });
 
     const {
         bottomSheetRef: simulationBottomSheetRef,
@@ -129,7 +129,6 @@ export const YieldDepositScreen = () => {
         pendingBottomSheetRef,
         pendingModalProps,
         pendingTransaction: actionPendingTransaction,
-        reopenPendingBottomSheet,
     } = useYieldPendingTransaction({
         accountKey: account?.key,
         isFocused,
@@ -370,10 +369,6 @@ export const YieldDepositScreen = () => {
         openInfoBottomSheet();
     }, [account?.symbol, analytics, openInfoBottomSheet, yieldFlowData.vault?.id]);
 
-    const handleCloseInfoBottomSheet = useCallback(() => {
-        closeInfoBottomSheet();
-        reopenPendingBottomSheet();
-    }, [closeInfoBottomSheet, reopenPendingBottomSheet]);
     const handleCloseDeposit = useCallback(() => {
         navigateToInitialScreen();
 
@@ -521,7 +516,7 @@ export const YieldDepositScreen = () => {
                 ref={infoBottomSheetRef}
                 apy={apy}
                 bonusRewardTokenSymbol={bonusRewardTokenSymbol}
-                onClose={handleCloseInfoBottomSheet}
+                onClose={closeInfoBottomSheet}
                 tokenSymbol={tokenSymbol}
                 vaultTokenSymbol={vaultTokenSymbol}
                 account={account}

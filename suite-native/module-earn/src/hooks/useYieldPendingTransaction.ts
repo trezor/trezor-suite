@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { type YieldPendingTransactionState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -71,18 +71,11 @@ export const useYieldPendingTransaction = ({
         openPendingBottomSheet();
     }, [closePendingBottomSheet, isFocused, matchingPendingTransaction, openPendingBottomSheet]);
 
-    const reopenPendingBottomSheet = useCallback(() => {
-        if (matchingPendingTransaction !== undefined) {
-            requestAnimationFrame(openPendingBottomSheet);
-        }
-    }, [matchingPendingTransaction, openPendingBottomSheet]);
-
     return {
         displayedPendingTransaction,
         isSheetPresented,
         pendingBottomSheetRef,
         pendingModalProps,
         pendingTransaction: matchingPendingTransaction,
-        reopenPendingBottomSheet,
     };
 };

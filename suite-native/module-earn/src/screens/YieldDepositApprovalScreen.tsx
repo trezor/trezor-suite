@@ -71,7 +71,7 @@ export const YieldDepositApprovalScreen = () => {
         bottomSheetRef: infoBottomSheetRef,
         closeModal: closeInfoBottomSheet,
         openModal: openInfoBottomSheet,
-    } = useBottomSheetModal();
+    } = useBottomSheetModal({ isNestedSheet: true });
     const {
         bottomSheetRef: approvalLimitBottomSheetRef,
         closeModal: closeApprovalLimitBottomSheet,
@@ -122,7 +122,6 @@ export const YieldDepositApprovalScreen = () => {
         pendingBottomSheetRef,
         pendingModalProps,
         pendingTransaction: approvalPendingTransaction,
-        reopenPendingBottomSheet,
     } = useYieldPendingTransaction({
         accountKey: account?.key,
         isFocused,
@@ -324,11 +323,6 @@ export const YieldDepositApprovalScreen = () => {
         vault: yieldFlowData.vault,
     });
 
-    const handleCloseInfoBottomSheet = useCallback(() => {
-        closeInfoBottomSheet();
-        reopenPendingBottomSheet();
-    }, [closeInfoBottomSheet, reopenPendingBottomSheet]);
-
     const handleSubmit = form.handleSubmit(async ({ amount }) => {
         if (isSubmitDisabled) {
             return;
@@ -508,7 +502,7 @@ export const YieldDepositApprovalScreen = () => {
                 ref={infoBottomSheetRef}
                 apy={apy}
                 bonusRewardTokenSymbol={bonusRewardTokenSymbol}
-                onClose={handleCloseInfoBottomSheet}
+                onClose={closeInfoBottomSheet}
                 tokenSymbol={tokenSymbol}
                 vaultTokenSymbol={vaultTokenSymbol}
                 account={account}
