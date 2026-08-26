@@ -1,5 +1,4 @@
 import type { Socket as TCPSocket } from 'net';
-import type { SocksProxyAgent } from 'socks-proxy-agent';
 import type { TLSSocket } from 'tls';
 
 import type { ISocket, SocketListener } from './interface';
@@ -12,7 +11,6 @@ type Socket = TCPSocket | TLSSocket;
 export type SocketOptions = {
     timeout?: number;
     keepAlive?: boolean;
-    proxyAgent?: SocksProxyAgent;
 };
 
 type Err = Error &
