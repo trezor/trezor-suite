@@ -16151,7 +16151,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/core@npm:1.15.47":
+"@swc/core@npm:^1.15.47":
   version: 1.15.47
   resolution: "@swc/core@npm:1.15.47"
   dependencies:
@@ -45475,7 +45475,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.29.7"
     "@babel/runtime": "npm:7.29.7"
     "@react-native/jest-preset": "npm:0.86.0"
-    "@swc/core": "npm:1.15.47"
+    "@swc/core": "npm:^1.15.47"
     "@swc/jest": "npm:^0.2.39"
     "@trezor/eslint": "workspace:*"
     "@types/jest": "npm:30.0.0"
