@@ -9890,6 +9890,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@solana/rpc@patch:@solana/rpc@npm%3A6.9.0#~/.yarn/patches/@solana-rpc-npm-6.9.0-ba7976484d.patch":
+  version: 6.9.0
+  resolution: "@solana/rpc@patch:@solana/rpc@npm%3A6.9.0#~/.yarn/patches/@solana-rpc-npm-6.9.0-ba7976484d.patch::version=6.9.0&hash=01732c"
+  dependencies:
+    "@solana/errors": "npm:6.9.0"
+    "@solana/fast-stable-stringify": "npm:6.9.0"
+    "@solana/functional": "npm:6.9.0"
+    "@solana/rpc-api": "npm:6.9.0"
+    "@solana/rpc-spec": "npm:6.9.0"
+    "@solana/rpc-spec-types": "npm:6.9.0"
+    "@solana/rpc-transformers": "npm:6.9.0"
+    "@solana/rpc-transport-http": "npm:6.9.0"
+    "@solana/rpc-types": "npm:6.9.0"
+  peerDependencies:
+    typescript: ">=5.4.0"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10/95643f4f12730e896dbb33543ad2ad47855472458a2bf5bac6e62a8f9b829ad145bf76ddb26615baf4344438f036c510f9e477ba36c55ae4021a63697dbfccfb
+  languageName: node
+  linkType: hard
+
 "@solana/signers@npm:6.9.0":
   version: 6.9.0
   resolution: "@solana/signers@npm:6.9.0"
