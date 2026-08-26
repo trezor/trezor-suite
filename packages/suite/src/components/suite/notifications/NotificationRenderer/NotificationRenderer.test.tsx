@@ -263,7 +263,11 @@ describe('NotificationRenderer transaction lifecycle', () => {
             type: 'tx-staked',
         });
 
-        expect(screen.getByText(intl.formatMessage(messages.TOAST_TX_STAKED))).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                intl.formatMessage(messages.TOAST_TX_STAKED, { account: 'descriptor' }),
+            ),
+        ).toBeInTheDocument();
 
         unmount();
         renderNotification({
