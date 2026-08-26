@@ -4,7 +4,7 @@ import { Type } from '@trezor/schema-utils';
 import type { blockchainDisconnect } from './blockchainDisconnect';
 import type { blockchainEstimateFee } from './blockchainEstimateFee';
 import type { blockchainEvmRpcCall } from './blockchainEvmRpcCall';
-import type { blockchainValidateEvmRpcUrl } from './blockchainEvmRpcGetChainId';
+import type { blockchainEvmRpcGetChainId } from './blockchainEvmRpcGetChainId';
 import type { blockchainGetAccountBalanceHistory } from './blockchainGetAccountBalanceHistory';
 import type { blockchainGetContractInfo } from './blockchainGetContractInfo';
 import type { blockchainGetCurrentFiatRates } from './blockchainGetCurrentFiatRates';
@@ -25,7 +25,7 @@ export const TrezorConnectBlockchain = Type.Object({
     blockchainDisconnect: Type.Unsafe<typeof blockchainDisconnect>(),
     blockchainSetCustomBackend: Type.Unsafe<typeof blockchainSetCustomBackend>(),
     blockchainGetInfo: Type.Unsafe<typeof blockchainGetInfo>(),
-    blockchainValidateEvmRpcUrl: Type.Unsafe<typeof blockchainValidateEvmRpcUrl>(),
+    blockchainEvmRpcGetChainId: Type.Unsafe<typeof blockchainEvmRpcGetChainId>(),
     blockchainEstimateFee: Type.Unsafe<typeof blockchainEstimateFee>(),
     blockchainGetAccountBalanceHistory: Type.Unsafe<typeof blockchainGetAccountBalanceHistory>(),
     blockchainGetTransactions: Type.Unsafe<typeof blockchainGetTransactions>(),

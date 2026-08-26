@@ -8,7 +8,7 @@ export { default as backupDevice } from './backupDevice';
 export { default as bleUnpair } from './bleUnpair';
 export { default as blockchainDisconnect } from './blockchainDisconnect';
 export { default as blockchainEstimateFee } from './blockchainEstimateFee';
-export { default as blockchainValidateEvmRpcUrl } from './blockchainEvmRpcGetChainId';
+export { default as blockchainEvmRpcGetChainId } from './blockchainEvmRpcGetChainId';
 export { default as blockchainGetAccountBalanceHistory } from './blockchainGetAccountBalanceHistory';
 export { default as blockchainGetCurrentFiatRates } from './blockchainGetCurrentFiatRates';
 export { default as blockchainGetContractInfo } from './blockchainGetContractInfo';

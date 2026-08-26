@@ -138,10 +138,7 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
 
         for (const url of urls) {
             try {
-                const result = await TrezorConnect.blockchainValidateEvmRpcUrl({
-                    url,
-                    chainId: expectedChainId,
-                });
+                const result = await TrezorConnect.blockchainEvmRpcGetChainId({ url });
 
                 if (!result.success) {
                     setValidationError(
@@ -152,13 +149,12 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
                     return false;
                 }
 
-                if (!result.payload.valid) {
-                    const { actualChainId } = result.payload;
+                if (result.payload.chainId !== expectedChainId) {
                     setValidationError(
                         translationString('TR_CUSTOM_BACKEND_CHAIN_MISMATCH', {
                             url,
                             expected: `${network.name} (${expectedChainId})`,
-                            actual: actualChainId?.toString() || 'unknown',
+                            actual: result.payload.chainId.toString(),
                         }),
                     );
                     setIsValidating(false);
