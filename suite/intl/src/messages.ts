@@ -2000,7 +2000,7 @@ export const messages = defineMessages({
     },
     TR_PASSPHRASE_NON_ASCII_CHARS: {
         defaultMessage:
-            'Use only  <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code>, and <code>these special characters</code>.',
+            'Use only <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code>, and <code>these special characters</code>.',
         id: 'TR_PASSPHRASE_NON_ASCII_CHARS',
     },
     TR_PASSPHRASE_NON_ASCII_CHARS_WARNING: {
@@ -4220,7 +4220,7 @@ export const messages = defineMessages({
     },
     TOAST_TX_SENT: {
         id: 'TOAST_TX_SENT',
-        defaultMessage: 'Transaction from {account} has been broadcast',
+        defaultMessage: 'Sent from {account}',
     },
     TOAST_TX_EXCHANGE_BROADCASTED: {
         id: 'TOAST_TX_EXCHANGE_BROADCASTED',
@@ -4241,7 +4241,7 @@ export const messages = defineMessages({
     },
     TOAST_TX_CONFIRMED: {
         id: 'TOAST_TX_CONFIRMED',
-        defaultMessage: 'Transaction in {account} has been successfully confirmed',
+        defaultMessage: 'Transaction in {account} confirmed',
     },
     TOAST_TX_BUTTON: {
         id: 'TOAST_TX_BUTTON',
@@ -5004,7 +5004,7 @@ export const messages = defineMessages({
     },
     RECEIVE_UNUSED_ADDRESS_LIMIT_REACHED: {
         id: 'RECEIVE_UNUSED_ADDRESS_LIMIT_REACHED',
-        defaultMessage: 'You can generate only 20 unused addresses.',
+        defaultMessage: 'You can generate up to 20 unused addresses.',
     },
     RECEIVE_TABLE_ADDRESS: {
         id: 'RECEIVE_TABLE_ADDRESS',
@@ -6851,7 +6851,7 @@ export const messages = defineMessages({
     TR_CHANGE_OUTPUT_TOOLTIP: {
         id: 'TR_CHANGE_OUTPUT_TOOLTIP',
         defaultMessage:
-            'A change address of this account. The remainder of a send normally returns here.',
+            'A change address of this account. The remainder of a send transaction normally returns here.',
     },
     TR_IN_PENDING_TRANSACTION: {
         id: 'TR_IN_PENDING_TRANSACTION',
@@ -8885,7 +8885,7 @@ export const messages = defineMessages({
     },
     TR_EARN_CLAIM_REWARDS_LABEL: {
         id: 'TR_EARN_CLAIM_REWARDS_LABEL',
-        defaultMessage: 'Bonus rewards to claim',
+        defaultMessage: 'Available bonus rewards',
     },
     TR_EARN_CLAIM_REWARDS_BUTTON: {
         id: 'TR_EARN_CLAIM_REWARDS_BUTTON',
@@ -8893,11 +8893,11 @@ export const messages = defineMessages({
     },
     TR_EARN_CLAIM_REWARDS_TOKENS_LABEL: {
         id: 'TR_EARN_CLAIM_REWARDS_TOKENS_LABEL',
-        defaultMessage: '{tokens, plural, one {# token} other {# tokens}}',
+        defaultMessage: 'in {tokens} tokens',
     },
     TR_EARN_CLAIM_REWARDS_ACCOUNTS_LABEL: {
         id: 'TR_EARN_CLAIM_REWARDS_ACCOUNTS_LABEL',
-        defaultMessage: '{accounts, plural, one {# account} other {# accounts}}',
+        defaultMessage: 'on {accounts} accounts',
     },
     TR_EARN_ENTER_AMOUNT_IN: {
         id: 'TR_EARN_ENTER_AMOUNT_IN',
@@ -10817,7 +10817,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_REWARDS_BADGE: {
         id: 'TR_STAKE_REWARDS_BADGE',
-        defaultMessage: '{count} Epoch',
+        defaultMessage: 'Epoch number {count}',
     },
     TR_EARN_REWARDS_ARE_EMPTY: {
         id: 'TR_EARN_REWARDS_ARE_EMPTY',
@@ -11553,11 +11553,11 @@ export const messages = defineMessages({
     },
     TR_TX_WRAP: {
         id: 'TR_TX_WRAP',
-        defaultMessage: 'Wrap {nativeAmount} into {wrappedAmount}',
+        defaultMessage: 'Wrap {nativeSymbol} into {wrappedAmount}',
     },
     TR_TX_UNWRAP: {
         id: 'TR_TX_UNWRAP',
-        defaultMessage: 'Unwrap {wrappedAmount} into {nativeAmount}',
+        defaultMessage: 'Unwrap {wrappedAmount} to {nativeSymbol}',
     },
     TR_WRAP_NATIVE_TOKEN: {
         id: 'TR_WRAP_NATIVE_TOKEN',
@@ -11767,15 +11767,15 @@ export const messages = defineMessages({
     },
     TOAST_TX_STAKED: {
         id: 'TOAST_TX_STAKED',
-        defaultMessage: 'Your staking transaction is pending',
+        defaultMessage: 'Staked from {account}',
     },
     TOAST_TX_UNSTAKED: {
         id: 'TOAST_TX_UNSTAKED',
-        defaultMessage: 'Your unstaking transaction is pending',
+        defaultMessage: 'Unstaked from {account}',
     },
     TOAST_TX_CLAIMED: {
         id: 'TOAST_TX_CLAIMED',
-        defaultMessage: 'Your claim is pending',
+        defaultMessage: 'Claimed from {account}',
     },
     TOAST_TX_STAKE_BUMPED: {
         id: 'TOAST_TX_STAKE_BUMPED',
