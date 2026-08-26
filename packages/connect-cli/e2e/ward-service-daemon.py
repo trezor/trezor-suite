@@ -211,7 +211,9 @@ from trezorlib.transport.udp import UdpTransport  # noqa: E402
 from trezorlib.ward_service import (  # noqa: E402
     WARD_PORT_OFFSET,
     WardServiceClient,
+    WardServiceClientV1,
     WardServiceServer,
+    service_speaks_codec,
 )
 
 
@@ -304,18 +306,48 @@ class Daemon(MockWardService):
         state_file=None,
         verbose=False,
     ) -> None:
-        self.service = WardServiceClient(
-            transport,
-            # THE IDENTITY THE DEVICE PINS. Passed in so a daemon that comes back is the SAME
-            # daemon: the pin is in flash, and a fresh key is not merely unrecognised but locked
-            # out. Left None on a first run, where the library picks one and the caller stores it.
-            static_privkey=static_privkey,
-            # `wardd-e2e`, not the calling app's manifest: the device PINS the daemon's static key,
-            # and borrowing the CLI's identity would make the two channels indistinguishable to it.
-            # The BUTTON CALLBACK is the one thing worth borrowing from a test client: pairing puts
-            # a screen in front of the user, and here the answer is "press it over debuglink".
-            app=AppManifest(app_name="wardd-e2e", button_callback=button_callback),
-        )
+        # WHICH CLIENT COMES FROM THE ENDPOINT, not from the wallet connection. The service
+        # interface speaks codec v1 on every build by default and THP only behind
+        # `USE_WARD_SERVICE_THP`, so a THP-wallet device normally has a CODEC service endpoint --
+        # and pointing a THP client at one fails deep inside the framing with "Payload too short",
+        # a long way from the cause. `service_speaks_codec` asks the endpoint the one question
+        # only it can answer; see its docstring for why the FRAMING of the reply is not the answer.
+        transport.open()
+        try:
+            speaks_codec = service_speaks_codec(transport)
+        finally:
+            transport.close()
+
+        if speaks_codec is None:
+            raise RuntimeError(
+                "could not tell which transport the WARD service interface speaks; "
+                "is the emulator a --ward-service-channel build?"
+            )
+
+        if speaks_codec:
+            # NO IDENTITY, AND NOTHING TO PERSIST. A codec transport carries no handshake, so the
+            # device pins nobody and `static_privkey`/`app` have nothing to describe. A daemon that
+            # comes back is simply heard again -- see `bind_codec`.
+            log(f"NOTE {_now()} the service interface speaks codec v1")
+            self.service = WardServiceClientV1(transport)
+        else:
+            log(f"NOTE {_now()} the service interface speaks THP")
+            self.service = WardServiceClient(
+                transport,
+                # THE IDENTITY THE DEVICE PINS. Passed in so a daemon that comes back is the SAME
+                # daemon: the pin is in flash, and a fresh key is not merely unrecognised but
+                # locked out. Left None on a first run, where the library picks one and the caller
+                # stores it.
+                static_privkey=static_privkey,
+                # `wardd-e2e`, not the calling app's manifest: the device PINS the daemon's static
+                # key, and borrowing the CLI's identity would make the two channels
+                # indistinguishable to it. The BUTTON CALLBACK is the one thing worth borrowing
+                # from a test client: pairing puts a screen in front of the user, and here the
+                # answer is "press it over debuglink".
+                app=AppManifest(
+                    app_name="wardd-e2e", button_callback=button_callback
+                ),
+            )
         self.server: WardServiceServer | None = None  # set by `open`, below
         self._log = log
         self._verbose = verbose
@@ -600,9 +632,12 @@ def main() -> int:
     # Written AFTER the bind rather than before: a key that never got as far as being pinned is not
     # an identity to come back with, and storing one would make the next run claim to be a daemon
     # this device has never seen.
-    if args.key_file and static_privkey is None:
+    # Only a THP daemon has a key to come back with; a codec one is authorised by the interface
+    # alone, so there is nothing to store and nothing the next run would be missing without it.
+    daemon_key = getattr(daemon.service, "static_privkey", None)
+    if args.key_file and static_privkey is None and daemon_key is not None:
         with open(args.key_file, "w") as handle:
-            handle.write(daemon.service.static_privkey.hex())
+            handle.write(daemon_key.hex())
         log(f"NOTE stored the daemon key in {args.key_file}")
 
     log(f"BOUND {_now()}")
