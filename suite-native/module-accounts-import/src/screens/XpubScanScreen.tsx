@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import { View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -16,7 +16,14 @@ import { getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { SelectableNetworkItem } from '@suite-native/accounts';
 import { type Alert, useAlert } from '@suite-native/alerts';
-import { Button, Card, TextDivider, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import {
+    AnimatedBox,
+    Button,
+    Card,
+    TextDivider,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -202,14 +209,14 @@ export const XpubScanScreen = ({
                             multiline
                         />
                         {isXpubFormFilled && (
-                            <Animated.View entering={FadeIn.duration(FORM_BUTTON_FADE_IN_DURATION)}>
+                            <AnimatedBox entering={FadeIn.duration(FORM_BUTTON_FADE_IN_DURATION)}>
                                 <Button
                                     testID="@accounts-import/sync-coins/xpub-submit"
                                     onPress={onXpubFormSubmit}
                                 >
                                     <Translation id="generic.buttons.confirm" />
                                 </Button>
-                            </Animated.View>
+                            </AnimatedBox>
                         )}
                     </VStack>
                 </Form>
