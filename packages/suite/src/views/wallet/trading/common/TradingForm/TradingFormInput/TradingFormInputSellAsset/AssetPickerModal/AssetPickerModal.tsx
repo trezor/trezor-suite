@@ -6,6 +6,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AssetGroupLabel,
     AssetGroupSpace,
+    AssetGroupsCard,
     AssetRowAccountWithBalance,
     AssetRowToken,
     AssetsModal,
@@ -14,6 +15,7 @@ import {
 import { useExpandableGroups, useSearchFilter } from 'src/components/suite/asset-picker/hooks';
 import {
     type AccountWithOptionalLabel,
+    type AssetGroupOption,
     type AssetPickerListItem,
     type AssetRowOption,
 } from 'src/components/suite/asset-picker/types';
@@ -83,6 +85,39 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
         [handleAccountClick, handleTokenClick],
     );
 
+    const renderAssetGroup = useCallback(
+        (account: AccountWithOptionalLabel, group: AssetGroupOption) => {
+            const isLowBalance = group.type === 'low-balance-group';
+
+            return (
+                <ExpandableAssetRowGroup
+                    key={group.type}
+                    label={
+                        isLowBalance
+                            ? 'TR_ASSET_PICKER_LOW_BALANCE'
+                            : 'TR_ASSET_PICKER_NON_TRADABLE'
+                    }
+                    account={account}
+                    items={group.items}
+                    renderItem={groupItem =>
+                        renderAssetRow(groupItem, {
+                            isInsideGroup: true,
+                            isSelectable: isLowBalance,
+                        })
+                    }
+                    expanded={group.expanded}
+                    onExpandToggle={expanded => {
+                        toggleGroup(getAssetGroupKey(account.key, group.type), expanded);
+                    }}
+                    dataTestId={`${getAccountTestId(account)}/${
+                        isLowBalance ? 'low-balance' : 'non-tradable'
+                    }`}
+                />
+            );
+        },
+        [renderAssetRow, toggleGroup],
+    );
+
     const renderItem = useCallback(
         (item: AssetPickerListItem) => {
             switch (item.type) {
@@ -96,41 +131,15 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                 case 'group-space':
                     return <AssetGroupSpace size={item.size} />;
 
-                case 'low-balance-group':
-                case 'non-tradable-group': {
-                    const isLowBalance = item.type === 'low-balance-group';
-
+                case 'asset-groups':
                     return (
-                        <ExpandableAssetRowGroup
-                            label={
-                                isLowBalance
-                                    ? 'TR_ASSET_PICKER_LOW_BALANCE'
-                                    : 'TR_ASSET_PICKER_NON_TRADABLE'
-                            }
-                            account={item.account}
-                            items={item.items}
-                            renderItem={groupItem =>
-                                renderAssetRow(groupItem, {
-                                    isInsideGroup: true,
-                                    isSelectable: isLowBalance,
-                                })
-                            }
-                            expanded={item.expanded}
-                            onExpandToggle={expanded => {
-                                toggleGroup(
-                                    getAssetGroupKey(item.account.key, item.type),
-                                    expanded,
-                                );
-                            }}
-                            dataTestId={`${getAccountTestId(item.account)}/${
-                                isLowBalance ? 'low-balance' : 'non-tradable'
-                            }`}
-                        />
+                        <AssetGroupsCard height={getAssetPickerItemHeight(item)}>
+                            {item.groups.map(group => renderAssetGroup(item.account, group))}
+                        </AssetGroupsCard>
                     );
-                }
             }
         },
-        [renderAssetRow, toggleGroup],
+        [renderAssetRow, renderAssetGroup],
     );
 
     return (

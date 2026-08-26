@@ -12,6 +12,7 @@ import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
     type AccountWithOptionalLabel,
     type AccountWithTokensOption,
+    type AssetGroupOption,
     type AssetPickerOption,
     type AssetRowOption,
 } from 'src/components/suite/asset-picker/types';
@@ -78,6 +79,7 @@ export const buildGroupedAssetOptions = ({
         );
 
     const options: AssetPickerOption[] = [];
+    const expandedGroups = new Set(expandedGroupKeys);
 
     for (const { account, rows } of groupRowsByAccount(assetRows.filter(isAssetRowOption))) {
         const { assets, lowBalanceAssets, nonTradeableAssets } = groupTradeableAssetsByTradability({
@@ -89,26 +91,26 @@ export const buildGroupedAssetOptions = ({
 
         options.push(...assets);
 
+        const groups: AssetGroupOption[] = [];
+
         if (lowBalanceAssets.length > 0) {
-            options.push({
+            groups.push({
                 type: 'low-balance-group',
-                account,
                 items: lowBalanceAssets,
-                expanded: expandedGroupKeys.includes(
-                    getAssetGroupKey(account.key, 'low-balance-group'),
-                ),
+                expanded: expandedGroups.has(getAssetGroupKey(account.key, 'low-balance-group')),
             });
         }
 
         if (nonTradeableAssets.length > 0) {
-            options.push({
+            groups.push({
                 type: 'non-tradable-group',
-                account,
                 items: nonTradeableAssets,
-                expanded: expandedGroupKeys.includes(
-                    getAssetGroupKey(account.key, 'non-tradable-group'),
-                ),
+                expanded: expandedGroups.has(getAssetGroupKey(account.key, 'non-tradable-group')),
             });
+        }
+
+        if (groups.length > 0) {
+            options.push({ type: 'asset-groups', account, groups });
         }
     }
 
