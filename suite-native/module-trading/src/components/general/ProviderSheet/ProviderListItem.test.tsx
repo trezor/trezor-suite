@@ -84,14 +84,14 @@ describe('ProviderListItem', () => {
         expect(getByText(getTranslation('moduleTrading.kyc.kycRequired'))).toBeOnTheScreen();
     });
 
-    it('should render anonymous information for DEX providers', async () => {
+    it('should render no-identity-verification information for DEX providers', async () => {
         const { getByText } = await renderProviderListItem(invityDexQuote, {
             shouldShowExchangeType: true,
             tradingType: 'exchange',
         });
 
         expect(
-            getByText(getTranslation('moduleTrading.providerListItem.anonymous')),
+            getByText(getTranslation('moduleTrading.providerListItem.noIdentityVerification')),
         ).toBeOnTheScreen();
         expect(
             getByText(getTranslation('moduleTrading.providerListItem.decentralizedExchange')),

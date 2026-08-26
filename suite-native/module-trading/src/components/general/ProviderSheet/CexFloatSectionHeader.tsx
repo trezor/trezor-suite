@@ -4,7 +4,7 @@ import { ProviderListSectionHeader } from './ProviderListSectionHeader';
 
 export const CexFloatSectionHeader = () => (
     <ProviderListSectionHeader
-        title={<Translation id="moduleTrading.providerSheet.float.title" />}
+        title={<Translation id="moduleTrading.providerSheet.float.titleOffers" />}
         subtitle={<Translation id="moduleTrading.providerSheet.float.description" />}
     />
 );

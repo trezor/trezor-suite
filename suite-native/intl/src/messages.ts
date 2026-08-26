@@ -3700,10 +3700,12 @@ export const messages = {
             title: 'Providers',
             fixed: {
                 title: 'Fixed-rate CEX',
+                titleOffers: 'Fixed-rate offers',
                 description: 'Lock in your rate for 15 minutes by paying a higher fee.',
             },
             float: {
                 title: 'Floating-rate CEX',
+                titleOffers: 'Floating-rate offers',
                 description: 'Get an estimated rate that may adjust with real-time market changes.',
             },
             dex: {
@@ -3715,6 +3717,9 @@ export const messages = {
                 all: 'All',
                 cex: 'CEX',
                 dex: 'DEX',
+                allProviders: 'All providers',
+                centralized: 'Centralized',
+                decentralized: 'Decentralized',
             },
             noProviders: 'No offers available.',
         },
@@ -4282,6 +4287,7 @@ export const messages = {
             decentralizedExchange: 'Decentralized exchange',
             centralizedExchange: 'Centralized exchange',
             anonymous: 'Anonymous',
+            noIdentityVerification: 'No identity verification (KYC).',
             kycRequired: 'KYC is required',
             lessToReceiveThanRequested: '{percent} less to receive than requested ({amount})',
         },

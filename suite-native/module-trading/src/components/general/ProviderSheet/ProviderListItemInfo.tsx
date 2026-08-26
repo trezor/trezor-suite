@@ -15,24 +15,19 @@ import { InfoLineItem } from './InfoLineItem';
 export type ProviderListItemInfoProps<T extends TradingTradeType> = {
     quote: T;
     provider: TradingProviderInfo;
-    shouldShowExchangeType: boolean;
 };
 
 export const ProviderListItemInfo = <T extends TradingTradeType>({
     quote,
     provider,
-    shouldShowExchangeType,
 }: ProviderListItemInfoProps<T>) => {
-    let isDex = false;
     let isAnonymous = false;
     let kycWarning: ReactNode = null;
 
     if ('kycPolicyType' in provider) {
         const kycPolicy = provider.kycPolicyType;
 
-        isDex = kycPolicy === 'DEX';
-
-        isAnonymous = kycPolicy === 'noKYC' || isDex;
+        isAnonymous = kycPolicy === 'noKYC' || kycPolicy === 'DEX';
         if (hasKycPolicyWarning(kycPolicy)) {
             kycWarning = <KycPolicyWarning kycPolicyType={kycPolicy} />;
         }
@@ -43,22 +38,12 @@ export const ProviderListItemInfo = <T extends TradingTradeType>({
     return (
         <>
             <RequestedAmountShortfallNote quote={quote} />
-            {shouldShowExchangeType && (
-                <InfoLineItem
-                    iconName="info"
-                    text={
-                        isDex ? (
-                            <Translation id="moduleTrading.providerListItem.decentralizedExchange" />
-                        ) : (
-                            <Translation id="moduleTrading.providerListItem.centralizedExchange" />
-                        )
-                    }
-                />
-            )}
             {isAnonymous && (
                 <InfoLineItem
-                    iconName="info"
-                    text={<Translation id="moduleTrading.providerListItem.anonymous" />}
+                    iconName="detective"
+                    text={
+                        <Translation id="moduleTrading.providerListItem.noIdentityVerification" />
+                    }
                     iconColor="contentBrand"
                     textColor="contentBrand"
                 />

@@ -1,5 +1,6 @@
+import { type SubTabItem, SubTabs } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { type FilterItem, FilterTabs } from '@suite-native/trading-atoms';
+import { type FilterItem } from '@suite-native/trading-atoms';
 
 import { type FilterValue } from '../../../hooks/general/useProviderFilters';
 import { SimpleSheetHeader } from '../SimpleSheetHeader';
@@ -22,6 +23,12 @@ export const ProviderSheetHandle = ({
 }: ProviderSheetHandleProps) => {
     const { translate } = useTranslate();
 
+    const items: SubTabItem<FilterValue>[] = filterItems.map(item => ({
+        label: item.label,
+        value: item.value,
+        testID: `@trading/provider-sheet/filter-tab/${item.value}`,
+    }));
+
     return (
         <>
             <SimpleSheetHeader
@@ -29,9 +36,9 @@ export const ProviderSheetHandle = ({
                 title={translate('moduleTrading.providerSheet.title')}
             >
                 {shouldShowFilters && (
-                    <FilterTabs
+                    <SubTabs
                         testID="@trading/provider-sheet/"
-                        items={filterItems}
+                        items={items}
                         onChange={setSelectedFilter}
                         value={selectedFilter}
                         keyExtractor={({ value }) => value}

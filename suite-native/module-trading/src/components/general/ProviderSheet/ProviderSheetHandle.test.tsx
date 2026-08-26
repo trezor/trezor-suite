@@ -34,15 +34,15 @@ describe('ProviderSheetHandle', () => {
                 setSelectedFilter={jest.fn()}
                 filterItems={[
                     {
-                        label: getTranslation('moduleTrading.providerSheet.filters.all'),
+                        label: getTranslation('moduleTrading.providerSheet.filters.allProviders'),
                         value: 'all',
                     },
                     {
-                        label: getTranslation('moduleTrading.providerSheet.filters.cex'),
+                        label: getTranslation('moduleTrading.providerSheet.filters.centralized'),
                         value: 'cex',
                     },
                     {
-                        label: getTranslation('moduleTrading.providerSheet.filters.dex'),
+                        label: getTranslation('moduleTrading.providerSheet.filters.decentralized'),
                         value: 'dex',
                     },
                 ]}
@@ -56,13 +56,13 @@ describe('ProviderSheetHandle', () => {
 
         expect(getByText(getTranslation('moduleTrading.providerSheet.title'))).toBeOnTheScreen();
         expect(
-            getByText(getTranslation('moduleTrading.providerSheet.filters.all')),
+            getByText(getTranslation('moduleTrading.providerSheet.filters.allProviders')),
         ).toBeOnTheScreen();
         expect(
-            getByText(getTranslation('moduleTrading.providerSheet.filters.cex')),
+            getByText(getTranslation('moduleTrading.providerSheet.filters.centralized')),
         ).toBeOnTheScreen();
         expect(
-            getByText(getTranslation('moduleTrading.providerSheet.filters.dex')),
+            getByText(getTranslation('moduleTrading.providerSheet.filters.decentralized')),
         ).toBeOnTheScreen();
     });
 
@@ -73,9 +73,15 @@ describe('ProviderSheetHandle', () => {
         );
 
         expect(getByText(getTranslation('moduleTrading.providerSheet.title'))).toBeOnTheScreen();
-        expect(queryByText(getTranslation('moduleTrading.providerSheet.filters.all'))).toBeNull();
-        expect(queryByText(getTranslation('moduleTrading.providerSheet.filters.cex'))).toBeNull();
-        expect(queryByText(getTranslation('moduleTrading.providerSheet.filters.dex'))).toBeNull();
+        expect(
+            queryByText(getTranslation('moduleTrading.providerSheet.filters.allProviders')),
+        ).toBeNull();
+        expect(
+            queryByText(getTranslation('moduleTrading.providerSheet.filters.centralized')),
+        ).toBeNull();
+        expect(
+            queryByText(getTranslation('moduleTrading.providerSheet.filters.decentralized')),
+        ).toBeNull();
     });
 
     it('should call onClose when close button is pressed', async () => {
@@ -91,7 +97,9 @@ describe('ProviderSheetHandle', () => {
         const setSelectedFilter = jest.fn();
         const { getByText } = await renderProviderSheetHandle({ setSelectedFilter }, {});
 
-        await fireEvent.press(getByText(getTranslation('moduleTrading.providerSheet.filters.cex')));
+        await fireEvent.press(
+            getByText(getTranslation('moduleTrading.providerSheet.filters.centralized')),
+        );
 
         expect(setSelectedFilter).toHaveBeenCalledWith('cex');
     });

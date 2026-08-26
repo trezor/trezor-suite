@@ -22,14 +22,9 @@ describe('ProviderListItemInfo', () => {
         quote: TradingTradeType,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = overridesWithQuotes,
     ) =>
-        await renderWithTradingProvider(
-            <ProviderListItemInfo
-                quote={quote}
-                provider={provider}
-                shouldShowExchangeType={false}
-            />,
-            { overrides },
-        );
+        await renderWithTradingProvider(<ProviderListItemInfo quote={quote} provider={provider} />, {
+            overrides,
+        });
 
     it('should render shortfall note for a shortfall quote', async () => {
         const shortfallQuote = {
