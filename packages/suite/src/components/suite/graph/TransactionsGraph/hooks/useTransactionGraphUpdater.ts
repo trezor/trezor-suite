@@ -50,7 +50,6 @@ export const useTransactionGraphUpdater = ({
         [allTransactions],
     );
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- onRequestGraphUpdate is the fetcher itself, not a cache input; what identifies the data is the account and the transactions the graph is synced to
     useQuery({
         queryKey: desktopQueryKeys.accountGraphUpdate(accountKey, newestConfirmedTxids),
         queryFn: async ({ signal }) => {
