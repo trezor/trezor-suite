@@ -1,29 +1,22 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type FeesRootState,
-    type TransactionsRootState,
     type YieldFlowType,
     type YieldPendingTransactionState,
     type YieldWithdrawFlowType,
-    fetchAndUpdateAccountThunk,
-    selectConvertedNetworkFeeInfo,
-    selectTransactionByAccountKeyAndTxid,
     stablecoinYieldActions,
-    useWrappedNativePendingTx,
+    useYieldPendingTxStatus,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getApyBreakdown, getPollIntervalMs, isPending } from '@suite-common/wallet-utils';
+import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { type NativeAnalyticsDep, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
-
-type YieldPendingTrackingRootState = TransactionsRootState;
 
 type UseYieldPendingTransactionTrackingParams = {
     account: Account | null;
@@ -170,37 +163,16 @@ export const useYieldPendingTransactionTracking = ({
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const pendingTxidRef = useRef(pendingTransaction?.txid);
     const claimCompletionTxidRef = useRef<string | null>(null);
-    const accountKey = account?.key;
     const accountSymbol = account?.symbol;
-    const trackedPendingTransaction = useSelector((state: YieldPendingTrackingRootState) => {
-        if (!accountKey || !pendingTransaction) {
-            return null;
-        }
 
-        return selectTransactionByAccountKeyAndTxid(state, accountKey, pendingTransaction.txid);
-    });
-    const feeInfo = useSelector((state: FeesRootState) =>
-        accountSymbol ? selectConvertedNetworkFeeInfo(state, accountSymbol) : null,
-    );
-    const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
-
-    const isWrappedNativeStep =
-        pendingTransaction?.type === 'wrap' || pendingTransaction?.type === 'unwrap';
-
-    // The wrap/unwrap steps resolve through the shared nonce-following tracker, so a fee-bumped
-    // replacement of the step transaction is still followed; it also polls the account itself.
-    const wrappedNativeStatus = useWrappedNativePendingTx(
+    const pendingTxStatus = useYieldPendingTxStatus({
         account,
-        isWrappedNativeStep && pendingTransaction ? pendingTransaction.txid : null,
-        pendingTransaction?.type === 'unwrap' ? 'unwrap' : 'wrap',
-    );
+        flowType,
+        flowKey,
+        pendingTransaction,
+    });
 
-    const isPendingTransactionUnresolved = isWrappedNativeStep
-        ? wrappedNativeStatus === 'pending'
-        : !trackedPendingTransaction || isPending(trackedPendingTransaction);
-
-    const shouldPollPendingTransaction =
-        !!flowKey && !!pendingTransaction && !isWrappedNativeStep && isPendingTransactionUnresolved;
+    const isPendingTransactionUnresolved = pendingTxStatus === 'pending';
 
     // Snapshot of the still-unresolved transaction so the unmount cleanup can emit `leftPending`.
     const leftPendingSnapshotRef = useRef<Omit<
@@ -242,19 +214,7 @@ export const useYieldPendingTransactionTracking = ({
     }, [pendingTransaction?.txid]);
 
     useEffect(() => {
-        if (!accountKey || !shouldPollPendingTransaction) {
-            return undefined;
-        }
-
-        const interval = setInterval(() => {
-            dispatch(fetchAndUpdateAccountThunk({ accountKey }));
-        }, pollIntervalMs);
-
-        return () => clearInterval(interval);
-    }, [accountKey, dispatch, pollIntervalMs, shouldPollPendingTransaction]);
-
-    useEffect(() => {
-        if (!flowKey || !pendingTransaction) {
+        if (!flowKey || !pendingTransaction || pendingTxStatus === null) {
             return;
         }
 
@@ -275,35 +235,26 @@ export const useYieldPendingTransactionTracking = ({
             });
         };
 
-        if (pendingTransaction.type === 'wrap' || pendingTransaction.type === 'unwrap') {
-            if (wrappedNativeStatus === 'failed') {
-                reportResolution('error');
-                dispatch(stablecoinYieldActions.transactionFailed(sessionParams));
-
-                return;
-            }
-
-            if (wrappedNativeStatus === 'confirmed') {
-                reportResolution('success');
-                dispatch(
-                    stablecoinYieldActions.resolveWrappedNativeStep({
-                        ...sessionParams,
-                        step: pendingTransaction.type,
-                        amount: pendingTransaction.amount,
-                    }),
-                );
-            }
-
+        if (pendingTxStatus === 'pending') {
             return;
         }
 
-        if (!trackedPendingTransaction || isPending(trackedPendingTransaction)) {
-            return;
-        }
-
-        if (trackedPendingTransaction.type === 'failed') {
+        if (pendingTxStatus === 'failed') {
             reportResolution('error');
             dispatch(stablecoinYieldActions.transactionFailed(sessionParams));
+
+            return;
+        }
+
+        if (pendingTransaction.type === 'wrap' || pendingTransaction.type === 'unwrap') {
+            reportResolution('success');
+            dispatch(
+                stablecoinYieldActions.resolveWrappedNativeStep({
+                    ...sessionParams,
+                    step: pendingTransaction.type,
+                    amount: pendingTransaction.amount,
+                }),
+            );
 
             return;
         }
@@ -388,9 +339,8 @@ export const useYieldPendingTransactionTracking = ({
         onApprovalConfirmed,
         onRevokeConfirmed,
         pendingTransaction,
-        trackedPendingTransaction,
+        pendingTxStatus,
         vault,
         waitForMerklToResolveClaim,
-        wrappedNativeStatus,
     ]);
 };

@@ -3,10 +3,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { type EventInstance, events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import {
-    type WrappedNativeFlowType,
-    type WrappedNativePendingTxStatus,
-} from '@suite-common/wallet-core';
+import { type EvmPendingTxStatus, type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { useCurrentRef } from '@trezor/react-utils';
 
 // Wrap and unwrap share one attribute schema, so one payload type serves both events.
@@ -14,7 +11,7 @@ type WrappedNativeFlowPayload = EventInstance<typeof events.yieldWrapEvent>['pay
 
 type UseWrappedNativeFlowAnalyticsParams = {
     flowType: WrappedNativeFlowType;
-    status: WrappedNativePendingTxStatus | null;
+    status: EvmPendingTxStatus | null;
     txid: string | null;
     networkSymbol: string;
 };

@@ -1,9 +1,6 @@
 import { type EventInstance, events } from '@suite-common/analytics';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type WrappedNativeFlowType,
-    type WrappedNativePendingTxStatus,
-} from '@suite-common/wallet-core';
+import { type EvmPendingTxStatus, type WrappedNativeFlowType } from '@suite-common/wallet-core';
 
 export type WrappedNativeFlowPayload = EventInstance<typeof events.yieldWrapEvent>['payload'];
 
@@ -18,7 +15,7 @@ export const buildWrappedNativeFlowEvent = (
 type WrappedNativeResolutionParams = {
     durationMs: number | undefined;
     networkSymbol: NetworkSymbol | undefined;
-    status: WrappedNativePendingTxStatus | null;
+    status: EvmPendingTxStatus | null;
 };
 
 export const getWrappedNativeResolutionPayload = ({

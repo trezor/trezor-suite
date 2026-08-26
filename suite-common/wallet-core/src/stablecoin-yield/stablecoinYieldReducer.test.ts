@@ -10,6 +10,7 @@ import {
     stablecoinYieldReducer,
 } from './stablecoinYieldReducer';
 import type { YieldFlowType, YieldPendingTransactionState } from './stablecoinYieldTypes';
+import { transactionsActions } from '../transactions/transactionsActions';
 
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -633,6 +634,72 @@ describe('stablecoinYieldReducer', () => {
             );
 
             expect(getSession(state, 'deposit')?.step).toBe('wrap');
+        });
+    });
+
+    describe('pending transaction tracking', () => {
+        const pendingDeposit = () =>
+            stablecoinYieldReducer(
+                initSession('deposit'),
+                stablecoinYieldActions.setPendingTx({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    tx: { type: 'deposit', txid: '0xdeposittxid', amount: '100' },
+                }),
+            );
+
+        it('records the nonce of the pending transaction', () => {
+            const state = stablecoinYieldReducer(
+                pendingDeposit(),
+                stablecoinYieldActions.setPendingTxNonce({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    txid: '0xdeposittxid',
+                    nonce: 7,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.action.pendingTransaction?.nonce).toBe(7);
+        });
+
+        it('ignores a nonce recorded for another transaction', () => {
+            const state = stablecoinYieldReducer(
+                pendingDeposit(),
+                stablecoinYieldActions.setPendingTxNonce({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    txid: '0xothertxid',
+                    nonce: 7,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.action.pendingTransaction?.nonce).toBeUndefined();
+        });
+
+        it('keeps following the recorded nonce when an RBF bump swaps the txid', () => {
+            const state = stablecoinYieldReducer(
+                stablecoinYieldReducer(
+                    pendingDeposit(),
+                    stablecoinYieldActions.setPendingTxNonce({
+                        flowType: 'deposit',
+                        flowKey: FLOW_KEY,
+                        txid: '0xdeposittxid',
+                        nonce: 7,
+                    }),
+                ),
+                transactionsActions.replaceTransaction({
+                    key: mockAccountKey(),
+                    txid: '0xdeposittxid',
+                    tx: { txid: '0xreplacementtxid' } as Parameters<
+                        typeof transactionsActions.replaceTransaction
+                    >[0]['tx'],
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.action.pendingTransaction).toMatchObject({
+                txid: '0xreplacementtxid',
+                nonce: 7,
+            });
         });
     });
 

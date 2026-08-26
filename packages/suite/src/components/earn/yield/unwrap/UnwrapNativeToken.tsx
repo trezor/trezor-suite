@@ -11,8 +11,8 @@ import {
     type YieldFlowDisplayToken,
     type YieldFlowFormValues,
     selectBaseCurrency,
+    useEvmPendingTxStatus,
     useMissingRateTickersQuery,
-    useWrappedNativePendingTx,
 } from '@suite-common/wallet-core';
 import { type Account, toTokenAddress } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
@@ -76,7 +76,11 @@ export const UnwrapNativeToken = ({
         decimals: tokenDecimals,
     });
 
-    const pendingTxStatus = useWrappedNativePendingTx(account, broadcast?.txid ?? null, 'unwrap');
+    const { status: pendingTxStatus } = useEvmPendingTxStatus(
+        account,
+        broadcast?.txid ?? null,
+        'unwrap',
+    );
     const isFlowComplete = !!broadcast && pendingTxStatus === 'confirmed';
 
     useEffect(() => {

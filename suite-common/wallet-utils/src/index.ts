@@ -30,7 +30,7 @@ export * from './tokenUtils';
 export * from './pollingUtils';
 export * from './transactionUtils';
 export * from './validationUtils';
-export * from './wrappedNativePendingTxUtils';
+export * from './evmPendingTxUtils';
 export * from './AmountTypes';
 export * from './baseCurrency';
 export * from './cardanoStakingUtils';

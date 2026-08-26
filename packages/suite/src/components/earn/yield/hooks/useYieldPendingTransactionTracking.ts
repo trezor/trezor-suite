@@ -8,38 +8,18 @@ import {
     type YieldFlowType,
     type YieldPendingTransactionState,
     type YieldWithdrawFlowType,
-    fetchAndUpdateAccountThunk,
     isYieldWithdrawFlow,
-    selectConvertedNetworkFeeInfo,
     selectStablecoinYieldSession,
-    selectTransactionByAccountKeyAndTxid,
     stablecoinYieldActions,
+    useYieldPendingTxStatus,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    getApyBreakdown,
-    getNativeWrapTxKind,
-    getWrappedNativeTxTarget,
-    isPending,
-} from '@suite-common/wallet-utils';
+import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { type Analytics } from '@trezor/analytics-uploader';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-const DEFAULT_PENDING_TX_POLL_INTERVAL_MS = 3_000;
-const MIN_PENDING_TX_POLL_INTERVAL_MS = 2_000;
-const BLOCK_TIME_TO_POLL_INTERVAL_RATIO = 2;
-
-const getPollIntervalMs = (blockTime: number | undefined): number => {
-    if (!blockTime) return DEFAULT_PENDING_TX_POLL_INTERVAL_MS;
-
-    return Math.max(
-        (blockTime / BLOCK_TIME_TO_POLL_INTERVAL_RATIO) * 1000,
-        MIN_PENDING_TX_POLL_INTERVAL_MS,
-    );
-};
 
 type ResolutionEventType =
     | {
@@ -188,17 +168,14 @@ export const useYieldPendingTransactionTracking = ({
     const pendingTransaction = useSelector(
         state => selectStablecoinYieldSession(state, flowType, flowKey).action.pendingTransaction,
     );
-    const trackedPendingTransaction = useSelector(state =>
-        pendingTransaction
-            ? selectTransactionByAccountKeyAndTxid(state, account.key, pendingTransaction.txid)
-            : null,
-    );
-    const feeInfo = useSelector(state => selectConvertedNetworkFeeInfo(state, account.symbol));
-    const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
+    const pendingTxStatus = useYieldPendingTxStatus({
+        account,
+        flowType,
+        flowKey,
+        pendingTransaction,
+    });
 
-    const isCurrentlyPending =
-        !!pendingTransaction &&
-        (!trackedPendingTransaction || isPending(trackedPendingTransaction));
+    const isCurrentlyPending = pendingTxStatus === 'pending';
 
     // Track start time per pending txid so we can compute durationMs on resolution.
     const pendingStartRef = useRef<{ txid: string; startedAt: number } | null>(null);
@@ -220,23 +197,7 @@ export const useYieldPendingTransactionTracking = ({
     });
 
     useEffect(() => {
-        if (!isCurrentlyPending) {
-            return;
-        }
-
-        const interval = setInterval(() => {
-            dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
-        }, pollIntervalMs);
-
-        return () => clearInterval(interval);
-    }, [account, dispatch, isCurrentlyPending, pollIntervalMs]);
-
-    useEffect(() => {
-        if (!pendingTransaction || !trackedPendingTransaction) {
-            return;
-        }
-
-        if (isPending(trackedPendingTransaction)) {
+        if (!pendingTransaction || pendingTxStatus === null || pendingTxStatus === 'pending') {
             return;
         }
 
@@ -251,19 +212,7 @@ export const useYieldPendingTransactionTracking = ({
             wrappedNative: isWrappedNativeToken(account.symbol, vault?.token.address),
         };
 
-        const wrappedNativeFlowType =
-            pendingTransaction.type === 'wrap' || pendingTransaction.type === 'unwrap'
-                ? pendingTransaction.type
-                : null;
-
-        const confirmedWrappedNativeKind = getNativeWrapTxKind(trackedPendingTransaction);
-        const didWrappedNativeOperationChange =
-            wrappedNativeFlowType !== null &&
-            (confirmedWrappedNativeKind !== undefined
-                ? confirmedWrappedNativeKind !== wrappedNativeFlowType
-                : getWrappedNativeTxTarget(trackedPendingTransaction) === undefined);
-
-        if (trackedPendingTransaction.type === 'failed' || didWrappedNativeOperationChange) {
+        if (pendingTxStatus === 'failed') {
             if (resolution) {
                 reportResolution(analytics, resolution, 'error', context);
             }
@@ -348,8 +297,8 @@ export const useYieldPendingTransactionTracking = ({
         flowKey,
         flowType,
         pendingTransaction,
+        pendingTxStatus,
         dispatch,
-        trackedPendingTransaction,
         analytics,
         account.symbol,
         vault,
