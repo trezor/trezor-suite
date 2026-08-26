@@ -3,7 +3,7 @@ import { Fragment, type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { Box, Card, Collapsible, Row, Text } from '@trezor/components';
+import { Box, Collapsible, Row, Text } from '@trezor/components';
 import { CaretUpDownIcon, CaretUpDownReverseIcon } from '@trezor/icons';
 import { TokenIconSet, type TokenIconSetToken } from '@trezor/product-components';
 
@@ -57,58 +57,56 @@ export function ExpandableAssetRowGroup({
 
     return (
         <Collapsible isOpen={expanded} data-testid={dataTestId}>
-            <Box padding={2} height={getExpandableGroupHeight(expanded, items.length)}>
-                <Card type="contrast" paddingType="none">
-                    <Collapsible.Toggle
-                        onClick={() => {
-                            // The operation will be probably expensive. Ask for fresh frame before switching the state.
-                            requestAnimationFrame(() => {
-                                onExpandToggle(!expanded);
-                            });
+            <Box height={getExpandableGroupHeight(expanded, items.length)}>
+                <Collapsible.Toggle
+                    onClick={() => {
+                        // The operation will be probably expensive. Ask for fresh frame before switching the state.
+                        requestAnimationFrame(() => {
+                            onExpandToggle(!expanded);
+                        });
+                    }}
+                    data-testid={dataTestId ? `${dataTestId}/toggle` : undefined}
+                >
+                    <Row
+                        alignItems="center"
+                        justifyContent="space-between"
+                        gap={12}
+                        padding={{
+                            vertical: 12,
+                            horizontal: 16,
                         }}
-                        data-testid={dataTestId ? `${dataTestId}/toggle` : undefined}
                     >
-                        <Row
-                            alignItems="center"
-                            justifyContent="space-between"
-                            gap={12}
-                            padding={{
-                                vertical: 12,
-                                horizontal: 16,
-                            }}
-                        >
-                            <Text typographyStyle="body-sm">
-                                <Translation id={label} />
-                            </Text>
+                        <Text typographyStyle="body-sm">
+                            <Translation id={label} />
+                        </Text>
 
-                            <Row alignItems="center" gap={12}>
-                                {!expanded && (
-                                    <TokenIconSet
-                                        symbol={account.symbol}
-                                        tokens={items.map(getIconSetToken)}
-                                        size={24}
-                                        gap={20}
-                                        maxVisibleIcons={GROUP_VISIBLE_ICON_COUNT}
-                                        isCentered={false}
-                                        isCountVisible
-                                        isReversed={false}
-                                    />
-                                )}
-
-                                <Collapsible.ToggleIcon
-                                    icon={expanded ? CaretUpDownReverseIcon : CaretUpDownIcon}
+                        <Row alignItems="center" gap={12}>
+                            {!expanded && (
+                                <TokenIconSet
+                                    symbol={account.symbol}
+                                    tokens={items.map(getIconSetToken)}
+                                    size={24}
+                                    gap={20}
+                                    maxVisibleIcons={GROUP_VISIBLE_ICON_COUNT}
+                                    isCentered={false}
+                                    isCountVisible
+                                    isReversed={false}
                                 />
-                            </Row>
-                        </Row>
-                    </Collapsible.Toggle>
+                            )}
 
-                    <CollapsibleContent $contentHeight={contentHeight} $expanded={expanded}>
-                        {expanded &&
-                            items.map(item => (
-                                <Fragment key={getItemKey(item)}>{renderItem(item)}</Fragment>
-                            ))}
-                    </CollapsibleContent>
-                </Card>
+                            <Collapsible.ToggleIcon
+                                icon={expanded ? CaretUpDownReverseIcon : CaretUpDownIcon}
+                            />
+                        </Row>
+                    </Row>
+                </Collapsible.Toggle>
+
+                <CollapsibleContent $contentHeight={contentHeight} $expanded={expanded}>
+                    {expanded &&
+                        items.map(item => (
+                            <Fragment key={getItemKey(item)}>{renderItem(item)}</Fragment>
+                        ))}
+                </CollapsibleContent>
             </Box>
         </Collapsible>
     );

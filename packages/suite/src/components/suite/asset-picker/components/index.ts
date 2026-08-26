@@ -3,6 +3,7 @@ export * from './AssetsListEmpty/AssetsListEmpty';
 export * from './AssetsModal/AssetsModal';
 export * from './AssetRow/AssetRowAccount';
 export * from './AssetRow/AssetGroupLabel';
+export * from './AssetRow/AssetGroupsCard';
 export * from './AssetRow/AssetGroupSpace';
 export * from './AssetRow/AssetRowToken/AssetRowToken';
 export * from './AssetRow/AssetRowAsset/AssetRowAsset';

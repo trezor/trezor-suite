@@ -5,6 +5,7 @@ import { BigNumber } from '@trezor/utils';
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { getAssetPickerItemHeight } from './assetPickerItemHeights';
+import { type AssetGroupOption, type AssetGroupsOption, type AssetRowOption } from '../types';
 
 import { createAccountOption, createHiddenTokensOption, createTokenOption } from './index';
 
@@ -35,6 +36,17 @@ const createHiddenTokens = (expanded: boolean) =>
         expandedHiddenTokensGroups: expanded ? [account.key] : [],
     });
 
+const groupItems: AssetRowOption[] = [
+    createAccountOption(account),
+    createTokenOption(account, usdt),
+];
+
+const createAssetGroups = (groups: AssetGroupOption[]): AssetGroupsOption => ({
+    type: 'asset-groups',
+    account,
+    groups,
+});
+
 describe('getAssetPickerItemHeight', () => {
     it('gives an account row and a token row the same height', () => {
         expect(getAssetPickerItemHeight(createAccountOption(account))).toBe(68);
@@ -44,25 +56,34 @@ describe('getAssetPickerItemHeight', () => {
     it('measures a collapsed group by its header alone', () => {
         expect(getAssetPickerItemHeight(createHiddenTokens(false))).toBe(50);
         expect(
-            getAssetPickerItemHeight({
-                type: 'low-balance-group',
-                account,
-                items: [createAccountOption(account), createTokenOption(account, usdt)],
-                expanded: false,
-            }),
+            getAssetPickerItemHeight(
+                createAssetGroups([
+                    { type: 'low-balance-group', items: groupItems, expanded: false },
+                ]),
+            ),
         ).toBe(50);
     });
 
     it('grows an expanded group by one row height per item', () => {
         expect(getAssetPickerItemHeight(createHiddenTokens(true))).toBe(50 + 2 * 68);
         expect(
-            getAssetPickerItemHeight({
-                type: 'non-tradable-group',
-                account,
-                items: [createAccountOption(account), createTokenOption(account, usdt)],
-                expanded: true,
-            }),
+            getAssetPickerItemHeight(
+                createAssetGroups([
+                    { type: 'non-tradable-group', items: groupItems, expanded: true },
+                ]),
+            ),
         ).toBe(50 + 2 * 68);
+    });
+
+    it('measures two groups sharing one card by the card padding plus both groups', () => {
+        expect(
+            getAssetPickerItemHeight(
+                createAssetGroups([
+                    { type: 'low-balance-group', items: groupItems, expanded: true },
+                    { type: 'non-tradable-group', items: groupItems, expanded: false },
+                ]),
+            ),
+        ).toBe(4 + (46 + 2 * 68) + 46);
     });
 
     it('measures the account label and the space between accounts', () => {

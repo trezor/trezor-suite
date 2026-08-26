@@ -93,10 +93,15 @@ describe('buildGroupedAssetOptions', () => {
         expect(buildOptions({ assetRows: [accountRow, tokenRow] })).toEqual([
             tokenRow,
             {
-                type: 'low-balance-group',
+                type: 'asset-groups',
                 account,
-                items: [accountRow],
-                expanded: false,
+                groups: [
+                    {
+                        type: 'low-balance-group',
+                        items: [accountRow],
+                        expanded: false,
+                    },
+                ],
             },
         ]);
     });
@@ -112,10 +117,15 @@ describe('buildGroupedAssetOptions', () => {
             }),
         ).toEqual([
             {
-                type: 'non-tradable-group',
+                type: 'asset-groups',
                 account,
-                items: [accountRow],
-                expanded: false,
+                groups: [
+                    {
+                        type: 'non-tradable-group',
+                        items: [accountRow],
+                        expanded: false,
+                    },
+                ],
             },
         ]);
     });
@@ -137,7 +147,7 @@ describe('buildGroupedAssetOptions', () => {
         expect(buildOptions({ assetRows: [accountRow], fiatRates: {} })).toEqual([accountRow]);
     });
 
-    it('emits both groups for an account holding only dust and non-sellable assets', () => {
+    it('puts both groups of an account holding only dust and non-sellable assets in one card', () => {
         const account = createEthAccount('dustEthAccount', '0.00000001');
         const accountRow = createAccountOption(account);
         const nonTradableTokenRow = createTokenOption(account, createToken());
@@ -149,16 +159,20 @@ describe('buildGroupedAssetOptions', () => {
             }),
         ).toEqual([
             {
-                type: 'low-balance-group',
+                type: 'asset-groups',
                 account,
-                items: [accountRow],
-                expanded: false,
-            },
-            {
-                type: 'non-tradable-group',
-                account,
-                items: [nonTradableTokenRow],
-                expanded: false,
+                groups: [
+                    {
+                        type: 'low-balance-group',
+                        items: [accountRow],
+                        expanded: false,
+                    },
+                    {
+                        type: 'non-tradable-group',
+                        items: [nonTradableTokenRow],
+                        expanded: false,
+                    },
+                ],
             },
         ]);
     });
@@ -176,12 +190,17 @@ describe('buildGroupedAssetOptions', () => {
 
         expect(options).toEqual([
             expect.objectContaining({
-                type: 'low-balance-group',
-                expanded: true,
-            }),
-            expect.objectContaining({
-                type: 'non-tradable-group',
-                expanded: false,
+                type: 'asset-groups',
+                groups: [
+                    expect.objectContaining({
+                        type: 'low-balance-group',
+                        expanded: true,
+                    }),
+                    expect.objectContaining({
+                        type: 'non-tradable-group',
+                        expanded: false,
+                    }),
+                ],
             }),
         ]);
     });
@@ -194,11 +213,16 @@ describe('buildGroupedAssetOptions', () => {
 
         expect(buildOptions({ assetRows: [firstAccountRow, secondAccountRow] })).toEqual([
             firstAccountRow,
-            expect.objectContaining({
-                type: 'low-balance-group',
+            {
+                type: 'asset-groups',
                 account: secondAccount,
-                items: [secondAccountRow],
-            }),
+                groups: [
+                    expect.objectContaining({
+                        type: 'low-balance-group',
+                        items: [secondAccountRow],
+                    }),
+                ],
+            },
         ]);
     });
 });

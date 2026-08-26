@@ -11,6 +11,7 @@ import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import {
     AssetGroupLabel,
     AssetGroupSpace,
+    AssetGroupsCard,
     AssetRowAccountWithBalance,
     AssetRowToken,
     AssetsList,
@@ -109,25 +110,29 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
                 case 'hidden-tokens':
                     return (
-                        <ExpandableAssetRowGroup
-                            label="TR_HIDDEN_TOKENS"
-                            account={item.account}
-                            items={item.tokens.map(token => createTokenOption(item.account, token))}
-                            renderItem={groupItem =>
-                                groupItem.type === 'token' && (
-                                    <AssetRowToken
-                                        token={groupItem.token}
-                                        account={groupItem.account}
-                                        onClick={handleTokenClick}
-                                        isInsideGroup
-                                    />
-                                )
-                            }
-                            expanded={item.expanded}
-                            onExpandToggle={expanded => {
-                                toggleGroup(item.account.key, expanded);
-                            }}
-                        />
+                        <AssetGroupsCard height={getAssetPickerItemHeight(item)}>
+                            <ExpandableAssetRowGroup
+                                label="TR_HIDDEN_TOKENS"
+                                account={item.account}
+                                items={item.tokens.map(token =>
+                                    createTokenOption(item.account, token),
+                                )}
+                                renderItem={groupItem =>
+                                    groupItem.type === 'token' && (
+                                        <AssetRowToken
+                                            token={groupItem.token}
+                                            account={groupItem.account}
+                                            onClick={handleTokenClick}
+                                            isInsideGroup
+                                        />
+                                    )
+                                }
+                                expanded={item.expanded}
+                                onExpandToggle={expanded => {
+                                    toggleGroup(item.account.key, expanded);
+                                }}
+                            />
+                        </AssetGroupsCard>
                     );
             }
         },

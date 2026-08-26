@@ -8,6 +8,7 @@ import { Box, Divider } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
 
 import {
+    AssetGroupsCard,
     AssetRowAccountWithBalance,
     AssetRowToken,
     AssetsList,
@@ -170,32 +171,35 @@ export function SelectTokenAssetModal({
 
                 case 'hidden-tokens':
                     return (
-                        <ExpandableAssetRowGroup
-                            label="TR_HIDDEN_TOKENS"
-                            account={item.account}
-                            items={item.tokens.map(token => createTokenOption(item.account, token))}
-                            renderItem={groupItem =>
-                                groupItem.type === 'token' && (
-                                    <AssetRowToken
-                                        token={groupItem.token}
-                                        account={groupItem.account}
-                                        onClick={handleSelectChange}
-                                        isInsideGroup
-                                    />
-                                )
-                            }
-                            expanded={item.expanded}
-                            onExpandToggle={expanded => {
-                                toggleGroup(item.account.key, expanded);
-                            }}
-                            dataTestId={`@asset-picker/send-token/option/hidden-tokens/${item.account.symbol}`}
-                        />
+                        <AssetGroupsCard height={getAssetPickerItemHeight(item)}>
+                            <ExpandableAssetRowGroup
+                                label="TR_HIDDEN_TOKENS"
+                                account={item.account}
+                                items={item.tokens.map(token =>
+                                    createTokenOption(item.account, token),
+                                )}
+                                renderItem={groupItem =>
+                                    groupItem.type === 'token' && (
+                                        <AssetRowToken
+                                            token={groupItem.token}
+                                            account={groupItem.account}
+                                            onClick={handleSelectChange}
+                                            isInsideGroup
+                                        />
+                                    )
+                                }
+                                expanded={item.expanded}
+                                onExpandToggle={expanded => {
+                                    toggleGroup(item.account.key, expanded);
+                                }}
+                                dataTestId={`@asset-picker/send-token/option/hidden-tokens/${item.account.symbol}`}
+                            />
+                        </AssetGroupsCard>
                     );
 
                 case 'group-label':
                 case 'group-space':
-                case 'low-balance-group':
-                case 'non-tradable-group':
+                case 'asset-groups':
                     return null;
             }
         },
