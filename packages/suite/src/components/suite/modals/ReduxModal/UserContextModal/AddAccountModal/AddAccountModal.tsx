@@ -1,11 +1,8 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
-import { AnimatePresence, motion } from 'framer-motion';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsPublic } from '@suite/coinjoin';
 import { selectIsDebugModeActive } from '@suite/debug';
-import { selectIsAddAccountNetworksBannerClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { preserveModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
@@ -26,10 +23,11 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { getAvailableAccountTypes, prepareNewAccountPayload } from '@suite-common/wallet-utils';
-import { Banner, Box, Column, Icon, Modal, Tooltip } from '@trezor/components';
+import { Box, Column, Icon, Modal, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { GraduationCapIcon, InfoIcon } from '@trezor/icons';
+import { InfoIcon } from '@trezor/icons';
 
+import { AddAccountBannerAboutNetworks } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountBannerAboutNetworks';
 import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
@@ -45,7 +43,6 @@ import { SelectNetwork } from './SelectNetwork';
 import { getSortedNetworks, getVisibleAccountCounts } from './addAccountModalUtils';
 import { useNetworkActivationQueue } from './useNetworkActivationQueue';
 import { verifyAvailability } from './verifyAvailability';
-import { bannerAnimationConfig } from '../ActivateAssetsModal';
 import { AdvancedCoinSettingsModal } from '../AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 
 type AddAccountProps = {
@@ -70,7 +67,6 @@ export const AddAccountModal = ({
     const accounts = useSelector(selectAccounts);
     const isDebug = useSelector(selectIsDebugModeActive);
     const isCoinjoinPublic = useSelector(selectIsPublic);
-    const isAddAccountNetworksBannerClosed = useSelector(selectIsAddAccountNetworksBannerClosed);
     const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
     const useTestnetNetworks = useSelector(selectIsTestnetNetworksEnabled);
     const dispatch = useDispatch();
@@ -169,9 +165,6 @@ export const AddAccountModal = ({
     const finishAddingAccount = () => {
         addingAccountNetworkSymbolRef.current = undefined;
         setAddingAccountNetworkSymbol(undefined);
-    };
-    const closeNetworkInfoBanner = () => {
-        dispatch(setFlag({ key: 'addAccountNetworksBannerClosed', value: true }));
     };
 
     const availableNetworksSymbols = useAvailableNetworkSymbols();
@@ -600,33 +593,7 @@ export const AddAccountModal = ({
                               }
                           />
                           <Column>
-                              <AnimatePresence>
-                                  {!isAddAccountNetworksBannerClosed && (
-                                      <motion.div {...bannerAnimationConfig}>
-                                          <Banner
-                                              intent="neutral"
-                                              margin={{ bottom: 12 }}
-                                              icon={GraduationCapIcon}
-                                              title={
-                                                  <Translation id="TR_ADD_ACCOUNT_NETWORKS_BANNER_TITLE" />
-                                              }
-                                              description={
-                                                  <Translation id="TR_ADD_ACCOUNT_NETWORKS_BANNER_DESCRIPTION" />
-                                              }
-                                              rightContent={
-                                                  <Banner.Button
-                                                      size="small"
-                                                      onClick={closeNetworkInfoBanner}
-                                                      data-testid="@modal/account/networks-banner-dismiss"
-                                                  >
-                                                      <Translation id="TR_OK_GOT_IT" />
-                                                  </Banner.Button>
-                                              }
-                                              data-testid="@modal/account/networks-banner"
-                                          />
-                                      </motion.div>
-                                  )}
-                              </AnimatePresence>
+                              <AddAccountBannerAboutNetworks />
                               {hasNoSearchResults ? (
                                   <Box padding={{ vertical: 32 }}>
                                       <NoNetworkSearchResults dataTestId="@modal/account/no-networks-found" />
