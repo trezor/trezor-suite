@@ -4,10 +4,10 @@ import { AccountLabel } from '@suite/account';
 import { type Account } from '@suite-common/wallet-types';
 
 import { ASSET_ROW_GROUP_LABEL_HEIGHT, ASSET_ROW_HEIGHTS_BY_SIZE } from '../constants';
-import { type AccountWithTokensOption, type AssetGroupSpaceSize } from '../types';
+import { type AssetGroupSpaceSize, type AssetPickerOption } from '../types';
 
 export type AssetPickerListItem =
-    | AccountWithTokensOption
+    | AssetPickerOption
     | {
           type: 'group-label';
           label: ReactNode;
@@ -20,7 +20,7 @@ export type AssetPickerListItem =
       };
 
 export function useInsertGroupLabelsAndSpaces(
-    accountsWithTokens: AccountWithTokensOption[],
+    accountsWithTokens: AssetPickerOption[],
 ): AssetPickerListItem[] {
     return useMemo(() => {
         const list: AssetPickerListItem[] = [];
