@@ -1,19 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import {
     type TradingTransactionExchange,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
-    type TransactionDetailStackParamList,
-    TransactionDetailStackRoutes,
-} from '@suite-native/navigation';
+import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import {
     TradeStatusProviderLink,
     type TradeStatusStep,
@@ -27,14 +19,8 @@ import {
     getTradeStatusUrl,
 } from '../utils/tradeStatusUtils';
 
-type TransactionDetailNavigation = StackToStackCompositeNavigationProps<
-    RootStackParamList,
-    TransactionDetailStackRoutes.TransactionDetail,
-    TransactionDetailStackParamList
->;
-
 export const useExchangeTradeStatusSteps = (trade: TradingTransactionExchange) => {
-    const navigation = useNavigation<TransactionDetailNavigation>();
+    const navigateToTransactionDetail = useNavigateToTransactionDetail();
     const progressId = getExchangeTradeProgress(trade.data.status);
     const provider = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, trade.data.exchange ?? '', trade.tradeType),
@@ -43,18 +29,15 @@ export const useExchangeTradeStatusSteps = (trade: TradingTransactionExchange) =
     const statusUrl = getTradeStatusUrl(trade) ?? '';
     const isDex = trade.data?.isDex ?? false;
 
-    if (progressId === undefined) {
+    if (!progressId) {
         return undefined;
     }
 
     const handleTxIdPress = () => {
         if (trade.data.receiveTxHash && trade.sendAccountKey) {
-            navigation.navigate(RootStackRoutes.TransactionDetailStack, {
-                screen: TransactionDetailStackRoutes.TransactionDetail,
-                params: {
-                    txid: trade.data.receiveTxHash,
-                    accountKey: trade.sendAccountKey,
-                },
+            navigateToTransactionDetail({
+                txid: trade.data.receiveTxHash,
+                accountKey: trade.sendAccountKey,
             });
         }
     };

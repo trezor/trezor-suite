@@ -13053,7 +13053,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-activity-center@workspace:suite-native/module-activity-center"
   dependencies:
-    "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
@@ -14920,7 +14919,6 @@ __metadata:
   resolution: "@suite-native/transactions@workspace:suite-native/transactions"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@react-navigation/native": "npm:7.1.31"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@shopify/flash-list": "npm:2.3.0"
     "@suite-common/dependency-injection": "workspace:*"

@@ -28,7 +28,6 @@ export const TradeStatusSubItem = ({
     color = 'contentSecondary',
 }: TradeStatusSubItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const isLabelText = typeof label === 'string' || typeof label === 'number';
     const isValueText = typeof value === 'string' || typeof value === 'number';
 
     const renderValue = isValueText ? (
@@ -67,11 +66,9 @@ export const TradeStatusSubItem = ({
         );
     }
 
-    return isLabelText ? (
+    return (
         <Text variant={textVariant} color={color}>
             {label}
         </Text>
-    ) : (
-        label
     );
 };

@@ -33,8 +33,8 @@ describe('TradeStatusStepper', () => {
             />,
         );
 
-    it('should render active and pending step content', () => {
-        const { getByTestId, getByText, queryByText } = renderStepper();
+    it('should render active and pending step content', async () => {
+        const { getByTestId, getByText, queryByText } = await renderStepper();
 
         expect(getByTestId('@trade-status-stepper/send/active')).toBeOnTheScreen();
         expect(getByTestId('@trade-status-stepper/provider/pending')).toBeOnTheScreen();
@@ -44,8 +44,8 @@ describe('TradeStatusStepper', () => {
         expect(queryByText('Pending details')).toBeNull();
     });
 
-    it('should render the completed content for a completed step', () => {
-        const { getByTestId, getByText, queryByText } = renderStepper({
+    it('should render the completed content for a completed step', async () => {
+        const { getByTestId, getByText, queryByText } = await renderStepper({
             steps: [
                 {
                     id: 'send',
@@ -71,8 +71,8 @@ describe('TradeStatusStepper', () => {
         expect(queryByText('Transaction ID')).toBeNull();
     });
 
-    it('should fall back to pending content when a state variant is missing', () => {
-        const { getByText } = renderStepper({
+    it('should fall back to pending content when a state variant is missing', async () => {
+        const { getByText } = await renderStepper({
             steps: [
                 {
                     id: 'provider',

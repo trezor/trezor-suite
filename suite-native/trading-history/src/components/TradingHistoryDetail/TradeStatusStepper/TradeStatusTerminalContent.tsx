@@ -1,20 +1,12 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import {
     type TradingTransaction,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
-    type TransactionDetailStackParamList,
-    TransactionDetailStackRoutes,
-} from '@suite-native/navigation';
+import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import { TradeStatusProviderLink, TradeStatusSubItem } from '@suite-native/trading-atoms';
 import { type TradingRootState } from '@suite-native/trading-state';
 import { exhaustive } from '@trezor/type-utils';
@@ -25,12 +17,6 @@ import { getTradeStatusUrl } from '../../../utils/tradeStatusUtils';
 type TradeStatusTerminalContentProps = {
     trade: TradingTransaction;
 };
-
-type TransactionDetailNavigation = StackToStackCompositeNavigationProps<
-    RootStackParamList,
-    TransactionDetailStackRoutes.TransactionDetail,
-    TransactionDetailStackParamList
->;
 
 const getTransactionId = (trade: TradingTransaction): string | undefined => {
     switch (trade.tradeType) {
@@ -46,7 +32,7 @@ const getTransactionId = (trade: TradingTransaction): string | undefined => {
 };
 
 export const TradeStatusTerminalContent = ({ trade }: TradeStatusTerminalContentProps) => {
-    const navigation = useNavigation<TransactionDetailNavigation>();
+    const navigateToTransactionDetail = useNavigateToTransactionDetail();
     const provider = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, trade.data.exchange ?? '', trade.tradeType),
     );
@@ -68,12 +54,9 @@ export const TradeStatusTerminalContent = ({ trade }: TradeStatusTerminalContent
             return;
         }
 
-        navigation.navigate(RootStackRoutes.TransactionDetailStack, {
-            screen: TransactionDetailStackRoutes.TransactionDetail,
-            params: {
-                txid: transactionId,
-                accountKey: trade.sendAccountKey,
-            },
+        navigateToTransactionDetail({
+            txid: transactionId,
+            accountKey: trade.sendAccountKey,
         });
     };
 

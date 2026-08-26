@@ -20,6 +20,7 @@
         { "path": "../atoms" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../link" },
         {
             "path": "../../packages/styles-native"
         },

@@ -1,19 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import {
     type TradingTransactionSell,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
-    type TransactionDetailStackParamList,
-    TransactionDetailStackRoutes,
-} from '@suite-native/navigation';
+import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import {
     TradeStatusProviderLink,
     type TradeStatusStep,
@@ -23,14 +15,8 @@ import { type TradingRootState } from '@suite-native/trading-state';
 
 import { getSellTradeProgress, getStepState, getTradeStatusUrl } from '../utils/tradeStatusUtils';
 
-type TransactionDetailNavigation = StackToStackCompositeNavigationProps<
-    RootStackParamList,
-    TransactionDetailStackRoutes.TransactionDetail,
-    TransactionDetailStackParamList
->;
-
 export const useSellTradeStatusSteps = (trade: TradingTransactionSell) => {
-    const navigation = useNavigation<TransactionDetailNavigation>();
+    const navigateToTransactionDetail = useNavigateToTransactionDetail();
     const provider = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, trade.data.exchange ?? '', trade.tradeType),
     );
@@ -40,12 +26,9 @@ export const useSellTradeStatusSteps = (trade: TradingTransactionSell) => {
 
     const handleTxIdPress = () => {
         if (trade.data.txid && trade.sendAccountKey) {
-            navigation.navigate(RootStackRoutes.TransactionDetailStack, {
-                screen: TransactionDetailStackRoutes.TransactionDetail,
-                params: {
-                    txid: trade.data.txid,
-                    accountKey: trade.sendAccountKey,
-                },
+            navigateToTransactionDetail({
+                txid: trade.data.txid,
+                accountKey: trade.sendAccountKey,
             });
         }
     };

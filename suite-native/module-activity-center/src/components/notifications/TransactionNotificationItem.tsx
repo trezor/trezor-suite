@@ -1,7 +1,4 @@
-import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-
-import { useNavigation } from '@react-navigation/native';
 
 import { type DeviceRootState } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
@@ -16,12 +13,7 @@ import {
 import { Divider, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import { Icon, type IconName, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-    TransactionDetailStackRoutes,
-} from '@suite-native/navigation';
+import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { getTxNotificationFields } from './utils';
@@ -73,10 +65,7 @@ const fullWidthDividerStyle = prepareNativeStyle(utils => ({
 export const TransactionNotificationItem = ({ notification, seen, index }: Props) => {
     const { applyStyle } = useNativeStyles();
     const { DateFormatter, TimeFormatter } = useFormatters();
-    const navigation =
-        useNavigation<
-            StackNavigationProps<RootStackParamList, RootStackRoutes.ActivityCenterStack>
-        >();
+    const navigateToTransactionDetail = useNavigateToTransactionDetail();
 
     const { type, descriptor, symbol, txid, formattedAmount, tokenContract } =
         getTxNotificationFields(notification);
@@ -93,13 +82,10 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
 
     const canNavigate = txid !== undefined && accountKey !== undefined;
 
-    const handleNavigate = useCallback(() => {
+    const handleNavigate = () => {
         if (!canNavigate) return;
-        navigation.navigate(RootStackRoutes.TransactionDetailStack, {
-            screen: TransactionDetailStackRoutes.TransactionDetail,
-            params: { txid, accountKey },
-        });
-    }, [navigation, canNavigate, txid, accountKey]);
+        navigateToTransactionDetail({ txid, accountKey });
+    };
 
     return (
         <VStack spacing="sp4">

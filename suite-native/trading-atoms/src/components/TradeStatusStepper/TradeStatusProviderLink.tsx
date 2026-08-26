@@ -45,7 +45,7 @@ export const TradeStatusProviderLink = ({
 
     return (
         <HStack spacing="sp8" alignItems="center">
-            {!!logo && <ProviderLogo logo={logo} size="body-md" />}
+            {!!logo && <ProviderLogo logo={logo} size="body-sm" />}
             <Box flexShrink={1}>
                 <Link
                     href={statusUrl}

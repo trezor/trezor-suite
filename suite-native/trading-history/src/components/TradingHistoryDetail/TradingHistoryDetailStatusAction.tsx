@@ -26,15 +26,15 @@ type NavigationProp = StackNavigationProps<
     RootStackRoutes.TradingHistoryDetail
 >;
 
-type TradingHistoryDetailActionButtonProps = {
+type TradingHistoryDetailStatusActionProps = {
     providerName?: string;
     tradeType: TradingType;
     status: TradingTransactionStatus;
 };
 
-const TradingHistoryDetailStartNewActionText = ({
+const StartNewTradeLabel = ({
     tradeType,
-}: Pick<TradingHistoryDetailActionButtonProps, 'tradeType'>) => {
+}: Pick<TradingHistoryDetailStatusActionProps, 'tradeType'>) => {
     switch (tradeType) {
         case 'buy':
             return <Translation id="moduleTrading.tradeHistory.detail.actionButton.startNew.buy" />;
@@ -51,11 +51,11 @@ const TradingHistoryDetailStartNewActionText = ({
     }
 };
 
-export const TradingHistoryDetailActionButton = ({
+export const TradingHistoryDetailStatusAction = ({
     providerName,
     tradeType,
     status,
-}: TradingHistoryDetailActionButtonProps) => {
+}: TradingHistoryDetailStatusActionProps) => {
     const navigation = useNavigation<NavigationProp>();
     const openLink = useOpenLink();
     const provider = useSelector((state: TradingRootState) =>
@@ -106,7 +106,7 @@ export const TradingHistoryDetailActionButton = ({
                     values={{ providerName: providerDisplayName }}
                 />
             ) : (
-                <TradingHistoryDetailStartNewActionText tradeType={tradeType} />
+                <StartNewTradeLabel tradeType={tradeType} />
             )}
         </Button>
     );
