@@ -20,6 +20,7 @@ import {
     bestSellQuotePerPaymentMethodProjection,
     selectDeviceHasTradingTrades,
     selectDeviceTradingTradesOrderedByDate,
+    selectGroupedExchangeQuotes,
     selectGroupedTradingExchangeQuotes,
     selectIsTradingNetworkFeeMissing,
     selectTradedAccountKeys,
@@ -1281,6 +1282,53 @@ describe('tradingSelectors', () => {
             expect(selectGroupedTradingExchangeQuotes(state)).toBe(
                 selectGroupedTradingExchangeQuotes(state),
             );
+        });
+    });
+
+    describe(selectGroupedExchangeQuotes.name, () => {
+        beforeEach(() => {
+            state.wallet.trading.exchange.exchangeInfo = {
+                providerInfos: {
+                    'fixed-provider': { isFixedRate: true },
+                    'float-provider': { isFixedRate: false },
+                },
+                buyCryptoIds: ['bitcoin'] as CryptoId[],
+                sellCryptoIds: ['ethereum'] as CryptoId[],
+            } as unknown as ExchangeInfo;
+            state.wallet.trading.exchange.quotes = [
+                {
+                    ...tradeApiFixtures.exchangeTrade,
+                    quoteId: 'fixed-quote',
+                    exchange: 'fixed-provider',
+                    isDex: false,
+                },
+                {
+                    ...tradeApiFixtures.exchangeTrade,
+                    quoteId: 'float-quote',
+                    exchange: 'float-provider',
+                    isDex: false,
+                },
+                {
+                    ...tradeApiFixtures.exchangeTrade,
+                    quoteId: 'dex-quote',
+                    exchange: 'dex-provider',
+                    isDex: true,
+                },
+            ];
+        });
+
+        it('should group quotes into fixed and float only, treating unrecognized providers as float', () => {
+            expect(selectGroupedExchangeQuotes(state)).toEqual({
+                fixed: [expect.objectContaining({ quoteId: 'fixed-quote' })],
+                float: [
+                    expect.objectContaining({ quoteId: 'float-quote' }),
+                    expect.objectContaining({ quoteId: 'dex-quote' }),
+                ],
+            });
+        });
+
+        it('should be stable', () => {
+            expect(selectGroupedExchangeQuotes(state)).toBe(selectGroupedExchangeQuotes(state));
         });
     });
 

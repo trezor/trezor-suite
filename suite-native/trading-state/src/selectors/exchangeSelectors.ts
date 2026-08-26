@@ -1,6 +1,8 @@
 import { type NetworkSymbol } from '@suite-common/networks';
 import {
-    selectGroupedTradingExchangeQuotes,
+    EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE,
+    type GroupedExchangeQuotesByRateType,
+    selectGroupedExchangeQuotes,
     selectTradingExchangeBuyCryptoIds,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
@@ -21,6 +23,9 @@ import {
     createTradingWithFeatureFlagsMemoizedSelector,
 } from '../reducers';
 import { getAssetByEnabledNetworksFilter } from '../utils';
+
+export type { GroupedExchangeQuotesByRateType };
+export { EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE, selectGroupedExchangeQuotes };
 
 export type TradingWithFeatureFlagsRootState = TradingRootState & FeatureFlagsRootState;
 
@@ -85,10 +90,6 @@ export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMem
 
 export const selectExchangeQuotes = (state: TradingRootState) =>
     state.wallet.trading.exchange.quotes;
-
-export const selectGroupedExchangeQuotes = selectGroupedTradingExchangeQuotes as unknown as (
-    state: TradingRootState,
-) => ReturnType<typeof selectGroupedTradingExchangeQuotes>;
 
 export const selectExchangeAmountLimits = (state: TradingRootState) =>
     selectTradingExchange(state).amountLimits;

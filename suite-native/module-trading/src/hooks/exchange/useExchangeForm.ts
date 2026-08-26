@@ -52,11 +52,11 @@ const useExchangeQuotesChangeEffect = ({ getValues, setValue }: ExchangeFormType
             let candidateQuotes: ExchangeTrade[];
 
             if (isDex) {
-                candidateQuotes = quoteGroups.dex;
+                candidateQuotes = quoteGroups.float.filter(quote => quote.isDex);
             } else if (isFixedRate) {
                 candidateQuotes = quoteGroups.fixed;
             } else {
-                candidateQuotes = quoteGroups.float;
+                candidateQuotes = quoteGroups.float.filter(quote => !quote.isDex);
             }
 
             bestQuote = candidateQuotes.find(quote => quote.exchange === exchange);
@@ -77,8 +77,6 @@ const useExchangeQuotesChangeEffect = ({ getValues, setValue }: ExchangeFormType
                 bestQuote = quoteGroups.fixed[0];
             } else if (quoteGroups.float.length > 0) {
                 bestQuote = quoteGroups.float[0];
-            } else if (quoteGroups.dex.length > 0) {
-                bestQuote = quoteGroups.dex[0];
             }
         }
 

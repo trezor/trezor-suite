@@ -18,7 +18,6 @@ import {
     selectExchangeQuotes,
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
-    selectGroupedExchangeQuotes,
     selectTradingExchange,
 } from './exchangeSelectors';
 
@@ -184,55 +183,6 @@ describe('exchangeSelectors', () => {
             state.wallet.trading.exchange.quotes = exchangeQuotes;
 
             expect(selectExchangeQuotes(state)).toEqual(exchangeQuotes);
-        });
-    });
-
-    describe('selectGroupedExchangeQuotes', () => {
-        it('should return empty groups when no quotes are specified', () => {
-            expect(selectGroupedExchangeQuotes(state)).toEqual({
-                fixed: [],
-                float: [],
-                dex: [],
-            });
-        });
-
-        it('should group quotes by fixed/float/dex', () => {
-            state.wallet.trading.exchange.quotes = exchangeQuotes;
-
-            const groupedQuotes = selectGroupedExchangeQuotes(state);
-
-            expect(groupedQuotes).toEqual({
-                fixed: [
-                    expect.objectContaining({
-                        quoteId: 'mercuryo-fixed-worst',
-                    }),
-                    expect.objectContaining({
-                        quoteId: 'mercuryo-fixed-best',
-                    }),
-                ],
-                float: [
-                    expect.objectContaining({
-                        quoteId: 'cexdirect-floating',
-                    }),
-                ],
-                dex: [
-                    expect.objectContaining({
-                        quoteId: 'invity-dex',
-                    }),
-                    expect.objectContaining({
-                        quoteId: 'mercuryo-dex',
-                    }),
-                    expect.objectContaining({
-                        quoteId: '1inch-fusion-plus',
-                    }),
-                ],
-            });
-        });
-
-        it('should be stable', () => {
-            state.wallet.trading.exchange.quotes = exchangeQuotes;
-
-            expect(selectGroupedExchangeQuotes(state)).toBe(selectGroupedExchangeQuotes(state));
         });
     });
 

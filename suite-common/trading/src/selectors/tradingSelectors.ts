@@ -47,6 +47,11 @@ import {
     TRADING_SLIP24_SUPPORTED_NETWORK_TYPES,
 } from '../constants';
 import {
+    EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE,
+    type GroupedExchangeQuotesByRateType,
+    groupExchangeQuotesByRateTypeProjection,
+} from './utils/groupExchangeQuotesByRateTypeProjection';
+import {
     EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
     type GroupedTradingExchangeQuotes,
     groupTradingExchangeQuotesProjection,
@@ -90,6 +95,7 @@ import {
 import { isAccountEligibleForTrade } from '../utils/tradingAccountUtils';
 
 export { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES, type GroupedTradingExchangeQuotes };
+export { EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE, type GroupedExchangeQuotesByRateType };
 
 type SelectedAccountRootState = {
     wallet: {
@@ -674,6 +680,11 @@ export const selectTradingExchangeAmountLimits = (state: TradingRootState) =>
 export const selectGroupedTradingExchangeQuotes = createMemoizedSelector(
     [selectTradingExchangeQuotes, selectTradingExchangeProviders],
     groupTradingExchangeQuotesProjection,
+);
+
+export const selectGroupedExchangeQuotes = createMemoizedSelector(
+    [selectTradingExchangeQuotes, selectTradingExchangeProviders],
+    groupExchangeQuotesByRateTypeProjection,
 );
 
 export const selectTradingExchangeDexQuotes = createMemoizedSelector(
