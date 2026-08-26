@@ -24,7 +24,6 @@ export const SERVICE_NAME = 'request-interceptor';
 const mainThreadAllowedDomain = {
     general: [...allowedDomains],
     customBackends: {} as Record<string, string[]>,
-    coinjoinCoordinatorUrl: undefined as string | undefined,
 };
 
 /**
