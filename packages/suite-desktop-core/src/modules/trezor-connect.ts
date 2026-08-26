@@ -14,42 +14,13 @@ import { parseElectrumUrl } from '@trezor/utils';
 
 import { bluetoothModuleState } from './bluetooth';
 import { getStoredFirmwares } from './firmware';
-import { type MainThreadEmitter, type ModuleInit, type ModuleInitBackground } from './module';
+import type { ModuleInit, ModuleInitBackground } from './module';
 import { looselyTypedIpcMain } from '../ipcMain';
 import { APP_NAME } from '../libs/constants';
 import { getComputerName } from '../libs/info';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
 
 export const SERVICE_NAME = '@trezor/connect';
-
-type EmitOnSetCustomBackendToMainThreadToAllowDomainsParams = {
-    params: Parameters<typeof TrezorConnect.blockchainSetCustomBackend>;
-    mainThreadEmitter: MainThreadEmitter;
-};
-
-const emitOnSetCustomBackendToMainThreadToAllowDomains = ({
-    params,
-    mainThreadEmitter,
-}: EmitOnSetCustomBackendToMainThreadToAllowDomainsParams) => {
-    const param = params[0];
-
-    if (param?.blockchainLink !== undefined) {
-        const domains = (param.blockchainLink.url ?? []).map(url => {
-            const electrumUrlResult = parseElectrumUrl(url);
-            if (electrumUrlResult !== undefined) {
-                return electrumUrlResult.host;
-            }
-
-            return new URL(url).hostname;
-        });
-
-        mainThreadEmitter.emit('module/request-interceptor', {
-            type: 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS',
-            coin: param.coin,
-            domains,
-        });
-    }
-};
 
 // `id` becomes the Bridge session owner shown to the user; it mirrors the desktop
 // manifest's `appName` (see packages/suite/src/support/extraDependencies.ts).
@@ -160,7 +131,27 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                 }
 
                 if (method === 'blockchainSetCustomBackend') {
-                    emitOnSetCustomBackendToMainThreadToAllowDomains({ params, mainThreadEmitter });
+                    const { coin, blockchainLink: { url: urls } = {} } = params[0];
+                    if (urls) {
+                        const domains = urls.map(
+                            url => parseElectrumUrl(url)?.host ?? new URL(url).hostname,
+                        );
+
+                        mainThreadEmitter.emit('module/request-interceptor', {
+                            type: 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS',
+                            coin,
+                            domains,
+                        });
+                    }
+                }
+
+                if (method === 'blockchainEvmRpcGetChainId') {
+                    const { url } = params[0];
+
+                    mainThreadEmitter.emit('module/request-interceptor', {
+                        type: 'ADD_WHITELISTED_DOMAIN',
+                        domain: new URL(url).hostname,
+                    });
                 }
 
                 if (method === 'firmwareUpdate') {
