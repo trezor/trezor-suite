@@ -4,7 +4,7 @@ import type {
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link';
 import { BlockchainLink } from '@trezor/blockchain-link';
-import type { CoinInfo, CoreEventMessage, Proxy, PushTransaction } from '@trezor/connect-common';
+import type { CoinInfo, CoreEventMessage, PushTransaction } from '@trezor/connect-common';
 import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
@@ -52,7 +52,6 @@ const getNormalizedTrezorShortcut = (shortcut: string) => {
 export type BlockchainOptions = {
     coinInfo: CoinInfo;
     postMessage: (message: CoreEventMessage) => void;
-    proxy?: Proxy;
     debug?: boolean;
     identity?: string;
     onDisconnected?: (pendingSubscriptions?: boolean) => void;
@@ -95,7 +94,6 @@ export class Blockchain {
             worker,
             server,
             debug: options.debug,
-            proxy: options.proxy,
             // register EVM and Tron blocks once per 12+ seconds
             ...(this.coinInfo.type === 'ethereum' ||
             ['TRX', 'tTRX'].includes(this.coinInfo.shortcut)

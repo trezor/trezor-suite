@@ -5,10 +5,10 @@
  */
 
 import type { Response } from '../../params';
-import type { ConnectSettingsTransport, EnabledNetwork, Proxy } from '../../settings';
+import type { ConnectSettingsTransport, EnabledNetwork } from '../../settings';
 
 export type UpdateConnectSettings = {
-    proxy?: Proxy;
+    proxy?: unknown;
     transports?: ConnectSettingsTransport[];
     enabledNetworks?: EnabledNetwork[];
 };

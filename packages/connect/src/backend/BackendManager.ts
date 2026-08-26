@@ -1,7 +1,6 @@
 import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
-import type { BlockchainLink, CoinInfo, Proxy } from '@trezor/connect-common';
+import type { BlockchainLink, CoinInfo } from '@trezor/connect-common';
 import type { TimerId } from '@trezor/type-utils';
-import { deepEqual } from '@trezor/utils';
 
 import type { BlockchainOptions } from './Blockchain';
 import { Blockchain } from './Blockchain';
@@ -16,8 +15,6 @@ type BackendParams = Pick<BlockchainOptions, 'coinInfo' | 'postMessage' | 'ident
 const DEFAULT_IDENTITY = 'default';
 
 export class BackendManager {
-    private proxy?: Proxy;
-
     private readonly instances: { [shortcut: CoinShortcutIdentity]: Blockchain } = {};
     private readonly reconnect: { [shortcut: CoinShortcutIdentity]: Reconnect } = {};
     private readonly custom: { [shortcut: CoinShortcut]: BlockchainLink } = {};
@@ -35,7 +32,6 @@ export class BackendManager {
                 coinInfo: this.patchCoinInfo(coinInfo),
                 identity,
                 debug: settingsStore.get('debug'),
-                proxy: this.proxy,
                 postMessage,
                 onDisconnected: pendingSubscriptions => {
                     const reconnectAttempts = pendingSubscriptions ? 0 : undefined;
@@ -89,13 +85,6 @@ export class BackendManager {
             this.custom[shortcut] = blockchainLink;
         } else {
             delete this.custom[shortcut];
-        }
-    }
-
-    async updateProxy(proxy: Proxy | undefined) {
-        if (proxy !== undefined && !deepEqual(this.proxy, proxy)) {
-            this.proxy = proxy;
-            await this.reconnectAll();
         }
     }
 

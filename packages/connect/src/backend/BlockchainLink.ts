@@ -1,4 +1,4 @@
-import type { CoinInfo, Proxy } from '@trezor/connect-common';
+import type { CoinInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { BackendManager } from './BackendManager';
@@ -29,7 +29,5 @@ export const initBlockchain = (
 ) => backends.getOrConnect({ coinInfo, identity, postMessage });
 
 export const reconnectAllBackends = (coinInfo?: CoinInfo) => backends.reconnectAll(coinInfo);
-
-export const updateProxy = (proxy?: Proxy) => backends.updateProxy(proxy);
 
 export const dispose = () => backends.dispose();

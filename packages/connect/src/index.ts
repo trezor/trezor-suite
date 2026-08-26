@@ -5,7 +5,7 @@ import {
 } from '@trezor/connect-common';
 import { type AbstractTransportParams, BridgeTransport } from '@trezor/transport-common';
 
-import { updateProxy } from './backend/BlockchainLink';
+import { reconnectAllBackends } from './backend/BlockchainLink';
 import { CoreInModule } from './impl/core-in-module';
 
 class CoreInModuleNode extends CoreInModule {
@@ -14,7 +14,11 @@ class CoreInModuleNode extends CoreInModule {
     }
 
     protected async updateProxy(proxy: UpdateConnectSettings['proxy']) {
-        await updateProxy(proxy);
+        if (proxy !== undefined) {
+            // Routing is handled by the request interceptor; reconnect so
+            // existing connections switch to the new Tor state.
+            await reconnectAllBackends();
+        }
     }
 }
 
