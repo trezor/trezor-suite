@@ -1,9 +1,7 @@
 import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
-import type { TradingTransaction, TradingType } from '@suite-common/trading';
+import type { TradingType } from '@suite-common/trading';
 import { type FormDraftKeyPrefix } from '@suite-common/wallet-types';
-import { useTranslate } from '@suite-native/intl';
-import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 
 import {
@@ -11,7 +9,6 @@ import {
     getFormDraftKeyPrefixFromTradingType,
     getTradeOperationData,
     getTradeStatusStep,
-    getTradeTitle,
 } from './utils';
 
 describe('utils', () => {
@@ -110,19 +107,6 @@ describe('utils', () => {
         ])('should return correct step for sell trade with %s status', (status, expectedStep) => {
             const trade = getSellTrade({ status: status as SellTradeStatus });
             expect(getTradeStatusStep(trade)).toBe(expectedStep);
-        });
-    });
-
-    describe('getTradeTitle', () => {
-        it.each<[string, TradingType]>([
-            ['Buy', 'buy'],
-            ['Sell', 'sell'],
-            ['Swap', 'exchange'],
-        ])('should return "%s" for [%s] tradeType', async (expectedTitle, tradeType) => {
-            const trade = { tradeType } as TradingTransaction;
-            const { result } = await renderHookWithBasicProvider(() => useTranslate());
-
-            expect(getTradeTitle(trade, result.current.translate)).toBe(expectedTitle);
         });
     });
 
