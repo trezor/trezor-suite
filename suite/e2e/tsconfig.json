@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [
         "**/*.json",
+        "llmExploratoryTester",
         "fixtures",
         "snapshots",
         "tests",
