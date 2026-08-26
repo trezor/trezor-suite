@@ -17,7 +17,7 @@ import {
 } from 'src/components/suite/asset-picker/components';
 import {
     type AssetPickerListItem,
-    useExpandableAccountGroups,
+    useExpandableGroups,
     useFilterAccountsWithTokens,
     useListScrollReset,
 } from 'src/components/suite/asset-picker/hooks';
@@ -58,8 +58,7 @@ export function SelectTokenAssetModal({
     const dispatch = useDispatch();
 
     const [search, setSearch] = useState('');
-    const { expandedAccountTokensGroups, updateExpandableAccountGroups } =
-        useExpandableAccountGroups();
+    const { expandedGroupKeys, toggleGroup } = useExpandableGroups();
     const listRef = useRef<HTMLDivElement>(null);
 
     const dataEnabled = getDefaultValue('options', []).includes('transactionData');
@@ -72,7 +71,7 @@ export function SelectTokenAssetModal({
 
     const options = useBuildTokenOptions({
         account,
-        expandedHiddenTokensGroups: expandedAccountTokensGroups,
+        expandedHiddenTokensGroups: expandedGroupKeys,
     });
     const filteredOptions = useFilterAccountsWithTokens(options, search);
 
@@ -185,7 +184,7 @@ export function SelectTokenAssetModal({
                             expanded={item.expanded}
                             height={item.height}
                             onExpandToggle={expanded => {
-                                updateExpandableAccountGroups(item.account.key, expanded);
+                                toggleGroup(item.account.key, expanded);
                             }}
                             dataTestId={`@asset-picker/send-token/option/hidden-tokens/${item.account.symbol}`}
                         />
@@ -193,11 +192,12 @@ export function SelectTokenAssetModal({
 
                 case 'group-label':
                 case 'group-space':
-                case 'non-tradable-tokens':
+                case 'low-balance-group':
+                case 'non-tradable-group':
                     return null;
             }
         },
-        [handleSelectChange, updateExpandableAccountGroups],
+        [handleSelectChange, toggleGroup],
     );
 
     return (

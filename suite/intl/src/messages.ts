@@ -13050,9 +13050,13 @@ export const messages = defineMessages({
         id: 'TR_HIDDEN_TOKEN_WITHOUT_FIAT',
         defaultMessage: 'No trading pair',
     },
-    TR_NON_TRADABLE_TOKENS: {
-        id: 'TR_NON_TRADABLE_TOKENS',
-        defaultMessage: 'Non-tradable tokens',
+    TR_ASSET_PICKER_LOW_BALANCE: {
+        id: 'TR_ASSET_PICKER_LOW_BALANCE',
+        defaultMessage: 'Low balance',
+    },
+    TR_ASSET_PICKER_NON_TRADABLE: {
+        id: 'TR_ASSET_PICKER_NON_TRADABLE',
+        defaultMessage: 'Non-tradable',
     },
     TR_FEATURE_FEEDBACK_MODAL_HEADING: {
         id: 'TR_FEATURE_FEEDBACK_MODAL_HEADING',
