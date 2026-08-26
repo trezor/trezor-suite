@@ -129,7 +129,8 @@
         "@types/react": "19.2.14",
         "react-dom": "19.2.3",
         "expo-modules-core": "~57.0.6",
-        "test-renderer": "1.2.0"
+        "test-renderer": "1.2.0",
+        "@solana/rpc@npm:6.9.0": "patch:@solana/rpc@npm%3A6.9.0#~/.yarn/patches/@solana-rpc-npm-6.9.0-ba7976484d.patch"
     },
     "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.2",

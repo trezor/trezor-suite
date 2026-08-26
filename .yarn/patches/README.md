@@ -18,6 +18,14 @@ Either revert the original patch commit, or simply install a newer version `yarn
 
 ---
 
+## @solana/rpc
+
+Reads the abort reason from the registered signal because `abortcontroller-polyfill` dispatches
+abort events with a null target on React Native. Introduced for
+[#30691](https://github.com/trezor/trezor-suite/issues/30691). Upstream fix:
+[anza-xyz/kit#1994](https://github.com/anza-xyz/kit/pull/1994). Remove after upgrading
+`@solana/rpc` to a release containing the upstream fix.
+
 ## expo-updates
 
 Prevents the Expo dev client from hanging when Detox starts an Android test. Introduced in
