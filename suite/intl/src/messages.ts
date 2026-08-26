@@ -11530,6 +11530,11 @@ export const messages = defineMessages({
         defaultMessage:
             "The maximum fee you're willing to pay for the transaction. You'll only pay what's necessary—typically the minimum fee during light network traffic. Higher fees help prioritize your transaction during network congestion.",
     },
+    TR_TRON_FEE_DESC: {
+        id: 'TR_TRON_FEE_DESC',
+        defaultMessage:
+            'The fee charged by the Tron network to process your transaction. This also covers a 1 {networkDisplaySymbol} charge to activate an unused receiving address.',
+    },
     TR_STELLAR_LIMIT_HISTORY_TITLE: {
         id: 'TR_STELLAR_LIMIT_HISTORY_TITLE',
         defaultMessage: 'Transaction history is limited to 12 months',
