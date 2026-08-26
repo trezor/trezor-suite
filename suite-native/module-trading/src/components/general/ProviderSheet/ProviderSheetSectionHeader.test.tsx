@@ -20,8 +20,8 @@ describe('ProviderSheetSectionHeader', () => {
         expect(getByText(expectedTitle)).toBeOnTheScreen();
     });
 
-    it('should throw when category is dex', () => {
-        expect(() => renderProviderSheetSectionHeader({ category: 'dex' })).toThrow(
+    it('should throw when category is dex', async () => {
+        await expect(() => renderProviderSheetSectionHeader({ category: 'dex' })).rejects.toThrow(
             'DEX section header should not be rendered as DEX quotes are shown inside fixed/float rate sections',
         );
     });

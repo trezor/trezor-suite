@@ -23,6 +23,8 @@ import {
     invityDexQuote,
     mercuryoFixedBestQuote,
     mercuryoFixedWorstQuote,
+    oneInchFusionPlusWithoutEip712SignDataQuote,
+    oneInchFusionQuote,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
@@ -264,8 +266,33 @@ describe('useExchangeForm', () => {
             it('should select quote with same Rate and Provider', async () => {
                 await act(() => {
                     form.setValue('quote', {
-                        ...invityDexQuote,
-                        quoteId: 'invity-dex-outdated',
+                        ...oneInchFusionPlusWithoutEip712SignDataQuote,
+                        quoteId: '1inch-fusion-plus-outdated',
+                    });
+                });
+
+                await act(() => {
+                    store.dispatch(tradingExchangeActions.saveQuotes([...exchangeQuotes]));
+                });
+
+                expect(form.getValues('quote')).toEqual(
+                    expect.objectContaining({
+                        quoteId: '1inch-fusion-plus',
+                    }),
+                );
+            });
+
+            it('should select quote with same Rate when same provider is not available', async () => {
+                await act(() => {
+                    store.dispatch(
+                        tradingExchangeActions.saveQuotes([...exchangeQuotes, oneInchFusionQuote]),
+                    );
+                });
+
+                await act(() => {
+                    form.setValue('quote', {
+                        ...oneInchFusionQuote,
+                        quoteId: '1inch-fusion-outdated',
                     });
                 });
 
@@ -276,27 +303,6 @@ describe('useExchangeForm', () => {
                 expect(form.getValues('quote')).toEqual(
                     expect.objectContaining({
                         quoteId: 'invity-dex',
-                    }),
-                );
-            });
-
-            it('should select quote with same Rate when same provider is not available', async () => {
-                await act(() => {
-                    form.setValue('quote', {
-                        ...invityDexQuote,
-                        quoteId: 'invity-dex-outdated',
-                    });
-                });
-
-                await act(() => {
-                    store.dispatch(
-                        tradingExchangeActions.saveQuotes(exchangeQuotes.toSpliced(3, 1)),
-                    );
-                });
-
-                expect(form.getValues('quote')).toEqual(
-                    expect.objectContaining({
-                        quoteId: 'mercuryo-dex',
                     }),
                 );
             });

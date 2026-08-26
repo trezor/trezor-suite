@@ -71,10 +71,10 @@ export const useProviderFilters = <T extends TradingTradeType>(
             }));
         }
 
-        // DEX quotes are shown inside fixed/float rate sections (no dedicated DEX section).
+        // DEX quotes are grouped into the float section upstream.
         const quotesByRateCategory: Record<'fixed' | 'float', T[]> = {
             fixed: quotes.fixed ?? [],
-            float: [...(quotes.float ?? []), ...(quotes.dex ?? [])],
+            float: quotes.float ?? [],
         };
 
         return EXCHANGE_RATE_CATEGORIES.map(category => ({

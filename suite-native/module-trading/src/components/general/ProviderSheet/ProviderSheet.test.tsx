@@ -1,11 +1,8 @@
-import {
-    EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
-    type TradingTradeType,
-    type TradingType,
-} from '@suite-common/trading';
+import { type TradingTradeType, type TradingType } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { screen } from '@suite-native/test-utils-store';
 import { cexdirectFloatingQuote, mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
+import { EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE } from '@suite-native/trading-state';
 
 import { ProviderSheet, type ProviderSheetProps } from './ProviderSheet';
 import {
@@ -67,7 +64,7 @@ describe('ProviderSheet', () => {
     it('should render fixed and float section headers for exchange without DEX section', async () => {
         const { getByText, queryByText } = await renderProviderSheet({
             tradingType: 'exchange',
-            quotes: EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
+            quotes: EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE,
         });
 
         expect(

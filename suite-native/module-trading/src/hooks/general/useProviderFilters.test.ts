@@ -1,8 +1,8 @@
 import type { ExchangeTrade } from 'invity-api';
 
-import { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE } from '@suite-native/trading-state';
 import { type QuotesByCategories } from '@suite-native/trading-types';
 
 import { useProviderFilters } from './useProviderFilters';
@@ -14,7 +14,7 @@ type UseProviderFilterProps = {
 describe('useProviderFilters', () => {
     const renderUseProviderFilters = async (initialProps: UseProviderFilterProps) =>
         await renderHookWithBasicProvider(
-            ({ quotes = EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES, shouldShowFilters = true }) =>
+            ({ quotes = EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE, shouldShowFilters = true }) =>
                 useProviderFilters(quotes, shouldShowFilters),
             {
                 initialProps,
@@ -35,6 +35,10 @@ describe('useProviderFilters', () => {
                 label: getTranslation('moduleTrading.providerSheet.filters.centralized'),
                 value: 'cex',
             },
+            {
+                label: getTranslation('moduleTrading.providerSheet.filters.decentralized'),
+                value: 'dex',
+            },
         ]);
 
         await rerender({});
@@ -42,7 +46,7 @@ describe('useProviderFilters', () => {
         expect(result.current.filterItems).toEqual(initialFilterItems);
     });
 
-    it('should return fixed and float sections even when empty and merge DEX into float', async () => {
+    it('should return fixed and float sections even when empty', async () => {
         const { result } = await renderUseProviderFilters({
             quotes: {
                 fixed: [],
@@ -70,7 +74,7 @@ describe('useProviderFilters', () => {
         ]);
     });
 
-    it('should merge DEX quotes into float and sort section quotes by best offer', async () => {
+    it('should sort section quotes by best offer', async () => {
         const { result } = await renderUseProviderFilters({
             quotes: {
                 fixed: [
