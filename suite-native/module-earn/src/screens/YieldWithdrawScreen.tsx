@@ -116,7 +116,7 @@ export const YieldWithdrawScreen = () => {
         bottomSheetRef: infoBottomSheetRef,
         closeModal: closeInfoBottomSheet,
         openModal: openInfoBottomSheet,
-    } = useBottomSheetModal();
+    } = useBottomSheetModal({ isNestedSheet: true });
     const {
         bottomSheetRef: pendingBottomSheetRef,
         closeModal: closePendingBottomSheet,
@@ -435,14 +435,6 @@ export const YieldWithdrawScreen = () => {
         navigation.goBack();
     }, [isWithdrawPending, navigation, openPendingBottomSheet]);
 
-    const handleCloseInfoBottomSheet = useCallback(() => {
-        closeInfoBottomSheet();
-
-        if (isWithdrawPending) {
-            requestAnimationFrame(openPendingBottomSheet);
-        }
-    }, [closeInfoBottomSheet, isWithdrawPending, openPendingBottomSheet]);
-
     const handleInputSwitch = useCallback(
         (activeView: 'primary' | 'secondary') => {
             analytics.report({
@@ -758,7 +750,7 @@ export const YieldWithdrawScreen = () => {
                 ref={infoBottomSheetRef}
                 apy={apy}
                 bonusRewardTokenSymbol={bonusRewardTokenSymbol}
-                onClose={handleCloseInfoBottomSheet}
+                onClose={closeInfoBottomSheet}
                 tokenSymbol={underlyingTokenSymbol}
                 vaultTokenSymbol={resolvedVaultTokenSymbol}
                 account={account}

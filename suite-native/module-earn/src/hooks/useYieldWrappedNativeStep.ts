@@ -80,7 +80,6 @@ export const useYieldWrappedNativeStep = ({
         pendingBottomSheetRef,
         pendingModalProps,
         pendingTransaction,
-        reopenPendingBottomSheet,
     } = useYieldPendingTransaction({
         accountKey: account?.key,
         isFocused,
@@ -178,7 +177,6 @@ export const useYieldWrappedNativeStep = ({
         pendingBottomSheetRef,
         pendingModalProps,
         pendingTransaction,
-        reopenPendingBottomSheet,
         session,
         simulation,
     };
