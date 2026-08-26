@@ -43,8 +43,16 @@ A trace is recorded for every test, and is read with Playwright directly:
 yarn workspace @suite/component-tests  playwright show-trace
 ```
 
+## Story Ids
+
+Story ids are the path under `stories/` minus the extension, plus the export name —
+`autodetect/AnalyticsConsent` mounts the `AnalyticsConsent` export of
+`stories/autodetect.story.tsx`.
+
 ## Known constraints
 
+- **Stories live here, not next to their components**, which needs the deep-import exception in
+  `eslint.config.mjs`.
 - **The bundler setup is shared with the app build**: aliases and plugins come from
   `packages/suite-build/viteShared.ts`, the browser polyfills from
   `packages/suite-build/browserPolyfills.ts`.
