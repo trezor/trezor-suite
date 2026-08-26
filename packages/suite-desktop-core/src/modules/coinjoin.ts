@@ -17,7 +17,7 @@ import { type InterceptedEvent } from '@trezor/request-manager';
 import { getSynchronize } from '@trezor/utils';
 
 import type { ModuleInit } from './module';
-import { ipcMain, rawIpcMain } from '../ipcMain';
+import { ipcMain, looselyTypedIpcMain } from '../ipcMain';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
 import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { ThreadProxy } from '../libs/thread-proxy';
@@ -207,13 +207,13 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
 
     const registerProxies = () => {
         const unregisterBackendProxy = createIpcProxyHandler(
-            rawIpcMain,
+            looselyTypedIpcMain,
             BACKEND_CHANNEL,
             backendProxyOptions,
         );
 
         const unregisterClientProxy = createIpcProxyHandler(
-            rawIpcMain,
+            looselyTypedIpcMain,
             CLIENT_CHANNEL,
             clientProxyOptions,
         );

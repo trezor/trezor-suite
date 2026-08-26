@@ -12,7 +12,7 @@ import {
 import { createLazy, throwError } from '@trezor/utils';
 
 import type { ModuleInit } from './module';
-import { rawIpcMain } from '../ipcMain';
+import { looselyTypedIpcMain } from '../ipcMain';
 import { BluetoothProcess } from '../libs/processes/BluetoothProcess';
 
 export const SERVICE_NAME = '@trezor/transport-bluetooth';
@@ -136,7 +136,7 @@ export const init: ModuleInit = () => {
         },
     };
 
-    const unregisterProxy = createIpcProxyHandler(rawIpcMain, 'Bluetooth', proxyOptions);
+    const unregisterProxy = createIpcProxyHandler(looselyTypedIpcMain, 'Bluetooth', proxyOptions);
     const onLoad = () => {
         bluetoothModuleState.getTransport = getBluetoothTransport;
     };
