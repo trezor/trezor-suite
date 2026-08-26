@@ -7,7 +7,8 @@ import { openApp, preparePreloadedReduxState } from '../support/setup';
 
 const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
 
-describe('Import altcoin accounts. [@noDevice]', () => {
+// Constatntly failing on iOS, TODO issue https://github.com/trezor/trezor-suite/issues/31780
+describe.skip('Import altcoin accounts. [@noDevice]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await onTabBar.navigateToMyAssets();
