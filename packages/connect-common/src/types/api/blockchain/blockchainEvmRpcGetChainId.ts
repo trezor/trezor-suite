@@ -1,11 +1,9 @@
 import type { CommonParams, Response } from '../../params';
 
-export type BlockchainValidateEvmRpcUrl = CommonParams & {
+export type BlockchainEvmRpcGetChainId = CommonParams & {
     url: string;
-    chainId: number;
 };
 
-export declare function blockchainValidateEvmRpcUrl(params: BlockchainValidateEvmRpcUrl): Response<{
-    valid: boolean;
-    actualChainId?: number;
-}>;
+export declare function blockchainEvmRpcGetChainId(
+    params: BlockchainEvmRpcGetChainId,
+): Response<{ chainId: number }>;

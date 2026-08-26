@@ -50,7 +50,7 @@ const connectPublicCallableMethodGroups = {
         'blockchainDisconnect',
         'blockchainSetCustomBackend',
         'blockchainGetInfo',
-        'blockchainValidateEvmRpcUrl',
+        'blockchainEvmRpcGetChainId',
         'blockchainEstimateFee',
         'blockchainGetAccountBalanceHistory',
         'blockchainGetTransactions',
