@@ -454,7 +454,6 @@ class RippleWorker extends BaseWorker<XrplAPI> {
             headers: { 'User-Agent': `Trezor Suite ${getSuiteVersion()}` },
             timeout: this.settings.timeout || DEFAULT_TIMEOUT, // timeout is used for request and heartbeat (ping)
             connectionTimeout: this.settings.timeout || DEFAULT_TIMEOUT, // connectionTimeout is used only for connection
-            ...(this.proxyAgent && { agent: this.proxyAgent }),
         });
 
         await client.connect();

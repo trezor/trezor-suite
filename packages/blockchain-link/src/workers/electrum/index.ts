@@ -166,7 +166,6 @@ class ElectrumWorker extends BaseWorker<ElectrumClient> {
         const socket = createSocket(url, {
             timeout,
             keepAlive,
-            proxyAgent: this.proxyAgent,
         });
         const api = new CachingElectrumClient();
         await api.connect(socket, {

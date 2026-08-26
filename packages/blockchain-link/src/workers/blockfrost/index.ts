@@ -318,7 +318,6 @@ class BlockfrostWorker extends BaseWorker<BlockfrostAPI> {
             timeout,
             pingTimeout,
             keepAlive,
-            agent: this.proxyAgent,
         });
         await api.connect();
 

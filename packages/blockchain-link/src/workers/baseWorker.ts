@@ -5,8 +5,6 @@
 // and
 // new BlockchainLink({ worker: () => new BlockchainLinkModule() });
 
-import { SocksProxyAgent } from 'socks-proxy-agent';
-
 import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import type { BlockchainSettings, Message, Response } from '@trezor/blockchain-link-types';
 
@@ -31,7 +29,6 @@ export type ContextType<API> = {
 
 export abstract class BaseWorker<API> {
     api: API | undefined;
-    proxyAgent: SocksProxyAgent | undefined;
     settings: Partial<BlockchainSettings> = {};
     state: WorkerState;
     post: (data: Response) => void;
@@ -114,12 +111,6 @@ export abstract class BaseWorker<API> {
             throw new CustomError('connect', 'All backends are down');
         }
 
-        // @sentry/node (used in suite-desktop) is wrapping each outgoing request
-        // and requires protocol to be explicitly set to https while using TOR + https/wss address combination
-        if (this.proxyAgent) {
-            this.proxyAgent.protocol = /^(https|wss):/.test(url) ? 'https:' : 'http:';
-        }
-
         this.debug('Connecting to', url);
 
         return this.tryConnect(url).catch(error => {
@@ -144,12 +135,6 @@ export abstract class BaseWorker<API> {
 
         if (data.type === MESSAGES.HANDSHAKE) {
             this.settings = data.settings;
-            const { proxy } = data.settings;
-            if (proxy) {
-                this.proxyAgent = new SocksProxyAgent(proxy.uri, proxy.opts);
-            } else {
-                this.proxyAgent = undefined;
-            }
 
             return true;
         }
