@@ -140,7 +140,7 @@
         "@suite/tx-simulation": "workspace:^",
         "@suite/ui-animations": "workspace:*",
         "@suite/wallet": "workspace:*",
-        "@tanstack/react-query": "5.101.2",
+        "@tanstack/react-query": "5.101.4",
         "@testing-library/jest-dom": "7.0.1",
         "@trezor/analytics-uploader": "workspace:*",
         "@trezor/asset-utils": "workspace:*",
