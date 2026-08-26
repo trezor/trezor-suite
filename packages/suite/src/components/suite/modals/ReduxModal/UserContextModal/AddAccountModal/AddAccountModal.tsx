@@ -47,11 +47,14 @@ import { AdvancedCoinSettingsModal } from '../AdvancedCoinSettingsModal/Advanced
 
 type AddAccountProps = {
     device: TrezorDevice;
+    // Callback when modal is closed, same as any other modal.
     onCancel: () => void;
+    // Callback when the add-account flow completed successfully enough to resume the parent flow.
     onConfirm?: () => void;
     symbol?: NetworkSymbol;
     isCoinjoinDisabled?: boolean;
     isBackClickDisabled?: boolean;
+    // Callback when the flow produced a specific single usable account (not when enabling a pinned network).
     onAddAccount?: (account: Account) => void;
 };
 
@@ -75,6 +78,11 @@ export const AddAccountModal = ({
 
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
+
+    const closeModalAndNotifyCompletion = useCallback(() => {
+        onCancel();
+        onConfirm?.();
+    }, [onCancel, onConfirm]);
 
     const resetAccountSearch = (networkSymbol: NetworkSymbol) => {
         // Reset the account search so the new account is visible in the list.
@@ -281,9 +289,8 @@ export const AddAccountModal = ({
     );
 
     function enablePinnedNetwork(network: Network) {
-        onCancel();
         dispatch(changeCoinVisibility({ symbol: network.symbol, shouldBeVisible: true }));
-        onConfirm?.();
+        closeModalAndNotifyCompletion();
     }
 
     async function enableAccount(
@@ -322,9 +329,7 @@ export const AddAccountModal = ({
                 return;
             }
 
-            onCancel();
-            onConfirm?.();
-
+            closeModalAndNotifyCompletion();
             onAddAccount?.(addedAccount);
         };
 
@@ -428,8 +433,7 @@ export const AddAccountModal = ({
                 return;
             }
 
-            onCancel();
-            onConfirm?.();
+            closeModalAndNotifyCompletion();
             onAddAccount?.(addedAccount);
         } finally {
             finishAddingAccount();
