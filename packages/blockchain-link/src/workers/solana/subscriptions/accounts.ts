@@ -1,38 +1,20 @@
 import type { SubscriptionAccountInfo, TokenDetailByMint } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
+import { tokenProgramsInfo } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
-import type { AccountInfoBase, SolanaRpcResponse } from '@trezor/network-solana/types';
+import type { AccountInfoWithJsonData, Base58EncodedBytes } from '@trezor/network-solana/types';
 
 import type { Context } from '../types';
 import { isValidTransaction } from '../utils';
 
-const extractTokenAccounts = (
-    accounts: SubscriptionAccountInfo[],
-    tokenMetadata: TokenDetailByMint,
-): SubscriptionAccountInfo[] =>
-    accounts.flatMap(
-        account =>
-            account.tokens?.flatMap(
-                token =>
-                    token.accounts
-                        ?.filter(
-                            tokenAccount =>
-                                tokenAccount.balance !== '0' && tokenMetadata[token.contract],
-                        )
-                        .map(tokenAccount => ({ descriptor: tokenAccount.publicKey })) || [],
-            ) || [],
-    );
+// Offset of the owner pubkey in the SPL token account layout, shared by Token and Token-2022.
+const TOKEN_ACCOUNT_OWNER_OFFSET = 32n;
 
-const findTokenAccountOwner = (
-    accounts: SubscriptionAccountInfo[],
-    accountDescriptor: string,
-): SubscriptionAccountInfo | undefined =>
-    accounts.find(account =>
-        account.tokens?.find(token =>
-            token.accounts?.find(tokenAccount => tokenAccount.publicKey === accountDescriptor),
-        ),
-    );
+const getTokenAccountMint = (account: AccountInfoWithJsonData) =>
+    'parsed' in account.data
+        ? (account.data.parsed?.info as { mint?: string } | undefined)?.mint
+        : undefined;
 
 let NEXT_ACCOUNT_SUBSCRIPTION_ID = 0;
 // Module-scoped registry of in-flight account subscriptions. Shared between the
@@ -45,24 +27,30 @@ export const abortSubscription = (id: number) => {
     abortController?.abort();
 };
 
-const handleAccountNotification = async (
+const handleNotifications = async <T>(
     context: Context,
-    accountNotifications: AsyncIterable<SolanaRpcResponse<AccountInfoBase>>,
+    notifications: AsyncIterable<T>,
     account: SubscriptionAccountInfo,
+    // Address whose history changed, or undefined to ignore the notification.
+    getChangedAddress: (notification: T, tokenMetadata: TokenDetailByMint) => string | undefined,
 ) => {
     const { connect, state, post, getTokenMetadata } = context;
     const { address, isConnectionClosedError } = await solana();
     try {
-        for await (const _ of accountNotifications) {
+        for await (const notification of notifications) {
+            const tokenMetadata = await getTokenMetadata();
+            const changedAddress = getChangedAddress(notification, tokenMetadata);
+            if (!changedAddress) continue;
+
             const api = await connect();
             // get the last transaction signature for the account, since that what triggered this callback
             const [lastSignatureResponse] = await api.rpc
-                .getSignaturesForAddress(address(account.descriptor), {
+                .getSignaturesForAddress(address(changedAddress), {
                     limit: 1,
                 })
                 .send();
             const lastSignature = lastSignatureResponse?.signature;
-            if (!lastSignature) return;
+            if (!lastSignature) continue;
 
             // get the last transaction
             const lastTx = await api.rpc
@@ -73,23 +61,11 @@ const handleAccountNotification = async (
                 })
                 .send();
 
-            if (!lastTx || !isValidTransaction(lastTx)) {
-                return;
-            }
+            if (!lastTx || !isValidTransaction(lastTx)) continue;
 
-            const tokenMetadata = await getTokenMetadata();
-            const tx = solanaUtils.transformTransaction(
-                lastTx,
-                account.descriptor,
-                [],
-                tokenMetadata,
-            );
-
-            // For token accounts we need to emit an event with the owner account's descriptor
-            // since we don't store token accounts in the user's accounts.
-            const descriptor =
-                findTokenAccountOwner(state.getAccounts(), account.descriptor)?.descriptor ||
-                account.descriptor;
+            // Transformed from the perspective of the address that changed: for a token transfer
+            // that is the token account appearing as the instruction's source or destination.
+            const tx = solanaUtils.transformTransaction(lastTx, changedAddress, [], tokenMetadata);
 
             post({
                 id: -1,
@@ -97,7 +73,7 @@ const handleAccountNotification = async (
                 payload: {
                     type: 'notification',
                     payload: {
-                        descriptor,
+                        descriptor: account.descriptor,
                         tx,
                     },
                 },
@@ -106,7 +82,7 @@ const handleAccountNotification = async (
     } catch (error) {
         if (isConnectionClosedError(error)) {
             // The WS was closed, we should unsubscribe
-            if (account.subscriptionId) abortSubscription(account.subscriptionId);
+            if (account.subscriptionId != null) abortSubscription(account.subscriptionId);
             state.removeAccounts([account]);
             context.onNetworkDisconnect();
         }
@@ -117,10 +93,7 @@ export const subscribeAccounts = async (context: Context, accounts: Subscription
     const { connect, state } = context;
     const api = await connect();
     const subscribedAccounts = state.getAccounts();
-    const tokenMetadata = await context.getTokenMetadata();
-    const tokenAccounts = extractTokenAccounts(accounts, tokenMetadata);
-    // we have to subscribe to both system and token accounts
-    const newAccounts = [...accounts, ...tokenAccounts].filter(
+    const newAccounts = accounts.filter(
         account =>
             !subscribedAccounts.some(
                 subscribedAccount => account.descriptor === subscribedAccount.descriptor,
@@ -131,10 +104,8 @@ export const subscribeAccounts = async (context: Context, accounts: Subscription
 
     await Promise.all(
         newAccounts.map(async a => {
+            // One controller per account, shared by its system and token subscriptions.
             const abortController = new AbortController();
-            const accountNotifications = await api.rpcSubscriptions
-                .accountNotifications(address(a.descriptor), { commitment: 'confirmed' })
-                .subscribe({ abortSignal: abortController.signal });
             const subscriptionId = NEXT_ACCOUNT_SUBSCRIPTION_ID++;
             ACCOUNT_SUBSCRIPTION_ABORT_CONTROLLERS.set(subscriptionId, abortController);
             const account: SubscriptionAccountInfo = {
@@ -142,7 +113,48 @@ export const subscribeAccounts = async (context: Context, accounts: Subscription
                 subscriptionId,
             };
             state.addAccounts([account]);
-            handleAccountNotification(context, accountNotifications, account);
+
+            const accountNotifications = await api.rpcSubscriptions
+                .accountNotifications(address(a.descriptor), { commitment: 'confirmed' })
+                .subscribe({ abortSignal: abortController.signal });
+            handleNotifications(context, accountNotifications, account, () => a.descriptor);
+
+            // One owner-filtered program subscription covers every token account, so the
+            // subscription count scales with accounts rather than with tokens held. It also
+            // catches token accounts created after subscribing, which a per-token-account
+            // subscription cannot — an incoming transfer of a not-yet-held token.
+            await Promise.all(
+                Object.values(tokenProgramsInfo).map(async ({ publicKey }) => {
+                    const tokenNotifications = await api.rpcSubscriptions
+                        .programNotifications(address(publicKey), {
+                            commitment: 'confirmed',
+                            encoding: 'jsonParsed',
+                            filters: [
+                                {
+                                    memcmp: {
+                                        bytes: a.descriptor as Base58EncodedBytes,
+                                        encoding: 'base58',
+                                        offset: TOKEN_ACCOUNT_OWNER_OFFSET,
+                                    },
+                                },
+                            ],
+                        })
+                        .subscribe({ abortSignal: abortController.signal });
+
+                    handleNotifications(
+                        context,
+                        tokenNotifications,
+                        account,
+                        ({ value }, tokenMetadata) => {
+                            const mint = getTokenAccountMint(value.account);
+
+                            // Ignore unrecognised tokens so airdropped spam does not trigger a
+                            // history fetch and an account refresh.
+                            return mint && tokenMetadata[mint] ? value.pubkey : undefined;
+                        },
+                    );
+                }),
+            );
         }),
     );
 
@@ -153,23 +165,12 @@ export const unsubscribeAccounts = (
     { state }: Context,
     accounts: SubscriptionAccountInfo[] | undefined = [],
 ) => {
-    const subscribedAccounts = state.getAccounts();
-
-    accounts.forEach(a => {
-        if (a.subscriptionId != null) {
-            abortSubscription(a.subscriptionId);
-            state.removeAccounts([a]);
+    accounts.forEach(({ descriptor }) => {
+        // The accounts Suite sends back carry no subscriptionId, so take the stored one.
+        const subscribed = state.getAccount(descriptor);
+        if (subscribed?.subscriptionId != null) {
+            abortSubscription(subscribed.subscriptionId);
+            state.removeAccounts([subscribed]);
         }
-
-        // unsubscribe token accounts as well
-        a.tokens?.forEach(t => {
-            t.accounts?.forEach(ta => {
-                const tokenAccount = subscribedAccounts.find(sa => sa.descriptor === ta.publicKey);
-                if (tokenAccount?.subscriptionId != null) {
-                    abortSubscription(tokenAccount.subscriptionId);
-                    state.removeAccounts([tokenAccount]);
-                }
-            });
-        });
     });
 };
