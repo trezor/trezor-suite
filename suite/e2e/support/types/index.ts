@@ -64,10 +64,18 @@ export type BuyAsset = {
     assetCryptoId: CryptoId;
 };
 
+export type SellAssetGroup = 'low-balance' | 'non-tradable';
+
 export type SellAsset = {
     searchFilter?: string;
     networkFilter?: AssetPickerNetworkFilter;
     networkSymbol: NetworkSymbol;
     tokenSymbol?: string;
+    accountType?: 'normal' | 'legacy' | 'segwit' | 'ledger';
     accountIndex?: number;
+
+    /**
+     * Expand this group first, the asset is not selectable while it is collapsed.
+     */
+    group?: SellAssetGroup;
 };
