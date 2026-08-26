@@ -10,17 +10,18 @@ import {
     getSellTrade,
 } from '@suite-native/trading-fixtures';
 
-import { TradingHistoryDetailActionButton } from './TradingHistoryDetailActionButton';
+import { TradingHistoryDetailStatusAction } from './TradingHistoryDetailStatusAction';
 import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
 const mockNavigate = jest.fn();
+const startNewTradeTestID = '@trading-history/detail/action/start-new-trade';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => ({ navigate: mockNavigate }),
 }));
 
-describe('TradingHistoryDetailActionButton', () => {
+describe('TradingHistoryDetailStatusAction', () => {
     const mockCanOpenURL = jest.spyOn(Linking, 'canOpenURL');
     const mockOpenURL = jest.spyOn(Linking, 'openURL');
 
@@ -33,85 +34,82 @@ describe('TradingHistoryDetailActionButton', () => {
         [getBuyTrade({ status: 'SUCCESS' }), 'buy'],
         [getSellTrade({ status: 'SUCCESS' }), 'sell'],
         [getExchangeTrade({ status: 'SUCCESS' }), 'exchange'],
-    ] as const)('renders a primary button for a successful trade', (trade, translationKey) => {
-        const { getByTestId, getByText } = renderWithTradingHistoryProvider(
-            <TradingHistoryDetailActionButton
-                providerName={trade.data.exchange}
-                tradeType={trade.tradeType}
-                status={trade.data.status}
-            />,
-        );
+    ] as const)(
+        'renders a start-new-trade action for a successful trade',
+        async (trade, translationKey) => {
+            const { getByTestId, getByText } = await renderWithTradingHistoryProvider(
+                <TradingHistoryDetailStatusAction
+                    providerName={trade.data.exchange}
+                    tradeType={trade.tradeType}
+                    status={trade.data.status}
+                />,
+            );
 
-        expect(
-            getByTestId('@trading-history/detail/action/start-new-trade/primary'),
-        ).toBeOnTheScreen();
-        expect(
-            getByText(
-                getTranslation(
-                    `moduleTrading.tradeHistory.detail.actionButton.startNew.${translationKey}`,
+            expect(getByTestId(startNewTradeTestID)).toBeOnTheScreen();
+            expect(
+                getByText(
+                    getTranslation(
+                        `moduleTrading.tradeHistory.detail.actionButton.startNew.${translationKey}`,
+                    ),
                 ),
-            ),
-        ).toBeOnTheScreen();
-    });
+            ).toBeOnTheScreen();
+        },
+    );
 
     it.each([
         [getBuyTrade({ status: 'ERROR' }), 'buy'],
         [getSellTrade({ status: 'ERROR' }), 'sell'],
         [getExchangeTrade({ status: 'ERROR' }), 'exchange'],
-    ] as const)('renders a secondary button for a failed trade', (trade, translationKey) => {
-        const { getByTestId, getByText } = renderWithTradingHistoryProvider(
-            <TradingHistoryDetailActionButton
-                providerName={trade.data.exchange}
-                tradeType={trade.tradeType}
-                status={trade.data.status}
-            />,
-        );
+    ] as const)(
+        'renders a start-new-trade action for a failed trade',
+        async (trade, translationKey) => {
+            const { getByTestId, getByText } = await renderWithTradingHistoryProvider(
+                <TradingHistoryDetailStatusAction
+                    providerName={trade.data.exchange}
+                    tradeType={trade.tradeType}
+                    status={trade.data.status}
+                />,
+            );
 
-        expect(
-            getByTestId('@trading-history/detail/action/start-new-trade/secondary'),
-        ).toBeOnTheScreen();
-        expect(
-            getByText(
-                getTranslation(
-                    `moduleTrading.tradeHistory.detail.actionButton.startNew.${translationKey}`,
+            expect(getByTestId(startNewTradeTestID)).toBeOnTheScreen();
+            expect(
+                getByText(
+                    getTranslation(
+                        `moduleTrading.tradeHistory.detail.actionButton.startNew.${translationKey}`,
+                    ),
                 ),
-            ),
-        ).toBeOnTheScreen();
-    });
+            ).toBeOnTheScreen();
+        },
+    );
 
     it.each([
         getBuyTrade({ status: 'SUBMITTED' }),
         getSellTrade({ status: 'PENDING' }),
         getExchangeTrade({ status: 'CONVERTING' }),
-    ])('does not render a button for an in-progress trade', trade => {
-        const { queryByTestId } = renderWithTradingHistoryProvider(
-            <TradingHistoryDetailActionButton
+    ])('does not render a button for an in-progress trade', async trade => {
+        const { queryByTestId } = await renderWithTradingHistoryProvider(
+            <TradingHistoryDetailStatusAction
                 providerName={trade.data.exchange}
                 tradeType={trade.tradeType}
                 status={trade.data.status}
             />,
         );
 
-        expect(queryByTestId('@trading-history/detail/action/start-new-trade/primary')).toBeNull();
-        expect(
-            queryByTestId('@trading-history/detail/action/start-new-trade/secondary'),
-        ).toBeNull();
+        expect(queryByTestId(startNewTradeTestID)).toBeNull();
         expect(queryByTestId('@trading-history/detail/action/contact-provider')).toBeNull();
     });
 
     it('opens the matching trading form for the start-new-trade action', async () => {
         const trade = getExchangeTrade({ status: 'SUCCESS' });
-        const { getByTestId } = renderWithTradingHistoryProvider(
-            <TradingHistoryDetailActionButton
+        const { getByTestId } = await renderWithTradingHistoryProvider(
+            <TradingHistoryDetailStatusAction
                 providerName={trade.data.exchange}
                 tradeType={trade.tradeType}
                 status={trade.data.status}
             />,
         );
 
-        await userEvent.press(
-            getByTestId('@trading-history/detail/action/start-new-trade/primary'),
-        );
+        await userEvent.press(getByTestId(startNewTradeTestID));
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.TradeStack,
@@ -124,8 +122,8 @@ describe('TradingHistoryDetailActionButton', () => {
 
     it('opens provider support for the KYC action', async () => {
         const trade = getExchangeTrade({ status: 'KYC' });
-        const { getByTestId, getByText } = renderWithTradingHistoryProvider(
-            <TradingHistoryDetailActionButton
+        const { getByTestId, getByText } = await renderWithTradingHistoryProvider(
+            <TradingHistoryDetailStatusAction
                 providerName={trade.data.exchange}
                 tradeType={trade.tradeType}
                 status={trade.data.status}
@@ -153,9 +151,9 @@ describe('TradingHistoryDetailActionButton', () => {
         expect(mockNavigate).not.toHaveBeenCalled();
     });
 
-    it('does not render the KYC action when provider support is unavailable', () => {
+    it('does not render the KYC action when provider support is unavailable', async () => {
         const trade = getExchangeTrade({ status: 'KYC' });
-        const { queryByTestId } = renderWithTradingHistoryProvider(
+        const { queryByTestId } = await renderWithTradingHistoryProvider(
             <TradingHistoryDetailStatusAction
                 providerName="provider-without-metadata"
                 tradeType={trade.tradeType}

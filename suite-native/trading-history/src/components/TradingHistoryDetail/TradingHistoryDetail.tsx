@@ -7,8 +7,8 @@ import { getTradeOperationData } from '@suite-native/trading-quote-utils';
 import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
 import { TradingHistoryDetailStatusStepper } from './TradeStatusStepper/TradingHistoryDetailStatusStepper';
-import { TradingHistoryDetailActionButton } from './TradingHistoryDetailActionButton';
 import { TradingHistoryDetailBuyPaymentBanner } from './TradingHistoryDetailBuyPaymentBanner';
+import { TradingHistoryDetailStatusAction } from './TradingHistoryDetailStatusAction';
 import { TradingDetailFeedback } from '../TradeHistoryListItem/TradingDetailFeedback';
 
 type TradingHistoryDetailProps = {
@@ -29,7 +29,7 @@ export const TradingHistoryDetail = ({ orderId }: TradingHistoryDetailProps) => 
 
     return (
         <VStack spacing="sp16">
-            <TradingHistoryDetailActionButton
+            <TradingHistoryDetailStatusAction
                 providerName={trade.data.exchange}
                 tradeType={trade.tradeType}
                 status={trade.data.status}

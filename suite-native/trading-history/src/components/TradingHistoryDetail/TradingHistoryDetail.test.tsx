@@ -20,9 +20,9 @@ describe('TradingHistoryDetail', () => {
             },
         );
 
-    it('should render customer and provider progress for a submitted buy', () => {
+    it('should render customer and provider progress for a submitted buy', async () => {
         const trade = getBuyTrade({ status: 'SUBMITTED' });
-        const { getByTestId, getByText } = renderDetail(trade);
+        const { getByTestId, getByText } = await renderDetail(trade);
 
         expect(getByTestId('@trade-status-stepper/customer-action/active')).toBeOnTheScreen();
         expect(getByTestId('@trade-status-stepper/provider-processing/pending')).toBeOnTheScreen();
@@ -42,13 +42,13 @@ describe('TradingHistoryDetail', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render a payment interruption banner for a buy without a status link while waiting for payment', () => {
+    it('should render a payment interruption banner for a buy without a status link while waiting for payment', async () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
         const trade = {
             ...buyTrade,
             data: { ...buyTrade.data, partnerData: undefined, statusUrl: null },
         };
-        const { getByText } = renderDetail(trade);
+        const { getByText } = await renderDetail(trade);
 
         expect(
             getByText(
@@ -77,8 +77,8 @@ describe('TradingHistoryDetail', () => {
                 },
             },
         ],
-    ] as const)('should not render a payment interruption banner when %s', (_, trade) => {
-        const { queryByText } = renderDetail(trade);
+    ] as const)('should not render a payment interruption banner when %s', async (_, trade) => {
+        const { queryByText } = await renderDetail(trade);
 
         expect(
             queryByText(
@@ -87,7 +87,7 @@ describe('TradingHistoryDetail', () => {
         ).not.toBeOnTheScreen();
     });
 
-    it('should render a completed transaction and active provider step for a pending sell', () => {
+    it('should render a completed transaction and active provider step for a pending sell', async () => {
         const transactionId = 'sell-transaction-id';
         const statusUrl = 'https://example.com/sell-status';
         const sellTrade = getSellTrade({ status: 'PENDING' });
@@ -96,7 +96,7 @@ describe('TradingHistoryDetail', () => {
             data: { ...sellTrade.data, txid: transactionId, statusUrl },
         };
 
-        const { getByTestId, getByText, queryByTestId } = renderDetail(trade);
+        const { getByTestId, getByText, queryByTestId } = await renderDetail(trade);
 
         expect(getByTestId('@trade-status-stepper/customer-action/completed')).toBeOnTheScreen();
         expect(getByTestId('@trade-status-stepper/provider-processing/active')).toBeOnTheScreen();
@@ -120,8 +120,8 @@ describe('TradingHistoryDetail', () => {
         expect(queryByTestId('@trade-status-stepper/terminal-content')).not.toBeOnTheScreen();
     });
 
-    it('should render completed customer and provider steps for a successful swap', () => {
-        const { getByTestId, getByText, queryByText } = renderDetail(
+    it('should render completed customer and provider steps for a successful swap', async () => {
+        const { getByTestId, getByText, queryByText } = await renderDetail(
             getExchangeTrade({ status: 'SUCCESS' }),
         );
 
@@ -147,7 +147,7 @@ describe('TradingHistoryDetail', () => {
         ).not.toBeOnTheScreen();
     });
 
-    it('should render available transaction data instead of steps for a terminal sell', () => {
+    it('should render available transaction data instead of steps for a terminal sell', async () => {
         const transactionId = 'sell-terminal-transaction-id';
         const sellTrade = getSellTrade({ status: 'ERROR' });
         const trade = {
@@ -159,7 +159,7 @@ describe('TradingHistoryDetail', () => {
             },
         };
 
-        const { getByTestId, getByText, queryByTestId } = renderDetail(trade);
+        const { getByTestId, getByText, queryByTestId } = await renderDetail(trade);
 
         expect(getByTestId('@trade-status-stepper/terminal-content')).toBeOnTheScreen();
         expect(getByText(transactionId)).toBeOnTheScreen();

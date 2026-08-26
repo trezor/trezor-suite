@@ -21,7 +21,7 @@ export const useBuyTradeStatusSteps = (trade: TradingTransactionBuy) => {
         selectTradingProviderByNameAndTradeType(state, trade.data.exchange ?? '', trade.tradeType),
     );
 
-    if (progressId === undefined) {
+    if (!progressId) {
         return undefined;
     }
 
