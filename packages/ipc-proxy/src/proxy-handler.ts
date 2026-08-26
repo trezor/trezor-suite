@@ -1,7 +1,6 @@
 import { type EventEmitter } from 'events';
 
 import { type ElectronIpcMainInvokeEvent } from './types';
-import { validateIpcMessage } from './validateIpcMessage';
 
 interface EventEmitterApi {
     on: (event: any, listener: (...args: any[]) => any) => any;
@@ -43,7 +42,7 @@ interface IpcMainHandlers {
     '/create': [string, ...any[]]; // channelName, ...params of interface constructor
 }
 
-export interface ElectronIpcMainEvent {
+export interface ElectronIpcMainProxyInvokeEvent extends ElectronIpcMainInvokeEvent {
     // reply: (channel: string, response: any) => any; // in electron it's defined as `Function`
     // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     reply: Function; // in electron it's defined as `Function`
@@ -52,7 +51,7 @@ export interface ElectronIpcMainEvent {
 interface ElectronIpcMain<Api> {
     on<K extends keyof IpcMainEvents<any>, Key extends string>(
         channel: `${Key}${K}`,
-        listener: (event: ElectronIpcMainEvent, args: IpcMainEvents<Api>[K]) => void,
+        listener: (event: ElectronIpcMainProxyInvokeEvent, args: IpcMainEvents<Api>[K]) => void,
     ): any;
     on(channel: string, listener: (event: ElectronIpcMainInvokeEvent, ...args: any[]) => void): any; // just to type compatibility with original Electron.IpcMain
     handle<K extends keyof IpcMainHandlers, Key extends string>(
@@ -82,8 +81,6 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
     debug?.info(SERVICE_NAME, `Init ipc interface ${channel}`);
     // Handle creation event from proxy-generator and creates actual interface instance
     ipcMain.handle(`${channel}/create`, async (ipcEvent, [instancePrefix, constructorParams]) => {
-        validateIpcMessage({ ipcEvent });
-
         debug?.info(SERVICE_NAME, `Create ipc chanel ${instancePrefix}`);
         const { onRequest, onAddListener, onRemoveListener } = await onCreateInstance(
             ...constructorParams,

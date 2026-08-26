@@ -34,19 +34,23 @@ const handleOnce: Electron.IpcMain['handleOnce'] = (channel, handler) =>
     baseIpcMain.handleOnce(channel, withValidation(handler));
 
 /**
- * @deprecated direct export of electron.ipcMain that does not validate sender frame.
- * Use only in cases where you need to do validation yourself (createIpcProxyHandler).
+ * `ipcMain` with listeners wrapped in security validation, but untyped IPC channels (original electron type).
+ * Use only in cases that declare their own IPC channel API (createIpcProxyHandler).
  */
-export const rawIpcMain = baseIpcMain;
+export const looselyTypedIpcMain: Electron.IpcMain = Object.assign(
+    Object.create(baseIpcMain ?? {}),
+    baseIpcMain,
+    {
+        on,
+        once,
+        addListener,
+        handle,
+        handleOnce,
+    },
+);
 
 /**
- * ipcMain with listeners wrapped in security validation.
- * Unless specifically needed, this should be used instead of rawIpcMain.
+ * `ipcMain` with listeners wrapped in security validation, and with IPC channels typed to a strict API contract (@trezor/suite-desktop-api).
+ * This should be used in Electron Main modules.
  */
-export const ipcMain: StrictIpcMain = Object.assign(Object.create(baseIpcMain ?? {}), baseIpcMain, {
-    on,
-    once,
-    addListener,
-    handle,
-    handleOnce,
-});
+export const ipcMain: StrictIpcMain = looselyTypedIpcMain;
