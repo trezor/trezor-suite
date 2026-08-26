@@ -17331,6 +17331,7 @@ __metadata:
     "@trezor/node-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
     node-fetch: "npm:^3.3.2"
+    socks: "npm:^2.8.3"
     socks-proxy-agent: "npm:8.0.5"
     tsx: "npm:^4.21.0"
     ws: "npm:^8.20.0"

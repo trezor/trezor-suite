@@ -1,4 +1,7 @@
 import net from 'net';
+import { SocksClient } from 'socks';
+
+import { isWhitelistedHost } from '@trezor/utils';
 
 import { type Interceptor } from './interceptorTypes';
 
@@ -51,6 +54,113 @@ export const interceptNetSocketConnect: Interceptor = ({ context, validateReques
 
     const originalSocketConnect = net.Socket.prototype.connect;
 
+    const parseTcpConnectArgs = (
+        args: unknown[],
+    ): { host: string; port: number; callback?: () => void } | undefined => {
+        const [options, callbackOrHost] = args;
+
+        if (typeof options === 'object' && options !== null && !Array.isArray(options)) {
+            if ('port' in options) {
+                const opts = options as net.TcpSocketConnectOpts;
+
+                return {
+                    host: opts.host ?? 'localhost',
+                    port: opts.port,
+                    callback:
+                        typeof callbackOrHost === 'function'
+                            ? (callbackOrHost as () => void)
+                            : undefined,
+                };
+            }
+
+            return undefined; // IPC socket
+        }
+
+        if (typeof options === 'number') {
+            const host = typeof callbackOrHost === 'string' ? callbackOrHost : 'localhost';
+            const cb = args[2];
+
+            return {
+                host,
+                port: options,
+                callback: typeof cb === 'function' ? (cb as () => void) : undefined,
+            };
+        }
+
+        return undefined;
+    };
+
+    const shouldRouteThroughTor = (hostname: string, targetPort?: number): boolean => {
+        const torSettings = context.getTorSettings();
+        if (!torSettings.running) return false;
+
+        // Never route the connection to the SOCKS proxy itself
+        if (
+            torSettings.host &&
+            torSettings.port &&
+            hostname === torSettings.host &&
+            targetPort === torSettings.port
+        ) {
+            return false;
+        }
+
+        return !isWhitelistedHost(hostname, context.notRequiredTorDomainsList);
+    };
+
+    function connectThroughSocks(
+        socket: net.Socket,
+        target: { host: string; port: number; callback?: () => void },
+        originalConnect: typeof net.Socket.prototype.connect,
+    ): net.Socket {
+        const { host, port } = context.getTorSettings();
+        if (!host || !port) {
+            return originalConnect.call(socket, {
+                host: target.host,
+                port: target.port,
+            } as unknown as Parameters<typeof originalConnect>[0]) as net.Socket;
+        }
+
+        // Save listeners that should not fire during the SOCKS handshake
+        const connectListeners = socket.listeners('connect').slice();
+        const dataListeners = socket.listeners('data').slice();
+        socket.removeAllListeners('connect');
+        socket.removeAllListeners('data');
+
+        // Connect to the SOCKS proxy
+        originalConnect.call(socket, { host, port } as unknown as Parameters<
+            typeof originalConnect
+        >[0]);
+
+        socket.once('connect', () => {
+            SocksClient.createConnection({
+                existing_socket: socket,
+                proxy: { host, port, type: 5 },
+                destination: { host: target.host, port: target.port },
+                command: 'connect',
+            })
+                .then(() => {
+                    // Restore original listeners
+                    for (const listener of dataListeners) {
+                        socket.on('data', listener as (...args: unknown[]) => void);
+                    }
+                    for (const listener of connectListeners) {
+                        socket.on('connect', listener as (...args: unknown[]) => void);
+                    }
+
+                    // Notify the caller that the connection is established
+                    if (target.callback) {
+                        target.callback();
+                    }
+                    socket.emit('connect');
+                })
+                .catch(err => {
+                    socket.destroy(err instanceof Error ? err : new Error(String(err)));
+                });
+        });
+
+        return socket;
+    }
+
     net.Socket.prototype.connect = function (...args) {
         const [options, callback] = args;
 
@@ -85,6 +195,11 @@ export const interceptNetSocketConnect: Interceptor = ({ context, validateReques
             method: 'net.Socket.connect',
             details,
         });
+
+        const tcpArgs = parseTcpConnectArgs(args);
+        if (tcpArgs && shouldRouteThroughTor(tcpArgs.host, tcpArgs.port)) {
+            return connectThroughSocks(this, tcpArgs, originalSocketConnect);
+        }
 
         return originalSocketConnect.apply(
             this,
