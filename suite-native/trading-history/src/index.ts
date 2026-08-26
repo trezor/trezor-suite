@@ -6,9 +6,5 @@ export {
     TradingHistoryDetailCompactHeader,
     TradingHistoryDetailHeader,
 } from './components/TradingHistoryDetail/TradingHistoryDetailHeader';
-export {
-    TradeDetailTransactionInfo,
-    type TradeDetailTransactionInfoProps,
-} from './components/TradeDetailSheet/TradeDetailTransactionInfo';
 export { TradeHistoryListItem } from './components/TradeHistoryListItem/TradeHistoryListItem';
 export { TradingDetailFeedback } from './components/TradeHistoryListItem/TradingDetailFeedback';
