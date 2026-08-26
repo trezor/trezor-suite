@@ -235,6 +235,15 @@ export const config: Config = {
                 T3W1: '2.11.0',
             },
         },
+        // TODO(ward): gate the WARD methods once the introducing firmware version is known.
+        // The WARD methods (wardGetEntry / wardSetEntry / wardQueueSetEntry / wardQueueGetEntry /
+        // wardQueueDeleteEntry / wardFlushQueue / wardResetApp) have no supportedFirmware rule, so
+        // they fall back to DEFAULT_FIRMWARE_RANGE and connect treats them as supported on ANY
+        // firmware -- the device then rejects the unknown message with a generic Failure instead of
+        // connect returning a clean FIRMWARE_NOT_SUPPORTED / FIRMWARE_OLD. Add a rule here (mirror the
+        // evolu block above: per-model `min`, plus `firmwareType: 'production'` if WARD ships
+        // debug-only like nostr, and/or a `capabilities: ['ward']` flag) when the WARD firmware branch
+        // lands and pins the version. Blocked on that; placeholder so it is not forgotten before release.
         {
             capabilities: ['monero'],
             methods: [
