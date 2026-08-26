@@ -9,9 +9,14 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 interface AccountAmountProps {
     account: Account;
     isFiatPrimary?: boolean;
+    isDisabled?: boolean;
 }
 
-export function AccountAmount({ account, isFiatPrimary = false }: AccountAmountProps) {
+export function AccountAmount({
+    account,
+    isFiatPrimary = false,
+    isDisabled = false,
+}: AccountAmountProps) {
     const accountBalance = subunitsToUnits({
         value: asAmountSubunit(new BigNumber(account.balance)),
         symbol: account.symbol,
@@ -22,6 +27,7 @@ export function AccountAmount({ account, isFiatPrimary = false }: AccountAmountP
             intent="neutral"
             priority={isFiatPrimary ? 'secondary' : undefined}
             typographyStyle={isFiatPrimary ? 'body-sm' : 'body-md'}
+            isDisabled={isDisabled}
         >
             <FormattedCryptoAmount symbol={account.symbol} value={accountBalance} isBalance />
         </Text>
@@ -32,6 +38,7 @@ export function AccountAmount({ account, isFiatPrimary = false }: AccountAmountP
             intent="neutral"
             priority={isFiatPrimary ? undefined : 'secondary'}
             typographyStyle={isFiatPrimary ? 'body-md' : 'body-sm'}
+            isDisabled={isDisabled}
         >
             <BaseCurrencyValue
                 symbol={account.symbol}

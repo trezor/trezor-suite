@@ -2,7 +2,6 @@ import { memo, useCallback, useState } from 'react';
 
 import { type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Divider } from '@trezor/components';
 
 import {
     AssetGroupLabel,
@@ -14,15 +13,27 @@ import {
 } from 'src/components/suite/asset-picker/components';
 import {
     type AssetPickerListItem,
-    useExpandableAccountGroups,
+    useExpandableGroups,
     useSearchFilter,
 } from 'src/components/suite/asset-picker/hooks';
-import { createTokenOption } from 'src/components/suite/asset-picker/utils';
+import {
+    type AccountWithOptionalLabel,
+    type AssetRowOption,
+} from 'src/components/suite/asset-picker/types';
+import {
+    type AssetGroupKey,
+    getAssetGroupKey,
+} from 'src/components/suite/asset-picker/utils/assetGroupKey';
 
 import { AssetListWrapper } from './AssetListWrapper';
 import { useBuildTradingAssetOptions } from './hooks/useBuildTradingAssetOptions';
 import { type UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
-import { AssetSearchWithNetworkFilter } from '../../TradingFormInputAssetPicker';
+import { AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
+
+const MODAL_WIDTH = 480;
+
+const getAccountTestId = (account: AccountWithOptionalLabel) =>
+    `@asset-picker/sell/option/${account.accountType}/${account.symbol}/${account.index}`;
 
 export type AssetPickerModalProps = {
     closeModal: () => void;
@@ -38,38 +49,49 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
     const { search, throttledSearch, setSearch } = useSearchFilter();
 
     const [networkFilter, setNetworkFilter] = useState<NetworkSymbol | undefined>(undefined);
-    const { expandedAccountTokensGroups, updateExpandableAccountGroups } =
-        useExpandableAccountGroups();
+    const { expandedGroupKeys, toggleGroup } = useExpandableGroups<AssetGroupKey>();
 
     const { listItems, networks } = useBuildTradingAssetOptions({
         search: throttledSearch,
         networkSymbol: networkFilter,
-        expandedNonTradableTokensGroups: expandedAccountTokensGroups,
+        expandedGroupKeys,
     });
 
     const handleAssetClick = useUpdateFormInput({ closeModal, onAssetSelect });
+
+    const renderAssetRow = useCallback(
+        (item: AssetRowOption, { isInsideGroup = false, isSelectable = true } = {}) => {
+            const onClick = isSelectable ? () => handleAssetClick(item) : undefined;
+
+            return item.type === 'account' ? (
+                <AssetRowAccountWithBalance
+                    account={item.account}
+                    onClick={onClick}
+                    isFiatPrimary
+                    isInsideGroup={isInsideGroup}
+                    dataTestId={getAccountTestId(item.account)}
+                />
+            ) : (
+                <AssetRowToken
+                    token={item.token}
+                    account={item.account}
+                    onClick={onClick}
+                    isFiatPrimary
+                    isInsideGroup={isInsideGroup}
+                    showNoTradingPairText={!isSelectable}
+                    dataTestId={`${getAccountTestId(item.account)}/token/${item.token.symbol}`}
+                />
+            );
+        },
+        [handleAssetClick],
+    );
 
     const renderItem = useCallback(
         (item: AssetPickerListItem) => {
             switch (item.type) {
                 case 'account':
-                    return (
-                        <AssetRowAccountWithBalance
-                            account={item.account}
-                            onClick={() => handleAssetClick(item)}
-                            dataTestId={`@asset-picker/sell/option/${item.account.symbol}`}
-                        />
-                    );
-
                 case 'token':
-                    return (
-                        <AssetRowToken
-                            token={item.token}
-                            account={item.account}
-                            onClick={() => handleAssetClick(item)}
-                            dataTestId={`@asset-picker/sell/option/${item.account.symbol}/${item.token.symbol}`}
-                        />
-                    );
+                    return renderAssetRow(item);
 
                 case 'group-label':
                     return <AssetGroupLabel label={item.label} />;
@@ -77,38 +99,47 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                 case 'group-space':
                     return <AssetGroupSpace size={item.size} />;
 
-                case 'non-tradable-tokens':
+                case 'low-balance-group':
+                case 'non-tradable-group': {
+                    const isLowBalance = item.type === 'low-balance-group';
+
                     return (
                         <ExpandableAssetRowGroup
-                            label="TR_NON_TRADABLE_TOKENS"
+                            label={
+                                isLowBalance
+                                    ? 'TR_ASSET_PICKER_LOW_BALANCE'
+                                    : 'TR_ASSET_PICKER_NON_TRADABLE'
+                            }
                             account={item.account}
-                            items={item.tokens.map(token => createTokenOption(item.account, token))}
+                            items={item.items}
                             renderItem={groupItem =>
-                                groupItem.type === 'token' && (
-                                    <AssetRowToken
-                                        token={groupItem.token}
-                                        account={groupItem.account}
-                                        isInsideGroup
-                                        showNoTradingPairText
-                                    />
-                                )
+                                renderAssetRow(groupItem, {
+                                    isInsideGroup: true,
+                                    isSelectable: isLowBalance,
+                                })
                             }
                             expanded={item.expanded}
                             onExpandToggle={expanded => {
-                                updateExpandableAccountGroups(item.account.key, expanded);
+                                toggleGroup(
+                                    getAssetGroupKey(item.account.key, item.type),
+                                    expanded,
+                                );
                             }}
                             height={item.height}
-                            dataTestId={`@asset-picker/sell/option/non-tradable-tokens/${item.account.symbol}`}
+                            dataTestId={`${getAccountTestId(item.account)}/${
+                                isLowBalance ? 'low-balance' : 'non-tradable'
+                            }`}
                         />
                     );
+                }
             }
         },
-        [handleAssetClick, updateExpandableAccountGroups],
+        [renderAssetRow, toggleGroup],
     );
 
     return (
-        <AssetsModal onClose={closeModal} heading={{ id: heading }}>
-            <AssetSearchWithNetworkFilter
+        <AssetsModal onClose={closeModal} heading={{ id: heading }} width={MODAL_WIDTH}>
+            <AssetPickerSearchHeader
                 placeholder="TR_ASSET_PICKER_SEARCH_PLACEHOLDER"
                 search={search}
                 setSearch={setSearch}
@@ -118,8 +149,6 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                 // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus
             />
-
-            <Divider margin={{ top: 16 }} />
 
             <AssetListWrapper
                 listItems={listItems}
