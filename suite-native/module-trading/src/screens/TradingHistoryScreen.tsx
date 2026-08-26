@@ -10,14 +10,11 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { useTradingDebugModeFlag } from '@suite-native/trading-debug';
 import { TradingHistory, TradingHistoryExportButton } from '@suite-native/trading-history';
 
 export const TradingHistoryScreen = () => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.TradingHistory>>();
-    const isTradingDebugModeEnabled = useTradingDebugModeFlag();
-
     const openTradeDetailScreen = useCallback(
         (orderId: string) => {
             navigation.navigate(RootStackRoutes.TradingHistoryDetail, { orderId });
@@ -37,9 +34,7 @@ export const TradingHistoryScreen = () => {
             isScrollable={false}
             noHorizontalPadding
         >
-            <TradingHistory
-                onOpenTradeDetail={isTradingDebugModeEnabled ? openTradeDetailScreen : undefined}
-            />
+            <TradingHistory onOpenTradeDetail={openTradeDetailScreen} />
         </Screen>
     );
 };

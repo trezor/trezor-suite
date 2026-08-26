@@ -14,8 +14,8 @@ import {
     renderWithTradingHistoryProvider,
 } from '../test-utils/tradingHistoryTestUtils';
 
-const mockShowSheet = jest.fn();
 const mockGoBack = jest.fn();
+const mockOpenTradeDetail = jest.fn();
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -24,13 +24,6 @@ jest.mock('@react-navigation/native', () => ({
     }),
     useRoute: () => ({
         params: undefined,
-    }),
-}));
-
-jest.mock('@suite-native/atoms', () => ({
-    ...jest.requireActual('@suite-native/atoms'),
-    useBottomSheetControls: () => ({
-        showSheet: mockShowSheet,
     }),
 }));
 
@@ -75,8 +68,9 @@ const getOverrides = (
     },
 });
 
+const defaultBuyTrade = getBuyTrade({ status: 'SUBMITTED' });
 const defaultTrades = [
-    getBuyTrade({ status: 'SUBMITTED' }),
+    defaultBuyTrade,
     getExchangeTrade({ status: 'SUCCESS' }),
     getSellTrade({ status: 'ERROR' }),
 ];
@@ -89,11 +83,14 @@ describe('TradingHistoryScreen', () => {
     }: {
         trades?: TradingTestPreloadedState['wallet']['trading']['trades'];
     } = {}) => {
-        const result = await renderWithTradingHistoryProvider(<TradingHistory />, {
-            overrides: getOverrides(trades),
-        });
+        const result = renderWithTradingHistoryProvider(
+            <TradingHistory onOpenTradeDetail={mockOpenTradeDetail} />,
+            {
+                overrides: getOverrides(trades),
+            },
+        );
 
-        ({ unmount } = result);
+        ({ unmount } = await result);
 
         return result;
     };
@@ -122,16 +119,12 @@ describe('TradingHistoryScreen', () => {
         ).toBeTruthy();
     });
 
-    it('should show bottom sheet when trade item is clicked', async () => {
-        const { getByText, queryAllByText } = await renderTradingHistory();
+    it('should open the trade detail screen when a trade item is clicked', async () => {
+        const { getByText } = await renderTradingHistory();
 
         await fireEvent.press(getByText('$1,234.00'));
 
-        expect(mockShowSheet).toHaveBeenCalledTimes(1);
-
-        expect(getByText(getTranslation('moduleTrading.tradeHistory.detail.paid'))).toBeTruthy();
-        // one for history list and one for detail in sheet
-        expect(queryAllByText('0.462586 ETH').length).toBe(2);
+        expect(mockOpenTradeDetail).toHaveBeenCalledWith(defaultBuyTrade.data.orderId);
     });
 
     it('should filter trades by type', async () => {

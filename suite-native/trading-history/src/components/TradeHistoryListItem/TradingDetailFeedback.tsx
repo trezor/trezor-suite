@@ -81,6 +81,7 @@ export const TradingDetailFeedback = ({
     return (
         <FeedbackCard
             heading={<Translation id="feedbackForm.title" />}
+            headingVariant="body-md-strong"
             description={<Translation id="feedbackForm.description" />}
             submitLabel={<Translation id="feedbackForm.submitButton" />}
             successHeading={<Translation id="feedbackForm.successTitle" />}
