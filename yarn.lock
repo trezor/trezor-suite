@@ -16561,7 +16561,6 @@ __metadata:
     "@types/node": "npm:22.13.10"
     "@types/web": "npm:^0.0.345"
     html-webpack-plugin: "npm:5.6.8"
-    socks-proxy-agent: "npm:8.0.5"
     tiny-worker: "npm:^2.3.0"
     viem: "npm:^2.54.1"
     webpack: "npm:5.109.0"
