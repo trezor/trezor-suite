@@ -23,10 +23,21 @@ type IntersectionGroup = {
     path: string[];
 };
 
+type ContractProperty = {
+    name: string;
+    node: ts.PropertySignature;
+};
+
+type PropertyGroup = {
+    members: ContractProperty[];
+    path: string[];
+};
+
 type IntersectionContract = {
     groups: IntersectionGroup[];
     isOpaque: boolean;
     name: string;
+    propertyGroups: PropertyGroup[];
     rootPath: string[];
     symbol: ts.Symbol;
     usages: ContractUsage[];
@@ -51,6 +62,20 @@ const isInsideTypeNode = (node: ts.Node) => {
 const isNodeDeclarationName = (node: ts.Node) =>
     !ts.isShorthandPropertyAssignment(node.parent) &&
     (node.parent as ts.Node & { name?: ts.Node }).name === node;
+
+const hasAncestorInSet = (node: ts.Node, ancestors: ReadonlySet<ts.Node>) => {
+    let currentNode: ts.Node | undefined = node.parent;
+
+    while (currentNode !== undefined) {
+        if (ancestors.has(currentNode)) {
+            return true;
+        }
+
+        currentNode = currentNode.parent;
+    }
+
+    return false;
+};
 
 const getAliasedContracts = (
     node: ts.Expression,
@@ -297,16 +322,6 @@ const addContractUsage = (
         parent.initializer === terminalExpression &&
         ts.isObjectBindingPattern(parent.name)
     ) {
-        addBindingPatternUsages(parent.name, contract);
-
-        return;
-    }
-
-    if (
-        ts.isVariableDeclaration(parent) &&
-        parent.initializer === terminalExpression &&
-        ts.isObjectBindingPattern(parent.name)
-    ) {
         addBindingPatternUsages(parent.name, contract, checker, path);
 
         return;
@@ -372,7 +387,7 @@ const isPathPrefix = (prefix: readonly string[], path: readonly string[]) =>
 
 const getGroupUsages = (
     contract: IntersectionContract,
-    group: IntersectionGroup,
+    group: { path: readonly string[] },
     checker: ts.TypeChecker,
 ) =>
     contract.usages.flatMap(usage => {
@@ -399,6 +414,34 @@ const getGroupUsages = (
 
 const isOptionalProperty = (property: ts.Symbol) =>
     (property.flags & ts.SymbolFlags.Optional) !== 0;
+
+const isPropertyUsed = (
+    property: ContractProperty,
+    usages: readonly ContractUsage[],
+    checker: ts.TypeChecker,
+) =>
+    usages.some(usage => {
+        const [firstPathPart] = usage.path;
+
+        if (firstPathPart !== undefined) {
+            return firstPathPart === property.name;
+        }
+
+        if (usage.requiredType === undefined) {
+            return true;
+        }
+
+        if (
+            (usage.requiredType.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) !== 0 ||
+            checker.getIndexInfosOfType(usage.requiredType).length > 0
+        ) {
+            return true;
+        }
+
+        const requiredProperty = checker.getPropertyOfType(usage.requiredType, property.name);
+
+        return requiredProperty !== undefined && !isOptionalProperty(requiredProperty);
+    });
 
 // Different intersection members can collectively satisfy a target even when none is assignable
 // on its own. Compare their properties recursively to account for requirements split across members.
@@ -614,6 +657,49 @@ const collectIntersectionGroups = (
             ? []
             : collectIntersectionGroups(member.type, sourceFile, checker, [...path, propertyName]);
     });
+};
+
+const collectPropertyGroups = (
+    node: ts.TypeNode,
+    path: readonly string[] = [],
+): PropertyGroup[] => {
+    if (ts.isIntersectionTypeNode(node)) {
+        return node.types.flatMap(memberNode => collectPropertyGroups(memberNode, path));
+    }
+
+    if (!ts.isTypeLiteralNode(node)) {
+        return [];
+    }
+
+    const members = node.members.flatMap(member => {
+        if (!ts.isPropertySignature(member) || member.type === undefined) {
+            return [];
+        }
+
+        const propertyName = getBindingPropertyName(member.name);
+
+        return propertyName === undefined
+            ? []
+            : [
+                  {
+                      name: propertyName,
+                      node: member,
+                  },
+              ];
+    });
+    const nestedGroups = node.members.flatMap(member => {
+        if (!ts.isPropertySignature(member) || member.type === undefined) {
+            return [];
+        }
+
+        const propertyName = getBindingPropertyName(member.name);
+
+        return propertyName === undefined
+            ? []
+            : collectPropertyGroups(member.type, [...path, propertyName]);
+    });
+
+    return members.length === 0 ? nestedGroups : [{ members, path: [...path] }, ...nestedGroups];
 };
 
 const getObjectBindingIdentifier = (parameter: ts.ParameterDeclaration, propertyName: string) => {
@@ -842,7 +928,7 @@ const getWrappedServicesIntersections = (node: ts.TypeNode, checker: ts.TypeChec
 };
 
 /**
- * Reports confidently unused members of local State and Deps intersection contracts.
+ * Reports confidently unused members of local State and Deps contracts.
  * See `README.md` for the analysis principles and conservative fallbacks.
  */
 export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
@@ -850,11 +936,13 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
         type: 'suggestion',
         docs: {
             description:
-                'Reports State and Deps intersection members that are not required by their local implementation.',
+                'Reports State and Deps contract members that are not required by their local implementation.',
             category: 'Best Practices',
             recommended: false,
         },
         messages: {
+            unusedContractMember:
+                "'{{memberName}}' is not required by the implementation using '{{typeName}}'. Remove it from the contract.",
             unusedIntersectionMember:
                 "'{{memberName}}' is not required by the implementation using '{{typeName}}'. Remove it from the intersection.",
         },
@@ -903,8 +991,9 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
                             }),
                         ),
                     ];
+                    const propertyGroups = collectPropertyGroups(statement.type);
 
-                    if (groups.length === 0) {
+                    if (groups.length === 0 && propertyGroups.length === 0) {
                         continue;
                     }
 
@@ -919,6 +1008,7 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
                             groups,
                             isOpaque: false,
                             name: statement.name.text,
+                            propertyGroups,
                             rootPath: [],
                             symbol,
                             usages: [],
@@ -970,6 +1060,8 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
                         continue;
                     }
 
+                    const reportedIntersectionMembers = new Set<ts.TypeNode>();
+
                     for (const group of contract.groups) {
                         const groupUsages = getGroupUsages(contract, group, checker);
 
@@ -992,11 +1084,34 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
 
                             if (isMemberUsed) return;
 
+                            reportedIntersectionMembers.add(member.node);
                             report(member.node, 'unusedIntersectionMember', {
                                 memberName: member.name,
                                 typeName: contract.name,
                             });
                         });
+                    }
+
+                    for (const group of contract.propertyGroups) {
+                        const groupUsages = getGroupUsages(contract, group, checker);
+
+                        if (groupUsages.length === 0) {
+                            continue;
+                        }
+
+                        for (const member of group.members) {
+                            if (
+                                hasAncestorInSet(member.node, reportedIntersectionMembers) ||
+                                isPropertyUsed(member, groupUsages, checker)
+                            ) {
+                                continue;
+                            }
+
+                            report(member.node, 'unusedContractMember', {
+                                memberName: member.name,
+                                typeName: contract.name,
+                            });
+                        }
                     }
                 }
             },
