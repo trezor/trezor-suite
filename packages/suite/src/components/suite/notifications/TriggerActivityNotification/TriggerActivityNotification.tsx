@@ -196,15 +196,21 @@ export const TriggerActivityNotification = () => {
                         value={selectedOption}
                         options={options}
                         onChange={(option: { value: string }) => setSelectedValue(option.value)}
+                        data-testid="@activity/debug/preset-select"
                     />
                     <Checkbox
                         isChecked={addAsUnseen}
                         labelAlignment="end"
                         onChange={() => setAddAsUnseen(prev => !prev)}
+                        data-testid="@activity/debug/unseen-checkbox"
                     >
                         <TextColumn description="Add as unseen (new)" />
                     </Checkbox>
-                    <ActionButton intent="brand" onClick={handleAdd}>
+                    <ActionButton
+                        intent="brand"
+                        onClick={handleAdd}
+                        data-testid="@activity/debug/add-button"
+                    >
                         Add activity
                     </ActionButton>
                 </Column>
