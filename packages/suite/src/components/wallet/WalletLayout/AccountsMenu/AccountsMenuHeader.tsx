@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
@@ -36,6 +38,7 @@ export const AccountsMenuHeader = () => {
 
     const device = useSelector(selectSelectedDevice);
     const accounts = useSelector(selectAllAccountsToList);
+    const [isHovered, setIsHovered] = useState(false);
 
     const isEmpty = accounts.length === 0;
 
@@ -71,13 +74,22 @@ export const AccountsMenuHeader = () => {
                                             />
                                         }
                                     >
-                                        <RelativeWrapper>
+                                        <RelativeWrapper
+                                            onMouseEnter={() => setIsHovered(true)}
+                                            onMouseLeave={() => setIsHovered(false)}
+                                        >
                                             {coinFilter.length > 0 && <Indicator />}
                                             <Icon
                                                 size={16}
-                                                intent={isCoinsFilterVisible ? 'brand' : 'neutral'}
+                                                intent={
+                                                    isCoinsFilterVisible && !isHovered
+                                                        ? 'brand'
+                                                        : 'neutral'
+                                                }
                                                 priority={
-                                                    isCoinsFilterVisible ? 'primary' : 'secondary'
+                                                    isCoinsFilterVisible || isHovered
+                                                        ? 'primary'
+                                                        : 'secondary'
                                                 }
                                                 as={FunnelSimpleIcon}
                                                 onClick={toggleCoinsFilter}

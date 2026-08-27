@@ -596,7 +596,7 @@ export const AddAccountModal = ({
                                   </Tooltip>
                               }
                           />
-                          <Column>
+                          <Column padding={{ bottom: 8 }}>
                               <AddAccountBannerAboutNetworks />
                               {hasNoSearchResults ? (
                                   <Box padding={{ vertical: 32 }}>
