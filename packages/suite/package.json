@@ -141,7 +141,7 @@
         "@suite/ui-animations": "workspace:*",
         "@suite/wallet": "workspace:*",
         "@tanstack/react-query": "5.101.2",
-        "@testing-library/jest-dom": "6.9.1",
+        "@testing-library/jest-dom": "7.0.1",
         "@trezor/analytics-uploader": "workspace:*",
         "@trezor/asset-utils": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",

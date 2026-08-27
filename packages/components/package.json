@@ -23,7 +23,7 @@
         "@suite-common/flags": "workspace:*",
         "@suite-common/illustrations": "workspace:*",
         "@tanstack/react-virtual": "^3.13.9",
-        "@testing-library/jest-dom": "6.9.1",
+        "@testing-library/jest-dom": "7.0.1",
         "@trezor/env-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/theme": "workspace:*",
