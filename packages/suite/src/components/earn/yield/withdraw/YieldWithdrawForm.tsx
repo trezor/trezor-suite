@@ -197,6 +197,7 @@ export const YieldWithdrawForm = () => {
             return (
                 <Banner
                     intent="info"
+                    data-testid="@yield/form/max-withdraw-info"
                     description={
                         <Translation
                             id="TR_EARN_YIELD_MAX_WITHDRAW_INFO"

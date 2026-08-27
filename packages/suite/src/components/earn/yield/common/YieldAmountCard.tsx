@@ -133,7 +133,13 @@ export const YieldAmountCard = ({
     ) : undefined;
 
     const unitSwitch = unitToggle ? (
-        <TextButton type="button" size="small" onClick={unitToggle.onClick} isUnderlined>
+        <TextButton
+            type="button"
+            size="small"
+            data-testid="@yield/form/unit-toggle-button"
+            onClick={unitToggle.onClick}
+            isUnderlined
+        >
             <Translation
                 id="TR_EARN_YIELD_ENTER_AMOUNT_IN_TOKEN"
                 values={{ tokenSymbol: unitToggle.otherTokenSymbol }}
@@ -218,6 +224,7 @@ export const YieldAmountCard = ({
                                     size="small"
                                     intent="neutral"
                                     priority="secondary"
+                                    data-testid="@yield/form/max-button"
                                     onClick={() => summary.onMaxClick?.()}
                                 >
                                     <Translation id="TR_FRACTION_BUTTONS_MAX" />
