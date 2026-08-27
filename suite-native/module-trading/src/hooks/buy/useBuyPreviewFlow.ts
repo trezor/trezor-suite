@@ -24,6 +24,7 @@ import {
     type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
+import { tradingActions } from '@suite-native/trading-state';
 
 import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
 
@@ -72,14 +73,14 @@ export const useBuyPreviewFlow = () => {
         }
 
         if (response.tradeForm) {
-            await openBrowserForFormData(
-                response.tradeForm.form,
-                returnUrl,
-                response.trade.orderId,
-            );
+            await openBrowserForFormData(response.tradeForm.form, returnUrl);
+        }
 
-            navigation.popToTop();
-            dispatch(tradingBuyActions.clearQuotesAndParams());
+        navigation.popToTop();
+        dispatch(tradingBuyActions.clearQuotesAndParams());
+
+        if (response.trade.orderId) {
+            dispatch(tradingActions.setTradeOrderIdToBeOpened(response.trade.orderId));
         }
     };
 

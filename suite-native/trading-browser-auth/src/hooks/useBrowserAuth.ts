@@ -13,7 +13,6 @@ import { invariant } from '@suite-common/suite-utils';
 import { type TradingType, tradingThunks } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import { captureSentryException } from '@suite-native/sentry';
-import { tradingActions } from '@suite-native/trading-state';
 import { exhaustive } from '@trezor/type-utils';
 import { noop } from '@trezor/utils';
 
@@ -53,12 +52,9 @@ const useLastErrorMessageDispatcher = (tradingType: TradingType | undefined) => 
 };
 
 export const useBrowserAuth = (tradingType: TradingType | undefined): BrowserAuthRet => {
-    const dispatch = useDispatch();
     const { translate } = useTranslate();
 
-    const [lastCallbackData, setLastCallbackData] = useState<
-        { callbackUrl: string; orderId: string | undefined } | undefined
-    >(undefined);
+    const [lastCallbackUrl, setLastCallbackUrl] = useState<string | undefined>(undefined);
 
     const receivedDeeplinkUrl = useLinkingURL();
     const dispatchLastErrorMessage = useLastErrorMessageDispatcher(tradingType);
@@ -66,31 +62,25 @@ export const useBrowserAuth = (tradingType: TradingType | undefined): BrowserAut
         useBrowserStateChangeCallbacks(tradingType);
     const { setShouldWatchForForeground } = useOnForegroundCallback(handleBrowserClosed);
 
-    // when the url contains lastCallbackUrl, dismissBrowser and mark the trade to be opened for buy
     useEffect(() => {
-        if (!lastCallbackData || !receivedDeeplinkUrl) {
+        if (!lastCallbackUrl || !receivedDeeplinkUrl) {
             return;
         }
 
-        const { callbackUrl, orderId } = lastCallbackData;
-        if (!callbackUrl || !doesUrlContainCloseCallbackUrl(receivedDeeplinkUrl, callbackUrl)) {
+        if (!doesUrlContainCloseCallbackUrl(receivedDeeplinkUrl, lastCallbackUrl)) {
             return;
         }
 
-        if (orderId && tradingType === 'buy') {
-            dispatch(tradingActions.setTradeOrderIdToBeOpened(orderId));
-        }
-
-        setLastCallbackData(undefined);
+        setLastCallbackUrl(undefined);
         handleBrowserSuccess();
         dismissBrowser()?.catch(_ => {
             // Ignore the error, the browser might have been already closed.
             // (And in fact it most probably already is.)
         });
-    }, [lastCallbackData, tradingType, dispatch, handleBrowserSuccess, receivedDeeplinkUrl]);
+    }, [lastCallbackUrl, handleBrowserSuccess, receivedDeeplinkUrl]);
 
     const openBrowser = useCallback(
-        async (url: string, callbackUrl: string, orderId?: string) => {
+        async (url: string, callbackUrl: string) => {
             if (!tradingType) {
                 const msg = 'Attempted to openBrowser without a tradingType provided.';
                 console.warn(msg);
@@ -99,7 +89,7 @@ export const useBrowserAuth = (tradingType: TradingType | undefined): BrowserAut
                 return;
             }
 
-            setLastCallbackData({ callbackUrl, orderId });
+            setLastCallbackUrl(callbackUrl);
 
             // Note that provider confirmation status is set "window_opened" even when `openBrowserAsync` fails (error is thrown / browser is locked).
             // There is no need to set it back to "inactive" in that case, because a user has no other option than
@@ -150,7 +140,7 @@ export const useBrowserAuth = (tradingType: TradingType | undefined): BrowserAut
     );
 
     const openBrowserForFormData = useCallback<BrowserAuthRet['openBrowserForFormData']>(
-        async (formData, returnUrl, orderId?: string) => {
+        async (formData, returnUrl) => {
             const source = getSourceForForm(formData);
             if (!source?.uri) {
                 const msg = 'Unable to open browser, no URI provided.';
@@ -161,7 +151,7 @@ export const useBrowserAuth = (tradingType: TradingType | undefined): BrowserAut
                 return;
             }
 
-            await openBrowser(source.uri, returnUrl, orderId);
+            await openBrowser(source.uri, returnUrl);
         },
         [openBrowser, dispatchLastErrorMessage, translate],
     );
