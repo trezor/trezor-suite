@@ -43,7 +43,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "dropbox": "^10.45.0",
-        "immer": "11.1.8",
+        "immer": "11.1.16",
         "react": "19.2.3",
         "react-redux": "9.3.0",
         "redux": "^5.0.1",
