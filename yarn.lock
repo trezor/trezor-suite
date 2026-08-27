@@ -11342,6 +11342,7 @@ __metadata:
   resolution: "@suite-common/suite-utils@workspace:suite-common/suite-utils"
   dependencies:
     "@suite-common/suite-config": "workspace:*"
+    "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -13476,6 +13477,7 @@ __metadata:
     "@suite-native/clipboard": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/confirm-on-trezor": "workspace:*"
+    "@suite-native/device": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/feedback-form": "workspace:*"

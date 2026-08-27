@@ -13,6 +13,7 @@ import {
     getDeviceInstances,
     getDeviceInstancesGroupedByDeviceId,
     getDeviceInternalModel,
+    getDeviceModelWithFlagshipFallback,
     getFwUpdateVersion,
     getIsDeviceConnectedAndAuthorized,
     getIsDeviceConnectedViaBluetooth,
@@ -416,6 +417,10 @@ export const selectDeviceModelById = createMemoizedSelector(
 export const selectDeviceModel = createMemoizedSelector([selectSelectedDevice], selectedDevice =>
     selectedDevice ? getDeviceInternalModel(selectedDevice) : null,
 );
+
+export const selectDeviceModelWithFlagshipFallback = (
+    state: DeviceRootState,
+): DeviceModelInternal => getDeviceModelWithFlagshipFallback(selectSelectedDevice(state));
 
 export const selectIsDeviceAuthenticityCheckSupported = createMemoizedSelector(
     [selectIsPortfolioTrackerDevice, selectDeviceModel],

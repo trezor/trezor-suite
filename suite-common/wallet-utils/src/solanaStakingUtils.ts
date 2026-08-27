@@ -1,5 +1,5 @@
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
-import { GeneralPrecomposedTransaction, type Account } from '@suite-common/wallet-types';
+import type { Account, GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import {
     MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,

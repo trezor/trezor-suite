@@ -1,3 +1,4 @@
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
@@ -508,6 +509,14 @@ export const getDeviceInternalModel = (
     device?.features?.internal_model ??
     (device?.thp?.properties?.internal_model as DeviceModelInternal) ??
     DeviceModelInternal.UNKNOWN;
+
+export const getDeviceModelWithFlagshipFallback = (
+    device?: Pick<Device, 'features' | 'thp'>,
+): DeviceModelInternal => {
+    const deviceModel = getDeviceInternalModel(device);
+
+    return deviceModel === DeviceModelInternal.UNKNOWN ? DEFAULT_FLAGSHIP_MODEL : deviceModel;
+};
 
 export const getIsThpDevice = <T extends Device | TrezorDevice>(
     device: T,
