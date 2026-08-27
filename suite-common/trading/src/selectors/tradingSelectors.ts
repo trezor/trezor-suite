@@ -92,7 +92,11 @@ import {
     isExchangeProvider,
     testnetToProdCryptoId,
 } from '../utils';
-import { getDisplayNetworkFee } from '../utils/exchange/exchangeUtils';
+import {
+    getDisplayNetworkFee,
+    hasEip712SignDataType,
+    requiresErc20Approval,
+} from '../utils/exchange/exchangeUtils';
 import {
     getTradingCoinInfoByCryptoId,
     getTradingCoinSymbolByCryptoId,
@@ -812,6 +816,32 @@ export const selectTradingSelectedQuoteByFormValues = <T extends TradingType>(
     formValues: TradingSelectedQuoteFormValues,
 ): TradingTradeMapProps[T] | undefined =>
     selectedQuoteByFormValuesResolvers[type](state, formValues);
+
+type TradingExchangeQuoteToEstimateParams = {
+    provider?: string;
+    exchangeType?: TradingExchangeFormType;
+    sendCryptoId?: CryptoId;
+};
+
+export const selectTradingExchangeQuoteToEstimate = (
+    state: TradingRootState,
+    { provider, exchangeType, sendCryptoId }: TradingExchangeQuoteToEstimateParams,
+): ExchangeTrade | undefined => {
+    const formQuote = selectTradingSelectedQuoteByFormValues(state, 'exchange', {
+        provider,
+        exchangeType,
+    });
+
+    if (
+        exchangeType === TRADING_EXCHANGE_FORM_DEX &&
+        requiresErc20Approval(sendCryptoId) &&
+        !hasEip712SignDataType(formQuote)
+    ) {
+        return selectTradingExchangeSelectedQuote(state);
+    }
+
+    return formQuote;
+};
 
 export const selectTradingExchangeFormStep = (state: TradingRootState) =>
     state.wallet.trading.exchange.formStep;

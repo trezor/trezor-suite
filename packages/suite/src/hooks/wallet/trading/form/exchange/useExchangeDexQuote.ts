@@ -1,20 +1,23 @@
 import { useCallback, useEffect } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
-
-import { type ExchangeTrade } from 'invity-api';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_FORM_OUTPUT_ADDRESS,
+    TRADING_FORM_PROVIDER_SELECT,
     type TradingAssetSellOption,
     type TradingExchangeFormProps,
     type TradingExchangeFormType,
+    type TradingRootState,
     getDexEstimationData,
     requiresErc20Approval,
+    selectTradingExchangeQuoteToEstimate,
 } from '@suite-common/trading';
 import { isAccountBasedNetwork } from '@suite-common/wallet-config';
+import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { ETHEREUM_ADJUST_GAS_LIMIT, updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
@@ -23,17 +26,15 @@ import { useCurrentRef } from '@trezor/react-utils';
 import { type TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
 import { type SendContextValues } from 'src/types/wallet/sendForm';
 
-interface UseExchangeDexQuoteProps {
+type UseExchangeDexQuoteProps = {
     account: Account | undefined;
     methods: UseFormReturn<TradingExchangeFormProps>;
     isFormLoading: boolean;
     isLoadingQuote: boolean;
     exchangeType: TradingExchangeFormType;
     sendCryptoSelect: TradingAssetSellOption | undefined;
-    selectedQuote: ExchangeTrade | undefined;
-    dexQuotes: ExchangeTrade[];
     composeRequest: SendContextValues<TradingSellExchangeFormProps>['composeTransaction'];
-}
+};
 
 /**
  * DEX-quote machinery for the exchange form: syncs the sender address, derives the
@@ -47,17 +48,30 @@ export const useExchangeDexQuote = ({
     isLoadingQuote,
     exchangeType,
     sendCryptoSelect,
-    selectedQuote,
-    dexQuotes,
     composeRequest,
 }: UseExchangeDexQuoteProps) => {
     const { dispatch } = useServices(injectDispatch);
     const { setValue, control } = methods;
 
-    const [transactionData, outputAddress, ethereumAdjustGasLimit] = useWatch({
-        control,
-        name: ['transactionData', TRADING_FORM_OUTPUT_ADDRESS, 'ethereumAdjustGasLimit'],
-    });
+    const [transactionData, outputAddress, ethereumAdjustGasLimit, ethereumFixedGasLimit] =
+        useWatch({
+            control,
+            name: [
+                'transactionData',
+                TRADING_FORM_OUTPUT_ADDRESS,
+                'ethereumAdjustGasLimit',
+                'ethereumFixedGasLimit',
+            ],
+        });
+
+    const provider = useWatch({ control, name: TRADING_FORM_PROVIDER_SELECT });
+    const quote = useSelector((reduxState: TradingRootState) =>
+        selectTradingExchangeQuoteToEstimate(reduxState, {
+            provider,
+            exchangeType,
+            sendCryptoId: sendCryptoSelect?.id,
+        }),
+    );
 
     const accountRef = useCurrentRef(account);
     const composeRequestRef = useCurrentRef(composeRequest);
@@ -95,15 +109,20 @@ export const useExchangeDexQuote = ({
         if (exchangeType !== TRADING_EXCHANGE_FORM_DEX) {
             setValue('transactionData', '');
             setValue(TRADING_FORM_OUTPUT_ADDRESS, '');
+            setValue('ethereumFixedGasLimit', undefined);
 
             return;
         }
 
-        const quote = requiresErc20Approval(sendCryptoSelect.id) ? selectedQuote : dexQuotes[0];
-
         if (!quote?.dexTx) {
             setValue('transactionData', '');
             setValue(TRADING_FORM_OUTPUT_ADDRESS, '');
+            setValue(
+                'ethereumFixedGasLimit',
+                requiresErc20Approval(sendCryptoSelect.id)
+                    ? undefined
+                    : ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+            );
 
             return;
         }
@@ -113,22 +132,21 @@ export const useExchangeDexQuote = ({
         setValue('transactionData', getDexEstimationData(quote) ?? '');
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
         setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT);
-    }, [
-        dexQuotes,
-        selectedQuote,
-        exchangeType,
-        sendCryptoSelect,
-        isFormLoading,
-        isLoadingQuote,
-        setValue,
-    ]);
+        setValue('ethereumFixedGasLimit', undefined);
+    }, [quote, exchangeType, sendCryptoSelect, isFormLoading, isLoadingQuote, setValue]);
 
     const fetchFeesAndComposeRef = useCurrentRef(fetchFeesAndCompose);
     // Fetch fees when the transaction to estimate changes shape.
     const transactionShape = getEvmTransactionTextSignature(transactionData);
     useEffect(() => {
         fetchFeesAndComposeRef.current();
-    }, [transactionShape, outputAddress, ethereumAdjustGasLimit, fetchFeesAndComposeRef]);
+    }, [
+        transactionShape,
+        outputAddress,
+        ethereumAdjustGasLimit,
+        ethereumFixedGasLimit,
+        fetchFeesAndComposeRef,
+    ]);
 
     return { fetchFeesAndCompose };
 };
