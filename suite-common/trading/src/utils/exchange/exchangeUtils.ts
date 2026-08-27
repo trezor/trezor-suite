@@ -20,18 +20,24 @@ type GetAmountLimitsProps = {
     currency: string;
 };
 
-export const isSendingEvmNativeToken = (cryptoId?: CryptoId) => {
+const isEvmCryptoId = (cryptoId?: CryptoId) =>
+    cryptoIdToNetwork(cryptoId)?.networkType === 'ethereum';
+
+const isNativeCryptoId = (cryptoId?: CryptoId) => {
     if (!cryptoId) {
         return false;
     }
 
-    const isEvmNetwork = cryptoIdToNetwork(cryptoId)?.networkType === 'ethereum';
     const { contractAddress } = parseCryptoId(cryptoId);
 
-    return (
-        isEvmNetwork && (!contractAddress || contractAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN)
-    );
+    return !contractAddress || contractAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
 };
+
+export const isSendingEvmNativeToken = (cryptoId?: CryptoId) =>
+    isEvmCryptoId(cryptoId) && isNativeCryptoId(cryptoId);
+
+export const requiresErc20Approval = (cryptoId?: CryptoId) =>
+    isEvmCryptoId(cryptoId) && !isNativeCryptoId(cryptoId);
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return error message
 const getAmountLimits = ({
@@ -119,11 +125,7 @@ export const hasEip712SignData = (quote?: ExchangeTrade) =>
     quote?.status === 'SIGN_DATA' && hasEip712SignDataType(quote);
 
 export const requiresTokenApproval = (quote?: ExchangeTrade): boolean =>
-    !!quote &&
-    !!quote.isDex &&
-    !!quote.send &&
-    !isSendingEvmNativeToken(quote.send) &&
-    !hasEip712SignData(quote);
+    !!quote?.isDex && requiresErc20Approval(quote.send) && !hasEip712SignData(quote);
 
 export const getDisplayNetworkFee = (
     quote: ExchangeTrade | undefined,
