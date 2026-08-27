@@ -2066,12 +2066,13 @@ export const messages = {
         accountDetail: {
             stablecoinYield: {
                 defiYieldInfoText:
-                    'This token represents your deposit and all rewards in DeFi Yield.',
+                    'This token represents your position in the vault. It grows in value as yield accrues.',
                 vault: 'Vault',
                 deposited: 'Deposited',
                 depositMore: 'Deposit more',
                 deposit: 'Deposit',
                 withdraw: 'Withdraw',
+                managePosition: 'Manage position',
                 firmwareUpdateAlert: {
                     title: 'Firmware update required',
                     description: 'Update firmware on the device {name} to use {featureName}.',
@@ -3603,7 +3604,6 @@ export const messages = {
         potentialRewards: 'Potential yearly rewards',
         potentialRewardsIfYouAdd: 'If you add {amountWithSymbol}',
         tokenBalance: 'Token balance',
-        goToVault: 'Go to vault',
         notAvailableShort: 'N/A',
         yieldRateBadge: {
             apy: '{value}% APY',
