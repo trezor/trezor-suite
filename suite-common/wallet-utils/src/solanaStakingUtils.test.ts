@@ -1,7 +1,7 @@
-import {
+import type {
+    Account,
     GeneralPrecomposedTransaction,
     SolanaTxMeta,
-    type Account,
 } from '@suite-common/wallet-types';
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import { StakeState } from '@trezor/network-solana/constants';

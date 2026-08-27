@@ -70,6 +70,7 @@
         { "path": "../clipboard" },
         { "path": "../config" },
         { "path": "../confirm-on-trezor" },
+        { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../device-mutex" },
         { "path": "../feedback-form" },
