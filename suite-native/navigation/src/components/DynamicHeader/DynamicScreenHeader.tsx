@@ -17,6 +17,7 @@ export type DynamicScreenHeaderProps = {
     expandedContent?: ReactNode;
     scrollThreshold?: number;
     contentEnteringAnimation?: AnimatedProps<ViewProps>['entering'];
+    contentLayoutAnimation?: AnimatedProps<ViewProps>['layout'];
 } & ScreenHeaderProps;
 
 export const DynamicScreenHeader = ({

@@ -1,4 +1,3 @@
-import { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import {
@@ -9,10 +8,23 @@ import {
     selectTradingProviderCompanyName,
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
-import { AnimatedHStack, Box, Pictogram, Text, TitleHeader, VStack } from '@suite-native/atoms';
+import {
+    AnimatedBox,
+    AnimatedHStack,
+    AnimatedText,
+    Box,
+    Pictogram,
+    TitleHeader,
+    VStack,
+} from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 
+import {
+    tradingHistoryDetailEnteringTransition,
+    tradingHistoryDetailExitingTransition,
+    tradingHistoryDetailLayoutTransition,
+} from '../../utils/tradingHistoryDetailAnimations';
 import { FailCrossSvg } from '../FailCrossSvg';
 import { SuccessSvg } from '../SuccessSvg';
 
@@ -209,26 +221,47 @@ const TradingHistoryDetailHeaderArtwork = ({
         case 'exchange-completed':
         case 'sell-completed':
             return (
-                <SuccessSvg
-                    width={size}
-                    height={size}
-                    testID="@trading-history/detail/header/artwork/success"
-                />
+                <AnimatedBox
+                    key={headerState}
+                    entering={tradingHistoryDetailEnteringTransition}
+                    exiting={tradingHistoryDetailExitingTransition}
+                    layout={tradingHistoryDetailLayoutTransition}
+                >
+                    <SuccessSvg
+                        width={size}
+                        height={size}
+                        testID="@trading-history/detail/header/artwork/success"
+                    />
+                </AnimatedBox>
             );
         case 'buy-failed':
         case 'sell-failed':
             return (
-                <FailCrossSvg
-                    width={size}
-                    height={size}
-                    testID="@trading-history/detail/header/artwork/fail"
-                />
+                <AnimatedBox
+                    key={headerState}
+                    entering={tradingHistoryDetailEnteringTransition}
+                    exiting={tradingHistoryDetailExitingTransition}
+                    layout={tradingHistoryDetailLayoutTransition}
+                >
+                    <FailCrossSvg
+                        width={size}
+                        height={size}
+                        testID="@trading-history/detail/header/artwork/fail"
+                    />
+                </AnimatedBox>
             );
         case 'exchange-kyc':
             return (
-                <Box testID="@trading-history/detail/header/artwork/kyc">
-                    <Pictogram variant="warning" size={size} />
-                </Box>
+                <AnimatedBox
+                    key={headerState}
+                    entering={tradingHistoryDetailEnteringTransition}
+                    exiting={tradingHistoryDetailExitingTransition}
+                    layout={tradingHistoryDetailLayoutTransition}
+                >
+                    <Box testID="@trading-history/detail/header/artwork/kyc">
+                        <Pictogram variant="warning" size={size} />
+                    </Box>
+                </AnimatedBox>
             );
         case 'buy-processing':
         case 'exchange-processing':
@@ -257,21 +290,28 @@ export const TradingHistoryDetailHeader = ({ orderId }: TradingHistoryDetailHead
                 headerState={headerState}
                 size={HEADER_ARTWORK_SIZE}
             />
-            <TitleHeader
-                title={<TradingHistoryDetailHeaderTitle headerState={headerState} />}
-                subtitle={
-                    <TradingHistoryDetailHeaderSubtitle
-                        headerState={headerState}
-                        providerName={
-                            providerName ??
-                            translate(
-                                'moduleTrading.tradeHistory.detail.header.unknownProviderName',
-                            )
-                        }
-                    />
-                }
-                titleVariant="headline-md"
-            />
+            <AnimatedBox
+                key={headerState}
+                entering={tradingHistoryDetailEnteringTransition}
+                exiting={tradingHistoryDetailExitingTransition}
+                layout={tradingHistoryDetailLayoutTransition}
+            >
+                <TitleHeader
+                    title={<TradingHistoryDetailHeaderTitle headerState={headerState} />}
+                    subtitle={
+                        <TradingHistoryDetailHeaderSubtitle
+                            headerState={headerState}
+                            providerName={
+                                providerName ??
+                                translate(
+                                    'moduleTrading.tradeHistory.detail.header.unknownProviderName',
+                                )
+                            }
+                        />
+                    }
+                    titleVariant="headline-md"
+                />
+            </AnimatedBox>
         </VStack>
     );
 };
@@ -284,14 +324,28 @@ export const TradingHistoryDetailCompactHeader = ({ orderId }: TradingHistoryDet
     }
 
     return (
-        <AnimatedHStack alignItems="center" spacing="sp8" entering={FadeIn} exiting={FadeOut}>
+        <AnimatedHStack
+            alignItems="center"
+            spacing="sp8"
+            entering={tradingHistoryDetailEnteringTransition}
+            exiting={tradingHistoryDetailExitingTransition}
+            layout={tradingHistoryDetailLayoutTransition}
+        >
             <TradingHistoryDetailHeaderArtwork
                 headerState={headerState}
                 size={COMPACT_HEADER_ARTWORK_SIZE}
             />
-            <Text variant="body-md-strong" numberOfLines={1} adjustsFontSizeToFit>
+            <AnimatedText
+                key={headerState}
+                variant="body-md-strong"
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                entering={tradingHistoryDetailEnteringTransition}
+                exiting={tradingHistoryDetailExitingTransition}
+                layout={tradingHistoryDetailLayoutTransition}
+            >
                 <TradingHistoryDetailHeaderTitle headerState={headerState} />
-            </Text>
+            </AnimatedText>
         </AnimatedHStack>
     );
 };

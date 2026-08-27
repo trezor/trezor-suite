@@ -9,7 +9,7 @@ import {
     isFinalStatus,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { Button } from '@suite-native/atoms';
+import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
@@ -20,6 +20,11 @@ import {
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
+
+import {
+    tradingHistoryDetailEnteringTransition,
+    tradingHistoryDetailExitingTransition,
+} from '../../utils/tradingHistoryDetailAnimations';
 
 type NavigationProp = StackNavigationProps<
     RootStackParamList,
@@ -82,7 +87,7 @@ export const TradingHistoryDetailStatusAction = ({
             return;
         }
 
-        navigation.navigate(RootStackRoutes.AppTabs, {
+        navigation.popTo(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.TradeStack,
             params: {
                 screen: TradingStackRoutes.Trading,
@@ -94,20 +99,25 @@ export const TradingHistoryDetailStatusAction = ({
     const actionTestID = isKYCStatus ? 'contact-provider' : `start-new-trade`;
 
     return (
-        <Button
-            onPress={handlePress}
-            priority={isSuccessStatus ? 'primary' : 'secondary'}
-            intent={isSuccessStatus ? 'brand' : 'neutral'}
-            testID={`@trading-history/detail/action/${actionTestID}`}
+        <AnimatedBox
+            entering={tradingHistoryDetailEnteringTransition}
+            exiting={tradingHistoryDetailExitingTransition}
         >
-            {isKYCStatus ? (
-                <Translation
-                    id="moduleTrading.tradeHistory.detail.actionButton.contactProvider"
-                    values={{ providerName: providerDisplayName }}
-                />
-            ) : (
-                <StartNewTradeLabel tradeType={tradeType} />
-            )}
-        </Button>
+            <Button
+                onPress={handlePress}
+                priority={isSuccessStatus ? 'primary' : 'secondary'}
+                intent={isSuccessStatus ? 'brand' : 'neutral'}
+                testID={`@trading-history/detail/action/${actionTestID}`}
+            >
+                {isKYCStatus ? (
+                    <Translation
+                        id="moduleTrading.tradeHistory.detail.actionButton.contactProvider"
+                        values={{ providerName: providerDisplayName }}
+                    />
+                ) : (
+                    <StartNewTradeLabel tradeType={tradeType} />
+                )}
+            </Button>
+        </AnimatedBox>
     );
 };
