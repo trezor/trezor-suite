@@ -15,6 +15,7 @@ type DynamicScrollableScreenContentHeaderProps = {
     marginTop?: NativeSpacing;
     expandedContent?: ReactNode;
     contentEnteringAnimation?: AnimatedProps<ViewProps>['entering'];
+    contentLayoutAnimation?: AnimatedProps<ViewProps>['layout'];
 } & Pick<ScreenHeaderProps, 'title'>;
 
 export const DynamicScrollableScreenContentHeader = ({
@@ -25,6 +26,7 @@ export const DynamicScrollableScreenContentHeader = ({
     expandedContent,
     subtitleVariant,
     contentEnteringAnimation,
+    contentLayoutAnimation,
 }: DynamicScrollableScreenContentHeaderProps) => {
     const { setScrollableHeaderHeight } = useDynamicHeader();
 
@@ -40,6 +42,7 @@ export const DynamicScrollableScreenContentHeader = ({
             marginBottom={marginBottom}
             onLayout={expandedContent ? handleLayout : undefined}
             entering={contentEnteringAnimation}
+            layout={contentLayoutAnimation}
         >
             {expandedContent || (
                 <>

@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { type TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
-import { VStack } from '@suite-native/atoms';
-import { Footer } from '@suite-native/trading-provider-utils';
+import { AnimatedVStack, VStack } from '@suite-native/atoms';
 import { getTradeOperationData } from '@suite-native/trading-quote-utils';
 import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
@@ -11,6 +10,7 @@ import { TradingHistoryDetailBuyPaymentBanner } from './TradingHistoryDetailBuyP
 import { TradingHistoryDetailInfo } from './TradingHistoryDetailInfo';
 import { TradingHistoryDetailStatusAction } from './TradingHistoryDetailStatusAction';
 import { TradingHistoryDetailSupportBanner } from './TradingHistoryDetailSupportBanner';
+import { tradingHistoryDetailLayoutTransition } from '../../utils/tradingHistoryDetailAnimations';
 import { TradingDetailFeedback } from '../TradeHistoryListItem/TradingDetailFeedback';
 
 type TradingHistoryDetailProps = {
@@ -36,23 +36,27 @@ export const TradingHistoryDetail = ({ orderId }: TradingHistoryDetailProps) => 
                 tradeType={trade.tradeType}
                 status={trade.data.status}
             />
-            <TradingHistoryDetailStatusStepper trade={trade} />
-            {trade.tradeType === 'buy' && <TradingHistoryDetailBuyPaymentBanner trade={trade} />}
-            <TradingDetailFeedback
-                type={trade.tradeType}
-                status={trade.data.status}
-                provider={trade.data.exchange}
-                id={trade.data.id}
-                sendCurrency={fromCurrency}
-                receiveCurrency={toCurrency}
-                country={countryOfResidence}
-            />
-            <TradingHistoryDetailInfo orderId={orderId} />
-            <TradingHistoryDetailSupportBanner
-                providerName={trade.data.exchange}
-                tradeType={trade.tradeType}
-            />
-            <Footer />
+            <AnimatedVStack spacing="sp16" layout={tradingHistoryDetailLayoutTransition}>
+                <TradingHistoryDetailStatusStepper trade={trade} />
+                {trade.tradeType === 'buy' && (
+                    <TradingHistoryDetailBuyPaymentBanner trade={trade} />
+                )}
+
+                <TradingDetailFeedback
+                    type={trade.tradeType}
+                    status={trade.data.status}
+                    provider={trade.data.exchange}
+                    id={trade.data.id}
+                    sendCurrency={fromCurrency}
+                    receiveCurrency={toCurrency}
+                    country={countryOfResidence}
+                />
+                <TradingHistoryDetailInfo orderId={orderId} />
+                <TradingHistoryDetailSupportBanner
+                    providerName={trade.data.exchange}
+                    tradeType={trade.tradeType}
+                />
+            </AnimatedVStack>
         </VStack>
     );
 };
