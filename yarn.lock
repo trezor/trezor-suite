@@ -3934,9 +3934,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/ui@npm:56.0.24":
-  version: 56.0.24
-  resolution: "@expo/ui@npm:56.0.24"
+"@expo/ui@npm:57.0.10":
+  version: 57.0.10
+  resolution: "@expo/ui@npm:57.0.10"
   dependencies:
     sf-symbols-typescript: "npm:^2.1.0"
     vaul: "npm:^1.1.2"
@@ -3954,7 +3954,7 @@ __metadata:
       optional: true
     react-native-worklets:
       optional: true
-  checksum: 10/ca8cdc4825ab1a905291409794e027908167425bbe75395873bc1dd998387948f870ff2956bc47fed600a9b33089ebc65dcd303005dd7f9c23f07a73e8dab978
+  checksum: 10/d9f3e50ef11db54991e07613eab9a9a4a8a6e7c04bca6203d5d34923480ac0046f8633ddb4553fe9c49df7faf563de393acf9ae28ca9f604244f534ae7c4c709
   languageName: node
   linkType: hard
 
@@ -12279,7 +12279,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/clipboard@workspace:suite-native/clipboard"
   dependencies:
-    "@expo/ui": "npm:56.0.24"
+    "@expo/ui": "npm:57.0.10"
     "@suite-native/intl": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     expo-clipboard: "npm:~57.0.1"
