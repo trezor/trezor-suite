@@ -15,8 +15,11 @@ export class YieldFlowSection {
     // Deposit step
     readonly depositButton: Locator;
     readonly depositedToast: Locator;
-    // Withdraw step
     readonly withdrawButton: Locator;
+    readonly redeemButton: Locator;
+    readonly unitToggleButton: Locator;
+    readonly maxButton: Locator;
+    readonly maxWithdrawInfoBanner: Locator;
     readonly withdrawnToast: Locator;
     // Flow-complete screen
     readonly flowCompleteHeading: Locator;
@@ -39,6 +42,10 @@ export class YieldFlowSection {
         this.depositButton = this.page.getByTestId('@yield/form/deposit-button');
         this.depositedToast = this.page.getByTestId('@toast/tx-yield-deposit');
         this.withdrawButton = this.page.getByTestId('@yield/form/withdraw-button');
+        this.redeemButton = this.page.getByTestId('@yield/form/redeem-button');
+        this.unitToggleButton = this.page.getByTestId('@yield/form/unit-toggle-button');
+        this.maxButton = this.page.getByTestId('@yield/form/max-button');
+        this.maxWithdrawInfoBanner = this.page.getByTestId('@yield/form/max-withdraw-info');
         this.withdrawnToast = this.page.getByTestId('@toast/tx-yield-withdraw');
         this.flowCompleteHeading = this.page.getByTestId('@yield/flow-complete/heading');
         this.flowCompleteStatus = this.page.getByTestId('@yield/flow-complete/status');

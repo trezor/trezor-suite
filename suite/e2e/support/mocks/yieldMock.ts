@@ -172,6 +172,24 @@ const BLOCKAID_WITHDRAW_RESPONSE = createBlockaidBenignResponse({
     },
 });
 
+// Redemption of 3 trSHUSDCp shares pays out 3 × pricePerShare = 3.016822 USDC.
+const BLOCKAID_REDEEM_RESPONSE = createBlockaidBenignResponse({
+    sent: {
+        asset: USDC_VAULT_SHARE_ASSET,
+        rawValue: '0x29a2241af62c0000',
+        value: '3.0',
+        usdPrice: '3.015781224726041',
+        summary: 'Sending 3 trSHUSDCp',
+    },
+    received: {
+        asset: USDC_ASSET,
+        rawValue: '0x2e0876',
+        value: '3.016822',
+        usdPrice: '3.015781224726041',
+        summary: 'Receiving 3.016822 USDC',
+    },
+});
+
 const YIELD_VAULTS_RESPONSE = {
     items: [
         {
@@ -349,6 +367,13 @@ export class YieldMock {
     async mockUsdcWithdraw() {
         await this.page.route(BLOCKAID_API_PATTERN, route =>
             route.fulfill({ json: BLOCKAID_WITHDRAW_RESPONSE }),
+        );
+    }
+
+    @step()
+    async mockUsdcRedeem() {
+        await this.page.route(BLOCKAID_API_PATTERN, route =>
+            route.fulfill({ json: BLOCKAID_REDEEM_RESPONSE }),
         );
     }
 
