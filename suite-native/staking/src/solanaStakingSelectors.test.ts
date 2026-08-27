@@ -214,6 +214,7 @@ const getTestState = ({
             },
         } as TrezorDevice,
         persistentDeviceData: [],
+        buttonRequestsByPath: {},
     },
     appSettings: {
         isOnboardingFinished: false,

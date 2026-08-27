@@ -203,6 +203,9 @@ export const connectPopupCallThunkInner = createThunk<
             device = selectSelectedDevice(getState());
             if (!device) throw TypedError('Device_Disconnected');
 
+            // Record the physical device so cancel can clear this call's button requests.
+            dispatch(connectPopupActions.setCallDevicePath(device.path));
+
             const response = await TrezorConnect.call({
                 device: {
                     path: device.path,
@@ -1091,11 +1094,14 @@ export const connectPopupResolveSelectAccountThunk = createThunk<
 
 export const connectPopupCancelThunk = createThunk<void, { error?: string; callId?: string }, void>(
     `${CONNECT_POPUP_MODULE}/cancelThunk`,
-    ({ error, callId }, { dispatch }) => {
+    ({ error, callId }, { dispatch, getState }) => {
+        const activeCall = selectConnectPopupCall(getState());
+
         getPermissionDeferred().reject(TypedError('Method_Cancel'));
         TrezorConnect.cancel({ reason: error, callId });
-        // todo: probably not needed to call explicitly anymore
-        dispatch(deviceActions.removeButtonRequests({}));
+        // Clear the button requests so the modal reflects the cancel without waiting for the aborted
+        // call to settle; keyed by the stored device path (undefined before the device phase = no-op).
+        dispatch(deviceActions.removeButtonRequests({ path: activeCall?.devicePath }));
 
         const cancelError = TypedError('Method_Interrupted');
         // Show the cancellation error modal immediately so the user sees

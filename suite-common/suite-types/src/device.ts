@@ -57,7 +57,6 @@ export interface ExtendedDevice {
     instance?: number;
     ts: number;
     firstConnectedTimestamp: number;
-    buttonRequests: ButtonRequest[];
     metadata: DeviceMetadata;
     walletNumber?: number; // number of passphrase wallet intended to be used in UI
     passwords: DeviceMetadata;

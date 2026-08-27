@@ -28,6 +28,7 @@ const defaultState: BackupDeviceThunkState = {
     device: {
         devices: [],
         persistentDeviceData: [],
+        buttonRequestsByPath: {},
         selectedDevice,
     },
 };

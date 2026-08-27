@@ -34,6 +34,7 @@ describe('selectBackupStatus', () => {
         device: {
             devices: [],
             persistentDeviceData: [],
+            buttonRequestsByPath: {},
             selectedDevice: mockSuiteDevice({}, { backup_availability }),
         },
     });

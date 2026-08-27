@@ -10,10 +10,14 @@ import {
     selectSendFormReviewLastButtonCode,
 } from './sendFormSelectors';
 
+// Button requests are stored per physical-device path (see deviceReducer); the selectors read the
+// selected device's path bucket.
+const DEVICE_PATH = 'device-path';
 const stateWith = (buttonRequests: ButtonRequest[]): DeviceRootState =>
     ({
         device: {
-            selectedDevice: mockSuiteDevice({ buttonRequests }),
+            selectedDevice: mockSuiteDevice({ path: DEVICE_PATH }),
+            buttonRequestsByPath: { [DEVICE_PATH]: buttonRequests },
         },
     }) as unknown as DeviceRootState;
 

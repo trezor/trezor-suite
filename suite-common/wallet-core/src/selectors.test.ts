@@ -66,6 +66,7 @@ const getState = ({
         devices: [device],
         selectedDevice: device,
         persistentDeviceData: [],
+        buttonRequestsByPath: {},
     },
 });
 

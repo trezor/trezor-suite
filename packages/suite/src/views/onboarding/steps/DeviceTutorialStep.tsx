@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceButtonRequests, selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import TrezorConnect from '@trezor/connect';
 import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const DeviceTutorialStep = () => {
     const device = useSelector(selectSelectedDevice);
+    const buttonRequests = useSelector(selectDeviceButtonRequests);
     const dispatch = useDispatch();
     const intl = useIntl();
 
@@ -23,7 +24,7 @@ export const DeviceTutorialStep = () => {
     // Cancelling before the `showDeviceTutorial` call reaches the device (and registers in Connect
     // core) is a no-op, leaving the device stuck showing the tutorial. Wait for the device to report
     // it is waiting for interaction before allowing Skip.
-    const isDeviceReady = !!device?.buttonRequests.length;
+    const isDeviceReady = !!buttonRequests.length;
 
     const handleSkipClick = () =>
         TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });

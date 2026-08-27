@@ -283,6 +283,7 @@ describe('Storage actions', () => {
                 device: {
                     devices: [dev1, dev2, dev2Instance1],
                     persistentDeviceData: [],
+                    buttonRequestsByPath: {},
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
                 },
@@ -374,6 +375,7 @@ describe('Storage actions', () => {
                 device: {
                     devices: [dev1, dev2],
                     persistentDeviceData: [],
+                    buttonRequestsByPath: {},
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
                 },
@@ -417,6 +419,7 @@ describe('Storage actions', () => {
                 device: {
                     devices: [dev1Connected],
                     persistentDeviceData: [],
+                    buttonRequestsByPath: {},
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
                 },
@@ -455,6 +458,7 @@ describe('Storage actions', () => {
                 device: {
                     devices: [dev1],
                     persistentDeviceData: [],
+                    buttonRequestsByPath: {},
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
                 },

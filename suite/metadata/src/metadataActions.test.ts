@@ -75,6 +75,7 @@ const getInitialState = (state?: InitialState) => {
             devices: device ? [device] : [],
             selectedDevice: device,
             persistentDeviceData: [],
+            buttonRequestsByPath: {},
             isConnectionModalOpen: false,
         },
         suite: {

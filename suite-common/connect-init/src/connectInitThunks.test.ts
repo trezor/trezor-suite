@@ -19,6 +19,7 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI_EVENT,
     UI_REQUEST,
+    asDeviceUniquePath,
 } from '@trezor/connect';
 
 import {
@@ -237,12 +238,17 @@ describe('TrezorConnect Actions', () => {
         await connectInitThunk()(dispatch, getState, extra);
         actions.length = 0;
 
-        await testMocks.getTrezorConnectMock().getFeatures();
+        await testMocks
+            .getTrezorConnectMock()
+            .getFeatures({ device: { path: asDeviceUniquePath('device-path-42') } });
 
         expect(actions).toEqual([
             { type: extra.actions.lockDevice.type, payload: true },
             { type: extra.actions.lockDevice.type, payload: false },
-            expect.objectContaining({ type: '@suite/device/removeButtonRequests' }),
+            {
+                type: '@suite/device/removeButtonRequests',
+                payload: { path: 'device-path-42' },
+            },
         ]);
     });
 
@@ -270,7 +276,7 @@ describe('TrezorConnect Actions', () => {
 
         emitTestEvent(UI_EVENT, {
             type: UI_REQUEST.REQUEST_BUTTON,
-            payload: { code: 'ButtonRequest_ProtectCall' },
+            payload: { code: 'ButtonRequest_ProtectCall', device: { path: 'device-path' } },
             callId: 'unscoped-call-id',
         });
 
@@ -278,7 +284,7 @@ describe('TrezorConnect Actions', () => {
         try {
             emitTestEvent(UI_EVENT, {
                 type: UI_REQUEST.REQUEST_BUTTON,
-                payload: { code: 'ButtonRequest_ProtectCall' },
+                payload: { code: 'ButtonRequest_ProtectCall', device: { path: 'device-path' } },
                 callId: scopedCallId,
             });
 
@@ -347,7 +353,7 @@ describe('TrezorConnect Actions', () => {
 
         emitTestEvent(UI_EVENT, {
             type: UI_REQUEST.REQUEST_BUTTON,
-            payload: { code: 'ButtonRequest_ProtectCall' },
+            payload: { code: 'ButtonRequest_ProtectCall', device: { path: 'device-path' } },
         });
 
         expect(onInvalidPinDepleted).toHaveBeenCalledTimes(1);

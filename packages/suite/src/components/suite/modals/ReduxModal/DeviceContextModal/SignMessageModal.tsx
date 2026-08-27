@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
-import type { DeviceRootState } from '@suite-common/device';
+import { type DeviceRootState, selectDeviceButtonRequests } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type NetworkSymbol,
@@ -51,6 +51,7 @@ export const SignMessageModal = ({
     serializedPath,
 }: SignMessageModalProps) => {
     const accounts = useSelector(selectDeviceAccounts);
+    const buttonRequestsCount = useSelector(selectDeviceButtonRequests).length;
     const deviceModelInternal = device.features?.internal_model;
 
     const onCancel = () => {
@@ -125,7 +126,7 @@ export const SignMessageModal = ({
                         <Card
                             header={
                                 <Row gap={12}>
-                                    <DotIndicator isActive={device.buttonRequests.length === 1} />
+                                    <DotIndicator isActive={buttonRequestsCount === 1} />
                                     <H4 margin={{ left: 4 }} typographyStyle="body-sm-strong">
                                         <Translation id="TR_ADDRESS" />
                                     </H4>
@@ -142,7 +143,7 @@ export const SignMessageModal = ({
                         <Card
                             header={
                                 <Row gap={12}>
-                                    <DotIndicator isActive={device.buttonRequests.length === 2} />
+                                    <DotIndicator isActive={buttonRequestsCount === 2} />
                                     <H4 margin={{ left: 4 }} typographyStyle="body-sm-strong">
                                         <Translation id="TR_DOMAIN" />
                                     </H4>
@@ -159,7 +160,7 @@ export const SignMessageModal = ({
                         header={
                             <Row gap={12}>
                                 <DotIndicator
-                                    isActive={device.buttonRequests.length === (isEip712 ? 3 : 2)}
+                                    isActive={buttonRequestsCount === (isEip712 ? 3 : 2)}
                                 />
                                 <H4 margin={{ left: 4 }} typographyStyle="body-sm-strong">
                                     <Translation id="TR_MESSAGE" />

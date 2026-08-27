@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
-import { usePin } from '@suite-common/device';
+import { selectDeviceButtonRequests, usePin } from '@suite-common/device';
 import { Modal } from '@trezor/components';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
@@ -14,6 +14,7 @@ type PinModalProps = {
 
 export const PinModal = ({ device }: PinModalProps) => {
     const requestId = useSelector(selectModalRequestId);
+    const buttonRequests = useSelector(selectDeviceButtonRequests);
     const {
         isSettingNewPin,
         isSettingNewWipeCode,
@@ -23,11 +24,11 @@ export const PinModal = ({ device }: PinModalProps) => {
         setPin,
         pin,
         submitted,
-    } = usePin(device.buttonRequests, requestId);
+    } = usePin(buttonRequests, requestId);
     if (!device.features) return null;
 
     const getHeading = () => {
-        const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];
+        const pinRequestType = buttonRequests[buttonRequests.length - 1];
 
         switch (pinRequestType?.code) {
             case 'PinMatrixRequestType_NewFirst':
