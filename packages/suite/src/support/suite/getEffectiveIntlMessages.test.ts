@@ -1,23 +1,27 @@
 import { getEffectiveIntlMessages } from './getEffectiveIntlMessages';
 
 describe(getEffectiveIntlMessages.name, () => {
+    const localizedMessages = { TR_CANCEL: 'Cancel' };
+    const definedMessageIds = ['TR_CANCEL', 'TR_ONLY_IN_SOURCE'];
+
     it('returns downloaded translations unchanged when overlay is off', () => {
-        const localizedMessages = { TR_CANCEL: 'Cancel' };
-
-        expect(getEffectiveIntlMessages(localizedMessages, false)).toBe(localizedMessages);
+        expect(
+            getEffectiveIntlMessages({
+                localizedMessages,
+                definedMessageIds,
+                showTranslationKeys: false,
+            }),
+        ).toBe(localizedMessages);
     });
 
-    it('shows downloaded translation ids when overlay is on', () => {
-        const result = getEffectiveIntlMessages({ TR_CANCEL: 'Cancel' }, true);
+    it('shows source message ids when overlay is on', () => {
+        const result = getEffectiveIntlMessages({
+            localizedMessages,
+            definedMessageIds,
+            showTranslationKeys: true,
+        });
 
-        expect(result.TR_CANCEL).toBe('TR_CANCEL');
-    });
-
-    it('shows messages.ts ids that are missing from downloaded translations', () => {
-        const result = getEffectiveIntlMessages({}, true);
-
-        expect(result.TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_TITLE).toBe(
-            'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_TITLE',
-        );
+        expect(Object.keys(result)).toStrictEqual(definedMessageIds);
+        expect(Object.values(result)).toStrictEqual(definedMessageIds);
     });
 });
