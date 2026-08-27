@@ -11,8 +11,8 @@ always will be. Transactions, UTXOs, tokens, contracts and rates grow with the a
 data, and the large end is real — `buildCoinDataForPlatform` returns a `Set` so callers avoid "a linear
 scan over tens of thousands of contracts"
 ([fetchCoins.ts](../../suite-common/token-definitions/scripts/utils/fetchCoins.ts)). Anything a linter
-could decide belongs in [`noRestrictedSyntax`](../../packages/eslint/src/javascriptConfig.mjs) or
-[`eslint-local-rules/rules.ts`](../../eslint-local-rules/rules.ts) instead.
+could decide belongs in [`noRestrictedSyntax`](../../packages/eslint/src/javascriptConfig.mjs) or the
+[`eslint-local-rules`](../../eslint-local-rules) directory instead.
 
 ## Index by key before iterating, don't scan inside a loop
 
