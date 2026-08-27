@@ -1,3 +1,4 @@
+import { fixupConfigRules } from '@eslint/compat';
 import pluginImport from 'eslint-plugin-import';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -24,7 +25,7 @@ export const globalNoExtraneousDependenciesDevDependencies = [
 
 /** @type {Config[]} */
 export const importConfig = [
-    pluginImport.flatConfigs.recommended,
+    ...fixupConfigRules(pluginImport.flatConfigs.recommended),
     {
         settings: {
             'import/ignore': ['node_modules', '\\.(coffee|scss|css|less|hbs|svg|json)$'],
