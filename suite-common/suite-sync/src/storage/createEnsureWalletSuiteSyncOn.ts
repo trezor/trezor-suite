@@ -5,10 +5,8 @@ import {
 } from '@suite-common/device';
 import {
     type EnsureSubscribedStorageDep,
-    type EnsureSuiteSyncKeysDep,
     type EnsureWalletSuiteSyncOn,
     type OnStorageEnsuredDep,
-    type SubscriptionStorageDep,
 } from '@suite-common/suite-sync-types';
 import { err } from '@trezor/type-utils';
 
@@ -17,8 +15,6 @@ import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from '../
 export type EnsureWalletSuiteSyncOnDeps = {
     getState: () => DeviceRootState;
 } & EnsureSubscribedStorageDep &
-    EnsureSuiteSyncKeysDep &
-    SubscriptionStorageDep &
     OnStorageEnsuredDep;
 
 /**
