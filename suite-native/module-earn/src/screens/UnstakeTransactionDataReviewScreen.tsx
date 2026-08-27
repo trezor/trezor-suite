@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { isDeviceReviewOnly } from '@suite-common/wallet-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { isDeviceReviewOnly } from '@suite-common/wallet-utils';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -85,7 +85,6 @@ export const UnstakeTransactionDataReviewScreen = ({
     const isReadyToUnstake = isTransactionAlreadySigned && !!account;
 
     const isFollowDeviceReview = isDeviceReviewOnly(precomposedTransaction);
-    const isFollowDeviceScreen = isFollowDeviceReview && !isTransactionAlreadySigned;
 
     useEarnReviewAutoStart({
         handleSign,
@@ -123,7 +122,7 @@ export const UnstakeTransactionDataReviewScreen = ({
             onRetry={onRetry}
             isRetryDisabled={isRetryDisabled}
             retryTestID={isFollowDeviceReview ? '@earn/follow-device-retry' : undefined}
-            isCompact={isFollowDeviceScreen}
+            isCompact={isFollowDeviceReview}
         />
     ) : null;
 
@@ -139,7 +138,20 @@ export const UnstakeTransactionDataReviewScreen = ({
         />
     );
 
-    if (isFollowDeviceScreen) {
+    const unstakeNowButton = isReadyToUnstake && (
+        <ScrollToEndOnMount>
+            <Button
+                isLoading={isPushing}
+                isDisabled={isSolanaAccount && isPastDeadline}
+                onPress={handleUnstakeNow}
+                testID="@earn/unstake-now"
+            >
+                <Translation id="earn.unstakeTransactionDataReviewScreen.viewTransactionButton" />
+            </Button>
+        </ScrollToEndOnMount>
+    );
+
+    if (isFollowDeviceReview) {
         return (
             <Screen
                 isScrollable={false}
@@ -151,7 +163,14 @@ export const UnstakeTransactionDataReviewScreen = ({
                     />
                 }
             >
-                <FollowDeviceScreenContent titleTxKey="earn.unstakeTransactionDataReviewScreen.followDeviceInstructions" />
+                <VStack flex={1} justifyContent="center" spacing="sp24">
+                    <FollowDeviceScreenContent
+                        titleTxKey="earn.unstakeTransactionDataReviewScreen.followDeviceInstructions"
+                        isTxSigned={isTransactionAlreadySigned}
+                    />
+
+                    {unstakeNowButton}
+                </VStack>
             </Screen>
         );
     }
@@ -169,18 +188,8 @@ export const UnstakeTransactionDataReviewScreen = ({
                     {timer}
                     {!isFollowDeviceReview && <UnstakeTransactionDataReviewStepList />}
                 </VStack>
-                {isReadyToUnstake && (
-                    <ScrollToEndOnMount>
-                        <Button
-                            isLoading={isPushing}
-                            isDisabled={isSolanaAccount && isPastDeadline}
-                            onPress={handleUnstakeNow}
-                            testID="@earn/unstake-now"
-                        >
-                            <Translation id="earn.unstakeTransactionDataReviewScreen.viewTransactionButton" />
-                        </Button>
-                    </ScrollToEndOnMount>
-                )}
+
+                {unstakeNowButton}
             </VStack>
 
             {isPending && !!pendingTxid && !!submittedAt && !!account && (

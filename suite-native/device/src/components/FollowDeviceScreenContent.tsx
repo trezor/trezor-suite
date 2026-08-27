@@ -11,9 +11,13 @@ const SCREEN_HEIGHT = getScreenHeight();
 
 type FollowDeviceScreenContentProps = {
     titleTxKey: TxKeyPath;
+    isTxSigned?: boolean;
 };
 
-export const FollowDeviceScreenContent = ({ titleTxKey }: FollowDeviceScreenContentProps) => {
+export const FollowDeviceScreenContent = ({
+    titleTxKey,
+    isTxSigned = false,
+}: FollowDeviceScreenContentProps) => {
     const deviceModel = useSelector(selectDeviceModelWithFlagshipFallback);
 
     return (
@@ -25,9 +29,12 @@ export const FollowDeviceScreenContent = ({ titleTxKey }: FollowDeviceScreenCont
                     maxHeight={0.42 * SCREEN_HEIGHT}
                 />
             </Box>
-            <Text variant="headline-md" textAlign="center">
-                <Translation id={titleTxKey} />
-            </Text>
+
+            {!isTxSigned && (
+                <Text variant="headline-md" textAlign="center">
+                    <Translation id={titleTxKey} />
+                </Text>
+            )}
         </VStack>
     );
 };
