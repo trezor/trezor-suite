@@ -1,3 +1,5 @@
+import { FadeIn, LinearTransition } from 'react-native-reanimated';
+
 import {
     DynamicScreenHeader,
     type RootStackParamList,
@@ -10,6 +12,8 @@ import {
     TradingHistoryDetailCompactHeader,
     TradingHistoryDetailHeader,
 } from '@suite-native/trading-history';
+
+const DETAIL_LAYOUT_TRANSITION = LinearTransition.duration(250);
 
 export const TradingHistoryDetailScreen = ({
     route: {
@@ -24,6 +28,8 @@ export const TradingHistoryDetailScreen = ({
                 scrollThreshold={0.65}
                 marginTop="sp8"
                 closeActionType="back"
+                contentEnteringAnimation={FadeIn}
+                contentLayoutAnimation={DETAIL_LAYOUT_TRANSITION}
             />
         }
     >
