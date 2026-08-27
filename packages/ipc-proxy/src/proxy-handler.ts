@@ -80,7 +80,7 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
 ) => {
     debug?.info(SERVICE_NAME, `Init ipc interface ${channel}`);
     // Handle creation event from proxy-generator and creates actual interface instance
-    ipcMain.handle(`${channel}/create`, async (ipcEvent, [instancePrefix, constructorParams]) => {
+    ipcMain.handle(`${channel}/create`, async (_, [instancePrefix, constructorParams]) => {
         debug?.info(SERVICE_NAME, `Create ipc chanel ${instancePrefix}`);
         const { onRequest, onAddListener, onRemoveListener } = await onCreateInstance(
             ...constructorParams,
@@ -92,13 +92,6 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
                     debug?.info(SERVICE_NAME, `Adding listener ${realEventName}`);
                     onAddListener(realEventName, (...payload: any[]) => {
                         debug?.info(SERVICE_NAME, `Emit ${realEventName} as ${ipcEventName}`);
-
-                        // prevents 'Render frame was disposed before WebFrameMain could be accessed', occurring when renderer process is closed during responding
-                        // https://github.com/electron/electron/blob/3536d49/docs/api/structures/ipc-main-event.md
-                        // https://github.com/electron/electron/blob/3536d49/docs/breaking-changes.md#behavior-changed-frame-properties-may-retrieve-detached-webframemain-instances-or-none-at-all
-                        if (ipcEvent.senderFrame === null || ipcEvent.senderFrame.isDestroyed())
-                            return;
-
                         reply(ipcEventName, payload);
                     });
                 },

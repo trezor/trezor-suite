@@ -2,7 +2,7 @@ import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { ipcMain as electronIpcMain } from 'electron';
 
-import { validateIpcMessage } from '@trezor/ipc-proxy';
+import { isSenderFrameDestroyed, validateIpcMessage } from '@trezor/ipc-proxy';
 
 import { ipcMain } from './ipcMain';
 
@@ -20,103 +20,75 @@ jest.mock('electron', () => ({
 
 jest.mock('@trezor/ipc-proxy', () => ({
     validateIpcMessage: jest.fn(),
+    isSenderFrameDestroyed: jest.fn(),
 }));
 
-describe('typed-electron ipcMain validation', () => {
+const createIpcEvent = (): IpcMainEvent =>
+    ({
+        senderFrame: { url: 'file:///build/index.html', isDestroyed: () => false },
+    }) as unknown as IpcMainEvent;
+
+const createIpcInvokeEvent = (): IpcMainInvokeEvent =>
+    ({
+        senderFrame: { url: 'file:///build/index.html', isDestroyed: () => false },
+    }) as unknown as IpcMainInvokeEvent;
+
+describe('ipcMain validation wrapper', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        jest.mocked(isSenderFrameDestroyed).mockReturnValue(false);
     });
 
-    it('validates sender before registering on listeners', () => {
-        const originalListener = jest.fn();
-        const ipcEvent = {
-            senderFrame: { url: 'file:///build/index.html', isDestroyed: () => false },
-        } as unknown as IpcMainEvent;
+    it.each([
+        { methodName: 'on', channel: 'theme/change' },
+        { methodName: 'once', channel: 'theme/change' },
+        // Electron defines 'addListener' as an alias for 'on', but Typescript behaves weirdly.
+        { methodName: 'addListener' as 'on', channel: 'theme/change' },
+    ] as const)(
+        'validates sender before registering $methodName listeners',
+        ({ methodName, channel }) => {
+            const originalListener = jest.fn();
+            const ipcEvent = createIpcEvent();
 
-        ipcMain.on('theme/change', originalListener);
+            ipcMain[methodName](channel, originalListener);
 
-        const wrappedListener = jest.mocked(electronIpcMain.on).mock.calls[0]?.[1];
-        expect(wrappedListener).toBeDefined();
-        if (wrappedListener === undefined) {
-            throw new Error('wrappedListener is undefined');
-        }
-        wrappedListener(ipcEvent, 'dark');
+            const wrappedListener = jest.mocked(electronIpcMain[methodName]).mock.calls[0]?.[1];
+            expect(wrappedListener).toBeDefined();
 
-        expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent });
-        expect(originalListener).toHaveBeenCalledWith(ipcEvent, 'dark');
-    });
+            if (wrappedListener === undefined) {
+                throw new Error('wrappedListener is undefined');
+            }
 
-    it('validates sender before registering once listeners', () => {
-        const originalListener = jest.fn();
-        const ipcEvent = {
-            senderFrame: { url: 'file:///build/index.html', isDestroyed: () => false },
-        } as unknown as IpcMainEvent;
+            wrappedListener(ipcEvent, 'dark');
 
-        ipcMain.once('theme/change', originalListener);
+            expect(isSenderFrameDestroyed).toHaveBeenCalledWith({ ipcEvent });
+            expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent });
+            expect(originalListener).toHaveBeenCalledWith(ipcEvent, 'dark');
+        },
+    );
 
-        const wrappedListener = jest.mocked(electronIpcMain.once).mock.calls[0]?.[1];
-        expect(wrappedListener).toBeDefined();
-        if (wrappedListener === undefined) {
-            throw new Error('wrappedListener is undefined');
-        }
-        wrappedListener(ipcEvent, 'dark');
+    it.each([
+        { methodName: 'handle', channel: 'app/is-visible' },
+        { methodName: 'handleOnce', channel: 'app/is-visible' },
+    ] as const)(
+        'validates sender before registering $methodName listeners and preserves return values',
+        async ({ methodName, channel }) => {
+            const originalListener = jest.fn().mockResolvedValue('result');
+            const ipcEvent = createIpcInvokeEvent();
 
-        expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent });
-        expect(originalListener).toHaveBeenCalledWith(ipcEvent, 'dark');
-    });
+            ipcMain[methodName](channel, originalListener);
 
-    it('validates sender before registering addListener listeners', () => {
-        const originalListener = jest.fn();
-        const ipcEvent = {
-            senderFrame: { url: 'file:///build/index.html', isDestroyed: () => false },
-        } as unknown as IpcMainEvent;
+            const wrappedListener = jest.mocked(electronIpcMain[methodName]).mock.calls[0]?.[1];
+            expect(wrappedListener).toBeDefined();
 
-        ipcMain.addListener('theme/change', originalListener);
+            if (wrappedListener === undefined) {
+                throw new Error('wrappedListener is undefined');
+            }
 
-        const wrappedListener = jest.mocked(electronIpcMain.addListener).mock.calls[0]?.[1];
-        expect(wrappedListener).toBeDefined();
-        if (wrappedListener === undefined) {
-            throw new Error('wrappedListener is undefined');
-        }
-        wrappedListener(ipcEvent, 'dark');
-
-        expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent });
-        expect(originalListener).toHaveBeenCalledWith(ipcEvent, 'dark');
-    });
-
-    it('validates sender before registering handle listeners and preserves return values', async () => {
-        const originalListener = jest.fn().mockResolvedValue('result');
-        const ipcEvent = {
-            senderFrame: { url: 'file:///build/index.html', isDestroyed: () => false },
-        } as unknown as IpcMainInvokeEvent;
-
-        ipcMain.handle('app/is-visible', originalListener);
-
-        const wrappedListener = jest.mocked(electronIpcMain.handle).mock.calls[0]?.[1];
-        expect(wrappedListener).toBeDefined();
-        if (wrappedListener === undefined) {
-            throw new Error('wrappedListener is undefined');
-        }
-        await expect(wrappedListener(ipcEvent)).resolves.toBe('result');
-        expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent });
-        expect(originalListener).toHaveBeenCalledWith(ipcEvent);
-    });
-
-    it('validates sender before registering handleOnce listeners and preserves return values', async () => {
-        const originalListener = jest.fn().mockResolvedValue('result');
-        const ipcEvent = {
-            senderFrame: { url: 'file:///build/index.html', isDestroyed: () => false },
-        } as unknown as IpcMainInvokeEvent;
-
-        ipcMain.handleOnce('app/is-visible', originalListener);
-
-        const wrappedListener = jest.mocked(electronIpcMain.handleOnce).mock.calls[0]?.[1];
-        expect(wrappedListener).toBeDefined();
-        if (wrappedListener === undefined) {
-            throw new Error('wrappedListener is undefined');
-        }
-        await expect(wrappedListener(ipcEvent)).resolves.toBe('result');
-        expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent });
-        expect(originalListener).toHaveBeenCalledWith(ipcEvent);
-    });
+            await expect(wrappedListener(ipcEvent)).resolves.toBe('result');
+            expect(isSenderFrameDestroyed).toHaveBeenCalledWith({ ipcEvent });
+            expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent });
+            expect(originalListener).toHaveBeenCalledWith(ipcEvent);
+        },
+    );
 });
