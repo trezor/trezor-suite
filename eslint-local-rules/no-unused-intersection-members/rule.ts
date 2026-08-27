@@ -516,7 +516,7 @@ const addDispatchedThunkUsages = (
 
 /**
  * Reports confidently unused members of local State and Deps intersection contracts.
- * See `eslint-local-rules/README.md` for the analysis principles and conservative fallbacks.
+ * See `README.md` for the analysis principles and conservative fallbacks.
  */
 export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
     meta: {

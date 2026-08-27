@@ -2,7 +2,7 @@ import { RuleTester } from 'eslint';
 import path from 'node:path';
 import { parser } from 'typescript-eslint';
 
-import { noUnusedIntersectionMembersRule } from './noUnusedIntersectionMembersRule';
+import { noUnusedIntersectionMembersRule } from './rule';
 
 const typeAwareRuleTester = new RuleTester({
     languageOptions: {
@@ -13,12 +13,12 @@ const typeAwareRuleTester = new RuleTester({
                 allowDefaultProject: ['unused-intersection-member.ts'],
             },
             sourceType: 'module',
-            tsconfigRootDir: path.join(__dirname, '..'),
+            tsconfigRootDir: path.join(__dirname, '../..'),
         },
     },
 });
 
-const typeAwareTestFilename = path.join(__dirname, '..', 'unused-intersection-member.ts');
+const typeAwareTestFilename = path.join(__dirname, '../..', 'unused-intersection-member.ts');
 
 typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMembersRule, {
     valid: [
