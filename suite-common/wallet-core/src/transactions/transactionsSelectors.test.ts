@@ -1,3 +1,12 @@
+import { type DeviceRootState } from '@suite-common/device';
+import {
+    type NotificationsRootState,
+    type TransactionNotification,
+} from '@suite-common/toast-notifications';
+import {
+    DUST_PHISHING_THRESHOLD,
+    type TokenDefinitionsRootState,
+} from '@suite-common/token-definitions';
 import {
     type Account,
     type AccountKey,
@@ -9,10 +18,13 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type TransactionsRootState } from './transactionsReducerTypes';
 import {
     selectEvmPrivatePendingHint,
+    selectHasUnseenNonPhishingTransactionNotifications,
+    selectNonPhishingTransactionNotifications,
     selectTransactionsWithMissingRates,
 } from './transactionsSelectors';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { type FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
+import { type PhishingRootState } from '../phishing/phishingReducerTypes';
 
 const ACCOUNT_KEY = 'descriptor-eth-device' as AccountKey;
 const LOCAL_CURRENCY = 'usd' as BaseCurrencyCode;
@@ -113,5 +125,107 @@ describe('selectEvmPrivatePendingHint', () => {
     it('returns undefined when the account has no transactions', () => {
         const state = getHintState([pendingSentTx(7)]);
         expect(selectEvmPrivatePendingHint(state, 'missing-account' as AccountKey)).toBeUndefined();
+    });
+});
+
+describe('selectNonPhishingTransactionNotifications', () => {
+    const PHISHING_ACCOUNT_KEY = 'phishing-eth-account' as AccountKey;
+    const DEVICE_STATE = 'phishing-device-session';
+    const DESCRIPTOR = '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b';
+
+    const ETH_USD_RATE = 2000;
+
+    // 5e11 wei is 0.001 USD at the rate above, a fifth of the dust threshold. 1e16 wei is 20 USD.
+    const DUST_AMOUNT_IN_WEI = '500000000000';
+    const MEANINGFUL_AMOUNT_IN_WEI = '10000000000000000';
+
+    const phishingEthAccount = {
+        key: PHISHING_ACCOUNT_KEY,
+        symbol: 'eth',
+        descriptor: DESCRIPTOR,
+        deviceState: DEVICE_STATE,
+    } as unknown as Account;
+
+    const receivedTransaction = (amount: string): WalletAccountTransaction =>
+        ({
+            txid: 'received-tx',
+            symbol: 'eth',
+            type: 'recv',
+            amount,
+            blockTime: HOUR_ALIGNED_TIMESTAMP,
+            tokens: [],
+            internalTransfers: [],
+        }) as unknown as WalletAccountTransaction;
+
+    const receivedNotification: TransactionNotification = {
+        context: 'event',
+        type: 'tx-received',
+        id: 1,
+        seen: false,
+        descriptor: DESCRIPTOR,
+        symbol: 'eth',
+        txid: 'received-tx',
+        formattedAmount: '0.0000005 ETH',
+    } as TransactionNotification;
+
+    type PhishingState = NotificationsRootState &
+        TokenDefinitionsRootState &
+        TransactionsRootState &
+        AccountsRootState &
+        FiatRatesRootState &
+        PhishingRootState &
+        DeviceRootState;
+
+    const getPhishingState = ({
+        amount,
+        isDustPhishingEnabled = true,
+    }: {
+        amount: string;
+        isDustPhishingEnabled?: boolean;
+    }): PhishingState =>
+        ({
+            notifications: [receivedNotification],
+            device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
+            // ETH declares the coin-definitions feature, so an entry is required here or
+            // phishing detection bails out early.
+            tokenDefinitions: { eth: {} },
+            wallet: {
+                accounts: [phishingEthAccount],
+                transactions: {
+                    transactions: { [PHISHING_ACCOUNT_KEY]: [receivedTransaction(amount)] },
+                    phishing: {},
+                },
+                fiat: { historic: { 'eth-usd': { [HOUR_ALIGNED_TIMESTAMP]: ETH_USD_RATE } } },
+                phishing: {
+                    dustPhishing: {
+                        isEnabled: isDustPhishingEnabled,
+                        dustThreshold: DUST_PHISHING_THRESHOLD,
+                    },
+                },
+            },
+        }) as unknown as PhishingState;
+
+    it('omits a notification whose transaction moves a dust-sized amount', () => {
+        const state = getPhishingState({ amount: DUST_AMOUNT_IN_WEI });
+
+        expect(selectNonPhishingTransactionNotifications(state)).toEqual([]);
+        expect(selectHasUnseenNonPhishingTransactionNotifications(state)).toBe(false);
+    });
+
+    it('keeps a notification whose transaction moves a meaningful amount', () => {
+        const state = getPhishingState({ amount: MEANINGFUL_AMOUNT_IN_WEI });
+
+        expect(selectNonPhishingTransactionNotifications(state)).toEqual([receivedNotification]);
+        expect(selectHasUnseenNonPhishingTransactionNotifications(state)).toBe(true);
+    });
+
+    it('keeps a dust notification when the user turned dust phishing detection off', () => {
+        const state = getPhishingState({
+            amount: DUST_AMOUNT_IN_WEI,
+            isDustPhishingEnabled: false,
+        });
+
+        expect(selectNonPhishingTransactionNotifications(state)).toEqual([receivedNotification]);
+        expect(selectHasUnseenNonPhishingTransactionNotifications(state)).toBe(true);
     });
 });
