@@ -10,6 +10,7 @@
 @braintree/sanitize-url
 @electron/fuses
 @electron/notarize
+@eslint/compat
 @eslint/js
 @evolu/common
 @evolu/nodejs
