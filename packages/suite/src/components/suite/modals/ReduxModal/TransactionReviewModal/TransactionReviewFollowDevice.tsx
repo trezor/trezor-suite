@@ -15,9 +15,12 @@ export const TransactionReviewFollowDevice = ({ isSigned }: TransactionReviewFol
     return (
         <Column alignItems="center" gap={16} data-testid="@modal/review/follow-device">
             <DeviceConfirmImage device={device} />
-            <H2 align="center" margin={{ left: 16, right: 16, bottom: 16 }}>
-                <Translation id={isSigned ? 'TR_CONFIRMED_TX' : 'TR_CONFIRM_ACTION_ON_YOUR'} />
-            </H2>
+
+            {!isSigned && (
+                <H2 align="center" margin={{ left: 16, right: 16, bottom: 16 }}>
+                    <Translation id="TR_CONFIRM_ACTION_ON_YOUR" />
+                </H2>
+            )}
         </Column>
     );
 };
