@@ -88,9 +88,9 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(stakingAccountItemInLeftSection).toBeVisible();
                 await walletPage.openAccount({ symbol: 'ada', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
-                await expect(walletPage.discoveryWarning).toBeHidden();
                 await expect(stakingSection.claimRewardsButton).toBeEnabled();
                 await expect(stakingSection.unstakeToClaimButton).toBeEnabled();
+                await expect(walletPage.discoveryWarning).toBeHidden();
                 await expect(stakingSection.startStakingButton).toBeHidden();
                 await expect(walletPage.topPanelBalanceWithSymbol).toHaveText(
                     startingBalanceFormatted,
