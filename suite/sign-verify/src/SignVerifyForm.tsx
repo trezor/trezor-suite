@@ -124,11 +124,11 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
                     {isSignPage && signFormatsDiffer && !isCompleted && (
                         <FormatSwitch
                             options={[
+                                { value: false, label: <Translation id="TR_BIP_SIG_FORMAT" /> },
                                 {
                                     value: true,
                                     label: <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />,
                                 },
-                                { value: false, label: <Translation id="TR_BIP_SIG_FORMAT" /> },
                             ]}
                             tooltip={
                                 <Translation
