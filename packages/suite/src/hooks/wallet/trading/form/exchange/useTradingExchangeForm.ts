@@ -148,7 +148,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         cryptoInputName: TRADING_FORM_OUTPUT_AMOUNT,
     });
 
-    const { dexQuotes, isScheduledQuotesRefresh, refreshQuotes } = useExchangeQuotes({
+    const { isScheduledQuotesRefresh, refreshQuotes } = useExchangeQuotes({
         methods,
         network,
         shouldSendInSats,
@@ -185,8 +185,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         isLoadingQuote,
         exchangeType,
         sendCryptoSelect,
-        selectedQuote,
-        dexQuotes,
         composeRequest,
     });
 

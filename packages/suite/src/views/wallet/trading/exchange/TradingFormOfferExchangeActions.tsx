@@ -7,6 +7,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import {
     requiresTokenApproval,
     selectIsTradingNetworkFeeMissing,
+    selectTradingExchangeQuoteToEstimate,
     selectTradingSendAccount,
     tradingExchangeActions,
 } from '@suite-common/trading';
@@ -44,7 +45,8 @@ export const TradingFormOfferExchangeActions = () => {
 
     const modalControls = useReceiveAddressModalControls();
 
-    const { outputs, sendCryptoSelect, receiveCryptoSelect, exchangeType, rateType } = watch();
+    const { outputs, sendCryptoSelect, receiveCryptoSelect, exchangeType, rateType, provider } =
+        watch();
     const { amount, tokenAddress } = getTradingFirstOutput(outputs);
     const areSatsUsed = !!shouldSendInSats;
 
@@ -58,7 +60,14 @@ export const TradingFormOfferExchangeActions = () => {
     } = useTradingFormOfferCommon<'exchange'>();
 
     const isNetworkFeeMissing = useSelector(reduxState =>
-        selectIsTradingNetworkFeeMissing(reduxState, quote),
+        selectIsTradingNetworkFeeMissing(
+            reduxState,
+            selectTradingExchangeQuoteToEstimate(reduxState, {
+                provider,
+                exchangeType,
+                sendCryptoId: sendCryptoSelect?.id,
+            }),
+        ),
     );
 
     const { stellarActivateButton, stellarActivateModal } = useTradingStellarActivation({
