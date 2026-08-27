@@ -15,22 +15,22 @@ import {
 } from '../../test-utils/tradingTestUtils';
 
 describe('BuyCryptoAmountInput', () => {
-    const renderCryptoAmountInput = (
+    const renderCryptoAmountInput = async (
         props: Partial<CryptoAmountInputProps>,
         form: BuyFormType,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <Form form={form}>
                 <BuyCryptoAmountInput showAssetsSheet={jest.fn()} {...props} />
             </Form>,
             { overrides },
         );
 
-    const renderUseTradingBuyForm = (
+    const renderUseTradingBuyForm = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) => {
-        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
+        const { result } = await renderHookWithTradingProvider(() => useBuyForm(), {
             overrides,
         });
 
@@ -38,11 +38,11 @@ describe('BuyCryptoAmountInput', () => {
     };
 
     it('should set fiat value in form', async () => {
-        const form = renderUseTradingBuyForm();
-        act(() => {
+        const form = await renderUseTradingBuyForm();
+        await act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form);
+        const { getByLabelText } = await renderCryptoAmountInput({}, form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
@@ -52,9 +52,9 @@ describe('BuyCryptoAmountInput', () => {
         expect(form.getValues('cryptoValue')).toEqual('100');
     });
 
-    it('should be disabled when asset is not selected', () => {
-        const form = renderUseTradingBuyForm();
-        const { getByLabelText } = renderCryptoAmountInput({}, form);
+    it('should be disabled when asset is not selected', async () => {
+        const form = await renderUseTradingBuyForm();
+        const { getByLabelText } = await renderCryptoAmountInput({}, form);
 
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
@@ -63,8 +63,8 @@ describe('BuyCryptoAmountInput', () => {
 
     it('should call showAssetsSheet when disabled and pressed', async () => {
         const showAssetsSheet = jest.fn();
-        const form = renderUseTradingBuyForm();
-        const { getByLabelText } = renderCryptoAmountInput({ showAssetsSheet }, form);
+        const form = await renderUseTradingBuyForm();
+        const { getByLabelText } = await renderCryptoAmountInput({ showAssetsSheet }, form);
 
         await userEvent.press(
             getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
@@ -75,11 +75,11 @@ describe('BuyCryptoAmountInput', () => {
 
     it('should not call showAssetsSheet when enabled and pressed', async () => {
         const showAssetsSheet = jest.fn();
-        const form = renderUseTradingBuyForm();
-        act(() => {
+        const form = await renderUseTradingBuyForm();
+        await act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({ showAssetsSheet }, form);
+        const { getByLabelText } = await renderCryptoAmountInput({ showAssetsSheet }, form);
 
         await userEvent.press(
             getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
@@ -89,11 +89,11 @@ describe('BuyCryptoAmountInput', () => {
     });
 
     it('should format input value to be decimal by default', async () => {
-        const form = renderUseTradingBuyForm();
-        act(() => {
+        const form = await renderUseTradingBuyForm();
+        await act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form);
+        const { getByLabelText } = await renderCryptoAmountInput({}, form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
@@ -107,11 +107,11 @@ describe('BuyCryptoAmountInput', () => {
     });
 
     it('should preserve a leading-zero decimal while typing', async () => {
-        const form = renderUseTradingBuyForm();
-        act(() => {
+        const form = await renderUseTradingBuyForm();
+        await act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form);
+        const { getByLabelText } = await renderCryptoAmountInput({}, form);
         const input = getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel'));
 
         await userEvent.type(input, '0.0001');
@@ -124,11 +124,11 @@ describe('BuyCryptoAmountInput', () => {
         const preloadedState = {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
-        const form = renderUseTradingBuyForm();
-        act(() => {
+        const form = await renderUseTradingBuyForm();
+        await act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form, preloadedState);
+        const { getByLabelText } = await renderCryptoAmountInput({}, form, preloadedState);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
@@ -145,11 +145,11 @@ describe('BuyCryptoAmountInput', () => {
         const preloadedState = {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
-        const form = renderUseTradingBuyForm();
-        act(() => {
+        const form = await renderUseTradingBuyForm();
+        await act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form, preloadedState);
+        const { getByLabelText } = await renderCryptoAmountInput({}, form, preloadedState);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
@@ -162,10 +162,10 @@ describe('BuyCryptoAmountInput', () => {
         ).toHaveDisplayValue('');
     });
 
-    it('should display loading skeleton while amountInCrypto is false and buyInfo is loading', () => {
-        const form = renderUseTradingBuyForm();
+    it('should display loading skeleton while amountInCrypto is false and buyInfo is loading', async () => {
+        const form = await renderUseTradingBuyForm();
 
-        const { getByLabelText } = renderCryptoAmountInput({}, form, {
+        const { getByLabelText } = await renderCryptoAmountInput({}, form, {
             wallet: { trading: { buy: { isLoading: true } } },
         });
 
@@ -174,13 +174,13 @@ describe('BuyCryptoAmountInput', () => {
         ).toBeTruthy();
     });
 
-    it('should not display loading skeleton while amountInCrypto is true and buyInfo is loading', () => {
-        const form = renderUseTradingBuyForm();
-        act(() => {
+    it('should not display loading skeleton while amountInCrypto is true and buyInfo is loading', async () => {
+        const form = await renderUseTradingBuyForm();
+        await act(() => {
             form.setValue('amountInCrypto', true);
         });
 
-        const { queryByLabelText } = renderCryptoAmountInput({}, form, {
+        const { queryByLabelText } = await renderCryptoAmountInput({}, form, {
             wallet: { trading: { buy: { isLoading: true } } },
         });
 
@@ -190,11 +190,11 @@ describe('BuyCryptoAmountInput', () => {
     });
 
     it('should limit value to 9 decimals', async () => {
-        const form = renderUseTradingBuyForm();
-        act(() => {
+        const form = await renderUseTradingBuyForm();
+        await act(() => {
             form.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form);
+        const { getByLabelText } = await renderCryptoAmountInput({}, form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),

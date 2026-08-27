@@ -27,17 +27,17 @@ describe('useEarnReviewAutoStart', () => {
     it('auto-starts signing and arms the device-review reveal once the review is ready', async () => {
         const params = buildParams();
 
-        renderHook(() => useEarnReviewAutoStart(params));
+        await renderHook(() => useEarnReviewAutoStart(params));
 
         await waitFor(() => expect(params.handleSign).toHaveBeenCalledTimes(1));
         expect(mockWaitForDeviceReview).toHaveBeenCalledTimes(1);
         expect(params.onSignFailed).not.toHaveBeenCalled();
     });
 
-    it('does not start signing when the transaction is already signed', () => {
+    it('does not start signing when the transaction is already signed', async () => {
         const params = buildParams({ isSigned: true });
 
-        renderHook(() => useEarnReviewAutoStart(params));
+        await renderHook(() => useEarnReviewAutoStart(params));
 
         expect(params.handleSign).not.toHaveBeenCalled();
         expect(mockWaitForDeviceReview).not.toHaveBeenCalled();
@@ -46,13 +46,13 @@ describe('useEarnReviewAutoStart', () => {
     it('waits until the transaction can be signed before starting', async () => {
         const params = buildParams({ canStart: false });
 
-        const { rerender } = renderHook((props: Params) => useEarnReviewAutoStart(props), {
+        const { rerender } = await renderHook((props: Params) => useEarnReviewAutoStart(props), {
             initialProps: params,
         });
 
         expect(params.handleSign).not.toHaveBeenCalled();
 
-        rerender({ ...params, canStart: true });
+        await rerender({ ...params, canStart: true });
 
         await waitFor(() => expect(params.handleSign).toHaveBeenCalledTimes(1));
     });
@@ -60,7 +60,7 @@ describe('useEarnReviewAutoStart', () => {
     it('calls onSignFailed when the signature is declined', async () => {
         const params = buildParams({ handleSign: jest.fn().mockResolvedValue(false) });
 
-        renderHook(() => useEarnReviewAutoStart(params));
+        await renderHook(() => useEarnReviewAutoStart(params));
 
         await waitFor(() => expect(params.onSignFailed).toHaveBeenCalledTimes(1));
     });
@@ -68,14 +68,14 @@ describe('useEarnReviewAutoStart', () => {
     it('signs only once and never re-prompts even if the screen re-renders', async () => {
         const params = buildParams();
 
-        const { rerender } = renderHook((props: Params) => useEarnReviewAutoStart(props), {
+        const { rerender } = await renderHook((props: Params) => useEarnReviewAutoStart(props), {
             initialProps: params,
         });
 
         await waitFor(() => expect(params.handleSign).toHaveBeenCalledTimes(1));
 
-        rerender({ ...params });
-        rerender({ ...params });
+        await rerender({ ...params });
+        await rerender({ ...params });
 
         expect(params.handleSign).toHaveBeenCalledTimes(1);
     });

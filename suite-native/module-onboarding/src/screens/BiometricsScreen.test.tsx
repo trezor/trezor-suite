@@ -42,8 +42,8 @@ jest.mock('@suite-native/app-init', () => ({
 describe('BiometricsScreen', () => {
     let store: TestStore;
 
-    const renderBiometricsScreen = () =>
-        renderWithStoreProvider(
+    const renderBiometricsScreen = async () =>
+        await renderWithStoreProvider(
             <BiometricsScreen
                 navigation={
                     { navigate: mockNavigate } as unknown as BiometricsScreenProps['navigation']
@@ -80,7 +80,7 @@ describe('BiometricsScreen', () => {
                 },
             },
         });
-        const { getByText } = renderBiometricsScreen();
+        const { getByText } = await renderBiometricsScreen();
 
         await userEvent.press(
             getByText(getTranslation('moduleOnboarding.biometricsScreen.button.notNow')),
@@ -112,7 +112,7 @@ describe('BiometricsScreen', () => {
                 },
             },
         });
-        const { getByText } = renderBiometricsScreen();
+        const { getByText } = await renderBiometricsScreen();
 
         await userEvent.press(
             getByText(getTranslation('moduleOnboarding.biometricsScreen.button.notNow')),

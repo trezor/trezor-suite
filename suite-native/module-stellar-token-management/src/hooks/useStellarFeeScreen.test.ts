@@ -197,8 +197,8 @@ describe('useStellarFeeScreen', () => {
         onSuccess: mockOnSuccess,
     };
 
-    const renderUseStellarFeeScreen = (props: UseStellarFeeScreenParams = defaultProps) =>
-        renderHookWithStoreProvider(hookProps => useStellarFeeScreen(hookProps), {
+    const renderUseStellarFeeScreen = async (props: UseStellarFeeScreenParams = defaultProps) =>
+        await renderHookWithStoreProvider(hookProps => useStellarFeeScreen(hookProps), {
             store,
             initialProps: props,
         });
@@ -232,16 +232,16 @@ describe('useStellarFeeScreen', () => {
         mockFetchAndUpdateAccountThunk.mockReturnValue({ type: 'fetch-account' });
     });
 
-    it('returns correct token info for known USDC token', () => {
-        const { result } = renderUseStellarFeeScreen();
+    it('returns correct token info for known USDC token', async () => {
+        const { result } = await renderUseStellarFeeScreen();
 
         expect(result.current.tokenName).toBe('USD Coin');
         expect(result.current.issuerDomain).toBe('centre.io');
         expect(result.current.iconContractAddress).toBe(KNOWN_USDC_CONTRACT);
     });
 
-    it('falls back to unknown issuer for unknown token', () => {
-        const { result } = renderUseStellarFeeScreen({
+    it('falls back to unknown issuer for unknown token', async () => {
+        const { result } = await renderUseStellarFeeScreen({
             ...defaultProps,
             tokenContract: UNKNOWN_TOKEN_CONTRACT,
         });
@@ -251,11 +251,11 @@ describe('useStellarFeeScreen', () => {
         expect(result.current.iconContractAddress).toBeUndefined();
     });
 
-    it('returns insufficientBalanceInfo when balance is insufficient', () => {
+    it('returns insufficientBalanceInfo when balance is insufficient', async () => {
         const lowBalanceAccount = { ...mockAccount, availableBalance: '1' };
         mockSelectAccountByKey.mockReturnValue(lowBalanceAccount);
 
-        const { result } = renderUseStellarFeeScreen();
+        const { result } = await renderUseStellarFeeScreen();
 
         const requiredAmount = BigNumber('100').plus(STELLAR_BASE_RESERVE).toString();
 
@@ -265,11 +265,11 @@ describe('useStellarFeeScreen', () => {
         });
     });
 
-    it('returns null for insufficientBalanceInfo in deactivation mode', () => {
+    it('returns null for insufficientBalanceInfo in deactivation mode', async () => {
         const lowBalanceAccount = { ...mockAccount, availableBalance: '1' };
         mockSelectAccountByKey.mockReturnValue(lowBalanceAccount);
 
-        const { result } = renderUseStellarFeeScreen({
+        const { result } = await renderUseStellarFeeScreen({
             ...defaultProps,
             mode: 'deactivation',
         });
@@ -277,15 +277,15 @@ describe('useStellarFeeScreen', () => {
         expect(result.current.insufficientBalanceInfo).toBeNull();
     });
 
-    it('handleCancel closes sheet, navigates back, and clears submitting state', () => {
-        const { result } = renderUseStellarFeeScreen();
+    it('handleCancel closes sheet, navigates back, and clears submitting state', async () => {
+        const { result } = await renderUseStellarFeeScreen();
 
-        act(() => {
+        await act(() => {
             result.current.handleReviewAndSign();
         });
         expect(result.current.isSubmitting).toBe(true);
 
-        act(() => {
+        await act(() => {
             result.current.handleCancel();
         });
 
@@ -294,10 +294,10 @@ describe('useStellarFeeScreen', () => {
         expect(mockGoBack).toHaveBeenCalledTimes(1);
     });
 
-    it('navigates to device connection guard and sets submitting state', () => {
-        const { result } = renderUseStellarFeeScreen();
+    it('navigates to device connection guard and sets submitting state', async () => {
+        const { result } = await renderUseStellarFeeScreen();
 
-        act(() => {
+        await act(() => {
             result.current.handleReviewAndSign();
         });
 
@@ -313,13 +313,13 @@ describe('useStellarFeeScreen', () => {
     it.each([
         ['activation', StellarManageTokenStackRoutes.ActivationFee],
         ['deactivation', StellarManageTokenStackRoutes.DeactivationFee],
-    ])('uses %s screen as cancel target', (mode, expectedScreen) => {
-        const { result } = renderUseStellarFeeScreen({
+    ])('uses %s screen as cancel target', async (mode, expectedScreen) => {
+        const { result } = await renderUseStellarFeeScreen({
             ...defaultProps,
             mode: mode as 'activation' | 'deactivation',
         });
 
-        act(() => {
+        await act(() => {
             result.current.handleReviewAndSign();
         });
 
@@ -341,9 +341,9 @@ describe('useStellarFeeScreen', () => {
         mockSelectIsDeviceConnectedAndAuthorized.mockReturnValue(true);
         mockThunkAction.mockImplementation(() => () => Promise.resolve(createFulfilledResult()));
 
-        const { result } = renderUseStellarFeeScreen();
+        const { result } = await renderUseStellarFeeScreen();
 
-        act(() => {
+        await act(() => {
             result.current.handleReviewAndSign();
         });
 
@@ -379,9 +379,9 @@ describe('useStellarFeeScreen', () => {
         });
         mockThunkAction.mockImplementation(() => () => Promise.resolve(createFulfilledResult()));
 
-        const { result } = renderUseStellarFeeScreen();
+        const { result } = await renderUseStellarFeeScreen();
 
-        act(() => {
+        await act(() => {
             result.current.handleReviewAndSign();
         });
 
@@ -404,9 +404,9 @@ describe('useStellarFeeScreen', () => {
             () => () => Promise.resolve(createRejectedResult({ message: 'Rejected by device' })),
         );
 
-        const { result } = renderUseStellarFeeScreen();
+        const { result } = await renderUseStellarFeeScreen();
 
-        act(() => {
+        await act(() => {
             result.current.handleReviewAndSign();
         });
 
@@ -429,20 +429,20 @@ describe('useStellarFeeScreen', () => {
         mockSelectDeviceButtonRequestsCodes.mockReturnValue(['button-request']);
         mockThunkAction.mockImplementation(() => () => deferred.promise);
 
-        const { result, rerender } = renderUseStellarFeeScreen();
+        const { result, rerender } = await renderUseStellarFeeScreen();
 
-        act(() => {
+        await act(() => {
             result.current.handleReviewAndSign();
         });
 
-        act(() => {
+        await act(() => {
             triggerFocusEffect();
         });
 
         await waitFor(() => expect(mockRevealConfirmOnTrezorSheet).toHaveBeenCalledTimes(1));
 
         mockSelectDeviceButtonRequestsCodes.mockReturnValue([]);
-        rerender(defaultProps);
+        await rerender(defaultProps);
 
         await waitFor(() => expect(mockCloseSheet).toHaveBeenCalledTimes(1));
 

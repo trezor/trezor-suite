@@ -51,7 +51,7 @@ export const createSlippageTestStore = (quote: ExchangeTrade | undefined = mercu
 export const renderWithSlippageTestProvider = (
     element: ReactElement,
     { store, quote }: SlippageTestOptions = {},
-): RenderResult => {
+): Promise<RenderResult> => {
     const preloadedState = store ? undefined : getSlippageTestPreloadedState(quote);
 
     return renderWithStoreProvider(element, { preloadedState, store });
@@ -60,7 +60,7 @@ export const renderWithSlippageTestProvider = (
 export const renderHookWithSlippageTestProvider = <Result>(
     callback: () => Result,
     { store, quote }: SlippageTestOptions = {},
-): RenderHookResult<Result, unknown> => {
+): Promise<RenderHookResult<Result, unknown>> => {
     const preloadedState = store ? undefined : getSlippageTestPreloadedState(quote);
 
     return renderHookWithStoreProvider(callback, { preloadedState, store });

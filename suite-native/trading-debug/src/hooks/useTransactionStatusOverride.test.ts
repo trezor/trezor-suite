@@ -20,16 +20,16 @@ describe('useTransactionStatusOverride', () => {
             mockIsDebugMode = false;
         });
 
-        it('returns the original status unchanged', () => {
-            const { result } = renderHook(() => useTransactionStatusOverride(pendingStatus));
+        it('returns the original status unchanged', async () => {
+            const { result } = await renderHook(() => useTransactionStatusOverride(pendingStatus));
 
             expect(result.current.status).toEqual(pendingStatus);
         });
 
-        it('forceStatus is a noop that does not change the output', () => {
-            const { result } = renderHook(() => useTransactionStatusOverride(noStatus));
+        it('forceStatus is a noop that does not change the output', async () => {
+            const { result } = await renderHook(() => useTransactionStatusOverride(noStatus));
 
-            act(() => {
+            await act(() => {
                 result.current.forceStatus('isPending');
             });
 
@@ -42,16 +42,16 @@ describe('useTransactionStatusOverride', () => {
             mockIsDebugMode = true;
         });
 
-        it('returns the original status when no override is set', () => {
-            const { result } = renderHook(() => useTransactionStatusOverride(pendingStatus));
+        it('returns the original status when no override is set', async () => {
+            const { result } = await renderHook(() => useTransactionStatusOverride(pendingStatus));
 
             expect(result.current.status).toEqual(pendingStatus);
         });
 
-        it('returns the real forceStatus setter so an override can be selected', () => {
-            const { result } = renderHook(() => useTransactionStatusOverride(noStatus));
+        it('returns the real forceStatus setter so an override can be selected', async () => {
+            const { result } = await renderHook(() => useTransactionStatusOverride(noStatus));
 
-            act(() => {
+            await act(() => {
                 result.current.forceStatus('isPending');
             });
 
@@ -67,23 +67,23 @@ describe('useTransactionStatusOverride', () => {
             ['isFailed', { isPending: false, isConfirmed: false, isFailed: true }],
             ['isConfirmed', { isPending: false, isConfirmed: true, isFailed: false }],
             ['none', { isPending: false, isConfirmed: false, isFailed: false }],
-        ] as const)('forces status to %s', (override, expectedStatus) => {
-            const { result } = renderHook(() => useTransactionStatusOverride(noStatus));
+        ] as const)('forces status to %s', async (override, expectedStatus) => {
+            const { result } = await renderHook(() => useTransactionStatusOverride(noStatus));
 
-            act(() => {
+            await act(() => {
                 result.current.forceStatus(override);
             });
 
             expect(result.current.status).toEqual(expectedStatus);
         });
 
-        it('resets to original status after forceStatus is called with no-override', () => {
-            const { result } = renderHook(() => useTransactionStatusOverride(pendingStatus));
+        it('resets to original status after forceStatus is called with no-override', async () => {
+            const { result } = await renderHook(() => useTransactionStatusOverride(pendingStatus));
 
-            act(() => {
+            await act(() => {
                 result.current.forceStatus('isFailed');
             });
-            act(() => {
+            await act(() => {
                 result.current.forceStatus('no-override');
             });
 

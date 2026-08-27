@@ -48,18 +48,18 @@ type RenderUseExchangeSignTransactionParams = {
     onSignTransactionNavigation?: () => void;
 };
 
-const renderUseExchangeSignTransaction = ({
+const renderUseExchangeSignTransaction = async ({
     overrides = {},
     onSignTransactionNavigation = jest.fn(),
 }: RenderUseExchangeSignTransactionParams = {}) => ({
     onSignTransactionNavigation,
-    ...renderHookWithTradingProvider(
+    ...(await renderHookWithTradingProvider(
         () => useExchangeSignTransaction({ onSignTransactionNavigation }),
         {
             tradeType: 'exchange',
             overrides: mergeDeepObject(baseOverrides, overrides),
         },
-    ),
+    )),
 });
 
 describe('useExchangeSignTransaction', () => {
@@ -73,8 +73,8 @@ describe('useExchangeSignTransaction', () => {
         });
     });
 
-    it('returns state derived from the exchange and transaction', () => {
-        const { result } = renderUseExchangeSignTransaction({
+    it('returns state derived from the exchange and transaction', async () => {
+        const { result } = await renderUseExchangeSignTransaction({
             overrides: {
                 wallet: {
                     trading: {
@@ -99,8 +99,8 @@ describe('useExchangeSignTransaction', () => {
         );
     });
 
-    it('navigates to outputs review with sign-data flow details', () => {
-        const { result, onSignTransactionNavigation } = renderUseExchangeSignTransaction({
+    it('navigates to outputs review with sign-data flow details', async () => {
+        const { result, onSignTransactionNavigation } = await renderUseExchangeSignTransaction({
             overrides: {
                 wallet: {
                     trading: {
@@ -112,7 +112,7 @@ describe('useExchangeSignTransaction', () => {
             },
         });
 
-        act(() => {
+        await act(() => {
             result.current.handleSignTransaction();
         });
 
@@ -125,9 +125,9 @@ describe('useExchangeSignTransaction', () => {
         expect(onSignTransactionNavigation).toHaveBeenCalledTimes(1);
     });
 
-    it('does not navigate when the quote is missing', () => {
+    it('does not navigate when the quote is missing', async () => {
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-        const { result, onSignTransactionNavigation } = renderUseExchangeSignTransaction({
+        const { result, onSignTransactionNavigation } = await renderUseExchangeSignTransaction({
             overrides: {
                 wallet: {
                     trading: {
@@ -139,7 +139,7 @@ describe('useExchangeSignTransaction', () => {
             },
         });
 
-        act(() => {
+        await act(() => {
             result.current.handleSignTransaction();
         });
 

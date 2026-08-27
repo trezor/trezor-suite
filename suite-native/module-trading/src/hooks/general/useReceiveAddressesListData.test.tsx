@@ -36,8 +36,8 @@ describe(useReceiveAddressesListData.name, () => {
         wallet: { accounts: [btc1NormalAccount] },
     };
 
-    const renderUseReceiveAddressesListData = (searchQuery = '') =>
-        renderHookWithTradingProvider(
+    const renderUseReceiveAddressesListData = async (searchQuery = '') =>
+        await renderHookWithTradingProvider(
             ({ query }) =>
                 useReceiveAddressesListData({
                     accountKey: btc1NormalAccount.key,
@@ -46,8 +46,8 @@ describe(useReceiveAddressesListData.name, () => {
             { overrides, initialProps: { query: searchQuery } },
         );
 
-    it('returns the first fresh address and all used addresses in separate sections', () => {
-        const { result } = renderUseReceiveAddressesListData();
+    it('returns the first fresh address and all used addresses in separate sections', async () => {
+        const { result } = await renderUseReceiveAddressesListData();
 
         expect(result.current).toEqual([
             expect.objectContaining({
@@ -74,8 +74,8 @@ describe(useReceiveAddressesListData.name, () => {
         ]);
     });
 
-    it('filters case-insensitively by full addresses without changing address order', () => {
-        const { result } = renderUseReceiveAddressesListData('used1');
+    it('filters case-insensitively by full addresses without changing address order', async () => {
+        const { result } = await renderUseReceiveAddressesListData('used1');
 
         expect(
             result.current.flatMap(section =>
@@ -84,8 +84,8 @@ describe(useReceiveAddressesListData.name, () => {
         ).toEqual(['UNUSED1', 'USED1']);
     });
 
-    it('filters by a Suite Sync label', () => {
-        const { result } = renderUseReceiveAddressesListData('savings');
+    it('filters by a Suite Sync label', async () => {
+        const { result } = await renderUseReceiveAddressesListData('savings');
 
         expect(result.current).toEqual([
             expect.objectContaining({
@@ -99,8 +99,8 @@ describe(useReceiveAddressesListData.name, () => {
         ]);
     });
 
-    it('returns no sections when the query does not match', () => {
-        const { result } = renderUseReceiveAddressesListData('missing');
+    it('returns no sections when the query does not match', async () => {
+        const { result } = await renderUseReceiveAddressesListData('missing');
 
         expect(result.current).toEqual([]);
     });

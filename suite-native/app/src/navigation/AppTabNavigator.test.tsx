@@ -35,21 +35,21 @@ const baseState = {
 };
 
 describe('AppTabNavigator', () => {
-    const renderTabs = (overrides: Record<string, unknown> = {}) =>
-        renderWithStoreProvider(<AppTabNavigator />, {
+    const renderTabs = async (overrides: Record<string, unknown> = {}) =>
+        await renderWithStoreProvider(<AppTabNavigator />, {
             preloadedState: mergePreloadedState(baseState, overrides),
         });
 
-    it('should render 3 buttons', () => {
-        const { getByText } = renderTabs();
+    it('should render 3 buttons', async () => {
+        const { getByText } = await renderTabs();
 
         expect(getByText(getTranslation('navigation.tabs.home'))).toBeTruthy();
         expect(getByText(getTranslation('navigation.tabs.accountsList'))).toBeTruthy();
         expect(getByText(getTranslation('navigation.tabs.settings'))).toBeTruthy();
     });
 
-    it('should not render Trade tab when all trading flags are disabled', () => {
-        const { queryByText } = renderTabs({
+    it('should not render Trade tab when all trading flags are disabled', async () => {
+        const { queryByText } = await renderTabs({
             featureFlags: {
                 [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
             },
@@ -64,8 +64,8 @@ describe('AppTabNavigator', () => {
         expect(queryByText(getTranslation('navigation.tabs.trade'))).toBe(null);
     });
 
-    it('should render Trade tab when at least one trading flag is enabled', () => {
-        const { getByText, getByTestId } = renderTabs({
+    it('should render Trade tab when at least one trading flag is enabled', async () => {
+        const { getByText, getByTestId } = await renderTabs({
             featureFlags: {
                 [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
             },
@@ -77,13 +77,13 @@ describe('AppTabNavigator', () => {
             }),
         });
 
-        fireEvent.press(getByText(getTranslation('navigation.tabs.trade')));
+        await fireEvent.press(getByText(getTranslation('navigation.tabs.trade')));
 
         expect(getByTestId('@screen/Trading')).toBeTruthy();
     });
 
-    it('should render Earn tab', () => {
-        const { queryByText } = renderTabs();
+    it('should render Earn tab', async () => {
+        const { queryByText } = await renderTabs();
 
         expect(queryByText(getTranslation('navigation.tabs.earn'))).toBeTruthy();
     });

@@ -33,37 +33,37 @@ const services: NativeAnalyticsDep = {
 describe('SellReceiveMethodPicker', () => {
     let form: SellFormType;
 
-    const renderSellReceiveMethodPicker = (
+    const renderSellReceiveMethodPicker = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithStoreProvider(<SellReceiveMethodPicker />, {
+        await renderWithStoreProvider(<SellReceiveMethodPicker />, {
             preloadedState: createTradingPreloadedState({ tradeType: 'sell', overrides }),
             services,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         jest.clearAllMocks();
 
-        const { result } = renderHookWithStoreProvider(() => useSellForm(), {
+        const { result } = await renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState: createTradingPreloadedState({ tradeType: 'sell' }),
             services,
         });
         form = result.current;
     });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should render nothing when no quotes are loaded', () => {
-        const { toJSON } = renderSellReceiveMethodPicker();
+    it('should render nothing when no quotes are loaded', async () => {
+        const { toJSON } = await renderSellReceiveMethodPicker();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render loading skeleton when no quotes are loaded and new quotes are loading', () => {
-        const { getByLabelText } = renderSellReceiveMethodPicker({
+    it('should render loading skeleton when no quotes are loaded and new quotes are loading', async () => {
+        const { getByLabelText } = await renderSellReceiveMethodPicker({
             wallet: { trading: { sell: { isLoading: true } } },
         });
 
@@ -72,8 +72,8 @@ describe('SellReceiveMethodPicker', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render "Not selected" when no quote is selected', () => {
-        const { getByLabelText } = renderSellReceiveMethodPicker({
+    it('should render "Not selected" when no quote is selected', async () => {
+        const { getByLabelText } = await renderSellReceiveMethodPicker({
             wallet: { trading: { sell: { quotes: sellQuotes } } },
         });
 
@@ -87,14 +87,14 @@ describe('SellReceiveMethodPicker', () => {
             wallet: { trading: { sell: { quotes: sellQuotes } } },
         };
 
-        beforeEach(() => {
-            act(() => {
+        beforeEach(async () => {
+            await act(() => {
                 form.setValue('quote', banxaBankTransferSellQuote);
             });
         });
 
-        it('should render selected receive method', () => {
-            const { getByLabelText, getByTestId } = renderSellReceiveMethodPicker(withQuotes);
+        it('should render selected receive method', async () => {
+            const { getByLabelText, getByTestId } = await renderSellReceiveMethodPicker(withQuotes);
 
             expect(
                 getByLabelText(getTranslation('moduleTrading.tradingScreen.selectedReceiveMethod')),
@@ -104,8 +104,8 @@ describe('SellReceiveMethodPicker', () => {
             expect(within(picker).getByTestId('@icons/payment-method-icon/bank')).toBeTruthy();
         });
 
-        it('should render loading skeleton when quotes are loaded and new quotes are loading', () => {
-            const { getByLabelText } = renderSellReceiveMethodPicker({
+        it('should render loading skeleton when quotes are loaded and new quotes are loading', async () => {
+            const { getByLabelText } = await renderSellReceiveMethodPicker({
                 wallet: { trading: { sell: { quotes: sellQuotes, isLoading: true } } },
             });
 
@@ -114,11 +114,13 @@ describe('SellReceiveMethodPicker', () => {
             ).toBeOnTheScreen();
         });
 
-        it('should allow to select receive method', () => {
-            const { getByText, getByLabelText } = renderSellReceiveMethodPicker(withQuotes);
+        it('should allow to select receive method', async () => {
+            const { getByText, getByLabelText } = await renderSellReceiveMethodPicker(withQuotes);
 
-            fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.receiveMethod')));
-            fireEvent.press(getByText(creditCardPaymentMethodTranslation));
+            await fireEvent.press(
+                getByText(getTranslation('moduleTrading.tradingScreen.receiveMethod')),
+            );
+            await fireEvent.press(getByText(creditCardPaymentMethodTranslation));
 
             expect(
                 getByLabelText(getTranslation('moduleTrading.tradingScreen.selectedReceiveMethod')),
@@ -130,13 +132,13 @@ describe('SellReceiveMethodPicker', () => {
                 reportMock.mockClear();
             });
 
-            it('should fire analytics event on receive method select', () => {
-                const { getByText } = renderSellReceiveMethodPicker(withQuotes);
+            it('should fire analytics event on receive method select', async () => {
+                const { getByText } = await renderSellReceiveMethodPicker(withQuotes);
 
-                fireEvent.press(
+                await fireEvent.press(
                     getByText(getTranslation('moduleTrading.tradingScreen.receiveMethod')),
                 );
-                fireEvent.press(getByText(creditCardPaymentMethodTranslation));
+                await fireEvent.press(getByText(creditCardPaymentMethodTranslation));
 
                 expect(reportMock).toHaveBeenCalledWith({
                     type: events.tradingParameterChangedEvent.name,
@@ -147,16 +149,16 @@ describe('SellReceiveMethodPicker', () => {
                 });
             });
 
-            it('should not fire analytics event when same receive method is selected', () => {
-                const { getAllByText } = renderSellReceiveMethodPicker(withQuotes);
+            it('should not fire analytics event when same receive method is selected', async () => {
+                const { getAllByText } = await renderSellReceiveMethodPicker(withQuotes);
 
-                fireEvent.press(
+                await fireEvent.press(
                     getIndexOrThrow(
                         getAllByText(getTranslation('moduleTrading.paymentMethods.bankTransfer')),
                         0,
                     ),
                 );
-                fireEvent.press(
+                await fireEvent.press(
                     getIndexOrThrow(
                         getAllByText(getTranslation('moduleTrading.paymentMethods.bankTransfer')),
                         1,

@@ -9,8 +9,8 @@ import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils'
 describe('TradeableAssetList', () => {
     const defaultAssets: TradeableAsset[] = [btcAsset, usdcAsset, adaAsset];
 
-    const renderTradeableAssetList = (props: Partial<TradeableAssetListProps>) =>
-        renderWithTradingProvider(
+    const renderTradeableAssetList = async (props: Partial<TradeableAssetListProps>) =>
+        await renderWithTradingProvider(
             <TradeableAssetList
                 assets={defaultAssets}
                 onAssetSelect={jest.fn()}
@@ -23,21 +23,21 @@ describe('TradeableAssetList', () => {
             />,
         );
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('selects a pressed asset', () => {
+    it('selects a pressed asset', async () => {
         const onAssetSelect = jest.fn();
-        const { getByText } = renderTradeableAssetList({ onAssetSelect });
+        const { getByText } = await renderTradeableAssetList({ onAssetSelect });
 
-        fireEvent.press(getByText('BTC'));
+        await fireEvent.press(getByText('BTC'));
 
         expect(onAssetSelect).toHaveBeenCalledWith(btcAsset);
     });
 
-    it('renders the empty state', () => {
-        const { getByText } = renderTradeableAssetList({ assets: [] });
+    it('renders the empty state', async () => {
+        const { getByText } = await renderTradeableAssetList({ assets: [] });
 
         expect(
             getByText(getTranslation('moduleTrading.tradeableAssetsSheet.emptyTitleText')),

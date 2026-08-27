@@ -118,9 +118,9 @@ describe('utils', () => {
             ['Buy', 'buy'],
             ['Sell', 'sell'],
             ['Swap', 'exchange'],
-        ])('should return "%s" for [%s] tradeType', (expectedTitle, tradeType) => {
+        ])('should return "%s" for [%s] tradeType', async (expectedTitle, tradeType) => {
             const trade = { tradeType } as TradingTransaction;
-            const { result } = renderHookWithBasicProvider(() => useTranslate());
+            const { result } = await renderHookWithBasicProvider(() => useTranslate());
 
             expect(getTradeTitle(trade, result.current.translate)).toBe(expectedTitle);
         });

@@ -5,7 +5,7 @@ import { TradeableAssetButton, type TradeableAssetButtonProps } from './Tradeabl
 
 describe('TradeableAssetButton', () => {
     const renderButton = async (initialProps: Partial<TradeableAssetButtonProps>) => {
-        const ret = renderWithBasicProvider(
+        const ret = await renderWithBasicProvider(
             <TradeableAssetButton
                 asset={btcAsset}
                 onPress={jest.fn()}
@@ -42,9 +42,9 @@ describe('TradeableAssetButton', () => {
         const { getByText } = await renderButton({ asset: btcAsset, onPress: pressSpy });
 
         const button = getByText('BTC');
-        fireEvent.press(button);
+        await fireEvent.press(button);
 
-        expect(pressSpy).toHaveBeenCalledWith();
+        expect(pressSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should render ETH icon for ETH on BASE asset', async () => {

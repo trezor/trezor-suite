@@ -29,25 +29,25 @@ describe('AccountTypeBadge', () => {
 
     const accounts = [ethNormalAccount, ethLedgerAccount];
 
-    const renderAccountTypeBadge = (accountKey: AccountKey) =>
-        renderWithStoreProvider(<AccountTypeBadge accountKey={accountKey} />, {
+    const renderAccountTypeBadge = async (accountKey: AccountKey) =>
+        await renderWithStoreProvider(<AccountTypeBadge accountKey={accountKey} />, {
             preloadedState: { wallet: { accounts } },
         });
 
-    it('should render the formatted account type', () => {
-        const { getByText } = renderAccountTypeBadge(ethLedgerAccount.key);
+    it('should render the formatted account type', async () => {
+        const { getByText } = await renderAccountTypeBadge(ethLedgerAccount.key);
 
         expect(getByText('Ledger')).toBeOnTheScreen();
     });
 
-    it('should render nothing for a normal non-bitcoin account', () => {
-        const { toJSON } = renderAccountTypeBadge(ethNormalAccount.key);
+    it('should render nothing for a normal non-bitcoin account', async () => {
+        const { toJSON } = await renderAccountTypeBadge(ethNormalAccount.key);
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing for an unknown account key', () => {
-        const { toJSON } = renderAccountTypeBadge('unknown-eth-1@2:3' as AccountKey);
+    it('should render nothing for an unknown account key', async () => {
+        const { toJSON } = await renderAccountTypeBadge('unknown-eth-1@2:3' as AccountKey);
 
         expect(toJSON()).toBeNull();
     });

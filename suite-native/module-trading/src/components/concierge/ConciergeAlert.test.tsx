@@ -74,7 +74,7 @@ const mockConciergeForm = ({
     } as unknown as ReturnType<typeof useFormContext<ConciergeAlertFormValues>>);
 };
 
-const renderConciergeAlert = ({
+const renderConciergeAlert = async ({
     tradingType = 'buy',
     values,
     errors,
@@ -85,7 +85,7 @@ const renderConciergeAlert = ({
 } = {}) => {
     mockConciergeForm({ errors, values });
 
-    return renderWithTradingProvider(<ConciergeAlert tradingType={tradingType} />, {
+    return await renderWithTradingProvider(<ConciergeAlert tradingType={tradingType} />, {
         tradeType: tradingType,
     });
 };
@@ -100,8 +100,8 @@ describe('ConciergeAlert', () => {
         } as unknown as ReturnType<typeof useFetchOtc>);
     });
 
-    it('should show alert when fiat amount is equal or over the limit', () => {
-        const { getByText } = renderConciergeAlert({
+    it('should show alert when fiat amount is equal or over the limit', async () => {
+        const { getByText } = await renderConciergeAlert({
             values: {
                 fiatValue: '1000',
             },
@@ -115,8 +115,8 @@ describe('ConciergeAlert', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should show sell alert when fiat string amount is equal or over the limit', () => {
-        const { getByText } = renderConciergeAlert({
+    it('should show sell alert when fiat string amount is equal or over the limit', async () => {
+        const { getByText } = await renderConciergeAlert({
             tradingType: 'sell',
             values: {
                 fiatStringAmount: '1000',
@@ -131,8 +131,8 @@ describe('ConciergeAlert', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should show alert when CRYPTO_MAX_FORM_TYPE is present in form', () => {
-        const { getByText } = renderConciergeAlert({
+    it('should show alert when CRYPTO_MAX_FORM_TYPE is present in form', async () => {
+        const { getByText } = await renderConciergeAlert({
             errors: {
                 cryptoValue: {
                     type: CRYPTO_MAX_FORM_TYPE,
@@ -148,8 +148,8 @@ describe('ConciergeAlert', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should not show alert when CRYPTO_MIN_FORM_TYPE is present in form', () => {
-        const { queryByText } = renderConciergeAlert({
+    it('should not show alert when CRYPTO_MIN_FORM_TYPE is present in form', async () => {
+        const { queryByText } = await renderConciergeAlert({
             errors: {
                 cryptoValue: {
                     type: CRYPTO_MIN_FORM_TYPE,
@@ -165,8 +165,8 @@ describe('ConciergeAlert', () => {
         ).not.toBeOnTheScreen();
     });
 
-    it('should not show alert when fiat amount is under the limit', () => {
-        const { queryByText } = renderConciergeAlert({
+    it('should not show alert when fiat amount is under the limit', async () => {
+        const { queryByText } = await renderConciergeAlert({
             values: {
                 fiatValue: '999',
             },

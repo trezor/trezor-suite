@@ -22,10 +22,10 @@ describe('TradingEnvironmentWarning', () => {
         }),
     } as const;
 
-    const renderTradingEnvironmentWarning = (
+    const renderTradingEnvironmentWarning = async (
         tradingEnvironment: TradingState['tradingEnvironment'],
     ) =>
-        renderWithStoreProvider(<TradingEnvironmentWarning />, {
+        await renderWithStoreProvider(<TradingEnvironmentWarning />, {
             store: createLightStore({
                 reducer,
                 preloadedState: {
@@ -39,16 +39,16 @@ describe('TradingEnvironmentWarning', () => {
             }),
         });
 
-    it('should render nothing when tradingEnvironment is [production]', () => {
-        const { toJSON } = renderTradingEnvironmentWarning('production');
+    it('should render nothing when tradingEnvironment is [production]', async () => {
+        const { toJSON } = await renderTradingEnvironmentWarning('production');
 
         expect(toJSON()).toBeNull();
     });
 
     it.each<TradingState['tradingEnvironment']>(['staging', 'dev', 'localhost'])(
         'should render warning for tradingEnvironment [%s]',
-        tradingEnvironment => {
-            const { getByText } = renderTradingEnvironmentWarning(tradingEnvironment);
+        async tradingEnvironment => {
+            const { getByText } = await renderTradingEnvironmentWarning(tradingEnvironment);
 
             expect(getByText(`Trading environment: ${tradingEnvironment}`)).toBeOnTheScreen();
         },

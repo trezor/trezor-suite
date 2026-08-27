@@ -129,7 +129,7 @@
         "@types/react": "19.2.14",
         "react-dom": "19.2.3",
         "expo-modules-core": "~57.0.6",
-        "react-test-renderer": "19.2.3"
+        "test-renderer": "1.2.0"
     },
     "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.2",

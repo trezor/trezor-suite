@@ -27,8 +27,8 @@ jest.mock('@suite-common/device', () => ({
 describe('TradingDeviceConnectionGuard', () => {
     let store: TestStore;
 
-    const renderTradingDeviceConnectionGuard = () =>
-        renderWithStoreProvider(
+    const renderTradingDeviceConnectionGuard = async () =>
+        await renderWithStoreProvider(
             <TradingDeviceConnectionGuard>
                 <Text>CHILDREN</Text>
             </TradingDeviceConnectionGuard>,
@@ -41,9 +41,9 @@ describe('TradingDeviceConnectionGuard', () => {
         store = createTradingTestStore();
     });
 
-    it('should display connect trezor info when no device is connected', () => {
+    it('should display connect trezor info when no device is connected', async () => {
         mockSelectIsDeviceConnected = false;
-        const { getByText, queryByText } = renderTradingDeviceConnectionGuard();
+        const { getByText, queryByText } = await renderTradingDeviceConnectionGuard();
 
         expect(
             getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
@@ -51,9 +51,9 @@ describe('TradingDeviceConnectionGuard', () => {
         expect(queryByText('CHILDREN')).not.toBeOnTheScreen();
     });
 
-    it('should display children when device is connected', () => {
+    it('should display children when device is connected', async () => {
         mockSelectIsDeviceConnected = true;
-        const { getByText, queryByText } = renderTradingDeviceConnectionGuard();
+        const { getByText, queryByText } = await renderTradingDeviceConnectionGuard();
 
         expect(
             queryByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),

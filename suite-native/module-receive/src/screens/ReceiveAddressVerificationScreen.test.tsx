@@ -58,22 +58,22 @@ describe('ReceiveAddressVerificationScreen', () => {
         } as never);
     });
 
-    it('displays pasted address verification instructions', () => {
-        const { getByText } = renderWithBasicProvider(<ReceiveAddressVerificationScreen />);
+    it('displays pasted address verification instructions', async () => {
+        const { getByText } = await renderWithBasicProvider(<ReceiveAddressVerificationScreen />);
 
         expect(getByText('moduleReceive.addressVerificationScreen.pastedTitle')).toBeTruthy();
     });
 
-    it('starts address verification only once when focused repeatedly', () => {
-        renderWithBasicProvider(<ReceiveAddressVerificationScreen />);
+    it('starts address verification only once when focused repeatedly', async () => {
+        await renderWithBasicProvider(<ReceiveAddressVerificationScreen />);
 
-        act(handleScreenFocus);
-        act(handleScreenFocus);
+        await act(handleScreenFocus);
+        await act(handleScreenFocus);
 
         expect(mockVerifyAddressOnDevice).toHaveBeenCalledTimes(1);
     });
 
-    it('displays shared address verification instructions', () => {
+    it('displays shared address verification instructions', async () => {
         mockUseRoute.mockReturnValue({
             params: {
                 accountKey,
@@ -82,7 +82,7 @@ describe('ReceiveAddressVerificationScreen', () => {
             },
         } as never);
 
-        const { getByText } = renderWithBasicProvider(<ReceiveAddressVerificationScreen />);
+        const { getByText } = await renderWithBasicProvider(<ReceiveAddressVerificationScreen />);
 
         expect(getByText('moduleReceive.addressVerificationScreen.sharedTitle')).toBeTruthy();
     });

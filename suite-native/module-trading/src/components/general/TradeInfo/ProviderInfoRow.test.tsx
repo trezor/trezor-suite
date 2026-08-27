@@ -5,14 +5,14 @@ import { getWalletState } from '@suite-native/trading-fixtures';
 import { ProviderInfoRow, type ProviderInfoRowProps } from './ProviderInfoRow';
 
 describe('ProviderInfoRow', () => {
-    const renderProviderInfoRow = (props: Partial<ProviderInfoRowProps> = {}) => {
+    const renderProviderInfoRow = async (props: Partial<ProviderInfoRowProps> = {}) => {
         const preloadedState = {
             wallet: getWalletState({
                 tradeType: 'exchange',
             }),
         };
 
-        return renderWithStoreProvider(
+        return await renderWithStoreProvider(
             <ProviderInfoRow exchange="mercuryo" tradingType="exchange" {...props} />,
             {
                 preloadedState,
@@ -20,15 +20,15 @@ describe('ProviderInfoRow', () => {
         );
     };
 
-    it('should render provider', () => {
-        const { getByText } = renderProviderInfoRow({});
+    it('should render provider', async () => {
+        const { getByText } = await renderProviderInfoRow({});
 
         expect(getByText('Mercuryo')).toBeOnTheScreen();
         expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
     });
 
-    it('should render nothing when no provider is found', () => {
-        const { toJSON } = renderProviderInfoRow({ exchange: 'non-existing-provider' });
+    it('should render nothing when no provider is found', async () => {
+        const { toJSON } = await renderProviderInfoRow({ exchange: 'non-existing-provider' });
 
         expect(toJSON()).toBeNull();
     });

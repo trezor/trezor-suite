@@ -45,8 +45,8 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('TradingLocationModalScreen', () => {
-    const renderTradingLocationModalScreen = () =>
-        renderWithStoreProvider(
+    const renderTradingLocationModalScreen = async () =>
+        await renderWithStoreProvider(
             <TradingLocationModalScreen
                 navigation={
                     {
@@ -76,12 +76,12 @@ describe('TradingLocationModalScreen', () => {
         jest.clearAllMocks();
     });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should render all components', () => {
-        const { getByText, queryByLabelText } = renderTradingLocationModalScreen();
+    it('should render all components', async () => {
+        const { getByText, queryByLabelText } = await renderTradingLocationModalScreen();
 
         expect(
             getByText(getTranslation('tradingResidence.locationSettings.title')),
@@ -97,7 +97,7 @@ describe('TradingLocationModalScreen', () => {
     });
 
     it('should log analytics event on country change', async () => {
-        const { getByText } = renderTradingLocationModalScreen();
+        const { getByText } = await renderTradingLocationModalScreen();
 
         await userEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
@@ -115,7 +115,7 @@ describe('TradingLocationModalScreen', () => {
     });
 
     it('should reset navigation on button press', async () => {
-        const { getByText } = renderTradingLocationModalScreen();
+        const { getByText } = await renderTradingLocationModalScreen();
 
         await userEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.skipButton')),

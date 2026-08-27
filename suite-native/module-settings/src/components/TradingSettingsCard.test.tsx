@@ -13,16 +13,16 @@ jest.mock('@suite-native/trading-state', () => ({
 }));
 
 describe('TradingSettingsCard', () => {
-    const renderTradingSettingsCard = (props: Partial<TradingSettingsCardProps> = {}) =>
-        renderWithStoreProvider(<TradingSettingsCard onPress={jest.fn()} {...props} />);
+    const renderTradingSettingsCard = async (props: Partial<TradingSettingsCardProps> = {}) =>
+        await renderWithStoreProvider(<TradingSettingsCard onPress={jest.fn()} {...props} />);
 
     beforeEach(() => {
         mockIsTradingCountrySet = false;
         mockIsTradingResidenceCheckEnabled = false;
     });
 
-    it('should not render trading settings button when selectIsTradingResidenceCheckEnabled is false', () => {
-        const { toJSON } = renderTradingSettingsCard();
+    it('should not render trading settings button when selectIsTradingResidenceCheckEnabled is false', async () => {
+        const { toJSON } = await renderTradingSettingsCard();
 
         expect(toJSON()).toBeNull();
     });
@@ -32,8 +32,8 @@ describe('TradingSettingsCard', () => {
             mockIsTradingResidenceCheckEnabled = true;
         });
 
-        it('should render "Enable trading" button when selectIsTradingCountrySet is false', () => {
-            const { getByTestId, getByText } = renderTradingSettingsCard({
+        it('should render "Enable trading" button when selectIsTradingCountrySet is false', async () => {
+            const { getByTestId, getByText } = await renderTradingSettingsCard({
                 testID: '@settings/trading',
             });
 
@@ -46,9 +46,9 @@ describe('TradingSettingsCard', () => {
             ).toBeOnTheScreen();
         });
 
-        it('should render "Trading" button when selectIsTradingCountrySet is true', () => {
+        it('should render "Trading" button when selectIsTradingCountrySet is true', async () => {
             mockIsTradingCountrySet = true;
-            const { getByTestId, getByText } = renderTradingSettingsCard({
+            const { getByTestId, getByText } = await renderTradingSettingsCard({
                 testID: '@settings/trading',
             });
 

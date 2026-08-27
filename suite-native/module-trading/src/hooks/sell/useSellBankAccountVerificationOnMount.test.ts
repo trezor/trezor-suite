@@ -3,9 +3,9 @@ import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { useSellBankAccountVerificationOnMount } from './useSellBankAccountVerificationOnMount';
 
 describe('useSellBankAccountVerificationOnMount', () => {
-    it('checks bank account verification only on mount', () => {
+    it('checks bank account verification only on mount', async () => {
         const doBankAccountVerificationCheck = jest.fn();
-        const { rerender } = renderHookWithBasicProvider(
+        const { rerender } = await renderHookWithBasicProvider(
             () =>
                 useSellBankAccountVerificationOnMount({
                     doBankAccountVerificationCheck,
@@ -13,7 +13,7 @@ describe('useSellBankAccountVerificationOnMount', () => {
             { initialProps: {} },
         );
 
-        rerender({});
+        await rerender({});
 
         expect(doBankAccountVerificationCheck).toHaveBeenCalledTimes(1);
     });

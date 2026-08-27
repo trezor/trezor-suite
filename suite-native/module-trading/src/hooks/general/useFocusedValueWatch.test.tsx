@@ -41,35 +41,35 @@ describe('useFocusedValueWatch', () => {
         },
     };
 
-    const renderForm = () =>
-        renderHookWithStoreProvider(() => useBuyForm(), {
+    const renderForm = async () =>
+        await renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState,
         });
 
-    const renderUseFocusedValueWatch = () =>
-        renderHookWithStoreProvider(({ control }) => useFocusedValueWatch(control), {
+    const renderUseFocusedValueWatch = async () =>
+        await renderHookWithStoreProvider(({ control }) => useFocusedValueWatch(control), {
             initialProps: { control: form.control },
             store,
         });
 
-    beforeEach(() => {
-        const { result } = renderForm();
+    beforeEach(async () => {
+        const { result } = await renderForm();
         form = result.current;
 
         store = createLightStore({ reducer, preloadedState });
     });
 
-    it('should return false by default', () => {
-        const { result } = renderUseFocusedValueWatch();
+    it('should return false by default', async () => {
+        const { result } = await renderUseFocusedValueWatch();
 
         expect(result.current).toEqual(false);
         expect(selectIsAmountInputActive(store.getState())).toBe(false);
     });
 
     it('should be false right after input is focused', async () => {
-        const { result } = renderUseFocusedValueWatch();
+        const { result } = await renderUseFocusedValueWatch();
 
-        act(() => {
+        await act(() => {
             form.setValue('focusedValue', 'fiatValue');
         });
 
@@ -81,7 +81,7 @@ describe('useFocusedValueWatch', () => {
     });
 
     it('should be true after 300ms of input focus', async () => {
-        const { result } = renderUseFocusedValueWatch();
+        const { result } = await renderUseFocusedValueWatch();
 
         await act(() => {
             form.setValue('focusedValue', 'fiatValue');
@@ -97,7 +97,7 @@ describe('useFocusedValueWatch', () => {
     });
 
     it('should set isAmountInputActive to false on unmount', async () => {
-        const { unmount } = renderUseFocusedValueWatch();
+        const { unmount } = await renderUseFocusedValueWatch();
         await act(() => {
             form.setValue('focusedValue', 'fiatValue');
         });
@@ -107,7 +107,7 @@ describe('useFocusedValueWatch', () => {
             await new Promise(resolve => setTimeout(resolve, 300));
         });
 
-        unmount();
+        await unmount();
 
         expect(selectIsAmountInputActive(store.getState())).toBe(false);
     });

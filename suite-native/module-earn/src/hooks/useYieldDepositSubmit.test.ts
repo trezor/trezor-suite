@@ -33,9 +33,9 @@ describe('useYieldDepositSubmit', () => {
         mockUseShowYieldAlert.mockReturnValue(showYieldAlert);
     });
 
-    it('continues with the current prepared action', () => {
+    it('continues with the current prepared action', async () => {
         const onActionReady = jest.fn();
-        const { result } = renderHookWithBasicProvider(() =>
+        const { result } = await renderHookWithBasicProvider(() =>
             useYieldDepositSubmit({
                 amount: '1',
                 onActionReady,
@@ -43,7 +43,7 @@ describe('useYieldDepositSubmit', () => {
             }),
         );
 
-        act(() => result.current.handleSubmitDeposit());
+        await act(() => result.current.handleSubmitDeposit());
 
         expect(onActionReady).toHaveBeenCalledWith(preparedAction);
         expect(showYieldAlert).not.toHaveBeenCalled();
@@ -54,9 +54,9 @@ describe('useYieldDepositSubmit', () => {
         ['stale', { ...preparedAction, amount: '2' }],
     ] satisfies [string, PreparedYieldDepositAction | null][])(
         'shows an alert when the prepared action is %s',
-        (_caseName, submitPreparedAction) => {
+        async (_caseName, submitPreparedAction) => {
             const onActionReady = jest.fn();
-            const { result } = renderHookWithBasicProvider(() =>
+            const { result } = await renderHookWithBasicProvider(() =>
                 useYieldDepositSubmit({
                     amount: '1',
                     onActionReady,
@@ -64,7 +64,7 @@ describe('useYieldDepositSubmit', () => {
                 }),
             );
 
-            act(() => result.current.handleSubmitDeposit());
+            await act(() => result.current.handleSubmitDeposit());
 
             expect(onActionReady).not.toHaveBeenCalled();
             expect(showYieldAlert).toHaveBeenCalledWith({

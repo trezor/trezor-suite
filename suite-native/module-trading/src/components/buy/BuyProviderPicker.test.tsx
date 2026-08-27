@@ -30,35 +30,35 @@ const services: NativeAnalyticsDep = {
 describe('BuyProviderPicker', () => {
     let form: BuyFormType;
 
-    const renderTradingProviderPicker = (
+    const renderTradingProviderPicker = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <Form form={form}>
                 <BuyProviderPicker />
             </Form>,
             { overrides, services },
         );
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         jest.clearAllMocks();
 
-        const { result } = renderHookWithTradingProvider(() => useBuyForm(), { services });
+        const { result } = await renderHookWithTradingProvider(() => useBuyForm(), { services });
         form = result.current;
     });
 
-    it('should display nothing when in default state', () => {
-        const { toJSON } = renderTradingProviderPicker();
+    it('should display nothing when in default state', async () => {
+        const { toJSON } = await renderTradingProviderPicker();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should display loader while quotes are fetched', () => {
-        const { getByLabelText } = renderTradingProviderPicker({
+    it('should display loader while quotes are fetched', async () => {
+        const { getByLabelText } = await renderTradingProviderPicker({
             wallet: { trading: { buy: { isLoading: true, quotes: [] } } },
         });
 
@@ -88,25 +88,27 @@ describe('BuyProviderPicker', () => {
             },
         };
 
-        beforeEach(() => {
-            act(() => {
+        beforeEach(async () => {
+            await act(() => {
                 form.setValue('quote', cexdirectCreditCardBuyQuote);
             });
         });
 
-        it('should allow to select provider', () => {
-            const { getByText, getByLabelText } = renderTradingProviderPicker(withQuotes);
+        it('should allow to select provider', async () => {
+            const { getByText, getByLabelText } = await renderTradingProviderPicker(withQuotes);
 
-            fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
-            fireEvent.press(getByText('Mercuryo'));
+            await fireEvent.press(
+                getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+            );
+            await fireEvent.press(getByText('Mercuryo'));
 
             expect(
                 getByLabelText(getTranslation('moduleTrading.tradingScreen.selectedProvider')),
             ).toHaveTextContent('Mercuryo');
         });
 
-        it('should display loader while quotes are re-fetched', () => {
-            const { getByLabelText } = renderTradingProviderPicker(
+        it('should display loader while quotes are re-fetched', async () => {
+            const { getByLabelText } = await renderTradingProviderPicker(
                 mergeDeepObject(withQuotes, {
                     wallet: { trading: { buy: { isLoading: true } } },
                 }),
@@ -117,14 +119,16 @@ describe('BuyProviderPicker', () => {
             ).toBeOnTheScreen();
         });
 
-        it('should display sheet even while quotes are fetched', () => {
-            const { getByText } = renderTradingProviderPicker(
+        it('should display sheet even while quotes are fetched', async () => {
+            const { getByText } = await renderTradingProviderPicker(
                 mergeDeepObject(withQuotes, {
                     wallet: { trading: { buy: { isLoading: true } } },
                 }),
             );
 
-            fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
+            await fireEvent.press(
+                getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+            );
 
             expect(getByText('Mercuryo')).toBeOnTheScreen();
         });
@@ -134,11 +138,13 @@ describe('BuyProviderPicker', () => {
                 reportMock.mockClear();
             });
 
-            it('should fire analytics event on provider select', () => {
-                const { getByText } = renderTradingProviderPicker(withQuotes);
+            it('should fire analytics event on provider select', async () => {
+                const { getByText } = await renderTradingProviderPicker(withQuotes);
 
-                fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
-                fireEvent.press(getByText('Mercuryo'));
+                await fireEvent.press(
+                    getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+                );
+                await fireEvent.press(getByText('Mercuryo'));
 
                 expect(reportMock).toHaveBeenCalledTimes(2);
                 expect(reportMock).toHaveBeenCalledWith({
@@ -156,20 +162,24 @@ describe('BuyProviderPicker', () => {
                 });
             });
 
-            it('should fire analytics event on provider change', () => {
-                const { getByText } = renderTradingProviderPicker(withQuotes);
+            it('should fire analytics event on provider change', async () => {
+                const { getByText } = await renderTradingProviderPicker(withQuotes);
 
-                fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
-                fireEvent.press(getByText('Mercuryo'));
+                await fireEvent.press(
+                    getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+                );
+                await fireEvent.press(getByText('Mercuryo'));
 
                 expect(reportMock).toHaveBeenCalledTimes(2);
             });
 
-            it('should not fire analytics event when same provider is selected', () => {
-                const { getByText, getAllByText } = renderTradingProviderPicker(withQuotes);
+            it('should not fire analytics event when same provider is selected', async () => {
+                const { getByText, getAllByText } = await renderTradingProviderPicker(withQuotes);
 
-                fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
-                fireEvent.press(getIndexOrThrow(getAllByText('Cexdirect'), 1));
+                await fireEvent.press(
+                    getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+                );
+                await fireEvent.press(getIndexOrThrow(getAllByText('Cexdirect'), 1));
 
                 expect(reportMock).toHaveBeenCalledTimes(1);
                 expect(reportMock).toHaveBeenCalledWith({
@@ -180,14 +190,16 @@ describe('BuyProviderPicker', () => {
                 });
             });
 
-            it('should not call analytics when user tries to open sheet while quotes are loading', () => {
-                const { getByText } = renderTradingProviderPicker(
+            it('should not call analytics when user tries to open sheet while quotes are loading', async () => {
+                const { getByText } = await renderTradingProviderPicker(
                     mergeDeepObject(withQuotes, {
                         wallet: { trading: { buy: { isLoading: true } } },
                     }),
                 );
 
-                fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.provider')));
+                await fireEvent.press(
+                    getByText(getTranslation('moduleTrading.tradingScreen.provider')),
+                );
 
                 expect(reportMock).not.toHaveBeenCalled();
             });

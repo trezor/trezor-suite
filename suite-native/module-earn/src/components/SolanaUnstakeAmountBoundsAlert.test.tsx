@@ -41,8 +41,8 @@ const buildEthereumAccount = (): Account =>
 
 const translate = ((id: string) => id) as UnstakeFormContext['translate'];
 
-const renderAlert = (account: Account, amountValue: string) => {
-    const { result } = renderHookWithStoreProvider(() =>
+const renderAlert = async (account: Account, amountValue: string) => {
+    const { result } = await renderHookWithStoreProvider(() =>
         useForm<EarnFormValues>({
             validation: unstakeFormValidationSchema,
             mode: 'onTouched',
@@ -54,49 +54,49 @@ const renderAlert = (account: Account, amountValue: string) => {
 
     return {
         form,
-        ...renderWithStoreProvider(
+        ...(await renderWithStoreProvider(
             <SolanaUnstakeAmountBoundsAlert account={account} amountValue={amountValue} />,
             { wrapper: ({ children }) => <Form form={form}>{children}</Form> },
-        ),
+        )),
     };
 };
 
 describe('SolanaUnstakeAmountBoundsAlert', () => {
-    it('renders nothing for a valid amount', () => {
+    it('renders nothing for a valid amount', async () => {
         const account = buildSolanaAccount([buildStakingAccount({ stake: `${3.12 * SOL}` })]);
-        const { toJSON } = renderAlert(account, '1.5');
+        const { toJSON } = await renderAlert(account, '1.5');
 
         expect(toJSON()).toBeNull();
     });
 
-    it('renders nothing for a non-Solana account', () => {
+    it('renders nothing for a non-Solana account', async () => {
         const account = buildEthereumAccount();
-        const { toJSON } = renderAlert(account, '0.5');
+        const { toJSON } = await renderAlert(account, '0.5');
 
         expect(toJSON()).toBeNull();
     });
 
-    it('renders both suggested amounts when a lower bound exists', () => {
+    it('renders both suggested amounts when a lower bound exists', async () => {
         const account = buildSolanaAccount([
             buildStakingAccount({ stake: `${2 * SOL}` }),
             buildStakingAccount({ stake: `${1.42 * SOL}` }),
         ]);
-        const { getByText } = renderAlert(account, '2');
+        const { getByText } = await renderAlert(account, '2');
 
         expect(getByText('1.42 SOL')).toBeTruthy();
         expect(getByText('2.42 SOL')).toBeTruthy();
     });
 
-    it('renders only the higher suggested amount when there is no valid lower bound', () => {
+    it('renders only the higher suggested amount when there is no valid lower bound', async () => {
         const account = buildSolanaAccount([buildStakingAccount({ stake: `${1.42 * SOL}` })]);
-        const { getByText } = renderAlert(account, '0.5');
+        const { getByText } = await renderAlert(account, '0.5');
 
         expect(getByText('1.42 SOL')).toBeTruthy();
     });
 
     it('fills in the amount when a suggested value is pressed', async () => {
         const account = buildSolanaAccount([buildStakingAccount({ stake: `${1.42 * SOL}` })]);
-        const { getByText, form } = renderAlert(account, '0.5');
+        const { getByText, form } = await renderAlert(account, '0.5');
 
         await userEvent.press(getByText('1.42 SOL'));
 

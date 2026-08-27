@@ -7,15 +7,15 @@ import {
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('ProviderSheetSectionHeader', () => {
-    const renderProviderSheetSectionHeader = (props: ProviderSheetSectionHeaderProps) =>
-        renderWithTradingProvider(<ProviderSheetSectionHeader {...props} />);
+    const renderProviderSheetSectionHeader = async (props: ProviderSheetSectionHeaderProps) =>
+        await renderWithTradingProvider(<ProviderSheetSectionHeader {...props} />);
 
     it.each<[QuotesCategory, string]>([
         ['fixed', 'Fixed-rate CEX'],
         ['float', 'Floating-rate CEX'],
         ['dex', 'DEX'],
-    ])('should render correct section based on category [%s]', (category, expectedTitle) => {
-        const { getByText } = renderProviderSheetSectionHeader({ category });
+    ])('should render correct section based on category [%s]', async (category, expectedTitle) => {
+        const { getByText } = await renderProviderSheetSectionHeader({ category });
 
         expect(getByText(expectedTitle)).toBeOnTheScreen();
     });

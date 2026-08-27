@@ -26,16 +26,16 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('HistoryButton', () => {
-    const renderHistoryButton = (
+    const renderHistoryButton = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithTradingProvider(<HistoryButton />, {
+        await renderWithTradingProvider(<HistoryButton />, {
             overrides,
         });
 
-    it('should render nothing where no trades are available', () => {
+    it('should render nothing where no trades are available', async () => {
         mockSelectDeviceTradingTrades = [];
-        const { toJSON } = renderHistoryButton({});
+        const { toJSON } = await renderHistoryButton({});
 
         expect(toJSON()).toBeNull();
     });
@@ -46,16 +46,16 @@ describe('HistoryButton', () => {
             mockNavigate = jest.fn();
         });
 
-        it('should render button when at least one trade is specified', () => {
-            const { getByText } = renderHistoryButton({});
+        it('should render button when at least one trade is specified', async () => {
+            const { getByText } = await renderHistoryButton({});
 
             expect(
                 getByText(getTranslation('moduleTrading.tradeHistory.list.title')),
             ).toBeOnTheScreen();
         });
 
-        it('should render nothing when isAmountInputActive is true', () => {
-            const { toJSON } = renderHistoryButton({
+        it('should render nothing when isAmountInputActive is true', async () => {
+            const { toJSON } = await renderHistoryButton({
                 wallet: {
                     trading: {
                         isAmountInputActive: true,
@@ -66,10 +66,12 @@ describe('HistoryButton', () => {
             expect(toJSON()).toBeNull();
         });
 
-        it('should navigate on press', () => {
-            const { getByText } = renderHistoryButton({});
+        it('should navigate on press', async () => {
+            const { getByText } = await renderHistoryButton({});
 
-            fireEvent.press(getByText(getTranslation('moduleTrading.tradeHistory.list.title')));
+            await fireEvent.press(
+                getByText(getTranslation('moduleTrading.tradeHistory.list.title')),
+            );
 
             expect(mockNavigate).toHaveBeenCalledWith('TradingHistory');
         });

@@ -11,8 +11,8 @@ jest.mock('../../../hooks/exchange/useDexExchangeTxSimulation', () => ({
 
 const mockUseDexExchangeTxSimulation = jest.mocked(useDexExchangeTxSimulation);
 
-const renderExchangePreviewScreenHeader = () =>
-    renderWithTradingProvider(<ExchangePreviewScreenHeader />, { tradeType: 'exchange' });
+const renderExchangePreviewScreenHeader = async () =>
+    await renderWithTradingProvider(<ExchangePreviewScreenHeader />, { tradeType: 'exchange' });
 
 describe('ExchangePreviewScreenHeader', () => {
     beforeEach(() => {
@@ -25,8 +25,8 @@ describe('ExchangePreviewScreenHeader', () => {
         });
     });
 
-    it('renders only the exchange preview title when simulation is disabled', () => {
-        const { getByText, queryByText } = renderExchangePreviewScreenHeader();
+    it('renders only the exchange preview title when simulation is disabled', async () => {
+        const { getByText, queryByText } = await renderExchangePreviewScreenHeader();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.title')),
@@ -34,7 +34,7 @@ describe('ExchangePreviewScreenHeader', () => {
         expect(queryByText(getTranslation('moduleTrading.transactionSimulation.title'))).toBeNull();
     });
 
-    it('renders the loading status while the simulation is loading', () => {
+    it('renders the loading status while the simulation is loading', async () => {
         mockUseDexExchangeTxSimulation.mockReturnValue({
             isEnabled: true,
             isLoading: true,
@@ -42,14 +42,14 @@ describe('ExchangePreviewScreenHeader', () => {
             data: undefined,
         });
 
-        const { getByText } = renderExchangePreviewScreenHeader();
+        const { getByText } = await renderExchangePreviewScreenHeader();
 
         expect(
             getByText(getTranslation('moduleTrading.transactionSimulation.simulating')),
         ).toBeOnTheScreen();
     });
 
-    it('renders the simulation title after a successful simulation', () => {
+    it('renders the simulation title after a successful simulation', async () => {
         mockUseDexExchangeTxSimulation.mockReturnValue({
             isEnabled: true,
             isLoading: false,
@@ -57,14 +57,14 @@ describe('ExchangePreviewScreenHeader', () => {
             data: undefined,
         });
 
-        const { getByText } = renderExchangePreviewScreenHeader();
+        const { getByText } = await renderExchangePreviewScreenHeader();
 
         expect(
             getByText(getTranslation('moduleTrading.transactionSimulation.title')),
         ).toBeOnTheScreen();
     });
 
-    it('renders only the exchange preview title when simulation fails', () => {
+    it('renders only the exchange preview title when simulation fails', async () => {
         mockUseDexExchangeTxSimulation.mockReturnValue({
             isEnabled: true,
             isLoading: false,
@@ -72,7 +72,7 @@ describe('ExchangePreviewScreenHeader', () => {
             data: undefined,
         });
 
-        const { getByText, queryByText } = renderExchangePreviewScreenHeader();
+        const { getByText, queryByText } = await renderExchangePreviewScreenHeader();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.title')),
@@ -83,7 +83,7 @@ describe('ExchangePreviewScreenHeader', () => {
         ).toBeNull();
     });
 
-    it('renders only the exchange preview title for a cross-chain trade', () => {
+    it('renders only the exchange preview title for a cross-chain trade', async () => {
         mockUseDexExchangeTxSimulation.mockReturnValue({
             isEnabled: true,
             isLoading: false,
@@ -91,7 +91,7 @@ describe('ExchangePreviewScreenHeader', () => {
             data: undefined,
         });
 
-        const { getByText, queryByText } = renderWithTradingProvider(
+        const { getByText, queryByText } = await renderWithTradingProvider(
             <ExchangePreviewScreenHeader />,
             {
                 tradeType: 'exchange',

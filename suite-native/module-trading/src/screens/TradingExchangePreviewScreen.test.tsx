@@ -155,7 +155,7 @@ describe('TradingExchangePreviewScreen', () => {
     let consoleErrorSpy: jest.SpyInstance;
     let unmount: (() => void) | undefined;
 
-    const renderTradingExchangePreviewScreen = (
+    const renderTradingExchangePreviewScreen = async (
         isApproved: boolean = false,
         customStore?: TestStore,
     ) => {
@@ -166,7 +166,7 @@ describe('TradingExchangePreviewScreen', () => {
         };
         jest.clearAllMocks();
 
-        const result = renderWithStoreProvider(
+        const result = await renderWithStoreProvider(
             <TradingExchangePreviewScreen
                 navigation={createNavigationProps()}
                 route={createRouteProps(isApproved)}
@@ -201,38 +201,38 @@ describe('TradingExchangePreviewScreen', () => {
         store = createStore();
     });
 
-    afterEach(() => {
+    afterEach(async () => {
         consoleErrorSpy.mockRestore();
         if (unmount) {
-            unmount();
+            await unmount();
             unmount = undefined;
         }
     });
 
-    it('should display device guard when device is not connected', () => {
+    it('should display device guard when device is not connected', async () => {
         mockIsDeviceConnected = false;
-        const { result } = renderTradingExchangePreviewScreen();
+        const { result } = await renderTradingExchangePreviewScreen();
         expect(
             result.getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
         ).toBeOnTheScreen();
     });
 
-    it('should render continue button', () => {
-        const { result } = renderTradingExchangePreviewScreen();
+    it('should render continue button', async () => {
+        const { result } = await renderTradingExchangePreviewScreen();
 
         expect(result.getByText(getTranslation('generic.buttons.continue'))).toBeOnTheScreen();
     });
 
-    it('should render screen title correctly', () => {
-        const { result } = renderTradingExchangePreviewScreen();
+    it('should render screen title correctly', async () => {
+        const { result } = await renderTradingExchangePreviewScreen();
 
         expect(
             result.getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.title')),
         ).toBeOnTheScreen();
     });
 
-    it('should render from and to account labels', () => {
-        const { result } = renderTradingExchangePreviewScreen();
+    it('should render from and to account labels', async () => {
+        const { result } = await renderTradingExchangePreviewScreen();
 
         expect(
             result.getByText(
@@ -246,10 +246,10 @@ describe('TradingExchangePreviewScreen', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render transaction details section', () => {
+    it('should render transaction details section', async () => {
         const {
             result: { getByText },
-        } = renderTradingExchangePreviewScreen();
+        } = await renderTradingExchangePreviewScreen();
 
         // 1st line of trade info is provider
         expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
@@ -259,7 +259,7 @@ describe('TradingExchangePreviewScreen', () => {
         it('should show error alert when trade confirmation errors', async () => {
             mockConfirmTrade.mockRejectedValueOnce(new Error('Trade confirmation failed'));
 
-            renderTradingExchangePreviewScreen();
+            await renderTradingExchangePreviewScreen();
 
             await waitFor(
                 () => {
@@ -278,7 +278,7 @@ describe('TradingExchangePreviewScreen', () => {
                 .mockRejectedValueOnce(new Error('Trade confirmation failed'))
                 .mockResolvedValueOnce(true);
 
-            const { reportMock } = renderTradingExchangePreviewScreen();
+            const { reportMock } = await renderTradingExchangePreviewScreen();
 
             await waitFor(() => {
                 expect(mockShowAlert).toHaveBeenCalled();
@@ -302,7 +302,7 @@ describe('TradingExchangePreviewScreen', () => {
         it('should navigate to top when cancel button is pressed', async () => {
             mockConfirmTrade.mockRejectedValueOnce(new Error('Trade confirmation failed'));
 
-            const { reportMock } = renderTradingExchangePreviewScreen();
+            const { reportMock } = await renderTradingExchangePreviewScreen();
 
             await waitFor(() => {
                 expect(mockShowAlert).toHaveBeenCalled();
@@ -326,7 +326,7 @@ describe('TradingExchangePreviewScreen', () => {
         it('should not show error alert when trade confirmation succeeds', async () => {
             mockConfirmTrade.mockResolvedValue(true);
 
-            renderTradingExchangePreviewScreen();
+            await renderTradingExchangePreviewScreen();
 
             await new Promise(resolve => setTimeout(resolve, 100));
 
@@ -334,8 +334,8 @@ describe('TradingExchangePreviewScreen', () => {
         });
     });
 
-    it('should report to analytics on mount', () => {
-        const { reportMock } = renderTradingExchangePreviewScreen();
+    it('should report to analytics on mount', async () => {
+        const { reportMock } = await renderTradingExchangePreviewScreen();
 
         expect(reportMock).toHaveBeenCalledTimes(1);
         expect(reportMock).toHaveBeenCalledWith({
@@ -347,7 +347,7 @@ describe('TradingExchangePreviewScreen', () => {
         });
     });
 
-    it('reports a validation risk as a high-risk issue', () => {
+    it('reports a validation risk as a high-risk issue', async () => {
         mockUseExchangeIssue.mockReturnValue({
             isSimulationEnabled: true,
             isSimulationLoading: false,
@@ -363,7 +363,7 @@ describe('TradingExchangePreviewScreen', () => {
             },
         });
 
-        const { reportMock } = renderTradingExchangePreviewScreen();
+        const { reportMock } = await renderTradingExchangePreviewScreen();
 
         expect(reportMock).toHaveBeenCalledWith({
             type: events.tradingExchangeIssueEvent.name,
@@ -374,7 +374,7 @@ describe('TradingExchangePreviewScreen', () => {
         });
     });
 
-    it('reports a returned simulation failure as a slippage-too-low issue', () => {
+    it('reports a returned simulation failure as a slippage-too-low issue', async () => {
         mockUseExchangeIssue.mockReturnValue({
             isSimulationEnabled: true,
             isSimulationLoading: false,
@@ -385,7 +385,7 @@ describe('TradingExchangePreviewScreen', () => {
             },
         });
 
-        const { reportMock } = renderTradingExchangePreviewScreen();
+        const { reportMock } = await renderTradingExchangePreviewScreen();
 
         expect(reportMock).toHaveBeenCalledWith({
             type: events.tradingExchangeIssueEvent.name,
@@ -401,7 +401,7 @@ describe('TradingExchangePreviewScreen', () => {
         [0.2, 'price-impact-critical', true],
     ] as const)(
         'reports deviation %s as %s with isSimulation=%s',
-        (deviation, issue, isSimulation) => {
+        async (deviation, issue, isSimulation) => {
             mockUseExchangeIssue.mockReturnValue({
                 isSimulationEnabled: true,
                 isSimulationLoading: false,
@@ -419,7 +419,7 @@ describe('TradingExchangePreviewScreen', () => {
                 data: isSimulation ? createSimulationResult() : undefined,
             });
 
-            const { reportMock } = renderTradingExchangePreviewScreen();
+            const { reportMock } = await renderTradingExchangePreviewScreen();
 
             expect(reportMock).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -430,7 +430,7 @@ describe('TradingExchangePreviewScreen', () => {
         },
     );
 
-    it('does not report an equivalent exchange issue twice', () => {
+    it('does not report an equivalent exchange issue twice', async () => {
         const firstIssue = {
             type: 'slippage-too-low' as const,
             severity: 'warning' as const,
@@ -442,7 +442,7 @@ describe('TradingExchangePreviewScreen', () => {
             issue: firstIssue,
         });
 
-        const { result, reportMock } = renderTradingExchangePreviewScreen();
+        const { result, reportMock } = await renderTradingExchangePreviewScreen();
         const countIssueEvents = () =>
             reportMock.mock.calls.filter(
                 ([event]) => event.type === events.tradingExchangeIssueEvent.name,
@@ -450,7 +450,7 @@ describe('TradingExchangePreviewScreen', () => {
 
         expect(countIssueEvents()).toBe(1);
 
-        result.rerender(
+        await result.rerender(
             <TradingExchangePreviewScreen
                 navigation={createNavigationProps()}
                 route={createRouteProps()}
@@ -464,7 +464,7 @@ describe('TradingExchangePreviewScreen', () => {
             isSimulation: true,
             issue: { ...firstIssue },
         });
-        result.rerender(
+        await result.rerender(
             <TradingExchangePreviewScreen
                 navigation={createNavigationProps()}
                 route={createRouteProps()}
@@ -474,23 +474,23 @@ describe('TradingExchangePreviewScreen', () => {
         expect(countIssueEvents()).toBe(1);
     });
 
-    it('should abort confirm trade on unmount', () => {
-        const { result } = renderTradingExchangePreviewScreen();
+    it('should abort confirm trade on unmount', async () => {
+        const { result } = await renderTradingExchangePreviewScreen();
 
         expect(mockAbortConfirmTrade).not.toHaveBeenCalled();
 
-        result.unmount();
+        await result.unmount();
         unmount = undefined;
 
         expect(mockAbortConfirmTrade).toHaveBeenCalledTimes(1);
     });
 
-    it('should clear trading state on unmount', () => {
-        const { result } = renderTradingExchangePreviewScreen();
+    it('should clear trading state on unmount', async () => {
+        const { result } = await renderTradingExchangePreviewScreen();
 
         expect(store.getState().wallet.trading.exchange.selectedQuote).toBeDefined();
 
-        result.unmount();
+        await result.unmount();
         unmount = undefined;
 
         expect(store.getState().wallet.trading.exchange.selectedQuote).toBeUndefined();
@@ -498,7 +498,7 @@ describe('TradingExchangePreviewScreen', () => {
     });
 
     it('should report to analytics on Continue press', async () => {
-        const { result, reportMock } = renderTradingExchangePreviewScreen();
+        const { result, reportMock } = await renderTradingExchangePreviewScreen();
         reportMock.mockClear();
 
         await userEvent.press(
@@ -523,7 +523,7 @@ describe('TradingExchangePreviewScreen', () => {
             };
             const testStore = createStore(approvalReqQuote);
 
-            renderTradingExchangePreviewScreen(false, testStore);
+            await renderTradingExchangePreviewScreen(false, testStore);
 
             await waitFor(() => {
                 expect(mockNavigate).toHaveBeenCalledTimes(1);
@@ -533,15 +533,15 @@ describe('TradingExchangePreviewScreen', () => {
     });
 
     describe('Error String Fallback Logic', () => {
-        it('should use txnErrorString when provided', () => {
+        it('should use txnErrorString when provided', async () => {
             mockTxnErrorString = 'Transaction error occurred';
 
-            const { result } = renderTradingExchangePreviewScreen();
+            const { result } = await renderTradingExchangePreviewScreen();
 
             expect(result.getByText('Transaction error occurred')).toBeOnTheScreen();
         });
 
-        it('should fall back to quote.error when txnErrorString is null', () => {
+        it('should fall back to quote.error when txnErrorString is null', async () => {
             mockTxnErrorString = null;
 
             const quoteWithError = {
@@ -550,12 +550,12 @@ describe('TradingExchangePreviewScreen', () => {
             };
 
             const testStore = createStore(quoteWithError);
-            const { result } = renderTradingExchangePreviewScreen(false, testStore);
+            const { result } = await renderTradingExchangePreviewScreen(false, testStore);
 
             expect(result.getByText('Quote error message')).toBeOnTheScreen();
         });
 
-        it('should not show error when both txnErrorString and quote.error are null', () => {
+        it('should not show error when both txnErrorString and quote.error are null', async () => {
             mockTxnErrorString = null;
 
             const quoteWithoutError = {
@@ -564,13 +564,13 @@ describe('TradingExchangePreviewScreen', () => {
             };
 
             const testStore = createStore(quoteWithoutError);
-            const { result } = renderTradingExchangePreviewScreen(false, testStore);
+            const { result } = await renderTradingExchangePreviewScreen(false, testStore);
 
             expect(result.queryByText('Transaction error occurred')).toBeNull();
             expect(result.queryByText('Quote error message')).toBeNull();
         });
 
-        it('should prioritize txnErrorString over quote.error', () => {
+        it('should prioritize txnErrorString over quote.error', async () => {
             mockTxnErrorString = 'Transaction error takes priority';
 
             const quoteWithError = {
@@ -579,13 +579,13 @@ describe('TradingExchangePreviewScreen', () => {
             };
 
             const testStore = createStore(quoteWithError);
-            const { result } = renderTradingExchangePreviewScreen(false, testStore);
+            const { result } = await renderTradingExchangePreviewScreen(false, testStore);
 
             expect(result.getByText('Transaction error takes priority')).toBeOnTheScreen();
             expect(result.queryByText('Quote error message')).toBeNull();
         });
 
-        it('should not show errors for quote with SIGN_DATA status and EIP-712 data', () => {
+        it('should not show errors for quote with SIGN_DATA status and EIP-712 data', async () => {
             mockTxnErrorString = 'Transaction error occurred';
 
             const quoteWithEip712SignData = {
@@ -594,13 +594,13 @@ describe('TradingExchangePreviewScreen', () => {
             };
 
             const testStore = createStore(quoteWithEip712SignData);
-            const { result } = renderTradingExchangePreviewScreen(false, testStore);
+            const { result } = await renderTradingExchangePreviewScreen(false, testStore);
 
             expect(result.queryByText('Transaction error occurred')).toBeNull();
             expect(result.queryByText('Quote error message')).toBeNull();
         });
 
-        it('should show errors for quote with SIGN_DATA status and non-EIP-712 data', () => {
+        it('should show errors for quote with SIGN_DATA status and non-EIP-712 data', async () => {
             mockTxnErrorString = 'Transaction error occurred';
 
             const quoteWithNonEip712SignData = {
@@ -614,7 +614,7 @@ describe('TradingExchangePreviewScreen', () => {
             };
 
             const testStore = createStore(quoteWithNonEip712SignData);
-            const { result } = renderTradingExchangePreviewScreen(false, testStore);
+            const { result } = await renderTradingExchangePreviewScreen(false, testStore);
 
             expect(result.getByText('Transaction error occurred')).toBeOnTheScreen();
             expect(result.queryByText('Quote error message')).toBeNull();
@@ -624,7 +624,7 @@ describe('TradingExchangePreviewScreen', () => {
     it('should preserve quote slippage when confirming a DEX quote', async () => {
         const testStore = createStore({ ...mercuryoDexQuote, swapSlippage: '0.5' });
 
-        renderTradingExchangePreviewScreen(false, testStore);
+        await renderTradingExchangePreviewScreen(false, testStore);
 
         await waitFor(() => {
             expect(mockConfirmTrade).toHaveBeenCalledTimes(1);
@@ -641,7 +641,7 @@ describe('TradingExchangePreviewScreen', () => {
 
     it('should confirm the trade again with user-confirmed slippage', async () => {
         const testStore = createStore(mercuryoDexQuote);
-        const { result } = renderTradingExchangePreviewScreen(false, testStore);
+        const { result } = await renderTradingExchangePreviewScreen(false, testStore);
 
         await waitFor(() => {
             expect(mockConfirmTrade).toHaveBeenCalledTimes(1);

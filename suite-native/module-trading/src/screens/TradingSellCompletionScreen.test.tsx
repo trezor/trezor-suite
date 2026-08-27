@@ -79,7 +79,7 @@ describe('TradingSellCompletionScreen', () => {
         tradingState.currentProviderMetadata = sellMoonpay;
         tradingState.providerConfirmationStatus = providerConfirmationStatus;
 
-        const result = renderWithTradingProvider(<TradingSellCompletionScreen />, {
+        const result = await renderWithTradingProvider(<TradingSellCompletionScreen />, {
             tradeType: 'sell',
             overrides: {
                 wallet: {
@@ -176,7 +176,7 @@ describe('TradingSellCompletionScreen', () => {
         const { rerender } = await renderScreen({ status: 'SEND_CRYPTO' });
 
         await waitFor(() => expect(mockComposeTradingTransaction).toHaveBeenCalledTimes(1));
-        rerender(<TradingSellCompletionScreen />);
+        await rerender(<TradingSellCompletionScreen />);
 
         expect(mockComposeTradingTransaction).toHaveBeenCalledTimes(1);
     });
@@ -205,7 +205,7 @@ describe('TradingSellCompletionScreen', () => {
         const { unmount } = await renderScreen();
 
         expect(mockClearTradingStateThunk).not.toHaveBeenCalled();
-        unmount();
+        await unmount();
 
         expect(mockClearTradingStateThunk).toHaveBeenCalledTimes(1);
     });

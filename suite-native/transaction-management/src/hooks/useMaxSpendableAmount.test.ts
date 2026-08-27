@@ -50,13 +50,13 @@ describe('useMaxSpendableAmount', () => {
         selectedUtxos: [],
     };
 
-    const renderUseMaxSpendableAmount = ({
+    const renderUseMaxSpendableAmount = async ({
         accountKey,
         tokenContract,
         formState,
         symbol,
     }: Parameters<typeof useMaxSpendableAmount>[0]) =>
-        renderHookWithStoreProvider(
+        await renderHookWithStoreProvider(
             () =>
                 useMaxSpendableAmount({
                     accountKey,
@@ -92,15 +92,15 @@ describe('useMaxSpendableAmount', () => {
         jest.clearAllMocks();
     });
 
-    it('should keep max spendable amount undefined without account key', () => {
-        const { result } = renderUseMaxSpendableAmount({ symbol: null });
+    it('should keep max spendable amount undefined without account key', async () => {
+        const { result } = await renderUseMaxSpendableAmount({ symbol: null });
 
         expect(result.current.maxSpendableAmount).toBeUndefined();
         expect(mockCalculateFeeLevelsMaxAmountThunk).not.toHaveBeenCalled();
     });
 
     it('should use token balance when token balance is available', async () => {
-        const { result } = renderUseMaxSpendableAmount({
+        const { result } = await renderUseMaxSpendableAmount({
             accountKey: ethAccountKey,
             tokenContract: usdcTokenContract,
             symbol: etcSymbol,
@@ -115,7 +115,7 @@ describe('useMaxSpendableAmount', () => {
 
     it('should calculate max spendable amount for native asset with default form state', async () => {
         mockMaxAmountThunkResult({ normal: '0.009', economy: '0.008' });
-        const { result } = renderUseMaxSpendableAmount({
+        const { result } = await renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
             symbol: btcSymbol,
         });
@@ -128,7 +128,7 @@ describe('useMaxSpendableAmount', () => {
     it('should calculate max spendable amount with provided form state', async () => {
         mockMaxAmountThunkResult({ normal: '0.009', economy: '0.008' });
 
-        const { result } = renderUseMaxSpendableAmount({
+        const { result } = await renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
             formState: customFormState,
             symbol: btcSymbol,
@@ -149,7 +149,7 @@ describe('useMaxSpendableAmount', () => {
     it('should fall back to economy fee level when normal max amount is missing', async () => {
         mockMaxAmountThunkResult({ normal: undefined, economy: '0.008' });
 
-        const { result } = renderUseMaxSpendableAmount({
+        const { result } = await renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
             symbol: btcSymbol,
         });
@@ -159,8 +159,8 @@ describe('useMaxSpendableAmount', () => {
         });
     });
 
-    it('should skip native asset calculation when calculation is disabled', () => {
-        const { result } = renderUseMaxSpendableAmount({
+    it('should skip native asset calculation when calculation is disabled', async () => {
+        const { result } = await renderUseMaxSpendableAmount({
             accountKey: btcAccountKey,
             symbol: btcSymbol,
             enabled: false,

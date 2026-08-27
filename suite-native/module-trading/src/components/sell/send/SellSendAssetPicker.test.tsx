@@ -85,17 +85,17 @@ describe('SellSendAssetPicker', () => {
         },
     ];
 
-    const renderSellForm = () =>
-        renderHookWithStoreProvider(() => useSellForm(), { services, store });
+    const renderSellForm = async () =>
+        await renderHookWithStoreProvider(() => useSellForm(), { services, store });
 
-    const renderSellSendAssetPicker = () =>
-        renderWithStoreProvider(<SellSendAssetPicker />, {
+    const renderSellSendAssetPicker = async () =>
+        await renderWithStoreProvider(<SellSendAssetPicker />, {
             services,
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         reportMock.mockClear();
         jest.clearAllMocks();
         mockSelectedMyAssetAccountKey = undefined;
@@ -109,7 +109,7 @@ describe('SellSendAssetPicker', () => {
                 },
             },
         });
-        const { result } = renderSellForm();
+        const { result } = await renderSellForm();
         form = result.current;
 
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
@@ -118,17 +118,17 @@ describe('SellSendAssetPicker', () => {
     });
 
     it('should navigate to the my asset screen', async () => {
-        const { getByLabelText } = renderSellSendAssetPicker();
+        const { getByLabelText } = await renderSellSendAssetPicker();
 
         await userEvent.press(getByLabelText('Select asset'));
 
         expect(mockNavigate).toHaveBeenCalledWith('TradingMyAsset', { tradingType: 'sell' });
     });
 
-    it('should select asset returned from the screen', () => {
+    it('should select asset returned from the screen', async () => {
         mockSelectedMyAssetAccountKey = btcAccount.key;
         mockSelectedMyAssetCryptoId = 'bitcoin';
-        renderSellSendAssetPicker();
+        await renderSellSendAssetPicker();
 
         const asset = form.getValues('sendAsset');
 
@@ -139,16 +139,16 @@ describe('SellSendAssetPicker', () => {
         );
     });
 
-    it('should select account returned from the screen', () => {
+    it('should select account returned from the screen', async () => {
         mockSelectedMyAssetAccountKey = btcAccount.key;
         mockSelectedMyAssetCryptoId = 'bitcoin';
-        renderSellSendAssetPicker();
+        await renderSellSendAssetPicker();
 
         const accountKeyStore = store.getState().wallet.trading.sell.tradingAccountKey;
         expect(accountKeyStore).toBe(btcAccount.key);
     });
 
-    it('should select the exact account when the same asset is present in multiple accounts', () => {
+    it('should select the exact account when the same asset is present in multiple accounts', async () => {
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue([
             defaultAccounts[0],
             {
@@ -160,24 +160,24 @@ describe('SellSendAssetPicker', () => {
         mockSelectedMyAssetAccountKey = ethAccount.key;
         mockSelectedMyAssetCryptoId = 'bitcoin';
 
-        renderSellSendAssetPicker();
+        await renderSellSendAssetPicker();
 
         expect(store.getState().wallet.trading.sell.tradingAccountKey).toBe(ethAccount.key);
     });
 
-    it('should leave the form unchanged when the screen is closed without a selection', () => {
-        renderSellSendAssetPicker();
+    it('should leave the form unchanged when the screen is closed without a selection', async () => {
+        await renderSellSendAssetPicker();
 
         expect(form.getValues('sendAsset')).toBeUndefined();
         expect(mockSetParams).not.toHaveBeenCalled();
     });
 
-    it('should apply sell asset change effects for an asset returned from the screen', () => {
+    it('should apply sell asset change effects for an asset returned from the screen', async () => {
         form.setValue('cryptoStringAmount', '1');
         mockSelectedMyAssetAccountKey = btcAccount.key;
         mockSelectedMyAssetCryptoId = 'bitcoin';
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        renderSellSendAssetPicker();
+        await renderSellSendAssetPicker();
 
         expect(form.getValues('cryptoStringAmount')).toBeUndefined();
         expect(dispatchSpy).toHaveBeenCalledWith(sellActions.sendAssetChanged());

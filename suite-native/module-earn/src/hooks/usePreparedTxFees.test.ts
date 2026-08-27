@@ -114,15 +114,15 @@ const createProps = (overrides: Partial<HookProps> = {}): HookProps => ({
     ...overrides,
 });
 
-const renderPreparedTxFees = (initialProps: HookProps) => {
+const renderPreparedTxFees = async (initialProps: HookProps) => {
     const store = createTestStore();
 
     return {
         store,
-        ...renderHookWithStoreProvider((props: HookProps) => usePreparedTxFees(props), {
+        ...(await renderHookWithStoreProvider((props: HookProps) => usePreparedTxFees(props), {
             store,
             initialProps,
-        }),
+        })),
     };
 };
 
@@ -153,7 +153,7 @@ describe('usePreparedTxFees', () => {
 
     it('prepares the transaction and stores fee levels with the form draft', async () => {
         const composeTransaction = jest.fn().mockResolvedValue(composeReady());
-        const { result, store } = renderPreparedTxFees(createProps({ composeTransaction }));
+        const { result, store } = await renderPreparedTxFees(createProps({ composeTransaction }));
 
         expect(result.current.isFeePreparing).toBe(true);
 
@@ -179,10 +179,10 @@ describe('usePreparedTxFees', () => {
             .mockReturnValueOnce(staleCompose.promise)
             .mockReturnValueOnce(freshCompose.promise);
         const props = createProps({ composeTransaction });
-        const { result, rerender } = renderPreparedTxFees(props);
+        const { result, rerender } = await renderPreparedTxFees(props);
 
         await settleDebounce();
-        rerender({ ...props, amount: '2' });
+        await rerender({ ...props, amount: '2' });
         await settleDebounce();
 
         expect(composeTransaction).toHaveBeenNthCalledWith(1, '1');
@@ -201,14 +201,14 @@ describe('usePreparedTxFees', () => {
     it('clears the stored draft and its own fee levels when the context turns invalid', async () => {
         const composeTransaction = jest.fn().mockResolvedValue(composeReady());
         const props = createProps({ composeTransaction });
-        const { rerender, store } = renderPreparedTxFees(props);
+        const { rerender, store } = await renderPreparedTxFees(props);
 
         await settleDebounce();
 
         expect(store.getState().wallet.send.feeLevels).toEqual(FEE_LEVELS);
         expect(store.getState().wallet.formDrafts[FORM_DRAFT_KEY]).toEqual(FORM_DRAFT);
 
-        rerender({ ...props, amount: undefined, hasInvalidContext: true });
+        await rerender({ ...props, amount: undefined, hasInvalidContext: true });
 
         expect(store.getState().wallet.send.feeLevels).toEqual({});
         expect(store.getState().wallet.formDrafts[FORM_DRAFT_KEY]).toBeUndefined();
@@ -217,10 +217,10 @@ describe('usePreparedTxFees', () => {
     it('keeps the fee store intact when only isEnabled turns false', async () => {
         const composeTransaction = jest.fn().mockResolvedValue(composeReady());
         const props = createProps({ composeTransaction });
-        const { rerender, store } = renderPreparedTxFees(props);
+        const { rerender, store } = await renderPreparedTxFees(props);
 
         await settleDebounce();
-        rerender({ ...props, isEnabled: false });
+        await rerender({ ...props, isEnabled: false });
 
         expect(store.getState().wallet.send.feeLevels).toEqual(FEE_LEVELS);
         expect(store.getState().wallet.formDrafts[FORM_DRAFT_KEY]).toEqual(FORM_DRAFT);
@@ -228,7 +228,7 @@ describe('usePreparedTxFees', () => {
 
     it('surfaces an error for every failed compose', async () => {
         const composeTransaction = jest.fn().mockResolvedValue({ type: 'error' });
-        const { result } = renderPreparedTxFees(createProps({ composeTransaction }));
+        const { result } = await renderPreparedTxFees(createProps({ composeTransaction }));
 
         await settleDebounce();
 
@@ -241,7 +241,7 @@ describe('usePreparedTxFees', () => {
     it('surfaces an error when the base fee preview cannot be built', async () => {
         buildFeePreviewMock.mockReturnValue(null);
         const composeTransaction = jest.fn().mockResolvedValue(composeReady());
-        const { result } = renderPreparedTxFees(createProps({ composeTransaction }));
+        const { result } = await renderPreparedTxFees(createProps({ composeTransaction }));
 
         await settleDebounce();
 
@@ -252,7 +252,7 @@ describe('usePreparedTxFees', () => {
 
     it('surfaces an error when the compose function throws', async () => {
         const composeTransaction = jest.fn().mockRejectedValue(new Error('compose exploded'));
-        const { result } = renderPreparedTxFees(createProps({ composeTransaction }));
+        const { result } = await renderPreparedTxFees(createProps({ composeTransaction }));
 
         await settleDebounce();
 
@@ -269,7 +269,7 @@ describe('usePreparedTxFees', () => {
             unsignedTransaction === '0xselected' ? null : BASE_FEE_PREVIEW,
         );
         const composeTransaction = jest.fn().mockResolvedValue(composeReady());
-        const { result } = renderPreparedTxFees(createProps({ composeTransaction }));
+        const { result } = await renderPreparedTxFees(createProps({ composeTransaction }));
 
         await settleDebounce();
 

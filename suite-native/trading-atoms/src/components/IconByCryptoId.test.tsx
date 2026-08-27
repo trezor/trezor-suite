@@ -13,7 +13,7 @@ const networkIconHint = 'Network Icon';
 
 describe('IconByCryptoId', () => {
     const renderIcon = async (props: IconByCryptoIdProps) => {
-        const result = renderWithBasicProvider(<IconByCryptoId {...props} />);
+        const result = await renderWithBasicProvider(<IconByCryptoId {...props} />);
         await act(async () => {});
 
         return result;

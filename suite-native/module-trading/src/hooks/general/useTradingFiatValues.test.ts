@@ -40,7 +40,7 @@ const renderUseTradingFiatValues = async (
     cryptoId: CryptoId | undefined,
     overrides: PreloadedStatePartial<TradingTestPreloadedState> = getOverrides(),
 ) => {
-    const res = renderHookWithTradingProvider(() => useTradingFiatValues(amount, cryptoId), {
+    const res = await renderHookWithTradingProvider(() => useTradingFiatValues(amount, cryptoId), {
         overrides,
     });
 

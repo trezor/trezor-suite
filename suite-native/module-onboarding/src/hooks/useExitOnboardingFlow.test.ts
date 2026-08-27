@@ -29,8 +29,8 @@ jest.mock('@suite-native/app-init', () => ({
 describe('useExitOnboardingFlow', () => {
     let store: TestStore;
 
-    const renderUseExitOnboardingFlow = () =>
-        renderHookWithStoreProvider(() => useExitOnboardingFlow(), { store });
+    const renderUseExitOnboardingFlow = async () =>
+        await renderHookWithStoreProvider(() => useExitOnboardingFlow(), { store });
 
     beforeEach(() => {
         store = createLightStore({
@@ -52,12 +52,12 @@ describe('useExitOnboardingFlow', () => {
         jest.clearAllMocks();
     });
 
-    it('should set onboarding flag and navigate', () => {
+    it('should set onboarding flag and navigate', async () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseExitOnboardingFlow();
+        const { result } = await renderUseExitOnboardingFlow();
 
         // call the returned callback
-        act(() => {
+        await act(() => {
             result.current();
         });
 

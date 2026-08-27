@@ -13,21 +13,21 @@ import {
 } from '../../test-utils/tradingTestUtils';
 
 describe('BuyFiatAmountInput', () => {
-    const renderFiatAmountInput = (
+    const renderFiatAmountInput = async (
         form: BuyFormType,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <Form form={form}>
                 <BuyFiatAmountInput />
             </Form>,
             { tradeType: 'buy', overrides },
         );
 
-    const renderUseTradingBuyForm = (
+    const renderUseTradingBuyForm = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) => {
-        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
+        const { result } = await renderHookWithTradingProvider(() => useBuyForm(), {
             tradeType: 'buy',
             overrides,
         });
@@ -40,8 +40,8 @@ describe('BuyFiatAmountInput', () => {
     };
 
     it('should set fiat value in form', async () => {
-        const form = renderUseTradingBuyForm();
-        const { getByLabelText } = renderFiatAmountInput(form);
+        const form = await renderUseTradingBuyForm();
+        const { getByLabelText } = await renderFiatAmountInput(form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
@@ -52,8 +52,8 @@ describe('BuyFiatAmountInput', () => {
     });
 
     it('should format input value to be decimal', async () => {
-        const form = renderUseTradingBuyForm();
-        const { getByLabelText } = renderFiatAmountInput(form);
+        const form = await renderUseTradingBuyForm();
+        const { getByLabelText } = await renderFiatAmountInput(form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
@@ -67,8 +67,8 @@ describe('BuyFiatAmountInput', () => {
     });
 
     it('should always escape non-numeric characters', async () => {
-        const form = renderUseTradingBuyForm();
-        const { getByLabelText } = renderFiatAmountInput(form);
+        const form = await renderUseTradingBuyForm();
+        const { getByLabelText } = await renderFiatAmountInput(form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
@@ -81,23 +81,23 @@ describe('BuyFiatAmountInput', () => {
         ).toHaveDisplayValue('');
     });
 
-    it('should display loading skeleton while amountInCrypto is true and buyInfo is loading', () => {
-        const form = renderUseTradingBuyForm();
-        act(() => {
+    it('should display loading skeleton while amountInCrypto is true and buyInfo is loading', async () => {
+        const form = await renderUseTradingBuyForm();
+        await act(() => {
             form.setValue('amountInCrypto', true);
         });
 
-        const { getByLabelText } = renderFiatAmountInput(form, withBuyLoading);
+        const { getByLabelText } = await renderFiatAmountInput(form, withBuyLoading);
 
         expect(
             getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
         ).toBeTruthy();
     });
 
-    it('should not display loading skeleton while amountInCrypto is false and buyInfo is loading', () => {
-        const form = renderUseTradingBuyForm();
+    it('should not display loading skeleton while amountInCrypto is false and buyInfo is loading', async () => {
+        const form = await renderUseTradingBuyForm();
 
-        const { queryByLabelText } = renderFiatAmountInput(form, withBuyLoading);
+        const { queryByLabelText } = await renderFiatAmountInput(form, withBuyLoading);
 
         expect(
             queryByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
@@ -105,8 +105,8 @@ describe('BuyFiatAmountInput', () => {
     });
 
     it('should limit value to 3 decimals', async () => {
-        const form = renderUseTradingBuyForm();
-        const { getByLabelText } = renderFiatAmountInput(form);
+        const form = await renderUseTradingBuyForm();
+        const { getByLabelText } = await renderFiatAmountInput(form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),

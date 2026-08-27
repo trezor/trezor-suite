@@ -33,8 +33,8 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('TradingTabContent', () => {
-    const renderTradingTabContent = (isBlacklisted: boolean = false) =>
-        renderWithTradingProvider(<TradingTabContent />, {
+    const renderTradingTabContent = async (isBlacklisted: boolean = false) =>
+        await renderWithTradingProvider(<TradingTabContent />, {
             overrides: {
                 wallet: {
                     trading: {
@@ -70,32 +70,32 @@ describe('TradingTabContent', () => {
         mockIsInternetReachable = true;
     });
 
-    it('should render error screen when isInternetReachable is false', () => {
+    it('should render error screen when isInternetReachable is false', async () => {
         mockIsInternetReachable = false;
 
-        renderTradingTabContent();
+        await renderTradingTabContent();
 
         expectDeviceOffline();
     });
 
-    it('should render trading not allowed in your country warning when ff is set up', () => {
-        renderTradingTabContent(true);
+    it('should render trading not allowed in your country warning when ff is set up', async () => {
+        await renderTradingTabContent(true);
 
         expectTradingNotAllowedInCountry();
     });
 
-    it('trading not allowed should have priority over offline notice', () => {
+    it('trading not allowed should have priority over offline notice', async () => {
         mockIsInternetReachable = false;
 
-        renderTradingTabContent(true);
+        await renderTradingTabContent(true);
 
         expectTradingNotAllowedInCountry();
     });
 
-    it('should render form even when isInternetReachable is null', () => {
+    it('should render form even when isInternetReachable is null', async () => {
         mockIsInternetReachable = null;
 
-        renderTradingTabContent();
+        await renderTradingTabContent();
 
         expectBuyForm();
     });

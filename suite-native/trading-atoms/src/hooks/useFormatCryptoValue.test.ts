@@ -8,8 +8,8 @@ import { useFormatCryptoValue } from './useFormatCryptoValue';
 describe('useFormatCryptoValue', () => {
     const getPreloadedState = () => ({ wallet: { trading: getInitializedTradingState() } });
 
-    const renderUseFormatCryptoValue = () =>
-        renderHookWithStoreProvider(() => useFormatCryptoValue(), {
+    const renderUseFormatCryptoValue = async () =>
+        await renderHookWithStoreProvider(() => useFormatCryptoValue(), {
             preloadedState: getPreloadedState(),
         });
 
@@ -17,8 +17,8 @@ describe('useFormatCryptoValue', () => {
         [undefined, 'bitcoin' as CryptoId],
         ['1.5', undefined],
         ['1', 'unknown-crypto' as CryptoId],
-    ])('returns undefined for value=%s cryptoId=%s', (value, cryptoId) => {
-        const { result } = renderUseFormatCryptoValue();
+    ])('returns undefined for value=%s cryptoId=%s', async (value, cryptoId) => {
+        const { result } = await renderUseFormatCryptoValue();
 
         expect(result.current(value, cryptoId)).toBeUndefined();
     });
@@ -30,8 +30,8 @@ describe('useFormatCryptoValue', () => {
             'solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL' as CryptoId,
             '10.1232 JTO',
         ],
-    ])('formats %s %s as "%s"', (value, cryptoId, expected) => {
-        const { result } = renderUseFormatCryptoValue();
+    ])('formats %s %s as "%s"', async (value, cryptoId, expected) => {
+        const { result } = await renderUseFormatCryptoValue();
 
         expect(result.current(value, cryptoId)).toBe(expected);
     });
@@ -45,8 +45,8 @@ describe('useFormatCryptoValue', () => {
             'solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL' as CryptoId,
             '0.1234567890123457 JTO',
         ],
-    ])('respects network decimal precision for %s %s', (value, cryptoId, expected) => {
-        const { result } = renderUseFormatCryptoValue();
+    ])('respects network decimal precision for %s %s', async (value, cryptoId, expected) => {
+        const { result } = await renderUseFormatCryptoValue();
 
         expect(result.current(value, cryptoId)).toBe(expected);
     });

@@ -4,8 +4,8 @@ import { btcAsset } from '@suite-native/trading-fixtures';
 import { TradeDetailAmountStack } from './TradeDetailAmountStack';
 
 describe('TradeDetailAmountStack', () => {
-    it('should render fiat amount without crypto icon and fiat badge', () => {
-        const { getByText, queryByText } = renderWithBasicProvider(
+    it('should render fiat amount without crypto icon and fiat badge', async () => {
+        const { getByText, queryByText } = await renderWithBasicProvider(
             <TradeDetailAmountStack
                 isCrypto={false}
                 amountString="$100.00"
@@ -18,8 +18,8 @@ describe('TradeDetailAmountStack', () => {
         expect(queryByText(/0.002/)).toBeNull();
     });
 
-    it('should render crypto amount with fiat badge', () => {
-        const { getByText } = renderWithBasicProvider(
+    it('should render crypto amount with fiat badge', async () => {
+        const { getByText } = await renderWithBasicProvider(
             <TradeDetailAmountStack
                 isCrypto={true}
                 amountString="0.5 BTC"

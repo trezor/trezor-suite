@@ -11,7 +11,7 @@ const mockConfirmApprovalThunk: any = () => () => ({
 jest.spyOn(exchangeThunks, 'confirmApprovalThunk').mockImplementation(mockConfirmApprovalThunk);
 
 describe('useApprovalFlow', () => {
-    it('should return selected quote from exchange state', () => {
+    it('should return selected quote from exchange state', async () => {
         const store = createTradingLightStore({
             tradeType: 'exchange',
             overrides: {
@@ -25,7 +25,7 @@ describe('useApprovalFlow', () => {
             },
         });
 
-        const { result } = renderHookWithStoreProvider(() => useApprovalFlow(), { store });
+        const { result } = await renderHookWithStoreProvider(() => useApprovalFlow(), { store });
 
         expect(result.current.quote).toEqual(invityDexQuote);
     });
@@ -44,7 +44,7 @@ describe('useApprovalFlow', () => {
                 },
             },
         });
-        const { result } = renderHookWithStoreProvider(() => useApprovalFlow(), { store });
+        const { result } = await renderHookWithStoreProvider(() => useApprovalFlow(), { store });
 
         await act(async () => {
             await result.current.onApprovalTypeChange('INFINITE');

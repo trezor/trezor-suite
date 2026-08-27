@@ -43,7 +43,7 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe(AccountList.name, () => {
-    const renderAccountList = (
+    const renderAccountList = async (
         props: Partial<AccountsListProps> = {},
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) => {
@@ -57,7 +57,7 @@ describe(AccountList.name, () => {
             receiveAccounts.length === 0
                 ? []
                 : [{ key: '', label: '', data: receiveAccounts, sectionData: undefined }];
-        const result = renderWithStoreProvider(
+        const result = await renderWithStoreProvider(
             <AccountList
                 symbol={symbol}
                 tradingType="buy"
@@ -79,17 +79,17 @@ describe(AccountList.name, () => {
         });
     });
 
-    it('displays all accounts for the selected network', () => {
-        const { getByText } = renderAccountList();
+    it('displays all accounts for the selected network', async () => {
+        const { getByText } = await renderAccountList();
 
         expect(getByText('BTC Account #1')).toBeTruthy();
         expect(getByText('BTC Account #2')).toBeTruthy();
     });
 
-    it('opens the address picker without changing trading state for an address-based account', () => {
-        const { getByText, store } = renderAccountList();
+    it('opens the address picker without changing trading state for an address-based account', async () => {
+        const { getByText, store } = await renderAccountList();
 
-        fireEvent.press(getByText('BTC Account #1'));
+        await fireEvent.press(getByText('BTC Account #1'));
 
         expect(navigationNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingReceiveAddress, {
             accountKey: btc1NormalAccount.key,
@@ -99,10 +99,10 @@ describe(AccountList.name, () => {
         expect(navigationPopToTop).not.toHaveBeenCalled();
     });
 
-    it('selects an account-based buy account and closes the picker', () => {
-        const { getByText, store } = renderAccountList({ symbol: 'eth' });
+    it('selects an account-based buy account and closes the picker', async () => {
+        const { getByText, store } = await renderAccountList({ symbol: 'eth' });
 
-        fireEvent.press(getByText('ETH Account #1'));
+        await fireEvent.press(getByText('ETH Account #1'));
 
         expect(selectBuySelectedReceiveAccount(store.getState())).toEqual({
             account: eth1NormalAccount,
@@ -110,10 +110,13 @@ describe(AccountList.name, () => {
         expect(navigationPopToTop).toHaveBeenCalledTimes(1);
     });
 
-    it('selects an account-based exchange account and closes the picker', () => {
-        const { getByText, store } = renderAccountList({ symbol: 'eth', tradingType: 'exchange' });
+    it('selects an account-based exchange account and closes the picker', async () => {
+        const { getByText, store } = await renderAccountList({
+            symbol: 'eth',
+            tradingType: 'exchange',
+        });
 
-        fireEvent.press(getByText('ETH Account #1'));
+        await fireEvent.press(getByText('ETH Account #1'));
 
         expect(selectExchangeSelectedReceiveAccount(store.getState())).toEqual({
             account: eth1NormalAccount,
@@ -121,19 +124,19 @@ describe(AccountList.name, () => {
         expect(navigationPopToTop).toHaveBeenCalledTimes(1);
     });
 
-    it('renders the separate add account button for a populated list', () => {
+    it('renders the separate add account button for a populated list', async () => {
         const onAddAccountTap = jest.fn();
-        const { getByText } = renderAccountList({ onAddAccountTap });
+        const { getByText } = await renderAccountList({ onAddAccountTap });
 
-        fireEvent.press(
+        await fireEvent.press(
             getByText(getTranslation('moduleAddAccounts.coinDiscoveryFinishedScreen.addButton')),
         );
 
         expect(onAddAccountTap).toHaveBeenCalledTimes(1);
     });
 
-    it('renders the redesigned empty state when no account exists', () => {
-        const { getByText } = renderAccountList(
+    it('renders the redesigned empty state when no account exists', async () => {
+        const { getByText } = await renderAccountList(
             {},
             {
                 ...defaultOverrides,

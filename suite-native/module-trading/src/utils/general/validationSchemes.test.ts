@@ -14,8 +14,8 @@ import {
 
 let formatters: ReturnType<typeof useFormatters>;
 
-beforeAll(() => {
-    const { result } = renderHookWithBasicProvider(() => useFormatters());
+beforeAll(async () => {
+    const { result } = await renderHookWithBasicProvider(() => useFormatters());
     formatters = result.current;
 });
 

@@ -92,7 +92,7 @@ describe('useAddressValidationAlerts', () => {
         preloadedState: Record<string, unknown> = defaultPreloadedState,
         { inputIndex = 0 } = {},
     ) => {
-        const result = renderHookWithStoreProvider(
+        const result = await renderHookWithStoreProvider(
             () => useAddressValidationAlerts({ inputIndex }),
             {
                 preloadedState,
@@ -198,7 +198,7 @@ describe('useAddressValidationAlerts', () => {
 
             // Simulate user clicking the primary button
             const alertCall = mockShowAlert.mock.calls[0][0];
-            act(() => {
+            await act(() => {
                 alertCall.onPressPrimaryButton();
             });
 
@@ -296,7 +296,7 @@ describe('useAddressValidationAlerts', () => {
 
             mockShowAlert.mockClear();
 
-            rerender({});
+            await rerender({});
 
             expect(mockShowAlert).not.toHaveBeenCalled();
         });

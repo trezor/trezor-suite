@@ -16,14 +16,14 @@ describe('BuyGeneralErrorScreen', () => {
         jest.clearAllMocks();
     });
 
-    it('renders unknown error text', () => {
-        const { getByText } = renderWithTradingProvider(<BuyGeneralErrorScreen />);
+    it('renders unknown error text', async () => {
+        const { getByText } = await renderWithTradingProvider(<BuyGeneralErrorScreen />);
 
         expect(getByText(getTranslation('generic.unknownError'))).toBeOnTheScreen();
     });
 
-    it('logs console.error on mount', () => {
-        renderWithTradingProvider(<BuyGeneralErrorScreen />);
+    it('logs console.error on mount', async () => {
+        await renderWithTradingProvider(<BuyGeneralErrorScreen />);
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
             'TradingBuyPreviewScreen: No quote or providerMetadata specified',

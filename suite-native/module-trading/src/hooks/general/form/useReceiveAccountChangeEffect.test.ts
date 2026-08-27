@@ -30,8 +30,8 @@ describe('useReceiveAccountChangeEffect', () => {
         }),
     } as const;
 
-    const renderUseReceiveAccountChangeEffect = () =>
-        renderHookWithStoreProvider(
+    const renderUseReceiveAccountChangeEffect = async () =>
+        await renderHookWithStoreProvider(
             () => useReceiveAccountChangeEffect(setValue, selectExchangeSelectedReceiveAccount),
             { store },
         );
@@ -48,19 +48,19 @@ describe('useReceiveAccountChangeEffect', () => {
         setValue = jest.fn();
     });
 
-    it('should set receiveAccount based on store value', () => {
-        renderUseReceiveAccountChangeEffect();
+    it('should set receiveAccount based on store value', async () => {
+        await renderUseReceiveAccountChangeEffect();
 
         expect(setValue).toHaveBeenCalledTimes(1);
         expect(setValue).toHaveBeenCalledWith('receiveAccount', undefined);
     });
 
-    it('should set receiveAccount on change', () => {
+    it('should set receiveAccount on change', async () => {
         const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
-        renderUseReceiveAccountChangeEffect();
+        await renderUseReceiveAccountChangeEffect();
 
         setValue.mockClear();
-        act(() => {
+        await act(() => {
             store.dispatch(tradingExchangeActions.setReceiveAccountKey(btc1Account.key));
         });
 

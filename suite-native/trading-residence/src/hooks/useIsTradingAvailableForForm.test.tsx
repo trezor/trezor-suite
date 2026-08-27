@@ -5,8 +5,8 @@ import { useIsTradingAvailableForForm } from './useIsTradingAvailableForForm';
 import { LocationForm } from '../components/LocationForm';
 
 describe('useIsTradingAvailableForForm', () => {
-    const renderUseIsTradingAvailableForForm = (preloadedState: Record<string, unknown>) =>
-        renderHookWithStoreProvider(() => useIsTradingAvailableForForm(), {
+    const renderUseIsTradingAvailableForForm = async (preloadedState: Record<string, unknown>) =>
+        await renderHookWithStoreProvider(() => useIsTradingAvailableForForm(), {
             wrapper: LocationForm,
             preloadedState,
         });
@@ -25,12 +25,12 @@ describe('useIsTradingAvailableForForm', () => {
         [true, 'US', 'CA'],
     ])(
         'should be [%s] for country [%s] and subdivision [%s]',
-        (expectedValue, country, countrySubdivision) => {
+        async (expectedValue, country, countrySubdivision) => {
             const preloadedState = {
                 wallet: { trading: { residence: { country, countrySubdivision } } },
             };
 
-            const { result } = renderUseIsTradingAvailableForForm(preloadedState);
+            const { result } = await renderUseIsTradingAvailableForForm(preloadedState);
 
             expect(result.current).toEqual(expectedValue);
         },

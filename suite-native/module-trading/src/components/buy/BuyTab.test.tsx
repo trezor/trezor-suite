@@ -40,8 +40,8 @@ describe('BuyTab', () => {
         (selectIsTradingBuyEnabled as jest.Mock).mockReturnValue(true);
     });
 
-    const renderBuyTab = (overrides?: PreloadedStatePartial<TradingTestPreloadedState>) =>
-        renderWithTradingProvider(<BuyTab />, { overrides });
+    const renderBuyTab = async (overrides?: PreloadedStatePartial<TradingTestPreloadedState>) =>
+        await renderWithTradingProvider(<BuyTab />, { overrides });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);
@@ -57,50 +57,50 @@ describe('BuyTab', () => {
         expect(screen.getByText("It's not you, it's us.")).toBeTruthy();
     };
 
-    it('should render Buy skeleton when isLoading is true', () => {
+    it('should render Buy skeleton when isLoading is true', async () => {
         mockUseTradingBuyData.mockReturnValue({
             isLoading: true,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        renderBuyTab();
+        await renderBuyTab();
 
         expectSkeleton();
     });
 
-    it('should render Buy skeleton when lastLoadedTimestamp is 0', () => {
+    it('should render Buy skeleton when lastLoadedTimestamp is 0', async () => {
         mockUseTradingBuyData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 0,
             isFullyLoaded: false,
         });
 
-        renderBuyTab();
+        await renderBuyTab();
 
         expectSkeleton();
     });
 
-    it('should render Buy form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', () => {
+    it('should render Buy form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', async () => {
         mockUseTradingBuyData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: true,
         });
 
-        renderBuyTab();
+        await renderBuyTab();
 
         expectBuyForm();
     });
 
-    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', () => {
+    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', async () => {
         mockUseTradingBuyData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        renderBuyTab();
+        await renderBuyTab();
 
         expectServerOffline();
     });
@@ -118,7 +118,7 @@ describe('BuyTab', () => {
                 isFullyLoaded: true,
             });
 
-        const { getByText } = renderBuyTab();
+        const { getByText } = await renderBuyTab();
 
         const reloadButton = getByText(getTranslation('tradingAtoms.error.serverOfflineRetry'));
 
@@ -132,9 +132,9 @@ describe('BuyTab', () => {
         expect(mockUseTradingBuyData).toHaveBeenCalledWith(1);
     });
 
-    it('should render disabled info when buy is disabled by FFs', () => {
+    it('should render disabled info when buy is disabled by FFs', async () => {
         (selectIsTradingBuyEnabled as jest.Mock).mockReturnValue(false);
-        const { getByText } = renderBuyTab();
+        const { getByText } = await renderBuyTab();
 
         expect(
             getByText(

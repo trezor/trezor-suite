@@ -54,14 +54,14 @@ const alertLabelsCases: AlertLabelsCase[] = [
     },
 ];
 
-const renderAlert = ({
+const renderAlert = async ({
     alertType,
     trade = getBuyTrade({ status: 'SUBMITTED' }),
 }: {
     alertType: TradeStatusStep;
     trade?: TradingTransaction;
 }) =>
-    renderWithStoreProvider(
+    await renderWithStoreProvider(
         <TradeDetailAlert alertType={alertType} orderId={trade.data.orderId} />,
         {
             preloadedState: {
@@ -82,16 +82,16 @@ describe('TradeDetailAlert', () => {
 
     it.each(alertLabelsCases)(
         'should render translated labels for $alertType alert',
-        ({ alertType, titleKey, descriptionKey }) => {
-            const { getByText } = renderAlert({ alertType });
+        async ({ alertType, titleKey, descriptionKey }) => {
+            const { getByText } = await renderAlert({ alertType });
 
             expect(getByText(getTranslation(titleKey))).toBeOnTheScreen();
             expect(getByText(getTranslation(descriptionKey))).toBeOnTheScreen();
         },
     );
 
-    it('should render proceed payment button for waiting alert', () => {
-        const { getByText } = renderAlert({ alertType: 'waiting' });
+    it('should render proceed payment button for waiting alert', async () => {
+        const { getByText } = await renderAlert({ alertType: 'waiting' });
 
         expect(
             getByText(getTranslation('moduleTrading.tradeHistory.detail.waitingAlert.button')),
@@ -111,8 +111,8 @@ describe('TradeDetailAlert', () => {
             getExchangeTrade({ status: 'ERROR' }),
             'moduleTrading.tradeHistory.detail.errorAlert.swapDescription',
         ],
-    ] as const)('should use trade-specific error description key', (trade, key) => {
-        const { getByText } = renderAlert({ alertType: 'error', trade });
+    ] as const)('should use trade-specific error description key', async (trade, key) => {
+        const { getByText } = await renderAlert({ alertType: 'error', trade });
 
         expect(getByText(getTranslation(key))).toBeOnTheScreen();
     });

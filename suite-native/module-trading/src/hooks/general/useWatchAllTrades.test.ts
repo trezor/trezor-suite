@@ -64,12 +64,12 @@ describe('useWatchAllTrades', () => {
             },
         });
 
-    const renderUseWatchAllTrades = (store: TestStore) =>
-        renderHookWithTradingProvider(() => useWatchAllTrades(), { store });
+    const renderUseWatchAllTrades = async (store: TestStore) =>
+        await renderHookWithTradingProvider(() => useWatchAllTrades(), { store });
 
-    it('should return empty arrays when no trades', () => {
+    it('should return empty arrays when no trades', async () => {
         const store = getInitializedStore();
-        const { result } = renderUseWatchAllTrades(store);
+        const { result } = await renderUseWatchAllTrades(store);
 
         expect(result.current.allTrades).toEqual([]);
         expect(result.current.tradesToWatch).toEqual([]);
@@ -77,7 +77,7 @@ describe('useWatchAllTrades', () => {
         expect(result.current.tradesWatching).toBe(0);
     });
 
-    it('should return trades for the current device', () => {
+    it('should return trades for the current device', async () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
         const sellTrade = getSellTrade({ status: 'SEND_CRYPTO' });
@@ -85,13 +85,13 @@ describe('useWatchAllTrades', () => {
         const store = getInitializedStore({
             trades: [buyTrade, exchangeTrade, sellTrade],
         });
-        const { result } = renderUseWatchAllTrades(store);
+        const { result } = await renderUseWatchAllTrades(store);
 
         expect(result.current.allTrades).toHaveLength(3);
         expect(result.current.totalTrades).toBe(3);
     });
 
-    it('should return trades to watch from useAllTradesReloadTimer', () => {
+    it('should return trades to watch from useAllTradesReloadTimer', async () => {
         const mockTradesToWatch = [
             getBuyTrade({ status: 'SUBMITTED' }),
             getExchangeTrade({ status: 'CONVERTING' }),
@@ -107,7 +107,7 @@ describe('useWatchAllTrades', () => {
         });
 
         const store = getInitializedStore();
-        const { result } = renderUseWatchAllTrades(store);
+        const { result } = await renderUseWatchAllTrades(store);
 
         expect(result.current.tradesToWatch).toEqual(mockTradesToWatch);
         expect(result.current.tradesWatching).toBe(2);
@@ -127,7 +127,7 @@ describe('useWatchAllTrades', () => {
         });
 
         const store = getInitializedStore();
-        renderUseWatchAllTrades(store);
+        await renderUseWatchAllTrades(store);
 
         // Wait for the effect to run
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -150,7 +150,7 @@ describe('useWatchAllTrades', () => {
         });
 
         const store = getInitializedStore();
-        renderUseWatchAllTrades(store);
+        await renderUseWatchAllTrades(store);
 
         // Wait for the effect to run
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -172,7 +172,7 @@ describe('useWatchAllTrades', () => {
         });
 
         const store = getInitializedStore();
-        renderUseWatchAllTrades(store);
+        await renderUseWatchAllTrades(store);
 
         // Wait for the effect to run
         await new Promise(resolve => setTimeout(resolve, 0));

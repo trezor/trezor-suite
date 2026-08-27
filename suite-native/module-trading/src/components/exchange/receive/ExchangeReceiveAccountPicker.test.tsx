@@ -50,8 +50,8 @@ describe('ExchangeReceiveAccountPicker', () => {
         featureFlags: createTradingFeatureFlags(),
     };
 
-    const renderExchangeForm = () => {
-        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+    const renderExchangeForm = async () => {
+        const { result } = await renderHookWithTradingProvider(() => useExchangeForm(), {
             tradeType: 'exchange',
             overrides: baseOverrides,
         });
@@ -59,40 +59,40 @@ describe('ExchangeReceiveAccountPicker', () => {
         return result.current;
     };
 
-    const renderPicker = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
-        renderWithTradingProvider(<ExchangeReceiveAccountPicker />, {
+    const renderPicker = async (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        await renderWithTradingProvider(<ExchangeReceiveAccountPicker />, {
             tradeType: 'exchange',
             overrides: mergeDeepObject(baseOverrides, overrides),
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
         });
 
-    const setSelectedAsset = (asset: TradeableAsset) => {
-        act(() => {
+    const setSelectedAsset = async (asset: TradeableAsset) => {
+        await act(() => {
             exchangeForm.setValue('receiveAsset', asset);
         });
     };
 
-    beforeEach(() => {
+    beforeEach(async () => {
         jest.clearAllMocks();
-        exchangeForm = renderExchangeForm();
+        exchangeForm = await renderExchangeForm();
     });
 
-    it('should display nothing when selectedSymbol is not specified', () => {
-        const { toJSON } = renderPicker();
+    it('should display nothing when selectedSymbol is not specified', async () => {
+        const { toJSON } = await renderPicker();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should display "Not selected" when asset is not specified', () => {
-        setSelectedAsset(btcAsset);
-        const { getByText } = renderPicker();
+    it('should display "Not selected" when asset is not specified', async () => {
+        await setSelectedAsset(btcAsset);
+        const { getByText } = await renderPicker();
 
         expect(getByText(getTranslation('moduleTrading.notSelected'))).toBeTruthy();
     });
 
-    it('should display selected account name', () => {
-        setSelectedAsset(btcAsset);
-        const { getByText } = renderPicker(
+    it('should display selected account name', async () => {
+        await setSelectedAsset(btcAsset);
+        const { getByText } = await renderPicker(
             exchangeStateWithReceiveAccount({
                 account: btc1NormalAccount,
                 address: btc1NormalAccount.addresses?.used[0],
@@ -102,16 +102,18 @@ describe('ExchangeReceiveAccountPicker', () => {
         expect(getByText(btcAccountName1)).toBeTruthy();
     });
 
-    it('should call navigate with correct params on press', () => {
-        setSelectedAsset(btcAsset);
-        const { getByText } = renderPicker(
+    it('should call navigate with correct params on press', async () => {
+        await setSelectedAsset(btcAsset);
+        const { getByText } = await renderPicker(
             exchangeStateWithReceiveAccount({
                 account: btc1NormalAccount,
                 address: btc1NormalAccount.addresses?.used[0],
             }),
         );
 
-        fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')));
+        await fireEvent.press(
+            getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
+        );
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', {

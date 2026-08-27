@@ -15,7 +15,7 @@ const renderSheet = async (
     quote = testQuote,
     selectedApprovalType: 'INFINITE' | 'MINIMAL' = 'INFINITE',
 ) => {
-    const res = renderWithTradingProvider(
+    const res = await renderWithTradingProvider(
         <ExchangeApprovalLimitSheet
             isVisible={isVisible}
             onDismiss={mockOnDismiss}

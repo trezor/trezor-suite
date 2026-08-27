@@ -3,8 +3,8 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { EdgeFades } from './EdgeFades';
 
 describe('EdgeFades', () => {
-    it('renders horizontal fades at the left and right edges', () => {
-        const { getByTestId } = renderWithBasicProvider(
+    it('renders horizontal fades at the left and right edges', async () => {
+        const { getByTestId } = await renderWithBasicProvider(
             <EdgeFades direction="horizontal" startSize={20} endSize={32} testID="edge-fades" />,
         );
 
@@ -27,8 +27,8 @@ describe('EdgeFades', () => {
         });
     });
 
-    it('renders vertical fades at the top and bottom edges', () => {
-        const { getByTestId } = renderWithBasicProvider(
+    it('renders vertical fades at the top and bottom edges', async () => {
+        const { getByTestId } = await renderWithBasicProvider(
             <EdgeFades direction="vertical" startSize={24} endSize={40} testID="edge-fades" />,
         );
 

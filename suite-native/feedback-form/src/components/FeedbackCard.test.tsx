@@ -25,8 +25,8 @@ describe('FeedbackCard', () => {
     const presentSpy = jest.spyOn(BottomSheetModal.prototype, 'present');
     const dismissSpy = jest.spyOn(BottomSheetModal.prototype, 'dismiss');
 
-    const renderFeedbackCard = (props?: Partial<Parameters<typeof FeedbackCard>[0]>) =>
-        renderWithBasicProvider(
+    const renderFeedbackCard = async (props?: Partial<Parameters<typeof FeedbackCard>[0]>) =>
+        await renderWithBasicProvider(
             <FeedbackCard
                 heading={HEADING}
                 description={DESCRIPTION}
@@ -39,9 +39,9 @@ describe('FeedbackCard', () => {
             />,
         );
 
-    const dismissSheet = () => {
+    const dismissSheet = async () => {
         const sheetInstance = presentSpy.mock.contexts[0];
-        act(() => {
+        await act(() => {
             sheetInstance.dismiss();
         });
     };
@@ -50,8 +50,8 @@ describe('FeedbackCard', () => {
         jest.clearAllMocks();
     });
 
-    it('shows the heading and the five rating buttons in the card', () => {
-        renderFeedbackCard();
+    it('shows the heading and the five rating buttons in the card', async () => {
+        await renderFeedbackCard();
 
         expect(screen.getByText(HEADING)).toBeOnTheScreen();
         ['1', '2', '3', '4', '5'].forEach(rating => {
@@ -59,21 +59,21 @@ describe('FeedbackCard', () => {
         });
     });
 
-    it('opens the feedback sheet with the pressed rating preselected', () => {
-        renderFeedbackCard();
+    it('opens the feedback sheet with the pressed rating preselected', async () => {
+        await renderFeedbackCard();
 
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
 
         expect(presentSpy).toHaveBeenCalledTimes(1);
         expectSheetRatingSelection('4', true);
         expectSheetRatingSelection('3', false);
     });
 
-    it('allows changing the rating inside the sheet', () => {
-        renderFeedbackCard();
+    it('allows changing the rating inside the sheet', async () => {
+        await renderFeedbackCard();
 
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
-        fireEvent.press(screen.getByTestId('@feedback-form/sheet/rating/2'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/sheet/rating/2'));
 
         expectSheetRatingSelection('2', true);
         expectSheetRatingSelection('4', false);
@@ -81,51 +81,51 @@ describe('FeedbackCard', () => {
         expect(presentSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('calls onRatingSelect when a card rating is pressed', () => {
-        renderFeedbackCard({ onRatingSelect });
+    it('calls onRatingSelect when a card rating is pressed', async () => {
+        await renderFeedbackCard({ onRatingSelect });
 
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
 
         expect(onRatingSelect).toHaveBeenCalledTimes(1);
         expect(onRatingSelect).toHaveBeenCalledWith('4');
     });
 
-    it('calls onRatingSelect again when the rating is changed inside the sheet', () => {
-        renderFeedbackCard({ onRatingSelect });
+    it('calls onRatingSelect again when the rating is changed inside the sheet', async () => {
+        await renderFeedbackCard({ onRatingSelect });
 
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
-        fireEvent.press(screen.getByTestId('@feedback-form/sheet/rating/2'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/sheet/rating/2'));
 
         expect(onRatingSelect).toHaveBeenCalledTimes(2);
         expect(onRatingSelect).toHaveBeenLastCalledWith('2');
     });
 
-    it('does not render the description row when no description is provided', () => {
-        renderFeedbackCard({ description: undefined });
+    it('does not render the description row when no description is provided', async () => {
+        await renderFeedbackCard({ description: undefined });
 
         expect(screen.queryByText(DESCRIPTION)).not.toBeOnTheScreen();
         expect(screen.getByTestId('@feedback-form/description-input')).toBeOnTheScreen();
     });
 
-    it('does not submit while the feedback text is missing', () => {
-        renderFeedbackCard();
+    it('does not submit while the feedback text is missing', async () => {
+        await renderFeedbackCard();
 
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
-        fireEvent.changeText(screen.getByTestId('@feedback-form/description-input'), '   ');
-        fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+        await fireEvent.changeText(screen.getByTestId('@feedback-form/description-input'), '   ');
+        await fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
 
         expect(onSubmit).not.toHaveBeenCalled();
     });
 
-    it('submits the rating and feedback, then shows the success view without closing the sheet', () => {
-        renderFeedbackCard();
+    it('submits the rating and feedback, then shows the success view without closing the sheet', async () => {
+        await renderFeedbackCard();
 
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/5'));
-        fireEvent.changeText(
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/5'));
+        await fireEvent.changeText(
             screen.getByTestId('@feedback-form/description-input'),
             'Smooth and fast',
         );
-        fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
 
         expect(onSubmit).toHaveBeenCalledWith('5', 'Smooth and fast');
         // Both the sheet and the card behind it switch to the success view.
@@ -138,29 +138,32 @@ describe('FeedbackCard', () => {
         expect(dismissSpy).not.toHaveBeenCalled();
     });
 
-    it('closes the sheet when the close button is pressed after submitting', () => {
-        renderFeedbackCard();
+    it('closes the sheet when the close button is pressed after submitting', async () => {
+        await renderFeedbackCard();
 
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/5'));
-        fireEvent.changeText(
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/5'));
+        await fireEvent.changeText(
             screen.getByTestId('@feedback-form/description-input'),
             'Smooth and fast',
         );
-        fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
-        fireEvent.press(screen.getByTestId('@feedback-form/close-button'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/close-button'));
 
         expect(dismissSpy).toHaveBeenCalledTimes(1);
         // The card keeps the success view after the sheet is closed.
         expect(screen.getAllByText(SUCCESS_HEADING).length).toBeGreaterThan(0);
     });
 
-    it('resets the form when the sheet is dismissed without submitting', () => {
-        renderFeedbackCard();
+    it('resets the form when the sheet is dismissed without submitting', async () => {
+        await renderFeedbackCard();
 
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/3'));
-        fireEvent.changeText(screen.getByTestId('@feedback-form/description-input'), 'Draft text');
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/3'));
+        await fireEvent.changeText(
+            screen.getByTestId('@feedback-form/description-input'),
+            'Draft text',
+        );
 
-        dismissSheet();
+        await dismissSheet();
 
         expectSheetRatingSelection('3', false);
         expect(screen.getByTestId('@feedback-form/description-input')).toHaveProp('value', '');
@@ -168,8 +171,8 @@ describe('FeedbackCard', () => {
         expect(screen.getByText(HEADING)).toBeOnTheScreen();
     });
 
-    it('renders the success view directly when defaultView is "success"', () => {
-        renderFeedbackCard({ defaultView: 'success' });
+    it('renders the success view directly when defaultView is "success"', async () => {
+        await renderFeedbackCard({ defaultView: 'success' });
 
         expect(screen.getAllByText(SUCCESS_HEADING).length).toBeGreaterThan(0);
         expect(screen.queryByText(HEADING)).not.toBeOnTheScreen();

@@ -46,8 +46,8 @@ jest.mock('@suite-native/alerts', () => ({
 describe('useReceiveQRCodeActions', () => {
     const qrCodeView = {} as ViewShotRef;
 
-    const renderUseReceiveQRCodeActions = () =>
-        renderHookWithBasicProvider(() => useReceiveQRCodeActions(), { services });
+    const renderUseReceiveQRCodeActions = async () =>
+        await renderHookWithBasicProvider(() => useReceiveQRCodeActions(), { services });
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -60,7 +60,7 @@ describe('useReceiveQRCodeActions', () => {
     });
 
     it('shares the QR code image', async () => {
-        const { result } = renderUseReceiveQRCodeActions();
+        const { result } = await renderUseReceiveQRCodeActions();
         result.current.qrCodeViewRef.current = qrCodeView;
 
         await act(() => result.current.handleShareQRCode());
@@ -82,7 +82,7 @@ describe('useReceiveQRCodeActions', () => {
 
     it('copies the QR code image', async () => {
         mockCaptureRef.mockResolvedValue('base64-image');
-        const { result } = renderUseReceiveQRCodeActions();
+        const { result } = await renderUseReceiveQRCodeActions();
         result.current.qrCodeViewRef.current = qrCodeView;
 
         await act(() => result.current.handleCopyQRCode());
@@ -104,7 +104,7 @@ describe('useReceiveQRCodeActions', () => {
     });
 
     it('saves the QR code image', async () => {
-        const { result } = renderUseReceiveQRCodeActions();
+        const { result } = await renderUseReceiveQRCodeActions();
         result.current.qrCodeViewRef.current = qrCodeView;
 
         await act(() => result.current.handleSaveQRCode());
@@ -131,7 +131,7 @@ describe('useReceiveQRCodeActions', () => {
 
     it('does not save the QR code image when media library permission is denied', async () => {
         mockRequestPermissionsAsync.mockResolvedValue({ granted: false });
-        const { result } = renderUseReceiveQRCodeActions();
+        const { result } = await renderUseReceiveQRCodeActions();
         result.current.qrCodeViewRef.current = qrCodeView;
 
         await act(() => result.current.handleSaveQRCode());
@@ -161,7 +161,7 @@ describe('useReceiveQRCodeActions', () => {
     });
 
     it('shows an error when the QR code is not available', async () => {
-        const { result } = renderUseReceiveQRCodeActions();
+        const { result } = await renderUseReceiveQRCodeActions();
 
         await act(() => result.current.handleShareQRCode());
 

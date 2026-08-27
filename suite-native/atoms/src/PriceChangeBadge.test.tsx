@@ -15,45 +15,47 @@ jest.mock('./Skeleton/BoxSkeleton', () => ({
 describe('PriceChangeBadge', () => {
     let colors: NativeStyleUtils['colors'];
 
-    beforeAll(() => {
-        const { result } = renderHook(() => useNativeStyles(), { wrapper: BasicProviderForTests });
+    beforeAll(async () => {
+        const { result } = await renderHook(() => useNativeStyles(), {
+            wrapper: BasicProviderForTests,
+        });
         ({ colors } = result.current.utils);
     });
 
-    it('should render green badge for change > 0', () => {
-        const { getByText } = renderWithBasicProvider(
+    it('should render green badge for change > 0', async () => {
+        const { getByText } = await renderWithBasicProvider(
             <PriceChangeBadge valuePercentageChange={0.01} />,
         );
 
         expect(getByText('1.00%')).toHaveStyle({ color: colors.contentBrand });
     });
 
-    it('should render green badge for change = 0', () => {
-        const { getByText } = renderWithBasicProvider(
+    it('should render green badge for change = 0', async () => {
+        const { getByText } = await renderWithBasicProvider(
             <PriceChangeBadge valuePercentageChange={0} />,
         );
 
         expect(getByText('0.00%')).toHaveStyle({ color: colors.contentBrand });
     });
 
-    it('should render red badge for change < 0', () => {
-        const { getByText } = renderWithBasicProvider(
+    it('should render red badge for change < 0', async () => {
+        const { getByText } = await renderWithBasicProvider(
             <PriceChangeBadge valuePercentageChange={-0.01} />,
         );
 
         expect(getByText('-1.00%')).toHaveStyle({ color: colors.contentCritical });
     });
 
-    it('should render skeleton when value is null', () => {
-        const { getByTestId } = renderWithBasicProvider(
+    it('should render skeleton when value is null', async () => {
+        const { getByTestId } = await renderWithBasicProvider(
             <PriceChangeBadge valuePercentageChange={null} />,
         );
 
         expect(getByTestId('skeleton-box')).toBeTruthy();
     });
 
-    it('should render 3 significant digits', () => {
-        const { getByText } = renderWithBasicProvider(
+    it('should render 3 significant digits', async () => {
+        const { getByText } = await renderWithBasicProvider(
             <PriceChangeBadge valuePercentageChange={0.1234} />,
         );
 

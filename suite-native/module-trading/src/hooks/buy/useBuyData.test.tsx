@@ -53,7 +53,7 @@ describe('useBuyData', () => {
     };
 
     const renderUseBuyData = async (reloadRequestOrdinalInitialValue: number, store: TestStore) => {
-        const ret = renderHookWithStoreProvider(
+        const ret = await renderHookWithStoreProvider(
             ({ reloadRequestOrdinal }) => useBuyData(reloadRequestOrdinal),
             {
                 initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
@@ -110,7 +110,7 @@ describe('useBuyData', () => {
 
         const store = configureMockStore({ reducer });
         const { rerender } = await renderUseBuyData(0, store);
-        rerender({ reloadRequestOrdinal: 0 });
+        await rerender({ reloadRequestOrdinal: 0 });
 
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
     });
@@ -122,7 +122,7 @@ describe('useBuyData', () => {
 
         const store = configureMockStore({ reducer });
         const { rerender } = await renderUseBuyData(0, store);
-        rerender({ reloadRequestOrdinal: 1 });
+        await rerender({ reloadRequestOrdinal: 1 });
 
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(2);
     });
@@ -143,7 +143,7 @@ describe('useBuyData', () => {
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingBuyActions.setTradingAccountKey(btc2Account.key));
             });
 
@@ -165,7 +165,7 @@ describe('useBuyData', () => {
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingBuyActions.setTradingAccountKey(btc2Account.key));
             });
 
@@ -184,7 +184,7 @@ describe('useBuyData', () => {
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingBuyActions.setTradingAccountKey(btc3Account.key));
             });
 
@@ -207,7 +207,7 @@ describe('useBuyData', () => {
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingBuyActions.setTradingAccountKey(undefined));
             });
 

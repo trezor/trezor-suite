@@ -10,21 +10,21 @@ jest.mock('@suite-common/device', () => ({
 }));
 
 describe('useDelayedReviewOutputListDisplayFlag', () => {
-    const renderUseRequestDelayedNavigationToOutputsReview = () =>
-        renderHookWithStoreProvider(() => useDelayedReviewOutputListDisplayFlag());
+    const renderUseRequestDelayedNavigationToOutputsReview = async () =>
+        await renderHookWithStoreProvider(() => useDelayedReviewOutputListDisplayFlag());
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should became once there are any button requests', () => {
-        const { result, rerender } = renderUseRequestDelayedNavigationToOutputsReview();
+    it('should became once there are any button requests', async () => {
+        const { result, rerender } = await renderUseRequestDelayedNavigationToOutputsReview();
 
         expect(result.current).toBe(false);
 
         // we are using mocked selector, so we need to rerender the hook to get updated value
         mockSelectDeviceButtonRequestsCodes.mockReturnValue(['buttonRequestMock1']);
-        rerender({});
+        await rerender({});
 
         expect(result.current).toBe(true);
     });

@@ -30,8 +30,8 @@ const ethAccountKey = mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' }
 describe('ApprovalButton', () => {
     let store: TestStore;
 
-    const renderApprovalButton = (props: Partial<ApprovalButtonProps>) =>
-        renderWithStoreProvider(<ApprovalButton flowType="approve" isReady {...props} />, {
+    const renderApprovalButton = async (props: Partial<ApprovalButtonProps>) =>
+        await renderWithStoreProvider(<ApprovalButton flowType="approve" isReady {...props} />, {
             store,
         });
 
@@ -53,16 +53,16 @@ describe('ApprovalButton', () => {
         });
     });
 
-    it('should render continue button when isReady is true', () => {
-        const { getByText } = renderApprovalButton({ isReady: true });
+    it('should render continue button when isReady is true', async () => {
+        const { getByText } = await renderApprovalButton({ isReady: true });
 
         const button = getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue'));
         expect(button).toBeOnTheScreen();
         expect(button).toBeEnabled();
     });
 
-    it('should render disabled button when isReady is false', () => {
-        const { getByText } = renderApprovalButton({ isReady: false });
+    it('should render disabled button when isReady is false', async () => {
+        const { getByText } = await renderApprovalButton({ isReady: false });
 
         const button = getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue'));
         expect(button).toBeOnTheScreen();
@@ -70,7 +70,7 @@ describe('ApprovalButton', () => {
     });
 
     it('should navigate to TradingExchangeOutputsReview on press', async () => {
-        const { getByText } = renderApprovalButton({ isReady: true });
+        const { getByText } = await renderApprovalButton({ isReady: true });
 
         await userEvent.press(
             getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
@@ -85,7 +85,7 @@ describe('ApprovalButton', () => {
     });
 
     it('should report to analytics on press', async () => {
-        const { getByText } = renderApprovalButton({ isReady: true });
+        const { getByText } = await renderApprovalButton({ isReady: true });
 
         await userEvent.press(
             getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
@@ -95,7 +95,7 @@ describe('ApprovalButton', () => {
     });
 
     it('should navigate to TradingExchangeOutputsReview on press for flowType revoke', async () => {
-        const { getByText } = renderApprovalButton({ isReady: true, flowType: 'revoke' });
+        const { getByText } = await renderApprovalButton({ isReady: true, flowType: 'revoke' });
 
         await userEvent.press(
             getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
@@ -110,7 +110,7 @@ describe('ApprovalButton', () => {
     });
 
     it('should report to analytics on press for flowType revoke', async () => {
-        const { getByText } = renderApprovalButton({ isReady: true, flowType: 'revoke' });
+        const { getByText } = await renderApprovalButton({ isReady: true, flowType: 'revoke' });
 
         await userEvent.press(
             getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
@@ -119,10 +119,10 @@ describe('ApprovalButton', () => {
         expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-preview', 'continue');
     });
 
-    it('should render nothing when no selected quote is provided', () => {
+    it('should render nothing when no selected quote is provided', async () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { toJSON } = renderApprovalButton({ isReady: true });
+        const { toJSON } = await renderApprovalButton({ isReady: true });
 
         expect(toJSON()).toBeNull();
     });

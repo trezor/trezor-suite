@@ -18,30 +18,33 @@ const reportMock = jest.fn();
 const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(reportMock) };
 
 describe('TradingDetailFeedback', () => {
-    const renderTradingDetailFeedback = (
+    const renderTradingDetailFeedback = async (
         props: Partial<Parameters<typeof TradingDetailFeedback>[0]> = {},
     ) =>
-        renderWithTradingHistoryProvider(<TradingDetailFeedback type="exchange" {...props} />, {
-            services,
-            overrides: {
-                geolocation: { countryCode: 'CZ' },
-                analytics: { instanceId: 'test-instance' },
+        await renderWithTradingHistoryProvider(
+            <TradingDetailFeedback type="exchange" {...props} />,
+            {
+                services,
+                overrides: {
+                    geolocation: { countryCode: 'CZ' },
+                    analytics: { instanceId: 'test-instance' },
+                },
             },
-        });
+        );
 
     beforeEach(() => {
         sendFeedbackActionMock.mockClear();
         reportMock.mockClear();
     });
 
-    it('renders the feedback card heading', () => {
-        renderTradingDetailFeedback();
+    it('renders the feedback card heading', async () => {
+        await renderTradingDetailFeedback();
 
         expect(screen.getByText(getTranslation('feedbackForm.title'))).toBeOnTheScreen();
     });
 
-    it('sends a trade feedback with the selected rating and typed description on submit', () => {
-        renderTradingDetailFeedback({
+    it('sends a trade feedback with the selected rating and typed description on submit', async () => {
+        await renderTradingDetailFeedback({
             status: 'CONFIRMED',
             provider: 'changelly',
             id: 'order-1',
@@ -50,9 +53,12 @@ describe('TradingDetailFeedback', () => {
             country: 'US',
         });
 
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
-        fireEvent.changeText(screen.getByTestId('@feedback-form/description-input'), 'Great!');
-        fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+        await fireEvent.changeText(
+            screen.getByTestId('@feedback-form/description-input'),
+            'Great!',
+        );
+        await fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
 
         expect(sendFeedbackActionMock).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -73,11 +79,11 @@ describe('TradingDetailFeedback', () => {
         );
     });
 
-    it('does not send feedback until a rating and description are provided', () => {
-        renderTradingDetailFeedback();
+    it('does not send feedback until a rating and description are provided', async () => {
+        await renderTradingDetailFeedback();
 
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
-        fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
 
         expect(sendFeedbackActionMock).not.toHaveBeenCalled();
         expect(reportMock).not.toHaveBeenCalledWith(
@@ -85,10 +91,10 @@ describe('TradingDetailFeedback', () => {
         );
     });
 
-    it('reports the rating selected event with the rating, category, trade context and provider', () => {
-        renderTradingDetailFeedback({ provider: 'changelly' });
+    it('reports the rating selected event with the rating, category, trade context and provider', async () => {
+        await renderTradingDetailFeedback({ provider: 'changelly' });
 
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
 
         expect(reportMock).toHaveBeenCalledWith({
             type: events.feedbackRatingSelectedEvent.name,
@@ -96,12 +102,15 @@ describe('TradingDetailFeedback', () => {
         });
     });
 
-    it('reports the feedback sent event on submit', () => {
-        renderTradingDetailFeedback({ provider: 'changelly' });
+    it('reports the feedback sent event on submit', async () => {
+        await renderTradingDetailFeedback({ provider: 'changelly' });
 
-        fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
-        fireEvent.changeText(screen.getByTestId('@feedback-form/description-input'), 'Great!');
-        fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+        await fireEvent.changeText(
+            screen.getByTestId('@feedback-form/description-input'),
+            'Great!',
+        );
+        await fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
 
         expect(reportMock).toHaveBeenCalledWith({
             type: events.feedbackSentEvent.name,

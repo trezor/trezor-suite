@@ -45,8 +45,8 @@ const cancelNavigationTarget = {
     name: RootStackRoutes.TransactionDetailStack,
 } as unknown as NavigateParameters<RootStackParamList>;
 
-const renderGuardedSign = (sign: () => Promise<void>) =>
-    renderHookWithStoreProvider(() => useDeviceGuardedSign({ sign, cancelNavigationTarget }));
+const renderGuardedSign = async (sign: () => Promise<void>) =>
+    await renderHookWithStoreProvider(() => useDeviceGuardedSign({ sign, cancelNavigationTarget }));
 
 describe('useDeviceGuardedSign', () => {
     beforeEach(() => {
@@ -56,10 +56,10 @@ describe('useDeviceGuardedSign', () => {
         selectDeviceButtonRequestsCodesMock.mockReturnValue(NO_BUTTON_REQUESTS);
     });
 
-    it('routes requestSign through the device-connection guard, forwarding the cancel target', () => {
-        const { result } = renderGuardedSign(jest.fn().mockResolvedValue(undefined));
+    it('routes requestSign through the device-connection guard, forwarding the cancel target', async () => {
+        const { result } = await renderGuardedSign(jest.fn().mockResolvedValue(undefined));
 
-        act(() => result.current.requestSign());
+        await act(() => result.current.requestSign());
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.AuthorizeDeviceStack, {
             screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
@@ -69,9 +69,9 @@ describe('useDeviceGuardedSign', () => {
 
     it('runs the pending sign when the screen regains focus with an authorized device', async () => {
         const sign = jest.fn().mockResolvedValue(undefined);
-        const { result } = renderGuardedSign(sign);
+        const { result } = await renderGuardedSign(sign);
 
-        act(() => result.current.requestSign());
+        await act(() => result.current.requestSign());
         await act(async () => {
             capturedFocusHandler?.();
             await Promise.resolve();
@@ -83,9 +83,9 @@ describe('useDeviceGuardedSign', () => {
     it('does not sign on focus when the device is not authorized', async () => {
         selectIsDeviceConnectedAndAuthorizedMock.mockReturnValue(false);
         const sign = jest.fn().mockResolvedValue(undefined);
-        const { result } = renderGuardedSign(sign);
+        const { result } = await renderGuardedSign(sign);
 
-        act(() => result.current.requestSign());
+        await act(() => result.current.requestSign());
         await act(async () => {
             capturedFocusHandler?.();
             await Promise.resolve();
@@ -96,7 +96,7 @@ describe('useDeviceGuardedSign', () => {
 
     it('does not sign on focus when no sign was requested', async () => {
         const sign = jest.fn().mockResolvedValue(undefined);
-        renderGuardedSign(sign);
+        await renderGuardedSign(sign);
 
         await act(async () => {
             capturedFocusHandler?.();
@@ -115,12 +115,12 @@ describe('useDeviceGuardedSign', () => {
                     resolveSign = resolve;
                 }),
         );
-        const { result } = renderGuardedSign(sign);
+        const { result } = await renderGuardedSign(sign);
 
         expect(result.current.isSigning).toBe(false);
         expect(result.current.isWaitingForDevice).toBe(false);
 
-        act(() => result.current.requestSign());
+        await act(() => result.current.requestSign());
         await act(async () => {
             capturedFocusHandler?.();
             await Promise.resolve();

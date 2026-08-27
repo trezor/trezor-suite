@@ -44,101 +44,101 @@ describe('useActiveTradingTypeReaction', () => {
         }),
     } as const;
 
-    const renderUseActiveTradingTypeReaction = (store: TestStore) =>
-        renderHookWithStoreProvider(() => useActiveTradingTypeReaction(), { store });
+    const renderUseActiveTradingTypeReaction = async (store: TestStore) =>
+        await renderHookWithStoreProvider(() => useActiveTradingTypeReaction(), { store });
 
     beforeEach(() => {
         castedSelectEnabledTradingTypes.mockReturnValue(['buy', 'exchange', 'sell']);
         mockUseRouteParams = {};
     });
 
-    it('should set buy active when only buy is allowed', () => {
+    it('should set buy active when only buy is allowed', async () => {
         castedSelectEnabledTradingTypes.mockReturnValue(['buy']);
         const store = createLightStore({ reducer });
 
-        renderUseActiveTradingTypeReaction(store);
+        await renderUseActiveTradingTypeReaction(store);
 
         expect(selectActiveTradingType(store.getState())).toBe('buy');
     });
 
-    it('should set exchange active when only exchange is allowed', () => {
+    it('should set exchange active when only exchange is allowed', async () => {
         castedSelectEnabledTradingTypes.mockReturnValue(['exchange']);
         const store = createLightStore({ reducer });
 
-        renderUseActiveTradingTypeReaction(store);
+        await renderUseActiveTradingTypeReaction(store);
 
         expect(selectActiveTradingType(store.getState())).toBe('exchange');
     });
 
-    it('should set sell active when only sell is allowed', () => {
+    it('should set sell active when only sell is allowed', async () => {
         castedSelectEnabledTradingTypes.mockReturnValue(['sell']);
         const store = createLightStore({ reducer });
 
-        renderUseActiveTradingTypeReaction(store);
+        await renderUseActiveTradingTypeReaction(store);
 
         expect(selectActiveTradingType(store.getState())).toBe('sell');
     });
 
-    it('should render with undefined navigation params', () => {
+    it('should render with undefined navigation params', async () => {
         (mockUseRouteParams as any) = undefined;
         const store = createLightStore({ reducer });
 
-        expect(() => renderUseActiveTradingTypeReaction(store)).not.toThrow();
+        await expect(renderUseActiveTradingTypeReaction(store)).resolves.toBeDefined();
     });
 
-    it('should clear activeTradingType on unmount', () => {
+    it('should clear activeTradingType on unmount', async () => {
         const store = createLightStore({ reducer });
-        const { unmount } = renderUseActiveTradingTypeReaction(store);
+        const { unmount } = await renderUseActiveTradingTypeReaction(store);
 
-        unmount();
+        await unmount();
 
         expect(selectActiveTradingType(store.getState())).toBeUndefined();
     });
 
     describe('with trading type specified by navigation params', () => {
-        it('should set buy active when buy is specified', () => {
+        it('should set buy active when buy is specified', async () => {
             mockUseRouteParams.tradingType = 'buy';
             const store = createLightStore({ reducer });
 
-            renderUseActiveTradingTypeReaction(store);
+            await renderUseActiveTradingTypeReaction(store);
 
             expect(selectActiveTradingType(store.getState())).toBe('buy');
         });
 
-        it('should set exchange active when exchange is specified', () => {
+        it('should set exchange active when exchange is specified', async () => {
             mockUseRouteParams.tradingType = 'exchange';
             const store = createLightStore({ reducer });
 
-            renderUseActiveTradingTypeReaction(store);
+            await renderUseActiveTradingTypeReaction(store);
 
             expect(selectActiveTradingType(store.getState())).toBe('exchange');
         });
 
-        it('should set sell active when sell is specified', () => {
+        it('should set sell active when sell is specified', async () => {
             mockUseRouteParams.tradingType = 'sell';
             const store = createLightStore({ reducer });
 
-            renderUseActiveTradingTypeReaction(store);
+            await renderUseActiveTradingTypeReaction(store);
 
             expect(selectActiveTradingType(store.getState())).toBe('sell');
         });
 
-        it('should fallback to buy when navigating to exchange but exchange is disabled', () => {
+        it('should fallback to buy when navigating to exchange but exchange is disabled', async () => {
             castedSelectEnabledTradingTypes.mockReturnValue(['buy']);
             mockUseRouteParams.tradingType = 'exchange';
             const store = createLightStore({ reducer });
 
-            renderUseActiveTradingTypeReaction(store);
+            await renderUseActiveTradingTypeReaction(store);
 
             expect(selectActiveTradingType(store.getState())).toBe('buy');
         });
 
-        it('should fallback to buy when navigating to sell but sell is disabled', () => {
+        it('should fallback to buy when navigating to sell but sell is disabled', async () => {
             mockUseRouteParams.tradingType = 'sell';
             castedSelectEnabledTradingTypes.mockReturnValue(['buy']);
             const store = createLightStore({ reducer });
 
-            renderUseActiveTradingTypeReaction(store);
+            await renderUseActiveTradingTypeReaction(store);
 
             expect(selectActiveTradingType(store.getState())).toBe('buy');
         });

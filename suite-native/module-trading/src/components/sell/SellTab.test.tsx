@@ -33,7 +33,7 @@ jest.mock('../concierge/ConciergeAlert', () => ({
 
 describe('SellTab', () => {
     const renderSellTab = async (overrides: Record<string, unknown> = {}) => {
-        const result = renderWithTradingProvider(<SellTab />, {
+        const result = await renderWithTradingProvider(<SellTab />, {
             tradeType: 'sell',
             overrides,
         });

@@ -22,11 +22,13 @@ const supportedFiatCurrencies: FiatCurrencyItem[] = [
 ];
 
 describe('useFiatCurrencyFilteredData', () => {
-    const renderUseFiatCurrencyFilteredData = () =>
-        renderHookWithBasicProvider(() => useFiatCurrencyFilteredData(supportedFiatCurrencies));
+    const renderUseFiatCurrencyFilteredData = async () =>
+        await renderHookWithBasicProvider(() =>
+            useFiatCurrencyFilteredData(supportedFiatCurrencies),
+        );
 
-    it('should return section list data structure', () => {
-        const { result } = renderUseFiatCurrencyFilteredData();
+    it('should return section list data structure', async () => {
+        const { result } = await renderUseFiatCurrencyFilteredData();
 
         expect(result.current.filteredData).toEqual([
             {
@@ -54,10 +56,10 @@ describe('useFiatCurrencyFilteredData', () => {
         ]);
     });
 
-    it('should filter by label case-insensitive', () => {
-        const { result } = renderUseFiatCurrencyFilteredData();
+    it('should filter by label case-insensitive', async () => {
+        const { result } = await renderUseFiatCurrencyFilteredData();
 
-        act(() => {
+        await act(() => {
             result.current.setFilterValue('unITed');
         });
 
@@ -66,10 +68,10 @@ describe('useFiatCurrencyFilteredData', () => {
         ]);
     });
 
-    it('should filter by value case-insensitive', () => {
-        const { result } = renderUseFiatCurrencyFilteredData();
+    it('should filter by value case-insensitive', async () => {
+        const { result } = await renderUseFiatCurrencyFilteredData();
 
-        act(() => {
+        await act(() => {
             result.current.setFilterValue('uSd');
         });
 
@@ -78,10 +80,10 @@ describe('useFiatCurrencyFilteredData', () => {
         ]);
     });
 
-    it('should return current filter value', () => {
-        const { result } = renderUseFiatCurrencyFilteredData();
+    it('should return current filter value', async () => {
+        const { result } = await renderUseFiatCurrencyFilteredData();
 
-        act(() => {
+        await act(() => {
             result.current.setFilterValue('usd');
         });
 

@@ -12,7 +12,7 @@ describe('ExchangeApprovalLimitCard', () => {
     const renderExchangeApprovalLimitCard = async (
         props: Partial<ExchangeApprovalLimitCardProps>,
     ) => {
-        const res = renderWithBasicProvider(
+        const res = await renderWithBasicProvider(
             <ExchangeApprovalLimitCard
                 title={<Text>Test limit</Text>}
                 description="Test description"
@@ -56,14 +56,14 @@ describe('ExchangeApprovalLimitCard', () => {
     it('should call onChange when card is pressed', async () => {
         const { getByText } = await renderExchangeApprovalLimitCard({});
 
-        fireEvent.press(getByText('Test limit'));
+        await fireEvent.press(getByText('Test limit'));
         expect(mockOnChange).toHaveBeenCalledTimes(1);
     });
 
     it('should call onChange when description is pressed', async () => {
         const { getByText } = await renderExchangeApprovalLimitCard({});
 
-        fireEvent.press(getByText('Test description'));
+        await fireEvent.press(getByText('Test description'));
         expect(mockOnChange).toHaveBeenCalledTimes(1);
     });
 

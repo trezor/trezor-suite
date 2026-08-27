@@ -30,8 +30,8 @@ jest.mock('@react-navigation/native', () => {
 describe('useProviderMetadataChangeEffect', () => {
     let store: TestStore;
 
-    const renderUseProviderMetadataChangeEffect = (exchange: string | undefined) =>
-        renderHookWithTradingProvider(
+    const renderUseProviderMetadataChangeEffect = async (exchange: string | undefined) =>
+        await renderHookWithTradingProvider(
             () => {
                 const form = useForm<ProviderFormValues>({
                     defaultValues: { quote: { exchange } },
@@ -48,24 +48,24 @@ describe('useProviderMetadataChangeEffect', () => {
         mockIsFocused = true;
     });
 
-    it('should set currentProviderMetadata when quote is set', () => {
-        const { result } = renderUseProviderMetadataChangeEffect('mercuryo');
+    it('should set currentProviderMetadata when quote is set', async () => {
+        const { result } = await renderUseProviderMetadataChangeEffect('mercuryo');
 
         expect(selectTradingProviderMetadata(store.getState())).toEqual(buyMercuryo);
         expect(result.current).toEqual(buyMercuryo);
     });
 
-    it('should clear currentProviderMetadata on unmount', () => {
-        const { unmount } = renderUseProviderMetadataChangeEffect('mercuryo');
+    it('should clear currentProviderMetadata on unmount', async () => {
+        const { unmount } = await renderUseProviderMetadataChangeEffect('mercuryo');
 
-        unmount();
+        await unmount();
 
         expect(selectTradingProviderMetadata(store.getState())).toBeUndefined();
     });
 
-    it('should not change provider metadata when screen is not focused', () => {
+    it('should not change provider metadata when screen is not focused', async () => {
         mockIsFocused = false;
-        renderUseProviderMetadataChangeEffect('mercuryo');
+        await renderUseProviderMetadataChangeEffect('mercuryo');
 
         expect(selectTradingProviderMetadata(store.getState())).toBeUndefined();
     });

@@ -97,8 +97,8 @@ describe('TradingExchangeRevokeScreen', () => {
 
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    const renderScreen = (params: Record<string, unknown> = {}) => {
-        const result = renderWithTradingProvider(
+    const renderScreen = async (params: Record<string, unknown> = {}) => {
+        const result = await renderWithTradingProvider(
             <TradingExchangeRevokeScreen
                 route={{ params } as any}
                 navigation={{ dispatch: mockNavigationDispatch } as any}
@@ -121,15 +121,15 @@ describe('TradingExchangeRevokeScreen', () => {
         store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1NormalAccount.key));
     });
 
-    afterEach(() => {
+    afterEach(async () => {
         if (unmount) {
-            unmount();
+            await unmount();
             unmount = undefined;
         }
     });
 
-    it('should confirm revoke with ZERO approval type', () => {
-        renderScreen();
+    it('should confirm revoke with ZERO approval type', async () => {
+        await renderScreen();
 
         expect(mockConfirmApproval).toHaveBeenCalledTimes(1);
         expect(mockConfirmApproval).toHaveBeenCalledWith(
@@ -137,30 +137,30 @@ describe('TradingExchangeRevokeScreen', () => {
         );
     });
 
-    it('should render the revoke screen with quote details', () => {
-        const { getByText } = renderScreen();
+    it('should render the revoke screen with quote details', async () => {
+        const { getByText } = await renderScreen();
 
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
         expect(errorSpy).not.toHaveBeenCalled();
     });
 
-    it('should display provider information correctly', () => {
-        const { getByText } = renderScreen();
+    it('should display provider information correctly', async () => {
+        const { getByText } = await renderScreen();
 
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
-    it('should render continue button', () => {
-        const { getByText } = renderScreen();
+    it('should render continue button', async () => {
+        const { getByText } = await renderScreen();
 
         expect(getByText(getTranslation('generic.buttons.continue'))).toBeOnTheScreen();
     });
 
-    it('should render alert when no quote is provided', () => {
+    it('should render alert when no quote is provided', async () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { getByText, queryByText } = renderScreen();
+        const { getByText, queryByText } = await renderScreen();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert')),
@@ -170,9 +170,9 @@ describe('TradingExchangeRevokeScreen', () => {
         expect(errorSpy).toHaveBeenCalledWith('No quote to revoke approval');
     });
 
-    it('should clear selected quote on back navigation', () => {
+    it('should clear selected quote on back navigation', async () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
-        renderScreen();
+        await renderScreen();
 
         const backAction: NavigationAction = { type: 'GO_BACK' };
 
@@ -183,8 +183,8 @@ describe('TradingExchangeRevokeScreen', () => {
         expect(mockNavigationDispatch).toHaveBeenCalledWith(backAction);
     });
 
-    it('should render low limit info alert when shouldIncreaseLimit is true', () => {
-        const { getByText } = renderScreen({ shouldIncreaseLimit: true });
+    it('should render low limit info alert when shouldIncreaseLimit is true', async () => {
+        const { getByText } = await renderScreen({ shouldIncreaseLimit: true });
 
         expect(
             getByText(
@@ -193,10 +193,10 @@ describe('TradingExchangeRevokeScreen', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should display device guard when device is not connected', () => {
+    it('should display device guard when device is not connected', async () => {
         mockIsDeviceConnected = false;
 
-        const { getByText } = renderScreen();
+        const { getByText } = await renderScreen();
 
         expect(
             getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
@@ -204,16 +204,16 @@ describe('TradingExchangeRevokeScreen', () => {
     });
 
     describe('analytics', () => {
-        it('should report revoke-preview visit ', () => {
-            renderScreen();
+        it('should report revoke-preview visit ', async () => {
+            await renderScreen();
 
             expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-preview', 'visit');
             expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
         });
 
-        it('should report revoke-preview cancel on back navigation', () => {
+        it('should report revoke-preview cancel on back navigation', async () => {
             store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
-            renderScreen();
+            await renderScreen();
 
             triggerPreventNavigationRemove({ type: 'GO_BACK' });
 

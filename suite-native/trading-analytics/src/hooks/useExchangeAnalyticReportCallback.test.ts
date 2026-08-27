@@ -30,14 +30,14 @@ describe('useExchangeAnalyticReportCallback', () => {
     ): ExchangeAnalyticsPreloadedState =>
         mergePreloadedState({ wallet: getWalletState({ tradeType: 'exchange' }) }, overrides);
 
-    const renderUseExchangeAnalyticReportCallback = ({
+    const renderUseExchangeAnalyticReportCallback = async ({
         candidateQuote: initialCandidateQuote,
         preloadedState = createPreloadedState(),
     }: {
         candidateQuote?: Parameters<typeof useExchangeAnalyticReportCallback>[0];
         preloadedState?: ExchangeAnalyticsPreloadedState;
     } = {}) =>
-        renderHookWithStoreProvider(
+        await renderHookWithStoreProvider(
             ({ candidateQuote }) => useExchangeAnalyticReportCallback(candidateQuote),
             {
                 preloadedState,
@@ -52,8 +52,8 @@ describe('useExchangeAnalyticReportCallback', () => {
         jest.clearAllMocks();
     });
 
-    it('should call analytics on mount', () => {
-        const { result } = renderUseExchangeAnalyticReportCallback({
+    it('should call analytics on mount', async () => {
+        const { result } = await renderUseExchangeAnalyticReportCallback({
             preloadedState: createPreloadedState({
                 wallet: {
                     trading: {
@@ -77,8 +77,8 @@ describe('useExchangeAnalyticReportCallback', () => {
         });
     });
 
-    it('should work without quote', () => {
-        const { result } = renderUseExchangeAnalyticReportCallback();
+    it('should work without quote', async () => {
+        const { result } = await renderUseExchangeAnalyticReportCallback();
 
         result.current('exchange-form', 'continue');
 
@@ -91,8 +91,8 @@ describe('useExchangeAnalyticReportCallback', () => {
         });
     });
 
-    it('should allow to specify quote as parameter', () => {
-        const { result } = renderUseExchangeAnalyticReportCallback({
+    it('should allow to specify quote as parameter', async () => {
+        const { result } = await renderUseExchangeAnalyticReportCallback({
             candidateQuote: invityDexQuote,
             preloadedState: createPreloadedState({
                 wallet: {
@@ -121,8 +121,8 @@ describe('useExchangeAnalyticReportCallback', () => {
     it.each([
         [{ ...mercuryoFixedWorstQuote, send: 'unknown_cryptoID' as CryptoId }],
         [{ ...mercuryoFixedWorstQuote, receive: 'unknown_cryptoID' as CryptoId }],
-    ])('should work with unknown quote values', quote => {
-        const { result } = renderUseExchangeAnalyticReportCallback({
+    ])('should work with unknown quote values', async quote => {
+        const { result } = await renderUseExchangeAnalyticReportCallback({
             candidateQuote: quote,
         });
 
@@ -137,13 +137,13 @@ describe('useExchangeAnalyticReportCallback', () => {
         });
     });
 
-    it('should be stable even when quote changes', () => {
-        const { result, rerender } = renderUseExchangeAnalyticReportCallback({
+    it('should be stable even when quote changes', async () => {
+        const { result, rerender } = await renderUseExchangeAnalyticReportCallback({
             candidateQuote: mercuryoFixedWorstQuote,
         });
         const firstCallback = result.current;
 
-        rerender({ candidateQuote: invityDexQuote });
+        await rerender({ candidateQuote: invityDexQuote });
 
         expect(result.current).toBe(firstCallback);
     });

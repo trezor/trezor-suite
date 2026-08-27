@@ -19,7 +19,7 @@ import { createTradingLightStore } from '../../../test-utils/tradingTestUtils';
 const btc1AccountKey = btc1NormalAccount.key;
 
 describe('useReceiveAccountPreselectionEffect', () => {
-    const renderUseReceiveAccountPreselectionEffect = ({
+    const renderUseReceiveAccountPreselectionEffect = async ({
         store,
         tradingType = 'buy',
         receiveAsset = btcAsset,
@@ -28,7 +28,7 @@ describe('useReceiveAccountPreselectionEffect', () => {
         tradingType?: 'buy' | 'exchange';
         receiveAsset?: TradeableAsset;
     }) =>
-        renderHookWithStoreProvider(
+        await renderHookWithStoreProvider(
             () =>
                 useReceiveAccountPreselectionEffect({
                     tradingType,
@@ -71,10 +71,10 @@ describe('useReceiveAccountPreselectionEffect', () => {
             },
         });
 
-    it('should dispatch buy actions when account is preselected', () => {
+    it('should dispatch buy actions when account is preselected', async () => {
         const store = createStore();
 
-        renderUseReceiveAccountPreselectionEffect({ store });
+        await renderUseReceiveAccountPreselectionEffect({ store });
 
         expect(store.getActions()).toEqual([
             tradingActions.setReceiveAccount({
@@ -85,10 +85,10 @@ describe('useReceiveAccountPreselectionEffect', () => {
         ]);
     });
 
-    it('should dispatch exchange actions when account is preselected', () => {
+    it('should dispatch exchange actions when account is preselected', async () => {
         const store = createStore({ tradeType: 'exchange' });
 
-        renderUseReceiveAccountPreselectionEffect({ store, tradingType: 'exchange' });
+        await renderUseReceiveAccountPreselectionEffect({ store, tradingType: 'exchange' });
 
         expect(store.getActions()).toEqual([
             tradingActions.setReceiveAccount({
@@ -99,18 +99,18 @@ describe('useReceiveAccountPreselectionEffect', () => {
         ]);
     });
 
-    it('should not dispatch actions when no preselected account can be found', () => {
+    it('should not dispatch actions when no preselected account can be found', async () => {
         const store = createStore();
 
-        renderUseReceiveAccountPreselectionEffect({ store, receiveAsset: adaAsset });
+        await renderUseReceiveAccountPreselectionEffect({ store, receiveAsset: adaAsset });
 
         expect(store.getActions()).toEqual([]);
     });
 
-    it('should not dispatch actions when selectedReceiveAccount already has account set', () => {
+    it('should not dispatch actions when selectedReceiveAccount already has account set', async () => {
         const store = createStore({ selectedReceiveAccountKey: btc1AccountKey });
 
-        renderUseReceiveAccountPreselectionEffect({ store });
+        await renderUseReceiveAccountPreselectionEffect({ store });
 
         expect(store.getActions()).toEqual([]);
     });

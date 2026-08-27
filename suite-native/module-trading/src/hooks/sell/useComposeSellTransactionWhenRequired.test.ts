@@ -10,13 +10,13 @@ type TestProps = {
 };
 
 describe('useComposeSellTransactionWhenRequired', () => {
-    it('composes once for each order that reaches SEND_CRYPTO', () => {
+    it('composes once for each order that reaches SEND_CRYPTO', async () => {
         const composeTradingTransaction = jest.fn();
         const initialProps: TestProps = {
             orderId: 'order-1',
             status: 'PENDING',
         };
-        const { rerender } = renderHookWithBasicProvider(
+        const { rerender } = await renderHookWithBasicProvider(
             ({ orderId, status }: TestProps) =>
                 useComposeSellTransactionWhenRequired({
                     orderId,
@@ -28,12 +28,12 @@ describe('useComposeSellTransactionWhenRequired', () => {
 
         expect(composeTradingTransaction).not.toHaveBeenCalled();
 
-        rerender({ orderId: 'order-1', status: 'SEND_CRYPTO' });
-        rerender({ orderId: 'order-1', status: 'SEND_CRYPTO' });
+        await rerender({ orderId: 'order-1', status: 'SEND_CRYPTO' });
+        await rerender({ orderId: 'order-1', status: 'SEND_CRYPTO' });
 
         expect(composeTradingTransaction).toHaveBeenCalledTimes(1);
 
-        rerender({ orderId: 'order-2', status: 'SEND_CRYPTO' });
+        await rerender({ orderId: 'order-2', status: 'SEND_CRYPTO' });
 
         expect(composeTradingTransaction).toHaveBeenCalledTimes(2);
     });

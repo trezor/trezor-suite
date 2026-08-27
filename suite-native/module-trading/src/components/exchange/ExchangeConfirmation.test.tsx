@@ -43,8 +43,8 @@ describe('ExchangeConfirmation', () => {
         isDex: false,
     };
 
-    const setQuote = (quote: ExchangeTrade | undefined) => {
-        act(() => {
+    const setQuote = async (quote: ExchangeTrade | undefined) => {
+        await act(() => {
             exchangeForm.setValue('quote', quote);
         });
     };
@@ -65,8 +65,8 @@ describe('ExchangeConfirmation', () => {
             cancelConsent: jest.fn(),
         });
 
-    const renderConfirmation = () =>
-        renderWithTradingProvider(<ExchangeConfirmation />, {
+    const renderConfirmation = async () =>
+        await renderWithTradingProvider(<ExchangeConfirmation />, {
             tradeType: 'exchange',
             overrides: baseOverrides,
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
@@ -77,15 +77,15 @@ describe('ExchangeConfirmation', () => {
     const queryRevokeButton = () =>
         screen.queryByText(getTranslation('moduleTrading.tradingScreen.buttons.revoke'));
 
-    beforeEach(() => {
+    beforeEach(async () => {
         jest.clearAllMocks();
 
-        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+        const { result } = await renderHookWithTradingProvider(() => useExchangeForm(), {
             tradeType: 'exchange',
             overrides: baseOverrides,
         });
         exchangeForm = result.current;
-        setQuote(defaultQuote);
+        await setQuote(defaultQuote);
 
         mockUseTradingStellarActivateToken.mockReturnValue({
             isReceivingInactiveStellarToken: false,
@@ -93,78 +93,78 @@ describe('ExchangeConfirmation', () => {
         });
     });
 
-    it('should render "Continue" button when canProceed is true', () => {
+    it('should render "Continue" button when canProceed is true', async () => {
         mockSelectQuote({});
 
-        renderConfirmation();
+        await renderConfirmation();
 
         expect(queryContinueButton()).toBeOnTheScreen();
     });
 
-    it('should not render "Continue" button when canProceed is false', () => {
+    it('should not render "Continue" button when canProceed is false', async () => {
         mockSelectQuote({ canProceed: false });
 
-        renderConfirmation();
+        await renderConfirmation();
 
         expect(queryContinueButton()).not.toBeOnTheScreen();
     });
 
-    it('should render "Continue" button when canProceed is false but is isLoading', () => {
+    it('should render "Continue" button when canProceed is false but is isLoading', async () => {
         mockSelectQuote({ canProceed: false, isLoading: true });
 
-        renderConfirmation();
+        await renderConfirmation();
 
         expect(queryContinueButton()).toBeOnTheScreen();
         expect(queryContinueButton()).toBeDisabled();
     });
 
-    it('should render "Continue" button when canProceed is false but is isDexQuoteApprovalPrefetchLoadingForCandidateQuote', () => {
+    it('should render "Continue" button when canProceed is false but is isDexQuoteApprovalPrefetchLoadingForCandidateQuote', async () => {
         mockSelectQuote({
             canProceed: false,
             isDexQuoteApprovalPrefetchLoadingForCandidateQuote: true,
         });
 
-        renderConfirmation();
+        await renderConfirmation();
 
         expect(queryContinueButton()).toBeOnTheScreen();
         expect(queryContinueButton()).toBeDisabled();
     });
 
-    it('should not render "Revoke" button when approval is not needed', () => {
+    it('should not render "Revoke" button when approval is not needed', async () => {
         mockSelectQuote({});
 
-        renderConfirmation();
+        await renderConfirmation();
 
         expect(queryRevokeButton()).not.toBeOnTheScreen();
     });
 
-    it('should not render "Revoke" button when approval is needed', () => {
-        setQuote({
+    it('should not render "Revoke" button when approval is needed', async () => {
+        await setQuote({
             ...defaultQuote,
             isDex: true,
         });
         mockSelectQuote({});
 
-        renderConfirmation();
+        await renderConfirmation();
 
         expect(queryRevokeButton()).not.toBeOnTheScreen();
     });
 
-    it('should render "Revoke" button when approval status is approved', () => {
-        setQuote({
+    it('should render "Revoke" button when approval status is approved', async () => {
+        await setQuote({
             ...defaultQuote,
             isDex: true,
             preapprovedStringAmount: '100',
         });
         mockSelectQuote({});
 
-        renderConfirmation();
+        await renderConfirmation();
 
         expect(queryRevokeButton()).toBeOnTheScreen();
     });
 
-    it('should render "Revoke" button when approval status is needs_increase', () => {
-        setQuote({
+    it('should render "Revoke" button when approval status is needs_increase', async () => {
+        await setQuote({
             ...defaultQuote,
             isDex: true,
             preapprovedStringAmount: '100',
@@ -173,22 +173,22 @@ describe('ExchangeConfirmation', () => {
 
         mockSelectQuote({});
 
-        renderConfirmation();
+        await renderConfirmation();
 
         expect(queryRevokeButton()).toBeOnTheScreen();
     });
 
-    it('should not render "Revoke" button when approval status is null', () => {
-        setQuote(undefined);
+    it('should not render "Revoke" button when approval status is null', async () => {
+        await setQuote(undefined);
         mockSelectQuote({});
 
-        renderConfirmation();
+        await renderConfirmation();
 
         expect(queryRevokeButton()).not.toBeOnTheScreen();
     });
 
-    it('should render "Revoke" button when approval status is needs_revoke', () => {
-        setQuote({
+    it('should render "Revoke" button when approval status is needs_revoke', async () => {
+        await setQuote({
             ...defaultQuote,
             isDex: true,
             preapprovedStringAmount: '100',
@@ -198,12 +198,12 @@ describe('ExchangeConfirmation', () => {
 
         mockSelectQuote({});
 
-        renderConfirmation();
+        await renderConfirmation();
 
         expect(queryRevokeButton()).toBeOnTheScreen();
     });
 
-    it('should render activate button when trading inactive Stellar token', () => {
+    it('should render activate button when trading inactive Stellar token', async () => {
         mockSelectQuote({});
 
         mockUseTradingStellarActivateToken.mockReturnValue({
@@ -211,14 +211,14 @@ describe('ExchangeConfirmation', () => {
             activateButtonElement: <Button>Activate</Button>,
         });
 
-        const { queryByText } = renderConfirmation();
+        const { queryByText } = await renderConfirmation();
         expect(queryByText('Activate')).toBeTruthy();
         expect(
             queryByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
         ).toBeNull();
     });
 
-    it('should not render activate button when not trading inactive Stellar token', () => {
+    it('should not render activate button when not trading inactive Stellar token', async () => {
         mockSelectQuote({});
 
         mockUseTradingStellarActivateToken.mockReturnValue({
@@ -226,15 +226,15 @@ describe('ExchangeConfirmation', () => {
             activateButtonElement: <Button>Activate</Button>,
         });
 
-        const { queryByText } = renderConfirmation();
+        const { queryByText } = await renderConfirmation();
         expect(queryByText('Activate')).toBeNull();
         expect(
             queryByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
         ).toBeTruthy();
     });
 
-    it('should not render Revoke button, when canProceed is false', () => {
-        setQuote({
+    it('should not render Revoke button, when canProceed is false', async () => {
+        await setQuote({
             ...defaultQuote,
             isDex: true,
             preapprovedStringAmount: '100',
@@ -244,7 +244,7 @@ describe('ExchangeConfirmation', () => {
 
         mockSelectQuote({ canProceed: false });
 
-        renderConfirmation();
+        await renderConfirmation();
 
         expect(queryRevokeButton()).toBeNull();
     });

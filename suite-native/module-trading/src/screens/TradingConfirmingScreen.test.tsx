@@ -100,7 +100,7 @@ const mockUseAllowanceTxTracking = useAllowanceTxTracking as jest.Mock;
 describe('TradingConfirmingScreen', () => {
     let store: TestStore;
 
-    const renderScreen = (
+    const renderScreen = async (
         routeProps: Partial<RootStackParamList[RootStackRoutes.TradingConfirming]> = {},
     ) => {
         routeParams = {
@@ -108,7 +108,7 @@ describe('TradingConfirmingScreen', () => {
             ...routeProps,
         };
 
-        return renderWithStoreProvider(
+        return await renderWithStoreProvider(
             <TradingConfirmingScreen navigation={mockNavigation} route={mockUseRoute()} />,
             { store },
         );
@@ -138,8 +138,8 @@ describe('TradingConfirmingScreen', () => {
         setApprovalTxid: jest.fn(),
     };
 
-    it('should render approve header when variant is approve', () => {
-        const { getByTestId } = renderScreen({ flowType: 'approve' });
+    it('should render approve header when variant is approve', async () => {
+        const { getByTestId } = await renderScreen({ flowType: 'approve' });
 
         expect(getByTestId('@screen/sub-header/title')).toHaveTextContent(
             getTranslation('moduleTrading.tradingConfirmationScreen.approveHeaderTitle', {
@@ -148,8 +148,8 @@ describe('TradingConfirmingScreen', () => {
         );
     });
 
-    it('should render revoke header when variant is revoke', () => {
-        const { getByTestId } = renderScreen({ flowType: 'revoke' });
+    it('should render revoke header when variant is revoke', async () => {
+        const { getByTestId } = await renderScreen({ flowType: 'revoke' });
 
         expect(getByTestId('@screen/sub-header/title')).toHaveTextContent(
             getTranslation('moduleTrading.tradingConfirmationScreen.revokeHeaderTitle', {
@@ -158,22 +158,22 @@ describe('TradingConfirmingScreen', () => {
         );
     });
 
-    it('should not navigate when transaction is not confirmed', () => {
-        renderScreen();
+    it('should not navigate when transaction is not confirmed', async () => {
+        await renderScreen();
 
         expect(mockNavigation.popToTop).not.toHaveBeenCalled();
         expect(mockNavigation.push).not.toHaveBeenCalled();
     });
 
-    it('approve: navigates to TradingExchangePreview when the quote status becomes CONFIRM', () => {
+    it('approve: navigates to TradingExchangePreview when the quote status becomes CONFIRM', async () => {
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
 
-        renderScreen({ flowType: 'approve' });
+        await renderScreen({ flowType: 'approve' });
 
         expect(mockNavigation.push).not.toHaveBeenCalled();
 
         // Simulate the backend advancing the status (what the watch poll saves).
-        act(() => {
+        await act(() => {
             store.dispatch(
                 tradingExchangeActions.saveSelectedQuote({ ...testQuote, status: 'CONFIRM' }),
             );
@@ -185,19 +185,19 @@ describe('TradingConfirmingScreen', () => {
         });
     });
 
-    it('approve: does not navigate while status stays APPROVAL_PENDING', () => {
+    it('approve: does not navigate while status stays APPROVAL_PENDING', async () => {
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
         store.dispatch(
             tradingExchangeActions.saveSelectedQuote({ ...testQuote, status: 'APPROVAL_PENDING' }),
         );
 
-        renderScreen({ flowType: 'approve' });
+        await renderScreen({ flowType: 'approve' });
 
         expect(mockNavigation.popToTop).not.toHaveBeenCalled();
         expect(mockNavigation.push).not.toHaveBeenCalled();
     });
 
-    it('revoke-and-approve: navigates to TradingExchangeApproval and strips revoke-tx artifacts from selectedQuote', () => {
+    it('revoke-and-approve: navigates to TradingExchangeApproval and strips revoke-tx artifacts from selectedQuote', async () => {
         // Seed selectedQuote with revoke artifacts that the post-revoke confirmExchangeTradeThunk would have written.
         store.dispatch(
             tradingExchangeActions.saveSelectedQuote({
@@ -209,12 +209,12 @@ describe('TradingConfirmingScreen', () => {
         );
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
 
-        renderScreen({ flowType: 'revoke-and-approve' });
+        await renderScreen({ flowType: 'revoke-and-approve' });
 
         expect(mockNavigation.push).not.toHaveBeenCalled();
 
         // Simulate the backend reporting the follow-up approval is required.
-        act(() => {
+        await act(() => {
             store.dispatch(
                 tradingExchangeActions.saveSelectedQuote({
                     ...testQuote,
@@ -236,18 +236,18 @@ describe('TradingConfirmingScreen', () => {
         expect(persisted?.status).toBe('APPROVAL_REQ');
     });
 
-    it('revoke: pops to top and clears selectedQuote', () => {
+    it('revoke: pops to top and clears selectedQuote', async () => {
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
 
-        renderScreen({ flowType: 'revoke' });
+        await renderScreen({ flowType: 'revoke' });
 
         expect(mockNavigation.popToTop).toHaveBeenCalled();
         expect(mockNavigation.push).not.toHaveBeenCalled();
         expect(selectTradingExchangeSelectedQuote(store.getState())).toBeUndefined();
     });
 
-    it('should render the explore in blockchain button', () => {
-        const { getByText } = renderScreen();
+    it('should render the explore in blockchain button', async () => {
+        const { getByText } = await renderScreen();
 
         expect(
             getByText(
@@ -256,7 +256,7 @@ describe('TradingConfirmingScreen', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render date when transaction has blockTime', () => {
+    it('should render date when transaction has blockTime', async () => {
         mockUseTransactionDetails.mockReturnValue({
             transaction: mockTransaction,
             openInBlockchain: mockOpenInBlockchain,
@@ -265,15 +265,15 @@ describe('TradingConfirmingScreen', () => {
             explorerUrl: 'https://etherscan.io/tx/test-txid',
         });
 
-        const { getByText } = renderScreen();
+        const { getByText } = await renderScreen();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingConfirmationScreen.date')),
         ).toBeOnTheScreen();
     });
 
-    it('should clear selected quote on back navigation', () => {
-        renderScreen();
+    it('should clear selected quote on back navigation', async () => {
+        await renderScreen();
 
         const interceptorOptions = mockUseNavigationRemoveInterceptorAlert.mock.calls.at(-1)?.[0];
 
@@ -283,7 +283,7 @@ describe('TradingConfirmingScreen', () => {
 
         const { onRemoveConfirmed } = interceptorOptions;
 
-        act(() => {
+        await act(() => {
             onRemoveConfirmed();
         });
 
@@ -292,14 +292,14 @@ describe('TradingConfirmingScreen', () => {
         expect(mockNavigation.goBack).toHaveBeenCalled();
     });
 
-    it('should allow leaving without confirmation when approval transaction fails', () => {
+    it('should allow leaving without confirmation when approval transaction fails', async () => {
         mockUseAllowanceTxTracking.mockReturnValue({
             status: { isConfirmed: false, isFailed: true, isPending: false } as TransactionStatus,
             approvalTxid: 'some-txid',
             setApprovalTxid: jest.fn(),
         });
 
-        renderScreen();
+        await renderScreen();
 
         expect(mockUseNavigationRemoveInterceptorAlert).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -308,11 +308,11 @@ describe('TradingConfirmingScreen', () => {
         );
     });
 
-    it('surfaces a backend error status and allows leaving without confirmation', () => {
+    it('surfaces a backend error status and allows leaving without confirmation', async () => {
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
         store.dispatch(tradingExchangeActions.saveSelectedQuote({ ...testQuote, status: 'ERROR' }));
 
-        renderScreen({ flowType: 'approve' });
+        await renderScreen({ flowType: 'approve' });
 
         expect(mockUseNavigationRemoveInterceptorAlert).toHaveBeenCalledWith(
             expect.objectContaining({ shouldPrevent: false }),
@@ -321,16 +321,16 @@ describe('TradingConfirmingScreen', () => {
     });
 
     describe('analytics', () => {
-        it('should report approval-confirming visit ', () => {
-            renderScreen();
+        it('should report approval-confirming visit ', async () => {
+            await renderScreen();
 
             expect(mockAnalyticsReport).toHaveBeenCalledWith('approval-confirming', 'visit');
             expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
         });
 
-        it('should report approval-confirming cancel on back navigation', () => {
+        it('should report approval-confirming cancel on back navigation', async () => {
             store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
-            renderScreen();
+            await renderScreen();
 
             const interceptorOptions =
                 mockUseNavigationRemoveInterceptorAlert.mock.calls.at(-1)?.[0];
@@ -341,7 +341,7 @@ describe('TradingConfirmingScreen', () => {
 
             const { onRemoveConfirmed } = interceptorOptions;
 
-            act(() => {
+            await act(() => {
                 onRemoveConfirmed();
             });
 
@@ -349,19 +349,19 @@ describe('TradingConfirmingScreen', () => {
             expect(mockAnalyticsReport).toHaveBeenCalledTimes(2);
         });
 
-        it('should report revoke-confirming visit for revoke', () => {
-            renderScreen({ flowType: 'revoke' });
+        it('should report revoke-confirming visit for revoke', async () => {
+            await renderScreen({ flowType: 'revoke' });
 
             expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-confirming', 'visit');
             expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
         });
 
-        it('should report continue when on navigation to next screen', () => {
+        it('should report continue when on navigation to next screen', async () => {
             mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
 
-            renderScreen({ flowType: 'approve' });
+            await renderScreen({ flowType: 'approve' });
 
-            act(() => {
+            await act(() => {
                 store.dispatch(
                     tradingExchangeActions.saveSelectedQuote({ ...testQuote, status: 'CONFIRM' }),
                 );

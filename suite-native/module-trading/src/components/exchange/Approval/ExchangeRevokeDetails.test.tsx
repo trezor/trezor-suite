@@ -23,10 +23,10 @@ describe('ExchangeRevokeDetails', () => {
         },
     };
 
-    const renderExchangeRevokeDetails = (
+    const renderExchangeRevokeDetails = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) =>
-        renderWithTradingProvider(<ExchangeRevokeDetails exchange="mercuryo" />, {
+        await renderWithTradingProvider(<ExchangeRevokeDetails exchange="mercuryo" />, {
             tradeType: 'exchange',
             overrides,
         });
@@ -35,8 +35,8 @@ describe('ExchangeRevokeDetails', () => {
         errorSpy.mockClear();
     });
 
-    it('should render revoke details', () => {
-        const { getByText } = renderExchangeRevokeDetails();
+    it('should render revoke details', async () => {
+        const { getByText } = await renderExchangeRevokeDetails();
 
         expect(
             getByText(getTranslation('moduleTrading.exchangeTradePreviewCard.account')),
@@ -51,8 +51,8 @@ describe('ExchangeRevokeDetails', () => {
         expect(errorSpy).not.toHaveBeenCalled();
     });
 
-    it('should render error when account is not found', () => {
-        const { getByText, queryByText } = renderExchangeRevokeDetails({
+    it('should render error when account is not found', async () => {
+        const { getByText, queryByText } = await renderExchangeRevokeDetails({
             wallet: {
                 trading: {
                     exchange: {

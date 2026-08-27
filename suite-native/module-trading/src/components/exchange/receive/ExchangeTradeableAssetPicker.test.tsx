@@ -91,8 +91,8 @@ describe('ExchangeTradeableAssetPicker', () => {
             },
         });
 
-    const renderFormHook = () => {
-        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+    const renderFormHook = async () => {
+        const { result } = await renderHookWithTradingProvider(() => useExchangeForm(), {
             services,
             store,
         });
@@ -100,27 +100,27 @@ describe('ExchangeTradeableAssetPicker', () => {
         return result.current;
     };
 
-    const renderTradeableAssetPicker = () =>
-        renderWithTradingProvider(<ExchangeTradeableAssetPicker />, {
+    const renderTradeableAssetPicker = async () =>
+        await renderWithTradingProvider(<ExchangeTradeableAssetPicker />, {
             services,
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         jest.clearAllMocks();
         mockTradingType = 'exchange';
         mockSelectedTradeableAssetCryptoId = undefined;
         store = initPreloadedStore(FirmwareType.Universal);
-        form = renderFormHook();
+        form = await renderFormHook();
     });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should render "Select asset" button with caret', () => {
-        const { getByLabelText } = renderTradeableAssetPicker();
+    it('should render "Select asset" button with caret', async () => {
+        const { getByLabelText } = await renderTradeableAssetPicker();
 
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
@@ -129,20 +129,22 @@ describe('ExchangeTradeableAssetPicker', () => {
         );
     });
 
-    it('should navigate to the exchange asset screen', () => {
-        const { getByLabelText } = renderTradeableAssetPicker();
+    it('should navigate to the exchange asset screen', async () => {
+        const { getByLabelText } = await renderTradeableAssetPicker();
 
-        fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')));
+        await fireEvent.press(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+        );
 
         expect(mockNavigate).toHaveBeenCalledWith('TradingTradeableAsset', {
             tradingType: 'exchange',
         });
     });
 
-    it('should apply receive asset change effects for an asset selected on the screen', () => {
+    it('should apply receive asset change effects for an asset selected on the screen', async () => {
         mockSelectedTradeableAssetCryptoId = btcAsset.cryptoId;
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        renderTradeableAssetPicker();
+        await renderTradeableAssetPicker();
 
         expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.receiveAssetChanged());
         expect(mockSetParams).toHaveBeenCalledWith({
@@ -157,11 +159,11 @@ describe('ExchangeTradeableAssetPicker', () => {
         });
     });
 
-    it('should clear the send asset and its typed amount when it collides with the newly selected receive asset', () => {
+    it('should clear the send asset and its typed amount when it collides with the newly selected receive asset', async () => {
         form.setValue('sendAsset', btcAsset);
         form.setValue('sendCryptoAmount', '1');
         mockSelectedTradeableAssetCryptoId = btcAsset.cryptoId;
-        renderTradeableAssetPicker();
+        await renderTradeableAssetPicker();
 
         expect(form.getValues('sendAsset')).toBeUndefined();
         expect(form.getValues('sendCryptoAmount')).toBeUndefined();
@@ -175,16 +177,16 @@ describe('ExchangeTradeableAssetPicker', () => {
     });
 
     describe('receiveAccount preselection', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
             jest.clearAllMocks();
             mockSelectedTradeableAssetCryptoId = undefined;
             store = initPreloadedStoreWithAccounts();
-            form = renderFormHook();
+            form = await renderFormHook();
         });
 
         it('should preselect a new receiveAccount for the new asset network after a cross-network change', async () => {
             mockSelectedTradeableAssetCryptoId = btcAsset.cryptoId;
-            const result = renderTradeableAssetPicker();
+            const result = await renderTradeableAssetPicker();
 
             await waitFor(() => {
                 expect(form.getValues('receiveAccount')).toEqual(
@@ -195,7 +197,7 @@ describe('ExchangeTradeableAssetPicker', () => {
             });
 
             mockSelectedTradeableAssetCryptoId = usdcAsset.cryptoId;
-            result.rerender(<ExchangeTradeableAssetPicker />);
+            await result.rerender(<ExchangeTradeableAssetPicker />);
 
             await waitFor(() => {
                 expect(form.getValues('receiveAccount')).toEqual(
@@ -208,7 +210,7 @@ describe('ExchangeTradeableAssetPicker', () => {
 
         it('should keep the selected receiveAccount when switching to another asset on the same network', async () => {
             mockSelectedTradeableAssetCryptoId = ethAsset.cryptoId;
-            const result = renderTradeableAssetPicker();
+            const result = await renderTradeableAssetPicker();
 
             await waitFor(() => {
                 expect(form.getValues('receiveAccount')).toEqual(
@@ -218,7 +220,7 @@ describe('ExchangeTradeableAssetPicker', () => {
                 );
             });
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingExchangeActions.setReceiveAccountKey(eth2AccountKey));
             });
 
@@ -231,7 +233,7 @@ describe('ExchangeTradeableAssetPicker', () => {
             });
 
             mockSelectedTradeableAssetCryptoId = usdcAsset.cryptoId;
-            result.rerender(<ExchangeTradeableAssetPicker />);
+            await result.rerender(<ExchangeTradeableAssetPicker />);
 
             await waitFor(() => {
                 expect(form.getValues('receiveAccount')).toEqual(

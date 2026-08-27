@@ -112,17 +112,17 @@ describe('ExchangeSendAssetPicker', () => {
         },
     });
 
-    const renderExchangeForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), { services, store });
+    const renderExchangeForm = async () =>
+        await renderHookWithStoreProvider(() => useExchangeForm(), { services, store });
 
-    const renderExchangeSendAssetPicker = () =>
-        renderWithStoreProvider(<ExchangeSendAssetPicker />, {
+    const renderExchangeSendAssetPicker = async () =>
+        await renderWithStoreProvider(<ExchangeSendAssetPicker />, {
             services,
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         jest.clearAllMocks();
         mockSelectedMyAssetAccountKey = undefined;
         mockSelectedMyAssetCryptoId = undefined;
@@ -146,7 +146,7 @@ describe('ExchangeSendAssetPicker', () => {
             },
             preloadedState: getPreloadedState(),
         });
-        const { result } = renderExchangeForm();
+        const { result } = await renderExchangeForm();
         form = result.current;
 
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue(
@@ -154,20 +154,20 @@ describe('ExchangeSendAssetPicker', () => {
         );
     });
 
-    it('should navigate to the my asset screen', () => {
-        const { getByLabelText } = renderExchangeSendAssetPicker();
+    it('should navigate to the my asset screen', async () => {
+        const { getByLabelText } = await renderExchangeSendAssetPicker();
 
-        fireEvent.press(getByLabelText('Select asset'));
+        await fireEvent.press(getByLabelText('Select asset'));
 
         expect(mockNavigate).toHaveBeenCalledWith('TradingMyAsset', {
             tradingType: 'exchange',
         });
     });
 
-    it('should select asset returned from the screen', () => {
+    it('should select asset returned from the screen', async () => {
         mockSelectedMyAssetAccountKey = btcAccount.key;
         mockSelectedMyAssetCryptoId = 'bitcoin';
-        renderExchangeSendAssetPicker();
+        await renderExchangeSendAssetPicker();
 
         const asset = form.getValues('sendAsset');
 
@@ -178,10 +178,10 @@ describe('ExchangeSendAssetPicker', () => {
         );
     });
 
-    it('should select account returned from the screen', () => {
+    it('should select account returned from the screen', async () => {
         mockSelectedMyAssetAccountKey = btcAccount.key;
         mockSelectedMyAssetCryptoId = 'bitcoin';
-        renderExchangeSendAssetPicker();
+        await renderExchangeSendAssetPicker();
 
         const accountForm = form.getValues('sendAccount');
         const accountKeyStore = store.getState().wallet.trading.exchange.tradingAccountKey;
@@ -190,12 +190,12 @@ describe('ExchangeSendAssetPicker', () => {
         expect(accountKeyStore).toBe(btcAccount.key);
     });
 
-    it('should apply exchange send asset change effects for an asset returned from the screen', () => {
+    it('should apply exchange send asset change effects for an asset returned from the screen', async () => {
         form.setValue('sendCryptoAmount', '1');
         mockSelectedMyAssetAccountKey = btcAccount.key;
         mockSelectedMyAssetCryptoId = 'bitcoin';
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        renderExchangeSendAssetPicker();
+        await renderExchangeSendAssetPicker();
 
         expect(form.getValues('sendCryptoAmount')).toBeUndefined();
         expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.sendAssetChanged());
@@ -212,13 +212,13 @@ describe('ExchangeSendAssetPicker', () => {
         });
     });
 
-    it('should clear the receive asset and apply its change effects on collision', () => {
+    it('should clear the receive asset and apply its change effects on collision', async () => {
         form.setValue('sendCryptoAmount', '1');
         form.setValue('receiveAsset', btcAsset);
         mockSelectedMyAssetAccountKey = btcAccount.key;
         mockSelectedMyAssetCryptoId = 'bitcoin';
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        renderExchangeSendAssetPicker();
+        await renderExchangeSendAssetPicker();
 
         expect(form.getValues('receiveAsset')).toBeUndefined();
         expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.receiveAssetChanged());
@@ -231,12 +231,12 @@ describe('ExchangeSendAssetPicker', () => {
         });
     });
 
-    it('should not apply receive asset change effects when there is no collision', () => {
+    it('should not apply receive asset change effects when there is no collision', async () => {
         form.setValue('sendCryptoAmount', '1');
         mockSelectedMyAssetAccountKey = btcAccount.key;
         mockSelectedMyAssetCryptoId = 'bitcoin';
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        renderExchangeSendAssetPicker();
+        await renderExchangeSendAssetPicker();
 
         expect(form.getValues('receiveAsset')).toBeUndefined();
         expect(dispatchSpy).not.toHaveBeenCalledWith(exchangeActions.receiveAssetChanged());

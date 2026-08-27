@@ -16,8 +16,8 @@ jest.mock('@react-navigation/native', () => ({
 const ethAccountKey = mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' });
 
 describe('SellCompletionConfirmButton', () => {
-    const renderSellCompletionButton = (precomposedTx: Record<string, unknown> | undefined) =>
-        renderWithTradingProvider(
+    const renderSellCompletionButton = async (precomposedTx: Record<string, unknown> | undefined) =>
+        await renderWithTradingProvider(
             <SellCompletionConfirmButton quote={banxaCreditCardSellQuote} />,
             {
                 tradeType: 'sell',
@@ -34,10 +34,10 @@ describe('SellCompletionConfirmButton', () => {
         jest.clearAllMocks();
     });
 
-    it('renders only when the transaction is final', () => {
-        expect(renderSellCompletionButton({ type: 'composing' }).toJSON()).toBeNull();
+    it('renders only when the transaction is final', async () => {
+        expect((await renderSellCompletionButton({ type: 'composing' })).toJSON()).toBeNull();
 
-        const { getByText } = renderSellCompletionButton(
+        const { getByText } = await renderSellCompletionButton(
             createPrecomposedTxFinal({ totalSpent: '1100', fee: '1000' }),
         );
 
@@ -48,8 +48,8 @@ describe('SellCompletionConfirmButton', () => {
         ).toBeOnTheScreen();
     });
 
-    it('does not render when there is not final type', () => {
-        const { toJSON } = renderWithTradingProvider(
+    it('does not render when there is not final type', async () => {
+        const { toJSON } = await renderWithTradingProvider(
             <SellCompletionConfirmButton quote={banxaCreditCardSellQuote} />,
             {
                 tradeType: 'sell',
@@ -66,7 +66,7 @@ describe('SellCompletionConfirmButton', () => {
     });
 
     it('navigates to outputs review', async () => {
-        const { getByText } = renderSellCompletionButton(
+        const { getByText } = await renderSellCompletionButton(
             createPrecomposedTxFinal({ totalSpent: '1100', fee: '1000' }),
         );
 

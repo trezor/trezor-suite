@@ -61,29 +61,31 @@ const overridesWithDisabledTrading: PreloadedStatePartial<TradingTestPreloadedSt
 describe('TradingScreen', () => {
     let unmount: (() => void) | undefined;
 
-    const renderTradingScreen = (overrides?: PreloadedStatePartial<TradingTestPreloadedState>) => {
-        const result = renderWithTradingProvider(<TradingScreen />, { overrides });
+    const renderTradingScreen = async (
+        overrides?: PreloadedStatePartial<TradingTestPreloadedState>,
+    ) => {
+        const result = await renderWithTradingProvider(<TradingScreen />, { overrides });
 
         ({ unmount } = result);
 
         return result;
     };
 
-    afterEach(() => {
+    afterEach(async () => {
         if (unmount) {
-            unmount();
+            await unmount();
             unmount = undefined;
         }
     });
 
-    it('should render nothing when trading feature flag is not enabled', () => {
-        const { toJSON } = renderTradingScreen(overridesWithDisabledTrading);
+    it('should render nothing when trading feature flag is not enabled', async () => {
+        const { toJSON } = await renderTradingScreen(overridesWithDisabledTrading);
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render Buy form by default', () => {
-        const { getByText } = renderTradingScreen({
+    it('should render Buy form by default', async () => {
+        const { getByText } = await renderTradingScreen({
             featureFlags: createTradingFeatureFlags({}),
         });
 

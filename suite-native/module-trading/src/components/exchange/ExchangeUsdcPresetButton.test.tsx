@@ -40,13 +40,13 @@ describe('ExchangeUsdcPresetButton', () => {
         mockSetValue.mockClear();
     });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('without a matching account shows an error message', () => {
+    it('without a matching account shows an error message', async () => {
         const store = createTradingLightStore({ tradeType: 'exchange' });
-        renderWithTradingProvider(<ExchangeUsdcPresetButton />, { store });
+        await renderWithTradingProvider(<ExchangeUsdcPresetButton />, { store });
 
         expect(screen.getByText('No account with USDC found.')).toBeOnTheScreen();
     });
@@ -54,21 +54,21 @@ describe('ExchangeUsdcPresetButton', () => {
     describe('with a matching ETH account that has a USDC token', () => {
         let store: TestStore;
 
-        beforeEach(() => {
+        beforeEach(async () => {
             const preloadedState = createTradingPreloadedState({
                 tradeType: 'exchange',
                 overrides: { wallet: { accounts: [ethAccountWithUsdc] } },
             });
             store = createTradingLightStore({ tradeType: 'exchange', overrides: preloadedState });
-            renderWithTradingProvider(<ExchangeUsdcPresetButton />, { store });
+            await renderWithTradingProvider(<ExchangeUsdcPresetButton />, { store });
         });
 
         it('renders the preset button', () => {
             expect(screen.getByText('Prefill 1 USDC→USDT')).toBeOnTheScreen();
         });
 
-        it('fills form for 1 USDC -> USDT trade', () => {
-            fireEvent.press(screen.getByText(/1 USDC.*USDT/));
+        it('fills form for 1 USDC -> USDT trade', async () => {
+            await fireEvent.press(screen.getByText(/1 USDC.*USDT/));
 
             expect(mockSetValue).toHaveBeenCalledWith(
                 'sendAsset',

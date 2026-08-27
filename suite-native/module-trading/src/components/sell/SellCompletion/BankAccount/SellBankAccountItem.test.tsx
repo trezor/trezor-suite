@@ -5,8 +5,8 @@ import { unverifiedBankAccount, verifiedBankAccount } from '@suite-native/tradin
 import { BANK_ACCOUNT_ITEM_TEST_ID, SellBankAccountItem } from './SellBankAccountItem';
 
 describe('SellBankAccountItem', () => {
-    const renderBankAccountItem = (props = {}) =>
-        renderWithBasicProvider(
+    const renderBankAccountItem = async (props = {}) =>
+        await renderWithBasicProvider(
             <SellBankAccountItem
                 bankAccount={verifiedBankAccount}
                 accessoryType="none"
@@ -15,20 +15,20 @@ describe('SellBankAccountItem', () => {
         );
 
     describe('Rendering', () => {
-        it('should render bank account holder name', () => {
-            const { getByText } = renderBankAccountItem();
+        it('should render bank account holder name', async () => {
+            const { getByText } = await renderBankAccountItem();
 
             expect(getByText('John Doe')).toBeOnTheScreen();
         });
 
-        it('should render formatted IBAN', () => {
-            const { getByText } = renderBankAccountItem();
+        it('should render formatted IBAN', async () => {
+            const { getByText } = await renderBankAccountItem();
 
             expect(getByText('CZ65 0800 0000 1920 0014 5399')).toBeOnTheScreen();
         });
 
-        it('should render verified status for verified bank account', () => {
-            const { getByText, getByTestId } = renderBankAccountItem({
+        it('should render verified status for verified bank account', async () => {
+            const { getByText, getByTestId } = await renderBankAccountItem({
                 bankAccount: verifiedBankAccount,
             });
 
@@ -38,8 +38,8 @@ describe('SellBankAccountItem', () => {
             expect(getByTestId('check-icon')).toBeOnTheScreen();
         });
 
-        it('should render not verified status for unverified bank account', () => {
-            const { getByText, queryByTestId } = renderBankAccountItem({
+        it('should render not verified status for unverified bank account', async () => {
+            const { getByText, queryByTestId } = await renderBankAccountItem({
                 bankAccount: unverifiedBankAccount,
             });
 
@@ -51,16 +51,16 @@ describe('SellBankAccountItem', () => {
     });
 
     describe('Accessory Types', () => {
-        it('should render caret accessory', () => {
-            const { getByTestId } = renderBankAccountItem({
+        it('should render caret accessory', async () => {
+            const { getByTestId } = await renderBankAccountItem({
                 accessoryType: 'caret',
             });
 
             expect(getByTestId('caret-right-icon')).toBeOnTheScreen();
         });
 
-        it('should render select accessory (radio button)', () => {
-            const { getByTestId } = renderBankAccountItem({
+        it('should render select accessory (radio button)', async () => {
+            const { getByTestId } = await renderBankAccountItem({
                 accessoryType: 'select',
                 isSelected: false,
             });
@@ -68,8 +68,8 @@ describe('SellBankAccountItem', () => {
             expect(getByTestId('radio-button-select')).toBeOnTheScreen();
         });
 
-        it('should render no accessory', () => {
-            const { queryByTestId } = renderBankAccountItem({
+        it('should render no accessory', async () => {
+            const { queryByTestId } = await renderBankAccountItem({
                 accessoryType: 'none',
             });
 
@@ -81,7 +81,7 @@ describe('SellBankAccountItem', () => {
     describe('User Interactions', () => {
         it('should call onPress when pressed', async () => {
             const mockOnPress = jest.fn();
-            const { getByTestId } = renderBankAccountItem({
+            const { getByTestId } = await renderBankAccountItem({
                 onPress: mockOnPress,
             });
 
@@ -92,7 +92,7 @@ describe('SellBankAccountItem', () => {
 
         it('should call onPress when radio button is pressed', async () => {
             const mockOnPress = jest.fn();
-            const { getByTestId } = renderBankAccountItem({
+            const { getByTestId } = await renderBankAccountItem({
                 accessoryType: 'select',
                 onPress: mockOnPress,
             });

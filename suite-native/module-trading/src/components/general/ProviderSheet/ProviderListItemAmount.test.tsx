@@ -52,19 +52,19 @@ const sellAmountInCryptoOverrides: PreloadedStatePartial<TradingTestPreloadedSta
 };
 
 describe('ProviderListItemAmount', () => {
-    const renderProviderListItemAmount = (
+    const renderProviderListItemAmount = async (
         quote: TradingTradeType,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = overridesWithQuotes,
-    ) => renderWithTradingProvider(<ProviderListItemAmount quote={quote} />, { overrides });
+    ) => await renderWithTradingProvider(<ProviderListItemAmount quote={quote} />, { overrides });
 
-    it('should render the received amount when the user entered the "from" amount', () => {
-        const { getByText } = renderProviderListItemAmount(mercuryoApplePayBuyQuote);
+    it('should render the received amount when the user entered the "from" amount', async () => {
+        const { getByText } = await renderProviderListItemAmount(mercuryoApplePayBuyQuote);
 
         expect(getByText('0.00100017 BTC')).toBeOnTheScreen();
     });
 
-    it('should render the fiat amount when the user requested a crypto ("to") amount for buy', () => {
-        const { getByText } = renderProviderListItemAmount(
+    it('should render the fiat amount when the user requested a crypto ("to") amount for buy', async () => {
+        const { getByText } = await renderProviderListItemAmount(
             mercuryoApplePayBuyQuote,
             buyWantCryptoOverrides,
         );
@@ -72,8 +72,8 @@ describe('ProviderListItemAmount', () => {
         expect(getByText('€10.00')).toBeOnTheScreen();
     });
 
-    it('should render the received fiat amount when the user entered a crypto amount for sell', () => {
-        const { getByText } = renderProviderListItemAmount(
+    it('should render the received fiat amount when the user entered a crypto amount for sell', async () => {
+        const { getByText } = await renderProviderListItemAmount(
             banxaCreditCardSellQuote,
             sellAmountInCryptoOverrides,
         );
@@ -81,13 +81,13 @@ describe('ProviderListItemAmount', () => {
         expect(getByText('$90.17')).toBeOnTheScreen();
     });
 
-    it('should render nothing when the amount is missing', () => {
+    it('should render nothing when the amount is missing', async () => {
         const quoteWithoutReceiveAmount = {
             ...mercuryoApplePayBuyQuote,
             receiveStringAmount: undefined,
         } as TradingTradeType;
 
-        const { toJSON } = renderProviderListItemAmount(quoteWithoutReceiveAmount);
+        const { toJSON } = await renderProviderListItemAmount(quoteWithoutReceiveAmount);
 
         expect(toJSON()).toBeNull();
     });

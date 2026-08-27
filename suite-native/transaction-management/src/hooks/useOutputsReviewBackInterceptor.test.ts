@@ -18,8 +18,9 @@ jest.mock('./useShowReviewCancellationAlert', () => ({
 }));
 
 describe('useOutputsReviewBackInterceptor', () => {
-    const renderUseOutputsReviewBackInterceptor = (onReviewCanceled: () => void = jest.fn()) =>
-        renderHookWithBasicProvider(() => useOutputsReviewBackInterceptor(onReviewCanceled));
+    const renderUseOutputsReviewBackInterceptor = async (
+        onReviewCanceled: () => void = jest.fn(),
+    ) => await renderHookWithBasicProvider(() => useOutputsReviewBackInterceptor(onReviewCanceled));
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -28,8 +29,8 @@ describe('useOutputsReviewBackInterceptor', () => {
         );
     });
 
-    it('should call showReviewCancellationAlert onBack action', () => {
-        renderUseOutputsReviewBackInterceptor();
+    it('should call showReviewCancellationAlert onBack action', async () => {
+        await renderUseOutputsReviewBackInterceptor();
 
         expect(mockShowReviewCancellationAlert).toHaveBeenCalledTimes(1);
     });
@@ -37,7 +38,7 @@ describe('useOutputsReviewBackInterceptor', () => {
     it('should call onReviewCanceled if review was canceled', async () => {
         const mockOnReviewCanceled = jest.fn();
 
-        renderUseOutputsReviewBackInterceptor(mockOnReviewCanceled);
+        await renderUseOutputsReviewBackInterceptor(mockOnReviewCanceled);
 
         await waitFor(() => {
             expect(mockOnReviewCanceled).toHaveBeenCalledTimes(1);
@@ -49,7 +50,7 @@ describe('useOutputsReviewBackInterceptor', () => {
         mockShowReviewCancellationAlert.mockReturnValue(
             Promise.resolve({ wasReviewCanceled: false }),
         );
-        renderUseOutputsReviewBackInterceptor(mockOnReviewCanceled);
+        await renderUseOutputsReviewBackInterceptor(mockOnReviewCanceled);
 
         await Promise.resolve(); // wait for the promise in the hook to resolve
         expect(mockOnReviewCanceled).toHaveBeenCalledTimes(0);

@@ -16,41 +16,41 @@ import {
 describe('SellSendAccountCryptoBalance', () => {
     let sellForm: SellFormType;
 
-    const renderSellForm = () => {
-        const { result } = renderHookWithTradingProvider(() => useSellForm(), {
+    const renderSellForm = async () => {
+        const { result } = await renderHookWithTradingProvider(() => useSellForm(), {
             tradeType: 'sell',
         });
 
         return result.current;
     };
 
-    const renderComponent = () =>
-        renderWithTradingProvider(<SellSendAccountCryptoBalance />, {
+    const renderComponent = async () =>
+        await renderWithTradingProvider(<SellSendAccountCryptoBalance />, {
             tradeType: 'sell',
             wrapper: ({ children }) => <Form form={sellForm}>{children}</Form>,
         });
 
-    beforeEach(() => {
-        sellForm = renderSellForm();
+    beforeEach(async () => {
+        sellForm = await renderSellForm();
     });
 
-    it('should use asset form field as default symbol', () => {
-        act(() => {
+    it('should use asset form field as default symbol', async () => {
+        await act(() => {
             sellForm.setValue('sendAsset', btcAsset);
         });
-        const { getByTestId } = renderComponent();
+        const { getByTestId } = await renderComponent();
 
         expect(getByTestId(SEND_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:- BTC');
     });
 
-    it('should use sendAccount form field to obtain account', () => {
-        act(() => {
+    it('should use sendAccount form field to obtain account', async () => {
+        await act(() => {
             sellForm.setValue('sendAsset', btcAsset);
         });
-        act(() => {
+        await act(() => {
             sellForm.setValue('sendAccount', getBtcAccount());
         });
-        const { getByTestId } = renderComponent();
+        const { getByTestId } = await renderComponent();
 
         expect(getByTestId(SEND_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:0.01 BTC');
     });

@@ -22,8 +22,8 @@ import { useProviderConfirmationStatus } from './useProviderConfirmationStatus';
 describe('useProviderConfirmationStatus', () => {
     let store: TestStore;
 
-    const renderUseProviderConfirmationStatus = () =>
-        renderHookWithStoreProvider(() => useProviderConfirmationStatus(), {
+    const renderUseProviderConfirmationStatus = async () =>
+        await renderHookWithStoreProvider(() => useProviderConfirmationStatus(), {
             store,
         });
 
@@ -44,34 +44,34 @@ describe('useProviderConfirmationStatus', () => {
         jest.useRealTimers();
     });
 
-    it('should return current status', () => {
+    it('should return current status', async () => {
         store.dispatch(tradingActions.setProviderConfirmationStatus('window_opened'));
-        const { result } = renderUseProviderConfirmationStatus();
+        const { result } = await renderUseProviderConfirmationStatus();
 
         expect(result.current).toEqual('window_opened');
     });
 
-    it('should clear tradingProviderConfirmationStatus on unmount', () => {
+    it('should clear tradingProviderConfirmationStatus on unmount', async () => {
         store.dispatch(tradingActions.setProviderConfirmationStatus('window_opened'));
-        const { unmount } = renderUseProviderConfirmationStatus();
+        const { unmount } = await renderUseProviderConfirmationStatus();
 
-        unmount();
+        await unmount();
 
         expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('inactive');
     });
 
-    it('should set tradingProviderConfirmationStatus to "confirmation_failed" after 30 "window_closed_incomplete" is set', () => {
-        renderUseProviderConfirmationStatus();
+    it('should set tradingProviderConfirmationStatus to "confirmation_failed" after 30 "window_closed_incomplete" is set', async () => {
+        await renderUseProviderConfirmationStatus();
         jest.useFakeTimers();
 
-        act(() => {
+        await act(() => {
             store.dispatch(tradingActions.setProviderConfirmationStatus('window_opened'));
             store.dispatch(
                 tradingActions.setProviderConfirmationStatus('window_closed_incomplete'),
             );
         });
 
-        act(() => {
+        await act(() => {
             jest.advanceTimersByTime(30_000);
         });
 
@@ -80,18 +80,18 @@ describe('useProviderConfirmationStatus', () => {
         );
     });
 
-    it('should set tradingProviderConfirmationStatus to "confirmation_failed" after 30 "window_closed_with_success" is set', () => {
-        renderUseProviderConfirmationStatus();
+    it('should set tradingProviderConfirmationStatus to "confirmation_failed" after 30 "window_closed_with_success" is set', async () => {
+        await renderUseProviderConfirmationStatus();
         jest.useFakeTimers();
 
-        act(() => {
+        await act(() => {
             store.dispatch(tradingActions.setProviderConfirmationStatus('window_opened'));
             store.dispatch(
                 tradingActions.setProviderConfirmationStatus('window_closed_with_success'),
             );
         });
 
-        act(() => {
+        await act(() => {
             jest.advanceTimersByTime(30_000);
         });
 
@@ -100,26 +100,26 @@ describe('useProviderConfirmationStatus', () => {
         );
     });
 
-    it('should not set tradingProviderConfirmationStatus to "confirmation_failed" when status changes', () => {
-        renderUseProviderConfirmationStatus();
+    it('should not set tradingProviderConfirmationStatus to "confirmation_failed" when status changes', async () => {
+        await renderUseProviderConfirmationStatus();
         jest.useFakeTimers();
 
-        act(() => {
+        await act(() => {
             store.dispatch(tradingActions.setProviderConfirmationStatus('window_opened'));
             store.dispatch(
                 tradingActions.setProviderConfirmationStatus('window_closed_with_success'),
             );
         });
 
-        act(() => {
+        await act(() => {
             jest.advanceTimersByTime(15_000);
         });
 
-        act(() => {
+        await act(() => {
             store.dispatch(tradingActions.setProviderConfirmationStatus('confirmation_success'));
         });
 
-        act(() => {
+        await act(() => {
             jest.advanceTimersByTime(30_000);
         });
 
@@ -128,10 +128,10 @@ describe('useProviderConfirmationStatus', () => {
         );
     });
 
-    it('should set tradingProviderConfirmationStatus to "confirmation_success" when isTradeFinalized becomes truthy', () => {
-        renderUseProviderConfirmationStatus();
+    it('should set tradingProviderConfirmationStatus to "confirmation_success" when isTradeFinalized becomes truthy', async () => {
+        await renderUseProviderConfirmationStatus();
 
-        act(() => {
+        await act(() => {
             store.dispatch(tradingActions.setProviderConfirmationStatus('window_opened'));
             store.dispatch(
                 tradingActions.setProviderConfirmationStatus('window_closed_with_success'),
@@ -148,10 +148,10 @@ describe('useProviderConfirmationStatus', () => {
         );
     });
 
-    it('should wait for the browser to close before setting "confirmation_success"', () => {
-        renderUseProviderConfirmationStatus();
+    it('should wait for the browser to close before setting "confirmation_success"', async () => {
+        await renderUseProviderConfirmationStatus();
 
-        act(() => {
+        await act(() => {
             store.dispatch(tradingActions.setProviderConfirmationStatus('window_opened'));
             store.dispatch(
                 sendFormActions.storePrecomposedTransaction({
@@ -162,7 +162,7 @@ describe('useProviderConfirmationStatus', () => {
 
         expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
 
-        act(() => {
+        await act(() => {
             store.dispatch(
                 tradingActions.setProviderConfirmationStatus('window_closed_incomplete'),
             );

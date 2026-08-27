@@ -79,20 +79,21 @@ describe('TradingHistoryDetailHeader', () => {
 
     it.each(testCases)(
         'should render the header for $titleId',
-        ({ trade, titleId, descriptionId, artwork }) => {
+        async ({ trade, titleId, descriptionId, artwork }) => {
             const orderId = trade.data.orderId ?? 'missing-order-id';
-            const { getByText, getByTestId, queryByTestId } = renderWithTradingHistoryProvider(
-                <TradingHistoryDetailHeader orderId={orderId} />,
-                {
-                    overrides: {
-                        wallet: {
-                            trading: {
-                                trades: [trade],
+            const { getByText, getByTestId, queryByTestId } =
+                await renderWithTradingHistoryProvider(
+                    <TradingHistoryDetailHeader orderId={orderId} />,
+                    {
+                        overrides: {
+                            wallet: {
+                                trading: {
+                                    trades: [trade],
+                                },
                             },
                         },
                     },
-                },
-            );
+                );
             const translationValues = { providerName: 'Mercuryo' };
 
             expect(getByText(getTranslation(titleId, translationValues))).toBeOnTheScreen();
@@ -132,9 +133,9 @@ describe('TradingHistoryDetailHeader', () => {
             titleId: 'moduleTrading.tradeHistory.detail.header.exchange.kyc.title' as const,
             trade: getExchangeTrade({ status: 'KYC' }),
         },
-    ])('renders $artwork artwork in compact content', ({ artwork, titleId, trade }) => {
+    ])('renders $artwork artwork in compact content', async ({ artwork, titleId, trade }) => {
         const orderId = trade.data.orderId ?? 'missing-order-id';
-        const { getByText, getByTestId } = renderWithTradingHistoryProvider(
+        const { getByText, getByTestId } = await renderWithTradingHistoryProvider(
             <TradingHistoryDetailCompactHeader orderId={orderId} />,
             {
                 overrides: {

@@ -38,10 +38,12 @@ describe('TradeStatusIcon', () => {
         });
     });
 
-    it('renders no icon for an undefined status', () => {
+    it('renders no icon for an undefined status', async () => {
         expect(getTradeStatusIconConfig(undefined)).toBeUndefined();
 
-        const { toJSON } = renderWithTradingHistoryProvider(<TradeStatusIcon status={undefined} />);
+        const { toJSON } = await renderWithTradingHistoryProvider(
+            <TradeStatusIcon status={undefined} />,
+        );
 
         expect(toJSON()).toBeNull();
     });
@@ -51,8 +53,8 @@ describe('TradeStatusIcon', () => {
         ['ERROR', 'moduleTrading.tradeHistory.statusIcon.error'],
         ['CANCELLED', 'moduleTrading.tradeHistory.statusIcon.warning'],
         ['SUBMITTED', 'moduleTrading.tradeHistory.statusIcon.pending'],
-    ] as const)('provides an accessible label for %s', (status, labelId) => {
-        const { getByLabelText } = renderWithTradingHistoryProvider(
+    ] as const)('provides an accessible label for %s', async (status, labelId) => {
+        const { getByLabelText } = await renderWithTradingHistoryProvider(
             <TradeStatusIcon status={status} />,
         );
 

@@ -15,38 +15,41 @@ describe('BuyAlert', () => {
         wallet: getWalletState({ tradeType: 'buy' }),
     };
 
-    const renderFormHook = () =>
-        renderHookWithStoreProvider(() => useBuyForm(), {
+    const renderFormHook = async () =>
+        await renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState,
         });
 
-    const renderTradingAlert = () =>
-        renderWithBasicProvider(<BuyAlert />, {
+    const renderTradingAlert = async () =>
+        await renderWithBasicProvider(<BuyAlert />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(() => {
-        const { result } = renderFormHook();
+    beforeEach(async () => {
+        const { result } = await renderFormHook();
         form = result.current;
     });
 
-    it('should render alert based on form generalAlert value', () => {
-        act(() => {
+    it('should render alert based on form generalAlert value', async () => {
+        await act(() => {
             form.setValue('generalAlert', 'TEST');
         });
 
-        const { getByText } = renderTradingAlert();
+        const { getByText } = await renderTradingAlert();
 
         expect(getByText('TEST')).toBeTruthy();
     });
 
-    it.each([undefined, ''])('should render nothing when generalAlert is %s', generalAlertValue => {
-        act(() => {
-            form.setValue('generalAlert', generalAlertValue);
-        });
+    it.each([undefined, ''])(
+        'should render nothing when generalAlert is %s',
+        async generalAlertValue => {
+            await act(() => {
+                form.setValue('generalAlert', generalAlertValue);
+            });
 
-        const { toJSON } = renderTradingAlert();
+            const { toJSON } = await renderTradingAlert();
 
-        expect(toJSON()).toBeNull();
-    });
+            expect(toJSON()).toBeNull();
+        },
+    );
 });

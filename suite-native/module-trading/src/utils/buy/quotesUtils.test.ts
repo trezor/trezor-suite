@@ -18,16 +18,16 @@ import { useBuyForm } from '../../hooks/buy/useBuyForm';
 describe('quotesUtils', () => {
     let form: BuyFormType;
 
-    const renderUseTradingBuyForm = () =>
-        renderHookWithStoreProvider(() => useBuyForm(), {
+    const renderUseTradingBuyForm = async () =>
+        await renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState: {
                 device: deviceInitialState,
                 wallet: { trading: getInitializedTradingState() },
             },
         });
 
-    beforeEach(() => {
-        const { result } = renderUseTradingBuyForm();
+    beforeEach(async () => {
+        const { result } = await renderUseTradingBuyForm();
         form = result.current;
     });
 
@@ -36,8 +36,8 @@ describe('quotesUtils', () => {
             expect(getPaymentMethodFromBuyForm(form)).toBeUndefined();
         });
 
-        it('should return TradingPaymentMethodListProps object when quote is set', () => {
-            act(() => {
+        it('should return TradingPaymentMethodListProps object when quote is set', async () => {
+            await act(() => {
                 form.setValue('quote', mercuryoApplePayBuyQuote);
             });
 
@@ -56,8 +56,8 @@ describe('quotesUtils', () => {
         });
 
         describe('with buy form populated', () => {
-            beforeEach(() => {
-                act(() => {
+            beforeEach(async () => {
+                await act(() => {
                     form.setValue('fiatValue', '100');
                     form.setValue('asset', btcAsset);
                     form.setValue('country', {
@@ -126,8 +126,8 @@ describe('quotesUtils', () => {
                 });
             });
 
-            it('should set receiveAddress from address', () => {
-                act(() => {
+            it('should set receiveAddress from address', async () => {
+                await act(() => {
                     form.setValue('receiveAccount', {
                         account: btc1NormalAccount,
                         address: btc1NormalAccount.addresses!.unused[0],
@@ -143,8 +143,8 @@ describe('quotesUtils', () => {
                 );
             });
 
-            it('should set paymentMethod to undefined when provided quote is not complete', () => {
-                act(() => {
+            it('should set paymentMethod to undefined when provided quote is not complete', async () => {
+                await act(() => {
                     form.setValue('quote', {
                         ...mercuryoApplePayBuyQuote,
                         paymentMethodName: undefined,

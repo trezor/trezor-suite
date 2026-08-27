@@ -4,12 +4,12 @@ import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store
 
 import { useWrappedNativeFlowAnalytics } from './useWrappedNativeFlowAnalytics';
 
-const renderFlowAnalytics = (props: Parameters<typeof useWrappedNativeFlowAnalytics>[0]) => {
+const renderFlowAnalytics = async (props: Parameters<typeof useWrappedNativeFlowAnalytics>[0]) => {
     const services: NativeAnalyticsDep = {
         analytics: mockNativeAnalytics(jest.fn()),
     };
 
-    const view = renderHookWithStoreProvider(useWrappedNativeFlowAnalytics, {
+    const view = await renderHookWithStoreProvider(useWrappedNativeFlowAnalytics, {
         initialProps: props,
         services,
     });
@@ -18,13 +18,13 @@ const renderFlowAnalytics = (props: Parameters<typeof useWrappedNativeFlowAnalyt
 };
 
 describe('useWrappedNativeFlowAnalytics', () => {
-    it('reports submit as yield/wrap for the wrap flow', () => {
-        const { result, analytics } = renderFlowAnalytics({
+    it('reports submit as yield/wrap for the wrap flow', async () => {
+        const { result, analytics } = await renderFlowAnalytics({
             flowType: 'wrap',
             networkSymbol: 'eth',
         });
 
-        act(() => {
+        await act(() => {
             result.current.reportSubmit();
         });
 
@@ -34,13 +34,13 @@ describe('useWrappedNativeFlowAnalytics', () => {
         });
     });
 
-    it('reports a cancelled simulation', () => {
-        const { result, analytics } = renderFlowAnalytics({
+    it('reports a cancelled simulation', async () => {
+        const { result, analytics } = await renderFlowAnalytics({
             flowType: 'wrap',
             networkSymbol: 'eth',
         });
 
-        act(() => {
+        await act(() => {
             result.current.reportSimulation('cancel');
         });
 
@@ -50,13 +50,13 @@ describe('useWrappedNativeFlowAnalytics', () => {
         });
     });
 
-    it('reports sent', () => {
-        const { result, analytics } = renderFlowAnalytics({
+    it('reports sent', async () => {
+        const { result, analytics } = await renderFlowAnalytics({
             flowType: 'wrap',
             networkSymbol: 'eth',
         });
 
-        act(() => {
+        await act(() => {
             result.current.reportSent();
         });
 
@@ -66,13 +66,13 @@ describe('useWrappedNativeFlowAnalytics', () => {
         });
     });
 
-    it('reports the given error message', () => {
-        const { result, analytics } = renderFlowAnalytics({
+    it('reports the given error message', async () => {
+        const { result, analytics } = await renderFlowAnalytics({
             flowType: 'wrap',
             networkSymbol: 'eth',
         });
 
-        act(() => {
+        await act(() => {
             result.current.reportError('push-failed');
         });
 
@@ -87,13 +87,13 @@ describe('useWrappedNativeFlowAnalytics', () => {
         });
     });
 
-    it('reports max selected as yield/interaction with no vaultId', () => {
-        const { result, analytics } = renderFlowAnalytics({
+    it('reports max selected as yield/interaction with no vaultId', async () => {
+        const { result, analytics } = await renderFlowAnalytics({
             flowType: 'wrap',
             networkSymbol: 'eth',
         });
 
-        act(() => {
+        await act(() => {
             result.current.reportMaxSelected();
         });
 

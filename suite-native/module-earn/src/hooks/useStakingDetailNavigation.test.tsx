@@ -18,8 +18,8 @@ describe('useStakingDetailNavigation', () => {
         jest.clearAllMocks();
     });
 
-    it('navigates a Solana account to staking management', () => {
-        const { result } = renderHook(() => useStakingDetailNavigation());
+    it('navigates a Solana account to staking management', async () => {
+        const { result } = await renderHook(() => useStakingDetailNavigation());
         result.current.navigateToStakingDetail({ accountKey, symbol: 'sol' });
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
@@ -27,8 +27,8 @@ describe('useStakingDetailNavigation', () => {
         });
     });
 
-    it('navigates an Ethereum account to staking management', () => {
-        const { result } = renderHook(() => useStakingDetailNavigation());
+    it('navigates an Ethereum account to staking management', async () => {
+        const { result } = await renderHook(() => useStakingDetailNavigation());
         result.current.navigateToStakingDetail({ accountKey, symbol: 'eth' });
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {

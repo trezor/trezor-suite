@@ -4,14 +4,14 @@ import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store
 
 import { useYieldCurrencyToggleAnalytics } from './useYieldCurrencyToggleAnalytics';
 
-const renderCurrencyToggleAnalytics = (
+const renderCurrencyToggleAnalytics = async (
     props: Parameters<typeof useYieldCurrencyToggleAnalytics>[0],
 ) => {
     const services: NativeAnalyticsDep = {
         analytics: mockNativeAnalytics(jest.fn()),
     };
 
-    const view = renderHookWithStoreProvider(useYieldCurrencyToggleAnalytics, {
+    const view = await renderHookWithStoreProvider(useYieldCurrencyToggleAnalytics, {
         initialProps: props,
         services,
     });
@@ -20,13 +20,13 @@ const renderCurrencyToggleAnalytics = (
 };
 
 describe('useYieldCurrencyToggleAnalytics', () => {
-    it('reports a switch to the fiat input', () => {
-        const { result, analytics } = renderCurrencyToggleAnalytics({
+    it('reports a switch to the fiat input', async () => {
+        const { result, analytics } = await renderCurrencyToggleAnalytics({
             networkSymbol: 'eth',
             vaultId: 'vault-1',
         });
 
-        act(() => {
+        await act(() => {
             result.current('secondary');
         });
 
@@ -41,13 +41,13 @@ describe('useYieldCurrencyToggleAnalytics', () => {
         });
     });
 
-    it('reports a switch back to the crypto input', () => {
-        const { result, analytics } = renderCurrencyToggleAnalytics({
+    it('reports a switch back to the crypto input', async () => {
+        const { result, analytics } = await renderCurrencyToggleAnalytics({
             networkSymbol: 'eth',
             vaultId: 'vault-1',
         });
 
-        act(() => {
+        await act(() => {
             result.current('primary');
         });
 
@@ -62,10 +62,10 @@ describe('useYieldCurrencyToggleAnalytics', () => {
         });
     });
 
-    it('omits vaultId for the standalone wrap/unwrap forms', () => {
-        const { result, analytics } = renderCurrencyToggleAnalytics({ networkSymbol: 'eth' });
+    it('omits vaultId for the standalone wrap/unwrap forms', async () => {
+        const { result, analytics } = await renderCurrencyToggleAnalytics({ networkSymbol: 'eth' });
 
-        act(() => {
+        await act(() => {
             result.current('secondary');
         });
 
@@ -80,10 +80,10 @@ describe('useYieldCurrencyToggleAnalytics', () => {
         });
     });
 
-    it('reports every switch, so a toggle back and forth is counted twice', () => {
-        const { result, analytics } = renderCurrencyToggleAnalytics({ networkSymbol: 'eth' });
+    it('reports every switch, so a toggle back and forth is counted twice', async () => {
+        const { result, analytics } = await renderCurrencyToggleAnalytics({ networkSymbol: 'eth' });
 
-        act(() => {
+        await act(() => {
             result.current('secondary');
             result.current('primary');
         });

@@ -58,12 +58,12 @@ const RECEIVE_CRYPTO_ID = 'stellar:USDC' as CryptoId;
 const TOKEN_CONTRACT = 'USDC-GA123';
 const ACCOUNT_KEY = 'xlm-account-key';
 
-const renderUseTradingStellarActivateToken = (options?: {
+const renderUseTradingStellarActivateToken = async (options?: {
     quote?: ExchangeTrade | BuyTrade;
     receiveCryptoId?: CryptoId;
     buttonTestId?: string;
 }) =>
-    renderHook(() =>
+    await renderHook(() =>
         useTradingStellarActivateToken({
             quote: options?.quote,
             receiveCryptoId: options?.receiveCryptoId,
@@ -72,24 +72,19 @@ const renderUseTradingStellarActivateToken = (options?: {
     );
 
 const getButtonProps = (
-    result: ReturnType<typeof renderUseTradingStellarActivateToken>['result'],
+    result: Awaited<ReturnType<typeof renderUseTradingStellarActivateToken>>['result'],
 ) => result.current.activateButtonElement?.props.children.props;
 
 const onActivateButtonPressStart = (
-    result: ReturnType<typeof renderUseTradingStellarActivateToken>['result'],
+    result: Awaited<ReturnType<typeof renderUseTradingStellarActivateToken>>['result'],
 ) => {
     const onPress = getButtonProps(result)?.onPress as (() => Promise<void>) | undefined;
-    let onPressPromise: Promise<void> | undefined;
 
-    act(() => {
-        onPressPromise = onPress?.();
-    });
-
-    return onPressPromise;
+    return onPress?.();
 };
 
 const onActivateButtonPress = async (
-    result: ReturnType<typeof renderUseTradingStellarActivateToken>['result'],
+    result: Awaited<ReturnType<typeof renderUseTradingStellarActivateToken>>['result'],
 ) => {
     const onPressPromise = onActivateButtonPressStart(result);
     await act(async () => await onPressPromise);
@@ -117,8 +112,8 @@ describe('useTradingStellarActivateToken', () => {
         }));
     });
 
-    it('returns activate button when receiving inactive Stellar token', () => {
-        const { result } = renderUseTradingStellarActivateToken({
+    it('returns activate button when receiving inactive Stellar token', async () => {
+        const { result } = await renderUseTradingStellarActivateToken({
             quote: { receive: 'USDC' } as ExchangeTrade,
             receiveCryptoId: RECEIVE_CRYPTO_ID,
             buttonTestId: 'activate-stellar-token',
@@ -129,12 +124,12 @@ describe('useTradingStellarActivateToken', () => {
         expect(getButtonProps(result)?.testID).toBe('activate-stellar-token');
     });
 
-    it('does not return activate button when token is already active', () => {
+    it('does not return activate button when token is already active', async () => {
         mockUseInactiveStellarTokens.mockReturnValue({
             inactiveTokens: [{ contract: 'AQUA-GB456' }],
         });
 
-        const { result } = renderUseTradingStellarActivateToken({
+        const { result } = await renderUseTradingStellarActivateToken({
             quote: { receive: 'USDC' } as ExchangeTrade,
             receiveCryptoId: RECEIVE_CRYPTO_ID,
         });
@@ -149,7 +144,7 @@ describe('useTradingStellarActivateToken', () => {
             meta: { requestStatus: 'fulfilled' },
         });
 
-        const { result } = renderUseTradingStellarActivateToken({
+        const { result } = await renderUseTradingStellarActivateToken({
             quote: { receive: 'USDC' } as ExchangeTrade,
             receiveCryptoId: RECEIVE_CRYPTO_ID,
         });
@@ -177,7 +172,7 @@ describe('useTradingStellarActivateToken', () => {
             meta: { requestStatus: 'rejected' },
         });
 
-        const { result } = renderUseTradingStellarActivateToken({
+        const { result } = await renderUseTradingStellarActivateToken({
             quote: { receive: 'USDC' } as ExchangeTrade,
             receiveCryptoId: RECEIVE_CRYPTO_ID,
         });
@@ -202,7 +197,7 @@ describe('useTradingStellarActivateToken', () => {
                 }),
         );
 
-        const { result } = renderUseTradingStellarActivateToken({
+        const { result } = await renderUseTradingStellarActivateToken({
             quote: { receive: 'USDC' } as ExchangeTrade,
             receiveCryptoId: RECEIVE_CRYPTO_ID,
         });
@@ -211,7 +206,7 @@ describe('useTradingStellarActivateToken', () => {
 
         await waitFor(() => expect(getButtonProps(result)?.isLoading).toBe(true));
 
-        act(() => {
+        await act(() => {
             resolveDispatch?.({
                 type: 'module-stellar-token-management/composeStellarTrustlineFeesThunk/fulfilled',
                 meta: { requestStatus: 'fulfilled' },

@@ -26,17 +26,17 @@ describe(useReceiveAccountsListData.name, () => {
         wallet: { accounts },
     };
 
-    const renderUseReceiveAccountsListData = (
+    const renderUseReceiveAccountsListData = async (
         symbol: NetworkSymbol,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) =>
-        renderHookWithTradingProvider(
+        await renderHookWithTradingProvider(
             ({ networkSymbol }) => useReceiveAccountsListData({ symbol: networkSymbol }),
             { overrides, initialProps: { networkSymbol: symbol } },
         );
 
-    it('returns all visible accounts for the selected network', () => {
-        const { result } = renderUseReceiveAccountsListData('btc');
+    it('returns all visible accounts for the selected network', async () => {
+        const { result } = await renderUseReceiveAccountsListData('btc');
 
         expect(result.current).toEqual([
             {
@@ -51,10 +51,10 @@ describe(useReceiveAccountsListData.name, () => {
         ]);
     });
 
-    it('reacts to a network change', () => {
-        const { result, rerender } = renderUseReceiveAccountsListData('btc');
+    it('reacts to a network change', async () => {
+        const { result, rerender } = await renderUseReceiveAccountsListData('btc');
 
-        rerender({ networkSymbol: 'eth' });
+        await rerender({ networkSymbol: 'eth' });
 
         expect(result.current[0]?.data).toEqual([
             { account: expect.objectContaining({ key: eth1NormalAccount.key }) },
@@ -62,8 +62,8 @@ describe(useReceiveAccountsListData.name, () => {
         ]);
     });
 
-    it('returns an empty array when no matching account exists', () => {
-        const { result } = renderUseReceiveAccountsListData('btc', {
+    it('returns an empty array when no matching account exists', async () => {
+        const { result } = await renderUseReceiveAccountsListData('btc', {
             ...defaultOverrides,
             wallet: { accounts: [] },
         });

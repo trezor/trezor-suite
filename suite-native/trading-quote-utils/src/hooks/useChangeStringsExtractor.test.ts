@@ -12,14 +12,14 @@ import { useChangeStringsExtractor } from './useChangeStringsExtractor';
 describe('useChangeStringsExtractor', () => {
     const getPreloadedState = () => ({ wallet: { trading: getInitializedTradingState() } });
 
-    const renderUseChangeStringsExtractor = (data: TradingTradeType | undefined) =>
-        renderHookWithStoreProvider(() => useChangeStringsExtractor(data), {
+    const renderUseChangeStringsExtractor = async (data: TradingTradeType | undefined) =>
+        await renderHookWithStoreProvider(() => useChangeStringsExtractor(data), {
             preloadedState: getPreloadedState(),
         });
 
-    it('should extract strings for buy trade', () => {
+    it('should extract strings for buy trade', async () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-        const { result } = renderUseChangeStringsExtractor(buyTrade.data);
+        const { result } = await renderUseChangeStringsExtractor(buyTrade.data);
 
         expect(result.current).toEqual({
             fromCurrency: 'USD',
@@ -34,9 +34,9 @@ describe('useChangeStringsExtractor', () => {
         });
     });
 
-    it('should extract strings for sell trade', () => {
+    it('should extract strings for sell trade', async () => {
         const sellTrade = getSellTrade({ status: 'SUBMITTED' });
-        const { result } = renderUseChangeStringsExtractor(sellTrade.data);
+        const { result } = await renderUseChangeStringsExtractor(sellTrade.data);
 
         expect(result.current).toEqual({
             fromCurrency: 'bitcoin',
@@ -51,9 +51,9 @@ describe('useChangeStringsExtractor', () => {
         });
     });
 
-    it('should extract strings for exchange trade', () => {
+    it('should extract strings for exchange trade', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONFIRM' });
-        const { result } = renderUseChangeStringsExtractor(exchangeTrade.data);
+        const { result } = await renderUseChangeStringsExtractor(exchangeTrade.data);
 
         expect(result.current).toEqual({
             fromCurrency: 'solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL',
@@ -68,8 +68,8 @@ describe('useChangeStringsExtractor', () => {
         });
     });
 
-    it('should handle undefined trade', () => {
-        const { result } = renderUseChangeStringsExtractor(undefined);
+    it('should handle undefined trade', async () => {
+        const { result } = await renderUseChangeStringsExtractor(undefined);
 
         expect(result.current).toEqual({
             fromCurrency: undefined,
@@ -84,7 +84,7 @@ describe('useChangeStringsExtractor', () => {
         });
     });
 
-    it('should handle trade with missing values', () => {
+    it('should handle trade with missing values', async () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
         const tradeWithMissingValues = {
             ...buyTrade.data,
@@ -92,7 +92,7 @@ describe('useChangeStringsExtractor', () => {
             receiveStringAmount: undefined,
         };
 
-        const { result } = renderUseChangeStringsExtractor(tradeWithMissingValues);
+        const { result } = await renderUseChangeStringsExtractor(tradeWithMissingValues);
 
         expect(result.current).toEqual({
             fromCurrency: 'USD',

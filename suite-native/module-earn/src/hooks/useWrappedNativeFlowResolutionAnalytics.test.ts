@@ -4,14 +4,14 @@ import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store
 
 import { useWrappedNativeFlowResolutionAnalytics } from './useWrappedNativeFlowResolutionAnalytics';
 
-const renderResolutionAnalytics = (
+const renderResolutionAnalytics = async (
     props: Parameters<typeof useWrappedNativeFlowResolutionAnalytics>[0],
 ) => {
     const services: NativeAnalyticsDep = {
         analytics: mockNativeAnalytics(jest.fn()),
     };
 
-    const view = renderHookWithStoreProvider(useWrappedNativeFlowResolutionAnalytics, {
+    const view = await renderHookWithStoreProvider(useWrappedNativeFlowResolutionAnalytics, {
         initialProps: props,
         services,
     });
@@ -27,11 +27,11 @@ const pendingWrap = {
 } as const satisfies Parameters<typeof useWrappedNativeFlowResolutionAnalytics>[0];
 
 describe('useWrappedNativeFlowResolutionAnalytics', () => {
-    it('reports success once when the status moves from pending to confirmed', () => {
-        const { rerender, analytics } = renderResolutionAnalytics(pendingWrap);
+    it('reports success once when the status moves from pending to confirmed', async () => {
+        const { rerender, analytics } = await renderResolutionAnalytics(pendingWrap);
 
-        act(() => {
-            rerender({ ...pendingWrap, status: 'confirmed' });
+        await act(async () => {
+            await rerender({ ...pendingWrap, status: 'confirmed' });
         });
 
         expect(analytics.report).toHaveBeenCalledTimes(1);
@@ -46,12 +46,12 @@ describe('useWrappedNativeFlowResolutionAnalytics', () => {
         });
     });
 
-    it('reports an on-chain-failure error when the status moves to failed', () => {
+    it('reports an on-chain-failure error when the status moves to failed', async () => {
         const pendingUnwrap = { ...pendingWrap, flowType: 'unwrap' } as const;
-        const { rerender, analytics } = renderResolutionAnalytics(pendingUnwrap);
+        const { rerender, analytics } = await renderResolutionAnalytics(pendingUnwrap);
 
-        act(() => {
-            rerender({ ...pendingUnwrap, status: 'failed' });
+        await act(async () => {
+            await rerender({ ...pendingUnwrap, status: 'failed' });
         });
 
         expect(analytics.report).toHaveBeenCalledTimes(1);
@@ -67,25 +67,25 @@ describe('useWrappedNativeFlowResolutionAnalytics', () => {
         });
     });
 
-    it('reports the resolution only once when confirmed twice', () => {
-        const { rerender, analytics } = renderResolutionAnalytics(pendingWrap);
+    it('reports the resolution only once when confirmed twice', async () => {
+        const { rerender, analytics } = await renderResolutionAnalytics(pendingWrap);
 
-        act(() => {
-            rerender({ ...pendingWrap, status: 'confirmed' });
+        await act(async () => {
+            await rerender({ ...pendingWrap, status: 'confirmed' });
         });
 
-        act(() => {
-            rerender({ ...pendingWrap, status: 'confirmed' });
+        await act(async () => {
+            await rerender({ ...pendingWrap, status: 'confirmed' });
         });
 
         expect(analytics.report).toHaveBeenCalledTimes(1);
     });
 
-    it('reports leftPending on unmount while the transaction is still pending', () => {
-        const { unmount, analytics } = renderResolutionAnalytics(pendingWrap);
+    it('reports leftPending on unmount while the transaction is still pending', async () => {
+        const { unmount, analytics } = await renderResolutionAnalytics(pendingWrap);
 
-        act(() => {
-            unmount();
+        await act(async () => {
+            await unmount();
         });
 
         expect(analytics.report).toHaveBeenCalledWith({
@@ -99,37 +99,37 @@ describe('useWrappedNativeFlowResolutionAnalytics', () => {
         });
     });
 
-    it('does not report leftPending on unmount once the transaction already resolved', () => {
-        const { rerender, unmount, analytics } = renderResolutionAnalytics(pendingWrap);
+    it('does not report leftPending on unmount once the transaction already resolved', async () => {
+        const { rerender, unmount, analytics } = await renderResolutionAnalytics(pendingWrap);
 
-        act(() => {
-            rerender({ ...pendingWrap, status: 'confirmed' });
+        await act(async () => {
+            await rerender({ ...pendingWrap, status: 'confirmed' });
         });
 
         expect(analytics.report).toHaveBeenCalledTimes(1);
 
-        act(() => {
-            unmount();
+        await act(async () => {
+            await unmount();
         });
 
         expect(analytics.report).toHaveBeenCalledTimes(1);
     });
 
-    it('resets the resolution guard when the txid changes', () => {
-        const { rerender, analytics } = renderResolutionAnalytics(pendingWrap);
+    it('resets the resolution guard when the txid changes', async () => {
+        const { rerender, analytics } = await renderResolutionAnalytics(pendingWrap);
 
-        act(() => {
-            rerender({ ...pendingWrap, status: 'confirmed' });
+        await act(async () => {
+            await rerender({ ...pendingWrap, status: 'confirmed' });
         });
 
         expect(analytics.report).toHaveBeenCalledTimes(1);
 
-        act(() => {
-            rerender({ ...pendingWrap, status: 'pending', txid: 'tx-2' });
+        await act(async () => {
+            await rerender({ ...pendingWrap, status: 'pending', txid: 'tx-2' });
         });
 
-        act(() => {
-            rerender({ ...pendingWrap, status: 'confirmed', txid: 'tx-2' });
+        await act(async () => {
+            await rerender({ ...pendingWrap, status: 'confirmed', txid: 'tx-2' });
         });
 
         expect(analytics.report).toHaveBeenCalledTimes(2);

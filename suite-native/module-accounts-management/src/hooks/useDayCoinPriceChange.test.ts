@@ -47,7 +47,7 @@ describe('useDayCoinPriceChange', () => {
     it('returns fiat rates of a regular token', async () => {
         mockFetchedRates(100, 110);
 
-        const { result } = renderHookWithStoreProvider(
+        const { result } = await renderHookWithStoreProvider(
             () => useDayCoinPriceChange({ symbol: ethSymbol, tokenContract: underlyingContract }),
             { preloadedState },
         );
@@ -75,7 +75,7 @@ describe('useDayCoinPriceChange', () => {
             exchangeRate: new BigNumber('1.2'),
         });
 
-        const { result } = renderHookWithStoreProvider(
+        const { result } = await renderHookWithStoreProvider(
             () =>
                 useDayCoinPriceChange({
                     symbol: ethSymbol,
@@ -108,7 +108,7 @@ describe('useDayCoinPriceChange', () => {
         mockFetchedRates(100, 110);
         fetchErc4626UnderlyingAssetMock.mockRejectedValue(new Error('Fetch failed'));
 
-        const { result } = renderHookWithStoreProvider(
+        const { result } = await renderHookWithStoreProvider(
             () =>
                 useDayCoinPriceChange({
                     symbol: ethSymbol,

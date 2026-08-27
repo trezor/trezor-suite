@@ -10,24 +10,24 @@ jest.mock('@suite-native/clipboard', () => ({
 }));
 
 describe('ReviewOutputHexData', () => {
-    const renderHexData = (value: string) =>
-        renderWithBasicProvider(<ReviewOutputHexData value={value} />);
+    const renderHexData = async (value: string) =>
+        await renderWithBasicProvider(<ReviewOutputHexData value={value} />);
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should render empty-state translation when value is empty', () => {
-        const { getByText } = renderHexData('');
+    it('should render empty-state translation when value is empty', async () => {
+        const { getByText } = await renderHexData('');
 
         expect(
             getByText(getTranslation('transactionManagement.review.outputs.transactionDataEmpty')),
         ).toBeOnTheScreen();
     });
 
-    it('should render full value when length is at most 300 characters', () => {
+    it('should render full value when length is at most 300 characters', async () => {
         const value = 'a'.repeat(300);
-        const { getByText, queryByText } = renderHexData(value);
+        const { getByText, queryByText } = await renderHexData(value);
 
         expect(getByText(value)).toBeOnTheScreen();
         expect(
@@ -47,7 +47,7 @@ describe('ReviewOutputHexData', () => {
             'transactionManagement.review.outputs.transactionDataShowLess',
         );
 
-        const { getByText, queryByText } = renderHexData(value);
+        const { getByText, queryByText } = await renderHexData(value);
 
         expect(getByText(truncated)).toBeOnTheScreen();
         expect(queryByText(value)).toBeNull();
@@ -71,7 +71,7 @@ describe('ReviewOutputHexData', () => {
             'transactionManagement.review.outputs.transactionDataShowLess',
         );
 
-        const { getByText } = renderHexData(value);
+        const { getByText } = await renderHexData(value);
 
         await userEvent.press(getByText(truncated));
 
@@ -81,7 +81,7 @@ describe('ReviewOutputHexData', () => {
 
     it('should copy full value on long press of the data control', async () => {
         const value = '0xcafe';
-        const { getAllByRole } = renderHexData(value);
+        const { getAllByRole } = await renderHexData(value);
 
         const button = getAllByRole('button')?.[0];
         if (!button) {

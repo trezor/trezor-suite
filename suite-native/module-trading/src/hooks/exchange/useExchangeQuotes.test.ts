@@ -64,8 +64,8 @@ describe('useExchangeQuotes', () => {
             },
         });
 
-    const renderUseExchangeQuotes = (store: TestStore) =>
-        renderHookWithStoreProvider(
+    const renderUseExchangeQuotes = async (store: TestStore) =>
+        await renderHookWithStoreProvider(
             () => {
                 const form = useExchangeForm();
                 useExchangeQuotes(form);
@@ -82,7 +82,7 @@ describe('useExchangeQuotes', () => {
     it('should query quotes once all required data is selected', async () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseExchangeQuotes(store);
+        const { result } = await renderUseExchangeQuotes(store);
         const { form } = result.current;
 
         await act(async () => {
@@ -112,7 +112,7 @@ describe('useExchangeQuotes', () => {
     it('should respect sats setting', async () => {
         const store = getInitializedStore(PROTO.AmountUnit.SATOSHI);
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseExchangeQuotes(store);
+        const { result } = await renderUseExchangeQuotes(store);
         const { form } = result.current;
 
         await act(async () => {
@@ -133,7 +133,7 @@ describe('useExchangeQuotes', () => {
         async amount => {
             const store = getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeQuotes(store);
+            const { result } = await renderUseExchangeQuotes(store);
             const { form } = result.current;
 
             await act(async () => {
@@ -155,17 +155,14 @@ describe('useExchangeQuotes', () => {
     it('should not query quotes when form contains error', async () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseExchangeQuotes(store);
+        const { result } = await renderUseExchangeQuotes(store);
         const { form } = result.current;
 
-        act(() => {
+        await act(async () => {
             form.setValue('sendAsset', btcAsset);
             form.setValue('receiveAsset', ethAsset);
-            form.setValue('sendCryptoAmount', '10');
-            form.setError('receiveAsset', {
-                type: 'manual',
-                message: 'VALIDATION_ERROR',
-            });
+            form.setValue('sendCryptoAmount', 'invalid', { shouldValidate: true });
+            await form.trigger();
         });
 
         expect(dispatchSpy).not.toHaveBeenCalledWith(
@@ -173,21 +170,15 @@ describe('useExchangeQuotes', () => {
                 type: 'handleRequestThunkMock',
             }),
         );
-
-        // clean up form flush async validations
-        await act(async () => {
-            form.clearErrors();
-            await form.trigger();
-        });
     });
 
     it('should query quotes as soon as form contains no errors', async () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseExchangeQuotes(store);
+        const { result } = await renderUseExchangeQuotes(store);
         const { form } = result.current;
 
-        act(() => {
+        await act(() => {
             form.setValue('sendAsset', btcAsset);
             form.setValue('receiveAsset', btcAsset);
             form.setValue('sendCryptoAmount', '10');
@@ -209,13 +200,13 @@ describe('useExchangeQuotes', () => {
         );
     });
 
-    it('should clear exchange state on unmount', () => {
+    it('should clear exchange state on unmount', async () => {
         const store = getInitializedStore();
         store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { unmount } = renderUseExchangeQuotes(store);
+        const { unmount } = await renderUseExchangeQuotes(store);
 
-        unmount();
+        await unmount();
 
         expect(dispatchSpy).toHaveBeenCalledWith({
             payload: undefined,
@@ -237,7 +228,7 @@ describe('useExchangeQuotes', () => {
     ])('should refetch quotes on %s value change', async (field, value) => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseExchangeQuotes(store);
+        const { result } = await renderUseExchangeQuotes(store);
         const { form } = result.current;
 
         await act(async () => {
@@ -249,7 +240,7 @@ describe('useExchangeQuotes', () => {
 
         dispatchSpy.mockClear();
 
-        act(() => {
+        await act(() => {
             form.setValue(field, value);
         });
 
@@ -263,7 +254,7 @@ describe('useExchangeQuotes', () => {
     it('should not re-fetch quotes for BTC when address is not selected', async () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseExchangeQuotes(store);
+        const { result } = await renderUseExchangeQuotes(store);
         const { form } = result.current;
 
         await act(async () => {
@@ -275,7 +266,7 @@ describe('useExchangeQuotes', () => {
 
         dispatchSpy.mockClear();
 
-        act(() => {
+        await act(() => {
             form.setValue('receiveAccount', {
                 account: btc1NormalAccount,
             });
@@ -291,7 +282,7 @@ describe('useExchangeQuotes', () => {
     it('should re-fetch quotes when re-fetch time elapsed', async () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseExchangeQuotes(store);
+        const { result } = await renderUseExchangeQuotes(store);
         const { form } = result.current;
 
         await act(async () => {
@@ -301,7 +292,7 @@ describe('useExchangeQuotes', () => {
             await Promise.resolve();
         });
 
-        act(() => {
+        await act(() => {
             store.dispatch(
                 tradingActions.setRefetchQuotesTimestamp(
                     Date.now() - TRADE_API_RELOAD_QUOTES_AFTER_SECONDS * 1000,
@@ -324,14 +315,14 @@ describe('useExchangeQuotes', () => {
     it('should not re-fetch quotes when re-fetch time elapsed but not all required data are available', async () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseExchangeQuotes(store);
+        const { result } = await renderUseExchangeQuotes(store);
         const { form } = result.current;
 
-        act(() => {
+        await act(() => {
             form.setValue('sendAsset', btcAsset);
         });
 
-        act(() => {
+        await act(() => {
             store.dispatch(
                 tradingActions.setRefetchQuotesTimestamp(
                     Date.now() - TRADE_API_RELOAD_QUOTES_AFTER_SECONDS * 1000,
@@ -352,7 +343,7 @@ describe('useExchangeQuotes', () => {
     it('should clear quotes when data in form becomes invalid', async () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseExchangeQuotes(store);
+        const { result } = await renderUseExchangeQuotes(store);
         const { form } = result.current;
 
         await act(async () => {
@@ -362,7 +353,7 @@ describe('useExchangeQuotes', () => {
             await Promise.resolve();
         });
         // handleRequestThunk is mocked, add quotes manually
-        act(() => {
+        await act(() => {
             store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
         });
 
@@ -389,7 +380,7 @@ describe('useExchangeQuotes', () => {
         const store = getInitializedStore();
 
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseExchangeQuotes(store);
+        const { result } = await renderUseExchangeQuotes(store);
         const { form } = result.current;
 
         const receiveAccount: ReceiveAccount = {
@@ -433,7 +424,7 @@ describe('useExchangeQuotes', () => {
 
     describe('analytics', () => {
         const renderUseExchangeQuotesWithFilledForm = async (store: TestStore) => {
-            const { result } = renderUseExchangeQuotes(store);
+            const { result } = await renderUseExchangeQuotes(store);
             const { form } = result.current;
 
             mockReport.mockClear();

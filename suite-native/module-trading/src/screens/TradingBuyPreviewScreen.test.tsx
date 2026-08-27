@@ -30,7 +30,7 @@ describe('TradingBuyPreviewScreen', () => {
         jest.clearAllMocks();
     });
 
-    const renderTradingBuyPreviewScreen = ({
+    const renderTradingBuyPreviewScreen = async ({
         providerMetadata,
         selectedQuote,
     }: {
@@ -41,30 +41,30 @@ describe('TradingBuyPreviewScreen', () => {
         tradingState.currentProviderMetadata = providerMetadata;
         tradingState.buy.selectedQuote = selectedQuote;
 
-        return renderWithTradingProvider(<TradingBuyPreviewScreen />, {
+        return await renderWithTradingProvider(<TradingBuyPreviewScreen />, {
             tradeType: 'buy',
             overrides: { wallet: { trading: tradingState } },
         });
     };
 
-    it('displays error when providerMetadata is missing', () => {
-        const { getByText } = renderTradingBuyPreviewScreen({
+    it('displays error when providerMetadata is missing', async () => {
+        const { getByText } = await renderTradingBuyPreviewScreen({
             selectedQuote: mercuryoApplePayBuyQuote,
         });
 
         expect(getByText(getTranslation('generic.unknownError'))).toBeOnTheScreen();
     });
 
-    it('displays error when quote is missing', () => {
-        const { getByText } = renderTradingBuyPreviewScreen({
+    it('displays error when quote is missing', async () => {
+        const { getByText } = await renderTradingBuyPreviewScreen({
             providerMetadata: buyMercuryo,
         });
 
         expect(getByText(getTranslation('generic.unknownError'))).toBeOnTheScreen();
     });
 
-    it('renders screen title with company name when all data is provided', () => {
-        const { getByText } = renderTradingBuyPreviewScreen({
+    it('renders screen title with company name when all data is provided', async () => {
+        const { getByText } = await renderTradingBuyPreviewScreen({
             selectedQuote: mercuryoApplePayBuyQuote,
             providerMetadata: buyMercuryo,
         });
@@ -78,8 +78,8 @@ describe('TradingBuyPreviewScreen', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should report buy-preview visit on mount', () => {
-        renderTradingBuyPreviewScreen({
+    it('should report buy-preview visit on mount', async () => {
+        await renderTradingBuyPreviewScreen({
             selectedQuote: mercuryoApplePayBuyQuote,
             providerMetadata: buyMercuryo,
         });

@@ -20,8 +20,8 @@ jest.mock('../exchange/useExchangeFormContext', () => ({
 }));
 
 describe('useTradingTradeableAssetsFilteredData', () => {
-    const renderUseTradingTradeableAssetsFilteredData = () =>
-        renderHookWithTradingProvider(
+    const renderUseTradingTradeableAssetsFilteredData = async () =>
+        await renderHookWithTradingProvider(
             () => useTradingTradeableAssetsFilteredData(selectExchangeBuyTradeableAssets),
             { tradeType: 'exchange' },
         );
@@ -30,10 +30,10 @@ describe('useTradingTradeableAssetsFilteredData', () => {
         jest.clearAllMocks();
     });
 
-    it('returns assets selected by the supplied selector', () => {
+    it('returns assets selected by the supplied selector', async () => {
         mockUseWatch.mockReturnValue(undefined);
 
-        const { result } = renderUseTradingTradeableAssetsFilteredData();
+        const { result } = await renderUseTradingTradeableAssetsFilteredData();
 
         expect(result.current.filteredData).toEqual([
             expect.objectContaining({ cryptoId: btcAsset.cryptoId }),
@@ -42,12 +42,12 @@ describe('useTradingTradeableAssetsFilteredData', () => {
         ]);
     });
 
-    it('filters the selected assets by search text', () => {
+    it('filters the selected assets by search text', async () => {
         mockUseWatch.mockReturnValue(undefined);
 
-        const { result } = renderUseTradingTradeableAssetsFilteredData();
+        const { result } = await renderUseTradingTradeableAssetsFilteredData();
 
-        act(() => {
+        await act(() => {
             result.current.setFilterValue('usdc');
         });
 

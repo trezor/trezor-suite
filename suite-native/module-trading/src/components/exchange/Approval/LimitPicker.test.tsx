@@ -15,8 +15,8 @@ describe('LimitPicker', () => {
     let store: TestStore;
     const mockOnApprovalTypeChange = jest.fn();
 
-    const renderLimitPicker = () =>
-        renderWithStoreProvider(
+    const renderLimitPicker = async () =>
+        await renderWithStoreProvider(
             <LimitPicker
                 onApprovalTypeChange={approvalType => {
                     mockOnApprovalTypeChange(approvalType);
@@ -52,8 +52,8 @@ describe('LimitPicker', () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(quote));
     });
 
-    it('should render limit by default', () => {
-        const { getByTestId } = renderLimitPicker();
+    it('should render limit by default', async () => {
+        const { getByTestId } = await renderLimitPicker();
 
         const picker = getByTestId('ExchangeApproval/LimitPicker');
 
@@ -66,7 +66,7 @@ describe('LimitPicker', () => {
     });
 
     it('should render Unlimited when selected by user', async () => {
-        const { getByTestId } = renderLimitPicker();
+        const { getByTestId } = await renderLimitPicker();
 
         const picker = getByTestId('ExchangeApproval/LimitPicker');
         const sheet = getByTestId('ExchangeApproval/LimitSheet');
@@ -102,7 +102,7 @@ describe('LimitPicker', () => {
     });
 
     it('should update limit when users selects new value', async () => {
-        const { getByTestId } = renderLimitPicker();
+        const { getByTestId } = await renderLimitPicker();
 
         const picker = getByTestId('ExchangeApproval/LimitPicker');
         const sheet = getByTestId('ExchangeApproval/LimitSheet');
@@ -122,10 +122,10 @@ describe('LimitPicker', () => {
         );
     });
 
-    it('should render nothing without quote', () => {
+    it('should render nothing without quote', async () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { toJSON } = renderLimitPicker();
+        const { toJSON } = await renderLimitPicker();
 
         expect(toJSON()).toBeNull();
     });

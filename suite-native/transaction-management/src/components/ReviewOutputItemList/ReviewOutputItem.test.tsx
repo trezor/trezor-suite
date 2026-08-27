@@ -22,8 +22,8 @@ jest.mock('./ReviewOutputItemValues', () => ({
 }));
 
 describe('ReviewOutputItem', () => {
-    const renderReviewOutputItem = (props: Partial<ReviewOutputItemProps>) =>
-        renderWithStoreProvider(
+    const renderReviewOutputItem = async (props: Partial<ReviewOutputItemProps>) =>
+        await renderWithStoreProvider(
             <ReviewOutputItem
                 accountKey={ETH_ACCOUNT_KEY}
                 onLayout={jest.fn()}
@@ -64,11 +64,11 @@ describe('ReviewOutputItem', () => {
             getTranslation('transactionManagement.review.outputs.tradedAssetsOutputLabel'),
         ],
         ['swap_intent', getTranslation('transactionManagement.review.outputs.swapIntentLabel')],
-    ])('should display title based on type [%s]', (type, expectedTitle) => {
+    ])('should display title based on type [%s]', async (type, expectedTitle) => {
         // Suppress console warnings for unsupported types
         jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-        const { getByTestId } = renderReviewOutputItem({
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type,
                 value: 'mockvalue',
@@ -79,8 +79,8 @@ describe('ReviewOutputItem', () => {
         expect(getByTestId('review-output-card/title')).toHaveTextContent(expectedTitle);
     });
 
-    it('should render ReviewOutputItemValues component for type "amount"', () => {
-        const { getByTestId } = renderReviewOutputItem({
+    it('should render ReviewOutputItemValues component for type "amount"', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'amount',
                 value: 'mockvalue',
@@ -94,8 +94,8 @@ describe('ReviewOutputItem', () => {
         );
     });
 
-    it('should not render output card for type "rewards"', () => {
-        const { queryByTestId } = renderReviewOutputItem({
+    it('should not render output card for type "rewards"', async () => {
+        const { queryByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'rewards',
                 rewards: [],
@@ -106,8 +106,8 @@ describe('ReviewOutputItem', () => {
         expect(queryByTestId('review-output-card/title')).toBeNull();
     });
 
-    it('should render value for type "destination-tag" and value set', () => {
-        const { getByTestId } = renderReviewOutputItem({
+    it('should render value for type "destination-tag" and value set', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'destination-tag',
                 value: 'mockvalue',
@@ -118,8 +118,8 @@ describe('ReviewOutputItem', () => {
         expect(getByTestId('review-output-card/content')).toHaveTextContent('mockvalue');
     });
 
-    it('should render tag not set placeholder for type "destination-tag" and empty value', () => {
-        const { getByTestId } = renderReviewOutputItem({
+    it('should render tag not set placeholder for type "destination-tag" and empty value', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'destination-tag',
                 value: '',
@@ -137,8 +137,8 @@ describe('ReviewOutputItem', () => {
         'regular_legacy',
         'contract',
         'signing-with',
-    ])('should render chunked value for type "%s"', type => {
-        const { getByTestId } = renderReviewOutputItem({
+    ])('should render chunked value for type "%s"', async type => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type,
                 value: '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe',
@@ -151,8 +151,8 @@ describe('ReviewOutputItem', () => {
         );
     });
 
-    it('should render "No restriction" for type "timebounds"', () => {
-        const { getByTestId } = renderReviewOutputItem({
+    it('should render "No restriction" for type "timebounds"', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'timebounds',
                 value: '',
@@ -165,8 +165,8 @@ describe('ReviewOutputItem', () => {
         );
     });
 
-    it('should render Testnet info for type "network"', () => {
-        const { getByTestId } = renderReviewOutputItem({
+    it('should render Testnet info for type "network"', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'network',
                 value: '',
@@ -179,8 +179,8 @@ describe('ReviewOutputItem', () => {
         );
     });
 
-    it('should render transaction data for type "data"', () => {
-        const { getByTestId } = renderReviewOutputItem({
+    it('should render transaction data for type "data"', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'data',
                 value: '0xabcd',
@@ -191,10 +191,10 @@ describe('ReviewOutputItem', () => {
         expect(getByTestId('review-output-card/content')).toHaveTextContent('0xabcd');
     });
 
-    it('should render long transaction data truncated with show-more control', () => {
+    it('should render long transaction data truncated with show-more control', async () => {
         const longHex = 'd'.repeat(301);
         const truncated = 'd'.repeat(300);
-        const { getByTestId } = renderReviewOutputItem({
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'data',
                 value: longHex,
@@ -211,8 +211,8 @@ describe('ReviewOutputItem', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render empty transaction data placeholder for type "data" with empty value', () => {
-        const { getByTestId } = renderReviewOutputItem({
+    it('should render empty transaction data placeholder for type "data" with empty value', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'data',
                 value: '',
@@ -225,8 +225,8 @@ describe('ReviewOutputItem', () => {
         );
     });
 
-    it('should render recipient name for type "recipient_name"', () => {
-        const { getByTestId } = renderReviewOutputItem({
+    it('should render recipient name for type "recipient_name"', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'recipient_name',
                 value: 'mockvalue',
@@ -237,8 +237,8 @@ describe('ReviewOutputItem', () => {
         expect(getByTestId('review-output-card/content')).toHaveTextContent('mockvalue');
     });
 
-    it('should render traded assets when send and receive are crypto', () => {
-        const { getByTestId } = renderReviewOutputItem({
+    it('should render traded assets when send and receive are crypto', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'traded_assets',
                 value: '',
@@ -266,8 +266,8 @@ describe('ReviewOutputItem', () => {
         );
     });
 
-    it('should render the send leg only for a partial clear-signed swap (receive missing)', () => {
-        const { getByTestId } = renderReviewOutputItem({
+    it('should render the send leg only for a partial clear-signed swap (receive missing)', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'traded_assets',
                 value: '',
@@ -292,8 +292,8 @@ describe('ReviewOutputItem', () => {
         );
     });
 
-    it('should render traded assets when receive is fiat', () => {
-        const { getByTestId } = renderReviewOutputItem({
+    it('should render traded assets when receive is fiat', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'traded_assets',
                 value: '',
@@ -319,8 +319,8 @@ describe('ReviewOutputItem', () => {
         );
     });
 
-    it('should render empty content for type "traded_assets" when send or receive is missing', () => {
-        const { getByTestId } = renderReviewOutputItem({
+    it('should render empty content for type "traded_assets" when send or receive is missing', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'traded_assets',
                 value: '',
@@ -332,8 +332,8 @@ describe('ReviewOutputItem', () => {
         expect(getByTestId('review-output-card/content')).toHaveTextContent('');
     });
 
-    it('should render "Swap" for "swap_intent"', () => {
-        const { getByTestId } = renderReviewOutputItem({
+    it('should render "Swap" for "swap_intent"', async () => {
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type: 'swap_intent',
                 value: 'swap',
@@ -352,9 +352,9 @@ describe('ReviewOutputItem', () => {
         'txid',
         'gas',
         'approve_data',
-    ])('should render no content for type', type => {
+    ])('should render no content for type', async type => {
         const warningSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-        const { getByTestId } = renderReviewOutputItem({
+        const { getByTestId } = await renderReviewOutputItem({
             reviewOutput: {
                 type,
                 value: 'mockvalue',
@@ -369,8 +369,8 @@ describe('ReviewOutputItem', () => {
     });
 
     describe('exchange approval flow', () => {
-        it('should render Token approval for type "address"', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should render Token approval for type "address"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     type: 'address',
                     value: '0x1234567890abcdef1234567890abcdef12345678',
@@ -387,8 +387,8 @@ describe('ReviewOutputItem', () => {
             );
         });
 
-        it('should render "Approve to" for type "contract"', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should render "Approve to" for type "contract"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     state: undefined,
                     type: 'contract',
@@ -405,8 +405,8 @@ describe('ReviewOutputItem', () => {
             );
         });
 
-        it('should render Approve info for type "approve_data"', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should render Approve info for type "approve_data"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     state: undefined,
                     token: {
@@ -443,9 +443,9 @@ describe('ReviewOutputItem', () => {
             expect(within(content).getByText('Ethereum')).toBeTruthy();
         });
 
-        it('should render unlimited allowance for max uint256 approve_data', () => {
+        it('should render unlimited allowance for max uint256 approve_data', async () => {
             const maxUint256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-            const { getByTestId } = renderReviewOutputItem({
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     state: undefined,
                     token: {
@@ -472,8 +472,8 @@ describe('ReviewOutputItem', () => {
             ).toBeOnTheScreen();
         });
 
-        it('should not render Chain row for type "approve_data" when value2 is absent', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should not render Chain row for type "approve_data" when value2 is absent', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     state: undefined,
                     token: {
@@ -506,8 +506,8 @@ describe('ReviewOutputItem', () => {
     });
 
     describe('exchange swap flow', () => {
-        it('should render "Recipient address" for type "address"', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should render "Recipient address" for type "address"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     type: 'address',
                     value: '0x1234567890abcdef1234567890abcdef12345678',
@@ -524,8 +524,8 @@ describe('ReviewOutputItem', () => {
             );
         });
 
-        it('should render swap contract label and formatted contract address for type "contract"', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should render swap contract label and formatted contract address for type "contract"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     state: undefined,
                     type: 'contract',
@@ -544,8 +544,8 @@ describe('ReviewOutputItem', () => {
     });
 
     describe('exchange revoke-and-approve flow', () => {
-        it('should render Token revoke for type "address"', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should render Token revoke for type "address"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     type: 'address',
                     value: '0x1234567890abcdef1234567890abcdef12345678',
@@ -562,8 +562,8 @@ describe('ReviewOutputItem', () => {
             );
         });
 
-        it('should render "Revoke approval from" for type "contract"', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should render "Revoke approval from" for type "contract"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     state: undefined,
                     type: 'contract',
@@ -580,8 +580,8 @@ describe('ReviewOutputItem', () => {
             );
         });
 
-        it('should render Revoke info for type "approve_data"', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should render Revoke info for type "approve_data"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     state: undefined,
                     token: {
@@ -620,8 +620,8 @@ describe('ReviewOutputItem', () => {
     });
 
     describe('exchange revoke flow', () => {
-        it('should render Token revoke for type "address"', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should render Token revoke for type "address"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     type: 'address',
                     value: '0x1234567890abcdef1234567890abcdef12345678',
@@ -638,8 +638,8 @@ describe('ReviewOutputItem', () => {
             );
         });
 
-        it('should render "Approve to" for type "contract"', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should render "Approve to" for type "contract"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     state: undefined,
                     type: 'contract',
@@ -656,8 +656,8 @@ describe('ReviewOutputItem', () => {
             );
         });
 
-        it('should render Revoke info for type "approve_data"', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should render Revoke info for type "approve_data"', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     state: undefined,
                     token: {
@@ -694,8 +694,8 @@ describe('ReviewOutputItem', () => {
             expect(within(content).getByText('Ethereum')).toBeTruthy();
         });
 
-        it('should not render Chain row for type "approve_data" when value2 is absent', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should not render Chain row for type "approve_data" when value2 is absent', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     state: undefined,
                     token: {
@@ -728,19 +728,19 @@ describe('ReviewOutputItem', () => {
     });
 
     describe('contentBuilder prop', () => {
-        it('renders content returned by contentBuilder instead of default', () => {
+        it('renders content returned by contentBuilder instead of default', async () => {
             const contentBuilder = jest.fn().mockReturnValue(<Text>Custom Content</Text>);
 
-            const { getByText } = renderReviewOutputItem({ contentBuilder });
+            const { getByText } = await renderReviewOutputItem({ contentBuilder });
 
             expect(getByText('Custom Content')).toBeOnTheScreen();
             expect(() => getByText('mockvalue')).toThrow();
         });
 
-        it('passes all data props to contentBuilder', () => {
+        it('passes all data props to contentBuilder', async () => {
             const contentBuilder = jest.fn().mockReturnValue(undefined);
 
-            renderReviewOutputItem({
+            await renderReviewOutputItem({
                 contentBuilder,
                 reviewOutput: { type: 'note', value: 'some value', state: 'active' },
             });
@@ -753,10 +753,10 @@ describe('ReviewOutputItem', () => {
             );
         });
 
-        it('falls back to default rendering when contentBuilder returns undefined', () => {
+        it('falls back to default rendering when contentBuilder returns undefined', async () => {
             const contentBuilder = jest.fn().mockReturnValue(undefined);
 
-            const { getByTestId } = renderReviewOutputItem({
+            const { getByTestId } = await renderReviewOutputItem({
                 contentBuilder,
                 reviewOutput: { type: 'note', value: 'fallback note text', state: 'active' },
             });
@@ -768,9 +768,9 @@ describe('ReviewOutputItem', () => {
     });
 
     describe('ReviewOutputItemContent approve_data edge cases', () => {
-        it('should warn and render no content for approve_data when exchange flow is swap', () => {
+        it('should warn and render no content for approve_data when exchange flow is swap', async () => {
             const warningSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-            const { getByTestId } = renderReviewOutputItem({
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     state: undefined,
                     type: 'approve_data',
@@ -785,8 +785,8 @@ describe('ReviewOutputItem', () => {
             );
         });
 
-        it('should render raw allowance value for approve_data on approve flow without token', () => {
-            const { getByTestId } = renderReviewOutputItem({
+        it('should render raw allowance value for approve_data on approve flow without token', async () => {
+            const { getByTestId } = await renderReviewOutputItem({
                 reviewOutput: {
                     state: undefined,
                     type: 'approve_data',

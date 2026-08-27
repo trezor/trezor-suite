@@ -84,12 +84,12 @@ const defaultTrades = [
 describe('TradingHistoryScreen', () => {
     let unmount: (() => void) | undefined;
 
-    const renderTradingHistory = ({
+    const renderTradingHistory = async ({
         trades = defaultTrades,
     }: {
         trades?: TradingTestPreloadedState['wallet']['trading']['trades'];
     } = {}) => {
-        const result = renderWithTradingHistoryProvider(<TradingHistory />, {
+        const result = await renderWithTradingHistoryProvider(<TradingHistory />, {
             overrides: getOverrides(trades),
         });
 
@@ -101,15 +101,15 @@ describe('TradingHistoryScreen', () => {
         jest.clearAllMocks();
     });
 
-    afterEach(() => {
+    afterEach(async () => {
         if (unmount) {
-            unmount();
+            await unmount();
             unmount = undefined;
         }
     });
 
-    it('should render list of trades', () => {
-        const { getByText } = renderTradingHistory();
+    it('should render list of trades', async () => {
+        const { getByText } = await renderTradingHistory();
 
         expect(getByText('$1,234.00')).toBeTruthy();
         expect(getByText('0.462586 ETH')).toBeTruthy();
@@ -122,10 +122,10 @@ describe('TradingHistoryScreen', () => {
         ).toBeTruthy();
     });
 
-    it('should show bottom sheet when trade item is clicked', () => {
-        const { getByText, queryAllByText } = renderTradingHistory();
+    it('should show bottom sheet when trade item is clicked', async () => {
+        const { getByText, queryAllByText } = await renderTradingHistory();
 
-        fireEvent.press(getByText('$1,234.00'));
+        await fireEvent.press(getByText('$1,234.00'));
 
         expect(mockShowSheet).toHaveBeenCalledTimes(1);
 
@@ -134,23 +134,25 @@ describe('TradingHistoryScreen', () => {
         expect(queryAllByText('0.462586 ETH').length).toBe(2);
     });
 
-    it('should filter trades by type', () => {
-        const { getByText, queryByText } = renderTradingHistory();
+    it('should filter trades by type', async () => {
+        const { getByText, queryByText } = await renderTradingHistory();
 
-        fireEvent.press(getByText(getTranslation('moduleTrading.tradeHistory.tabs.exchange')));
+        await fireEvent.press(
+            getByText(getTranslation('moduleTrading.tradeHistory.tabs.exchange')),
+        );
 
         expect(getByText('10.1232 JTO')).toBeTruthy();
         expect(queryByText('$1,234.00')).toBeNull();
         expect(queryByText('1.22 BTC')).toBeNull();
 
-        fireEvent.press(getByText(getTranslation('moduleTrading.tradeHistory.tabs.sell')));
+        await fireEvent.press(getByText(getTranslation('moduleTrading.tradeHistory.tabs.sell')));
 
         expect(getByText('1.22 BTC')).toBeTruthy();
         expect(queryByText('10.1232 JTO')).toBeNull();
     });
 
     it('should show the first trade after scrolling and changing the filter', async () => {
-        const { getByTestId, getByText } = renderTradingHistory();
+        const { getByTestId, getByText } = await renderTradingHistory();
         const list = getByTestId('@trading/history/list');
 
         await userEvent.scrollTo(list, {
@@ -166,11 +168,13 @@ describe('TradingHistoryScreen', () => {
         expect(getByText('10.1232 JTO')).toBeVisible();
     });
 
-    it('should show filtered empty state and return to all trades', () => {
+    it('should show filtered empty state and return to all trades', async () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-        const { getByText, queryByText } = renderTradingHistory({ trades: [buyTrade] });
+        const { getByText, queryByText } = await renderTradingHistory({ trades: [buyTrade] });
 
-        fireEvent.press(getByText(getTranslation('moduleTrading.tradeHistory.tabs.exchange')));
+        await fireEvent.press(
+            getByText(getTranslation('moduleTrading.tradeHistory.tabs.exchange')),
+        );
 
         expect(
             getByText(getTranslation('moduleTrading.tradeHistory.filteredEmptyState.exchange')),
@@ -182,15 +186,15 @@ describe('TradingHistoryScreen', () => {
             ),
         ).toBeTruthy();
 
-        fireEvent.press(
+        await fireEvent.press(
             getByText(getTranslation('moduleTrading.tradeHistory.filteredEmptyState.showAll')),
         );
 
         expect(getByText('$1,234.00')).toBeTruthy();
     });
 
-    it('should show global empty state and return to the trade form', () => {
-        const { getByTestId, getByText, queryByText } = renderTradingHistory({
+    it('should show global empty state and return to the trade form', async () => {
+        const { getByTestId, getByText, queryByText } = await renderTradingHistory({
             trades: [],
         });
 
@@ -205,7 +209,9 @@ describe('TradingHistoryScreen', () => {
             ),
         ).toBeNull();
 
-        fireEvent.press(getByText(getTranslation('moduleTrading.tradeHistory.emptyState.button')));
+        await fireEvent.press(
+            getByText(getTranslation('moduleTrading.tradeHistory.emptyState.button')),
+        );
 
         expect(mockGoBack).toHaveBeenCalledTimes(1);
     });

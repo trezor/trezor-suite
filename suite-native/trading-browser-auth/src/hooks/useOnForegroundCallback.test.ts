@@ -25,30 +25,30 @@ describe('useOnForegroundCallback', () => {
     const mockCallback = jest.fn();
     const appStateSpy = jest.spyOn(AppState, 'addEventListener');
 
-    const renderUseOnFocusCallback = () =>
-        renderHookWithBasicProvider(() => useOnForegroundCallback(mockCallback), {});
+    const renderUseOnFocusCallback = async () =>
+        await renderHookWithBasicProvider(() => useOnForegroundCallback(mockCallback), {});
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should only subscribe for app state changes on mount', () => {
-        const { result } = renderUseOnFocusCallback();
+    it('should only subscribe for app state changes on mount', async () => {
+        const { result } = await renderUseOnFocusCallback();
 
         expect(appStateSpy).toHaveBeenCalledWith('change', expect.any(Function));
         expect(result.current.shouldWatchForForeground).toBe(false);
         expect(mockCallback).toHaveBeenCalledTimes(0);
     });
 
-    it('should call callback once when app state is active and shouldWatchForForeground is set to true', () => {
-        const { result } = renderUseOnFocusCallback();
+    it('should call callback once when app state is active and shouldWatchForForeground is set to true', async () => {
+        const { result } = await renderUseOnFocusCallback();
         const changeHandler = getChangeHandler(appStateSpy);
 
-        act(() => {
+        await act(() => {
             // simulate app being in foreground
             changeHandler('active');
             result.current.setShouldWatchForForeground(true);
@@ -58,11 +58,11 @@ describe('useOnForegroundCallback', () => {
         expect(result.current.shouldWatchForForeground).toBe(false);
     });
 
-    it('should not call callback when app is on background and shouldWatchForForeground is set to true ', () => {
-        const { result } = renderUseOnFocusCallback();
+    it('should not call callback when app is on background and shouldWatchForForeground is set to true ', async () => {
+        const { result } = await renderUseOnFocusCallback();
         const changeHandler = getChangeHandler(appStateSpy);
 
-        act(() => {
+        await act(() => {
             // simulate app going to background
             changeHandler('active');
             changeHandler('background');
@@ -74,11 +74,11 @@ describe('useOnForegroundCallback', () => {
         expect(result.current.shouldWatchForForeground).toBe(true);
     });
 
-    it('should react to app state changes', () => {
-        const { result } = renderUseOnFocusCallback();
+    it('should react to app state changes', async () => {
+        const { result } = await renderUseOnFocusCallback();
         const changeHandler = getChangeHandler(appStateSpy);
 
-        act(() => {
+        await act(() => {
             // simulate app going to background
             changeHandler('active');
             changeHandler('background');
@@ -94,7 +94,7 @@ describe('useOnForegroundCallback', () => {
 
     it('should catch errors in callback', async () => {
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-        const { result } = renderUseOnFocusCallback();
+        const { result } = await renderUseOnFocusCallback();
         const changeHandler = getChangeHandler(appStateSpy);
         const error = new Error('Test error');
 

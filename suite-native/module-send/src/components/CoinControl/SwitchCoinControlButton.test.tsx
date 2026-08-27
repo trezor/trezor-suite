@@ -19,12 +19,14 @@ const accountKey = mockAccountKey({ descriptor: 'accountKey' });
 describe('renders button with correct color scheme', () => {
     let colors: NativeStyleUtils['colors'];
 
-    beforeAll(() => {
-        const { result } = renderHook(() => useNativeStyles(), { wrapper: BasicProviderForTests });
+    beforeAll(async () => {
+        const { result } = await renderHook(() => useNativeStyles(), {
+            wrapper: BasicProviderForTests,
+        });
         ({ colors } = result.current.utils);
     });
 
-    it('should render warning primary button when selected utxos are not enough', () => {
+    it('should render warning primary button when selected utxos are not enough', async () => {
         (useUtxoSelection as jest.Mock).mockReturnValue({
             isCoinControlEnabled: true,
             selectedUtxos: [
@@ -41,7 +43,7 @@ describe('renders button with correct color scheme', () => {
             totalSelectedAmount: BigNumber(500),
         });
 
-        const { getByTestId } = renderWithBasicProvider(
+        const { getByTestId } = await renderWithBasicProvider(
             <SwitchCoinControlButton accountKey={accountKey} amount="1000" />,
         );
 
@@ -49,7 +51,7 @@ describe('renders button with correct color scheme', () => {
         expect(button.props.style[1].backgroundColor).toBe(colors.elementFillWarningBold);
     });
 
-    it('should render brand primary button when utxos are selected and amount is sufficient', () => {
+    it('should render brand primary button when utxos are selected and amount is sufficient', async () => {
         (useUtxoSelection as jest.Mock).mockReturnValue({
             isCoinControlEnabled: true,
             selectedUtxos: [
@@ -65,7 +67,7 @@ describe('renders button with correct color scheme', () => {
             ],
             totalSelectedAmount: BigNumber(1000),
         });
-        const { getByTestId } = renderWithBasicProvider(
+        const { getByTestId } = await renderWithBasicProvider(
             <SwitchCoinControlButton accountKey={accountKey} amount="1000" />,
         );
 
@@ -73,14 +75,14 @@ describe('renders button with correct color scheme', () => {
         expect(button.props.style[1].backgroundColor).toBe(colors.elementFillBrandBold);
     });
 
-    it('should render neutral secondary button when no utxos are selected and no amount is provided', () => {
+    it('should render neutral secondary button when no utxos are selected and no amount is provided', async () => {
         (useUtxoSelection as jest.Mock).mockReturnValue({
             isCoinControlEnabled: false,
             selectedUtxos: [],
             totalSelectedAmount: BigNumber(1000),
         });
 
-        const { getByTestId } = renderWithBasicProvider(
+        const { getByTestId } = await renderWithBasicProvider(
             <SwitchCoinControlButton accountKey={accountKey} />,
         );
 

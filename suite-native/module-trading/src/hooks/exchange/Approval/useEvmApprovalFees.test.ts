@@ -70,10 +70,10 @@ describe('useEvmApprovalFees', () => {
             overrides: mergeDeepObject(baseOverrides, extraOverrides),
         });
 
-    const renderUseEvmApprovalFees = (
+    const renderUseEvmApprovalFees = async (
         store: TestStore,
         params?: Parameters<typeof useEvmApprovalFees>[0],
-    ) => renderHookWithStoreProvider(() => useEvmApprovalFees(params), { store });
+    ) => await renderHookWithStoreProvider(() => useEvmApprovalFees(params), { store });
 
     beforeEach(() => {
         mockComposeEvmApprovalFeeLevelsThunk.mockReset().mockImplementation(() => ({
@@ -82,8 +82,8 @@ describe('useEvmApprovalFees', () => {
         }));
     });
 
-    it('should return isLoading true when fee is undefined', () => {
-        const { result } = renderUseEvmApprovalFees(createStore());
+    it('should return isLoading true when fee is undefined', async () => {
+        const { result } = await renderUseEvmApprovalFees(createStore());
 
         expect(result.current).toEqual(
             expect.objectContaining({
@@ -95,7 +95,7 @@ describe('useEvmApprovalFees', () => {
         );
     });
 
-    it('should return fee and isLoading false when composed transaction info is available', () => {
+    it('should return fee and isLoading false when composed transaction info is available', async () => {
         const store = createStore({
             wallet: { trading: { exchange: { selectedQuote: undefined } } },
         });
@@ -107,7 +107,7 @@ describe('useEvmApprovalFees', () => {
             }),
         );
 
-        const { result } = renderUseEvmApprovalFees(store);
+        const { result } = await renderUseEvmApprovalFees(store);
 
         expect(result.current.fee).toBe('50000');
         expect(result.current.error).toBeNull();
@@ -137,7 +137,7 @@ describe('useEvmApprovalFees', () => {
             },
         });
 
-        const { result } = renderUseEvmApprovalFees(store);
+        const { result } = await renderUseEvmApprovalFees(store);
 
         await waitFor(() => {
             expect(result.current.error).toBe(
@@ -148,8 +148,8 @@ describe('useEvmApprovalFees', () => {
         expect(result.current.isLoading).toBe(false);
     });
 
-    it('should accept approvalTypeOverride parameter', () => {
-        const { result } = renderUseEvmApprovalFees(createStore(), {
+    it('should accept approvalTypeOverride parameter', async () => {
+        const { result } = await renderUseEvmApprovalFees(createStore(), {
             approvalTypeOverride: 'ZERO',
         });
 
@@ -170,7 +170,7 @@ describe('useEvmApprovalFees', () => {
             },
         });
 
-        renderUseEvmApprovalFees(store);
+        await renderUseEvmApprovalFees(store);
 
         await waitFor(() => {
             expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalled();
@@ -199,7 +199,7 @@ describe('useEvmApprovalFees', () => {
             },
         });
 
-        renderUseEvmApprovalFees(store);
+        await renderUseEvmApprovalFees(store);
 
         await waitFor(() => {
             expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalled();
@@ -240,7 +240,7 @@ describe('useEvmApprovalFees', () => {
             },
         });
 
-        renderUseEvmApprovalFees(store);
+        await renderUseEvmApprovalFees(store);
 
         await waitFor(() => {
             expect(mockComposeEvmApprovalFeeLevelsThunk).toHaveBeenCalled();

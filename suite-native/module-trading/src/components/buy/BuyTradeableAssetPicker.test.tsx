@@ -81,8 +81,8 @@ describe('BuyTradeableAssetPicker', () => {
             },
         });
 
-    const renderFormHook = () => {
-        const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
+    const renderFormHook = async () => {
+        const { result } = await renderHookWithTradingProvider(() => useBuyForm(), {
             services,
             store,
         });
@@ -91,7 +91,7 @@ describe('BuyTradeableAssetPicker', () => {
     };
 
     const renderTradeableAssetPicker = async () => {
-        const res = renderWithTradingProvider(
+        const res = await renderWithTradingProvider(
             <Form form={form}>
                 <BuyTradeableAssetPicker />
             </Form>,
@@ -104,17 +104,17 @@ describe('BuyTradeableAssetPicker', () => {
         return res;
     };
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
     describe('with regular firmware', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
             jest.clearAllMocks();
             mockTradingType = 'buy';
             mockSelectedTradeableAssetCryptoId = undefined;
             store = initPreloadedStore(FirmwareType.Universal);
-            form = renderFormHook();
+            form = await renderFormHook();
         });
 
         it('should render "Select asset" button with caret', async () => {
@@ -130,7 +130,9 @@ describe('BuyTradeableAssetPicker', () => {
         it('should navigate to the buy asset screen', async () => {
             const { getByLabelText } = await renderTradeableAssetPicker();
 
-            fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')));
+            await fireEvent.press(
+                getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+            );
 
             expect(mockNavigate).toHaveBeenCalledWith('TradingTradeableAsset', {
                 tradingType: 'buy',
@@ -187,12 +189,12 @@ describe('BuyTradeableAssetPicker', () => {
     });
 
     describe('receiveAccount preselection', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
             jest.clearAllMocks();
             mockTradingType = 'buy';
             mockSelectedTradeableAssetCryptoId = undefined;
             store = initPreloadedStoreWithAccounts();
-            form = renderFormHook();
+            form = await renderFormHook();
         });
 
         it('should keep the selected receiveAccount when switching to another asset on the same network', async () => {
@@ -205,7 +207,7 @@ describe('BuyTradeableAssetPicker', () => {
                 });
             });
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingBuyActions.setTradingAccountKey(eth2AccountKey));
                 store.dispatch(tradingBuyActions.setReceiveAccountKey(eth2AccountKey));
             });
@@ -217,7 +219,7 @@ describe('BuyTradeableAssetPicker', () => {
             });
 
             mockSelectedTradeableAssetCryptoId = usdcAsset.cryptoId;
-            result.rerender(
+            await result.rerender(
                 <Form form={form}>
                     <BuyTradeableAssetPicker />
                 </Form>,
@@ -232,12 +234,12 @@ describe('BuyTradeableAssetPicker', () => {
     });
 
     describe('with BTC-only firmware', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
             jest.clearAllMocks();
             mockTradingType = 'buy';
             mockSelectedTradeableAssetCryptoId = undefined;
             store = initPreloadedStore(FirmwareType.BitcoinOnly);
-            form = renderFormHook();
+            form = await renderFormHook();
         });
 
         it('should preselect BTC and do not render caret', async () => {
@@ -252,8 +254,12 @@ describe('BuyTradeableAssetPicker', () => {
             const { getByLabelText } = await renderTradeableAssetPicker();
 
             // no need to act as there should be no action
-            fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')));
-            fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')));
+            await fireEvent.press(
+                getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+            );
+            await fireEvent.press(
+                getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
+            );
 
             expect(
                 getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),

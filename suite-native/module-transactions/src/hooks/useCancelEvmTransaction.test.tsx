@@ -96,8 +96,8 @@ const selectDeviceButtonRequestsCodesMock = selectDeviceButtonRequestsCodes as u
 // Stable references so react-redux's reference-equality useSelector doesn't re-render every tick.
 const EMPTY_BUTTON_REQUEST_CODES: number[] = [];
 
-const renderCancelHook = (transaction: WalletAccountTransaction = pendingEvmTx) =>
-    renderHookWithStoreProvider(() =>
+const renderCancelHook = async (transaction: WalletAccountTransaction = pendingEvmTx) =>
+    await renderHookWithStoreProvider(() =>
         useCancelEvmTransaction({ accountKey: ethAccount.key, transaction }),
     );
 
@@ -111,8 +111,8 @@ describe('useCancelEvmTransaction', () => {
         selectDeviceButtonRequestsCodesMock.mockReturnValue(EMPTY_BUTTON_REQUEST_CODES);
     });
 
-    it('is cancellable for a pending EVM tx with rbf params and a live (non-stuck) nonce', () => {
-        const { result } = renderCancelHook();
+    it('is cancellable for a pending EVM tx with rbf params and a live (non-stuck) nonce', async () => {
+        const { result } = await renderCancelHook();
 
         expect(result.current.isCancellable).toBe(true);
         // sanity: nothing composed/signing yet
@@ -122,34 +122,34 @@ describe('useCancelEvmTransaction', () => {
         expect(result.current.isSigning).toBe(false);
     });
 
-    it('is not cancellable when the account is not an EVM account', () => {
+    it('is not cancellable when the account is not an EVM account', async () => {
         selectAccountByKeyMock.mockReturnValue(btcAccount);
 
-        const { result } = renderCancelHook();
+        const { result } = await renderCancelHook();
 
         expect(result.current.isCancellable).toBe(false);
     });
 
-    it('is not cancellable when the transaction is no longer pending', () => {
+    it('is not cancellable when the transaction is no longer pending', async () => {
         selectIsTransactionPendingMock.mockReturnValue(false);
 
-        const { result } = renderCancelHook();
+        const { result } = await renderCancelHook();
 
         expect(result.current.isCancellable).toBe(false);
     });
 
-    it("is not cancellable when the tx's own nonce is stuck (superseded/gapped)", () => {
+    it("is not cancellable when the tx's own nonce is stuck (superseded/gapped)", async () => {
         useEvmNonceInfoMock.mockReturnValue({ nonceInfo: stuckNonceInfo });
 
-        const { result } = renderCancelHook();
+        const { result } = await renderCancelHook();
 
         expect(result.current.isCancellable).toBe(false);
     });
 
-    it('is not cancellable for a tx without ethereum rbf params', () => {
+    it('is not cancellable for a tx without ethereum rbf params', async () => {
         const txWithoutRbf = { ...pendingEvmTx, rbfParams: undefined } as WalletAccountTransaction;
 
-        const { result } = renderCancelHook(txWithoutRbf);
+        const { result } = await renderCancelHook(txWithoutRbf);
 
         expect(result.current.isCancellable).toBe(false);
     });

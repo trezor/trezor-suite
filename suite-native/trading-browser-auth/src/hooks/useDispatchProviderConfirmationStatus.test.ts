@@ -17,8 +17,8 @@ import { useDispatchProviderConfirmationStatus } from './useDispatchProviderConf
 describe('useDispatchProviderConfirmationStatus', () => {
     let store: TestStore;
 
-    const renderUseDispatchProviderConfirmationStatus = () =>
-        renderHookWithStoreProvider(() => useDispatchProviderConfirmationStatus(), { store });
+    const renderUseDispatchProviderConfirmationStatus = async () =>
+        await renderHookWithStoreProvider(() => useDispatchProviderConfirmationStatus(), { store });
 
     beforeEach(() => {
         store = createLightStore({
@@ -32,10 +32,10 @@ describe('useDispatchProviderConfirmationStatus', () => {
         });
     });
 
-    it('should provide callback for dispatching setProviderConfirmationStatus trading action', () => {
-        const { result } = renderUseDispatchProviderConfirmationStatus();
+    it('should provide callback for dispatching setProviderConfirmationStatus trading action', async () => {
+        const { result } = await renderUseDispatchProviderConfirmationStatus();
 
-        act(() => {
+        await act(() => {
             result.current('window_opened');
         });
 

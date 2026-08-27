@@ -4,19 +4,19 @@ import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { TokenAmountFormatter, type TokenAmountFormatterProps } from './TokenAmountFormatter';
 
 describe('TokenAmountFormatter', () => {
-    const renderTokenAmountFormatter = (props: Partial<TokenAmountFormatterProps>) =>
-        renderWithStoreProvider(
+    const renderTokenAmountFormatter = async (props: Partial<TokenAmountFormatterProps>) =>
+        await renderWithStoreProvider(
             <TokenAmountFormatter tokenSymbol={'USDC' as TokenSymbol} value="1234.56" {...props} />,
         );
 
-    it('should render formatted value', () => {
-        const { getByTestId } = renderTokenAmountFormatter({});
+    it('should render formatted value', async () => {
+        const { getByTestId } = await renderTokenAmountFormatter({});
 
         expect(getByTestId('plain-text')).toHaveTextContent('1,234.56 USDC');
     });
 
-    it('should render phishing transaction with empty value as discreet text', () => {
-        const { getByTestId } = renderTokenAmountFormatter({
+    it('should render phishing transaction with empty value as discreet text', async () => {
+        const { getByTestId } = await renderTokenAmountFormatter({
             value: '',
             isPhishingTransaction: true,
         });

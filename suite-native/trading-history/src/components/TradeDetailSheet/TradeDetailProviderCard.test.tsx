@@ -34,8 +34,8 @@ const getTrade = ({ shouldIncludeStatusUrl = false } = {}) => {
     };
 };
 
-const renderProviderCard = (trade = getTrade()) =>
-    renderWithStoreProvider(<TradeDetailProviderCard orderId={trade.data.orderId!} />, {
+const renderProviderCard = async (trade = getTrade()) =>
+    await renderWithStoreProvider(<TradeDetailProviderCard orderId={trade.data.orderId!} />, {
         preloadedState: getPreloadedState([trade]),
     });
 
@@ -47,7 +47,7 @@ describe('TradeDetailProviderCard', () => {
     });
 
     it('should show status url when it is defined and open it on press', async () => {
-        const { getByText } = renderProviderCard(getTrade({ shouldIncludeStatusUrl: true }));
+        const { getByText } = await renderProviderCard(getTrade({ shouldIncludeStatusUrl: true }));
         const statusLink = getByText(
             getTranslation('moduleTrading.tradeHistory.detail.checkOrderStatus'),
         );
@@ -61,8 +61,8 @@ describe('TradeDetailProviderCard', () => {
         });
     });
 
-    it('should not show status url when it is not defined', () => {
-        const { queryByText } = renderProviderCard();
+    it('should not show status url when it is not defined', async () => {
+        const { queryByText } = await renderProviderCard();
 
         expect(
             queryByText(getTranslation('moduleTrading.tradeHistory.detail.checkOrderStatus')),
@@ -70,7 +70,7 @@ describe('TradeDetailProviderCard', () => {
     });
 
     it('should show support url when it is defined and open it on press', async () => {
-        const { getByText } = renderProviderCard();
+        const { getByText } = await renderProviderCard();
 
         const supportLink = getByText(
             getTranslation('moduleTrading.tradeHistory.detail.providerSupport'),

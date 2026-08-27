@@ -27,22 +27,22 @@ jest.mock('../../../hooks/general/useAmountInputDecimals', () => ({
 }));
 
 describe('SellSendAmountInput', () => {
-    const renderCryptoAmountInput = (
+    const renderCryptoAmountInput = async (
         props: Partial<SellSendAmountInputProps>,
         form: SellFormType,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <Form form={form}>
                 <SellSendAmountInput showAssetsScreen={jest.fn()} {...props} />
             </Form>,
             { tradeType: 'sell', overrides },
         );
 
-    const renderUseTradingSellForm = (
+    const renderUseTradingSellForm = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) => {
-        const { result } = renderHookWithTradingProvider(() => useSellForm(), {
+        const { result } = await renderHookWithTradingProvider(() => useSellForm(), {
             tradeType: 'sell',
             overrides,
         });
@@ -55,11 +55,11 @@ describe('SellSendAmountInput', () => {
     });
 
     it('should set send value in form', async () => {
-        const form = renderUseTradingSellForm();
-        act(() => {
+        const form = await renderUseTradingSellForm();
+        await act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form);
+        const { getByLabelText } = await renderCryptoAmountInput({}, form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
@@ -69,9 +69,9 @@ describe('SellSendAmountInput', () => {
         expect(form.getValues('cryptoStringAmount')).toEqual('100');
     });
 
-    it('should be disabled when asset is not selected', () => {
-        const form = renderUseTradingSellForm();
-        const { getByLabelText } = renderCryptoAmountInput({}, form);
+    it('should be disabled when asset is not selected', async () => {
+        const form = await renderUseTradingSellForm();
+        const { getByLabelText } = await renderCryptoAmountInput({}, form);
 
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
@@ -80,8 +80,8 @@ describe('SellSendAmountInput', () => {
 
     it('should call showAssetsScreen when disabled and pressed', async () => {
         const showAssetsScreen = jest.fn();
-        const form = renderUseTradingSellForm();
-        const { getByLabelText } = renderCryptoAmountInput({ showAssetsScreen }, form);
+        const form = await renderUseTradingSellForm();
+        const { getByLabelText } = await renderCryptoAmountInput({ showAssetsScreen }, form);
 
         await userEvent.press(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
@@ -92,11 +92,11 @@ describe('SellSendAmountInput', () => {
 
     it('should not call showAssetsScreen when enabled and pressed', async () => {
         const showAssetsScreen = jest.fn();
-        const form = renderUseTradingSellForm();
-        act(() => {
+        const form = await renderUseTradingSellForm();
+        await act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({ showAssetsScreen }, form);
+        const { getByLabelText } = await renderCryptoAmountInput({ showAssetsScreen }, form);
 
         await userEvent.press(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
@@ -106,11 +106,11 @@ describe('SellSendAmountInput', () => {
     });
 
     it('should format input value to be decimal by default', async () => {
-        const form = renderUseTradingSellForm();
-        act(() => {
+        const form = await renderUseTradingSellForm();
+        await act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form);
+        const { getByLabelText } = await renderCryptoAmountInput({}, form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
@@ -124,11 +124,11 @@ describe('SellSendAmountInput', () => {
     });
 
     it('should preserve a leading-zero decimal while typing', async () => {
-        const form = renderUseTradingSellForm();
-        act(() => {
+        const form = await renderUseTradingSellForm();
+        await act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form);
+        const { getByLabelText } = await renderCryptoAmountInput({}, form);
         const input = getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel'));
 
         await userEvent.type(input, '0.0001');
@@ -141,11 +141,11 @@ describe('SellSendAmountInput', () => {
         const overrides = {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
-        const form = renderUseTradingSellForm(overrides);
-        act(() => {
+        const form = await renderUseTradingSellForm(overrides);
+        await act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form, overrides);
+        const { getByLabelText } = await renderCryptoAmountInput({}, form, overrides);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
@@ -162,11 +162,11 @@ describe('SellSendAmountInput', () => {
         const overrides = {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         };
-        const form = renderUseTradingSellForm(overrides);
-        act(() => {
+        const form = await renderUseTradingSellForm(overrides);
+        await act(() => {
             form.setValue('sendAsset', btcAsset);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form, overrides);
+        const { getByLabelText } = await renderCryptoAmountInput({}, form, overrides);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
@@ -181,15 +181,15 @@ describe('SellSendAmountInput', () => {
 
     it('should limit value to decimals based on useAmountInputDecimals return value', async () => {
         const accountKey = mockAccountKey({ symbol: 'eth', descriptor: 'accountKey' });
-        const form = renderUseTradingSellForm();
-        act(() => {
+        const form = await renderUseTradingSellForm();
+        await act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('sendAccount', {
                 key: accountKey,
                 symbol: 'eth',
             } as Account);
         });
-        const { getByLabelText } = renderCryptoAmountInput({}, form);
+        const { getByLabelText } = await renderCryptoAmountInput({}, form);
 
         await userEvent.type(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
@@ -203,30 +203,30 @@ describe('SellSendAmountInput', () => {
         );
     });
 
-    it('should display loading skeleton while amountInCrypto is false and quotes are loading', () => {
+    it('should display loading skeleton while amountInCrypto is false and quotes are loading', async () => {
         const overrides = { wallet: { trading: { sell: { isLoading: true } } } };
-        const form = renderUseTradingSellForm(overrides);
+        const form = await renderUseTradingSellForm(overrides);
 
-        act(() => {
+        await act(() => {
             form.setValue('amountInCrypto', false);
         });
 
-        const { getByLabelText } = renderCryptoAmountInput({}, form, overrides);
+        const { getByLabelText } = await renderCryptoAmountInput({}, form, overrides);
 
         expect(
             getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
         ).toBeTruthy();
     });
 
-    it('should not display loading skeleton when amountInCrypto is true', () => {
+    it('should not display loading skeleton when amountInCrypto is true', async () => {
         const overrides = { wallet: { trading: { sell: { isLoading: true } } } };
-        const form = renderUseTradingSellForm(overrides);
+        const form = await renderUseTradingSellForm(overrides);
 
-        act(() => {
+        await act(() => {
             form.setValue('amountInCrypto', true);
         });
 
-        const { queryByLabelText } = renderCryptoAmountInput({}, form, overrides);
+        const { queryByLabelText } = await renderCryptoAmountInput({}, form, overrides);
 
         expect(
             queryByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),

@@ -19,9 +19,9 @@ const createAsset = (index: number, isEnabled = true): MyAsset => ({
 describe('MyAssetGroup', () => {
     const assets = [createAsset(1), createAsset(2), createAsset(3)];
 
-    it('shows two preview icons and an overflow count while collapsed', () => {
+    it('shows two preview icons and an overflow count while collapsed', async () => {
         const testID = '@trading/my-asset-group';
-        const { getByTestId, getByText } = renderWithStoreProvider(
+        const { getByTestId, getByText } = await renderWithStoreProvider(
             <MyAssetGroup
                 assets={assets}
                 onAssetSelect={jest.fn()}
@@ -39,9 +39,9 @@ describe('MyAssetGroup', () => {
         });
     });
 
-    it('renders all assets when expanded', () => {
+    it('renders all assets when expanded', async () => {
         const testID = '@trading/my-asset-group';
-        const { getByTestId, getByText } = renderWithStoreProvider(
+        const { getByTestId, getByText } = await renderWithStoreProvider(
             <MyAssetGroup
                 assets={assets}
                 onAssetSelect={jest.fn()}
@@ -50,7 +50,7 @@ describe('MyAssetGroup', () => {
             />,
         );
 
-        fireEvent.press(getByTestId(`${testID}/toggle`));
+        await fireEvent.press(getByTestId(`${testID}/toggle`));
 
         expect(getByTestId(`${testID}/toggle`).props.accessibilityState).toEqual({
             expanded: true,
@@ -60,9 +60,9 @@ describe('MyAssetGroup', () => {
         expect(getByText('Token 3')).toBeOnTheScreen();
     });
 
-    it('does not select a non-tradeable asset', () => {
+    it('does not select a non-tradeable asset', async () => {
         const onAssetSelect = jest.fn();
-        const { getByText } = renderWithStoreProvider(
+        const { getByText } = await renderWithStoreProvider(
             <MyAssetGroup
                 assets={[createAsset(1, false)]}
                 onAssetSelect={onAssetSelect}
@@ -71,8 +71,8 @@ describe('MyAssetGroup', () => {
             />,
         );
 
-        fireEvent.press(getByText('Non-tradeable'));
-        fireEvent.press(getByText('Token 1'));
+        await fireEvent.press(getByText('Non-tradeable'));
+        await fireEvent.press(getByText('Token 1'));
 
         expect(onAssetSelect).not.toHaveBeenCalled();
     });

@@ -29,21 +29,24 @@ describe('BuyCard', () => {
         featureFlags: createTradingFeatureFlags(),
     };
 
-    const renderForm = () => renderHookWithTradingProvider(() => useBuyForm(), { overrides });
+    const renderForm = async () =>
+        await renderHookWithTradingProvider(() => useBuyForm(), { overrides });
 
-    const renderBuyCard = (extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
-        renderWithTradingProvider(<BuyCard isAmountInputActive={false} />, {
+    const renderBuyCard = async (
+        extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) =>
+        await renderWithTradingProvider(<BuyCard isAmountInputActive={false} />, {
             overrides: { ...overrides, ...extraOverrides },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(() => {
-        const { result } = renderForm();
+    beforeEach(async () => {
+        const { result } = await renderForm();
         form = result.current;
     });
 
-    it('should render default BuyCard', () => {
-        const { getByLabelText, getByTestId, getByText } = renderBuyCard();
+    it('should render default BuyCard', async () => {
+        const { getByLabelText, getByTestId, getByText } = await renderBuyCard();
 
         expect(getByText(getTranslation('moduleTrading.selectFiat.buy.title'))).toBeOnTheScreen();
         expect(getByText(getTranslation('moduleTrading.selectCoin.title'))).toBeOnTheScreen();
@@ -58,18 +61,18 @@ describe('BuyCard', () => {
         });
     });
 
-    it('should convert cryptoValue to the base unit before passing it to CryptoToFiatValueBadge when bitcoin amount unit is sats', () => {
-        act(() => {
+    it('should convert cryptoValue to the base unit before passing it to CryptoToFiatValueBadge when bitcoin amount unit is sats', async () => {
+        await act(() => {
             form.setValue('asset', btcAsset);
         });
-        act(() => {
+        await act(() => {
             form.setValue('amountInCrypto', true);
         });
-        act(() => {
+        await act(() => {
             form.setValue('cryptoValue', '1234567123456');
         });
 
-        const { getByText, queryByText } = renderBuyCard({
+        const { getByText, queryByText } = await renderBuyCard({
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         });
 

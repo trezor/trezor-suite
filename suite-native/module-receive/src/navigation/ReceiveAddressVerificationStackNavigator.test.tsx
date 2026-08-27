@@ -32,8 +32,8 @@ describe('ReceiveAddressVerificationStackNavigator', () => {
         },
     } as const;
 
-    const renderNavigator = () =>
-        renderWithBasicProvider(
+    const renderNavigator = async () =>
+        await renderWithBasicProvider(
             <ReceiveAddressVerificationStackNavigator navigation={{} as never} route={route} />,
         );
 
@@ -43,19 +43,19 @@ describe('ReceiveAddressVerificationStackNavigator', () => {
     });
 
     it('shows the continuation screen immediately when the device is ready', async () => {
-        const { findByText } = renderNavigator();
+        const { findByText } = await renderNavigator();
 
         expect(await findByText('Continue on Trezor')).toBeTruthy();
     });
 
     it('shows the connection guard until the device is ready', async () => {
         mockIsDeviceConnectionGuardVisible.mockReturnValue(true);
-        const { findByText, rerender } = renderNavigator();
+        const { findByText, rerender } = await renderNavigator();
 
         expect(await findByText('Connect device')).toBeTruthy();
 
         mockIsDeviceConnectionGuardVisible.mockReturnValue(false);
-        rerender(
+        await rerender(
             <ReceiveAddressVerificationStackNavigator navigation={{} as never} route={route} />,
         );
 

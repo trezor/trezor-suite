@@ -17,8 +17,8 @@ import { useLocationForm } from './useLocationForm';
 describe('useLocationForm', () => {
     let store: TestStore;
 
-    const renderUseLocationForm = () =>
-        renderHookWithStoreProvider(() => useLocationForm(), { store });
+    const renderUseLocationForm = async () =>
+        await renderHookWithStoreProvider(() => useLocationForm(), { store });
 
     beforeEach(() => {
         store = createLightStore({
@@ -34,8 +34,8 @@ describe('useLocationForm', () => {
         });
     });
 
-    it('should use default subdivision value from redux state', () => {
-        act(() => {
+    it('should use default subdivision value from redux state', async () => {
+        await act(() => {
             store.dispatch(
                 residenceActions.setResidenceCountry({
                     country: 'US',
@@ -44,7 +44,7 @@ describe('useLocationForm', () => {
             );
         });
 
-        const { result } = renderUseLocationForm();
+        const { result } = await renderUseLocationForm();
 
         expect(result.current.getValues('country')).toEqual(
             expect.objectContaining({
@@ -58,8 +58,8 @@ describe('useLocationForm', () => {
         });
     });
 
-    it('should ignore persisted subdivision when it does not belong to country', () => {
-        act(() => {
+    it('should ignore persisted subdivision when it does not belong to country', async () => {
+        await act(() => {
             store.dispatch(
                 residenceActions.setResidenceCountry({
                     country: 'CZ',
@@ -68,13 +68,13 @@ describe('useLocationForm', () => {
             );
         });
 
-        const { result } = renderUseLocationForm();
+        const { result } = await renderUseLocationForm();
 
         expect(result.current.getValues('countrySubdivision')).toBeUndefined();
     });
 
-    it('should use value from expo-localization when country is not set in store', () => {
-        const { result } = renderUseLocationForm();
+    it('should use value from expo-localization when country is not set in store', async () => {
+        const { result } = await renderUseLocationForm();
 
         expect(result.current.getValues('country')).toEqual(
             expect.objectContaining({
@@ -83,7 +83,7 @@ describe('useLocationForm', () => {
         );
     });
 
-    it('should fallback to worldwide when country is not set in store and expo-localization country is not supported', () => {
+    it('should fallback to worldwide when country is not set in store and expo-localization country is not supported', async () => {
         jest.spyOn(Localization, 'getLocales').mockReturnValue([
             {
                 languageTag: 'es-CU',
@@ -99,7 +99,7 @@ describe('useLocationForm', () => {
             } as unknown as Locale,
         ]);
 
-        const { result } = renderUseLocationForm();
+        const { result } = await renderUseLocationForm();
 
         expect(result.current.getValues('country')).toEqual(
             expect.objectContaining({

@@ -71,10 +71,13 @@ describe('useComposeTradingTransaction', () => {
         });
     };
 
-    const renderUseComposeTradingTransaction = (store: TestStore) =>
-        renderHookWithStoreProvider(() => useComposeTradingTransaction({ tradeType: 'exchange' }), {
-            store,
-        });
+    const renderUseComposeTradingTransaction = async (store: TestStore) =>
+        await renderHookWithStoreProvider(
+            () => useComposeTradingTransaction({ tradeType: 'exchange' }),
+            {
+                store,
+            },
+        );
 
     beforeEach(() => {
         mockComposeTradingTransactionThunk.mockClear();
@@ -83,9 +86,9 @@ describe('useComposeTradingTransaction', () => {
     it('should compose transaction with latest draft fee values from store', async () => {
         const store = getInitializedStore();
 
-        const { result } = renderUseComposeTradingTransaction(store);
+        const { result } = await renderUseComposeTradingTransaction(store);
 
-        act(() => {
+        await act(() => {
             store.dispatch(
                 formDraftActions.storeDraft({
                     key: exchangeFormDraftKey,
