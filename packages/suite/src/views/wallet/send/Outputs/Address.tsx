@@ -81,6 +81,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const [hasAddressChecksummed, setHasAddressChecksummed] = useState<boolean | undefined>();
     const [autocorrectMessage, setAutocorrectMessage] = useState<string | undefined>();
     const autocorrectTimeout = useRef<TimerId>(null);
+    const composeAfterAddressChangeRef = useRef(false);
     const dispatch = useDispatch();
     const { device } = useDevice();
     const {
@@ -157,6 +158,15 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             trigger(inputName);
         }
     }, [selectedToken, networkType, inputName, trigger, address]);
+
+    useEffect(() => {
+        if (!composeAfterAddressChangeRef.current || addressError) {
+            return;
+        }
+
+        composeAfterAddressChangeRef.current = false;
+        composeTransaction(amountInputName);
+    }, [address, addressError, amountInputName, composeTransaction]);
 
     const handleQrClick = useCallback(async () => {
         const uri = await dispatch(openDeferredModal({ type: 'qr-reader' }));
@@ -370,7 +380,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     const { ref: inputRef, ...inputField } = register(inputName, {
         onChange: () => {
-            composeTransaction(amountInputName);
+            composeAfterAddressChangeRef.current = true;
             setHasAddressChecksummed(false);
             setAutocorrectMessage(undefined);
             setValue(resolvedAddressInputName, undefined);

@@ -26,7 +26,11 @@ export const useForm = <TFieldValues extends FieldValues, TContext extends objec
     // TS7 infers Yup object schemas as transformed optionalized shapes
     // (`MakeKeysOptional<T>`) which does not match the form contract used
     // across suite-native. Keep that mismatch contained in this wrapper.
-    const resolver = yupResolver(validation) as Resolver<TFieldValues, TContext, TFieldValues>;
+    const resolver = yupResolver(validation) as unknown as Resolver<
+        TFieldValues,
+        TContext,
+        TFieldValues
+    >;
 
     const form = hookFormUseForm<TFieldValues, TContext>({
         resolver,

@@ -53,6 +53,7 @@ export const useFees = <TFieldValues extends FeesFormValues>({
     const feeLimitRef = useRef<string | undefined>('');
     const maxPriorityFeePerGasRef = useRef<string | undefined>('');
     const maxFeePerGasRef = useRef<string | undefined>('');
+    const composeAfterErrorClearRef = useRef(false);
 
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { clearErrors, getValues, register, setValue, watch } =
@@ -83,6 +84,20 @@ export const useFees = <TFieldValues extends FeesFormValues>({
     const maxPriorityFeePerGas = watch('maxPriorityFeePerGas');
     const maxFeePerGas = watch('maxFeePerGas');
     const estimatedFeeLimit = watch('estimatedFeeLimit');
+
+    useEffect(() => {
+        if (
+            !composeAfterErrorClearRef.current ||
+            errors.feePerUnit ||
+            errors.feeLimit ||
+            !composeRequest
+        ) {
+            return;
+        }
+
+        composeAfterErrorClearRef.current = false;
+        composeRequest();
+    }, [errors.feePerUnit, errors.feeLimit, composeRequest]);
 
     useEffect(() => {
         if (selectedFeeRef.current !== 'custom') return;
@@ -160,8 +175,8 @@ export const useFees = <TFieldValues extends FeesFormValues>({
             // error should be cleared and levels should be precomposed again
             feePerUnit = '';
             feeLimit = '';
+            composeAfterErrorClearRef.current = true;
             clearErrors(['feePerUnit', 'feeLimit', 'maxPriorityFeePerGas', 'maxFeePerGas']);
-            composeRequest?.();
         }
 
         setValue('selectedFee', level);

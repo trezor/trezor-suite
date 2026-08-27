@@ -328,9 +328,7 @@ export const useTradingReceiveAddress = ({
     }, [receiveAddress, extraField, receiveAccount, type, dispatch]);
 
     return {
-        form: {
-            ...methods,
-        },
+        form: methods,
         suiteReceiveAccounts,
         selectedAccount: receiveAccount,
         accountAddress,

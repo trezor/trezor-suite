@@ -34,7 +34,7 @@ const changeDeviceLabelSchema = (t: TranslationFunction) =>
 export const useChangeDeviceLabel = (): {
     form: UseFormReturn<
         {
-            deviceLabel: string | undefined;
+            deviceLabel?: string | undefined;
         },
         unknown,
         {
