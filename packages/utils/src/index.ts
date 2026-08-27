@@ -52,6 +52,7 @@ export * from './objectPartition';
 export * from './parseElectrumUrl';
 export * from './parseHostname';
 export * from './promiseAllSequence';
+export * from './redactSensitiveData';
 export * from './redactUserPath';
 export * from './resolveAfter';
 export * from './safeParseUrl';
