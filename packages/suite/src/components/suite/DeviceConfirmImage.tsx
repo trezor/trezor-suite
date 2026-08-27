@@ -1,4 +1,4 @@
-import { getDeviceInternalModel } from '@suite-common/suite-utils';
+import { getDeviceModelWithFlagshipFallback } from '@suite-common/suite-utils';
 import { type ImageProps } from '@trezor/components';
 import { type Device } from '@trezor/connect';
 import { DeviceWithScene } from '@trezor/product-components';
@@ -16,7 +16,7 @@ export const DeviceConfirmImage = ({
     width,
     ...rest
 }: DeviceConfirmImageProps) => {
-    const deviceModelInternal = getDeviceInternalModel(device);
+    const deviceModelInternal = getDeviceModelWithFlagshipFallback(device);
 
     return (
         <DeviceWithScene
