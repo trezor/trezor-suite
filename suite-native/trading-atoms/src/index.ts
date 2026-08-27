@@ -31,6 +31,7 @@ export * from './components/ProviderDisplay';
 export * from './components/ProviderLogo';
 export * from './components/SearchableSheetHeader';
 export * from './components/SheetHeaderTitle';
+export * from './components/TradingAsset';
 export {
     TradeStatusStepper,
     type TradeStatusStep,

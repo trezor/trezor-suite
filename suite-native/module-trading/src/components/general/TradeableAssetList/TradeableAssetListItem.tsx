@@ -1,11 +1,17 @@
 import { invariant } from '@suite-common/suite-utils';
 import { type TradeableAssetBalance, cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type TokenSymbol } from '@suite-common/wallet-types';
-import { VStack } from '@suite-native/atoms';
+import { AnimatedPressable, Box, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
+import { TradingAsset } from '@suite-native/trading-atoms';
 import { type TradeableAsset } from '@suite-native/trading-types';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AssetListItem } from '../AssetListItem';
+import { useTradingAssetPressStyle } from '../../../hooks/general/useTradingAssetPressStyle';
+
+const containerStyle = prepareNativeStyle(({ borders }) => ({
+    borderRadius: borders.radii.r12,
+}));
 
 export type TradeableAssetListItemProps = {
     asset: TradeableAsset;
@@ -18,6 +24,8 @@ export const TradeableAssetListItem = ({
     balance,
     onPress,
 }: TradeableAssetListItemProps) => {
+    const { applyStyle } = useNativeStyles();
+    const { animatedStyle, handlePressIn, handlePressOut } = useTradingAssetPressStyle();
     const { symbol, name, contractAddress, cryptoId } = asset;
 
     const networkSymbol = cryptoIdToNetworkSymbol(cryptoId);
@@ -42,13 +50,26 @@ export const TradeableAssetListItem = ({
     ) : undefined;
 
     return (
-        <AssetListItem
-            name={name}
-            symbol={symbol}
-            contractAddress={contractAddress}
-            networkSymbol={networkSymbol}
+        <AnimatedPressable
             onPress={onPress}
-            rightContent={balanceContent}
-        />
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            accessible
+            accessibilityRole="button"
+            accessibilityState={{ disabled: false }}
+            accessibilityLabel={name}
+            style={[animatedStyle, applyStyle(containerStyle)]}
+        >
+            <Box paddingHorizontal="sp8" paddingVertical="sp12">
+                <TradingAsset
+                    assetType="crypto"
+                    name={name}
+                    symbol={symbol}
+                    contractAddress={contractAddress}
+                    networkSymbol={networkSymbol}
+                    rightContent={balanceContent}
+                />
+            </Box>
+        </AnimatedPressable>
     );
 };
