@@ -2,8 +2,8 @@
 
 ## Unused State and Deps intersection members
 
-`no-unused-intersection-members` checks local intersection aliases whose names end in `State` or
-`Deps`:
+`no-unused-intersection-members` checks explicit intersections in local aliases whose names end in
+`State` or `Deps`:
 
 ```ts
 type RunDeps = LoggerDeps & StorageDeps;
@@ -13,6 +13,14 @@ const run = (deps: RunDeps) => deps.logger.log('started');
 
 Here `StorageDeps` is reported because the implementation can satisfy every observed requirement
 without it.
+
+Intersections nested in an object contract are checked as well:
+
+```ts
+type RunDeps = { services: LoggerDeps & StorageDeps };
+
+const run = (deps: RunDeps) => deps.services.logger.log('started');
+```
 
 ### Principles
 
@@ -35,14 +43,14 @@ without it.
    needed, it keeps the whole contract. The rule should suggest a removal only when that removal is
    demonstrably safe for every usage visible in the file.
 7. **Stay local and predictable.** Candidates are type aliases in the current source file, must end
-   in `State` or `Deps`, and must contain either a direct intersection or an intersection inside a
-   transparent `services` container. Usage collection is file-local: a consumer needing an
+   in `State` or `Deps`, and must contain an explicit root or nested intersection, including one
+   inside a transparent `services` container. Usage collection is file-local: a consumer needing an
    additional capability should declare it at the consumer instead of relying on a broader upstream
    alias. This avoids turning lint into an open-ended whole-program dependency analysis.
 
 ### Analysis stages
 
-1. At `Program:exit`, collect matching aliases and resolve every direct or service-wrapped
+1. At `Program:exit`, collect matching aliases and resolve every root, nested, or service-wrapped
    intersection member with the TypeScript type checker.
 2. Mark contracts as opaque when they enter a generic context that the rule cannot safely interpret.
 3. Read `createThunk` configuration and add the state/dependency requirements of dispatched child

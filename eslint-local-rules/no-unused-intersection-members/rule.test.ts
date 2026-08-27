@@ -95,6 +95,19 @@ typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMe
         {
             filename: typeAwareTestFilename,
             code: `
+                    type LoggerDep = { logger: { log: () => void } };
+                    type StorageDep = { storage: { save: () => void } };
+                    type RunDeps = { services: LoggerDep & StorageDep };
+
+                    const run = (deps: RunDeps) => {
+                        deps.services.logger.log();
+                        deps.services.storage.save();
+                    };
+                `,
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
                     type LoggerDeps = { logger: { log: () => void } };
                     type StorageDeps = { storage: { save: () => void } };
                     type UnrelatedContract = LoggerDeps & StorageDeps;
@@ -421,6 +434,39 @@ typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMe
                     declare const deps: RunDeps;
                     const { services: { logger: serviceLogger } } = deps;
                     serviceLogger.log();
+                `,
+            errors: [
+                {
+                    messageId: 'unusedIntersectionMember',
+                    data: { memberName: 'StorageDep', typeName: 'RunDeps' },
+                },
+            ],
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type LoggerDep = { logger: { log: () => void } };
+                    type StorageDep = { storage: { save: () => void } };
+                    type RunDeps = { services: LoggerDep & StorageDep };
+
+                    const run = (deps: RunDeps) => deps.services.logger.log();
+                `,
+            errors: [
+                {
+                    messageId: 'unusedIntersectionMember',
+                    data: { memberName: 'StorageDep', typeName: 'RunDeps' },
+                },
+            ],
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type LoggerDep = { logger: { log: () => void } };
+                    type StorageDep = { storage: { save: () => void } };
+                    type RunDeps = { services: LoggerDep & StorageDep };
+
+                    declare const useLogger: (deps: { services: LoggerDep }) => void;
+                    const run = (deps: RunDeps) => useLogger(deps);
                 `,
             errors: [
                 {
