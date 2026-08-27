@@ -1,3 +1,5 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { tradingBuyActions } from '@suite-common/trading';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -25,8 +27,12 @@ import {
 } from '../../test-utils/tradingTestUtils';
 
 const reportMock = jest.fn();
-const services: NativeAnalyticsDep = {
+const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
     analytics: mockNativeAnalytics(reportMock),
+    networkModuleRepository: {
+        ...mockNetworkModuleRepository(),
+        getSupportedNetworks: () => ['btc', 'eth'],
+    },
 };
 
 const eth1AccountKey = eth1NormalAccount.key;

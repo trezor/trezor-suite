@@ -8,7 +8,8 @@ import {
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     btcAsset,
@@ -47,6 +48,10 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 type ReportSpy = jest.SpyInstance;
+
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(),
+};
 
 const useExchangeSelectQuoteWithReportSpy = (exchangeForm: ExchangeFormType) => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -100,12 +105,12 @@ describe('useExchangeSelectQuote', () => {
     };
 
     const renderExchangeForm = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), { store });
+        await renderHookWithStoreProvider(() => useExchangeForm(), { store, services });
 
     const renderUseExchangeSelectQuote = async () => {
         const hook = await renderHookWithStoreProvider(
             () => useExchangeSelectQuoteWithReportSpy(exchangeForm),
-            { store },
+            { store, services },
         );
 
         const spy = hook.result.current.reportSpy;

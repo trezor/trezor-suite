@@ -1,18 +1,15 @@
-import { combineReducers, createReducer } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { selectedAccountReducer } from '@suite/account';
 import { locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { TorStatus, torActions, torReducer } from '@suite/tor';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-    initPreloadedState,
-    testMocks,
-} from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { prepareAccountsReducer, prepareWalletSettingsReducer } from '@suite-common/wallet-core';
+import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import '@suite-common/test-utils/globalOverrides';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -40,9 +37,14 @@ jest.mock('./coinjoinService', () => {
     return mock.mockCoinjoinService();
 });
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
-const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
+const walletSettingsReducer = prepareWalletSettingsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadWalletSettings: mockReducer() },
+});
 const btcSymbol = asNetworkSymbol('btc');
 const testSymbol = asNetworkSymbol('test');
 const regtestSymbol = asNetworkSymbol('regtest');
@@ -61,7 +63,11 @@ const rootReducer = combineReducers({
     messageSystem: messageSystemReducer,
     wallet: combineReducers({
         coinjoin: coinjoinReducer,
-        accounts: prepareAccountsReducer(extraDependenciesCommonMock),
+        accounts: prepareAccountsReducer({
+            actionTypes: { storageLoad: mockActionType('storageLoad') },
+            actions: { setAccountAddMetadata: mockSetAccountAddMetadata() },
+            reducers: { storageLoadAccounts: mockReducer() },
+        }),
         selectedAccount: selectedAccountReducer,
         settings: walletSettingsReducer,
     }),
@@ -76,7 +82,8 @@ type Wallet = Partial<State['wallet']> & {
 
 const initStore = ({ accounts, coinjoin, device, selectedAccount, suite, locks }: Wallet = {}) => {
     // State != suite AppState, therefore <any>
-    const store = configureMockStore<any>({
+    const store = configureMockStore<void, any, UnknownAction>({
+        extra: undefined,
         reducer: rootReducer,
         preloadedState: initPreloadedState({
             rootReducer,

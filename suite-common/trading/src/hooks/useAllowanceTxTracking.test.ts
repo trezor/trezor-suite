@@ -27,6 +27,7 @@ const createPreloadedState = (transactions: WalletAccountTransaction[] = []) => 
 
 const renderUseAllowanceTxTracking = (preloadedState = createPreloadedState()) => {
     const store = configureMockStore({
+        extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({
                 transactions: (state = preloadedState.wallet.transactions) => state,

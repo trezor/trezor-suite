@@ -1,8 +1,10 @@
-import { isFulfilled, isRejected } from '@reduxjs/toolkit';
+import { createAction, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { asGetter } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { configureMockStore } from '@suite-common/test-utils';
 import {
+    type PushSendFormTransactionThunkDeps,
     pushSendFormTransactionThunk,
     selectAccountByKey,
     selectIsMevProtectionEnabled,
@@ -12,6 +14,7 @@ import {
     type PrecomposedTransactionFinalCancelRbf,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 
 import { signAndPushEvmCancelTransactionThunk } from './cancelTransactionThunks';
 import { cleanupSendFormThunk, signTransactionNativeThunk } from './sendFormThunks';
@@ -68,9 +71,17 @@ const cleanupMock = cleanupSendFormThunk as unknown as jest.Mock;
 const selectAccountByKeyMock = selectAccountByKey as unknown as jest.Mock;
 const mevEnabledMock = selectIsMevProtectionEnabled as unknown as jest.Mock;
 const mevFeatureMock = selectIsMevProtectionFeatureEnabled as unknown as jest.Mock;
+const extra: PushSendFormTransactionThunkDeps = {
+    actions: { onModalCancel: createAction<void>('test/onModalCancel') },
+    services: {
+        analytics: mockNativeAnalytics(),
+        getIsWindowVisible: asGetter(() => true),
+        getTradedAccountKeys: asGetter(() => []),
+    },
+};
 
 const dispatchCancel = () =>
-    configureMockStore().dispatch(
+    configureMockStore({ extra }).dispatch(
         signAndPushEvmCancelTransactionThunk({ accountKey, composedCancelTx, cancelFormState }),
     );
 

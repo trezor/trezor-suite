@@ -2,6 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -12,7 +13,6 @@ import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingFormOfferSellActions } from './TradingFormOfferSellActions';
-import { extraDependenciesDesktopMock } from '../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const mockUseTradingFormContext = jest.fn();
@@ -58,6 +58,7 @@ const account = mockWalletAccount({
 
 const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             ...mockInitialAppState,
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
@@ -74,7 +75,7 @@ const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
 
     renderWithProviders(
         store,
-        extraDependenciesDesktopMock.services,
+        { analytics: mockDesktopAnalytics() },
         <TradingFormOfferSellActions />,
     );
 };

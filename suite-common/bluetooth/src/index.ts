@@ -5,6 +5,7 @@ export type {
     BluetoothAutoConnectPolicy,
     DeviceBluetoothConnectionStatusType,
     ForgetBluetoothDeviceDep,
+    ForgetBluetoothDeviceThunk,
     ForgetBluetoothDeviceThunkParams,
     BluetoothDeviceCommon,
 } from './types';

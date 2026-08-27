@@ -1,4 +1,4 @@
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import { getRoute } from './router';
 import { routerMiddleware } from './routerMiddleware';
@@ -21,7 +21,8 @@ const getRequiredRoute = <TName extends NonNullable<LocationChangePayload['route
 
 const initStore = (router?: Partial<RouterState>) => {
     const store = configureMockStore({
-        middleware: [routerMiddleware(() => extraDependenciesCommonMock)],
+        extra: undefined,
+        middleware: [routerMiddleware(() => ({}))],
         reducer: { router: routerReducer },
         preloadedState: {
             router: {

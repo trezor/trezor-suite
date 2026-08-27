@@ -1,7 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { tradingBuyActions, tradingThunks } from '@suite-common/trading';
+import { mockGetSelectedAccount, mockGetTradingEnvironment } from '@suite-common/trading/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { localeReducer } from '@suite-native/intl';
@@ -26,6 +28,13 @@ const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount2
 const btc3Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount3') });
 
 describe('useBuyData', () => {
+    const extra = {
+        services: {
+            getSelectedAccount: mockGetSelectedAccount(),
+            getTradingEnvironment: mockGetTradingEnvironment(),
+        },
+    };
+
     const getAccounts = () => [
         btc1Account,
         btc2Account,
@@ -37,7 +46,9 @@ describe('useBuyData', () => {
         wallet: combineReducers({
             settings: createStaticReducer(initialWalletSettingsState),
             accounts: createStaticReducer(getAccounts()),
-            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+            trading: tradingSlice.prepareReducer({
+                actionTypes: { storageLoad: mockActionType('storageLoad') },
+            }),
         }),
     } as const;
 
@@ -49,7 +60,7 @@ describe('useBuyData', () => {
         };
         preloadedState.wallet.trading.buy.tradingAccountKey = tradingAccountKey;
 
-        return configureMockStore({ reducer, preloadedState });
+        return configureMockStore({ extra, reducer, preloadedState });
     };
 
     const renderUseBuyData = async (reloadRequestOrdinalInitialValue: number, store: TestStore) => {
@@ -88,7 +99,7 @@ describe('useBuyData', () => {
                     }, 100);
                 }),
         );
-        const store = configureMockStore({ reducer });
+        const store = configureMockStore({ extra, reducer });
         const { result } = await renderUseBuyData(0, store);
 
         expect(result.current.isLoading).toBe(true);
@@ -96,7 +107,7 @@ describe('useBuyData', () => {
     });
 
     it('should settle after API queries are resolved', async () => {
-        const store = configureMockStore({ reducer });
+        const store = configureMockStore({ extra, reducer });
         const { result } = await renderUseBuyData(0, store);
 
         expect(result.current.isLoading).toBe(false);
@@ -108,7 +119,7 @@ describe('useBuyData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const store = configureMockStore({ reducer });
+        const store = configureMockStore({ extra, reducer });
         const { rerender } = await renderUseBuyData(0, store);
         await rerender({ reloadRequestOrdinal: 0 });
 
@@ -120,7 +131,7 @@ describe('useBuyData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const store = configureMockStore({ reducer });
+        const store = configureMockStore({ extra, reducer });
         const { rerender } = await renderUseBuyData(0, store);
         await rerender({ reloadRequestOrdinal: 1 });
 

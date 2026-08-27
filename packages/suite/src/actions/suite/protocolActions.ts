@@ -46,7 +46,8 @@ export type HandleProtocolRequestDeps = WithServices<
 >;
 
 export type HandleProtocolRequestState = GotoThunkState & WalletConnectInitThunkState;
-type HandleProtocolRequestDispatchDeps = HandleProtocolRequestDeps & WalletConnectInitThunkDeps;
+export type HandleProtocolRequestDispatchDeps = HandleProtocolRequestDeps &
+    WalletConnectInitThunkDeps;
 
 export const handleProtocolRequest =
     (uri: string) =>

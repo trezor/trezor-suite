@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 
 import { createFeeLevels } from './__fixtures__/feeLevels';
 import { prepareSendFormReducer, transactionManagementActions } from './sendFormSlice';
@@ -8,7 +8,10 @@ import { prepareSendFormReducer, transactionManagementActions } from './sendForm
 describe('sendFormSlice', () => {
     // Create a test store with the prepared reducer
     const createTestStore = () => {
-        const reducer = prepareSendFormReducer(extraDependenciesCommonMock);
+        const reducer = prepareSendFormReducer({
+            actionTypes: { storageLoad: mockActionType('storageLoad') },
+            reducers: { storageLoadFormDrafts: mockReducer() },
+        });
 
         return configureStore({
             reducer: { send: reducer },

@@ -8,7 +8,8 @@ import {
     type FiatCurrencyCode,
 } from 'invity-api';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/buyUtils';
 import { type BuyInfo, type TradingBuyState } from '../../reducers/buyReducer';
@@ -20,7 +21,9 @@ import type { LogErrorThunkProps } from '../common/logErrorThunk';
 
 import { buyThunks } from './index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 jest.mock('../common/logErrorThunk', () => ({
     logErrorThunk: (props: LogErrorThunkProps) => ({
@@ -107,7 +110,7 @@ describe('selectBuyQuoteThunk', () => {
 
     const getMocks = (initialBuyState?: Partial<TradingBuyState>) => {
         const store = configureMockStore({
-            extra: {},
+            extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,

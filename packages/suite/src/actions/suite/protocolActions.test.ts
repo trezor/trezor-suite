@@ -1,12 +1,15 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { mockLockDevice } from '@suite-common/device/mocks';
 import { type FindNetworkSymbolForProtocol } from '@suite-common/networks';
 import { createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import * as protocolConstants from './constants/protocolConstants';
 import * as protocolActions from './protocolActions';
-import { type HandleProtocolRequestDeps, type HandleProtocolRequestState } from './protocolActions';
-import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
+import {
+    type HandleProtocolRequestDispatchDeps,
+    type HandleProtocolRequestState,
+} from './protocolActions';
 
 jest.mock('@suite-common/walletconnect', () => ({
     walletConnectPairThunk: jest.fn(),
@@ -19,7 +22,8 @@ const createHandleProtocolRequestDeps = () => {
     const getState = (): HandleProtocolRequestState => {
         throw new Error('This thunk must not read state in this test.');
     };
-    const extra: HandleProtocolRequestDeps = {
+    const extra: HandleProtocolRequestDispatchDeps = {
+        actions: { lockDevice: mockLockDevice() },
         services: {
             analytics: mockDesktopAnalytics(),
             findNetworkSymbolForProtocol,
@@ -33,7 +37,7 @@ const createHandleProtocolRequestDeps = () => {
 
     const { actions, dispatch } = createMockDispatch({
         getState,
-        extra: extraDependenciesDesktopMock,
+        extra,
     });
 
     return { actions, dispatch, getState, extra };

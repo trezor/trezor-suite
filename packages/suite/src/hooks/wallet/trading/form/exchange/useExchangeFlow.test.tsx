@@ -42,6 +42,7 @@ const renderExchangeFlow = ({
     isAmountEmpty = false,
 }: Props = {}) => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             wallet: { trading: { exchange: { quotes: [] } } },
         },

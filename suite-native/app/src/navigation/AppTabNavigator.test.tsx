@@ -1,6 +1,8 @@
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -33,11 +35,13 @@ const baseState = {
         trading: { residence: { country: null, wasOnboardingVisited: false } },
     },
 };
+const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 
 describe('AppTabNavigator', () => {
     const renderTabs = async (overrides: Record<string, unknown> = {}) =>
         await renderWithStoreProvider(<AppTabNavigator />, {
             preloadedState: mergePreloadedState(baseState, overrides),
+            services,
         });
 
     it('should render 3 buttons', async () => {

@@ -1,5 +1,8 @@
 import { type BuyTrade, type BuyTradeQuoteRequest, type CryptoId } from 'invity-api';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { type GotoThunkDeps } from '@suite/router';
+import { type WithServices } from '@suite-common/redux-utils';
 import { configureMockStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -30,6 +33,19 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
+
+type SelectBuyQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
+
+const createExtra = (report: jest.Mock): SelectBuyQuoteThunkDeps => ({
+    services: {
+        analytics: mockAnalytics(report),
+        suiteRouterHistory: {
+            getLocation: jest.fn(),
+            navigate: jest.fn(),
+            listen: jest.fn(() => jest.fn()),
+        },
+    },
+});
 
 const ACCOUNT: Account = mockWalletAccount({
     symbol: asNetworkSymbol('eth'),
@@ -91,7 +107,7 @@ describe('selectBuyQuoteThunk', () => {
         const report = jest.fn();
         const store = configureMockStore({
             preloadedState: buildState(),
-            extra: { services: { analytics: mockAnalytics(report) } },
+            extra: createExtra(report),
         });
 
         await store.dispatch(selectBuyQuoteThunk({ quote: QUOTE }));
@@ -120,7 +136,7 @@ describe('selectBuyQuoteThunk', () => {
         const report = jest.fn();
         const store = configureMockStore({
             preloadedState: buildState({ quotesRequest: undefined }),
-            extra: { services: { analytics: mockAnalytics(report) } },
+            extra: createExtra(report),
         });
 
         await store.dispatch(selectBuyQuoteThunk({ quote: QUOTE }));

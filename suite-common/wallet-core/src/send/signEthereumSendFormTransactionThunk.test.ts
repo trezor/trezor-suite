@@ -33,6 +33,7 @@ const formState = (overrides?: Partial<FormState>): FormState =>
 
 const initStore = (txs = confirmedNonces(6)) =>
     configureMockStore({
+        extra: undefined,
         preloadedState: {
             wallet: {
                 transactions: { transactions: { [ethAccount.key]: txs } },

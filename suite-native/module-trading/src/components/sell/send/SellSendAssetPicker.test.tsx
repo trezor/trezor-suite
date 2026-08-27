@@ -1,5 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -33,8 +35,9 @@ jest.mock('@suite-native/trading-state', () => ({
 const mockedSelectAccountsWithTokensToSellSectionListByTradingType =
     selectAccountsWithTokensToSellSectionListByTradingType as unknown as jest.Mock;
 const reportMock = jest.fn();
-const services: NativeAnalyticsDep = {
+const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
     analytics: mockNativeAnalytics(reportMock),
+    networkModuleRepository: mockNetworkModuleRepository(),
 };
 
 const mockNavigate = jest.fn();

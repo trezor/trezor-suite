@@ -1,12 +1,39 @@
-import { combineReducers, createReducer } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers, createAction, createReducer } from '@reduxjs/toolkit';
 
-import { connectInitThunk } from '@suite-common/connect-init';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
+import {
+    mockConnectInitHooks,
+    mockConnectInitSettings,
+    mockCreateTransports,
+    mockGetDebugSettings,
+    mockGetThpSettings,
+} from '@suite-common/connect-init/mocks';
 import type { DeviceReducerState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import {
+    mockGetAllowPrerelease,
+    mockGetBinFilesBaseUrl,
+    mockSuiteDevice,
+} from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { noopCreateLogger } from '@trezor/connect-common';
 
 import fixtures from './__fixtures__/publicKeyActions';
+const extra: ConnectInitThunkDeps = {
+    actions: { lockDevice: createAction<boolean>('notImplemented/lockDevice') },
+    services: {
+        analytics: mockDesktopAnalytics(),
+        connectInitHooks: mockConnectInitHooks(),
+        connectInitSettings: mockConnectInitSettings(),
+        createLogger: noopCreateLogger,
+        createTransports: mockCreateTransports(),
+        getAllowPrerelease: mockGetAllowPrerelease(),
+        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+        getDebugSettings: mockGetDebugSettings(),
+        getThpSettings: mockGetThpSettings(),
+    },
+};
 
 const device = mockSuiteDevice({
     state: { staticSessionId: '1stTestnetAddress@device_id:0' },
@@ -61,7 +88,11 @@ const initStore = (stateOverrides?: StateOverrides) => {
         preloadedState.wallet.selectedAccount.account.networkType = stateOverrides.networkType;
     }
 
-    return configureMockStore<any>({ reducer: rootReducer, preloadedState });
+    return configureMockStore<ConnectInitThunkDeps, any, UnknownAction>({
+        extra,
+        reducer: rootReducer,
+        preloadedState,
+    });
 };
 
 describe('PublicKeyActions', () => {

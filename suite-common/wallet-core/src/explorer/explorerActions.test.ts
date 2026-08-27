@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { explorerActions } from './explorerActions';
@@ -10,11 +11,15 @@ import {
     prepareExplorerReducer,
 } from './explorerReducer';
 
-const explorerReducer = prepareExplorerReducer(extraDependenciesCommonMock);
+const explorerReducer = prepareExplorerReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadExplorer: mockReducer() },
+});
 const btcSymbol = asNetworkSymbol('btc');
 
 const initStore = (state: Partial<ExplorerConfig> = {}) =>
     configureMockStore({
+        extra: undefined,
         reducer: {
             wallet: combineReducers({
                 explorer: explorerReducer,

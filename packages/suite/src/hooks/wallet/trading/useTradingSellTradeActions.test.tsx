@@ -160,7 +160,7 @@ const renderActions = (overrides?: StateOverrides) => {
         cryptoId: BITCOIN_CRYPTO_ID,
     });
 
-    const store = configureMockStore({ preloadedState: state });
+    const store = configureMockStore({ extra: undefined, preloadedState: state });
     const { result } = renderHookWithStoreProvider(() => useTradingSellTradeActions(), { store });
 
     return { store, result };

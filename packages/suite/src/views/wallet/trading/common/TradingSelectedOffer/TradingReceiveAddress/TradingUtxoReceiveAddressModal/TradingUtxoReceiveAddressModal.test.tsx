@@ -3,6 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { fireEvent, screen } from '@testing-library/react';
 
 import { initialMetadataState } from '@suite/metadata';
+import { mockAddressValidator } from '@suite-common/address/mocks';
 import { createSuiteSyncAddressId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
@@ -14,7 +15,6 @@ import { type WalletDescriptor } from '@trezor/device-utils';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingUtxoReceiveAddressModal } from './TradingUtxoReceiveAddressModal';
-import { extraDependenciesDesktopMock } from '../../../../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../../../../mocks/mockInitialAppState';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
@@ -138,11 +138,11 @@ const buildState = () => ({
 });
 
 const renderModal = () => {
-    const store = configureMockStore({ preloadedState: buildState() });
+    const store = configureMockStore({ extra: undefined, preloadedState: buildState() });
 
     return renderWithProviders(
         store,
-        extraDependenciesDesktopMock.services,
+        { addressValidator: mockAddressValidator() },
         <TradingUtxoReceiveAddressModal />,
     );
 };

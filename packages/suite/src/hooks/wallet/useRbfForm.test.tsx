@@ -2,6 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { type ServerInfo } from '@trezor/blockchain-link-types';
@@ -18,7 +19,6 @@ import {
 
 import * as fixtures from './__fixtures__/useRbfForm';
 import { RbfContext, useRbf, useRbfContext } from './useRbfForm';
-import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
 
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();
@@ -120,6 +120,7 @@ const initStore = ({ send, fees, selectedAccount, coinjoin }: Args = {}) => {
     const rootReducer = fixtures.getRootReducer(selectedAccount, fees);
 
     return configureMockStore({
+        extra: { services: { analytics: mockDesktopAnalytics() } },
         reducer: rootReducer,
         preloadedState: initPreloadedState({
             rootReducer,
@@ -190,7 +191,7 @@ describe('useRbfForm hook', () => {
 
             const { unmount } = renderWithProviders(
                 store,
-                extraDependenciesDesktopMock.services,
+                { analytics: mockDesktopAnalytics() },
                 <TestComponent />,
             );
 

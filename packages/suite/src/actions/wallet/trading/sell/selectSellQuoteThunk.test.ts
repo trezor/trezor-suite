@@ -1,5 +1,8 @@
 import { type CryptoId, type SellFiatTrade, type SellFiatTradeQuoteRequest } from 'invity-api';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { type GotoThunkDeps } from '@suite/router';
+import { type WithServices } from '@suite-common/redux-utils';
 import { configureMockStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -32,6 +35,19 @@ jest.mock('./requestSellTradeThunk', () => ({
 
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
+type SelectSellQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
+
+const createExtra = (report: jest.Mock): SelectSellQuoteThunkDeps => ({
+    services: {
+        analytics: mockAnalytics(report),
+        suiteRouterHistory: {
+            getLocation: jest.fn(),
+            navigate: jest.fn(),
+            listen: jest.fn(() => jest.fn()),
+        },
+    },
+});
+
 const ACCOUNT: Account = mockWalletAccount({
     symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('0xAccount'),
@@ -58,7 +74,7 @@ const buildStore = (
     },
 ) =>
     configureMockStore({
-        extra: { services: { analytics: mockAnalytics(report) } },
+        extra: createExtra(report),
         preloadedState: {
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
             tokenDefinitions: {},

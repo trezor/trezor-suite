@@ -2,7 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import {
     confirmAddressOnDeviceThunk,
     prepareWalletSettingsReducer,
@@ -14,8 +15,13 @@ import { accounts } from '../../reducers/__fixtures__/account';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
-const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const walletSettingsReducer = prepareWalletSettingsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadWalletSettings: mockReducer() },
+});
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -53,7 +59,7 @@ describe('getPurchaseAddress thunk', () => {
 
     const createMockStore = (preloadedState = {}) =>
         configureMockStore({
-            extra: extraDependenciesCommonMock,
+            extra: undefined,
             reducer: combineReducers({
                 device: () => deviceInitialState,
                 wallet: combineReducers({
@@ -118,7 +124,7 @@ describe('getPurchaseAddress thunk', () => {
             );
 
             const storeWithNonChunked = configureMockStore({
-                extra: extraDependenciesCommonMock,
+                extra: undefined,
                 reducer: combineReducers({
                     device: () => deviceInitialState,
                     wallet: combineReducers({

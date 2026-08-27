@@ -1,16 +1,13 @@
-import { combineReducers, createReducer } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { selectedAccountReducer } from '@suite/account';
 import { locksReducer } from '@suite/locks';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-    initPreloadedState,
-    testMocks,
-} from '@suite-common/test-utils';
+import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
+import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 
 import * as fixtures from './__fixtures__/coinjoinAccountActions';
 import * as coinjoinAccountActions from './coinjoinAccountActions';
@@ -39,12 +36,18 @@ const rootReducer = combineReducers({
         () => ({}),
     ),
     locks: locksReducer,
-    messageSystem: prepareMessageSystemReducer(extraDependenciesCommonMock),
+    messageSystem: prepareMessageSystemReducer({
+        actionTypes: { storageLoad: mockActionType('storageLoad') },
+    }),
     device: createReducer({ devices: [DEVICE], selectedDevice: DEVICE }, () => ({})),
     modal: () => ({}),
     wallet: combineReducers({
         coinjoin: coinjoinReducer,
-        accounts: prepareAccountsReducer(extraDependenciesCommonMock),
+        accounts: prepareAccountsReducer({
+            actionTypes: { storageLoad: mockActionType('storageLoad') },
+            actions: { setAccountAddMetadata: mockSetAccountAddMetadata() },
+            reducers: { storageLoadAccounts: mockReducer() },
+        }),
         selectedAccount: selectedAccountReducer,
         blockchain: () => ({ btc: { blockHeight: 150 } }),
         transactions: () => ({ transactions: {} }),
@@ -56,7 +59,8 @@ type Wallet = Partial<State['wallet']> & { devices?: State['device']['devices'] 
 
 const initStore = ({ accounts, coinjoin, devices }: Wallet = {}) =>
     // State != suite AppState, therefore <any>
-    configureMockStore<any>({
+    configureMockStore<void, any, UnknownAction>({
+        extra: undefined,
         reducer: rootReducer,
         preloadedState: initPreloadedState({
             rootReducer,

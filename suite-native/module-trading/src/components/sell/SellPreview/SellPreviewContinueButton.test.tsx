@@ -1,3 +1,5 @@
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils-store';
 import { banxaCreditCardSellQuote, eth1NormalAccount } from '@suite-native/trading-fixtures';
@@ -6,6 +8,7 @@ import { SellPreviewContinueButton } from './SellPreviewContinueButton';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 const mockReplace = jest.fn();
+const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -19,6 +22,7 @@ describe('SellPreviewContinueButton', () => {
 
     const renderButton = async (withRequiredState = true) =>
         await renderWithTradingProvider(<SellPreviewContinueButton companyName="Banxa" />, {
+            services,
             tradeType: 'sell',
             overrides: withRequiredState
                 ? {

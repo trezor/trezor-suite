@@ -1,5 +1,11 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
+
 import { type TranslationKey } from '@suite/intl';
+import { type AnalyticsDep, type AnalyticsSharedEvents } from '@suite-common/analytics';
+import { asGetter } from '@suite-common/dependency-injection';
 import { deviceInitialState } from '@suite-common/device';
+import { type WithServices } from '@suite-common/redux-utils';
+import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
@@ -24,7 +30,8 @@ import {
     preloadFeeInfoThunk,
     setCustomBackendThunk,
 } from '@suite-common/wallet-core';
-import { type FeesState } from '@suite-common/wallet-types';
+import { type FeesState, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { PROTO } from '@trezor/connect';
 import { typedObjectKeys } from '@trezor/utils';
 
@@ -93,8 +100,19 @@ const getInitialState = (
 });
 
 type State = ReturnType<typeof getInitialState>;
+type BlockchainActionsTestDeps = WithServices<
+    AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
+>;
+const extra: BlockchainActionsTestDeps = {
+    services: {
+        analytics: mockAnalytics<AnalyticsSharedEvents>(),
+        getIsWindowVisible: asGetter(() => true),
+        getTradedAccountKeys: asGetter(() => []),
+    },
+};
 const mockStore = (preloadedState: State) =>
-    configureMockStore<State>({
+    configureMockStore<BlockchainActionsTestDeps, State, UnknownAction>({
+        extra,
         reducer: (currentState = preloadedState, action) => {
             const state = currentState as State;
 

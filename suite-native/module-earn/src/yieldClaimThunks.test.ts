@@ -112,6 +112,7 @@ const synchronizeSentTransactionThunkMock = synchronizeSentTransactionThunk as u
 
 const buildStore = () =>
     configureMockStore({
+        extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({
                 stablecoinYield: stablecoinYieldReducer,

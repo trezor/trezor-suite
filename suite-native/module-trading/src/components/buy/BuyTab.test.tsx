@@ -1,3 +1,7 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { act, screen, userEvent } from '@suite-native/test-utils-store';
 import { selectIsTradingBuyEnabled } from '@suite-native/trading-state';
@@ -10,6 +14,10 @@ import {
 } from '../../test-utils/tradingTestUtils';
 
 let mockUseTradingBuyData: jest.Mock;
+const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+    analytics: mockNativeAnalytics(),
+    networkModuleRepository: mockNetworkModuleRepository(),
+};
 
 jest.mock('../../hooks/buy/useBuyData', () => ({
     useBuyData: (...params: unknown[]) => mockUseTradingBuyData(...params),
@@ -41,7 +49,7 @@ describe('BuyTab', () => {
     });
 
     const renderBuyTab = async (overrides?: PreloadedStatePartial<TradingTestPreloadedState>) =>
-        await renderWithTradingProvider(<BuyTab />, { overrides });
+        await renderWithTradingProvider(<BuyTab />, { overrides, services });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);

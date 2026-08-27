@@ -31,6 +31,7 @@ const getInitialState = (initialState: any = {}) => ({
 type State = ReturnType<typeof getInitialState>;
 const mockStore = (preloadedState: State) =>
     configureMockStore({
+        extra: undefined,
         reducer: (state = preloadedState, action) => ({
             ...state,
             wallet: {

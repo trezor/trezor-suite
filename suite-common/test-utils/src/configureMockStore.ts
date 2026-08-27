@@ -9,11 +9,8 @@ import {
 } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
-import { type ExtraDependencies } from '@suite-common/redux-extra-dependencies';
 import { createMiddleware } from '@suite-common/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
-
-import { extraDependenciesCommonMock } from './extraDependenciesCommonMock';
 
 /*
  * This function is useful, because a lot of test fixtures doesn't count with added thunk pending/fulfilled action that are now
@@ -23,17 +20,9 @@ import { extraDependenciesCommonMock } from './extraDependenciesCommonMock';
 export const filterThunkActionTypes = <Action extends UnknownAction>(actions: Action[]) =>
     actions.filter(action => !isPending(action) && !isFulfilled(action));
 
-type ExtraDependenciesPartial = {
-    [K in keyof ExtraDependencies]?: Partial<ExtraDependencies[K]>;
-};
-
-type MockStoreConfig<
-    S = any,
-    A extends UnknownAction = UnknownAction,
-    Extra = ExtraDependenciesPartial,
-> = {
+type MockStoreConfig<S, A extends UnknownAction, Extra> = {
     middleware?: any[];
-    extra?: Extra;
+    extra: Extra;
     // The third generic (PreloadedState) sits in a contravariant position in redux's Reducer
     // signature, so neither `unknown` nor `Record<string, never>` work as drop-in replacements
     // for `{}` here — both reject test fixtures that pass a Partial<S> as preloaded state.
@@ -42,6 +31,10 @@ type MockStoreConfig<
     preloadedState?: any;
     serializableCheck?: { ignoredActions?: string[] };
 };
+
+// createThunk represents `void` dependencies as an empty object internally. Mirror that here so
+// dependency-free thunks remain dispatchable while tests still have to pass `extra: undefined`.
+type MockStoreExtra<Extra> = [Extra] extends [void] ? Record<never, never> : Extra;
 
 export const initPreloadedState = ({
     rootReducer,
@@ -58,18 +51,17 @@ export const initPreloadedState = ({
 
 /**
  * A mock store for testing Redux async action creators and middleware.
+ *
+ * `extra` is required so every test declares its thunk dependencies. Pass `undefined` when the
+ * tested code has none.
  */
-export function configureMockStore<
-    S = any,
-    A extends UnknownAction = UnknownAction,
-    Extra = ExtraDependenciesPartial,
->({
+export function configureMockStore<Extra, S = any, A extends UnknownAction = UnknownAction>({
     middleware = [],
     extra,
     reducer = (state: any) => state,
     preloadedState,
     serializableCheck = {},
-}: MockStoreConfig<S, A, Extra> = {}) {
+}: MockStoreConfig<S, A, Extra>) {
     let actions: A[] = [];
 
     const actionLoggerMiddleware = createMiddleware((action, { next }) => {
@@ -82,7 +74,7 @@ export function configureMockStore<
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
                 thunk: {
-                    extraArgument: mergeDeepObject(extraDependenciesCommonMock, extra ?? {}),
+                    extraArgument: extra,
                 },
                 serializableCheck,
             })
@@ -94,7 +86,7 @@ export function configureMockStore<
 
     return {
         ...store,
-        dispatch: store.dispatch as ThunkDispatch<S, any, A>,
+        dispatch: store.dispatch as ThunkDispatch<S, MockStoreExtra<Extra>, A>,
         getActions: () => actions,
 
         clearActions: () => {

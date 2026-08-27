@@ -1,12 +1,13 @@
 import { type ReactElement } from 'react';
 
-import { combineReducers } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
 import { geolocationInitialState } from '@suite-common/geolocation';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import {
     formDraftReducer,
@@ -70,7 +71,9 @@ type TradingLightStoreState = Omit<TradingTestPreloadedState, 'wallet'> & {
     };
 };
 
-type TradingLightStore = ReturnType<typeof configureMockStore<TradingLightStoreState>>;
+type TradingLightStore = ReturnType<
+    typeof configureMockStore<void, TradingLightStoreState, UnknownAction>
+>;
 
 export const createTradingFeatureFlags = (
     overrides: Partial<typeof featureFlagsInitialState> = {},
@@ -130,11 +133,14 @@ export const createTradingLightStore = (args?: {
             phishing: createStaticReducer(preloadedState.wallet.phishing),
             send: createStaticReducer(preloadedState.wallet.send ?? {}),
             transactions: createStaticReducer(transactionsInitialState),
-            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+            trading: tradingSlice.prepareReducer({
+                actionTypes: { storageLoad: mockActionType('storageLoad') },
+            }),
         }),
     } as const;
 
     return configureMockStore({
+        extra: undefined,
         reducer,
         preloadedState: {
             wallet: {

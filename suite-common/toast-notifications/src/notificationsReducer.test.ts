@@ -17,6 +17,7 @@ interface InitStoreArgs {
 
 const initStore = ({ preloadedState }: InitStoreArgs = {}) => {
     const store = configureMockStore({
+        extra: undefined,
         reducer: { notifications: notificationsReducer },
         preloadedState,
     });

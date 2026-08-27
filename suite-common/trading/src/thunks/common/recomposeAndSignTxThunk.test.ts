@@ -2,9 +2,10 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { type DeviceReducerState, prepareDeviceReducer } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     blockchainInitialState,
@@ -37,8 +38,21 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 const trxSymbol = asNetworkSymbol('trx');
 const ethSymbol = asNetworkSymbol('eth');
 const btcFeeData = {
@@ -134,7 +148,7 @@ describe('recomposeAndSignTxThunk', () => {
         };
 
         const store = configureMockStore({
-            extra: {},
+            extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({
                     accounts: () => [account],

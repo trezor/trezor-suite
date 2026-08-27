@@ -38,7 +38,8 @@ type SetCurrentFreshAddressPayload = {
     currentFreshAddress?: CurrentFreshAddress;
 };
 
-type ReceiveSliceDeps = ActionTypesDep<'storageLoad'> & ReducersDep<'storageLoadReceiveAccounts'>;
+export type ReceiveSliceDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadReceiveAccounts'>;
 
 export const receiveInitialState: ReceiveState = {
     accounts: {},

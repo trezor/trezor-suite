@@ -1,4 +1,4 @@
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -13,9 +13,8 @@ import { type SerializedTx } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
 
 const extraDependencies: SendFormReducerDeps = {
-    ...extraDependenciesCommonMock,
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
     reducers: {
-        ...extraDependenciesCommonMock.reducers,
         storageLoadFormDrafts: (state, { payload }) => {
             payload.sendFormDrafts.forEach(
                 ({ key, value }: { key: AccountKey; value: FormState }) => {

@@ -10,6 +10,7 @@ import { useFilteredModal } from './useFilteredModal';
 
 const mockStore = (preloadedState: { modal: ModalState }) =>
     configureMockStore({
+        extra: undefined,
         preloadedState,
     });
 

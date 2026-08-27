@@ -86,6 +86,7 @@ const renderBuyQuotes = (
 ) => {
     const { resolver } = options;
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             wallet: {
                 trading: {

@@ -2,6 +2,8 @@ import { type OptionalKey } from '@trezor/type-utils';
 
 import { type RouterState, routerReducer } from '../src/routerReducer';
 
+export { mockSuiteRouterHistory } from './mockSuiteRouterHistory';
+
 const TEST_INIT_ACTION = { type: '@tests/init' };
 
 export type RouterStateOverrides = OptionalKey<RouterState, keyof RouterState>;

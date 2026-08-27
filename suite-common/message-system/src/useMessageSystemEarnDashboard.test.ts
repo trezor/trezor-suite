@@ -1,16 +1,15 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-    renderHookWithStoreProvider,
-} from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
 import { type MessageSystemState } from './messageSystemTypes';
 import { useMessageSystemEarnDashboard } from './useMessageSystemEarnDashboard';
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const stateWithMessages = {
     ...messageSystemInitialState,
@@ -54,7 +53,7 @@ const stateWithMessages = {
 
 const createStore = (state: MessageSystemState = stateWithMessages) =>
     configureMockStore({
-        extra: {},
+        extra: undefined,
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: { messageSystem: state } as { messageSystem: MessageSystemState },
     });

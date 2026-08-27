@@ -1,8 +1,9 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
 import { prepareDebugReducer } from '@suite/debug';
 import { metadataReducer, selectLabelingDataForAccount } from '@suite/metadata';
 import { prepareSuiteSettingsReducer } from '@suite/settings';
+import { mockMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations-types/mocks';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 
@@ -21,8 +22,7 @@ import {
     originalTransactionSpendAccount,
     transactionSendingCoinsReplacement,
 } from './__fixtures__/moveLabelsForRbfTransactions.fixture';
-import { moveLabelsForRbfThunk } from './moveLabelsForRbfThunk';
-
+import { type MoveLabelsForRbfThunkDeps, moveLabelsForRbfThunk } from './moveLabelsForRbfThunk';
 const rootReducer = combineReducers({
     wallet: combineReducers({
         accounts: accountsReducer,
@@ -45,7 +45,13 @@ const initStore = ({
     metadata: TestState['metadata'];
 }) => {
     // State != suite AppState, therefore <any>
-    const store = configureMockStore<any>({
+    const extra: MoveLabelsForRbfThunkDeps = {
+        services: {
+            migrateSuiteSyncLabelsForRbfTransaction: mockMigrateSuiteSyncLabelsForRbfTransaction(),
+        },
+    };
+    const store = configureMockStore<MoveLabelsForRbfThunkDeps, any, UnknownAction>({
+        extra,
         reducer: rootReducer,
         preloadedState: initPreloadedState({
             rootReducer,

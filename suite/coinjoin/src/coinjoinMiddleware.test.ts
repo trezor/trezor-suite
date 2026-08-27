@@ -5,12 +5,10 @@ import { locksReducer } from '@suite/locks';
 import { routerReducer } from '@suite/router';
 import { torReducer } from '@suite/tor';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-    testMocks,
-} from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
+import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import '@suite-common/test-utils/globalOverrides';
 
 import { fixtures } from './__fixtures__/coinjoinMiddleware';
@@ -24,7 +22,9 @@ jest.mock('./coinjoinService', () => {
     return mock.mockCoinjoinService();
 });
 
-const messageSystem = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const messageSystem = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const rootReducer = combineReducers({
     device: createReducer({}, () => ({})),
@@ -35,7 +35,11 @@ const rootReducer = combineReducers({
     tor: torReducer,
     discreetMode: createReducer({ isActive: false }, () => {}),
     wallet: combineReducers({
-        accounts: prepareAccountsReducer(extraDependenciesCommonMock),
+        accounts: prepareAccountsReducer({
+            actionTypes: { storageLoad: mockActionType('storageLoad') },
+            actions: { setAccountAddMetadata: mockSetAccountAddMetadata() },
+            reducers: { storageLoadAccounts: mockReducer() },
+        }),
         coinjoin: coinjoinReducer,
         selectedAccount: selectedAccountReducer,
     }),
@@ -79,6 +83,7 @@ const initStore = ({ device, router, suite, tor, wallet }: Partial<State> = {}) 
     }
 
     const store = configureMockStore({
+        extra: undefined,
         reducer: rootReducer,
         preloadedState,
         middleware: [coinjoinMiddleware],

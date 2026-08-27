@@ -5,6 +5,7 @@
         { "path": "../analytics" },
         { "path": "../bluetooth" },
         { "path": "../calldata" },
+        { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../earn-stablecoin-api" },
         { "path": "../earn-staking-api" },

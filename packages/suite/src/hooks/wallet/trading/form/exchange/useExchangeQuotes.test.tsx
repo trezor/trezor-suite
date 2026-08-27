@@ -154,6 +154,7 @@ const renderExchangeQuotes = (
     const network = 'network' in options ? options.network : getNetwork(btcSymbol);
 
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             wallet: {
                 trading: {

@@ -2,6 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import userEvent from '@testing-library/user-event';
 
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { openModal } from '@suite/modal';
 import { configureMockStore } from '@suite-common/test-utils';
 import { transactionsInitialState } from '@suite-common/wallet-core';
@@ -12,7 +13,6 @@ import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingDetailTxId } from './TradingDetailTxId';
-import { extraDependenciesDesktopMock } from '../../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
 const sendAccount = mockWalletAccount({
@@ -45,11 +45,11 @@ const getInitialState = (): AppState => ({
 
 describe('TradingDetailTxId', () => {
     it('opens the transaction detail of the account holding the transaction', async () => {
-        const store = configureMockStore({ preloadedState: getInitialState() });
+        const store = configureMockStore({ extra: undefined, preloadedState: getInitialState() });
 
         const { container } = renderWithProviders(
             store,
-            extraDependenciesDesktopMock.services,
+            { analytics: mockDesktopAnalytics() },
             <TradingDetailTxId
                 value={payoutTxid}
                 account={sendAccount}
@@ -75,11 +75,11 @@ describe('TradingDetailTxId', () => {
     });
 
     it('falls back to the send account when the transaction is not on the receive account', async () => {
-        const store = configureMockStore({ preloadedState: getInitialState() });
+        const store = configureMockStore({ extra: undefined, preloadedState: getInitialState() });
 
         const { container } = renderWithProviders(
             store,
-            extraDependenciesDesktopMock.services,
+            { analytics: mockDesktopAnalytics() },
             <TradingDetailTxId
                 value="signedSendTxid"
                 account={sendAccount}

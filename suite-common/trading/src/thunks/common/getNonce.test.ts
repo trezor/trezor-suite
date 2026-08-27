@@ -35,7 +35,7 @@ describe('getNonce thunk', () => {
 
     const createMockStore = () =>
         configureMockStore({
-            extra: {},
+            extra: undefined,
             reducer: combineReducers({
                 device: () => deviceInitialState,
             }),

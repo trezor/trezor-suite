@@ -30,7 +30,7 @@ You most probably do not want to use this function directly.
 - **IntlProvider**: Simplified variant for tests. Always uses `en-US` locale.
 - **StylesProvider**: With `colorVariant` set to `standard`.
 - **NavigationContainer**
-- **NativeServicesProvider**: With `extraDependenciesNativeMock.services`.
+- **NativeServicesProvider**: With services explicitly supplied by the test when needed.
 - **FormatterProvider**: With `locale` set to `en` and `baseCurrency` set to `USD`.
 - **BottomSheetModalProvider**
 

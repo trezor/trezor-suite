@@ -1,9 +1,11 @@
 import { type StateFromReducersMapObject, combineReducers } from '@reduxjs/toolkit';
 import { WebBrowserResultType } from 'expo-web-browser';
 
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type TradingType, selectTradingSellLastErrorMessage } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
     type PreloadedStatePartial,
@@ -26,6 +28,7 @@ import { useBrowserAuth } from './useBrowserAuth';
 
 const mockOpenBrowserAsync = jest.fn();
 const mockDismissBrowser = jest.fn();
+const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 
 jest.mock('expo-web-browser', () => {
     const originalModule = jest.requireActual('expo-web-browser');
@@ -61,7 +64,7 @@ describe('useBrowserAuth', () => {
     let store: TestStore;
 
     const renderUseBrowserAuth = async (tradingType: TradingType = 'sell') =>
-        await renderHookWithStoreProvider(() => useBrowserAuth(tradingType), { store });
+        await renderHookWithStoreProvider(() => useBrowserAuth(tradingType), { services, store });
 
     const defaultWalletState = getWalletState();
 
@@ -69,7 +72,9 @@ describe('useBrowserAuth', () => {
         locale: localeReducer,
         wallet: combineReducers({
             settings: createStaticReducer(initialWalletSettingsState),
-            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+            trading: tradingSlice.prepareReducer({
+                actionTypes: { storageLoad: mockActionType('storageLoad') },
+            }),
             accounts: createStaticReducer(defaultWalletState.accounts),
             fiat: createStaticReducer(defaultWalletState.fiat),
             send: createStaticReducer(defaultWalletState.send),
@@ -104,6 +109,7 @@ describe('useBrowserAuth', () => {
             const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
             mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
             const { result } = await renderHookWithStoreProvider(() => useBrowserAuth(undefined), {
+                services,
                 store,
             });
 

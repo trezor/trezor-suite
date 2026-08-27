@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { initialWalletSettingsState, sendFormActions } from '@suite-common/wallet-core';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { localeReducer } from '@suite-native/intl';
@@ -65,8 +65,13 @@ describe('useTradingOutputsReviewScreenControls', () => {
         wallet: combineReducers({
             settings: createStaticReducer(initialWalletSettingsState),
             accounts: createStaticReducer(getWalletState({ tradeType: 'exchange' }).accounts),
-            send: prepareSendFormReducer(extraDependenciesCommonMock),
-            trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+            send: prepareSendFormReducer({
+                actionTypes: { storageLoad: mockActionType('storageLoad') },
+                reducers: { storageLoadFormDrafts: mockReducer() },
+            }),
+            trading: tradingSlice.prepareReducer({
+                actionTypes: { storageLoad: mockActionType('storageLoad') },
+            }),
         }),
     } as const;
 

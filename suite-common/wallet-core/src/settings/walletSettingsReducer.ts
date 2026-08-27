@@ -57,7 +57,7 @@ export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> 
     'addressDisplayType',
 ];
 
-type WalletSettingsReducerDeps = ActionTypesDep<'storageLoad'> &
+export type WalletSettingsReducerDeps = ActionTypesDep<'storageLoad'> &
     ReducersDep<'storageLoadWalletSettings'>;
 
 export const prepareWalletSettingsReducer = createReducerWithExtraDeps(

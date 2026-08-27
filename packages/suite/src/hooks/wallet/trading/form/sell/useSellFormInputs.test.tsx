@@ -94,6 +94,7 @@ const mockComposeRequest = jest.fn();
 
 const renderSellFormInputs = () => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             wallet: {
                 accounts: [ACCOUNT],

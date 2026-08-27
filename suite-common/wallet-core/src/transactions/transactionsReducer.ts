@@ -31,7 +31,7 @@ const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => 
     return state.transactions[accountKey];
 };
 
-type TransactionsReducerDeps = ActionTypesDep<'storageLoad'> &
+export type TransactionsReducerDeps = ActionTypesDep<'storageLoad'> &
     ReducersDep<'storageLoadTransactions'>;
 
 export const prepareTransactionsReducer = createReducerWithExtraDeps(

@@ -1,16 +1,15 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-    renderHookWithStoreProvider,
-} from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
 import { type MessageSystemState } from './messageSystemTypes';
 import { useMessageSystemYield } from './useMessageSystemYield';
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const VAULT_CONTRACT_ADDRESS = '0xAbCdEf0123456789abcdef0123456789ABCDEF01';
 
@@ -61,7 +60,7 @@ const stateWithDisabledFeatures = {
 
 const createStore = (state: MessageSystemState = stateWithDisabledFeatures) =>
     configureMockStore({
-        extra: {},
+        extra: undefined,
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: { messageSystem: state } as { messageSystem: MessageSystemState },
     });

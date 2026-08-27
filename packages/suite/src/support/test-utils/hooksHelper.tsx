@@ -19,7 +19,6 @@ import { MockedFormatterProvider } from '@suite-common/formatters/mocks';
 
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 
-import { type SuiteServices } from '../extraDependencies';
 import { ResponsiveContextProvider } from '../suite/ResponsiveContext';
 
 const testQueryClient = new QueryClient({
@@ -32,7 +31,7 @@ const SuiteProviders = ({
     children,
 }: {
     store: any;
-    services: SuiteServices;
+    services: object;
     children: ReactNode;
 }) => (
     <QueryClientProvider client={testQueryClient}>
@@ -53,7 +52,7 @@ const SuiteProviders = ({
 // used in hooks tests
 export const renderWithProviders = (
     store: any,
-    services: SuiteServices,
+    services: object,
     children: ReactNode,
 ): RenderResult =>
     render(
@@ -64,7 +63,7 @@ export const renderWithProviders = (
 
 export const renderHookWithProviders = <Result, Props>(
     store: any,
-    services: SuiteServices,
+    services: object,
     callback: (props: Props) => Result,
     options?: Omit<RenderHookOptions<Props>, 'wrapper'>,
 ) =>

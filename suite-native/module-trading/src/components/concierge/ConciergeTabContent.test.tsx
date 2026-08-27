@@ -1,4 +1,6 @@
 import { type TradingOTC, type useFetchOtc } from '@suite-common/trading';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, screen, userEvent, waitFor } from '@suite-native/test-utils-store';
 import { residenceCheckDisabledState } from '@suite-native/trading-fixtures';
@@ -11,6 +13,7 @@ import {
 } from '../../test-utils/tradingTestUtils';
 
 const mockUseFetchOtc = jest.fn();
+const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
 
@@ -45,6 +48,7 @@ const renderConciergeTabContent = async (
             ...residenceCheckDisabledState,
             ...overrides,
         },
+        services,
     });
 
 describe('ConciergeTabContent', () => {

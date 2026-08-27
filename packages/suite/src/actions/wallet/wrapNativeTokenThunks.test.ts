@@ -1,4 +1,6 @@
-import { events } from '@suite-common/analytics';
+import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { asGetter } from '@suite-common/dependency-injection';
+import { type WithServices } from '@suite-common/redux-utils';
 import { configureMockStore } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -11,7 +13,10 @@ import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
-import { PUSH_TRANSACTION_FAILED_CAUSE } from './stablecoin-yield/signingHelpers';
+import {
+    PUSH_TRANSACTION_FAILED_CAUSE,
+    type SendYieldTransactionDeps,
+} from './stablecoin-yield/signingHelpers';
 import { submitWrapNativeTokenThunk } from './wrapNativeTokenThunks';
 
 const ethSymbol = asNetworkSymbol('eth');
@@ -19,6 +24,16 @@ const ethSymbol = asNetworkSymbol('eth');
 const mockComposeYieldWrapTransactionThunk = jest.fn();
 const mockOpenDeferredModal = jest.fn();
 const mockSendYieldTransaction = jest.fn();
+
+type WrapNativeTokenThunkDeps = SendYieldTransactionDeps & WithServices<AnalyticsDep>;
+
+const createExtra = (report: jest.Mock = jest.fn()): WrapNativeTokenThunkDeps => ({
+    services: {
+        analytics: mockAnalytics(report),
+        getIsWindowVisible: asGetter(() => true),
+        getTradedAccountKeys: asGetter(() => []),
+    },
+});
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -47,7 +62,7 @@ const token: YieldFlowDisplayToken & { contractAddress: string } = {
 
 const buildStore = (report: jest.Mock) =>
     configureMockStore({
-        extra: { services: { analytics: mockAnalytics(report) } },
+        extra: createExtra(report),
         preloadedState: {},
     });
 
@@ -92,7 +107,7 @@ describe('submitWrapNativeTokenThunk', () => {
     });
 
     it('uses the parent yield flow identity when provided', async () => {
-        const store = configureMockStore({ extra: {}, preloadedState: {} });
+        const store = configureMockStore({ extra: createExtra(), preloadedState: {} });
         mockOpenDeferredModal.mockImplementation(
             () => () => Promise.resolve({ value: true, resolve: jest.fn() }),
         );
@@ -244,7 +259,7 @@ describe('submitWrapNativeTokenThunk', () => {
             acceptModalAndFailWith(
                 new Error('push failed', { cause: PUSH_TRANSACTION_FAILED_CAUSE }),
             );
-            const store = configureMockStore({ extra: {}, preloadedState: {} });
+            const store = configureMockStore({ extra: createExtra(), preloadedState: {} });
 
             await store
                 .dispatch(
@@ -260,7 +275,7 @@ describe('submitWrapNativeTokenThunk', () => {
 
         it('falls back to the generic error for an unrecognised failure', async () => {
             acceptModalAndFailWith(new Error('boom'));
-            const store = configureMockStore({ extra: {}, preloadedState: {} });
+            const store = configureMockStore({ extra: createExtra(), preloadedState: {} });
 
             await store
                 .dispatch(
@@ -275,7 +290,7 @@ describe('submitWrapNativeTokenThunk', () => {
 
         it('still shows the signing toast, the only feedback a standalone wrap gets', async () => {
             acceptModalAndFailWith(new Error('boom'));
-            const store = configureMockStore({ extra: {}, preloadedState: {} });
+            const store = configureMockStore({ extra: createExtra(), preloadedState: {} });
 
             await store
                 .dispatch(submitWrapNativeTokenThunk({ account, token, wrapAmount: '1' }))
@@ -291,7 +306,7 @@ describe('submitWrapNativeTokenThunk', () => {
 
         it('does not report a flow error for a standalone wrap', async () => {
             acceptModalAndFailWith(new Error('boom'));
-            const store = configureMockStore({ extra: {}, preloadedState: {} });
+            const store = configureMockStore({ extra: createExtra(), preloadedState: {} });
 
             await store
                 .dispatch(submitWrapNativeTokenThunk({ account, token, wrapAmount: '1' }))
@@ -304,7 +319,7 @@ describe('submitWrapNativeTokenThunk', () => {
             mockComposeYieldWrapTransactionThunk.mockImplementation(() => () => ({
                 unwrap: () => Promise.resolve({ type: 'error', reason: 'fee-estimation-failed' }),
             }));
-            const store = configureMockStore({ extra: {}, preloadedState: {} });
+            const store = configureMockStore({ extra: createExtra(), preloadedState: {} });
 
             await store
                 .dispatch(

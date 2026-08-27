@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { initialWalletSettingsState, sendFormActions } from '@suite-common/wallet-core';
 import { localeReducer } from '@suite-native/intl';
 import {
@@ -33,8 +33,13 @@ describe('useProviderConfirmationStatus', () => {
                 locale: localeReducer,
                 wallet: combineReducers({
                     settings: createStaticReducer(initialWalletSettingsState),
-                    send: prepareSendFormReducer(extraDependenciesCommonMock),
-                    trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+                    send: prepareSendFormReducer({
+                        actionTypes: { storageLoad: mockActionType('storageLoad') },
+                        reducers: { storageLoadFormDrafts: mockReducer() },
+                    }),
+                    trading: tradingSlice.prepareReducer({
+                        actionTypes: { storageLoad: mockActionType('storageLoad') },
+                    }),
                 }),
             },
         });

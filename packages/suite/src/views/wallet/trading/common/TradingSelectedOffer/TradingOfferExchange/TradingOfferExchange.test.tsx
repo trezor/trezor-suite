@@ -4,7 +4,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
 import {
@@ -20,11 +20,9 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { type AppState } from 'src/reducers/store';
-import { type SuiteServices } from 'src/support/extraDependencies';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingOfferExchange } from './TradingOfferExchange';
-import { extraDependenciesDesktopMock } from '../../../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
 
 const mockSendTransaction = jest.fn(() => Promise.resolve(true));
@@ -149,6 +147,7 @@ const renderOfferExchange = ({
     mockGetSimulatedReceiveAmount.mockReturnValue(simulatedReceiveAmount);
 
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -162,10 +161,7 @@ const renderOfferExchange = ({
     });
 
     const report = jest.fn();
-    const services: SuiteServices = {
-        ...extraDependenciesDesktopMock.services,
-        analytics: mockDesktopAnalytics(report),
-    };
+    const services: DesktopAnalyticsDep = { analytics: mockDesktopAnalytics(report) };
 
     renderWithProviders(store, services, <TradingOfferExchange />);
 

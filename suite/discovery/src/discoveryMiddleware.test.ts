@@ -25,10 +25,11 @@ import {
     messageSystemInitialState,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 import { type ThpState, initialThpState, prepareThpReducer, thpActions } from '@suite-common/thp';
 import * as walletCore from '@suite-common/wallet-core';
 import { discoveryInitialState, prepareDiscoveryReducer } from '@suite-common/wallet-core';
@@ -48,11 +49,29 @@ jest.mock('@suite-common/wallet-core', () => {
 
 const mockedStartOrRestartDiscoveryThunk = jest.mocked(walletCore.startOrRestartDiscoveryThunk);
 
-const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
-const discoveryReducer = prepareDiscoveryReducer(extraDependenciesCommonMock);
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
-const suiteSettingsReducer = prepareSuiteSettingsReducer(extraDependenciesCommonMock);
-const thpReducer = prepareThpReducer(extraDependenciesCommonMock);
+const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
+const discoveryReducer = prepareDiscoveryReducer(undefined);
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const suiteSettingsReducer = prepareSuiteSettingsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadSuiteSettings: mockReducer() },
+});
+const thpReducer = prepareThpReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 type State = {
     device: DeviceReducerState;
@@ -309,7 +328,8 @@ const getInitialState = (state: FixtureState = {}): State => ({
 
 const initStore = (state?: FixtureState) =>
     configureMockStore({
-        middleware: [prepareDiscoveryMiddleware(() => extraDependenciesCommonMock)],
+        extra: undefined,
+        middleware: [prepareDiscoveryMiddleware(() => ({}))],
         reducer: {
             device: deviceReducer,
             locks: locksReducer,

@@ -79,6 +79,7 @@ const buildDefaults = (): TradingSellFormProps =>
 
 const renderComposeTransaction = () => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             wallet: {
                 accounts: [BTC_ACCOUNT, SOL_ACCOUNT],

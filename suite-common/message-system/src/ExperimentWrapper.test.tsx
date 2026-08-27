@@ -2,23 +2,21 @@ import { Provider } from 'react-redux';
 
 import { combineReducers } from '@reduxjs/toolkit';
 
-import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-    render,
-    screen,
-} from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore, render, screen } from '@suite-common/test-utils';
 
 import { ExperimentWrapper } from './ExperimentWrapper';
 import { createMessageSystemState } from './__fixtures__/createMessageSystemState';
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
 import { ExperimentId, type MessageSystemState } from './messageSystemTypes';
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const createStore = (messageSystem: MessageSystemState) =>
     configureMockStore({
-        extra: {},
+        extra: undefined,
         reducer: combineReducers({
             messageSystem: messageSystemReducer,
             analytics: (state = { instanceId: 'test-instance-id' }) => state,

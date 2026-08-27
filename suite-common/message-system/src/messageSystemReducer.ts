@@ -53,7 +53,7 @@ const getMessageStateById = (draft: MessageSystemState, id: string): MessageStat
     return draft.dismissedMessages[id];
 };
 
-type MessageSystemReducerDeps = ActionTypesDep<'storageLoad'>;
+export type MessageSystemReducerDeps = ActionTypesDep<'storageLoad'>;
 
 export const prepareMessageSystemReducer = createReducerWithExtraDeps(
     initialState,

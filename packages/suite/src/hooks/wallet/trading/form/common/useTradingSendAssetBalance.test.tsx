@@ -56,6 +56,7 @@ const OUTPUT_CURRENCY: BaseCurrencyOption = { value: 'usd', label: 'USD' };
 
 const renderSendAssetBalance = (account = ACCOUNT, tokenAddress: string | null = null) => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: { wallet: { accounts: [account] } },
     });
 

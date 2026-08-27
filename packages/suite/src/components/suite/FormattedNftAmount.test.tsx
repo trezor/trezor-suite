@@ -14,7 +14,6 @@ import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { FormattedNftAmount } from './FormattedNftAmount';
-import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
 
 const ethereumAccount = mockWalletAccount({
@@ -49,11 +48,11 @@ const getInitialState = (): AppState => ({
 
 describe('FormattedNftAmount', () => {
     it('opens a token in the explorer of its own network, not of the selected account', () => {
-        const store = configureMockStore({ preloadedState: getInitialState() });
+        const store = configureMockStore({ extra: undefined, preloadedState: getInitialState() });
 
         renderWithProviders(
             store,
-            extraDependenciesDesktopMock.services,
+            {},
             <FormattedNftAmount transfer={nftTransfer} networkSymbol="pol" isWithLink />,
         );
 

@@ -2,7 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type BankAccount, type SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { handleSellTradeThunk } from './handleSellTradeThunk';
@@ -27,7 +28,9 @@ jest.mock('./handleSellTradeThunk', () => {
     };
 });
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 describe('confirmSellTradeThunk', () => {
     afterEach(() => {
@@ -41,7 +44,7 @@ describe('confirmSellTradeThunk', () => {
 
     const getMocks = (initialSellState?: Partial<TradingSellState>) => {
         const store = configureMockStore({
-            extra: {},
+            extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,

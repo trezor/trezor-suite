@@ -3,6 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
 import { type ExchangeIssue } from '@suite-common/trading';
 
@@ -10,7 +11,6 @@ import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingOfferExchangeIssueBanner } from './TradingOfferExchangeIssueBanner';
-import { extraDependenciesDesktopMock } from '../../../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite/intl', () => ({
@@ -53,11 +53,14 @@ const renderIssueBanner = ({
     issue: ExchangeIssue;
     isSimulationEnabled?: boolean;
 }) => {
-    const store = configureMockStore({ preloadedState: mockInitialAppState satisfies AppState });
+    const store = configureMockStore({
+        extra: undefined,
+        preloadedState: mockInitialAppState satisfies AppState,
+    });
 
     renderWithProviders(
         store,
-        extraDependenciesDesktopMock.services,
+        { analytics: mockDesktopAnalytics() },
         <TradingOfferExchangeIssueBanner
             issue={issue}
             isSimulationEnabled={isSimulationEnabled}

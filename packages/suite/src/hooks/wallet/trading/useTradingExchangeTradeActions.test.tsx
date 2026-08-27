@@ -135,7 +135,7 @@ const renderActions = (overrides?: StateOverrides) => {
         cryptoId: ETHEREUM_CRYPTO_ID,
     });
 
-    const store = configureMockStore({ preloadedState: state });
+    const store = configureMockStore({ extra: undefined, preloadedState: state });
     const { result } = renderHookWithStoreProvider(() => useTradingExchangeTradeActions(), {
         store,
     });

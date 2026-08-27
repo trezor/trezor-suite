@@ -78,6 +78,7 @@ const cancellableTx = (
 
 const initStore = (levels?: FeeInfo['levels']) =>
     configureMockStore({
+        extra: undefined,
         preloadedState: {
             device: { selectedDevice: undefined },
             wallet: {

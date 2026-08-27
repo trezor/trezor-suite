@@ -7,7 +7,6 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { type AggregatedAccountHistory, type GraphRange } from 'src/types/wallet/graph';
 
 import { TransactionsGraph } from './TransactionsGraph';
-import { extraDependenciesDesktopMock } from '../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 global.ResizeObserver = class MockedResizeObserver {
@@ -46,6 +45,7 @@ const renderTransactionsGraph = ({
     isLoading: boolean;
 }) => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -57,7 +57,7 @@ const renderTransactionsGraph = ({
 
     const { container } = renderWithProviders(
         store,
-        extraDependenciesDesktopMock.services,
+        {},
         <TransactionsGraph
             variant="one-asset"
             account={ACCOUNT}

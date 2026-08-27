@@ -1,9 +1,11 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { buildStakeData } from '@suite-common/staking';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockGetIsWindowVisible, mockOnModalCancel } from '@suite-common/suite-types/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import { prepareSendFormReducer } from '@suite-common/wallet-core';
@@ -12,12 +14,14 @@ import {
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { mockAccountKey, mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
+    type PushStakeTransactionNativeThunkDeps,
     pushStakeTransactionNativeThunk,
     signStakeTransactionNativeThunk,
 } from './stakeNativeThunks';
@@ -107,6 +111,14 @@ const SOL_ACCOUNT_KEY = mockAccountKey({
     deviceStaticSessionId: STATIC_SESSION_ID,
 });
 const POOL_ADDRESS = '0xD523794C879D9eC028960a231F866758e405bE34';
+const extra: PushStakeTransactionNativeThunkDeps = {
+    actions: { onModalCancel: mockOnModalCancel() },
+    services: {
+        analytics: mockNativeAnalytics(),
+        getIsWindowVisible: mockGetIsWindowVisible(),
+        getTradedAccountKeys: mockGetTradedAccountKeys(),
+    },
+};
 
 const ethAccount: Account = {
     symbol: 'eth',
@@ -139,6 +151,7 @@ const buildStore = ({
     blockchain?: Record<string, unknown>;
 } = {}) =>
     configureMockStore({
+        extra,
         reducer: combineReducers({
             device: (): { selectedDevice: TrezorDevice } => ({
                 selectedDevice: {
@@ -158,7 +171,10 @@ const buildStore = ({
                 }),
                 formDrafts: () => formDrafts,
                 blockchain: () => blockchain,
-                send: prepareSendFormReducer(extraDependenciesCommonMock),
+                send: prepareSendFormReducer({
+                    actionTypes: { storageLoad: mockActionType('storageLoad') },
+                    reducers: { storageLoadFormDrafts: mockReducer() },
+                }),
                 settings: () => ({ mevProtection: false }),
             }),
         }),

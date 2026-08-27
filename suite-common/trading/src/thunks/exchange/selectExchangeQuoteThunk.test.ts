@@ -1,7 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTradeQuoteRequest } from 'invity-api';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../constants';
@@ -12,7 +13,9 @@ import { tradeApi } from '../../tradeApi';
 
 import { exchangeThunks } from './index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const USDT_CRYPTO_ID = 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId;
 
@@ -82,7 +85,7 @@ describe('selectExchangeQuoteThunk', () => {
         refetchQuotesOverride?: Partial<QuoteRefetchingState>,
     ) => {
         const store = configureMockStore({
-            extra: {},
+            extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,

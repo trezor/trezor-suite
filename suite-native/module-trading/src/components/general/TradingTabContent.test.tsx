@@ -1,4 +1,8 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { screen } from '@suite-native/test-utils-store';
 import { tradingInitialState } from '@suite-native/trading-state';
@@ -7,6 +11,10 @@ import { TradingTabContent } from './TradingTabContent';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockIsInternetReachable: boolean | null = true;
+const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+    analytics: mockNativeAnalytics(),
+    networkModuleRepository: mockNetworkModuleRepository(),
+};
 
 jest.mock('@react-native-community/netinfo', () => ({
     useNetInfo: () => ({
@@ -35,6 +43,7 @@ jest.mock('@react-navigation/native', () => ({
 describe('TradingTabContent', () => {
     const renderTradingTabContent = async (isBlacklisted: boolean = false) =>
         await renderWithTradingProvider(<TradingTabContent />, {
+            services,
             overrides: {
                 wallet: {
                     trading: {

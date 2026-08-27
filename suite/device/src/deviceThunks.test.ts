@@ -3,14 +3,26 @@ import { withExtraArgument } from 'redux-thunk';
 
 import { type RouterState, routerReducer } from '@suite/router';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
-import { extraDependenciesCommonMock, filterThunkActionTypes } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { filterThunkActionTypes } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 
 import disconnectDeviceThunkFixture from './__fixtures__/deviceThunks';
 import { disconnectDeviceThunk } from './deviceThunks';
 
 const EMPTY_ACTION = { type: 'foo' };
-const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
+const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
 
 type State = {
     device: ReturnType<typeof deviceReducer>;
@@ -34,7 +46,7 @@ const getInitialState = (state?: {
 const configureStore = <S, DispatchExts = Record<never, never>>(): MockStoreCreator<
     S,
     DispatchExts
-> => reduxMockStore([withExtraArgument(extraDependenciesCommonMock) as any]);
+> => reduxMockStore([withExtraArgument(undefined) as any]);
 
 const mockStore = configureStore<State, any>();
 

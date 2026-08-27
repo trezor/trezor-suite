@@ -185,6 +185,7 @@ const middlewares = [storageMiddleware];
 
 const mockStore = (preloadedState: State) =>
     configureMockStore({
+        extra: undefined,
         middleware: middlewares,
         reducer: (state = preloadedState, action) => {
             const nextState = getInitialState(state, action);

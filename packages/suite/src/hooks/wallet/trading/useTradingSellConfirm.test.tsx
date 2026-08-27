@@ -86,7 +86,7 @@ const buildState = (overrides: StateOverrides = {}) => {
 const renderConfirm = (overrides?: StateOverrides) => {
     const state = buildState(overrides);
 
-    const store = configureMockStore({ preloadedState: state });
+    const store = configureMockStore({ extra: undefined, preloadedState: state });
     const { result } = renderHookWithStoreProvider(() => useTradingSellConfirm(), { store });
 
     return { store, result };

@@ -1,16 +1,21 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
 import { setCustomBackendThunk } from './blockchainThunks';
 
-const blockchainReducer = prepareBlockchainReducer(extraDependenciesCommonMock);
+const blockchainReducer = prepareBlockchainReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadBlockchain: mockReducer() },
+});
 const electrumUrl = '127.0.0.1:50001:t';
 
 const initStore = () =>
     configureMockStore({
+        extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({
                 blockchain: blockchainReducer,

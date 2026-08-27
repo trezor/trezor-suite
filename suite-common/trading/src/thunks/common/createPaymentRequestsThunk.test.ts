@@ -3,7 +3,8 @@ import { type CryptoId, type ExchangeTradeSigned } from 'invity-api';
 
 import { deviceInitialState } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, { type Address, type PROTO } from '@trezor/connect';
@@ -17,7 +18,9 @@ import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { tradeApi } from '../../tradeApi';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 // Mock internal thunks - this is the key change from the previous approach
 jest.mock('./getNonce', () => ({
@@ -210,7 +213,7 @@ describe('createPaymentRequestsThunk', () => {
 
     const createMockStore = (preloadedState = {}) =>
         configureMockStore({
-            extra: extraDependenciesCommonMock,
+            extra: undefined,
             reducer: combineReducers({
                 device: () => deviceInitialState,
                 wallet: combineReducers({

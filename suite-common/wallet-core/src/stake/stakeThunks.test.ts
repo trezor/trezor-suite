@@ -61,6 +61,7 @@ const initStore = ({
     stake?: StakeState;
 } = {}) =>
     configureMockStore({
+        extra: undefined,
         preloadedState: {
             wallet: {
                 settings: { enabledNetworks },

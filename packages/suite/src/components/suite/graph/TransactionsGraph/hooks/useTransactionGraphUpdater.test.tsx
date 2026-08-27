@@ -63,7 +63,7 @@ const renderTransactionGraphUpdater = ({
     transactions?: WalletAccountTransaction[];
     hasAccount?: boolean;
 } = {}) => {
-    const store = configureMockStore({ reducer: { wallet: walletReducer } });
+    const store = configureMockStore({ extra: undefined, reducer: { wallet: walletReducer } });
     store.dispatch(setTransactions(transactions));
 
     const abortSignals: AbortSignal[] = [];

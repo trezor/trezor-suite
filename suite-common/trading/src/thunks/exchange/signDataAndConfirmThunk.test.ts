@@ -2,8 +2,9 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
@@ -17,7 +18,9 @@ import type { LogErrorThunkProps } from '../common/logErrorThunk';
 
 import { exchangeThunks } from './index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 jest.mock('../common/logErrorThunk', () => ({
     logErrorThunk: (props: LogErrorThunkProps) => ({
@@ -47,7 +50,7 @@ describe('signDataAndConfirmThunk', () => {
             orderId: 'orderId',
         };
         const store = configureMockStore({
-            extra: {},
+            extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,

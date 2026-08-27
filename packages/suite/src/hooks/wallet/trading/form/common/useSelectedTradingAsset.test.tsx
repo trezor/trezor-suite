@@ -48,6 +48,7 @@ const buildState = (
 describe('useSelectedTradingAsset', () => {
     it('returns undefined when no eligible account is selected', () => {
         const store = configureMockStore({
+            extra: undefined,
             preloadedState: buildState([INELIGIBLE_ACCOUNT]),
         });
         const { result } = renderHookWithStoreProvider(() => useSelectedTradingAsset('sell'), {
@@ -59,6 +60,7 @@ describe('useSelectedTradingAsset', () => {
 
     it('returns the native asset view-model when a native account is selected', () => {
         const store = configureMockStore({
+            extra: undefined,
             preloadedState: buildState([ELIGIBLE_ACCOUNT], ELIGIBLE_ACCOUNT.key),
         });
         const { result } = renderHookWithStoreProvider(() => useSelectedTradingAsset('sell'), {
@@ -78,6 +80,7 @@ describe('useSelectedTradingAsset', () => {
 
     it('flags a prefilled token as a token asset', () => {
         const store = configureMockStore({
+            extra: undefined,
             preloadedState: buildState([ELIGIBLE_ACCOUNT], ELIGIBLE_ACCOUNT.key, {
                 key: ELIGIBLE_ACCOUNT.key,
                 cryptoId: TOKEN_CRYPTO_ID,

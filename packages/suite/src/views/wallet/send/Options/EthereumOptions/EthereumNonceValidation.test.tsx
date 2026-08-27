@@ -13,7 +13,6 @@ import { SendContext } from 'src/hooks/wallet/useSendForm';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { EthereumNonce } from './EthereumNonce';
-import { extraDependenciesDesktopMock } from '../../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as any;
@@ -76,6 +75,7 @@ const pendingAtNonce6 = {
 
 const render = (props: Props) => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -88,11 +88,7 @@ const render = (props: Props) => {
         },
     });
 
-    return renderWithProviders(
-        store,
-        extraDependenciesDesktopMock.services,
-        <Harness {...props} />,
-    );
+    return renderWithProviders(store, {}, <Harness {...props} />);
 };
 
 const typeNonce = async (text: string) => {

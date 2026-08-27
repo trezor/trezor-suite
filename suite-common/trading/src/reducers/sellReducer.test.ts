@@ -10,7 +10,7 @@ describe('tradingSellReducer', () => {
     sellTradingFixtures.forEach(fixture => {
         it(fixture.description, () => {
             const store = configureMockStore({
-                extra: {},
+                extra: undefined,
                 reducer: combineReducers({
                     wallet: combineReducers({
                         trading: combineReducers({

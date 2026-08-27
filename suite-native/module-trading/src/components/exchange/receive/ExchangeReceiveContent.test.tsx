@@ -1,3 +1,7 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -21,6 +25,11 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () => ({ params: {} }),
 }));
 
+const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+    analytics: mockNativeAnalytics(),
+    networkModuleRepository: mockNetworkModuleRepository(),
+};
+
 describe('ExchangeReceiveContent', () => {
     let form: ExchangeFormType;
     const preloadedState = createTradingPreloadedState({
@@ -42,11 +51,13 @@ describe('ExchangeReceiveContent', () => {
     const renderForm = async () =>
         await renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
+            services,
         });
 
     const renderExchangeReceiveContent = async () =>
         await renderWithStoreProvider(<ExchangeReceiveContent />, {
             preloadedState,
+            services,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

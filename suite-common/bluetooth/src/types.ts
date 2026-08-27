@@ -67,6 +67,8 @@ export type ForgetBluetoothDeviceThunkParams = {
     skipDisconnect?: boolean;
 };
 
+export type ForgetBluetoothDeviceThunk = SuiteCompatibleThunk<ForgetBluetoothDeviceThunkParams>;
+
 export type ForgetBluetoothDeviceDep = {
-    forgetBluetoothDevice: SuiteCompatibleThunk<ForgetBluetoothDeviceThunkParams>;
+    forgetBluetoothDevice: ForgetBluetoothDeviceThunk;
 };

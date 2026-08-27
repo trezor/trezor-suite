@@ -183,7 +183,7 @@ describe('cancelling a swap on the device', () => {
     });
 
     it('reports the cancellation once and nothing else', async () => {
-        const store = configureMockStore({ preloadedState });
+        const store = configureMockStore({ extra: undefined, preloadedState });
         const { result } = renderHookWithStoreProvider(() => useTradingExchangeTradeActions(), {
             store,
         });

@@ -29,6 +29,7 @@ const renderClearStaleQuotes = (
     props: { type: TradingType; isAmountEmpty: boolean },
 ) => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: state,
     });
 

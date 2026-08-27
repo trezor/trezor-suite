@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -9,8 +10,13 @@ import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { accountsActions } from './accountsActions';
 import { type AccountsRootState, prepareAccountsReducer } from './accountsReducer';
+import { mockSetAccountAddMetadata } from '../../mocks';
 
-const accountsReducer = prepareAccountsReducer(extraDependenciesCommonMock);
+const accountsReducer = prepareAccountsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    actions: { setAccountAddMetadata: mockSetAccountAddMetadata() },
+    reducers: { storageLoadAccounts: mockReducer() },
+});
 const btcSymbol = asNetworkSymbol('btc');
 const ltcSymbol = asNetworkSymbol('ltc');
 
@@ -20,6 +26,7 @@ interface InitStoreArgs {
 
 const initStore = ({ preloadedState }: InitStoreArgs = {}) => {
     const store = configureMockStore({
+        extra: undefined,
         reducer: { wallet: combineReducers({ accounts: accountsReducer }) },
         preloadedState,
     });

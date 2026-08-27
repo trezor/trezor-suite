@@ -1,3 +1,7 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 
 import { ExchangeTab } from './ExchangeTab';
@@ -7,6 +11,10 @@ let mockIsDeviceInViewOnlyMode = false;
 let mockIsPortfolioTrackerDevice = false;
 let mockHasBitcoinOnlyFirmware = false;
 let mockIsTradingExchangeEnabled = true;
+const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+    analytics: mockNativeAnalytics(),
+    networkModuleRepository: mockNetworkModuleRepository(),
+};
 
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
@@ -36,7 +44,7 @@ jest.mock('@react-navigation/native', () => ({
 
 describe('ExchangeTab', () => {
     const renderExchangeTab = async () =>
-        await renderWithTradingProvider(<ExchangeTab />, { tradeType: 'exchange' });
+        await renderWithTradingProvider(<ExchangeTab />, { services, tradeType: 'exchange' });
 
     beforeEach(() => {
         mockIsDeviceInViewOnlyMode = false;

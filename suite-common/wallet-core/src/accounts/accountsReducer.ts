@@ -111,7 +111,7 @@ const setMetadata = (state: Account[], account: Account) => {
     state[index].metadata = account.metadata;
 };
 
-type AccountsReducerDeps = ActionTypesDep<'storageLoad'> &
+export type AccountsReducerDeps = ActionTypesDep<'storageLoad'> &
     ReducersDep<'storageLoadAccounts'> & {
         actions: {
             setAccountAddMetadata: ActionCreatorWithPreparedPayload<[Account], Account>;

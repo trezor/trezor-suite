@@ -4,6 +4,7 @@ import { recoveryActions, recoveryReducer } from './index';
 
 const initStore = () =>
     configureMockStore({
+        extra: undefined,
         preloadedState: {
             recovery: recoveryReducer(undefined, { type: 'foo' }),
         },

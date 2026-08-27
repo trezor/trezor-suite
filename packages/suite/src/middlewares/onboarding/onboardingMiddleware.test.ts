@@ -40,6 +40,7 @@ type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
     const store = configureMockStore({
+        extra: undefined,
         middleware: [...middlewares],
         reducer: (currentState = state, action) => ({
             ...currentState,

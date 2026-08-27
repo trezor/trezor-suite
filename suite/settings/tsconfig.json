@@ -17,9 +17,6 @@
         {
             "path": "../../suite-common/suite-types"
         },
-        {
-            "path": "../../suite-common/test-utils"
-        },
         { "path": "../../suite-common/trading" },
         { "path": "../experimental" },
         {

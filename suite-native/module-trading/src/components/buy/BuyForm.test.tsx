@@ -1,3 +1,7 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act, screen } from '@suite-native/test-utils-store';
@@ -28,6 +32,11 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () => ({ params: {} }),
 }));
 
+const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+    analytics: mockNativeAnalytics(),
+    networkModuleRepository: mockNetworkModuleRepository(),
+};
+
 describe('BuyForm', () => {
     const residenceCheckDisabledOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         featureFlags: createTradingFeatureFlags(),
@@ -45,7 +54,7 @@ describe('BuyForm', () => {
 
     const renderFormHook = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
-    ) => await renderHookWithTradingProvider(() => useBuyForm(), { overrides });
+    ) => await renderHookWithTradingProvider(() => useBuyForm(), { overrides, services });
 
     const renderBuyForm = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState>,
@@ -53,6 +62,7 @@ describe('BuyForm', () => {
     ) =>
         await renderWithTradingProvider(<BuyForm />, {
             overrides,
+            services,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
