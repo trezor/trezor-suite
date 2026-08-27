@@ -71,6 +71,29 @@ describe('TradeStatusStepper', () => {
         expect(queryByText('Transaction ID')).toBeNull();
     });
 
+    it('should render all subitems for the current step state', async () => {
+        const { getByText, queryByText } = await renderStepper({
+            steps: [
+                {
+                    id: 'send',
+                    state: 'active',
+                    title: { pending: 'Transaction pending' },
+                    subItems: {
+                        pending: [<Text key="pending">Pending details</Text>],
+                        processing: [
+                            <Text key="transaction-id">Transaction ID</Text>,
+                            <Text key="provider">Provider details</Text>,
+                        ],
+                    },
+                },
+            ],
+        });
+
+        expect(getByText('Transaction ID')).toBeOnTheScreen();
+        expect(getByText('Provider details')).toBeOnTheScreen();
+        expect(queryByText('Pending details')).toBeNull();
+    });
+
     it('should fall back to pending content when a state variant is missing', async () => {
         const { getByText } = await renderStepper({
             steps: [
