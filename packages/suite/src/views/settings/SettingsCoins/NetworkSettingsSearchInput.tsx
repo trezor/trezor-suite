@@ -33,7 +33,7 @@ export const NetworkSettingsSearchInput = ({
             leftContent={
                 <Icon as={MagnifyingGlassIcon} intent="neutral" priority="secondary" size={16} />
             }
-            rightContent={rightContent}
+            rightContent={searchQuery ? undefined : rightContent}
         />
     );
 };
