@@ -1,5 +1,6 @@
 import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
 import type { BlockchainLink, CoinInfo, Proxy } from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TimerId } from '@trezor/type-utils';
 import { deepEqual } from '@trezor/utils';
 
@@ -36,8 +37,22 @@ export class BackendManager {
         return this.instances[`${shortcut}/${identity}`] ?? null;
     }
 
-    async getOrConnect({ coinInfo, postMessage, identity }: BackendParams): Promise<Blockchain> {
-        const coinIdentity = `${coinInfo.shortcut}/${identity ?? DEFAULT_IDENTITY}` as const;
+    getOrConnect(params: BackendParams, { force }: { force?: boolean } = {}) {
+        const coinIdentity = this.getCoinIdentity(params);
+
+        // A dropped backend is retried on a growing delay. Connecting on demand instead would
+        // skip that delay entirely, because a coin with accounts is asked for the backend on
+        // every account sync — which is what turned one dropped Solana socket into 15 connect
+        // attempts and 111 requests per second. Only an explicit reconnect may skip the wait.
+        if (!force && this.reconnect[coinIdentity] && !this.instances[coinIdentity]) {
+            return Promise.reject(ERRORS.TypedError('Backend_Disconnected'));
+        }
+
+        return this.connect(params);
+    }
+
+    private async connect({ coinInfo, postMessage, identity }: BackendParams): Promise<Blockchain> {
+        const coinIdentity = this.getCoinIdentity({ coinInfo, identity });
         let backend = this.instances[coinIdentity];
         if (!backend) {
             backend = new Blockchain({
@@ -94,7 +109,7 @@ export class BackendManager {
         backends.forEach(i => i.disconnect());
 
         // initialize again using old backends as params
-        return Promise.all(backends.map(this.getOrConnect, this));
+        return Promise.all(backends.map(backend => this.getOrConnect(backend, { force: true })));
     }
 
     isSupported(coinInfo: CoinInfo) {
@@ -135,7 +150,7 @@ export class BackendManager {
         { coinInfo, postMessage, identity }: BackendParams,
         reconnectAttempt: number | undefined,
     ) {
-        const coinIdentity = `${coinInfo.shortcut}/${identity ?? DEFAULT_IDENTITY}` as const;
+        const coinIdentity = this.getCoinIdentity({ coinInfo, identity });
         this.setInstance(coinIdentity, undefined);
         delete this.connectedAt[coinIdentity];
 
@@ -158,7 +173,7 @@ export class BackendManager {
         );
         const time = Date.now() + timeout;
         const handle = setTimeout(() => {
-            this.getOrConnect({ coinInfo, postMessage, identity }).catch(() => {});
+            this.connect({ coinInfo, postMessage, identity }).catch(() => {});
         }, timeout);
         clearTimeout(this.reconnect[coinIdentity]?.handle);
         this.reconnect[coinIdentity] = { handle };
@@ -166,6 +181,13 @@ export class BackendManager {
         postMessage(
             createBlockchainMessage(BLOCKCHAIN.RECONNECTING, { coin: coinInfo, identity, time }),
         );
+    }
+
+    private getCoinIdentity({
+        coinInfo,
+        identity,
+    }: Pick<BackendParams, 'coinInfo' | 'identity'>): CoinShortcutIdentity {
+        return `${coinInfo.shortcut}/${identity ?? DEFAULT_IDENTITY}`;
     }
 
     private nextAttempt(coinIdentity: CoinShortcutIdentity) {

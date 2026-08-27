@@ -5,7 +5,7 @@ import type { ContextType } from '../baseWorker';
 
 export type Context = ContextType<SolanaAPI> & {
     getTokenMetadata: () => Promise<TokenDetailByMint>;
-    onNetworkDisconnect: () => void;
+    onSubscriptionsClosed: () => void;
 };
 
 export type Request<T> = T & Context;
