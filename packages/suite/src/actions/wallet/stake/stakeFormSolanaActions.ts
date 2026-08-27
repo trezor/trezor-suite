@@ -21,6 +21,7 @@ import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { getSuiteVersion } from '@trezor/env-utils';
 import solana from '@trezor/network-solana/runtime';
+import { redactSensitiveDataFromString } from '@trezor/utils';
 
 const getSolanaUserAgent = () => `Trezor Suite ${getSuiteVersion()}`;
 
@@ -156,7 +157,7 @@ export const signTransaction =
                 dispatch(
                     notificationsActions.addToast({
                         type: 'sign-tx-error',
-                        error: signedTx.error.message,
+                        error: redactSensitiveDataFromString(signedTx.error.message),
                     }),
                 );
             }

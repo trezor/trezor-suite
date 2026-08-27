@@ -40,6 +40,7 @@ import {
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
+    createSafeConnectError,
     getAddressParameters,
     getCardanoAccountPoolId,
     getDelegationCertificates,
@@ -60,7 +61,7 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, PROTO } from '@trezor/connect';
 import type { EstimatedFee } from '@trezor/network-solana/types'; // TODO should be Cardano instead?
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, redactSensitiveDataFromString } from '@trezor/utils';
 
 const calculateTransaction = (
     availableBalance: string,
@@ -203,7 +204,8 @@ export const prepareTxPlan = async ({
         testnet: isTestnet(account.symbol),
     });
 
-    if (!response.success) throw new Error(response.error.message);
+    if (!response.success)
+        throw createSafeConnectError(response.error, 'cardanoComposeTransaction');
 
     return { txPlan: response.payload[0], certificates, withdrawals, selectedPool };
 };
@@ -382,12 +384,27 @@ export const signTransaction =
             return;
         }
 
-        const txData = await getTransactionData(
-            formValues,
-            selectedAccount,
-            cardanoPools,
-            stake.votingDelegation,
-        );
+        let txData;
+        try {
+            txData = await getTransactionData(
+                formValues,
+                selectedAccount,
+                cardanoPools,
+                stake.votingDelegation,
+            );
+        } catch (error) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'sign-tx-error',
+                    error:
+                        error instanceof Error
+                            ? redactSensitiveDataFromString(error.message)
+                            : 'Compose failed',
+                }),
+            );
+
+            return;
+        }
 
         if (!txData) {
             dispatch(
@@ -450,7 +467,7 @@ export const signTransaction =
                 dispatch(
                     notificationsActions.addToast({
                         type: 'sign-tx-error',
-                        error: signedTx.error.message,
+                        error: redactSensitiveDataFromString(signedTx.error.message),
                     }),
                 );
             }

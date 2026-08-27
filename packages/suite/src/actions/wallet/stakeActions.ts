@@ -51,7 +51,7 @@ import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err } from '@trezor/type-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, redactSensitiveDataFromString } from '@trezor/utils';
 
 import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
@@ -258,7 +258,7 @@ const pushTransaction =
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    error: sentTx.error.message,
+                    error: redactSensitiveDataFromString(sentTx.error.message),
                 }),
             );
 

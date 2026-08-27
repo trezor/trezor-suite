@@ -45,6 +45,7 @@ import {
     getAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+import { redactSensitiveDataFromString } from '@trezor/utils';
 
 const calculateStakingTransaction = (
     availableBalance: string,
@@ -257,7 +258,7 @@ export const signTransaction =
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    error: signedTx.error.message,
+                    error: redactSensitiveDataFromString(signedTx.error.message),
                 }),
             );
 

@@ -52,6 +52,7 @@ export const useCardanoStaking = (): CardanoStaking => {
             if (!account) return;
 
             setLoading(true);
+
             try {
                 const composeRes = await prepareTxPlan({
                     account,
@@ -59,12 +60,15 @@ export const useCardanoStaking = (): CardanoStaking => {
                     cardanoPools,
                     votingDelegation,
                 });
+
                 if (composeRes?.txPlan) {
                     if (composeRes.txPlan.type === 'error') {
                         throw new Error(composeRes.txPlan.error);
                     }
+
                     setFee(composeRes.txPlan.fee);
                     setDeposit(composeRes.txPlan.deposit);
+
                     const actionAvailability: ActionAvailability =
                         composeRes.txPlan.type === 'final'
                             ? {
@@ -74,6 +78,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                                   status: false,
                                   reason: 'TX_NOT_FINAL',
                               };
+
                     setDelegatingAvailable(actionAvailability);
                     seWithdrawingAvailable(actionAvailability);
                 }
@@ -85,6 +90,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                     status: false,
                     reason: err.message,
                 };
+
                 setDelegatingAvailable(actionAvailability);
                 seWithdrawingAvailable(actionAvailability);
             }

@@ -110,10 +110,14 @@ export const useChangeDelegateForm = ({
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(signTransaction(values, composedTx));
+            try {
+                const result = await dispatch(signTransaction(values, composedTx));
 
-            if (result?.success) {
-                clearForm();
+                if (result?.success) {
+                    clearForm();
+                }
+            } catch (error) {
+                console.warn('Sign transaction unexpected error', error);
             }
         }
     }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);

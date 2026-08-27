@@ -351,11 +351,16 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
             setIsLoading(true);
-            const result = await dispatch(signTransaction(values, composedTx));
+            try {
+                const result = await dispatch(signTransaction(values, composedTx));
 
-            setIsLoading(false);
-            if (result?.success) {
-                clearForm();
+                if (result?.success) {
+                    clearForm();
+                }
+            } catch (error) {
+                console.warn('Sign transaction unexpected error', error);
+            } finally {
+                setIsLoading(false);
             }
         }
     }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);

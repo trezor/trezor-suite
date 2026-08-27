@@ -70,15 +70,25 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
 
             // store current request ID before async debounced process and compare it later. see explanation below
             const resultID = composeRequestIDRef.current;
-            const result = await debounce(() => {
-                if (Object.keys(errors).length > 0) {
-                    return Promise.resolve(undefined);
+            let result;
+            try {
+                result = await debounce(() => {
+                    if (Object.keys(errors).length > 0) {
+                        return Promise.resolve(undefined);
+                    }
+
+                    const values = getValues();
+
+                    return dispatch(composeTransaction(values, state));
+                });
+            } catch (error) {
+                console.warn('Compose unexpected error', error);
+                if (resultID === composeRequestIDRef.current) {
+                    setLoading(false);
                 }
 
-                const values = getValues();
-
-                return dispatch(composeTransaction(values, state));
-            });
+                return;
+            }
 
             // RACE-CONDITION NOTE:
             // resultID could be outdated when composeRequestID was updated by another upcoming/pending composeRequest and render tick didn't process it yet,
