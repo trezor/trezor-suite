@@ -11513,6 +11513,10 @@ export const messages = defineMessages({
     },
     TR_TRON_FEE_DESC: {
         id: 'TR_TRON_FEE_DESC',
+        defaultMessage: 'The fee charged by the Tron network to process your transaction.',
+    },
+    TR_TRON_FEE_ACTIVATION_DESC: {
+        id: 'TR_TRON_FEE_ACTIVATION_DESC',
         defaultMessage:
             'The fee charged by the Tron network to process your transaction. This also covers a 1 {networkDisplaySymbol} charge to activate an unused receiving address.',
     },
