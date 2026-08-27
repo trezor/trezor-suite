@@ -25,7 +25,7 @@ describe('OverviewRow', () => {
 
         await fireEvent.press(getByText('Title'));
 
-        expect(onPress).toHaveBeenCalledWith();
+        expect(onPress).toHaveBeenCalledTimes(1);
     });
 
     it('should render warning when added', async () => {

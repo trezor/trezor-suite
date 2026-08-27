@@ -54,6 +54,7 @@ describe('useMaxSpendableAmount', () => {
         accountKey,
         tokenContract,
         formState,
+        enabled,
         symbol,
     }: Parameters<typeof useMaxSpendableAmount>[0]) =>
         await renderHookWithStoreProvider(
@@ -62,6 +63,7 @@ describe('useMaxSpendableAmount', () => {
                     accountKey,
                     tokenContract,
                     formState,
+                    enabled,
                     symbol,
                 }),
             {
