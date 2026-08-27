@@ -30,6 +30,7 @@ jest-extended
 jest-junit
 jest-watch-typeahead
 minimist
+test-renderer
 ts-jest
 uri-scheme
 xml2js
