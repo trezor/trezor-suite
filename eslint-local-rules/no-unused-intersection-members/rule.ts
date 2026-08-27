@@ -18,9 +18,14 @@ type ContractUsage = {
     requiredType?: ts.Type;
 };
 
-type IntersectionContract = {
-    isOpaque: boolean;
+type IntersectionGroup = {
     members: IntersectionMember[];
+    path: string[];
+};
+
+type IntersectionContract = {
+    groups: IntersectionGroup[];
+    isOpaque: boolean;
     name: string;
     rootPath: string[];
     symbol: ts.Symbol;
@@ -362,6 +367,36 @@ const getTypesAtPath = (
     return currentTypes;
 };
 
+const isPathPrefix = (prefix: readonly string[], path: readonly string[]) =>
+    prefix.every((part, index) => path[index] === part);
+
+const getGroupUsages = (
+    contract: IntersectionContract,
+    group: IntersectionGroup,
+    checker: ts.TypeChecker,
+) =>
+    contract.usages.flatMap(usage => {
+        if (isPathPrefix(group.path, usage.path)) {
+            return [{ ...usage, path: usage.path.slice(group.path.length) }];
+        }
+
+        if (!isPathPrefix(usage.path, group.path)) {
+            return [];
+        }
+
+        if (usage.requiredType === undefined) {
+            // Accessing a parent value without a narrower expected type may consume every nested
+            // member.
+            return [{ path: [] }];
+        }
+
+        return getTypesAtPath(
+            [usage.requiredType],
+            group.path.slice(usage.path.length),
+            checker,
+        ).map(requiredType => ({ path: [], requiredType }));
+    });
+
 const isOptionalProperty = (property: ts.Symbol) =>
     (property.flags & ts.SymbolFlags.Optional) !== 0;
 
@@ -538,6 +573,47 @@ const getConfigContracts = (
     return propertyType.aliasSymbol === undefined
         ? []
         : (contractsBySymbol.get(propertyType.aliasSymbol) ?? []);
+};
+
+const collectIntersectionGroups = (
+    node: ts.TypeNode,
+    sourceFile: ts.SourceFile,
+    checker: ts.TypeChecker,
+    path: readonly string[] = [],
+): IntersectionGroup[] => {
+    if (ts.isIntersectionTypeNode(node)) {
+        const group = {
+            members: node.types.map(memberNode => ({
+                name: memberNode.getText(sourceFile),
+                node: memberNode,
+                type: checker.getTypeFromTypeNode(memberNode),
+            })),
+            path: [...path],
+        };
+        const nestedGroups = node.types.flatMap(memberNode =>
+            ts.isTypeLiteralNode(memberNode)
+                ? collectIntersectionGroups(memberNode, sourceFile, checker, path)
+                : [],
+        );
+
+        return [group, ...nestedGroups];
+    }
+
+    if (!ts.isTypeLiteralNode(node)) {
+        return [];
+    }
+
+    return node.members.flatMap(member => {
+        if (!ts.isPropertySignature(member) || member.type === undefined) {
+            return [];
+        }
+
+        const propertyName = getBindingPropertyName(member.name);
+
+        return propertyName === undefined
+            ? []
+            : collectIntersectionGroups(member.type, sourceFile, checker, [...path, propertyName]);
+    });
 };
 
 const getObjectBindingIdentifier = (parameter: ts.ParameterDeclaration, propertyName: string) => {
@@ -804,11 +880,31 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
 
                 const contractsBySymbol = new Map<ts.Symbol, IntersectionContract[]>();
 
+                // Restrict candidates to local aliases with explicit intersections so each proof is
+                // tied to a concrete member list that can be reported and edited reliably.
                 for (const statement of sourceFile.statements) {
                     if (
                         !ts.isTypeAliasDeclaration(statement) ||
                         !contractTypeNamePattern.test(statement.name.text)
                     ) {
+                        continue;
+                    }
+
+                    const groups = [
+                        ...collectIntersectionGroups(statement.type, sourceFile, checker),
+                        ...getWrappedServicesIntersections(statement.type, checker).map(
+                            servicesIntersection => ({
+                                members: servicesIntersection.types.map(memberNode => ({
+                                    name: memberNode.getText(sourceFile),
+                                    node: memberNode,
+                                    type: checker.getTypeFromTypeNode(memberNode),
+                                })),
+                                path: ['services'],
+                            }),
+                        ),
+                    ];
+
+                    if (groups.length === 0) {
                         continue;
                     }
 
@@ -818,53 +914,16 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
                         continue;
                     }
 
-                    const contracts: IntersectionContract[] = [];
-
-                    // Direct intersections remain independently editable top-level members.
-                    if (ts.isIntersectionTypeNode(statement.type)) {
-                        contracts.push({
+                    contractsBySymbol.set(symbol, [
+                        {
+                            groups,
                             isOpaque: false,
-                            members: statement.type.types.map(memberNode => ({
-                                name: memberNode.getText(sourceFile),
-                                node: memberNode,
-                                type: checker.getTypeFromTypeNode(memberNode),
-                            })),
                             name: statement.name.text,
                             rootPath: [],
                             symbol,
                             usages: [],
-                        });
-                    }
-
-                    const wrappedServicesIntersections = getWrappedServicesIntersections(
-                        statement.type,
-                        checker,
-                    );
-                    const wrappedServiceMembers = wrappedServicesIntersections.flatMap(
-                        intersection => intersection.types,
-                    );
-
-                    if (wrappedServiceMembers.length > 0) {
-                        // WithServices moves a dependency intersection below the `services` key.
-                        // Analyze those inner members as another local contract while retaining the
-                        // outer contract above for any non-service intersection members.
-                        contracts.push({
-                            isOpaque: false,
-                            members: wrappedServiceMembers.map(memberNode => ({
-                                name: memberNode.getText(sourceFile),
-                                node: memberNode,
-                                type: checker.getTypeFromTypeNode(memberNode),
-                            })),
-                            name: statement.name.text,
-                            rootPath: ['services'],
-                            symbol,
-                            usages: [],
-                        });
-                    }
-
-                    if (contracts.length > 0) {
-                        contractsBySymbol.set(symbol, contracts);
-                    }
+                        },
+                    ]);
                 }
 
                 if (contractsBySymbol.size === 0) {
@@ -911,25 +970,34 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
                         continue;
                     }
 
-                    contract.members.forEach((member, memberIndex) => {
-                        const remainingTypes = contract.members
-                            .filter((_, index) => index !== memberIndex)
-                            .map(remainingMember => remainingMember.type);
-                        // Keep overlapping providers instead of choosing one arbitrarily. Otherwise,
-                        // a member is necessary when removing it leaves any usage unsatisfied.
-                        const isMemberUsed = contract.usages.some(
-                            usage =>
-                                isUsageSatisfied(usage, [member.type], checker) ||
-                                !isUsageSatisfied(usage, remainingTypes, checker),
-                        );
+                    for (const group of contract.groups) {
+                        const groupUsages = getGroupUsages(contract, group, checker);
 
-                        if (isMemberUsed) return;
+                        if (groupUsages.length === 0) {
+                            continue;
+                        }
 
-                        report(member.node, 'unusedIntersectionMember', {
-                            memberName: member.name,
-                            typeName: contract.name,
+                        group.members.forEach((member, memberIndex) => {
+                            const remainingTypes = group.members
+                                .filter((_, index) => index !== memberIndex)
+                                .map(remainingMember => remainingMember.type);
+                            // Keep overlapping providers instead of choosing one arbitrarily.
+                            // Otherwise, a member is necessary when removing it leaves any usage
+                            // unsatisfied.
+                            const isMemberUsed = groupUsages.some(
+                                usage =>
+                                    isUsageSatisfied(usage, [member.type], checker) ||
+                                    !isUsageSatisfied(usage, remainingTypes, checker),
+                            );
+
+                            if (isMemberUsed) return;
+
+                            report(member.node, 'unusedIntersectionMember', {
+                                memberName: member.name,
+                                typeName: contract.name,
+                            });
                         });
-                    });
+                    }
                 }
             },
         };
