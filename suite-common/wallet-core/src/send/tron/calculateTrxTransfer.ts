@@ -44,7 +44,11 @@ export const calculateTrxTransfer = (
         type: 'nonfinal' as const,
         totalSpent: calculateTotal(amount, totalFeeInSun),
         max,
-        fee: baseFeeInSun,
+        // Everything the network takes for a native TRX transfer: the bandwidth burn or the flat
+        // create-account fee, plus the activation fee and the memo fee. One number drives the
+        // reserve, the displayed fee and trading alike. TRC-20 and raw contract calls keep `fee`
+        // as the pure energy cap instead — there it is what ends up in the signed `fee_limit`.
+        fee: totalFeeInSun,
         accountActivationFee: isNewAccount ? String(TRON_ACCOUNT_ACTIVATION_FEE_SUN) : undefined,
         memoFee: hasMemo ? String(TRON_MEMO_FEE_SUN) : undefined,
         feePerByte: feeLevel.feePerUnit,
