@@ -68,6 +68,9 @@ export class WalletPage {
     readonly topPanelBalanceWithSymbol: Locator;
     readonly addAccountButton: Locator;
     readonly addAccountConfirmButton: Locator;
+    readonly addAccountNetworkSearchInput: Locator;
+    readonly addAccountNetworkButton = (symbol: NetworkSymbol) =>
+        this.page.getByTestId(`@settings/wallet/network/${symbol}/add-button`);
     readonly filterAccountsButton: Locator;
     readonly addAccountTypeSelectInput: Locator;
     readonly addAccountTypeSelectOption = (type: string) =>
@@ -145,6 +148,9 @@ export class WalletPage {
         this.verifyAddressErrorToast = this.page.getByTestId('@toast/verify-address-error');
         this.addAccountButton = this.page.getByTestId('@account-menu/add-account');
         this.addAccountConfirmButton = this.page.getByTestId('@add-account');
+        this.addAccountNetworkSearchInput = this.page.getByTestId(
+            '@modal/account/network-search-input',
+        );
         this.filterAccountsButton = this.page.getByTestId('@account-menu/filter-accounts');
         this.addAccountTypeSelectInput = this.page.getByTestId('@add-account-type/select/input');
         this.accountNotLoaded = this.page.getByTestId('@accounts/account-not-loaded');
@@ -163,6 +169,18 @@ export class WalletPage {
             .getByTestId('@menu/switch-device')
             .getByTestId('@deviceStatus-disconnected');
         this.discoveryWarning = this.page.getByTestId('@warning/trezorDiscovery');
+    }
+
+    get addAccountModal() {
+        return this.page
+            .locator('[data-testid="@modal"]')
+            .filter({ has: this.addAccountNetworkSearchInput });
+    }
+
+    @step()
+    async closeAddAccountModal() {
+        await this.addAccountModal.getByTestId('@modal/close-button').click();
+        await expect(this.addAccountModal).toBeHidden();
     }
 
     accountButton = ({
