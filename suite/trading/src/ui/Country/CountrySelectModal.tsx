@@ -1,7 +1,8 @@
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { getCountryFlag } from '@suite-common/flags';
 import { type TradingCountryCode, useCountryFilteredData } from '@suite-common/trading';
-import { Column, Flag, Input, Modal, Paragraph, Row } from '@trezor/components';
+import { Column, Flag, Icon, Input, Modal, Paragraph, Row } from '@trezor/components';
+import { MagnifyingGlassIcon } from '@trezor/icons';
 import { CardList } from '@trezor/product-components';
 
 interface CountrySelectModalProps {
@@ -34,6 +35,14 @@ export const CountrySelectModal = ({
                 <Input
                     onChange={ev => setFilterValue(ev.target.value)}
                     placeholder={translationString('TR_SEARCH_COUNTRY_PLACEHOLDER')}
+                    leftContent={
+                        <Icon
+                            as={MagnifyingGlassIcon}
+                            intent="neutral"
+                            priority="secondary"
+                            size={16}
+                        />
+                    }
                     onClear={() => setFilterValue('')}
                     showClearButton
                     value={filterValue}
