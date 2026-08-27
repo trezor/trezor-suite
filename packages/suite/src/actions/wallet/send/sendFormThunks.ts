@@ -57,7 +57,7 @@ import {
 } from '../../labels/moveLabelsForRbfThunk';
 
 type SaveSendFormDraftThunkParams = { formState: FormState };
-type SaveSendFormDraftThunkState = SelectedAccountRootState & SendRootState;
+type SaveSendFormDraftThunkState = SelectedAccountRootState;
 
 export const saveSendFormDraftThunk = createThunk<
     null | undefined,
@@ -92,7 +92,7 @@ export const getSendFormDraftThunk = createThunk<
     }
 });
 
-type RemoveSendFormDraftThunkState = SelectedAccountRootState & SendRootState;
+type RemoveSendFormDraftThunkState = SelectedAccountRootState;
 
 export const removeSendFormDraftThunk = createThunk<
     0 | undefined,

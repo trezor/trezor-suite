@@ -6,7 +6,6 @@ import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type AccountsRootState,
     type FeesRootState,
     type TransactionsRootState,
     type YieldFlowType,
@@ -24,7 +23,7 @@ import { type NativeAnalyticsDep, selectNativeAnalyticsDep } from '@suite-native
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 
-type YieldPendingTrackingRootState = TransactionsRootState & AccountsRootState & FeesRootState;
+type YieldPendingTrackingRootState = TransactionsRootState;
 
 type UseYieldPendingTransactionTrackingParams = {
     account: Account | null;

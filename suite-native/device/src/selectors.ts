@@ -182,9 +182,7 @@ export const selectHasNoDeviceWithEmptyPassphrase = createMemoizedSelector(
     deviceInstances => A.isEmpty(deviceInstances.filter(d => d.useEmptyPassphrase)),
 );
 
-type FwAuthenticityCheckState = NativeDeviceRootState &
-    FeatureFlagsRootState &
-    MessageSystemRootState;
+type FwAuthenticityCheckState = NativeDeviceRootState & MessageSystemRootState;
 /**
  * Get firmware revision check error, or null if check was successful / skipped, if the check is enabled in settings and through message system.
  */

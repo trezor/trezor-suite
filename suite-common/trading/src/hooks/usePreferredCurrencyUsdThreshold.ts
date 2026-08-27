@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import {
     type FiatRatesRootState,
-    type WalletSettingsRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     useMissingRateTickersQuery,
@@ -21,7 +20,7 @@ const USD_ASSET_THRESHOLD = new BigNumber('0.1');
 const BTC_TICKERS: TickerId[] = [{ symbol: 'btc' }];
 const NO_MISSING_TICKERS: TickerId[] = [];
 
-type PreferredCurrencyUsdThresholdRootState = FiatRatesRootState & WalletSettingsRootState;
+type PreferredCurrencyUsdThresholdRootState = FiatRatesRootState;
 
 export const calculatePreferredCurrencyUsdThreshold = ({
     baseCurrency,

@@ -1,10 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import {
-    type DeviceRootState,
-    selectHasBitcoinOnlyFirmware,
-    selectHasOnlyPortfolioDevice,
-} from '@suite-common/device';
+import { selectHasBitcoinOnlyFirmware, selectHasOnlyPortfolioDevice } from '@suite-common/device';
 import {
     Feature,
     type MessageSystemRootState,
@@ -12,13 +8,12 @@ import {
 } from '@suite-common/message-system';
 
 import {
-    type BannerFlagsSliceRootState,
     selectIsDefiYieldPromoBannerClosed,
     selectIsEthVaultPromoBannerClosed,
     selectIsTs7PromoBannerClosed,
 } from './bannerFlagsSlice';
 
-type PromoBannersRootState = MessageSystemRootState & BannerFlagsSliceRootState & DeviceRootState;
+type PromoBannersRootState = MessageSystemRootState;
 
 export type VisiblePromoBannerKey = 'ts7' | 'defi-yield' | 'eth-vault';
 

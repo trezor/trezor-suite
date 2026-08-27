@@ -11,7 +11,6 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import {
     type AccountsRootState,
-    type EthereumGetCurrentNonceThunkState,
     type FormDraftRootState,
     ethereumGetCurrentNonceThunk,
     selectAccountByKey,
@@ -176,8 +175,7 @@ const prepareEthereumStakingContext = (
 };
 
 export type SignEthereumStakingTransactionNativeThunkState = PrepareEthereumStakingContextState &
-    DeviceRootState &
-    EthereumGetCurrentNonceThunkState;
+    DeviceRootState;
 
 export const signEthereumStakingTransactionNativeThunk = createThunk<
     void,
