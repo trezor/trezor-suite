@@ -60,6 +60,9 @@ test.describe('Discovery', { tag: ['@T3W1', '@T3T1'] }, () => {
                 timeout: DISCOVERY_LIMIT,
             });
             for (const symbol of coinsToActivate) {
+                // The account menu is virtualized, so narrow it down to the coin being checked to
+                // make sure its account is rendered no matter where it sits in the full list.
+                await walletPage.searchAccounts(symbol);
                 await expect
                     .soft(
                         walletPage.balanceOfAccount({ symbol, atIndex: 0 }),
@@ -69,6 +72,7 @@ test.describe('Discovery', { tag: ['@T3W1', '@T3T1'] }, () => {
                         timeout: DISCOVERY_LIMIT,
                     });
             }
+            await walletPage.clearAccountSearch();
         });
     });
 });
