@@ -1,6 +1,10 @@
 import type { Rule } from 'eslint';
 import ts from 'typescript';
 
+// This rule proves that a member is removable instead of trying to reconstruct complete data flow.
+// It records concrete requirements, marks ambiguous escapes as opaque, and reports only when every
+// requirement remains satisfied without the member. See `README.md` for the full design.
+
 type TypeAwareParserServices = {
     esTreeNodeToTSNodeMap?: ReadonlyMap<Rule.Node, ts.Node>;
     program?: ts.Program;
@@ -91,6 +95,8 @@ const addContractUsage = (
     contract: IntersectionContract,
     checker: ts.TypeChecker,
 ) => {
+    // A usage is represented by the accessed property path and, when the value is passed on, the
+    // type expected by the receiver. Transparent wrappers do not change either requirement.
     const path: string[] = [];
     let terminalExpression = rootExpression;
     let { parent } = terminalExpression;
@@ -113,6 +119,7 @@ const addContractUsage = (
                 continue;
             }
 
+            // A runtime key can reach any part of the contract, so no member is provably unused.
             contract.isOpaque = true;
 
             return;
@@ -134,6 +141,7 @@ const addContractUsage = (
         const requiredType = getExpectedArgumentType(parent, terminalExpression, checker);
 
         if (requiredType === undefined) {
+            // A value passed to an unresolved signature may depend on the complete contract.
             contract.isOpaque = true;
 
             return;
@@ -164,6 +172,7 @@ const addContractUsage = (
     }
 
     if (path.length === 0) {
+        // A bare value can escape this file without exposing which parts the receiver needs.
         contract.isOpaque = true;
 
         return;
@@ -212,6 +221,8 @@ const getTypesAtPath = (
 const isOptionalProperty = (property: ts.Symbol) =>
     (property.flags & ts.SymbolFlags.Optional) !== 0;
 
+// Different intersection members can collectively satisfy a target even when none is assignable
+// on its own. Compare their properties recursively to account for requirements split across members.
 const areTypesCollectivelyAssignable = (
     sourceTypes: readonly ts.Type[],
     targetType: ts.Type,
@@ -226,6 +237,8 @@ const areTypesCollectivelyAssignable = (
     }
 
     if (visitedTypes.has(targetType)) {
+        // Recursive target types are treated as satisfied to prefer a false negative over an
+        // incorrect removal suggestion.
         return true;
     }
 
@@ -253,6 +266,8 @@ const areTypesCollectivelyAssignable = (
         checker.getSignaturesOfType(targetType, ts.SignatureKind.Construct).length > 0 ||
         checker.getIndexInfosOfType(targetType).length > 0
     ) {
+        // Callable, constructable, and indexed contracts cannot be safely composed property by
+        // property. Failing this proof keeps the member under inspection.
         return false;
     }
 
@@ -309,6 +324,8 @@ const isUsageSatisfied = (
 const isCreateThunkCall = (node: ts.CallExpression) =>
     ts.isIdentifier(node.expression) && node.expression.text === 'createThunk';
 
+// Generic consumers may use a contract through constraints or inference without an observable
+// property path. createThunk is excluded because its state and extra contracts are handled below.
 const markContractsUsedByGenericCallsAsOpaque = (
     sourceFile: ts.SourceFile,
     contractsBySymbol: ReadonlyMap<ts.Symbol, IntersectionContract>,
@@ -416,6 +433,8 @@ const getDispatchedThunkRequirements = (action: ts.Expression, checker: ts.TypeC
     });
 };
 
+// A dispatched child thunk introduces transitive state and dependency requirements even though the
+// parent callback never accesses those values directly.
 const addDispatchedThunkUsages = (
     sourceFile: ts.SourceFile,
     contractsBySymbol: ReadonlyMap<ts.Symbol, IntersectionContract>,
@@ -495,6 +514,10 @@ const addDispatchedThunkUsages = (
     ts.forEachChild(sourceFile, visitNode);
 };
 
+/**
+ * Reports confidently unused members of local State and Deps intersection contracts.
+ * See `eslint-local-rules/README.md` for the analysis principles and conservative fallbacks.
+ */
 export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
     meta: {
         type: 'suggestion',
@@ -535,6 +558,8 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
 
                 const contractsBySymbol = new Map<ts.Symbol, IntersectionContract>();
 
+                // Restricting candidates to direct aliases with explicit intersections keeps each
+                // proof tied to a concrete member list that can be reported and edited reliably.
                 for (const statement of sourceFile.statements) {
                     if (
                         !ts.isTypeAliasDeclaration(statement) ||
@@ -567,6 +592,8 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
                     return;
                 }
 
+                // Record ambiguous escapes and hidden child-thunk requirements before evaluating
+                // ordinary expression and property-path usages.
                 markContractsUsedByGenericCallsAsOpaque(sourceFile, contractsBySymbol, checker);
                 addDispatchedThunkUsages(sourceFile, contractsBySymbol, checker);
 
@@ -597,6 +624,8 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
                         const remainingTypes = contract.members
                             .filter((_, index) => index !== memberIndex)
                             .map(remainingMember => remainingMember.type);
+                        // Keep overlapping providers instead of choosing one arbitrarily. Otherwise,
+                        // a member is necessary when removing it leaves any usage unsatisfied.
                         const isMemberUsed = contract.usages.some(
                             usage =>
                                 isUsageSatisfied(usage, [member.type], checker) ||
