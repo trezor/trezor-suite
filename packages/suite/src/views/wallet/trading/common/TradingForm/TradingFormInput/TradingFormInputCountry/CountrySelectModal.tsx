@@ -10,7 +10,8 @@ import {
     tradingThunks,
     useCountryFilteredData,
 } from '@suite-common/trading';
-import { Column, Flag, Input, Modal, Paragraph, Row } from '@trezor/components';
+import { Column, Flag, Icon, Input, Modal, Paragraph, Row } from '@trezor/components';
+import { MagnifyingGlassIcon } from '@trezor/icons';
 import { CardList } from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -49,6 +50,14 @@ export const CountrySelectModal = ({ heading, onClose }: CountrySelectModalProps
                 <Input
                     onChange={ev => setFilterValue(ev.target.value)}
                     placeholder={translationString('TR_SEARCH_COUNTRY_PLACEHOLDER')}
+                    leftContent={
+                        <Icon
+                            as={MagnifyingGlassIcon}
+                            intent="neutral"
+                            priority="secondary"
+                            size={16}
+                        />
+                    }
                     onClear={() => setFilterValue('')}
                     showClearButton
                     value={filterValue}
