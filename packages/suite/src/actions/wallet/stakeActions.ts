@@ -245,6 +245,9 @@ const pushTransaction =
                     type: events.stakingConfirmEvent.name,
                     payload: { action: stakeType, networkSymbol: account.symbol },
                 });
+
+                // The confirmed delegation is now on-chain; don't let it pre-fill the next flow.
+                dispatch(stakeActions.clearVotingDelegation());
             }
 
             // notification from the backend may be delayed.
