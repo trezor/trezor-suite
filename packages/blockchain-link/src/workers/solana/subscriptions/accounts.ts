@@ -34,7 +34,7 @@ const handleNotifications = async <T>(
     // Address whose history changed, or undefined to ignore the notification.
     getChangedAddress: (notification: T, tokenMetadata: TokenDetailByMint) => string | undefined,
 ) => {
-    const { connect, state, post, getTokenMetadata } = context;
+    const { connect, post, getTokenMetadata } = context;
     const { address, isConnectionClosedError } = await solana();
     try {
         for await (const notification of notifications) {
@@ -80,12 +80,7 @@ const handleNotifications = async <T>(
             });
         }
     } catch (error) {
-        if (isConnectionClosedError(error)) {
-            // The WS was closed, we should unsubscribe
-            if (account.subscriptionId != null) abortSubscription(account.subscriptionId);
-            state.removeAccounts([account]);
-            context.onNetworkDisconnect();
-        }
+        if (isConnectionClosedError(error)) context.onSubscriptionsClosed();
     }
 };
 

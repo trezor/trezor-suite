@@ -26,7 +26,8 @@ export const initBlockchain = (
     coinInfo: CoinInfo,
     postMessage: Options['postMessage'],
     identity?: string,
-) => backends.getOrConnect({ coinInfo, identity, postMessage });
+    options?: { force?: boolean },
+) => backends.getOrConnect({ coinInfo, identity, postMessage }, options);
 
 export const reconnectAllBackends = (coinInfo?: CoinInfo) => backends.reconnectAll(coinInfo);
 

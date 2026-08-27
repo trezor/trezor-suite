@@ -49,6 +49,9 @@ export default class BlockchainUnsubscribeFiatRates extends AbstractMethod<
             this.params.coinInfo,
             sendCoreMessage,
             this.params.identity,
+            // Suite reconnects a backend through this method (reconnectBlockchainThunk), including
+            // from the reconnect button, so it connects now instead of awaiting the retry delay.
+            { force: true },
         );
 
         return backend.unsubscribeFiatRates();
