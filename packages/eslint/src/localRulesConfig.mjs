@@ -1,4 +1,6 @@
 import pluginLocalRules from 'eslint-plugin-local-rules';
+
+import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
  */
@@ -89,4 +91,19 @@ export const localRulesConfig = [
             'local-rules/no-suite-imports-in-suite-common': 'error',
         },
     },
+    ...(areExpensiveChecksEnabled
+        ? [
+              {
+                  files: [
+                      'packages/**/src/**/*.{ts,tsx}',
+                      'suite/**/src/**/*.{ts,tsx}',
+                      'suite-common/**/src/**/*.{ts,tsx}',
+                      'suite-native/**/src/**/*.{ts,tsx}',
+                  ],
+                  rules: {
+                      'local-rules/no-unused-intersection-members': 'error',
+                  },
+              },
+          ]
+        : []),
 ];

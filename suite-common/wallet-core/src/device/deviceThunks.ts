@@ -416,7 +416,7 @@ export const setDeviceAutoEjectThunk = createThunk<
     });
 });
 
-type ToggleAutoEjectThunkState = DeviceRootState & WalletSettingsRootState;
+type ToggleAutoEjectThunkState = WalletSettingsRootState;
 
 export const toggleAutoEjectThunk = createThunk<
     unknown,

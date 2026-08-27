@@ -5,7 +5,7 @@ import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { selectAccounts } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type CallMethodResponse } from '@trezor/connect';
 import type { TronContractInput } from '@trezor/connect-common';
@@ -106,6 +106,7 @@ const processNamespaces = (
     );
 
 export type TronRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
+    AccountsRootState &
     WalletConnectStateRootState;
 export type TronRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 

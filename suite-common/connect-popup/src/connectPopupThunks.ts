@@ -71,8 +71,7 @@ type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
 };
 
 export type ConnectPopupCallThunkState = DeviceRootState &
-    ConnectPopupStateRootState &
-    AccountsRootState;
+    ConnectPopupStateRootState;
 export type ConnectPopupCallThunkDeps = {
     actions: LockDeviceDep;
     services: AnalyticsDep;
@@ -309,8 +308,7 @@ export const connectPopupCallThunk = <M extends CallMethodKeys>(
 > => connectPopupCallThunkInner(params) as any;
 
 type ConnectPopupDeeplinkThunkState = DeviceRootState &
-    ConnectPopupStateRootState &
-    AccountsRootState;
+    ConnectPopupStateRootState;
 type ConnectPopupDeeplinkThunkDeps = {
     actions: LockDeviceDep;
     services: AnalyticsDep;

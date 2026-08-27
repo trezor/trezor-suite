@@ -5,7 +5,7 @@ import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { selectAccounts } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect, { type CallMethodResponse, type ComposeOutput } from '@trezor/connect';
@@ -36,6 +36,7 @@ const findAccount = (accounts: Account[], firstAddress: string) =>
     });
 
 export type BitcoinRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
+    AccountsRootState &
     WalletConnectStateRootState;
 export type BitcoinRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 

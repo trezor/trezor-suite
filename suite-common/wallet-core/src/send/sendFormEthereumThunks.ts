@@ -62,7 +62,6 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
-import { type AccountsRootState } from '../accounts/accountsReducer';
 import {
     type WalletSettingsRootState,
     selectAddressDisplayType,
@@ -270,9 +269,7 @@ export const calculate = (
 
     return payloadData;
 };
-type ComposeEthereumTransactionFeeLevelsThunkState = AccountsRootState &
-    DeviceRootState &
-    TransactionsRootState;
+type ComposeEthereumTransactionFeeLevelsThunkState = DeviceRootState & TransactionsRootState;
 
 export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
@@ -543,7 +540,7 @@ interface EthereumGetCurrentNonceThunkParams {
     // See ResolveEthereumNonceParams: temporarily required so no caller can silently fall back to the stale nonce.
     fetchConfirmedNonce?: boolean;
 }
-export type EthereumGetCurrentNonceThunkState = AccountsRootState & TransactionsRootState;
+export type EthereumGetCurrentNonceThunkState = TransactionsRootState;
 
 export const ethereumGetCurrentNonceThunk = createThunk<
     ResolveEthereumNonceResult,
@@ -565,9 +562,7 @@ export const ethereumGetCurrentNonceThunk = createThunk<
     },
 );
 
-type SignEthereumSendFormTransactionThunkState = AccountsRootState &
-    TransactionsRootState &
-    WalletSettingsRootState;
+type SignEthereumSendFormTransactionThunkState = TransactionsRootState & WalletSettingsRootState;
 
 export const signEthereumSendFormTransactionThunk = createThunk<
     { serializedTx: string },

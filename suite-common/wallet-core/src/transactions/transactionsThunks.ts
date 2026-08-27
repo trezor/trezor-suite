@@ -378,10 +378,7 @@ type AddFakePendingEvmTxThunkParams = {
     // correct it yet.
     ethereumNonce?: string;
 };
-type AddFakePendingEvmTxThunkState = AccountsRootState &
-    BlockchainRootState &
-    FeesRootState &
-    TransactionsRootState;
+type AddFakePendingEvmTxThunkState = BlockchainRootState & FeesRootState & TransactionsRootState;
 
 export const addFakePendingEvmTxThunk = createThunk<
     void,
