@@ -5,7 +5,7 @@ import { Button, Column, H4, Tooltip } from '@trezor/components';
 import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
 
 type SelectNetworkProps = {
-    heading: React.ReactNode;
+    heading?: React.ReactNode;
     networks: Network[];
     handleNetworkSelection?: (symbol?: NetworkSymbol) => void;
     onSettings?: (symbol: NetworkSymbol) => void;
@@ -27,9 +27,11 @@ export const SelectNetwork = ({
 
     return (
         <Column gap={12} data-testid={dataTestId}>
-            <H4 intent="neutral" priority="secondary" typographyStyle="body-sm">
-                {heading}
-            </H4>
+            {heading && (
+                <H4 intent="neutral" priority="secondary" typographyStyle="body-sm">
+                    {heading}
+                </H4>
+            )}
             <NetworkList
                 onClick={handleNetworkSelection}
                 networks={networks}
