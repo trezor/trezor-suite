@@ -70,8 +70,7 @@ type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     source: ConnectCallSource;
 };
 
-export type ConnectPopupCallThunkState = DeviceRootState &
-    ConnectPopupStateRootState;
+export type ConnectPopupCallThunkState = DeviceRootState & ConnectPopupStateRootState;
 export type ConnectPopupCallThunkDeps = {
     actions: LockDeviceDep;
     services: AnalyticsDep;
@@ -307,8 +306,7 @@ export const connectPopupCallThunk = <M extends CallMethodKeys>(
     { state: ConnectPopupCallThunkState; extra: ConnectPopupCallThunkDeps }
 > => connectPopupCallThunkInner(params) as any;
 
-type ConnectPopupDeeplinkThunkState = DeviceRootState &
-    ConnectPopupStateRootState;
+type ConnectPopupDeeplinkThunkState = DeviceRootState & ConnectPopupStateRootState;
 type ConnectPopupDeeplinkThunkDeps = {
     actions: LockDeviceDep;
     services: AnalyticsDep;
