@@ -33,6 +33,7 @@ const TRADE_ENDPOINTS: Record<TradeFlow, TradeEndpoints> = {
 };
 
 const WATCH_POLL_PERIOD = '00:30';
+const TRADE_RESPONSE_TIMEOUT = 90_000;
 const WATCH_POLL_TIMEOUT = 35_000;
 const ADVANCE_ATTEMPTS = 5;
 
@@ -145,7 +146,9 @@ export class TradingMockNew {
     }
 
     async waitForLiveTrade() {
-        const response = await this.page.waitForResponse(this.endpoints.trade);
+        const response = await this.page.waitForResponse(this.endpoints.trade, {
+            timeout: TRADE_RESPONSE_TIMEOUT,
+        });
         const trade = (await response.json()) as ExchangeTrade;
         // A DEX trade sends to the provider's router contract (`dexTx`), so it has no sendAddress.
         const hasDepositAddress = trade.isDex || trade.sendAddress;
