@@ -22,8 +22,11 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
 
         await test.step('Add ETH account', async () => {
             await tradingPage.assetPicker.globalAddAccountButton.click();
+            await expect(walletPage.addAccountNetworkSearchInput).toBeVisible();
+            await walletPage.addAccountNetworkSearchInput.fill('eth');
             await tradingPage.receiveAccount.addAccountModalNetworkButton('eth').click();
             await page.discoveryShouldFinish();
+            await walletPage.closeAddAccountModal();
         });
 
         await test.step('Filter and select account', async () => {

@@ -56,15 +56,14 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
                             await walletPage.getAccountsInTypeCount(type);
 
                         await walletPage.addAccountButton.click();
-                        await expect(settingsPage.modal).toBeVisible();
-                        await settingsPage.coinsTab.addAccountNetworkSearchInput.fill(coin);
-                        await expect(settingsPage.coinsTab.networkAddButton('eth')).toBeHidden();
-                        await settingsPage.coinsTab.networkAddButton(coin).click();
+                        await expect(walletPage.addAccountNetworkSearchInput).toBeVisible();
+                        await walletPage.addAccountNetworkSearchInput.fill(coin);
+                        await expect(walletPage.addAccountNetworkButton('eth')).toBeHidden();
+                        await walletPage.addAccountNetworkButton(coin).click();
                         await walletPage.addAccountTypeSelectInput.click();
                         await walletPage.addAccountTypeSelectOption(type).click();
                         await walletPage.addAccountConfirmButton.click();
-                        await expect(settingsPage.modal).toBeVisible();
-                        await settingsPage.modalCloseButton.click();
+                        await walletPage.closeAddAccountModal();
 
                         const numberOfAccountsAfter = await walletPage.getAccountsInTypeCount(type);
 
@@ -105,12 +104,11 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
                 );
 
                 await walletPage.addAccountButton.click();
-                await expect(settingsPage.modal).toBeVisible();
-                await settingsPage.coinsTab.addAccountNetworkSearchInput.fill(coin.symbol);
-                await expect(settingsPage.coinsTab.networkAddButton('btc')).toBeHidden();
-                await settingsPage.coinsTab.networkAddButton(coin.symbol).click();
-                await expect(settingsPage.modal).toBeVisible();
-                await settingsPage.modalCloseButton.click();
+                await expect(walletPage.addAccountNetworkSearchInput).toBeVisible();
+                await walletPage.addAccountNetworkSearchInput.fill(coin.symbol);
+                await expect(walletPage.addAccountNetworkButton('btc')).toBeHidden();
+                await walletPage.addAccountNetworkButton(coin.symbol).click();
+                await walletPage.closeAddAccountModal();
 
                 const numberOfAccountsAfter = await walletPage.getAccountsForCoinInTypeCount(
                     'normal',
