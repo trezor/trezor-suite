@@ -9,9 +9,8 @@ import {
     type TradingAssetSellOption,
     type TradingExchangeFormProps,
     type TradingExchangeFormType,
-    cryptoIdToNetwork,
     getDexEstimationData,
-    isSendingEvmNativeToken,
+    requiresErc20Approval,
 } from '@suite-common/trading';
 import { isAccountBasedNetwork } from '@suite-common/wallet-config';
 import { ETHEREUM_ADJUST_GAS_LIMIT, updateFeeInfoThunk } from '@suite-common/wallet-core';
@@ -99,11 +98,7 @@ export const useExchangeDexQuote = ({
             return;
         }
 
-        const sendNetwork = cryptoIdToNetwork(sendCryptoSelect.id);
-        const isEvmNativeToken = isSendingEvmNativeToken(sendCryptoSelect.id);
-        const requiresApproval = sendNetwork?.networkType === 'ethereum' && !isEvmNativeToken;
-
-        const quote = requiresApproval ? selectedQuote : dexQuotes[0];
+        const quote = requiresErc20Approval(sendCryptoSelect.id) ? selectedQuote : dexQuotes[0];
 
         if (!quote?.dexTx) {
             setValue('transactionData', '');

@@ -14,6 +14,8 @@ import { exchangeThunks } from './index';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
+const USDT_CRYPTO_ID = 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId;
+
 describe('selectExchangeQuoteThunk', () => {
     afterEach(() => {
         jest.clearAllMocks();
@@ -165,9 +167,14 @@ describe('selectExchangeQuoteThunk', () => {
         expect(store.getState().wallet.trading.exchange.selectedQuote).toEqual(dexQuote);
     });
 
-    it('should not save DEX quote with other statuses but still call nextStep', async () => {
+    it('should not save an ERC-20 DEX quote with other statuses but still call nextStep', async () => {
         const { quote, state } = getDataMocks();
-        const dexQuote = { ...quote, isDex: true, status: 'APPROVAL_REQ' as const };
+        const dexQuote = {
+            ...quote,
+            isDex: true,
+            send: USDT_CRYPTO_ID,
+            status: 'APPROVAL_REQ' as const,
+        };
         const { store, mockNextStep } = getMocks(state, { status: 'running' });
 
         await store

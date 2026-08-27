@@ -9,12 +9,44 @@ import {
     getDisplayComposedLevels,
     getDisplayNetworkFee,
     hasEip712SignDataType,
+    requiresErc20Approval,
     requiresTokenApproval,
     tokenSupportsIncreasingAllowance,
 } from './exchangeUtils';
 
 const USDT_CRYPTO_ID = 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId;
 const DAI_CRYPTO_ID = 'ethereum--0x6b175474e89094c44da98b954eedeac495271d0f' as CryptoId;
+const USDT_SOLANA_CRYPTO_ID = 'solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB' as CryptoId;
+const USDC_BASE_CRYPTO_ID = 'base--0x833589fcd6edb6e08f4c7c32d4f71b54bda02913' as CryptoId;
+
+describe('requiresErc20Approval', () => {
+    it('should return false when no crypto id is provided', () => {
+        expect(requiresErc20Approval(undefined)).toBe(false);
+    });
+
+    it('should return true for an ERC-20 token', () => {
+        expect(requiresErc20Approval(USDT_CRYPTO_ID)).toBe(true);
+    });
+
+    it('should return true for a token on another EVM network', () => {
+        expect(requiresErc20Approval(USDC_BASE_CRYPTO_ID)).toBe(true);
+    });
+
+    it('should return false for a native EVM coin', () => {
+        expect(requiresErc20Approval('ethereum' as CryptoId)).toBe(false);
+    });
+
+    it('should return false for a native EVM coin addressed by the zero contract', () => {
+        expect(
+            requiresErc20Approval('base--0x0000000000000000000000000000000000000000' as CryptoId),
+        ).toBe(false);
+    });
+
+    it('should return false for a non-EVM network, both native and token', () => {
+        expect(requiresErc20Approval('solana' as CryptoId)).toBe(false);
+        expect(requiresErc20Approval(USDT_SOLANA_CRYPTO_ID)).toBe(false);
+    });
+});
 
 describe('requiresTokenApproval', () => {
     it('should return false when no quote is provided', () => {
@@ -46,6 +78,26 @@ describe('requiresTokenApproval', () => {
         const quote = {
             orderId: 'test-order',
             isDex: true,
+        };
+        const result = requiresTokenApproval(quote);
+        expect(result).toBe(false);
+    });
+
+    it('should return false when sending native SOL', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: 'solana' as CryptoId,
+        };
+        const result = requiresTokenApproval(quote);
+        expect(result).toBe(false);
+    });
+
+    it('should return false when sending an SPL token', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: USDT_SOLANA_CRYPTO_ID,
         };
         const result = requiresTokenApproval(quote);
         expect(result).toBe(false);
