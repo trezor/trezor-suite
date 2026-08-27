@@ -1,6 +1,10 @@
 import { configureMockStore } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type PrecomposedTransaction,
+    type PrecomposedTransactionError,
+} from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
 import { composeTronTransactionFeeLevelsThunk } from './sendFormTronThunks';
@@ -31,6 +35,14 @@ const formState = { outputs: [{ address: '', amount: '1' }] } as any;
 
 const composeContext = (feeEstimationRecipient?: string) =>
     ({ account, network, feeEstimationRecipient }) as any;
+
+function assertComposed(
+    tx: PrecomposedTransaction | undefined,
+): asserts tx is Exclude<PrecomposedTransaction, PrecomposedTransactionError> {
+    if (!tx || tx.type === 'error') {
+        throw new Error(`Expected a composed transaction, got ${tx?.error ?? 'undefined'}`);
+    }
+}
 
 const dispatchCompose = (feeEstimationRecipient?: string) =>
     configureMockStore({})
@@ -64,17 +76,18 @@ describe('composeTronTransactionFeeLevelsThunk – cold recipient activation fee
         expect(getAccountInfo).toHaveBeenCalledWith(
             expect.objectContaining({ descriptor: COLD_RECIPIENT }),
         );
-        expect(normal).toBeDefined();
-        expect(normal?.type).not.toBe('error');
-        expect((normal as any)?.accountActivationFee).toBeDefined();
+        assertComposed(normal);
+        expect(normal.accountActivationFee).toBe('1000000');
+        // 0.1 TRX create-account fee + 1 TRX activation fee
+        expect(normal.fee).toBe('1100000');
     });
 
     it('does not add an activation fee when no recipient is available (falls back to own account)', async () => {
         const { normal } = await dispatchCompose(undefined);
 
         expect(getAccountInfo).not.toHaveBeenCalled();
-        expect(normal).toBeDefined();
-        expect(normal?.type).not.toBe('error');
-        expect((normal as any)?.accountActivationFee).toBeUndefined();
+        assertComposed(normal);
+        expect(normal.accountActivationFee).toBeUndefined();
+        expect(normal.fee).toBe('0');
     });
 });

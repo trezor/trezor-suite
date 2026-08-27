@@ -19,12 +19,14 @@ const makeTrc20Tx = (overrides: Record<string, unknown> = {}): GeneralPrecompose
         ...overrides,
     }) as unknown as GeneralPrecomposedTransaction;
 
-const makeNativeTrxTx = (): GeneralPrecomposedTransaction =>
+const makeNativeTrxTx = (overrides: Record<string, unknown> = {}): GeneralPrecomposedTransaction =>
     ({
         type: 'nonfinal',
+        fee: '0',
         bytes: 300,
         totalSpent: '0',
         inputs: [],
+        ...overrides,
     }) as unknown as GeneralPrecomposedTransaction;
 
 const makeTronResources = (
@@ -106,11 +108,11 @@ describe(calculateTronFeeBreakdown.name, () => {
     });
 
     it('native TRX: no bandwidth — TRX burns bandwidth cost', () => {
-        // Tx: bandwidth: 300
+        // Tx: bandwidth: 300, fee: 0.3 TRX
         // Account: bandwidth: 0, energy: 0
         // Expected: trxBurned: 0.3 TRX, coveredBandwidth: 0
         const result = calculateTronFeeBreakdown(
-            makeNativeTrxTx(),
+            makeNativeTrxTx({ fee: '300000' }),
             makeTronResources({ availableFreeBandwidth: 0 }),
             trxSymbol,
         );
@@ -189,41 +191,35 @@ describe(calculateTronFeeBreakdown.name, () => {
         expect(result?.coveredEnergy.toNumber()).toBe(1000);
     });
 
-    it('native TRX to new account: free bandwidth is not accepted — burns create-account fee', () => {
-        // Tx: bandwidth: 300, activates the recipient account
+    it('native TRX to new account: burns the create-account fee and the activation fee', () => {
+        // Tx: bandwidth: 300, fee: 0.1 create-account + 1 activation
         // Account: free bandwidth: 300, staked bandwidth: 0
-        // Expected: trxBurned: 0.1 TRX (flat create-account fee), coveredBandwidth: 0
-        const tx = {
-            ...makeNativeTrxTx(),
-            accountActivationFee: '1000000',
-        } as GeneralPrecomposedTransaction;
+        // Expected: trxBurned: 1.1 TRX, coveredBandwidth: 0 (free bandwidth is not accepted)
+        const tx = makeNativeTrxTx({ fee: '1100000', accountActivationFee: '1000000' });
         const result = calculateTronFeeBreakdown(tx, makeTronResources(), trxSymbol);
-        expect(result?.trxBurned.toString()).toBe('0.1');
+        expect(result?.trxBurned.toString()).toBe('1.1');
         expect(result?.coveredBandwidth.toNumber()).toBe(0);
     });
 
-    it('native TRX to new account: staked bandwidth covers — 0 TRX burned', () => {
-        // Tx: bandwidth: 300, activates the recipient account
+    it('native TRX to new account: staked bandwidth covers — only the activation fee is burned', () => {
+        // Tx: bandwidth: 300, fee: 1 activation (bandwidth covered by stake)
         // Account: free bandwidth: 0, staked bandwidth: 300
-        // Expected: trxBurned: 0 TRX, coveredBandwidth: 300
-        const tx = {
-            ...makeNativeTrxTx(),
-            accountActivationFee: '1000000',
-        } as GeneralPrecomposedTransaction;
+        // Expected: trxBurned: 1 TRX, coveredBandwidth: 300
+        const tx = makeNativeTrxTx({ fee: '1000000', accountActivationFee: '1000000' });
         const result = calculateTronFeeBreakdown(
             tx,
             makeTronResources({ availableFreeBandwidth: 0, availableStakedBandwidth: 300 }),
             trxSymbol,
         );
-        expect(result?.trxBurned.toNumber()).toBe(0);
+        expect(result?.trxBurned.toString()).toBe('1');
         expect(result?.coveredBandwidth.toNumber()).toBe(300);
     });
 
     it('native TRX with memo: adds 1 TRX memo fee on top of bandwidth', () => {
-        // Tx: bandwidth: 300, memo fee: 1 TRX
+        // Tx: bandwidth: 300, fee: 1 TRX memo (bandwidth covered)
         // Account: bandwidth: 300
         // Expected: trxBurned: 1 TRX (memo only, bandwidth covered)
-        const tx = { ...makeNativeTrxTx(), memoFee: '1000000' } as GeneralPrecomposedTransaction;
+        const tx = makeNativeTrxTx({ fee: '1000000', memoFee: '1000000' });
         const result = calculateTronFeeBreakdown(tx, makeTronResources(), trxSymbol);
         expect(result?.trxBurned.toString()).toBe('1');
         expect(result?.coveredBandwidth.toNumber()).toBe(300);
