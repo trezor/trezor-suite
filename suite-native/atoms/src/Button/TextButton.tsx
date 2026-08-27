@@ -38,12 +38,14 @@ export type TextButtonProps = Omit<
     isLoading?: boolean;
     isDisabled?: boolean;
     isUnderlined?: boolean;
+    isDotted?: boolean;
 } & ButtonColorProps &
     TestProps;
 
 type TextButtonStyleProps = {
     isUnderlined: boolean;
     size: TextButtonSize;
+    isDotted?: boolean;
 };
 
 const buttonContainerStyle = prepareNativeStyle(() => ({
@@ -51,18 +53,21 @@ const buttonContainerStyle = prepareNativeStyle(() => ({
     maxWidth: '100%',
 }));
 
-const textStyle = prepareNativeStyle<TextButtonStyleProps>((utils, { isUnderlined, size }) => ({
-    ...utils.typography[textButtonTypographyMap[size]],
-    flexShrink: 1,
-    extend: [
-        {
-            condition: isUnderlined,
-            style: {
-                textDecorationLine: 'underline',
+const textStyle = prepareNativeStyle<TextButtonStyleProps>(
+    (utils, { isUnderlined, size, isDotted }) => ({
+        ...utils.typography[textButtonTypographyMap[size]],
+        flexShrink: 1,
+        extend: [
+            {
+                condition: isUnderlined,
+                style: {
+                    textDecorationLine: 'underline',
+                    textDecorationStyle: isDotted ? 'dotted' : 'solid',
+                },
             },
-        },
-    ],
-}));
+        ],
+    }),
+);
 
 export const TextButton = ({
     children,
@@ -74,6 +79,7 @@ export const TextButton = ({
     isInverse = false,
     isLoading = false,
     isUnderlined = false,
+    isDotted = false,
     priority = 'primary',
     size = 'large',
     style,
@@ -149,7 +155,10 @@ export const TextButton = ({
                 )}
                 <Animated.Text
                     numberOfLines={1}
-                    style={[applyStyle(textStyle, { isUnderlined, size }), animatedTextStyle]}
+                    style={[
+                        applyStyle(textStyle, { isUnderlined, size, isDotted }),
+                        animatedTextStyle,
+                    ]}
                     testID={testID ? `${testID}/text` : undefined}
                 >
                     {children}

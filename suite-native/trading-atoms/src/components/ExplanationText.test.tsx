@@ -46,6 +46,7 @@ describe('ExplanationText', () => {
             primaryButtonTitle: expect.objectContaining({
                 props: { id: 'generic.buttons.gotIt' },
             }),
+            isClosableByOutsidePress: true,
             testID: '@test/explanation/alert',
         });
         expect(getTranslation('generic.buttons.gotIt')).toBe('Got it');

@@ -3,6 +3,7 @@ import { Pressable } from 'react-native';
 
 import { HStack } from '@suite-native/atoms';
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type NativeSpacing } from '@trezor/theme';
 
 const infoRowStyle = prepareNativeStyle<{
     noBorder?: boolean;
@@ -25,6 +26,7 @@ type TradeInfoRowProps = PropsWithChildren<{
     style?: NativeStyleObject;
     noHorizontalPadding?: boolean;
     noVerticalPadding?: boolean;
+    spacing?: NativeSpacing | number;
 }>;
 
 export const TradeInfoRow = ({
@@ -35,12 +37,14 @@ export const TradeInfoRow = ({
     style,
     noHorizontalPadding,
     noVerticalPadding,
+    spacing,
 }: TradeInfoRowProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <Pressable onPress={onPress} testID={testID}>
             <HStack
+                spacing={spacing}
                 style={[
                     applyStyle(infoRowStyle, { noBorder, noHorizontalPadding, noVerticalPadding }),
                     style,

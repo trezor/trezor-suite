@@ -1,17 +1,24 @@
 import { type ReactNode } from 'react';
 
 import { useAlert } from '@suite-native/alerts';
-import { TextButton } from '@suite-native/atoms';
+import { TextButton, type TextButtonProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export type ExplanationTextProps = {
     children: ReactNode;
     title: ReactNode;
     description: ReactNode;
+    priority?: TextButtonProps['priority'];
     testID?: string;
 };
 
-export const ExplanationText = ({ children, title, description, testID }: ExplanationTextProps) => {
+export const ExplanationText = ({
+    children,
+    title,
+    description,
+    priority = 'secondary',
+    testID,
+}: ExplanationTextProps) => {
     const { showAlert } = useAlert();
 
     const handlePress = () => {
@@ -21,6 +28,7 @@ export const ExplanationText = ({ children, title, description, testID }: Explan
             textAlign: 'left',
             titleSpacing: 'sp4',
             primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
+            isClosableByOutsidePress: true,
             testID: testID ? `${testID}/alert` : undefined,
         });
     };
@@ -31,8 +39,9 @@ export const ExplanationText = ({ children, title, description, testID }: Explan
             iconRight="question"
             intent="neutral"
             isUnderlined
+            isDotted
             onPress={handlePress}
-            priority="secondary"
+            priority={priority}
             size="small"
             testID={testID}
         >
