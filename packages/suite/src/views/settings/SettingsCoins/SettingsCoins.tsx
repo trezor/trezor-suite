@@ -29,12 +29,12 @@ import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
+import { NetworkSettingsSearchInput } from 'src/components/suite/NetworkList/NetworkSettingsSearchInput';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
-import { NetworkSettingsSearchInput } from './NetworkSettingsSearchInput';
 import { NoNetworkSearchResults } from './NoNetworkSearchResults';
 import { useNetworkSettingsSearch } from './useNetworkSettingsSearch';
 
