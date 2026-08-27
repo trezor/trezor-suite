@@ -841,6 +841,60 @@ describe('recomposeAndSignTxThunk', () => {
         );
     });
 
+    it('should sign the recomposed native TRX fee, correcting an activation fee the real recipient does not need', async () => {
+        const { store, tradingFormState } = getMocks({
+            composedTransactionInfo: {
+                selectedFee: 'normal',
+                composed: {
+                    feePerByte: '1000',
+                    // Offers-page estimate against the cold stand-in recipient:
+                    // 0.1 create-account fee + 1 activation.
+                    fee: '1100000',
+                    outputs: [],
+                },
+            },
+        });
+
+        const account = { ...accountBtc, symbol: trxSymbol, networkType: 'tron' } as Account;
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: { txid: 'txid' },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            // Recompose against the real payin address, which turned out to be
+                            // activated already — bandwidth burn only.
+                            fee: '100000',
+                            outputs: [{ amount: '10000000' }],
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account,
+                address: 'address',
+                amount: '0.1',
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('fulfilled');
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+        expect(mockSignAndPushSendFormTransaction.mock.calls[0][0].precomposedTransaction.fee).toBe(
+            '100000',
+        );
+    });
+
     it('should keep the composed feeLimit for non-Tron networks', async () => {
         const { store, account, tradingFormState } = getMocks({
             composedTransactionInfo: {
