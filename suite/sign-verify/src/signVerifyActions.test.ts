@@ -15,6 +15,11 @@ const ADDRESS = 'ADDRESS';
 const MESSAGE = 'MESSAGE';
 const SIGNATURE = 'SIGNATURE';
 const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
+const LEGACY_ACCOUNT = mockWalletAccount({
+    symbol: asNetworkSymbol('btc'),
+    accountType: 'legacy',
+});
+const ETHEREUM_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 
 const CONNECTED_DEVICE = mockSuiteDevice({ connected: true, available: true });
 
@@ -142,6 +147,23 @@ describe('Sign/Verify actions', () => {
                     hex: true,
                     signatureFormat: 'electrum',
                 },
+            });
+        });
+
+        it.each([
+            ['an account signing in a single format', ETHEREUM_ACCOUNT],
+            ['an account not offered the choice', LEGACY_ACCOUNT],
+        ])('leaves the signature format out for %s', async (_name, account) => {
+            testMocks.setTrezorConnectFixtures({
+                success: true,
+                payload: { address: ADDRESS, signature: SIGNATURE },
+            });
+
+            await sign(account, PATH, MESSAGE)(dispatch, getState, deps);
+
+            expect(deps.services.analytics.report).toHaveBeenCalledWith({
+                type: events.coinSignMessageEvent.name,
+                payload: { status: 'success', symbol: account.symbol, hex: false },
             });
         });
 

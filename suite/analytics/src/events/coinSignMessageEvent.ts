@@ -7,7 +7,7 @@ type Attributes = {
     error?: AttributeDef<string>;
     symbol: AttributeDef<string>;
     hex: AttributeDef<boolean>;
-    signatureFormat: AttributeDef<'trezor' | 'electrum'>;
+    signatureFormat?: AttributeDef<'trezor' | 'electrum'>;
 };
 
 export const coinSignMessageEvent: EventDef<Attributes, EventType.CoinSignMessage> = {
@@ -38,7 +38,7 @@ export const coinSignMessageEvent: EventDef<Attributes, EventType.CoinSignMessag
         },
         signatureFormat: {
             description:
-                'The selected signature format: `electrum` when the Electrum-compatible format was chosen, `trezor` otherwise. The choice is offered on Bitcoin-like networks only, so every other `symbol` always reports `trezor` — filter by `symbol` before reading the split',
+                'The selected signature format: `electrum` when the Electrum-compatible format was chosen, `trezor` otherwise. Sent only by accounts that are offered the choice: non-legacy accounts of Bitcoin-like networks that have more than the `normal` account type, such as `btc` and `ltc`. Left out by legacy accounts, by single-account-type coins like `bch`, `doge` and `zec`, and by networks signing in one format such as `eth` and `ada`',
             changelog: [{ version: '26.9.0', notes: 'added' }],
         },
     },
