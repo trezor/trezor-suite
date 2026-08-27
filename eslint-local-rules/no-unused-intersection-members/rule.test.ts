@@ -122,11 +122,32 @@ typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMe
         {
             filename: typeAwareTestFilename,
             code: `
+                    type SendState = {
+                        drafts: Record<string, unknown>;
+                        serializedTransaction?: string;
+                    };
+
+                    const getDrafts = (state: SendState) => state.drafts;
+                `,
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
                     type LoggerDeps = { logger: { log: () => void } };
                     type StorageDeps = { storage: { save: () => void } };
                     type UnrelatedContract = LoggerDeps & StorageDeps;
 
                     const run = (deps: UnrelatedContract) => deps.logger.log();
+                `,
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type LoggerDep = { logger: { log: () => void } };
+                    type StorageDep = { storage: { save: () => void } };
+                    type RunContext = LoggerDep & StorageDep;
+
+                    const run = (context: RunContext) => context.logger.log();
                 `,
         },
         {
@@ -674,6 +695,70 @@ typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMe
                 {
                     messageId: 'unusedContractMember',
                     data: { memberName: 'storage', typeName: 'RunDeps' },
+                },
+            ],
+        },
+        {
+            filename: typeAwareTestFilename,
+            options: [{ additionalTypeNameSuffixes: ['Context'] }],
+            code: `
+                    type LoggerDep = { logger: { log: () => void } };
+                    type StorageDep = { storage: { save: () => void } };
+                    type RunContext = LoggerDep & StorageDep;
+
+                    const run = (context: RunContext) => context.logger.log();
+                `,
+            errors: [
+                {
+                    messageId: 'unusedIntersectionMember',
+                    data: { memberName: 'StorageDep', typeName: 'RunContext' },
+                },
+            ],
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type LoggerDep = { logger: { log: () => void } };
+                    type StorageDep = { storage: { save: () => void } };
+                    type ServiceContext = LoggerDep & StorageDep;
+
+                    const createService = (deps: ServiceContext) => () => deps.logger.log();
+                `,
+            errors: [
+                {
+                    messageId: 'unusedIntersectionMember',
+                    data: { memberName: 'StorageDep', typeName: 'ServiceContext' },
+                },
+            ],
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type ExtraContext = {
+                        logger: { log: () => void };
+                        storage: { save: () => void };
+                    };
+
+                    declare const createThunk: <Result, Payload, Config>(
+                        name: string,
+                        callback: (
+                            payload: Payload,
+                            api: {
+                                dispatch: (action: unknown) => unknown;
+                                extra: Config extends { extra: infer Deps } ? Deps : never;
+                            },
+                        ) => Result,
+                    ) => unknown;
+
+                    createThunk<void, void, { extra: ExtraContext }>(
+                        'run',
+                        (_, { extra }) => extra.logger.log(),
+                    );
+                `,
+            errors: [
+                {
+                    messageId: 'unusedContractMember',
+                    data: { memberName: 'storage', typeName: 'ExtraContext' },
                 },
             ],
         },

@@ -43,7 +43,11 @@ type IntersectionContract = {
     usages: ContractUsage[];
 };
 
-const contractTypeNamePattern = /(?:State|Deps)$/;
+type RuleOptions = {
+    additionalTypeNameSuffixes?: string[];
+};
+
+const defaultTypeNameSuffixes = ['State', 'Deps'];
 
 const isInsideTypeNode = (node: ts.Node) => {
     let currentNode: ts.Node | undefined = node.parent;
@@ -610,10 +614,9 @@ const markContractsUsedByGenericCallsAsOpaque = (
     ts.forEachChild(sourceFile, visitNode);
 };
 
-const getConfigContracts = (
+const getConfigPropertyType = (
     createThunkCall: ts.CallExpression,
     propertyName: 'extra' | 'state',
-    contractsBySymbol: ReadonlyMap<ts.Symbol, IntersectionContract[]>,
     checker: ts.TypeChecker,
 ) => {
     const configTypeNode = createThunkCall.typeArguments?.[2];
@@ -630,9 +633,18 @@ const getConfigContracts = (
     }
 
     const declaration = property.valueDeclaration ?? property.declarations?.[0] ?? configTypeNode;
-    const propertyType = checker.getTypeOfSymbolAtLocation(property, declaration);
+    return checker.getTypeOfSymbolAtLocation(property, declaration);
+};
 
-    return propertyType.aliasSymbol === undefined
+const getConfigContracts = (
+    createThunkCall: ts.CallExpression,
+    propertyName: 'extra' | 'state',
+    contractsBySymbol: ReadonlyMap<ts.Symbol, IntersectionContract[]>,
+    checker: ts.TypeChecker,
+) => {
+    const propertyType = getConfigPropertyType(createThunkCall, propertyName, checker);
+
+    return propertyType?.aliasSymbol === undefined
         ? []
         : (contractsBySymbol.get(propertyType.aliasSymbol) ?? []);
 };
@@ -719,6 +731,63 @@ const collectPropertyGroups = (
     });
 
     return members.length === 0 ? nestedGroups : [{ members, path: [...path] }, ...nestedGroups];
+};
+
+const getDependencyFactoryFunction = (node: ts.Node) => {
+    if (
+        ts.isFunctionDeclaration(node) &&
+        node.name !== undefined &&
+        /^create[A-Z]/.test(node.name.text)
+    ) {
+        return node;
+    }
+
+    if (
+        (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) &&
+        ts.isVariableDeclaration(node.parent) &&
+        ts.isIdentifier(node.parent.name) &&
+        /^create[A-Z]/.test(node.parent.name.text)
+    ) {
+        return node;
+    }
+
+    return undefined;
+};
+
+const collectRoleContractSymbols = (sourceFile: ts.SourceFile, checker: ts.TypeChecker) => {
+    const symbols = new Set<ts.Symbol>();
+    const addTypeAliasSymbol = (type: ts.Type | undefined) => {
+        if (type?.aliasSymbol !== undefined) {
+            symbols.add(type.aliasSymbol);
+        }
+    };
+    const visitNode = (node: ts.Node) => {
+        if (ts.isCallExpression(node) && isCreateThunkCall(node, checker)) {
+            addTypeAliasSymbol(getConfigPropertyType(node, 'state', checker));
+            addTypeAliasSymbol(getConfigPropertyType(node, 'extra', checker));
+        }
+
+        const dependencyFactory = getDependencyFactoryFunction(node);
+        const depsParameter = dependencyFactory?.parameters[0];
+
+        if (
+            depsParameter !== undefined &&
+            ts.isIdentifier(depsParameter.name) &&
+            depsParameter.name.text === 'deps'
+        ) {
+            addTypeAliasSymbol(
+                depsParameter.type === undefined
+                    ? checker.getTypeAtLocation(depsParameter)
+                    : checker.getTypeFromTypeNode(depsParameter.type),
+            );
+        }
+
+        ts.forEachChild(node, visitNode);
+    };
+
+    ts.forEachChild(sourceFile, visitNode);
+
+    return symbols;
 };
 
 const getObjectBindingIdentifier = (parameter: ts.ParameterDeclaration, propertyName: string) => {
@@ -1063,7 +1132,7 @@ const getWrappedServicesIntersections = (node: ts.TypeNode, checker: ts.TypeChec
 };
 
 /**
- * Reports confidently unused members of local State and Deps contracts.
+ * Reports confidently unused members of recognized local contracts.
  * See `README.md` for the analysis principles and conservative fallbacks.
  */
 export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
@@ -1071,7 +1140,7 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
         type: 'suggestion',
         docs: {
             description:
-                'Reports State and Deps contract members that are not required by their local implementation.',
+                'Reports contract members that are not required by their local implementation.',
             category: 'Best Practices',
             recommended: false,
         },
@@ -1081,7 +1150,19 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
             unusedIntersectionMember:
                 "'{{memberName}}' is not required by the implementation using '{{typeName}}'. Remove it from the intersection.",
         },
-        schema: [],
+        schema: [
+            {
+                type: 'object',
+                properties: {
+                    additionalTypeNameSuffixes: {
+                        type: 'array',
+                        items: { type: 'string', minLength: 1 },
+                        uniqueItems: true,
+                    },
+                },
+                additionalProperties: false,
+            },
+        ],
     },
     create(context) {
         const parserServices = getTypeScriptParserServices(context);
@@ -1092,6 +1173,11 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
 
         const checker = parserServices.program.getTypeChecker();
         const report = createTypeScriptNodeReporter(context, parserServices);
+        const options = context.options[0] as RuleOptions | undefined;
+        const typeNameSuffixes = [
+            ...defaultTypeNameSuffixes,
+            ...(options?.additionalTypeNameSuffixes ?? []),
+        ];
 
         return {
             'Program:exit': programNode => {
@@ -1102,18 +1188,26 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
                 }
 
                 const contractsBySymbol = new Map<ts.Symbol, IntersectionContract[]>();
+                const roleContractSymbols = collectRoleContractSymbols(sourceFile, checker);
 
                 // Restrict candidates to local aliases with explicit intersections so each proof is
                 // tied to a concrete member list that can be reported and edited reliably.
                 for (const statement of sourceFile.statements) {
+                    if (!ts.isTypeAliasDeclaration(statement)) {
+                        continue;
+                    }
+
+                    const symbol = checker.getSymbolAtLocation(statement.name);
+
                     if (
-                        !ts.isTypeAliasDeclaration(statement) ||
-                        !contractTypeNamePattern.test(statement.name.text)
+                        symbol === undefined ||
+                        (!typeNameSuffixes.some(suffix => statement.name.text.endsWith(suffix)) &&
+                            !roleContractSymbols.has(symbol))
                     ) {
                         continue;
                     }
 
-                    const groups = [
+                    const allGroups = [
                         ...collectIntersectionGroups(statement.type, sourceFile, checker),
                         ...getWrappedServicesIntersections(statement.type, checker).map(
                             servicesIntersection => ({
@@ -1126,15 +1220,16 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
                             }),
                         ),
                     ];
-                    const propertyGroups = collectPropertyGroups(statement.type);
+                    const isNonRoleStateContract =
+                        statement.name.text.endsWith('State') && !roleContractSymbols.has(symbol);
+                    const groups = isNonRoleStateContract
+                        ? allGroups.filter(group => group.path.length === 0).slice(0, 1)
+                        : allGroups;
+                    const propertyGroups = isNonRoleStateContract
+                        ? []
+                        : collectPropertyGroups(statement.type);
 
                     if (groups.length === 0 && propertyGroups.length === 0) {
-                        continue;
-                    }
-
-                    const symbol = checker.getSymbolAtLocation(statement.name);
-
-                    if (symbol === undefined) {
                         continue;
                     }
 
