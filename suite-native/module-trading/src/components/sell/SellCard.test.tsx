@@ -22,12 +22,12 @@ describe('SellCard', () => {
     let form: SellFormType;
     const preloadedState = createTradingPreloadedState({ tradeType: 'sell' });
 
-    const renderForm = () =>
-        renderHookWithStoreProvider(() => useSellForm(), {
+    const renderForm = async () =>
+        await renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState,
         });
 
-    const renderSellCard = (isAmountInputActive: boolean) => {
+    const renderSellCard = async (isAmountInputActive: boolean) => {
         const cardPreloadedState = createTradingPreloadedState({
             tradeType: 'sell',
             overrides: {
@@ -35,28 +35,31 @@ describe('SellCard', () => {
             },
         });
 
-        return renderWithStoreProvider(<SellCard isAmountInputActive={isAmountInputActive} />, {
-            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-            preloadedState: cardPreloadedState,
-        });
+        return await renderWithStoreProvider(
+            <SellCard isAmountInputActive={isAmountInputActive} />,
+            {
+                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+                preloadedState: cardPreloadedState,
+            },
+        );
     };
 
-    beforeEach(() => {
-        const { result } = renderForm();
+    beforeEach(async () => {
+        const { result } = await renderForm();
         form = result.current;
     });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should render all components for "you pay" part', () => {
-        act(() => {
+    it('should render all components for "you pay" part', async () => {
+        await act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('amountInCrypto', true);
             form.setValue('cryptoStringAmount', '100');
         });
-        const { getByText, getByLabelText } = renderSellCard(false);
+        const { getByText, getByLabelText } = await renderSellCard(false);
 
         expect(
             getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),

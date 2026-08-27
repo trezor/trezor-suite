@@ -69,7 +69,8 @@ const btc1AccountKey = btc1Account.key;
 describe('useSellFlow', () => {
     let store: TestStore;
 
-    const renderUseSellFlow = () => renderHookWithStoreProvider(() => useSellFlow(), { store });
+    const renderUseSellFlow = async () =>
+        await renderHookWithStoreProvider(() => useSellFlow(), { store });
 
     beforeEach(() => {
         store = createTradingLightStore({ tradeType: 'sell' });
@@ -86,12 +87,12 @@ describe('useSellFlow', () => {
             const trade = banxaCreditCardSellQuote;
 
             // Set up required state
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
-            const { result } = renderUseSellFlow();
+            const { result } = await renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doSellTrade(trade);
@@ -116,13 +117,13 @@ describe('useSellFlow', () => {
             const trade = banxaCreditCardSellQuote;
 
             // Set up quote but not account
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
                 // Explicitly clear trading account key
                 store.dispatch(tradingSellActions.setTradingAccountKey(undefined));
             });
 
-            const { result } = renderUseSellFlow();
+            const { result } = await renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doSellTrade(trade);
@@ -141,12 +142,12 @@ describe('useSellFlow', () => {
             const trade = banxaCreditCardSellQuote;
 
             // Set up account but not selectedQuote
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(undefined));
             });
 
-            const { result } = renderUseSellFlow();
+            const { result } = await renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doSellTrade(trade);
@@ -169,12 +170,12 @@ describe('useSellFlow', () => {
             const bankAccount = verifiedBankAccount;
 
             // Set up required state
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
-            const { result } = renderUseSellFlow();
+            const { result } = await renderUseSellFlow();
 
             await act(async () => {
                 await result.current.confirmTrade(bankAccount);
@@ -200,12 +201,12 @@ describe('useSellFlow', () => {
             const bankAccount = verifiedBankAccount;
 
             // Set up account but not quote
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(undefined));
             });
 
-            const { result } = renderUseSellFlow();
+            const { result } = await renderUseSellFlow();
 
             await act(async () => {
                 await result.current.confirmTrade(bankAccount);
@@ -224,12 +225,12 @@ describe('useSellFlow', () => {
             const bankAccount = verifiedBankAccount;
 
             // Set up quote but not account
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
                 store.dispatch(tradingSellActions.setTradingAccountKey(undefined));
             });
 
-            const { result } = renderUseSellFlow();
+            const { result } = await renderUseSellFlow();
 
             await act(async () => {
                 await result.current.confirmTrade(bankAccount);
@@ -252,12 +253,12 @@ describe('useSellFlow', () => {
                 quoteId: undefined,
             };
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
-            const { result } = renderUseSellFlow();
+            const { result } = await renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doBankAccountVerificationCheck();
@@ -275,12 +276,12 @@ describe('useSellFlow', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const trade = { ...banxaCreditCardSellQuote, quoteId: '' };
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
-            const { result } = renderUseSellFlow();
+            const { result } = await renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doBankAccountVerificationCheck();
@@ -299,12 +300,12 @@ describe('useSellFlow', () => {
             // Use a trade with a quoteId to avoid triggering doSellTrade
             const trade = { ...banxaCreditCardSellQuote, quoteId: 'test-quote-id' };
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
-            const { result } = renderUseSellFlow();
+            const { result } = await renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doBankAccountVerificationCheck();
@@ -320,12 +321,12 @@ describe('useSellFlow', () => {
         it('should not call doSellTrade if selectedQuote is missing', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(undefined));
             });
 
-            const { result } = renderUseSellFlow();
+            const { result } = await renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doBankAccountVerificationCheck();
@@ -343,12 +344,12 @@ describe('useSellFlow', () => {
         it('should navigate to browser when processResponseData is called with form data', async () => {
             const trade = banxaCreditCardSellQuote;
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
-            const { result } = renderUseSellFlow();
+            const { result } = await renderUseSellFlow();
 
             await act(async () => {
                 await result.current.doSellTrade(trade);
@@ -370,7 +371,7 @@ describe('useSellFlow', () => {
 
             // Call processResponseData - capturedHandleTradeArgs is set during mock
             expect(capturedHandleTradeArgs).toBeTruthy();
-            act(() => {
+            await act(() => {
                 capturedHandleTradeArgs!.processResponseData(mockResponse);
             });
 

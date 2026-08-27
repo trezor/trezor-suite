@@ -41,7 +41,7 @@ describe('useExchangeData', () => {
     ) => {
         const effectiveStore = store ?? createTradingLightStore({ tradeType: 'exchange' });
 
-        const ret = renderHookWithStoreProvider(
+        const ret = await renderHookWithStoreProvider(
             ({ reloadRequestOrdinal }) => useExchangeData(reloadRequestOrdinal),
             {
                 initialProps: { reloadRequestOrdinal: reloadRequestOrdinalInitialValue },
@@ -95,7 +95,7 @@ describe('useExchangeData', () => {
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
         const { rerender } = await renderUseExchangeData();
-        rerender({ reloadRequestOrdinal: 0 });
+        await rerender({ reloadRequestOrdinal: 0 });
 
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(1);
     });
@@ -106,7 +106,7 @@ describe('useExchangeData', () => {
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
         const { rerender } = await renderUseExchangeData();
-        rerender({ reloadRequestOrdinal: 1 });
+        await rerender({ reloadRequestOrdinal: 1 });
 
         expect(initialThunkLoadActionSpy).toHaveBeenCalledTimes(2);
     });
@@ -127,7 +127,7 @@ describe('useExchangeData', () => {
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingExchangeActions.setTradingAccountKey(btc2Account.key));
             });
 
@@ -149,7 +149,7 @@ describe('useExchangeData', () => {
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingExchangeActions.setTradingAccountKey(btc2Account.key));
             });
 
@@ -168,7 +168,7 @@ describe('useExchangeData', () => {
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingExchangeActions.setTradingAccountKey(btc3Account.key));
             });
 
@@ -191,7 +191,7 @@ describe('useExchangeData', () => {
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 store.dispatch(tradingExchangeActions.setTradingAccountKey(undefined));
             });
 

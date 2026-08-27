@@ -10,17 +10,17 @@ describe('useBottomSheetControls', () => {
     });
 
     describe('isSheetVisible', () => {
-        it('should be false by default', () => {
-            const { result } = renderHookWithBasicProvider(() => useBottomSheetControls());
+        it('should be false by default', async () => {
+            const { result } = await renderHookWithBasicProvider(() => useBottomSheetControls());
 
             expect(result.current.isSheetVisible).toBe(false);
         });
 
-        it('should be true after showSheet call and Keyboard.dismiss should be called one time', () => {
-            const { result } = renderHookWithBasicProvider(() => useBottomSheetControls());
+        it('should be true after showSheet call and Keyboard.dismiss should be called one time', async () => {
+            const { result } = await renderHookWithBasicProvider(() => useBottomSheetControls());
             const keyboardDismissSpy = jest.spyOn(Keyboard, 'dismiss');
 
-            act(() => {
+            await act(() => {
                 result.current.showSheet();
             });
 
@@ -28,11 +28,11 @@ describe('useBottomSheetControls', () => {
             expect(result.current.isSheetVisible).toBe(true);
         });
 
-        it('should be false after hideSheet call and Keyboard.dismiss should be called two times by default', () => {
-            const { result } = renderHookWithBasicProvider(() => useBottomSheetControls());
+        it('should be false after hideSheet call and Keyboard.dismiss should be called two times by default', async () => {
+            const { result } = await renderHookWithBasicProvider(() => useBottomSheetControls());
             const keyboardDismissSpy = jest.spyOn(Keyboard, 'dismiss');
 
-            act(() => {
+            await act(() => {
                 result.current.showSheet();
                 result.current.hideSheet();
             });
@@ -41,11 +41,11 @@ describe('useBottomSheetControls', () => {
             expect(result.current.isSheetVisible).toBe(false);
         });
 
-        it('should be false after hideSheet call with shouldHideKeyboard=true and Keyboard.dismiss should be called two times', () => {
-            const { result } = renderHookWithBasicProvider(() => useBottomSheetControls());
+        it('should be false after hideSheet call with shouldHideKeyboard=true and Keyboard.dismiss should be called two times', async () => {
+            const { result } = await renderHookWithBasicProvider(() => useBottomSheetControls());
             const keyboardDismissSpy = jest.spyOn(Keyboard, 'dismiss');
 
-            act(() => {
+            await act(() => {
                 result.current.showSheet();
                 result.current.hideSheet(true);
             });
@@ -54,11 +54,11 @@ describe('useBottomSheetControls', () => {
             expect(result.current.isSheetVisible).toBe(false);
         });
 
-        it('should be false after hideSheet call with shouldHideKeyboard=false and Keyboard.dismiss should be called only once', () => {
-            const { result } = renderHookWithBasicProvider(() => useBottomSheetControls());
+        it('should be false after hideSheet call with shouldHideKeyboard=false and Keyboard.dismiss should be called only once', async () => {
+            const { result } = await renderHookWithBasicProvider(() => useBottomSheetControls());
             const keyboardDismissSpy = jest.spyOn(Keyboard, 'dismiss');
 
-            act(() => {
+            await act(() => {
                 result.current.showSheet();
                 result.current.hideSheet(false);
             });

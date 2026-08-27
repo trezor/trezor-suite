@@ -99,11 +99,11 @@ describe('useExchangeSelectQuote', () => {
         });
     };
 
-    const renderExchangeForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), { store });
+    const renderExchangeForm = async () =>
+        await renderHookWithStoreProvider(() => useExchangeForm(), { store });
 
-    const renderUseExchangeSelectQuote = () => {
-        const hook = renderHookWithStoreProvider(
+    const renderUseExchangeSelectQuote = async () => {
+        const hook = await renderHookWithStoreProvider(
             () => useExchangeSelectQuoteWithReportSpy(exchangeForm),
             { store },
         );
@@ -119,38 +119,38 @@ describe('useExchangeSelectQuote', () => {
     });
 
     describe('while loading quotes', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
             store = getInitializedStore({ isLoading: true });
 
-            const { result } = renderExchangeForm();
+            const { result } = await renderExchangeForm();
             exchangeForm = result.current;
         });
 
-        it('should canProceed be false when loading', () => {
-            const { result } = renderUseExchangeSelectQuote();
+        it('should canProceed be false when loading', async () => {
+            const { result } = await renderUseExchangeSelectQuote();
             expect(result.current.canProceed).toBe(false);
             expect(result.current.isLoading).toBe(true);
             expect(result.current.isDexQuoteApprovalPrefetchLoadingForCandidateQuote).toBe(false);
         });
 
-        it('selectQuote should not dispatch selectQuoteThunk when isLoading', () => {
+        it('selectQuote should not dispatch selectQuoteThunk when isLoading', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
 
             dispatchSpy.mockClear();
-            act(() => {
+            await act(() => {
                 result.current.selectQuote();
             });
 
             expect(dispatchSpy).not.toHaveBeenCalled();
         });
 
-        it('selectQuoteForRevoke should not dispatch selectQuoteThunk when isLoading', () => {
+        it('selectQuoteForRevoke should not dispatch selectQuoteThunk when isLoading', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
 
             dispatchSpy.mockClear();
-            act(() => {
+            await act(() => {
                 result.current.selectQuoteForRevoke();
             });
 
@@ -159,22 +159,22 @@ describe('useExchangeSelectQuote', () => {
     });
 
     describe('while prefetching dex quote approval info', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
             store = getInitializedStore({
                 isLoading: false,
                 dexQuoteApprovalPrefetchLoadingQuoteId: invityDexQuote.quoteId!,
             });
 
-            const { result } = renderExchangeForm();
+            const { result } = await renderExchangeForm();
             exchangeForm = result.current;
 
-            act(() => {
+            await act(() => {
                 exchangeForm.setValue('quote', invityDexQuote);
             });
         });
 
         it('should canProceed be false while prefetch is loading for approval-required quote', async () => {
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
 
             await act(() => Promise.resolve());
 
@@ -183,12 +183,12 @@ describe('useExchangeSelectQuote', () => {
             expect(result.current.isDexQuoteApprovalPrefetchLoadingForCandidateQuote).toBe(true);
         });
 
-        it('should not dispatch selectQuoteThunk while prefetch is loading for approval-required quote', () => {
+        it('should not dispatch selectQuoteThunk while prefetch is loading for approval-required quote', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
 
             dispatchSpy.mockClear();
-            act(() => {
+            await act(() => {
                 result.current.selectQuote();
             });
 
@@ -196,11 +196,11 @@ describe('useExchangeSelectQuote', () => {
         });
 
         it('should canProceed be true while prefetch is loading for quote without approval', async () => {
-            act(() => {
+            await act(() => {
                 exchangeForm.setValue('quote', mercuryoFixedBestQuote);
             });
 
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
 
             await act(() => Promise.resolve());
 
@@ -208,26 +208,26 @@ describe('useExchangeSelectQuote', () => {
         });
 
         it('should canProceed be true when another approval-required quote is currently prefetched', async () => {
-            act(() => {
+            await act(() => {
                 exchangeForm.setValue('quote', {
                     ...invityDexQuote,
                     quoteId: 'another-dex-quote-id',
                 });
             });
 
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
 
             await act(() => Promise.resolve());
 
             expect(result.current.canProceed).toBe(true);
         });
 
-        it('selectQuoteForRevoke should not dispatch selectQuoteThunk while prefetch is loading for approval-required quote', () => {
+        it('selectQuoteForRevoke should not dispatch selectQuoteThunk while prefetch is loading for approval-required quote', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
 
             dispatchSpy.mockClear();
-            act(() => {
+            await act(() => {
                 result.current.selectQuoteForRevoke();
             });
 
@@ -236,31 +236,31 @@ describe('useExchangeSelectQuote', () => {
     });
 
     describe('with quote loaded and selected', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
             store = getInitializedStore({ isLoading: false });
 
-            const { result } = renderExchangeForm();
+            const { result } = await renderExchangeForm();
             exchangeForm = result.current;
 
-            act(() => {
+            await act(() => {
                 exchangeForm.setValue('quote', mercuryoFixedBestQuote);
             });
         });
 
         it('should canProceed be true when not loading and quote exists', async () => {
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
 
             await act(() => Promise.resolve());
 
             expect(result.current.canProceed).toBe(true);
         });
 
-        it('should call selectQuoteThunk when selectQuote is called', () => {
+        it('should call selectQuoteThunk when selectQuote is called', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
 
-            act(() => {
+            await act(() => {
                 result.current.selectQuote();
             });
 
@@ -276,17 +276,17 @@ describe('useExchangeSelectQuote', () => {
             );
         });
 
-        it('should apply default slippage when selecting a DEX quote without slippage', () => {
+        it('should apply default slippage when selecting a DEX quote without slippage', async () => {
             const quote = { ...invityDexQuote, swapSlippage: undefined };
-            act(() => {
+            await act(() => {
                 exchangeForm.setValue('quote', quote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 result.current.selectQuote();
             });
 
@@ -299,7 +299,7 @@ describe('useExchangeSelectQuote', () => {
                 TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
             );
 
-            act(() => {
+            await act(() => {
                 selectQuoteAction.payload.nextStep();
             });
 
@@ -311,8 +311,8 @@ describe('useExchangeSelectQuote', () => {
             );
         });
 
-        it('should not call selectQuoteThunk when account is not fully selected', () => {
-            act(() => {
+        it('should not call selectQuoteThunk when account is not fully selected', async () => {
+            await act(() => {
                 [
                     tradingExchangeActions.setReceiveAccountKey(btcAccount.key),
                     tradingExchangeActions.setTradingAccountKey(ethAccount.key),
@@ -321,10 +321,10 @@ describe('useExchangeSelectQuote', () => {
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result, reportMock } = renderUseExchangeSelectQuote();
+            const { result, reportMock } = await renderUseExchangeSelectQuote();
 
             dispatchSpy.mockClear();
-            act(() => {
+            await act(() => {
                 result.current.selectQuote();
             });
 
@@ -344,13 +344,13 @@ describe('useExchangeSelectQuote', () => {
             });
         });
 
-        it('should navigate to TradingExchangePreview when nextStep callback is executed', () => {
+        it('should navigate to TradingExchangePreview when nextStep callback is executed', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 result.current.selectQuote();
             });
 
@@ -360,7 +360,7 @@ describe('useExchangeSelectQuote', () => {
             const [dispatchCall] = firstCall;
             const { nextStep } = (dispatchCall as any).payload;
 
-            act(() => {
+            await act(() => {
                 nextStep();
             });
 
@@ -368,12 +368,12 @@ describe('useExchangeSelectQuote', () => {
         });
 
         describe('selectQuoteForRevoke', () => {
-            it('should call selectQuoteThunk when selectQuoteForRevoke is called', () => {
+            it('should call selectQuoteThunk when selectQuoteForRevoke is called', async () => {
                 const dispatchSpy = jest.spyOn(store, 'dispatch');
 
-                const { result } = renderUseExchangeSelectQuote();
+                const { result } = await renderUseExchangeSelectQuote();
 
-                act(() => {
+                await act(() => {
                     result.current.selectQuoteForRevoke();
                 });
 
@@ -389,8 +389,8 @@ describe('useExchangeSelectQuote', () => {
                 );
             });
 
-            it('should not call selectQuoteThunk when account is not fully selected', () => {
-                act(() => {
+            it('should not call selectQuoteThunk when account is not fully selected', async () => {
+                await act(() => {
                     [
                         tradingExchangeActions.setReceiveAccountKey(btcAccount.key),
                         tradingExchangeActions.setTradingAccountKey(ethAccount.key),
@@ -399,10 +399,10 @@ describe('useExchangeSelectQuote', () => {
                 });
 
                 const dispatchSpy = jest.spyOn(store, 'dispatch');
-                const { result, reportMock } = renderUseExchangeSelectQuote();
+                const { result, reportMock } = await renderUseExchangeSelectQuote();
 
                 dispatchSpy.mockClear();
-                act(() => {
+                await act(() => {
                     result.current.selectQuoteForRevoke();
                 });
 
@@ -425,25 +425,25 @@ describe('useExchangeSelectQuote', () => {
     });
 
     describe('navigation based on approval status', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
             store = getInitializedStore({ isLoading: false });
 
-            const { result } = renderExchangeForm();
+            const { result } = await renderExchangeForm();
             exchangeForm = result.current;
         });
 
-        it('should navigate to TradingExchangePreview when quote status is CONFIRM', () => {
+        it('should navigate to TradingExchangePreview when quote status is CONFIRM', async () => {
             const quote = { ...mercuryoFixedBestQuote, status: 'CONFIRM' as const };
 
-            act(() => {
+            await act(() => {
                 exchangeForm.setValue('quote', quote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 result.current.selectQuote();
             });
 
@@ -453,7 +453,7 @@ describe('useExchangeSelectQuote', () => {
             const [dispatchCall] = firstCall;
             const { nextStep } = (dispatchCall as any).payload;
 
-            act(() => {
+            await act(() => {
                 nextStep();
             });
 
@@ -466,18 +466,18 @@ describe('useExchangeSelectQuote', () => {
             expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
         });
 
-        it('should navigate to TradingExchangePreview when quote status is SIGN_DATA', () => {
+        it('should navigate to TradingExchangePreview when quote status is SIGN_DATA', async () => {
             const quote = { ...mercuryoFixedBestQuote, status: 'SIGN_DATA' as const };
 
-            act(() => {
+            await act(() => {
                 exchangeForm.setValue('quote', quote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 result.current.selectQuote();
             });
 
@@ -487,7 +487,7 @@ describe('useExchangeSelectQuote', () => {
             const [dispatchCall] = firstCall;
             const { nextStep } = (dispatchCall as any).payload;
 
-            act(() => {
+            await act(() => {
                 nextStep();
             });
 
@@ -498,18 +498,18 @@ describe('useExchangeSelectQuote', () => {
             });
         });
 
-        it('should navigate to TradingExchangeApproval when quote status is APPROVAL_REQ with no preapproval', () => {
+        it('should navigate to TradingExchangeApproval when quote status is APPROVAL_REQ with no preapproval', async () => {
             const quote = { ...invityDexQuote, status: 'APPROVAL_REQ' as const };
 
-            act(() => {
+            await act(() => {
                 exchangeForm.setValue('quote', quote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 result.current.selectQuote();
             });
 
@@ -519,7 +519,7 @@ describe('useExchangeSelectQuote', () => {
             const [dispatchCall] = firstCall;
             const { nextStep } = (dispatchCall as any).payload;
 
-            act(() => {
+            await act(() => {
                 nextStep();
             });
 
@@ -536,22 +536,22 @@ describe('useExchangeSelectQuote', () => {
             expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
         });
 
-        it('should navigate to TradingExchangeApproval with shouldIncreaseLimit when status is APPROVAL_REQ, preapproved, token supports increase', () => {
+        it('should navigate to TradingExchangeApproval with shouldIncreaseLimit when status is APPROVAL_REQ, preapproved, token supports increase', async () => {
             const quote = {
                 ...invityDexQuote,
                 status: 'APPROVAL_REQ' as const,
                 preapprovedStringAmount: '10',
             };
 
-            act(() => {
+            await act(() => {
                 exchangeForm.setValue('quote', quote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 result.current.selectQuote();
             });
 
@@ -561,7 +561,7 @@ describe('useExchangeSelectQuote', () => {
             const [dispatchCall] = firstCall;
             const { nextStep } = (dispatchCall as any).payload;
 
-            act(() => {
+            await act(() => {
                 nextStep();
             });
 
@@ -579,7 +579,7 @@ describe('useExchangeSelectQuote', () => {
             expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
         });
 
-        it('should navigate to TradingExchangeRevoke with shouldIncreaseLimit when status is APPROVAL_REQ, preapproved, token does not support increase (USDT)', () => {
+        it('should navigate to TradingExchangeRevoke with shouldIncreaseLimit when status is APPROVAL_REQ, preapproved, token does not support increase (USDT)', async () => {
             const quote = {
                 ...invityDexQuote,
                 status: 'APPROVAL_REQ' as const,
@@ -588,15 +588,15 @@ describe('useExchangeSelectQuote', () => {
                 send: 'ethereum--0xdAC17F958D2ee523a2206206994597C13D831ec7' as any,
             };
 
-            act(() => {
+            await act(() => {
                 exchangeForm.setValue('quote', quote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 result.current.selectQuote();
             });
 
@@ -606,7 +606,7 @@ describe('useExchangeSelectQuote', () => {
             const [dispatchCall] = firstCall;
             const { nextStep } = (dispatchCall as any).payload;
 
-            act(() => {
+            await act(() => {
                 nextStep();
             });
 
@@ -622,21 +622,21 @@ describe('useExchangeSelectQuote', () => {
             });
         });
 
-        it('selectQuoteForRevoke should navigate to TradingExchangeRevoke with shouldIncreaseLimit: false when quote has preapproval', () => {
+        it('selectQuoteForRevoke should navigate to TradingExchangeRevoke with shouldIncreaseLimit: false when quote has preapproval', async () => {
             const quote = {
                 ...invityDexQuote,
                 preapprovedStringAmount: '10',
             };
 
-            act(() => {
+            await act(() => {
                 exchangeForm.setValue('quote', quote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 result.current.selectQuoteForRevoke();
             });
 
@@ -646,7 +646,7 @@ describe('useExchangeSelectQuote', () => {
             const [dispatchCall] = firstCall;
             const { nextStep } = (dispatchCall as any).payload;
 
-            act(() => {
+            await act(() => {
                 nextStep();
             });
 
@@ -664,16 +664,16 @@ describe('useExchangeSelectQuote', () => {
             expect(dispatchedTypes).not.toContain('@trading-exchange/savePreselectedQuote');
         });
 
-        it('selectQuoteForRevoke should not navigate when quote has no preapproval', () => {
-            act(() => {
+        it('selectQuoteForRevoke should not navigate when quote has no preapproval', async () => {
+            await act(() => {
                 exchangeForm.setValue('quote', invityDexQuote);
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeSelectQuote();
+            const { result } = await renderUseExchangeSelectQuote();
             dispatchSpy.mockClear();
 
-            act(() => {
+            await act(() => {
                 result.current.selectQuoteForRevoke();
             });
 
@@ -683,7 +683,7 @@ describe('useExchangeSelectQuote', () => {
             const [dispatchCall] = firstCall;
             const { nextStep } = (dispatchCall as any).payload;
 
-            act(() => {
+            await act(() => {
                 nextStep();
             });
 

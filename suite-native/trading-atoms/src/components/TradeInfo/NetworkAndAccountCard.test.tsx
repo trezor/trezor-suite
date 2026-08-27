@@ -29,8 +29,8 @@ describe('NetworkAndAccountCard', () => {
         }),
     } as const;
 
-    const renderNetworkAndAccountCard = (props: Partial<NetworkAndAccountCardProps>) =>
-        renderWithStoreProvider(
+    const renderNetworkAndAccountCard = async (props: Partial<NetworkAndAccountCardProps>) =>
+        await renderWithStoreProvider(
             <NetworkAndAccountCard title="TITLE" account={btc1NormalAccount} {...props} />,
             {
                 store: createLightStore({
@@ -44,16 +44,16 @@ describe('NetworkAndAccountCard', () => {
             },
         );
 
-    it('should render title, network name and account label', () => {
-        const { getByText, getByHintText } = renderNetworkAndAccountCard({});
+    it('should render title, network name and account label', async () => {
+        const { getByText, getByHintText } = await renderNetworkAndAccountCard({});
 
         expect(getByText('TITLE')).toBeOnTheScreen();
         expect(getByHintText('Network Icon')).toBeOnTheScreen();
         expect(getByText('BTC Account #1')).toBeOnTheScreen();
     });
 
-    it('should render children', () => {
-        const { getByText } = renderNetworkAndAccountCard({
+    it('should render children', async () => {
+        const { getByText } = await renderNetworkAndAccountCard({
             children: <Text>CHILDREN</Text>,
         });
 

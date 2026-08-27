@@ -14,10 +14,10 @@ jest.mock('./ConciergeTabContent', () => ({
 }));
 
 describe('ConciergeTab', () => {
-    it('should render disabled info when concierge is disabled by FFs', () => {
+    it('should render disabled info when concierge is disabled by FFs', async () => {
         (selectIsTradingConciergeEnabled as jest.Mock).mockReturnValue(false);
 
-        const { getByText } = renderWithTradingProvider(<ConciergeTab />);
+        const { getByText } = await renderWithTradingProvider(<ConciergeTab />);
 
         expect(
             getByText(
@@ -28,10 +28,10 @@ describe('ConciergeTab', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should not render disabled message when concierge is enabled', () => {
+    it('should not render disabled message when concierge is enabled', async () => {
         (selectIsTradingConciergeEnabled as jest.Mock).mockReturnValue(true);
 
-        const { queryByText } = renderWithTradingProvider(<ConciergeTab />);
+        const { queryByText } = await renderWithTradingProvider(<ConciergeTab />);
 
         expect(
             queryByText(

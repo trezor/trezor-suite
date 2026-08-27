@@ -3,8 +3,8 @@ import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 import { FiatCurrencyListItem, type FiatCurrencyListItemProps } from './FiatCurrencyListItem';
 
 describe('FiatCurrencyListItem', () => {
-    const renderFiatCurrencyListItem = (props: Partial<FiatCurrencyListItemProps>) =>
-        renderWithBasicProvider(
+    const renderFiatCurrencyListItem = async (props: Partial<FiatCurrencyListItemProps>) =>
+        await renderWithBasicProvider(
             <FiatCurrencyListItem
                 label="LABEL"
                 displayValue="DISPLAY_VALUE"
@@ -14,18 +14,18 @@ describe('FiatCurrencyListItem', () => {
             />,
         );
 
-    it('should render label and display value', () => {
-        const { getByText } = renderFiatCurrencyListItem({});
+    it('should render label and display value', async () => {
+        const { getByText } = await renderFiatCurrencyListItem({});
 
         expect(getByText('LABEL')).toBeTruthy();
         expect(getByText('DISPLAY_VALUE')).toBeTruthy();
     });
 
-    it('should call onPress callback when pressed', () => {
+    it('should call onPress callback when pressed', async () => {
         const onPress = jest.fn();
-        const { getByText } = renderFiatCurrencyListItem({ onPress });
+        const { getByText } = await renderFiatCurrencyListItem({ onPress });
 
-        fireEvent.press(getByText('LABEL'));
+        await fireEvent.press(getByText('LABEL'));
 
         expect(onPress).toHaveBeenCalledTimes(1);
     });

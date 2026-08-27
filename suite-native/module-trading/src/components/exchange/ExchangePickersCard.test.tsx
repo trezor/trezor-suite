@@ -37,10 +37,10 @@ describe('ExchangePickersCard', () => {
         featureFlags: createTradingFeatureFlags(),
     };
 
-    const renderExchangePickersCard = (
+    const renderExchangePickersCard = async (
         extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) => {
-        const result = renderWithTradingProvider(<ExchangePickersCard />, {
+        const result = await renderWithTradingProvider(<ExchangePickersCard />, {
             services,
             tradeType: 'exchange',
             overrides: { ...baseOverrides, ...extraOverrides },
@@ -52,10 +52,10 @@ describe('ExchangePickersCard', () => {
         return result;
     };
 
-    beforeEach(() => {
+    beforeEach(async () => {
         jest.clearAllMocks();
 
-        const { result } = renderHookWithTradingProvider(() => useExchangeForm(), {
+        const { result } = await renderHookWithTradingProvider(() => useExchangeForm(), {
             services,
             tradeType: 'exchange',
             overrides: baseOverrides,
@@ -63,42 +63,42 @@ describe('ExchangePickersCard', () => {
         exchangeForm = result.current;
     });
 
-    afterEach(() => {
-        unmount?.();
+    afterEach(async () => {
+        await unmount?.();
     });
 
-    it('should render nothing when no picker can be displayed', () => {
-        const { toJSON } = renderExchangePickersCard();
+    it('should render nothing when no picker can be displayed', async () => {
+        const { toJSON } = await renderExchangePickersCard();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render receive account picker when receive asset is selected', () => {
-        act(() => {
+    it('should render receive account picker when receive asset is selected', async () => {
+        await act(() => {
             exchangeForm.setValue('receiveAsset', btcAsset);
         });
 
-        const { getByText } = renderExchangePickersCard();
+        const { getByText } = await renderExchangePickersCard();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
         ).toBeOnTheScreen();
     });
 
-    it('should render provider picker when quotes are loading', () => {
-        const { getByText } = renderExchangePickersCard({
+    it('should render provider picker when quotes are loading', async () => {
+        const { getByText } = await renderExchangePickersCard({
             wallet: { trading: { exchange: { isLoading: true } } },
         });
 
         expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
     });
 
-    it('should render provider picker when quote is selected', () => {
-        act(() => {
+    it('should render provider picker when quote is selected', async () => {
+        await act(() => {
             exchangeForm.setValue('quote', mercuryoFixedWorstQuote);
         });
 
-        const { getByText } = renderExchangePickersCard();
+        const { getByText } = await renderExchangePickersCard();
 
         expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
     });

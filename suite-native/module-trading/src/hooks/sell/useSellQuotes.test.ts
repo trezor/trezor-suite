@@ -54,8 +54,8 @@ describe('useSellQuotes', () => {
             },
         });
 
-    const renderUseSellQuotes = (store: TestStore) =>
-        renderHookWithStoreProvider(
+    const renderUseSellQuotes = async (store: TestStore) =>
+        await renderHookWithStoreProvider(
             () => {
                 const form = useSellForm();
                 useSellQuotes(form);
@@ -72,9 +72,9 @@ describe('useSellQuotes', () => {
     it('should query quotes once all required data is selected', async () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseSellQuotes(store);
+        const { result } = await renderUseSellQuotes(store);
 
-        act(() => {
+        await act(() => {
             result.current.setValue('sendAsset', usdcAsset);
             result.current.setValue('fiatCurrency', 'usd');
             result.current.setValue('amountInCrypto', true);
@@ -97,9 +97,9 @@ describe('useSellQuotes', () => {
         async amount => {
             const store = getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseSellQuotes(store);
+            const { result } = await renderUseSellQuotes(store);
 
-            act(() => {
+            await act(() => {
                 result.current.setValue('sendAsset', bnbAsset);
                 result.current.setValue('fiatCurrency', 'usd');
             });
@@ -120,9 +120,9 @@ describe('useSellQuotes', () => {
     it('should accept amount in fiat when requested', async () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseSellQuotes(store);
+        const { result } = await renderUseSellQuotes(store);
 
-        act(() => {
+        await act(() => {
             result.current.setValue('sendAsset', usdcAsset);
             result.current.setValue('fiatCurrency', 'usd');
             result.current.setValue('amountInCrypto', false);
@@ -140,13 +140,13 @@ describe('useSellQuotes', () => {
         );
     });
 
-    it('should clear sell state on unmount', () => {
+    it('should clear sell state on unmount', async () => {
         const store = getInitializedStore();
         store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { unmount } = renderUseSellQuotes(store);
+        const { unmount } = await renderUseSellQuotes(store);
 
-        unmount();
+        await unmount();
 
         expect(dispatchSpy).toHaveBeenCalledWith({
             payload: undefined,
@@ -163,8 +163,8 @@ describe('useSellQuotes', () => {
         async (field, value) => {
             const store = getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseSellQuotes(store);
-            act(() => {
+            const { result } = await renderUseSellQuotes(store);
+            await act(() => {
                 result.current.setValue('sendAsset', usdcAsset);
                 result.current.setValue('fiatCurrency', 'usd');
             });
@@ -175,7 +175,7 @@ describe('useSellQuotes', () => {
             });
 
             dispatchSpy.mockClear();
-            act(() => {
+            await act(() => {
                 result.current.setValue(field, value);
             });
 
@@ -191,8 +191,8 @@ describe('useSellQuotes', () => {
         jest.useFakeTimers();
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseSellQuotes(store);
-        act(() => {
+        const { result } = await renderUseSellQuotes(store);
+        await act(() => {
             result.current.setValue('sendAsset', usdcAsset);
             result.current.setValue('fiatCurrency', 'usd');
         });
@@ -203,12 +203,12 @@ describe('useSellQuotes', () => {
             await Promise.resolve();
         });
 
-        act(() => {
+        await act(() => {
             store.dispatch(tradingActions.setRefetchQuotesTimestamp(Date.now()));
         });
         dispatchSpy.mockClear();
 
-        act(() => {
+        await act(() => {
             jest.advanceTimersByTime(TRADE_API_RELOAD_QUOTES_AFTER_SECONDS * 1000);
         });
 
@@ -220,22 +220,22 @@ describe('useSellQuotes', () => {
         );
     });
 
-    it('should not re-fetch quotes when re-fetch time elapsed but not all required data are available', () => {
+    it('should not re-fetch quotes when re-fetch time elapsed but not all required data are available', async () => {
         jest.useFakeTimers();
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result, unmount } = renderUseSellQuotes(store);
+        const { result, unmount } = await renderUseSellQuotes(store);
 
-        act(() => {
+        await act(() => {
             result.current.setValue('fiatCurrency', 'usd');
         });
 
-        act(() => {
+        await act(() => {
             store.dispatch(tradingActions.setRefetchQuotesTimestamp(Date.now()));
         });
         dispatchSpy.mockClear();
 
-        act(() => {
+        await act(() => {
             jest.advanceTimersByTime(TRADE_API_RELOAD_QUOTES_AFTER_SECONDS * 1000);
         });
 
@@ -243,15 +243,15 @@ describe('useSellQuotes', () => {
             expect.objectContaining({ type: 'handleRequestThunkMock' }),
         );
 
-        unmount();
+        await unmount();
     });
 
     it('should clear quotes when data in form becomes invalid', async () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result, unmount } = renderUseSellQuotes(store);
+        const { result, unmount } = await renderUseSellQuotes(store);
 
-        act(() => {
+        await act(() => {
             result.current.setValue('sendAsset', usdcAsset);
             result.current.setValue('fiatCurrency', 'usd');
             result.current.setValue('fiatStringAmount', '100');
@@ -265,7 +265,7 @@ describe('useSellQuotes', () => {
 
         dispatchSpy.mockClear();
         // clear some value to make form invalid
-        act(() => {
+        await act(() => {
             result.current.setValue('fiatStringAmount', undefined);
         });
 
@@ -276,7 +276,7 @@ describe('useSellQuotes', () => {
         expect(store.getState().wallet.trading.sell.quotes).toEqual([]);
 
         // unmount hook to avoid unintentional rerenders
-        unmount();
+        await unmount();
     });
 
     it('should not clear quotes when error is from quote', async () => {
@@ -286,9 +286,9 @@ describe('useSellQuotes', () => {
         };
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseSellQuotes(store);
+        const { result } = await renderUseSellQuotes(store);
 
-        act(() => {
+        await act(() => {
             store.dispatch(tradingSellActions.setTradingAccountKey(eth1Account.key));
             result.current.setValue('sendAsset', usdcAsset);
             result.current.setValue('fiatCurrency', 'usd');
@@ -316,9 +316,9 @@ describe('useSellQuotes', () => {
     it('should not clear quotes when fiat quote exceeds max spendable amount', async () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseSellQuotes(store);
+        const { result } = await renderUseSellQuotes(store);
 
-        act(() => {
+        await act(() => {
             result.current.setValue('sendAsset', usdcAsset);
             result.current.setValue('fiatCurrency', 'usd');
             result.current.setValue('amountInCrypto', false);
@@ -350,7 +350,7 @@ describe('useSellQuotes', () => {
     it('should not query quotes when form contains error', async () => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseSellQuotes(store);
+        const { result } = await renderUseSellQuotes(store);
 
         await act(async () => {
             result.current.setValue('sendAsset', usdcAsset);

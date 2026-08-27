@@ -12,12 +12,12 @@ describe('FilterTabs', () => {
         { label: 'Ethereum', value: 'eth' },
     ];
 
-    const renderComponent = (
+    const renderComponent = async (
         onChange = jest.fn(),
         value = 'all',
         keyExtractor?: (item: FilterItem<string>) => string,
     ) =>
-        renderWithStoreProvider(
+        await renderWithStoreProvider(
             <FilterTabs
                 items={items}
                 onChange={onChange}
@@ -26,8 +26,8 @@ describe('FilterTabs', () => {
             />,
         );
 
-    it('should render all filter tabs', () => {
-        const { getByText } = renderComponent();
+    it('should render all filter tabs', async () => {
+        const { getByText } = await renderComponent();
 
         expect(
             getByText(getTranslation('moduleTrading.tradeableAssetsSheet.allFilterTabTitle')),
@@ -36,19 +36,19 @@ describe('FilterTabs', () => {
         expect(getByText('Ethereum')).toBeTruthy();
     });
 
-    it('should call onChange with the correct value when a tab is pressed', () => {
+    it('should call onChange with the correct value when a tab is pressed', async () => {
         const onChange = jest.fn();
-        const { getByText } = renderComponent(onChange);
+        const { getByText } = await renderComponent(onChange);
 
         const bitcoinTab = getByText('Bitcoin');
         expect(bitcoinTab).toBeTruthy();
-        fireEvent.press(bitcoinTab!);
+        await fireEvent.press(bitcoinTab!);
 
         expect(onChange).toHaveBeenCalledWith('btc');
     });
 
-    it('should have the correct tab active based on the value prop', () => {
-        const { getByRole } = renderComponent(jest.fn(), 'btc');
+    it('should have the correct tab active based on the value prop', async () => {
+        const { getByRole } = await renderComponent(jest.fn(), 'btc');
 
         const activeTab = getByRole('tab', { selected: true });
         expect(within(activeTab).getByText('Bitcoin')).toBeTruthy();
@@ -64,9 +64,9 @@ describe('FilterTabs', () => {
         ).toBeTruthy();
     });
 
-    it('should use custom keyExtractor if provided', () => {
+    it('should use custom keyExtractor if provided', async () => {
         const keyExtractor = jest.fn(item => item.label);
-        renderComponent(jest.fn(), 'all', keyExtractor);
+        await renderComponent(jest.fn(), 'all', keyExtractor);
         expect(keyExtractor).toHaveBeenCalledWith(items[0]);
         expect(keyExtractor).toHaveBeenCalledWith(items[1]);
         expect(keyExtractor).toHaveBeenCalledWith(items[2]);

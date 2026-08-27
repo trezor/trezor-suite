@@ -66,24 +66,24 @@ const getOverrides = (
 });
 
 describe('TradeDetailTransactionInfo', () => {
-    const renderComponent = (
+    const renderComponent = async (
         orderId: TradeDetailTransactionInfoProps['orderId'],
         overrides = getOverrides([]),
     ) =>
-        renderWithTradingHistoryProvider(<TradeDetailTransactionInfo orderId={orderId} />, {
+        await renderWithTradingHistoryProvider(<TradeDetailTransactionInfo orderId={orderId} />, {
             overrides,
         });
 
-    it('should not render when trade is not found', () => {
-        const { toJSON } = renderComponent('nonexistent_order_id', getOverrides([]));
+    it('should not render when trade is not found', async () => {
+        const { toJSON } = await renderComponent('nonexistent_order_id', getOverrides([]));
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render buy trade transaction info correctly', () => {
+    it('should render buy trade transaction info correctly', async () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
-        const { getByText, queryByText } = renderComponent(
+        const { getByText, queryByText } = await renderComponent(
             buyTrade.data.orderId!,
             getOverrides([buyTrade]),
         );
@@ -95,18 +95,21 @@ describe('TradeDetailTransactionInfo', () => {
         ).toBeNull();
     });
 
-    it('should render correct account name for buy trade', () => {
+    it('should render correct account name for buy trade', async () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
-        const { getByText } = renderComponent(buyTrade.data.orderId!, getOverrides([buyTrade]));
+        const { getByText } = await renderComponent(
+            buyTrade.data.orderId!,
+            getOverrides([buyTrade]),
+        );
 
         expect(getByText('ETH Account #1')).toBeTruthy();
     });
 
-    it('should render exchange trade transaction info correctly', () => {
+    it('should render exchange trade transaction info correctly', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
 
-        const { getByText } = renderComponent(
+        const { getByText } = await renderComponent(
             exchangeTrade.data.orderId!,
             getOverrides([exchangeTrade]),
         );
@@ -115,10 +118,10 @@ describe('TradeDetailTransactionInfo', () => {
         expect(getByText('0.462586 SOL')).toBeTruthy();
     });
 
-    it('should render correct account name for exchange trade', () => {
+    it('should render correct account name for exchange trade', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
 
-        const { getAllByText } = renderComponent(
+        const { getAllByText } = await renderComponent(
             exchangeTrade.data.orderId!,
             getOverrides([exchangeTrade]),
         );
@@ -127,12 +130,12 @@ describe('TradeDetailTransactionInfo', () => {
         expect(getAllByText('SOL Account #1')).toHaveLength(2);
     });
 
-    it('should render exchange trade even when accounts are not found', () => {
+    it('should render exchange trade even when accounts are not found', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
         const overridesState = getOverrides([exchangeTrade]);
         overridesState!.wallet!.accounts = []; // remove all accounts
 
-        const { getByText, getAllByText } = renderComponent(
+        const { getByText, getAllByText } = await renderComponent(
             exchangeTrade.data.orderId!,
             overridesState,
         );
@@ -142,22 +145,22 @@ describe('TradeDetailTransactionInfo', () => {
         expect(getAllByText('Solana')).toHaveLength(2);
     });
 
-    it('should render "Unknown" when asset network is not found', () => {
+    it('should render "Unknown" when asset network is not found', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
         exchangeTrade.data.send = 'unknown-asset' as any;
         exchangeTrade.data.receive = 'unknown-asset' as any;
         const overridesState = getOverrides([exchangeTrade]);
         overridesState!.wallet!.accounts = []; // remove all accounts
 
-        const { getAllByText } = renderComponent(exchangeTrade.data.orderId!, overridesState);
+        const { getAllByText } = await renderComponent(exchangeTrade.data.orderId!, overridesState);
 
         expect(getAllByText(getTranslation('generic.unknown'))).toHaveLength(2);
     });
 
-    it('should render sell trade transaction info correctly', () => {
+    it('should render sell trade transaction info correctly', async () => {
         const sellTrade = getSellTrade({ status: 'SEND_CRYPTO' });
 
-        const { getByText, queryByText } = renderComponent(
+        const { getByText, queryByText } = await renderComponent(
             sellTrade.data.orderId!,
             getOverrides([sellTrade]),
         );
@@ -169,10 +172,13 @@ describe('TradeDetailTransactionInfo', () => {
         ).toBeTruthy();
     });
 
-    it('should render correct account name for sell trade', () => {
+    it('should render correct account name for sell trade', async () => {
         const sellTrade = getSellTrade({ status: 'SEND_CRYPTO' });
 
-        const { getByText } = renderComponent(sellTrade.data.orderId!, getOverrides([sellTrade]));
+        const { getByText } = await renderComponent(
+            sellTrade.data.orderId!,
+            getOverrides([sellTrade]),
+        );
 
         expect(getByText('BTC Account #1')).toBeTruthy();
     });

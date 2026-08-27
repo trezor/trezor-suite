@@ -17,9 +17,9 @@ const createAsset = (index: number): MyAsset => ({
 });
 
 describe('TokenIconGroup', () => {
-    it('overlaps preview icons and the overflow badge', () => {
+    it('overlaps preview icons and the overflow badge', async () => {
         const testID = '@trading/token-icon-group';
-        const { getByTestId, getByText } = renderWithStoreProvider(
+        const { getByTestId, getByText } = await renderWithStoreProvider(
             <TokenIconGroup
                 assets={[createAsset(1), createAsset(2), createAsset(3), createAsset(4)]}
                 testID={testID}

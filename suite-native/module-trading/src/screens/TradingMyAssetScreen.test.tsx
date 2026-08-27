@@ -67,12 +67,12 @@ describe('TradingMyAssetScreen', () => {
 
     it.each(['sell', 'exchange'] as const)(
         'returns the selected asset and account to the %s form',
-        tradingType => {
-            const { getByText } = renderWithTradingProvider(
+        async tradingType => {
+            const { getByText } = await renderWithTradingProvider(
                 <TradingMyAssetScreen navigation={navigation} route={createRoute(tradingType)} />,
             );
 
-            fireEvent.press(getByText('BTC'));
+            await fireEvent.press(getByText('BTC'));
 
             expect(mockUseTradingMyAssets).toHaveBeenCalledWith(tradingType);
             expect(navigation.popTo).toHaveBeenCalledWith(RootStackRoutes.AppTabs, {

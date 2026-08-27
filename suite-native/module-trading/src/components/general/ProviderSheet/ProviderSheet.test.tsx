@@ -15,11 +15,11 @@ import {
 } from '../../../test-utils/tradingTestUtils';
 
 describe('ProviderSheet', () => {
-    const renderProviderSheet = (
+    const renderProviderSheet = async (
         props: Partial<ProviderSheetProps<TradingType, TradingTradeType>> = {},
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <ProviderSheet
                 onClose={jest.fn()}
                 isVisible={true}
@@ -31,12 +31,12 @@ describe('ProviderSheet', () => {
             { overrides },
         );
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should render empty providers placeholder and no section header and for buy', () => {
-        const { queryByText, getByText } = renderProviderSheet({}, {});
+    it('should render empty providers placeholder and no section header and for buy', async () => {
+        const { queryByText, getByText } = await renderProviderSheet({}, {});
 
         expect(
             getByText(getTranslation('moduleTrading.providerSheet.noProviders')),
@@ -44,8 +44,8 @@ describe('ProviderSheet', () => {
         expect(queryByText(getTranslation('moduleTrading.providerSheet.fixed.title'))).toBeNull();
     });
 
-    it('should render section header and empty placeholder for exchange', () => {
-        const { getByText } = renderProviderSheet({ tradingType: 'exchange' }, {});
+    it('should render section header and empty placeholder for exchange', async () => {
+        const { getByText } = await renderProviderSheet({ tradingType: 'exchange' }, {});
 
         expect(
             getByText(getTranslation('moduleTrading.providerSheet.noProviders')),
@@ -55,8 +55,8 @@ describe('ProviderSheet', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render all section headers for exchange', () => {
-        const { getByText } = renderProviderSheet({
+    it('should render all section headers for exchange', async () => {
+        const { getByText } = await renderProviderSheet({
             tradingType: 'exchange',
             quotes: EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES,
         });
@@ -72,8 +72,8 @@ describe('ProviderSheet', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render provided quotes', () => {
-        const { queryByText, getByText } = renderProviderSheet({
+    it('should render provided quotes', async () => {
+        const { queryByText, getByText } = await renderProviderSheet({
             quotes: { fixed: [mercuryoApplePayBuyQuote] },
         });
 
@@ -84,8 +84,8 @@ describe('ProviderSheet', () => {
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
-    it('should render exchange type information for exchange quotes', () => {
-        const { getByText } = renderProviderSheet({
+    it('should render exchange type information for exchange quotes', async () => {
+        const { getByText } = await renderProviderSheet({
             quotes: { fixed: [cexdirectFloatingQuote] },
             tradingType: 'exchange',
         });

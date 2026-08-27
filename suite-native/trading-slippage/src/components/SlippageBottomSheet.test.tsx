@@ -19,7 +19,7 @@ const mockOnSlippageConfirmed = jest.fn();
 
 describe('SlippageBottomSheet', () => {
     const renderSlippageBottomSheet = async (store: TestStore) => {
-        const result = renderWithSlippageTestProvider(
+        const result = await renderWithSlippageTestProvider(
             <SlippageBottomSheet
                 isVisible={false}
                 onClose={mockOnClose}

@@ -4,8 +4,8 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { ReceiveAddressInfo } from './ReceiveAddressInfo';
 
 describe('ReceiveAddressInfo', () => {
-    it('shows the shared assets and tokens information for an Ethereum account', () => {
-        const { getByText } = renderWithBasicProvider(
+    it('shows the shared assets and tokens information for an Ethereum account', async () => {
+        const { getByText } = await renderWithBasicProvider(
             <ReceiveAddressInfo networkSymbol="eth" isTokenAddress={false} />,
         );
 
@@ -16,8 +16,8 @@ describe('ReceiveAddressInfo', () => {
         ).toBeOnTheScreen();
     });
 
-    it('shows the shared assets and tokens information for an Ethereum token', () => {
-        const { getByText } = renderWithBasicProvider(
+    it('shows the shared assets and tokens information for an Ethereum token', async () => {
+        const { getByText } = await renderWithBasicProvider(
             <ReceiveAddressInfo networkSymbol="eth" isTokenAddress />,
         );
 
@@ -28,8 +28,8 @@ describe('ReceiveAddressInfo', () => {
         ).toBeOnTheScreen();
     });
 
-    it('does not show the shared assets and tokens information for a Bitcoin account', () => {
-        const { queryByText } = renderWithBasicProvider(
+    it('does not show the shared assets and tokens information for a Bitcoin account', async () => {
+        const { queryByText } = await renderWithBasicProvider(
             <ReceiveAddressInfo networkSymbol="btc" isTokenAddress={false} />,
         );
 
@@ -40,8 +40,8 @@ describe('ReceiveAddressInfo', () => {
         ).not.toBeOnTheScreen();
     });
 
-    it('keeps the network-address information for tokens on other networks', () => {
-        const { getByText } = renderWithBasicProvider(
+    it('keeps the network-address information for tokens on other networks', async () => {
+        const { getByText } = await renderWithBasicProvider(
             <ReceiveAddressInfo networkSymbol="sol" isTokenAddress />,
         );
 
@@ -54,8 +54,8 @@ describe('ReceiveAddressInfo', () => {
         ).toBeOnTheScreen();
     });
 
-    it('keeps the long-address information for Cardano', () => {
-        const { getByText } = renderWithBasicProvider(
+    it('keeps the long-address information for Cardano', async () => {
+        const { getByText } = await renderWithBasicProvider(
             <ReceiveAddressInfo networkSymbol="ada" isTokenAddress={false} />,
         );
 

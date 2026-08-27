@@ -66,37 +66,37 @@ describe('ContextMessage', () => {
         dismissedMessages: [],
     };
 
-    const render = ({
+    const render = async ({
         context,
         preloadedState,
     }: {
         context: ContextDomain;
         preloadedState?: any;
     }) =>
-        renderWithStoreProvider(
+        await renderWithStoreProvider(
             <ContextMessage context={context} accessibilityHint={contextActionId} />,
             {
                 preloadedState: { messageSystem: emptyMessageSystem, ...preloadedState },
             },
         );
 
-    it('should render content when there is message of given context', () => {
-        const { queryByText } = render({
+    it('should render content when there is message of given context', async () => {
+        const { queryByText } = await render({
             context: Context.getTrading('buy'),
             preloadedState: stateWithTradeContextMessage,
         });
         expect(queryByText(contentText)).toBeTruthy();
     });
 
-    it('should return null when there is no message fetched', () => {
-        const { queryByHintText } = render({
+    it('should return null when there is no message fetched', async () => {
+        const { queryByHintText } = await render({
             context: Context.getTrading('buy'),
         });
         expect(queryByHintText(contextActionId)).toBeNull();
     });
 
-    it('should render content in English when locale is en-US', () => {
-        const { queryByText } = render({
+    it('should render content in English when locale is en-US', async () => {
+        const { queryByText } = await render({
             context: Context.getTrading('buy'),
             preloadedState: {
                 ...stateWithTradeContextMessage,
@@ -110,8 +110,8 @@ describe('ContextMessage', () => {
         expect(queryByText(contentTextCs)).toBeNull();
     });
 
-    it('should render content in Czech when locale is cs-CZ - different from en-US', () => {
-        const { queryByText } = render({
+    it('should render content in Czech when locale is cs-CZ - different from en-US', async () => {
+        const { queryByText } = await render({
             context: Context.getTrading('buy'),
             preloadedState: {
                 ...stateWithTradeContextMessage,

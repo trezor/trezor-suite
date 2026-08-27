@@ -17,24 +17,24 @@ jest.mock('@suite-native/trading-state', () => ({
 }));
 
 describe('ActiveTab', () => {
-    const renderActiveTab = (overrides: PreloadedStatePartial<TradingTestPreloadedState>) =>
-        renderWithTradingProvider(<ActiveTab />, { overrides });
+    const renderActiveTab = async (overrides: PreloadedStatePartial<TradingTestPreloadedState>) =>
+        await renderWithTradingProvider(<ActiveTab />, { overrides });
 
     it.each<[TradingTypeWithConcierge, string]>([
         ['buy', 'Buy disabled'],
         ['exchange', 'Swap disabled'],
         ['sell', 'Sell disabled'],
         ['concierge', 'Concierge disabled'],
-    ])('should display correct trading type tab for %s', (tradingType, expectedTitle) => {
-        const { getByText } = renderActiveTab({
+    ])('should display correct trading type tab for %s', async (tradingType, expectedTitle) => {
+        const { getByText } = await renderActiveTab({
             wallet: { trading: { activeTradingType: tradingType } },
         });
 
         expect(getByText(expectedTitle)).toBeOnTheScreen();
     });
 
-    it('should render nothing when no active tab is specified', () => {
-        const { toJSON } = renderActiveTab({
+    it('should render nothing when no active tab is specified', async () => {
+        const { toJSON } = await renderActiveTab({
             wallet: { trading: { activeTradingType: undefined } },
         });
 

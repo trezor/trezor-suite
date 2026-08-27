@@ -60,13 +60,13 @@ describe('AccountListItem', () => {
 
     let store: TestStore;
 
-    const renderAccountListItem = (
+    const renderAccountListItem = async (
         receiveAccount: ReceiveAccount,
         overrides: Record<string, unknown> = defaultOverrides,
     ) => {
         store = createTradingTestStore({ overrides });
 
-        return renderWithStoreProvider(
+        return await renderWithStoreProvider(
             <AccountListItem onPress={onPressMock} receiveAccount={receiveAccount} />,
             { store },
         );
@@ -76,23 +76,23 @@ describe('AccountListItem', () => {
         jest.clearAllMocks();
     });
 
-    it('should call onPress callback when pressed', () => {
+    it('should call onPress callback when pressed', async () => {
         const receiveAccount: ReceiveAccount = {
             account: btc10000000Account,
         };
-        const { getByText } = renderAccountListItem(receiveAccount);
+        const { getByText } = await renderAccountListItem(receiveAccount);
 
-        fireEvent.press(getByText('My BTC account'));
+        await fireEvent.press(getByText('My BTC account'));
 
         expect(onPressMock).toHaveBeenCalled();
     });
 
-    it('should render account name', () => {
+    it('should render account name', async () => {
         const receiveAccount: ReceiveAccount = {
             account: btc10000000Account,
         };
         const { getByText, queryByAccessibilityHint, getByLabelText } =
-            renderAccountListItem(receiveAccount);
+            await renderAccountListItem(receiveAccount);
 
         expect(getByText('My BTC account')).toBeTruthy();
         expect(
@@ -110,7 +110,7 @@ describe('AccountListItem', () => {
         ).toHaveTextContent('0.1 BTC');
     });
 
-    it('should display caret when account defines addresses', () => {
+    it('should display caret when account defines addresses', async () => {
         const receiveAccount: ReceiveAccount = {
             account: {
                 ...btc10000000Account,
@@ -121,7 +121,7 @@ describe('AccountListItem', () => {
                 },
             },
         };
-        const { getByText, getByAccessibilityHint } = renderAccountListItem(receiveAccount);
+        const { getByText, getByAccessibilityHint } = await renderAccountListItem(receiveAccount);
 
         expect(getByText('My BTC account')).toBeTruthy();
         expect(
@@ -129,7 +129,7 @@ describe('AccountListItem', () => {
         ).toBeTruthy();
     });
 
-    it('should display the descriptor for an account-based network', () => {
+    it('should display the descriptor for an account-based network', async () => {
         const account = mockWalletAccount({
             descriptor: asAccountDescriptor('0x1234567890abcdef'),
             symbol: asNetworkSymbol('eth'),
@@ -137,7 +137,7 @@ describe('AccountListItem', () => {
             accountLabel: 'My ETH account',
             availableBalance: '1000000000000000000',
         });
-        const { getByText } = renderAccountListItem(
+        const { getByText } = await renderAccountListItem(
             { account },
             {
                 ...defaultOverrides,

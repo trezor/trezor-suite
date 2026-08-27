@@ -8,15 +8,18 @@ import {
 } from '../../test-utils/tradingTestUtils';
 
 describe('RequestedAmountShortfallNote', () => {
-    const renderNote = (
+    const renderNote = async (
         quote: typeof mercuryoApplePayBuyQuote,
         overrides: PreloadedStatePartial<TradingTestPreloadedState>,
-    ) => renderWithTradingProvider(<RequestedAmountShortfallNote quote={quote} />, { overrides });
+    ) =>
+        await renderWithTradingProvider(<RequestedAmountShortfallNote quote={quote} />, {
+            overrides,
+        });
 
-    it('renders a fiat shortfall formatted in the quote fiat currency', () => {
+    it('renders a fiat shortfall formatted in the quote fiat currency', async () => {
         const quote = { ...mercuryoApplePayBuyQuote, fiatStringAmount: '8' };
 
-        const { getByText } = renderNote(quote, {
+        const { getByText } = await renderNote(quote, {
             wallet: {
                 trading: {
                     buy: {
@@ -34,14 +37,14 @@ describe('RequestedAmountShortfallNote', () => {
         expect(getByText('20% less to receive than requested (€2.00)')).toBeOnTheScreen();
     });
 
-    it('renders nothing when there is a fiat shortfall but the quote has no fiat currency', () => {
+    it('renders nothing when there is a fiat shortfall but the quote has no fiat currency', async () => {
         const quote = {
             ...mercuryoApplePayBuyQuote,
             fiatCurrency: undefined,
             fiatStringAmount: '8',
         };
 
-        const { toJSON } = renderNote(quote, {
+        const { toJSON } = await renderNote(quote, {
             wallet: {
                 trading: {
                     buy: {
@@ -59,10 +62,10 @@ describe('RequestedAmountShortfallNote', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('renders a crypto shortfall amount when the user requested a fixed crypto amount', () => {
+    it('renders a crypto shortfall amount when the user requested a fixed crypto amount', async () => {
         const quote = { ...mercuryoApplePayBuyQuote, receiveStringAmount: '0.001' };
 
-        const { getByText } = renderNote(quote, {
+        const { getByText } = await renderNote(quote, {
             wallet: {
                 trading: {
                     buy: {
@@ -80,8 +83,8 @@ describe('RequestedAmountShortfallNote', () => {
         expect(getByText('50% less to receive than requested (0.001 BTC)')).toBeOnTheScreen();
     });
 
-    it('renders nothing when there is no requested amount shortfall', () => {
-        const { toJSON } = renderNote(mercuryoApplePayBuyQuote, {});
+    it('renders nothing when there is no requested amount shortfall', async () => {
+        const { toJSON } = await renderNote(mercuryoApplePayBuyQuote, {});
 
         expect(toJSON()).toBeNull();
     });

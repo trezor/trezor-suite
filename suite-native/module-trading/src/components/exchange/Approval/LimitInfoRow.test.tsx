@@ -16,7 +16,10 @@ describe('LimitInfoRow', () => {
         onPress: jest.fn(),
     };
 
-    const renderLimitInfoRow = (props: Partial<LimitInfoRowProps> = {}, quoteOverrides = {}) => {
+    const renderLimitInfoRow = async (
+        props: Partial<LimitInfoRowProps> = {},
+        quoteOverrides = {},
+    ) => {
         const walletState = getWalletState({ tradeType: 'exchange' });
         const preloadedState = {
             wallet: {
@@ -34,13 +37,13 @@ describe('LimitInfoRow', () => {
             },
         };
 
-        return renderWithStoreProvider(<LimitInfoRow {...defaultProps} {...props} />, {
+        return await renderWithStoreProvider(<LimitInfoRow {...defaultProps} {...props} />, {
             preloadedState,
         });
     };
 
-    it('should render formatted amount when approval type is MINIMAL', () => {
-        const { getByText } = renderLimitInfoRow(
+    it('should render formatted amount when approval type is MINIMAL', async () => {
+        const { getByText } = await renderLimitInfoRow(
             {},
             { approvalType: 'MINIMAL', sendStringAmount: '100' },
         );
@@ -48,22 +51,22 @@ describe('LimitInfoRow', () => {
         expect(getByText('100 USDC')).toBeOnTheScreen();
     });
 
-    it('should render unlimited label when approval type is INFINITE', () => {
+    it('should render unlimited label when approval type is INFINITE', async () => {
         const unlimitedText = getTranslation(
             'moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel',
         );
 
-        const { getByText } = renderLimitInfoRow({}, { approvalType: 'INFINITE' });
+        const { getByText } = await renderLimitInfoRow({}, { approvalType: 'INFINITE' });
 
         expect(getByText(unlimitedText)).toBeOnTheScreen();
     });
 
-    it('should render unlimited label without coin symbol when approval type is INFINITE and coin is missing in trading info', () => {
+    it('should render unlimited label without coin symbol when approval type is INFINITE and coin is missing in trading info', async () => {
         const unlimitedText = getTranslation(
             'moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel',
         );
 
-        const { getByText, queryByText } = renderLimitInfoRow(
+        const { getByText, queryByText } = await renderLimitInfoRow(
             {},
             { approvalType: 'INFINITE', send: cryptoIdWithoutCoinInfo },
         );
@@ -72,8 +75,8 @@ describe('LimitInfoRow', () => {
         expect(getByText(new RegExp(`^${unlimitedText}\\s*$`))).toBeOnTheScreen();
     });
 
-    it('should render children', () => {
-        const { getByText } = renderLimitInfoRow({
+    it('should render children', async () => {
+        const { getByText } = await renderLimitInfoRow({
             children: <Text>Child content</Text>,
         });
 
@@ -82,7 +85,7 @@ describe('LimitInfoRow', () => {
 
     it('should call onPress when pressed', async () => {
         const onPress = jest.fn();
-        const { getByTestId } = renderLimitInfoRow({
+        const { getByTestId } = await renderLimitInfoRow({
             onPress,
             testID: 'test-limit-info-row',
         });
@@ -92,16 +95,16 @@ describe('LimitInfoRow', () => {
         expect(onPress).toHaveBeenCalledTimes(1);
     });
 
-    it('should render "Limit" label when quote has not preapproved limit', () => {
-        const { getByText } = renderLimitInfoRow();
+    it('should render "Limit" label when quote has not preapproved limit', async () => {
+        const { getByText } = await renderLimitInfoRow();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.limitLabel')),
         ).toBeOnTheScreen();
     });
 
-    it('should render "New limit" label when quote has preapproved limit', () => {
-        const { getByText } = renderLimitInfoRow({}, { preapprovedStringAmount: '25' });
+    it('should render "New limit" label when quote has preapproved limit', async () => {
+        const { getByText } = await renderLimitInfoRow({}, { preapprovedStringAmount: '25' });
 
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.newLimitLabel')),

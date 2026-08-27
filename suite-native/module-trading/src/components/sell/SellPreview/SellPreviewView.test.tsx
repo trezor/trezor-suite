@@ -12,8 +12,8 @@ import { SellPreviewView } from './SellPreviewView';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('SellPreviewView', () => {
-    const renderSellPreviewView = (quote: SellFiatTrade = banxaBankTransferSellQuote) =>
-        renderWithTradingProvider(<SellPreviewView quote={quote} />, {
+    const renderSellPreviewView = async (quote: SellFiatTrade = banxaBankTransferSellQuote) =>
+        await renderWithTradingProvider(<SellPreviewView quote={quote} />, {
             tradeType: 'sell',
             overrides: {
                 wallet: {
@@ -47,8 +47,8 @@ describe('SellPreviewView', () => {
             },
         });
 
-    it('renders the sell summary', () => {
-        const { getByText } = renderSellPreviewView();
+    it('renders the sell summary', async () => {
+        const { getByText } = await renderSellPreviewView();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.youPay')),
@@ -62,16 +62,16 @@ describe('SellPreviewView', () => {
         ).toBeOnTheScreen();
     });
 
-    it('renders the quote passed to the view', () => {
-        const { getByText } = renderSellPreviewView(banxaCreditCardSellQuote);
+    it('renders the quote passed to the view', async () => {
+        const { getByText } = await renderSellPreviewView(banxaCreditCardSellQuote);
 
         expect(
             getByText(getTranslation('moduleTrading.paymentMethods.creditCard')),
         ).toBeOnTheScreen();
     });
 
-    it('does not render completion-only bank account or fee controls', () => {
-        const { queryByTestId } = renderSellPreviewView();
+    it('does not render completion-only bank account or fee controls', async () => {
+        const { queryByTestId } = await renderSellPreviewView();
 
         expect(queryByTestId('@trading/sell/bank-account-item')).not.toBeOnTheScreen();
         expect(queryByTestId('@transactionManagement/fee-selector-row')).not.toBeOnTheScreen();

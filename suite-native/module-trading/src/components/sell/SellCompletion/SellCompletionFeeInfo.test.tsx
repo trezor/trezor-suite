@@ -13,12 +13,12 @@ jest.mock('../../general/TradeInfo/TradeFeeInfoRow', () => {
 });
 
 describe('SellCompletionFeeInfo', () => {
-    const renderSellCompletionFeeInfo = (
+    const renderSellCompletionFeeInfo = async (
         props: Partial<SellCompletionFeeInfoProps> = {},
         tradingAccountKey: AccountKey = eth1NormalAccount.key,
         providerConfirmationStatus: ProviderConfirmationStatus = 'confirmation_success',
     ) =>
-        renderWithTradingProvider(<SellCompletionFeeInfo isTxnError={false} {...props} />, {
+        await renderWithTradingProvider(<SellCompletionFeeInfo isTxnError={false} {...props} />, {
             tradeType: 'sell',
             overrides: {
                 wallet: {
@@ -30,8 +30,8 @@ describe('SellCompletionFeeInfo', () => {
             },
         });
 
-    it('should render nothing when isTxnError', () => {
-        const { toJSON } = renderSellCompletionFeeInfo({
+    it('should render nothing when isTxnError', async () => {
+        const { toJSON } = await renderSellCompletionFeeInfo({
             quote: banxaCreditCardSellQuote,
             isTxnError: true,
         });
@@ -39,24 +39,24 @@ describe('SellCompletionFeeInfo', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when there is no quote', () => {
-        const { toJSON } = renderSellCompletionFeeInfo({});
+    it('should render nothing when there is no quote', async () => {
+        const { toJSON } = await renderSellCompletionFeeInfo({});
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when quote has no cryptoCurrency', () => {
+    it('should render nothing when quote has no cryptoCurrency', async () => {
         const quoteWithoutCrypto = {
             ...banxaCreditCardSellQuote,
             cryptoCurrency: undefined,
         };
-        const { toJSON } = renderSellCompletionFeeInfo({ quote: quoteWithoutCrypto });
+        const { toJSON } = await renderSellCompletionFeeInfo({ quote: quoteWithoutCrypto });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when account is not found', () => {
-        const { toJSON } = renderSellCompletionFeeInfo(
+    it('should render nothing when account is not found', async () => {
+        const { toJSON } = await renderSellCompletionFeeInfo(
             { quote: banxaCreditCardSellQuote },
             mockAccountKey({ descriptor: 'unknownAccountKey' }),
         );
@@ -64,8 +64,8 @@ describe('SellCompletionFeeInfo', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when providerConfirmationStatus is not in "confirmation_success" state', () => {
-        const { toJSON } = renderSellCompletionFeeInfo(
+    it('should render nothing when providerConfirmationStatus is not in "confirmation_success" state', async () => {
+        const { toJSON } = await renderSellCompletionFeeInfo(
             { quote: banxaCreditCardSellQuote },
             eth1NormalAccount.key,
             'window_closed_with_success',
@@ -74,8 +74,8 @@ describe('SellCompletionFeeInfo', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render fee info otherwise', () => {
-        const { getByTestId } = renderSellCompletionFeeInfo({
+    it('should render fee info otherwise', async () => {
+        const { getByTestId } = await renderSellCompletionFeeInfo({
             quote: banxaCreditCardSellQuote,
         });
 

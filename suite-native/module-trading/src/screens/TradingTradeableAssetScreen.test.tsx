@@ -65,35 +65,38 @@ describe('TradingTradeableAssetScreen', () => {
     it.each([
         ['buy', 'BTC', btcAsset.cryptoId],
         ['exchange', 'USDC', usdcAsset.cryptoId],
-    ] as const)('renders and selects the %s asset data', (tradingType, assetSymbol, cryptoId) => {
-        mockUseTradingTradeableAssetsFilteredData.mockReturnValue(
-            tradingType === 'buy' ? mockBuyFilteredData : mockExchangeFilteredData,
-        );
+    ] as const)(
+        'renders and selects the %s asset data',
+        async (tradingType, assetSymbol, cryptoId) => {
+            mockUseTradingTradeableAssetsFilteredData.mockReturnValue(
+                tradingType === 'buy' ? mockBuyFilteredData : mockExchangeFilteredData,
+            );
 
-        const { getByLabelText, getByText } = renderWithTradingProvider(
-            <TradingTradeableAssetScreen
-                navigation={navigation}
-                route={createRoute(tradingType)}
-            />,
-        );
+            const { getByLabelText, getByText } = await renderWithTradingProvider(
+                <TradingTradeableAssetScreen
+                    navigation={navigation}
+                    route={createRoute(tradingType)}
+                />,
+            );
 
-        const assetElement =
-            tradingType === 'buy' ? getByText(assetSymbol) : getByLabelText(assetSymbol);
-        fireEvent.press(assetElement);
+            const assetElement =
+                tradingType === 'buy' ? getByText(assetSymbol) : getByLabelText(assetSymbol);
+            await fireEvent.press(assetElement);
 
-        expect(mockUseTradingTradeableAssetsFilteredData).toHaveBeenCalledWith(
-            tradingType === 'buy' ? selectBuyTradeableAssets : selectExchangeBuyTradeableAssets,
-        );
+            expect(mockUseTradingTradeableAssetsFilteredData).toHaveBeenCalledWith(
+                tradingType === 'buy' ? selectBuyTradeableAssets : selectExchangeBuyTradeableAssets,
+            );
 
-        expect(navigation.popTo).toHaveBeenCalledWith(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.TradeStack,
-            params: {
-                screen: TradingStackRoutes.Trading,
+            expect(navigation.popTo).toHaveBeenCalledWith(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.TradeStack,
                 params: {
-                    tradingType,
-                    selectedTradeableAssetCryptoId: cryptoId,
+                    screen: TradingStackRoutes.Trading,
+                    params: {
+                        tradingType,
+                        selectedTradeableAssetCryptoId: cryptoId,
+                    },
                 },
-            },
-        });
-    });
+            });
+        },
+    );
 });

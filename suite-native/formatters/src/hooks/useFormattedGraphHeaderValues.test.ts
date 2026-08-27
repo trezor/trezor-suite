@@ -25,8 +25,8 @@ const setNewStoreMockup = (preloadedState: any) => {
 };
 
 describe(useFormattedGraphHeaderValues.name, () => {
-    const renderUseFormattedGraphHeaderValues = (value?: string) =>
-        renderHookWithStoreProvider(() => useFormattedGraphHeaderValues(value), {
+    const renderUseFormattedGraphHeaderValues = async (value?: string) =>
+        await renderHookWithStoreProvider(() => useFormattedGraphHeaderValues(value), {
             store,
         });
 
@@ -34,12 +34,12 @@ describe(useFormattedGraphHeaderValues.name, () => {
         jest.clearAllMocks();
     });
 
-    it('should parse balance amount correctly with valid input - english locale + USD', () => {
+    it('should parse balance amount correctly with valid input - english locale + USD', async () => {
         setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'usd' } },
         });
-        const { result } = renderUseFormattedGraphHeaderValues('1234.56');
+        const { result } = await renderUseFormattedGraphHeaderValues('1234.56');
         expect(result.current).toEqual({
             currencySymbol: '$',
             wholeNumber: '1,234',
@@ -47,12 +47,12 @@ describe(useFormattedGraphHeaderValues.name, () => {
         });
     });
 
-    it('parses balance amount correctly with valid input - english locale + CZK', () => {
+    it('parses balance amount correctly with valid input - english locale + CZK', async () => {
         setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'czk' } },
         });
-        const { result } = renderUseFormattedGraphHeaderValues('1234.56');
+        const { result } = await renderUseFormattedGraphHeaderValues('1234.56');
         expect(result.current).toEqual({
             currencySymbol: 'CZK',
             wholeNumber: '1,234',
@@ -60,12 +60,12 @@ describe(useFormattedGraphHeaderValues.name, () => {
         });
     });
 
-    it('parses balance amount correctly with valid input - czech locale + CZK', () => {
+    it('parses balance amount correctly with valid input - czech locale + CZK', async () => {
         setNewStoreMockup({
             locale: { appLocaleCode: 'cs-CZ' },
             wallet: { settings: { localCurrency: 'czk' } },
         });
-        const { result } = renderUseFormattedGraphHeaderValues('1234.56');
+        const { result } = await renderUseFormattedGraphHeaderValues('1234.56');
         expect(result.current).toEqual({
             currencySymbol: 'Kč',
             wholeNumber: '1\u00a0234', // non-breaking space
@@ -73,12 +73,12 @@ describe(useFormattedGraphHeaderValues.name, () => {
         });
     });
 
-    it('parses balance amount correctly with valid input and no decimal part', () => {
+    it('parses balance amount correctly with valid input and no decimal part', async () => {
         setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'eur' } },
         });
-        const { result } = renderUseFormattedGraphHeaderValues('2000');
+        const { result } = await renderUseFormattedGraphHeaderValues('2000');
         expect(result.current).toEqual({
             currencySymbol: '€',
             wholeNumber: '2,000',
@@ -86,12 +86,12 @@ describe(useFormattedGraphHeaderValues.name, () => {
         });
     });
 
-    it('parses balance amount correctly with valid input and only decimal part', () => {
+    it('parses balance amount correctly with valid input and only decimal part', async () => {
         setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'czk' } },
         });
-        const { result } = renderUseFormattedGraphHeaderValues('0.99');
+        const { result } = await renderUseFormattedGraphHeaderValues('0.99');
         expect(result.current).toEqual({
             currencySymbol: 'CZK',
             wholeNumber: '0',
@@ -99,12 +99,12 @@ describe(useFormattedGraphHeaderValues.name, () => {
         });
     });
 
-    it('handles BTC BaseCurrency correctly', () => {
+    it('handles BTC BaseCurrency correctly', async () => {
         setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'btc', bitcoinAmountUnit: AmountUnit.BITCOIN } },
         });
-        const { result } = renderUseFormattedGraphHeaderValues('0.01');
+        const { result } = await renderUseFormattedGraphHeaderValues('0.01');
         expect(result.current).toEqual({
             currencySymbol: 'BTC',
             wholeNumber: '0',
@@ -112,12 +112,12 @@ describe(useFormattedGraphHeaderValues.name, () => {
         });
     });
 
-    it('rounds BTC Crypto value correctly', () => {
+    it('rounds BTC Crypto value correctly', async () => {
         setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'btc', bitcoinAmountUnit: AmountUnit.BITCOIN } },
         });
-        const { result } = renderUseFormattedGraphHeaderValues('0.00124009');
+        const { result } = await renderUseFormattedGraphHeaderValues('0.00124009');
         expect(result.current).toEqual({
             currencySymbol: 'BTC',
             wholeNumber: '0',
@@ -125,12 +125,12 @@ describe(useFormattedGraphHeaderValues.name, () => {
         });
     });
 
-    it('parses satoshis value correctly - english locale', () => {
+    it('parses satoshis value correctly - english locale', async () => {
         setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'btc', bitcoinAmountUnit: AmountUnit.SATOSHI } },
         });
-        const { result } = renderUseFormattedGraphHeaderValues('0.01477571');
+        const { result } = await renderUseFormattedGraphHeaderValues('0.01477571');
         expect(result.current).toEqual({
             currencySymbol: 'sat',
             wholeNumber: '1,477,571',
@@ -138,12 +138,12 @@ describe(useFormattedGraphHeaderValues.name, () => {
         });
     });
 
-    it('parses satoshis value correctly - spanish locale', () => {
+    it('parses satoshis value correctly - spanish locale', async () => {
         setNewStoreMockup({
             locale: { appLocaleCode: 'es-ES' as SupportedLocaleCode },
             wallet: { settings: { localCurrency: 'btc', bitcoinAmountUnit: AmountUnit.SATOSHI } },
         });
-        const { result } = renderUseFormattedGraphHeaderValues('0.01477571');
+        const { result } = await renderUseFormattedGraphHeaderValues('0.01477571');
         expect(result.current).toEqual({
             currencySymbol: 'sat',
             wholeNumber: '1.477.571',

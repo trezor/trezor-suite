@@ -28,17 +28,17 @@ describe('useUtxoSelection', () => {
         jest.clearAllMocks();
     });
 
-    it('should return an empty array when no UTXOs are selected', () => {
+    it('should return an empty array when no UTXOs are selected', async () => {
         (useAtom as jest.Mock).mockReturnValue([[], mockSetSelectedUtxos]);
 
-        const { result } = renderHook(() => useUtxoSelection(accountKey));
+        const { result } = await renderHook(() => useUtxoSelection(accountKey));
 
         expect(result.current.selectedUtxos).toEqual([]);
         expect(result.current.totalSelectedAmount.toString()).toEqual('0');
         expect(result.current.isCoinControlEnabled).toBe(false);
     });
 
-    it('should calculate total selected amount correctly', () => {
+    it('should calculate total selected amount correctly', async () => {
         const mockUtxos: SelectedUtxos = {
             [accountKey]: [
                 {
@@ -63,12 +63,12 @@ describe('useUtxoSelection', () => {
         };
         (useAtom as jest.Mock).mockReturnValue([mockUtxos, mockSetSelectedUtxos]);
 
-        const { result } = renderHook(() => useUtxoSelection(accountKey));
+        const { result } = await renderHook(() => useUtxoSelection(accountKey));
 
         expect(result.current.totalSelectedAmount.toString()).toEqual('3000');
     });
 
-    it('should handle correct account key UTXO selection', () => {
+    it('should handle correct account key UTXO selection', async () => {
         (useAtom as jest.Mock).mockReturnValue([
             {
                 ['testAccKey2']: [
@@ -86,7 +86,7 @@ describe('useUtxoSelection', () => {
             mockSetSelectedUtxos,
         ]);
 
-        const { result } = renderHook(() => useUtxoSelection(accountKey));
+        const { result } = await renderHook(() => useUtxoSelection(accountKey));
 
         expect(result.current.selectedUtxos).toEqual([]);
         expect(result.current.totalSelectedAmount.toString()).toEqual('0');

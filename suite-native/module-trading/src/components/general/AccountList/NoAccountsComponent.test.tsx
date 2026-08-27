@@ -4,7 +4,7 @@ import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-sto
 import { NoAccountsComponent } from './NoAccountsComponent';
 
 describe('NoAccountsComponent', () => {
-    const renderNoAccountsComponent = ({
+    const renderNoAccountsComponent = async ({
         isConnected,
         id,
         onActivateAccount = jest.fn(),
@@ -13,7 +13,7 @@ describe('NoAccountsComponent', () => {
         id?: string;
         onActivateAccount?: () => void;
     }) =>
-        renderWithStoreProvider(
+        await renderWithStoreProvider(
             <NoAccountsComponent symbol="btc" onActivateAccount={onActivateAccount} />,
             {
                 preloadedState: {
@@ -28,9 +28,9 @@ describe('NoAccountsComponent', () => {
             },
         );
 
-    it('renders the connected-device state and activates the configured network', () => {
+    it('renders the connected-device state and activates the configured network', async () => {
         const onActivateAccount = jest.fn();
-        const { getByText } = renderNoAccountsComponent({
+        const { getByText } = await renderNoAccountsComponent({
             isConnected: true,
             onActivateAccount,
         });
@@ -46,7 +46,7 @@ describe('NoAccountsComponent', () => {
             ),
         ).toBeTruthy();
 
-        fireEvent.press(
+        await fireEvent.press(
             getByText(
                 getTranslation('moduleTrading.accountScreen.accountEmpty.activate', {
                     network: 'Bitcoin',
@@ -57,8 +57,8 @@ describe('NoAccountsComponent', () => {
         expect(onActivateAccount).toHaveBeenCalledTimes(1);
     });
 
-    it('renders the view-only explanation without activation', () => {
-        const { getByText, queryByText } = renderNoAccountsComponent({ isConnected: false });
+    it('renders the view-only explanation without activation', async () => {
+        const { getByText, queryByText } = await renderNoAccountsComponent({ isConnected: false });
 
         expect(
             getByText(
@@ -74,8 +74,8 @@ describe('NoAccountsComponent', () => {
         ).toBeNull();
     });
 
-    it('renders the Portfolio Tracker explanation without activation', () => {
-        const { getByText, queryByText } = renderNoAccountsComponent({
+    it('renders the Portfolio Tracker explanation without activation', async () => {
+        const { getByText, queryByText } = await renderNoAccountsComponent({
             isConnected: false,
             id: 'hiddenDeviceWithImportedAccounts',
         });

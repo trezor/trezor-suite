@@ -45,8 +45,8 @@ describe('ReceiveAddressActions', () => {
     const addressPath = "m/84'/0'/0'/0/0";
     const mockUseNavigation = jest.mocked(useNavigation);
 
-    const renderActions = () =>
-        renderWithBasicProvider(
+    const renderActions = async () =>
+        await renderWithBasicProvider(
             <ReceiveAddressInteractionsProvider
                 accountKey={accountKey}
                 address={address}
@@ -76,7 +76,7 @@ describe('ReceiveAddressActions', () => {
     });
 
     it('opens the verification sheet after copying the address', async () => {
-        const { getByText } = renderActions();
+        const { getByText } = await renderActions();
 
         await userEvent.press(getByText(getTranslation('qrCode.copyButton')));
 
@@ -93,7 +93,7 @@ describe('ReceiveAddressActions', () => {
     });
 
     it('closes the sheet and opens address verification', async () => {
-        const { getByTestId } = renderActions();
+        const { getByTestId } = await renderActions();
 
         await userEvent.press(getByTestId('@receive/address-verification/pasted/verify-button'));
 
@@ -109,7 +109,7 @@ describe('ReceiveAddressActions', () => {
     });
 
     it('opens address verification directly', async () => {
-        const { getByText } = renderActions();
+        const { getByText } = await renderActions();
 
         await userEvent.press(getByText(getTranslation('moduleReceive.addressActions.verify')));
 
@@ -126,7 +126,7 @@ describe('ReceiveAddressActions', () => {
     });
 
     it('opens shared address verification after sharing', async () => {
-        const { getByText, getByTestId } = renderActions();
+        const { getByText, getByTestId } = await renderActions();
 
         await userEvent.press(getByText(getTranslation('qrCode.shareButton')));
         await userEvent.press(getByTestId('@receive/address-verification/shared/verify-button'));
@@ -149,7 +149,7 @@ describe('ReceiveAddressActions', () => {
 
     it('does not open shared address verification after cancelling sharing', async () => {
         mockShare.mockResolvedValue({ action: Share.dismissedAction });
-        const { getByText } = renderActions();
+        const { getByText } = await renderActions();
 
         await userEvent.press(getByText(getTranslation('qrCode.shareButton')));
 

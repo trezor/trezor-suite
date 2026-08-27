@@ -38,30 +38,30 @@ describe('ExchangeCard', () => {
         },
     });
 
-    const renderForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderForm = async () =>
+        await renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
         });
 
-    const renderExchangeCard = () =>
-        renderWithStoreProvider(<ExchangeCard isAmountInputActive={false} />, {
+    const renderExchangeCard = async () =>
+        await renderWithStoreProvider(<ExchangeCard isAmountInputActive={false} />, {
             preloadedState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    beforeEach(() => {
-        const { result } = renderForm();
+    beforeEach(async () => {
+        const { result } = await renderForm();
         form = result.current;
     });
 
-    it('should render send and receive sections with selected assets', () => {
-        act(() => {
+    it('should render send and receive sections with selected assets', async () => {
+        await act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('sendCryptoAmount', '100');
             form.setValue('receiveAsset', ethOnBaseAsset);
         });
 
-        const { getByTestId } = renderExchangeCard();
+        const { getByTestId } = await renderExchangeCard();
         const sendSection = getByTestId('@trading/exchangeCard/sendSection');
         const receiveSection = getByTestId('@trading/exchangeCard/receiveSection');
 
@@ -103,7 +103,7 @@ describe('ExchangeCard', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should convert receiveCryptoAmount to the base unit before passing it to CryptoToFiatValueBadge when bitcoin amount unit is sats', () => {
+    it('should convert receiveCryptoAmount to the base unit before passing it to CryptoToFiatValueBadge when bitcoin amount unit is sats', async () => {
         const satsPreloadedState = createTradingPreloadedState({
             tradeType: 'exchange',
             overrides: {
@@ -120,14 +120,14 @@ describe('ExchangeCard', () => {
             },
         });
 
-        act(() => {
+        await act(() => {
             form.setValue('receiveAsset', btcAsset);
         });
-        act(() => {
+        await act(() => {
             form.setValue('receiveCryptoAmount', '1234567123456');
         });
 
-        const { getByText, queryByText } = renderWithStoreProvider(
+        const { getByText, queryByText } = await renderWithStoreProvider(
             <ExchangeCard isAmountInputActive={false} />,
             {
                 preloadedState: satsPreloadedState,

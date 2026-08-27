@@ -15,8 +15,8 @@ jest.mock('../hooks/buy/useBuyData', () => ({
 }));
 
 describe('TradingStackNavigator', () => {
-    it('should render', () => {
-        const { getByTestId } = renderWithTradingProvider(<TradingStackNavigator />, {
+    it('should render', async () => {
+        const { getByTestId } = await renderWithTradingProvider(<TradingStackNavigator />, {
             overrides: {
                 featureFlags: createTradingFeatureFlags({}),
                 messageSystem: mockMessageSystemStateWithFeatureFlags({}),
@@ -26,8 +26,8 @@ describe('TradingStackNavigator', () => {
         expect(getByTestId('@screen/Trading')).toBeTruthy();
     });
 
-    it('should not render when all feature flags are disabled', () => {
-        const { queryByTestId } = renderWithTradingProvider(<TradingStackNavigator />, {
+    it('should not render when all feature flags are disabled', async () => {
+        const { queryByTestId } = await renderWithTradingProvider(<TradingStackNavigator />, {
             overrides: {
                 featureFlags: createTradingFeatureFlags({}),
                 messageSystem: mockMessageSystemStateWithFeatureFlags({

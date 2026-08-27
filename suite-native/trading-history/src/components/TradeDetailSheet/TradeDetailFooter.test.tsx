@@ -25,10 +25,10 @@ describe('TradeDetailFooter', () => {
         jest.clearAllMocks();
     });
 
-    it('should not render when trade is not found', () => {
+    it('should not render when trade is not found', async () => {
         const preloadedState = getPreloadedState([]);
 
-        const { toJSON } = renderWithStoreProvider(
+        const { toJSON } = await renderWithStoreProvider(
             <TradeDetailFooter orderId="nonexistent_order_id" />,
             { preloadedState },
         );
@@ -36,16 +36,16 @@ describe('TradeDetailFooter', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should handle copy order ID press', () => {
+    it('should handle copy order ID press', async () => {
         const sellTrade = getSellTrade({ status: 'ERROR' });
         const preloadedState = getPreloadedState([sellTrade]);
 
-        const { getByText } = renderWithStoreProvider(
+        const { getByText } = await renderWithStoreProvider(
             <TradeDetailFooter orderId={sellTrade.data.orderId!} />,
             { preloadedState },
         );
 
-        fireEvent.press(getByText(getTranslation('generic.buttons.copy')));
+        await fireEvent.press(getByText(getTranslation('generic.buttons.copy')));
 
         expect(mockCopyToClipboard).toHaveBeenCalledWith(
             sellTrade.data.orderId!,

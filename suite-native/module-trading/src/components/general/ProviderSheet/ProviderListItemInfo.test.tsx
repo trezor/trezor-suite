@@ -18,11 +18,11 @@ const overridesWithQuotes: PreloadedStatePartial<TradingTestPreloadedState> = {
 };
 
 describe('ProviderListItemInfo', () => {
-    const renderProviderListItemInfo = (
+    const renderProviderListItemInfo = async (
         quote: TradingTradeType,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = overridesWithQuotes,
     ) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <ProviderListItemInfo
                 quote={quote}
                 provider={provider}
@@ -31,7 +31,7 @@ describe('ProviderListItemInfo', () => {
             { overrides },
         );
 
-    it('should render shortfall note for a shortfall quote', () => {
+    it('should render shortfall note for a shortfall quote', async () => {
         const shortfallQuote = {
             ...mercuryoApplePayBuyQuote,
             fiatStringAmount: '8',
@@ -55,14 +55,14 @@ describe('ProviderListItemInfo', () => {
             },
         };
 
-        const { getByText } = renderProviderListItemInfo(shortfallQuote, shortfallOverrides);
+        const { getByText } = await renderProviderListItemInfo(shortfallQuote, shortfallOverrides);
 
         // The note is shown in the fiat currency the user is trading in (EUR from the quote).
         expect(getByText('20% less to receive than requested (€2.00)')).toBeOnTheScreen();
     });
 
-    it('should not render shortfall note when quote does not have shortfall', () => {
-        const { queryByText } = renderProviderListItemInfo(mercuryoApplePayBuyQuote);
+    it('should not render shortfall note when quote does not have shortfall', async () => {
+        const { queryByText } = await renderProviderListItemInfo(mercuryoApplePayBuyQuote);
 
         expect(queryByText(/less to receive/)).toBeNull();
     });

@@ -35,11 +35,11 @@ describe('SellBankAccountPicker', () => {
         },
     });
 
-    const renderPicker = (
+    const renderPicker = async (
         props: ComponentProps<typeof SellBankAccountPicker>,
         overrides: PreloadedStatePartial<TradingTestPreloadedState>,
     ) =>
-        renderWithTradingProvider(<SellBankAccountPicker {...props} />, {
+        await renderWithTradingProvider(<SellBankAccountPicker {...props} />, {
             tradeType: 'sell',
             overrides,
         });
@@ -49,8 +49,8 @@ describe('SellBankAccountPicker', () => {
     });
 
     describe('Conditional Rendering', () => {
-        it('should not render when no bank accounts are available', () => {
-            const { queryByTestId } = renderPicker(
+        it('should not render when no bank accounts are available', async () => {
+            const { queryByTestId } = await renderPicker(
                 {
                     orderId: 'order_id_1',
                     selectedBankAccountIban: '',
@@ -69,8 +69,8 @@ describe('SellBankAccountPicker', () => {
             expect(queryByTestId('@trading/sell/bank-account-item')).not.toBeOnTheScreen();
         });
 
-        it('should not render when bankAccounts is undefined', () => {
-            const { queryByTestId } = renderPicker(
+        it('should not render when bankAccounts is undefined', async () => {
+            const { queryByTestId } = await renderPicker(
                 {
                     orderId: 'order_id_1',
                     selectedBankAccountIban: '',
@@ -89,8 +89,8 @@ describe('SellBankAccountPicker', () => {
             expect(queryByTestId('@trading/sell/bank-account-item')).not.toBeOnTheScreen();
         });
 
-        it('should not render when orderId is undefined', () => {
-            const { queryByTestId } = renderPicker(
+        it('should not render when orderId is undefined', async () => {
+            const { queryByTestId } = await renderPicker(
                 {
                     orderId: undefined,
                     selectedBankAccountIban: verifiedBankAccount.bankAccount,

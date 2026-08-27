@@ -18,7 +18,7 @@ describe('BuyPreviewReceiveCard', () => {
     };
 
     const renderBuyPreviewReceiveCard = async (overrides?: typeof withReceiveAccount) => {
-        const result = renderWithTradingProvider(
+        const result = await renderWithTradingProvider(
             <BuyPreviewReceiveCard quote={mercuryoApplePayBuyQuote} />,
             { tradeType: 'buy', overrides },
         );

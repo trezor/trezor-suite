@@ -58,7 +58,7 @@ describe('BuyPaymentMethodPicker', () => {
         }),
     } as const;
 
-    const renderPaymentMethodPicker = (
+    const renderPaymentMethodPicker = async (
         componentPreloadedState: PreloadedStatePartial<typeof defaultPreloadedState> = {},
         store?: EnhancedStore,
         formPreloadedState: PreloadedStatePartial<
@@ -71,14 +71,14 @@ describe('BuyPaymentMethodPicker', () => {
             componentPreloadedState,
         );
 
-        const { result } = renderHookWithStoreProvider(() => useBuyForm(), {
+        const { result } = await renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState: mergedFormPreloadedState,
             services,
             store,
         });
         form = result.current;
 
-        return renderWithStoreProvider(
+        return await renderWithStoreProvider(
             <Form form={form}>
                 <BuyPaymentMethodPicker />
             </Form>,
@@ -90,22 +90,22 @@ describe('BuyPaymentMethodPicker', () => {
         jest.clearAllMocks();
     });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should not render when there are no payment methods', () => {
-        const { toJSON } = renderPaymentMethodPicker();
+    it('should not render when there are no payment methods', async () => {
+        const { toJSON } = await renderPaymentMethodPicker();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should display loader when loading initial quotes', () => {
+    it('should display loader when loading initial quotes', async () => {
         const preloadedState = {
             wallet: { trading: { buy: { isLoading: true, quotes: [] } } },
         } satisfies PreloadedStatePartial<typeof defaultPreloadedState>;
 
-        const { getByLabelText } = renderPaymentMethodPicker(preloadedState);
+        const { getByLabelText } = await renderPaymentMethodPicker(preloadedState);
 
         expect(
             getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
@@ -117,19 +117,21 @@ describe('BuyPaymentMethodPicker', () => {
             wallet: { trading: getInitializedTradingStateWithQuotes() },
         };
 
-        it('should display "Not selected" when no method is selected in form', () => {
-            const { getByLabelText } = renderPaymentMethodPicker(withQuotes);
+        it('should display "Not selected" when no method is selected in form', async () => {
+            const { getByLabelText } = await renderPaymentMethodPicker(withQuotes);
             expect(
                 getByLabelText(getTranslation('moduleTrading.tradingScreen.noPaymentMethod')),
             ).toHaveTextContent(getTranslation('moduleTrading.notSelected'));
         });
 
-        it('should allow to select payment method', () => {
+        it('should allow to select payment method', async () => {
             const { getByText, getByLabelText, getByTestId } =
-                renderPaymentMethodPicker(withQuotes);
+                await renderPaymentMethodPicker(withQuotes);
 
-            fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.paymentMethod')));
-            fireEvent.press(getByText(creditCardPaymentMethodTranslation));
+            await fireEvent.press(
+                getByText(getTranslation('moduleTrading.tradingScreen.paymentMethod')),
+            );
+            await fireEvent.press(getByText(creditCardPaymentMethodTranslation));
 
             expect(
                 getByLabelText(getTranslation('moduleTrading.tradingScreen.selectedPaymentMethod')),
@@ -142,8 +144,8 @@ describe('BuyPaymentMethodPicker', () => {
             ).toBeTruthy();
         });
 
-        it('should display loader while quotes are fetched', () => {
-            const { getByLabelText } = renderPaymentMethodPicker(
+        it('should display loader while quotes are fetched', async () => {
+            const { getByLabelText } = await renderPaymentMethodPicker(
                 mergeDeepObject(withQuotes, {
                     wallet: { trading: { buy: { isLoading: true } } },
                 }),
@@ -154,7 +156,7 @@ describe('BuyPaymentMethodPicker', () => {
             ).toBeOnTheScreen();
         });
 
-        it('should display sheet even while quotes are fetched', () => {
+        it('should display sheet even while quotes are fetched', async () => {
             const store = createLightStore({
                 reducer,
                 preloadedState: {
@@ -165,10 +167,12 @@ describe('BuyPaymentMethodPicker', () => {
                 },
             });
             store.dispatch(tradingBuyActions.saveQuotes(buyQuotes));
-            const { getByText } = renderPaymentMethodPicker(undefined, store);
+            const { getByText } = await renderPaymentMethodPicker(undefined, store);
 
-            fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.paymentMethod')));
-            act(() => {
+            await fireEvent.press(
+                getByText(getTranslation('moduleTrading.tradingScreen.paymentMethod')),
+            );
+            await act(() => {
                 store.dispatch(tradingBuyActions.setIsLoading(true));
             });
 
@@ -180,13 +184,13 @@ describe('BuyPaymentMethodPicker', () => {
                 reportMock.mockClear();
             });
 
-            it('should fire analytics event on payment method select', () => {
-                const { getByText } = renderPaymentMethodPicker(withQuotes);
+            it('should fire analytics event on payment method select', async () => {
+                const { getByText } = await renderPaymentMethodPicker(withQuotes);
 
-                fireEvent.press(
+                await fireEvent.press(
                     getByText(getTranslation('moduleTrading.tradingScreen.paymentMethod')),
                 );
-                fireEvent.press(getByText(creditCardPaymentMethodTranslation));
+                await fireEvent.press(getByText(creditCardPaymentMethodTranslation));
 
                 expect(reportMock).toHaveBeenCalledWith({
                     type: events.tradingParameterChangedEvent.name,
@@ -197,34 +201,34 @@ describe('BuyPaymentMethodPicker', () => {
                 });
             });
 
-            it('should fire analytics event on payment method change', () => {
-                const { getByText } = renderPaymentMethodPicker(withQuotes);
+            it('should fire analytics event on payment method change', async () => {
+                const { getByText } = await renderPaymentMethodPicker(withQuotes);
 
-                act(() => {
+                await act(() => {
                     form.setValue('quote', cexdirectCreditCardBuyQuote);
                 });
 
-                fireEvent.press(
+                await fireEvent.press(
                     getByText(getTranslation('moduleTrading.tradingScreen.paymentMethod')),
                 );
-                fireEvent.press(getByText('Apple Pay'));
+                await fireEvent.press(getByText('Apple Pay'));
 
                 expect(reportMock).toHaveBeenCalledTimes(1);
             });
 
-            it('should not fire analytics event when same payment method is selected', () => {
-                const { getByText, getAllByText } = renderPaymentMethodPicker(withQuotes);
+            it('should not fire analytics event when same payment method is selected', async () => {
+                const { getByText, getAllByText } = await renderPaymentMethodPicker(withQuotes);
 
-                act(() => {
+                await act(() => {
                     form.setValue('quote', cexdirectCreditCardBuyQuote);
                 });
 
-                fireEvent.press(
+                await fireEvent.press(
                     getByText(getTranslation('moduleTrading.tradingScreen.paymentMethod')),
                 );
                 const creditCardOption = getAllByText(creditCardPaymentMethodTranslation)[1];
                 if (!creditCardOption) throw new Error('Credit Card option [1] not found');
-                fireEvent.press(creditCardOption);
+                await fireEvent.press(creditCardOption);
 
                 expect(reportMock).toHaveBeenCalledTimes(0);
             });

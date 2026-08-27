@@ -47,8 +47,8 @@ describe('useTronFeeBreakdown', () => {
         };
     };
 
-    it('should return null for a non-Tron account', () => {
-        const { result } = renderHookWithStoreProvider(
+    it('should return null for a non-Tron account', async () => {
+        const { result } = await renderHookWithStoreProvider(
             () => useTronFeeBreakdown({ accountKey: ETH_ACCOUNT_KEY }),
             { preloadedState: getPreloadedStateWith() },
         );
@@ -56,8 +56,8 @@ describe('useTronFeeBreakdown', () => {
         expect(result.current).toBeNull();
     });
 
-    it('should return null for a missing account', () => {
-        const { result } = renderHookWithStoreProvider(
+    it('should return null for a missing account', async () => {
+        const { result } = await renderHookWithStoreProvider(
             () =>
                 useTronFeeBreakdown({
                     accountKey: mockAccountKey({
@@ -71,8 +71,8 @@ describe('useTronFeeBreakdown', () => {
         expect(result.current).toBeNull();
     });
 
-    it('should return a breakdown for a Tron account', () => {
-        const { result } = renderHookWithStoreProvider(
+    it('should return a breakdown for a Tron account', async () => {
+        const { result } = await renderHookWithStoreProvider(
             () => useTronFeeBreakdown({ accountKey: TRON_ACCOUNT_KEY }),
             { preloadedState: getPreloadedStateWith([getTronAccount()]) },
         );

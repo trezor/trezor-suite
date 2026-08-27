@@ -16,16 +16,16 @@ const testQuote = exchangeQuotes[0];
 describe('ExchangeConfirmationHeader', () => {
     let store: TestStore;
 
-    const renderHeader = (props: ExchangeConfirmationHeaderProps) =>
-        renderWithStoreProvider(<ExchangeConfirmationHeader {...props} />, { store });
+    const renderHeader = async (props: ExchangeConfirmationHeaderProps) =>
+        await renderWithStoreProvider(<ExchangeConfirmationHeader {...props} />, { store });
 
     beforeEach(() => {
         store = createTradingLightStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
     });
 
-    it('should render approve title with coin symbol when flowType is approve', () => {
-        const { getByTestId } = renderHeader({ flowType: 'approve' });
+    it('should render approve title with coin symbol when flowType is approve', async () => {
+        const { getByTestId } = await renderHeader({ flowType: 'approve' });
 
         expect(getByTestId('@screen/sub-header/title')).toHaveTextContent(
             getTranslation('moduleTrading.tradingConfirmationScreen.approveHeaderTitle', {
@@ -34,8 +34,8 @@ describe('ExchangeConfirmationHeader', () => {
         );
     });
 
-    it('should render revoke title with coin symbol when flowType is revoke', () => {
-        const { getByTestId } = renderHeader({ flowType: 'revoke' });
+    it('should render revoke title with coin symbol when flowType is revoke', async () => {
+        const { getByTestId } = await renderHeader({ flowType: 'revoke' });
 
         expect(getByTestId('@screen/sub-header/title')).toHaveTextContent(
             getTranslation('moduleTrading.tradingConfirmationScreen.revokeHeaderTitle', {
@@ -44,22 +44,22 @@ describe('ExchangeConfirmationHeader', () => {
         );
     });
 
-    it('should render empty label when quote is not available', () => {
+    it('should render empty label when quote is not available', async () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { getByTestId } = renderHeader({ flowType: 'approve' });
+        const { getByTestId } = await renderHeader({ flowType: 'approve' });
 
         expect(getByTestId('@screen/sub-header/title')).toHaveTextContent('');
     });
 
-    it('should render empty label when symbol was not found', () => {
+    it('should render empty label when symbol was not found', async () => {
         const quoteWithUnknownSend = {
             ...testQuote,
             send: 'unknown-crypto-id',
         } as ExchangeTrade;
         store.dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithUnknownSend));
 
-        const { getByTestId } = renderHeader({ flowType: 'revoke' });
+        const { getByTestId } = await renderHeader({ flowType: 'revoke' });
 
         expect(getByTestId('@screen/sub-header/title')).toHaveTextContent('');
     });

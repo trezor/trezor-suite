@@ -29,28 +29,28 @@ describe('ExchangeSendContent', () => {
         },
     });
 
-    const renderForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderForm = async () =>
+        await renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
         });
 
-    const renderExchangeSendContent = () =>
-        renderWithStoreProvider(<ExchangeSendContent />, {
+    const renderExchangeSendContent = async () =>
+        await renderWithStoreProvider(<ExchangeSendContent />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
             preloadedState,
         });
 
-    beforeEach(() => {
-        const { result } = renderForm();
+    beforeEach(async () => {
+        const { result } = await renderForm();
         form = result.current;
     });
 
-    it('should render all components', () => {
-        act(() => {
+    it('should render all components', async () => {
+        await act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('sendCryptoAmount', '100');
         });
-        const { getByText, getByLabelText } = renderExchangeSendContent();
+        const { getByText, getByLabelText } = await renderExchangeSendContent();
 
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),

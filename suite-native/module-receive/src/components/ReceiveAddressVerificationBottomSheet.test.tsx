@@ -8,10 +8,10 @@ describe('ReceiveAddressVerificationBottomSheet', () => {
     const onVerifyAddress = jest.fn();
     const onSkipVerification = jest.fn();
 
-    const renderBottomSheet = (
+    const renderBottomSheet = async (
         source: ReceiveAddressVerificationSource = ReceiveAddressVerificationSource.Pasted,
     ) =>
-        renderWithBasicProvider(
+        await renderWithBasicProvider(
             <ReceiveAddressVerificationBottomSheet
                 ref={{ current: null }}
                 source={source}
@@ -24,8 +24,8 @@ describe('ReceiveAddressVerificationBottomSheet', () => {
         jest.clearAllMocks();
     });
 
-    it('renders shared address instructions', () => {
-        const { getByText, queryByText } = renderBottomSheet(
+    it('renders shared address instructions', async () => {
+        const { getByText, queryByText } = await renderBottomSheet(
             ReceiveAddressVerificationSource.Shared,
         );
 
@@ -42,8 +42,8 @@ describe('ReceiveAddressVerificationBottomSheet', () => {
         ).not.toBeOnTheScreen();
     });
 
-    it('renders verification instructions', () => {
-        const { getByText } = renderBottomSheet();
+    it('renders verification instructions', async () => {
+        const { getByText } = await renderBottomSheet();
 
         expect(
             getByText(getTranslation('moduleReceive.addressCopiedBottomSheet.title')),
@@ -60,7 +60,7 @@ describe('ReceiveAddressVerificationBottomSheet', () => {
     });
 
     it('calls verification action', async () => {
-        const { getByText } = renderBottomSheet();
+        const { getByText } = await renderBottomSheet();
 
         await userEvent.press(
             getByText(
@@ -72,7 +72,7 @@ describe('ReceiveAddressVerificationBottomSheet', () => {
     });
 
     it('calls skip action', async () => {
-        const { getByText } = renderBottomSheet();
+        const { getByText } = await renderBottomSheet();
 
         await userEvent.press(
             getByText(

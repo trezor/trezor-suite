@@ -8,8 +8,10 @@ import { TradingAccountCard } from './TradingAccountCard';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 describe('TradingAccountCard', () => {
-    const renderCard = (overrides: Partial<React.ComponentProps<typeof TradingAccountCard>> = {}) =>
-        renderWithTradingProvider(
+    const renderCard = async (
+        overrides: Partial<React.ComponentProps<typeof TradingAccountCard>> = {},
+    ) =>
+        await renderWithTradingProvider(
             <TradingAccountCard
                 title="From"
                 account={eth1NormalAccount}
@@ -21,26 +23,26 @@ describe('TradingAccountCard', () => {
             { tradeType: 'exchange' },
         );
 
-    it('renders title', () => {
-        const { getByText } = renderCard({ title: 'From Account' });
+    it('renders title', async () => {
+        const { getByText } = await renderCard({ title: 'From Account' });
 
         expect(getByText('From Account')).toBeOnTheScreen();
     });
 
-    it('renders account label', () => {
-        const { getByText } = renderCard();
+    it('renders account label', async () => {
+        const { getByText } = await renderCard();
 
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
     });
 
-    it('renders amount with minus prefix for "from" direction', () => {
-        const { getByText } = renderCard({ amount: '100' });
+    it('renders amount with minus prefix for "from" direction', async () => {
+        const { getByText } = await renderCard({ amount: '100' });
 
         expect(getByText('-100 USDC')).toBeOnTheScreen();
     });
 
-    it('renders amount with plus prefix for "to" direction', () => {
-        const { getByText } = renderCard({
+    it('renders amount with plus prefix for "to" direction', async () => {
+        const { getByText } = await renderCard({
             account: btc1NormalAccount,
             cryptoId: mercuryoFixedWorstQuote.receive,
             amount: '0.00083554',
@@ -50,26 +52,26 @@ describe('TradingAccountCard', () => {
         expect(getByText('+0.00083554 BTC')).toBeOnTheScreen();
     });
 
-    it('does not render amount text when amount is undefined', () => {
-        const { queryByText } = renderCard();
+    it('does not render amount text when amount is undefined', async () => {
+        const { queryByText } = await renderCard();
 
         expect(queryByText(/^[-+]/)).toBeNull();
     });
 
-    it('renders fiat badge when amount is provided', () => {
-        const { getByText } = renderCard({ amount: '100' });
+    it('renders fiat badge when amount is provided', async () => {
+        const { getByText } = await renderCard({ amount: '100' });
 
         expect(getByText(`100-${mercuryoFixedWorstQuote.send}`)).toBeOnTheScreen();
     });
 
-    it('does not render fiat badge when amount is undefined', () => {
-        const { queryByText } = renderCard();
+    it('does not render fiat badge when amount is undefined', async () => {
+        const { queryByText } = await renderCard();
 
         expect(queryByText(new RegExp(`-${mercuryoFixedWorstQuote.send}`))).toBeNull();
     });
 
-    it('returns null when cryptoId is not specified', () => {
-        const { toJSON } = renderCard({ cryptoId: undefined });
+    it('returns null when cryptoId is not specified', async () => {
+        const { toJSON } = await renderCard({ cryptoId: undefined });
 
         expect(toJSON()).toBeNull();
     });

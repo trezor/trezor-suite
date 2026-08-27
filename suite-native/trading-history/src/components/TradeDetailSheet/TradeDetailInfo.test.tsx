@@ -19,10 +19,10 @@ const getPreloadedState = (trades: TradingTransaction[]) => ({
 });
 
 describe('TradeDetailInfo', () => {
-    it('should not render when trade is not found', () => {
+    it('should not render when trade is not found', async () => {
         const preloadedState = getPreloadedState([]);
 
-        const { toJSON } = renderWithStoreProvider(
+        const { toJSON } = await renderWithStoreProvider(
             <TradeDetailInfo orderId="nonexistent_order_id" />,
             { preloadedState },
         );
@@ -30,12 +30,12 @@ describe('TradeDetailInfo', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render buy trade info correctly', () => {
+    it('should render buy trade info correctly', async () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
         const preloadedState = getPreloadedState([buyTrade]);
 
-        const { getByText } = renderWithStoreProvider(
+        const { getByText } = await renderWithStoreProvider(
             <TradeDetailInfo orderId={buyTrade.data.orderId!} />,
             { preloadedState },
         );
@@ -47,12 +47,12 @@ describe('TradeDetailInfo', () => {
         expect(getByText(/[0-9]{1,2}:21/)).toBeTruthy();
     });
 
-    it('should render exchange trade info correctly', () => {
+    it('should render exchange trade info correctly', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
 
         const preloadedState = getPreloadedState([exchangeTrade]);
 
-        const { getByText, queryByText } = renderWithStoreProvider(
+        const { getByText, queryByText } = await renderWithStoreProvider(
             <TradeDetailInfo orderId={exchangeTrade.data.orderId!} />,
             { preloadedState },
         );

@@ -86,15 +86,17 @@ const sections = [
 const preferredCurrencyUsdThreshold = asBaseCurrencyAmount(new BigNumber('0.1'));
 
 describe('useMyAssetsFilteredData', () => {
-    const renderFilter = (threshold: BaseCurrencyAmount | null = preferredCurrencyUsdThreshold) => {
+    const renderFilter = async (
+        threshold: BaseCurrencyAmount | null = preferredCurrencyUsdThreshold,
+    ) => {
         mockUseTradingMyAssets.mockReturnValue(sections);
         mockUsePreferredCurrencyUsdThreshold.mockReturnValue(threshold);
 
-        return renderHook(() => useMyAssetsFilteredData('sell'));
+        return await renderHook(() => useMyAssetsFilteredData('sell'));
     };
 
-    it('groups each account assets by tradeability and low balance', () => {
-        const { result } = renderFilter();
+    it('groups each account assets by tradeability and low balance', async () => {
+        const { result } = await renderFilter();
         const ethSection = result.current.filteredSections[1];
 
         expect(mockUseTradingMyAssets).toHaveBeenCalledWith('sell');
@@ -107,8 +109,8 @@ describe('useMyAssetsFilteredData', () => {
         expect(ethSection?.nonTradeableAssets).toEqual([nonTradeableLowBalanceAsset]);
     });
 
-    it('keeps all tradeable assets in the main list when the threshold is unavailable', () => {
-        const { result } = renderFilter(null);
+    it('keeps all tradeable assets in the main list when the threshold is unavailable', async () => {
+        const { result } = await renderFilter(null);
         const ethSection = result.current.filteredSections[1];
 
         expect(ethSection?.lowBalanceAssets).toEqual([]);
@@ -116,18 +118,18 @@ describe('useMyAssetsFilteredData', () => {
         expect(ethSection?.nonTradeableAssets).toEqual([nonTradeableLowBalanceAsset]);
     });
 
-    it('uses the supplied preferred-currency threshold', () => {
-        const { result } = renderFilter(asBaseCurrencyAmount(new BigNumber('0.09')));
+    it('uses the supplied preferred-currency threshold', async () => {
+        const { result } = await renderFilter(asBaseCurrencyAmount(new BigNumber('0.09')));
         const ethSection = result.current.filteredSections[1];
 
         expect(ethSection?.lowBalanceAssets).toEqual([]);
         expect(ethSection?.assets).toContain(lowBalanceAsset);
     });
 
-    it('searches all categories without flattening them', () => {
-        const { result } = renderFilter();
+    it('searches all categories without flattening them', async () => {
+        const { result } = await renderFilter();
 
-        act(() => result.current.setFilterValue('disabled low'));
+        await act(() => result.current.setFilterValue('disabled low'));
 
         expect(result.current.filteredSections).toHaveLength(1);
         expect(result.current.filteredSections[0]?.assets).toEqual([]);
@@ -137,10 +139,10 @@ describe('useMyAssetsFilteredData', () => {
         ]);
     });
 
-    it('combines case-insensitive search and network filters', () => {
-        const { result } = renderFilter();
+    it('combines case-insensitive search and network filters', async () => {
+        const { result } = await renderFilter();
 
-        act(() => {
+        await act(() => {
             result.current.setFilterSymbol('eth');
             result.current.setFilterValue('LOW USDC');
         });
@@ -149,12 +151,12 @@ describe('useMyAssetsFilteredData', () => {
         expect(result.current.filteredSections[0]?.lowBalanceAssets).toEqual([lowBalanceAsset]);
     });
 
-    it('updates the scroll reset key for both filters', () => {
-        const { result } = renderFilter();
+    it('updates the scroll reset key for both filters', async () => {
+        const { result } = await renderFilter();
 
         expect(result.current.scrollResetKey).toBe('Network:all;Search:');
 
-        act(() => {
+        await act(() => {
             result.current.setFilterSymbol('eth');
             result.current.setFilterValue('usd');
         });

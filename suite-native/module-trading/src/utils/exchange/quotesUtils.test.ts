@@ -23,13 +23,13 @@ import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils
 describe('quotesUtils', () => {
     let form: ExchangeFormType;
 
-    const renderUseTradingBuyForm = () =>
-        renderHookWithTradingProvider(() => useExchangeForm(), {
+    const renderUseTradingBuyForm = async () =>
+        await renderHookWithTradingProvider(() => useExchangeForm(), {
             overrides: { wallet: { trading: getInitializedTradingState() } },
         });
 
-    beforeEach(() => {
-        const { result } = renderUseTradingBuyForm();
+    beforeEach(async () => {
+        const { result } = await renderUseTradingBuyForm();
         form = result.current;
     });
 
@@ -40,8 +40,8 @@ describe('quotesUtils', () => {
             );
         });
 
-        it('should throw when receiveAsset is not specified', () => {
-            act(() => {
+        it('should throw when receiveAsset is not specified', async () => {
+            await act(() => {
                 form.setValue('sendAsset', btcAsset);
             });
 
@@ -50,8 +50,8 @@ describe('quotesUtils', () => {
             );
         });
 
-        it('should throw when sendCryptoAmount is not specified', () => {
-            act(() => {
+        it('should throw when sendCryptoAmount is not specified', async () => {
+            await act(() => {
                 form.setValue('sendAsset', btcAsset);
                 form.setValue('receiveAsset', ethAsset);
             });
@@ -61,8 +61,8 @@ describe('quotesUtils', () => {
             );
         });
 
-        it('should return correct TradingExchangeFormProps when all values are set', () => {
-            act(() => {
+        it('should return correct TradingExchangeFormProps when all values are set', async () => {
+            await act(() => {
                 form.setValue('sendAsset', btcAsset);
                 form.setValue('receiveAsset', ethAsset);
                 form.setValue('sendCryptoAmount', '1');
@@ -75,8 +75,8 @@ describe('quotesUtils', () => {
             } satisfies MinimalExchangeFormProps);
         });
 
-        it('should include fromAddress when provided', () => {
-            act(() => {
+        it('should include fromAddress when provided', async () => {
+            await act(() => {
                 form.setValue('sendAsset', ethAsset);
                 form.setValue('receiveAsset', btcAsset);
                 form.setValue('sendCryptoAmount', '1');
@@ -91,8 +91,8 @@ describe('quotesUtils', () => {
             } satisfies MinimalExchangeFormProps);
         });
 
-        it('should not use btc account descriptor', () => {
-            act(() => {
+        it('should not use btc account descriptor', async () => {
+            await act(() => {
                 form.setValue('sendAsset', btcAsset);
                 form.setValue('receiveAsset', ethAsset);
                 form.setValue('sendCryptoAmount', '1');
@@ -106,14 +106,14 @@ describe('quotesUtils', () => {
             } satisfies MinimalExchangeFormProps);
         });
 
-        it('should make address lower case for eth based assets', () => {
+        it('should make address lower case for eth based assets', async () => {
             const alteredUsdcAsset = {
                 ...usdcAsset,
                 cryptoId: 'ethereum--0XA0B86991C6218B36C1D19D4A2E9EB0CE3606EB48' as CryptoId,
                 contractAddress: usdcAsset.contractAddress!.toUpperCase() as TokenAddress,
             };
 
-            act(() => {
+            await act(() => {
                 form.setValue('sendAsset', alteredUsdcAsset);
                 form.setValue('receiveAsset', alteredUsdcAsset);
                 form.setValue('sendCryptoAmount', '1');
@@ -130,7 +130,7 @@ describe('quotesUtils', () => {
             } satisfies MinimalExchangeFormProps);
         });
 
-        it('should include receiveAddress when receiveAccount has an address', () => {
+        it('should include receiveAddress when receiveAccount has an address', async () => {
             const receiveAccount: ReceiveAccount = {
                 account: btc1NormalAccount,
                 address: {
@@ -143,7 +143,7 @@ describe('quotesUtils', () => {
                 },
             };
 
-            act(() => {
+            await act(() => {
                 form.setValue('sendAsset', ethAsset);
                 form.setValue('receiveAsset', btcAsset);
                 form.setValue('sendCryptoAmount', '1');
@@ -159,12 +159,12 @@ describe('quotesUtils', () => {
             } satisfies MinimalExchangeFormProps);
         });
 
-        it('should not fall back to account descriptor for BTC when no address is set', () => {
+        it('should not fall back to account descriptor for BTC when no address is set', async () => {
             const receiveAccount: ReceiveAccount = {
                 account: btc1NormalAccount,
             };
 
-            act(() => {
+            await act(() => {
                 form.setValue('sendAsset', ethAsset);
                 form.setValue('receiveAsset', btcAsset);
                 form.setValue('sendCryptoAmount', '1');
@@ -179,12 +179,12 @@ describe('quotesUtils', () => {
             } satisfies MinimalExchangeFormProps);
         });
 
-        it('should use  account descriptor for non-btc like networks', () => {
+        it('should use  account descriptor for non-btc like networks', async () => {
             const receiveAccount: ReceiveAccount = {
                 account: eth1NormalAccount,
             };
 
-            act(() => {
+            await act(() => {
                 form.setValue('sendAsset', btcAsset);
                 form.setValue('receiveAsset', ethAsset);
                 form.setValue('sendCryptoAmount', '1');
@@ -200,8 +200,8 @@ describe('quotesUtils', () => {
             } satisfies MinimalExchangeFormProps);
         });
 
-        it('should not make address lower case for SOL based assets', () => {
-            act(() => {
+        it('should not make address lower case for SOL based assets', async () => {
+            await act(() => {
                 form.setValue('sendAsset', jupOnSolanaAsset);
                 form.setValue('receiveAsset', jitoOnSolanaAsset);
                 form.setValue('sendCryptoAmount', '1');

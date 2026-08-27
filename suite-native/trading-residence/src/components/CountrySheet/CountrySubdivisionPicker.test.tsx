@@ -45,19 +45,19 @@ const TestCountrySubdivisionPickerControlsProvider = ({ children }: { children: 
 };
 
 describe('CountrySubdivisionPicker', () => {
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    const renderCountrySubdivisionPicker = (defaultValues: TradingLocationFormValues) => {
-        const form = renderHookWithBasicProvider(() =>
+    const renderCountrySubdivisionPicker = async (defaultValues: TradingLocationFormValues) => {
+        const form = await renderHookWithBasicProvider(() =>
             useForm<TradingLocationFormValues>({
                 defaultValues,
                 validation: locationFormValidationSchema,
             }),
         );
 
-        const renderResult = renderWithBasicProvider(
+        const renderResult = await renderWithBasicProvider(
             <CountrySubdivisionPicker testID="TEST_ID" noBottomBorder />,
             {
                 wrapper: ({ children }) => (
@@ -74,8 +74,8 @@ describe('CountrySubdivisionPicker', () => {
         };
     };
 
-    it('should render nothing when selected country does not require subdivision', () => {
-        const { queryByText } = renderCountrySubdivisionPicker({
+    it('should render nothing when selected country does not require subdivision', async () => {
+        const { queryByText } = await renderCountrySubdivisionPicker({
             country: czechiaCountry,
         });
 
@@ -84,8 +84,8 @@ describe('CountrySubdivisionPicker', () => {
         ).toBeNull();
     });
 
-    it('should render empty value when selected country requires subdivision', () => {
-        const { getByLabelText } = renderCountrySubdivisionPicker({
+    it('should render empty value when selected country requires subdivision', async () => {
+        const { getByLabelText } = await renderCountrySubdivisionPicker({
             country: usaCountry,
         });
 
@@ -96,8 +96,8 @@ describe('CountrySubdivisionPicker', () => {
         ).toHaveTextContent(getTranslation('tradingResidence.locationSettings.notSelected'));
     });
 
-    it('should display selected subdivision', () => {
-        const { getByLabelText } = renderCountrySubdivisionPicker({
+    it('should display selected subdivision', async () => {
+        const { getByLabelText } = await renderCountrySubdivisionPicker({
             country: usaCountry,
             countrySubdivision: {
                 value: 'CA',
@@ -114,7 +114,7 @@ describe('CountrySubdivisionPicker', () => {
     });
 
     it('should allow to select subdivision', async () => {
-        const { getByText, getByLabelText } = renderCountrySubdivisionPicker({
+        const { getByText, getByLabelText } = await renderCountrySubdivisionPicker({
             country: usaCountry,
         });
 

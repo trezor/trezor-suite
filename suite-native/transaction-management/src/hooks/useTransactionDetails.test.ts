@@ -55,11 +55,11 @@ const buildPreloadedState = (
     },
 });
 
-const renderUseTransactionDetails = (
+const renderUseTransactionDetails = async (
     params: Parameters<typeof useTransactionDetails>[0],
     transactions?: WalletAccountTransaction[],
 ) =>
-    renderHookWithStoreProvider(() => useTransactionDetails(params), {
+    await renderHookWithStoreProvider(() => useTransactionDetails(params), {
         preloadedState: buildPreloadedState(transactions),
     });
 
@@ -69,27 +69,33 @@ describe('useTransactionDetails', () => {
     });
 
     describe('transaction', () => {
-        it('returns undefined when accountKey is null', () => {
-            const { result } = renderUseTransactionDetails({ accountKey: null, txid: TXID });
+        it('returns undefined when accountKey is null', async () => {
+            const { result } = await renderUseTransactionDetails({ accountKey: null, txid: TXID });
 
             expect(result.current.transaction).toBeUndefined();
         });
 
-        it('returns undefined when txid is null', () => {
-            const { result } = renderUseTransactionDetails({ accountKey: ACCOUNT_KEY, txid: null });
+        it('returns undefined when txid is null', async () => {
+            const { result } = await renderUseTransactionDetails({
+                accountKey: ACCOUNT_KEY,
+                txid: null,
+            });
 
             expect(result.current.transaction).toBeUndefined();
         });
 
-        it('returns the transaction matching accountKey and txid', () => {
-            const { result } = renderUseTransactionDetails({ accountKey: ACCOUNT_KEY, txid: TXID });
+        it('returns the transaction matching accountKey and txid', async () => {
+            const { result } = await renderUseTransactionDetails({
+                accountKey: ACCOUNT_KEY,
+                txid: TXID,
+            });
 
             expect(result.current.transaction?.txid).toBe(TXID);
             expect(result.current.transaction?.symbol).toBe(mockTransaction.symbol);
         });
 
-        it('returns null when no transaction matches the txid', () => {
-            const { result } = renderUseTransactionDetails({
+        it('returns null when no transaction matches the txid', async () => {
+            const { result } = await renderUseTransactionDetails({
                 accountKey: ACCOUNT_KEY,
                 txid: 'nonexistent-txid',
             });
@@ -99,14 +105,17 @@ describe('useTransactionDetails', () => {
     });
 
     describe('isPending', () => {
-        it('returns false for a confirmed transaction', () => {
-            const { result } = renderUseTransactionDetails({ accountKey: ACCOUNT_KEY, txid: TXID });
+        it('returns false for a confirmed transaction', async () => {
+            const { result } = await renderUseTransactionDetails({
+                accountKey: ACCOUNT_KEY,
+                txid: TXID,
+            });
 
             expect(result.current.isPending).toBe(false);
         });
 
-        it('returns true for a pending transaction (blockHeight 0)', () => {
-            const { result } = renderUseTransactionDetails(
+        it('returns true for a pending transaction (blockHeight 0)', async () => {
+            const { result } = await renderUseTransactionDetails(
                 { accountKey: ACCOUNT_KEY, txid: TXID },
                 [pendingTransaction],
             );
@@ -114,22 +123,25 @@ describe('useTransactionDetails', () => {
             expect(result.current.isPending).toBe(true);
         });
 
-        it('returns false when accountKey is null', () => {
-            const { result } = renderUseTransactionDetails({ accountKey: null, txid: TXID });
+        it('returns false when accountKey is null', async () => {
+            const { result } = await renderUseTransactionDetails({ accountKey: null, txid: TXID });
 
             expect(result.current.isPending).toBe(false);
         });
     });
 
     describe('tokenTransfer', () => {
-        it('returns undefined when tokenContract is not provided', () => {
-            const { result } = renderUseTransactionDetails({ accountKey: ACCOUNT_KEY, txid: TXID });
+        it('returns undefined when tokenContract is not provided', async () => {
+            const { result } = await renderUseTransactionDetails({
+                accountKey: ACCOUNT_KEY,
+                txid: TXID,
+            });
 
             expect(result.current.tokenTransfer).toBeUndefined();
         });
 
-        it('returns the matching token transfer when tokenContract matches', () => {
-            const { result } = renderUseTransactionDetails(
+        it('returns the matching token transfer when tokenContract matches', async () => {
+            const { result } = await renderUseTransactionDetails(
                 { accountKey: ACCOUNT_KEY, txid: TXID, tokenContract: TOKEN_CONTRACT },
                 [transactionWithToken],
             );
@@ -138,8 +150,8 @@ describe('useTransactionDetails', () => {
             expect(result.current.tokenTransfer?.symbol).toBe('usdc');
         });
 
-        it('returns undefined when tokenContract does not match any token', () => {
-            const { result } = renderUseTransactionDetails(
+        it('returns undefined when tokenContract does not match any token', async () => {
+            const { result } = await renderUseTransactionDetails(
                 { accountKey: ACCOUNT_KEY, txid: TXID, tokenContract: '0xnonexistent' },
                 [transactionWithToken],
             );
@@ -149,15 +161,18 @@ describe('useTransactionDetails', () => {
     });
 
     describe('explorerUrl', () => {
-        it('returns a URL containing the txid when transaction exists', () => {
-            const { result } = renderUseTransactionDetails({ accountKey: ACCOUNT_KEY, txid: TXID });
+        it('returns a URL containing the txid when transaction exists', async () => {
+            const { result } = await renderUseTransactionDetails({
+                accountKey: ACCOUNT_KEY,
+                txid: TXID,
+            });
 
             expect(result.current.explorerUrl).not.toBeNull();
             expect(result.current.explorerUrl).toContain(TXID);
         });
 
-        it('returns null when transaction does not exist', () => {
-            const { result } = renderUseTransactionDetails({
+        it('returns null when transaction does not exist', async () => {
+            const { result } = await renderUseTransactionDetails({
                 accountKey: ACCOUNT_KEY,
                 txid: 'nonexistent-txid',
             });
@@ -165,18 +180,21 @@ describe('useTransactionDetails', () => {
             expect(result.current.explorerUrl).toBeNull();
         });
 
-        it('returns null when accountKey is null', () => {
-            const { result } = renderUseTransactionDetails({ accountKey: null, txid: TXID });
+        it('returns null when accountKey is null', async () => {
+            const { result } = await renderUseTransactionDetails({ accountKey: null, txid: TXID });
 
             expect(result.current.explorerUrl).toBeNull();
         });
     });
 
     describe('openInBlockchain', () => {
-        it('calls openLink with the explorerUrl when transaction exists', () => {
-            const { result } = renderUseTransactionDetails({ accountKey: ACCOUNT_KEY, txid: TXID });
+        it('calls openLink with the explorerUrl when transaction exists', async () => {
+            const { result } = await renderUseTransactionDetails({
+                accountKey: ACCOUNT_KEY,
+                txid: TXID,
+            });
 
-            act(() => {
+            await act(() => {
                 result.current.openInBlockchain();
             });
 
@@ -184,23 +202,23 @@ describe('useTransactionDetails', () => {
             expect(mockOpenLink).toHaveBeenCalledWith(result.current.explorerUrl);
         });
 
-        it('does not call openLink when transaction does not exist', () => {
-            const { result } = renderUseTransactionDetails({
+        it('does not call openLink when transaction does not exist', async () => {
+            const { result } = await renderUseTransactionDetails({
                 accountKey: ACCOUNT_KEY,
                 txid: 'nonexistent-txid',
             });
 
-            act(() => {
+            await act(() => {
                 result.current.openInBlockchain();
             });
 
             expect(mockOpenLink).not.toHaveBeenCalled();
         });
 
-        it('does not call openLink when accountKey is null', () => {
-            const { result } = renderUseTransactionDetails({ accountKey: null, txid: TXID });
+        it('does not call openLink when accountKey is null', async () => {
+            const { result } = await renderUseTransactionDetails({ accountKey: null, txid: TXID });
 
-            act(() => {
+            await act(() => {
                 result.current.openInBlockchain();
             });
 

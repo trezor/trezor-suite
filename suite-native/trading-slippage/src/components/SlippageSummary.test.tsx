@@ -24,12 +24,12 @@ const TestWrapper = ({ slippage = '1' }: { slippage?: string }) => {
     );
 };
 
-const renderSlippageSummary = (slippage?: string, quote?: ExchangeTrade) =>
-    renderWithSlippageTestProvider(<TestWrapper slippage={slippage} />, { quote });
+const renderSlippageSummary = async (slippage?: string, quote?: ExchangeTrade) =>
+    await renderWithSlippageTestProvider(<TestWrapper slippage={slippage} />, { quote });
 
 describe('SlippageSummary', () => {
-    it('should render all row labels', () => {
-        const { getByText } = renderSlippageSummary();
+    it('should render all row labels', async () => {
+        const { getByText } = await renderSlippageSummary();
 
         expect(
             getByText(getTranslation('moduleTrading.slippage.summary.offered')),
@@ -42,46 +42,46 @@ describe('SlippageSummary', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should show offered amount and symbol from the quote', () => {
-        const { getByText } = renderSlippageSummary();
+    it('should show offered amount and symbol from the quote', async () => {
+        const { getByText } = await renderSlippageSummary();
 
         expect(getByText(`${mercuryoDexQuote.receiveStringAmount} BTC`)).toBeOnTheScreen();
     });
 
-    it('should calculate deduction and minimum receive from slippage', () => {
-        const { getByText } = renderSlippageSummary('1');
+    it('should calculate deduction and minimum receive from slippage', async () => {
+        const { getByText } = await renderSlippageSummary('1');
 
         expect(getByText('-0.00000836 BTC')).toBeOnTheScreen();
         expect(getByText('0.00082718 BTC')).toBeOnTheScreen();
     });
 
-    it('should use swapSlippage from the quote when form value is empty', () => {
-        const { getByText } = renderSlippageSummary('');
+    it('should use swapSlippage from the quote when form value is empty', async () => {
+        const { getByText } = await renderSlippageSummary('');
 
         expect(getByText('-0.00000836 BTC')).toBeOnTheScreen();
         expect(getByText('0.00082718 BTC')).toBeOnTheScreen();
     });
 
-    it('should recalculate values when slippage changes', () => {
-        const { getByText } = renderSlippageSummary('3');
+    it('should recalculate values when slippage changes', async () => {
+        const { getByText } = await renderSlippageSummary('3');
 
         expect(getByText('-0.00002507 BTC')).toBeOnTheScreen();
         expect(getByText('0.00081047 BTC')).toBeOnTheScreen();
     });
 
     describe('quote validation', () => {
-        it('should throw when swapSlippage is undefined', () => {
+        it('should throw when swapSlippage is undefined', async () => {
             const quote = { ...mercuryoDexQuote, swapSlippage: undefined };
 
-            expect(() => renderSlippageSummary(undefined, quote)).toThrow(
+            await expect(renderSlippageSummary(undefined, quote)).rejects.toThrow(
                 'swapSlippage is required in quote for SlippageSummary',
             );
         });
 
-        it('should throw when receiveStringAmount is undefined', () => {
+        it('should throw when receiveStringAmount is undefined', async () => {
             const quote = { ...mercuryoDexQuote, receiveStringAmount: undefined };
 
-            expect(() => renderSlippageSummary(undefined, quote)).toThrow(
+            await expect(renderSlippageSummary(undefined, quote)).rejects.toThrow(
                 'receiveStringAmount is required in quote for SlippageSummary',
             );
         });

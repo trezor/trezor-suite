@@ -17,8 +17,8 @@ type HookProps = {
     setAccountKey: (accountKey: AccountKey | undefined) => void;
 };
 describe('useSendAccountAssetBalance', () => {
-    const renderUseSendAccountAssetBalance = (initialProps: HookProps) =>
-        renderHookWithStoreProvider(
+    const renderUseSendAccountAssetBalance = async (initialProps: HookProps) =>
+        await renderHookWithStoreProvider(
             ({
                 sendAccount,
                 sendAsset,
@@ -47,13 +47,13 @@ describe('useSendAccountAssetBalance', () => {
             },
         );
 
-    it('should watch for balance and asset symbol', () => {
+    it('should watch for balance and asset symbol', async () => {
         const setBalance = jest.fn();
         const setSendNetworkSymbol = jest.fn();
         const setSendAssetSymbol = jest.fn();
         const setContractAddress = jest.fn();
         const setAccountKey = jest.fn();
-        renderUseSendAccountAssetBalance({
+        await renderUseSendAccountAssetBalance({
             sendAccount: getBtcAccount(),
             sendAsset: btcAsset,
             setBalance,
@@ -68,14 +68,14 @@ describe('useSendAccountAssetBalance', () => {
         expect(setSendAssetSymbol).toHaveBeenCalledWith('BTC');
     });
 
-    it('should set balance to undefined when account is undefined', () => {
+    it('should set balance to undefined when account is undefined', async () => {
         const setBalance = jest.fn();
         const setSendNetworkSymbol = jest.fn();
         const setSendAssetSymbol = jest.fn();
         const setContractAddress = jest.fn();
         const setAccountKey = jest.fn();
 
-        renderUseSendAccountAssetBalance({
+        await renderUseSendAccountAssetBalance({
             sendAccount: undefined,
             sendAsset: btcAsset,
             setBalance,
@@ -88,14 +88,14 @@ describe('useSendAccountAssetBalance', () => {
         expect(setBalance).toHaveBeenCalledWith(undefined);
     });
 
-    it('should set balance to undefined when symbol is undefined', () => {
+    it('should set balance to undefined when symbol is undefined', async () => {
         const setBalance = jest.fn();
         const setSendNetworkSymbol = jest.fn();
         const setSendAssetSymbol = jest.fn();
         const setContractAddress = jest.fn();
         const setAccountKey = jest.fn();
 
-        renderUseSendAccountAssetBalance({
+        await renderUseSendAccountAssetBalance({
             sendAccount: getBtcAccount(),
             sendAsset: undefined,
             setBalance,

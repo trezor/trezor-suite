@@ -4,13 +4,13 @@ import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 import { AccountListFooter } from './AccountListFooter';
 
 describe('AccountListFooter', () => {
-    it('renders a standalone add account action', () => {
+    it('renders a standalone add account action', async () => {
         const onAddAccountTap = jest.fn();
-        const { getByText } = renderWithBasicProvider(
+        const { getByText } = await renderWithBasicProvider(
             <AccountListFooter onAddAccountTap={onAddAccountTap} />,
         );
 
-        fireEvent.press(
+        await fireEvent.press(
             getByText(getTranslation('moduleAddAccounts.coinDiscoveryFinishedScreen.addButton')),
         );
 

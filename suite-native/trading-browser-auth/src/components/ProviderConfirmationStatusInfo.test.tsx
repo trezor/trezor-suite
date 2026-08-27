@@ -11,22 +11,29 @@ jest.mock('../hooks/useProviderConfirmationStatus', () => ({
 }));
 
 describe('ProviderConfirmationStatusInfo', () => {
-    const renderProviderConfirmationStatusInfo = (onConfirmationComplete?: jest.Mock) =>
-        renderWithBasicProvider(
+    const renderProviderConfirmationStatusInfo = async (onConfirmationComplete?: jest.Mock) =>
+        await renderWithBasicProvider(
             <ProviderConfirmationStatusInfo
                 companyName="MoonPay"
                 onConfirmationComplete={onConfirmationComplete}
             />,
         );
 
-    const finishSpinnerAnimation = (
-        getByProps: ReturnType<typeof renderProviderConfirmationStatusInfo>['UNSAFE_getByProps'],
+    const finishSpinnerAnimation = async (
+        container: Awaited<ReturnType<typeof renderProviderConfirmationStatusInfo>>['container'],
     ) => {
-        const spinner = getByProps({ loop: false, speed: 1.5 });
+        const [spinner] = container.queryAll(
+            instance => instance.props.loop === false && instance.props.speed === 1.5,
+        );
 
-        fireEvent(spinner, 'animationFinish');
-        fireEvent(spinner, 'animationFinish');
-        fireEvent(spinner, 'animationFinish');
+        if (!spinner) {
+            throw new Error('Spinner animation was not rendered.');
+        }
+
+        const event = { nativeEvent: { isCancelled: false } };
+        await fireEvent(spinner, 'animationFinish', event);
+        await fireEvent(spinner, 'animationFinish', event);
+        await fireEvent(spinner, 'animationFinish', event);
     };
 
     beforeEach(() => {
@@ -35,10 +42,10 @@ describe('ProviderConfirmationStatusInfo', () => {
 
     it.each<ProviderConfirmationStatus>(['inactive', 'confirmation_success', 'window_opened'])(
         'should render nothing when providerConfirmationStatus is [%s]',
-        providerConfirmationStatus => {
+        async providerConfirmationStatus => {
             mockUseProviderConfirmationStatus = providerConfirmationStatus;
 
-            const { toJSON } = renderProviderConfirmationStatusInfo();
+            const { toJSON } = await renderProviderConfirmationStatusInfo();
 
             expect(toJSON()).toBeNull();
         },
@@ -65,23 +72,23 @@ describe('ProviderConfirmationStatusInfo', () => {
         ],
     ])(
         'should render "%s" when providerConfirmationStatus is [%s]',
-        (expectedTitle, providerConfirmationStatus) => {
+        async (expectedTitle, providerConfirmationStatus) => {
             mockUseProviderConfirmationStatus = providerConfirmationStatus;
 
-            const { getByText } = renderProviderConfirmationStatusInfo();
+            const { getByText } = await renderProviderConfirmationStatusInfo();
 
             expect(getByText(expectedTitle)).toBeTruthy();
         },
     );
 
-    it('should show the success animation before hiding the confirmation status', () => {
+    it('should show the success animation before hiding the confirmation status', async () => {
         mockUseProviderConfirmationStatus = 'window_closed_with_success';
         const onConfirmationComplete = jest.fn();
-        const { getByText, queryByText, rerender, UNSAFE_getByProps } =
-            renderProviderConfirmationStatusInfo(onConfirmationComplete);
+        const { container, getByText, queryByText, rerender } =
+            await renderProviderConfirmationStatusInfo(onConfirmationComplete);
 
         mockUseProviderConfirmationStatus = 'confirmation_success';
-        rerender(
+        await rerender(
             <ProviderConfirmationStatusInfo
                 companyName="MoonPay"
                 onConfirmationComplete={onConfirmationComplete}
@@ -97,7 +104,7 @@ describe('ProviderConfirmationStatusInfo', () => {
         ).toBeTruthy();
         expect(onConfirmationComplete).not.toHaveBeenCalled();
 
-        finishSpinnerAnimation(UNSAFE_getByProps);
+        await finishSpinnerAnimation(container);
 
         expect(
             queryByText(
@@ -109,22 +116,22 @@ describe('ProviderConfirmationStatusInfo', () => {
         expect(onConfirmationComplete).toHaveBeenCalledWith('success');
     });
 
-    it('should complete immediately when there is no success animation to show', () => {
+    it('should complete immediately when there is no success animation to show', async () => {
         mockUseProviderConfirmationStatus = 'confirmation_success';
         const onConfirmationComplete = jest.fn();
 
-        renderProviderConfirmationStatusInfo(onConfirmationComplete);
+        await renderProviderConfirmationStatusInfo(onConfirmationComplete);
 
         expect(onConfirmationComplete).toHaveBeenCalledWith('success');
     });
 
-    it('should show the failure animation before rendering the failure status', () => {
+    it('should show the failure animation before rendering the failure status', async () => {
         mockUseProviderConfirmationStatus = 'window_closed_incomplete';
-        const { getByText, queryByText, rerender, UNSAFE_getByProps } =
-            renderProviderConfirmationStatusInfo();
+        const { container, getByText, queryByText, rerender } =
+            await renderProviderConfirmationStatusInfo();
 
         mockUseProviderConfirmationStatus = 'confirmation_failed';
-        rerender(<ProviderConfirmationStatusInfo companyName="MoonPay" />);
+        await rerender(<ProviderConfirmationStatusInfo companyName="MoonPay" />);
 
         const failureTitle = getTranslation(
             'moduleTrading.tradingSellPreviewScreen.providerStatus.cannotBeCompletedAlert.title',
@@ -132,15 +139,15 @@ describe('ProviderConfirmationStatusInfo', () => {
 
         expect(queryByText(failureTitle)).toBeNull();
 
-        finishSpinnerAnimation(UNSAFE_getByProps);
+        await finishSpinnerAnimation(container);
 
         expect(getByText(failureTitle)).toBeTruthy();
     });
 
-    it('should render a quote error immediately', () => {
+    it('should render a quote error immediately', async () => {
         mockUseProviderConfirmationStatus = 'window_closed_incomplete';
 
-        const { getByText } = renderWithBasicProvider(
+        const { getByText } = await renderWithBasicProvider(
             <ProviderConfirmationStatusInfo companyName="MoonPay" quoteStatus="ERROR" />,
         );
 

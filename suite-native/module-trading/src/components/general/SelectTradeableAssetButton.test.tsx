@@ -9,7 +9,7 @@ import {
 
 describe('SelectTradeableAssetButton', () => {
     const renderButton = async (initialProps: Partial<SelectTradeableAssetButtonProps>) => {
-        const res = renderWithBasicProvider(
+        const res = await renderWithBasicProvider(
             <SelectTradeableAssetButton
                 onPress={jest.fn()}
                 selectedAsset={undefined}

@@ -58,8 +58,8 @@ const createParams = (overrides: Record<string, unknown> = {}) => ({
 
 type HookParams = ReturnType<typeof createParams>;
 
-const renderReview = (params: HookParams, { isDeviceConnected = true } = {}) =>
-    renderHookWithStoreProvider((props: HookParams) => useEarnTransactionReview(props), {
+const renderReview = async (params: HookParams, { isDeviceConnected = true } = {}) =>
+    await renderHookWithStoreProvider((props: HookParams) => useEarnTransactionReview(props), {
         preloadedState: { device: { selectedDevice: { connected: isDeviceConnected } } },
         initialProps: params,
     });
@@ -76,7 +76,7 @@ describe('useEarnTransactionReview', () => {
         it('signs successfully and passes the payload to onSignSuccess', async () => {
             const params = createParams();
             params.signAction.mockResolvedValue(fulfilled(SIGNED_PAYLOAD));
-            const { result } = renderReview(params);
+            const { result } = await renderReview(params);
 
             let signingResult;
             await act(async () => {
@@ -93,7 +93,7 @@ describe('useEarnTransactionReview', () => {
             const errorPayload = { error: 'sign-transaction-failed', message: 'boom' };
             const params = createParams();
             params.signAction.mockResolvedValue(rejected(errorPayload));
-            const { result } = renderReview(params);
+            const { result } = await renderReview(params);
 
             let signingResult;
             await act(async () => {
@@ -111,7 +111,7 @@ describe('useEarnTransactionReview', () => {
             params.signAction.mockResolvedValue(
                 rejected({ error: 'sign-transaction-failed', message: 'tx-cancelled' }),
             );
-            const { result } = renderReview(params);
+            const { result } = await renderReview(params);
 
             let signingResult;
             await act(async () => {
@@ -129,7 +129,7 @@ describe('useEarnTransactionReview', () => {
         it('pushes successfully and marks the navigation success before onPushSuccess', async () => {
             const params = createParams({ isSigned: true });
             params.pushAction.mockResolvedValue(fulfilled(PUSHED_PAYLOAD));
-            const { result } = renderReview(params);
+            const { result } = await renderReview(params);
 
             await act(async () => {
                 await result.current.handleSubmitted();
@@ -151,7 +151,7 @@ describe('useEarnTransactionReview', () => {
             params.pushAction.mockResolvedValue(
                 rejected({ error: 'push-transaction-pending-conflict' }),
             );
-            const { result } = renderReview(params);
+            const { result } = await renderReview(params);
 
             await act(async () => {
                 await result.current.handleSubmitted();
@@ -171,7 +171,7 @@ describe('useEarnTransactionReview', () => {
                     resolvePush = resolve;
                 }),
             );
-            const { result } = renderReview(params);
+            const { result } = await renderReview(params);
 
             await act(async () => {
                 const firstSubmit = result.current.handleSubmitted();
@@ -192,7 +192,7 @@ describe('useEarnTransactionReview', () => {
             params.pushAction
                 .mockResolvedValueOnce(rejected({ error: 'push-transaction-failed' }))
                 .mockResolvedValueOnce(fulfilled(PUSHED_PAYLOAD));
-            const { result } = renderReview(params);
+            const { result } = await renderReview(params);
 
             await act(async () => {
                 await result.current.handleSubmitted();
@@ -212,7 +212,7 @@ describe('useEarnTransactionReview', () => {
         it('does nothing when pushAction returns null and never switches to sending', async () => {
             const params = createParams({ isSigned: true });
             params.pushAction.mockReturnValue(null);
-            const { result } = renderReview(params);
+            const { result } = await renderReview(params);
 
             await act(async () => {
                 await result.current.handleSubmitted();

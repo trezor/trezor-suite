@@ -4,8 +4,8 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { SlidingFooterOverlay } from './SlidingFooterOverlay';
 
 describe('SlidingFooterOverlay', () => {
-    it('should render children', () => {
-        const { getByText, getByTestId } = renderWithBasicProvider(
+    it('should render children', async () => {
+        const { getByText, getByTestId } = await renderWithBasicProvider(
             <SlidingFooterOverlay activeStepOffset={123}>
                 <Text>CHILDREN</Text>
             </SlidingFooterOverlay>,
@@ -17,8 +17,8 @@ describe('SlidingFooterOverlay', () => {
         });
     });
 
-    it('should render without children', () => {
-        const { getByTestId } = renderWithBasicProvider(
+    it('should render without children', async () => {
+        const { getByTestId } = await renderWithBasicProvider(
             <SlidingFooterOverlay activeStepOffset={321} />,
         );
 

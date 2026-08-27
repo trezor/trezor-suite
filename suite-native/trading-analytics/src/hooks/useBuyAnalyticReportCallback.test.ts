@@ -28,14 +28,14 @@ describe('useBuyAnalyticReportCallback', () => {
     ): BuyAnalyticsPreloadedState =>
         mergePreloadedState({ wallet: getWalletState({ tradeType: 'buy' }) }, overrides);
 
-    const renderUseBuyAnalyticReportCallback = ({
+    const renderUseBuyAnalyticReportCallback = async ({
         candidateQuote: initialCandidateQuote,
         preloadedState = createPreloadedState(),
     }: {
         candidateQuote?: Parameters<typeof useBuyAnalyticReportCallback>[0];
         preloadedState?: BuyAnalyticsPreloadedState;
     } = {}) =>
-        renderHookWithStoreProvider(
+        await renderHookWithStoreProvider(
             ({ candidateQuote }) => useBuyAnalyticReportCallback(candidateQuote),
             {
                 preloadedState,
@@ -50,8 +50,8 @@ describe('useBuyAnalyticReportCallback', () => {
         jest.clearAllMocks();
     });
 
-    it('should call analytics with correct payload when persisted quote and coinInfo are present', () => {
-        const { result } = renderUseBuyAnalyticReportCallback({
+    it('should call analytics with correct payload when persisted quote and coinInfo are present', async () => {
+        const { result } = await renderUseBuyAnalyticReportCallback({
             preloadedState: createPreloadedState({
                 wallet: {
                     trading: {
@@ -76,8 +76,8 @@ describe('useBuyAnalyticReportCallback', () => {
         });
     });
 
-    it('should prefer candidateQuote over persisted quote', () => {
-        const { result } = renderUseBuyAnalyticReportCallback({
+    it('should prefer candidateQuote over persisted quote', async () => {
+        const { result } = await renderUseBuyAnalyticReportCallback({
             candidateQuote: cexdirectCreditCardBuyQuote,
             preloadedState: createPreloadedState({
                 wallet: {

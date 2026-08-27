@@ -13,12 +13,13 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('ConfirmationFailed', () => {
-    const renderConfirmationFailed = () => renderWithBasicProvider(<ConfirmationFailed />);
+    const renderConfirmationFailed = async () =>
+        await renderWithBasicProvider(<ConfirmationFailed />);
 
-    it('should navigate back on button press', () => {
-        const { getByText } = renderConfirmationFailed();
+    it('should navigate back on button press', async () => {
+        const { getByText } = await renderConfirmationFailed();
 
-        fireEvent.press(
+        await fireEvent.press(
             getByText(
                 getTranslation(
                     'moduleTrading.tradingSellPreviewScreen.providerStatus.cannotBeCompletedAlert.button',

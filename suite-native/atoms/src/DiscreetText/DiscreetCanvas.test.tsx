@@ -17,8 +17,8 @@ jest.mock('./useDiscreetFont', () => ({
 jest.unmock('./DiscreetCanvas');
 
 describe('DiscreetCanvas', () => {
-    it('should fill its parent without defining its own dimensions', () => {
-        const { getByTestId } = renderWithBasicProvider(
+    it('should fill its parent without defining its own dimensions', async () => {
+        const { getByTestId } = await renderWithBasicProvider(
             <DiscreetCanvas fontSize={16} lineHeight={24} text="$100" color="contentPrimary" />,
         );
 

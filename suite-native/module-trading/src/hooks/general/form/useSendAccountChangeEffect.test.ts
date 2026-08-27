@@ -34,8 +34,8 @@ describe('useSendAccountChangeEffect', () => {
         }),
     } as const;
 
-    const renderUseSendAccountChangeEffect = () =>
-        renderHookWithStoreProvider(
+    const renderUseSendAccountChangeEffect = async () =>
+        await renderHookWithStoreProvider(
             () => {
                 useSendAccountChangeEffect(
                     setValue,
@@ -59,39 +59,39 @@ describe('useSendAccountChangeEffect', () => {
         onSendAssetCleared = jest.fn();
     });
 
-    it('should set sendAccount and sendAsset to undefined initially', () => {
-        renderUseSendAccountChangeEffect();
+    it('should set sendAccount and sendAsset to undefined initially', async () => {
+        await renderUseSendAccountChangeEffect();
 
         expect(setValue).toHaveBeenCalledTimes(2);
         expect(setValue).toHaveBeenCalledWith('sendAccount', undefined);
         expect(setValue).toHaveBeenCalledWith('sendAsset', undefined);
     });
 
-    it('should not fire onSendAssetCleared on initial mount when there was no account', () => {
-        renderUseSendAccountChangeEffect();
+    it('should not fire onSendAssetCleared on initial mount when there was no account', async () => {
+        await renderUseSendAccountChangeEffect();
 
         expect(onSendAssetCleared).not.toHaveBeenCalled();
     });
 
-    it('should fire onSendAssetCleared when a previously selected account disappears', () => {
-        renderUseSendAccountChangeEffect();
-        act(() => {
+    it('should fire onSendAssetCleared when a previously selected account disappears', async () => {
+        await renderUseSendAccountChangeEffect();
+        await act(() => {
             store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1Account.key));
         });
 
         onSendAssetCleared.mockClear();
-        act(() => {
+        await act(() => {
             store.dispatch(tradingExchangeActions.setTradingAccountKey(undefined));
         });
 
         expect(onSendAssetCleared).toHaveBeenCalledTimes(1);
     });
 
-    it('should set sendAccount when account is changed in store', () => {
-        renderUseSendAccountChangeEffect();
+    it('should set sendAccount when account is changed in store', async () => {
+        await renderUseSendAccountChangeEffect();
 
         setValue.mockClear();
-        act(() => {
+        await act(() => {
             store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1Account.key));
         });
 
@@ -99,14 +99,14 @@ describe('useSendAccountChangeEffect', () => {
         expect(setValue).toHaveBeenCalledWith('sendAccount', btc1Account);
     });
 
-    it('should set sendAsset to undefined when no trading account is selected', () => {
-        renderUseSendAccountChangeEffect();
-        act(() => {
+    it('should set sendAsset to undefined when no trading account is selected', async () => {
+        await renderUseSendAccountChangeEffect();
+        await act(() => {
             store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1Account.key));
         });
 
         setValue.mockClear();
-        act(() => {
+        await act(() => {
             store.dispatch(tradingExchangeActions.setTradingAccountKey(undefined));
         });
 
@@ -115,14 +115,14 @@ describe('useSendAccountChangeEffect', () => {
         expect(setValue).toHaveBeenCalledWith('sendAsset', undefined);
     });
 
-    it('should not change sendAsset when trading account key changed', () => {
-        renderUseSendAccountChangeEffect();
-        act(() => {
+    it('should not change sendAsset when trading account key changed', async () => {
+        await renderUseSendAccountChangeEffect();
+        await act(() => {
             store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1Account.key));
         });
 
         setValue.mockClear();
-        act(() => {
+        await act(() => {
             store.dispatch(tradingExchangeActions.setTradingAccountKey(btc2Account.key));
         });
 

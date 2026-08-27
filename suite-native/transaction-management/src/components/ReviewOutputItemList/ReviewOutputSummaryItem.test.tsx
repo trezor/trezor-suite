@@ -35,8 +35,8 @@ jest.mock('./ReviewOutputItemValues', () => ({
 }));
 
 describe('ReviewOutputSummaryItem', () => {
-    const renderReviewOutputSummaryItem = (props: Partial<ReviewOutputSummaryItemProps>) =>
-        renderWithStoreProvider(
+    const renderReviewOutputSummaryItem = async (props: Partial<ReviewOutputSummaryItemProps>) =>
+        await renderWithStoreProvider(
             <ReviewOutputSummaryItem
                 accountKey={ETH_ACCOUNT_KEY}
                 symbol={btcSymbol}
@@ -51,14 +51,14 @@ describe('ReviewOutputSummaryItem', () => {
         mockSelectIsClearSignedTradingSwap.mockReturnValue(false);
     });
 
-    it('should render nothing when summaryOutput is not specified', () => {
-        const { toJSON } = renderReviewOutputSummaryItem({});
+    it('should render nothing when summaryOutput is not specified', async () => {
+        const { toJSON } = await renderReviewOutputSummaryItem({});
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render "total amount" and "fee" for BTC', () => {
-        const { getByText } = renderReviewOutputSummaryItem({
+    it('should render "total amount" and "fee" for BTC', async () => {
+        const { getByText } = await renderReviewOutputSummaryItem({
             summaryOutput: {
                 totalSpent: '1000',
                 fee: '10',
@@ -83,8 +83,8 @@ describe('ReviewOutputSummaryItem', () => {
         ).toBeTruthy();
     });
 
-    it('should render "amount" and "max fee" for ETH', () => {
-        const { getByText } = renderReviewOutputSummaryItem({
+    it('should render "amount" and "max fee" for ETH', async () => {
+        const { getByText } = await renderReviewOutputSummaryItem({
             summaryOutput: {
                 totalSpent: '1000',
                 fee: '10',
@@ -114,8 +114,8 @@ describe('ReviewOutputSummaryItem', () => {
         'approve',
         'revoke',
         'revoke-and-approve',
-    ])('should not render "amount" for flowType "%s"', flowType => {
-        const { getByText, queryByText } = renderReviewOutputSummaryItem({
+    ])('should not render "amount" for flowType "%s"', async flowType => {
+        const { getByText, queryByText } = await renderReviewOutputSummaryItem({
             summaryOutput: {
                 totalSpent: '1000',
                 fee: '10',
@@ -137,8 +137,8 @@ describe('ReviewOutputSummaryItem', () => {
         ).toBeTruthy();
     });
 
-    it('should render "amount" and "max fee" for USDC', () => {
-        const { getByText } = renderReviewOutputSummaryItem({
+    it('should render "amount" and "max fee" for USDC', async () => {
+        const { getByText } = await renderReviewOutputSummaryItem({
             summaryOutput: {
                 totalSpent: '1000',
                 fee: '10',
@@ -165,10 +165,10 @@ describe('ReviewOutputSummaryItem', () => {
         ).toBeTruthy();
     });
 
-    it('should not render "amount" if transaction is clear-signed', () => {
+    it('should not render "amount" if transaction is clear-signed', async () => {
         mockSelectIsClearSignedTradingSwap.mockReturnValue(true);
 
-        const { queryByText, getByText } = renderReviewOutputSummaryItem({
+        const { queryByText, getByText } = await renderReviewOutputSummaryItem({
             summaryOutput: {
                 totalSpent: '1000',
                 fee: '10',

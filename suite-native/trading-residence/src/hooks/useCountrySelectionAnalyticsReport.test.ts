@@ -10,17 +10,17 @@ describe('useCountrySelectionAnalyticsReport', () => {
         analytics: mockNativeAnalytics(reportMock),
     };
 
-    const renderUseCountrySelectionAnalyticsReport = () =>
-        renderHookWithBasicProvider(() => useCountrySelectionAnalyticsReport(), { services });
+    const renderUseCountrySelectionAnalyticsReport = async () =>
+        await renderHookWithBasicProvider(() => useCountrySelectionAnalyticsReport(), { services });
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should report event to analytics', () => {
-        const { result } = renderUseCountrySelectionAnalyticsReport();
+    it('should report event to analytics', async () => {
+        const { result } = await renderUseCountrySelectionAnalyticsReport();
 
-        act(() => {
+        await act(() => {
             result.current('submitCustom');
         });
 

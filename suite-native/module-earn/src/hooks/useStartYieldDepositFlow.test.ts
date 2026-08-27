@@ -145,10 +145,10 @@ const wethHookParams: HookParams = {
     routeParams: wethRouteParams,
 };
 
-const renderUseStartYieldDepositFlow = (
+const renderUseStartYieldDepositFlow = async (
     store: TestStore,
     hookParams: HookParams = defaultHookParams,
-) => renderHookWithStoreProvider(() => useStartYieldDepositFlow(hookParams), { store });
+) => await renderHookWithStoreProvider(() => useStartYieldDepositFlow(hookParams), { store });
 
 describe('useStartYieldDepositFlow', () => {
     beforeEach(() => {
@@ -160,7 +160,7 @@ describe('useStartYieldDepositFlow', () => {
     it('navigates to deposit when allowance initialization skips to action step', async () => {
         const store = buildStore();
         fetchAllowanceMock.mockResolvedValue(allowanceSubunits('1000000'));
-        const { result } = renderUseStartYieldDepositFlow(store);
+        const { result } = await renderUseStartYieldDepositFlow(store);
 
         await act(async () => {
             await result.current.handleStartYieldDepositFlow();
@@ -171,7 +171,7 @@ describe('useStartYieldDepositFlow', () => {
 
     it('navigates to approval when allowance is zero', async () => {
         const store = buildStore();
-        const { result } = renderUseStartYieldDepositFlow(store);
+        const { result } = await renderUseStartYieldDepositFlow(store);
 
         await act(async () => {
             await result.current.handleStartYieldDepositFlow();
@@ -187,7 +187,7 @@ describe('useStartYieldDepositFlow', () => {
         const store = buildStore();
         store.dispatch(stablecoinYieldActions.resetSession(sessionParams));
         store.dispatch(stablecoinYieldActions.skipApprovalStep(sessionParams));
-        const { result } = renderUseStartYieldDepositFlow(store);
+        const { result } = await renderUseStartYieldDepositFlow(store);
 
         await act(async () => {
             await result.current.handleStartYieldDepositFlow();
@@ -209,7 +209,7 @@ describe('useStartYieldDepositFlow', () => {
     it('falls back to approval when allowance initialization fails', async () => {
         const store = buildStore();
         fetchAllowanceMock.mockRejectedValue(new Error('Allowance unavailable.'));
-        const { result } = renderUseStartYieldDepositFlow(store);
+        const { result } = await renderUseStartYieldDepositFlow(store);
 
         await act(async () => {
             await result.current.handleStartYieldDepositFlow();
@@ -231,7 +231,7 @@ describe('useStartYieldDepositFlow', () => {
             decimals: 18,
             balance: '2500000000000000000',
         });
-        const { result } = renderUseStartYieldDepositFlow(store, wethHookParams);
+        const { result } = await renderUseStartYieldDepositFlow(store, wethHookParams);
 
         await act(async () => {
             await result.current.handleStartYieldDepositFlow();
@@ -249,7 +249,7 @@ describe('useStartYieldDepositFlow', () => {
             tokens: [{ contract: wethTokenContract, symbol: 'WETH', decimals: 18, balance: '3' }],
         } as unknown as Account;
         const store = buildStore(trackedAccount);
-        const { result } = renderUseStartYieldDepositFlow(store, wethHookParams);
+        const { result } = await renderUseStartYieldDepositFlow(store, wethHookParams);
 
         await act(async () => {
             await result.current.handleStartYieldDepositFlow();
@@ -264,7 +264,7 @@ describe('useStartYieldDepositFlow', () => {
 
     it('starts on the wrap step when no wrapped-native balance exists', async () => {
         const store = buildStore();
-        const { result } = renderUseStartYieldDepositFlow(store, wethHookParams);
+        const { result } = await renderUseStartYieldDepositFlow(store, wethHookParams);
 
         await act(async () => {
             await result.current.handleStartYieldDepositFlow();
@@ -284,11 +284,11 @@ describe('useStartYieldDepositFlow', () => {
                 resolveAllowance = resolve;
             }),
         );
-        const { result } = renderUseStartYieldDepositFlow(store);
+        const { result } = await renderUseStartYieldDepositFlow(store);
         let startPromise: Promise<boolean> = Promise.resolve(false);
         let duplicateStartPromise: Promise<boolean> = Promise.resolve(false);
 
-        act(() => {
+        await act(() => {
             startPromise = result.current.handleStartYieldDepositFlow();
             duplicateStartPromise = result.current.handleStartYieldDepositFlow();
         });

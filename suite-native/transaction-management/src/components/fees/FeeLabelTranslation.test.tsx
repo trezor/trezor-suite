@@ -6,15 +6,15 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { FeeLabelTranslation } from './FeeLabelTranslation';
 
 describe('FeeLabelTranslation', () => {
-    const renderFeeLabelTranslation = (networkType: NetworkType) =>
-        renderWithBasicProvider(
+    const renderFeeLabelTranslation = async (networkType: NetworkType) =>
+        await renderWithBasicProvider(
             <Text>
                 <FeeLabelTranslation networkType={networkType} />
             </Text>,
         );
 
-    it('should render "Maximum fee" for [ethereum]', () => {
-        const { getByText } = renderFeeLabelTranslation('ethereum');
+    it('should render "Maximum fee" for [ethereum]', async () => {
+        const { getByText } = await renderFeeLabelTranslation('ethereum');
 
         expect(
             getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
@@ -23,8 +23,8 @@ describe('FeeLabelTranslation', () => {
 
     it.each<NetworkType>(['bitcoin', 'cardano', 'solana'])(
         'should render "Transaction fee" for [%s]',
-        networkType => {
-            const { getByText } = renderFeeLabelTranslation(networkType);
+        async networkType => {
+            const { getByText } = await renderFeeLabelTranslation(networkType);
 
             expect(
                 getByText(getTranslation('transactionManagement.fees.description.title.general')),

@@ -103,8 +103,8 @@ const LocationFormWithCountrySubdivisionPickerControls = ({
 describe('ConfirmLocationButton', () => {
     let store: TestStore;
 
-    const renderConfirmLocationButton = (props: Partial<ConfirmLocationButtonProps>) =>
-        renderWithStoreProvider(<ConfirmLocationButton afterConfirm={jest.fn} {...props} />, {
+    const renderConfirmLocationButton = async (props: Partial<ConfirmLocationButtonProps>) =>
+        await renderWithStoreProvider(<ConfirmLocationButton afterConfirm={jest.fn} {...props} />, {
             wrapper: LocationForm,
             store,
         });
@@ -124,11 +124,11 @@ describe('ConfirmLocationButton', () => {
         });
     });
 
-    it('should set location and call afterConfirmMock on press', () => {
+    it('should set location and call afterConfirmMock on press', async () => {
         const afterConfirmMock = jest.fn();
 
-        const { getByText } = renderConfirmLocationButton({ afterConfirm: afterConfirmMock });
-        fireEvent.press(
+        const { getByText } = await renderConfirmLocationButton({ afterConfirm: afterConfirmMock });
+        await fireEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
         );
 
@@ -138,9 +138,9 @@ describe('ConfirmLocationButton', () => {
         expect(afterConfirmMock).toHaveBeenCalled();
     });
 
-    it('should log submitDefault event on press', () => {
-        const { getByText } = renderConfirmLocationButton({});
-        fireEvent.press(
+    it('should log submitDefault event on press', async () => {
+        const { getByText } = await renderConfirmLocationButton({});
+        await fireEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
         );
 
@@ -148,13 +148,16 @@ describe('ConfirmLocationButton', () => {
         expect(mockAnalyticsReport).toHaveBeenCalledWith('submitDefault');
     });
 
-    it('should log submitCustom when selected value does not match the default one', () => {
-        const { getByText } = renderWithStoreProvider(<ConfirmLocationButtonWithChangedCountry />, {
-            wrapper: LocationForm,
-            store,
-        });
+    it('should log submitCustom when selected value does not match the default one', async () => {
+        const { getByText } = await renderWithStoreProvider(
+            <ConfirmLocationButtonWithChangedCountry />,
+            {
+                wrapper: LocationForm,
+                store,
+            },
+        );
 
-        fireEvent.press(
+        await fireEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
         );
 
@@ -164,7 +167,7 @@ describe('ConfirmLocationButton', () => {
 
     it('should open subdivision picker and not confirm when subdivision is required but missing', async () => {
         const afterConfirmMock = jest.fn();
-        const { getByText, queryByText } = renderWithStoreProvider(
+        const { getByText, queryByText } = await renderWithStoreProvider(
             <ConfirmLocationButtonWithUSCountry afterConfirm={afterConfirmMock} />,
             {
                 wrapper: LocationFormWithCountrySubdivisionPickerControls,
@@ -189,9 +192,9 @@ describe('ConfirmLocationButton', () => {
         expect(afterConfirmMock).not.toHaveBeenCalled();
     });
 
-    it('should persist subdivision when required subdivision is selected', () => {
+    it('should persist subdivision when required subdivision is selected', async () => {
         const afterConfirmMock = jest.fn();
-        const { getByText } = renderWithStoreProvider(
+        const { getByText } = await renderWithStoreProvider(
             <ConfirmLocationButtonWithUSCountry
                 afterConfirm={afterConfirmMock}
                 countrySubdivision={{
@@ -206,7 +209,7 @@ describe('ConfirmLocationButton', () => {
             },
         );
 
-        fireEvent.press(
+        await fireEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
         );
 

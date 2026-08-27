@@ -12,8 +12,8 @@ type UseProviderFilterProps = {
     shouldShowFilters?: boolean;
 };
 describe('useProviderFilters', () => {
-    const renderUseProviderFilters = (initialProps: UseProviderFilterProps) =>
-        renderHookWithBasicProvider(
+    const renderUseProviderFilters = async (initialProps: UseProviderFilterProps) =>
+        await renderHookWithBasicProvider(
             ({ quotes = EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES, shouldShowFilters = true }) =>
                 useProviderFilters(quotes, shouldShowFilters),
             {
@@ -21,8 +21,8 @@ describe('useProviderFilters', () => {
             },
         );
 
-    it('filterItems should be stable', () => {
-        const { result, rerender } = renderUseProviderFilters({});
+    it('filterItems should be stable', async () => {
+        const { result, rerender } = await renderUseProviderFilters({});
 
         const initialFilterItems = result.current.filterItems;
 
@@ -32,13 +32,13 @@ describe('useProviderFilters', () => {
             { label: getTranslation('moduleTrading.providerSheet.filters.dex'), value: 'dex' },
         ]);
 
-        rerender({});
+        await rerender({});
 
         expect(result.current.filterItems).toEqual(initialFilterItems);
     });
 
-    it('should return all given sections even when empty when no filter is selected ', () => {
-        const { result } = renderUseProviderFilters({
+    it('should return all given sections even when empty when no filter is selected ', async () => {
+        const { result } = await renderUseProviderFilters({
             quotes: {
                 fixed: [],
                 float: [],
@@ -51,10 +51,10 @@ describe('useProviderFilters', () => {
         ]);
     });
 
-    it('should return all sections when "all" filter is selected', () => {
-        const { result } = renderUseProviderFilters({});
+    it('should return all sections when "all" filter is selected', async () => {
+        const { result } = await renderUseProviderFilters({});
 
-        act(() => {
+        await act(() => {
             result.current.setSelectedFilter('all');
         });
 
@@ -66,10 +66,10 @@ describe('useProviderFilters', () => {
         ]);
     });
 
-    it('should return fixed and float when CEX is selected', () => {
-        const { result } = renderUseProviderFilters({});
+    it('should return fixed and float when CEX is selected', async () => {
+        const { result } = await renderUseProviderFilters({});
 
-        act(() => {
+        await act(() => {
             result.current.setSelectedFilter('cex');
         });
 
@@ -80,10 +80,10 @@ describe('useProviderFilters', () => {
         ]);
     });
 
-    it('should return dex when DEX is selected', () => {
-        const { result } = renderUseProviderFilters({});
+    it('should return dex when DEX is selected', async () => {
+        const { result } = await renderUseProviderFilters({});
 
-        act(() => {
+        await act(() => {
             result.current.setSelectedFilter('dex');
         });
 
@@ -93,10 +93,10 @@ describe('useProviderFilters', () => {
         ]);
     });
 
-    it('should return all section when cex is selected but shouldShowFilters is false', () => {
-        const { result } = renderUseProviderFilters({ shouldShowFilters: false });
+    it('should return all section when cex is selected but shouldShowFilters is false', async () => {
+        const { result } = await renderUseProviderFilters({ shouldShowFilters: false });
 
-        act(() => {
+        await act(() => {
             result.current.setSelectedFilter('cex');
         });
 

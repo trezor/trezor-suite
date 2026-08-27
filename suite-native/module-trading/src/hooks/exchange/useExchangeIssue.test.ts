@@ -26,8 +26,8 @@ describe('useExchangeIssue', () => {
         mockUseCommonExchangeIssue.mockReturnValue(exchangeIssue);
     });
 
-    const renderUseExchangeIssue = (isRemoteFeatureEnabled?: boolean) =>
-        renderHookWithTradingProvider(() => useExchangeIssue(), {
+    const renderUseExchangeIssue = async (isRemoteFeatureEnabled?: boolean) =>
+        await renderHookWithTradingProvider(() => useExchangeIssue(), {
             tradeType: 'exchange',
             overrides: {
                 ...(isRemoteFeatureEnabled === undefined
@@ -48,8 +48,8 @@ describe('useExchangeIssue', () => {
             },
         });
 
-    it('passes the enabled native exchange context to the common hook', () => {
-        const { result } = renderUseExchangeIssue();
+    it('passes the enabled native exchange context to the common hook', async () => {
+        const { result } = await renderUseExchangeIssue();
 
         expect(mockUseCommonExchangeIssue).toHaveBeenCalledWith({
             account: btc1NormalAccount,
@@ -59,8 +59,8 @@ describe('useExchangeIssue', () => {
         expect(result.current).toBe(exchangeIssue);
     });
 
-    it('passes a disabled state when the message-system feature is disabled', () => {
-        renderUseExchangeIssue(false);
+    it('passes a disabled state when the message-system feature is disabled', async () => {
+        await renderUseExchangeIssue(false);
 
         expect(mockUseCommonExchangeIssue).toHaveBeenCalledWith({
             account: btc1NormalAccount,

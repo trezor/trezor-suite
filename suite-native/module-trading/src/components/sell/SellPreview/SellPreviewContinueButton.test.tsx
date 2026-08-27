@@ -17,8 +17,8 @@ describe('SellPreviewContinueButton', () => {
         jest.clearAllMocks();
     });
 
-    const renderButton = (withRequiredState = true) =>
-        renderWithTradingProvider(<SellPreviewContinueButton companyName="Banxa" />, {
+    const renderButton = async (withRequiredState = true) =>
+        await renderWithTradingProvider(<SellPreviewContinueButton companyName="Banxa" />, {
             tradeType: 'sell',
             overrides: withRequiredState
                 ? {
@@ -34,8 +34,8 @@ describe('SellPreviewContinueButton', () => {
                 : undefined,
         });
 
-    it('renders provider CTA', () => {
-        const { getByText } = renderButton();
+    it('renders provider CTA', async () => {
+        const { getByText } = await renderButton();
 
         expect(
             getByText(
@@ -47,7 +47,7 @@ describe('SellPreviewContinueButton', () => {
     });
 
     it('replaces preview with completion screen', async () => {
-        const { getByText } = renderButton();
+        const { getByText } = await renderButton();
 
         await userEvent.press(
             getByText(
@@ -60,8 +60,8 @@ describe('SellPreviewContinueButton', () => {
         expect(mockReplace).toHaveBeenCalledWith('TradingSellCompletion');
     });
 
-    it('is disabled without a quote and account', () => {
-        const { getByText } = renderButton(false);
+    it('is disabled without a quote and account', async () => {
+        const { getByText } = await renderButton(false);
 
         expect(
             getByText(

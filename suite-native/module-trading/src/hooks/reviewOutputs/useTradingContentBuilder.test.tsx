@@ -50,25 +50,25 @@ describe('useTradingContentBuilder', () => {
         return <>{contentBuilder({ ...baseProps, ...props })}</>;
     };
 
-    const renderContentBuilder = (props: Partial<ReviewOutputItemContentDataProps> = {}) =>
-        renderWithTradingProvider(<ContentBuilderWrapper props={props} />, {
+    const renderContentBuilder = async (props: Partial<ReviewOutputItemContentDataProps> = {}) =>
+        await renderWithTradingProvider(<ContentBuilderWrapper props={props} />, {
             tradeType: 'exchange',
         });
 
-    it('returns undefined for non-traded_assets output type', () => {
-        const { toJSON } = renderContentBuilder({ outputType: 'note' });
+    it('returns undefined for non-traded_assets output type', async () => {
+        const { toJSON } = await renderContentBuilder({ outputType: 'note' });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('returns undefined when send is missing', () => {
-        const { toJSON } = renderContentBuilder({ send: undefined });
+    it('returns undefined when send is missing', async () => {
+        const { toJSON } = await renderContentBuilder({ send: undefined });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('renders the send leg only for a partial swap (receive missing)', () => {
-        const { getByText, queryByText } = renderContentBuilder({ receive: undefined });
+    it('renders the send leg only for a partial swap (receive missing)', async () => {
+        const { getByText, queryByText } = await renderContentBuilder({ receive: undefined });
 
         expect(getByText('-1.22 BTC')).toBeOnTheScreen();
         expect(queryByText('+0.45796014 ETH')).toBeNull();
@@ -79,27 +79,27 @@ describe('useTradingContentBuilder', () => {
         ).toBeNull();
     });
 
-    it('returns undefined when receive is fiat (no cryptoId)', () => {
-        const { toJSON } = renderContentBuilder({ receive: mockReceiveFiat });
+    it('returns undefined when receive is fiat (no cryptoId)', async () => {
+        const { toJSON } = await renderContentBuilder({ receive: mockReceiveFiat });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('renders send amount with minus prefix', () => {
-        const { getByText } = renderContentBuilder();
+    it('renders send amount with minus prefix', async () => {
+        const { getByText } = await renderContentBuilder();
 
         expect(getByText('-1.22 BTC')).toBeOnTheScreen();
     });
 
-    it('renders receive amount adjusted by slippage with plus prefix', () => {
-        const { getByText } = renderContentBuilder();
+    it('renders receive amount adjusted by slippage with plus prefix', async () => {
+        const { getByText } = await renderContentBuilder();
 
         expect(getByText('+0.45796014 ETH')).toBeOnTheScreen();
     });
 
     describe('recipient row', () => {
-        it('renders recipient label and address when receive account is found', () => {
-            const { getByText } = renderContentBuilder({});
+        it('renders recipient label and address when receive account is found', async () => {
+            const { getByText } = await renderContentBuilder({});
 
             expect(
                 getByText(
@@ -109,8 +109,8 @@ describe('useTradingContentBuilder', () => {
             expect(getByText(btc1NormalAccount.descriptor)).toBeOnTheScreen();
         });
 
-        it('does not render recipient row when receive account is not found', () => {
-            const { queryByText } = renderContentBuilder({
+        it('does not render recipient row when receive account is not found', async () => {
+            const { queryByText } = await renderContentBuilder({
                 receive: {
                     ...mockReceiveCrypto,
                     accountKey: 'non-existent-account-key' as AccountKey,

@@ -30,8 +30,8 @@ jest.mock('@suite-native/alerts', () => ({
 describe('useReceiveAddressSharing', () => {
     const address = 'bc1qreceiveaddress';
 
-    const renderUseReceiveAddressSharing = () =>
-        renderHookWithBasicProvider(
+    const renderUseReceiveAddressSharing = async () =>
+        await renderHookWithBasicProvider(
             () =>
                 useReceiveAddressSharing({
                     address,
@@ -51,7 +51,7 @@ describe('useReceiveAddressSharing', () => {
     });
 
     it('opens shared address verification after sharing the address', async () => {
-        const { result } = renderUseReceiveAddressSharing();
+        const { result } = await renderUseReceiveAddressSharing();
 
         await act(() => result.current.handleShareAddress());
 
@@ -64,7 +64,7 @@ describe('useReceiveAddressSharing', () => {
 
     it('does not open shared address verification after cancelling sharing', async () => {
         mockShare.mockResolvedValue({ action: Share.dismissedAction });
-        const { result } = renderUseReceiveAddressSharing();
+        const { result } = await renderUseReceiveAddressSharing();
 
         await act(() => result.current.handleShareAddress());
 
@@ -73,10 +73,10 @@ describe('useReceiveAddressSharing', () => {
         expect(mockAnalyticsReport).not.toHaveBeenCalled();
     });
 
-    it('starts shared address verification from the bottom sheet', () => {
-        const { result } = renderUseReceiveAddressSharing();
+    it('starts shared address verification from the bottom sheet', async () => {
+        const { result } = await renderUseReceiveAddressSharing();
 
-        act(() => result.current.handleVerifySharedAddress());
+        await act(() => result.current.handleVerifySharedAddress());
 
         expect(mockCloseSharedAddressBottomSheet).toHaveBeenCalledTimes(1);
         expect(mockVerifyAddress).toHaveBeenCalledWith(ReceiveAddressVerificationSource.Shared);
@@ -84,7 +84,7 @@ describe('useReceiveAddressSharing', () => {
 
     it('shows an error when sharing the address fails', async () => {
         mockShare.mockRejectedValue(new Error('Sharing failed'));
-        const { result } = renderUseReceiveAddressSharing();
+        const { result } = await renderUseReceiveAddressSharing();
 
         await act(() => result.current.handleShareAddress());
 

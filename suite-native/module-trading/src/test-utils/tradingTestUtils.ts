@@ -159,7 +159,7 @@ type RenderHookWithTradingProviderOptions<Props> = TradingProviderOptions &
 export const renderWithTradingProvider = (
     element: ReactElement,
     { overrides, tradeType, ...options }: RenderWithTradingProviderOptions = {},
-): RenderResult =>
+): Promise<RenderResult> =>
     renderWithStoreProvider(element, {
         preloadedState: createTradingPreloadedState({ overrides, tradeType }),
         ...options,
@@ -168,7 +168,7 @@ export const renderWithTradingProvider = (
 export const renderHookWithTradingProvider = <Result, Props>(
     callback: (props: Props) => Result,
     { overrides, tradeType, ...options }: RenderHookWithTradingProviderOptions<Props> = {},
-): RenderHookResult<Result, Props> =>
+): Promise<RenderHookResult<Result, Props>> =>
     renderHookWithStoreProvider<Result, Props>(callback, {
         preloadedState: createTradingPreloadedState({ overrides, tradeType }),
         ...options,

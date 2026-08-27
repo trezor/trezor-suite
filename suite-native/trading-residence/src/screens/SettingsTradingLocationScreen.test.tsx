@@ -37,8 +37,8 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('TradingLocationSettingsScreen', () => {
-    const renderTradingLocationSettingsScreen = () =>
-        renderWithStoreProvider(<SettingsTradingLocationScreen />, {
+    const renderTradingLocationSettingsScreen = async () =>
+        await renderWithStoreProvider(<SettingsTradingLocationScreen />, {
             services,
             store: createLightStore({
                 reducer: {
@@ -58,12 +58,13 @@ describe('TradingLocationSettingsScreen', () => {
         jest.clearAllMocks();
     });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should render all components', () => {
-        const { getByText, queryByText, getByLabelText } = renderTradingLocationSettingsScreen();
+    it('should render all components', async () => {
+        const { getByText, queryByText, getByLabelText } =
+            await renderTradingLocationSettingsScreen();
 
         expect(
             getByText(getTranslation('tradingResidence.locationSettings.title')),
@@ -79,7 +80,7 @@ describe('TradingLocationSettingsScreen', () => {
     });
 
     it('should goBack on `Confirm location` press', async () => {
-        const { getByText } = renderTradingLocationSettingsScreen();
+        const { getByText } = await renderTradingLocationSettingsScreen();
 
         await userEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
@@ -89,7 +90,7 @@ describe('TradingLocationSettingsScreen', () => {
     });
 
     it('should log analytics event on country change', async () => {
-        const { getByText } = renderTradingLocationSettingsScreen();
+        const { getByText } = await renderTradingLocationSettingsScreen();
 
         await userEvent.press(
             getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
@@ -107,7 +108,7 @@ describe('TradingLocationSettingsScreen', () => {
     });
 
     it('should go back and log analytics event on back button press', async () => {
-        const { getByLabelText } = renderTradingLocationSettingsScreen();
+        const { getByLabelText } = await renderTradingLocationSettingsScreen();
 
         await userEvent.press(getByLabelText(getTranslation('generic.buttons.goBack')));
 

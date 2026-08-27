@@ -11,9 +11,9 @@ const getMockPreloadedState = (areTestnetsEnabled: boolean) => ({
 });
 
 describe('SelectableNetworkList', () => {
-    it('should render mainnet and testnet sections when testnets are enabled', () => {
+    it('should render mainnet and testnet sections when testnets are enabled', async () => {
         const onSelectItem = jest.fn();
-        const { getByText } = renderWithStoreProvider(
+        const { getByText } = await renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
             { preloadedState: getMockPreloadedState(true) },
         );
@@ -22,9 +22,9 @@ describe('SelectableNetworkList', () => {
         expect(getByText('Testnet networks (no value–for testing purposes only)')).toBeTruthy();
     });
 
-    it('should split networks into mainnet and testnet sections correctly', () => {
+    it('should split networks into mainnet and testnet sections correctly', async () => {
         const onSelectItem = jest.fn();
-        const { getByText } = renderWithStoreProvider(
+        const { getByText } = await renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
             { preloadedState: getMockPreloadedState(true) },
         );
@@ -35,22 +35,22 @@ describe('SelectableNetworkList', () => {
         expect(getByText('Ethereum Sepolia')).toBeTruthy();
     });
 
-    it('should call onSelectItem with correct network symbol when item is pressed', () => {
+    it('should call onSelectItem with correct network symbol when item is pressed', async () => {
         const onSelectItem = jest.fn();
-        const { getByText } = renderWithStoreProvider(
+        const { getByText } = await renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
             { preloadedState: getMockPreloadedState(true) },
         );
 
-        fireEvent.press(getByText('Bitcoin'));
+        await fireEvent.press(getByText('Bitcoin'));
         expect(onSelectItem).toHaveBeenCalledWith('btc');
-        fireEvent.press(getByText('Bitcoin Testnet'));
+        await fireEvent.press(getByText('Bitcoin Testnet'));
         expect(onSelectItem).toHaveBeenCalledWith('test');
     });
 
-    it('should not render testnet section when testnets are disabled', () => {
+    it('should not render testnet section when testnets are disabled', async () => {
         const onSelectItem = jest.fn();
-        const { getByText, queryByText } = renderWithStoreProvider(
+        const { getByText, queryByText } = await renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
             { preloadedState: getMockPreloadedState(false) },
         );

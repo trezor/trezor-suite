@@ -52,12 +52,14 @@ describe(TradingReceiveAddressPickerScreen.name, () => {
         wallet: { accounts: [btc1NormalAccount] },
     };
 
-    const renderScreen = () => {
+    const renderScreen = async () => {
         const store = createTradingLightStore({
             tradeType: mockRouteParams.tradingType,
             overrides,
         });
-        const result = renderWithStoreProvider(<TradingReceiveAddressPickerScreen />, { store });
+        const result = await renderWithStoreProvider(<TradingReceiveAddressPickerScreen />, {
+            store,
+        });
 
         return { ...result, store };
     };
@@ -72,8 +74,8 @@ describe(TradingReceiveAddressPickerScreen.name, () => {
         mockRouteParams = { accountKey: btc1NormalAccount.key, tradingType: 'buy' };
     });
 
-    it('renders the compact title, search input, and address sections', () => {
-        const { getByPlaceholderText, getByText } = renderScreen();
+    it('renders the compact title, search input, and address sections', async () => {
+        const { getByPlaceholderText, getByText } = await renderScreen();
 
         expect(
             getByText(getTranslation('moduleTrading.accountScreen.receiveAddressTitle')),
@@ -86,19 +88,19 @@ describe(TradingReceiveAddressPickerScreen.name, () => {
     });
 
     it('filters addresses and renders the no-results state', async () => {
-        const { getByPlaceholderText, getByText, queryByText } = renderScreen();
+        const { getByPlaceholderText, getByText, queryByText } = await renderScreen();
         const searchInput = getByPlaceholderText(
             getTranslation('moduleTrading.accountScreen.searchPlaceholder'),
         );
 
-        fireEvent.changeText(searchInput, 'USED1');
+        await fireEvent.changeText(searchInput, 'USED1');
 
         await waitFor(() => {
             expect(getByText('USED1')).toBeTruthy();
             expect(queryByText('USED2')).toBeNull();
         });
 
-        fireEvent.changeText(searchInput, 'missing');
+        await fireEvent.changeText(searchInput, 'missing');
 
         await waitFor(() => {
             expect(
@@ -107,10 +109,10 @@ describe(TradingReceiveAddressPickerScreen.name, () => {
         });
     });
 
-    it('atomically selects a buy account and address', () => {
-        const { getByText, store } = renderScreen();
+    it('atomically selects a buy account and address', async () => {
+        const { getByText, store } = await renderScreen();
 
-        fireEvent.press(getByText('UNUSED1'));
+        await fireEvent.press(getByText('UNUSED1'));
 
         expect(selectBuySelectedReceiveAccount(store.getState())).toEqual({
             account: btc1NormalAccount,
@@ -119,11 +121,11 @@ describe(TradingReceiveAddressPickerScreen.name, () => {
         expect(navigationPopToTop).toHaveBeenCalledTimes(1);
     });
 
-    it('atomically selects an exchange account and address', () => {
+    it('atomically selects an exchange account and address', async () => {
         mockRouteParams = { accountKey: btc1NormalAccount.key, tradingType: 'exchange' };
-        const { getByText, store } = renderScreen();
+        const { getByText, store } = await renderScreen();
 
-        fireEvent.press(getByText('USED1'));
+        await fireEvent.press(getByText('USED1'));
 
         expect(selectExchangeSelectedReceiveAccount(store.getState())).toEqual({
             account: btc1NormalAccount,
@@ -132,15 +134,15 @@ describe(TradingReceiveAddressPickerScreen.name, () => {
         expect(navigationPopToTop).toHaveBeenCalledTimes(1);
     });
 
-    it('preserves the previous selection when navigating back', () => {
-        const { getByTestId, store } = renderScreen();
+    it('preserves the previous selection when navigating back', async () => {
+        const { getByTestId, store } = await renderScreen();
         const previousAddress = btc1NormalAccount.addresses?.used[1];
 
         store.dispatch(tradingBuyActions.setTradingAccountKey(btc1NormalAccount.key));
         store.dispatch(tradingBuyActions.setReceiveAccountKey(btc1NormalAccount.key));
         store.dispatch(tradingBuyActions.setReceiveAddress(previousAddress?.address));
 
-        fireEvent.press(getByTestId('@screen/sub-header/go-back-button'));
+        await fireEvent.press(getByTestId('@screen/sub-header/go-back-button'));
 
         expect(selectBuySelectedReceiveAccount(store.getState())).toEqual({
             account: btc1NormalAccount,

@@ -20,8 +20,8 @@ jest.mock('@suite-native/alerts', () => ({
 describe('useTradingOutputsReviewErrorAlert', () => {
     let store: TestStore;
 
-    const renderUseTradingOutputsReviewErrorAlert = (accountKey: AccountKey) =>
-        renderHookWithTradingProvider(() => useTradingOutputsReviewErrorAlert(accountKey), {
+    const renderUseTradingOutputsReviewErrorAlert = async (accountKey: AccountKey) =>
+        await renderHookWithTradingProvider(() => useTradingOutputsReviewErrorAlert(accountKey), {
             store,
         });
 
@@ -30,14 +30,14 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         store = createTradingLightStore({ tradeType: 'exchange' });
     });
 
-    it('should show alert', () => {
+    it('should show alert', async () => {
         const mockOnRetry = jest.fn();
         const mockOnCancel = jest.fn();
-        const { result } = renderUseTradingOutputsReviewErrorAlert(
+        const { result } = await renderUseTradingOutputsReviewErrorAlert(
             mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
         );
 
-        act(() => {
+        await act(() => {
             result.current(mockOnRetry, mockOnCancel);
         });
 
@@ -55,17 +55,17 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         });
     });
 
-    it('should show special text fort solana', () => {
+    it('should show special text fort solana', async () => {
         const mockOnRetry = jest.fn();
         const mockOnCancel = jest.fn();
-        const { result } = renderUseTradingOutputsReviewErrorAlert(
+        const { result } = await renderUseTradingOutputsReviewErrorAlert(
             mockAccountKey({
                 symbol: 'sol',
                 descriptor: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
             }),
         );
 
-        act(() => {
+        await act(() => {
             result.current(mockOnRetry, mockOnCancel);
         });
 

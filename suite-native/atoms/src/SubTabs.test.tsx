@@ -28,12 +28,14 @@ const items: SubTabItem<string>[] = [
 describe('SubTabs', () => {
     let colors: NativeStyleUtils['colors'];
 
-    beforeAll(() => {
-        const { result } = renderHook(() => useNativeStyles(), { wrapper: BasicProviderForTests });
+    beforeAll(async () => {
+        const { result } = await renderHook(() => useNativeStyles(), {
+            wrapper: BasicProviderForTests,
+        });
         ({ colors } = result.current.utils);
     });
 
-    const renderSubTabs = ({
+    const renderSubTabs = async ({
         onChange = jest.fn(),
         paddingHorizontal,
         size = 'normal',
@@ -44,7 +46,7 @@ describe('SubTabs', () => {
         size?: 'normal' | 'large';
         value?: string;
     } = {}) =>
-        renderWithBasicProvider(
+        await renderWithBasicProvider(
             <SubTabs
                 items={items}
                 onChange={onChange}
@@ -55,8 +57,8 @@ describe('SubTabs', () => {
             />,
         );
 
-    it('renders the active and inactive tabs with accessible selected states', () => {
-        const { getByRole } = renderSubTabs();
+    it('renders the active and inactive tabs with accessible selected states', async () => {
+        const { getByRole } = await renderSubTabs();
 
         const activeTab = getByRole('tab', { selected: true });
         const inactiveTab = getByRole('tab', { selected: false });
@@ -65,25 +67,25 @@ describe('SubTabs', () => {
         expect(within(inactiveTab).getByText('Buy')).toBeOnTheScreen();
     });
 
-    it('calls onChange with the pressed tab value', () => {
+    it('calls onChange with the pressed tab value', async () => {
         const onChange = jest.fn();
-        const { getByText } = renderSubTabs({ onChange });
+        const { getByText } = await renderSubTabs({ onChange });
 
-        fireEvent.press(getByText('Buy'));
+        await fireEvent.press(getByText('Buy'));
 
         expect(onChange).toHaveBeenCalledWith('buy');
     });
 
-    it('applies configurable horizontal padding to the tab list', () => {
-        const { getByTestId } = renderSubTabs({ paddingHorizontal: 'sp4' });
+    it('applies configurable horizontal padding to the tab list', async () => {
+        const { getByTestId } = await renderSubTabs({ paddingHorizontal: 'sp4' });
 
         expect(getByTestId('sub-tabs').props.contentContainerStyle).toEqual(
             expect.objectContaining({ paddingHorizontal: 4 }),
         );
     });
 
-    it('uses normal size dimensions, typography, icon size, and active colors', () => {
-        const { getByTestId } = renderSubTabs();
+    it('uses normal size dimensions, typography, icon size, and active colors', async () => {
+        const { getByTestId } = await renderSubTabs();
 
         expect(getByTestId('exchange-tab')).toHaveStyle({
             height: 36,
@@ -104,8 +106,8 @@ describe('SubTabs', () => {
         expect(getByTestId('buy-tab/text')).toHaveStyle({ color: colors.contentSecondary });
     });
 
-    it('uses large size dimensions, typography, and icon size', () => {
-        const { getByTestId } = renderSubTabs({ size: 'large' });
+    it('uses large size dimensions, typography, and icon size', async () => {
+        const { getByTestId } = await renderSubTabs({ size: 'large' });
 
         expect(getByTestId('exchange-tab')).toHaveStyle({
             height: 40,

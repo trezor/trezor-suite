@@ -10,8 +10,8 @@ jest.mock('@suite-common/device', () => ({
 }));
 
 describe('useWaitForButtonRequest.ts', () => {
-    const renderUseWaitForButtonRequest = (initialCallback: jest.Mock) =>
-        renderHookWithStoreProvider(
+    const renderUseWaitForButtonRequest = async (initialCallback: jest.Mock) =>
+        await renderHookWithStoreProvider(
             ({ onButtonRequest }) => useWaitForButtonRequest(onButtonRequest),
             {
                 initialProps: {
@@ -24,11 +24,11 @@ describe('useWaitForButtonRequest.ts', () => {
         jest.clearAllMocks();
     });
 
-    it('should call callback once there are any button requests', () => {
+    it('should call callback once there are any button requests', async () => {
         const callback = jest.fn();
-        const { result, rerender } = renderUseWaitForButtonRequest(callback);
+        const { result, rerender } = await renderUseWaitForButtonRequest(callback);
 
-        act(() => {
+        await act(() => {
             result.current();
         });
 
@@ -36,27 +36,27 @@ describe('useWaitForButtonRequest.ts', () => {
 
         // we are use mock, we need to rerender manually
         mockSelectDeviceButtonRequestsCodes.mockReturnValue(['buttonRequestMock1']);
-        rerender({ onButtonRequest: callback });
+        await rerender({ onButtonRequest: callback });
 
         expect(callback).toHaveBeenCalledTimes(1);
     });
 
-    it('should not call callback multiple times', () => {
+    it('should not call callback multiple times', async () => {
         const callback = jest.fn();
-        const { result, rerender } = renderUseWaitForButtonRequest(callback);
+        const { result, rerender } = await renderUseWaitForButtonRequest(callback);
 
-        act(() => {
+        await act(() => {
             result.current();
         });
 
         // we are use mock, we need to rerender manually
         mockSelectDeviceButtonRequestsCodes.mockReturnValue(['buttonRequestMock1']);
-        rerender({ onButtonRequest: callback });
+        await rerender({ onButtonRequest: callback });
         mockSelectDeviceButtonRequestsCodes.mockReturnValue([
             'buttonRequestMock1',
             'buttonRequestMock2',
         ]);
-        rerender({ onButtonRequest: callback });
+        await rerender({ onButtonRequest: callback });
 
         expect(callback).toHaveBeenCalledTimes(1);
     });

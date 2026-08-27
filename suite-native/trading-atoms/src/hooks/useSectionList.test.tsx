@@ -4,10 +4,10 @@ import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
 import { type UseSectionListProps, useSectionList } from './useSectionList';
 
-const renderUseSectionListHook = <T, U = undefined>(
+const renderUseSectionListHook = async <T, U = undefined>(
     initialProps: Partial<UseSectionListProps<T, U>>,
 ) =>
-    renderHookWithBasicProvider(
+    await renderHookWithBasicProvider(
         ({
             data = [],
             noSingletonSectionHeader = false,
@@ -72,8 +72,8 @@ describe('useSectionList', () => {
     const mockData = [section1, section2, section3];
 
     describe('data transformation', () => {
-        it('should correctly transform data with section headers', () => {
-            const { result } = renderUseSectionListHook({
+        it('should correctly transform data with section headers', async () => {
+            const { result } = await renderUseSectionListHook({
                 data: mockData,
             });
 
@@ -162,8 +162,8 @@ describe('useSectionList', () => {
         });
 
         describe('with noSingletonSectionHeader', () => {
-            it('should handle single section', () => {
-                const { result } = renderUseSectionListHook({
+            it('should handle single section', async () => {
+                const { result } = await renderUseSectionListHook({
                     data: [section1],
                     noSingletonSectionHeader: true,
                 });
@@ -194,8 +194,8 @@ describe('useSectionList', () => {
                 expect(result.current.data).toEqual(expectedTransformedData);
             });
 
-            it('should handle empty data', () => {
-                const { result } = renderUseSectionListHook({
+            it('should handle empty data', async () => {
+                const { result } = await renderUseSectionListHook({
                     data: [],
                     noSingletonSectionHeader: true,
                 });
@@ -203,8 +203,8 @@ describe('useSectionList', () => {
                 expect(result.current.data).toEqual([]);
             });
 
-            it('should handle empty sections', () => {
-                const { result } = renderUseSectionListHook({
+            it('should handle empty sections', async () => {
+                const { result } = await renderUseSectionListHook({
                     data: [section4],
                     noSingletonSectionHeader: true,
                 });
@@ -212,8 +212,8 @@ describe('useSectionList', () => {
                 expect(result.current.data).toEqual([]);
             });
 
-            it('should handle empty section even with renderEmptySectionContent specified', () => {
-                const { result } = renderUseSectionListHook({
+            it('should handle empty section even with renderEmptySectionContent specified', async () => {
+                const { result } = await renderUseSectionListHook({
                     data: [section4],
                     noSingletonSectionHeader: true,
                     SectionEmptyComponent: <Text>Empty Section Placeholder</Text>,
@@ -222,8 +222,8 @@ describe('useSectionList', () => {
                 expect(result.current.data).toEqual([]);
             });
 
-            it('should handle multiple sections with SectionEmptyComponent specified', () => {
-                const { result } = renderUseSectionListHook({
+            it('should handle multiple sections with SectionEmptyComponent specified', async () => {
+                const { result } = await renderUseSectionListHook({
                     data: [section3, section4],
                     SectionEmptyComponent: <Text>Empty Section Placeholder</Text>,
                     noSingletonSectionHeader: true,
@@ -262,8 +262,8 @@ describe('useSectionList', () => {
         });
 
         describe('without noSingletonSectionHeader', () => {
-            it('should handle single section', () => {
-                const { result } = renderUseSectionListHook({
+            it('should handle single section', async () => {
+                const { result } = await renderUseSectionListHook({
                     data: [section1],
                 });
 
@@ -299,16 +299,16 @@ describe('useSectionList', () => {
                 expect(result.current.data).toEqual(expectedTransformedData);
             });
 
-            it('should handle empty data', () => {
-                const { result } = renderUseSectionListHook({
+            it('should handle empty data', async () => {
+                const { result } = await renderUseSectionListHook({
                     data: [],
                 });
 
                 expect(result.current.data).toEqual([]);
             });
 
-            it('should handle empty sections', () => {
-                const { result } = renderUseSectionListHook({
+            it('should handle empty sections', async () => {
+                const { result } = await renderUseSectionListHook({
                     data: [section4],
                 });
 
@@ -322,8 +322,8 @@ describe('useSectionList', () => {
                 ]);
             });
 
-            it('should handle empty section even with SectionEmptyComponent specified', () => {
-                const { result } = renderUseSectionListHook({
+            it('should handle empty section even with SectionEmptyComponent specified', async () => {
+                const { result } = await renderUseSectionListHook({
                     data: [section4],
                     SectionEmptyComponent: <Text>Empty Section Placeholder</Text>,
                 });
@@ -348,8 +348,8 @@ describe('useSectionList', () => {
                 ]);
             });
 
-            it('should handle multiple sections with SectionEmptyComponent specified', () => {
-                const { result } = renderUseSectionListHook({
+            it('should handle multiple sections with SectionEmptyComponent specified', async () => {
+                const { result } = await renderUseSectionListHook({
                     data: [section3, section4],
                     SectionEmptyComponent: <Text>Empty Section Placeholder</Text>,
                 });
@@ -388,22 +388,22 @@ describe('useSectionList', () => {
     });
 
     describe('sections and items count', () => {
-        it('should correctly calculate sectionsCount', () => {
-            const { result } = renderUseSectionListHook({ data: mockData });
+        it('should correctly calculate sectionsCount', async () => {
+            const { result } = await renderUseSectionListHook({ data: mockData });
 
             expect(result.current.sectionsCount).toBe(3);
         });
 
-        it('should correctly calculate itemsCount', () => {
-            const { result } = renderUseSectionListHook({ data: mockData });
+        it('should correctly calculate itemsCount', async () => {
+            const { result } = await renderUseSectionListHook({ data: mockData });
 
             expect(result.current.itemsCount).toBe(6);
         });
     });
 
     describe('isEnabled property handling', () => {
-        it('should correctly handle items with explicit or undefined isEnabled property', () => {
-            const { result } = renderUseSectionListHook({ data: [sectionWithDisabledItems] });
+        it('should correctly handle items with explicit or undefined isEnabled property', async () => {
+            const { result } = await renderUseSectionListHook({ data: [sectionWithDisabledItems] });
 
             const transformedData = result.current.data;
             const items = transformedData.filter(item => item.type === 'item');

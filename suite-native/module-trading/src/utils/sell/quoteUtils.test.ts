@@ -11,13 +11,13 @@ import { useSellForm } from '../../hooks/sell/useSellForm';
 describe('quoteUtils', () => {
     let form: SellFormType;
 
-    const renderUseTradingSellForm = () =>
-        renderHookWithStoreProvider(() => useSellForm(), {
+    const renderUseTradingSellForm = async () =>
+        await renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState: { wallet: getWalletState({ tradeType: 'sell' }) },
         });
 
-    beforeEach(() => {
-        const { result } = renderUseTradingSellForm();
+    beforeEach(async () => {
+        const { result } = await renderUseTradingSellForm();
         form = result.current;
     });
 
@@ -28,8 +28,8 @@ describe('quoteUtils', () => {
             );
         });
 
-        it('should throw when amountInCrypto is true and cryptoStringAmount is not specified', () => {
-            act(() => {
+        it('should throw when amountInCrypto is true and cryptoStringAmount is not specified', async () => {
+            await act(() => {
                 form.setValue('sendAsset', btcAsset);
                 form.setValue('amountInCrypto', true);
             });
@@ -39,8 +39,8 @@ describe('quoteUtils', () => {
             );
         });
 
-        it('should throw when amountInCrypto is false and fiatStringAmount is not specified', () => {
-            act(() => {
+        it('should throw when amountInCrypto is false and fiatStringAmount is not specified', async () => {
+            await act(() => {
                 form.setValue('sendAsset', btcAsset);
                 form.setValue('amountInCrypto', false);
             });
@@ -50,8 +50,8 @@ describe('quoteUtils', () => {
             );
         });
 
-        it('should return correct MinimalSellFormProps when all values are specified and amountInCrypto is true', () => {
-            act(() => {
+        it('should return correct MinimalSellFormProps when all values are specified and amountInCrypto is true', async () => {
+            await act(() => {
                 form.setValue('sendAsset', btcAsset);
                 form.setValue('amountInCrypto', true);
                 form.setValue('cryptoStringAmount', '0.1');
@@ -80,8 +80,8 @@ describe('quoteUtils', () => {
             } satisfies MinimalSellFormProps);
         });
 
-        it('should return correct MinimalSellFormProps when all values are specified and amountInCrypto is false', () => {
-            act(() => {
+        it('should return correct MinimalSellFormProps when all values are specified and amountInCrypto is false', async () => {
+            await act(() => {
                 form.setValue('sendAsset', btcAsset);
                 form.setValue('amountInCrypto', false);
                 form.setValue('fiatStringAmount', '1000');

@@ -31,7 +31,7 @@ describe('useAutoStartReview', () => {
     it('starts the review once, arms the device-review reveal and forwards the outcome', async () => {
         const params = buildParams();
 
-        renderHook(() => useAutoStartReview(params));
+        await renderHook(() => useAutoStartReview(params));
 
         await waitFor(() => expect(params.startReview).toHaveBeenCalledTimes(1));
         expect(mockWaitForDeviceReview).toHaveBeenCalledTimes(1);
@@ -40,10 +40,10 @@ describe('useAutoStartReview', () => {
         );
     });
 
-    it('does not start the review while it is not allowed yet', () => {
+    it('does not start the review while it is not allowed yet', async () => {
         const params = buildParams({ shouldAutoStartReview: false });
 
-        renderHook(() => useAutoStartReview(params));
+        await renderHook(() => useAutoStartReview(params));
 
         expect(params.startReview).not.toHaveBeenCalled();
         expect(mockWaitForDeviceReview).not.toHaveBeenCalled();
@@ -63,14 +63,14 @@ describe('useAutoStartReview', () => {
         );
         const params = buildParams({ startReview, onReviewSettled });
 
-        const { rerender } = renderHook((props: Params) => useAutoStartReview(props), {
+        const { rerender } = await renderHook((props: Params) => useAutoStartReview(props), {
             initialProps: params,
         });
 
         await waitFor(() => expect(onReviewSettled).toHaveBeenCalledTimes(1));
 
-        rerender({ ...params, shouldAutoStartReview: false });
-        rerender({ ...params, shouldAutoStartReview: true });
+        await rerender({ ...params, shouldAutoStartReview: false });
+        await rerender({ ...params, shouldAutoStartReview: true });
 
         await waitFor(() => expect(startReview).toHaveBeenCalledTimes(2));
     });
@@ -79,14 +79,14 @@ describe('useAutoStartReview', () => {
         const startReview = jest.fn().mockResolvedValue('failed');
         const params = buildParams({ startReview });
 
-        const { rerender } = renderHook((props: Params) => useAutoStartReview(props), {
+        const { rerender } = await renderHook((props: Params) => useAutoStartReview(props), {
             initialProps: params,
         });
 
         await waitFor(() => expect(startReview).toHaveBeenCalledTimes(1));
 
-        rerender({ ...params, shouldAutoStartReview: false });
-        rerender({ ...params, shouldAutoStartReview: true });
+        await rerender({ ...params, shouldAutoStartReview: false });
+        await rerender({ ...params, shouldAutoStartReview: true });
 
         expect(startReview).toHaveBeenCalledTimes(1);
     });
@@ -98,14 +98,14 @@ describe('useAutoStartReview', () => {
             .mockResolvedValue('signed');
         const params = buildParams({ startReview });
 
-        const { rerender } = renderHook((props: Params) => useAutoStartReview(props), {
+        const { rerender } = await renderHook((props: Params) => useAutoStartReview(props), {
             initialProps: params,
         });
 
         await waitFor(() => expect(startReview).toHaveBeenCalledTimes(1));
 
-        rerender({ ...params, shouldAutoStartReview: false });
-        rerender({ ...params, shouldAutoStartReview: true });
+        await rerender({ ...params, shouldAutoStartReview: false });
+        await rerender({ ...params, shouldAutoStartReview: true });
 
         await waitFor(() => expect(startReview).toHaveBeenCalledTimes(2));
     });
@@ -117,14 +117,14 @@ describe('useAutoStartReview', () => {
             .mockResolvedValue(undefined);
         const params = buildParams({ onReviewSettled });
 
-        const { rerender } = renderHook((props: Params) => useAutoStartReview(props), {
+        const { rerender } = await renderHook((props: Params) => useAutoStartReview(props), {
             initialProps: params,
         });
 
         await waitFor(() => expect(onReviewSettled).toHaveBeenCalledTimes(1));
 
-        rerender({ ...params, shouldAutoStartReview: false });
-        rerender({ ...params, shouldAutoStartReview: true });
+        await rerender({ ...params, shouldAutoStartReview: false });
+        await rerender({ ...params, shouldAutoStartReview: true });
 
         await waitFor(() => expect(onReviewSettled).toHaveBeenCalledTimes(2));
     });
@@ -140,11 +140,11 @@ describe('useAutoStartReview', () => {
         const onReviewSettled = jest.fn();
         const params = buildParams({ startReview, onReviewSettled });
 
-        const { unmount } = renderHook(() => useAutoStartReview(params));
+        const { unmount } = await renderHook(() => useAutoStartReview(params));
 
         await waitFor(() => expect(startReview).toHaveBeenCalledTimes(1));
 
-        unmount();
+        await unmount();
         resolveStart('signed');
         await new Promise<void>(resolve => {
             setTimeout(resolve, 0);

@@ -26,24 +26,24 @@ describe('useInputFieldControls', () => {
         }));
     });
 
-    it('should return given value', () => {
-        const { result } = renderHook(() =>
+    it('should return given value', async () => {
+        const { result } = await renderHook(() =>
             useInputFieldControls('testField', 'testValue', jest.fn()),
         );
 
         expect(result.current.value).toBe('testValue');
     });
 
-    it('should return empty string when value is undefined', () => {
-        const { result } = renderHook(() =>
+    it('should return empty string when value is undefined', async () => {
+        const { result } = await renderHook(() =>
             useInputFieldControls('testField', undefined, jest.fn()),
         );
 
         expect(result.current.value).toBe('');
     });
 
-    it('should use onChange from useField', () => {
-        const { result } = renderHook(() =>
+    it('should use onChange from useField', async () => {
+        const { result } = await renderHook(() =>
             useInputFieldControls('testField', 'testValue', jest.fn()),
         );
 
@@ -51,8 +51,8 @@ describe('useInputFieldControls', () => {
         expect(mockOnChange).toHaveBeenCalledWith('newValue');
     });
 
-    it('should use onBlur from useField', () => {
-        const { result } = renderHook(() =>
+    it('should use onBlur from useField', async () => {
+        const { result } = await renderHook(() =>
             useInputFieldControls('testField', 'testValue', jest.fn()),
         );
 
@@ -60,9 +60,9 @@ describe('useInputFieldControls', () => {
         expect(mockOnBlur).toHaveBeenCalled();
     });
 
-    it('should set focusedValue on onFocus', () => {
+    it('should set focusedValue on onFocus', async () => {
         const mockSetValue = jest.fn();
-        const { result } = renderHook(() =>
+        const { result } = await renderHook(() =>
             useInputFieldControls('testField', 'testValue', mockSetValue),
         );
 
@@ -70,9 +70,9 @@ describe('useInputFieldControls', () => {
         expect(mockSetValue).toHaveBeenCalledWith('focusedValue', 'testField');
     });
 
-    it('should clear focusedValue and call onBlur on clearFocusedValueAndBlur', () => {
+    it('should clear focusedValue and call onBlur on clearFocusedValueAndBlur', async () => {
         const mockSetValue = jest.fn();
-        const { result } = renderHook(() =>
+        const { result } = await renderHook(() =>
             useInputFieldControls('testField', 'testValue', mockSetValue),
         );
 
@@ -82,18 +82,18 @@ describe('useInputFieldControls', () => {
         expect(mockOnBlur).toHaveBeenCalled();
     });
 
-    it('should return hasError from useField', () => {
+    it('should return hasError from useField', async () => {
         mockHasError = true;
-        const { result } = renderHook(() =>
+        const { result } = await renderHook(() =>
             useInputFieldControls('testField', 'testValue', jest.fn()),
         );
 
         expect(result.current.hasError).toBe(true);
     });
 
-    it('should keep focus callbacks stable when the value changes', () => {
+    it('should keep focus callbacks stable when the value changes', async () => {
         const mockSetValue = jest.fn();
-        const { result, rerender } = renderHook(
+        const { result, rerender } = await renderHook(
             ({ value }: { value: string }) =>
                 useInputFieldControls('testField', value, mockSetValue),
             { initialProps: { value: '1' } },
@@ -101,7 +101,7 @@ describe('useInputFieldControls', () => {
         const initialOnFocus = result.current.onFocus;
         const initialOnBlur = result.current.onBlur;
 
-        rerender({ value: '2' });
+        await rerender({ value: '2' });
 
         expect(result.current.onFocus).toBe(initialOnFocus);
         expect(result.current.onBlur).toBe(initialOnBlur);

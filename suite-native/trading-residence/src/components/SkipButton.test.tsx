@@ -10,25 +10,29 @@ jest.mock('../hooks/useCountrySelectionAnalyticsReport', () => ({
 }));
 
 describe('SkipButton', () => {
-    const renderSkipButton = (props: Partial<SkipButtonProps>) =>
-        renderWithBasicProvider(<SkipButton onPress={jest.fn()} {...props} />);
+    const renderSkipButton = async (props: Partial<SkipButtonProps>) =>
+        await renderWithBasicProvider(<SkipButton onPress={jest.fn()} {...props} />);
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should call onPress callback when pressed', () => {
+    it('should call onPress callback when pressed', async () => {
         const onPressMock = jest.fn();
 
-        const { getByText } = renderSkipButton({ onPress: onPressMock });
-        fireEvent.press(getByText(getTranslation('tradingResidence.locationSettings.skipButton')));
+        const { getByText } = await renderSkipButton({ onPress: onPressMock });
+        await fireEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.skipButton')),
+        );
 
         expect(onPressMock).toHaveBeenCalled();
     });
 
-    it('should log cancel event on press', () => {
-        const { getByText } = renderSkipButton({});
-        fireEvent.press(getByText(getTranslation('tradingResidence.locationSettings.skipButton')));
+    it('should log cancel event on press', async () => {
+        const { getByText } = await renderSkipButton({});
+        await fireEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.skipButton')),
+        );
 
         expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
         expect(mockAnalyticsReport).toHaveBeenCalledWith('cancel');

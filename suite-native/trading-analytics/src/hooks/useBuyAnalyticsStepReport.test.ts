@@ -13,8 +13,8 @@ describe('useBuyAnalyticsStepReport', () => {
         jest.clearAllMocks();
     });
 
-    it('should pass the step and action to the underlying callback', () => {
-        const { result } = renderHookWithBasicProvider(() =>
+    it('should pass the step and action to the underlying callback', async () => {
+        const { result } = await renderHookWithBasicProvider(() =>
             useBuyAnalyticsStepReport('buy-preview'),
         );
 

@@ -14,13 +14,13 @@ describe('useExchangeIssueAnalyticReportCallback', () => {
         jest.clearAllMocks();
     });
 
-    it('reports an exchange issue', () => {
-        const { result } = renderHookWithBasicProvider(
+    it('reports an exchange issue', async () => {
+        const { result } = await renderHookWithBasicProvider(
             () => useExchangeIssueAnalyticReportCallback(),
             { services },
         );
 
-        act(() => {
+        await act(() => {
             result.current('high-risk', true);
         });
 

@@ -7,33 +7,33 @@ import { TradeableAssetListItem, type TradeableAssetListItemProps } from './Trad
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('TradeableAssetListItem', () => {
-    const renderComponent = ({
+    const renderComponent = async ({
         onPress = jest.fn(),
         asset = btcAsset,
         balance,
     }: Partial<TradeableAssetListItemProps>) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <TradeableAssetListItem asset={asset} balance={balance} onPress={onPress} />,
         );
 
-    it('should render with correct labels', () => {
-        const { getAllByText } = renderComponent({ asset: usdcAsset });
+    it('should render with correct labels', async () => {
+        const { getAllByText } = await renderComponent({ asset: usdcAsset });
 
         expect(getAllByText('USDC').length).toBeGreaterThan(0);
         expect(getAllByText('Ethereum').length).toBeGreaterThan(0);
     });
 
-    it('should call onPress callback when clicked', () => {
+    it('should call onPress callback when clicked', async () => {
         const onPress = jest.fn();
-        const { getByText } = renderComponent({ asset: btcAsset, onPress });
+        const { getByText } = await renderComponent({ asset: btcAsset, onPress });
 
-        fireEvent.press(getByText('BTC'));
+        await fireEvent.press(getByText('BTC'));
 
-        expect(onPress).toHaveBeenCalledWith();
+        expect(onPress).toHaveBeenCalledTimes(1);
     });
 
-    it('displays the total fiat and crypto balances', () => {
-        const { getByText } = renderComponent({
+    it('displays the total fiat and crypto balances', async () => {
+        const { getByText } = await renderComponent({
             asset: btcAsset,
             balance: {
                 cryptoAmount: '0.5',

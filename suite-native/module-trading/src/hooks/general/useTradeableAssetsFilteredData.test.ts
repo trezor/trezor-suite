@@ -33,18 +33,18 @@ const mockAssets: TradeableAsset[] = [
 ];
 
 describe('useTradeableAssetsFilteredData', () => {
-    const renderUseTradeableAssetsFilteredData = () =>
-        renderHook(() => useTradeableAssetsFilteredData({ assets: mockAssets }));
+    const renderUseTradeableAssetsFilteredData = async () =>
+        await renderHook(() => useTradeableAssetsFilteredData({ assets: mockAssets }));
 
-    it('should return all assets when no filter is applied', () => {
-        const { result } = renderUseTradeableAssetsFilteredData();
+    it('should return all assets when no filter is applied', async () => {
+        const { result } = await renderUseTradeableAssetsFilteredData();
         expect(result.current.filteredData).toEqual(mockAssets);
     });
 
-    it('should filter assets by network symbol', () => {
-        const { result } = renderUseTradeableAssetsFilteredData();
+    it('should filter assets by network symbol', async () => {
+        const { result } = await renderUseTradeableAssetsFilteredData();
 
-        act(() => {
+        await act(() => {
             result.current.setFilterValue('btc' as NetworkSymbol);
         });
 
@@ -52,10 +52,10 @@ describe('useTradeableAssetsFilteredData', () => {
         expect(result.current.filteredData[0]?.networkId).toBe('bitcoin');
     });
 
-    it('should filter assets by network name', () => {
-        const { result } = renderUseTradeableAssetsFilteredData();
+    it('should filter assets by network name', async () => {
+        const { result } = await renderUseTradeableAssetsFilteredData();
 
-        act(() => {
+        await act(() => {
             result.current.setFilterValue('bnb' as NetworkSymbol);
         });
 
@@ -63,28 +63,28 @@ describe('useTradeableAssetsFilteredData', () => {
         expect(result.current.filteredData[0]?.networkId).toBe('binance-smart-chain');
     });
 
-    it('should filter assets by name', () => {
-        const { result } = renderUseTradeableAssetsFilteredData();
-        act(() => {
+    it('should filter assets by name', async () => {
+        const { result } = await renderUseTradeableAssetsFilteredData();
+        await act(() => {
             result.current.setFilterValue('rock');
         });
         expect(result.current.filteredData).toHaveLength(1);
         expect(result.current.filteredData[0]?.name).toBe('Rocket Pool ETH');
     });
 
-    it('should filter assets by contract address', () => {
-        const { result } = renderUseTradeableAssetsFilteredData();
-        act(() => {
+    it('should filter assets by contract address', async () => {
+        const { result } = await renderUseTradeableAssetsFilteredData();
+        await act(() => {
             result.current.setFilterValue('0xa0b');
         });
         expect(result.current.filteredData).toHaveLength(1);
         expect(result.current.filteredData[0]?.contractAddress).toBeTruthy();
     });
 
-    it('should filter assets by filter symbol', () => {
-        const { result } = renderUseTradeableAssetsFilteredData();
+    it('should filter assets by filter symbol', async () => {
+        const { result } = await renderUseTradeableAssetsFilteredData();
 
-        act(() => {
+        await act(() => {
             result.current.setFilterSymbol('btc' as NetworkSymbol);
         });
 
@@ -93,9 +93,9 @@ describe('useTradeableAssetsFilteredData', () => {
         expect(result.current.filteredData[0]?.networkId).toBe('bitcoin');
     });
 
-    it('should combine network symbol filter with search query', () => {
-        const { result } = renderUseTradeableAssetsFilteredData();
-        act(() => {
+    it('should combine network symbol filter with search query', async () => {
+        const { result } = await renderUseTradeableAssetsFilteredData();
+        await act(() => {
             result.current.setFilterSymbol('eth' as NetworkSymbol);
             result.current.setFilterValue('usd');
         });
@@ -103,9 +103,9 @@ describe('useTradeableAssetsFilteredData', () => {
         expect(result.current.filteredData[0]?.name).toBe('USDC');
     });
 
-    it('should handle case-insensitive search', () => {
-        const { result } = renderUseTradeableAssetsFilteredData();
-        act(() => {
+    it('should handle case-insensitive search', async () => {
+        const { result } = await renderUseTradeableAssetsFilteredData();
+        await act(() => {
             result.current.setFilterValue('usDT');
         });
         expect(result.current.filteredData).toHaveLength(2);
@@ -116,16 +116,16 @@ describe('useTradeableAssetsFilteredData', () => {
         ).toBe(true);
     });
 
-    it('should return empty array when no matches found', () => {
-        const { result } = renderUseTradeableAssetsFilteredData();
-        act(() => {
+    it('should return empty array when no matches found', async () => {
+        const { result } = await renderUseTradeableAssetsFilteredData();
+        await act(() => {
             result.current.setFilterValue('NonExistentAsset');
         });
         expect(result.current.filteredData).toHaveLength(0);
     });
 
     describe('sort order', () => {
-        it('puts the five featured assets first in their fixed order', () => {
+        it('puts the five featured assets first in their fixed order', async () => {
             const solAsset: TradeableAsset = {
                 ...unknownAsset,
                 cryptoId: 'solana' as CryptoId,
@@ -134,7 +134,7 @@ describe('useTradeableAssetsFilteredData', () => {
                 name: 'Solana',
             };
             const assets = [usdcAsset, solAsset, ethAsset, usdtAsset, btcAsset];
-            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+            const { result } = await renderHook(() => useTradeableAssetsFilteredData({ assets }));
 
             expect(result.current.filteredData).toEqual([
                 btcAsset,
@@ -145,7 +145,7 @@ describe('useTradeableAssetsFilteredData', () => {
             ]);
         });
 
-        it('puts owned assets over the USD threshold next, ordered by fiat value', () => {
+        it('puts owned assets over the USD threshold next, ordered by fiat value', async () => {
             const assetBalances = new Map([
                 [
                     jitoOnSolanaAsset.cryptoId,
@@ -170,7 +170,7 @@ describe('useTradeableAssetsFilteredData', () => {
                 ],
             ]);
             const assets = [rethOnBaseAsset, jitoOnSolanaAsset, jupOnSolanaAsset];
-            const { result } = renderHook(() =>
+            const { result } = await renderHook(() =>
                 useTradeableAssetsFilteredData({
                     assets,
                     assetBalances,
@@ -185,12 +185,12 @@ describe('useTradeableAssetsFilteredData', () => {
             ]);
         });
 
-        it('should rank exact name match before name-startsWith', () => {
+        it('should rank exact name match before name-startsWith', async () => {
             // tronTetherAsset.name = 'Tether' (exact match), usdtAsset.name = 'Tether USDT' (startsWith)
             const assets = [usdtAsset, tronTetherAsset];
-            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+            const { result } = await renderHook(() => useTradeableAssetsFilteredData({ assets }));
 
-            act(() => {
+            await act(() => {
                 result.current.setFilterValue('tether');
             });
 
@@ -198,7 +198,7 @@ describe('useTradeableAssetsFilteredData', () => {
             expect(result.current.filteredData[1]).toBe(usdtAsset);
         });
 
-        it('should rank exact symbol match before symbol-startsWith', () => {
+        it('should rank exact symbol match before symbol-startsWith', async () => {
             // Inline asset with symbol starting with 'usd' but not exact; usdcAsset.symbol = 'USDC' also startsWith.
             // We create an asset with symbol exactly 'USD' to compare against 'USDC'.
             const usdExactAsset: TradeableAsset = {
@@ -207,9 +207,9 @@ describe('useTradeableAssetsFilteredData', () => {
                 name: 'US Dollar',
             };
             const assets = [usdcAsset, usdExactAsset];
-            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+            const { result } = await renderHook(() => useTradeableAssetsFilteredData({ assets }));
 
-            act(() => {
+            await act(() => {
                 result.current.setFilterValue('usd');
             });
 
@@ -219,14 +219,14 @@ describe('useTradeableAssetsFilteredData', () => {
             expect(result.current.filteredData[1]).toBe(usdcAsset);
         });
 
-        it('should rank name-startsWith before name-contains', () => {
+        it('should rank name-startsWith before name-contains', async () => {
             // ethAsset.name = 'Ethereum' → startsWith 'et' → weight 2
             // rethOnBaseAsset.name = 'Rocket Pool ETH' → contains 'et' but not startsWith → weight 4
             // Also: ethAsset.symbol = 'ETH' → 'eth' !== 'et', so no symbol exact match; name check wins at weight 2
             const assets = [rethOnBaseAsset, ethAsset];
-            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+            const { result } = await renderHook(() => useTradeableAssetsFilteredData({ assets }));
 
-            act(() => {
+            await act(() => {
                 result.current.setFilterValue('et');
             });
 
@@ -234,13 +234,13 @@ describe('useTradeableAssetsFilteredData', () => {
             expect(result.current.filteredData[1]).toBe(rethOnBaseAsset);
         });
 
-        it('should rank asset name/symbol matches before network name matches', () => {
+        it('should rank asset name/symbol matches before network name matches', async () => {
             // ethAsset.name = 'Ethereum' → exact name match → weight 0
             // usdcAsset.networkId = 'ethereum' → network name 'Ethereum' exact match → weight 6
             const assets = [usdcAsset, ethAsset];
-            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+            const { result } = await renderHook(() => useTradeableAssetsFilteredData({ assets }));
 
-            act(() => {
+            await act(() => {
                 result.current.setFilterValue('ethereum');
             });
 
@@ -248,14 +248,14 @@ describe('useTradeableAssetsFilteredData', () => {
             expect(result.current.filteredData[1]).toBe(usdcAsset);
         });
 
-        it('should rank contract address matches after name/symbol matches', () => {
+        it('should rank contract address matches after name/symbol matches', async () => {
             // Inline asset with '0xa0b' in its name → name startsWith → weight 2
             // usdcAsset.contractAddress starts with '0xa0b' → weight 12
             const contractNameAsset: TradeableAsset = { ...unknownAsset, name: '0xa0b Token' };
             const assets = [usdcAsset, contractNameAsset];
-            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+            const { result } = await renderHook(() => useTradeableAssetsFilteredData({ assets }));
 
-            act(() => {
+            await act(() => {
                 result.current.setFilterValue('0xa0b');
             });
 
@@ -263,20 +263,20 @@ describe('useTradeableAssetsFilteredData', () => {
             expect(result.current.filteredData[1]).toBe(usdcAsset);
         });
 
-        it('should not change order when filter is empty', () => {
+        it('should not change order when filter is empty', async () => {
             const assets = [btcAsset, ethAsset, usdcAsset];
-            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+            const { result } = await renderHook(() => useTradeableAssetsFilteredData({ assets }));
 
             // No filter set — original order should be preserved
             expect(result.current.filteredData).toEqual(assets);
         });
 
-        it('should order match on token address as last', () => {
+        it('should order match on token address as last', async () => {
             const assets = [btcAsset, ethAsset, usdcAsset, tronTetherAsset] as TradeableAsset[];
 
-            const { result } = renderHook(() => useTradeableAssetsFilteredData({ assets }));
+            const { result } = await renderHook(() => useTradeableAssetsFilteredData({ assets }));
 
-            act(() => {
+            await act(() => {
                 result.current.setFilterValue('tc');
             });
 
@@ -285,36 +285,36 @@ describe('useTradeableAssetsFilteredData', () => {
     });
 
     describe('filterValue', () => {
-        it('should have correct value for empty filter', () => {
-            const { result } = renderUseTradeableAssetsFilteredData();
+        it('should have correct value for empty filter', async () => {
+            const { result } = await renderUseTradeableAssetsFilteredData();
 
             expect(result.current.filterValue).toEqual('Network:all;Search:');
         });
 
-        it('should be affected by search value', () => {
-            const { result } = renderUseTradeableAssetsFilteredData();
+        it('should be affected by search value', async () => {
+            const { result } = await renderUseTradeableAssetsFilteredData();
 
-            act(() => {
+            await act(() => {
                 result.current.setFilterValue('search text');
             });
 
             expect(result.current.filterValue).toEqual('Network:all;Search:search text');
         });
 
-        it('should be affected by network selection', () => {
-            const { result } = renderUseTradeableAssetsFilteredData();
+        it('should be affected by network selection', async () => {
+            const { result } = await renderUseTradeableAssetsFilteredData();
 
-            act(() => {
+            await act(() => {
                 result.current.setFilterSymbol('eth' as NetworkSymbol);
             });
 
             expect(result.current.filterValue).toEqual('Network:eth;Search:');
         });
 
-        it('should be affected by both search value and network selection', () => {
-            const { result } = renderUseTradeableAssetsFilteredData();
+        it('should be affected by both search value and network selection', async () => {
+            const { result } = await renderUseTradeableAssetsFilteredData();
 
-            act(() => {
+            await act(() => {
                 result.current.setFilterValue('search text');
                 result.current.setFilterSymbol('eth' as NetworkSymbol);
             });

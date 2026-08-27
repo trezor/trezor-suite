@@ -127,21 +127,21 @@ describe('TradingSellOutputsReviewScreen', () => {
     let store: TestStore;
     let unmount: (() => void) | undefined;
 
-    afterEach(() => {
+    afterEach(async () => {
         if (unmount) {
-            unmount();
+            await unmount();
             unmount = undefined;
         }
     });
 
     describe('TradingSellOutputsReviewScreen', () => {
-        const renderScreen = (
+        const renderScreen = async (
             route: StackProps<
                 RootStackParamList,
                 RootStackRoutes.TradingSellOutputsReview
             >['route'],
         ) => {
-            const result = renderWithTradingProvider(
+            const result = await renderWithTradingProvider(
                 <TradingSellOutputsReviewScreen route={route} navigation={mockNavigation} />,
                 { store },
             );
@@ -159,11 +159,11 @@ describe('TradingSellOutputsReviewScreen', () => {
             mockNavigation.popToTop.mockClear();
         });
 
-        it('should render TradingSellOutputsReviewScreen', () => {
+        it('should render TradingSellOutputsReviewScreen', async () => {
             const params = createSellRouteParams();
             const route = createSellRoute(params);
 
-            const { toJSON } = renderScreen(route);
+            const { toJSON } = await renderScreen(route);
 
             expect(toJSON()).not.toBeNull();
             expect(mockUseSellFlowFn).toHaveBeenCalled();
@@ -178,13 +178,13 @@ describe('TradingSellOutputsReviewScreen', () => {
     });
 
     describe('TradingExchangeOutputsReviewScreen', () => {
-        const renderScreen = (
+        const renderScreen = async (
             route: StackProps<
                 RootStackParamList,
                 RootStackRoutes.TradingExchangeOutputsReview
             >['route'],
         ) => {
-            const result = renderWithTradingProvider(
+            const result = await renderWithTradingProvider(
                 <TradingExchangeOutputsReviewScreen route={route} navigation={mockNavigation} />,
                 { store },
             );
@@ -202,11 +202,11 @@ describe('TradingSellOutputsReviewScreen', () => {
             mockNavigation.popToTop.mockClear();
         });
 
-        it('should render TradingExchangeOutputsReviewScreen', () => {
+        it('should render TradingExchangeOutputsReviewScreen', async () => {
             const params = createExchangeRouteParams();
             const route = createExchangeRoute(params);
 
-            const { toJSON } = renderScreen(route);
+            const { toJSON } = await renderScreen(route);
 
             expect(toJSON()).not.toBeNull();
             expect(mockUseExchangeFlowFn).toHaveBeenCalled();
@@ -219,11 +219,11 @@ describe('TradingSellOutputsReviewScreen', () => {
             );
         });
 
-        it('should pass signDataAndConfirm when flowType is sign-data', () => {
+        it('should pass signDataAndConfirm when flowType is sign-data', async () => {
             const params = createExchangeRouteParams(undefined, 'sign-data');
             const route = createExchangeRoute(params);
 
-            renderScreen(route);
+            await renderScreen(route);
 
             expect(mockUseTradingOutputsReviewScreenControls).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -232,11 +232,11 @@ describe('TradingSellOutputsReviewScreen', () => {
             );
         });
 
-        it('should pass signAndSendTransaction when flowType is swap', () => {
+        it('should pass signAndSendTransaction when flowType is swap', async () => {
             const params = createExchangeRouteParams(undefined, 'swap');
             const route = createExchangeRoute(params);
 
-            renderScreen(route);
+            await renderScreen(route);
 
             expect(mockUseTradingOutputsReviewScreenControls).toHaveBeenCalledWith(
                 expect.objectContaining({

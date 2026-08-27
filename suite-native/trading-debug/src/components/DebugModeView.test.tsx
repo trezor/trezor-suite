@@ -10,8 +10,8 @@ jest.mock('../hooks/useTradingDebugModeFlag', () => ({
 }));
 
 describe('DebugModeView', () => {
-    const renderDebugModeView = () =>
-        renderWithBasicProvider(
+    const renderDebugModeView = async () =>
+        await renderWithBasicProvider(
             <DebugModeView>
                 <Text>TEST TEXT</Text>
             </DebugModeView>,
@@ -21,15 +21,15 @@ describe('DebugModeView', () => {
         mockDebugMode = false;
     });
 
-    it('should render nothing when debug mode is disabled', () => {
-        const { toJSON } = renderDebugModeView();
+    it('should render nothing when debug mode is disabled', async () => {
+        const { toJSON } = await renderDebugModeView();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render children when debug mode is enabled', () => {
+    it('should render children when debug mode is enabled', async () => {
         mockDebugMode = true;
-        const { getByText } = renderDebugModeView();
+        const { getByText } = await renderDebugModeView();
 
         expect(getByText('TEST TEXT')).toBeOnTheScreen();
     });

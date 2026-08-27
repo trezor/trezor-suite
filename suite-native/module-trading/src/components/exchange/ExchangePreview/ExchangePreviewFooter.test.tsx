@@ -69,10 +69,10 @@ describe('ExchangePreviewFooter', () => {
         },
     };
 
-    const renderExchangePreviewFooter = (
+    const renderExchangePreviewFooter = async (
         extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <ExchangePreviewFooter
                 isContinueDisabled={false}
                 onSignTransactionNavigation={jest.fn()}
@@ -88,17 +88,17 @@ describe('ExchangePreviewFooter', () => {
         setIssue(null);
     });
 
-    it('renders the continue button without an issue', () => {
-        const { getByTestId, queryByTestId } = renderExchangePreviewFooter();
+    it('renders the continue button without an issue', async () => {
+        const { getByTestId, queryByTestId } = await renderExchangePreviewFooter();
 
         expect(getByTestId('@trading/exchange-preview/continue-button')).toBeOnTheScreen();
         expect(queryByTestId('@trading/exchange-preview/back-to-form-button')).toBeNull();
     });
 
-    it('replaces the continue button with back to trade form on an issue', () => {
+    it('replaces the continue button with back to trade form on an issue', async () => {
         setIssue(priceImpactIssue);
 
-        const { getByTestId, queryByTestId } = renderExchangePreviewFooter();
+        const { getByTestId, queryByTestId } = await renderExchangePreviewFooter();
 
         expect(getByTestId('@trading/exchange-preview/back-to-form-button')).toBeOnTheScreen();
         expect(queryByTestId('@trading/exchange-preview/continue-button')).toBeNull();
@@ -107,7 +107,7 @@ describe('ExchangePreviewFooter', () => {
     it('pops back to the trade form on back press', async () => {
         setIssue(priceImpactIssue);
 
-        const { getByText } = renderExchangePreviewFooter();
+        const { getByText } = await renderExchangePreviewFooter();
 
         await userEvent.press(
             getByText(getTranslation('moduleTrading.transactionSimulation.backToTradeForm')),
@@ -117,10 +117,10 @@ describe('ExchangePreviewFooter', () => {
         expect(mockNavigate).not.toHaveBeenCalled();
     });
 
-    it('renders nothing when the trade is finalized despite an issue', () => {
+    it('renders nothing when the trade is finalized despite an issue', async () => {
         setIssue(priceImpactIssue);
 
-        const { toJSON } = renderExchangePreviewFooter({
+        const { toJSON } = await renderExchangePreviewFooter({
             wallet: {
                 trading: {
                     exchange: {

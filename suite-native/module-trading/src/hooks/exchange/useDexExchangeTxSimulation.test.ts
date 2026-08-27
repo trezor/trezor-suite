@@ -26,8 +26,8 @@ describe('useDexExchangeTxSimulation', () => {
         mockUseCommonDexExchangeTxSimulation.mockReturnValue(simulation);
     });
 
-    const renderUseDexExchangeTxSimulation = (isRemoteFeatureEnabled?: boolean) =>
-        renderHookWithTradingProvider(() => useDexExchangeTxSimulation(), {
+    const renderUseDexExchangeTxSimulation = async (isRemoteFeatureEnabled?: boolean) =>
+        await renderHookWithTradingProvider(() => useDexExchangeTxSimulation(), {
             tradeType: 'exchange',
             overrides: {
                 ...(isRemoteFeatureEnabled === undefined
@@ -48,8 +48,8 @@ describe('useDexExchangeTxSimulation', () => {
             },
         });
 
-    it('passes the enabled native exchange context to the common hook', () => {
-        const { result } = renderUseDexExchangeTxSimulation();
+    it('passes the enabled native exchange context to the common hook', async () => {
+        const { result } = await renderUseDexExchangeTxSimulation();
 
         expect(mockUseCommonDexExchangeTxSimulation).toHaveBeenCalledWith({
             account: btc1NormalAccount,
@@ -59,8 +59,8 @@ describe('useDexExchangeTxSimulation', () => {
         expect(result.current).toBe(simulation);
     });
 
-    it('passes a disabled state when the message-system feature is disabled', () => {
-        renderUseDexExchangeTxSimulation(false);
+    it('passes a disabled state when the message-system feature is disabled', async () => {
+        await renderUseDexExchangeTxSimulation(false);
 
         expect(mockUseCommonDexExchangeTxSimulation).toHaveBeenCalledWith({
             account: btc1NormalAccount,

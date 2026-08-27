@@ -23,7 +23,7 @@ describe('useSellPreviewFlow', () => {
         jest.clearAllMocks();
     });
 
-    it('reports preview continue and replaces the route', () => {
+    it('reports preview continue and replaces the route', async () => {
         const store = createTradingLightStore({
             tradeType: 'sell',
             overrides: {
@@ -37,12 +37,12 @@ describe('useSellPreviewFlow', () => {
                 },
             },
         });
-        const { result } = renderHookWithStoreProvider(() => useSellPreviewFlow(), {
+        const { result } = await renderHookWithStoreProvider(() => useSellPreviewFlow(), {
             store,
             services,
         });
 
-        act(() => result.current.continueToProvider());
+        await act(() => result.current.continueToProvider());
 
         expect(mockReplace).toHaveBeenCalledWith('TradingSellCompletion');
         expect(mockReport).toHaveBeenCalledWith({

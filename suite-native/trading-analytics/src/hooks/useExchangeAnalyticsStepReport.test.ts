@@ -16,8 +16,8 @@ describe('useExchangeAnalyticsStepReport', () => {
         jest.clearAllMocks();
     });
 
-    it('should report correct data on callback execution', () => {
-        const { result } = renderHookWithStoreProvider(
+    it('should report correct data on callback execution', async () => {
+        const { result } = await renderHookWithStoreProvider(
             () => useExchangeAnalyticsStepReport('exchange-form'),
             { preloadedState },
         );

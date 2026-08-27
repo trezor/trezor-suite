@@ -82,8 +82,8 @@ describe('useBuyPreviewFlow', () => {
         });
     };
 
-    const renderHook = (store: ReturnType<typeof getInitializedStore>) =>
-        renderHookWithStoreProvider(() => useBuyPreviewFlow(), { store, services });
+    const renderHook = async (store: ReturnType<typeof getInitializedStore>) =>
+        await renderHookWithStoreProvider(() => useBuyPreviewFlow(), { store, services });
 
     const getProcessResponseData = () => {
         const [payload] = mockConfirmTradeThunk.mock.calls[0] as [any];
@@ -92,34 +92,34 @@ describe('useBuyPreviewFlow', () => {
     };
 
     describe('canProceed', () => {
-        it('is false when isLoading is true', () => {
+        it('is false when isLoading is true', async () => {
             const store = getInitializedStore({ isLoading: true, withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
             expect(result.current.canProceed).toBe(false);
         });
 
-        it('is false when receive address or account key is missing', () => {
+        it('is false when receive address or account key is missing', async () => {
             const store = getInitializedStore({ withFullState: false });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
             expect(result.current.canProceed).toBe(false);
         });
 
-        it('is true when not loading and all required state is set', () => {
+        it('is true when not loading and all required state is set', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
             expect(result.current.canProceed).toBe(true);
         });
     });
 
     describe('confirmTrade', () => {
-        it('dispatches confirmTradeThunk with correct address and account when canProceed is true', () => {
+        it('dispatches confirmTradeThunk with correct address and account when canProceed is true', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
@@ -131,11 +131,11 @@ describe('useBuyPreviewFlow', () => {
             );
         });
 
-        it('does not dispatch confirmTradeThunk when canProceed is false', () => {
+        it('does not dispatch confirmTradeThunk when canProceed is false', async () => {
             const store = getInitializedStore({ isLoading: true, withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
@@ -146,9 +146,9 @@ describe('useBuyPreviewFlow', () => {
     describe('handleTradeResponse', () => {
         it('opens browser, pops to top, and clears Redux state when tradeForm is present', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
@@ -168,9 +168,9 @@ describe('useBuyPreviewFlow', () => {
 
         it('navigates to trading screen before clearing Redux state', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
@@ -192,9 +192,9 @@ describe('useBuyPreviewFlow', () => {
 
         it('does not open browser or navigate when tradeForm is absent', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
@@ -213,11 +213,11 @@ describe('useBuyPreviewFlow', () => {
     });
 
     describe('analytics', () => {
-        it('reports buy-preview continue when confirmTrade is called and canProceed is true', () => {
+        it('reports buy-preview continue when confirmTrade is called and canProceed is true', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
@@ -233,22 +233,22 @@ describe('useBuyPreviewFlow', () => {
             );
         });
 
-        it('does not report analytics when canProceed is false', () => {
+        it('does not report analytics when canProceed is false', async () => {
             const store = getInitializedStore({ isLoading: true, withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 
             expect(mockReport).not.toHaveBeenCalled();
         });
 
-        it('triggerAnalyticsTradeConfirmation reports tradingConfirmTradeEvent', () => {
+        it('triggerAnalyticsTradeConfirmation reports tradingConfirmTradeEvent', async () => {
             const store = getInitializedStore({ withFullState: true });
-            const { result } = renderHook(store);
+            const { result } = await renderHook(store);
 
-            act(() => {
+            await act(() => {
                 result.current.confirmTrade();
             });
 

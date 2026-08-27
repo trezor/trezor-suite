@@ -27,8 +27,8 @@ jest.mock('@suite-native/transaction-management', () => ({
     },
 }));
 
-const renderItem = (stakeType: EarnFormDraftPrefix) =>
-    renderWithStoreProvider(
+const renderItem = async (stakeType: EarnFormDraftPrefix) =>
+    await renderWithStoreProvider(
         <EarnSummaryOutputItem
             accountKey={accountKey}
             stakeType={stakeType}
@@ -57,10 +57,10 @@ describe('EarnSummaryOutputItem', () => {
     ])(
         // The device omits the amount from the Ethereum claim and the Solana unstake summaries.
         'renders the amount row: $isAmountVisible for $symbol $stakeType',
-        ({ symbol, stakeType, isAmountVisible }) => {
+        async ({ symbol, stakeType, isAmountVisible }) => {
             mockAccountNetworkSymbol = symbol;
 
-            renderItem(stakeType);
+            await renderItem(stakeType);
 
             const renderedKeys = getRenderedTranslationKeys();
             expect(renderedKeys.includes(AMOUNT_TRANSLATION_KEY)).toBe(isAmountVisible);

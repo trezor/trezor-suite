@@ -48,8 +48,8 @@ const overridesWithAccounts = (
 describe('TradingReceiveAccountsPickerScreen', () => {
     let unmount: (() => void) | undefined;
 
-    const renderScreen = (overrides: PreloadedStatePartial<TradingTestPreloadedState>) => {
-        const result = renderWithTradingProvider(<TradingReceiveAccountsPickerScreen />, {
+    const renderScreen = async (overrides: PreloadedStatePartial<TradingTestPreloadedState>) => {
+        const result = await renderWithTradingProvider(<TradingReceiveAccountsPickerScreen />, {
             tradeType: mockRouteParams.tradingType,
             overrides,
         });
@@ -59,53 +59,53 @@ describe('TradingReceiveAccountsPickerScreen', () => {
         return result;
     };
 
-    afterEach(() => {
+    afterEach(async () => {
         if (unmount) {
-            unmount();
+            await unmount();
             unmount = undefined;
         }
     });
 
-    it('should render the empty-state title when no account exists', () => {
+    it('should render the empty-state title when no account exists', async () => {
         mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 
-        const { getByText } = renderScreen(overridesWithAccounts([]));
+        const { getByText } = await renderScreen(overridesWithAccounts([]));
 
         expect(
             getByText(getTranslation('moduleTrading.accountScreen.accountEmpty.title')),
         ).toBeTruthy();
     });
 
-    it('should render account list with accounts', () => {
+    it('should render account list with accounts', async () => {
         mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 
-        const { getByText } = renderScreen(overridesWithAccounts(accounts));
+        const { getByText } = await renderScreen(overridesWithAccounts(accounts));
 
         expect(getByText(accounts[0]?.accountLabel ?? '')).toBeTruthy();
     });
 
-    it('should render account list with accounts for exchange', () => {
+    it('should render account list with accounts for exchange', async () => {
         mockRouteParams = { symbol: 'btc', tradingType: 'exchange' };
 
-        const { getByText } = renderScreen(overridesWithAccounts(accounts));
+        const { getByText } = await renderScreen(overridesWithAccounts(accounts));
 
         expect(getByText(accounts[0]?.accountLabel ?? '')).toBeTruthy();
     });
 
-    it('should render empty state when no account exist', () => {
+    it('should render empty state when no account exist', async () => {
         mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 
-        const { getByText } = renderScreen(overridesWithAccounts([]));
+        const { getByText } = await renderScreen(overridesWithAccounts([]));
 
         expect(
             getByText(getTranslation('moduleTrading.accountScreen.accountEmpty.title')),
         ).toBeTruthy();
     });
 
-    it('should render the activation button when no account exists', () => {
+    it('should render the activation button when no account exists', async () => {
         mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 
-        const { getByText } = renderScreen(overridesWithAccounts([]));
+        const { getByText } = await renderScreen(overridesWithAccounts([]));
 
         expect(
             getByText(

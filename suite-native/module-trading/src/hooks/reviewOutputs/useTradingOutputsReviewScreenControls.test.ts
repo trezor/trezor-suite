@@ -81,8 +81,8 @@ describe('useTradingOutputsReviewScreenControls', () => {
         });
     };
 
-    const renderUseTradingOutputsReviewScreenControls = () =>
-        renderHookWithStoreProvider(
+    const renderUseTradingOutputsReviewScreenControls = async () =>
+        await renderHookWithStoreProvider(
             () =>
                 useTradingOutputsReviewScreenControls({
                     orderId: 'orderId',
@@ -100,8 +100,8 @@ describe('useTradingOutputsReviewScreenControls', () => {
         store = createTestStore();
     });
 
-    it('should return confirmOnTrezorRef', () => {
-        const { result } = renderUseTradingOutputsReviewScreenControls();
+    it('should return confirmOnTrezorRef', async () => {
+        const { result } = await renderUseTradingOutputsReviewScreenControls();
 
         expect(result.current.confirmOnTrezorRef).toBe(
             mockUseConfirmOnTrezorController.confirmOnTrezorRef,
@@ -109,20 +109,20 @@ describe('useTradingOutputsReviewScreenControls', () => {
     });
 
     describe('without signed transaction', () => {
-        it('should call signAndSendTransaction on mount', () => {
-            renderUseTradingOutputsReviewScreenControls();
+        it('should call signAndSendTransaction on mount', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledTimes(1);
         });
 
-        it('should not call closeSheet', () => {
-            renderUseTradingOutputsReviewScreenControls();
+        it('should not call closeSheet', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
 
             expect(mockUseConfirmOnTrezorController.closeSheet).not.toHaveBeenCalled();
         });
 
-        it('should navigate to trade detail', () => {
-            renderUseTradingOutputsReviewScreenControls();
+        it('should navigate to trade detail', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -131,7 +131,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             );
 
             // call the nextStep callback to simulate thunk behavior
-            act(() => {
+            await act(() => {
                 const { nextStep } = (
                     mockSignAndSendTransaction.mock.lastCall as unknown as [
                         TradingExchangeSignAndSendTransactionProps,
@@ -144,9 +144,9 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'continue');
         });
 
-        it('should navigate to trade detail and report sell analytics', () => {
+        it('should navigate to trade detail and report sell analytics', async () => {
             store = createTestStore('sell');
-            renderUseTradingOutputsReviewScreenControls();
+            await renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -155,7 +155,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             );
 
             // call the nextStep callback to simulate thunk behavior
-            act(() => {
+            await act(() => {
                 const { nextStep } = (
                     mockSignAndSendTransaction.mock.lastCall as unknown as [
                         TradingExchangeSignAndSendTransactionProps,
@@ -168,8 +168,8 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockReportToAnalytics).toHaveBeenLastCalledWith('sign-and-send', 'continue');
         });
 
-        it('should display alert on thunk error', () => {
-            renderUseTradingOutputsReviewScreenControls();
+        it('should display alert on thunk error', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -178,7 +178,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             );
 
             // call the onError callback to simulate thunk behavior
-            act(() => {
+            await act(() => {
                 const { onError } = (
                     mockSignAndSendTransaction.mock.lastCall as unknown as [
                         TradingExchangeSignAndSendTransactionProps,
@@ -197,8 +197,8 @@ describe('useTradingOutputsReviewScreenControls', () => {
             );
         });
 
-        it('should retry signing without leaving the outputs review', () => {
-            renderUseTradingOutputsReviewScreenControls();
+        it('should retry signing without leaving the outputs review', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -207,7 +207,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             );
 
             // call the onError callback to simulate thunk behavior
-            act(() => {
+            await act(() => {
                 const { onError } = (
                     mockSignAndSendTransaction.mock.lastCall as unknown as [
                         TradingExchangeSignAndSendTransactionProps,
@@ -221,7 +221,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
                 });
             });
 
-            act(() => {
+            await act(() => {
                 mockShowAlert.mock.calls[0][0].onPressPrimaryButton();
             });
 
@@ -229,10 +229,10 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'retry');
         });
 
-        it('should leave the flow when error alert is canceled', () => {
-            renderUseTradingOutputsReviewScreenControls();
+        it('should leave the flow when error alert is canceled', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
 
-            act(() => {
+            await act(() => {
                 const { onError } = (
                     mockSignAndSendTransaction.mock.lastCall as unknown as [
                         TradingExchangeSignAndSendTransactionProps,
@@ -246,7 +246,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
                 });
             });
 
-            act(() => {
+            await act(() => {
                 mockShowAlert.mock.calls[0][0].onPressSecondaryButton();
             });
             expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'cancel');
@@ -256,8 +256,8 @@ describe('useTradingOutputsReviewScreenControls', () => {
     });
 
     describe('with signed transaction', () => {
-        beforeEach(() => {
-            act(() => {
+        beforeEach(async () => {
+            await act(() => {
                 store.dispatch(
                     sendFormActions.storeSignedTransaction({
                         serializedTx: {
@@ -269,24 +269,24 @@ describe('useTradingOutputsReviewScreenControls', () => {
             });
         });
 
-        it('should not call signAndSendTransaction', () => {
-            renderUseTradingOutputsReviewScreenControls();
+        it('should not call signAndSendTransaction', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
 
             expect(mockSignAndSendTransaction).not.toHaveBeenCalled();
         });
 
-        it('should closeSheet', () => {
-            renderUseTradingOutputsReviewScreenControls();
+        it('should closeSheet', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
 
             expect(mockUseConfirmOnTrezorController.closeSheet).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('useOutputsReviewBackInterceptor', () => {
-        it('should be initialized with popToTop navigation callback and report cancel for exchange', () => {
-            renderUseTradingOutputsReviewScreenControls();
+        it('should be initialized with popToTop navigation callback and report cancel for exchange', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
 
-            act(() => {
+            await act(() => {
                 const onReviewCanceled = mockUseOutputsReviewBackInterceptor.mock.lastCall?.[0];
                 onReviewCanceled();
             });
@@ -295,11 +295,11 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'cancel');
         });
 
-        it('should report cancel for sell', () => {
+        it('should report cancel for sell', async () => {
             store = createTestStore('sell');
-            renderUseTradingOutputsReviewScreenControls();
+            await renderUseTradingOutputsReviewScreenControls();
 
-            act(() => {
+            await act(() => {
                 const onReviewCanceled = mockUseOutputsReviewBackInterceptor.mock.lastCall?.[0];
                 onReviewCanceled();
             });
@@ -309,8 +309,8 @@ describe('useTradingOutputsReviewScreenControls', () => {
         });
     });
 
-    it('should report visit to analytics on mount for exchange', () => {
-        renderUseTradingOutputsReviewScreenControls();
+    it('should report visit to analytics on mount for exchange', async () => {
+        await renderUseTradingOutputsReviewScreenControls();
 
         expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'visit');
     });

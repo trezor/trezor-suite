@@ -18,7 +18,7 @@ const SOL_WITHDRAWAL_RESERVE = '0.02';
 
 const translate = ((id: string) => id) as EarnFormContext['translate'];
 
-const renderBanner = ({
+const renderBanner = async ({
     balance,
     amount,
     isMaxSelected,
@@ -32,7 +32,7 @@ const renderBanner = ({
         availableBalance: networkAmountToSmallestUnit(balance, 'sol'),
     });
 
-    const { result } = renderHookWithStoreProvider(() =>
+    const { result } = await renderHookWithStoreProvider(() =>
         useForm<EarnFormValues>({
             validation: earnFormValidationSchema,
             mode: 'onTouched',
@@ -42,7 +42,7 @@ const renderBanner = ({
     );
     const form = result.current;
 
-    return renderWithStoreProvider(
+    return await renderWithStoreProvider(
         <EarnWithdrawalFeesBanner
             accountKey={account.key}
             symbol="sol"
@@ -56,14 +56,18 @@ const renderBanner = ({
 };
 
 describe('EarnWithdrawalFeesBanner', () => {
-    it('renders nothing for a manually entered amount that leaves the withdrawal reserve intact', () => {
-        const { toJSON } = renderBanner({ balance: '5', amount: '4', isMaxSelected: false });
+    it('renders nothing for a manually entered amount that leaves the withdrawal reserve intact', async () => {
+        const { toJSON } = await renderBanner({ balance: '5', amount: '4', isMaxSelected: false });
 
         expect(toJSON()).toBeNull();
     });
 
-    it('recommends the reserve for a manually entered amount that eats into it', () => {
-        const { getByText } = renderBanner({ balance: '5', amount: '4.99', isMaxSelected: false });
+    it('recommends the reserve for a manually entered amount that eats into it', async () => {
+        const { getByText } = await renderBanner({
+            balance: '5',
+            amount: '4.99',
+            isMaxSelected: false,
+        });
 
         expect(
             getByText(
@@ -75,9 +79,9 @@ describe('EarnWithdrawalFeesBanner', () => {
         ).toBeTruthy();
     });
 
-    it('confirms the kept reserve for the stake max amount, which leaves exactly the reserve', () => {
+    it('confirms the kept reserve for the stake max amount, which leaves exactly the reserve', async () => {
         const balance = '5';
-        const { getByText } = renderBanner({
+        const { getByText } = await renderBanner({
             balance,
             amount: getMaxStakeAmount({ balance, symbol: 'sol' }),
             isMaxSelected: true,
@@ -93,10 +97,10 @@ describe('EarnWithdrawalFeesBanner', () => {
         ).toBeTruthy();
     });
 
-    it('recommends the reserve when stake max can only leave the smaller fee buffer', () => {
+    it('recommends the reserve when stake max can only leave the smaller fee buffer', async () => {
         // Below MIN_SOL_BALANCE_FOR_STAKING the max amount reserves the 0.005 fee buffer only.
         const balance = '1.01';
-        const { getByText } = renderBanner({
+        const { getByText } = await renderBanner({
             balance,
             amount: getMaxStakeAmount({ balance, symbol: 'sol' }),
             isMaxSelected: true,

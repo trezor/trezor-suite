@@ -29,10 +29,10 @@ jest.mock('./ReviewOutputsBody', () => ({
 }));
 
 describe('ReviewOutputsContent', () => {
-    const renderReviewOutputsContent = (
+    const renderReviewOutputsContent = async (
         props: Partial<Omit<ReviewOutputsContentProps, 'exchangeFlowType' | 'tradingType'>>,
     ) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <ReviewOutputsContent
                 orderId="ORDER_ID"
                 accountKey={mockAccountKey({ descriptor: 'accountKey' })}
@@ -55,18 +55,18 @@ describe('ReviewOutputsContent', () => {
         });
     });
 
-    it('should not display footer if transaction is not signed yet', () => {
-        const { queryByTestId } = renderReviewOutputsContent({});
+    it('should not display footer if transaction is not signed yet', async () => {
+        const { queryByTestId } = await renderReviewOutputsContent({});
 
         expect(queryByTestId('@trading/outputs-review/footer')).not.toBeOnTheScreen();
     });
 
-    it('should display footer if transaction is signed', () => {
+    it('should display footer if transaction is signed', async () => {
         mockUseTradingOutputsReviewScreenControls.mockReturnValue({
             isTransactionAlreadySigned: true,
             confirmOnTrezorRef: { current: null },
         });
-        const { getByTestId } = renderReviewOutputsContent({});
+        const { getByTestId } = await renderReviewOutputsContent({});
 
         expect(getByTestId('@trading/outputs-review/footer')).toBeOnTheScreen();
     });

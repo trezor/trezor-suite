@@ -43,8 +43,8 @@ describe('ExchangePreviewView', () => {
         });
     });
 
-    const renderExchangePreviewView = (props: Partial<ExchangePreviewViewProps> = {}) =>
-        renderWithTradingProvider(
+    const renderExchangePreviewView = async (props: Partial<ExchangePreviewViewProps> = {}) =>
+        await renderWithTradingProvider(
             <ExchangePreviewView
                 quote={mercuryoFixedWorstQuote}
                 txnErrorString={null}
@@ -76,8 +76,8 @@ describe('ExchangePreviewView', () => {
             },
         );
 
-    it('should render all sections except alert', () => {
-        const { getByText } = renderExchangePreviewView({});
+    it('should render all sections except alert', async () => {
+        const { getByText } = await renderExchangePreviewView({});
 
         expect(getByText('BTC Account #1')).toBeOnTheScreen();
         expect(getByText('ETH Account #1')).toBeOnTheScreen();
@@ -87,8 +87,8 @@ describe('ExchangePreviewView', () => {
         expect(getByText('ERROR_MESSAGE')).toBeOnTheScreen();
     });
 
-    it('should render txnErrorString but no fee picker when isTxnError is true', () => {
-        const { getByText, queryByText } = renderExchangePreviewView({
+    it('should render txnErrorString but no fee picker when isTxnError is true', async () => {
+        const { getByText, queryByText } = await renderExchangePreviewView({
             txnErrorString: 'txnErrorString',
         });
 
@@ -100,8 +100,8 @@ describe('ExchangePreviewView', () => {
         ).toBeNull();
     });
 
-    it('should render EIP-712 info with provider name when quote has EIP-712 sign data', () => {
-        const { getByTestId } = renderExchangePreviewView({
+    it('should render EIP-712 info with provider name when quote has EIP-712 sign data', async () => {
+        const { getByTestId } = await renderExchangePreviewView({
             quote: oneInchFusionPlusWithEip712SignDataQuote,
         });
 
@@ -110,8 +110,8 @@ describe('ExchangePreviewView', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should not render transaction fee for quotes with EIP-712 sign data', () => {
-        const { queryByText } = renderExchangePreviewView({
+    it('should not render transaction fee for quotes with EIP-712 sign data', async () => {
+        const { queryByText } = await renderExchangePreviewView({
             quote: oneInchFusionPlusWithEip712SignDataQuote,
         });
 
@@ -120,24 +120,24 @@ describe('ExchangePreviewView', () => {
         ).toBeNull();
     });
 
-    it('should not render EIP-712 info when quote has no EIP-712 sign data', () => {
-        const { queryByTestId } = renderExchangePreviewView({
+    it('should not render EIP-712 info when quote has no EIP-712 sign data', async () => {
+        const { queryByTestId } = await renderExchangePreviewView({
             quote: oneInchFusionPlusWithoutEip712SignDataQuote,
         });
 
         expect(queryByTestId('@trading/exchange-preview/eip712-info')).toBeNull();
     });
 
-    it('should render KYC warning for provider with "KYC-required"', () => {
-        const { getByText } = renderExchangePreviewView({
+    it('should render KYC warning for provider with "KYC-required"', async () => {
+        const { getByText } = await renderExchangePreviewView({
             quote: cexdirectFloatingQuote,
         });
 
         expect(getByText(getTranslation('moduleTrading.kyc.kycRequired'))).toBeOnTheScreen();
     });
 
-    it('should not render KYC provider warning for providers with "noKYC"', () => {
-        const { queryByText } = renderExchangePreviewView({
+    it('should not render KYC provider warning for providers with "noKYC"', async () => {
+        const { queryByText } = await renderExchangePreviewView({
             quote: mercuryoFixedWorstQuote,
         });
 

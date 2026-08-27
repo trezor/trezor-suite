@@ -36,8 +36,8 @@ const section: MyAssetsSection = {
 describe('MyAssetList', () => {
     const testID = '@trading/sell/send-asset-screen';
 
-    const renderList = (assets: MyAssetsSection[] = [section]) =>
-        renderWithTradingProvider(
+    const renderList = async (assets: MyAssetsSection[] = [section]) =>
+        await renderWithTradingProvider(
             <MyAssetList
                 assets={assets}
                 onAssetSelect={jest.fn()}
@@ -49,8 +49,8 @@ describe('MyAssetList', () => {
             />,
         );
 
-    it('expands low-balance and non-tradeable groups independently', () => {
-        const { getByTestId, getByText } = renderList();
+    it('expands low-balance and non-tradeable groups independently', async () => {
+        const { getByTestId, getByText } = await renderList();
         const lowBalanceTestID = `${testID}/${eth1NormalAccount.key}/low-balance`;
         const nonTradeableTestID = `${testID}/${eth1NormalAccount.key}/non-tradeable`;
 
@@ -62,7 +62,7 @@ describe('MyAssetList', () => {
             expanded: false,
         });
 
-        fireEvent.press(getByTestId(`${lowBalanceTestID}/toggle`));
+        await fireEvent.press(getByTestId(`${lowBalanceTestID}/toggle`));
 
         expect(getByTestId(`${lowBalanceTestID}/toggle`).props.accessibilityState).toEqual({
             expanded: true,
@@ -71,7 +71,7 @@ describe('MyAssetList', () => {
             expanded: false,
         });
 
-        fireEvent.press(getByTestId(`${nonTradeableTestID}/toggle`));
+        await fireEvent.press(getByTestId(`${nonTradeableTestID}/toggle`));
 
         expect(getByTestId(`${lowBalanceTestID}/toggle`).props.accessibilityState).toEqual({
             expanded: true,
@@ -82,8 +82,8 @@ describe('MyAssetList', () => {
         expect(getByText('Disabled')).toBeDisabled();
     });
 
-    it('renders the existing empty-state copy', () => {
-        const { getByText } = renderList([]);
+    it('renders the existing empty-state copy', async () => {
+        const { getByText } = await renderList([]);
 
         expect(
             getByText(getTranslation('moduleTrading.myAssetScreen.emptyTitle')),

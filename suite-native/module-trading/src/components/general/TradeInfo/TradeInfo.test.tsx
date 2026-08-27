@@ -29,25 +29,25 @@ describe('TradeInfo', () => {
         tradingType: 'exchange' as TradingExchangeType | TradingSellType,
     };
 
-    const renderTradeInfo = (props = {}) => {
+    const renderTradeInfo = async (props = {}) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return renderWithTradingProvider(<TradeInfo {...finalProps} />);
+        return await renderWithTradingProvider(<TradeInfo {...finalProps} />);
     };
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should render provider', () => {
-        const { getByText } = renderTradeInfo();
+    it('should render provider', async () => {
+        const { getByText } = await renderTradeInfo();
 
         expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });
 
-    it('should pass correct props to FeeSelector', () => {
-        renderTradeInfo();
+    it('should pass correct props to FeeSelector', async () => {
+        await renderTradeInfo();
 
         expect(mockFeeSelectorProps).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -58,8 +58,8 @@ describe('TradeInfo', () => {
         );
     });
 
-    it('should render children', () => {
-        const { getByText } = renderTradeInfo({
+    it('should render children', async () => {
+        const { getByText } = await renderTradeInfo({
             children: <Text>child content</Text>,
         });
 

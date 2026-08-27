@@ -8,15 +8,15 @@ import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
 describe('useTradingReceiveAccountSelection', () => {
     it.each(['buy', 'exchange'] as const)(
         'should select the %s receive account with one action',
-        tradingType => {
+        async tradingType => {
             const store = createTradingLightStore({ tradeType: tradingType });
             const address = btc1NormalAccount.addresses?.unused[0];
-            const { result } = renderHookWithStoreProvider(
+            const { result } = await renderHookWithStoreProvider(
                 () => useTradingReceiveAccountSelection(tradingType),
                 { store },
             );
 
-            act(() => {
+            await act(() => {
                 result.current({ account: btc1NormalAccount, address });
             });
 
@@ -30,7 +30,7 @@ describe('useTradingReceiveAccountSelection', () => {
         },
     );
 
-    it('should not expose a stale address when switching exchange accounts', () => {
+    it('should not expose a stale address when switching exchange accounts', async () => {
         const store = createTradingLightStore({
             tradeType: 'exchange',
             overrides: {
@@ -49,13 +49,13 @@ describe('useTradingReceiveAccountSelection', () => {
             selectExchangeSelectedReceiveAccount(store.getState()),
         );
         const unsubscribe = store.subscribe(selectReceiveAccount);
-        const { result } = renderHookWithStoreProvider(
+        const { result } = await renderHookWithStoreProvider(
             () => useTradingReceiveAccountSelection('exchange'),
             { store },
         );
 
-        expect(() => {
-            act(() => {
+        expect(async () => {
+            await act(() => {
                 result.current({ account: btc2legacyAccount });
             });
         }).not.toThrow();

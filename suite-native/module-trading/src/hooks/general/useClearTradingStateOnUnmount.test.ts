@@ -13,14 +13,17 @@ describe('useClearTradingStateOnUnmount', () => {
         jest.clearAllMocks();
     });
 
-    it('clears trading state on unmount', () => {
-        const { unmount } = renderHookWithTradingProvider(() => useClearTradingStateOnUnmount(), {
-            tradeType: 'sell',
-        });
+    it('clears trading state on unmount', async () => {
+        const { unmount } = await renderHookWithTradingProvider(
+            () => useClearTradingStateOnUnmount(),
+            {
+                tradeType: 'sell',
+            },
+        );
 
         expect(mockClearTradingStateThunk).not.toHaveBeenCalled();
 
-        unmount();
+        await unmount();
 
         expect(mockClearTradingStateThunk).toHaveBeenCalledTimes(1);
     });

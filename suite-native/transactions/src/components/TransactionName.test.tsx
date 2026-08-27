@@ -26,16 +26,16 @@ const unwrapTx = {
 } as unknown as WalletAccountTransaction;
 
 describe('TransactionName - WETH wrap/unwrap label', () => {
-    it('labels a wrap with the native symbol and the wrapped amount', () => {
-        const { getByText } = renderWithStoreProvider(
+    it('labels a wrap with the native symbol and the wrapped amount', async () => {
+        const { getByText } = await renderWithStoreProvider(
             <TransactionName transaction={wrapTx} isPending={false} />,
         );
 
         expect(getByText('Wrap ETH into 1 WETH')).toBeTruthy();
     });
 
-    it('labels an unwrap with the wrapped amount and the native symbol', () => {
-        const { getByText } = renderWithStoreProvider(
+    it('labels an unwrap with the wrapped amount and the native symbol', async () => {
+        const { getByText } = await renderWithStoreProvider(
             <TransactionName transaction={unwrapTx} isPending={false} />,
         );
 

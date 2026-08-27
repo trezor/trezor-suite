@@ -22,29 +22,29 @@ describe('FeeSummaryCard', () => {
         wallet: getWalletState(),
     });
 
-    const renderCard = (props: Partial<typeof defaultProps> = {}) =>
-        renderWithStoreProvider(<FeeSummaryCard {...defaultProps} {...props} />, {
+    const renderCard = async (props: Partial<typeof defaultProps> = {}) =>
+        await renderWithStoreProvider(<FeeSummaryCard {...defaultProps} {...props} />, {
             preloadedState: getPreloadedState(),
         });
 
-    it('should render fee label for bitcoin', () => {
-        const { getByText } = renderCard();
+    it('should render fee label for bitcoin', async () => {
+        const { getByText } = await renderCard();
 
         expect(
             getByText(getTranslation('transactionManagement.fees.description.title.general')),
         ).toBeTruthy();
     });
 
-    it('should render ethereum-specific label for ethereum network', () => {
-        const { getByText } = renderCard({ networkType: 'ethereum', symbol: ethSymbol });
+    it('should render ethereum-specific label for ethereum network', async () => {
+        const { getByText } = await renderCard({ networkType: 'ethereum', symbol: ethSymbol });
 
         expect(
             getByText(getTranslation('transactionManagement.fees.description.title.ethereum')),
         ).toBeTruthy();
     });
 
-    it('should render pressable card with testID', () => {
-        const { getByTestId } = renderCard();
+    it('should render pressable card with testID', async () => {
+        const { getByTestId } = await renderCard();
 
         expect(getByTestId('@test/fee-summary-card')).toBeTruthy();
     });

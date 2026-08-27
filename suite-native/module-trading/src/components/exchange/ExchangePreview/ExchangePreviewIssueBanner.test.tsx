@@ -75,8 +75,10 @@ describe('ExchangePreviewIssueBanner', () => {
         },
     };
 
-    const renderExchangePreviewIssueBanner = ({ onSignTransactionNavigation = jest.fn() } = {}) =>
-        renderWithTradingProvider(
+    const renderExchangePreviewIssueBanner = async ({
+        onSignTransactionNavigation = jest.fn(),
+    } = {}) =>
+        await renderWithTradingProvider(
             <ExchangePreviewIssueBanner
                 onSignTransactionNavigation={onSignTransactionNavigation}
             />,
@@ -88,16 +90,16 @@ describe('ExchangePreviewIssueBanner', () => {
         setIssue(null);
     });
 
-    it('renders nothing without an issue', () => {
-        const { toJSON } = renderExchangePreviewIssueBanner();
+    it('renders nothing without an issue', async () => {
+        const { toJSON } = await renderExchangePreviewIssueBanner();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('renders the price impact issue with a formatted percent', () => {
+    it('renders the price impact issue with a formatted percent', async () => {
         setIssue(priceImpactIssue);
 
-        const { getByText } = renderExchangePreviewIssueBanner();
+        const { getByText } = await renderExchangePreviewIssueBanner();
 
         expect(
             getByText(
@@ -115,10 +117,10 @@ describe('ExchangePreviewIssueBanner', () => {
         ).toBeOnTheScreen();
     });
 
-    it('renders the high-risk issue with its title and description', () => {
+    it('renders the high-risk issue with its title and description', async () => {
         setIssue(highRiskIssue);
 
-        const { getByText } = renderExchangePreviewIssueBanner();
+        const { getByText } = await renderExchangePreviewIssueBanner();
 
         expect(
             getByText(getTranslation('moduleTrading.transactionSimulation.issues.highRisk.title')),
@@ -130,7 +132,7 @@ describe('ExchangePreviewIssueBanner', () => {
         ).toBeOnTheScreen();
     });
 
-    it('renders the combined issue as bullets under the high-risk title', () => {
+    it('renders the combined issue as bullets under the high-risk title', async () => {
         setIssue({
             type: 'high-risk-with-price-impact',
             severity: 'critical',
@@ -138,7 +140,7 @@ describe('ExchangePreviewIssueBanner', () => {
             deviation: 0.99,
         });
 
-        const { getByText } = renderExchangePreviewIssueBanner();
+        const { getByText } = await renderExchangePreviewIssueBanner();
 
         expect(
             getByText(getTranslation('moduleTrading.transactionSimulation.issues.highRisk.title')),
@@ -157,10 +159,10 @@ describe('ExchangePreviewIssueBanner', () => {
         ).toBeOnTheScreen();
     });
 
-    it('renders the issue without continue anyway when the simulation is disabled', () => {
+    it('renders the issue without continue anyway when the simulation is disabled', async () => {
         setIssue(priceImpactIssue, { isSimulationEnabled: false });
 
-        const { getByText, queryByText } = renderExchangePreviewIssueBanner();
+        const { getByText, queryByText } = await renderExchangePreviewIssueBanner();
 
         expect(
             getByText(
@@ -178,7 +180,7 @@ describe('ExchangePreviewIssueBanner', () => {
         const mockOnSignTransactionNavigation = jest.fn();
         setIssue(priceImpactIssue);
 
-        const { getByText } = renderExchangePreviewIssueBanner({
+        const { getByText } = await renderExchangePreviewIssueBanner({
             onSignTransactionNavigation: mockOnSignTransactionNavigation,
         });
 

@@ -49,11 +49,11 @@ describe('SellCompletionView', () => {
         },
     });
 
-    const renderSellCompletionView = (
+    const renderSellCompletionView = async (
         props: Partial<SellCompletionViewProps> = {},
         formStep?: TradingSellStepType,
     ) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <SellCompletionView
                 quote={banxaBankTransferSellQuote}
                 txnErrorString={null}
@@ -66,8 +66,8 @@ describe('SellCompletionView', () => {
             },
         );
 
-    it('renders the sell summary', () => {
-        const { getByText } = renderSellCompletionView();
+    it('renders the sell summary', async () => {
+        const { getByText } = await renderSellCompletionView();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.youPay')),
@@ -81,22 +81,22 @@ describe('SellCompletionView', () => {
         ).toBeOnTheScreen();
     });
 
-    it('renders the transaction error', () => {
-        const { getByText } = renderSellCompletionView({
+    it('renders the transaction error', async () => {
+        const { getByText } = await renderSellCompletionView({
             txnErrorString: 'Transaction error occurred',
         });
 
         expect(getByText('Transaction error occurred')).toBeOnTheScreen();
     });
 
-    it('renders bank accounts during the bank account step', () => {
-        const { getAllByTestId } = renderSellCompletionView({}, 'BANK_ACCOUNT');
+    it('renders bank accounts during the bank account step', async () => {
+        const { getAllByTestId } = await renderSellCompletionView({}, 'BANK_ACCOUNT');
 
         expect(getAllByTestId(BANK_ACCOUNT_ITEM_TEST_ID).length).toBeGreaterThan(0);
     });
 
-    it('renders the quote passed to the view', () => {
-        const { getByText } = renderSellCompletionView({
+    it('renders the quote passed to the view', async () => {
+        const { getByText } = await renderSellCompletionView({
             quote: banxaCreditCardSellQuote,
         });
 

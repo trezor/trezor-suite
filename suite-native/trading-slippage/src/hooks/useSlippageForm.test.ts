@@ -10,7 +10,9 @@ import { renderHookWithSlippageTestProvider } from '../test-utils/testUtils';
 
 describe('useSlippageForm', () => {
     const renderUseSlippageForm = async (initialSlippage?: string) => {
-        const ret = renderHookWithSlippageTestProvider(() => useSlippageForm(initialSlippage));
+        const ret = await renderHookWithSlippageTestProvider(() =>
+            useSlippageForm(initialSlippage),
+        );
         // wait for form validation
         await act(() => Promise.resolve());
 

@@ -48,17 +48,17 @@ const getOverrides = (
 });
 
 describe('TradingHistoryExportButton', () => {
-    const renderExportButton = ({
+    const renderExportButton = async ({
         trades = [getBuyTrade({ status: 'SUCCESS' })],
     }: {
         trades?: TradingTestPreloadedState['wallet']['trading']['trades'];
     } = {}) =>
-        renderWithTradingHistoryProvider(<TradingHistoryExportButton />, {
+        await renderWithTradingHistoryProvider(<TradingHistoryExportButton />, {
             overrides: getOverrides(trades),
         });
 
     const confirmExport = async () => {
-        fireEvent.press(screen.getByTestId('@trading/history/export-button'));
+        await fireEvent.press(screen.getByTestId('@trading/history/export-button'));
         await act(() => mockShowAlert.mock.calls[0]![0].onPressPrimaryButton());
     };
 
@@ -67,22 +67,22 @@ describe('TradingHistoryExportButton', () => {
         mockExportTradingHistoryCsv.mockResolvedValue({ success: true });
     });
 
-    it('renders nothing when the device has no trades', () => {
-        renderExportButton({ trades: [] });
+    it('renders nothing when the device has no trades', async () => {
+        await renderExportButton({ trades: [] });
 
         expect(screen.queryByTestId('@trading/history/export-button')).toBeNull();
     });
 
-    it('renders the export button when the device has trades', () => {
-        renderExportButton();
+    it('renders the export button when the device has trades', async () => {
+        await renderExportButton();
 
         expect(screen.getByTestId('@trading/history/export-button')).toBeOnTheScreen();
     });
 
-    it('opens a confirmation alert instead of exporting immediately', () => {
-        renderExportButton();
+    it('opens a confirmation alert instead of exporting immediately', async () => {
+        await renderExportButton();
 
-        fireEvent.press(screen.getByTestId('@trading/history/export-button'));
+        await fireEvent.press(screen.getByTestId('@trading/history/export-button'));
 
         expect(mockShowAlert).toHaveBeenCalledTimes(1);
         expect(mockExportTradingHistoryCsv).not.toHaveBeenCalled();
@@ -99,7 +99,7 @@ describe('TradingHistoryExportButton', () => {
     });
 
     it('exports the CSV and shows a success toast when the download is confirmed', async () => {
-        renderExportButton();
+        await renderExportButton();
 
         await confirmExport();
 
@@ -117,7 +117,7 @@ describe('TradingHistoryExportButton', () => {
 
     it('shows a critical toast when the export fails', async () => {
         mockExportTradingHistoryCsv.mockResolvedValue({ success: false, reason: 'exportFailed' });
-        renderExportButton();
+        await renderExportButton();
 
         await confirmExport();
 
@@ -129,7 +129,7 @@ describe('TradingHistoryExportButton', () => {
 
     it('shows a critical toast when the export throws an error', async () => {
         mockExportTradingHistoryCsv.mockRejectedValue(new Error('unexpected failure'));
-        renderExportButton();
+        await renderExportButton();
 
         await confirmExport();
 
@@ -144,7 +144,7 @@ describe('TradingHistoryExportButton', () => {
             success: false,
             reason: 'fileSavingNotSupported',
         });
-        renderExportButton();
+        await renderExportButton();
 
         await confirmExport();
 
@@ -156,7 +156,7 @@ describe('TradingHistoryExportButton', () => {
 
     it('shows no toast when the export is cancelled by dismissing the directory picker', async () => {
         mockExportTradingHistoryCsv.mockResolvedValue({ success: false, reason: 'cancelled' });
-        renderExportButton();
+        await renderExportButton();
 
         await confirmExport();
 
@@ -164,10 +164,10 @@ describe('TradingHistoryExportButton', () => {
         expect(mockShowToast).not.toHaveBeenCalled();
     });
 
-    it('dismisses the alert without exporting when cancelled', () => {
-        renderExportButton();
+    it('dismisses the alert without exporting when cancelled', async () => {
+        await renderExportButton();
 
-        fireEvent.press(screen.getByTestId('@trading/history/export-button'));
+        await fireEvent.press(screen.getByTestId('@trading/history/export-button'));
         mockShowAlert.mock.calls[0]![0].onPressSecondaryButton();
 
         expect(mockHideAlert).toHaveBeenCalledTimes(1);

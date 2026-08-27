@@ -23,11 +23,11 @@ export type RenderHookOptionsExtended<Props> = RenderHookOptions<Props> & {
     store?: TestStore;
 };
 
-export const renderWithStoreProvider = (
+export const renderWithStoreProvider = async (
     element: ReactElement,
     { preloadedState, services, wrapper: Wrapper, store, ...options }: RenderOptionsExtended = {},
-): RenderResult =>
-    render(element, {
+): Promise<RenderResult> =>
+    await render(element, {
         wrapper: ({ children }) => (
             <StoreProviderForTests
                 preloadedState={preloadedState}
@@ -40,7 +40,7 @@ export const renderWithStoreProvider = (
         ...options,
     });
 
-export const renderHookWithStoreProvider = <Result = unknown, Props = unknown>(
+export const renderHookWithStoreProvider = async <Result = unknown, Props = unknown>(
     callback: (props: Props) => Result,
     {
         preloadedState,
@@ -49,8 +49,8 @@ export const renderHookWithStoreProvider = <Result = unknown, Props = unknown>(
         store,
         ...options
     }: RenderHookOptionsExtended<Props> = {},
-): RenderHookResult<Result, Props> =>
-    renderHook(callback, {
+): Promise<RenderHookResult<Result, Props>> =>
+    await renderHook(callback, {
         wrapper: ({ children }) => (
             <StoreProviderForTests
                 preloadedState={preloadedState}

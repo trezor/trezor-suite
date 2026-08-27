@@ -8,8 +8,8 @@ describe('SellBankAccountSheet', () => {
     const mockCloseModal = jest.fn();
     const mockRef = { current: null };
 
-    const renderBankAccountSheet = (props = {}) =>
-        renderWithBasicProvider(
+    const renderBankAccountSheet = async (props = {}) =>
+        await renderWithBasicProvider(
             <SellBankAccountSheet
                 ref={mockRef}
                 bankAccounts={bankAccounts}
@@ -25,8 +25,8 @@ describe('SellBankAccountSheet', () => {
     });
 
     describe('User Experience', () => {
-        it('should display all bank accounts', () => {
-            const { getByText } = renderBankAccountSheet();
+        it('should display all bank accounts', async () => {
+            const { getByText } = await renderBankAccountSheet();
 
             // User should see bank account holder names
             expect(getByText('John Doe')).toBeOnTheScreen();
@@ -35,7 +35,7 @@ describe('SellBankAccountSheet', () => {
         });
 
         it('should allow user to select a bank account', async () => {
-            const { getByText } = renderBankAccountSheet();
+            const { getByText } = await renderBankAccountSheet();
 
             // User should be able to tap on a bank account to select it
             await userEvent.press(getByText('John Doe'));
@@ -44,7 +44,7 @@ describe('SellBankAccountSheet', () => {
         });
 
         it('should close the modal after user selects a bank account', async () => {
-            const { getByText } = renderBankAccountSheet();
+            const { getByText } = await renderBankAccountSheet();
 
             // When user selects any bank account, modal should close
             await userEvent.press(getByText('Jane Smith'));

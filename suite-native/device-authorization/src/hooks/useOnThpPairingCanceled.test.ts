@@ -19,20 +19,20 @@ const mockDeviceThpPairingStatusChange = (status: DeviceThpPairingStatus) => {
 };
 
 describe('useOnThpPairingCanceled', () => {
-    test('callback is triggered', () => {
+    test('callback is triggered', async () => {
         mockDeviceThpPairingStatusChange({ status: 'canceled' });
         const callback = jest.fn();
 
-        renderHookWithBasicProvider(() => useOnThpPairingCanceled(callback));
+        await renderHookWithBasicProvider(() => useOnThpPairingCanceled(callback));
 
         expect(callback).toHaveBeenCalled();
     });
 
-    test('callback is not triggered', () => {
+    test('callback is not triggered', async () => {
         mockDeviceThpPairingStatusChange({ status: 'finished' });
         const callback = jest.fn();
 
-        renderHookWithBasicProvider(() => useOnThpPairingCanceled(callback));
+        await renderHookWithBasicProvider(() => useOnThpPairingCanceled(callback));
 
         expect(callback).not.toHaveBeenCalled();
     });

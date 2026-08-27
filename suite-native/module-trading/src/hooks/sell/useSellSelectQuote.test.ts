@@ -1,8 +1,12 @@
 import { tradingSellActions } from '@suite-common/trading';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import {
+    type TestStore,
+    act,
+    renderHookWithStoreProvider,
+    waitFor,
+} from '@suite-native/test-utils-store';
 import { banxaCreditCardSellQuote } from '@suite-native/trading-fixtures';
-import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from './useSellForm';
 import { useSellSelectQuote } from './useSellSelectQuote';
@@ -17,68 +21,73 @@ jest.mock('@suite-common/trading', () => ({
 
 describe('useSellSelectQuote', () => {
     let store: TestStore;
-    let sellForm: SellFormType;
 
-    const renderSellForm = () => renderHookWithStoreProvider(() => useSellForm(), { store });
+    const renderUseSellSelectQuote = async () =>
+        await renderHookWithStoreProvider(
+            () => {
+                const form = useSellForm();
 
-    const renderUseSellSelectQuote = () =>
-        renderHookWithStoreProvider(() => useSellSelectQuote(sellForm), { store });
+                return { form, ...useSellSelectQuote(form) };
+            },
+            { store },
+        );
 
     beforeEach(() => {
         store = createTradingLightStore({ tradeType: 'sell' });
-
-        const { result } = renderSellForm();
-        sellForm = result.current;
     });
 
     describe('canProceed', () => {
-        it('should be false when no quote is selected in form', () => {
-            const { result } = renderUseSellSelectQuote();
+        it('should be false when no quote is selected in form', async () => {
+            const { result } = await renderUseSellSelectQuote();
 
             expect(result.current.canProceed).toEqual(false);
         });
 
-        it('should be false when quotes are being fetched', () => {
-            act(() => {
-                sellForm.setValue('quote', banxaCreditCardSellQuote);
+        it('should be false when quotes are being fetched', async () => {
+            const { result } = await renderUseSellSelectQuote();
+
+            await act(() => {
+                result.current.form.setValue('quote', banxaCreditCardSellQuote);
                 store.dispatch(tradingSellActions.setIsLoading(true));
             });
 
-            const { result } = renderUseSellSelectQuote();
-
             expect(result.current.canProceed).toEqual(false);
         });
 
-        it('should be false when form contains error', () => {
-            act(() => {
+        it('should be false when form contains error', async () => {
+            const { result, rerender } = await renderUseSellSelectQuote();
+            const { form } = result.current;
+            form.register('cryptoStringAmount');
+
+            await act(() => {
                 store.dispatch(
                     tradingSellActions.setTradingAccountKey(
                         mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
                     ),
                 );
-                sellForm.setValue('quote', banxaCreditCardSellQuote);
-                sellForm.setError('cryptoStringAmount', {
-                    type: 'manual',
-                    message: 'VALIDATION_ERROR',
-                });
+                form.setValue('quote', banxaCreditCardSellQuote);
             });
 
-            const { result } = renderUseSellSelectQuote();
+            await act(async () => {
+                form.setValue('cryptoStringAmount', '-1', { shouldValidate: true });
+                await form.trigger('cryptoStringAmount');
+            });
+            await rerender(undefined);
 
-            expect(result.current.canProceed).toEqual(false);
+            await waitFor(() => expect(result.current.canProceed).toEqual(false));
         });
 
-        it('should be true when quote is selected', () => {
-            act(() => {
-                sellForm.setValue('quote', banxaCreditCardSellQuote);
+        it('should be true when quote is selected', async () => {
+            const { result } = await renderUseSellSelectQuote();
+
+            await act(() => {
+                result.current.form.setValue('quote', banxaCreditCardSellQuote);
                 store.dispatch(
                     tradingSellActions.setTradingAccountKey(
                         mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
                     ),
                 );
             });
-
-            const { result } = renderUseSellSelectQuote();
 
             expect(result.current.canProceed).toEqual(true);
         });

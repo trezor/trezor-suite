@@ -51,8 +51,8 @@ const buildPreloadedState = (account: ReturnType<typeof mockWalletAccount>) => (
 });
 
 describe('AccountSettingsScreen', () => {
-    it('renders Show XPUB button for UTXO account', () => {
-        const { queryAllByText } = renderWithStoreProvider(
+    it('renders Show XPUB button for UTXO account', async () => {
+        const { queryAllByText } = await renderWithStoreProvider(
             <AccountSettingsScreen
                 route={buildRoute(btcAccount.key)}
                 navigation={navigationMock}
@@ -70,8 +70,8 @@ describe('AccountSettingsScreen', () => {
         ).toBeGreaterThan(0);
     });
 
-    it('does not render Show XPUB button for address-based account', () => {
-        const { queryByText } = renderWithStoreProvider(
+    it('does not render Show XPUB button for address-based account', async () => {
+        const { queryByText } = await renderWithStoreProvider(
             <AccountSettingsScreen
                 route={buildRoute(ethAccount.key)}
                 navigation={navigationMock}

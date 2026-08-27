@@ -40,18 +40,20 @@ const services: NativeAnalyticsDep = {
 };
 
 describe('SellForm', () => {
-    const renderFormHook = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
-        renderHookWithTradingProvider(() => useSellForm(), {
+    const renderFormHook = async (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) =>
+        await renderHookWithTradingProvider(() => useSellForm(), {
             services,
             tradeType: 'sell',
             overrides,
         });
 
-    const renderSellForm = (
+    const renderSellForm = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
         form: SellFormType,
     ) =>
-        renderWithTradingProvider(<SellForm />, {
+        await renderWithTradingProvider(<SellForm />, {
             services,
             tradeType: 'sell',
             overrides,
@@ -62,13 +64,13 @@ describe('SellForm', () => {
         jest.clearAllMocks();
     });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should render when sell data are not preloaded', () => {
-        const { result } = renderFormHook();
-        const { getByText, getByLabelText } = renderSellForm({}, result.current);
+    it('should render when sell data are not preloaded', async () => {
+        const { result } = await renderFormHook();
+        const { getByText, getByLabelText } = await renderSellForm({}, result.current);
 
         expect(
             getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
@@ -87,15 +89,15 @@ describe('SellForm', () => {
         let form: SellFormType;
         let overrides: PreloadedStatePartial<TradingTestPreloadedState>;
 
-        beforeEach(() => {
+        beforeEach(async () => {
             overrides = {
                 wallet: { trading: { sell: { quotes: sellQuotes } } },
                 ...residenceCheckDisabledState,
             };
 
-            const { result } = renderFormHook(overrides);
+            const { result } = await renderFormHook(overrides);
             form = result.current;
-            act(() => {
+            await act(() => {
                 form.setValue('sendAsset', btcAsset);
                 form.setValue('sendAccount', getBtcAccount());
                 form.setValue('amountInCrypto', true);
@@ -104,8 +106,8 @@ describe('SellForm', () => {
             });
         });
 
-        it('should render with default values', () => {
-            const { getByLabelText, getByText } = renderSellForm(overrides, form);
+        it('should render with default values', async () => {
+            const { getByLabelText, getByText } = await renderSellForm(overrides, form);
 
             expect(
                 getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
@@ -124,11 +126,11 @@ describe('SellForm', () => {
             ).toBeOnTheScreen();
         });
 
-        it('should render only SellCard and Done when amount input is active', () => {
-            act(() => {
+        it('should render only SellCard and Done when amount input is active', async () => {
+            await act(() => {
                 form.setValue('focusedValue', 'fiatStringAmount');
             });
-            const { queryByText, getByText } = renderSellForm(overrides, form);
+            const { queryByText, getByText } = await renderSellForm(overrides, form);
 
             expect(
                 getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
@@ -147,9 +149,9 @@ describe('SellForm', () => {
         });
     });
 
-    it('should report to analytics on mount', () => {
-        const { result } = renderFormHook();
-        renderSellForm({}, result.current);
+    it('should report to analytics on mount', async () => {
+        const { result } = await renderFormHook();
+        await renderSellForm({}, result.current);
 
         expect(reportMock).toHaveBeenCalledWith({
             type: events.tradingSellEvent.name,

@@ -31,8 +31,8 @@ describe('BuyConfirmation', () => {
     const mockUseTradingStellarActivateToken =
         require('../../hooks/general/useTradingStellarActivateToken').useTradingStellarActivateToken;
 
-    const renderConfirmation = () =>
-        renderWithStoreProvider(<BuyConfirmation />, {
+    const renderConfirmation = async () =>
+        await renderWithStoreProvider(<BuyConfirmation />, {
             preloadedState: { wallet: { trading: getInitializedTradingStateWithQuotes() } },
         });
 
@@ -43,7 +43,7 @@ describe('BuyConfirmation', () => {
         });
     });
 
-    it('should render buy button when canProceed is true', () => {
+    it('should render buy button when canProceed is true', async () => {
         mockUseBuyFlow.mockReturnValue({
             canProceed: true,
             selectQuote: jest.fn(),
@@ -52,11 +52,11 @@ describe('BuyConfirmation', () => {
             cancelConsent: jest.fn(),
         });
 
-        const { getByText } = renderConfirmation();
+        const { getByText } = await renderConfirmation();
         expect(getByText(CTA_TEXT)).toBeTruthy();
     });
 
-    it('should not render buy button when canProceed is false', () => {
+    it('should not render buy button when canProceed is false', async () => {
         mockUseBuyFlow.mockReturnValue({
             canProceed: false,
             selectQuote: jest.fn(),
@@ -65,12 +65,12 @@ describe('BuyConfirmation', () => {
             cancelConsent: jest.fn(),
         });
 
-        const { queryByText } = renderConfirmation();
+        const { queryByText } = await renderConfirmation();
 
         expect(queryByText(CTA_TEXT)).toBeNull();
     });
 
-    it('should render activate button when trading inactive Stellar token', () => {
+    it('should render activate button when trading inactive Stellar token', async () => {
         mockUseBuyFlow.mockReturnValue({
             canProceed: true,
             selectQuote: jest.fn(),
@@ -84,12 +84,12 @@ describe('BuyConfirmation', () => {
             activateButtonElement: <Button>Activate</Button>,
         });
 
-        const { queryByText } = renderConfirmation();
+        const { queryByText } = await renderConfirmation();
         expect(queryByText('Activate')).toBeTruthy();
         expect(queryByText(CTA_TEXT)).toBeNull();
     });
 
-    it('should not render activate button when not trading inactive Stellar token', () => {
+    it('should not render activate button when not trading inactive Stellar token', async () => {
         mockUseBuyFlow.mockReturnValue({
             canProceed: true,
             selectQuote: jest.fn(),
@@ -103,7 +103,7 @@ describe('BuyConfirmation', () => {
             activateButtonElement: <Button>Activate</Button>,
         });
 
-        const { queryByText } = renderConfirmation();
+        const { queryByText } = await renderConfirmation();
         expect(queryByText('Activate')).toBeNull();
         expect(queryByText(CTA_TEXT)).toBeTruthy();
     });

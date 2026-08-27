@@ -50,7 +50,7 @@ type RenderWithTradingProviderOptions = TradingProviderOptions &
 export const renderWithTradingHistoryProvider = (
     element: ReactElement,
     { overrides, ...options }: RenderWithTradingProviderOptions = {},
-): RenderResult =>
+): Promise<RenderResult> =>
     renderWithStoreProvider(element, {
         preloadedState: createTradingPreloadedState({ overrides }),
         ...options,

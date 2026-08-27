@@ -54,13 +54,15 @@ const ConciergeProviderPickerWrapper = ({ country = 'CZ' }: { country?: TradingC
     );
 };
 
-const renderConciergeProviderPicker = (props?: { country?: TradingCountryCode }) => {
+const renderConciergeProviderPicker = async (props?: { country?: TradingCountryCode }) => {
     mockUseFetchOtc.mockReturnValue({
         data: otcData,
         isLoading: false,
     } as unknown as ReturnType<typeof useFetchOtc>);
 
-    return renderWithBasicProvider(<ConciergeProviderPickerWrapper country={props?.country} />);
+    return await renderWithBasicProvider(
+        <ConciergeProviderPickerWrapper country={props?.country} />,
+    );
 };
 
 describe('ConciergeProviderPicker', () => {
@@ -68,27 +70,27 @@ describe('ConciergeProviderPicker', () => {
         jest.clearAllMocks();
     });
 
-    it('should select first provider by default', () => {
-        const { getByTestId } = renderConciergeProviderPicker();
+    it('should select first provider by default', async () => {
+        const { getByTestId } = await renderConciergeProviderPicker();
 
         expect(getByTestId('@trading/concierge/provider-picker/value')).toHaveTextContent(
             'Trezor OTC',
         );
     });
 
-    it('should open sheet and select Invity OTC', () => {
-        const { getByTestId, getByText } = renderConciergeProviderPicker();
+    it('should open sheet and select Invity OTC', async () => {
+        const { getByTestId, getByText } = await renderConciergeProviderPicker();
 
-        fireEvent.press(getByTestId('@trading/concierge/provider-picker'));
-        fireEvent.press(getByText('Invity OTC'));
+        await fireEvent.press(getByTestId('@trading/concierge/provider-picker'));
+        await fireEvent.press(getByText('Invity OTC'));
 
         expect(getByTestId('@trading/concierge/provider-picker/value')).toHaveTextContent(
             'Invity OTC',
         );
     });
 
-    it('should show warning when no providers are available', () => {
-        const { getByText } = renderConciergeProviderPicker({ country: 'US' });
+    it('should show warning when no providers are available', async () => {
+        const { getByText } = await renderConciergeProviderPicker({ country: 'US' });
 
         expect(
             getByText(getTranslation('moduleTrading.tradingScreen.concierge.noProvidersAvailable')),

@@ -9,11 +9,11 @@ import {
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('ExchangeToAccountTradePreviewCard', () => {
-    const renderExchangeToAccountTradePreviewCard = (
+    const renderExchangeToAccountTradePreviewCard = async (
         props: Partial<ExchangeToAccountTradePreviewCardProps> = {},
         receiveAccountKey = btc1NormalAccount.key,
     ) =>
-        renderWithTradingProvider(<ExchangeToAccountTradePreviewCard {...props} />, {
+        await renderWithTradingProvider(<ExchangeToAccountTradePreviewCard {...props} />, {
             tradeType: 'exchange',
             overrides: {
                 wallet: {
@@ -32,14 +32,14 @@ describe('ExchangeToAccountTradePreviewCard', () => {
             },
         });
 
-    it('should render nothing when there is no quote', () => {
-        const { toJSON } = renderExchangeToAccountTradePreviewCard({});
+    it('should render nothing when there is no quote', async () => {
+        const { toJSON } = await renderExchangeToAccountTradePreviewCard({});
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render nothing when account is not found', () => {
-        const { toJSON } = renderExchangeToAccountTradePreviewCard(
+    it('should render nothing when account is not found', async () => {
+        const { toJSON } = await renderExchangeToAccountTradePreviewCard(
             { quote: mercuryoFixedWorstQuote },
             mockAccountKey({ descriptor: 'unknownAccountKey' }),
         );
@@ -47,8 +47,8 @@ describe('ExchangeToAccountTradePreviewCard', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render TradeSideCard otherwise', () => {
-        const { getByText } = renderExchangeToAccountTradePreviewCard({
+    it('should render TradeSideCard otherwise', async () => {
+        const { getByText } = await renderExchangeToAccountTradePreviewCard({
             quote: mercuryoFixedWorstQuote,
         });
 

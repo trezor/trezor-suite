@@ -32,8 +32,8 @@ describe('SellTabContent', () => {
         }));
     });
 
-    const renderSellTabContent = () =>
-        renderWithTradingProvider(<SellTabContent />, { tradeType: 'sell' });
+    const renderSellTabContent = async () =>
+        await renderWithTradingProvider(<SellTabContent />, { tradeType: 'sell' });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);
@@ -51,50 +51,50 @@ describe('SellTabContent', () => {
         ).toBeOnTheScreen();
     };
 
-    it('should render Sell skeleton when isLoading is true', () => {
+    it('should render Sell skeleton when isLoading is true', async () => {
         mockUseSellData.mockReturnValue({
             isLoading: true,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        renderSellTabContent();
+        await renderSellTabContent();
 
         expectSkeleton();
     });
 
-    it('should render Sell skeleton when lastLoadedTimestamp is 0', () => {
+    it('should render Sell skeleton when lastLoadedTimestamp is 0', async () => {
         mockUseSellData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 0,
             isFullyLoaded: false,
         });
 
-        renderSellTabContent();
+        await renderSellTabContent();
 
         expectSkeleton();
     });
 
-    it('should render Sell form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', () => {
+    it('should render Sell form when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded true', async () => {
         mockUseSellData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: true,
         });
 
-        renderSellTabContent();
+        await renderSellTabContent();
 
         expectSellForm();
     });
 
-    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', () => {
+    it('should render server error info when isLoading is false, lastLoadedTimestamp is greater than 0 and isFullyLoaded false', async () => {
         mockUseSellData.mockReturnValue({
             isLoading: false,
             lastLoadedTimestamp: 1,
             isFullyLoaded: false,
         });
 
-        renderSellTabContent();
+        await renderSellTabContent();
 
         expectServerOffline();
     });
@@ -112,7 +112,7 @@ describe('SellTabContent', () => {
                 isFullyLoaded: true,
             });
 
-        const { getByText } = renderSellTabContent();
+        const { getByText } = await renderSellTabContent();
 
         const reloadButton = getByText(getTranslation('tradingAtoms.error.serverOfflineRetry'));
 

@@ -98,10 +98,13 @@ describe('useTradingTransaction', () => {
         });
     };
 
-    const renderUseTradingTransaction = ({ store }: { store: TestStore }) =>
-        renderHookWithTradingProvider(() => useTradingTransaction({ tradeType: 'exchange' }), {
-            store,
-        });
+    const renderUseTradingTransaction = async ({ store }: { store: TestStore }) =>
+        await renderHookWithTradingProvider(
+            () => useTradingTransaction({ tradeType: 'exchange' }),
+            {
+                store,
+            },
+        );
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -139,7 +142,7 @@ describe('useTradingTransaction', () => {
         it('should call composeTradingTransaction', async () => {
             const store = getInitializedStore();
 
-            const { result } = renderUseTradingTransaction({ store });
+            const { result } = await renderUseTradingTransaction({ store });
 
             await act(async () => {
                 await result.current.composeTradingTransaction();
@@ -155,7 +158,7 @@ describe('useTradingTransaction', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const mockNextStep = jest.fn();
 
-            const { result } = renderUseTradingTransaction({ store });
+            const { result } = await renderUseTradingTransaction({ store });
 
             await act(async () => {
                 await result.current.signAndSendTransaction({
@@ -188,7 +191,7 @@ describe('useTradingTransaction', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const mockNextStep = jest.fn();
 
-            const { result } = renderUseTradingTransaction({ store });
+            const { result } = await renderUseTradingTransaction({ store });
 
             await act(async () => {
                 await result.current.signAndSendTransaction({
@@ -210,7 +213,7 @@ describe('useTradingTransaction', () => {
         it('should set isConsentRequested to false and resolve the promise', async () => {
             const store = getInitializedStore();
 
-            const { result } = renderUseTradingTransaction({ store });
+            const { result } = await renderUseTradingTransaction({ store });
 
             // First, trigger the signAndSendTransaction to set up the promise
             const originalSendTransactionThunk =
@@ -228,7 +231,7 @@ describe('useTradingTransaction', () => {
             });
 
             // Now resolve the push consent
-            act(() => {
+            await act(() => {
                 result.current.resolveTransactionSendConsent(true);
             });
 
@@ -241,16 +244,16 @@ describe('useTradingTransaction', () => {
     });
 
     describe('useEffect cleanup', () => {
-        it('should call TrezorConnect.cancel on unmount', () => {
+        it('should call TrezorConnect.cancel on unmount', async () => {
             const store = getInitializedStore();
-            const { unmount } = renderUseTradingTransaction({ store });
+            const { unmount } = await renderUseTradingTransaction({ store });
 
             // Get the mocked TrezorConnect.cancel function
             const TrezorConnect = require('@trezor/connect');
             const mockCancel = TrezorConnect.cancel;
 
             // Unmount the component to trigger the cleanup useEffect
-            unmount();
+            await unmount();
 
             // Verify that TrezorConnect.cancel was called
             expect(mockCancel).toHaveBeenCalled();

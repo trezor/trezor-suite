@@ -5,11 +5,11 @@ import { BuyPreviewInfoCard } from './BuyPreviewInfoCard';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('BuyPreviewInfoCard', () => {
-    const renderCard = (quote = mercuryoApplePayBuyQuote) =>
-        renderWithTradingProvider(<BuyPreviewInfoCard quote={quote} />, { tradeType: 'buy' });
+    const renderCard = async (quote = mercuryoApplePayBuyQuote) =>
+        await renderWithTradingProvider(<BuyPreviewInfoCard quote={quote} />, { tradeType: 'buy' });
 
-    it('displays "you pay" label with formatted fiat amount', () => {
-        const { getByText } = renderCard();
+    it('displays "you pay" label with formatted fiat amount', async () => {
+        const { getByText } = await renderCard();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingBuyPreviewScreen.youPay')),
@@ -17,16 +17,16 @@ describe('BuyPreviewInfoCard', () => {
         expect(getByText('€10.00')).toBeOnTheScreen();
     });
 
-    it('displays payment method name', () => {
-        const { getByLabelText } = renderCard();
+    it('displays payment method name', async () => {
+        const { getByLabelText } = await renderCard();
 
         expect(
             getByLabelText(getTranslation('moduleTrading.tradingScreen.selectedPaymentMethod')),
         ).toHaveTextContent('Apple Pay');
     });
 
-    it('displays provider name', () => {
-        const { getByText } = renderCard();
+    it('displays provider name', async () => {
+        const { getByText } = await renderCard();
 
         expect(getByText('Mercuryo')).toBeOnTheScreen();
     });

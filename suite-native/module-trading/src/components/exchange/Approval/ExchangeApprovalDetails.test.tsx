@@ -30,10 +30,10 @@ describe('ExchangeApprovalDetails', () => {
         },
     };
 
-    const renderExchangeApprovalDetails = (
+    const renderExchangeApprovalDetails = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) =>
-        renderWithTradingProvider(
+        await renderWithTradingProvider(
             <ExchangeApprovalDetails
                 exchange="mercuryo"
                 onApprovalTypeChange={mockOnApprovalTypeChange}
@@ -48,8 +48,8 @@ describe('ExchangeApprovalDetails', () => {
         errorSpy.mockClear();
     });
 
-    it('should render approval details', () => {
-        const { getByText } = renderExchangeApprovalDetails();
+    it('should render approval details', async () => {
+        const { getByText } = await renderExchangeApprovalDetails();
 
         expect(
             getByText(getTranslation('moduleTrading.exchangeTradePreviewCard.account')),
@@ -61,8 +61,8 @@ describe('ExchangeApprovalDetails', () => {
         expect(errorSpy).not.toHaveBeenCalled();
     });
 
-    it('should render error when account is not found', () => {
-        const { getByText, queryByText } = renderExchangeApprovalDetails({
+    it('should render error when account is not found', async () => {
+        const { getByText, queryByText } = await renderExchangeApprovalDetails({
             wallet: {
                 trading: {
                     exchange: {

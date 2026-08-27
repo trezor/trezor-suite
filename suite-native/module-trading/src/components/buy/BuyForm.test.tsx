@@ -43,25 +43,26 @@ describe('BuyForm', () => {
         },
     };
 
-    const renderFormHook = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
-        renderHookWithTradingProvider(() => useBuyForm(), { overrides });
+    const renderFormHook = async (
+        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
+    ) => await renderHookWithTradingProvider(() => useBuyForm(), { overrides });
 
-    const renderBuyForm = (
+    const renderBuyForm = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState>,
         form: BuyFormType,
     ) =>
-        renderWithTradingProvider(<BuyForm />, {
+        await renderWithTradingProvider(<BuyForm />, {
             overrides,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
-    afterEach(() => {
-        screen.unmount();
+    afterEach(async () => {
+        await screen.unmount();
     });
 
-    it('should render when buy data are not preloaded', () => {
-        const { result } = renderFormHook(residenceCheckDisabledOverrides);
-        const { queryByText, getByText, getByLabelText } = renderBuyForm(
+    it('should render when buy data are not preloaded', async () => {
+        const { result } = await renderFormHook(residenceCheckDisabledOverrides);
+        const { queryByText, getByText, getByLabelText } = await renderBuyForm(
             residenceCheckDisabledOverrides,
             result.current,
         );
@@ -94,13 +95,13 @@ describe('BuyForm', () => {
             featureFlags: createTradingFeatureFlags(),
         };
 
-        beforeEach(() => {
-            const { result } = renderFormHook(overrides);
+        beforeEach(async () => {
+            const { result } = await renderFormHook(overrides);
             form = result.current;
         });
 
-        it('should render with default values', () => {
-            const { queryByText, getByLabelText, getByText } = renderBuyForm(overrides, form);
+        it('should render with default values', async () => {
+            const { queryByText, getByLabelText, getByText } = await renderBuyForm(overrides, form);
 
             expect(
                 getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
@@ -130,11 +131,11 @@ describe('BuyForm', () => {
             ).toBeNull();
         });
 
-        it('should render only BuyCard and Done when amount input is active', () => {
-            act(() => {
+        it('should render only BuyCard and Done when amount input is active', async () => {
+            await act(() => {
                 form.setValue('focusedValue', 'fiatValue');
             });
-            const { queryByText, getByText } = renderBuyForm(overrides, form);
+            const { queryByText, getByText } = await renderBuyForm(overrides, form);
 
             expect(
                 getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),

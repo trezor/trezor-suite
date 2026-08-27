@@ -31,8 +31,8 @@ describe('TradeSideCard', () => {
         }),
     } as const;
 
-    const renderTradeSideCard = (props: Partial<TradeSideCardProps>) =>
-        renderWithStoreProvider(
+    const renderTradeSideCard = async (props: Partial<TradeSideCardProps>) =>
+        await renderWithStoreProvider(
             <TradeSideCard
                 account={btc1NormalAccount}
                 amount={<Text>AMOUNT</Text>}
@@ -51,22 +51,22 @@ describe('TradeSideCard', () => {
             },
         );
 
-    it('should render nothing when no cryptoId is specified', () => {
-        const { toJSON } = renderTradeSideCard({});
+    it('should render nothing when no cryptoId is specified', async () => {
+        const { toJSON } = await renderTradeSideCard({});
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should render title, amount and account label', () => {
-        const { getByText } = renderTradeSideCard({ cryptoId: 'bitcoin' as CryptoId });
+    it('should render title, amount and account label', async () => {
+        const { getByText } = await renderTradeSideCard({ cryptoId: 'bitcoin' as CryptoId });
 
         expect(getByText('TITLE')).toBeOnTheScreen();
         expect(getByText('AMOUNT')).toBeOnTheScreen();
         expect(getByText('BTC Account #1')).toBeOnTheScreen();
     });
 
-    it('should render children when provided', () => {
-        const { getByText } = renderTradeSideCard({
+    it('should render children when provided', async () => {
+        const { getByText } = await renderTradeSideCard({
             cryptoId: 'bitcoin' as CryptoId,
             children: <Text>CHILDREN</Text>,
         });

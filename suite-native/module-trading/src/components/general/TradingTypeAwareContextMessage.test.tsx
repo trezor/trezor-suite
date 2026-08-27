@@ -37,9 +37,9 @@ describe('TradingTypeAwareContextMessage', () => {
         },
     });
 
-    const renderTradingTypeAwareContextMessage = (
+    const renderTradingTypeAwareContextMessage = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState>,
-    ) => renderWithTradingProvider(<TradingTypeAwareContextMessage />, { overrides });
+    ) => await renderWithTradingProvider(<TradingTypeAwareContextMessage />, { overrides });
 
     it.each<[TradingType, string]>([
         ['buy', 'Trading buy message'],
@@ -47,8 +47,8 @@ describe('TradingTypeAwareContextMessage', () => {
         ['sell', 'Trading sell message'],
     ])(
         'should render correct context message for trading type %s',
-        (tradingType, expectedMessage) => {
-            const { getByText } = renderTradingTypeAwareContextMessage(
+        async (tradingType, expectedMessage) => {
+            const { getByText } = await renderTradingTypeAwareContextMessage(
                 overridesForTradingType(tradingType),
             );
 
@@ -56,8 +56,10 @@ describe('TradingTypeAwareContextMessage', () => {
         },
     );
 
-    it('should render nothing when trading type is not specified', () => {
-        const { toJSON } = renderTradingTypeAwareContextMessage(overridesForTradingType(undefined));
+    it('should render nothing when trading type is not specified', async () => {
+        const { toJSON } = await renderTradingTypeAwareContextMessage(
+            overridesForTradingType(undefined),
+        );
 
         expect(toJSON()).toBeNull();
     });

@@ -11,10 +11,10 @@ jest.mock('@suite-native/discovery', () => ({
 describe('TradingAssetListHeader', () => {
     const testID = '@trading/test/asset-list';
 
-    it('forwards search and network changes', () => {
+    it('forwards search and network changes', async () => {
         const onFilterChange = jest.fn();
         const onSelectedNetworkFilter = jest.fn();
-        const { getByTestId } = renderWithTradingProvider(
+        const { getByTestId } = await renderWithTradingProvider(
             <TradingAssetListHeader
                 networkFilterMode="discovered"
                 onFilterChange={onFilterChange}
@@ -25,9 +25,9 @@ describe('TradingAssetListHeader', () => {
             />,
         );
 
-        fireEvent.changeText(getByTestId(`${testID}/search-input`), 'ether');
-        fireEvent.press(getByTestId(`${testID}/network-picker`));
-        fireEvent.press(getByTestId(`${testID}/network-picker/networks-sheet/eth`));
+        await fireEvent.changeText(getByTestId(`${testID}/search-input`), 'ether');
+        await fireEvent.press(getByTestId(`${testID}/network-picker`));
+        await fireEvent.press(getByTestId(`${testID}/network-picker/networks-sheet/eth`));
 
         expect(onFilterChange).toHaveBeenCalledWith('ether');
         expect(onSelectedNetworkFilter).toHaveBeenCalledWith('eth');

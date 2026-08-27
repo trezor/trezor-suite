@@ -39,22 +39,22 @@ describe('useGeolocationCountryCode', () => {
             },
         });
 
-    const renderUseGeolocationCountryCode = (store: TestStore) =>
-        renderHookWithStoreProvider(() => useGeolocationCountryCode(), { store });
+    const renderUseGeolocationCountryCode = async (store: TestStore) =>
+        await renderHookWithStoreProvider(() => useGeolocationCountryCode(), { store });
 
-    it('should call geolocation thunk on mount', () => {
+    it('should call geolocation thunk on mount', async () => {
         const store = createGeolocationTestStore();
 
-        renderUseGeolocationCountryCode(store);
+        await renderUseGeolocationCountryCode(store);
 
         expect(selectCountryCode(store.getState())).toBe('US');
     });
 
-    it('should not call geolocation thunk if country code is already known', () => {
+    it('should not call geolocation thunk if country code is already known', async () => {
         const store = createGeolocationTestStore();
         store.dispatch(geolocationActions.setCountryCode('CZ'));
 
-        renderUseGeolocationCountryCode(store);
+        await renderUseGeolocationCountryCode(store);
 
         expect(selectCountryCode(store.getState())).toBe('CZ');
     });

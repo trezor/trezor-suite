@@ -5,11 +5,11 @@ import { SellFromAccountCard, type SellFromAccountCardProps } from './SellFromAc
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 describe('SellFromAccountCard', () => {
-    const renderSellFromAccountCard = (
+    const renderSellFromAccountCard = async (
         props: Partial<SellFromAccountCardProps> = {},
         tradingAccountKey = eth1NormalAccount.key,
     ) =>
-        renderWithTradingProvider(<SellFromAccountCard {...props} />, {
+        await renderWithTradingProvider(<SellFromAccountCard {...props} />, {
             tradeType: 'sell',
             overrides: {
                 wallet: {
@@ -18,8 +18,8 @@ describe('SellFromAccountCard', () => {
             },
         });
 
-    it('should render TradeSideCard', () => {
-        const { getByText } = renderSellFromAccountCard({
+    it('should render TradeSideCard', async () => {
+        const { getByText } = await renderSellFromAccountCard({
             quote: banxaCreditCardSellQuote,
         });
 

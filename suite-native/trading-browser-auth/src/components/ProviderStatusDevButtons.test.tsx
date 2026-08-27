@@ -18,8 +18,8 @@ import { ProviderStatusDevButtons } from './ProviderStatusDevButtons';
 describe('ProviderStatusDevButtons', () => {
     let store: TestStore;
 
-    const renderProviderStatusDevButtons = () =>
-        renderWithStoreProvider(<ProviderStatusDevButtons />, { store });
+    const renderProviderStatusDevButtons = async () =>
+        await renderWithStoreProvider(<ProviderStatusDevButtons />, { store });
 
     beforeEach(() => {
         store = createLightStore({
@@ -34,15 +34,15 @@ describe('ProviderStatusDevButtons', () => {
         });
     });
 
-    it('should display nothing without debug mode', () => {
-        const { toJSON } = renderProviderStatusDevButtons();
+    it('should display nothing without debug mode', async () => {
+        const { toJSON } = await renderProviderStatusDevButtons();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('should display current status', () => {
+    it('should display current status', async () => {
         store.dispatch(toggleFeatureFlag({ featureFlag: FeatureFlag.IsTradingDebugEnabled }));
-        const { getByText } = renderProviderStatusDevButtons();
+        const { getByText } = await renderProviderStatusDevButtons();
 
         expect(getByText('Current status:')).toBeOnTheScreen();
         expect(getByText('inactive')).toBeOnTheScreen();
@@ -50,7 +50,7 @@ describe('ProviderStatusDevButtons', () => {
 
     it('should change state on buttons press', async () => {
         store.dispatch(toggleFeatureFlag({ featureFlag: FeatureFlag.IsTradingDebugEnabled }));
-        const { getByText } = renderProviderStatusDevButtons();
+        const { getByText } = await renderProviderStatusDevButtons();
 
         await userEvent.press(getByText('restart flow'));
         expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');

@@ -40,20 +40,20 @@ describe('TradingLocationSettings', () => {
             },
         });
 
-    const renderTradingLocationSettings = (props: TradingLocationSettingsProps) =>
-        renderWithStoreProvider(<TradingLocationSettings {...props} />, { store });
+    const renderTradingLocationSettings = async (props: TradingLocationSettingsProps) =>
+        await renderWithStoreProvider(<TradingLocationSettings {...props} />, { store });
 
     beforeEach(() => {
         store = createStore();
     });
 
-    afterEach(() => {
+    afterEach(async () => {
         // make sure component is unmounted (FlashList otherwise might try to do some magic)
-        screen.unmount();
+        await screen.unmount();
     });
 
-    it('should render all components', () => {
-        const { getByText } = renderTradingLocationSettings({
+    it('should render all components', async () => {
+        const { getByText } = await renderTradingLocationSettings({
             context: 'settings',
             children: <Text>Test Children</Text>,
         });
@@ -68,14 +68,14 @@ describe('TradingLocationSettings', () => {
         expect(getByText('POL')).toBeOnTheScreen();
     });
 
-    it('should show trading as unavailable when required subdivision is missing', () => {
+    it('should show trading as unavailable when required subdivision is missing', async () => {
         store = createStore({
             country: 'US',
             countrySubdivision: undefined,
             wasOnboardingVisited: false,
         });
 
-        const { getByText } = renderTradingLocationSettings({
+        const { getByText } = await renderTradingLocationSettings({
             context: 'settings',
             children: <Text>Test Children</Text>,
         });

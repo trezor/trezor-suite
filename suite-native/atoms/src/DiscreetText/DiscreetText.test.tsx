@@ -1,5 +1,3 @@
-import { View } from 'react-native';
-
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { Box as MockBox } from '../Box';
@@ -17,17 +15,17 @@ jest.mock('./DiscreetCanvas', () => ({
 }));
 
 describe('DiscreetText', () => {
-    it('should render the canvas without reacting to text layout changes', () => {
-        const { getByTestId, UNSAFE_getAllByType } = renderWithBasicProvider(
+    it('should render the canvas without reacting to text layout changes', async () => {
+        const { container, getByTestId } = await renderWithBasicProvider(
             <DiscreetText isForcedDiscreetMode>Hidden amount</DiscreetText>,
         );
 
-        const hasLayoutHandler = UNSAFE_getAllByType(View).some(
+        const hasLayoutHandler = container.queryAll(
             view => typeof view.props.onLayout === 'function',
-        );
+        ).length;
 
         expect(getByTestId('discreet-text')).toBeOnTheScreen();
         expect(getByTestId('discreet-canvas')).toBeOnTheScreen();
-        expect(hasLayoutHandler).toBe(false);
+        expect(hasLayoutHandler).toBe(0);
     });
 });
