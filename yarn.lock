@@ -11142,6 +11142,7 @@ __metadata:
   resolution: "@suite-common/sentry@workspace:suite-common/sentry"
   dependencies:
     "@sentry/core": "npm:10.69.0"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

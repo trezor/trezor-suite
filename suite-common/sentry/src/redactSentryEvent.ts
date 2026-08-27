@@ -1,4 +1,5 @@
 import { ALLOW_REPORT_TAG, MAX_EVENTS_INTERVAL_LENGTH, MAX_EVENTS_PER_INTERVAL } from './constants';
+import { redactSensitiveEventData } from './redactSensitiveEventData';
 import { type ChainableBeforeSend } from './types';
 
 let eventCountThisSession = 0;
@@ -41,5 +42,5 @@ export const redactSentryEvent: ChainableBeforeSend = event => {
     }
 
     // whole event is sent after user confirms analytics (or a past decision is loaded)
-    return event;
+    return redactSensitiveEventData(event);
 };
