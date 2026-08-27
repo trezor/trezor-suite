@@ -108,6 +108,20 @@ typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMe
         {
             filename: typeAwareTestFilename,
             code: `
+                    type RunDeps = {
+                        logger: { log: () => void };
+                        storage: { save: () => void };
+                    };
+
+                    const run = (deps: RunDeps) => {
+                        deps.logger.log();
+                        deps.storage.save();
+                    };
+                `,
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
                     type LoggerDeps = { logger: { log: () => void } };
                     type StorageDeps = { storage: { save: () => void } };
                     type UnrelatedContract = LoggerDeps & StorageDeps;
@@ -294,6 +308,24 @@ typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMe
         {
             filename: typeAwareTestFilename,
             code: `
+                    type LoggerDep = { logger: { log: () => void } };
+                    type StorageDep = { storage: { save: () => void } };
+                    type RunDeps = { services: LoggerDep & StorageDep };
+
+                    declare const deps: RunDeps;
+                    const { logger } = deps.services;
+                    logger.log();
+                `,
+            errors: [
+                {
+                    messageId: 'unusedIntersectionMember',
+                    data: { memberName: 'StorageDep', typeName: 'RunDeps' },
+                },
+            ],
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
                     type AccountsRootState = { accounts: { selected: string } };
                     type SettingsRootState = { settings: { enabled: boolean } };
                     type RunState = AccountsRootState & SettingsRootState;
@@ -474,6 +506,73 @@ typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMe
                     data: { memberName: 'StorageDep', typeName: 'RunDeps' },
                 },
             ],
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type RunDeps = {
+                        logger: { log: () => void };
+                        storage: { save: () => void };
+                    };
+
+                    const run = (deps: RunDeps) => deps.logger.log();
+                `,
+            errors: [
+                {
+                    messageId: 'unusedContractMember',
+                    data: { memberName: 'storage', typeName: 'RunDeps' },
+                },
+            ],
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type RunDeps = {
+                        services: {
+                            logger: { log: () => void };
+                            storage: { save: () => void };
+                        };
+                    };
+
+                    const run = ({ services: { logger } }: RunDeps) => logger.log();
+                `,
+            errors: [
+                {
+                    messageId: 'unusedContractMember',
+                    data: { memberName: 'storage', typeName: 'RunDeps' },
+                },
+            ],
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type LoggerDeps = { logger: { log: () => void } };
+                    type RunDeps = {
+                        logger: { log: () => void };
+                        storage: { save: () => void };
+                    };
+
+                    declare const useLogger: (deps: LoggerDeps) => void;
+                    const run = (deps: RunDeps) => useLogger(deps);
+                `,
+            errors: [
+                {
+                    messageId: 'unusedContractMember',
+                    data: { memberName: 'storage', typeName: 'RunDeps' },
+                },
+            ],
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type LoggerDeps = { logger: { log: () => void } };
+                    type RunDeps = LoggerDeps & {
+                        storage: { save: () => void };
+                    };
+
+                    const run = (deps: RunDeps) => deps.logger.log();
+                `,
+            errors: [{ messageId: 'unusedIntersectionMember' }],
         },
     ],
 } as Parameters<typeof typeAwareRuleTester.run>[2]);
