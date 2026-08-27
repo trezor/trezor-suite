@@ -2515,10 +2515,6 @@ export const messages = {
             },
         },
         tron: {
-            accountActivationFee: 'Activation fee',
-            accountActivationFeeTitle: 'Activation fee',
-            accountActivationFeeDescription:
-                'New TRON accounts require a one-time 1 {networkDisplaySymbol} network fee to activate.',
             note: {
                 label: 'Note',
                 addButton: 'Add note',
