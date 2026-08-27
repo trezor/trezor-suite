@@ -1,17 +1,20 @@
-import { messages as definedMessages } from '@suite/intl';
+type GetEffectiveIntlMessagesParams = {
+    localizedMessages: Record<string, string>;
+    definedMessageIds: readonly string[];
+    showTranslationKeys: boolean;
+};
 
-export const getEffectiveIntlMessages = (
-    localizedMessages: Record<string, string>,
-    showTranslationKeys: boolean,
-): Record<string, string> => {
+export const getEffectiveIntlMessages = ({
+    localizedMessages,
+    definedMessageIds,
+    showTranslationKeys,
+}: GetEffectiveIntlMessagesParams): Record<string, string> => {
     if (!showTranslationKeys) {
         return localizedMessages;
     }
 
-    // Ctrl+F12 remaps catalog values to their ids. Downloaded JSON files lag behind
-    // messages.ts until the next Crowdin sync, so union both sources or new keys
-    // would keep showing defaultMessage instead of the id.
-    const ids = new Set([...Object.keys(localizedMessages), ...Object.keys(definedMessages)]);
-
-    return Object.fromEntries([...ids].map(id => [id, id]));
+    // Ctrl+F12 remaps catalog values to their ids. The file `messages.ts` is the source of truth
+    // for keys used within codebase, while downloaded JSON files lag behind until the next Crowdin sync,
+    // so use `messages.ts` keys, otherwise it would keep showing defaultMessage instead of the id.
+    return Object.fromEntries(definedMessageIds.map(id => [id, id]));
 };
