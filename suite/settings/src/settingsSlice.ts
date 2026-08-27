@@ -69,7 +69,7 @@ export type SuiteSettingsRootState = {
     suiteSettings: SuiteSettingsState;
 };
 
-type SuiteSettingsSliceDeps = ActionTypesDep<'storageLoad'> &
+export type SuiteSettingsSliceDeps = ActionTypesDep<'storageLoad'> &
     ReducersDep<'storageLoadSuiteSettings'>;
 
 export const suiteSettingsInitialState: SuiteSettingsState = {

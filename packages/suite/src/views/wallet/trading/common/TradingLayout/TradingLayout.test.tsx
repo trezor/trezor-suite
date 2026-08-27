@@ -2,13 +2,13 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
 
 import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingLayout } from './TradingLayout';
-import { extraDependenciesDesktopMock } from '../../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
@@ -39,6 +39,7 @@ const buildState = (): AppState => ({
 
 const mockStore = (preloadedState: AppState) =>
     configureMockStore({
+        extra: undefined,
         preloadedState,
     });
 
@@ -48,7 +49,7 @@ describe('TradingLayout', () => {
 
         renderWithProviders(
             store,
-            extraDependenciesDesktopMock.services,
+            { analytics: mockDesktopAnalytics() },
             <TradingLayout>
                 <div data-testid="trading-content" />
             </TradingLayout>,

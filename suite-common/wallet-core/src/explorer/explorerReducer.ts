@@ -42,7 +42,8 @@ const normalizeExplorer = (explorer: Explorer) => {
     return explorer;
 };
 
-type ExplorerReducerDeps = ActionTypesDep<'storageLoad'> & ReducersDep<'storageLoadExplorer'>;
+export type ExplorerReducerDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadExplorer'>;
 
 export const prepareExplorerReducer = createReducerWithExtraDeps(
     explorerInitialState,

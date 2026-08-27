@@ -40,6 +40,7 @@ const renderSellFlow = ({
     isAmountEmpty = false,
 }: Props = {}) => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             wallet: { trading: { sell: { quotes: [] } } },
         },

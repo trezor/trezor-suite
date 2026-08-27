@@ -1,3 +1,4 @@
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -29,6 +30,7 @@ const getInitialState = (custom?: any): any => ({
 const initStore = (custom?: any) => {
     const preloadedState = getInitialState(custom);
     const store = configureMockStore({
+        extra: { services: { analytics: mockDesktopAnalytics() } },
         preloadedState,
         reducer: (state: any, action: any) => ({
             ...state,

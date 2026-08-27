@@ -1,19 +1,42 @@
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { debugInitialState } from '@suite/debug';
 import { prepareDesktopDeviceReducer } from '@suite/device';
 import { lockDevice } from '@suite/locks';
 import { suiteSettingsInitialState } from '@suite/settings';
-import { connectInitThunk } from '@suite-common/connect-init';
+import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
+import {
+    mockConnectInitHooks,
+    mockConnectInitSettings,
+    mockCreateTransports,
+    mockGetDebugSettings,
+    mockGetThpSettings,
+} from '@suite-common/connect-init/mocks';
 import { deviceReducerInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
+import { noopCreateLogger } from '@trezor/connect-common';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
-
 const deviceReducer = prepareDesktopDeviceReducer(extraDependencies);
+
+const extra: ConnectInitThunkDeps = {
+    actions: { lockDevice },
+    services: {
+        analytics: mockDesktopAnalytics(),
+        connectInitHooks: mockConnectInitHooks(),
+        connectInitSettings: mockConnectInitSettings(),
+        createLogger: noopCreateLogger,
+        createTransports: mockCreateTransports(),
+        getAllowPrerelease: mockGetAllowPrerelease(),
+        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+        getDebugSettings: mockGetDebugSettings(),
+        getThpSettings: mockGetThpSettings(),
+    },
+};
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
@@ -42,7 +65,7 @@ const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesSt
 type State = ReturnType<typeof getInitialState>;
 const mockStore = (preloadedState: State) =>
     configureMockStore({
-        extra: extraDependenciesDesktopMock,
+        extra,
         reducer: (state = preloadedState, action) => ({
             ...state,
             suite: suiteReducer(state.suite, action),

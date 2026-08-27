@@ -3,7 +3,8 @@ import React from 'react';
 import { useServices } from '@suite-common/dependency-injection';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { type TestStore } from '@suite-native/test-utils-store';
 import { getBuyTrade } from '@suite-native/trading-fixtures';
 
@@ -52,6 +53,9 @@ const useWatchTradeWithReportSpy = (props: {
 };
 
 const btc1AccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(),
+};
 
 describe('useWatchTrade', () => {
     beforeEach(() => {
@@ -106,6 +110,7 @@ describe('useWatchTrade', () => {
     ) =>
         await renderHookWithTradingProvider(() => useWatchTradeWithReportSpy(props), {
             store,
+            services,
         });
 
     describe('Trade Watching Behavior', () => {

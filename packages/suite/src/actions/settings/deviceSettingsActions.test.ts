@@ -1,6 +1,8 @@
+import { openModal } from '@suite/modal';
 import { prepareSuiteSettingsReducer, suiteSettingsInitialState } from '@suite/settings';
+import { mockForgetBluetoothDevice } from '@suite-common/bluetooth/mocks';
 import { deviceActions } from '@suite-common/device';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { mockReportSecurityCheck, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, filterThunkActionTypes } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
@@ -12,8 +14,6 @@ import fixtures, {
     type DeviceSettingsFixtureState,
     deviceReducer,
 } from './__fixtures__/deviceSettingsActions';
-import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
-
 const DEVICE = mockSuiteDevice({ path: '1', connected: true });
 const suiteSettingsReducer = prepareSuiteSettingsReducer(extraDependencies);
 
@@ -41,7 +41,11 @@ const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
 
 const mockStore = (preloadedState: DeviceSettingsFixtureState) =>
     configureMockStore({
-        extra: extraDependenciesDesktopMock,
+        extra: {
+            actions: { openModal },
+            services: { reportSecurityCheck: mockReportSecurityCheck() },
+            thunks: { forgetBluetoothDevice: mockForgetBluetoothDevice() },
+        },
         reducer: (state = preloadedState, action) => ({
             ...state,
             suite: suiteReducer(state.suite, action),

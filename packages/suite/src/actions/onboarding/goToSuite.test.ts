@@ -1,12 +1,35 @@
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type SuiteRouterHistoryDep } from '@suite/router';
+import { asGetter } from '@suite-common/dependency-injection';
+import { type WithServices } from '@suite-common/redux-utils';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
+import { type StartDiscoveryThunkDeps } from '@suite-common/wallet-core';
 import { type DeepPartial } from '@trezor/type-utils';
 
 import { goToSuite } from 'src/actions/onboarding/onboardingActions';
 import { type AppState } from 'src/types/suite';
 
 const device = mockSuiteDevice();
+
+type GoToSuiteTestDeps = StartDiscoveryThunkDeps &
+    WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep>;
+
+const createExtra = (report: jest.Mock): GoToSuiteTestDeps => ({
+    services: {
+        analytics: mockDesktopAnalytics(report),
+        getTradedAccountKeys: asGetter(() => []),
+        suiteRouterHistory: {
+            getLocation: jest.fn(),
+            navigate: jest.fn(),
+            listen: jest.fn(() => jest.fn()),
+        },
+    },
+    thunks: {
+        fetchAndSaveMetadata: jest.fn(() => () => undefined),
+    },
+});
 
 const setup = () => {
     const report = jest.fn();
@@ -21,7 +44,7 @@ const setup = () => {
     };
 
     const store = configureMockStore({
-        extra: { services: { analytics: mockDesktopAnalytics(report) } },
+        extra: createExtra(report),
         preloadedState,
     });
 

@@ -1,13 +1,17 @@
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import { type FlagsState, flagsInitialState, prepareFlagsReducer } from './flagsSlice';
 import { initialRunCompleted } from './flagsThunks';
 
-const flagsReducer = prepareFlagsReducer(extraDependenciesCommonMock);
+const flagsReducer = prepareFlagsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadFlags: mockReducer() },
+});
 
 const initStore = (flags?: Partial<FlagsState>) =>
     configureMockStore({
-        extra: extraDependenciesCommonMock,
+        extra: undefined,
         reducer: { flags: flagsReducer },
         preloadedState: { flags: { ...flagsInitialState, ...flags } },
     });

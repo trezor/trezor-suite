@@ -9,7 +9,7 @@ import {
     composeCancelTransactionThunk,
 } from './composeCancelTransactionThunk';
 
-const initStore = () => configureMockStore({});
+const initStore = () => configureMockStore({ extra: undefined });
 
 const FIRST_ACCOUNT_CHANGE_ADDRESS = 'bcrt1qte33uyyfzrdrm9nqk0uwlq9dqr6ezu2gurhree';
 

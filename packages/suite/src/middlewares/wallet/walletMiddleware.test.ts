@@ -1,10 +1,8 @@
 import { type SelectedAccountState, selectedAccountReducer } from '@suite/account';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type RouterState } from '@suite/router';
-import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-    testMocks,
-} from '@suite-common/test-utils';
+import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
+import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import {
     type SendState,
     accountsRefreshTimeReducer,
@@ -14,7 +12,7 @@ import {
     prepareSendFormReducer,
 } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
-import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
@@ -92,10 +90,14 @@ type State = ReturnType<typeof getInitialState>;
 
 const mockStore = (preloadedState: State) =>
     configureMockStore({
-        middleware: [
-            walletMiddleware,
-            prepareBlockchainMiddleware(() => extraDependenciesCommonMock),
-        ],
+        extra: {
+            services: {
+                analytics: mockDesktopAnalytics(),
+                getIsWindowVisible: mockGetIsWindowVisible(),
+                getTradedAccountKeys: mockGetTradedAccountKeys(),
+            },
+        },
+        middleware: [walletMiddleware, prepareBlockchainMiddleware(() => ({}))],
         // the synced action carries a live timer handle
         serializableCheck: { ignoredActions: [blockchainActions.synced.type] },
         reducer: (state = preloadedState, action) => ({

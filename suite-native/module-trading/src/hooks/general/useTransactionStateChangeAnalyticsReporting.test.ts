@@ -2,7 +2,8 @@ import React from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type TradingTransaction } from '@suite-common/trading';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { renderHook, renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade } from '@suite-native/trading-fixtures';
 
@@ -10,6 +11,10 @@ import { useTransactionStateChangeAnalyticsReporting } from './useTransactionSta
 
 type Props = { trades: TradingTransaction[] };
 type ReportSpy = jest.SpyInstance;
+
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(),
+};
 
 const useHookWithReportSpy = (trades: TradingTransaction[]) => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -32,7 +37,7 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
     const setup = async (initialTrades: TradingTransaction[]) => {
         const hook = await renderHookWithBasicProvider(
             ({ trades }: Props) => useHookWithReportSpy(trades),
-            { initialProps: { trades: initialTrades } },
+            { initialProps: { trades: initialTrades }, services },
         );
 
         const spy = hook.result.current;

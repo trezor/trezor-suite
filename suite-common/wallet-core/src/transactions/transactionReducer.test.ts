@@ -1,11 +1,14 @@
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 
 import { accounts, transactions } from './__fixtures__/transactionConstants';
 import { transactionsActions } from './transactionsActions';
 import { prepareTransactionsReducer, transactionsInitialState } from './transactionsReducer';
 import { fetchTransactionsPageThunk } from './transactionsThunks';
 
-const reducer = prepareTransactionsReducer(extraDependenciesCommonMock);
+const reducer = prepareTransactionsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadTransactions: mockReducer() },
+});
 
 describe('transaction reducer', () => {
     let testAccounts = [...accounts];

@@ -2,7 +2,9 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { mockOpenModal } from '@suite-common/suite-types/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import {
     confirmAddressOnDeviceThunk,
     prepareWalletSettingsReducer,
@@ -16,11 +18,16 @@ import { prepareTradingReducer } from '../../reducers/tradingReducer';
 
 import { tradingThunks } from './index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
-const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const walletSettingsReducer = prepareWalletSettingsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadWalletSettings: mockReducer() },
+});
 const verifyAddressThunkDeps = {
     actions: {
-        openModal: extraDependenciesCommonMock.actions.openModal,
+        openModal: mockOpenModal(),
     },
 };
 
@@ -172,12 +179,10 @@ describe('verifyAddressThunk', () => {
             }),
         );
 
-        const actionModal = store
-            .getActions()
-            .find(action => action.type === extraDependenciesCommonMock.actions.openModal.type);
+        const actionModal = store.getActions().find(action => action.type === mockOpenModal().type);
 
         expect(actionModal).toEqual({
-            type: extraDependenciesCommonMock.actions.openModal.type,
+            type: mockOpenModal().type,
             payload: {
                 type: 'unverified-address-proceed',
                 value: addressData?.address,
@@ -207,12 +212,10 @@ describe('verifyAddressThunk', () => {
             }),
         );
 
-        const actionModal = store
-            .getActions()
-            .find(action => action.type === extraDependenciesCommonMock.actions.openModal.type);
+        const actionModal = store.getActions().find(action => action.type === mockOpenModal().type);
 
         expect(actionModal).toEqual({
-            type: extraDependenciesCommonMock.actions.openModal.type,
+            type: mockOpenModal().type,
             payload: {
                 type: 'unverified-address-proceed',
                 value: addressData?.address,

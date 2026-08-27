@@ -1,6 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
@@ -20,10 +22,12 @@ import { OnboardingButtons, type OnboardingButtonsProps } from './OnboardingButt
 
 describe('OnboardingButtons', () => {
     let store: TestStore;
+    const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 
     const renderOnboardingButtons = async (props: OnboardingButtonsProps) =>
         await renderWithStoreProvider(<OnboardingButtons {...props} />, {
             wrapper: LocationForm,
+            services,
             store,
         });
 

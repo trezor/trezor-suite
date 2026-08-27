@@ -1,11 +1,9 @@
 import { type CryptoId, type InfoResponse } from 'invity-api';
 
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { accounts } from './account';
-// @ts-expect-error: indexing with noUncheckedIndexedAccess
-const firstAccount: (typeof accounts)[number] = accounts[0];
 import { buyThunks } from '../../thunks/buy';
 import { exchangeThunks } from '../../thunks/exchange';
 import { type TradingTransactionBuy, type TradingTransactionExchange } from '../../types';
@@ -14,6 +12,10 @@ import {
     initialState,
     tradingActions,
 } from '../tradingCommonReducer';
+
+const storageLoadActionType = mockActionType('storageLoad');
+// @ts-expect-error: indexing with noUncheckedIndexedAccess
+const firstAccount: (typeof accounts)[number] = accounts[0];
 
 const tradeBuy: TradingTransactionBuy = {
     date: 'ddd',
@@ -108,7 +110,7 @@ export const tradingFixtures = [
         initialState,
         actions: [
             {
-                type: extraDependenciesCommonMock.actionTypes.storageLoad,
+                type: storageLoadActionType,
                 payload: {
                     tradingTrades: [tradeBuy],
                 },
@@ -127,7 +129,7 @@ export const tradingFixtures = [
         },
         actions: [
             {
-                type: extraDependenciesCommonMock.actionTypes.storageLoad,
+                type: storageLoadActionType,
                 payload: {
                     tradingTrades: undefined,
                 },

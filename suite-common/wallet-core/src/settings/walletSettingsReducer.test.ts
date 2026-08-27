@@ -1,12 +1,13 @@
 import { deviceInitialState } from '@suite-common/device';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type SuspiciousTransactionsFilter } from '@suite-common/wallet-types';
 import { FirmwareType } from '@trezor/device-utils';
 
 import * as walletSettingsActions from './walletSettingsActions';
 import {
+    type WalletSettingsReducerDeps,
     initialWalletSettingsState,
     prepareWalletSettingsReducer,
     selectIsHideSuspiciousTransactions,
@@ -20,7 +21,11 @@ const opSymbol = asNetworkSymbol('op');
 const ethSymbol = asNetworkSymbol('eth');
 const btcSymbol = asNetworkSymbol('btc');
 
-const reducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
+const walletSettingsReducerDeps: WalletSettingsReducerDeps = {
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadWalletSettings: mockReducer() },
+};
+const reducer = prepareWalletSettingsReducer(walletSettingsReducerDeps);
 
 describe('settings reducer', () => {
     it('test initial state', () => {
@@ -34,7 +39,7 @@ describe('settings reducer', () => {
     it('STORAGE.LOAD', () => {
         expect(
             reducer(undefined, {
-                type: extraDependenciesCommonMock.actionTypes.storageLoad,
+                type: walletSettingsReducerDeps.actionTypes.storageLoad,
                 payload: {
                     walletSettings: initialState,
                 },

@@ -1,10 +1,22 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { tradingSellActions, tradingThunks } from '@suite-common/trading';
+import { mockGetSelectedAccount, mockGetTradingEnvironment } from '@suite-common/trading/mocks';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
-import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { localeReducer } from '@suite-native/intl';
+import {
+    type TestStore,
+    act,
+    createStaticReducer,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import { tradingSlice } from '@suite-native/trading-state';
 
 import { useSellData } from './useSellData';
-import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -16,26 +28,46 @@ const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount2
 const btc3Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount3') });
 
 describe('useSellData', () => {
+    const extra = {
+        services: {
+            getSelectedAccount: mockGetSelectedAccount(),
+            getTradingEnvironment: mockGetTradingEnvironment(),
+        },
+    };
+
+    const accounts = [
+        btc1Account,
+        btc2Account,
+        { ...btc3Account, descriptor: asAccountDescriptor('') },
+    ];
+
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            accounts: createStaticReducer(accounts),
+            trading: tradingSlice.prepareReducer({
+                actionTypes: { storageLoad: mockActionType('storageLoad') },
+            }),
+        }),
+    } as const;
+
     const getInitializedStore = (tradingAccountKey: AccountKey | undefined) => {
         const tradingState = getInitializedTradingState('sell');
         tradingState.sell!.tradingAccountKey = tradingAccountKey;
 
-        return createTradingLightStore({
-            tradeType: 'sell',
-            overrides: {
+        return configureMockStore({
+            extra,
+            reducer,
+            preloadedState: {
                 wallet: {
                     trading: tradingState,
-                    accounts: [
-                        btc1Account,
-                        btc2Account,
-                        { ...btc3Account, descriptor: asAccountDescriptor('') },
-                    ],
                 },
             },
         });
     };
 
-    const getDefaultStore = () => createTradingLightStore({ tradeType: 'sell' });
+    const getDefaultStore = () => configureMockStore({ extra, reducer });
 
     const renderUseSellData = async (
         reloadRequestOrdinalInitialValue: number = 0,

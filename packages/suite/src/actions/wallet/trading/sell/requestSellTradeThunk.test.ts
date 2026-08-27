@@ -69,7 +69,7 @@ const QUOTE: SellFiatTrade = {
 
 const buildStore = (accounts: Account[] = [ACCOUNT]) =>
     configureMockStore({
-        extra: {},
+        extra: undefined,
         preloadedState: {
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
             tokenDefinitions: {},

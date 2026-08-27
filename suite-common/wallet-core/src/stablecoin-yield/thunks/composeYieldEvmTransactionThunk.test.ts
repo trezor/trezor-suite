@@ -52,6 +52,7 @@ const buildFeeInfo = (levels: FeeInfo['levels']): FeeInfo => ({
 
 const initStore = (feeInfo = buildFeeInfo([normalLevel])) =>
     configureMockStore({
+        extra: undefined,
         reducer: combineReducers({
             device: () => deviceInitialState,
             wallet: combineReducers({

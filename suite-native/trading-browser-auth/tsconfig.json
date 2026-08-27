@@ -23,8 +23,9 @@
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {
-            "path": "../../suite-common/test-utils"
+            "path": "../../suite-common/redux-utils"
         },
+        { "path": "../analytics" },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },

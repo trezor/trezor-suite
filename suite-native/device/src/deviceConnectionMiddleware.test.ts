@@ -41,6 +41,7 @@ jest.mock('@suite-native/navigation', () => {
 
 const createMockStoreAndDispatch = (initialState: any, action: UnknownAction) => {
     const mockStore = configureMockStore({
+        extra: undefined,
         middleware: [deviceConnectionMiddleware.middleware],
         preloadedState: initialState,
     });

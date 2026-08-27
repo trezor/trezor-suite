@@ -73,6 +73,7 @@ const ethFeeInfo: FeeInfo = {
 
 const initStore = () =>
     configureMockStore({
+        extra: undefined,
         reducer: combineReducers({
             device: () => deviceInitialState,
             wallet: combineReducers({

@@ -1,10 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-    renderHookWithStoreProvider,
-} from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { getIntegerInRangeFromString } from '@trezor/utils';
 
 jest.mock('@trezor/utils', () => ({
@@ -19,7 +16,9 @@ import { messageSystemInitialState, prepareMessageSystemReducer } from './messag
 import { ExperimentId, type MessageSystemState } from './messageSystemTypes';
 import { useExperiment } from './useExperiment';
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const createStore = (
     overrides: {
@@ -32,7 +31,7 @@ const createStore = (
     const instanceId = 'instanceId' in overrides ? overrides.instanceId : 'test-instance-id';
 
     return configureMockStore({
-        extra: {},
+        extra: undefined,
         reducer: combineReducers({
             messageSystem: messageSystemReducer,
             analytics: (state = { instanceId }) => state,

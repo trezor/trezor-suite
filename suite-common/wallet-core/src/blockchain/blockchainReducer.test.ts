@@ -1,11 +1,14 @@
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type BackendSettings } from '@suite-common/wallet-types';
 
 import { type SetBackendPayload, blockchainActions } from './blockchainActions';
 import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
 
-const blockchainReducer = prepareBlockchainReducer(extraDependenciesCommonMock);
+const blockchainReducer = prepareBlockchainReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadBlockchain: mockReducer() },
+});
 const btcSymbol = asNetworkSymbol('btc');
 
 const urls = ['http://a, http://b, http://c'];

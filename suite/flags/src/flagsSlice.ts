@@ -51,7 +51,7 @@ export type BooleanFlagKey = {
     [Key in keyof FlagsState]: FlagsState[Key] extends boolean ? Key : never;
 }[keyof FlagsState];
 
-type FlagsSliceDeps = ActionTypesDep<'storageLoad'> & ReducersDep<'storageLoadFlags'>;
+export type FlagsSliceDeps = ActionTypesDep<'storageLoad'> & ReducersDep<'storageLoadFlags'>;
 
 export const flagsInitialState: FlagsState = {
     initialRun: true,

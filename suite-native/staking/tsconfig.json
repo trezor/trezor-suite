@@ -47,6 +47,7 @@
         },
         {
             "path": "../../suite-common/test-utils"
-        }
+        },
+        { "path": "../analytics" }
     ]
 }

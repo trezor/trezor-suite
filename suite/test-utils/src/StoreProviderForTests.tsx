@@ -11,12 +11,14 @@ export type { TestStore } from './initStoreForTests';
 type ReduxProviderProps = {
     preloadedState?: PreloadedState;
     injectedStore?: TestStore;
+    services?: object;
 } & PropsWithChildren;
 
 export const StoreProviderForTests = ({
     children,
     injectedStore,
     preloadedState = {},
+    services,
 }: ReduxProviderProps) => {
     const store = useMemo(() => {
         if (injectedStore) {
@@ -30,7 +32,7 @@ export const StoreProviderForTests = ({
 
     return (
         <Provider store={store}>
-            <BasicProviderForTests>{children}</BasicProviderForTests>
+            <BasicProviderForTests services={services}>{children}</BasicProviderForTests>
         </Provider>
     );
 };

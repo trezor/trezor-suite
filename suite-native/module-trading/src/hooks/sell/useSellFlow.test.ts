@@ -3,6 +3,8 @@ import type { SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 import { tradingSellActions } from '@suite-common/trading';
 import type { sellThunks } from '@suite-common/trading';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     banxaCreditCardSellQuote,
@@ -65,12 +67,15 @@ jest.mock('../general/useTradingTransaction', () => ({
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const btc1AccountKey = btc1Account.key;
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(),
+};
 
 describe('useSellFlow', () => {
     let store: TestStore;
 
     const renderUseSellFlow = async () =>
-        await renderHookWithStoreProvider(() => useSellFlow(), { store });
+        await renderHookWithStoreProvider(() => useSellFlow(), { store, services });
 
     beforeEach(() => {
         store = createTradingLightStore({ tradeType: 'sell' });

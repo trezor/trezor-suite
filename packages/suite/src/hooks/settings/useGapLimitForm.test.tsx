@@ -10,6 +10,7 @@ const SYMBOL = asNetworkSymbol('btc');
 
 const renderGapLimitForm = (savedGapLimit?: number) => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             wallet: {
                 blockchain: {

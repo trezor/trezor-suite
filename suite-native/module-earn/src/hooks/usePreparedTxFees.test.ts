@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { formDraftReducer } from '@suite-common/wallet-core';
 import {
     type FeesState,
@@ -99,7 +99,10 @@ const createTestStore = () =>
                 }),
                 fees: createStaticReducer(FEES_STATE),
                 formDrafts: formDraftReducer,
-                send: prepareSendFormReducer(extraDependenciesCommonMock),
+                send: prepareSendFormReducer({
+                    actionTypes: { storageLoad: mockActionType('storageLoad') },
+                    reducers: { storageLoadFormDrafts: mockReducer() },
+                }),
             }),
         },
     });

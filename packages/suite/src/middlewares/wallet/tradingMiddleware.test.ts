@@ -10,7 +10,8 @@ import {
     routerLocationChange,
     routerReducer,
 } from '@suite/router';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import {
     type TradingState,
     initialState,
@@ -20,6 +21,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
+import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import { type AccountKey, type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
@@ -41,8 +43,14 @@ jest.mock('@suite-common/trading', () => {
     };
 });
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
-const accountsReducer = prepareAccountsReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const accountsReducer = prepareAccountsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    actions: { setAccountAddMetadata: mockSetAccountAddMetadata() },
+    reducers: { storageLoadAccounts: mockReducer() },
+});
 const accounts = [ACCOUNT];
 
 interface Args {
@@ -97,7 +105,7 @@ const initStore = (state: State) => {
     const { trading, selectedAccount } = state.wallet;
 
     const store = configureMockStore({
-        extra: {},
+        extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: tradingReducer,

@@ -17,6 +17,7 @@ import {
 
 const getStore = (overrides: Partial<typeof locksInitialState> = {}) =>
     configureMockStore({
+        extra: undefined,
         reducer: combineReducers({ locks: locksReducer }),
         preloadedState: { locks: { ...locksInitialState, ...overrides } },
     });

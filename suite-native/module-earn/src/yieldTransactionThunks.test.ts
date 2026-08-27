@@ -120,6 +120,7 @@ const selectSelectedDeviceMock = selectSelectedDevice as jest.Mock;
 
 const buildStore = () =>
     configureMockStore({
+        extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({
                 stablecoinYield: stablecoinYieldReducer,

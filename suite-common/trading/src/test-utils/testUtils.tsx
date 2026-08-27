@@ -195,6 +195,7 @@ export const renderHookWithTradingStore = <Result, Props = unknown>(
     { preloadedState, wrapper: Wrapper, ...options }: RenderHookWithTradingStoreOptions<Props> = {},
 ) => {
     const store = configureMockStore({
+        extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: tradingCommonReducer,

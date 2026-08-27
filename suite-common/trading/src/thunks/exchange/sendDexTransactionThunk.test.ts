@@ -2,7 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
@@ -27,7 +28,9 @@ jest.mock('./confirmExchangeTradeThunk', () => {
     };
 });
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 describe('sendDexTransactionThunk', () => {
     afterEach(() => {
@@ -58,7 +61,7 @@ describe('sendDexTransactionThunk', () => {
 
     const getMocks = (initialExchangeState?: Partial<TradingExchangeState>) => {
         const store = configureMockStore({
-            extra: {},
+            extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,

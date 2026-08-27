@@ -5,20 +5,43 @@ import {
     prepareBluetoothReducerCreator,
 } from '@suite-common/bluetooth';
 import { prepareDeviceReducer } from '@suite-common/device';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { prepareThpReducer } from '@suite-common/thp';
 
 import { forgetPersistentDataPreloadedStateFixture } from './__fixtures__/forgetPersistentDataPreloadedState';
-import { forgetDevicePersistentDataThunk } from './deviceThunks';
+import {
+    type ForgetDevicePersistentDataThunkDeps,
+    forgetDevicePersistentDataThunk,
+} from './deviceThunks';
 
-const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
-const bluetoothReducer = prepareBluetoothReducerCreator<BluetoothDeviceCommon>()(
-    extraDependenciesCommonMock,
-);
-const thpReducer = prepareThpReducer(extraDependenciesCommonMock);
+const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
+const bluetoothReducer = prepareBluetoothReducerCreator<BluetoothDeviceCommon>()({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const thpReducer = prepareThpReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const extra: ForgetDevicePersistentDataThunkDeps = {
+    thunks: {
+        forgetBluetoothDevice: jest.fn(() => () => undefined),
+    },
+};
 
 const initStore = () =>
     configureMockStore({
+        extra,
         reducer: combineReducers({
             bluetooth: bluetoothReducer,
             device: deviceReducer,

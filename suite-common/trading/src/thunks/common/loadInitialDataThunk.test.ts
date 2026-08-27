@@ -1,8 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
+import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import { type Account, type SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import { loadInitialDataThunk } from './loadInitialDataThunk';
@@ -26,8 +28,14 @@ import { sellThunks } from '../sell';
 jest.mock('../../tradeApi');
 tradeApi.setServersEnvironment = () => {};
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
-const mockedAccountReducer = prepareAccountsReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const mockedAccountReducer = prepareAccountsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    actions: { setAccountAddMetadata: mockSetAccountAddMetadata() },
+    reducers: { storageLoadAccounts: mockReducer() },
+});
 const defaultAccount = accountBtc as Account;
 const defaultSelectedAccount: SelectedAccountStatus = {
     status: 'loaded',

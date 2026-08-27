@@ -45,7 +45,7 @@ function assertComposed(
 }
 
 const dispatchCompose = (feeEstimationRecipient?: string, assumeNewAccount?: boolean) =>
-    configureMockStore({})
+    configureMockStore({ extra: undefined })
         .dispatch(
             composeTronTransactionFeeLevelsThunk({
                 formState,

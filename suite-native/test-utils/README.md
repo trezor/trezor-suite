@@ -6,10 +6,9 @@ If your test needs a store (selectors, dispatched actions), use [`@suite-native/
 
 ## What it provides
 
-- `BasicProviderForTests` — wraps children in the providers needed to render atoms and intl-aware components outside a full app (theme, safe-area, intl, optional formatters).
+- `BasicProviderForTests` — wraps children in the providers needed to render atoms and intl-aware components outside a full app (theme, safe-area, intl, optional formatters and explicitly supplied services).
 - `renderWithBasicProvider(element, options?)` — `@testing-library/react-native`'s `render` with `BasicProviderForTests` pre-applied.
 - `renderHookWithBasicProvider(callback, options?)` — same for hook tests.
-- `extraDependenciesNativeMock` — native-side `extraDependencies` mock for slices that need it in tests.
 - Re-exports all of `@testing-library/react-native`.
 
 Both render helpers accept the standard render options plus a `formattersConfig?: FormatterProviderConfig` if the component under test renders formatted values.

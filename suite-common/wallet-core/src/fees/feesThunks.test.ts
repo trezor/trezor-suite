@@ -1,7 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState, prepareDeviceReducer } from '@suite-common/device';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, type FeesState } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
@@ -21,10 +22,24 @@ jest.mock('@trezor/connect', () => {
     };
 });
 
-const blockchainReducer = prepareBlockchainReducer(extraDependenciesCommonMock);
+const blockchainReducer = prepareBlockchainReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadBlockchain: mockReducer() },
+});
 const trxSymbol = asNetworkSymbol('trx');
 const ethSymbol = asNetworkSymbol('eth');
-const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
+const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
 
 const tronFeeInfo: FeeInfo = {
     blockHeight: 100,
@@ -46,6 +61,7 @@ const ethFeeInfo: FeeInfo = {
 
 const initStore = (fees: FeesState = {}) =>
     configureMockStore({
+        extra: undefined,
         reducer: combineReducers({
             device: deviceReducer,
             wallet: combineReducers({

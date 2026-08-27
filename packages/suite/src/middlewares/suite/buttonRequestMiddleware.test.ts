@@ -1,25 +1,33 @@
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { debugInitialState } from '@suite/debug';
 import { lockDevice } from '@suite/locks';
 import { routerReducer } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
-import { connectInitThunk } from '@suite-common/connect-init';
+import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
+import {
+    mockConnectInitHooks,
+    mockConnectInitSettings,
+    mockCreateTransports,
+    mockGetDebugSettings,
+    mockGetThpSettings,
+} from '@suite-common/connect-init/mocks';
 import { deviceActions } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-    testMocks,
-} from '@suite-common/test-utils';
+    mockGetAllowPrerelease,
+    mockGetBinFilesBaseUrl,
+    mockSuiteDevice,
+} from '@suite-common/suite-types/mocks';
+import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { defaultTrezorUIEventHandlerThunk, observeSelectedDevice } from '@suite-common/wallet-core';
 import { UI_EVENT, UI_REQUEST } from '@trezor/connect';
+import { noopCreateLogger } from '@trezor/connect-common';
 
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
 import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-
-import { extraDependenciesDesktopMock } from '../../../mocks/extraDependenciesDesktopMock';
 
 const device = mockSuiteDevice();
 
@@ -45,11 +53,29 @@ const getInitialState = () => ({
 
 type State = ReturnType<typeof getInitialState>;
 
+const connectInitThunkDeps: ConnectInitThunkDeps = {
+    actions: { lockDevice },
+    services: {
+        analytics: mockDesktopAnalytics(),
+        connectInitHooks: mockConnectInitHooks(),
+        connectInitSettings: mockConnectInitSettings(),
+        createLogger: noopCreateLogger,
+        createTransports: mockCreateTransports(),
+        getAllowPrerelease: mockGetAllowPrerelease(),
+        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+        getDebugSettings: mockGetDebugSettings(),
+        getThpSettings: mockGetThpSettings(),
+    },
+};
+
 const initStore = (state: State) => {
     const store = configureMockStore({
-        extra: extraDependenciesDesktopMock,
+        extra: {
+            ...connectInitThunkDeps,
+            actions: { lockDevice },
+        },
         middleware: [
-            prepareSuiteMiddleware(() => extraDependenciesCommonMock),
+            prepareSuiteMiddleware(() => ({ services: { suiteSync: mockSuiteSync() } })),
             buttonRequestMiddleware,
         ],
         preloadedState: state,

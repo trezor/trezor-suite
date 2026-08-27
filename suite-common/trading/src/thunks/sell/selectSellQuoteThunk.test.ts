@@ -1,7 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type SellFiatTradeQuoteRequest } from 'invity-api';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import { type SellInfo, type TradingSellState } from '../../reducers/sellReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
@@ -11,7 +12,9 @@ import { sellUtilsFixtures } from '../../utils/sell/__fixtures__/sellUtils';
 
 import { sellThunks } from './index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 describe('selectSellQuoteThunk', () => {
     afterEach(() => {
@@ -71,7 +74,7 @@ describe('selectSellQuoteThunk', () => {
 
     const getMocks = (initialSellState?: Partial<TradingSellState>) => {
         const store = configureMockStore({
-            extra: {},
+            extra: undefined,
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,

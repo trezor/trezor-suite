@@ -12,6 +12,7 @@ interface Props {
 
 export const renderWithIntl = (ui: ReactElement, { locale = 'en' }: Props = {}): RenderResult => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {},
     });
 

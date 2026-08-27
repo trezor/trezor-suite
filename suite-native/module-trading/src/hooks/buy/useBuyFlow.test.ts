@@ -1,3 +1,5 @@
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { type TestStore, act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
@@ -11,6 +13,9 @@ import { useBuyForm } from './useBuyForm';
 import { createTradingLightStore } from '../../test-utils/tradingTestUtils';
 
 const mockSelectQuoteThunk = jest.fn();
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(),
+};
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -46,10 +51,10 @@ describe('useBuyFlow', () => {
         });
 
     const renderBuyForm = async () =>
-        await renderHookWithStoreProvider(() => useBuyForm(), { store });
+        await renderHookWithStoreProvider(() => useBuyForm(), { store, services });
 
     const renderUseTradingBuyFlow = async () =>
-        await renderHookWithStoreProvider(() => useBuyFlow(buyForm), { store });
+        await renderHookWithStoreProvider(() => useBuyFlow(buyForm), { store, services });
 
     describe('while loading quotes', () => {
         beforeEach(async () => {

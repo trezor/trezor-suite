@@ -1,9 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import { initialWalletSettingsState, prepareAccountsReducer } from '@suite-common/wallet-core';
+import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import TrezorConnect from '@trezor/connect';
 import { asWalletDescriptor } from '@trezor/device-utils';
 
@@ -15,8 +18,26 @@ import { type SuiteRootStateSliceForMetadata, metadataReducer } from './metadata
 import * as metadataThunks from './metadataThunks';
 import { DropboxProvider } from './providers/DropboxProvider';
 
-const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
-const accountsReducer = prepareAccountsReducer(extraDependenciesCommonMock);
+const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
+const accountsReducer = prepareAccountsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    actions: { setAccountAddMetadata: mockSetAccountAddMetadata() },
+    reducers: { storageLoadAccounts: mockReducer() },
+});
+const extra: metadataLabelingActions.InitMetadataDeps = {
+    services: { analytics: mockDesktopAnalytics() },
+};
 
 jest.spyOn(TrezorConnect, 'cipherKeyValue').mockImplementation(() =>
     Promise.resolve({
@@ -99,7 +120,8 @@ const getInitialState = (state?: InitialState) => {
 
 type State = ReturnType<typeof getInitialState>;
 const initStore = (state: State) => {
-    const store = configureMockStore<State, any>({
+    const store = configureMockStore<typeof extra, State, any>({
+        extra,
         reducer: (s = state, action: any): State => {
             // the reducer may also receive the empty PreloadedState ({}), fall back to the initial state
             const current = { ...state, ...s };

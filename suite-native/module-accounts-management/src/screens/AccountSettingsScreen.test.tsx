@@ -1,3 +1,5 @@
+import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
+import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -23,6 +25,7 @@ const navigationMock = {} as StackProps<
 
 const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const services: SuiteSyncDep = { suiteSync: mockSuiteSync() };
 
 const buildRoute = (accountKey: string) =>
     ({
@@ -57,7 +60,7 @@ describe('AccountSettingsScreen', () => {
                 route={buildRoute(btcAccount.key)}
                 navigation={navigationMock}
             />,
-            { preloadedState: buildPreloadedState(btcAccount) },
+            { preloadedState: buildPreloadedState(btcAccount), services },
         );
 
         // The text appears in both the trigger button and the XpubQRCodeBottomSheet's show button.
@@ -76,7 +79,7 @@ describe('AccountSettingsScreen', () => {
                 route={buildRoute(ethAccount.key)}
                 navigation={navigationMock}
             />,
-            { preloadedState: buildPreloadedState(ethAccount) },
+            { preloadedState: buildPreloadedState(ethAccount), services },
         );
 
         expect(

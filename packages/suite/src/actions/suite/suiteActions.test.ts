@@ -1,15 +1,32 @@
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { flagsInitialState, prepareFlagsReducer } from '@suite/flags';
+import { lockDevice } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { routerReducer } from '@suite/router';
 import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
 import { torReducer } from '@suite/tor';
-import { connectInitThunk } from '@suite-common/connect-init';
+import { type AnalyticsDep } from '@suite-common/analytics';
+import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
+import {
+    mockConnectInitHooks,
+    mockConnectInitSettings,
+    mockCreateTransports,
+    mockGetDebugSettings,
+    mockGetThpSettings,
+} from '@suite-common/connect-init/mocks';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
+import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
+import { mockFetchAndSaveMetadata } from '@suite-common/metadata-types/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import {
+    mockGetAllowPrerelease,
+    mockGetBinFilesBaseUrl,
+    mockSuiteDevice,
+} from '@suite-common/suite-types/mocks';
 import { configureMockStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
     acquireDevice,
@@ -18,6 +35,9 @@ import {
     selectDeviceThunk,
     selectNewlyConnectedDeviceThunk,
 } from '@suite-common/wallet-core';
+import { type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
+import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
+import { noopCreateLogger } from '@trezor/connect-common';
 
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -26,10 +46,33 @@ import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
 
 import fixtures from './__fixtures__/suiteActions';
 import { SUITE } from './constants';
-
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const flagsReducer = prepareFlagsReducer(extraDependencies);
+
+type SuiteActionsTestDeps = ConnectInitThunkDeps &
+    WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
+        thunks: FetchAndSaveMetadataDep;
+    };
+
+const extra: SuiteActionsTestDeps = {
+    actions: { lockDevice },
+    services: {
+        analytics: mockDesktopAnalytics(),
+        connectInitHooks: mockConnectInitHooks(),
+        connectInitSettings: mockConnectInitSettings(),
+        createLogger: noopCreateLogger,
+        createTransports: mockCreateTransports(),
+        getAllowPrerelease: mockGetAllowPrerelease(),
+        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+        getDebugSettings: mockGetDebugSettings(),
+        getThpSettings: mockGetThpSettings(),
+        getTradedAccountKeys: mockGetTradedAccountKeys(),
+    },
+    thunks: {
+        fetchAndSaveMetadata: mockFetchAndSaveMetadata(),
+    },
+};
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
@@ -75,6 +118,7 @@ const getInitialState = (
 type State = ReturnType<typeof getInitialState>;
 const mockStore = (preloadedState: State) =>
     configureMockStore({
+        extra,
         reducer: (state = preloadedState, action) => ({
             ...state,
             suite: suiteReducer(state.suite, action),

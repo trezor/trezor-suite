@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import * as fixtures from './__fixtures__/messageSystemActions';
 
@@ -11,7 +12,9 @@ import {
     prepareMessageSystemReducer,
 } from './index';
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const getInitialState = (state?: MessageSystemState) => ({
     messageSystem: {
@@ -24,6 +27,7 @@ type State = ReturnType<typeof getInitialState>;
 
 const initStore = (preloadedState: State) => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState,
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
     });

@@ -9,6 +9,7 @@ const accountWithNonce = (nonce: number): EthAccount =>
 
 const storeWithTxs = (accountTransactions: ReturnType<typeof evmTx>[]) =>
     configureMockStore({
+        extra: undefined,
         preloadedState: {
             wallet: {
                 transactions: {

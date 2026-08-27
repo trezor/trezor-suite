@@ -31,9 +31,10 @@ export interface LoadInitialDataThunkProps {
 }
 
 type LoadInitialDataThunkState = TradingRootStateWithAccounts;
-type LoadInitialDataThunkDeps = WithServices<{
+export type GetTradingEnvironment = () => TradeServerEnvironment | undefined;
+export type LoadInitialDataThunkDeps = WithServices<{
     getSelectedAccount: () => SelectedAccountStatus;
-    getTradingEnvironment: () => TradeServerEnvironment | undefined;
+    getTradingEnvironment: GetTradingEnvironment;
 }>;
 
 export const loadInitialDataThunk = createThunk<

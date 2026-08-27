@@ -14,7 +14,6 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { type IODetailsType } from './IODetailsType';
 import { IOGroup } from './IOGroup';
-import { extraDependenciesDesktopMock } from '../../../../../../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../../../../../../mocks/mockInitialAppState';
 
 const bitcoinAccount = mockWalletAccount({
@@ -53,11 +52,11 @@ const getInitialState = (): AppState => ({
 
 describe('IOGroup', () => {
     it('opens an address in the explorer of the transaction network, not of the selected account', () => {
-        const store = configureMockStore({ preloadedState: getInitialState() });
+        const store = configureMockStore({ extra: undefined, preloadedState: getInitialState() });
 
         renderWithProviders(
             store,
-            extraDependenciesDesktopMock.services,
+            {},
             <IOGroup tx={bitcoinTransaction} inputs={inputs} outputs={[]} />,
         );
 

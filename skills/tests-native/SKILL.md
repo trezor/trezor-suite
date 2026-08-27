@@ -17,7 +17,7 @@ Never import directly from `@testing-library/react-native` — both packages re-
 ## `@suite-native/test-utils`
 
 Provides `renderWithBasicProvider` and `renderHookWithBasicProvider`, which wrap the component with theme, safe-area,
-intl, and formatters providers. Also exports `BasicProviderForTests`, `extraDependenciesNativeMock`, and all of
+intl, and formatters providers. Also exports `BasicProviderForTests` and all of
 `@testing-library/react-native`.
 
 `BasicProviderForTests` is the underlying wrapper component used by both render helpers. Use it directly only when you

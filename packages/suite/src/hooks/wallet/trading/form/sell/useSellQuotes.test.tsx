@@ -137,6 +137,7 @@ const renderSellQuotes = (
     };
 
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             wallet: {
                 trading: {

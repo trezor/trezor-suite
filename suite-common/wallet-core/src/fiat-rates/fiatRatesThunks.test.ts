@@ -41,6 +41,7 @@ const tokenTransaction = (contract: TokenAddress): WalletAccountTransaction =>
 
 const initStore = () =>
     configureMockStore({
+        extra: undefined,
         preloadedState: {
             wallet: {
                 accounts: [ethAccount],

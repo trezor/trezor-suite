@@ -1,16 +1,29 @@
+import { type AnalyticsSharedEvents } from '@suite-common/analytics';
+import { asGetter } from '@suite-common/dependency-injection';
 import { configureMockStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import TrezorConnect from '@trezor/connect';
 
-import { synchronizeSentTransactionThunk } from './sendFormThunks';
+import {
+    type SynchronizeSentTransactionThunkDeps,
+    synchronizeSentTransactionThunk,
+} from './sendFormThunks';
 import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
 import { transactionsActions } from '../transactions/transactionsActions';
 
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const extra: SynchronizeSentTransactionThunkDeps = {
+    services: {
+        analytics: mockAnalytics<AnalyticsSharedEvents>(),
+        getIsWindowVisible: asGetter(() => true),
+        getTradedAccountKeys: asGetter(() => []),
+    },
+};
 
-const precomposed = (extra?: Record<string, unknown>) =>
-    ({ type: 'final', totalSpent: '0', fee: '0', outputs: [], inputs: [], ...extra }) as any;
+const precomposed = (overrides?: Record<string, unknown>) =>
+    ({ type: 'final', totalSpent: '0', fee: '0', outputs: [], inputs: [], ...overrides }) as any;
 
 describe('synchronizeSentTransactionThunk – RBF eviction (#28147)', () => {
     let getTransactions: jest.SpyInstance;
@@ -24,7 +37,7 @@ describe('synchronizeSentTransactionThunk – RBF eviction (#28147)', () => {
     afterEach(() => jest.restoreAllMocks());
 
     it('evicts the replaced pending tx when the precomposed tx has prevTxid', () => {
-        const store = configureMockStore({});
+        const store = configureMockStore({ extra });
 
         store.dispatch(
             synchronizeSentTransactionThunk({
@@ -44,7 +57,7 @@ describe('synchronizeSentTransactionThunk – RBF eviction (#28147)', () => {
     });
 
     it('does not evict for a normal (non-RBF) transaction', () => {
-        const store = configureMockStore({});
+        const store = configureMockStore({ extra });
 
         store.dispatch(
             synchronizeSentTransactionThunk({
@@ -93,7 +106,7 @@ describe('synchronizeSentTransactionThunk – EVM fake pending tx nonce', () => 
     };
 
     it('stamps the fake pending tx with the signed nonce passed in, not the re-derived one', () => {
-        const store = configureMockStore({ preloadedState });
+        const store = configureMockStore({ extra, preloadedState });
 
         store.dispatch(
             synchronizeSentTransactionThunk({
@@ -114,7 +127,7 @@ describe('synchronizeSentTransactionThunk – periodic sync kick', () => {
     // notification can be missed, so a send must (re)start the self-re-arming per-symbol
     // sync — otherwise the freshly added pending tx may never flip to confirmed.
     it('dispatches syncAccountsWithBlockchainThunk for the sent EVM account', () => {
-        const store = configureMockStore({});
+        const store = configureMockStore({ extra });
 
         store.dispatch(
             synchronizeSentTransactionThunk({

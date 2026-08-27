@@ -1,12 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type Action } from '@suite-common/suite-types';
-import {
-    act,
-    configureMockStore,
-    extraDependenciesCommonMock,
-    renderHookWithStoreProvider,
-} from '@suite-common/test-utils';
+import { act, configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
 import { type MessageSystemState } from './messageSystemTypes';
@@ -21,11 +17,13 @@ if (typeof globalThis.crypto.randomUUID !== 'function') {
     });
 }
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const createStore = (actions: Action[] = []) =>
     configureMockStore({
-        extra: {},
+        extra: undefined,
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: {
             messageSystem: {

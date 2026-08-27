@@ -1,4 +1,5 @@
 export { mockAccountKey } from './mockAccountKey';
+export { mockGetTradedAccountKeys } from './mockGetTradedAccountKeys';
 export {
     mockWalletAccount,
     networkSpecificDefaultRipple,

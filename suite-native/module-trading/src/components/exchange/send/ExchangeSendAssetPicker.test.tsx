@@ -3,8 +3,10 @@ import type { CryptoId } from 'invity-api';
 
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
@@ -46,8 +48,9 @@ jest.mock('@suite-native/trading-state', () => ({
 const mockedSelectAccountsWithTokensToSellSectionListByTradingType =
     selectAccountsWithTokensToSellSectionListByTradingType as unknown as jest.Mock;
 const reportMock = jest.fn();
-const services: NativeAnalyticsDep = {
+const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
     analytics: mockNativeAnalytics(reportMock),
+    networkModuleRepository: mockNetworkModuleRepository(),
 };
 
 const mockNavigate = jest.fn();
@@ -141,7 +144,9 @@ describe('ExchangeSendAssetPicker', () => {
                     accounts: createStaticReducer(walletState.accounts),
                     fiat: createStaticReducer(walletState.fiat),
                     send: createStaticReducer(walletState.send),
-                    trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
+                    trading: tradingSlice.prepareReducer({
+                        actionTypes: { storageLoad: mockActionType('storageLoad') },
+                    }),
                 }),
             },
             preloadedState: getPreloadedState(),

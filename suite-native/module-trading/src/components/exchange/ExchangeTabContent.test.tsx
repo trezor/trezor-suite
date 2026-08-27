@@ -1,3 +1,7 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { act, screen, userEvent } from '@suite-native/test-utils-store';
 
@@ -5,6 +9,10 @@ import { ExchangeTabContent } from './ExchangeTabContent';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 let mockUseTradingExchangeData: jest.Mock;
+const services: NativeAnalyticsDep & NetworkModuleRepositoryDep = {
+    analytics: mockNativeAnalytics(),
+    networkModuleRepository: mockNetworkModuleRepository(),
+};
 
 jest.mock('../../hooks/exchange/useExchangeData', () => ({
     useExchangeData: (...params: unknown[]) => mockUseTradingExchangeData(...params),
@@ -31,7 +39,10 @@ describe('ExchangeTab', () => {
     });
 
     const renderExchangeTab = async () =>
-        await renderWithTradingProvider(<ExchangeTabContent />, { tradeType: 'exchange' });
+        await renderWithTradingProvider(<ExchangeTabContent />, {
+            services,
+            tradeType: 'exchange',
+        });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);

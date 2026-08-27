@@ -2,26 +2,16 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../suite-common/address" },
         {
             "path": "../../suite-common/dependency-injection"
         },
         {
             "path": "../../suite-common/formatters"
         },
-        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/react-query"
         },
-        {
-            "path": "../../suite-common/redux-extra-dependencies"
-        },
-        {
-            "path": "../../suite-common/test-utils"
-        },
-        { "path": "../analytics" },
         { "path": "../intl" },
-        { "path": "../services" },
         {
             "path": "../../packages/styles-native"
         },

@@ -38,7 +38,7 @@ const normalizeRememberedCoins = (app: AppRememberedPermission): AppRememberedPe
     allowedPermissions: canonicalizePermissionCoins(app.allowedPermissions),
 });
 
-type ConnectPopupReducerDeps = ActionTypesDep<'storageLoad'>;
+export type ConnectPopupReducerDeps = ActionTypesDep<'storageLoad'>;
 
 export const prepareConnectPopupReducer = createReducerWithExtraDeps(
     connectPopupInitialState,

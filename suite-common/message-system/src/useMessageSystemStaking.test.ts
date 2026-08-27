@@ -1,10 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-    renderHookWithStoreProvider,
-} from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
@@ -14,7 +11,9 @@ import { useMessageSystemStaking } from './useMessageSystemStaking';
 const ethSymbol = asNetworkSymbol('eth');
 const adaSymbol = asNetworkSymbol('ada');
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const stateWithDisabledFeatures = {
     ...messageSystemInitialState,
@@ -69,7 +68,7 @@ const stateWithDisabledFeatures = {
 
 const createStore = (state: MessageSystemState = stateWithDisabledFeatures) =>
     configureMockStore({
-        extra: {},
+        extra: undefined,
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: { messageSystem: state } as { messageSystem: MessageSystemState },
     });

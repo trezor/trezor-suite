@@ -1,6 +1,11 @@
 import { suiteSettingsInitialState } from '@suite/settings';
 import type { DeviceReducerState } from '@suite-common/device';
-import { prepareFirmwareReducer } from '@suite-common/firmware';
+import { type FirmwareUpdateThunkDeps, prepareFirmwareReducer } from '@suite-common/firmware';
+import {
+    mockGetBinFilesBaseUrl,
+    mockGetLanguage,
+    mockReportSecurityCheck,
+} from '@suite-common/suite-types/mocks';
 import { configureMockStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -8,8 +13,14 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import { actions, reducerActions } from './__fixtures__/firmwareActions';
-
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
+const extra: FirmwareUpdateThunkDeps = {
+    services: {
+        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+        getLanguage: mockGetLanguage(),
+        reportSecurityCheck: mockReportSecurityCheck(),
+    },
+};
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type FirmwareState = ReturnType<typeof firmwareReducer>;
@@ -55,6 +66,7 @@ const getInitialState = (override?: InitialState): any => {
 
 const mockStore = (preloadedState: ReturnType<typeof getInitialState>) =>
     configureMockStore({
+        extra,
         reducer: (state = preloadedState, action) => ({
             ...state,
             firmware: firmwareReducer(state.firmware, action),

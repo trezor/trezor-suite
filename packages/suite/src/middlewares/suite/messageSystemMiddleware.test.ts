@@ -81,6 +81,7 @@ type State = ReturnType<typeof getInitialState>;
 
 const initStore = (preloadedState: State) => {
     const store = configureMockStore({
+        extra: undefined,
         reducer,
         preloadedState,
         middleware: [messageSystemMiddleware],

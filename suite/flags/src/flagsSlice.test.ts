@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { DEVICE } from '@trezor/connect';
 
 import { NewContentIndicatorId } from './flagsConstants';
@@ -14,7 +14,10 @@ import {
     setNewContentIndicatorSeen,
 } from './flagsSlice';
 
-const flagsReducer = prepareFlagsReducer(extraDependenciesCommonMock);
+const flagsReducer = prepareFlagsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadFlags: mockReducer() },
+});
 
 const initStore = (preloadedState = flagsInitialState) =>
     configureStore({

@@ -1,6 +1,8 @@
 import '@suite-common/test-utils/globalOverrides';
 
 import { type TranslationKey } from '@suite/intl';
+import { type SuiteRouterHistoryDep } from '@suite/router';
+import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
@@ -11,7 +13,6 @@ import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { DeviceCompromised } from './DeviceCompromised';
-import { extraDependenciesDesktopMock } from '../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
@@ -33,6 +34,7 @@ global.ResizeObserver = class MockedResizeObserver {
 
 const initStore = (preloadedState: AppState) =>
     configureMockStore({
+        extra: undefined,
         preloadedState,
     });
 
@@ -57,6 +59,10 @@ const matchingDevicePersistentData = {
     device_id: defaultDevice.features.device_id,
     unit_color: defaultDevice.features.unit_color,
     internal_model: defaultDevice.features.internal_model,
+};
+
+const services: SuiteRouterHistoryDep = {
+    suiteRouterHistory: mockSuiteRouterHistory(),
 };
 
 const deviceCompromisedFixtures: Array<{
@@ -184,7 +190,7 @@ describe(`${DeviceCompromised.name} component`, () => {
             const store = initStore(getInitialState(device));
             const { getByText, unmount } = renderWithProviders(
                 store,
-                extraDependenciesDesktopMock.services,
+                services,
                 <DeviceCompromised />,
             );
             expect(getByText(result)).not.toBeNull();

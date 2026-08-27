@@ -11,6 +11,7 @@ import { checkDeviceAuthenticityThunk } from './checkDeviceAuthenticityThunk';
 
 const initStore = (device?: TrezorDevice) =>
     configureMockStore({
+        extra: undefined,
         preloadedState: {
             device: {
                 selectedDevice: device,

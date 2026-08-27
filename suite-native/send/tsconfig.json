@@ -26,6 +26,9 @@
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {
+            "path": "../../suite-common/dependency-injection"
+        },
+        {
             "path": "../../suite-common/test-utils"
         }
     ]

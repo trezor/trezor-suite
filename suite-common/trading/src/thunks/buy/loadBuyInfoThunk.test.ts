@@ -21,7 +21,7 @@ describe('loadBuyInfoThunk', () => {
     tradeApi.createApiKey = () => {};
 
     const store = configureMockStore({
-        extra: {},
+        extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: combineReducers({

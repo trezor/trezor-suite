@@ -2,8 +2,12 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { createIntl } from 'react-intl';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { Translation, type TranslationKey, messages } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { type FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { mockFindNetworkSymbolForProtocol } from '@suite-common/networks/mocks';
 import { configureMockStore, fireEvent, screen } from '@suite-common/test-utils';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -11,7 +15,6 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { NotificationRenderer } from './NotificationRenderer';
-import { extraDependenciesDesktopMock } from '../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
@@ -23,6 +26,10 @@ const ethSymbol = asNetworkSymbol('eth');
 const intl = createIntl({ locale: 'en' });
 
 const mockReport = jest.fn();
+const services: DesktopAnalyticsDep & FindNetworkSymbolForProtocolDep = {
+    analytics: mockDesktopAnalytics(mockReport),
+    findNetworkSymbolForProtocol: mockFindNetworkSymbolForProtocol(),
+};
 
 const MessageView = ({ message, messageValues }: NotificationViewProps) => (
     <Translation id={message} values={messageValues} />
@@ -43,6 +50,7 @@ const NotificationViewProbe = ({ message, messageValues, variant }: Notification
 
 const renderNotification = (notification: LocalizedNotificationEntry) => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -60,20 +68,21 @@ const renderNotification = (notification: LocalizedNotificationEntry) => {
 
     return renderWithProviders(
         store,
-        extraDependenciesDesktopMock.services,
+        services,
         <NotificationRenderer render={NotificationViewProbe} notification={notification} />,
     );
 };
 const renderTradingError = (payload: Omit<TradingErrorNotification, 'context' | 'id'>) => {
     const notification: TradingErrorNotification = { context: 'toast', id: 0, ...payload };
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: mockInitialAppState,
         serializableCheck: { ignoredActions: [] },
     });
 
     return renderWithProviders(
         store,
-        extraDependenciesDesktopMock.services,
+        services,
         <NotificationRenderer render={MessageView} notification={notification} />,
     );
 };
@@ -81,14 +90,10 @@ const renderTradingError = (payload: Omit<TradingErrorNotification, 'context' | 
 const renderWrapToast = (payload: Omit<WrapNotification, 'context' | 'id'>) => {
     const notification = { context: 'toast', id: 0, ...payload } as WrapNotification;
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: mockInitialAppState,
         serializableCheck: { ignoredActions: [] },
     });
-    const services = {
-        ...extraDependenciesDesktopMock.services,
-        analytics: { ...extraDependenciesDesktopMock.services.analytics, report: mockReport },
-    };
-
     renderWithProviders(
         store,
         services,

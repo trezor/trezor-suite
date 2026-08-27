@@ -56,6 +56,7 @@ const toSubunits = (weth: string) => new BigNumber(weth).shiftedBy(18);
 
 const initStore = () =>
     configureMockStore({
+        extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({ stablecoinYield: stablecoinYieldReducer }),
         }),

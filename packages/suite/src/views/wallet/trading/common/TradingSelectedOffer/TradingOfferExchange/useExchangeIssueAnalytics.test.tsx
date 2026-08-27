@@ -1,16 +1,14 @@
 import '@suite-common/test-utils/globalOverrides';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
 import { type ExchangeIssue } from '@suite-common/trading';
 
 import { type AppState } from 'src/reducers/store';
-import { type SuiteServices } from 'src/support/extraDependencies';
 import { renderHookWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { getTradingExchangeIssue, useExchangeIssueAnalytics } from './useExchangeIssueAnalytics';
-import { extraDependenciesDesktopMock } from '../../../../../../../mocks/extraDependenciesDesktopMock';
 import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
 
 const HIGH_RISK_ISSUE: ExchangeIssue = {
@@ -33,13 +31,13 @@ type IssueAnalyticsProps = {
 
 const renderIssueAnalytics = (initialProps: IssueAnalyticsProps) => {
     const report = jest.fn();
-    const services: SuiteServices = {
-        ...extraDependenciesDesktopMock.services,
-        analytics: mockDesktopAnalytics(report),
-    };
+    const services: DesktopAnalyticsDep = { analytics: mockDesktopAnalytics(report) };
 
     const { rerender } = renderHookWithProviders(
-        configureMockStore({ preloadedState: mockInitialAppState satisfies AppState }),
+        configureMockStore({
+            extra: undefined,
+            preloadedState: mockInitialAppState satisfies AppState,
+        }),
         services,
         (props: IssueAnalyticsProps) => useExchangeIssueAnalytics(props),
         { initialProps },

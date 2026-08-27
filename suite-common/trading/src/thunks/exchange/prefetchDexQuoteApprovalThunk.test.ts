@@ -1,7 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { configureMockStore } from '@suite-common/test-utils';
 import type { Account } from '@suite-common/wallet-types';
 import { type AccountAddresses } from '@trezor/connect';
 
@@ -14,7 +15,9 @@ import { getUnusedAddressFromAccount } from '../../utils';
 
 jest.mock('../../tradeApi');
 
-const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 
 const getExchangeTrade = (quoteId: string): ExchangeTrade =>
     ({
@@ -31,7 +34,7 @@ const getExchangeTrade = (quoteId: string): ExchangeTrade =>
 
 const getStore = (quotes: ExchangeTrade[]) =>
     configureMockStore({
-        extra: {},
+        extra: undefined,
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: tradingReducer,

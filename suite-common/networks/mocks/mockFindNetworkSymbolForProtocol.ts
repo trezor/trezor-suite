@@ -1,3 +1,10 @@
-import type { FindNetworkSymbolForProtocol } from '../src/createFindNetworkSymbolForProtocol';
+import { type Protocol } from '@trezor/network-module-suite-common-types';
 
-export const mockFindNetworkSymbolForProtocol: FindNetworkSymbolForProtocol = () => null;
+import { type FindNetworkSymbolForProtocol, type NetworkSymbol } from '../src';
+
+export const mockFindNetworkSymbolForProtocol =
+    (
+        symbolsByProtocol: Partial<Record<Protocol, NetworkSymbol>> = {},
+    ): FindNetworkSymbolForProtocol =>
+    protocol =>
+        symbolsByProtocol[protocol] ?? null;

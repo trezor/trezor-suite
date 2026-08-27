@@ -52,7 +52,7 @@ const addCredential = (credentials: ThpSuiteCredentials[], credential: ThpCreden
         .filter(c => c.trezor_static_public_key !== credential.trezor_static_public_key)
         .concat([{ ...credential, connectionCounter: 0 }]);
 
-type ThpReducerDeps = ActionTypesDep<'storageLoad'>;
+export type ThpReducerDeps = ActionTypesDep<'storageLoad'>;
 type StorageLoadThpAction = PayloadAction<{
     thp?: { credentials?: ThpSuiteCredentials[] };
 }>;

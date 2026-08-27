@@ -46,6 +46,7 @@ const renderForSell = (
     accounts: Account[] = [FIRST_ELIGIBLE_ACCOUNT, TRADE_ACCOUNT],
 ) => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: buildState(accounts, sellTradingAccountKey),
     });
     const { result } = renderHookWithStoreProvider(() => useTradingFormAccount('sell'), { store });

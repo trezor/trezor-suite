@@ -1,8 +1,9 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 import { prepareSendFormReducer } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -112,6 +113,7 @@ const buildStore = ({
     blockchain?: Partial<Record<'sol' | 'dsol', { url: string }>>;
 } = {}) =>
     configureMockStore({
+        extra: undefined,
         reducer: combineReducers({
             device: (): { selectedDevice: TrezorDevice } => ({
                 selectedDevice: {
@@ -128,7 +130,10 @@ const buildStore = ({
                 formDrafts: () => ({}),
                 blockchain: () => blockchain,
                 fees: () => ({ sol: solanaFeeBucket, dsol: solanaFeeBucket }),
-                send: prepareSendFormReducer(extraDependenciesCommonMock),
+                send: prepareSendFormReducer({
+                    actionTypes: { storageLoad: mockActionType('storageLoad') },
+                    reducers: { storageLoadFormDrafts: mockReducer() },
+                }),
                 settings: () => ({ mevProtection: false }),
             }),
         }),

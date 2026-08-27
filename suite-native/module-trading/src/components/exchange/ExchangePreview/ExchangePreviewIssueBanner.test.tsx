@@ -1,5 +1,7 @@
 import { type ExchangeIssue } from '@suite-common/trading';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils-store';
 import { createPrecomposedTxFinal, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
@@ -13,6 +15,7 @@ import {
 } from '../../../test-utils/tradingTestUtils';
 
 const mockNavigate = jest.fn();
+const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -82,7 +85,7 @@ describe('ExchangePreviewIssueBanner', () => {
             <ExchangePreviewIssueBanner
                 onSignTransactionNavigation={onSignTransactionNavigation}
             />,
-            { tradeType: 'exchange', overrides: baseOverrides },
+            { overrides: baseOverrides, services, tradeType: 'exchange' },
         );
 
     beforeEach(() => {

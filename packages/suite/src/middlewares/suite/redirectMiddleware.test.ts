@@ -1,10 +1,13 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
+
 import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { goto, routerReducer } from '@suite/router';
 import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
+import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 
 import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
@@ -48,10 +51,14 @@ const getInitialState = (
 });
 
 type State = ReturnType<typeof getInitialState>;
-const middlewares = [redirectMiddleware, prepareSuiteMiddleware(() => extraDependenciesCommonMock)];
+const middlewares = [
+    redirectMiddleware,
+    prepareSuiteMiddleware(() => ({ services: { suiteSync: mockSuiteSync() } })),
+];
 
 const initStore = (state: State) => {
-    const store = configureMockStore<State>({
+    const store = configureMockStore<void, State, UnknownAction>({
+        extra: undefined,
         middleware: middlewares,
         reducer: (currentState = state, action) => {
             const typedState = currentState as State;

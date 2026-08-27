@@ -144,7 +144,8 @@ const reconnecting = (draft: BlockchainState, payload: BlockchainReconnecting) =
     }
 };
 
-type BlockchainReducerDeps = ActionTypesDep<'storageLoad'> & ReducersDep<'storageLoadBlockchain'>;
+export type BlockchainReducerDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadBlockchain'>;
 
 export const prepareBlockchainReducer = createReducerWithExtraDeps(
     blockchainInitialState,

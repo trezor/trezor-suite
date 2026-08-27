@@ -1,8 +1,10 @@
 import { type SuiteCompatibleThunk } from '@suite-common/redux-utils';
 import type { StaticSessionId, WalletDescriptor } from '@trezor/device-utils';
 
+export type FetchAndSaveMetadataThunk = SuiteCompatibleThunk<StaticSessionId>;
+
 export type FetchAndSaveMetadataDep = {
-    fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
+    fetchAndSaveMetadata: FetchAndSaveMetadataThunk;
 };
 
 export interface LabelableEntityKeys {

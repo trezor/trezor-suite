@@ -1,3 +1,4 @@
+import { asGetter } from '@suite-common/dependency-injection';
 import { configureMockStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
@@ -7,10 +8,12 @@ import {
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import {
+    type PushWrappedNativeTokenThunkDeps,
     type SignedWrappedNativeTokenTransaction,
     pushWrappedNativeTokenThunk,
 } from './wrappedNativeTokenThunks';
@@ -44,9 +47,17 @@ const signedTransaction: SignedWrappedNativeTokenTransaction = {
 };
 
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
+const extra: PushWrappedNativeTokenThunkDeps = {
+    services: {
+        analytics: mockNativeAnalytics(),
+        getIsWindowVisible: asGetter(() => true),
+        getTradedAccountKeys: asGetter(() => []),
+    },
+};
 
 const buildStore = (storeAccount: Account) =>
     configureMockStore({
+        extra,
         preloadedState: {
             wallet: { accounts: [storeAccount], settings: { mevProtection: false } },
         },

@@ -14,6 +14,7 @@ const account = {
 
 const initStore = () =>
     configureMockStore({
+        extra: undefined,
         preloadedState: {
             wallet: {
                 blockchain: { ada: { blockHeight: 100 } },

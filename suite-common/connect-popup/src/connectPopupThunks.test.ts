@@ -1,8 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
+import { mockLockDevice } from '@suite-common/device/mocks';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 import { accountsInitialState } from '@suite-common/wallet-core';
 import * as walletUtils from '@suite-common/wallet-utils';
 
@@ -62,11 +64,14 @@ const usedAddress = (address: string) => ({
     accountInfo: { addresses: { used: [{ path: "m/84'/0'/0'/0/0", address, balance: '1000' }] } },
 });
 
-const connectPopupReducer = prepareConnectPopupReducer(extraDependenciesCommonMock);
+const connectPopupReducer = prepareConnectPopupReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const extra = { actions: { lockDevice: mockLockDevice() } };
 
 const initStore = () =>
     configureMockStore({
-        extra: extraDependenciesCommonMock,
+        extra,
         reducer: combineReducers({
             connectPopup: connectPopupReducer,
             device: (state = { ...deviceInitialState, selectedDevice: fakeDevice }) => state,

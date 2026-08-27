@@ -106,7 +106,7 @@ const renderExchangeDexQuote = ({
     isFormLoading?: boolean;
     isLoadingQuote?: boolean;
 }) => {
-    const store = configureMockStore();
+    const store = configureMockStore({ extra: undefined });
 
     return renderHookWithStoreProvider(
         () => {
