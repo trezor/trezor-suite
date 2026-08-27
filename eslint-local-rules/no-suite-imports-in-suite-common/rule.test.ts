@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
 
-import { noSuiteImportsInSuiteCommonRule } from './noSuiteImportsInSuiteCommonRule';
+import { noSuiteImportsInSuiteCommonRule } from './rule';
 
 const ruleTester = new RuleTester();
 

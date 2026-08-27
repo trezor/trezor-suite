@@ -1,6 +1,6 @@
 import type { Rule } from 'eslint';
 
-import { createImportExportVisitors, getNodeSourcePath } from './utils';
+import { createImportExportVisitors, getNodeSourcePath } from '../utils';
 
 /**
  * Returns the suggested import path for a deep import, or null if the import is allowed.

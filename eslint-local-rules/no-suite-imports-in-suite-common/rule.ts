@@ -1,6 +1,6 @@
 import type { Rule } from 'eslint';
 
-import { createImportExportVisitors, getNodeSourcePath } from './utils';
+import { createImportExportVisitors, getNodeSourcePath } from '../utils';
 
 const normalizePathSeparators = (filePath: string) => filePath.replace(/\\/g, '/');
 

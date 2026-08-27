@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
 
-import { noPackageDeepImportsRule } from './noPackageDeepImportsRule';
+import { noPackageDeepImportsRule } from './rule';
 
 const ruleTester = new RuleTester();
 

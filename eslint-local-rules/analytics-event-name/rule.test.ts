@@ -1,7 +1,7 @@
 import { RuleTester } from 'eslint';
 import { parser } from 'typescript-eslint';
 
-import { analyticsEventNameRule } from './analyticsEventNameRule';
+import { analyticsEventNameRule } from './rule';
 
 const typescriptRuleTester = new RuleTester({
     languageOptions: {
