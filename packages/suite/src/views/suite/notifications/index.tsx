@@ -38,20 +38,30 @@ const NotificationsView = () => {
             title: (
                 <Row gap={4} alignItems="center">
                     <Translation id="NOTIFICATIONS_IMPORTANT_TITLE" />
-                    {hasUnseenNotifications && <Dot isAnimated intent="critical" size={8} />}
+                    {hasUnseenNotifications && (
+                        <Dot
+                            isAnimated
+                            intent="critical"
+                            size={8}
+                            data-testid="@notifications/menu/unseen-dot"
+                        />
+                    )}
                 </Row>
             ),
             callback: () => setSelectedTab('transactions'),
+            'data-testid': '@notifications/menu/transactions',
         },
         {
             id: 'all',
             title: <Translation id="NOTIFICATIONS_SYSTEM_TITLE" />,
             callback: () => setSelectedTab('all'),
+            'data-testid': '@notifications/menu/all',
         },
         {
             id: 'release-notes',
             title: <Translation id="TR_RELEASE_NOTES" />,
             callback: () => setSelectedTab('release-notes'),
+            'data-testid': '@notifications/menu/release-notes',
         },
     ];
 
@@ -87,6 +97,7 @@ const NotificationsView = () => {
 
             {isDebugModeActive && (
                 <CollapsibleBox
+                    data-testid="@activity/debug/box"
                     heading={
                         <Row gap={8}>
                             Debug activity
