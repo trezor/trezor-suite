@@ -89,6 +89,15 @@ const groups = {
         pattern: 'methods',
         includeFilter: 'nostrGetPublicKey,nostrSignEvent,ethereumSignAuth7702',
     },
+    // WARD lives in a firmware branch, not a released version, and its bespoke arc runs against an
+    // emulator started FROM THAT BRANCH on T3W1. Like `experimental`, it is opt-in: it never runs as
+    // part of `all` (there is no released firmware to run it against), only via `--groups=ward` with a
+    // firmware branch. See packages/connect/e2e/tests/device/ward.test.ts.
+    ward: {
+        name: 'ward',
+        pattern: 'ward',
+        includeFilter: '',
+    },
 };
 
 const firmwares1 = ['1.9.0', '1-latest', '1-main'];
@@ -114,6 +123,12 @@ const inputs = [
             Object.values(groups).filter(group => {
                 if (group.name === 'thp') {
                     return firmware !== '2.3.0' && model === 'T3W1';
+                }
+
+                // WARD ships only in a firmware branch and needs T3W1 (THP); gate the group the same
+                // way `thp` is gated, and keep it out of `all` (below).
+                if (group.name === 'ward') {
+                    return model === 'T3W1';
                 }
 
                 return true;
@@ -242,8 +257,9 @@ const filterCartesianResultByArgs = () => {
             // CLI args parse into arrays, so `all` arrives as `['all']`
             const filterValues = Array.isArray(filterBy) ? filterBy : [filterBy];
             if (filterValues.includes('all')) {
-                // experimental methods are opt-in; they never run as part of `all`
-                if (key === 'groups' && getValue(m[key]) === 'experimental') {
+                // experimental methods and WARD are opt-in; they never run as part of `all`
+                // (WARD additionally has no released firmware to run against)
+                if (key === 'groups' && ['experimental', 'ward'].includes(getValue(m[key]))) {
                     return false;
                 }
 

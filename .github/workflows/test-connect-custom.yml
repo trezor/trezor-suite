@@ -32,13 +32,17 @@ on:
         description: "Firmware version (e.g. 2-latest, 1-latest, 2-main, 2.11.0...)"
         type: string
         default: "2-latest"
+      deviceBranch:
+        description: "Build the emulator firmware from this trezor-firmware branch (overrides the version). Required to run the `ward` group, since WARD ships only in a branch (use petrsusil/ward-draft). Leave empty for released firmware."
+        type: string
+        default: ""
       groups:
-        description: "Test groups (e.g. api,init,thp)"
+        description: "Test groups (e.g. api,init,thp,ward)"
         type: string
         default: "all"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ inputs.testEnv }}-${{ inputs.deviceModel }}-${{ inputs.deviceVersion }}-${{ inputs.transport }}-${{ inputs.groups }}
+  group: ${{ github.workflow }}-${{ inputs.testEnv }}-${{ inputs.deviceModel }}-${{ inputs.deviceVersion }}-${{ inputs.deviceBranch }}-${{ inputs.transport }}-${{ inputs.groups }}
   cancel-in-progress: true
 
 jobs:
@@ -72,6 +76,7 @@ jobs:
       testPattern: ${{ matrix.groups.pattern }}
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
+      testsFirmwareBranch: ${{ inputs.deviceBranch }}
       testDescription: ${{ matrix.env }}-${{ matrix.groups.pattern }}-${{ matrix.groups.name }}
       disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}

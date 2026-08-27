@@ -23,6 +23,13 @@ if (!deviceModel) {
     throw new Error('Device model must be provided');
 }
 
+// Exposed so bespoke tests can gate themselves on the emulator they were handed. WARD, for
+// instance, only exists in a firmware-branch build on T3W1 (see tests/device/ward.test.ts), so
+// its arc must skip every other matrix rather than call methods the firmware does not have. Typed
+// as plain strings so consumers can compare against literals without importing the Model enum.
+export const emulatorModel: string | undefined = deviceModel;
+export const emulatorStartType: string | undefined = emuStartType;
+
 switch (emuStartType) {
     case 'emulator-start':
     case undefined:
