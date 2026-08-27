@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { type NetworkType } from '@suite-common/wallet-config';
 import {
     DEFAULT_VOTING_OPTION,
     type VotingDelegationOption,
     selectVotingDelegationOption,
     stakeActions,
 } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Column, Input, Radio, Text } from '@trezor/components';
 
@@ -22,21 +22,24 @@ const VOTING_OPTIONS: {
 ];
 
 export interface VotingDelegationsOptionsProps {
-    networkType: NetworkType;
+    account: Account;
     initialValue?: VotingDelegationOption;
     hasTitle?: boolean;
     resetOnMount?: boolean;
 }
 
 export const VotingDelegationsOptions = ({
-    networkType,
+    account,
     initialValue = DEFAULT_VOTING_OPTION,
     hasTitle = false,
     resetOnMount = true,
 }: VotingDelegationsOptionsProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
+    const accountKey = account.key;
+    const selectedVotingDelegation = useSelector(state =>
+        selectVotingDelegationOption(state, accountKey),
+    );
     const [hasError, setHasError] = useState<boolean>(false);
 
     // reset voting delegation option on modal open
@@ -45,23 +48,24 @@ export const VotingDelegationsOptions = ({
             return;
         }
 
-        dispatch(stakeActions.setVotingDelegationOption(initialValue));
-    }, [dispatch, initialValue, resetOnMount]);
+        dispatch(stakeActions.setVotingDelegationOption({ accountKey, option: initialValue }));
+    }, [dispatch, accountKey, initialValue, resetOnMount]);
 
-    if (networkType !== 'cardano') return null;
+    if (account.networkType !== 'cardano') return null;
+
+    const setOption = (option: VotingDelegationOption) =>
+        dispatch(stakeActions.setVotingDelegationOption({ accountKey, option }));
 
     const handleOptionSelect = (type: VotingDelegationOption['type']) => {
         setHasError(false);
 
         switch (type) {
             case 'everstake':
-                dispatch(stakeActions.setVotingDelegationOption({ type: 'everstake' }));
+                setOption({ type: 'everstake' });
                 break;
 
             case 'another_drep':
-                dispatch(
-                    stakeActions.setVotingDelegationOption({ type: 'another_drep', drepId: '' }),
-                );
+                setOption({ type: 'another_drep', drepId: '' });
                 break;
         }
     };
@@ -70,7 +74,7 @@ export const VotingDelegationsOptions = ({
         const isDrepValid = validateCardanoDrep(value);
         setHasError(!isDrepValid);
 
-        dispatch(stakeActions.setVotingDelegationOption({ type: 'another_drep', drepId: value }));
+        setOption({ type: 'another_drep', drepId: value });
     };
 
     return (

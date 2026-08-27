@@ -1,6 +1,6 @@
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     getCardanoAccountPoolId,
     secondsToDays,
@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-utils';
 
 import type { VotingDelegationOption } from './stakeActions';
+import { DEFAULT_VOTING_OPTION } from './stakeConstants';
 import type { StakeRootState } from './stakeReducerTypes';
 
 export const selectStake = (state: StakeRootState) => state.wallet.stake;
@@ -75,8 +76,16 @@ export const selectPoolStatsApy = (
     }
 };
 
-export const selectVotingDelegationOption = (state: StakeRootState): VotingDelegationOption =>
-    selectStake(state).votingDelegation;
+export const selectVotingDelegationOption = (
+    state: StakeRootState,
+    accountKey: AccountKey,
+): VotingDelegationOption => {
+    const { votingDelegation } = selectStake(state);
+
+    return votingDelegation?.accountKey === accountKey
+        ? votingDelegation.option
+        : DEFAULT_VOTING_OPTION;
+};
 
 export const selectStakePrecomposedForm = (state: StakeRootState) =>
     selectStake(state).precomposedForm;

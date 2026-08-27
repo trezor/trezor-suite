@@ -38,7 +38,9 @@ export const useChangeDelegateForm = ({
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
-    const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
+    const selectedVotingDelegation = useSelector(state =>
+        selectVotingDelegationOption(state, account.key),
+    );
 
     const feeInfo = getConvertedOrDefaultFeeInfo({
         networkType: account.networkType,

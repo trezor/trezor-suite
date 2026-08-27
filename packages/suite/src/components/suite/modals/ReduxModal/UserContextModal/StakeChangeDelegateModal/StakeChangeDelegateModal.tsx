@@ -6,7 +6,6 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
-    DEFAULT_VOTING_OPTION,
     type VotingDelegationOption,
     selectVotingDelegationOption,
     stakeActions,
@@ -37,9 +36,11 @@ export const StakeChangeDelegateModalLoaded = ({
 }: StakeChangeDelegateModalProps) => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
-
     const { account } = selectedAccount;
+
+    const selectedVotingDelegation = useSelector(state =>
+        selectVotingDelegationOption(state, account.key),
+    );
 
     const { isVotingDisabled, votingMessageContent } = useMessageSystemStaking(account.symbol);
 
@@ -63,7 +64,7 @@ export const StakeChangeDelegateModalLoaded = ({
     }, [currentDrepId, isEverstake]);
 
     const handleCancel = () => {
-        dispatch(stakeActions.setVotingDelegationOption(DEFAULT_VOTING_OPTION));
+        dispatch(stakeActions.clearVotingDelegation());
 
         onCancel?.();
 
@@ -151,7 +152,7 @@ export const StakeChangeDelegateModalLoaded = ({
                         <Column gap={20} hasDivider>
                             <CurrentDelegate account={account} />
                             <VotingDelegationsOptions
-                                networkType={account.networkType}
+                                account={account}
                                 initialValue={drepIdOptionValue}
                                 hasTitle
                                 resetOnMount

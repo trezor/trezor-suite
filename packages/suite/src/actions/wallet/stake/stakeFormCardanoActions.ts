@@ -24,7 +24,7 @@ import {
 } from '@suite-common/wallet-constants';
 import {
     type StakeRootState,
-    type VotingDelegationOption,
+    type AccountVotingDelegation,
     selectCardanoPoolsInfo,
 } from '@suite-common/wallet-core';
 import {
@@ -104,7 +104,7 @@ export const prepareTxPlan = async (
     account: Account,
     action: CardanoAction,
     cardanoPools: AdaPools['pools'],
-    votingDelegation?: VotingDelegationOption,
+    votingDelegation?: AccountVotingDelegation,
 ) => {
     if (account?.networkType !== 'cardano') return;
 
@@ -142,12 +142,14 @@ export const prepareTxPlan = async (
     }
 
     if (action === 'delegate' || action === 'voteDelegate') {
+        const confirmedOption =
+            votingDelegation?.accountKey === account.key ? votingDelegation.option : undefined;
+
         const isVotingToAnotherDrep =
-            votingDelegation?.type === 'another_drep' &&
-            validateCardanoDrep(votingDelegation.drepId);
+            confirmedOption?.type === 'another_drep' && validateCardanoDrep(confirmedOption.drepId);
 
         const drepBech32 = isVotingToAnotherDrep
-            ? votingDelegation.drepId
+            ? confirmedOption.drepId
             : CARDANO_EVERSTAKE_DREP.bech32;
 
         const dRep = parseDrepBech32(drepBech32);
@@ -195,7 +197,7 @@ const getTransactionData = (
     formValues: StakeFormState,
     selectedAccount: SelectedAccountStatus,
     cardanoPools: AdaPools['pools'],
-    votingDelegation?: VotingDelegationOption,
+    votingDelegation?: AccountVotingDelegation,
 ) => {
     const { stakeType } = formValues;
 

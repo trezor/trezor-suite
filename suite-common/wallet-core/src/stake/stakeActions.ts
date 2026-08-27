@@ -1,7 +1,11 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type PrecomposedTransactionFinal, type StakeFormState } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type PrecomposedTransactionFinal,
+    type StakeFormState,
+} from '@suite-common/wallet-types';
 
 export const STAKE_MODULE_PREFIX = '@common/wallet-core/stake';
 
@@ -18,12 +22,19 @@ type RequestPushTransactionPayload = {
 export type VotingDelegationOption =
     { type: 'everstake' } | { type: 'another_drep'; drepId: string };
 
+export type AccountVotingDelegation = {
+    accountKey: AccountKey;
+    option: VotingDelegationOption;
+};
+
 const setVotingDelegationOption = createAction(
     `${STAKE_MODULE_PREFIX}/setVotingDelegationOption`,
-    (payload: VotingDelegationOption) => ({
+    (payload: AccountVotingDelegation) => ({
         payload,
     }),
 );
+
+const clearVotingDelegation = createAction(`${STAKE_MODULE_PREFIX}/clearVotingDelegation`);
 
 const requestSignTransaction = createAction(
     `${STAKE_MODULE_PREFIX}/requestSignTransaction`,
@@ -52,6 +63,7 @@ export const stakeActions = {
     requestSignTransaction,
     requestPushTransaction,
     setVotingDelegationOption,
+    clearVotingDelegation,
     setResolvedEthereumNonce,
     dispose,
 };

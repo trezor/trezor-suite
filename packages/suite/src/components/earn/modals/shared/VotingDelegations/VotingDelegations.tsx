@@ -15,9 +15,11 @@ type VotingDelegationsProps = {
 };
 
 export const VotingDelegations = ({ account }: VotingDelegationsProps) => {
-    const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
+    const selectedVotingDelegation = useSelector(state =>
+        selectVotingDelegationOption(state, account.key),
+    );
 
-    if (account.networkType !== 'cardano' || !selectedVotingDelegation) return null;
+    if (account.networkType !== 'cardano') return null;
 
     return (
         <Card>
@@ -45,7 +47,7 @@ export const VotingDelegations = ({ account }: VotingDelegationsProps) => {
                 paddingType="none"
                 hasDivider={false}
             >
-                <VotingDelegationsOptions networkType={account.networkType} resetOnMount />
+                <VotingDelegationsOptions account={account} resetOnMount />
             </CollapsibleBox>
         </Card>
     );
