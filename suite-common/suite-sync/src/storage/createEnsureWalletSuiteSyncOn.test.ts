@@ -7,7 +7,6 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
-import { createSubscriptionStorageMock } from '../../mocks/mockCreateSubscriptionStorage';
 import { SuiteSyncUnavailableOnDeviceError } from '../createEnsureSuiteSyncKeys';
 import type { EnsureWalletSuiteSyncOnDeps } from './createEnsureWalletSuiteSyncOn';
 import { createEnsureWalletSuiteSyncOn } from './createEnsureWalletSuiteSyncOn';
@@ -28,8 +27,6 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             getState: () => createMockState([]),
             ensureSubscribedStorage: null,
-            subscriptionStorage: createSubscriptionStorageMock(),
-            ensureSuiteSyncKeys: null,
             onStorageEnsured: () => {},
         });
 
@@ -50,9 +47,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             getState: () => createMockState([mockSuiteDevice({ unavailableCapabilities })]),
-            ensureSuiteSyncKeys: null,
             ensureSubscribedStorage: null,
-            subscriptionStorage: createSubscriptionStorageMock(),
             onStorageEnsured: () => {},
         });
 
@@ -73,9 +68,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             getState: () => createMockState([DEVICE_123]),
-            ensureSuiteSyncKeys: null,
             ensureSubscribedStorage: () => Promise.resolve(ensureResult),
-            subscriptionStorage: createSubscriptionStorageMock(),
             onStorageEnsured: () => {},
         });
 
@@ -96,9 +89,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             getState: () => createMockState([DEVICE_123]),
-            ensureSuiteSyncKeys: null,
             ensureSubscribedStorage: () => Promise.resolve(ensureResult),
-            subscriptionStorage: createSubscriptionStorageMock(),
             onStorageEnsured: () => {},
         });
 
@@ -124,9 +115,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             getState: () => createMockState([DEVICE_123]),
-            ensureSuiteSyncKeys: null,
             ensureSubscribedStorage: () => Promise.resolve(ensureResult),
-            subscriptionStorage: createSubscriptionStorageMock(),
             onStorageEnsured,
         });
 

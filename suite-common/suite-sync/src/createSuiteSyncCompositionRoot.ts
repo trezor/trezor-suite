@@ -177,9 +177,7 @@ export const createSuiteSyncCompositionRoot = (
         dispatch: deps.dispatch,
         ensureWalletSuiteSyncOn: createEnsureWalletSuiteSyncOn({
             getState: deps.getState,
-            ensureSuiteSyncKeys,
             ensureSubscribedStorage,
-            subscriptionStorage,
             onStorageEnsured,
         }),
     });
