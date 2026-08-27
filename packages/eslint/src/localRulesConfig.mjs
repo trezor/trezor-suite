@@ -95,6 +95,7 @@ export const localRulesConfig = [
         ? [
               {
                   files: [
+                      'networks/**/src/**/*.{ts,tsx}',
                       'packages/**/src/**/*.{ts,tsx}',
                       'suite/**/src/**/*.{ts,tsx}',
                       'suite-common/**/src/**/*.{ts,tsx}',
