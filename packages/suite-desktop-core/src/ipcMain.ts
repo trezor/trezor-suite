@@ -2,7 +2,7 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { ipcMain as baseIpcMain } from 'electron';
 
-import { validateIpcMessage } from '@trezor/ipc-proxy';
+import { isSenderFrameDestroyed, validateIpcMessage } from '@trezor/ipc-proxy';
 import type * as desktopApi from '@trezor/suite-desktop-api';
 
 export type StrictIpcMain = desktopApi.StrictIpcMain<
@@ -12,7 +12,10 @@ export type StrictIpcMain = desktopApi.StrictIpcMain<
 
 const withValidation = <T extends (...args: any[]) => any>(fn: T): T =>
     ((...args: any[]) => {
-        const [ipcEvent] = args;
+        const ipcEvent: Electron.IpcMainEvent = args[0];
+        // If sender frame was closed, it's harmless, so it'll just silently early-return.
+        if (isSenderFrameDestroyed({ ipcEvent })) return;
+        // Failed security validation throws and stops processing.
         validateIpcMessage({ ipcEvent });
 
         return fn(...args);
@@ -24,6 +27,8 @@ const on: Electron.IpcMain['on'] = (channel, listener) =>
 const once: Electron.IpcMain['once'] = (channel, listener) =>
     baseIpcMain.once(channel, withValidation(listener));
 
+// In Electron, 'addListener' is an alias for 'on': https://github.com/electron/electron/blob/fe4cffac230a21114e645834eab06072f4ea2034/docs/api/ipc-main.md?plain=1#L74-L81
+// Currently unused in suite-desktop-core, but in order to cover the interface completely, the same wrapper is applied.
 const addListener: Electron.IpcMain['addListener'] = (channel, listener) =>
     baseIpcMain.addListener(channel, withValidation(listener));
 
