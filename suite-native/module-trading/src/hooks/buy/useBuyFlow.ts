@@ -121,8 +121,7 @@ export const useBuyFlow = (form: BuyFormType) => {
             buyThunks.selectQuoteThunk({
                 quote: candidateQuote,
                 returnUrl,
-                loginRequest: formResponse =>
-                    openBrowserForFormData(formResponse, returnUrl, candidateQuote.orderId),
+                loginRequest: formResponse => openBrowserForFormData(formResponse, returnUrl),
                 nextStep: () => {
                     navigation.navigate(RootStackRoutes.TradingBuyPreview);
                     form.reset();
