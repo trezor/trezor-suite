@@ -28,13 +28,13 @@ import { Box, Column, Icon, Modal, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { InfoIcon } from '@trezor/icons';
 
+import { NetworkSettingsSearchInput } from 'src/components/suite/NetworkList/NetworkSettingsSearchInput';
 import { AddAccountBannerAboutNetworks } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountBannerAboutNetworks';
 import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useAccountSearch, useSelector } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
-import { NetworkSettingsSearchInput } from 'src/views/settings/SettingsCoins/NetworkSettingsSearchInput';
 import { NoNetworkSearchResults } from 'src/views/settings/SettingsCoins/NoNetworkSearchResults';
 import { useNetworkSettingsSearch } from 'src/views/settings/SettingsCoins/useNetworkSettingsSearch';
 
