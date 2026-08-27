@@ -15,6 +15,7 @@ import { SignVerifyPubKeyField } from './SignVerifyPubKeyField';
 import { SignVerifySignatureField } from './SignVerifySignatureField';
 import { SignVerifyTabs } from './SignVerifyTabs';
 import { isVerifySupported, sign, verify } from './signVerifyActions';
+import { getHasSelectableSignatureFormat } from './signVerifyUtils';
 import { type SignVerifyOutcome, type SignVerifyPage } from './types';
 import { useSignVerifyCopyValue } from './useSignVerifyCopyValue';
 import { type SignVerifyFields, useSignVerifyForm } from './useSignVerifyForm';
@@ -103,11 +104,7 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
         }
     };
 
-    // Empty accountTypes means there is only 'normal' accountType and therefore the signatures are same.
-    const signFormatsDiffer =
-        account.networkType === 'bitcoin' &&
-        account.accountType !== 'legacy' &&
-        Object.keys(network?.accountTypes ?? {}).length >= 1;
+    const signFormatsDiffer = getHasSelectableSignatureFormat(account);
     const canVerify = isVerifySupported(account);
     const isCardano = network?.networkType === 'cardano';
 

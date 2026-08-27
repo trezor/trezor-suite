@@ -20,6 +20,7 @@ import { type ErrorCode, type SerializedError } from '@trezor/connect-common/src
 import { type Result } from '@trezor/type-utils';
 
 import * as SIGN_VERIFY from './signVerifyConstants';
+import { getHasSelectableSignatureFormat } from './signVerifyUtils';
 
 export type SignVerifyRootState = DeviceRootState & WalletSettingsRootState;
 
@@ -235,7 +236,11 @@ export const sign =
     ) =>
     async (dispatch: Dispatch, getState: () => SignThunkState, extra: SignThunkDeps) => {
         const { analytics } = extra.services;
-        const signatureFormat = isElectrum ? 'electrum' : 'trezor';
+        // Networks signing in a single format never offered the choice, so reporting one of its
+        // values would invent an answer the user never gave.
+        const formatAttributes = getHasSelectableSignatureFormat(account)
+            ? { signatureFormat: isElectrum ? ('electrum' as const) : ('trezor' as const) }
+            : {};
 
         try {
             const stateParams = await getStateParams(account, getState);
@@ -254,7 +259,7 @@ export const sign =
                         ...getFailureAttributes(response.error),
                         symbol: account.symbol,
                         hex,
-                        signatureFormat,
+                        ...formatAttributes,
                     },
                 });
 
@@ -263,7 +268,7 @@ export const sign =
 
             analytics.report({
                 type: events.coinSignMessageEvent.name,
-                payload: { status: 'success', symbol: account.symbol, hex, signatureFormat },
+                payload: { status: 'success', symbol: account.symbol, hex, ...formatAttributes },
             });
 
             return onSignSuccess(dispatch)(response.payload);
@@ -275,7 +280,7 @@ export const sign =
                     error: asError(error).message,
                     symbol: account.symbol,
                     hex,
-                    signatureFormat,
+                    ...formatAttributes,
                 },
             });
 
