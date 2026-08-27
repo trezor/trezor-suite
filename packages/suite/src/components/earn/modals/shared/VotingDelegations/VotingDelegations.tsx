@@ -47,7 +47,7 @@ export const VotingDelegations = ({ account }: VotingDelegationsProps) => {
                 paddingType="none"
                 hasDivider={false}
             >
-                <VotingDelegationsOptions account={account} resetOnMount />
+                <VotingDelegationsOptions account={account} resetOnMount={false} />
             </CollapsibleBox>
         </Card>
     );
