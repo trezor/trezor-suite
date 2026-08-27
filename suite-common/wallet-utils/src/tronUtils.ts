@@ -45,7 +45,11 @@ export type TronFeeBreakdown = {
     trxBurned: BigNumber;
     coveredEnergy: BigNumber;
     coveredBandwidth: BigNumber;
+    isAccountActivation: boolean;
 };
+
+export const isTronAccountActivation = (tx: GeneralPrecomposedTransaction | undefined) =>
+    !!tx && 'accountActivationFee' in tx && !!tx.accountActivationFee;
 
 const toTrx = (sun: BigNumber, symbol: NetworkSymbol) =>
     new BigNumber(subunitsToUnits({ value: asAmountSubunit(sun), symbol }));
@@ -64,8 +68,8 @@ export const calculateTronFeeBreakdown = (
     const energyConsumed = 'energyConsumed' in tx ? (tx.energyConsumed ?? 0) : 0;
     const bandwidthBytes = tx.bytes ?? 0;
 
-    const isNewAccount = 'accountActivationFee' in tx && !!tx.accountActivationFee;
-    const isBandwidthCovered = isNewAccount
+    const isAccountActivation = isTronAccountActivation(tx);
+    const isBandwidthCovered = isAccountActivation
         ? availableStakedBandwidth >= bandwidthBytes
         : Math.max(availableStakedBandwidth, availableFreeBandwidth) >= bandwidthBytes;
     const coveredBandwidth = new BigNumber(isBandwidthCovered ? bandwidthBytes : 0);
@@ -74,7 +78,12 @@ export const calculateTronFeeBreakdown = (
     const isContractCall = 'feeLimit' in tx && tx.feeLimit !== undefined;
 
     if (!isContractCall) {
-        return { trxBurned: toTrx(new BigNumber(tx.fee), symbol), coveredEnergy, coveredBandwidth };
+        return {
+            trxBurned: toTrx(new BigNumber(tx.fee), symbol),
+            coveredEnergy,
+            coveredBandwidth,
+            isAccountActivation,
+        };
     }
 
     const memoFeeSun = new BigNumber(('memoFee' in tx && tx.memoFee) || 0);
@@ -95,5 +104,5 @@ export const calculateTronFeeBreakdown = (
 
     const trxBurned = toTrx(energyBurnSun.plus(bandwidthBurnSun).plus(memoFeeSun), symbol);
 
-    return { trxBurned, coveredEnergy, coveredBandwidth };
+    return { trxBurned, coveredEnergy, coveredBandwidth, isAccountActivation };
 };

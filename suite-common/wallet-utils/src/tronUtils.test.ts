@@ -2,7 +2,11 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 
-import { calculateTronFeeBreakdown, computeBandwidthFeeLevel } from './tronUtils';
+import {
+    calculateTronFeeBreakdown,
+    computeBandwidthFeeLevel,
+    isTronAccountActivation,
+} from './tronUtils';
 
 const trxSymbol = asNetworkSymbol('trx');
 
@@ -97,6 +101,26 @@ describe(computeBandwidthFeeLevel.name, () => {
     });
 });
 
+describe(isTronAccountActivation.name, () => {
+    it('is true only when the transaction carries an activation fee', () => {
+        expect(isTronAccountActivation(makeNativeTrxTx({ accountActivationFee: '1000000' }))).toBe(
+            true,
+        );
+        expect(isTronAccountActivation(makeNativeTrxTx())).toBe(false);
+        expect(isTronAccountActivation(makeTrc20Tx())).toBe(false);
+    });
+
+    it('is false for a missing or errored transaction', () => {
+        expect(isTronAccountActivation(undefined)).toBe(false);
+        expect(
+            isTronAccountActivation({
+                type: 'error',
+                error: 'AMOUNT_IS_NOT_ENOUGH',
+            } as GeneralPrecomposedTransaction),
+        ).toBe(false);
+    });
+});
+
 describe(calculateTronFeeBreakdown.name, () => {
     it('native TRX: has bandwidth — 0 TRX burned', () => {
         // Tx: bandwidth: 300
@@ -105,6 +129,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         const result = calculateTronFeeBreakdown(makeNativeTrxTx(), makeTronResources(), trxSymbol);
         expect(result?.trxBurned.toNumber()).toBe(0);
         expect(result?.coveredBandwidth.toNumber()).toBe(300);
+        expect(result?.isAccountActivation).toBe(false);
     });
 
     it('native TRX: no bandwidth — TRX burns bandwidth cost', () => {
@@ -199,6 +224,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         const result = calculateTronFeeBreakdown(tx, makeTronResources(), trxSymbol);
         expect(result?.trxBurned.toString()).toBe('1.1');
         expect(result?.coveredBandwidth.toNumber()).toBe(0);
+        expect(result?.isAccountActivation).toBe(true);
     });
 
     it('native TRX to new account: staked bandwidth covers — only the activation fee is burned', () => {
