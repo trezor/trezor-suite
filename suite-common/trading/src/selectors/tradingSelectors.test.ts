@@ -66,6 +66,7 @@ import {
     selectTradingExchangeLastErrorMessage,
     selectTradingExchangeLoadingTimestampAndStatus,
     selectTradingExchangeProviders,
+    selectTradingExchangeQuoteToEstimate,
     selectTradingExchangeQuotes,
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
@@ -120,6 +121,8 @@ import { tradeApiFixtures } from '../__fixtures__/tradeApi';
 import { accountBtc, accountEth } from '../__fixtures__/utils';
 import {
     TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID,
+    TRADING_EXCHANGE_FORM_CEX,
+    TRADING_EXCHANGE_FORM_DEX,
     TRADING_SLIP24_SUPPORTED_NETWORK_TYPES,
 } from '../constants';
 import { getProviderMetadataFixture } from '../reducers/__fixtures__/providerMetadata';
@@ -1724,6 +1727,88 @@ describe('tradingSelectors', () => {
             data: { primaryType: 'Order' },
         },
     } as unknown as ExchangeTrade;
+
+    describe(selectTradingExchangeQuoteToEstimate.name, () => {
+        const offer: ExchangeTrade = {
+            exchange: 'lifi',
+            isDex: true,
+            dexTx: { from: '0xUser', to: '0xRouter', data: '0xswap', value: '1' },
+        };
+
+        const createdTrade: ExchangeTrade = {
+            exchange: 'lifi',
+            isDex: true,
+            dexTx: { from: '0xUser', to: '0xToken', data: '0xapproval', value: '0' },
+        };
+
+        const stateWithOfferAndTrade = {
+            wallet: {
+                trading: {
+                    exchange: { quotes: [offer], selectedQuote: createdTrade },
+                },
+            },
+        } as TradingRootState;
+
+        const formValues = { provider: 'lifi', exchangeType: TRADING_EXCHANGE_FORM_DEX } as const;
+
+        it('should return the offer selected in the form for a native send', () => {
+            expect(
+                selectTradingExchangeQuoteToEstimate(stateWithOfferAndTrade, {
+                    ...formValues,
+                    sendCryptoId: 'ethereum' as CryptoId,
+                }),
+            ).toBe(offer);
+        });
+
+        it('should return the created trade for a token send, which is where its approval calldata lives', () => {
+            expect(
+                selectTradingExchangeQuoteToEstimate(stateWithOfferAndTrade, {
+                    ...formValues,
+                    sendCryptoId:
+                        'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+                }),
+            ).toBe(createdTrade);
+        });
+
+        it('should return the gasless offer selected in the form for a token send before a trade is created', () => {
+            const stateWithGaslessOffer = {
+                wallet: {
+                    trading: {
+                        exchange: { quotes: [gaslessQuote], selectedQuote: undefined },
+                    },
+                },
+            } as TradingRootState;
+
+            expect(
+                selectTradingExchangeQuoteToEstimate(stateWithGaslessOffer, {
+                    provider: '1inchfusion',
+                    exchangeType: TRADING_EXCHANGE_FORM_DEX,
+                    sendCryptoId:
+                        'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+                }),
+            ).toBe(gaslessQuote);
+        });
+
+        it('should return the CEX offer selected in the form for a token send with a leftover created DEX trade', () => {
+            const cexOffer: ExchangeTrade = { exchange: 'changelly', isDex: false };
+            const stateWithLeftoverTrade = {
+                wallet: {
+                    trading: {
+                        exchange: { quotes: [cexOffer], selectedQuote: createdTrade },
+                    },
+                },
+            } as TradingRootState;
+
+            expect(
+                selectTradingExchangeQuoteToEstimate(stateWithLeftoverTrade, {
+                    provider: 'changelly',
+                    exchangeType: TRADING_EXCHANGE_FORM_CEX,
+                    sendCryptoId:
+                        'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+                }),
+            ).toBe(cexOffer);
+        });
+    });
 
     describe(selectTradingDisplayComposedFee.name, () => {
         it.each([

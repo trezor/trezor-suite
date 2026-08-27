@@ -380,6 +380,10 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
             customFeeLimit = customFeeLimit.multipliedBy(formState.ethereumAdjustGasLimit);
         }
 
+        if (formState.ethereumFixedGasLimit) {
+            customFeeLimit = new BigNumber(formState.ethereumFixedGasLimit);
+        }
+
         // increase gas limit for staking, this flow is used only during bump fee
         const isStakeEthTx = !!getTxStakeNameByDataHex(formState.transactionData);
         if (isStakeEthTx) {

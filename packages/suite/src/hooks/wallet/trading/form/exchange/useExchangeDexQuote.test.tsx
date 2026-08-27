@@ -11,6 +11,7 @@ import {
     type TradingExchangeFormProps,
 } from '@suite-common/trading';
 import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 
@@ -56,6 +57,38 @@ const DEX_QUOTE: ExchangeTrade = {
     },
 };
 
+const DEX_QUOTE_WITHOUT_TRANSACTION: ExchangeTrade = {
+    exchange: 'swapkit',
+    send: 'bitcoin' as CryptoId,
+    receive: 'ethereum' as CryptoId,
+    isDex: true,
+};
+
+const SELECTED_DEX_QUOTE: ExchangeTrade = {
+    exchange: 'lifi',
+    send: 'bitcoin' as CryptoId,
+    receive: 'ethereum' as CryptoId,
+    isDex: true,
+    dexTx: {
+        from: '0xUserAddress',
+        to: '0xSelectedDexRouterAddress',
+        data: '0x0987654321fedcba',
+        value: '1000000000000000000',
+    },
+};
+
+const STALE_OUTPUTS: TradingExchangeFormProps['outputs'] = [
+    {
+        type: 'payment',
+        address: '0xstaleAddress',
+        amount: '0.1',
+        fiat: '',
+        currency: { value: 'usd', label: 'USD' },
+        token: null,
+        label: '',
+    },
+];
+
 const buildDefaults = (
     overrides: Partial<TradingExchangeFormProps> = {},
 ): TradingExchangeFormProps => ({
@@ -97,18 +130,22 @@ const mockComposeRequest = jest.fn();
 
 type RenderExchangeDexQuoteParams = {
     defaultValues: TradingExchangeFormProps;
-    dexQuotes?: ExchangeTrade[];
+    quotes?: ExchangeTrade[];
     isFormLoading?: boolean;
     isLoadingQuote?: boolean;
 };
 
 const renderExchangeDexQuote = ({
     defaultValues,
-    dexQuotes = [],
+    quotes = [],
     isFormLoading = false,
     isLoadingQuote = false,
 }: RenderExchangeDexQuoteParams) => {
-    const { services } = createTestCompositionRoot<void, unknown>({});
+    const { services } = createTestCompositionRoot<void, unknown>({
+        preloadedState: {
+            wallet: { trading: { exchange: { quotes } } },
+        },
+    });
 
     return renderHookWithStoreProvider(
         () => {
@@ -123,8 +160,6 @@ const renderExchangeDexQuote = ({
                 isLoadingQuote,
                 exchangeType: defaultValues.exchangeType,
                 sendCryptoSelect: defaultValues.sendCryptoSelect,
-                selectedQuote: undefined,
-                dexQuotes,
                 composeRequest: mockComposeRequest,
             });
 
@@ -143,7 +178,7 @@ describe('useExchangeDexQuote', () => {
     it('derives transaction data, receive address and gas limit from the active DEX quote', async () => {
         const { result } = renderExchangeDexQuote({
             defaultValues: buildDefaults({ exchangeType: TRADING_EXCHANGE_FORM_DEX }),
-            dexQuotes: [DEX_QUOTE],
+            quotes: [DEX_QUOTE],
         });
 
         await waitFor(() => {
@@ -155,29 +190,80 @@ describe('useExchangeDexQuote', () => {
         });
     });
 
-    it('clears transaction data and receive address for a non-DEX exchange type', async () => {
+    it('derives the transaction from the selected quote, not from the best one', async () => {
         const { result } = renderExchangeDexQuote({
             defaultValues: buildDefaults({
-                exchangeType: TRADING_EXCHANGE_FORM_CEX,
-                transactionData: '0xstale',
-                outputs: [
-                    {
-                        type: 'payment',
-                        address: '0xstaleAddress',
-                        amount: '0.1',
-                        fiat: '',
-                        currency: { value: 'usd', label: 'USD' },
-                        token: null,
-                        label: '',
-                    },
-                ],
+                exchangeType: TRADING_EXCHANGE_FORM_DEX,
+                provider: SELECTED_DEX_QUOTE.exchange,
             }),
-            dexQuotes: [DEX_QUOTE],
+            quotes: [DEX_QUOTE_WITHOUT_TRANSACTION, SELECTED_DEX_QUOTE],
+        });
+
+        await waitFor(() => {
+            expect(result.current.methods.getValues('outputs.0.address')).toBe(
+                '0xSelectedDexRouterAddress',
+            );
+            expect(result.current.methods.getValues('transactionData')).toBe('0x0987654321fedcba');
+            expect(result.current.methods.getValues('ethereumAdjustGasLimit')).toBeDefined();
+            expect(result.current.methods.getValues('ethereumFixedGasLimit')).toBeUndefined();
+        });
+    });
+
+    it('falls back to a fixed gas limit when the selected quote has no dexTx', async () => {
+        const { result } = renderExchangeDexQuote({
+            defaultValues: buildDefaults({
+                exchangeType: TRADING_EXCHANGE_FORM_DEX,
+                provider: DEX_QUOTE_WITHOUT_TRANSACTION.exchange,
+                transactionData: '0xstale',
+                outputs: STALE_OUTPUTS,
+            }),
+            quotes: [DEX_QUOTE_WITHOUT_TRANSACTION, SELECTED_DEX_QUOTE],
         });
 
         await waitFor(() => {
             expect(result.current.methods.getValues('transactionData')).toBe('');
             expect(result.current.methods.getValues('outputs.0.address')).toBe('');
+            expect(result.current.methods.getValues('ethereumFixedGasLimit')).toBe(
+                ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+            );
+        });
+
+        expect(result.current.methods.getValues('ethereumAdjustGasLimit')).toBeUndefined();
+    });
+
+    it('does not use a fixed gas limit for a token send without dexTx', async () => {
+        const { result } = renderExchangeDexQuote({
+            defaultValues: buildDefaults({
+                exchangeType: TRADING_EXCHANGE_FORM_DEX,
+                sendCryptoSelect: {
+                    ...SEND_CRYPTO_SELECT,
+                    id: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+                },
+                ethereumFixedGasLimit: ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+            }),
+            quotes: [DEX_QUOTE_WITHOUT_TRANSACTION],
+        });
+
+        await waitFor(() => {
+            expect(result.current.methods.getValues('ethereumFixedGasLimit')).toBeUndefined();
+        });
+    });
+
+    it('clears transaction data and receive address for a non-DEX exchange type', async () => {
+        const { result } = renderExchangeDexQuote({
+            defaultValues: buildDefaults({
+                exchangeType: TRADING_EXCHANGE_FORM_CEX,
+                transactionData: '0xstale',
+                outputs: STALE_OUTPUTS,
+                ethereumFixedGasLimit: ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+            }),
+            quotes: [DEX_QUOTE],
+        });
+
+        await waitFor(() => {
+            expect(result.current.methods.getValues('transactionData')).toBe('');
+            expect(result.current.methods.getValues('outputs.0.address')).toBe('');
+            expect(result.current.methods.getValues('ethereumFixedGasLimit')).toBeUndefined();
         });
     });
 
@@ -197,7 +283,7 @@ describe('useExchangeDexQuote', () => {
                     },
                 ],
             }),
-            dexQuotes: [DEX_QUOTE],
+            quotes: [DEX_QUOTE],
             isFormLoading: true,
         });
 
