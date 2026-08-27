@@ -12,7 +12,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@hookform/resolvers": "^5.4.0",
+        "@hookform/resolvers": "^5.7.1",
         "@suite-common/address": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
@@ -36,7 +36,7 @@
         "@trezor/icons": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "react": "19.2.3",
-        "react-hook-form": "^7.77.0",
+        "react-hook-form": "^7.85.0",
         "react-redux": "9.3.0",
         "redux": "^5.0.1"
     },

@@ -4345,14 +4345,87 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:^5.4.0":
-  version: 5.4.0
-  resolution: "@hookform/resolvers@npm:5.4.0"
+"@hookform/resolvers@npm:^5.7.1":
+  version: 5.7.1
+  resolution: "@hookform/resolvers@npm:5.7.1"
   dependencies:
     "@standard-schema/utils": "npm:^0.3.0"
   peerDependencies:
+    "@sinclair/typebox": ">=0.25.24"
+    "@standard-schema/spec": ^1.0.0
+    "@typeschema/main": ">=0.13.7"
+    "@vinejs/vine": ^2.0.0 || ^3.0.0 || ^4.0.0
+    ajv: ^8.12.0
+    ajv-errors: ^3.0.0
+    ajv-formats: ^2.1.1
+    arktype: ^2.0.0
+    ata-validator: ^1.2.0
+    class-transformer: ">=0.4.0"
+    class-validator: ">=0.12.0"
+    computed-types: ^1.0.0
+    effect: ^3.10.3
+    fluentvalidation-ts: ^3.0.0
+    fp-ts: ^2.7.0
+    io-ts: ^2.0.0
+    joi: ^17.0.0
+    nope-validator: ">=0.12.0"
     react-hook-form: ^7.55.0
-  checksum: 10/c56e03d3707999bf0bebdcf1a8c5fc1cbbca527425d893e2402ead09e3644681581b8d2ad76eec62f72270534f5dc38159e2d6ee4001a0152363b8eddfedfcab
+    superstruct: ">=0.12.0"
+    typanion: ^3.3.2
+    valibot: ">=0.31.0 || ^1.0.0-beta.4 || ^1.0.0-rc"
+    vest: ">=3.0.0"
+    yup: ^1.0.0
+    zod: ^3.25.0 || ^4.0.0
+  peerDependenciesMeta:
+    "@sinclair/typebox":
+      optional: true
+    "@standard-schema/spec":
+      optional: true
+    "@typeschema/main":
+      optional: true
+    "@vinejs/vine":
+      optional: true
+    ajv:
+      optional: true
+    ajv-errors:
+      optional: true
+    ajv-formats:
+      optional: true
+    arktype:
+      optional: true
+    ata-validator:
+      optional: true
+    class-transformer:
+      optional: true
+    class-validator:
+      optional: true
+    computed-types:
+      optional: true
+    effect:
+      optional: true
+    fluentvalidation-ts:
+      optional: true
+    fp-ts:
+      optional: true
+    io-ts:
+      optional: true
+    joi:
+      optional: true
+    nope-validator:
+      optional: true
+    superstruct:
+      optional: true
+    typanion:
+      optional: true
+    valibot:
+      optional: true
+    vest:
+      optional: true
+    yup:
+      optional: true
+    zod:
+      optional: true
+  checksum: 10/27df7989e95373ae133820cc00d0d2e7998fdc444af40179486f92ab000594cbbaab535521fac5f2e3ae127a21e3703926afd1b954e6587a20847db6bea6f3bc
   languageName: node
   linkType: hard
 
@@ -11712,7 +11785,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     lodash: "npm:^4.18.1"
     react: "npm:19.2.3"
-    react-hook-form: "npm:^7.77.0"
+    react-hook-form: "npm:^7.85.0"
     react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
@@ -11769,7 +11842,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
     react: "npm:19.2.3"
-    react-hook-form: "npm:^7.77.0"
+    react-hook-form: "npm:^7.85.0"
   languageName: unknown
   linkType: soft
 
@@ -11849,7 +11922,7 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:^"
     react: "npm:19.2.3"
-    react-hook-form: "npm:^7.77.0"
+    react-hook-form: "npm:^7.85.0"
     react-native: "npm:0.86.0"
     react-native-reanimated: "npm:4.5.0"
     react-redux: "npm:9.3.0"
@@ -12822,13 +12895,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
-    "@hookform/resolvers": "npm:^5.4.0"
+    "@hookform/resolvers": "npm:^5.7.1"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.3"
-    react-hook-form: "npm:^7.77.0"
+    react-hook-form: "npm:^7.85.0"
     react-native: "npm:0.86.0"
     react-native-reanimated: "npm:4.5.0"
   languageName: unknown
@@ -13078,7 +13151,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     react: "npm:19.2.3"
-    react-hook-form: "npm:^7.77.0"
+    react-hook-form: "npm:^7.85.0"
     react-native: "npm:0.86.0"
     react-native-reanimated: "npm:4.5.0"
     react-redux: "npm:9.3.0"
@@ -13144,7 +13217,7 @@ __metadata:
     date-fns: "npm:^4.1.0"
     jotai: "npm:2.17.1"
     react: "npm:19.2.3"
-    react-hook-form: "npm:^7.77.0"
+    react-hook-form: "npm:^7.85.0"
     react-native: "npm:0.86.0"
     react-native-reanimated: "npm:4.5.0"
     react-redux: "npm:9.3.0"
@@ -13839,7 +13912,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     jotai: "npm:2.17.1"
     react: "npm:19.2.3"
-    react-hook-form: "npm:^7.77.0"
+    react-hook-form: "npm:^7.85.0"
     react-native: "npm:0.86.0"
     react-native-reanimated: "npm:4.5.0"
     react-redux: "npm:9.3.0"
@@ -15010,7 +15083,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     expo-linear-gradient: "npm:~57.0.1"
     react: "npm:19.2.3"
-    react-hook-form: "npm:^7.77.0"
+    react-hook-form: "npm:^7.85.0"
     react-native: "npm:0.86.0"
     react-native-reanimated: "npm:4.5.0"
     react-redux: "npm:9.3.0"
@@ -15824,7 +15897,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/sign-verify@workspace:suite/sign-verify"
   dependencies:
-    "@hookform/resolvers": "npm:^5.4.0"
+    "@hookform/resolvers": "npm:^5.7.1"
     "@suite-common/address": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -15850,7 +15923,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.3"
-    react-hook-form: "npm:^7.77.0"
+    react-hook-form: "npm:^7.85.0"
     react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
   languageName: unknown
@@ -15870,7 +15943,7 @@ __metadata:
   dependencies:
     "@evolu/common": "npm:8.0.0-next.5"
     "@evolu/web": "patch:@evolu/web@npm%3A3.0.0-next.1#~/.yarn/patches/@evolu-web-npm-3.0.0-next.1-9b296ca288.patch"
-    "@hookform/resolvers": "npm:^5.4.0"
+    "@hookform/resolvers": "npm:^5.7.1"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
@@ -15901,7 +15974,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
-    react-hook-form: "npm:^7.77.0"
+    react-hook-form: "npm:^7.85.0"
     react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
@@ -17500,7 +17573,7 @@ __metadata:
     postcss-styled-syntax: "npm:^0.7.1"
     qrcode.react: "npm:^4.2.0"
     react: "npm:19.2.3"
-    react-hook-form: "npm:^7.77.0"
+    react-hook-form: "npm:^7.85.0"
     react-intl: "npm:^8.1.3"
     react-svg: "npm:16.4.2"
     storybook: "npm:^10.3.4"
@@ -17968,7 +18041,7 @@ __metadata:
   dependencies:
     "@floating-ui/react": "npm:^0.27.17"
     "@formatjs/intl": "npm:4.1.2"
-    "@hookform/resolvers": "npm:^5.4.0"
+    "@hookform/resolvers": "npm:^5.7.1"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@sentry/core": "npm:10.69.0"
@@ -18142,7 +18215,7 @@ __metadata:
     react-error-boundary: "npm:^6.0.0"
     react-focus-lock: "npm:^2.13.7"
     react-helmet-async: "npm:^2.0.5"
-    react-hook-form: "npm:^7.77.0"
+    react-hook-form: "npm:^7.85.0"
     react-intl: "npm:^8.1.3"
     react-redux: "npm:9.3.0"
     react-select: "npm:^5.10.2"
@@ -40899,12 +40972,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.77.0":
-  version: 7.77.0
-  resolution: "react-hook-form@npm:7.77.0"
+"react-hook-form@npm:^7.85.0":
+  version: 7.85.0
+  resolution: "react-hook-form@npm:7.85.0"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10/0edcc9ebac61991ac300df400917797f67cd41f81cbead16903698ccc04fe5b1eda48960d262c7d3331ae33c6a2517287a10112be6e16c0da73285f09862f4f8
+  checksum: 10/ab3c695866c6f803cb56ac71385a103f12879a72ca353b979b7d159e92cc54de721c988af8ff52ce3bca6181b50bb80e085567aae7819c7a7db1fcb1bfb2565d
   languageName: node
   linkType: hard
 
