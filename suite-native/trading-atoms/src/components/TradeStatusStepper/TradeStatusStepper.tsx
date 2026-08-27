@@ -160,11 +160,13 @@ export const TradeStatusStepper = ({ steps, testID }: TradeStatusStepperProps) =
                                     {title}
                                 </Text>
                             )}
-                            <VStack spacing="sp12">
-                                {stepSubItems?.map(subItem => (
-                                    <Box key={subItem.key}>{subItem}</Box>
-                                ))}
-                            </VStack>
+                            {stepSubItems && stepSubItems?.length > 0 && (
+                                <VStack spacing="sp12">
+                                    {stepSubItems?.map(subItem => (
+                                        <Box key={subItem.key}>{subItem}</Box>
+                                    ))}
+                                </VStack>
+                            )}
                         </VStack>
                     </Box>
                 );

@@ -8,7 +8,9 @@ import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
 import { TradingHistoryDetailStatusStepper } from './TradeStatusStepper/TradingHistoryDetailStatusStepper';
 import { TradingHistoryDetailBuyPaymentBanner } from './TradingHistoryDetailBuyPaymentBanner';
+import { TradingHistoryDetailInfo } from './TradingHistoryDetailInfo';
 import { TradingHistoryDetailStatusAction } from './TradingHistoryDetailStatusAction';
+import { TradingHistoryDetailSupportBanner } from './TradingHistoryDetailSupportBanner';
 import { TradingDetailFeedback } from '../TradeHistoryListItem/TradingDetailFeedback';
 
 type TradingHistoryDetailProps = {
@@ -44,6 +46,11 @@ export const TradingHistoryDetail = ({ orderId }: TradingHistoryDetailProps) => 
                 sendCurrency={fromCurrency}
                 receiveCurrency={toCurrency}
                 country={countryOfResidence}
+            />
+            <TradingHistoryDetailInfo orderId={orderId} />
+            <TradingHistoryDetailSupportBanner
+                providerName={trade.data.exchange}
+                tradeType={trade.tradeType}
             />
             <Footer />
         </VStack>
