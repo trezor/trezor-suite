@@ -2,8 +2,8 @@
 
 ## Unused State and Deps contract members
 
-`no-unused-intersection-members` checks explicit intersections and object properties in local aliases
-whose names end in `State` or `Deps`:
+`no-unused-intersection-members` checks explicit intersections and object properties in local
+contract aliases. By default, aliases whose names end in `State` or `Deps` are contracts:
 
 ```ts
 type RunDeps = LoggerDeps & StorageDeps;
@@ -35,6 +35,33 @@ const run = (deps: RunDeps) => deps.logger.log('started');
 
 Here the `storage` property is reported.
 
+### Contract discovery
+
+In addition to the default `State` and `Deps` suffixes, a type alias is treated as a contract when it
+is used as:
+
+- The `state` or `extra` type of a thunk factory configuration.
+- The `deps` parameter of a `create*` dependency factory.
+
+Projects can opt additional naming conventions into the analysis:
+
+```js
+{
+    'local-rules/no-unused-intersection-members': [
+        'error',
+        { additionalTypeNameSuffixes: ['Context', 'Services'] },
+    ],
+}
+```
+
+Role-based discovery keeps thunk and DI contracts covered even when their names use another suffix,
+while unrelated data types remain outside the rule by default.
+
+An ordinary `*State` alias may describe persisted reducer data rather than a capability contract. To
+avoid treating fields in that data model as locally removable, suffix-only `*State` aliases retain
+the original root-intersection analysis. Nested intersections and object members are enabled when
+the alias is identified as a thunk state contract.
+
 ### Principles
 
 1. **Analyze requirements, not textual references.** A member may be needed through
@@ -57,11 +84,11 @@ Here the `storage` property is reported.
 6. **Prefer false negatives over false positives.** When the analysis cannot prove which member is
    needed, it keeps the whole contract. The rule should suggest a removal only when that removal is
    demonstrably safe for every usage visible in the file.
-7. **Stay local and predictable.** Candidates are type aliases in the current source file, must end
-   in `State` or `Deps`, and must contain an explicit root or nested intersection or object property,
-   including one inside a transparent `services` container. Usage collection is file-local: a
-   consumer needing an additional capability should declare it at the consumer instead of relying
-   on a broader upstream alias. This avoids turning lint into an open-ended whole-program dependency
+7. **Stay local and predictable.** Candidates are explicit intersections and object properties
+   within recognized contract aliases in the current source file, including intersections inside a
+   transparent `services` container. Usage collection is file-local: a consumer needing an
+   additional capability should declare it at the consumer instead of relying on a broader upstream
+   alias. This avoids turning lint into an open-ended whole-program dependency
    analysis.
 
 ### Analysis stages
