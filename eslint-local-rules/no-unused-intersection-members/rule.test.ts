@@ -153,6 +153,22 @@ typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMe
         {
             filename: typeAwareTestFilename,
             code: `
+                    type LoggerDep = { logger: { log: () => void } };
+                    type StorageDep = { storage: { save: () => void } };
+                    type RunDeps = LoggerDep & StorageDep;
+                    type RunKeys = keyof RunDeps;
+                    type RunStorage = RunDeps['storage'];
+                    type PublicRunContract = RunDeps;
+
+                    const run = (deps: RunDeps) => deps.logger.log();
+                    declare const key: RunKeys;
+                    declare const storage: RunStorage;
+                    declare const publicDeps: PublicRunContract;
+                `,
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
                     type LoggerDeps = { logger: { log: () => void } };
                     type StorageDeps = { storage: { save: () => void } };
                     type RunDeps = LoggerDeps & StorageDeps;
