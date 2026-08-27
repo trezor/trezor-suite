@@ -247,6 +247,19 @@ typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMe
                         };
                 `,
         },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type LoggerDeps = { logger: { log: () => void } };
+                    type StorageDeps = { storage: { save: () => void } };
+                    type RunDeps = LoggerDeps & StorageDeps;
+
+                    const run = ({ logger, ...remainingDeps }: RunDeps) => {
+                        logger.log();
+                        return remainingDeps;
+                    };
+                `,
+        },
     ],
     invalid: [
         {
@@ -379,6 +392,40 @@ typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMe
                 {
                     messageId: 'unusedIntersectionMember',
                     data: { memberName: 'UnusedState', typeName: 'ParentState' },
+                },
+            ],
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type LoggerDeps = { logger: { log: () => void } };
+                    type StorageDeps = { storage: { save: () => void } };
+                    type RunDeps = LoggerDeps & StorageDeps;
+
+                    const run = ({ logger }: RunDeps) => logger.log();
+                `,
+            errors: [
+                {
+                    messageId: 'unusedIntersectionMember',
+                    data: { memberName: 'StorageDeps', typeName: 'RunDeps' },
+                },
+            ],
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type LoggerDep = { services: { logger: { log: () => void } } };
+                    type StorageDep = { services: { storage: { save: () => void } } };
+                    type RunDeps = LoggerDep & StorageDep;
+
+                    declare const deps: RunDeps;
+                    const { services: { logger: serviceLogger } } = deps;
+                    serviceLogger.log();
+                `,
+            errors: [
+                {
+                    messageId: 'unusedIntersectionMember',
+                    data: { memberName: 'StorageDep', typeName: 'RunDeps' },
                 },
             ],
         },

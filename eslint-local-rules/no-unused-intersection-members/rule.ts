@@ -166,6 +166,59 @@ const recordContractUsage = (
     }
 };
 
+const getBindingPropertyName = (name: ts.PropertyName | ts.BindingName) => {
+    if (ts.isIdentifier(name) || ts.isStringLiteralLike(name) || ts.isNumericLiteral(name)) {
+        return name.text;
+    }
+
+    if (
+        ts.isComputedPropertyName(name) &&
+        (ts.isStringLiteralLike(name.expression) || ts.isNumericLiteral(name.expression))
+    ) {
+        return name.expression.text;
+    }
+
+    return undefined;
+};
+
+const addBindingPatternUsages = (
+    pattern: ts.ObjectBindingPattern,
+    contract: IntersectionContract,
+    checker: ts.TypeChecker,
+    parentPath: readonly string[] = [],
+) => {
+    if (pattern.elements.length === 0 && parentPath.length > 0) {
+        recordContractUsage({ path: [...parentPath] }, contract, checker);
+
+        return;
+    }
+
+    for (const element of pattern.elements) {
+        if (element.dotDotDotToken !== undefined) {
+            // A rest binding can read every property not explicitly destructured.
+            contract.isOpaque = true;
+
+            return;
+        }
+
+        const propertyName = getBindingPropertyName(element.propertyName ?? element.name);
+
+        if (propertyName === undefined || ts.isArrayBindingPattern(element.name)) {
+            contract.isOpaque = true;
+
+            return;
+        }
+
+        const path = [...parentPath, propertyName];
+
+        if (ts.isObjectBindingPattern(element.name)) {
+            addBindingPatternUsages(element.name, contract, checker, path);
+        } else {
+            recordContractUsage({ path }, contract, checker);
+        }
+    }
+};
+
 const addContractUsage = (
     rootExpression: ts.Expression,
     contract: IntersectionContract,
@@ -230,6 +283,26 @@ const addContractUsage = (
         }
 
         recordContractUsage({ path, requiredType }, contract, checker);
+
+        return;
+    }
+
+    if (
+        ts.isVariableDeclaration(parent) &&
+        parent.initializer === terminalExpression &&
+        ts.isObjectBindingPattern(parent.name)
+    ) {
+        addBindingPatternUsages(parent.name, contract);
+
+        return;
+    }
+
+    if (
+        ts.isVariableDeclaration(parent) &&
+        parent.initializer === terminalExpression &&
+        ts.isObjectBindingPattern(parent.name)
+    ) {
+        addBindingPatternUsages(parent.name, contract, checker, path);
 
         return;
     }
@@ -804,6 +877,18 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
                 addDispatchedThunkUsages(sourceFile, contractsBySymbol, checker);
 
                 const visitNode = (node: ts.Node) => {
+                    if (ts.isParameter(node) && ts.isObjectBindingPattern(node.name)) {
+                        const parameterType =
+                            node.type === undefined
+                                ? checker.getTypeAtLocation(node)
+                                : checker.getTypeFromTypeNode(node.type);
+                        const contracts = getContractsForType(parameterType, contractsBySymbol);
+
+                        for (const contract of contracts) {
+                            addBindingPatternUsages(node.name, contract, checker);
+                        }
+                    }
+
                     if (
                         ts.isExpression(node) &&
                         !isNodeDeclarationName(node) &&
