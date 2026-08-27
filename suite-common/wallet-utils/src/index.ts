@@ -34,6 +34,7 @@ export * from './wrappedNativePendingTxUtils';
 export * from './AmountTypes';
 export * from './baseCurrency';
 export * from './cardanoStakingUtils';
+export * from './connectErrorUtils';
 export * from './amountUtils';
 export * from './bigNumberUtils';
 export * from './feeUnitUtils';
