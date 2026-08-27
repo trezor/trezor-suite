@@ -1,13 +1,8 @@
 import { useTranslation } from '@suite/intl';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import {
-    asAmountSubunit,
-    calculateTronFeeBreakdown,
-    subunitsToUnits,
-} from '@suite-common/wallet-utils';
+import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
 import { Note } from '@trezor/components';
 import { ReceiptIcon } from '@trezor/icons';
-import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { type Account } from 'src/types/wallet';
@@ -27,27 +22,13 @@ export const TransactionReviewTronFeeNotes = ({
     const { trxBurned, coveredEnergy, coveredBandwidth } =
         calculateTronFeeBreakdown(tx, tronResources, account.symbol) ?? {};
 
-    const accountActivationFee = 'accountActivationFee' in tx ? tx.accountActivationFee : undefined;
-
-    const totalTrxBurned =
-        trxBurned && accountActivationFee
-            ? trxBurned.plus(
-                  new BigNumber(
-                      subunitsToUnits({
-                          value: asAmountSubunit(new BigNumber(accountActivationFee)),
-                          symbol: account.symbol,
-                      }),
-                  ),
-              )
-            : trxBurned;
-
     return (
         <>
-            {totalTrxBurned && !totalTrxBurned.isZero() && (
+            {trxBurned && !trxBurned.isZero() && (
                 <Note data-testid="@modal/header/tron-burned" icon={ReceiptIcon}>
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
-                        value={totalTrxBurned.toString()}
+                        value={trxBurned.toString()}
                         symbol={account.symbol}
                     />
                 </Note>

@@ -5816,15 +5816,6 @@ export const messages = defineMessages({
         id: 'TR_FEE_LIMIT',
         defaultMessage: 'Fee limit',
     },
-    TR_TRON_ACCOUNT_ACTIVATION_FEE: {
-        id: 'TR_TRON_ACCOUNT_ACTIVATION_FEE',
-        defaultMessage: 'Activation fee',
-    },
-    TR_TRON_ACCOUNT_ACTIVATION_FEE_TOOLTIP: {
-        id: 'TR_TRON_ACCOUNT_ACTIVATION_FEE_TOOLTIP',
-        defaultMessage:
-            'New TRON accounts require a one-time 1 {networkDisplaySymbol} network fee to activate.',
-    },
     TR_TRON_TX_CREATE_ACCOUNT: {
         id: 'TR_TRON_TX_CREATE_ACCOUNT',
         defaultMessage: 'Create account',
