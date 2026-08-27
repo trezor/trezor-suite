@@ -45725,7 +45725,7 @@ __metadata:
     tsx: "npm:^4.21.0"
     typescript: "npm:@typescript/typescript6@6.0.2"
     typescript-eslint: "npm:^8.67.0"
-    uint8array-tools: "npm:^0.0.8"
+    uint8array-tools: "npm:^0.0.9"
     version-bump-prompt: "npm:^6.1.0"
   dependenciesMeta:
     "@anthropic-ai/claude-code":
@@ -46377,6 +46377,13 @@ __metadata:
   version: 0.0.8
   resolution: "uint8array-tools@npm:0.0.8"
   checksum: 10/db3310f197a9a728e45e19149e5b222b633622796e5ef621809d03986f4959b2c895f2347c065eb16c89a07033ee8b9222b9abb607283615bdaeb3297dedbf01
+  languageName: node
+  linkType: hard
+
+"uint8array-tools@npm:^0.0.9":
+  version: 0.0.9
+  resolution: "uint8array-tools@npm:0.0.9"
+  checksum: 10/ea924e6d574f8c24d94400f0635eeffbeb0190fd2e4b781bb8e43b089c799a3d8c11c9b75d7c68524bc7e18f7ffc3d942f122ecf729746ba51612a8463848943
   languageName: node
   linkType: hard
 
