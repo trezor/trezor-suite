@@ -2,8 +2,7 @@ import { useCallback } from 'react';
 
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
-import { Box, Button, Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { Button, Card, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useYieldDetailNavigation, useYieldFlowData } from '@suite-native/module-earn';
 
@@ -23,7 +22,7 @@ export const YieldVaultBanner = ({ accountKey, tokenContract }: YieldVaultBanner
 
     const { navigateToYieldDetail } = useYieldDetailNavigation();
 
-    const onGoToVaultPress = useCallback(() => {
+    const handleManagePositionPress = useCallback(() => {
         if (!account || !vault) {
             return;
         }
@@ -40,42 +39,28 @@ export const YieldVaultBanner = ({ accountKey, tokenContract }: YieldVaultBanner
         });
     }, [account, vault, navigateToYieldDetail]);
 
-    if (resolutionStatus !== 'resolved' || !vault?.outputToken?.name) return null;
+    if (resolutionStatus !== 'resolved') return null;
 
     return (
-        <Box marginHorizontal="sp16">
-            <Card>
-                <VStack spacing="sp16">
-                    <HStack spacing="sp10">
-                        <Icon name="info" size="mediumLarge" />
-                        <Box flex={1}>
-                            <Text variant="body-sm-strong">
-                                <Translation id="moduleAccounts.accountDetail.stablecoinYield.defiYieldInfoText" />
-                            </Text>
-                        </Box>
-                    </HStack>
+        <VStack marginHorizontal="sp16" spacing="sp16">
+            <Text variant="headline-sm">
+                <Translation id="earn.defiYield" />
+            </Text>
 
-                    <CardDivider />
-
-                    <HStack justifyContent="space-between" alignItems="center">
-                        <Text variant="body-sm" color="contentSecondary">
-                            <Translation id="moduleAccounts.accountDetail.stablecoinYield.vault" />
-                        </Text>
-                        <Text variant="body-sm">{vault.outputToken?.name ?? ''}</Text>
-                    </HStack>
-
-                    <CardDivider />
-
-                    <Button
-                        intent="brand"
-                        priority="secondary"
-                        size="medium"
-                        onPress={onGoToVaultPress}
-                    >
-                        <Translation id="earn.goToVault" />
-                    </Button>
-                </VStack>
+            <Card noShadow>
+                <Text variant="body-md">
+                    <Translation id="moduleAccounts.accountDetail.stablecoinYield.defiYieldInfoText" />
+                </Text>
             </Card>
-        </Box>
+
+            <Button
+                intent="brand"
+                priority="secondary"
+                size="medium"
+                onPress={handleManagePositionPress}
+            >
+                <Translation id="moduleAccounts.accountDetail.stablecoinYield.managePosition" />
+            </Button>
+        </VStack>
     );
 };

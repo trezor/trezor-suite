@@ -107,10 +107,6 @@ export const TransactionListHeader = memo(
                         tokenContract={tokenContract}
                     />
 
-                    {tokenContract && (
-                        <YieldVaultBanner accountKey={accountKey} tokenContract={tokenContract} />
-                    )}
-
                     {hasSelectedAssetTransactions && (
                         <Box paddingTop="sp8" paddingHorizontal="sp16">
                             <AccountDetailActionButtons
@@ -121,6 +117,9 @@ export const TransactionListHeader = memo(
                     )}
                     {isPriceCardDisplayed && (
                         <AssetPriceCard accountKey={accountKey} tokenContract={tokenContract} />
+                    )}
+                    {tokenContract && (
+                        <YieldVaultBanner accountKey={accountKey} tokenContract={tokenContract} />
                     )}
                     {isStellarTokenActionsDisplayed && (
                         <StellarTokenActions
