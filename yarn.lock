@@ -15489,7 +15489,6 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
-    "@suite-common/message-system": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
