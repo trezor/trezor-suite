@@ -95,7 +95,8 @@ the alias is identified as a thunk state contract.
 
 1. At `Program:exit`, collect matching aliases and resolve every root, nested, or service-wrapped
    intersection and object member with the TypeScript type checker.
-2. Mark contracts as opaque when they enter a generic context that the rule cannot safely interpret.
+2. Mark contracts as opaque when they enter a type-level context that the rule cannot safely
+   interpret.
 3. Read `createThunk` configuration and add the state/dependency requirements of dispatched child
    thunks.
 4. Traverse runtime expressions and record property paths, expected argument types, and assignments.
@@ -113,7 +114,8 @@ The complete alias is kept when the implementation contains an ambiguous use, in
 
 - Dynamic access such as `deps[key]`.
 - Passing the whole value to a call whose expected parameter type cannot be resolved.
-- Using the alias as a generic call or type argument outside the supported `createThunk` shape.
+- Deriving another type with `keyof`, indexed access, conditional or mapped types, or a public alias.
+- Using the alias as a generic call or type argument outside supported contract composition.
 - A bare value escaping without a property path or expected type.
 - Recursive, callable, constructable, or indexed structures that cannot be safely composed from
   individual members.

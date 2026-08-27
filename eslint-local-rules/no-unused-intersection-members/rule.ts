@@ -576,14 +576,110 @@ const isCreateThunkCall = (node: ts.CallExpression, checker: ts.TypeChecker) => 
         });
 };
 
-// Generic consumers may use a contract through constraints or inference without an observable
-// property path. createThunk is excluded because its state and extra contracts are handled below.
-const markContractsUsedByGenericCallsAsOpaque = (
+// Type-level consumers may depend on members without producing an observable runtime property path.
+// Supported contract composition and thunk configuration remain transparent; derivation and generic
+// contexts keep the source contract intact.
+const markContractsUsedByOpaqueTypePositions = (
     sourceFile: ts.SourceFile,
     contractsBySymbol: ReadonlyMap<ts.Symbol, IntersectionContract[]>,
     checker: ts.TypeChecker,
 ) => {
-    const visitTypeNode = (node: ts.Node) => {
+    const supportedThunkConfigProperties = new Set<ts.Declaration>();
+    const supportedThunkCallbackAliases = new Set<ts.Symbol>();
+    const collectThunkConfigProperties = (node: ts.Node) => {
+        if (ts.isCallExpression(node) && isCreateThunkCall(node, checker)) {
+            const configTypeNode = node.typeArguments?.[2];
+            const callback = node.arguments[1];
+
+            if (callback !== undefined) {
+                const callbackType = checker.getTypeAtLocation(callback);
+
+                if (callbackType.aliasSymbol !== undefined) {
+                    supportedThunkCallbackAliases.add(callbackType.aliasSymbol);
+                }
+            }
+
+            if (configTypeNode !== undefined) {
+                const configType = checker.getTypeFromTypeNode(configTypeNode);
+
+                for (const propertyName of ['state', 'extra']) {
+                    checker
+                        .getPropertyOfType(configType, propertyName)
+                        ?.declarations?.forEach(declaration =>
+                            supportedThunkConfigProperties.add(declaration),
+                        );
+                }
+            }
+        }
+
+        ts.forEachChild(node, collectThunkConfigProperties);
+    };
+    ts.forEachChild(sourceFile, collectThunkConfigProperties);
+
+    const isInsideSupportedThunkConfig = (node: ts.Node) => {
+        let currentNode: ts.Node | undefined = node.parent;
+
+        while (currentNode !== undefined && !ts.isStatement(currentNode)) {
+            if (
+                ts.isPropertySignature(currentNode) &&
+                supportedThunkConfigProperties.has(currentNode)
+            ) {
+                return true;
+            }
+
+            currentNode = currentNode.parent;
+        }
+
+        return false;
+    };
+
+    const isOpaqueTypePosition = (node: ts.TypeReferenceNode) => {
+        if (isInsideSupportedThunkConfig(node)) {
+            return false;
+        }
+
+        let currentNode: ts.Node = node;
+        let { parent }: { parent: ts.Node | undefined } = node;
+
+        while (parent !== undefined && !ts.isStatement(parent)) {
+            if (
+                ts.isTypeOperatorNode(parent) ||
+                ts.isIndexedAccessTypeNode(parent) ||
+                ts.isConditionalTypeNode(parent) ||
+                ts.isMappedTypeNode(parent)
+            ) {
+                return true;
+            }
+
+            if (
+                (ts.isTypeReferenceNode(parent) || ts.isCallExpression(parent)) &&
+                parent.typeArguments?.includes(currentNode as ts.TypeNode)
+            ) {
+                return true;
+            }
+
+            if (ts.isTypeAliasDeclaration(parent)) {
+                const containingSymbol = checker.getSymbolAtLocation(parent.name);
+
+                return (
+                    containingSymbol === undefined ||
+                    (!contractsBySymbol.has(containingSymbol) &&
+                        !supportedThunkCallbackAliases.has(containingSymbol))
+                );
+            }
+
+            if (ts.isParameter(parent) || ts.isVariableDeclaration(parent)) {
+                return false;
+            }
+
+            currentNode = parent;
+            parent = currentNode.parent;
+        }
+
+        return ts.isInterfaceDeclaration(parent);
+    };
+
+    const visitNode = (node: ts.Node) => {
         if (ts.isTypeReferenceNode(node)) {
             const type = checker.getTypeFromTypeNode(node);
             const contracts =
@@ -591,21 +687,11 @@ const markContractsUsedByGenericCallsAsOpaque = (
                     ? []
                     : (contractsBySymbol.get(type.aliasSymbol) ?? []);
 
-            for (const contract of contracts) {
-                contract.isOpaque = true;
+            if (isOpaqueTypePosition(node)) {
+                for (const contract of contracts) {
+                    contract.isOpaque = true;
+                }
             }
-        }
-
-        ts.forEachChild(node, visitTypeNode);
-    };
-
-    const visitNode = (node: ts.Node) => {
-        if (ts.isCallExpression(node) && !isCreateThunkCall(node, checker)) {
-            node.typeArguments?.forEach(visitTypeNode);
-        }
-
-        if (ts.isTypeReferenceNode(node)) {
-            node.typeArguments?.forEach(visitTypeNode);
         }
 
         ts.forEachChild(node, visitNode);
@@ -622,17 +708,18 @@ const getConfigPropertyType = (
     const configTypeNode = createThunkCall.typeArguments?.[2];
 
     if (configTypeNode === undefined) {
-        return [];
+        return undefined;
     }
 
     const configType = checker.getTypeFromTypeNode(configTypeNode);
     const property = checker.getPropertyOfType(configType, propertyName);
 
     if (property === undefined) {
-        return [];
+        return undefined;
     }
 
     const declaration = property.valueDeclaration ?? property.declarations?.[0] ?? configTypeNode;
+
     return checker.getTypeOfSymbolAtLocation(property, declaration);
 };
 
@@ -943,9 +1030,7 @@ const addRequirementsFromDispatches = (
     depsContracts: readonly IntersectionContract[],
     checker: ts.TypeChecker,
 ) => {
-    const addRequirements = (
-        requirements: ReturnType<typeof getDispatchedThunkRequirements>,
-    ) => {
+    const addRequirements = (requirements: ReturnType<typeof getDispatchedThunkRequirements>) => {
         for (const requirement of requirements) {
             if (requirement.stateType !== undefined) {
                 for (const stateContract of stateContracts) {
@@ -1252,7 +1337,7 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
 
                 // Record ambiguous escapes and hidden child-thunk requirements before evaluating
                 // ordinary expression and property-path usages.
-                markContractsUsedByGenericCallsAsOpaque(sourceFile, contractsBySymbol, checker);
+                markContractsUsedByOpaqueTypePositions(sourceFile, contractsBySymbol, checker);
                 addDispatchedThunkUsages(sourceFile, contractsBySymbol, checker);
 
                 const visitNode = (node: ts.Node) => {
