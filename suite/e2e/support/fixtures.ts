@@ -12,6 +12,7 @@ import { SolanaStakingMock } from './mocks/solanaStakingMock';
 import { TradingMockNew } from './mocks/trading/tradingMockNew';
 import { TradingMock } from './mocks/tradingMock';
 import { YieldMock } from './mocks/yieldMock';
+import { ActivityPage } from './pageObjects/activityPage';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
 import { AssetsSection } from './pageObjects/assetsSection';
 import { ConnectPermissionsModal } from './pageObjects/connectPermissionsModal';
@@ -39,6 +40,7 @@ import { suiteBaseTest } from './testExtends/suiteBaseFixture';
 import { TradingStoreFixture } from './tradingStore';
 
 type Fixtures = {
+    activityPage: ActivityPage;
     dashboardPage: DashboardPage;
     settingsPage: SettingsPage;
     guidePanel: GuidePanel;
@@ -86,6 +88,9 @@ type Fixtures = {
 };
 
 const test = suiteBaseTest.extend<Fixtures>({
+    activityPage: async ({ page }, use) => {
+        await use(new ActivityPage(page));
+    },
     dashboardPage: async ({ page, device, devicePrompt }, use) => {
         await use(new DashboardPage(page, device, devicePrompt));
     },
