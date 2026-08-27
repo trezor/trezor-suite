@@ -571,8 +571,111 @@ typeAwareRuleTester.run('no-unused-intersection-members', noUnusedIntersectionMe
                     };
 
                     const run = (deps: RunDeps) => deps.logger.log();
-                `,
+            `,
             errors: [{ messageId: 'unusedIntersectionMember' }],
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type ChildState = { child: { ready: boolean } };
+                    type UnusedState = { unused: { ready: boolean } };
+                    type ChildDeps = { logger: { log: () => void } };
+                    type UnusedDeps = { storage: { save: () => void } };
+                    type ParentState = ChildState & UnusedState;
+                    type ParentDeps = ChildDeps & UnusedDeps;
+                    type ParentConfig = { state: ParentState; extra: ParentDeps };
+                    type ChildAction = (
+                        dispatch: unknown,
+                        getState: () => ChildState,
+                        extra: ChildDeps,
+                    ) => void;
+                    type ParentCallback = (
+                        payload: void,
+                        api: {
+                            dispatch: (action: ChildAction) => unknown;
+                            getState: () => ParentState;
+                            extra: ParentDeps;
+                        },
+                    ) => void;
+
+                    declare const childThunk: () => ChildAction;
+                    declare const createThunk: <Result, Payload, Config>(
+                        name: string,
+                        callback: (
+                            payload: Payload,
+                            api: {
+                                dispatch: (action: ChildAction) => unknown;
+                                getState: () => Config extends { state: infer State } ? State : never;
+                                extra: Config extends { extra: infer Deps } ? Deps : never;
+                            },
+                        ) => Result,
+                    ) => unknown;
+
+                    const parentCallback: ParentCallback = (_, api) => {
+                        api.dispatch(childThunk());
+                    };
+                    const thunkFactories = { createThunk };
+
+                    thunkFactories.createThunk<
+                        void,
+                        void,
+                        ParentConfig
+                    >('parent', parentCallback);
+                `,
+            errors: [
+                {
+                    messageId: 'unusedIntersectionMember',
+                    data: { memberName: 'UnusedState', typeName: 'ParentState' },
+                },
+                {
+                    messageId: 'unusedIntersectionMember',
+                    data: { memberName: 'UnusedDeps', typeName: 'ParentDeps' },
+                },
+            ],
+        },
+        {
+            filename: typeAwareTestFilename,
+            code: `
+                    type ServiceDeps = { services: { logger: { log: () => void } } };
+                    type RunDeps = {
+                        services: { logger: { log: () => void } };
+                        thunks: { run: () => void };
+                        storage: { save: () => void };
+                    };
+                    type ChildAction = (
+                        dispatch: unknown,
+                        getState: () => unknown,
+                        extra: ServiceDeps,
+                    ) => void;
+
+                    declare const complete: (api: {
+                        dispatch: (action: ChildAction) => unknown;
+                    }) => void;
+                    declare const createThunk: <Result, Payload, Config>(
+                        name: string,
+                        callback: (
+                            payload: Payload,
+                            api: {
+                                dispatch: (action: ChildAction) => unknown;
+                                extra: Config extends { extra: infer Deps } ? Deps : never;
+                            },
+                        ) => Result,
+                    ) => unknown;
+
+                    createThunk<void, void, { extra: RunDeps }>(
+                        'run',
+                        (_, { dispatch, extra }) => {
+                            complete({ dispatch });
+                            extra.thunks.run();
+                        },
+                    );
+                `,
+            errors: [
+                {
+                    messageId: 'unusedContractMember',
+                    data: { memberName: 'storage', typeName: 'RunDeps' },
+                },
+            ],
         },
     ],
 } as Parameters<typeof typeAwareRuleTester.run>[2]);
