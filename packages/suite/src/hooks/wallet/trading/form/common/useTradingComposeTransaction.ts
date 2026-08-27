@@ -115,6 +115,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             network: state.network,
             feeInfo: state.feeInfo,
             feeEstimationRecipient,
+            assumeNewAccount: true,
         };
     }, [state, feeEstimationRecipient]);
 

@@ -33,8 +33,8 @@ const account = {
 
 const formState = { outputs: [{ address: '', amount: '1' }] } as any;
 
-const composeContext = (feeEstimationRecipient?: string) =>
-    ({ account, network, feeEstimationRecipient }) as any;
+const composeContext = (feeEstimationRecipient?: string, assumeNewAccount?: boolean) =>
+    ({ account, network, feeEstimationRecipient, assumeNewAccount }) as any;
 
 function assertComposed(
     tx: PrecomposedTransaction | undefined,
@@ -44,12 +44,12 @@ function assertComposed(
     }
 }
 
-const dispatchCompose = (feeEstimationRecipient?: string) =>
+const dispatchCompose = (feeEstimationRecipient?: string, assumeNewAccount?: boolean) =>
     configureMockStore({})
         .dispatch(
             composeTronTransactionFeeLevelsThunk({
                 formState,
-                composeContext: composeContext(feeEstimationRecipient),
+                composeContext: composeContext(feeEstimationRecipient, assumeNewAccount),
             }),
         )
         .unwrap();
@@ -89,5 +89,14 @@ describe('composeTronTransactionFeeLevelsThunk – cold recipient activation fee
         assertComposed(normal);
         expect(normal.accountActivationFee).toBeUndefined();
         expect(normal.fee).toBe('0');
+    });
+
+    it('assumeNewAccount charges the activation fee without asking the backend', async () => {
+        const { normal } = await dispatchCompose(undefined, true);
+
+        expect(getAccountInfo).not.toHaveBeenCalled();
+        assertComposed(normal);
+        expect(normal.accountActivationFee).toBe('1000000');
+        expect(normal.fee).toBe('1100000');
     });
 });
