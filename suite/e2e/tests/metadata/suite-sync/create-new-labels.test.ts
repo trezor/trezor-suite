@@ -117,14 +117,25 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await walletPage.exportTransactions('csv');
                 const download = await downloadPromise;
 
-                expect(download.suggestedFilename()).toContain(
-                    expectedAccount.label.replaceAll(' ', '_'),
+                expect(download.suggestedFilename()).toMatch(
+                    new RegExp(
+                        `^${expectedAccount.label.replaceAll(' ', '_')}_\\d{8}T\\d{6}\\.csv$`,
+                    ),
                 );
 
                 const downloadPath = await download.path();
                 const exportedTransactions = fs.readFileSync(downloadPath, 'utf8');
+                const [header, ...rows] = exportedTransactions
+                    .split('\n')
+                    .map(row => row.split(','));
+                const transactionIdColumnIndex = header?.indexOf('Transaction ID') ?? -1;
+                const labelColumnIndex = header?.indexOf('Label') ?? -1;
+                const exportedOutputLabels = rows
+                    .filter(row => row[transactionIdColumnIndex] === expectedOutput.txId)
+                    .map(row => row[labelColumnIndex])
+                    .filter(label => label !== '');
 
-                expect(exportedTransactions).toContain(expectedOutput.label);
+                expect(exportedOutputLabels).toEqual([expectedOutput.label]);
             });
         },
     );
