@@ -94,6 +94,7 @@ export const AccountListBaseItem = ({
             onPress={onPress}
             accessibilityRole="button"
             accessibilityLabel={accountLabel}
+            testID={isFreshAddress ? '@trading/account-list/fresh-address' : undefined}
         >
             <HStack
                 alignItems="center"
