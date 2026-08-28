@@ -13,14 +13,8 @@ const DEFAULT_TIMEOUT_MIN = 120;
 function buildAgentPrompt(context: PrContext): string {
     // Slim brief for the agent prompt — context.json fields minus harness plumbing.
     const brief = {
-        prNumber: context.prNumber,
-        prTitle: context.prTitle,
-        prBody: context.prBody,
-        issue: context.issue && {
-            number: context.issue.number,
-            title: context.issue.title,
-            body: context.issue.body,
-        },
+        prs: context.prs,
+        issues: context.issues,
         deviceModel: context.deviceModel,
         contextImages: context.contextImages,
     };

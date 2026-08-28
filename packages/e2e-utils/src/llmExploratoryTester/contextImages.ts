@@ -54,13 +54,13 @@ function collectAttachmentUrls(texts: string[]): string[] {
     return attachmentUrls;
 }
 
-function extensionFromContentType(contentType: string): string {
+function extensionFromContentType(contentType: string): string | null {
     if (contentType.includes('jpeg') || contentType.includes('jpg')) return '.jpg';
     if (contentType.includes('gif')) return '.gif';
     if (contentType.includes('webp')) return '.webp';
     if (contentType.includes('png')) return '.png';
 
-    throw new Error(`unsupported attachment content-type: ${contentType}`);
+    return null;
 }
 
 export async function downloadAttachmentImages(texts: string[]): Promise<string[]> {
@@ -85,6 +85,10 @@ export async function downloadAttachmentImages(texts: string[]): Promise<string[
         }
 
         const extension = extensionFromContentType(contentType);
+        if (extension === null) {
+            log(`[context] skipped ${url} (content-type: ${contentType})`);
+            continue;
+        }
 
         const bytes = Buffer.from(await response.arrayBuffer());
         if (bytes.byteLength > MAX_ATTACHMENT_BYTES) {

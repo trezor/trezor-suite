@@ -12,21 +12,21 @@ export const DEVICE_MODELS = ['T1B1', 'T2T1', 'T3B1', 'T3T1', 'T3W1'] as const;
 
 export const DeviceModelSchema = z.enum(DEVICE_MODELS);
 
+const GithubItemSchema = z.object({
+    number: z.number().int().positive(),
+    title: z.string(),
+    body: z.string(),
+    url: z.string(),
+});
+
 // Harness fields (urls/model) plus the slim brief the QA agent sees.
 export const PrContextSchema = z.object({
     prNumber: z.number().int().positive(),
     prUrl: z.string(),
     prTitle: z.string(),
     prBody: z.string(),
-    // Closing issue from the PR's closingIssuesReferences, when present.
-    issue: z
-        .object({
-            number: z.number().int().positive(),
-            title: z.string(),
-            body: z.string(),
-            url: z.string(),
-        })
-        .nullable(),
+    prs: z.array(GithubItemSchema),
+    issues: z.array(GithubItemSchema),
     deviceModel: DeviceModelSchema,
     suiteUrl: z.string(),
     contextImages: z.array(z.string()),
