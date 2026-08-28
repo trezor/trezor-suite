@@ -18,7 +18,6 @@ export * from './blockchain/blockchainReducer';
 export * from './blockchain/blockchainSelectors';
 export * from './blockchain/blockchainSubscriptionMiddleware';
 export * from './blockchain/blockchainThunks';
-export * from './device/deviceAddressUtils';
 export * from './device/deviceSelectors';
 export * from './device/deviceThunks';
 export * from './device/entropyCheckThunks';
