@@ -149,14 +149,13 @@ export const getMaxStakeAmountFixture: GetMaxStakeAmountFixture[] = [
     },
     {
         description:
-            'ADA: withdrawal reserve is 0, so once above the fee buffer the max amount is the full balance',
+            'ADA: delegation is liquid, so both the fee buffer and the withdrawal reserve are 0 and the max amount is the full balance',
         args: { balance: '5', symbol: 'ada' },
         result: '5',
     },
     {
-        description:
-            'ADA: never returns a negative amount when the balance is below the fee buffer',
+        description: 'ADA: a dust balance is still fully stakeable because nothing is reserved',
         args: { balance: '0.001', symbol: 'ada' },
-        result: '0',
+        result: '0.001',
     },
 ];
