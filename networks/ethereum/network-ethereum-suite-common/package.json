@@ -5,6 +5,10 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
+    "exports": {
+        "./network-module": "./src/EthereumNetworkSuiteCommonNetworkModule.ts",
+        ".": "./src/index.ts"
+    },
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
@@ -13,7 +17,11 @@
     },
     "dependencies": {
         "@noble/hashes": "^2.0.1",
+        "@suite-common/calldata": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "@trezor/network-ethereum": "workspace:*",
-        "@trezor/network-module-suite-common-types": "workspace:*"
+        "@trezor/network-module-suite-common-types": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "viem": "^2.54.1"
     }
 }

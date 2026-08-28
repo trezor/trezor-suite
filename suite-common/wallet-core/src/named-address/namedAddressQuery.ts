@@ -1,12 +1,7 @@
+import type { NetworkModuleRepositoryDep, NetworkSymbol } from '@suite-common/networks';
 import { commonQueryKeys } from '@suite-common/react-query';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    isSymbolSupportingNamedAddress,
-    looksLikeEvmAddress,
-    looksLikeNamedAddress,
-} from '@suite-common/wallet-utils';
 
-import { resolveNamedAddress, reverseResolveAddress } from './resolveNamedAddress';
+import { type SymbolNamedAddressResolver, getNamedAddressSupport } from './namedAddressResolver';
 
 const STALE_TIME_MS = 10 * 60 * 1000;
 const GC_TIME_MS = 60 * 60 * 1000;
@@ -24,20 +19,19 @@ export const NAMED_ADDRESS_RESOLVE_DEBOUNCE_MS = 300;
 export type ResolveMode = 'forward' | 'reverse' | 'idle';
 
 export const getResolveMode = (
+    resolver: SymbolNamedAddressResolver | undefined,
     value: string,
-    symbol: NetworkSymbol | null | undefined,
 ): ResolveMode => {
-    if (!symbol || !isSymbolSupportingNamedAddress(symbol)) return 'idle';
-    if (looksLikeNamedAddress(value)) return 'forward';
-    if (looksLikeEvmAddress(value)) return 'reverse';
+    if (!resolver) return 'idle';
+    if (resolver.isNameLike(value)) return 'forward';
+    if (resolver.isAddressLike(value)) return 'reverse';
 
     return 'idle';
 };
 
-export const getResolveFn = (mode: ResolveMode) => {
-    if (mode === 'forward') return resolveNamedAddress;
-    if (mode === 'reverse') return reverseResolveAddress;
-    throw new Error(`Unsupported resolve mode: ${mode}`);
+export type ResolveNamedAddressQueryParams = NetworkModuleRepositoryDep & {
+    value: string;
+    symbol: NetworkSymbol | null | undefined;
 };
 
 /**
@@ -48,19 +42,30 @@ export const getResolveFn = (mode: ResolveMode) => {
  * The value is trimmed here rather than by the caller: an untrimmed key would silently split
  * "vitalik.eth" and " vitalik.eth " into two entries.
  */
-export const getResolveNamedAddressQueryOptions = (
-    value: string,
-    symbol: NetworkSymbol | null | undefined,
-) => {
+export const getResolveNamedAddressQueryOptions = ({
+    networkModuleRepository,
+    value,
+    symbol,
+}: ResolveNamedAddressQueryParams) => {
     const trimmedValue = value.trim();
+    const { resolver } = getNamedAddressSupport(networkModuleRepository, symbol);
 
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is symbol + value; the resolver is the network module those two select, and a live object never belongs in a key
     return {
         queryKey: commonQueryKeys.resolveNamedAddress(symbol ?? 'unknown', trimmedValue),
-        queryFn: () =>
-            getResolveFn(getResolveMode(trimmedValue, symbol))(
-                trimmedValue,
-                symbol as NetworkSymbol,
-            ),
+        queryFn: () => {
+            const mode = getResolveMode(resolver, trimmedValue);
+
+            // `enabled` keeps the hook off this path; a direct caller reaching it asked to
+            // resolve something no resolver on this network can answer.
+            if (!resolver || !symbol || mode === 'idle') {
+                throw new Error(`Unsupported resolve mode: ${mode}`);
+            }
+
+            return mode === 'forward'
+                ? resolver.resolveNamedAddress(trimmedValue, symbol)
+                : resolver.reverseResolveAddress(trimmedValue, symbol);
+        },
         staleTime: STALE_TIME_MS,
         gcTime: GC_TIME_MS,
         retry: RETRY_COUNT,

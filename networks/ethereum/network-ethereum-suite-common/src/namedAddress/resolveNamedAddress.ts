@@ -1,6 +1,6 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
 
-import { resolveViaBlockbook } from './resolveNamedAddresBB';
+import { resolveViaBlockbook } from './resolveNamedAddressBB';
 import { resolveNamedAddressOnchain } from './universalResolver';
 
 /**
@@ -10,7 +10,7 @@ import { resolveNamedAddressOnchain } from './universalResolver';
  * A `null` result is a definitive "no record" answer, so only a thrown error — an unreachable
  * or erroring backend — is worth retrying through Blockbook.
  */
-export const resolveNamedAddress = async (value: string, symbol: NetworkSymbol) => {
+export const resolveNamedAddress = async (value: string, symbol: EthereumNetworkSymbol) => {
     try {
         return await resolveNamedAddressOnchain(value, symbol);
     } catch {
@@ -18,8 +18,5 @@ export const resolveNamedAddress = async (value: string, symbol: NetworkSymbol) 
     }
 };
 
-export {
-    type NamedAddressProfile,
-    resolveNamedProfileOnchain as resolveNamedProfile,
-    reverseResolveAddressOnchain as reverseResolveAddress,
-} from './universalResolver';
+// Re-exported so the resolver capability reaches the whole implementation through one import.
+export { resolveNamedProfileOnchain, reverseResolveAddressOnchain } from './universalResolver';

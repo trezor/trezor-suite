@@ -12,8 +12,15 @@ import { closeModal, openModal } from '@suite/modal';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { type AddressValidatorDep } from '@suite-common/address';
 import { mockAddressValidator } from '@suite-common/address/mocks';
-import { type FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
-import { mockFindNetworkSymbolForProtocol } from '@suite-common/networks/mocks';
+import {
+    type FindNetworkSymbolForProtocolDep,
+    type NetworkModuleRepositoryDep,
+} from '@suite-common/networks';
+import {
+    mockFindNetworkSymbolForProtocol,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { mockMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations-types/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
@@ -96,6 +103,7 @@ type SendFormTestServices = AddressValidatorDep &
     GetIsWindowVisibleDep &
     GetTradedAccountKeysDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
+    NetworkModuleRepositoryDep &
     SuiteSyncDep;
 
 const services: SendFormTestServices = {
@@ -109,6 +117,7 @@ const services: SendFormTestServices = {
     getIsWindowVisible: mockGetIsWindowVisible(),
     getTradedAccountKeys: mockGetTradedAccountKeys(),
     migrateSuiteSyncLabelsForRbfTransaction: mockMigrateSuiteSyncLabelsForRbfTransaction(),
+    networkModuleRepository: mockNetworkModuleRepository({ get: () => mockNetworkModule() }),
     suiteSync: mockSuiteSync(),
 };
 const extraActions: OnModalCancelDep = { onModalCancel: closeModal };

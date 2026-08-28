@@ -1,12 +1,12 @@
-import { resolveViaBlockbook } from './resolveNamedAddresBB';
 import { resolveNamedAddress } from './resolveNamedAddress';
+import { resolveViaBlockbook } from './resolveNamedAddressBB';
 import { resolveNamedAddressOnchain } from './universalResolver';
 
 jest.mock('./universalResolver', () => ({
     resolveNamedAddressOnchain: jest.fn(),
 }));
 
-jest.mock('./resolveNamedAddresBB', () => ({
+jest.mock('./resolveNamedAddressBB', () => ({
     resolveViaBlockbook: jest.fn(),
 }));
 

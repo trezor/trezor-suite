@@ -1,8 +1,6 @@
 import { encodeErrorResult, parseAbi } from 'viem';
 
-import { QueryClient } from '@suite-common/react-query';
-
-import { getResolveNamedAddressQueryOptions } from './namedAddressQuery';
+import { resolveNamedAddress } from './resolveNamedAddress';
 
 const mockBlockchainEvmRpcCall = jest.fn();
 const mockGetAccountInfo = jest.fn();
@@ -16,26 +14,18 @@ jest.mock('@trezor/connect', () => ({
 }));
 
 /**
- * Guards the number of requests a single resolution costs, end to end through the real
- * resolver, orchestrator and query layers. A backend that answers a bare "execution reverted"
- * — which is what both Blockbook and a direct RPC actually send — used to cost twelve requests
- * for one mistyped name: three tiers of fallback times four query attempts.
+ * Guards the number of requests a single resolution costs, through the real resolver and its
+ * Blockbook fallback. A backend that answers a bare "execution reverted" — which is what both
+ * Blockbook and a direct RPC actually send — used to cost twelve requests for one mistyped
+ * name: three tiers of fallback times four query attempts. The query layer contributes the
+ * retry half of that product; `namedAddressQuery.test.ts` guards it.
  */
 const RESOLVED_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 
 describe('resolution request cost', () => {
-    let queryClient: QueryClient;
-
     beforeEach(() => {
         mockBlockchainEvmRpcCall.mockReset();
         mockGetAccountInfo.mockReset();
-        queryClient = new QueryClient();
-    });
-
-    // Each cached query holds a garbage-collection timer for its whole `gcTime`, which would
-    // otherwise keep the test runner alive long after the assertions finish.
-    afterEach(() => {
-        queryClient.clear();
     });
 
     it('costs two requests and no error for a name that does not exist', async () => {
@@ -44,13 +34,11 @@ describe('resolution request cost', () => {
             error: { message: 'execution reverted' },
         });
 
-        const resolved = await queryClient.ensureQueryData(
-            getResolveNamedAddressQueryOptions('cult.et', 'eth'),
-        );
+        const resolved = await resolveNamedAddress('cult.et', 'eth');
 
         // The batched call, then the bare `addr` in case the resolver lacks `multicall`.
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(2);
-        // A definitive answer, so no Blockbook fallback and no query retry.
+        // A definitive answer, so no Blockbook fallback.
         expect(mockGetAccountInfo).not.toHaveBeenCalled();
         // Resolving to `null` rather than rejecting is what keeps this out of the error log.
         expect(resolved).toBeNull();
@@ -72,9 +60,7 @@ describe('resolution request cost', () => {
             },
         });
 
-        const resolved = await queryClient.ensureQueryData(
-            getResolveNamedAddressQueryOptions('vitalik.eth', 'eth'),
-        );
+        const resolved = await resolveNamedAddress('vitalik.eth', 'eth');
 
         expect(resolved).toBe(RESOLVED_ADDRESS);
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
@@ -107,9 +93,7 @@ describe('resolution request cost', () => {
             payload: { descriptor: RESOLVED_ADDRESS },
         });
 
-        const resolved = await queryClient.ensureQueryData(
-            getResolveNamedAddressQueryOptions('offchain.eth', 'eth'),
-        );
+        const resolved = await resolveNamedAddress('offchain.eth', 'eth');
 
         expect(resolved).toBe(RESOLVED_ADDRESS);
         expect(mockGetAccountInfo).toHaveBeenCalledTimes(1);
@@ -125,9 +109,7 @@ describe('resolution request cost', () => {
             payload: { descriptor: RESOLVED_ADDRESS },
         });
 
-        const resolved = await queryClient.ensureQueryData(
-            getResolveNamedAddressQueryOptions('vitalik.eth', 'eth'),
-        );
+        const resolved = await resolveNamedAddress('vitalik.eth', 'eth');
 
         expect(resolved).toBe(RESOLVED_ADDRESS);
         expect(mockGetAccountInfo).toHaveBeenCalledTimes(1);

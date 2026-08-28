@@ -287,7 +287,7 @@ describe('universalResolver', () => {
             await expect(resolveNamedAddressOnchain('offchain.eth', 'eth')).rejects.toThrow();
         });
 
-        // `looksLikeNamedAddress` admits shapes ENSIP-15 normalization rejects. No resolver could
+        // `isNameLike` admits shapes ENSIP-15 normalization rejects. No resolver could
         // hold them, so spending a request — here or on the Blockbook fallback — buys nothing.
         it.each([['.eth'], ['foo_bar.eth']])('answers %s without a request', async invalidName => {
             await expect(resolveNamedAddressOnchain(invalidName, 'eth')).resolves.toBeNull();

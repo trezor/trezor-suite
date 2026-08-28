@@ -1,23 +1,31 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkSymbol, selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import { useQuery } from '@suite-common/react-query';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useDebouncedValue } from '@trezor/react-utils';
 
 import { getResolveMode, getResolveNamedAddressQueryOptions } from './namedAddressQuery';
+import { getNamedAddressSupport } from './namedAddressResolver';
 
 export const useResolveNamedAddress = (value: string, symbol: NetworkSymbol | null | undefined) => {
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
     // Normalize at the entry so the queryKey, debounce comparison and queryable check
     // all agree on a single canonical form — "test.eth" and "test.eth " must share cache.
     const trimmedValue = value.trim();
     const debouncedValue = useDebouncedValue(trimmedValue);
     const isDebouncing = trimmedValue !== debouncedValue;
 
-    const debouncedMode = getResolveMode(debouncedValue, symbol);
+    const { resolver } = getNamedAddressSupport(networkModuleRepository, symbol);
+    const debouncedMode = getResolveMode(resolver, debouncedValue);
     // Live mode follows the un-debounced value so consumers get an immediate "we're going
     // to resolve this" signal even before the debounce window elapses.
-    const liveMode = getResolveMode(trimmedValue, symbol);
+    const liveMode = getResolveMode(resolver, trimmedValue);
 
     const query = useQuery({
-        ...getResolveNamedAddressQueryOptions(debouncedValue, symbol),
+        ...getResolveNamedAddressQueryOptions({
+            networkModuleRepository,
+            value: debouncedValue,
+            symbol,
+        }),
         // `enabled` guarantees a supported symbol whenever the query runs.
         enabled: !isDebouncing && debouncedMode !== 'idle',
     });
