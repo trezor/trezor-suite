@@ -38,6 +38,7 @@ on:
 jobs:
   run_android_e2e_tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -128,6 +129,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Run Detox E2E Android tests
+        timeout-minutes: 50
         uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
         env:
           RUNNER_TEMP: /tmp
