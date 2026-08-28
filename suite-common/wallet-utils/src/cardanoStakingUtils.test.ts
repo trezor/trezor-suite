@@ -4,6 +4,7 @@ import { type Account } from '@suite-common/wallet-types';
 
 import * as fixtures from './__fixtures__/cardanoStakingUtils';
 import {
+    hasCardanoLiveVoteDelegation,
     isCardanoStakedOutsideEverstake,
     isCardanoStakedWithEverstake,
     isCardanoStakedWithFiveBinaries,
@@ -50,6 +51,12 @@ describe('cardano staking utils', () => {
     fixtures.isCardanoStakedWithFiveBinaries.forEach(f => {
         it(`isCardanoStakedWithFiveBinaries: ${f.description}`, () => {
             expect(isCardanoStakedWithFiveBinaries(f.account as Account)).toBe(f.result);
+        });
+    });
+
+    fixtures.hasCardanoLiveVoteDelegation.forEach(f => {
+        it(`hasCardanoLiveVoteDelegation: ${f.description}`, () => {
+            expect(hasCardanoLiveVoteDelegation(f.account as Account)).toBe(f.result);
         });
     });
 });
