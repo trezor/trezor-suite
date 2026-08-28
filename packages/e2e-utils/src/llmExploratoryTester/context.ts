@@ -1,12 +1,9 @@
-import { execFileSync } from 'node:child_process';
-
 import { error, log } from '../logger';
 import { downloadAttachmentImages } from './contextImages';
 import { CONTEXT_FILE, writeJson } from './paths';
 import { DeviceModelSchema, type PrContext } from './schemas';
-import { parsePrNumber } from './target';
+import { ghView, loadLinkedNumbersFrom, parseTarget } from './target';
 
-const REPO = 'trezor/trezor-suite';
 const PREVIEW_SUITE_URL_BASE = 'https://dev.suite.sldev.cz/suite-web';
 const DEFAULT_MODEL = 'T3W1';
 const MAX_BODY_CHARS = 4000;
@@ -17,10 +14,9 @@ type PullRequest = {
     body: string;
     headRefName: string;
     url: string;
-    closingIssueNumbers: number[];
 };
 
-type Issue = {
+type GithubIssue = {
     number: number;
     title: string;
     body: string;
@@ -28,79 +24,11 @@ type Issue = {
 };
 
 function loadPullRequest(prNumber: number): PullRequest {
-    const data: {
-        number: number;
-        title: string;
-        body: string;
-        headRefName: string;
-        url: string;
-        closingIssuesReferences: { number: number }[];
-    } = JSON.parse(
-        execFileSync(
-            'gh',
-            [
-                'pr',
-                'view',
-                String(prNumber),
-                '--repo',
-                REPO,
-                '--json',
-                'number,title,body,headRefName,url,closingIssuesReferences',
-            ],
-            { encoding: 'utf-8', maxBuffer: 16 * 1024 * 1024 },
-        ),
-    );
-
-    return {
-        number: data.number,
-        title: data.title,
-        body: data.body,
-        headRefName: data.headRefName,
-        url: data.url,
-        closingIssueNumbers: data.closingIssuesReferences.map(({ number }) => number),
-    };
+    return ghView<PullRequest>('pr', prNumber, 'number,title,body,headRefName,url');
 }
 
-function loadIssue(issueNumber: number): Issue {
-    const data: {
-        number: number;
-        title: string;
-        body: string;
-        url: string;
-    } = JSON.parse(
-        execFileSync(
-            'gh',
-            [
-                'issue',
-                'view',
-                String(issueNumber),
-                '--repo',
-                REPO,
-                '--json',
-                'number,title,body,url',
-            ],
-            { encoding: 'utf-8', maxBuffer: 16 * 1024 * 1024 },
-        ),
-    );
-
-    return data;
-}
-
-// The PR's first closing issue (if any) provides the bug/feature context.
-function loadClosingIssue(pr: PullRequest): Issue | null {
-    const [firstClosing, ...rest] = pr.closingIssueNumbers;
-    if (firstClosing === undefined) {
-        return null;
-    }
-
-    const issue = loadIssue(firstClosing);
-    log(
-        rest.length > 0
-            ? `[context] PR #${pr.number}: ${pr.closingIssueNumbers.length} closing issues — using #${issue.number}`
-            : `[context] PR #${pr.number} → issue #${issue.number} ${issue.title}`,
-    );
-
-    return issue;
+function loadIssue(issueNumber: number): GithubIssue {
+    return ghView<GithubIssue>('issue', issueNumber, 'number,title,body,url');
 }
 
 // Bot-managed sections nest (DETAILS wrapping SELECTOR, …). Strip innermost
@@ -121,30 +49,62 @@ function stripBotSections(body: string | undefined): string {
     return stripped.trim().slice(0, MAX_BODY_CHARS);
 }
 
+function newestPr(prs: PullRequest[]): PullRequest {
+    const [first] = prs;
+    if (first === undefined) {
+        throw new Error('no pull requests');
+    }
+
+    return prs.reduce((newest, pr) => (pr.number > newest.number ? pr : newest));
+}
+
+function toContextItem(item: GithubIssue | PullRequest) {
+    return {
+        number: item.number,
+        title: item.title,
+        body: stripBotSections(item.body),
+        url: item.url,
+    };
+}
+
 async function main(): Promise<void> {
-    const prNumber = parsePrNumber(process.env.TARGET);
+    const target = parseTarget(process.env.TARGET);
     const deviceModel = DeviceModelSchema.parse(process.env.DEVICE_MODEL ?? DEFAULT_MODEL);
 
-    const pr = loadPullRequest(prNumber);
-    const issue = loadClosingIssue(pr);
-    const suiteUrl = `${PREVIEW_SUITE_URL_BASE}/${pr.headRefName}/web/`;
-    const texts = [pr.body];
-    if (issue !== null) {
-        texts.push(issue.body);
+    let prs: PullRequest[];
+    let issues: GithubIssue[];
+
+    if (target.kind === 'pr') {
+        prs = [loadPullRequest(target.number)];
+        issues = loadLinkedNumbersFrom('pr', target.number).map(loadIssue);
+    } else {
+        prs = loadLinkedNumbersFrom('issue', target.number).map(loadPullRequest);
+        if (prs.length === 0) {
+            throw new Error(`issue #${target.number} has no linked pull request`);
+        }
+        issues = [loadIssue(target.number)];
     }
-    const contextImages = await downloadAttachmentImages(texts);
+
+    const pr = newestPr(prs);
+    const suiteUrl = `${PREVIEW_SUITE_URL_BASE}/${pr.headRefName}/web/`;
+    const contextImages = await downloadAttachmentImages([
+        ...prs.map(({ body }) => body),
+        ...issues.map(({ body }) => body),
+    ]);
+
+    if (prs.length > 1) {
+        log(
+            `[context] PRs ${prs.map(({ number }) => `#${number}`).join(', ')} · Suite #${pr.number}`,
+        );
+    }
 
     const context: PrContext = {
         prNumber: pr.number,
         prUrl: pr.url,
         prTitle: pr.title,
         prBody: stripBotSections(pr.body),
-        issue: issue && {
-            number: issue.number,
-            title: issue.title,
-            body: stripBotSections(issue.body),
-            url: issue.url,
-        },
+        prs: prs.map(toContextItem),
+        issues: issues.map(toContextItem),
         deviceModel,
         suiteUrl,
         contextImages,
