@@ -1,11 +1,11 @@
 import type { Rule } from 'eslint';
 import ts from 'typescript';
 
-type TypeAwareParserServices = {
-    esTreeNodeToTSNodeMap?: ReadonlyMap<Rule.Node, ts.Node>;
-    program?: ts.Program;
-    tsNodeToESTreeNodeMap?: ReadonlyMap<ts.Node, Rule.Node>;
-};
+import {
+    type TypeScriptNodeReporter,
+    createTypeScriptNodeReporter,
+    getTypeScriptParserServices,
+} from '../utils';
 
 export type NamedContractRuleContext = {
     createAdjacentDeclarationSwapFix: (
@@ -13,12 +13,7 @@ export type NamedContractRuleContext = {
         secondDeclaration: ts.Statement,
     ) => Rule.ReportFixer | undefined;
     localTypeAliases: Map<string, ts.TypeAliasDeclaration>;
-    report: (
-        node: ts.Node,
-        messageId: string,
-        data: Record<string, string>,
-        fix?: Rule.ReportFixer,
-    ) => void;
+    report: TypeScriptNodeReporter;
     sourceFile: ts.SourceFile;
     statements: ts.NodeArray<ts.Statement>;
     validateContractBlockSpacing: (
@@ -28,54 +23,19 @@ export type NamedContractRuleContext = {
     ) => void;
 };
 
-export const unwrapExpression = (expression: ts.Expression): ts.Expression => {
-    if (
-        ts.isParenthesizedExpression(expression) ||
-        ts.isAsExpression(expression) ||
-        ts.isTypeAssertionExpression(expression) ||
-        ts.isNonNullExpression(expression)
-    ) {
-        return unwrapExpression(expression.expression);
-    }
-
-    return expression;
-};
-
-export const getFunctionExpression = (expression: ts.Expression) => {
-    const unwrappedExpression = unwrapExpression(expression);
-
-    return ts.isArrowFunction(unwrappedExpression) || ts.isFunctionExpression(unwrappedExpression)
-        ? unwrappedExpression
-        : undefined;
-};
-
-export const getVariableFunction = (declaration: ts.VariableDeclaration) =>
-    declaration.initializer === undefined
-        ? undefined
-        : getFunctionExpression(declaration.initializer);
-
-export const getTypeReferenceName = (node: ts.TypeNode | undefined) =>
-    node !== undefined && ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName)
-        ? node.typeName.text
-        : undefined;
-
 export const createNamedContractRuleListener = (
     context: Rule.RuleContext,
     validate: (contractContext: NamedContractRuleContext) => void,
 ): Rule.RuleListener => {
-    const parserServices = context.sourceCode.parserServices as TypeAwareParserServices;
+    const parserServices = getTypeScriptParserServices(context);
 
-    if (
-        parserServices.program === undefined ||
-        parserServices.esTreeNodeToTSNodeMap === undefined ||
-        parserServices.tsNodeToESTreeNodeMap === undefined
-    ) {
+    if (parserServices === undefined) {
         return {};
     }
 
     return {
         'Program:exit': programNode => {
-            const sourceFile = parserServices.esTreeNodeToTSNodeMap?.get(programNode as Rule.Node);
+            const sourceFile = parserServices.getTypeScriptNode(programNode as Rule.Node);
 
             if (sourceFile === undefined || !ts.isSourceFile(sourceFile)) {
                 return;
@@ -88,13 +48,7 @@ export const createNamedContractRuleListener = (
                     .map(declaration => [declaration.name.text, declaration] as const),
             );
 
-            const report: NamedContractRuleContext['report'] = (node, messageId, data, fix) => {
-                const reportNode = parserServices.tsNodeToESTreeNodeMap?.get(node);
-
-                if (reportNode !== undefined) {
-                    context.report({ node: reportNode, messageId, data, fix });
-                }
-            };
+            const report = createTypeScriptNodeReporter(context, parserServices);
 
             const createAdjacentDeclarationSwapFix: NamedContractRuleContext['createAdjacentDeclarationSwapFix'] =
                 (firstDeclaration, secondDeclaration) => {
@@ -175,26 +129,22 @@ export const createNamedContractRuleListener = (
                             (ts.isTypeAliasDeclaration(nextStatement) ||
                                 ts.isInterfaceDeclaration(nextStatement)) &&
                             nextStatement.name.text;
-                        const reportNode = parserServices.tsNodeToESTreeNodeMap?.get(nextStatement);
+                        report(
+                            nextStatement,
+                            'contractMustBeSeparated',
+                            {
+                                previousName: previousName || 'the previous declaration',
+                                nextName: nextName || consumerName,
+                            },
+                            fixer => {
+                                const { line } = sourceFile.getLineAndCharacterOfPosition(
+                                    nextStatement.getStart(sourceFile),
+                                );
+                                const start = sourceFile.getPositionOfLineAndCharacter(line, 0);
 
-                        if (reportNode !== undefined) {
-                            context.report({
-                                node: reportNode,
-                                messageId: 'contractMustBeSeparated',
-                                data: {
-                                    previousName: previousName || 'the previous declaration',
-                                    nextName: nextName || consumerName,
-                                },
-                                fix: fixer => {
-                                    const { line } = sourceFile.getLineAndCharacterOfPosition(
-                                        nextStatement.getStart(sourceFile),
-                                    );
-                                    const start = sourceFile.getPositionOfLineAndCharacter(line, 0);
-
-                                    return fixer.insertTextBeforeRange([start, start], '\n');
-                                },
-                            });
-                        }
+                                return fixer.insertTextBeforeRange([start, start], '\n');
+                            },
+                        );
                     }
                 };
 

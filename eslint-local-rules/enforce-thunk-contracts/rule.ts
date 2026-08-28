@@ -1,13 +1,13 @@
 import type { Rule } from 'eslint';
 import ts from 'typescript';
 
+import { createNamedContractRuleListener } from '../named-contracts/utils';
 import {
-    createNamedContractRuleListener,
     getFunctionExpression,
     getTypeReferenceName,
     getVariableFunction,
     unwrapExpression,
-} from '../named-contracts/utils';
+} from '../utils';
 
 type RequiredContract = {
     expectedName: string;
