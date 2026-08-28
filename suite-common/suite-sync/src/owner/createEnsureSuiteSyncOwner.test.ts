@@ -4,7 +4,7 @@ import { asDeviceUniquePath } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import {
-    type CreateEnsureSuiteSyncOwnerDeps,
+    type EnsureSuiteSyncOwnerDeps,
     createEnsureSuiteSyncOwner,
 } from './createEnsureSuiteSyncOwner';
 import { type RetrieveSuiteSyncOwnerParams } from './createRetrieveSuiteSyncOwner';
@@ -25,8 +25,8 @@ const owner = {
 };
 
 const createDeps = (
-    overrides: Partial<CreateEnsureSuiteSyncOwnerDeps> = {},
-): CreateEnsureSuiteSyncOwnerDeps => ({
+    overrides: Partial<EnsureSuiteSyncOwnerDeps> = {},
+): EnsureSuiteSyncOwnerDeps => ({
     loadSuiteSyncOwnerFromState: jest.fn().mockResolvedValue(null),
     retrieveSuiteSyncOwner: jest.fn().mockResolvedValue(ok(owner)),
     saveSuiteSyncOwner: jest.fn(),

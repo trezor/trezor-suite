@@ -61,9 +61,9 @@ type GetMMKVRaw = {
 export type MMKVStorage = Storage & GetMMKVRaw;
 export type MMKVStorageDep = { mmkvStorage: MMKVStorage };
 
-type CreateMMKVStorageDeps = EnsureEncryptionKeyDep;
+type MMKVStorageDeps = EnsureEncryptionKeyDep;
 
-export const createMMKVStorage = (deps: CreateMMKVStorageDeps): MMKVStorage => {
+export const createMMKVStorage = (deps: MMKVStorageDeps): MMKVStorage => {
     let mmkv: MMKV | null = null;
 
     const ensureMMKV = async () => {

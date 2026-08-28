@@ -123,11 +123,10 @@ export const updateFeeInfoThunk = createThunk<
     },
 );
 
-export type GetOrFetchRawFeeInfoThunkState = UpdateFeeInfoThunkState;
-
 interface GetOrFetchRawFeeInfoThunkProps {
     networkSymbol: NetworkSymbol;
 }
+export type GetOrFetchRawFeeInfoThunkState = UpdateFeeInfoThunkState;
 
 export const getOrFetchRawFeeInfoThunk = createThunk<
     FeeInfo | undefined,

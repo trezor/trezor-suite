@@ -162,12 +162,12 @@ export const initBlockchainThunk = createThunk<
 const isAccountSubscribable = (account: Account) =>
     !account.failed && isTrezorConnectBackendType(account.backendType);
 
-export type SubscribeBlockchainThunkState = AccountsRootState;
 type SubscribeBlockchainThunkParams = {
     symbol: NetworkSymbol;
     fiatRates?: boolean;
     onConnect?: boolean;
 };
+export type SubscribeBlockchainThunkState = AccountsRootState;
 
 // called from WalletMiddleware after ACCOUNT.ADD/UPDATE action
 // or after BLOCKCHAIN.CONNECT event (blockchainActions.onConnect)

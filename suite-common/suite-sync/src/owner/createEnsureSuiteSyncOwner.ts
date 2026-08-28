@@ -6,7 +6,7 @@ import { type LoadSuiteSyncOwnerFromStateDep } from './createLoadSuiteSyncOwnerF
 import { type RetrieveSuiteSyncOwnerKeysDep } from './createRetrieveSuiteSyncOwner';
 import { type SaveSuiteSyncOwnerDep } from './createSaveSuiteSyncOwner';
 
-export type CreateEnsureSuiteSyncOwnerDeps = RetrieveSuiteSyncOwnerKeysDep &
+export type EnsureSuiteSyncOwnerDeps = RetrieveSuiteSyncOwnerKeysDep &
     LoadSuiteSyncOwnerFromStateDep &
     SaveSuiteSyncOwnerDep;
 
@@ -16,7 +16,7 @@ export type CreateEnsureSuiteSyncOwnerDeps = RetrieveSuiteSyncOwnerKeysDep &
  * - Retrieve and persist the owner only when it is not cached already.
  */
 export const createEnsureSuiteSyncOwner =
-    (deps: CreateEnsureSuiteSyncOwnerDeps): EnsureSuiteSyncOwner =>
+    (deps: EnsureSuiteSyncOwnerDeps): EnsureSuiteSyncOwner =>
     async ({ device, delegatedKey }) => {
         const currentSuiteSyncOwner = await deps.loadSuiteSyncOwnerFromState({
             deviceStaticId: device.state.staticSessionId,

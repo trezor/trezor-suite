@@ -4,8 +4,10 @@ import { type TorRootState, selectTorBootstrap, torActions } from '@suite/tor';
 import { type TorBootstrap } from '@suite/tor-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
+type SetTorBootstrapSlowThunkState = TorRootState;
+
 export const setTorBootstrapSlowThunk =
-    (isSlow: boolean) => (dispatch: Dispatch, getState: () => TorRootState) => {
+    (isSlow: boolean) => (dispatch: Dispatch, getState: () => SetTorBootstrapSlowThunkState) => {
         const previousTorBootstrap = selectTorBootstrap(getState());
 
         if (!previousTorBootstrap) {

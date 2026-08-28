@@ -281,13 +281,13 @@ export const updateFiatRatesThunk = createThunk<
     },
 );
 
-export type UpdateMissingTxFiatRatesThunkState = FiatRatesRootState &
-    TransactionsRootState &
-    UpdateTxsFiatRatesThunkState;
 type UpdateMissingTxFiatRatesThunkParams = {
     localCurrency: BaseCurrencyCode;
     accountKey?: AccountKey;
 };
+export type UpdateMissingTxFiatRatesThunkState = FiatRatesRootState &
+    TransactionsRootState &
+    UpdateTxsFiatRatesThunkState;
 
 export const updateMissingTxFiatRatesThunk = createThunk<
     void,

@@ -10,14 +10,14 @@ import { ok } from '@trezor/type-utils';
 import { type GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';
 import { setSuiteSyncError, updateSuiteSyncEnabled } from './suiteSyncSlice';
 
-export type CreateTurnOnSuiteSyncDeps = {
+export type TurnOnSuiteSyncDeps = {
     getIsSuiteSyncEnabled: () => boolean;
     dispatch: Dispatch;
 } & EnsureWalletSuiteSyncOnDep &
     GetDeviceForStaticSessionIdDep;
 
 export const createTurnOnSuiteSync =
-    (deps: CreateTurnOnSuiteSyncDeps): TurnOnSuiteSync =>
+    (deps: TurnOnSuiteSyncDeps): TurnOnSuiteSync =>
     async ({ deviceStaticSessionId }) => {
         const isSuiteSyncEnabled = deps.getIsSuiteSyncEnabled();
         const isDeviceConnected = deviceStaticSessionId

@@ -12,7 +12,7 @@ import {
     getTimeFrameForHistoryHours,
 } from '@suite-common/graph';
 import { createThunk } from '@suite-common/redux-utils';
-import { type FetchTransactionsFromNowUntilTimestampState } from '@suite-common/wallet-core';
+import { type FetchTransactionsFromNowUntilTimestampThunkState } from '@suite-common/wallet-core';
 
 import { accountDetailGraphAtoms } from './accountDetailGraphAtoms';
 import { type GraphInstanceId, isPortfolioGraphInstanceId } from './graphInstances';
@@ -27,8 +27,6 @@ import { checkAndReportGraphError, omitErrorMessageSensitiveData } from './utils
 
 const GRAPH_MODULE_PREFIX = '@suite-native/graph';
 const GRAPH_NOT_AVAILABLE_ERROR_MESSAGE = 'Graph is not available for testnet coins.';
-
-type RefetchGraphThunkState = FetchTransactionsFromNowUntilTimestampState;
 
 // The app doesn't mount any jotai Provider, so all atoms live in the default store
 // and it is safe to write them from outside of React. Do not add a jotai Provider.
@@ -125,6 +123,8 @@ const fetchGraphDataToAtoms = async ({
 
     return { status: RefetchGraphThunkStatus.Fetched };
 };
+
+type RefetchGraphThunkState = FetchTransactionsFromNowUntilTimestampThunkState;
 
 export const refetchGraphThunk = createThunk<
     RefetchGraphThunkResult,

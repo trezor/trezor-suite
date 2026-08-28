@@ -19,36 +19,34 @@ const ACTION_PREFIX = '@suite-native/analytics';
 
 type EnableAnalyticsThunkDeps = WithServices<NativeAnalyticsDep>;
 
-const enableAnalyticsThunk = createThunk<
-    void,
-    void,
-    { state: void; extra: EnableAnalyticsThunkDeps }
->(`${ACTION_PREFIX}/enableAnalyticsThunk`, (_, { dispatch, extra }) => {
-    extra.services.analytics.report({
-        type: events.settingsDataPermissionEvent.name,
-        payload: { analyticsPermission: true },
-    });
-    allowSentryReport(true);
-    dispatch(analyticsActions.enableAnalytics());
-});
+const enableAnalyticsThunk = createThunk<void, void, { extra: EnableAnalyticsThunkDeps }>(
+    `${ACTION_PREFIX}/enableAnalyticsThunk`,
+    (_, { dispatch, extra }) => {
+        extra.services.analytics.report({
+            type: events.settingsDataPermissionEvent.name,
+            payload: { analyticsPermission: true },
+        });
+        allowSentryReport(true);
+        dispatch(analyticsActions.enableAnalytics());
+    },
+);
 
 type DisableAnalyticsThunkDeps = WithServices<NativeAnalyticsDep>;
 
-const disableAnalyticsThunk = createThunk<
-    void,
-    void,
-    { state: void; extra: DisableAnalyticsThunkDeps }
->(`${ACTION_PREFIX}/disableAnalyticsThunk`, (_, { dispatch, extra }) => {
-    extra.services.analytics.report(
-        {
-            type: events.settingsDataPermissionEvent.name,
-            payload: { analyticsPermission: false },
-        },
-        { force: true },
-    );
-    allowSentryReport(false);
-    dispatch(analyticsActions.disableAnalytics());
-});
+const disableAnalyticsThunk = createThunk<void, void, { extra: DisableAnalyticsThunkDeps }>(
+    `${ACTION_PREFIX}/disableAnalyticsThunk`,
+    (_, { dispatch, extra }) => {
+        extra.services.analytics.report(
+            {
+                type: events.settingsDataPermissionEvent.name,
+                payload: { analyticsPermission: false },
+            },
+            { force: true },
+        );
+        allowSentryReport(false);
+        dispatch(analyticsActions.disableAnalytics());
+    },
+);
 
 export type InitAnalyticsThunkState = AnalyticsRootState;
 export type InitAnalyticsThunkDeps = WithServices<NativeAnalyticsDep>;

@@ -183,13 +183,13 @@ export const openYieldRevokeModal = ({
         txType: 'revoke',
     });
 };
-type HandleYieldApproveSuccessTxidThunkState = StablecoinYieldRootState;
 type HandleYieldApproveSuccessTxidThunkParams = YieldSessionPayload & {
     fee?: string;
     isAmountUnlimited?: boolean;
     submittedAt?: number;
     txid: string;
 };
+type HandleYieldApproveSuccessTxidThunkState = StablecoinYieldRootState;
 
 export const handleYieldApproveSuccessTxidThunk = createThunk<
     void,

@@ -11,12 +11,12 @@ export type GetIsSuiteSyncEnabledDep = {
     getIsSuiteSyncEnabled: GetIsSuiteSyncEnabled;
 };
 
-export type CreateBip329Deps = GetIsSuiteSyncEnabledDep &
+export type Bip329Deps = GetIsSuiteSyncEnabledDep &
     LegacyToBip329Dep &
     ExportSuiteSyncToBip329Dep &
     ImportBip329ToSuiteSyncDep;
 
-export const createBip329 = (deps: CreateBip329Deps): Bip329 => ({
+export const createBip329 = (deps: Bip329Deps): Bip329 => ({
     export: params => {
         if (deps.getIsSuiteSyncEnabled()) {
             return deps.exportSuiteSyncToBip329(params);

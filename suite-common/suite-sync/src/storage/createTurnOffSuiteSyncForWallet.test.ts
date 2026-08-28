@@ -7,7 +7,7 @@ import { createSubscriptionStorageMock } from '../../mocks/mockCreateSubscriptio
 import { setSuiteSyncOwner } from '../suiteSyncSlice';
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
 import {
-    type CreateTurnOffSuiteSyncForWalletDeps,
+    type TurnOffSuiteSyncForWalletDeps,
     createTurnOffSuiteSyncForWallet,
 } from './createTurnOffSuiteSyncForWallet';
 
@@ -15,7 +15,7 @@ const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 
 describe(createTurnOffSuiteSyncForWallet.name, () => {
     it('disposes wallet storage, deletes repository entry, and clears owner from state', async () => {
-        const deps = createMockDeps<CreateTurnOffSuiteSyncForWalletDeps>({
+        const deps = createMockDeps<TurnOffSuiteSyncForWalletDeps>({
             dispatch: mock<Dispatch>(() => {}),
             subscriptionStorage: createSubscriptionStorageMock(),
             suiteSyncStorageRepository: {

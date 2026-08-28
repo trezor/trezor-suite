@@ -11,17 +11,21 @@ import { type BlockchainRootState, selectBlockchainState } from '@suite-common/w
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-type ToggleTorRootState = TorRootState & ModalRootState & RouterRootState & BlockchainRootState;
-type ToggleTorDeps = WithServices<DesktopAnalyticsDep>;
+type ToggleTorThunkState = TorRootState & ModalRootState & RouterRootState & BlockchainRootState;
+type ToggleTorThunkDeps = WithServices<DesktopAnalyticsDep>;
 
-export type ToggleTorDispatch = ThunkDispatch<ToggleTorRootState, ToggleTorDeps, UnknownAction>;
+export type ToggleTorDispatch = ThunkDispatch<
+    ToggleTorThunkState,
+    ToggleTorThunkDeps,
+    UnknownAction
+>;
 
 export const toggleTor =
     (shouldEnable: boolean) =>
     async (
         dispatch: ToggleTorDispatch,
-        getState: () => ToggleTorRootState,
-        extra: ToggleTorDeps,
+        getState: () => ToggleTorThunkState,
+        extra: ToggleTorThunkDeps,
     ) => {
         const modal = selectModalType(getState());
         const torBootstrap = selectTorBootstrap(getState());

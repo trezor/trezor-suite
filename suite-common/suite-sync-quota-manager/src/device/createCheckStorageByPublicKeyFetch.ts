@@ -34,14 +34,14 @@ export type CheckStorageByPublicKeyDep = {
     checkStorageByPublicKeyFetch: CheckStorageByPublicKeyFetch;
 };
 
-type CheckStorageByPublicKeyFetchDep = QuotaManagerFetchDep;
+type CheckStorageByPublicKeyFetchDeps = QuotaManagerFetchDep;
 
 /**
  * Ask quota manager for storage allowance by public key.
  * Returns also unspent space left.
  */
 export const createCheckStorageByPublicKeyFetch =
-    (deps: CheckStorageByPublicKeyFetchDep): CheckStorageByPublicKeyFetch =>
+    (deps: CheckStorageByPublicKeyFetchDeps): CheckStorageByPublicKeyFetch =>
     async ({ publicKey }) => {
         const result = await deps.quotaManagerFetch({
             path: '/storage/ask',

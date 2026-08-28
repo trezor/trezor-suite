@@ -103,11 +103,11 @@ export const handleDeviceDisconnect = createThunk<
     dispatch(selectDeviceThunk({ device: available[0] }));
 });
 
-type ForgetDisconnectedDevicesThunkState = DeviceRootState;
 type ForgetDisconnectedDevicesThunkParams = {
     device: Device | TrezorDevice;
     forceForget?: boolean;
 };
+type ForgetDisconnectedDevicesThunkState = DeviceRootState;
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT` via suiteMiddleware

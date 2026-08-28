@@ -43,10 +43,10 @@ export type FetchDep = {
     fetch: typeof fetch;
 };
 
-export type CreateQuotaManagerFetchDeps = GetQuotaManagerUrlDep & FetchDep;
+export type QuotaManagerFetchDeps = GetQuotaManagerUrlDep & FetchDep;
 
 export const createQuotaManagerFetch =
-    (deps: CreateQuotaManagerFetchDeps): QuotaManagerFetch =>
+    (deps: QuotaManagerFetchDeps): QuotaManagerFetch =>
     async ({ path, method, body, queryParams }) => {
         const base = deps.getQuotaManagerUrl();
         const normalizedBase = base.endsWith('/') ? base : `${base}/`;

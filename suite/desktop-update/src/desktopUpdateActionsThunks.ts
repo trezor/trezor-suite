@@ -12,12 +12,12 @@ import {
     desktopUpdateActions,
 } from './desktopUpdateReducer';
 
-type GetState = () => DesktopUpdateRootState;
-
+type AvailableThunkState = DesktopUpdateRootState;
 type AvailableThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const availableThunk =
-    (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState, extra: AvailableThunkDeps) => {
+    (info: UpdateInfo) =>
+    (dispatch: Dispatch, getState: () => AvailableThunkState, extra: AvailableThunkDeps) => {
         // eslint-disable-next-line no-restricted-syntax
         const { allowPrerelease } = getState().desktopUpdate;
 
@@ -42,10 +42,11 @@ export const notAvailableThunk = (info: UpdateInfo) => (dispatch: Dispatch) => {
     dispatch(desktopUpdateActions.notAvailable(info));
 };
 
+type DownloadThunkState = DesktopUpdateRootState;
 type DownloadThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const downloadThunk =
-    () => (dispatch: Dispatch, getState: GetState, extra: DownloadThunkDeps) => {
+    () => (dispatch: Dispatch, getState: () => DownloadThunkState, extra: DownloadThunkDeps) => {
         // eslint-disable-next-line no-restricted-syntax
         const { latest, allowPrerelease } = getState().desktopUpdate;
 
@@ -62,10 +63,12 @@ export const downloadThunk =
         dispatch(desktopUpdateActions.download());
     };
 
+type ReadyThunkState = DesktopUpdateRootState;
 type ReadyThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const readyThunk =
-    (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState, extra: ReadyThunkDeps) => {
+    (info: UpdateInfo) =>
+    (dispatch: Dispatch, getState: () => ReadyThunkState, extra: ReadyThunkDeps) => {
         // eslint-disable-next-line no-restricted-syntax
         const { latest, allowPrerelease } = getState().desktopUpdate;
 
@@ -84,11 +87,12 @@ export const readyThunk =
         dispatch(desktopUpdateActions.ready(info));
     };
 
+type InstallUpdateThunkState = DesktopUpdateRootState;
 type InstallUpdateThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const installUpdateThunk =
     ({ installNow }: { installNow: boolean }) =>
-    (_: Dispatch, getState: GetState, extra: InstallUpdateThunkDeps) => {
+    (_: Dispatch, getState: () => InstallUpdateThunkState, extra: InstallUpdateThunkDeps) => {
         // eslint-disable-next-line no-restricted-syntax
         const { desktopUpdate } = getState();
 
@@ -116,26 +120,28 @@ export const installUpdateThunk =
         }
     };
 
+type ErrorThunkState = DesktopUpdateRootState;
 type ErrorThunkDeps = WithServices<DesktopAnalyticsDep>;
 
-export const errorThunk = () => (dispatch: Dispatch, getState: GetState, extra: ErrorThunkDeps) => {
-    // eslint-disable-next-line no-restricted-syntax
-    const { state, latest, allowPrerelease } = getState().desktopUpdate;
+export const errorThunk =
+    () => (dispatch: Dispatch, getState: () => ErrorThunkState, extra: ErrorThunkDeps) => {
+        // eslint-disable-next-line no-restricted-syntax
+        const { state, latest, allowPrerelease } = getState().desktopUpdate;
 
-    // Ignore displaying errors while checking
-    if (state !== UpdateState.Checking) {
-        dispatch(notificationsActions.addToast({ type: 'auto-updater-error', state }));
+        // Ignore displaying errors while checking
+        if (state !== UpdateState.Checking) {
+            dispatch(notificationsActions.addToast({ type: 'auto-updater-error', state }));
 
-        const payload = getAppUpdatePayload({
-            status: AppUpdateEventStatus.Error,
-            earlyAccessProgram: allowPrerelease,
-            updateInfo: latest,
-        });
-        extra.services.analytics.report({
-            type: events.appUpdateEvent.name,
-            payload,
-        });
-    }
+            const payload = getAppUpdatePayload({
+                status: AppUpdateEventStatus.Error,
+                earlyAccessProgram: allowPrerelease,
+                updateInfo: latest,
+            });
+            extra.services.analytics.report({
+                type: events.appUpdateEvent.name,
+                payload,
+            });
+        }
 
-    dispatch(desktopUpdateActions.notAvailable());
-};
+        dispatch(desktopUpdateActions.notAvailable());
+    };

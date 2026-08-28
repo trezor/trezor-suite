@@ -8,7 +8,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { resetSuiteSyncError, setSuiteSyncError } from '../suiteSyncSlice';
 
-export type CreateEnsureWalletSuiteSyncOnWithFwCheckDeps = {
+export type EnsureWalletSuiteSyncOnWithErrorHandlerDeps = {
     dispatch: Dispatch;
 } & EnsureWalletSuiteSyncOnDep;
 
@@ -17,7 +17,7 @@ export type CreateEnsureWalletSuiteSyncOnWithFwCheckDeps = {
  * suite sync errors to the Redux store.
  */
 export const createEnsureWalletSuiteSyncOnWithErrorHandler =
-    (deps: CreateEnsureWalletSuiteSyncOnWithFwCheckDeps): EnsureWalletSuiteSyncOn =>
+    (deps: EnsureWalletSuiteSyncOnWithErrorHandlerDeps): EnsureWalletSuiteSyncOn =>
     async params => {
         const result = await deps.ensureWalletSuiteSyncOn(params);
 

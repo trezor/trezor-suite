@@ -20,7 +20,7 @@ export type GetAllLabelsForAccountParams = {
 
 export type GetAllLabelsForAccount = (params: GetAllLabelsForAccountParams) => AllLabelsForAccount;
 
-export type GetAllLabelsForAccountDeps = {
+export type SuiteSyncToBip329Deps = {
     getAllLabelsForAccount: GetAllLabelsForAccount;
 };
 
@@ -29,7 +29,7 @@ export type ExportSuiteSyncToBip329Dep = {
 };
 
 export const createSuiteSyncToBip329 =
-    (deps: GetAllLabelsForAccountDeps): ExportBip329 =>
+    (deps: SuiteSyncToBip329Deps): ExportBip329 =>
     ({ account }) => {
         const { walletDescriptor } = parseStaticSessionId(account.deviceState);
 
