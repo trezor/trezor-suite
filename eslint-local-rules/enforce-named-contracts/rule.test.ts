@@ -214,6 +214,18 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
                     { state: SaveThunkState; extra: SaveThunkDeps }
                 >('save', () => undefined);
             `,
+            output: `
+                declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+                type SaveThunkState = { value: string };
+
+                type SaveThunkDeps = { save: () => void };
+
+                const saveThunk = createThunk<
+                    void,
+                    void,
+                    { state: SaveThunkState; extra: SaveThunkDeps }
+                >('save', () => undefined);
+            `,
             errors: [
                 {
                     messageId: 'contractOrder',
@@ -259,6 +271,13 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
 
                 const createSave = (deps: SaveDeps): Save => () => deps.logger.log();
             `,
+            output: `
+                type SaveDeps = { logger: { log: () => void } };
+
+                type Save = () => void;
+
+                const createSave = (deps: SaveDeps): Save => () => deps.logger.log();
+            `,
             errors: [
                 {
                     messageId: 'dependencyFactoryContractOrder',
@@ -266,6 +285,70 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
                         depsName: 'SaveDeps',
                         serviceName: 'Save',
                         factoryName: 'createSave',
+                    },
+                },
+            ],
+        },
+        {
+            filename,
+            code: `
+                declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+                export type SaveThunkDeps = { save: () => void };
+
+                export type SaveThunkState = { value: string };
+
+                export const saveThunk = createThunk<
+                    void,
+                    void,
+                    { state: SaveThunkState; extra: SaveThunkDeps }
+                >('save', () => undefined);
+            `,
+            output: `
+                declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+                export type SaveThunkState = { value: string };
+
+                export type SaveThunkDeps = { save: () => void };
+
+                export const saveThunk = createThunk<
+                    void,
+                    void,
+                    { state: SaveThunkState; extra: SaveThunkDeps }
+                >('save', () => undefined);
+            `,
+            errors: [
+                {
+                    messageId: 'contractOrder',
+                    data: {
+                        stateName: 'SaveThunkState',
+                        depsName: 'SaveThunkDeps',
+                        consumerName: 'saveThunk',
+                    },
+                },
+            ],
+        },
+        {
+            filename,
+            code: `
+                declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+                // Saving requires access to this service.
+                type SaveThunkDeps = { save: () => void };
+
+                type SaveThunkState = { value: string };
+
+                const saveThunk = createThunk<
+                    void,
+                    void,
+                    { state: SaveThunkState; extra: SaveThunkDeps }
+                >('save', () => undefined);
+            `,
+            output: null,
+            errors: [
+                {
+                    messageId: 'contractOrder',
+                    data: {
+                        stateName: 'SaveThunkState',
+                        depsName: 'SaveThunkDeps',
+                        consumerName: 'saveThunk',
                     },
                 },
             ],

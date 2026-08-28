@@ -30,14 +30,14 @@ export interface LoadInitialDataThunkProps {
     forcedApiKey?: string;
 }
 
-export type GetTradingEnvironment = () => TradeServerEnvironment | undefined;
-
 type LoadInitialDataThunkState = TradingRootStateWithAccounts;
 
 export type LoadInitialDataThunkDeps = WithServices<{
     getSelectedAccount: () => SelectedAccountStatus;
     getTradingEnvironment: GetTradingEnvironment;
 }>;
+
+export type GetTradingEnvironment = () => TradeServerEnvironment | undefined;
 
 export const loadInitialDataThunk = createThunk<
     void,

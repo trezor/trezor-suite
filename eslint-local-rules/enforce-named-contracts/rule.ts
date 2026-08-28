@@ -174,7 +174,7 @@ export const enforceNamedContractsRule: Rule.RuleModule = {
             category: 'Best Practices',
             recommended: false,
         },
-        fixable: 'whitespace',
+        fixable: 'code',
         messages: {
             contractMustBeAdjacent:
                 "Declare '{{contractName}}' in the contiguous type block directly above '{{consumerName}}'.",
@@ -231,12 +231,62 @@ export const enforceNamedContractsRule: Rule.RuleModule = {
                     node: ts.Node,
                     messageId: MessageId,
                     data: Record<string, string>,
+                    fix?: Rule.ReportFixer,
                 ) => {
                     const reportNode = parserServices.tsNodeToESTreeNodeMap?.get(node);
 
                     if (reportNode !== undefined) {
-                        context.report({ node: reportNode, messageId, data });
+                        context.report({ node: reportNode, messageId, data, fix });
                     }
+                };
+
+                const createAdjacentDeclarationSwapFix = (
+                    firstDeclaration: ts.Statement,
+                    secondDeclaration: ts.Statement,
+                ): Rule.ReportFixer | undefined => {
+                    const firstStatementIndex = statements.indexOf(firstDeclaration);
+                    const secondStatementIndex = statements.indexOf(secondDeclaration);
+
+                    if (secondStatementIndex !== firstStatementIndex + 1) {
+                        return undefined;
+                    }
+
+                    const previousStatement = statements[firstStatementIndex - 1];
+                    const nextStatement = statements[secondStatementIndex + 1];
+                    const firstStart = firstDeclaration.getStart(sourceFile);
+                    const secondStart = secondDeclaration.getStart(sourceFile);
+                    const leadingTrivia = sourceFile.text.slice(
+                        previousStatement?.end ?? 0,
+                        firstStart,
+                    );
+                    const betweenDeclarations = sourceFile.text.slice(
+                        firstDeclaration.end,
+                        secondStart,
+                    );
+                    const trailingTrivia = sourceFile.text.slice(
+                        secondDeclaration.end,
+                        nextStatement?.getStart(sourceFile) ?? sourceFile.end,
+                    );
+                    const containsComment = (text: string) => /\/\/|\/\*/u.test(text);
+
+                    // A comment in the surrounding whitespace may describe one declaration.
+                    // Moving code without knowing which declaration owns it could change its meaning.
+                    if (
+                        containsComment(leadingTrivia) ||
+                        containsComment(betweenDeclarations) ||
+                        containsComment(trailingTrivia)
+                    ) {
+                        return undefined;
+                    }
+
+                    const firstText = sourceFile.text.slice(firstStart, firstDeclaration.end);
+                    const secondText = sourceFile.text.slice(secondStart, secondDeclaration.end);
+
+                    return fixer =>
+                        fixer.replaceTextRange(
+                            [firstStart, secondDeclaration.end],
+                            `${secondText}${betweenDeclarations}${firstText}`,
+                        );
                 };
 
                 const validateContractBlockSpacing = (
@@ -384,11 +434,16 @@ export const enforceNamedContractsRule: Rule.RuleModule = {
                         depsDeclaration !== undefined &&
                         statements.indexOf(stateDeclaration) > statements.indexOf(depsDeclaration)
                     ) {
-                        report(depsDeclaration, 'contractOrder', {
-                            consumerName,
-                            stateName: stateDeclaration.name.text,
-                            depsName: depsDeclaration.name.text,
-                        });
+                        report(
+                            depsDeclaration,
+                            'contractOrder',
+                            {
+                                consumerName,
+                                stateName: stateDeclaration.name.text,
+                                depsName: depsDeclaration.name.text,
+                            },
+                            createAdjacentDeclarationSwapFix(depsDeclaration, stateDeclaration),
+                        );
                     }
 
                     const firstContractIndex = Math.min(
@@ -578,11 +633,19 @@ export const enforceNamedContractsRule: Rule.RuleModule = {
                                 serviceStatementIndex !== undefined &&
                                 depsStatementIndex > serviceStatementIndex
                             ) {
-                                report(depsDeclaration, 'dependencyFactoryContractOrder', {
-                                    factoryName,
-                                    depsName: expectedDepsName,
-                                    serviceName: serviceDeclaration.name.text,
-                                });
+                                report(
+                                    depsDeclaration,
+                                    'dependencyFactoryContractOrder',
+                                    {
+                                        factoryName,
+                                        depsName: expectedDepsName,
+                                        serviceName: serviceDeclaration.name.text,
+                                    },
+                                    createAdjacentDeclarationSwapFix(
+                                        serviceDeclaration,
+                                        depsDeclaration,
+                                    ),
+                                );
                             }
 
                             validateContractBlockSpacing(
