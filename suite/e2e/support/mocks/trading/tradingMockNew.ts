@@ -18,7 +18,8 @@ export type CapturedLiveTrade = ExchangeTrade & {
 };
 
 type TxSimulationResult = NonNullable<Parameters<typeof getSimulatedReceiveAmount>[0]>;
-type TxSimulationScan = Omit<TxSimulationResult['payload'], 'needsDisclaimer'>;
+type EvmTxSimulationResult = Extract<TxSimulationResult, { method: 'ethereumSignTransaction' }>;
+type TxSimulationScan = Omit<EvmTxSimulationResult['payload'], 'needsDisclaimer'>;
 
 type TradeFlow = 'buy' | 'sell' | 'swap';
 type TradeEndpoints = {
