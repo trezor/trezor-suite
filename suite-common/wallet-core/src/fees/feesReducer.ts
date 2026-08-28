@@ -13,7 +13,7 @@ import { getConvertedOrDefaultFeeInfo, isEip1559 } from '@suite-common/wallet-ut
 import { type FeeLevel } from '@trezor/connect';
 
 import { feesActions } from './feesActions';
-import { type FeesRootState, selectFees } from './feesSelectors';
+import { type FeesRootState, selectFees, selectRawNetworkFeeInfo } from './feesSelectors';
 import { updateFeeInfoThunk } from './feesThunks';
 
 export { type FeesRootState, selectFees, selectRawNetworkFeeInfo } from './feesSelectors';
@@ -46,19 +46,27 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<FeesRootState>();
 
 /**
  * Returns feeInfo per network, cleaned up, and for Ethereum also converted from wei to Gwei.
+ *
+ * Inputs are limited to the given network's fee data (plus entry existence) so the returned
+ * reference stays stable across unrelated fees updates — other networks' fees and status-only
+ * changes (e.g. `loading`) of the same network.
  */
 export const selectConvertedNetworkFeeInfo = createMemoizedSelector(
-    [selectFees, (_state: FeesRootState, symbol?: NetworkSymbol) => symbol],
-    (fees, symbol): FeeInfo | null => {
-        if (!symbol || !fees[symbol]) return null;
+    [
+        selectRawNetworkFeeInfo,
+        (state: FeesRootState, symbol?: NetworkSymbol) =>
+            symbol !== undefined && selectFees(state)[symbol] !== undefined,
+        (_state: FeesRootState, symbol?: NetworkSymbol) => symbol,
+    ],
+    (rawFeeInfo, hasFeeEntry, symbol): FeeInfo | null => {
+        if (!symbol || !hasFeeEntry) return null;
 
         const networkType = getNetworkType(symbol);
-        const feeInfo = getConvertedOrDefaultFeeInfo({
-            networkType,
-            feeInfo: fees[symbol].data,
-        });
 
-        return feeInfo;
+        return getConvertedOrDefaultFeeInfo({
+            networkType,
+            feeInfo: rawFeeInfo,
+        });
     },
 );
 
