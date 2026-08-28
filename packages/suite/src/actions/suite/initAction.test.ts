@@ -42,6 +42,7 @@ import {
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
@@ -72,14 +73,34 @@ import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import windowReducer from 'src/reducers/suite/windowReducer';
 import { walletReducers } from 'src/reducers/wallet';
-import { extraDependencies } from 'src/support/extraDependencies';
 import type { AppState } from 'src/types/suite';
 
-const deviceReducer = prepareDeviceReducer(extraDependencies);
-const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
-const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
-const flagsReducer = prepareFlagsReducer(extraDependencies);
-const suiteSettingsReducer = prepareSuiteSettingsReducer(extraDependencies);
+const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
+const analyticsReducer = prepareAnalyticsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const messageSystemReducer = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const flagsReducer = prepareFlagsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadFlags: mockReducer() },
+});
+const suiteSettingsReducer = prepareSuiteSettingsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadSuiteSettings: mockReducer() },
+});
 
 global.fetch = jest.fn().mockImplementation(() =>
     Promise.resolve({

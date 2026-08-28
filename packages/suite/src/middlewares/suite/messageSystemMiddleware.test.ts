@@ -8,13 +8,13 @@ import {
     getValidExperimentIds,
     getValidMessages,
 } from '@suite-common/message-system/src/messageSystemUtils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type Action } from '@suite-common/suite-types';
 import { configureMockStore } from '@suite-common/test-utils';
 
 import { type AppState } from 'src/reducers/store';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { walletReducers } from 'src/reducers/wallet';
-import { extraDependencies } from 'src/support/extraDependencies';
 
 import messageSystemMiddleware from './messageSystemMiddleware';
 
@@ -26,8 +26,21 @@ jest.mock('@suite-common/message-system/src/messageSystemUtils', () => ({
 const messageSystemReducer: Reducer<
     ReturnType<ReturnType<typeof prepareMessageSystemReducer>>,
     UnknownAction
-> = prepareMessageSystemReducer(extraDependencies);
-const deviceReducer = prepareDeviceReducer(extraDependencies);
+> = prepareMessageSystemReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
 
 type WalletsState = ReturnType<typeof walletReducers>;
 type MessageSystemState = ReturnType<typeof messageSystemReducer>;

@@ -4,6 +4,7 @@ import { debugInitialState } from '@suite/debug';
 import { locksReducer } from '@suite/locks';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { torReducer } from '@suite/tor';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type SuiteSyncDataState, type SuiteSyncState } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
@@ -32,9 +33,11 @@ import { type DeepPartial } from '@trezor/type-utils';
 
 import { type AppState } from 'src/reducers/store';
 import protocolReducer from 'src/reducers/suite/protocolReducer';
-import { extraDependencies } from 'src/support/extraDependencies';
 
-const sendFormReducer = prepareSendFormReducer(extraDependencies);
+const sendFormReducer = prepareSendFormReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadFormDrafts: mockReducer() },
+});
 
 const UTXO = {
     '00': testMocks.getUtxo({

@@ -13,15 +13,26 @@ import {
 } from '@suite-common/connect-init/mocks';
 import { deviceReducerInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 import { noopCreateLogger } from '@trezor/connect-common';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { extraDependencies } from 'src/support/extraDependencies';
 
-const deviceReducer = prepareDesktopDeviceReducer(extraDependencies);
+const deviceReducer = prepareDesktopDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
 
 const extra: ConnectInitThunkDeps = {
     actions: { lockDevice },
