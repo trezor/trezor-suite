@@ -1,5 +1,6 @@
 import { type AdaPools } from '@suite-common/earn-staking-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import type { VotingDelegationOption } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 import TrezorConnect, { PROTO } from '@trezor/connect';
@@ -18,6 +19,45 @@ jest.mock('@trezor/connect', () => {
         },
     };
 });
+
+const PREDEFINED_DREP_ID = 'drep_always_abstain';
+const NON_EVERSTAKE_POOL_ID = 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy';
+
+const createCardanoAccount = ({
+    drepId,
+    isStakingActive = true,
+}: {
+    drepId: string | null;
+    isStakingActive?: boolean;
+}): Account =>
+    ({
+        key: 'ada-account-key',
+        index: 0,
+        symbol: 'ada',
+        networkType: 'cardano',
+        descriptor: 'ada-descriptor',
+        utxo: [],
+        addresses: {
+            change: [{ address: 'addr-change', path: "m/1852'/1815'/0'/1/0", transfers: 0 }],
+            used: [],
+            unused: [],
+        },
+        misc: {
+            staking: {
+                address: 'stake-address',
+                rewards: '0',
+                isActive: isStakingActive,
+                poolId: NON_EVERSTAKE_POOL_ID,
+                drep: drepId === null ? null : { drep_id: drepId },
+            },
+        },
+    }) as unknown as Account;
+
+const migratePool = (account: Account, votingDelegation: VotingDelegationOption) =>
+    prepareTxPlan({ account, action: 'delegate', cardanoPools: [], votingDelegation });
+
+const getCertificateTypes = (txData: Awaited<ReturnType<typeof prepareTxPlan>>) =>
+    txData?.certificates.map(certificate => certificate.type);
 
 const cardanoComposeTransactionMock = TrezorConnect.cardanoComposeTransaction as jest.Mock;
 
@@ -57,6 +97,15 @@ const mockComposeSuccess = () => {
 describe('prepareTxPlan', () => {
     beforeEach(() => {
         cardanoComposeTransactionMock.mockReset();
+
+        jest.mocked(TrezorConnect.cardanoComposeTransaction).mockResolvedValue({
+            success: true,
+            payload: [{ type: 'final' }],
+        } as unknown as Awaited<ReturnType<typeof TrezorConnect.cardanoComposeTransaction>>);
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
     it('composes a delegation for an account that has no staking address and no rewards yet', async () => {
@@ -72,8 +121,12 @@ describe('prepareTxPlan', () => {
         expect(cardanoComposeTransactionMock).toHaveBeenCalledTimes(1);
         expect(cardanoComposeTransactionMock.mock.calls[0][0].certificates).toEqual(
             expect.arrayContaining([
-                expect.objectContaining({ type: PROTO.CardanoCertificateType.STAKE_REGISTRATION }),
-                expect.objectContaining({ type: PROTO.CardanoCertificateType.STAKE_DELEGATION }),
+                expect.objectContaining({
+                    type: PROTO.CardanoCertificateType.STAKE_REGISTRATION,
+                }),
+                expect.objectContaining({
+                    type: PROTO.CardanoCertificateType.STAKE_DELEGATION,
+                }),
             ]),
         );
     });
@@ -89,5 +142,53 @@ describe('prepareTxPlan', () => {
 
         expect(result).toBeNull();
         expect(cardanoComposeTransactionMock).not.toHaveBeenCalled();
+    });
+
+    it('composes no vote delegation certificate when the current delegation is kept, so a predefined DRep survives a pool migration', async () => {
+        const account = createCardanoAccount({ drepId: PREDEFINED_DREP_ID });
+
+        const certificateTypes = getCertificateTypes(
+            await migratePool(account, { type: 'current' }),
+        );
+
+        expect(certificateTypes).not.toContain(PROTO.CardanoCertificateType.VOTE_DELEGATION);
+        expect(certificateTypes).toContain(PROTO.CardanoCertificateType.STAKE_DELEGATION);
+    });
+
+    it('composes a vote delegation certificate for the Everstake option', async () => {
+        const account = createCardanoAccount({ drepId: PREDEFINED_DREP_ID });
+
+        const certificateTypes = getCertificateTypes(
+            await migratePool(account, { type: 'everstake' }),
+        );
+
+        expect(certificateTypes).toContain(PROTO.CardanoCertificateType.VOTE_DELEGATION);
+    });
+
+    it('composes a vote delegation certificate for an unregistered account, which has no live delegation to keep', async () => {
+        const account = createCardanoAccount({
+            drepId: PREDEFINED_DREP_ID,
+            isStakingActive: false,
+        });
+
+        const certificateTypes = getCertificateTypes(
+            await migratePool(account, { type: 'current' }),
+        );
+
+        expect(certificateTypes).toContain(PROTO.CardanoCertificateType.VOTE_DELEGATION);
+    });
+
+    it('builds nothing for a vote delegation that keeps the current delegation, leaving nothing to sign', async () => {
+        const account = createCardanoAccount({ drepId: PREDEFINED_DREP_ID });
+
+        const txData = await prepareTxPlan({
+            account,
+            action: 'voteDelegate',
+            cardanoPools: [],
+            votingDelegation: { type: 'current' },
+        });
+
+        expect(txData).toBeNull();
+        expect(TrezorConnect.cardanoComposeTransaction).not.toHaveBeenCalled();
     });
 });

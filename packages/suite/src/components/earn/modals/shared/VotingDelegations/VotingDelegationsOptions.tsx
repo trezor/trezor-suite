@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import {
-    DEFAULT_VOTING_OPTION,
     type VotingDelegationOption,
     selectVotingDelegationOption,
     stakeActions,
@@ -13,40 +12,31 @@ import { Column, Input, Radio, Text } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-const VOTING_OPTIONS: {
-    key: VotingDelegationOption['type'];
-    translationId: TranslationKey;
-}[] = [
-    { key: 'everstake', translationId: 'TR_STAKING_DELEGATE_TO_EVERSTAKE' },
-    { key: 'another_drep', translationId: 'TR_STAKING_DELEGATE_TO_ANOTHER_DREP' },
-];
+export const VOTING_OPTION_LABELS = {
+    everstake: 'TR_STAKING_DELEGATE_TO_EVERSTAKE',
+    another_drep: 'TR_STAKING_DELEGATE_TO_ANOTHER_DREP',
+    current: 'TR_STAKING_KEEP_CURRENT_DELEGATION',
+} as const satisfies Record<VotingDelegationOption['type'], TranslationKey>;
+
+const VOTING_OPTION_KEYS = ['everstake', 'another_drep'] as const;
+
+const VOTING_OPTION_KEYS_WITH_CURRENT = ['current', ...VOTING_OPTION_KEYS] as const;
 
 export interface VotingDelegationsOptionsProps {
     networkType: NetworkType;
-    initialValue?: VotingDelegationOption;
     hasTitle?: boolean;
-    resetOnMount?: boolean;
+    hasKeepCurrentOption?: boolean;
 }
 
 export const VotingDelegationsOptions = ({
     networkType,
-    initialValue = DEFAULT_VOTING_OPTION,
     hasTitle = false,
-    resetOnMount = true,
+    hasKeepCurrentOption = false,
 }: VotingDelegationsOptionsProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
     const [hasError, setHasError] = useState<boolean>(false);
-
-    // reset voting delegation option on modal open
-    useEffect(() => {
-        if (!resetOnMount) {
-            return;
-        }
-
-        dispatch(stakeActions.setVotingDelegationOption(initialValue));
-    }, [dispatch, initialValue, resetOnMount]);
 
     if (networkType !== 'cardano') return null;
 
@@ -63,6 +53,10 @@ export const VotingDelegationsOptions = ({
                     stakeActions.setVotingDelegationOption({ type: 'another_drep', drepId: '' }),
                 );
                 break;
+
+            case 'current':
+                dispatch(stakeActions.setVotingDelegationOption({ type: 'current' }));
+                break;
         }
     };
 
@@ -73,6 +67,8 @@ export const VotingDelegationsOptions = ({
         dispatch(stakeActions.setVotingDelegationOption({ type: 'another_drep', drepId: value }));
     };
 
+    const optionKeys = hasKeepCurrentOption ? VOTING_OPTION_KEYS_WITH_CURRENT : VOTING_OPTION_KEYS;
+
     return (
         <Column gap={8}>
             {hasTitle && (
@@ -81,14 +77,13 @@ export const VotingDelegationsOptions = ({
                 </Text>
             )}
             <Column gap={16} padding={8}>
-                {VOTING_OPTIONS.map(({ key, translationId }) => (
+                {optionKeys.map(key => (
                     <React.Fragment key={key}>
                         <Radio
-                            key={key}
                             isChecked={selectedVotingDelegation.type === key}
                             onChange={() => handleOptionSelect(key)}
                         >
-                            <Translation id={translationId} />
+                            <Translation id={VOTING_OPTION_LABELS[key]} />
                         </Radio>
                         {selectedVotingDelegation.type === 'another_drep' &&
                             key === 'another_drep' && (

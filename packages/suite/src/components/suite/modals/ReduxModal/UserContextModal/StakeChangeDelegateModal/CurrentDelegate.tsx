@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import { type Account } from '@suite-common/wallet-types';
+import { getCardanoAccountDrepId } from '@suite-common/wallet-utils';
 import { Column, Paragraph, Text } from '@trezor/components';
 
 type CurrentDelegateProps = {
@@ -9,7 +10,7 @@ type CurrentDelegateProps = {
 export const CurrentDelegate = ({ account }: CurrentDelegateProps) => {
     if (account.networkType !== 'cardano') return null;
 
-    const currentDelegateDrepId = account.misc?.staking?.drep?.drep_id;
+    const currentDelegateDrepId = getCardanoAccountDrepId(account);
 
     const getStakeProviderLabel = () => {
         if (CARDANO_EVERSTAKE_DREP.bech32 === currentDelegateDrepId) return 'Everstake';
