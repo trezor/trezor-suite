@@ -2,6 +2,7 @@ import { bech32 } from '@scure/base';
 
 import { type AdaPools } from '@suite-common/earn-staking-api';
 import {
+    CARDANO_EVERSTAKE_DREP,
     CARDANO_EVERSTAKE_STAKING_POOL,
     EVERSTAKE_POOLS,
     FIVE_BINARIES_POOLS,
@@ -200,6 +201,34 @@ export const isCardanoStakedWithFiveBinaries = [
     {
         description: 'account without delegation',
         account: cardanoAccount(undefined),
+        result: false,
+    },
+];
+
+const cardanoAccountWithDrep = (drep: { drep_id: string } | null, isActive = true) => ({
+    networkType: 'cardano',
+    misc: { staking: { poolId: everstakePool, drep, isActive } },
+});
+
+export const hasCardanoLiveVoteDelegation = [
+    {
+        description: 'registered account voting for a DRep',
+        account: cardanoAccountWithDrep({ drep_id: CARDANO_EVERSTAKE_DREP.bech32 }),
+        result: true,
+    },
+    {
+        description: 'registered account with no vote delegation',
+        account: cardanoAccountWithDrep(null),
+        result: false,
+    },
+    {
+        description: 'unregistered account, whose reported DRep is stale',
+        account: cardanoAccountWithDrep({ drep_id: CARDANO_EVERSTAKE_DREP.bech32 }, false),
+        result: false,
+    },
+    {
+        description: 'non-cardano account',
+        account: { networkType: 'ethereum' },
         result: false,
     },
 ];
