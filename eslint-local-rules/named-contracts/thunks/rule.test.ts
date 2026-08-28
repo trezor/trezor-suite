@@ -1,5 +1,5 @@
 import { enforceThunkContractsRule } from './rule';
-import { namedContractsFilename, namedContractsRuleTester } from '../named-contracts/testUtils';
+import { namedContractsFilename, namedContractsRuleTester } from '../testUtils';
 
 namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRule, {
     valid: [

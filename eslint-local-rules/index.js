@@ -6,8 +6,8 @@ require('ts-node').register({
 });
 
 const { analyticsEventNameRule } = require('./analytics-event-name/rule');
-const { enforceDiFactoryContractsRule } = require('./enforce-di-factory-contracts/rule');
-const { enforceThunkContractsRule } = require('./enforce-thunk-contracts/rule');
+const { enforceDiFactoryContractsRule } = require('./named-contracts/di/rule');
+const { enforceThunkContractsRule } = require('./named-contracts/thunks/rule');
 const { noOverrideDsComponentRule } = require('./no-override-ds-component/rule');
 const { noPackageDeepImportsRule } = require('./no-package-deep-imports/rule');
 const { noSuiteImportsInSuiteCommonRule } = require('./no-suite-imports-in-suite-common/rule');
