@@ -38,7 +38,6 @@ import {
     transformReferencedTransactions,
 } from './bitcoin/refTx';
 import { signTx } from './bitcoin/signtx';
-import { signTxLegacy } from './bitcoin/signtxLegacy';
 import { deriveOutputScript, verifyTx } from './bitcoin/signtxVerify';
 import { Discovery } from './common/Discovery';
 import { validateParams } from './common/paramsValidator';
@@ -416,12 +415,8 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
             outputs.map(output => () => deriveOutputScript(getHDNode, output, coinInfo.network)),
         );
 
-        const signTxMethod = !device.unavailableCapabilities.replaceTransaction
-            ? signTx
-            : signTxLegacy;
-
         const cmd = device.getCommands();
-        const response = await signTxMethod({
+        const response = await signTx({
             typedCall: cmd.typedCall,
             inputs,
             outputs,
