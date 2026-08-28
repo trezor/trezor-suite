@@ -30,7 +30,7 @@ import {
     selectFeeLevels,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
-import { useDebounce } from '@trezor/react-utils';
+import { useDebounce, useFreshRef } from '@trezor/react-utils';
 
 import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import {
@@ -105,13 +105,13 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
     const feeInfo = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
+    const feeInfoRef = useFreshRef(feeInfo);
     const formDraft = useSelector((state: FormDraftRootState) =>
         claimFormDraftKey
             ? (selectDeepCopyOfFormDraft(state, claimFormDraftKey) as FormState | undefined)
             : undefined,
     );
-    const formDraftRef = useRef(formDraft);
-    formDraftRef.current = formDraft;
+    const formDraftRef = useFreshRef(formDraft);
     const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
     const selectedFee = formDraft?.selectedFee ?? 'normal';
     const selectedFeeLevel = feeLevels[selectedFee];
@@ -172,7 +172,9 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
             }: PrepareClaimFeeParams,
             requestId: number,
         ) => {
-            if (!feeInfo || !claimFormDraftKey) {
+            const currentFeeInfo = feeInfoRef.current;
+
+            if (!currentFeeInfo || !claimFormDraftKey) {
                 clearClaimFeeState();
 
                 return;
@@ -213,7 +215,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                 });
                 const claimFeeLevels = buildYieldClaimFeeLevels({
                     availableBalance: claimAccount.availableBalance,
-                    feeInfo,
+                    feeInfo: currentFeeInfo,
                     formDraft: claimFormDraft,
                     gasLimit: feeLevel.payload.feeLimit,
                 });
@@ -242,8 +244,25 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                 }
             }
         },
-        [claimFormDraftKey, clearClaimFeeState, dispatch, feeInfo, setHasFeeEstimationError],
+        [
+            claimFormDraftKey,
+            clearClaimFeeState,
+            dispatch,
+            feeInfoRef,
+            formDraftRef,
+            setHasFeeEstimationError,
+        ],
     );
+
+    const prepareClaimFeeParamsRef = useFreshRef(prepareClaimFeeParams);
+
+    // Value-stable keys of the fee preparation inputs. `prepareClaimFeeParams` gets a new identity
+    // whenever `accountRewards` does (e.g. on any fiat rates update), so keying the effect on the
+    // params object would keep re-running the fee preparation without its actual inputs changing.
+    const claimCalldata = prepareClaimFeeParams?.claimCalldata ?? null;
+    const claimContractAddress = prepareClaimFeeParams?.contractAddress ?? null;
+    const claimChainId = prepareClaimFeeParams?.chainId ?? null;
+    const feeInfoBlockHeight = feeInfo?.blockHeight ?? null;
 
     useEffect(() => {
         const requestId = requestIdRef.current + 1;
@@ -251,7 +270,9 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
 
         setHasFeeEstimationError(false);
 
-        if (!prepareClaimFeeParams) {
+        const params = prepareClaimFeeParamsRef.current;
+
+        if (!params) {
             clearClaimFeeState();
 
             return;
@@ -259,13 +280,17 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
 
         setBaseContext(null);
         setIsPreparingClaimFee(true);
-        void debounce(() => void prepareClaimFee(prepareClaimFeeParams, requestId));
+        void debounce(() => void prepareClaimFee(params, requestId));
     }, [
+        claimCalldata,
+        claimChainId,
+        claimContractAddress,
         clearClaimFeeState,
         debounce,
         feeEstimationRetryKey,
+        feeInfoBlockHeight,
         prepareClaimFee,
-        prepareClaimFeeParams,
+        prepareClaimFeeParamsRef,
         setHasFeeEstimationError,
     ]);
 
