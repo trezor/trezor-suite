@@ -174,7 +174,7 @@ export class DeviceFixture {
             raw = JSON.parse(debugState.tokens.join(''));
         } catch (error) {
             throw new Error(`Failed to parse display content JSON: ${debugState.tokens.join('')}`, {
-                cause: error as Error,
+                cause: error,
             });
         }
 

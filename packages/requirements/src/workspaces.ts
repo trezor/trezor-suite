@@ -32,7 +32,7 @@ export const listAllWorkspaces = (repoRoot: string): ReadonlyArray<WorkspaceEntr
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
 
-        throw new Error(`Failed to list workspaces in ${cacheKey}: ${message}`);
+        throw new Error(`Failed to list workspaces in ${cacheKey}: ${message}`, { cause: error });
     }
 
     const workspaces = rawOutput

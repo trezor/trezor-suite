@@ -358,7 +358,7 @@ export const stake = async ({
             data,
         };
     } catch (e) {
-        throw new Error(e);
+        throw new Error(e, { cause: e });
     }
 };
 
@@ -429,7 +429,7 @@ export const unstake = async ({
             data,
         };
     } catch (error) {
-        throw new Error(error);
+        throw new Error(error, { cause: error });
     }
 };
 
@@ -492,7 +492,7 @@ export const claimWithdrawRequest = async ({
             data,
         };
     } catch (error) {
-        throw new Error(error);
+        throw new Error(error, { cause: error });
     }
 };
 

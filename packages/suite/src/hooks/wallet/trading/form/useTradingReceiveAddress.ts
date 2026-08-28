@@ -214,7 +214,7 @@ export const useTradingReceiveAddress = ({
         }
 
         if (!isNewAsset && persistedReceiveAddress && canUseNonSuiteAccount && symbol) {
-            let isValidForCurrentSymbol = false;
+            let isValidForCurrentSymbol: boolean;
 
             try {
                 isValidForCurrentSymbol = addressValidator.isAddressValid(

@@ -32,7 +32,7 @@ const fetchNftPage = async (page: number, assetPlatformId: string): Promise<NftD
 
         return await response.json();
     } catch (error) {
-        throw new Error(error);
+        throw new Error(error, { cause: error });
     }
 };
 

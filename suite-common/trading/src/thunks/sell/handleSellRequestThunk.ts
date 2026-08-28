@@ -109,7 +109,7 @@ export const handleSellRequestThunk = createThunk<
             return rejectWithValue('Invalid request data');
         }
 
-        let allQuotes: SellFiatTrade[] = [];
+        let allQuotes: SellFiatTrade[];
         let requestSucceeded = false;
         try {
             allQuotes = (await getQuotesRequest({ requestData, signal })) ?? [];

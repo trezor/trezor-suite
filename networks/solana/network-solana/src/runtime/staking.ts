@@ -170,6 +170,7 @@ export const stake = async ({
     } catch (error) {
         throw new Error(
             `Solana staking: staking failed - ${error instanceof Error ? error.message : serializeError(error)}`,
+            { cause: error },
         );
     }
 };
@@ -336,6 +337,7 @@ export const unstake = async ({
     } catch (error) {
         throw new Error(
             `Solana staking: unstaking failed - ${error instanceof Error ? error.message : serializeError(error)}`,
+            { cause: error },
         );
     }
 };
@@ -403,6 +405,7 @@ export const claim = async ({
     } catch (error) {
         throw new Error(
             `Solana staking: claiming failed - ${error instanceof Error ? error.message : serializeError(error)}`,
+            { cause: error },
         );
     }
 };

@@ -39,12 +39,10 @@ export const FirmwareChangelog = ({ ref, onClose }: FirmwareChangelogProps) => {
             );
         }
 
-        let firmwareChangelogLines: string[] = [];
-        if (typeof firmwareChangelog === 'string') {
-            firmwareChangelogLines = firmwareChangelog.split('\n');
-        } else {
-            firmwareChangelogLines = firmwareChangelog;
-        }
+        const firmwareChangelogLines =
+            typeof firmwareChangelog === 'string'
+                ? firmwareChangelog.split('\n')
+                : firmwareChangelog;
 
         return firmwareChangelogLines.map((text, index) => {
             const key = text + index;

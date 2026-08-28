@@ -247,7 +247,7 @@ export const fetchAllCoins = async (): Promise<CoinData[]> => {
         return data;
     } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
-        throw new Error(`fetchAllCoins error: ${message}`);
+        throw new Error(`fetchAllCoins error: ${message}`, { cause: err });
     }
 };
 

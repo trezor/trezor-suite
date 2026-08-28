@@ -18,12 +18,10 @@ export const formatDurationStrict = (seconds: number, locale?: Locale) =>
     formatDistanceStrict(0, seconds * 1000, { locale });
 
 export const calcTicks = (startDate: Date, endDate: Date) => {
-    let timestamps = [];
-    if (differenceInMonths(endDate, startDate) <= 1) {
-        timestamps = eachDayOfInterval({ start: startDate, end: endDate });
-    } else {
-        timestamps = eachMonthOfInterval({ start: startDate, end: endDate });
-    }
+    const timestamps =
+        differenceInMonths(endDate, startDate) <= 1
+            ? eachDayOfInterval({ start: startDate, end: endDate })
+            : eachMonthOfInterval({ start: startDate, end: endDate });
 
     return timestamps;
 };

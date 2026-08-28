@@ -85,10 +85,8 @@ export class TxWeightCalculator {
             const n = input.multisig.nodes
                 ? input.multisig.nodes.length
                 : input.multisig.pubkeys.length;
-            let multisig_script_size = _TXSIZE_MULTISIGSCRIPT + n * (1 + _TXSIZE_PUBKEY);
-            if (SEGWIT_INPUT_SCRIPT_TYPES.includes(input.script_type)) {
-                multisig_script_size += getVarIntSize(multisig_script_size);
-            } else {
+            if (!SEGWIT_INPUT_SCRIPT_TYPES.includes(input.script_type)) {
+                let multisig_script_size = _TXSIZE_MULTISIGSCRIPT + n * (1 + _TXSIZE_PUBKEY);
                 multisig_script_size += getOpPushSize(multisig_script_size);
                 input_script_size =
                     1 + // the OP_FALSE bug in multisig

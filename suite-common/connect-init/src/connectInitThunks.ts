@@ -210,6 +210,6 @@ export const connectInitThunk = createThunk<
         } else {
             formattedError = error.code ? `${error.code}: ${error.message}` : error.message;
         }
-        throw new Error(formattedError);
+        throw new Error(formattedError, { cause: error });
     }
 });
