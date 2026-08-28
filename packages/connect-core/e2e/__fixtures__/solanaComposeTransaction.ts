@@ -26,7 +26,7 @@ const solanaComposeTransaction: TestCase = {
                 fromAddress: 'ANctUhC7YZPueiv4T8bkDcHYEAJ7Hwoxhvgnr2QkF8uR',
                 toAddress: '5Q9c3XoBef8BYA5RzSmogWnRrQas6HPwYuo4AYPafpom',
                 amount: '1',
-                token: {
+                tokenTransfer: {
                     mint: 'HBoNJ5v8g71s2boRivrHnfSB5MVPLDHHyVjruPfhGkvL',
                     program: 'spl-token',
                     decimals: 1,
@@ -34,6 +34,13 @@ const solanaComposeTransaction: TestCase = {
                         {
                             publicKey: '6EjZ73R3oEUHQL4zczkx3pRD3acysP3ug7hwMAdzdtNQ',
                             balance: '30',
+                        },
+                    ],
+                    recipientAccountOwner: '11111111111111111111111111111111',
+                    recipientTokenAccounts: [
+                        {
+                            publicKey: '73rsTqUoMd34Y3YwXtu4An2LkncLF9SeDY6TGUFfksfe',
+                            balance: '10',
                         },
                     ],
                 },
@@ -60,7 +67,7 @@ const solanaComposeTransaction: TestCase = {
                 fromAddress: 'ANctUhC7YZPueiv4T8bkDcHYEAJ7Hwoxhvgnr2QkF8uR',
                 toAddress: 'Aey9o8JXzTcQdjJVrV4Y56xzt5qHkLPWLgAQmaodUojm',
                 amount: '1',
-                token: {
+                tokenTransfer: {
                     mint: 'HBoNJ5v8g71s2boRivrHnfSB5MVPLDHHyVjruPfhGkvL',
                     program: 'spl-token',
                     decimals: 1,
@@ -70,6 +77,8 @@ const solanaComposeTransaction: TestCase = {
                             balance: '30',
                         },
                     ],
+                    recipientAccountOwner: null,
+                    recipientTokenAccounts: [],
                 },
                 blockHash: 'FuVcUvTCAEAefjSb7twrdnM98KFuxPhe9idGNZ3jb4zT',
                 lastValidBlockHeight: 290999698,

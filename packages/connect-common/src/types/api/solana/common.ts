@@ -57,6 +57,11 @@ export const SolanaProgramName = Type.Union([
     Type.Literal('spl-token-2022'),
 ]);
 
+const SolanaTokenAccount = Type.Object({
+    publicKey: Type.String(),
+    balance: Type.String(),
+});
+
 const SolanaComposeTransactionCommon = {
     fromAddress: Type.String(),
     amount: Type.String(),
@@ -68,17 +73,18 @@ const SolanaComposeTransactionCommon = {
             computeUnitLimit: Type.String(),
         }),
     ),
-    token: Type.Optional(
+    tokenTransfer: Type.Optional(
         Type.Object({
             mint: Type.String(),
             program: SolanaProgramName,
             decimals: Type.Number(),
-            accounts: Type.Array(Type.Object({ publicKey: Type.String(), balance: Type.String() })),
+            accounts: Type.Array(SolanaTokenAccount),
+            recipientAccountOwner: Type.Union([Type.String(), Type.Null()]),
+            recipientTokenAccounts: Type.Array(SolanaTokenAccount),
         }),
     ),
     memo: Type.Optional(Type.String()),
     coin: Type.Optional(CoinSymbolParam()),
-    identity: Type.Optional(Type.String()),
 };
 
 const SolanaComposeSerializedTransaction = Type.Object({

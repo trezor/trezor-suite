@@ -161,6 +161,50 @@ const calculate = (
     return payloadData;
 };
 
+const getTokenTransferInfo = async (
+    account: Account,
+    tokenInfo: TokenInfo | undefined,
+    descriptor: string | undefined,
+    serialized: boolean,
+) => {
+    if (!tokenInfo) {
+        return { success: true as const, payload: undefined };
+    }
+
+    const payload: Parameters<typeof TrezorConnect.solanaComposeTransaction>[0]['tokenTransfer'] = {
+        mint: tokenInfo.contract,
+        program: solanaUtils.tokenStandardToTokenProgramName(tokenInfo.standard),
+        decimals: tokenInfo.decimals,
+        accounts: tokenInfo.accounts ?? [],
+        recipientAccountOwner: null,
+        recipientTokenAccounts: [],
+    };
+
+    if (!descriptor || serialized) {
+        return { success: true as const, payload };
+    }
+
+    const recipientAccountInfo = await TrezorConnect.getAccountInfo({
+        descriptor,
+        coin: asCoinSymbol(account.symbol),
+        identity: getAccountIdentity(account),
+    });
+
+    if (!recipientAccountInfo.success) {
+        return recipientAccountInfo;
+    }
+
+    const recipientAccountOwner = recipientAccountInfo.payload.misc?.owner ?? null;
+    const recipientTokenAccounts =
+        recipientAccountInfo.payload.tokens?.find(t => t.contract === tokenInfo.contract)
+            ?.accounts ?? [];
+
+    return {
+        success: true as const,
+        payload: { ...payload, recipientAccountOwner, recipientTokenAccounts },
+    };
+};
+
 function assertIsSolanaAccount(
     account: Account,
 ): asserts account is Extract<Account, { networkType: 'solana' }> {
@@ -217,33 +261,41 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             }
         }
 
+        const toAddress = firstOutput.address;
+        const serializedTx = formState.transactionData;
+        const tokenTransferInfo = await getTokenTransferInfo(
+            account,
+            tokenInfo,
+            toAddress,
+            !!serializedTx,
+        );
+
+        if (!tokenTransferInfo.success) {
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: tokenTransferInfo.error.message,
+            });
+        }
+
         // To estimate fees on Solana we need to turn a transaction into a message for which fees are estimated.
         // Since all the values don't have to be filled in the form at the time of this function call, we use dummy values
         // for the estimation, since these values don't affect the final fee.
         // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
         const transaction = await TrezorConnect.solanaComposeTransaction({
             fromAddress: account.descriptor,
-            toAddress: firstOutput.address,
+            toAddress,
             amount: firstOutput.amount,
-            token: tokenInfo
-                ? {
-                      mint: tokenInfo.contract,
-                      program: solanaUtils.tokenStandardToTokenProgramName(tokenInfo.standard),
-                      decimals: tokenInfo.decimals,
-                      accounts: tokenInfo.accounts ?? [],
-                  }
-                : undefined,
+            tokenTransfer: tokenTransferInfo.payload,
             blockHash,
             lastValidBlockHeight,
             memo: formState.destinationTag || undefined,
             coin: asCoinSymbol(account.symbol),
-            identity: getAccountIdentity(account),
             priorityFees: {
                 // dummy value so simulation always passes
                 computeUnitPrice: formState.feePerUnit || '1',
                 computeUnitLimit: formState.feeLimit || SOL_COMPUTE_UNIT_LIMIT.toString(),
             },
-            serializedTx: formState.transactionData,
+            serializedTx,
         });
 
         if (!transaction.success) {
@@ -383,18 +435,28 @@ export const signSolanaSendFormTransactionThunk = createThunk<
         const { outputs: signOutputs } = formState;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstSignOutput: (typeof signOutputs)[number] = signOutputs[0];
+
+        const toAddress = firstSignOutput.address;
+        const serializedTx = formState.transactionData;
+        const tokenTransferInfo = await getTokenTransferInfo(
+            selectedAccount,
+            token,
+            toAddress,
+            !!serializedTx,
+        );
+
+        if (!tokenTransferInfo.success) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: tokenTransferInfo.error.message,
+            });
+        }
+
         const transaction = await TrezorConnect.solanaComposeTransaction({
             fromAddress: selectedAccount.descriptor,
-            toAddress: firstSignOutput.address,
+            toAddress,
             amount: firstSignOutput.amount,
-            token: token
-                ? {
-                      mint: token.contract,
-                      program: solanaUtils.tokenStandardToTokenProgramName(token.standard),
-                      decimals: token.decimals,
-                      accounts: token.accounts ?? [],
-                  }
-                : undefined,
+            tokenTransfer: tokenTransferInfo.payload,
             blockHash,
             lastValidBlockHeight,
             memo: formState.destinationTag || undefined,
@@ -403,8 +465,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                 computeUnitLimit: precomposedTransaction.feeLimit,
             },
             coin: asCoinSymbol(selectedAccount.symbol),
-            identity: getAccountIdentity(selectedAccount),
-            serializedTx: formState.transactionData,
+            serializedTx,
         });
 
         if (!transaction.success) {
