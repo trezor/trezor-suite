@@ -4223,6 +4223,7 @@ export const messages = {
                     title: "Left the provider's website before paying?",
                     description:
                         "No worries – you haven't been charged. Just go back and create a new trade.",
+                },
                 supportBanner: {
                     title: 'Need help with your trade?',
                 },
