@@ -48,7 +48,10 @@ module.exports = {
             device: {
                 avdName: 'Pixel_6_API_34',
             },
-            bootArgs: '-no-metrics',
+            // CI exports the same options it booted the emulator with, so a
+            // Detox-initiated boot does not silently fall back to a different
+            // graphics or memory setup than the rest of the run used.
+            bootArgs: process.env.EMULATOR_OPTIONS ?? '-no-metrics',
         },
     },
     configurations: {

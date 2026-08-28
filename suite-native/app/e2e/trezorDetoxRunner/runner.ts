@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { uploadToCurrents } from './currentsUpload';
 import { runProjectSafely } from './detox';
+import { ensureEmulatorReady, isAndroidTarget } from './emulator';
 import { processJUnitReport } from './junitReport';
 import type { Action } from './quarantine';
 import type { ProjectConfig } from './types';
@@ -14,6 +15,12 @@ export const runAllProjects = async (
     const failedProjects: string[] = [];
 
     for (const project of projects) {
+        // A dead emulator left over by a previous project must be replaced here,
+        // otherwise every remaining project of the shard fails on a missing device.
+        if (isAndroidTarget(project.target) && !(await ensureEmulatorReady())) {
+            console.warn(`Starting ${project.projectName} without a verified emulator.`);
+        }
+
         const detoxFailed = await runProjectSafely(project, headless, testFiles);
         const hasRemainingFailures = await processJUnitReport(
             project.projectName,
