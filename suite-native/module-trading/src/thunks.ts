@@ -112,7 +112,7 @@ type PushTradingTxnThunkParams = {
 export const pushTradingTxnThunk = createThunk<
     Ok<{ txid: string }>,
     PushTradingTxnThunkParams,
-    { rejectValue: SerializedError | string; state: void }
+    { rejectValue: SerializedError | string }
 >(
     `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/pushTransaction`,
     async ({ serializedTx, account }, { rejectWithValue, fulfillWithValue }) => {

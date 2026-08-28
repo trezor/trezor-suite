@@ -6,14 +6,14 @@ import { slip15ToBip329 } from './slip15ToBip329';
 
 export type GetLegacyAccountLabels = (accountKey: AccountKey) => AccountLabels;
 
-export type GetLegacyAccountLabelsDep = {
+export type LegacyToBip329Deps = {
     getLegacyAccountLabels: GetLegacyAccountLabels;
 };
 
 export type LegacyToBip329Dep = { legacyToBip329: ExportBip329 };
 
 export const createLegacyToBip329 =
-    (deps: GetLegacyAccountLabelsDep): ExportBip329 =>
+    (deps: LegacyToBip329Deps): ExportBip329 =>
     ({ account }) => {
         const accountLabels = deps.getLegacyAccountLabels(account.key);
 

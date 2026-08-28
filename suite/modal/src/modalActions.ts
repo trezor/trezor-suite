@@ -34,7 +34,7 @@ export const removePreserveModal = createAction(MODAL_REMOVE_PRESERVE);
  */
 export const preserveModalOnTxTimeout = createAction(MODAL_PRESERVE_ON_TX_TIMEOUT);
 
-type OnReceiveConfirmationState = {
+type OnReceiveConfirmationThunkState = {
     modal: {
         context: string;
         requestId?: string;
@@ -42,7 +42,8 @@ type OnReceiveConfirmationState = {
 };
 
 export const onReceiveConfirmation =
-    (confirmation: boolean) => (dispatch: Dispatch, getState: () => OnReceiveConfirmationState) => {
+    (confirmation: boolean) =>
+    (dispatch: Dispatch, getState: () => OnReceiveConfirmationThunkState) => {
         const requestId = selectModalConfirmationRequestId(getState());
         TrezorConnect.uiResponse({
             type: UI_RESPONSE.RECEIVE_CONFIRMATION,

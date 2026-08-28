@@ -794,7 +794,7 @@ type FetchTransactionsFromNowUntilTimestampParams = {
     accountKey: AccountKey;
     timestamp: Timestamp | null;
 };
-export type FetchTransactionsFromNowUntilTimestampState = AccountsRootState &
+export type FetchTransactionsFromNowUntilTimestampThunkState = AccountsRootState &
     TransactionsRootState &
     FetchAllTransactionsForAccountThunkState &
     FetchTransactionsPageThunkState;
@@ -802,7 +802,7 @@ export type FetchTransactionsFromNowUntilTimestampState = AccountsRootState &
 export const fetchTransactionsFromNowUntilTimestamp = createSingleInstanceThunk<
     FetchTransactionsFromNowUntilTimestampParams,
     WalletAccountTransaction[],
-    { state: FetchTransactionsFromNowUntilTimestampState }
+    { state: FetchTransactionsFromNowUntilTimestampThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsForAccount`,
     async ({ accountKey, timestamp }, { dispatch, getState }) => {

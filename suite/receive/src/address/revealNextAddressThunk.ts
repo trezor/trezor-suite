@@ -22,7 +22,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-type RevealNextAddressState = AccountsRootState &
+type RevealNextAddressThunkState = AccountsRootState &
     TransactionsRootState &
     ReceiveRootState &
     SelectLabeledUnusedAddressesState;
@@ -33,7 +33,7 @@ export const revealNextAddressThunk =
     ({ accountKey }: { accountKey: AccountKey }) =>
     (
         dispatch: Dispatch,
-        getState: () => RevealNextAddressState,
+        getState: () => RevealNextAddressThunkState,
         extra: RevealNextAddressThunkDeps,
     ) => {
         const account = selectAccountByKey(getState(), accountKey);

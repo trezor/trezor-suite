@@ -10,7 +10,7 @@ import { type SuiteSyncUncontrolledErrorHandlerDep } from './suiteSyncUncontroll
 
 type GetSelectedDevice = () => TrezorDevice | undefined;
 
-export type CreateSuiteSyncInternalErrorHandlerDeps = AllocateOwnerQuotaDep &
+export type SuiteSyncInternalErrorHandlerDeps = AllocateOwnerQuotaDep &
     EnsureDelegatedIdentityKeyDep &
     SuiteSyncUncontrolledErrorHandlerDep &
     // Todo: temporary, see: https://github.com/trezor/trezor-suite/issues/27049
@@ -24,7 +24,7 @@ export type CreateSuiteSyncInternalErrorHandlerDeps = AllocateOwnerQuotaDep &
  *              errors and propagate them upstream.
  */
 export const createSuiteSyncInternalErrorHandler =
-    (deps: CreateSuiteSyncInternalErrorHandlerDeps): SuiteSyncInternalErrorHandler =>
+    (deps: SuiteSyncInternalErrorHandlerDeps): SuiteSyncInternalErrorHandler =>
     async (error: Errors) => {
         const { type } = error;
 

@@ -19,7 +19,7 @@ import { err, ok } from '@trezor/type-utils';
 import { createSuiteSyncStorageMock } from '../../mocks/mockCreateSuiteSyncStorage';
 import { SuiteSyncUnavailableOnDeviceError } from '../createEnsureSuiteSyncKeys';
 import {
-    type CreateEnsureSubscribedStorageDeps,
+    type EnsureSubscribedStorageDeps,
     createEnsureSubscribedStorage,
 } from './createEnsureSubscribedStorage';
 import { createStorageIdFromDeviceStaticSessionId } from '../storage/createStorageIdFromDeviceStaticSessionId';
@@ -82,7 +82,7 @@ describe(createEnsureSubscribedStorage.name, () => {
         const suiteSyncListener = createListenerMock();
         const storageResult = err(SuiteSyncUnavailableOnDeviceError());
 
-        const deps = createMockDeps<CreateEnsureSubscribedStorageDeps>({
+        const deps = createMockDeps<EnsureSubscribedStorageDeps>({
             ensureStorage: () => Promise.resolve(storageResult),
             subscriptionStorage: createSubscriptionStorage(),
             suiteSyncListener,
@@ -115,7 +115,7 @@ describe(createEnsureSubscribedStorage.name, () => {
             unsubscribe: jest.fn(),
         });
 
-        const deps = createMockDeps<CreateEnsureSubscribedStorageDeps>({
+        const deps = createMockDeps<EnsureSubscribedStorageDeps>({
             ensureStorage: () => Promise.resolve(ok(storage)),
             subscriptionStorage,
             suiteSyncListener,
@@ -140,7 +140,7 @@ describe(createEnsureSubscribedStorage.name, () => {
             outputs: { subscribe: () => () => {} },
         });
 
-        const deps = createMockDeps<CreateEnsureSubscribedStorageDeps>({
+        const deps = createMockDeps<EnsureSubscribedStorageDeps>({
             ensureStorage: () => Promise.resolve(ok(storage)),
             subscriptionStorage: createSubscriptionStorage(),
             suiteSyncListener,
@@ -173,7 +173,7 @@ describe(createEnsureSubscribedStorage.name, () => {
 
         const storage = createStorageWithEmitters(storageEmitters);
 
-        const deps = createMockDeps<CreateEnsureSubscribedStorageDeps>({
+        const deps = createMockDeps<EnsureSubscribedStorageDeps>({
             ensureStorage: () => Promise.resolve(ok(storage)),
             subscriptionStorage: createSubscriptionStorage(),
             suiteSyncListener,

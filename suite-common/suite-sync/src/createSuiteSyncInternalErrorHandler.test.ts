@@ -13,7 +13,7 @@ import { asWalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
 import {
-    type CreateSuiteSyncInternalErrorHandlerDeps,
+    type SuiteSyncInternalErrorHandlerDeps,
     createSuiteSyncInternalErrorHandler,
 } from './createSuiteSyncInternalErrorHandler';
 
@@ -32,7 +32,7 @@ const createDevice = (overrides: Partial<TrezorDevice> = {}): TrezorDevice =>
 
 describe(createSuiteSyncInternalErrorHandler.name, () => {
     it('propagates a device error when no selected device is available', async () => {
-        const deps = createMockDeps<CreateSuiteSyncInternalErrorHandlerDeps>({
+        const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: null,
             suiteSyncUncontrolledErrorHandler: () => undefined,
@@ -53,7 +53,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
 
     it('retrieves delegated key and allocates additional owner quota for RelayQuotaExceeded', async () => {
         const device = createDevice();
-        const deps = createMockDeps<CreateSuiteSyncInternalErrorHandlerDeps>({
+        const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
             allocateOwnerQuota: () => Promise.resolve(ok()),
             ensureDelegatedIdentityKey: () =>
                 Promise.resolve(ok(asDelegatedIdentityKey('delegated-key'))),
@@ -79,7 +79,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
     it('propagates delegated key retrieval failures', async () => {
         const device = createDevice();
         const deviceError: DeviceErrorType = DeviceError('Delegated key failed');
-        const deps = createMockDeps<CreateSuiteSyncInternalErrorHandlerDeps>({
+        const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: () => Promise.resolve(err(deviceError)),
             suiteSyncUncontrolledErrorHandler: () => undefined,
@@ -104,7 +104,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
             caused: new Error('quota manager failed'),
         };
 
-        const deps = createMockDeps<CreateSuiteSyncInternalErrorHandlerDeps>({
+        const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
             allocateOwnerQuota: () => Promise.resolve(err(allocationError)),
             ensureDelegatedIdentityKey: () =>
                 Promise.resolve(ok(asDelegatedIdentityKey('delegated-key'))),
@@ -126,7 +126,7 @@ describe(createSuiteSyncInternalErrorHandler.name, () => {
         const device = createDevice();
         const relayError = { type: 'RelayOther', message: 'relay failed' } as const;
 
-        const deps = createMockDeps<CreateSuiteSyncInternalErrorHandlerDeps>({
+        const deps = createMockDeps<SuiteSyncInternalErrorHandlerDeps>({
             allocateOwnerQuota: null,
             ensureDelegatedIdentityKey: null,
             suiteSyncUncontrolledErrorHandler: () => undefined,

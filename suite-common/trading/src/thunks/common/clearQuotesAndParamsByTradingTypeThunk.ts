@@ -10,7 +10,11 @@ export type ClearQuotesAndParamsByTradingTypeThunkProps = {
     tradingType: TradingTradeBuySellType;
 };
 
-export const clearQuotesAndParamsByTradingTypeThunk = createThunk(
+export const clearQuotesAndParamsByTradingTypeThunk = createThunk<
+    void,
+    ClearQuotesAndParamsByTradingTypeThunkProps,
+    void
+>(
     `${TRADING_THUNK_PREFIX}/clearQuotesAndParamsByTradingType`,
     ({ tradingType }: ClearQuotesAndParamsByTradingTypeThunkProps, { dispatch }) => {
         switch (tradingType) {

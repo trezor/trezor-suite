@@ -794,13 +794,13 @@ export const runAdditionalDiscoveryThunk = createThunk<
     },
 );
 
-type SubmitPassphraseThunkState = DiscoveryRootState;
 type SubmitPassphraseThunkParams = {
     device: TrezorDevice;
     passphrase: string;
     passphraseOnDevice?: boolean;
     requestId?: string;
 };
+type SubmitPassphraseThunkState = DiscoveryRootState;
 
 export const submitPassphrase = createThunk<
     void,

@@ -4,7 +4,7 @@ import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
-import type { CreateEnsureWalletSuiteSyncOnWithFwCheckDeps } from './createEnsureWalletSuiteSyncOnWithErrorHandler';
+import type { EnsureWalletSuiteSyncOnWithErrorHandlerDeps } from './createEnsureWalletSuiteSyncOnWithErrorHandler';
 import { createEnsureWalletSuiteSyncOnWithErrorHandler } from './createEnsureWalletSuiteSyncOnWithErrorHandler';
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
@@ -65,7 +65,7 @@ describe(createEnsureWalletSuiteSyncOnWithErrorHandler.name, () => {
     ])(
         'dispatches correct error for $description and passes result through',
         async ({ innerResult, expectedDispatchedAction }) => {
-            const deps = createMockDeps<CreateEnsureWalletSuiteSyncOnWithFwCheckDeps>({
+            const deps = createMockDeps<EnsureWalletSuiteSyncOnWithErrorHandlerDeps>({
                 dispatch: mock<Dispatch>(() => {}),
                 ensureWalletSuiteSyncOn: () => Promise.resolve(innerResult),
             });
@@ -85,7 +85,7 @@ describe(createEnsureWalletSuiteSyncOnWithErrorHandler.name, () => {
     it('delegates to ensureWalletSuiteSyncOn with correct params', async () => {
         const ensureResult = ok({ data: {} } as any);
 
-        const deps = createMockDeps<CreateEnsureWalletSuiteSyncOnWithFwCheckDeps>({
+        const deps = createMockDeps<EnsureWalletSuiteSyncOnWithErrorHandlerDeps>({
             dispatch: mock<Dispatch>(() => {}),
             ensureWalletSuiteSyncOn: () => Promise.resolve(ensureResult),
         });

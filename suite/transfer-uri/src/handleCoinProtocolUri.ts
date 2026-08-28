@@ -19,7 +19,7 @@ export type CoinProtocol = {
 
 type SaveCoinProtocol = (coinProtocol: CoinProtocol) => UnknownAction;
 
-export type HandleCoinProtocolUriDeps = WithServices<
+export type HandleCoinProtocolUriThunkDeps = WithServices<
     FindNetworkSymbolForProtocolDep & DesktopAnalyticsDep
 >;
 
@@ -32,7 +32,7 @@ export type HandleCoinProtocolUriDeps = WithServices<
  */
 export const handleCoinProtocolUri =
     (uri: string, saveCoinProtocol: SaveCoinProtocol) =>
-    (dispatch: Dispatch, _getState: unknown, extra: HandleCoinProtocolUriDeps) => {
+    (dispatch: Dispatch, _getState: unknown, extra: HandleCoinProtocolUriThunkDeps) => {
         // Report any URI carrying a recognizable scheme (incl. unknown-protocol deeplinks).
         const reportScheme = (scheme: string, amountPresent: boolean) =>
             extra.services.analytics.report({

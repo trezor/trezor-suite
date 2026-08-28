@@ -43,7 +43,7 @@ const BIOMETRICS_THUNK_PREFIX = 'biometrics';
 export const authenticateUserThunk = createThunk<
     LocalAuthenticationResult,
     void,
-    { rejectValue: AuthenticateError; state: void }
+    { rejectValue: AuthenticateError }
 >(`${BIOMETRICS_THUNK_PREFIX}/authenticate`, async (_, { rejectWithValue }) => {
     const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
 

@@ -117,13 +117,13 @@ import {
     signTronSendFormTransactionThunk,
 } from './tron/sendFormTronThunks';
 
-type ConvertSendFormDraftsBtcAmountUnitsThunkState = AccountsRootState &
-    SendRootState &
-    WalletSettingsRootState;
 type ConvertSendFormDraftsBtcAmountUnitsThunkParams = {
     selectedAccountKey?: AccountKey;
     isOnSendPage?: boolean;
 };
+type ConvertSendFormDraftsBtcAmountUnitsThunkState = AccountsRootState &
+    SendRootState &
+    WalletSettingsRootState;
 
 export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk<
     void,

@@ -28,10 +28,10 @@ import { type SuiteRouterHistoryDep } from './suiteRouterHistory';
  * Handle changes of history.location and history.location.hash
  * Called from ./support/RouterHandler
  */
-type OnLocationChangeThunkState = LocksRootState & ModalRootState & RouterRootState;
 type OnLocationChangeThunkParams = RouterPathOptional & {
     anchor?: AnchorType;
 };
+type OnLocationChangeThunkState = LocksRootState & ModalRootState & RouterRootState;
 
 export const onLocationChange = createThunk<
     ReturnType<typeof routerLocationChange> | null | undefined,

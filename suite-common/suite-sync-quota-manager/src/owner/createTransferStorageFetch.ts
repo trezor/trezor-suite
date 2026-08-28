@@ -42,7 +42,7 @@ export type TransferStorageFetch = (
     params: TransferStorageFetchParams,
 ) => Promise<TransferStorageResult>;
 
-export type TransferStorageDeps = {
+export type TransferStorageFetchDeps = {
     dispatch: Dispatch;
 } & QuotaManagerFetchDep;
 
@@ -56,7 +56,7 @@ export type TransferStorageFetchDep = {
  * Can be used to increase the quota of the owner by transferring unspent storage from the device.
  */
 export const createTransferStorageFetch =
-    (deps: TransferStorageDeps): TransferStorageFetch =>
+    (deps: TransferStorageFetchDeps): TransferStorageFetch =>
     async ({ params, walletDescriptor, deviceId }) => {
         const result = await deps.quotaManagerFetch({
             path: '/storage/add',

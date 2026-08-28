@@ -99,8 +99,6 @@ export const composeYieldWrapTransactionThunk = createThunk<
     },
 );
 
-export type TrackWrappedNativeTokenThunkState = AccountsRootState;
-
 type TrackWrappedNativeTokenPayload = {
     accountKey: AccountKey;
     /**
@@ -111,6 +109,8 @@ type TrackWrappedNativeTokenPayload = {
      */
     mode?: 'fetch-balance' | 'ensure-tracked';
 };
+
+export type TrackWrappedNativeTokenThunkState = AccountsRootState;
 
 /**
  * Makes sure the account tracks the wrapped-native token (e.g. WETH) of its network. Wrapping

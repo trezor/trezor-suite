@@ -3,20 +3,20 @@ import { createMockDeps } from '@suite-common/dependency-injection';
 import { createQuotaManagerFetchMock } from '../../mocks/createQuotaManagerFetchMock';
 import { type QuotaManagerFetchResult } from '../../quotaManagerFetch';
 import { createGenerateSessionIdMock } from '../../session/mocks/createGenerateSessionIdMock';
-import { type PrepareChallengeSessionDeps } from '../createPrepareChallengeSessionFetch';
+import { type PrepareChallengeSessionFetchDeps } from '../createPrepareChallengeSessionFetch';
 
-type CreatePrepareChallengeSessionDepsMockParams = {
+type CreatePrepareChallengeSessionFetchDepsMockParams = {
     sessionIds: string[];
     quotaManagerFetchResponses: QuotaManagerFetchResult[];
-    patch?: Partial<PrepareChallengeSessionDeps>;
+    patch?: Partial<PrepareChallengeSessionFetchDeps>;
 };
 
-export const createPrepareChallengeSessionDepsMock = ({
+export const createPrepareChallengeSessionFetchDepsMock = ({
     sessionIds,
     quotaManagerFetchResponses,
     patch = {},
-}: CreatePrepareChallengeSessionDepsMockParams) =>
-    createMockDeps<PrepareChallengeSessionDeps>({
+}: CreatePrepareChallengeSessionFetchDepsMockParams) =>
+    createMockDeps<PrepareChallengeSessionFetchDeps>({
         generateSessionId: createGenerateSessionIdMock(sessionIds),
         quotaManagerFetch: createQuotaManagerFetchMock(quotaManagerFetchResponses),
         ...patch,

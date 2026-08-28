@@ -105,6 +105,19 @@ export const localRulesConfig = [
                       'local-rules/no-unused-intersection-members': 'error',
                   },
               },
+              {
+                  files: [
+                      'networks/**/src/**/*.{ts,tsx}',
+                      'packages/**/src/**/*.{ts,tsx}',
+                      'suite/**/src/**/*.{ts,tsx}',
+                      'suite-common/**/src/**/*.{ts,tsx}',
+                      'suite-native/**/src/**/*.{ts,tsx}',
+                  ],
+                  ignores: ['**/__fixtures__/**', '**/*.test.{ts,tsx}', '**/*.type-test.ts'],
+                  rules: {
+                      'local-rules/enforce-named-contracts': 'error',
+                  },
+              },
           ]
         : []),
 ];

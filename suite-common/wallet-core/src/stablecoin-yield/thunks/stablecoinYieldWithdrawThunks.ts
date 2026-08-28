@@ -30,10 +30,10 @@ type ComposeYieldWithdrawTransactionPayload = {
     flowType: YieldWithdrawFlowType;
 };
 
-export type ComposeYieldWithdrawTransactionThunkState = ComposeYieldEvmTransactionThunkState;
-
 export const isYieldWithdrawFeeError = (reason: ComposeYieldWithdrawErrorReason) =>
     reason === 'fee-estimation-failed' || reason === 'missing-fee-level';
+
+export type ComposeYieldWithdrawTransactionThunkState = ComposeYieldEvmTransactionThunkState;
 
 export const composeYieldWithdrawTransactionThunk = createThunk<
     ComposeYieldWithdrawResult,

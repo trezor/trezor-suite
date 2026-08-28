@@ -6,12 +6,12 @@ import { EXPLORER_MODULE_PREFIX, explorerActions } from './explorerActions';
 import { type ExplorerState } from './explorerReducer';
 import { selectNetworkExplorerType } from './explorerSelectors';
 
-type SetNetworkExplorerThunkDeps = WithServices<AnalyticsDep>;
-type SetNetworkExplorerThunkState = ExplorerState;
 type SetNetworkExplorerThunkParams = {
     symbol: NetworkSymbol;
     explorer?: Explorer;
 };
+type SetNetworkExplorerThunkState = ExplorerState;
+type SetNetworkExplorerThunkDeps = WithServices<AnalyticsDep>;
 
 export const setNetworkExplorerThunk = createThunk<
     void,

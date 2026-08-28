@@ -4,7 +4,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import {
     type CoinProtocol,
-    type HandleCoinProtocolUriDeps,
+    type HandleCoinProtocolUriThunkDeps,
     handleCoinProtocolUri,
 } from './handleCoinProtocolUri';
 
@@ -23,7 +23,7 @@ const setup = () => {
         payload: coinProtocol,
     }));
 
-    const extra: HandleCoinProtocolUriDeps = {
+    const extra: HandleCoinProtocolUriThunkDeps = {
         services: {
             analytics: mockDesktopAnalytics(report),
             findNetworkSymbolForProtocol,

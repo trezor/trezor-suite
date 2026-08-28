@@ -96,7 +96,7 @@ export {
 export {
     createSuiteSyncWriteLabels,
     type SuiteSyncWriteLabels,
-    type CreateSuiteSyncWriteLabelsDeps,
+    type SuiteSyncWriteLabelsDeps,
 } from './data/labeling/createSuiteSyncWriteLabels';
 export {
     isSuiteSyncSupportedByDevice,

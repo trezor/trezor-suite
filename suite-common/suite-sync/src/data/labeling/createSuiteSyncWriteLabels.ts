@@ -13,12 +13,12 @@ import { selectSuiteSyncWalletLabel } from '../wallet/suiteSyncWalletSelectors';
 
 export type SuiteSyncWriteLabels = WriteLabelsDep;
 
-export type CreateSuiteSyncWriteLabelsDeps = {
+export type SuiteSyncWriteLabelsDeps = {
     getState: () => any;
 } & SuiteSyncAnalyticsDep;
 
 export const createSuiteSyncWriteLabels = (
-    deps: CreateSuiteSyncWriteLabelsDeps,
+    deps: SuiteSyncWriteLabelsDeps,
 ): SuiteSyncWriteLabels => ({
     writeWalletLabel: createWriteWalletLabel({
         analytics: deps.analytics,

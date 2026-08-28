@@ -22,10 +22,10 @@ export type PrepareChallengeSessionFetchDep = {
     prepareChallengeSessionFetch: PrepareChallengeSessionFetch;
 };
 
-export type PrepareChallengeSessionDeps = QuotaManagerFetchDep & GenerateSessionIdDep;
+export type PrepareChallengeSessionFetchDeps = QuotaManagerFetchDep & GenerateSessionIdDep;
 
 export const createPrepareChallengeSessionFetch =
-    (deps: PrepareChallengeSessionDeps): PrepareChallengeSessionFetch =>
+    (deps: PrepareChallengeSessionFetchDeps): PrepareChallengeSessionFetch =>
     async () => {
         const sessionId = deps.generateSessionId();
 
