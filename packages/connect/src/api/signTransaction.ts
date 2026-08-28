@@ -21,7 +21,6 @@ import {
     parseTransactionHexes,
     requireReferencedTransactions,
     signTx,
-    signTxLegacy,
     transformOrigTransactions,
     transformReferencedTransactions,
     validateReferencedTransactions,
@@ -263,17 +262,14 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         return account.addresses;
     }
 
-    private async fetchRefTxs(
-        sendCoreMessage: MethodContext['sendCoreMessage'],
-        useLegacySignProcess: boolean,
-    ) {
+    private async fetchRefTxs(sendCoreMessage: MethodContext['sendCoreMessage']) {
         const {
             params: { inputs, outputs, options, coinInfo, identity, addresses },
         } = this;
 
         const requiredRefTxs = requireReferencedTransactions(inputs, options, coinInfo);
         const refTxsIds = requiredRefTxs ? getReferencedTransactions(inputs) : [];
-        const origTxsIds = !useLegacySignProcess ? getOrigTransactions(inputs, outputs) : [];
+        const origTxsIds = getOrigTransactions(inputs, outputs);
 
         if (!refTxsIds.length && !origTxsIds.length) {
             return [];
@@ -315,9 +311,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         const device = this.getDevice();
         const { params } = this;
         const { inputs, outputs, coinInfo } = params;
-        const useLegacySignProcess = !!device.unavailableCapabilities.replaceTransaction;
-        const refTxs =
-            params.refTxs ?? (await this.fetchRefTxs(sendCoreMessage, useLegacySignProcess));
+        const refTxs = params.refTxs ?? (await this.fetchRefTxs(sendCoreMessage));
 
         let outputScripts: Awaited<ReturnType<typeof deriveOutputScript>>[] = [];
         if (params.options.serialize !== false) {
@@ -339,10 +333,8 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             await device.getCommands().unlockPath(params.unlockPath);
         }
 
-        const signTxMethod = !useLegacySignProcess ? signTx : signTxLegacy;
-
         device.startPiggybackAck();
-        const response = await signTxMethod({
+        const response = await signTx({
             ...params,
             refTxs,
             typedCall: device.getCommands().typedCall,
