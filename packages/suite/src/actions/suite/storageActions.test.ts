@@ -1,12 +1,10 @@
 import '@suite-common/test-utils/globalOverrides';
 
 import { coinjoinReducer } from '@suite/coinjoin';
-import { prepareDesktopDeviceReducer } from '@suite/device';
 import {
     NewContentIndicatorId,
     initialRunCompleted,
     markNewContentIndicatorAsSeen,
-    prepareFlagsReducer,
     setNewContentIndicatorSeen,
 } from '@suite/flags';
 import { initialMetadataState, metadataReducer } from '@suite/metadata';
@@ -15,17 +13,13 @@ import { prepareSuiteSyncReducer } from '@suite/suite-sync';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { prepareReceiveReducer } from '@suite-common/receive';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks, wireEnabledNetworksMock } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    changeCoinVisibility,
-    prepareDiscoveryReducer,
-    prepareSendFormReducer,
-    transactionsActions,
-} from '@suite-common/wallet-core';
+import { changeCoinVisibility, transactionsActions } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -35,11 +29,18 @@ import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
 import { storageMiddleware } from 'src/middlewares/wallet/storageMiddleware';
+import { suiteReducers } from 'src/reducers/suite';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
+import {
+    accountsReducer,
+    discoveryReducer,
+    fiatRatesReducer,
+    sendFormReducer,
+    transactionsReducer,
+    walletSettingsReducer,
+} from 'src/reducers/wallet';
 import graphReducer from 'src/reducers/wallet/graphReducer';
 import { db } from 'src/storage';
-import { extraDependencies } from 'src/support/extraDependencies';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { type AcquiredDevice, type AppState } from 'src/types/suite';
 
@@ -50,14 +51,14 @@ const ltcSymbol = asNetworkSymbol('ltc');
 
 const { getWalletTransaction } = testMocks;
 
-const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
-const deviceReducer = prepareDesktopDeviceReducer(extraDependencies);
-const flagsReducer = prepareFlagsReducer(extraDependencies);
-const sendFormReducer = prepareSendFormReducer(extraDependencies);
-const walletSettingsReducer = discoveryActions.prepareWalletSettingsReducer(extraDependencies);
-const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
-const suiteSyncReducer = prepareSuiteSyncReducer(extraDependencies);
-const receiveReducer = prepareReceiveReducer(extraDependencies);
+const deviceReducer = suiteReducers.device;
+const flagsReducer = suiteReducers.flags;
+const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(undefined);
+const suiteSyncReducer = prepareSuiteSyncReducer(undefined);
+const receiveReducer = prepareReceiveReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadReceiveAccounts: mockReducer() },
+});
 
 // TODO: add method in suite-storage for deleting all stored data (done as a static method on SuiteDB), call it after each test
 // TODO: test deleting device instances on parent device forget

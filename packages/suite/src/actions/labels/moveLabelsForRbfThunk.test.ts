@@ -3,13 +3,13 @@ import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 import { prepareDebugReducer } from '@suite/debug';
 import { metadataReducer, selectLabelingDataForAccount } from '@suite/metadata';
 import { prepareSuiteSettingsReducer } from '@suite/settings';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations-types/mocks';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accountsReducer, transactionsReducer } from 'src/reducers/wallet';
-import { extraDependencies } from 'src/support/extraDependencies';
 
 import {
     accountReceivingCoins,
@@ -30,8 +30,13 @@ const rootReducer = combineReducers({
     }),
     metadata: metadataReducer,
     suite: suiteReducer,
-    suiteSettings: prepareSuiteSettingsReducer(extraDependencies),
-    debug: prepareDebugReducer(extraDependencies),
+    suiteSettings: prepareSuiteSettingsReducer({
+        actionTypes: { storageLoad: mockActionType('storageLoad') },
+        reducers: { storageLoadSuiteSettings: mockReducer() },
+    }),
+    debug: prepareDebugReducer({
+        actionTypes: { storageLoad: mockActionType('storageLoad') },
+    }),
     suiteSync: suiteSyncReducer,
 });
 

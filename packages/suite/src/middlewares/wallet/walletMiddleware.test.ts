@@ -1,6 +1,7 @@
 import { type SelectedAccountState, selectedAccountReducer } from '@suite/account';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type RouterState } from '@suite/router';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import {
@@ -17,11 +18,13 @@ import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/walle
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
 import { accountsReducer, blockchainReducer, walletSettingsReducer } from 'src/reducers/wallet';
-import { extraDependencies } from 'src/support/extraDependencies';
 
 import * as fixtures from './__fixtures__/walletMiddleware';
 
-const sendFormReducer = prepareSendFormReducer(extraDependencies);
+const sendFormReducer = prepareSendFormReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadFormDrafts: mockReducer() },
+});
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
 
@@ -290,9 +293,9 @@ describe('walletMiddleware', () => {
                 store.dispatch(action);
 
                 // Omit irrelevant `metadata` property so it does not have to be included in the fixtures.
-                const capturedActions = store.getActions().map(action => ({
-                    type: action.type,
-                    payload: action.payload,
+                const capturedActions = store.getActions().map(capturedAction => ({
+                    type: capturedAction.type,
+                    payload: capturedAction.payload,
                 }));
 
                 expect(capturedActions).toEqual(expectedActions);

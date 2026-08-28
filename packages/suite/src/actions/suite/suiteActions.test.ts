@@ -21,6 +21,7 @@ import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { mockFetchAndSaveMetadata } from '@suite-common/metadata-types/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
 import {
     mockGetAllowPrerelease,
@@ -41,14 +42,29 @@ import { noopCreateLogger } from '@trezor/connect-common';
 
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { extraDependencies } from 'src/support/extraDependencies';
 import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
 
 import fixtures from './__fixtures__/suiteActions';
 import { SUITE } from './constants';
-const firmwareReducer = prepareFirmwareReducer(extraDependencies);
-const deviceReducer = prepareDeviceReducer(extraDependencies);
-const flagsReducer = prepareFlagsReducer(extraDependencies);
+const firmwareReducer = prepareFirmwareReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
+const deviceReducer = prepareDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: mockActionType('storageLoad'),
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: mockReducer(),
+    },
+});
+const flagsReducer = prepareFlagsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadFlags: mockReducer() },
+});
 
 type SuiteActionsTestDeps = ConnectInitThunkDeps &
     WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {

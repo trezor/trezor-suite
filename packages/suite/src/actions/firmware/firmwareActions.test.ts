@@ -1,6 +1,7 @@
 import { suiteSettingsInitialState } from '@suite/settings';
 import type { DeviceReducerState } from '@suite-common/device';
 import { type FirmwareUpdateThunkDeps, prepareFirmwareReducer } from '@suite-common/firmware';
+import { mockActionType } from '@suite-common/redux-utils/mocks';
 import {
     mockGetBinFilesBaseUrl,
     mockGetLanguage,
@@ -10,10 +11,11 @@ import { configureMockStore, filterThunkActionTypes, testMocks } from '@suite-co
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { extraDependencies } from 'src/support/extraDependencies';
 
 import { actions, reducerActions } from './__fixtures__/firmwareActions';
-const firmwareReducer = prepareFirmwareReducer(extraDependencies);
+const firmwareReducer = prepareFirmwareReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+});
 const extra: FirmwareUpdateThunkDeps = {
     services: {
         getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
