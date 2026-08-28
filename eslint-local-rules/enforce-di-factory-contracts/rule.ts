@@ -1,11 +1,8 @@
 import type { Rule } from 'eslint';
 import ts from 'typescript';
 
-import {
-    createNamedContractRuleListener,
-    getTypeReferenceName,
-    getVariableFunction,
-} from '../named-contracts/utils';
+import { createNamedContractRuleListener } from '../named-contracts/utils';
+import { getTypeReferenceName, getVariableFunction } from '../utils';
 
 /** Enforces local, predictably named dependency contracts for DI service factories. */
 export const enforceDiFactoryContractsRule: Rule.RuleModule = {

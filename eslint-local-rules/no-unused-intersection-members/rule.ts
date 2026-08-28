@@ -1,15 +1,11 @@
 import type { Rule } from 'eslint';
 import ts from 'typescript';
 
+import { createTypeScriptNodeReporter, getTypeScriptParserServices } from '../utils';
+
 // This rule proves that a member is removable instead of trying to reconstruct complete data flow.
 // It records concrete requirements, marks ambiguous escapes as opaque, and reports only when every
 // requirement remains satisfied without the member. See `README.md` for the full design.
-
-type TypeAwareParserServices = {
-    esTreeNodeToTSNodeMap?: ReadonlyMap<Rule.Node, ts.Node>;
-    program?: ts.Program;
-    tsNodeToESTreeNodeMap?: ReadonlyMap<ts.Node, Rule.Node>;
-};
 
 type IntersectionMember = {
     name: string;
@@ -716,23 +712,18 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
         schema: [],
     },
     create(context) {
-        const parserServices = context.sourceCode.parserServices as TypeAwareParserServices;
+        const parserServices = getTypeScriptParserServices(context);
 
-        if (
-            parserServices.program === undefined ||
-            parserServices.esTreeNodeToTSNodeMap === undefined ||
-            parserServices.tsNodeToESTreeNodeMap === undefined
-        ) {
+        if (parserServices === undefined) {
             return {};
         }
 
         const checker = parserServices.program.getTypeChecker();
+        const report = createTypeScriptNodeReporter(context, parserServices);
 
         return {
             'Program:exit': programNode => {
-                const sourceFile = parserServices.esTreeNodeToTSNodeMap?.get(
-                    programNode as Rule.Node,
-                );
+                const sourceFile = parserServices.getTypeScriptNode(programNode as Rule.Node);
 
                 if (sourceFile === undefined || !ts.isSourceFile(sourceFile)) {
                     return;
@@ -849,19 +840,9 @@ export const noUnusedIntersectionMembersRule: Rule.RuleModule = {
 
                         if (isMemberUsed) return;
 
-                        const reportNode = parserServices.tsNodeToESTreeNodeMap?.get(member.node);
-
-                        if (reportNode === undefined) {
-                            return;
-                        }
-
-                        context.report({
-                            node: reportNode,
-                            messageId: 'unusedIntersectionMember',
-                            data: {
-                                memberName: member.name,
-                                typeName: contract.name,
-                            },
+                        report(member.node, 'unusedIntersectionMember', {
+                            memberName: member.name,
+                            typeName: contract.name,
                         });
                     });
                 }
