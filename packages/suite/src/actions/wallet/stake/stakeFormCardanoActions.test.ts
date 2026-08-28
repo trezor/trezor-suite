@@ -6,6 +6,7 @@ import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/
 import TrezorConnect, { PROTO } from '@trezor/connect';
 
 import { prepareTxPlan } from './stakeFormCardanoActions';
+import { VotingDelegationOption } from '@suite-common/wallet-core';
 
 jest.mock('@trezor/connect', () => {
     const actual = jest.requireActual('@trezor/connect');
@@ -142,6 +143,67 @@ describe('prepareTxPlan', () => {
 
         expect(result).toBeNull();
         expect(cardanoComposeTransactionMock).not.toHaveBeenCalled();
+    });
+
+    it('composes no vote delegation certificate when the current delegation is kept, so a predefined DRep survives a pool migration', async () => {
+        const account = createCardanoAccount({ drepId: PREDEFINED_DREP_ID });
+
+        const certificateTypes = getCertificateTypes(
+            await migratePool(account, { type: 'current' }),
+        );
+
+        expect(certificateTypes).not.toContain(PROTO.CardanoCertificateType.VOTE_DELEGATION);
+        expect(certificateTypes).toContain(PROTO.CardanoCertificateType.STAKE_DELEGATION);
+    });
+
+    it('composes a vote delegation certificate for the Everstake option', async () => {
+        const account = createCardanoAccount({ drepId: PREDEFINED_DREP_ID });
+
+        const certificateTypes = getCertificateTypes(
+            await migratePool(account, { type: 'everstake' }),
+        );
+
+        expect(certificateTypes).toContain(PROTO.CardanoCertificateType.VOTE_DELEGATION);
+    });
+
+    it('composes a vote delegation certificate for an unregistered account, which has no live delegation to keep', async () => {
+        const account = createCardanoAccount({
+            drepId: PREDEFINED_DREP_ID,
+            isStakingActive: false,
+        });
+
+        const certificateTypes = getCertificateTypes(
+            await migratePool(account, { type: 'current' }),
+        );
+
+        expect(certificateTypes).toContain(PROTO.CardanoCertificateType.VOTE_DELEGATION);
+    });
+
+    it('builds nothing for a vote delegation that keeps the current delegation, leaving nothing to sign', async () => {
+        const account = createCardanoAccount({ drepId: PREDEFINED_DREP_ID });
+
+        const txData = await prepareTxPlan({
+            account,
+            action: 'voteDelegate',
+            cardanoPools: [],
+            votingDelegation: { type: 'current' },
+        });
+
+        expect(txData).toBeNull();
+        expect(TrezorConnect.cardanoComposeTransaction).not.toHaveBeenCalled();
+    });
+});
+
+describe('prepareTxPlan', () => {
+    beforeEach(() => {
+        jest.mocked(TrezorConnect.cardanoComposeTransaction).mockResolvedValue({
+            success: true,
+            payload: [{ type: 'final' }],
+        } as unknown as Awaited<ReturnType<typeof TrezorConnect.cardanoComposeTransaction>>);
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
     it('composes no vote delegation certificate when the current delegation is kept, so a predefined DRep survives a pool migration', async () => {
