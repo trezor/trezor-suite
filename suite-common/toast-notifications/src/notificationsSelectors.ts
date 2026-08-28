@@ -1,12 +1,7 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 
-import {
-    TRANSACTION_BROADCAST_NOTIFICATION_TYPES,
-    type TransactionBroadcastNotificationType,
-} from './constants';
 import { isTransactionNotification } from './notificationsUtils';
 import {
-    type NotificationEntry,
     type NotificationsRootState,
     type ToastPayload,
     type TransactionNotification,
@@ -35,25 +30,5 @@ export const selectVisibleNotificationsByType = createMemoizedSelector(
             notifications.filter(
                 notification => notification.type === notificationType && !notification.closed,
             ),
-        ),
-);
-
-type TransactionBroadcastNotification = Extract<
-    NotificationEntry,
-    { type: TransactionBroadcastNotificationType }
->;
-
-const isTransactionBroadcastNotification = (
-    notification: NotificationEntry,
-): notification is TransactionBroadcastNotification =>
-    'txid' in notification &&
-    TRANSACTION_BROADCAST_NOTIFICATION_TYPES.some(type => type === notification.type);
-
-export const selectTransactionBroadcastNotificationByTxid = createMemoizedSelector(
-    [selectNotifications, (_state: NotificationsRootState, txid: string) => txid],
-    (notifications, txid): TransactionBroadcastNotification | undefined =>
-        notifications.find(
-            (notification): notification is TransactionBroadcastNotification =>
-                isTransactionBroadcastNotification(notification) && notification.txid === txid,
         ),
 );

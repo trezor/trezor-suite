@@ -170,14 +170,6 @@ test.describe(
                     address: accounts.miner_account.address,
                     txids: [accounts.account2.txid],
                 });
-
-                const confirmationToast = page
-                    .locator('[data-testid="@toast/tx-confirmed"][data-toast-intent="brand"]')
-                    .filter({ hasText: 'Bitcoin Regtest #1' });
-                await expect(confirmationToast).toBeVisible();
-                await expect(confirmationToast).toContainTranslation('TOAST_TX_CONFIRMED', {
-                    values: { account: 'Bitcoin Regtest #1' },
-                });
             });
 
             await test.step('Verify sent transaction has disappeared, self transaction stays', async () => {

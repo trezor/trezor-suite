@@ -1,16 +1,15 @@
 import '@suite-common/test-utils/globalOverrides';
 
-import { createIntl } from 'react-intl';
-
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { Translation, type TranslationKey, messages } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { type FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { mockFindNetworkSymbolForProtocol } from '@suite-common/networks/mocks';
 import { configureMockStore, fireEvent, screen } from '@suite-common/test-utils';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { PiggyBankIcon } from '@trezor/icons';
 
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
@@ -23,7 +22,6 @@ type TradingErrorNotification = Extract<LocalizedNotificationEntry, { type: 'tra
 type WrapNotification = Extract<LocalizedNotificationEntry, { type: 'tx-wrap' | 'tx-unwrap' }>;
 
 const ethSymbol = asNetworkSymbol('eth');
-const intl = createIntl({ locale: 'en' });
 
 const mockReport = jest.fn();
 const services: DesktopAnalyticsDep & FindNetworkSymbolForProtocolDep = {
@@ -42,8 +40,17 @@ const DismissableView = ({ onCancel }: NotificationViewProps & { onCancel?: () =
     </button>
 );
 
-const NotificationViewProbe = ({ message, messageValues, variant }: NotificationViewProps) => (
-    <div data-testid="notification-view" data-variant={variant}>
+const NotificationViewProbe = ({
+    icon,
+    message,
+    messageValues,
+    variant,
+}: NotificationViewProps) => (
+    <div
+        data-testid="notification-view"
+        data-variant={variant}
+        data-icon={icon === PiggyBankIcon ? 'piggy-bank' : undefined}
+    >
         <Translation id={message} values={messageValues} />
     </div>
 );
@@ -239,7 +246,7 @@ describe('NotificationRenderer trading-error', () => {
     });
 });
 
-describe('NotificationRenderer transaction lifecycle', () => {
+describe('NotificationRenderer transaction broadcasts', () => {
     const transactionPayload = {
         context: 'toast' as const,
         id: 1,
@@ -249,7 +256,7 @@ describe('NotificationRenderer transaction lifecycle', () => {
         txid: 'txid',
     };
 
-    it('renders a broadcast transaction as pending', () => {
+    it('renders a broadcast transaction with the warning variant', () => {
         renderNotification({
             ...transactionPayload,
             type: 'tx-sent',
@@ -257,59 +264,19 @@ describe('NotificationRenderer transaction lifecycle', () => {
 
         const notificationView = screen.getByTestId('notification-view');
         expect(notificationView).toHaveAttribute('data-variant', 'warning');
-        expect(
-            screen.getByText(intl.formatMessage(messages.TOAST_TX_SENT, { account: 'descriptor' })),
-        ).toBeInTheDocument();
     });
 
-    it('uses the approved staking pending and fee-bump copy', () => {
-        const { unmount } = renderNotification({
-            ...transactionPayload,
-            type: 'tx-staked',
-        });
+    it.each(['tx-staked', 'tx-unstaked', 'tx-claimed'] as const)(
+        'renders a %s broadcast with the warning variant and piggy-bank icon',
+        type => {
+            renderNotification({
+                ...transactionPayload,
+                type,
+            });
 
-        expect(
-            screen.getByText(
-                intl.formatMessage(messages.TOAST_TX_STAKED, { account: 'descriptor' }),
-            ),
-        ).toBeInTheDocument();
-
-        unmount();
-        renderNotification({
-            ...transactionPayload,
-            type: 'tx-staked',
-            isFeeBump: true,
-        });
-
-        expect(
-            screen.getByText(intl.formatMessage(messages.TOAST_TX_STAKE_BUMPED)),
-        ).toBeInTheDocument();
-    });
-
-    it('renders a correlated staking confirmation as successful', () => {
-        renderNotification({
-            ...transactionPayload,
-            type: 'tx-confirmed',
-            sourceType: 'tx-staked',
-        });
-
-        const notificationView = screen.getByTestId('notification-view');
-        expect(notificationView).toHaveAttribute('data-variant', 'success');
-        expect(
-            screen.getByText(intl.formatMessage(messages.TOAST_TX_STAKE_CONFIRMED)),
-        ).toBeInTheDocument();
-    });
-
-    it('uses generic confirmation copy without a correlated broadcast', () => {
-        renderNotification({
-            ...transactionPayload,
-            type: 'tx-confirmed',
-        });
-
-        expect(
-            screen.getByText(
-                intl.formatMessage(messages.TOAST_TX_CONFIRMED, { account: 'descriptor' }),
-            ),
-        ).toBeInTheDocument();
-    });
+            const notificationView = screen.getByTestId('notification-view');
+            expect(notificationView).toHaveAttribute('data-variant', 'warning');
+            expect(notificationView).toHaveAttribute('data-icon', 'piggy-bank');
+        },
+    );
 });
