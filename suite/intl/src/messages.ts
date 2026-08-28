@@ -11832,30 +11832,6 @@ export const messages = defineMessages({
         id: 'TOAST_TX_CLAIMED',
         defaultMessage: 'Claimed from {account}',
     },
-    TOAST_TX_STAKE_BUMPED: {
-        id: 'TOAST_TX_STAKE_BUMPED',
-        defaultMessage: 'Your staking transaction has been sped up',
-    },
-    TOAST_TX_UNSTAKE_BUMPED: {
-        id: 'TOAST_TX_UNSTAKE_BUMPED',
-        defaultMessage: 'Your unstaking transaction was sped up',
-    },
-    TOAST_TX_CLAIM_BUMPED: {
-        id: 'TOAST_TX_CLAIM_BUMPED',
-        defaultMessage: 'Your claim has been sped up',
-    },
-    TOAST_TX_STAKE_CONFIRMED: {
-        id: 'TOAST_TX_STAKE_CONFIRMED',
-        defaultMessage: 'Your staking transaction has been processed on the blockchain',
-    },
-    TOAST_TX_UNSTAKE_CONFIRMED: {
-        id: 'TOAST_TX_UNSTAKE_CONFIRMED',
-        defaultMessage: 'Your unstaking transaction has been processed on the blockchain',
-    },
-    TOAST_TX_CLAIM_CONFIRMED: {
-        id: 'TOAST_TX_CLAIM_CONFIRMED',
-        defaultMessage: 'Your claim has been processed on the blockchain',
-    },
     TOAST_TX_YIELD_DEPOSIT: {
         id: 'TOAST_TX_YIELD_DEPOSIT',
         defaultMessage: 'Deposit transaction from {account} has been broadcast',
