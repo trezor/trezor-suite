@@ -1,16 +1,13 @@
-import { type GestureResponderEvent, Pressable, type TextProps } from 'react-native';
+import { type GestureResponderEvent, type TextProps } from 'react-native';
 import Animated, {
     interpolateColor,
     useAnimatedStyle,
-    useDerivedValue,
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
 
 import type { RequireAtLeastOne } from 'type-fest';
 
-import { HStack } from '@suite-native/atoms';
-import { type CSSColor, Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import type { Color, TypographyStyle } from '@trezor/theme';
 
@@ -22,7 +19,6 @@ type LinkProps = RequireAtLeastOne<
         href?: string;
         onPress?: () => void;
         isUnderlined?: boolean;
-        showExternalIcon?: boolean;
         textColor?: Color;
         textPressedColor?: Color;
         textVariant?: TypographyStyle;
@@ -51,11 +47,12 @@ const ANIMATION_DURATION = 100;
 const IS_NOT_PRESSED_VALUE = 0;
 const IS_PRESSED_VALUE = 1;
 
+const noop = () => {};
+
 export const Link = ({
     href,
     label,
     isUnderlined = false,
-    showExternalIcon = false,
     textColor = 'contentBrand',
     textPressedColor = 'contentBrandPressed',
     textVariant = 'body-md',
@@ -67,16 +64,13 @@ export const Link = ({
     const openLink = useOpenLink();
     const isPressed = useSharedValue(IS_NOT_PRESSED_VALUE);
 
-    const animatedColor = useDerivedValue<CSSColor>(
-        () =>
-            interpolateColor(
-                isPressed.value,
-                [IS_NOT_PRESSED_VALUE, IS_PRESSED_VALUE],
-                [utils.colors[textColor], utils.colors[textPressedColor]],
-            ) as CSSColor,
-    );
-
-    const animatedTextColorStyle = useAnimatedStyle(() => ({ color: animatedColor.value }));
+    const animatedTextColorStyle = useAnimatedStyle(() => ({
+        color: interpolateColor(
+            isPressed.value,
+            [IS_NOT_PRESSED_VALUE, IS_PRESSED_VALUE],
+            [utils.colors[textColor], utils.colors[textPressedColor]],
+        ),
+    }));
 
     const handlePressIn = (e: GestureResponderEvent) => {
         // eslint-disable-next-line react-hooks/immutability
@@ -94,23 +88,19 @@ export const Link = ({
     };
 
     return (
-        <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut}>
-            <HStack spacing="sp6" alignItems="center">
-                <Animated.Text
-                    {...textProps}
-                    suppressHighlighting
-                    style={[
-                        applyStyle(textStyle, { isUnderlined, textVariant }),
-                        animatedTextColorStyle,
-                        style,
-                    ]}
-                >
-                    {label}
-                </Animated.Text>
-                {showExternalIcon && (
-                    <Icon.Animated name="arrowLineUpRight" color={animatedColor} size="medium" />
-                )}
-            </HStack>
-        </Pressable>
+        <Animated.Text
+            {...textProps}
+            onPressIn={handlePressIn}
+            onPress={noop} // If the handling is defined in onPress, the very short taps are sometimes ignored
+            onPressOut={handlePressOut}
+            style={[
+                applyStyle(textStyle, { isUnderlined, textVariant }),
+                animatedTextColorStyle,
+                style,
+            ]}
+            suppressHighlighting
+        >
+            {label}
+        </Animated.Text>
     );
 };

@@ -14,8 +14,6 @@
         "@suite-common/analytics": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-native/analytics": "workspace:*",
-        "@suite-native/atoms": "workspace:*",
-        "@suite-native/icons": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",

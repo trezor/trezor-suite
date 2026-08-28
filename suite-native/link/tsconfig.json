@@ -9,8 +9,6 @@
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../analytics" },
-        { "path": "../atoms" },
-        { "path": "../icons" },
         { "path": "../toasts" },
         {
             "path": "../../packages/styles-native"
