@@ -48,6 +48,7 @@ import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type AccountKey, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import {
+    getAddressForNetworkType,
     getAddressParameters,
     getDerivationType,
     getNetworkId,
@@ -65,7 +66,6 @@ import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';
 
-import { getAddressForNetworkType } from './deviceAddressUtils';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { setAutoEjectEnabled } from '../settings/walletSettingsActions';
