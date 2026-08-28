@@ -61,6 +61,11 @@ import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
 import { type SendRootState } from '../send/sendFormReducer';
 import { selectSendSignedTx } from '../send/sendFormSelectors';
 
+// How long a locally added fake pending tx is kept in the UI.
+const FAKE_TX_TTL_SECONDS = 15 * 60;
+// Cardano's average block interval, not reported by @trezor/connect.
+const CARDANO_BLOCK_TIME_SECONDS = 20;
+
 /**
  * Replace existing transaction in the reducer (RBF)
  * There might be multiple occurrences of the same transaction assigned to multiple accounts in the storage:
@@ -422,7 +427,6 @@ export const addFakePendingEvmTxThunk = createThunk<
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const rawFeeInfo = selectRawNetworkFeeInfo(getState(), account.symbol);
 
-        const FAKE_TX_TTL_SECONDS = 15 * 60; // keep fake tx for 15 minutes
         const deadline = FAKE_TX_TTL_SECONDS / rawFeeInfo!.blockTime;
 
         const sig = getEvmTransactionTextSignature(precomposedForm.transactionData);
@@ -489,7 +493,7 @@ export const addFakePendingCardanoTxThunk = createThunk<
                 totalInput: '0',
                 totalOutput: '0',
             },
-            deadline: blockHeight + 10,
+            deadline: blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / CARDANO_BLOCK_TIME_SECONDS),
         };
         dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
     },
@@ -516,7 +520,6 @@ export const addFakePendingTronTxThunk = createThunk<
     ({ txid, account, amount, fee, type, target, tronSpecific }, { dispatch, getState }) => {
         if (account.networkType !== 'tron') return;
 
-        const FAKE_TX_TTL_SECONDS = 15 * 60;
         const blockTime = selectRawNetworkFeeInfo(getState(), account.symbol)?.blockTime ?? 0;
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol) ?? 0;
         const deadline = blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / blockTime);

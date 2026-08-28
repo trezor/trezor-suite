@@ -12,31 +12,33 @@ const account = {
     networkType: 'cardano',
 } as unknown as Account;
 
+const BLOCK_HEIGHT = 100;
+
 const initStore = () =>
     configureMockStore({
         extra: undefined,
         preloadedState: {
             wallet: {
-                blockchain: { ada: { blockHeight: 100 } },
+                blockchain: { ada: { blockHeight: BLOCK_HEIGHT } },
             },
         },
     });
 
+const dispatchFakePendingTx = async (store: ReturnType<typeof initStore>) => {
+    await store.dispatch(
+        addFakePendingCardanoTxThunk({
+            precomposedTransaction: { totalSpent: '2170000', fee: '170000' },
+            txid: 'test-txid',
+            account,
+        }),
+    );
+
+    return store.getActions().find(transactionsActions.addTransaction.match);
+};
+
 describe('addFakePendingCardanoTxThunk', () => {
     it('stores the pending tx with the fee excluded from the amount, matching the confirmed tx from blockfrost', async () => {
-        const store = initStore();
-
-        await store.dispatch(
-            addFakePendingCardanoTxThunk({
-                precomposedTransaction: { totalSpent: '2170000', fee: '170000' },
-                txid: 'test-txid',
-                account,
-            }),
-        );
-
-        const addTransactionAction = store
-            .getActions()
-            .find(transactionsActions.addTransaction.match);
+        const addTransactionAction = await dispatchFakePendingTx(initStore());
 
         expect(addTransactionAction?.payload.transactions).toEqual([
             expect.objectContaining({
@@ -46,8 +48,19 @@ describe('addFakePendingCardanoTxThunk', () => {
                 fee: '170000',
                 totalSpent: '2170000',
                 blockHash: undefined,
-                deadline: 110,
+                deadline: 145,
             }),
         ]);
+    });
+
+    it('keeps the pending tx alive for 15 minutes worth of Cardano blocks, as Blockfrost only reports the tx once it is confirmed and indexed', async () => {
+        const addTransactionAction = await dispatchFakePendingTx(initStore());
+
+        const [transaction] = addTransactionAction?.payload.transactions ?? [];
+        const cardanoBlockTimeSeconds = 20;
+
+        expect(transaction?.deadline).toBe(
+            BLOCK_HEIGHT + Math.ceil((15 * 60) / cardanoBlockTimeSeconds),
+        );
     });
 });
