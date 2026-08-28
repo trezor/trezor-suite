@@ -56,8 +56,10 @@ describe('useAllTradesReloadTimer', () => {
             },
         });
 
-    const renderUseAllTradesReloadTimer = async (store: TestStore) =>
-        await renderHookWithTradingProvider(() => useAllTradesReloadTimer(), { store });
+    const renderUseAllTradesReloadTimer = async (store: TestStore, isEnabled = true) =>
+        await renderHookWithTradingProvider(() => useAllTradesReloadTimer({ isEnabled }), {
+            store,
+        });
 
     it('should enable reload timer when there are trades to watch', async () => {
         const mockTrades = [
@@ -82,6 +84,21 @@ describe('useAllTradesReloadTimer', () => {
 
         expect(mockUseReloadTimer).toHaveBeenCalledWith({
             isEnabled: true, // Should be true when there are trades to watch
+            refreshLimitSeconds: 120,
+        });
+    });
+
+    it('should disable reload timer when watching is disabled', async () => {
+        const trade = {
+            ...getBuyTrade({ status: 'SUBMITTED' }),
+            selectedAccountKey: btc1NormalAccount.key,
+        };
+        const store = getInitializedStore({ trades: [trade] });
+
+        await renderUseAllTradesReloadTimer(store, false);
+
+        expect(mockUseReloadTimer).toHaveBeenCalledWith({
+            isEnabled: false,
             refreshLimitSeconds: 120,
         });
     });
@@ -187,9 +204,31 @@ describe('useAllTradesReloadTimer', () => {
             await result.current.refreshAllTrades();
         });
 
-        // After refresh, should still be false (state is managed internally)
-        // The actual state change happens in the hook's internal state
+        expect(result.current.hasFetchedInitialTrades).toBe(true);
         expect(mockReset).toHaveBeenCalled();
+    });
+
+    it('should reset initial refresh state when watching is disabled', async () => {
+        const trade = {
+            ...getBuyTrade({ status: 'SUBMITTED' }),
+            selectedAccountKey: btc1NormalAccount.key,
+        };
+        const store = getInitializedStore({ trades: [trade] });
+        let isEnabled = true;
+        const { result, rerender } = await renderHookWithTradingProvider(
+            () => useAllTradesReloadTimer({ isEnabled }),
+            { store },
+        );
+
+        await act(async () => {
+            await result.current.refreshAllTrades();
+        });
+        expect(result.current.hasFetchedInitialTrades).toBe(true);
+
+        isEnabled = false;
+        rerender({});
+
+        expect(result.current.hasFetchedInitialTrades).toBe(false);
     });
 
     it('should handle empty trades array', async () => {

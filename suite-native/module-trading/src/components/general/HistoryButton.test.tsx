@@ -12,6 +12,10 @@ import {
 
 let mockSelectDeviceTradingTrades: TradingTransaction[];
 let mockNavigate: jest.Mock;
+let mockIsFocused = true;
+const mockUseWatchAllTrades = jest.fn((_props: { isEnabled: boolean }) => ({
+    totalTrades: mockSelectDeviceTradingTrades.length,
+}));
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -20,12 +24,21 @@ jest.mock('@suite-common/trading', () => ({
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
+    useIsFocused: () => mockIsFocused,
     useNavigation: jest.fn(() => ({
         navigate: mockNavigate,
     })),
 }));
 
+jest.mock('../../hooks/general/useWatchAllTrades', () => ({
+    useWatchAllTrades: (props: { isEnabled: boolean }) => mockUseWatchAllTrades(props),
+}));
+
 describe('HistoryButton', () => {
+    beforeEach(() => {
+        mockIsFocused = true;
+    });
+
     const renderHistoryButton = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
@@ -52,6 +65,14 @@ describe('HistoryButton', () => {
             expect(
                 getByText(getTranslation('moduleTrading.tradeHistory.list.title')),
             ).toBeOnTheScreen();
+        });
+
+        it('should disable trade watching when the screen is not focused', async () => {
+            mockIsFocused = false;
+
+            await renderHistoryButton({});
+
+            expect(mockUseWatchAllTrades).toHaveBeenCalledWith({ isEnabled: false });
         });
 
         it('should render nothing when isAmountInputActive is true', async () => {

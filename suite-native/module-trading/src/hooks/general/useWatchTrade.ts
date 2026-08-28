@@ -30,6 +30,8 @@ export interface TradingUseWatchTradeProps {
     accountKey: AccountKey | undefined;
     orderId: string | undefined;
     isInProgress: boolean;
+    isEnabled?: boolean;
+    shouldReportAnalytics?: boolean;
 }
 const REFRESH_SECONDS_BASE = 30;
 const REFRESH_SECONDS_IN_PROGRESS = 10;
@@ -37,7 +39,13 @@ const REFRESH_SECONDS_IN_PROGRESS = 10;
 export const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
     trade?.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
 
-export const useWatchTrade = ({ accountKey, orderId, isInProgress }: TradingUseWatchTradeProps) => {
+export const useWatchTrade = ({
+    accountKey,
+    orderId,
+    isInProgress,
+    isEnabled = true,
+    shouldReportAnalytics = true,
+}: TradingUseWatchTradeProps) => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const account = useSelector((state: AccountsRootState) =>
@@ -46,7 +54,7 @@ export const useWatchTrade = ({ accountKey, orderId, isInProgress }: TradingUseW
     const trade = useSelector((state: TradingRootState) =>
         selectTradingTradeByOrderId(state, orderId),
     );
-    const shouldRefresh = useMemo(() => shouldRefreshTrade(trade), [trade]);
+    const shouldRefresh = useMemo(() => isEnabled && shouldRefreshTrade(trade), [isEnabled, trade]);
     const { timer, shouldReload, resetCount } = useReloadTimer({
         isEnabled: shouldRefresh,
         refreshLimitSeconds: isInProgress ? REFRESH_SECONDS_IN_PROGRESS : REFRESH_SECONDS_BASE,
@@ -56,6 +64,10 @@ export const useWatchTrade = ({ accountKey, orderId, isInProgress }: TradingUseW
     const { reset } = timer;
 
     useEffect(() => {
+        if (!shouldReportAnalytics) {
+            return;
+        }
+
         const currentStatus = getTradeStatusStep(trade);
         if (currentStatus !== previousStatus.current) {
             previousStatus.current = currentStatus;
@@ -67,7 +79,13 @@ export const useWatchTrade = ({ accountKey, orderId, isInProgress }: TradingUseW
                 });
             }
         }
-    }, [trade, account, previousStatus, analytics]);
+    }, [trade, account, previousStatus, analytics, shouldReportAnalytics]);
+
+    useEffect(() => {
+        if (!shouldRefresh) {
+            setHasRefreshed(false);
+        }
+    }, [shouldRefresh]);
 
     useEffect(() => {
         if (trade && account && (!hasRefreshed || shouldReload) && shouldRefresh) {
