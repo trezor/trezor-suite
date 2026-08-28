@@ -109,6 +109,7 @@ jobs:
       target: "desktop"
       pw-config: ${{ needs.resolve-spec-list.outputs.spec-list != '' && './playwright-config/playwright-desktop-pr-all.config.ts' || './playwright-config/playwright-desktop-pr.config.ts' }}
       test-group: ${{ matrix.TEST_GROUP }}
+      caller-job-id: ${{ github.job }}
       fail-fast: "7"
       currents-project-id: "4ytF0E"
       download-artifact-name: "desktop-app-build-e2e"
@@ -316,6 +317,7 @@ jobs:
       target: "web"
       pw-config: ${{ needs.resolve-spec-list.outputs.spec-list != '' && './playwright-config/playwright-web-pr-all.config.ts' || './playwright-config/playwright-web-pr.config.ts' }}
       test-group: ${{ matrix.TEST_GROUP }}
+      caller-job-id: ${{ github.job }}
       fail-fast: "7"
       currents-project-id: "Og0NOQ"
       download-artifact-name: "connect-explorer-webextension-dev.suite.sldev.cz"

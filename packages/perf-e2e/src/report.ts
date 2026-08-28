@@ -14,15 +14,19 @@ const UNIT_SUFFIX: Record<MetricUnit, string> = {
     count: '',
 };
 
+/**
+ * The number alone, for a report that writes the unit once after a pair of them rather than after
+ * each — `775/2000 ms` reads as one measurement against one limit, `775 ms/2000 ms` as two things.
+ */
+export const formatMetricNumber = (value: number): string => `${Math.round(value * 10) / 10}`;
+
 /** `null` is a metric this environment could not measure, which is not the same as a zero. */
 export const formatMetricValue = (value: number | null, unit: MetricUnit): string => {
     if (value === null) {
         return 'n/a';
     }
 
-    const rounded = Math.round(value * 10) / 10;
-
-    return `${rounded}${UNIT_SUFFIX[unit]}`;
+    return `${formatMetricNumber(value)}${UNIT_SUFFIX[unit]}`;
 };
 
 const formatMetricBlock = (metric: MetricComparison): string =>

@@ -207,10 +207,10 @@ class PerfReporter implements Reporter {
             ...BASELINES,
             ...Object.fromEntries(measured.map(entry => [entry.key, entry.median])),
         };
-        const updatedLimits: Limits = {
-            ...LIMITS,
-            ...suggestLimits(measured.map(entry => ({ ...entry.comparison, scenario: entry.key }))),
-        };
+        const suggestedLimits = suggestLimits(
+            measured.map(entry => ({ ...entry.comparison, scenario: entry.key })),
+        );
+        const updatedLimits: Limits = { ...LIMITS, ...suggestedLimits };
 
         lines.push(
             '',
@@ -234,11 +234,9 @@ class PerfReporter implements Reporter {
                 key: entry.key,
                 runs: entry.runs,
                 report: entry.report,
+                suggestedLimits: suggestedLimits[entry.key],
             })),
-            budgetsSnippet: {
-                path: BUDGETS_MODULE_PATH,
-                contents: formatBudgetsModule(updatedBaselines, updatedLimits),
-            },
+            budgetsPath: BUDGETS_MODULE_PATH,
             log: message => {
                 // eslint-disable-next-line no-console
                 console.log(message);
