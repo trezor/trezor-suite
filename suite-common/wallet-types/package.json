@@ -19,6 +19,8 @@
         "@trezor/connect": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/network-solana": "workspace:*",
+        "@trezor/network-stellar": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:^",
         "@types/invity-api": "^1.1.19",

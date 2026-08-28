@@ -1,22 +1,27 @@
 export * from './client';
 export type * from './types';
+export { getNetworkByBlockaidChain } from './chains';
 export { getSimulationErrorRiskLevel, areTxSimulationMethods } from './utils';
 export { getAssetDiffTransferAmount } from './utils/getAssetDiffTransferAmount';
 export {
+    getSolanaAssetDiffLabel,
+    getStellarAssetDiffLabel,
+} from './utils/getAssetDiffTransferLabel';
+export { type CrossChainAssetDiff, getCrossChainAssetDiffs } from './utils/getCrossChainAssetDiffs';
+export {
     getTxSimulationRiskSummary,
+    type TxSimulationFailure,
     type TxSimulationRiskSummary,
+    type TxSimulationValidationFeature,
     type TxSimulationValidationSummary,
 } from './utils/getTxSimulationRiskSummary';
 export { useDappScan } from './hooks/useDappScan';
 export {
     useNetworkTxSimulation,
     isTxSimulationResultWithMethods,
-    type NetworkTxSimulationResult,
-    type TxSimulationEVMResult,
 } from './hooks/useNetworkTxSimulation';
 export { useTxSimulation } from './hooks/useTxSimulation';
 
-export type { AccountSummary, TransactionSimulation } from '@blockaid/client/resources/evm';
 export { TX_METHODS_WITH_FEES } from './config';
 export {
     computeGasFeeInWei,

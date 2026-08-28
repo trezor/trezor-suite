@@ -1,4 +1,9 @@
-import { type Network, getNetworkByEvmChainId, networks } from '@suite-common/wallet-config';
+import {
+    type Network,
+    getNetwork,
+    getNetworkByEvmChainId,
+    networks,
+} from '@suite-common/wallet-config';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
 export * from './getTxSimulationParams';
@@ -43,6 +48,10 @@ export function getNetworkFromTxSimulationAction(action: TxSimulationAction): Ne
 
             return getNetworkByEvmChainId(chainId) ?? null;
         }
+
+        case 'solanaSignTransaction':
+        case 'stellarSignTransaction':
+            return getNetwork(action.symbol);
 
         default:
             return null;

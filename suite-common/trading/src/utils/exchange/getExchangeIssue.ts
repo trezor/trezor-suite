@@ -39,9 +39,7 @@ export const getExchangeIssue = ({
     simulationResult,
     fiatDeviation,
 }: GetExchangeIssueParams): ExchangeIssue | null => {
-    const { validationRisk, simulationFailure } = getTxSimulationRiskSummary(
-        simulationResult?.payload,
-    );
+    const { validationRisk, simulationFailure } = getTxSimulationRiskSummary(simulationResult);
 
     if (simulationFailure) {
         return {
