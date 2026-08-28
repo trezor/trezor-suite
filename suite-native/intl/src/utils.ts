@@ -108,7 +108,6 @@ export const deleteNestedTranslationKey = (obj: Record<string, any>, path: strin
             break;
         }
 
-        currentNode = node;
         parent = parents.pop();
     }
 };

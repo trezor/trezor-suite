@@ -72,7 +72,7 @@ const derToAsn1 = (byteArray: Uint8Array): Asn1 => {
     }
 
     function getLength() {
-        let length = 0;
+        let length: number;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const positionByte: number = byteArray[position];
 

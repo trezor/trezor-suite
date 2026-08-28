@@ -69,9 +69,9 @@ describe('data/thpSettings', () => {
         result = parseThpSettings({ manifest, thp: { pairingMethods: 1 } });
         expect(result).toEqual({ appName, pairingMethods });
         // @ts-expect-error invalid pairingMethods
-        result = parseThpSettings({ manifest, thp: { pairingMethods: ['Foo'] } });
+        parseThpSettings({ manifest, thp: { pairingMethods: ['Foo'] } });
         // @ts-expect-error invalid pairingMethods
-        result = parseThpSettings({ manifest, thp: { pairingMethods: [0] } });
+        parseThpSettings({ manifest, thp: { pairingMethods: [0] } });
 
         // @ts-expect-error invalid appName
         result = parseThpSettings({ thp: { appName: {} } });

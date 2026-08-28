@@ -124,10 +124,6 @@ export const javascriptConfig = [
 
             // Offs
             'no-undef': 'off', // Todo: write description
-            // New in ESLint 10 recommended config; adopt separately from the dependency upgrade.
-            'no-useless-assignment': 'off',
-            'preserve-caught-error': 'off',
-
             // Offs for Node.js
             'no-sync': 'off', // disallow use of synchronous methods (off by default)
             'no-process-exit': 'off', // disallow process.exit() (on by default in the node environment)

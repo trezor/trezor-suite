@@ -28,6 +28,6 @@ export const sharedTest = async (description: string, callback: () => any) => {
         ]);
         success(description);
     } catch (e) {
-        throw new Error(error(e));
+        throw new Error(error(e), { cause: e });
     }
 };

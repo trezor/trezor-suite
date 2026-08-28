@@ -221,7 +221,7 @@ export class Status extends TypedEmitter<StatusEvents> {
             return this.processStatus(status);
         } catch (error) {
             this.log('error', `Status processing ${error.message}`);
-            throw new Error(`Status processing ${error.message}`);
+            throw new Error(`Status processing ${error.message}`, { cause: error });
         }
     }
 

@@ -27,7 +27,7 @@ export class JsonRpcClient {
             await this.socket.connect(this);
         } catch (err) {
             this.socket = undefined;
-            throw new Error(`JSON RPC connection failed: [${err}]`);
+            throw new Error(`JSON RPC connection failed: [${err}]`, { cause: err });
         }
     }
 

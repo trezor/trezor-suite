@@ -128,7 +128,7 @@ export const handleExchangeRequestThunk = createThunk<
             dispatch(tradingExchangeActions.clearQuotes());
         }
 
-        let allQuotes: ExchangeTrade[] = [];
+        let allQuotes: ExchangeTrade[];
         let requestSucceeded = false;
         try {
             allQuotes = (await getQuotesRequest({ requestData, signal })) ?? [];

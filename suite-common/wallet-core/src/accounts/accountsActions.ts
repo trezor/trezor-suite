@@ -102,7 +102,7 @@ const createAccount = createAction(
             return { payload };
         } catch (error) {
             console.error('Error creating account payload:', error);
-            throw new Error('Failed to create account payload');
+            throw new Error('Failed to create account payload', { cause: error });
         }
     },
 );

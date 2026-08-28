@@ -267,7 +267,7 @@ describe('DeviceList', () => {
         let readCount = 0;
         const transport = createTestTransport({
             read: () => {
-                let res = '';
+                let res: string;
                 if (readCount === 0) {
                     // cancel response
                     res = '3f2323000300000000000000000000000000000000';

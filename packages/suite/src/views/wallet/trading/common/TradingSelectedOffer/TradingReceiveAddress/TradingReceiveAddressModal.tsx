@@ -43,7 +43,7 @@ export const TradingReceiveAddressModal = () => {
             if (cryptoId) {
                 const symbol =
                     cryptoIdToNetwork(cryptoId)?.symbol ?? cryptoIdToNativeCoinSymbol(cryptoId);
-                let isValid = true;
+                let isValid: boolean;
 
                 try {
                     isValid =

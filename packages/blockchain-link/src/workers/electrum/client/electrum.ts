@@ -69,7 +69,7 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
             this.lastBlock = await (this as ElectrumAPI).request('blockchain.headers.subscribe');
         } catch (err) {
             this.socket = undefined;
-            throw new Error(`Communication with Electrum server failed: [${err}]`);
+            throw new Error(`Communication with Electrum server failed: [${err}]`, { cause: err });
         }
 
         this.keepAlive();
