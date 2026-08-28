@@ -153,9 +153,11 @@ export const prepareTxPlan = async ({
         votingDelegation?.type === 'current' && hasCardanoLiveVoteDelegation(account);
 
     if ((action === 'delegate' || action === 'voteDelegate') && !isKeepingCurrentVote) {
-        const isVotingToAnotherDrep =
-            votingDelegation?.type === 'another_drep' &&
-            validateCardanoDrep(votingDelegation.drepId);
+        const isVotingToAnotherDrep = votingDelegation?.type === 'another_drep';
+
+        if (isVotingToAnotherDrep && !validateCardanoDrep(votingDelegation.drepId)) {
+            return null;
+        }
 
         const drepBech32 = isVotingToAnotherDrep
             ? votingDelegation.drepId
