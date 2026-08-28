@@ -1,10 +1,12 @@
 import '@suite-common/test-utils/globalOverrides';
 
 import { coinjoinReducer } from '@suite/coinjoin';
+import { prepareDesktopDeviceReducer } from '@suite/device';
 import {
     NewContentIndicatorId,
     initialRunCompleted,
     markNewContentIndicatorAsSeen,
+    prepareFlagsReducer,
     setNewContentIndicatorSeen,
 } from '@suite/flags';
 import { initialMetadataState, metadataReducer } from '@suite/metadata';
@@ -26,10 +28,10 @@ import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mo
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 
+import { storageLoad } from 'src/actions/suite/storageLifecycleActions';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
 import { storageMiddleware } from 'src/middlewares/wallet/storageMiddleware';
-import { suiteReducers } from 'src/reducers/suite';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import {
     accountsReducer,
@@ -51,8 +53,25 @@ const ltcSymbol = asNetworkSymbol('ltc');
 
 const { getWalletTransaction } = testMocks;
 
-const deviceReducer = suiteReducers.device;
-const flagsReducer = suiteReducers.flags;
+const deviceReducer = prepareDesktopDeviceReducer({
+    actionTypes: {
+        setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
+        storageLoad: storageLoad.type,
+    },
+    reducers: {
+        setDeviceMetadataPasswordsReducer: mockReducer(),
+        setDeviceMetadataReducer: mockReducer(),
+        storageLoadDevices: (state, { payload }) => {
+            state.devices = payload.devices;
+            state.persistentDeviceData = payload.persistentDeviceData ?? [];
+        },
+    },
+});
+const flagsReducer = prepareFlagsReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadFlags: mockReducer() },
+});
 const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(undefined);
 const suiteSyncReducer = prepareSuiteSyncReducer(undefined);
 const receiveReducer = prepareReceiveReducer({
