@@ -181,6 +181,19 @@ describe('WebsocketClient', () => {
         expect(disconnectedSpy).toHaveBeenCalledTimes(0);
     });
 
+    it('client.dispose() rejects a pending connection attempt', async () => {
+        const cli = new Client({ url: server.getUrl() });
+        // NOTE: intentionally not awaited, the socket is still CONNECTING
+        const abandoned = cli.connect();
+
+        cli.dispose();
+
+        await expect(abandoned).rejects.toThrow('websocket_disposed');
+
+        // `dispose` leaves the socket itself behind, release it so the run can exit
+        cli.terminate();
+    });
+
     it('client.terminate() destroys an open socket', async () => {
         const cli = new Client({ url: server.getUrl() });
         const socket = spyOnSocket(cli);

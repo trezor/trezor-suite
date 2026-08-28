@@ -311,6 +311,10 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
 
     dispose() {
         this.removeAllListeners();
+        // `onClose` below strips the handlers that would settle an attempt still in flight,
+        // so it has to be dropped here as well - otherwise `connectPromise` would keep being
+        // handed out until the connection timeout fires.
+        this.clearConnectionAttempt(new WebsocketError('websocket_disposed'));
         this.disconnect();
         this.onClose();
     }
