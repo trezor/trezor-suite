@@ -56,6 +56,11 @@ class WSWrapper extends EventEmitter {
         }
     }
 
+    // Counterpart of `ws.terminate()` in Node.js, closes the socket in any `readyState`.
+    terminate() {
+        this._ws.close();
+    }
+
     send(message: any) {
         if (this.readyState !== WSWrapper.OPEN) {
             throw new WebsocketError(`Connection is not open. state: ${this.readyState}`);

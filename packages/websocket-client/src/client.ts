@@ -1,6 +1,6 @@
 import WebSocket from 'ws';
 
-import { TypedEmitter, createDeferred, createDeferredManager } from '@trezor/utils';
+import { type Deferred, TypedEmitter, createDeferred, createDeferredManager } from '@trezor/utils';
 
 type WebsocketOptions = {
     url: string;
@@ -43,6 +43,8 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
     private ws?: WebSocket;
     private pingTimeout?: ReturnType<typeof setTimeout>;
     private connectPromise?: Promise<void>;
+    private connectDeferred?: Deferred;
+    private connectionTimeout?: ReturnType<typeof setTimeout>;
 
     protected createWebsocket?(): WebSocket;
     protected ping() {
@@ -195,6 +197,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         // create deferred promise
         const dfd = createDeferred();
         this.connectPromise = dfd.promise;
+        this.connectDeferred = dfd;
 
         const ws = this.createWebsocket ? this.createWebsocket() : this.initWebsocket(this.options);
 
@@ -212,6 +215,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
             this.options.connectionTimeout || this.options.timeout || DEFAULT_TIMEOUT,
         );
         (connectionTimeout as any).unref?.();
+        this.connectionTimeout = connectionTimeout;
 
         ws.once('error', error => {
             clearTimeout(connectionTimeout);
@@ -228,7 +232,10 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
 
         // wait for onopen event
         return dfd.promise.finally(() => {
-            this.connectPromise = undefined;
+            // a newer attempt may already be in flight if this one was dropped by `terminate`
+            if (this.connectDeferred === dfd) {
+                this.clearConnectionAttempt();
+            }
         });
     }
 
@@ -259,6 +266,33 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         }
 
         return Promise.resolve();
+    }
+
+    // Rejecting the deferred is what unblocks callers already awaiting the attempt.
+    private clearConnectionAttempt(error?: WebsocketError) {
+        const dfd = this.connectDeferred;
+
+        clearTimeout(this.connectionTimeout);
+        this.connectionTimeout = undefined;
+        this.connectDeferred = undefined;
+        this.connectPromise = undefined;
+
+        if (error) {
+            dfd?.reject(error);
+        }
+    }
+
+    /**
+     * Unlike `disconnect`, which is a no-op unless the socket is `OPEN`, this also releases
+     * sockets stuck in `CONNECTING`/`CLOSING`, whose handle would keep the event loop alive.
+     * The client stays usable, the next `connect()` starts from scratch.
+     */
+    terminate() {
+        const { ws } = this;
+        this.clearConnectionAttempt(new WebsocketError('websocket_terminated'));
+        this.onClose();
+        ws?.terminate();
+        this.ws = undefined;
     }
 
     isConnected() {

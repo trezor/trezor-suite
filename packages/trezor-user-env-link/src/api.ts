@@ -397,6 +397,9 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
+    terminate() {
+        this.client.terminate();
+    }
 
     // legacy api, should be removed probably
     dispose() {

@@ -1,4 +1,4 @@
-import { type ServerOptions, type WebSocket, WebSocketServer } from 'ws';
+import WS, { type ServerOptions, type WebSocket, WebSocketServer } from 'ws';
 
 import { WebsocketClient } from './client';
 
@@ -61,6 +61,34 @@ const createServer = async () => {
 
     return { server, url: `ws://localhost:${port}` };
 };
+
+/** Captures the `ws` instance created by the client, which is otherwise private. */
+const spyOnSocket = (cli: WebsocketClient<any>) => {
+    let socket: WebSocket | undefined;
+    // @ts-expect-error initWebsocket is protected
+    jest.spyOn(cli, 'initWebsocket').mockImplementation(options => {
+        // @ts-expect-error initWebsocket is protected
+        socket = WebsocketClient.prototype.initWebsocket.call(cli, options);
+
+        return socket;
+    });
+
+    return () => socket;
+};
+
+/**
+ * `terminate()` only moves the socket to `CLOSING`, `CLOSED` is reached on the next tick.
+ * The listener has to be attached after `terminate()`, which strips the previous ones.
+ */
+const waitForSocketClose = (socket?: WebSocket) =>
+    new Promise<void>(resolve => {
+        if (socket?.readyState === WS.CLOSED) {
+            resolve();
+
+            return;
+        }
+        socket?.once('close', () => resolve());
+    });
 
 describe('WebsocketClient', () => {
     let server: Server;
@@ -151,6 +179,42 @@ describe('WebsocketClient', () => {
         await cli.connect();
         cli.dispose();
         expect(disconnectedSpy).toHaveBeenCalledTimes(0);
+    });
+
+    it('client.terminate() destroys an open socket', async () => {
+        const cli = new Client({ url: server.getUrl() });
+        const socket = spyOnSocket(cli);
+        await cli.connect();
+
+        cli.terminate();
+
+        expect(cli.isConnected()).toEqual(false);
+        await waitForSocketClose(socket());
+        expect(socket()?.readyState).toEqual(WS.CLOSED);
+        expect(() => cli.terminate()).not.toThrow();
+    });
+
+    it('client.terminate() destroys a socket that never opened', async () => {
+        const cli = new Client({ url: server.getUrl() });
+        const socket = spyOnSocket(cli);
+        // NOTE: intentionally not awaited, the socket is still CONNECTING
+        const abandoned = cli.connect();
+        expect(socket()?.readyState).toEqual(WS.CONNECTING);
+
+        // `disconnect()` would be a no-op here and leak the underlying handle
+        cli.terminate();
+
+        await expect(abandoned).rejects.toThrow('websocket_terminated');
+        await waitForSocketClose(socket());
+        expect(socket()?.readyState).toEqual(WS.CLOSED);
+
+        // the abandoned attempt must not be handed out by the next `connect()`
+        await cli.connect();
+        expect(cli.isConnected()).toEqual(true);
+        const resp = await cli.sendMessage({ method: 'init' });
+        expect(resp.success).toEqual(true);
+
+        cli.terminate();
     });
 
     it('throws connection error', async () => {
