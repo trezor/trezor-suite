@@ -30,6 +30,7 @@ const methods = [
 
 type SolanaSignTransactionThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
     AccountsRootState;
+
 type SolanaSignTransactionThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
 const solanaSignTransaction = createThunk<
@@ -111,6 +112,7 @@ const solanaSignTransaction = createThunk<
 );
 
 export type SolanaRequestThunkState = SolanaSignTransactionThunkState & WalletConnectStateRootState;
+
 export type SolanaRequestThunkDeps = SolanaSignTransactionThunkDeps;
 
 const solanaRequestThunk = createThunk<

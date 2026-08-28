@@ -10,6 +10,7 @@ const MODULE = '@common/wallet-core/uiEvent';
 export type UiEventAction = Without<UiEventMessage | PopupEventMessage, 'event'>;
 
 export type DefaultTrezorUIEventHandlerThunkState = DeviceRootState;
+
 export type DefaultTrezorUIEventHandlerThunkDeps = WithServices<ConnectInitHooksDeps>;
 
 export const defaultTrezorUIEventHandlerThunk = createThunk<

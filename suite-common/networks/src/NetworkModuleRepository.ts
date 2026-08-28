@@ -3,6 +3,8 @@ import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import type { NetworkSymbol, StaticNetworkModulesDep } from './NetworkModules';
 
+export type NetworkModuleRepositoryDeps = StaticNetworkModulesDep;
+
 export type NetworkModuleRepository = {
     get: <T extends NetworkSymbol>(symbol: T) => SuiteCommonNetworkModule<T>;
     getSupportedNetworks: () => readonly NetworkSymbol[];
@@ -12,8 +14,6 @@ export type NetworkModuleRepository = {
 export type NetworkModuleRepositoryDep = {
     networkModuleRepository: NetworkModuleRepository;
 };
-
-export type NetworkModuleRepositoryDeps = StaticNetworkModulesDep;
 
 export const createNetworkModuleRepository = (
     deps: NetworkModuleRepositoryDeps,

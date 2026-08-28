@@ -39,9 +39,6 @@ import {
 const DAY_IN_SECONDS = 3600 * 24;
 
 type GraphRootState = { wallet: { graph: GraphState } };
-type FetchAccountGraphDataThunkState = BlockchainRootState &
-    GraphRootState &
-    WalletSettingsRootState;
 
 const selectAccountGraphData = (state: GraphRootState, account: Account) =>
     state.wallet.graph.data.find(
@@ -58,6 +55,10 @@ export const accountGraphStart = createAction<Omit<GraphData, 'data'>>(ACCOUNT_G
 export const aggregatedGraphStart = createAction(AGGREGATED_GRAPH_START);
 export const aggregatedGraphSuccess = createAction(AGGREGATED_GRAPH_SUCCESS);
 export const setSelectedRange = createAction<GraphRange>(SET_SELECTED_RANGE);
+
+type FetchAccountGraphDataThunkState = BlockchainRootState &
+    GraphRootState &
+    WalletSettingsRootState;
 
 /**
  * Fetch the account history (received, sent amounts, num of txs) for the given `startDate`, `endDate`.

@@ -20,6 +20,11 @@ export type EnsureDeviceHasQuotaParams = {
     delegatedKey: DelegatedIdentityKey;
 };
 
+export type EnsureDeviceHasQuotaDeps = {
+    dispatch: Dispatch;
+} & CheckStorageByPublicKeyDep &
+    RegisterDeviceDep;
+
 export type EnsureDeviceHasQuota = (
     params: EnsureDeviceHasQuotaParams,
 ) => Promise<
@@ -28,11 +33,6 @@ export type EnsureDeviceHasQuota = (
         QuotaManagerCommunicationFailedErrType | ProofOfDelegatedSignFailedType | DeviceErrorType
     >
 >;
-
-export type EnsureDeviceHasQuotaDeps = {
-    dispatch: Dispatch;
-} & CheckStorageByPublicKeyDep &
-    RegisterDeviceDep;
 
 export type EnsureDeviceHasQuotaDep = {
     ensureDeviceHasQuota: EnsureDeviceHasQuota;

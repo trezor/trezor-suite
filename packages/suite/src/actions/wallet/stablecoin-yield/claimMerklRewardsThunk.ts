@@ -72,6 +72,7 @@ type ClaimMerklRewardsThunkState = DeviceRootState &
     MessageSystemRootState &
     SynchronizeSentTransactionThunkState &
     WalletSettingsRootState;
+
 type ClaimMerklRewardsThunkDeps = SynchronizeSentTransactionThunkDeps & {
     services: DesktopAnalyticsDep;
 };

@@ -12,6 +12,7 @@ import { getCustomBackends } from '@suite-common/wallet-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 type ToggleTorThunkState = TorRootState & ModalRootState & RouterRootState & BlockchainRootState;
+
 type ToggleTorThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export type ToggleTorDispatch = ThunkDispatch<

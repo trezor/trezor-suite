@@ -60,6 +60,7 @@ const resolveStellarRequestContext = (event: WalletKitTypes.SessionRequest) => {
 
 type StellarSignXDRThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
     AccountsRootState;
+
 type StellarSignXDRThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
 const stellarSignXDR = createThunk<
@@ -133,6 +134,7 @@ const stellarSignXDR = createThunk<
 );
 
 export type StellarRequestThunkState = StellarSignXDRThunkState & WalletConnectStateRootState;
+
 export type StellarRequestThunkDeps = StellarSignXDRThunkDeps;
 
 const stellarRequestThunk = createThunk<

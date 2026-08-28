@@ -54,6 +54,11 @@ const CONNECT_INIT_MODULE = '@common/connect-init';
 // If you are looking where connectInitSettings is defined, it is defined in packages/suite/src/support/extraDependencies.ts
 // or in suite-native/state/src/extraDependencies.ts depends on which platform this connectInitThunk runs.
 
+export type ConnectInitThunkState = DeviceRootState &
+    FirmwareRootState &
+    MessageSystemRootState &
+    WalletSettingsRootState;
+
 export type ConnectInitThunkDeps = {
     actions: LockDeviceDep;
     services: {
@@ -68,11 +73,6 @@ export type ConnectInitThunkDeps = {
         ThpHostNameDep &
         TransportsDep;
 };
-
-export type ConnectInitThunkState = DeviceRootState &
-    FirmwareRootState &
-    MessageSystemRootState &
-    WalletSettingsRootState;
 
 export type ConnectInitThunkDispatch = ThunkDispatch<
     ConnectInitThunkState,

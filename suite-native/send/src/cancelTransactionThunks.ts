@@ -47,6 +47,7 @@ type SignAndPushEvmCancelTransactionThunkState = AccountsRootState &
     SignTransactionNativeThunkState &
     PushSendFormTransactionThunkState &
     CleanupSendFormThunkState;
+
 type SignAndPushEvmCancelTransactionThunkDeps = PushSendFormTransactionThunkDeps;
 
 /**

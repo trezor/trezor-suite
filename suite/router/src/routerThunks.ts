@@ -57,6 +57,7 @@ export const onLocationChange = createThunk<
  * Called from `@suite-middlewares/suiteMiddleware`
  */
 type RouterInitThunkState = LocksRootState & ModalRootState & RouterRootState;
+
 type RouterInitThunkDeps = WithServices<SuiteRouterHistoryDep>;
 
 export const routerInit = createThunk<
@@ -79,6 +80,7 @@ type GotoPayload = {
 };
 
 export type GotoThunkState = LocksRootState & ModalRootState & RouterRootState;
+
 export type GotoThunkDeps = WithServices<SuiteRouterHistoryDep>;
 
 export const goto = createThunk<void, GotoPayload, { state: GotoThunkState; extra: GotoThunkDeps }>(
@@ -138,6 +140,7 @@ export const goto = createThunk<void, GotoPayload, { state: GotoThunkState; extr
  * Reverse operation (again without touching history) needs to be done in back action.
  */
 type CloseModalAppThunkState = GotoThunkState;
+
 type CloseModalAppThunkDeps = GotoThunkDeps;
 
 export const closeModalApp = createThunk<
@@ -173,6 +176,7 @@ type InitialRedirectionThunkParams = {
     isInitialRun?: boolean;
 };
 type InitialRedirectionThunkState = GotoThunkState;
+
 type InitialRedirectionThunkDeps = GotoThunkDeps;
 
 export const initialRedirection = createThunk<

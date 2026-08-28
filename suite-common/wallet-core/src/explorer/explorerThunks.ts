@@ -11,6 +11,7 @@ type SetNetworkExplorerThunkParams = {
     explorer?: Explorer;
 };
 type SetNetworkExplorerThunkState = ExplorerState;
+
 type SetNetworkExplorerThunkDeps = WithServices<AnalyticsDep>;
 
 export const setNetworkExplorerThunk = createThunk<

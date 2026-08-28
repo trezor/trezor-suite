@@ -141,6 +141,7 @@ export const signWrappedNativeTokenThunk = createThunk<
 export type PushWrappedNativeTokenThunkState = MevProtectionRootState &
     SynchronizeSentTransactionThunkState &
     WalletSettingsRootState;
+
 export type PushWrappedNativeTokenThunkDeps = SynchronizeSentTransactionThunkDeps;
 
 export const pushWrappedNativeTokenThunk = createThunk<

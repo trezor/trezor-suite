@@ -42,6 +42,7 @@ type SuccessfulAccountsThunkState = AccountsRootState & DeviceRootState & Wallet
 
 type SessionAuthenticateThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
     SuccessfulAccountsThunkState;
+
 type SessionAuthenticateThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
 const sessionAuthenticateThunk = createThunk<
@@ -132,6 +133,7 @@ const sessionAuthenticateThunk = createThunk<
 });
 
 type SessionProposalThunkState = SuccessfulAccountsThunkState;
+
 type SessionProposalThunkDeps = WithServices<AnalyticsDep>;
 
 const sessionProposalThunk = createThunk<
@@ -167,6 +169,7 @@ const sessionProposalThunk = createThunk<
 });
 
 type SessionRequestThunkState = WalletConnectRequestThunkState;
+
 type SessionRequestThunkDeps = WalletConnectRequestThunkDeps;
 
 const sessionRequestThunk = createThunk<
@@ -292,6 +295,7 @@ export const switchSelectedAccountThunk = createThunk<
 );
 
 type SessionProposalApproveThunkState = SuccessfulAccountsThunkState & WalletConnectStateRootState;
+
 type SessionProposalApproveThunkDeps = WithServices<AnalyticsDep>;
 
 export const sessionProposalApproveThunk = createThunk<
@@ -374,6 +378,7 @@ export const sessionProposalApproveThunk = createThunk<
 );
 
 type SessionProposalRejectThunkState = WalletConnectStateRootState;
+
 type SessionProposalRejectThunkDeps = WithServices<AnalyticsDep>;
 
 export const sessionProposalRejectThunk = createThunk<
@@ -404,6 +409,7 @@ export type WalletConnectInitThunkState = SessionAuthenticateThunkState &
     SessionProposalThunkState &
     SessionRequestThunkState &
     SessionProposalRejectThunkState;
+
 export type WalletConnectInitThunkDeps = SessionAuthenticateThunkDeps &
     SessionProposalThunkDeps &
     SessionRequestThunkDeps &
@@ -469,6 +475,7 @@ export const walletConnectInitThunk = createThunk<
 });
 
 type WalletConnectPairThunkState = WalletConnectInitThunkState;
+
 type WalletConnectPairThunkDeps = WalletConnectInitThunkDeps;
 
 export const walletConnectPairThunk = createThunk<

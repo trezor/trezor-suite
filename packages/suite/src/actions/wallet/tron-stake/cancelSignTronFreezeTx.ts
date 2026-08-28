@@ -7,12 +7,12 @@ import {
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-type CancelSignTronFreezeTxState = TronStakeRootState;
+type CancelSignTronFreezeTxThunkState = TronStakeRootState;
 
 export const cancelSignTronFreezeTx = createThunk<
     void,
     void,
-    { state: CancelSignTronFreezeTxState }
+    { state: CancelSignTronFreezeTxThunkState }
 >(`${TRON_STAKE_PREFIX}/thunk/cancelSignTronFreezeTx`, (_params, { dispatch, getState }) => {
     const { serializedTx } = selectTronStakeTxReview(getState());
 

@@ -108,6 +108,7 @@ const processNamespaces = (
 export type TronRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
     AccountsRootState &
     WalletConnectStateRootState;
+
 export type TronRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
 const tronRequestThunk = createThunk<

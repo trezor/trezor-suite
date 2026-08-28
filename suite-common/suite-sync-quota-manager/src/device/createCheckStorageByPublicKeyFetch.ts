@@ -26,6 +26,8 @@ export type CheckStorageByPublicKeyResult = Result<
     QuotaManagerFetchCommunicationError
 >;
 
+type CheckStorageByPublicKeyFetchDeps = QuotaManagerFetchDep;
+
 export type CheckStorageByPublicKeyFetch = (
     params: CheckStorageByPublicKeyFetchParams,
 ) => Promise<CheckStorageByPublicKeyResult>;
@@ -33,8 +35,6 @@ export type CheckStorageByPublicKeyFetch = (
 export type CheckStorageByPublicKeyDep = {
     checkStorageByPublicKeyFetch: CheckStorageByPublicKeyFetch;
 };
-
-type CheckStorageByPublicKeyFetchDeps = QuotaManagerFetchDep;
 
 /**
  * Ask quota manager for storage allowance by public key.

@@ -220,6 +220,7 @@ export const showAddress =
             .catch(onError(dispatch, 'verify-address-error'));
 
 type SignThunkState = SignVerifyRootState;
+
 type SignThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const sign =
@@ -282,6 +283,7 @@ export const sign =
     };
 
 type VerifyThunkState = SignVerifyRootState;
+
 type VerifyThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const verify =

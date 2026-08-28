@@ -8,14 +8,14 @@ import { AddressEvoluTable, type AddressTableSchema } from './data/addressTable'
 import { OutputEvoluTable, type OutputTableSchema } from './data/outputTable';
 import { EvoluWalletTable, type WalletTableSchema } from './data/walletTable';
 
-export type CreateEvoluStorageFactoryDeps = CreateEvoluInstanceDep;
+export type EvoluStorageFactoryDeps = CreateEvoluInstanceDep;
 
 /**
  * This is intended as Wrapper around Evolu. In case we need to change Evolu for
  * something else, this is the Public API for the rest of the Suite ecosystem.
  */
 export const createEvoluStorageFactory =
-    (deps: CreateEvoluStorageFactoryDeps): CreateSuiteStorage =>
+    (deps: EvoluStorageFactoryDeps): CreateSuiteStorage =>
     async ({ suiteSyncOwner }): Promise<SuiteSyncStorage> => {
         /**
          * Dispose function of the connected owner. When owner is changed

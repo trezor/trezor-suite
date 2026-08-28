@@ -22,6 +22,7 @@ type RunPassphraseWalletAddingDiscoveryThunkParams = {
     device: TrezorDevice;
 };
 type RunPassphraseWalletAddingDiscoveryThunkState = RunDiscoveryThunkState;
+
 type RunPassphraseWalletAddingDiscoveryThunkDeps = WithServices<
     AnalyticsDep & ConnectInitHooksDeps & GetTradedAccountKeysDep
 > & {
@@ -70,6 +71,7 @@ type StartDiscoveryOfExistingPassphraseWalletThunkPayload = {
     useScopedCallIds?: boolean;
 };
 type StartDiscoveryOfExistingPassphraseWalletThunkState = RunDiscoveryThunkState;
+
 type StartDiscoveryOfExistingPassphraseWalletThunkDeps = WithServices<
     AnalyticsDep & ConnectInitHooksDeps & GetTradedAccountKeysDep
 > & {
@@ -123,6 +125,7 @@ type StartAddWalletDiscoveryThunkParams = {
 };
 type StartAddWalletDiscoveryThunkState = StartDiscoveryOfExistingPassphraseWalletThunkState &
     StartDiscoveryThunkState;
+
 type StartAddWalletDiscoveryThunkDeps = StartDiscoveryOfExistingPassphraseWalletThunkDeps &
     StartDiscoveryThunkDeps;
 

@@ -71,6 +71,7 @@ type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
 };
 
 export type ConnectPopupCallThunkState = DeviceRootState & ConnectPopupStateRootState;
+
 export type ConnectPopupCallThunkDeps = {
     actions: LockDeviceDep;
     services: AnalyticsDep;
@@ -307,6 +308,7 @@ export const connectPopupCallThunk = <M extends CallMethodKeys>(
 > => connectPopupCallThunkInner(params) as any;
 
 type ConnectPopupDeeplinkThunkState = DeviceRootState & ConnectPopupStateRootState;
+
 type ConnectPopupDeeplinkThunkDeps = {
     actions: LockDeviceDep;
     services: AnalyticsDep;
@@ -392,6 +394,7 @@ export const connectPopupDeeplinkThunk = createThunk<
 });
 
 type ConnectPopupVerifyAddressThunkState = DeviceRootState & ConnectPopupStateRootState;
+
 type ConnectPopupVerifyAddressThunkDeps = {
     actions: LockDeviceDep;
 };
@@ -492,6 +495,7 @@ const resolveCandidateValue = (
 type ConnectPopupLoadSelectAccountPageThunkState = DeviceRootState &
     ConnectPopupStateRootState &
     AccountsRootState;
+
 type ConnectPopupLoadSelectAccountPageThunkDeps = {
     actions: LockDeviceDep;
 };
@@ -851,6 +855,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
 type ConnectPopupSelectManualAccountThunkState = DeviceRootState &
     ConnectPopupStateRootState &
     AccountsRootState;
+
 type ConnectPopupSelectManualAccountThunkDeps = {
     actions: LockDeviceDep;
 };
@@ -884,6 +889,7 @@ export const connectPopupSelectManualAccountThunk = createThunk<
 type ConnectPopupBackToManualAccountsThunkState = DeviceRootState &
     ConnectPopupStateRootState &
     AccountsRootState;
+
 type ConnectPopupBackToManualAccountsThunkDeps = {
     actions: LockDeviceDep;
 };
@@ -914,6 +920,7 @@ export const connectPopupBackToManualAccountsThunk = createThunk<
 // Verifies a single candidate address on the device. Safe to run while the selectAccount call is
 // pending because that method holds no device session (useDevice = false).
 type ConnectPopupVerifySelectAccountThunkState = DeviceRootState & ConnectPopupStateRootState;
+
 type ConnectPopupVerifySelectAccountThunkDeps = {
     actions: LockDeviceDep;
 };

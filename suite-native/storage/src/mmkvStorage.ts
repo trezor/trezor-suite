@@ -55,13 +55,15 @@ const tryInitStorage = (encryptionKey: string) => {
     }
 };
 
+type MMKVStorageDeps = EnsureEncryptionKeyDep;
+
 type GetMMKVRaw = {
     getMMKV: () => Promise<MMKV>;
 };
-export type MMKVStorage = Storage & GetMMKVRaw;
-export type MMKVStorageDep = { mmkvStorage: MMKVStorage };
 
-type MMKVStorageDeps = EnsureEncryptionKeyDep;
+export type MMKVStorage = Storage & GetMMKVRaw;
+
+export type MMKVStorageDep = { mmkvStorage: MMKVStorage };
 
 export const createMMKVStorage = (deps: MMKVStorageDeps): MMKVStorage => {
     let mmkv: MMKV | null = null;

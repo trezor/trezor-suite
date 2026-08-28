@@ -10,11 +10,11 @@ import {
 } from '../suiteSyncSlice';
 import { type SuiteSyncRelayConnectionEvent } from './relayConnectionStatus';
 
-export type UpdateRelayConnectionStatus = (event: SuiteSyncRelayConnectionEvent) => void;
-
 export type UpdateRelayConnectionStatusDeps = {
     dispatch: Dispatch;
 };
+
+export type UpdateRelayConnectionStatus = (event: SuiteSyncRelayConnectionEvent) => void;
 
 export const createUpdateRelayConnectionStatus =
     (deps: UpdateRelayConnectionStatusDeps): UpdateRelayConnectionStatus =>

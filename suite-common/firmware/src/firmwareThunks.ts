@@ -27,10 +27,11 @@ export type FirmwareUpdateResult = {
     connectResponse?: Awaited<ReturnType<typeof TrezorConnect.firmwareUpdate>>;
 };
 
+export type FirmwareUpdateThunkState = DeviceRootState & FirmwareRootState;
+
 export type FirmwareUpdateThunkDeps = WithServices<
     GetBinFilesBaseUrlDep & GetLanguageDep & ReportSecurityCheckDep
 >;
-export type FirmwareUpdateThunkState = DeviceRootState & FirmwareRootState;
 
 export const firmwareUpdate = createThunk<
     FirmwareUpdateResult,

@@ -30,6 +30,7 @@ type SubmitYieldDepositPayload = {
 };
 type SubmitYieldDepositThunkState = ComposeYieldDepositTransactionThunkState &
     SendYieldTransactionState;
+
 type SubmitYieldDepositThunkDeps = SendYieldTransactionDeps & {
     services: DesktopAnalyticsDep;
 };

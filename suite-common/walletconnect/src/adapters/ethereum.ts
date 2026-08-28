@@ -47,6 +47,7 @@ export type EthereumRequestThunkState = trezorConnectPopupActions.ConnectPopupCa
     MevProtectionRootState &
     WalletSettingsRootState &
     TransactionsRootState;
+
 export type EthereumRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
 const ethereumRequestThunk = createThunk<

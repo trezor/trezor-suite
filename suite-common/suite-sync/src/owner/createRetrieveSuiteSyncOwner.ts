@@ -25,6 +25,11 @@ export type RetrieveSuiteSyncOwnerParams = {
     delegatedKey: DelegatedIdentityKey;
 };
 
+export type RetrieveSuiteSyncOwnerDeps = {
+    createSuiteSyncOwner: CreateSuiteSyncOwner;
+    trezorConnect: Pick<typeof TrezorConnect, 'evoluGetNode'>;
+};
+
 export type RetrieveSuiteSyncOwner = (
     params: RetrieveSuiteSyncOwnerParams,
 ) => Promise<
@@ -39,11 +44,6 @@ export type RetrieveSuiteSyncOwner = (
 
 export type RetrieveSuiteSyncOwnerKeysDep = {
     retrieveSuiteSyncOwner: RetrieveSuiteSyncOwner;
-};
-
-export type RetrieveSuiteSyncOwnerDeps = {
-    createSuiteSyncOwner: CreateSuiteSyncOwner;
-    trezorConnect: Pick<typeof TrezorConnect, 'evoluGetNode'>;
 };
 
 export const createRetrieveSuiteSyncOwner =

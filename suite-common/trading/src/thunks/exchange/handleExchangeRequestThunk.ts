@@ -76,6 +76,7 @@ export const getQuoteRequestData = ({
 };
 
 type HandleExchangeRequestThunkState = AccountsRootState & TradingRootState;
+
 type HandleExchangeRequestThunkDeps = WithServices<AddressValidatorDep>;
 
 export const handleExchangeRequestThunk = createThunk<

@@ -20,9 +20,9 @@ type GetAffectedWorkspacesResult = {
     readonly workspaces: ReadonlyArray<WorkspaceInfo>;
 };
 
-export type GetAffectedWorkspaces = (cwd: string) => Promise<GetAffectedWorkspacesResult>;
-
 export type GetAffectedWorkspacesDeps = ExecCliCommandDep & { requirementsWorkspaceName: string };
+
+export type GetAffectedWorkspaces = (cwd: string) => Promise<GetAffectedWorkspacesResult>;
 
 export const createGetAffectedWorkspaces =
     (deps: GetAffectedWorkspacesDeps): GetAffectedWorkspaces =>

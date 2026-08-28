@@ -3,6 +3,7 @@ import { DEVICE_MODULE_PREFIX } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 
 type RedirectAfterWalletSelectedThunkState = GotoThunkState;
+
 type RedirectAfterWalletSelectedThunkDeps = GotoThunkDeps;
 
 export const redirectAfterWalletSelectedThunk = createThunk<
@@ -40,6 +41,7 @@ export const redirectAfterWalletSelectedThunk = createThunk<
 );
 
 type OpenSwitchDeviceDialogThunkState = GotoThunkState;
+
 type OpenSwitchDeviceDialogThunkDeps = GotoThunkDeps;
 
 export const openSwitchDeviceDialog = createThunk<

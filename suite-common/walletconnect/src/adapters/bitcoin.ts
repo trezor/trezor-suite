@@ -38,6 +38,7 @@ const findAccount = (accounts: Account[], firstAddress: string) =>
 export type BitcoinRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
     AccountsRootState &
     WalletConnectStateRootState;
+
 export type BitcoinRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
 const bitcoinRequestThunk = createThunk<

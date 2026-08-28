@@ -191,6 +191,7 @@ export type PushYieldClaimReviewThunkState = MevProtectionRootState &
     StablecoinYieldRootState &
     SynchronizeSentTransactionThunkState &
     WalletSettingsRootState;
+
 export type PushYieldClaimReviewThunkDeps = SynchronizeSentTransactionThunkDeps;
 
 export const pushYieldClaimReviewThunk = createThunk<

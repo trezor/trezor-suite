@@ -49,6 +49,7 @@ const disableAnalyticsThunk = createThunk<void, void, { extra: DisableAnalyticsT
 );
 
 export type InitAnalyticsThunkState = AnalyticsRootState;
+
 export type InitAnalyticsThunkDeps = WithServices<NativeAnalyticsDep>;
 
 export const initAnalyticsThunk = createThunk<

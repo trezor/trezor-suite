@@ -59,6 +59,7 @@ type PostOnboardingInitThunkState = ConnectInitThunkState &
     PeriodicFetchFiatRatesThunkState &
     CreateImportedDeviceThunkState &
     WalletConnectInitThunkState;
+
 type PostOnboardingInitThunkDeps = ConnectInitThunkDeps &
     InitBlockchainThunkDeps &
     InitTokenDefinitionsThunkDeps &
@@ -107,6 +108,7 @@ type ApplicationInitThunkState = SettingsSliceRootState &
     MessageSystemRootState &
     InitAnalyticsThunkState &
     PostOnboardingInitThunkState;
+
 type ApplicationInitThunkDeps = InitAnalyticsThunkDeps & PostOnboardingInitThunkDeps;
 
 export const applicationInit = createThunk<

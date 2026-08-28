@@ -6,6 +6,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { removeDatabase } from './storageActions';
 
 type ResetSuiteAppThunkState = GotoThunkState;
+
 type ResetSuiteAppThunkDeps = GotoThunkDeps & {
     services: ReloadAppDep;
 };
