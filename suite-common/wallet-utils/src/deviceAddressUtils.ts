@@ -3,7 +3,7 @@ import TrezorConnect, { type PROTO } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type DeviceIdentity } from '@trezor/connect-common/src/types/params';
-import { type Result } from '@trezor/type-utils';
+import { type Result, exhaustive } from '@trezor/type-utils';
 
 type DeviceParam = DeviceIdentity & { useEmptyPassphrase?: boolean };
 
@@ -120,5 +120,69 @@ export const getAddressForNetworkType = ({
             return TrezorConnect.stellarGetAddress(params);
         default:
             return methodNotDefinedError('getAddress');
+    }
+};
+
+type GetDescriptorForNetworkTypeParams = {
+    device: DeviceParam;
+    networkType: NetworkType;
+    path: string;
+    coin?: NetworkSymbol;
+    // Only meaningful for `cardano`.
+    derivationType?: PROTO.CardanoDerivationType;
+};
+
+// Returns the account descriptor (xpub for UTXO networks, address for account-based networks)
+// that can be passed to `TrezorConnect.getAccountInfo({ descriptor })`.
+export const getDescriptorForNetworkType = ({
+    device,
+    networkType,
+    path,
+    coin,
+    derivationType,
+}: GetDescriptorForNetworkTypeParams): Promise<Result<string, SerializedError>> => {
+    const params = {
+        device,
+        path,
+        coin: coin === undefined ? undefined : asCoinSymbol(coin),
+        showOnTrezor: false,
+    };
+
+    const extractDescriptor =
+        <T, E>(extract: (payload: T) => string) =>
+        (res: Result<T, E>) =>
+            res.success ? { success: true as const, payload: extract(res.payload) } : res;
+
+    switch (networkType) {
+        case 'bitcoin':
+            return TrezorConnect.getPublicKey(params).then(
+                extractDescriptor(({ xpubSegwit, xpub }) => xpubSegwit ?? xpub),
+            );
+        case 'cardano':
+            return TrezorConnect.cardanoGetPublicKey({ ...params, derivationType }).then(
+                extractDescriptor(({ xpub }) => xpub),
+            );
+        case 'ethereum':
+            return TrezorConnect.ethereumGetAddress(params).then(
+                extractDescriptor(({ address }) => address),
+            );
+        case 'ripple':
+            return TrezorConnect.rippleGetAddress(params).then(
+                extractDescriptor(({ address }) => address),
+            );
+        case 'solana':
+            return TrezorConnect.solanaGetAddress(params).then(
+                extractDescriptor(({ address }) => address),
+            );
+        case 'stellar':
+            return TrezorConnect.stellarGetAddress(params).then(
+                extractDescriptor(({ address }) => address),
+            );
+        case 'tron':
+            return TrezorConnect.tronGetAddress(params).then(
+                extractDescriptor(({ address }) => address),
+            );
+        default:
+            return exhaustive(networkType);
     }
 };
