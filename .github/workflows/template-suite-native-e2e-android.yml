@@ -43,6 +43,15 @@ jobs:
       fail-fast: false
       matrix:
         TEST_GROUP: [0, 1, 2, 3, 4]
+    env:
+      # Single source of truth for the emulator options: the Detox runner reuses
+      # them verbatim when it has to relaunch an emulator that died mid-run.
+      # `-no-metrics` keeps the emulator non-interactive (the metrics-collection
+      # prompt is planned to become blocking in a future release).
+      EMULATOR_OPTIONS: >-
+        -no-window -gpu swiftshader_indirect -no-snapshot-load -no-snapshot-save
+        -noaudio -no-boot-anim -no-metrics -grpc 8554 -memory 4096
+      DIAGNOSTICS_DIR: /tmp/e2e-diagnostics
 
     steps:
       - name: Checkout project
@@ -128,6 +137,24 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      # The emulator dies without leaving a trace of its own when the kernel kills
+      # it, so sample host memory and disk next to the run to see what ran out.
+      - name: Start host resource monitor
+        run: |
+          mkdir -p "$DIAGNOSTICS_DIR"
+          nohup bash -c '
+            while true; do
+              {
+                date --iso-8601=seconds
+                free --mebi
+                df --human-readable / /tmp
+                ps -eo pid,rss,comm --sort=-rss | head -n 8
+                echo
+              } >> "$DIAGNOSTICS_DIR/host-resources.log" 2>&1
+              sleep 15
+            done
+          ' > /dev/null 2>&1 &
+
       - name: Run Detox E2E Android tests
         timeout-minutes: 50
         uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
@@ -152,7 +179,7 @@ jobs:
           ram-size: 4096M
           force-avd-creation: true
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-load -no-snapshot-save -noaudio -no-boot-anim -grpc 8554 -memory 4096
+          emulator-options: ${{ env.EMULATOR_OPTIONS }}
           disable-animations: true
           cores: 4
           heap-size: 512M
@@ -178,19 +205,38 @@ jobs:
           docker cp trezor-user-env.unix:/trezor-user-env/logs/tropic_model.log "$LOG_DIR/trezor-user-env-tropic_model.log" || true
           docker cp trezor-user-env.unix:/trezor-user-env/docker/version.txt "$LOG_DIR/trezor-user-env-version.txt" || true
           docker logs trezor-user-env-regtest > "$LOG_DIR/electrum-regtest.txt" || true
-          # Emulator crash DB written by QEMU to the host filesystem on abnormal termination
-          find /tmp "$HOME/.android/avd" -name "emu-crash*.db" -print0 2>/dev/null \
-            | while IFS= read -r -d '' db; do
-              cp "$db" "$LOG_DIR/$(basename "$db")" || true
-              sqlite3 "$db" "SELECT * FROM Crash;" > "$LOG_DIR/$(basename "$db" .db)-report.txt" 2>&1 || true
-            done || true
+          docker logs docker-quota-db-1 > "$LOG_DIR/quota-db.log" 2>&1 || true
+          docker logs docker-suite-sync-1 > "$LOG_DIR/suite-sync.log" 2>&1 || true
           # Android tombstones (only available if the emulator is still reachable via ADB)
           mkdir -p "$LOG_DIR/tombstones"
           adb shell ls /data/tombstones/ 2>/dev/null \
             && adb pull /data/tombstones/. "$LOG_DIR/tombstones" \
             || true
-          docker logs docker-quota-db-1 > quota-db.log 2>&1 || true
-          docker logs docker-suite-sync-1 > suite-sync.log 2>&1 || true
+
+      - name: Collect emulator crash diagnostics
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          set -uo pipefail
+          DIAG_DIR="suite-native/app/artifacts/diagnostics"
+          mkdir -p "$DIAG_DIR"
+          cp "$DIAGNOSTICS_DIR/host-resources.log" "$DIAG_DIR/" || true
+          # QEMU stores its Crashpad reports in a directory, so it has to be copied
+          # recursively. An empty database means the process was killed from the
+          # outside rather than having crashed on its own.
+          find /tmp "$HOME/.android" -maxdepth 3 -name "emu-crash*.db" -print0 2>/dev/null \
+            | while IFS= read -r -d '' crashDb; do
+              cp -r "$crashDb" "$DIAG_DIR/" || true
+            done
+          # An OOM kill leaves no trace in the emulator's own output, the kernel ring
+          # buffer is the only place it shows up.
+          sudo dmesg -T 2>/dev/null \
+            | grep -iE "out of memory|oom-kill|killed process" \
+            > "$DIAG_DIR/kernel-oom.log" || true
+          free --mebi > "$DIAG_DIR/memory-after-run.log" 2>&1 || true
+          df --human-readable > "$DIAG_DIR/disk-after-run.log" 2>&1 || true
+          pgrep -a qemu-system > "$DIAG_DIR/qemu-processes.log" 2>&1 || true
+          adb devices > "$DIAG_DIR/adb-devices.log" 2>&1 || true
 
       - name: "Store test artifacts"
         if: ${{ !cancelled() }}
