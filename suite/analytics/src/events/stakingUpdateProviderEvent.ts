@@ -58,9 +58,13 @@ export const stakingUpdateProviderEvent: EventDef<Attributes, EventType.StakingU
                     version: '26.7.0',
                     notes: 'for Tron, carries the Super Representative address of a Suite-offered representative, or `custom` for a user-entered one',
                 },
+                {
+                    version: '26.9.0',
+                    notes: 'added `current` for Cardano, reported when the delegation already registered on-chain is kept',
+                },
             ],
             description:
-                'Voting delegation provider: `everstake` for Everstake provider, `another_drep` for other delegation providers; for Tron, the Super Representative address or `custom`',
+                'Voting delegation provider: `everstake` for Everstake provider, `another_drep` for other delegation providers, `current` to keep the delegation the account is already registered with (Cardano only, covers the predefined DReps that have no bech32 form); for Tron, the Super Representative address or `custom`',
         },
     },
 };
