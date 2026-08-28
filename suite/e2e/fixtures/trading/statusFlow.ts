@@ -7,7 +7,6 @@ export type TradeStatusPhase = {
     translationValues?: (provider: string) => Record<string, string | number>;
 };
 
-// Only CONVERTING renders the provider name, hence the lone translationValues.
 export const swapStatusFlow: readonly TradeStatusPhase[] = [
     { status: 'CONFIRMING', translationKey: 'TR_EXCHANGE_DETAIL_SENDING_TRANSACTION' },
     {
@@ -16,4 +15,13 @@ export const swapStatusFlow: readonly TradeStatusPhase[] = [
         translationValues: provider => ({ providerName: provider, type: 'swap' }),
     },
     { status: 'SUCCESS', translationKey: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE' },
+];
+
+export const sellStatusFlow: readonly TradeStatusPhase[] = [
+    { status: 'PENDING', translationKey: 'TR_SELL_DETAIL_SENDING_TRANSACTION' },
+    {
+        status: 'SUCCESS',
+        translationKey: 'TR_TRADING_DETAIL_PROCESSING',
+        translationValues: provider => ({ providerName: provider, type: 'sell' }),
+    },
 ];

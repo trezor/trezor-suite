@@ -2,7 +2,6 @@ import { getCryptoId } from '@suite-common/trading';
 import { fromGwei, localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { getCompanyNameFromList } from '../../fixtures/trading';
 import { swapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { expect, test } from '../../support/fixtures';
 
@@ -11,7 +10,6 @@ const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 const accountLabel = 'Ethereum #1';
 const usdcCryptoId = getCryptoId('eth', '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 const usdcDecimals = 6;
-const dexProvider = getCompanyNameFromList('lifi', 'swapList');
 
 // A DEX swap broadcasts the swap itself, so there is no CONFIRMING deposit phase.
 const dexStatusFlow = swapStatusFlow.filter(phase => phase.status !== 'CONFIRMING');
@@ -58,7 +56,10 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
         tradingPage,
         devicePrompt,
         tradingMockNew,
+        tradingResponses,
     }) => {
+        const dexProvider = await tradingResponses.swap.companyName('lifi');
+
         await test.step('Fill in the Swap form (ETH -> USDC)', async () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
@@ -88,9 +89,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             feeRate = `${maxFeePerGasRounded} Gwei`;
             priorityFeeRate = `${maxPriorityFeePerGasRounded} Gwei`;
 
-            const liveTradePromise = tradingMockNew.waitForLiveTrade();
             await tradingPage.swapBestOfferButton.click();
-            await liveTradePromise;
         });
 
         // The DEX re-quotes on trade creation, so amounts come from the trade, not the offer.
@@ -103,11 +102,12 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
         let slippagePercent: string;
 
         await test.step('Verify DEX details on the Confirm & send screen', async () => {
-            const { receiveStringAmount, swapSlippage } = tradingMockNew.liveTrade;
+            const { receiveStringAmount, swapSlippage, receive } =
+                await tradingResponses.swap.trade();
             receiveAmount = localizeNumber(receiveStringAmount);
             formattedReceiveAmount = `${receiveAmount} USDC`;
             slippagePercent = `${swapSlippage}%`;
-            const guaranteedShare = new BigNumber(100).minus(swapSlippage!).div(100);
+            const guaranteedShare = new BigNumber(100).minus(swapSlippage).div(100);
             minimumReceived = new BigNumber(receiveStringAmount).times(guaranteedShare);
             formattedMinimumReceived = `${localizeNumber(minimumReceived.toFixed(4))} USDC`;
             promptMinimumReceived = `${minimumReceived.toFixed()} USDC`;
@@ -139,7 +139,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             // rendered value is compared against the last captured scan on each attempt.
             await expect(async () => {
                 await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
-                    `${localizeNumber(tradingMockNew.simulatedReceiveAmount)} USDC`,
+                    `${localizeNumber(tradingMockNew.simulatedReceiveAmount(receive))} USDC`,
                     { timeout: 2_000 },
                 );
             }).toPass({ timeout: 15_000 });
@@ -153,6 +153,8 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
         });
 
         await test.step('Confirm the DEX transaction on device', async () => {
+            const { receiveAddress } = await tradingResponses.swap.trade();
+
             await devicePrompt.confirmOnDevicePromptIsShown();
 
             await expect(devicePrompt.outputValueOf('recipient_name')).toHaveText(dexProvider);
@@ -184,9 +186,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                 `+ ${promptMinimumReceived}`,
             );
             // The recipient is the user's own receive address, not the LI.FI router (dexTx.to).
-            await expect(devicePrompt.assetsReceiveAddress).toHaveText(
-                tradingMockNew.liveTrade.receiveAddress!,
-            );
+            await expect(devicePrompt.assetsReceiveAddress).toHaveText(receiveAddress);
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: deviceReview.contractTitle },
@@ -221,6 +221,8 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
         });
 
         await test.step('Re-verify the fully revealed review form', async () => {
+            const { receiveAddress } = await tradingResponses.swap.trade();
+
             await expect(devicePrompt.outputValueOf('recipient_name')).toHaveText(dexProvider);
             await expect(devicePrompt.outputValueOf('swap_intent')).toHaveTranslation(
                 'TR_TRADING_INTENT_SWAP',
@@ -231,9 +233,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             await expect(devicePrompt.assetsReceiveCryptoAmount).toHaveText(
                 `+ ${promptMinimumReceived}`,
             );
-            await expect(devicePrompt.assetsReceiveAddress).toHaveText(
-                tradingMockNew.liveTrade.receiveAddress!,
-            );
+            await expect(devicePrompt.assetsReceiveAddress).toHaveText(receiveAddress);
             await expect(devicePrompt.header.gasLimitValue).toHaveText(reviewedGasLimit);
         });
 
@@ -242,11 +242,13 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             await page.clock.install();
             await devicePrompt.sendButton.click();
 
+            const { sendStringAmount } = await tradingResponses.swap.trade();
+
             await tradingPage.verifySwapToast({
                 sendAccount: accountLabel,
                 receiveAccount: accountLabel,
                 // The toast echoes the provider's formatting of the amount, not the one we typed.
-                sendAmount: tradingMockNew.liveTrade.sendStringAmount,
+                sendAmount: sendStringAmount,
                 receiveAmount,
             });
         });
