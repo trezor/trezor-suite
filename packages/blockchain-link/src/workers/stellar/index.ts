@@ -327,8 +327,10 @@ const pushTransaction = async (
             e?.response?.data?.extras?.result_codes?.transaction || 'unknown';
         const opResultCode: string =
             e?.response?.data?.extras?.result_codes?.operations?.[0] || 'unknown';
-        throw new Error(
-            `transaction result code: ${txResultCode}, operation result code: ${opResultCode}`,
+        throw Object.assign(
+            new Error(
+                `transaction result code: ${txResultCode}, operation result code: ${opResultCode}`,
+            ),
             { cause: e },
         );
     }
