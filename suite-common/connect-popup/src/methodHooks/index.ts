@@ -9,6 +9,7 @@ import { ethereumSignTransaction } from './ethereumSignTransaction';
 import { requestLoginHooks } from './requestLogin';
 import { selectAccountHooks } from './selectAccount';
 import { solanaSignTransaction } from './solanaSignTransaction';
+import { stellarSignTransaction } from './stellarSignTransaction';
 import type {
     CompatibilityHookParams,
     CompatibilityHookResult,
@@ -37,6 +38,7 @@ export const validateCallHooks = <M extends CallMethodKeys>(
 export const preCallHooks = async <M extends CallMethodKeys>(params: PreCallHookParams<M>) => {
     await bitcoinSignTransaction.preCallHook(params);
     await solanaSignTransaction.preCallHook(params);
+    await stellarSignTransaction.preCallHook(params);
 
     const ethereumPayload = await ethereumSignTransaction.preCallHook(params);
     if (ethereumPayload) return ethereumPayload;
@@ -55,6 +57,7 @@ export async function postCallHooks<M extends CallMethodKeys>(params: PostCallHo
         await bitcoinSignTransaction.postCallHook(params),
         await ethereumSignTransaction.postCallHook(params),
         await solanaSignTransaction.postCallHook(params),
+        await stellarSignTransaction.postCallHook(params),
         await addressConfirmationModalHooks.postCallHook(params),
         await selectAccountHooks.postCallHook(params),
         await cardanoGetPublicKeyCompat.postCallHook(params),
