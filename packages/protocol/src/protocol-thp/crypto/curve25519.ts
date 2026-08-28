@@ -177,8 +177,10 @@ export function curve25519(privateKey: Uint8Array, publicKey: Uint8Array): Buffe
         [x2, z2, x3, z3] = ladderOperation(ctx, x1, x2, z2, x3, z3);
     }
 
-    [x2] = conditionalSwap(x2, x3, Boolean(swap));
-    [z2] = conditionalSwap(z2, z3, Boolean(swap));
+    // eslint-disable-next-line no-useless-assignment -- RFC 7748 assigns both outputs in the final swap.
+    [x2, x3] = conditionalSwap(x2, x3, Boolean(swap));
+    // eslint-disable-next-line no-useless-assignment -- RFC 7748 assigns both outputs in the final swap.
+    [z2, z3] = conditionalSwap(z2, z3, Boolean(swap));
 
     const x = (pow(z2, p - 2n, p) * x2) % p;
 
