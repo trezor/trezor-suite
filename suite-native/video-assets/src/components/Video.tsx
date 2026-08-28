@@ -4,34 +4,15 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { useEvent } from 'expo';
 import { VideoView, useVideoPlayer } from 'expo-video';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { useNativeStyles } from '@trezor/styles-native';
 
 import { type VideoName, videos } from '../videos';
+import { activityIndicatorStyle, videoContainer, videoStyle } from './Video.styles';
 
 type VideoProps = {
     name: VideoName;
     aspectRatio?: number;
 };
-
-type VideoStyleProps = {
-    aspectRatio: number;
-};
-
-const videoContainer = prepareNativeStyle((utils, { aspectRatio }: VideoStyleProps) => ({
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: utils.borders.radii.r20,
-    aspectRatio,
-}));
-
-const videoStyle = prepareNativeStyle<VideoStyleProps>((_, { aspectRatio }) => ({
-    flex: 1,
-    aspectRatio,
-}));
-
-const activityIndicatorStyle = prepareNativeStyle(_ => ({
-    position: 'absolute',
-}));
 
 export const Video = ({ name, aspectRatio = 1 }: VideoProps) => {
     const { applyStyle, utils } = useNativeStyles();
