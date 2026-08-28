@@ -26,6 +26,11 @@ type Request<T> = T & Context;
 
 let BASE_RESERVE = new BigNumber(STELLAR_BASE_RESERVE);
 
+const DEFAULT_TXS_PER_PAGE = 20;
+
+// https://developers.stellar.org/docs/data/apis/horizon/api-reference/structure/pagination
+const HORIZON_MAX_LIMIT = 200;
+
 const fetchLatestLedger = async (api: StellarAPI) => {
     const latestLedgerInfo = await api.ledgers().order('desc').limit(1).call();
 
@@ -93,7 +98,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     };
 
     const api = await request.connect();
-    const { identifyTransaction, isNotFoundError } = await stellar();
+    const { groupOperationsByTransaction, identifyTransaction, isNotFoundError } = await stellar();
     let info;
     try {
         info = await api.accounts().accountId(payload.descriptor).call();
@@ -164,22 +169,47 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         } as const;
     }
 
-    const requestBuilder = await api
-        .transactions()
-        .forAccount(payload.descriptor)
-        .includeFailed(true)
-        .limit(payload.pageSize || 20)
-        .order('desc');
-    if (payload.page && payload.page !== 1 && payload.pageCursor) {
-        requestBuilder.cursor(payload.pageCursor);
-    }
-    let transactions;
+    const pageSize = payload.pageSize || DEFAULT_TXS_PER_PAGE;
+
+    // A Stellar Asset Contract reports its transfers as `asset_balance_changes` on the
+    // host-function operation, which only the operations resource exposes. `join('transactions')`
+    // embeds the transaction in the same response — without it, reading `operation.transaction()`
+    // would fire one HTTP request per operation.
+    const fetchOperationGroups = async (limit: number) => {
+        const requestBuilder = api
+            .operations()
+            .forAccount(payload.descriptor)
+            .includeFailed(true)
+            .join('transactions')
+            .limit(limit)
+            .order('desc');
+        if (payload.page && payload.page !== 1 && payload.pageCursor) {
+            requestBuilder.cursor(payload.pageCursor);
+        }
+
+        const { records } = await requestBuilder.call();
+
+        return {
+            groups: groupOperationsByTransaction(records, records.length === limit),
+            hasRecords: records.length > 0,
+        };
+    };
+
+    let groups;
     try {
-        transactions = await requestBuilder.call();
+        const firstWindow = await fetchOperationGroups(Math.min(HORIZON_MAX_LIMIT, pageSize * 2));
+        groups = firstWindow.groups;
+
+        if (groups.length === 0 && firstWindow.hasRecords) {
+            // A single transaction filled the whole window, so its trailing group was dropped.
+            // The protocol caps operations per transaction at 100, so the largest window Horizon
+            // allows always leaves at least one complete group.
+            groups = (await fetchOperationGroups(HORIZON_MAX_LIMIT)).groups;
+        }
     } catch (error) {
         if (isNotFoundError(error)) {
             // Horizon retains limited history; accounts without activity in the retained
-            // window return 404 on the transactions endpoint even though they exist
+            // window return 404 on the operations endpoint even though they exist
             account.history.transactions = [];
 
             return {
@@ -190,13 +220,22 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         throw error;
     }
 
-    account.history.transactions = transactions.records
-        .map(identifyTransaction)
-        .map(identified =>
-            utils.transformTransaction(identified, payload.descriptor, tokenMetadata),
-        );
+    const pageGroups = groups.slice(0, pageSize);
 
-    const cursor = transactions.records[transactions.records.length - 1]?.paging_token;
+    account.history.transactions = await Promise.all(
+        pageGroups.map(async ({ operations }) => {
+            // Resolved from the joined response, so this does not hit the network
+            const rawTx = await operations[0].transaction();
+
+            return utils.transformTransaction(
+                identifyTransaction(operations, rawTx),
+                payload.descriptor,
+                tokenMetadata,
+            );
+        }),
+    );
+
+    const cursor = pageGroups[pageGroups.length - 1]?.cursor;
 
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,

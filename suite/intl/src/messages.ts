@@ -4761,6 +4761,15 @@ export const messages = defineMessages({
         id: 'TR_ASSET_CODE_INVALID',
         defaultMessage: 'Invalid asset code. Enter a valid asset code.',
     },
+    TR_ASSET_CODE_OR_CONTRACT_ID: {
+        id: 'TR_ASSET_CODE_OR_CONTRACT_ID',
+        defaultMessage: 'Asset code or contract ID',
+    },
+    TR_CONTRACT_ID_UNKNOWN: {
+        id: 'TR_CONTRACT_ID_UNKNOWN',
+        defaultMessage:
+            'Unrecognized contract ID. Enter the asset code and issuer address instead.',
+    },
     TR_INACTIVE_TOKENS_EMPTY: {
         id: 'TR_INACTIVE_TOKENS_EMPTY',
         defaultMessage: 'No inactive tokens',
