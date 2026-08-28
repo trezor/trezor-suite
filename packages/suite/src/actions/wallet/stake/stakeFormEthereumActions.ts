@@ -124,6 +124,7 @@ type SignTransactionThunkState = DeviceRootState &
     EthereumGetCurrentNonceThunkState &
     SelectedAccountRootState &
     WalletSettingsRootState;
+
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const signTransaction =

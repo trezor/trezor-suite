@@ -1,29 +1,10 @@
-import { RuleTester } from 'eslint';
-import path from 'node:path';
-import { parser } from 'typescript-eslint';
+import { enforceThunkContractsRule } from './rule';
+import { namedContractsFilename, namedContractsRuleTester } from '../named-contracts/testUtils';
 
-import { enforceNamedContractsRule } from './rule';
-
-const ruleTester = new RuleTester({
-    languageOptions: {
-        parser,
-        parserOptions: {
-            ecmaVersion: 2020,
-            projectService: {
-                allowDefaultProject: ['named-contracts.ts'],
-            },
-            sourceType: 'module',
-            tsconfigRootDir: path.join(__dirname, '../..'),
-        },
-    },
-});
-
-const filename = path.join(__dirname, '../..', 'named-contracts.ts');
-
-ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
+namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRule, {
     valid: [
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
 
@@ -31,7 +12,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             `,
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
                 type SaveThunkState = { value: string };
@@ -46,7 +27,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             `,
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
                 type SaveThunkState = { value: string };
@@ -63,7 +44,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             `,
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
                 type SaveThunkState = { value: string };
@@ -75,7 +56,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             `,
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
                 type SaveThunkState = { value: string };
@@ -87,7 +68,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             `,
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 type SaveThunkState = { value: string };
 
@@ -105,7 +86,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             `,
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 type SaveThunkState = { value: string };
 
@@ -124,49 +105,10 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
                 }
             `,
         },
-        {
-            filename,
-            code: `
-                type SaveDeps = { logger: { log: () => void } };
-
-                type Save = () => void;
-
-                const createSave = (deps: SaveDeps): Save => () => deps.logger.log();
-            `,
-        },
-        {
-            filename,
-            code: `
-                type SaveDeps = { logger: { log: () => void } };
-
-                type Save = () => void;
-
-                function createSave(deps: SaveDeps): Save {
-                    return () => deps.logger.log();
-                }
-            `,
-        },
-        {
-            filename,
-            code: `
-                type NativeAppDeps = { logger: { log: () => void } };
-                type NativeServices = { save: () => void };
-
-                const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices => ({
-                    save: () => deps.logger.log(),
-                });
-            `,
-        },
-        {
-            filename,
-            code: `
-                const createMockDeps = <T>(deps: T): T => deps;
-            `,
-        },
     ],
     invalid: [
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
                 type SaveThunkState = { value: string };
@@ -201,7 +143,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             ],
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
                 type SaveThunkDeps = { save: () => void };
@@ -238,59 +180,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             ],
         },
         {
-            filename,
-            code: `
-                type SaveDeps = { logger: { log: () => void } };
-                type Save = () => void;
-                const createSave = (deps: SaveDeps): Save => () => deps.logger.log();
-            `,
-            output: `
-                type SaveDeps = { logger: { log: () => void } };
-
-                type Save = () => void;
-
-                const createSave = (deps: SaveDeps): Save => () => deps.logger.log();
-            `,
-            errors: [
-                {
-                    messageId: 'contractMustBeSeparated',
-                    data: { previousName: 'SaveDeps', nextName: 'Save' },
-                },
-                {
-                    messageId: 'contractMustBeSeparated',
-                    data: { previousName: 'Save', nextName: 'createSave' },
-                },
-            ],
-        },
-        {
-            filename,
-            code: `
-                type Save = () => void;
-
-                type SaveDeps = { logger: { log: () => void } };
-
-                const createSave = (deps: SaveDeps): Save => () => deps.logger.log();
-            `,
-            output: `
-                type SaveDeps = { logger: { log: () => void } };
-
-                type Save = () => void;
-
-                const createSave = (deps: SaveDeps): Save => () => deps.logger.log();
-            `,
-            errors: [
-                {
-                    messageId: 'dependencyFactoryContractOrder',
-                    data: {
-                        depsName: 'SaveDeps',
-                        serviceName: 'Save',
-                        factoryName: 'createSave',
-                    },
-                },
-            ],
-        },
-        {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
                 export type SaveThunkDeps = { save: () => void };
@@ -327,7 +217,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             ],
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
                 // Saving requires access to this service.
@@ -354,7 +244,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             ],
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config = void>(name: string, callback: unknown) => unknown;
                 const saveThunk = createThunk<void, void>('save', () => undefined);
@@ -362,7 +252,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             errors: [{ messageId: 'missingThunkConfig', data: { thunkName: 'saveThunk' } }],
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
                 const saveThunk = createThunk<void, void, {}>('save', () => undefined);
@@ -370,7 +260,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             errors: [{ messageId: 'emptyThunkConfig', data: { thunkName: 'saveThunk' } }],
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
                 type State = { value: string };
@@ -387,7 +277,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             ],
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
                 type SaveThunkState = { value: string };
@@ -406,7 +296,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             ],
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
                 type SaveThunkDeps = { save: () => void };
@@ -424,7 +314,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             ],
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 type State = { value: string };
                 type Deps = { save: () => void };
@@ -445,7 +335,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             ],
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 const save = () => (dispatch, getState, extra) => {
                     void dispatch;
@@ -459,7 +349,7 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
             ],
         },
         {
-            filename,
+            filename: namedContractsFilename,
             code: `
                 const save = () => (_, getState, extra) => {
                     void getState;
@@ -471,50 +361,5 @@ ruleTester.run('enforce-named-contracts', enforceNamedContractsRule, {
                 { messageId: 'contractMustBeNamed', data: { contractName: 'SaveThunkDeps' } },
             ],
         },
-        {
-            filename,
-            code: `
-                type CreateSaveDeps = { logger: { log: () => void } };
-                type Save = () => void;
-
-                const createSave = (deps: CreateSaveDeps): Save => () => deps.logger.log();
-            `,
-            errors: [
-                {
-                    messageId: 'contractMustBeNamed',
-                    data: { contractName: 'SaveDeps', consumerName: 'createSave' },
-                },
-            ],
-        },
-        {
-            filename,
-            code: `
-                type SaveDeps = { logger: { log: () => void } };
-
-                const createSave = (deps: SaveDeps) => () => deps.logger.log();
-            `,
-            errors: [
-                {
-                    messageId: 'dependencyFactoryReturnType',
-                    data: { factoryName: 'createSave' },
-                },
-            ],
-        },
-        {
-            filename,
-            code: `
-                type SaveDeps = { logger: { log: () => void } };
-
-                type Save = () => void;
-
-                const createSave = ({ logger }: SaveDeps): Save => () => logger.log();
-            `,
-            errors: [
-                {
-                    messageId: 'dependencyFactoryParameter',
-                    data: { factoryName: 'createSave', contractName: 'SaveDeps' },
-                },
-            ],
-        },
     ],
-} as Parameters<typeof ruleTester.run>[2]);
+} as Parameters<typeof namedContractsRuleTester.run>[2]);

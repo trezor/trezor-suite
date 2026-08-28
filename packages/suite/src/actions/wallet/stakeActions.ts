@@ -117,6 +117,7 @@ type PushTransactionThunkState = DeviceRootState &
     StakeRootState &
     SyncAccountsWithBlockchainThunkState &
     WalletSettingsRootState;
+
 type PushTransactionThunkDeps = WithServices<DesktopAnalyticsDep> &
     SyncAccountsWithBlockchainThunkDeps;
 
@@ -282,6 +283,7 @@ type SignTransactionThunkState = DeviceRootState &
     StakeRootState &
     SyncAccountsWithBlockchainThunkState &
     WalletSettingsRootState;
+
 type SignTransactionThunkDeps = PushTransactionThunkDeps;
 
 export const signTransaction =

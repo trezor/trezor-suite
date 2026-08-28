@@ -67,8 +67,9 @@ export const disableAnalyticsThunk =
         dispatch(analyticsActions.disableAnalytics());
     };
 
-type InitAnalyticsThunkState = AnalyticsRootState;
-type InitAnalyticsThunkDeps = WithServices<DesktopAnalyticsDep>;
+type InitThunkState = AnalyticsRootState;
+
+type InitThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 /**
  * Init analytics, should be always run on application start (see suiteMiddleware). It:
@@ -79,9 +80,9 @@ type InitAnalyticsThunkDeps = WithServices<DesktopAnalyticsDep>;
 export const init =
     () =>
     (
-        dispatch: ThunkDispatch<InitAnalyticsThunkState, InitAnalyticsThunkDeps, UnknownAction>,
-        getState: () => InitAnalyticsThunkState,
-        extra: InitAnalyticsThunkDeps,
+        dispatch: ThunkDispatch<InitThunkState, InitThunkDeps, UnknownAction>,
+        getState: () => InitThunkState,
+        extra: InitThunkDeps,
     ) => {
         const sessionId = getTrackingRandomId();
         // if instanceId does not exist yet (was not loaded from storage), create a new one

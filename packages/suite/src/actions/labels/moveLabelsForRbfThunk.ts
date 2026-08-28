@@ -31,7 +31,9 @@ export type MoveLabelsForRbfThunkState = DeviceRootState &
     MessageSystemRootState &
     MoveLabelsForRbfOldMetadataThunkState &
     WithSuiteSyncState;
+
 export type MoveLabelsForRbfThunkDeps = WithServices<MigrateSuiteSyncLabelsForRbfTransactionDep>;
+
 type MoveLabelsForRbfThunkDispatch = ThunkDispatch<
     MoveLabelsForRbfThunkState,
     MoveLabelsForRbfThunkDeps,
