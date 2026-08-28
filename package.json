@@ -89,7 +89,7 @@
         "native:android": "yarn workspace @suite-native/app android",
         "native:ios": "yarn workspace @suite-native/app ios",
         "native:prebuild": "yarn workspace @suite-native/app prebuild",
-        "native:prebuild:clean": "yarn workspace @suite-native/app prebuild:clean",
+        "native:prebuild:no-clean": "yarn workspace @suite-native/app prebuild:no-clean",
         "native:reverse-ports": "yarn workspace @suite-native/app reverse-ports",
         "ws": "./scripts/workspace-run.sh",
         "_______ Aliases _______": "Aliases for longer commands which we often have to run manually. Names don't have to be pretty or make total sense.",

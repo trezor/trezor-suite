@@ -27,9 +27,9 @@ nix develop .#use_android
 
 ## Before you run the app
 
-1. Run `yarn native:prebuild:clean` to generate `ios/` and `android/` directories.
-    - You can prebuild for specific platform if you setup only Android/iOS: `yarn prebuild:clean --platform [android|ios]`
-    - It's necessary to re-run faster version of this command `yarn native:prebuild` (shortcut `yarn p`) on any change in native code (when you change branch/pull/rebase).
+1. Run `yarn native:prebuild` (shortcut `yarn p`) to generate `ios/` and `android/` directories.
+    - You can prebuild for specific platform if you setup only Android/iOS: `yarn prebuild --platform [android|ios]`
+    - It's necessary to re-run faster version of this command `yarn native:prebuild:no-clean` on any change in native code (when you change branch/pull/rebase).
 
 ## Running app on Android
 
@@ -107,7 +107,7 @@ Whenever you do a change in a native code (updating native dependency and so on)
 ## Troubleshooting
 
 1. For any issues with the build, try to clean the project and rebuild it:
-    - `yarn native:prebuild:clean`
+    - `yarn native:prebuild`
     - `yarn native:android` or `yarn native:ios`
 2. In case of issues with the packager, try to restart it with `--reset-cache` i.e (`yarn s --reset-cache`).
 3. If metro crashes after running `yarn start` on iOS, try running `watchman watch-del-all` to clear stale file‑watch state.
