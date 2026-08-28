@@ -18,6 +18,8 @@ import type { TypedCallProvider } from '../types/typed-call-provider';
 
 const blacklist: Record<string, string[] | true> = {
     PassphraseAck: ['passphrase'],
+    PinMatrixAck: ['pin'],
+    WordAck: ['word'],
     CipheredKeyValue: ['value'],
     GetPublicKey: ['address_n'],
     PublicKey: ['node', 'xpub'],
