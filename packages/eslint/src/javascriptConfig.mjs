@@ -125,7 +125,6 @@ export const javascriptConfig = [
             // Offs
             'no-undef': 'off', // Todo: write description
             // New in ESLint 10 recommended config; adopt separately from the dependency upgrade.
-            'no-unassigned-vars': 'off',
             'no-useless-assignment': 'off',
             'preserve-caught-error': 'off',
 
