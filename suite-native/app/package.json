@@ -25,7 +25,7 @@
         "prebuild": "expo prebuild",
         "eas-build-post-install": "yarn workspace @suite-common/message-system sign-config",
         "eas-build-on-success": "./eas-post-success.sh",
-        "prebuild:clean": "expo prebuild --clean",
+        "prebuild:no-clean": "expo prebuild --no-clean",
         "build:e2e": "detox build --configuration",
         "test:e2e": "node ./scripts/cleanArtifacts.js && tsx e2e/trezorDetoxRunner/index.ts",
         "test:e2e:android": "node ./scripts/cleanArtifacts.js && tsx e2e/trezorDetoxRunner/index.ts --config=e2e/trezorDetoxRunner/config/runner-android.config.js",

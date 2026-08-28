@@ -70,7 +70,7 @@ jobs:
 
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
-        run: yarn prebuild --platform ios --clean
+        run: yarn prebuild --platform ios
 
       # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
       - name: Sign message system config
