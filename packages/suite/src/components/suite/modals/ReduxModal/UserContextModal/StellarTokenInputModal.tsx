@@ -1,6 +1,11 @@
+import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import {
+    lazyStellarTokenMetadata,
+    resolveStellarAssetFromContractId,
+} from '@suite-common/wallet-utils';
 import { Button, Column, Input, Modal, Row, Text } from '@trezor/components';
 import stellar from '@trezor/network-stellar/runtime';
 type StellarTokenInputModalProps = {
@@ -13,10 +18,19 @@ type FormData = {
     assetIssuer: string;
 };
 
-const validateAssetCode = (translate: (id: TranslationKey) => string) => async (value: string) => {
-    const { isValidAssetCode } = await stellar();
+const resolveContractId = async (contractId: string) =>
+    resolveStellarAssetFromContractId(contractId, await lazyStellarTokenMetadata.getOrInit());
 
-    return !value || isValidAssetCode(value) || translate('TR_ASSET_CODE_INVALID');
+const validateAssetCode = (translate: (id: TranslationKey) => string) => async (value: string) => {
+    const { isValidAssetCode, isValidContractId } = await stellar();
+
+    if (!value || isValidAssetCode(value)) return true;
+
+    if (isValidContractId(value)) {
+        return !!(await resolveContractId(value)) || translate('TR_CONTRACT_ID_UNKNOWN');
+    }
+
+    return translate('TR_ASSET_CODE_INVALID');
 };
 
 const validateAssetIssuer =
@@ -34,6 +48,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
         handleSubmit,
         formState: { errors, isValid },
         control,
+        setValue,
     } = useForm<FormData>({
         mode: 'onChange',
         defaultValues: {
@@ -59,6 +74,29 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
         required: true,
         validate: validateAssetIssuer(translationString),
     });
+
+    // A pasted Stellar Asset Contract id is swapped for the classic asset it wraps, so the rest
+    // of the activation flow keeps working with an asset code and issuer.
+    useEffect(() => {
+        let isStale = false;
+
+        const fillFromContractId = async () => {
+            const { isValidContractId } = await stellar();
+            if (!isValidContractId(assetCode)) return;
+
+            const resolved = await resolveContractId(assetCode);
+            if (isStale || !resolved) return;
+
+            setValue('assetCode', resolved.assetCode, { shouldValidate: true });
+            setValue('assetIssuer', resolved.assetIssuer, { shouldValidate: true });
+        };
+
+        fillFromContractId();
+
+        return () => {
+            isStale = true;
+        };
+    }, [assetCode, setValue]);
 
     const handleContinue = handleSubmit((data: FormData) => {
         onSubmit(data.assetCode, data.assetIssuer);
@@ -87,7 +125,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
 
                 <Column gap={16}>
                     <Input
-                        label={<Translation id="TR_ASSET_CODE" />}
+                        label={<Translation id="TR_ASSET_CODE_OR_CONTRACT_ID" />}
                         value={assetCode}
                         innerRef={assetCodeRef}
                         {...assetCodeField}
