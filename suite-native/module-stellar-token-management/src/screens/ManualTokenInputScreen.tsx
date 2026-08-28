@@ -7,6 +7,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
+import { resolveStellarAssetFromContractId } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, Card, Input, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -20,7 +21,11 @@ import {
 } from '@suite-native/navigation';
 import stellar from '@trezor/network-stellar/runtime';
 
+import { lazyTokenMetadata } from '../hooks/useInactiveStellarTokens';
 import { composeStellarTrustlineFeesThunk } from '../thunks';
+
+// A Stellar Asset Contract id is 56 characters, an asset code at most 12
+const ASSET_CODE_INPUT_MAX_LENGTH = 56;
 
 type RouteProps = StackProps<
     StellarManageTokenStackParamList,
@@ -53,11 +58,45 @@ export const ManualTokenInputScreen = () => {
     // Validation
     const [isAssetCodeValid, setIsAssetCodeValid] = useState(false);
     const [isIssuerAddressValid, setIsIssuerAddressValid] = useState(false);
+    const [isContractIdUnknown, setIsContractIdUnknown] = useState(false);
 
     useEffect(() => {
         stellar()
             .then(({ isValidAssetCode }) => isValidAssetCode(assetCode))
             .then(setIsAssetCodeValid);
+    }, [assetCode]);
+
+    // A pasted Stellar Asset Contract id is swapped for the classic asset it wraps, so the rest
+    // of the activation flow keeps working with an asset code and issuer.
+    useEffect(() => {
+        let isStale = false;
+
+        const fillFromContractId = async () => {
+            const { isValidContractId } = await stellar();
+            if (!isValidContractId(assetCode)) {
+                if (!isStale) setIsContractIdUnknown(false);
+
+                return;
+            }
+
+            const resolved = await resolveStellarAssetFromContractId(
+                assetCode,
+                await lazyTokenMetadata.getOrInit(),
+            );
+            if (isStale) return;
+
+            setIsContractIdUnknown(!resolved);
+            if (resolved) {
+                setAssetCode(resolved.assetCode);
+                setIssuerAddress(resolved.assetIssuer);
+            }
+        };
+
+        fillFromContractId();
+
+        return () => {
+            isStale = true;
+        };
     }, [assetCode]);
 
     useEffect(() => {
@@ -66,7 +105,11 @@ export const ManualTokenInputScreen = () => {
             .then(setIsIssuerAddressValid);
     }, [issuerAddress]);
 
-    const hasAssetCodeError = assetCodeTouched && !!assetCode && !isAssetCodeValid;
+    // Anything longer than the 12 character asset code limit can only be a contract id, so the
+    // asset code error would be misleading there
+    const isContractIdCandidate = assetCode.length > 12;
+    const hasAssetCodeError =
+        assetCodeTouched && !!assetCode && !isContractIdCandidate && !isAssetCodeValid;
     const hasIssuerAddressError = issuerAddressTouched && !!issuerAddress && !isIssuerAddressValid;
 
     const isFormValid = assetCode && issuerAddress && isAssetCodeValid && isIssuerAddressValid;
@@ -168,13 +211,18 @@ export const ManualTokenInputScreen = () => {
                                     'moduleStellarToken.manualInput.assetCodePlaceholder',
                                 )}
                                 autoCapitalize="characters"
-                                maxLength={12}
-                                hasError={hasAssetCodeError}
+                                maxLength={ASSET_CODE_INPUT_MAX_LENGTH}
+                                hasError={hasAssetCodeError || isContractIdUnknown}
                                 testID="@stellar-token/asset-code-input"
                             />
                             {hasAssetCodeError && (
                                 <Text variant="body-sm" color="contentCritical">
                                     <Translation id="moduleStellarToken.manualInput.assetCodeError" />
+                                </Text>
+                            )}
+                            {isContractIdUnknown && (
+                                <Text variant="body-sm" color="contentCritical">
+                                    <Translation id="moduleStellarToken.manualInput.contractIdUnknown" />
                                 </Text>
                             )}
                         </VStack>

@@ -4,6 +4,8 @@ export const isValidAssetCode = (code: string): boolean => /^[a-zA-Z0-9]{1,12}$/
 
 export const isValidAddress = (address: string): boolean => StrKey.isValidEd25519PublicKey(address);
 
+export const isValidContractId = (address: string): boolean => StrKey.isValidContract(address);
+
 /**
  * Derive the public-network Soroban contract id for a classic Stellar asset
  * in strict `CODE-ISSUER` form.

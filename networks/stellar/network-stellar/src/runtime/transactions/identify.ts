@@ -1,17 +1,27 @@
-import {
-    type Asset,
-    FeeBumpTransaction,
-    type Horizon,
-    type Memo,
-    Networks,
-    type Transaction,
-    TransactionBuilder,
-    extractBaseAddress,
-} from '@stellar/stellar-sdk';
+import { Horizon, extractBaseAddress } from '@stellar/stellar-sdk';
 
 import { BigNumber } from '@trezor/utils';
 
 import { toStroops } from '../../constants';
+
+const { OperationResponseType } = Horizon.HorizonApi;
+
+type OperationRecord = Horizon.ServerApi.OperationRecord;
+type TransactionRecord = Horizon.ServerApi.TransactionRecord;
+
+// Horizon omits `from` on mint and `to` on burn/clawback, though the SDK types both as required.
+type BalanceChange = Omit<Horizon.HorizonApi.BalanceChange, 'from' | 'to'> & {
+    from?: string;
+    to?: string;
+};
+
+export type TokenTransferInfo = {
+    assetCode: string;
+    assetIssuer: string;
+    amount: string;
+    fromAddress: string;
+    toAddress: string;
+};
 
 const isoToTimestamp = (isoDate: string): number => {
     const timestamp = Date.parse(isoDate);
@@ -23,112 +33,137 @@ const isoToTimestamp = (isoDate: string): number => {
     return Math.floor(timestamp / 1000);
 };
 
-const convertMemo = (memo: Memo): string | undefined => {
-    switch (memo.type) {
+const convertMemo = ({ memo, memo_type: memoType }: TransactionRecord): string | undefined => {
+    if (memo === undefined) return undefined;
+
+    switch (memoType) {
         case 'text':
         case 'id':
-            return memo.value?.toString();
+            return memo;
         case 'hash':
         case 'return':
-            return memo.value?.toString('hex');
+            // Horizon returns these base64-encoded, the rest of Suite expects hex
+            return Buffer.from(memo, 'base64').toString('hex');
         default:
             return undefined;
     }
 };
 
-export const identifyTransaction = (rawTx: Horizon.ServerApi.TransactionRecord) => {
+const isClassicAsset = (assetType: string) =>
+    assetType === 'credit_alphanum4' || assetType === 'credit_alphanum12';
+
+/**
+ * A Stellar Asset Contract reports transfers as balance changes on the host-function
+ * operation. `mint` has no `from` and `burn`/`clawback` have no `to`, so the asset issuer
+ * stands in for the missing side.
+ */
+const identifyBalanceChanges = (changes: BalanceChange[]): TokenTransferInfo[] =>
+    changes
+        .filter(
+            (change): change is BalanceChange & { asset_code: string; asset_issuer: string } =>
+                isClassicAsset(change.asset_type) && !!change.asset_code && !!change.asset_issuer,
+        )
+        .map(change => ({
+            assetCode: change.asset_code,
+            assetIssuer: change.asset_issuer,
+            amount: toStroops(change.amount).toString(),
+            fromAddress: extractBaseAddress(change.from ?? change.asset_issuer),
+            toAddress: extractBaseAddress(change.to ?? change.asset_issuer),
+        }));
+
+/**
+ * Maps the operations of a single transaction that the account participates in onto the
+ * shape `transformTransaction` consumes. Horizon pre-decodes every operation, so no
+ * envelope XDR is parsed here.
+ */
+export const identifyTransaction = (operations: OperationRecord[], rawTx: TransactionRecord) => {
     // For fee-bump transactions the fee is paid by fee_account, not by the inner source_account
     const feeSource = extractBaseAddress(rawTx.fee_account || rawTx.source_account);
     const fee = rawTx.fee_charged.toString();
     const createdAt = isoToTimestamp(rawTx.created_at);
     const { hash, ledger_attr: ledgerAttr } = rawTx;
-
-    let parsedTx: Transaction;
-    try {
-        const envelope = TransactionBuilder.fromXDR(rawTx.envelope_xdr, Networks.PUBLIC);
-        parsedTx = envelope instanceof FeeBumpTransaction ? envelope.innerTransaction : envelope;
-    } catch {
-        // A single unparseable record must not fail the whole account history
-        return {
-            type: 'unknown',
-            memo: undefined,
-            feeSource,
-            hash,
-            fee,
-            createdAt,
-            ledgerAttr,
-        } as const;
-    }
+    const memo = convertMemo(rawTx);
 
     // In Stellar, there are many types of operations; currently, we only include limited support and will consider adding more support later.
-    const memo = convertMemo(parsedTx.memo);
-    const common = { parsedTx, memo, feeSource, hash, fee, createdAt, ledgerAttr };
+    const common = { memo, feeSource, hash, fee, createdAt, ledgerAttr };
 
     if (!rawTx.successful) {
-        // If the transaction is not successful, we can set the type to 'failed' and return early
         return { type: 'failed', ...common } as const;
     }
 
-    const rawOp = parsedTx.operations[0];
+    const operation = operations[0];
 
-    if (!rawOp || parsedTx.operations.length !== 1) {
-        // If the transaction has more than one operation, we consider it as a unknown type
+    if (!operation || operations.length !== 1) {
+        // The account taking part in several operations of one transaction cannot be
+        // expressed as a single transfer, so it stays unknown.
         return { type: 'unknown', ...common } as const;
     }
 
-    const opSource = rawOp.source || rawTx.source_account;
-    const fromAddress = extractBaseAddress(opSource);
-
-    switch (rawOp.type) {
-        case 'createAccount':
+    switch (operation.type) {
+        case OperationResponseType.createAccount:
             return {
                 type: 'create-account',
                 ...common,
-                fromAddress,
-                toAddress: extractBaseAddress(rawOp.destination),
-                amount: toStroops(rawOp.startingBalance),
+                fromAddress: extractBaseAddress(operation.funder),
+                toAddress: extractBaseAddress(operation.account),
+                amount: toStroops(operation.starting_balance),
             } as const;
-        case 'payment': {
-            const toAddress = extractBaseAddress(rawOp.destination);
-            if (rawOp.asset.isNative()) {
+        case OperationResponseType.payment: {
+            const fromAddress = extractBaseAddress(operation.from);
+            const toAddress = extractBaseAddress(operation.to);
+
+            if (operation.asset_type === 'native') {
                 return {
                     type: 'payment-native',
                     ...common,
                     fromAddress,
                     toAddress,
-                    amount: toStroops(rawOp.amount),
-                } as const;
-            } else {
-                return {
-                    type: 'payment-token',
-                    ...common,
-                    fromAddress,
-                    toAddress,
-                    tokenInfo: {
-                        assetCode: rawOp.asset.getCode(),
-                        assetIssuer: rawOp.asset.getIssuer(),
-                        amount: toStroops(rawOp.amount).toString(),
-                    },
+                    amount: toStroops(operation.amount),
                 } as const;
             }
-        }
-        case 'changeTrust': {
-            // Only support regular assets, not liquidity pool shares
-            if (
-                rawOp.line.getAssetType() !== 'credit_alphanum4' &&
-                rawOp.line.getAssetType() !== 'credit_alphanum12'
-            ) {
+
+            if (!isClassicAsset(operation.asset_type)) {
                 return { type: 'unknown', ...common } as const;
             }
 
-            const line = rawOp.line as Asset;
-            const assetCode = line.getCode();
-            const isRemoval = new BigNumber(rawOp.limit).isZero();
+            return {
+                type: 'token-transfer',
+                ...common,
+                transfers: [
+                    {
+                        assetCode: operation.asset_code!,
+                        assetIssuer: operation.asset_issuer!,
+                        amount: toStroops(operation.amount).toString(),
+                        fromAddress,
+                        toAddress,
+                    },
+                ],
+            } as const;
+        }
+        case OperationResponseType.changeTrust: {
+            // Only support regular assets, not liquidity pool shares
+            if (!isClassicAsset(operation.asset_type) || !operation.asset_code) {
+                return { type: 'unknown', ...common } as const;
+            }
 
-            return { type: 'change-trust', ...common, fromAddress, assetCode, isRemoval } as const;
+            return {
+                type: 'change-trust',
+                ...common,
+                fromAddress: extractBaseAddress(operation.trustor),
+                assetCode: operation.asset_code,
+                isRemoval: new BigNumber(operation.limit).isZero(),
+            } as const;
+        }
+        case OperationResponseType.invokeHostFunction: {
+            const transfers = identifyBalanceChanges(operation.asset_balance_changes);
+
+            if (transfers.length === 0) {
+                return { type: 'unknown', ...common } as const;
+            }
+
+            return { type: 'token-transfer', ...common, transfers } as const;
         }
         default:
-            // We only support createAccount and payment operations for now, so we consider it as a unknown type
             return { type: 'unknown', ...common } as const;
     }
 };

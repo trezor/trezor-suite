@@ -1,8 +1,9 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
+import stellar from '@trezor/network-stellar/runtime';
 
-import { getStellarInactiveTokens } from './stellarTokens';
+import { getStellarInactiveTokens, resolveStellarAssetFromContractId } from './stellarTokens';
 
 const xlmSymbol = asNetworkSymbol('xlm');
 
@@ -93,5 +94,66 @@ describe(getStellarInactiveTokens.name, () => {
         ]);
 
         expect(result[2]?.rating).toBeUndefined();
+    });
+});
+
+const USDC_ISSUER = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+const CATCOIN_ISSUER = 'GDJVFDG5OCW5PYWHB64MGTHGFF57DRRJEDUEFDEL2SLNIOONHYJWHA3Z';
+const USDC = `USDC-${USDC_ISSUER}`;
+const CATCOIN = `CATCOIN-${CATCOIN_ISSUER}`;
+
+const definitionsOf = (...contracts: string[]) =>
+    Object.fromEntries(contracts.map(contract => [contract, { name: contract, symbol: contract }]));
+
+describe(resolveStellarAssetFromContractId.name, () => {
+    let usdcContractId: string;
+    let catcoinContractId: string;
+
+    beforeAll(async () => {
+        const { computeSorobanAssetContractId } = await stellar();
+        usdcContractId = computeSorobanAssetContractId(USDC).sorobanAssetContractId;
+        catcoinContractId = computeSorobanAssetContractId(CATCOIN).sorobanAssetContractId;
+    });
+
+    it('resolves a contract id to the asset it wraps', async () => {
+        await expect(
+            resolveStellarAssetFromContractId(usdcContractId, definitionsOf(USDC, CATCOIN)),
+        ).resolves.toEqual({ assetCode: 'USDC', assetIssuer: USDC_ISSUER });
+    });
+
+    it('resolves an asset with a 12 character code', async () => {
+        await expect(
+            resolveStellarAssetFromContractId(catcoinContractId, definitionsOf(USDC, CATCOIN)),
+        ).resolves.toEqual({ assetCode: 'CATCOIN', assetIssuer: CATCOIN_ISSUER });
+    });
+
+    it('returns nothing for an asset missing from the definitions', async () => {
+        await expect(
+            resolveStellarAssetFromContractId(usdcContractId, definitionsOf(CATCOIN)),
+        ).resolves.toBeUndefined();
+    });
+
+    it('returns nothing for values that are not contract ids', async () => {
+        const definitions = definitionsOf(USDC);
+
+        await expect(
+            resolveStellarAssetFromContractId('USDC', definitions),
+        ).resolves.toBeUndefined();
+        await expect(
+            resolveStellarAssetFromContractId(USDC_ISSUER, definitions),
+        ).resolves.toBeUndefined();
+        await expect(resolveStellarAssetFromContractId('', definitions)).resolves.toBeUndefined();
+    });
+
+    it('ignores definition entries that are not classic assets', async () => {
+        const definitions = {
+            ...definitionsOf(USDC),
+            ...definitionsOf('not-an-asset'),
+            ...definitionsOf(usdcContractId),
+        };
+
+        await expect(
+            resolveStellarAssetFromContractId(usdcContractId, definitions),
+        ).resolves.toEqual({ assetCode: 'USDC', assetIssuer: USDC_ISSUER });
     });
 });

@@ -4817,9 +4817,11 @@ export const messages = {
         manualInput: {
             title: 'Activate token manually',
             subtitle: 'To activate a token, enter its asset code and issuer address.',
-            assetCode: 'Asset code',
+            assetCode: 'Asset code or contract ID',
             assetCodePlaceholder: 'e.g. SHX',
             assetCodeError: 'Invalid asset code. Enter 1-12 alphanumeric characters.',
+            contractIdUnknown:
+                'Unrecognized contract ID. Enter the asset code and issuer address instead.',
             issuerAddressPlaceholder: 'e.g. GARDNV3Q...',
             issuerAddressError: 'Invalid issuer address. Enter a valid Stellar address.',
         },
