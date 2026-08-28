@@ -10775,6 +10775,10 @@ export const messages = defineMessages({
         id: 'TR_STAKING_DELEGATE_TO_ANOTHER_DREP',
         defaultMessage: 'Delegate to another DRep',
     },
+    TR_STAKING_KEEP_CURRENT_DELEGATION: {
+        id: 'TR_STAKING_KEEP_CURRENT_DELEGATION',
+        defaultMessage: 'Keep your current delegation',
+    },
     TR_STAKING_DELEGATION_INFO_TEXT: {
         id: 'TR_STAKING_DELEGATION_INFO_TEXT',
         defaultMessage:
