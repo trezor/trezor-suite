@@ -113,10 +113,90 @@ jobs:
       currents-project-id: "4ytF0E"
       download-artifact-name: "desktop-app-build-e2e"
       spec-list: ${{ needs.resolve-spec-list.outputs.spec-list }}
+      lighthouse: "true"
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
       e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
+
+  # ── Performance report ─────────────────────────────────────────────────────
+
+  # Collects the perf-results artifacts every shard uploaded, computes per-scenario deltas vs the
+  # nightly develop baseline on the LHCI server, uploads this run's samples there (fire-and-forget)
+  # and overwrites the "Performance report" section of the PR description. Informative only: the
+  # report script exits 0 on every non-programming failure, so a missing baseline, a dead server or
+  # an absent token degrade the report, never the check.
+  perf-report:
+    name: Performance report
+    needs:
+      - run-e2e-suite-desktop-tests
+      - run-e2e-suite-web-tests
+    # !cancelled(): a red shard must not cost us the report computed from the shards that did
+    # finish — but a superseded (cancelled) run must not post a stale report over the new run's.
+    if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # The workflow-level grants (id-token: write for deploys, pull-requests: write) are not needed
+    # here — the PR body is updated with the bot app token, not GITHUB_TOKEN.
+    permissions:
+      contents: read
+    concurrency:
+      group: post-perf-report-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+    env:
+      LHCI_SERVER_URL: "https://perf-lhci.sldev.cz"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          # Full history (blobless) so the report script can resolve `git merge-base` with develop
+          # for the upload's ancestorHash. Nothing here pushes, so no credentials linger.
+          fetch-depth: 0
+          filter: tree:0
+          persist-credentials: false
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
+      - name: Install dependencies
+        shell: bash
+        run: yarn workspaces focus @trezor/suite-e2e
+      - name: Download perf artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: perf-results-*
+          path: perf-artifacts
+      - name: Build performance report
+        shell: bash
+        env:
+          LHCI_BUILD_TOKEN: ${{ secrets.LHCI_BUILD_TOKEN }}
+          PERF_BRANCH: ${{ github.head_ref }}
+          PERF_HASH: ${{ github.event.pull_request.head.sha }}
+          PERF_BASE_BRANCH: develop
+          PERF_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          yarn workspace @trezor/suite-e2e perf:report:ci \
+            --mode ci-pr \
+            --artifacts "${{ github.workspace }}/perf-artifacts" \
+            --out "${{ github.workspace }}/perf-report.md"
+      # A focused run without @perf specs produces no artifacts, so the script writes no report and
+      # the previous PR section stays as it was (it names the SHA it measured, staleness is
+      # self-documenting). Fork PRs get no report: they cannot read the bot credentials anyway —
+      # the same-repo check fails closed (head.repo can be null when the fork was deleted).
+      - name: Post performance report
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository && hashFiles('perf-report.md') != '' }}
+        uses: ./.github/actions/post-perf-report
+        with:
+          report-file: perf-report.md
+          trezor-bot-app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          trezor-bot-private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
   # ── Web ────────────────────────────────────────────────────────────────────
 
@@ -320,6 +400,7 @@ jobs:
       currents-project-id: "Og0NOQ"
       download-artifact-name: "connect-explorer-webextension-dev.suite.sldev.cz"
       spec-list: ${{ needs.resolve-spec-list.outputs.spec-list }}
+      lighthouse: "true"
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

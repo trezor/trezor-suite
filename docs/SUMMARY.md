@@ -63,6 +63,7 @@
     - [Suite E2E in CI](./symlink/tests/e2e-ci.md)
     - [Playwright contribution guide](./symlink/tests/e2e-playwright-contribution-guide.md)
     - [GitHub Test Reporter](./symlink/tests/e2e-github-reporter.md)
+    - [Lighthouse in E2E](./symlink/tests/e2e-lighthouse.md)
     - [regtest](./tests/regtest.md)
     - [@suite/test-utils](./tests/suite-test-utils.md)
     - [@suite-common/test-utils](./tests/suite-common-test-utils.md)

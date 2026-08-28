@@ -3,6 +3,8 @@ import { checkEvoluRelayServerRunning } from '@suite-common/e2e-evolu-client';
 import type { PerfMetrics } from '@trezor/perf-e2e';
 
 import { AnalyticsFixture, AnalyticsHelper } from './analytics';
+import { LighthouseMode, getLighthouseMode } from '../performance/lighthouseConfig';
+import { LighthouseFlow, startLighthouseFlow } from '../performance/lighthouseTimespan';
 import { measurePerformance } from '../performance/perfMeasure';
 import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
@@ -75,14 +77,15 @@ type Fixtures = {
     evoluClient: EvoluClient;
     perf: {
         /**
-         * Wraps an interaction a desktop test already performs and holds it to the limits of its
-         * scenario. Returns null where instrumentation is not installed (e.g. web).
+         * Wraps an interaction the test already performs and holds it to the limits of its
+         * scenario. Returns null where instrumentation is not installed (PERF=0).
          */
         measure: (
             scenario: string,
             interaction: () => Promise<void>,
         ) => Promise<PerfMetrics | null>;
     };
+    lighthouseFlow: LighthouseFlow;
 };
 
 const test = suiteBaseTest.extend<Fixtures>({
@@ -202,10 +205,30 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(evoluClient);
         await evoluClient.dispose();
     },
-    perf: async ({ page }, use, testInfo) => {
+    lighthouseFlow: [
+        async ({ page }, use, testInfo) => {
+            const flow = await startLighthouseFlow(page, testInfo);
+
+            try {
+                await flow.wrapTest(() => use(flow));
+            } finally {
+                await flow.finish();
+            }
+        },
+        // Auto only where a test that never takes the `perf` fixture is still meant to be profiled.
+        // Leaving it auto otherwise would hand a `page` to every test in the suite, including the
+        // ones that deliberately open none.
+        { auto: getLighthouseMode() === LighthouseMode.Test },
+    ],
+    // Lighthouse wraps the measurement rather than the other way round: its timespan then also
+    // covers the settling `measurePerformance` waits out, which costs Lighthouse nothing (the page
+    // is idle by then) and keeps the CDP work of opening a timespan out of the measured interaction.
+    perf: async ({ page, lighthouseFlow }, use, testInfo) => {
         await use({
             measure: (scenario, interaction) =>
-                measurePerformance(page, testInfo, scenario, interaction),
+                lighthouseFlow.timespan(scenario, () =>
+                    measurePerformance(page, testInfo, scenario, interaction),
+                ),
         });
     },
 });

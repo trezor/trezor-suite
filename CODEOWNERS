@@ -89,6 +89,7 @@
 /packages/e2e-utils @Vere-Grey
 /packages/trezor-user-env-link @Vere-Grey
 /suite/e2e @Vere-Grey
+/suite/lhci-server @cermakjiri
 /suite-common/e2e-evolu-client @Vere-Grey
 /suite-native/app/e2e @Vere-Grey
 

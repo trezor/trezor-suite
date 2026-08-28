@@ -1,4 +1,5 @@
 import { Page, TestInfo } from '@playwright/test';
+import { writeFileSync } from 'fs';
 
 import {
     PerfMetrics,
@@ -14,6 +15,7 @@ import {
 } from '@trezor/perf-e2e';
 
 import { BASELINES, LIMITS } from './budgets';
+import { SuiteTestOptions } from '../support/testExtends/suiteTestOptions';
 
 /**
  * The ceiling on the wait for the page to settle, not the wait itself: the metrics are read as soon
@@ -26,9 +28,9 @@ const MAX_SETTLE_MS = 400;
  * Measures a single interaction and reports it against the limits of its scenario. Going over a
  * limit never fails the test.
  *
- * Instrumentation is installed globally at app load (see `electronSetup`), so no reload is needed
- * here. On a target where it was not installed, the interaction still runs and measurement is
- * skipped.
+ * Instrumentation is installed globally at app load (see `electronSetup` and `webSetup`), so no
+ * reload is needed here. Where it was not installed (PERF=0), the interaction still runs and
+ * measurement is skipped.
  *
  * The limits are those of this scenario on the device model the test is running on: the same
  * interaction costs a different amount on each, so holding both models to one number would either
@@ -47,9 +49,7 @@ export const measurePerformance = async (
     );
     if (!installed) {
         // eslint-disable-next-line no-console
-        console.log(
-            `[perf] instrumentation not installed (web run, or PERF=0) — skipping "${scenario}"`,
-        );
+        console.log(`[perf] instrumentation not installed (PERF=0?) — skipping "${scenario}"`);
         await interaction();
 
         return null;
@@ -71,11 +71,38 @@ export const measurePerformance = async (
         resolveBudget(LIMITS, scenario, model),
     );
     const humanReport = formatHumanReport(comparison);
+    const report = buildJsonReport(comparison);
 
+    // The attachment feeds perfReporter within this run; the file on disk is what the CI
+    // perf-report job collects across shards, so it also carries what the attachment gets from its
+    // surroundings for free: which measurement this is a sample of.
     await testInfo.attach(`perf-report-${scenario}.json`, {
-        body: JSON.stringify(buildJsonReport(comparison), null, 2),
+        body: JSON.stringify(report, null, 2),
         contentType: 'application/json',
     });
+    try {
+        // The scenario is free-form and, unlike an attachment name, a file name gets no sanitizing
+        // from Playwright. And as everywhere in this module: a report we fail to persist is worth a
+        // loud line in the log, never a failed test — the meta inside keeps the scenario verbatim.
+        writeFileSync(
+            testInfo.outputPath(`perf-report-${scenario.replace(/[^\w-]+/g, '-')}.json`),
+            JSON.stringify(
+                {
+                    meta: {
+                        scenario,
+                        model,
+                        target: (testInfo.project.use as SuiteTestOptions).target,
+                        retry: testInfo.retry,
+                    },
+                    report,
+                },
+                null,
+                2,
+            ),
+        );
+    } catch (error) {
+        console.warn(`[perf] the report file for "${scenario}" could not be written:`, error);
+    }
 
     // eslint-disable-next-line no-console
     console.log(`\n[perf] ${measurementKey(scenario, model)}\n${humanReport}\n`);

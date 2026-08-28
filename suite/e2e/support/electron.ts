@@ -5,6 +5,7 @@ import path from 'path';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { BRIDGE_VERSION } from './bridge';
+import { getLighthouseDebugPort, isLighthouseEnabled } from '../performance/lighthouseConfig';
 
 const appDir = path.join(__dirname, '../../../packages/suite-desktop');
 const showConnectLogsArgument = '--state.suite.settings.debug.showConnectLogs=true';
@@ -43,6 +44,11 @@ const formatErrorLogMessage = (data: string) => {
 
 const buildArgs = (params: LaunchSuiteParams) => {
     const args = [
+        // Lighthouse attaches to the renderer through Puppeteer, which needs a CDP endpoint of its
+        // own. The switch goes ahead of the app path: Electron takes the first argument that is not
+        // a switch as the app to run, and hands only what precedes it to Chromium.
+        ...(isLighthouseEnabled() ? [`--remote-debugging-port=${getLighthouseDebugPort()}`] : []),
+
         // This needs to be just path to the app root, so it is same as for production builds,
         // electron will resolve the path to app.js from the package.json => "main": "dist/app.js",
         appDir,
