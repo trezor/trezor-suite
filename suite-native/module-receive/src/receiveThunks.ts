@@ -52,6 +52,7 @@ export const setCurrentFreshAddressForFlowEntryThunk = createThunk<
 );
 
 export type AddReceiveAddressThunkState = ReceiveAddressListRootState;
+
 export type AddReceiveAddressThunkDeps = WithServices<NativeAnalyticsDep>;
 
 export const addReceiveAddressThunk = createThunk<

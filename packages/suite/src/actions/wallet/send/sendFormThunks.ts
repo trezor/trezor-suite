@@ -116,6 +116,7 @@ type UpdateRbfLabelsThunkParams = {
 };
 
 type UpdateRbfLabelsThunkState = MoveLabelsForRbfThunkState & ReplaceTransactionThunkState;
+
 type UpdateRbfLabelsThunkDeps = MoveLabelsForRbfThunkDeps;
 
 const updateRbfLabelsThunk = createThunk<
@@ -159,6 +160,7 @@ type ApplySendFormMetadataLabelsThunkState = DeviceRootState &
     MetadataRootState &
     SendRootState &
     WithSuiteSyncState;
+
 type ApplySendFormMetadataLabelsThunkDeps = WithServices<SuiteSyncDep>;
 
 const applySendFormMetadataLabelsThunk = createThunk<
@@ -248,6 +250,7 @@ type SignAndPushSendFormTransactionThunkState = ApplySendFormMetadataLabelsThunk
     PushSendFormTransactionThunkState &
     SignTransactionThunkState &
     UpdateRbfLabelsThunkState;
+
 type SignAndPushSendFormTransactionThunkDeps = ApplySendFormMetadataLabelsThunkDeps &
     CancelSignSendFormTransactionThunkDeps &
     PushSendFormTransactionThunkDeps &

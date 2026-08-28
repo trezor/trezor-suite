@@ -11,7 +11,7 @@ import { Schema } from './schema';
 // See: https://www.evolu.dev/docs/faq#how-to-delete-opfs-sqlite-in-browser
 const VERSION = 9;
 
-type CreateEvoluInstanceFactoryDeps = {
+type EvoluInstanceFactoryDeps = {
     run: Run<EvoluPlatformDeps>;
 };
 
@@ -24,7 +24,7 @@ export type CreateEvoluInstanceDep = {
 };
 
 export const createEvoluInstanceFactory =
-    (deps: CreateEvoluInstanceFactoryDeps): CreateEvoluInstance =>
+    (deps: EvoluInstanceFactoryDeps): CreateEvoluInstance =>
     async ({ suiteSyncOwner }) => {
         const owner = createEvoluAppOwnerFromTrezorData({ data: suiteSyncOwner.ownerSecret });
 

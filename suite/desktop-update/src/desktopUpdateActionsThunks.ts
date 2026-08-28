@@ -13,6 +13,7 @@ import {
 } from './desktopUpdateReducer';
 
 type AvailableThunkState = DesktopUpdateRootState;
+
 type AvailableThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const availableThunk =
@@ -43,6 +44,7 @@ export const notAvailableThunk = (info: UpdateInfo) => (dispatch: Dispatch) => {
 };
 
 type DownloadThunkState = DesktopUpdateRootState;
+
 type DownloadThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const downloadThunk =
@@ -64,6 +66,7 @@ export const downloadThunk =
     };
 
 type ReadyThunkState = DesktopUpdateRootState;
+
 type ReadyThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const readyThunk =
@@ -88,6 +91,7 @@ export const readyThunk =
     };
 
 type InstallUpdateThunkState = DesktopUpdateRootState;
+
 type InstallUpdateThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const installUpdateThunk =
@@ -121,6 +125,7 @@ export const installUpdateThunk =
     };
 
 type ErrorThunkState = DesktopUpdateRootState;
+
 type ErrorThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const errorThunk =

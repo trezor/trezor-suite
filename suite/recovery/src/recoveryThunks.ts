@@ -23,8 +23,9 @@ const recoveryInputTypeToInputMethod: Record<RecoveryInputType, PROTO.RecoveryDe
     advanced: PROTO.RecoveryDeviceInputMethod.Matrix,
 };
 
-type CheckSeedThunkDeps = WithServices<DesktopAnalyticsDep>;
 type CheckSeedThunkState = DeviceRootState & { recovery: RecoveryState };
+
+type CheckSeedThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const checkSeedThunk = createThunk<
     void,
@@ -123,8 +124,9 @@ export const recoverDeviceThunk = createThunk<void, void, { state: RecoverDevice
     },
 );
 
-type RecoveryRerunThunkDeps = WithServices<DesktopAnalyticsDep>;
 type RecoveryRerunThunkState = DeviceRootState & { recovery: RecoveryState };
+
+type RecoveryRerunThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 // Recovery mode is persistent on T2T1. This means that device stays in recovery mode even after reconnecting.
 // In such case, we need to call again the call that brought device into recovery mode (either proper recovery

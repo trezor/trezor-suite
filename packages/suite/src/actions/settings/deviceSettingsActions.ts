@@ -113,6 +113,7 @@ export const changeWipeCode =
     };
 
 type ResetDeviceThunkState = DeviceRootState & SuiteSettingsRootState & MessageSystemRootState;
+
 type ResetDeviceThunkDeps = { services: ReportSecurityCheckDep };
 
 export const resetDevice =

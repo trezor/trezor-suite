@@ -30,6 +30,7 @@ type SubmitYieldWithdrawPayload = {
 };
 type SubmitYieldWithdrawThunkState = ComposeYieldWithdrawTransactionThunkState &
     SendYieldTransactionState;
+
 type SubmitYieldWithdrawThunkDeps = SendYieldTransactionDeps & {
     services: DesktopAnalyticsDep;
 };

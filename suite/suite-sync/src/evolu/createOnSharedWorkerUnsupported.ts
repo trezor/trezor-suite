@@ -2,11 +2,11 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-type OnSharedWorkerUnsupported = () => void;
-
 type OnSharedWorkerUnsupportedDeps = {
     dispatch: Dispatch;
 };
+
+type OnSharedWorkerUnsupported = () => void;
 
 export const createOnSharedWorkerUnsupported =
     (deps: OnSharedWorkerUnsupportedDeps): OnSharedWorkerUnsupported =>

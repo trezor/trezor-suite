@@ -23,6 +23,11 @@ export type EnsureOwnerHasAllocatedQuotaParams = {
     isWriteMode: boolean;
 };
 
+export type EnsureOwnerHasAllocatedQuotaDeps = {
+    dispatch: Dispatch;
+} & CheckStorageByOwnerIdFetchDep &
+    AllocateOwnerQuotaDep;
+
 export type EnsureOwnerHasAllocatedQuota = (
     params: EnsureOwnerHasAllocatedQuotaParams,
 ) => Promise<
@@ -33,11 +38,6 @@ export type EnsureOwnerHasAllocatedQuota = (
         | QuotaManagerCommunicationFailedErrType
     >
 >;
-
-export type EnsureOwnerHasAllocatedQuotaDeps = {
-    dispatch: Dispatch;
-} & CheckStorageByOwnerIdFetchDep &
-    AllocateOwnerQuotaDep;
 
 export type EnsureOwnerHasAllocatedQuotaDep = {
     ensureOwnerHasAllocatedQuota: EnsureOwnerHasAllocatedQuota;

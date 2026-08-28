@@ -45,6 +45,7 @@ const getAccountTypeFromDescriptor = (descriptor: string, symbol: NetworkSymbol)
 };
 
 type ImportAccountThunkState = AccountsRootState & TokenDefinitionsRootState;
+
 type ImportAccountThunkDeps = WithServices<GetTokenDefinitionsEnabledNetworksDep>;
 
 export const importAccountThunk = createThunk<

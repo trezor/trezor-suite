@@ -14,7 +14,10 @@ type RequiredContract = {
 
 type MessageId =
     | 'contractMustBeAdjacent'
+    | 'contractMustBeSeparated'
+    | 'contractOrder'
     | 'contractMustBeNamed'
+    | 'dependencyFactoryContractOrder'
     | 'dependencyFactoryParameter'
     | 'dependencyFactoryReturnType'
     | 'emptyThunkConfig'
@@ -171,13 +174,19 @@ export const enforceNamedContractsRule: Rule.RuleModule = {
             category: 'Best Practices',
             recommended: false,
         },
+        fixable: 'whitespace',
         messages: {
             contractMustBeAdjacent:
                 "Declare '{{contractName}}' in the contiguous type block directly above '{{consumerName}}'.",
+            contractMustBeSeparated:
+                "Leave an empty line between '{{previousName}}' and '{{nextName}}'.",
+            contractOrder: "Declare '{{stateName}}' before '{{depsName}}' for '{{consumerName}}'.",
             contractMustBeNamed:
                 "Use the named '{{contractName}}' contract instead of an inline or differently named type.",
             dependencyFactoryParameter:
                 "Pass '{{contractName}}' as a single 'deps' parameter to dependency-injected factory '{{factoryName}}'.",
+            dependencyFactoryContractOrder:
+                "Declare '{{depsName}}' before '{{serviceName}}' for '{{factoryName}}'.",
             dependencyFactoryReturnType:
                 "Give dependency-injected factory '{{factoryName}}' an explicit named service return type.",
             emptyThunkConfig: "Use explicit 'void' for dependency-free thunk '{{thunkName}}'.",
@@ -227,6 +236,64 @@ export const enforceNamedContractsRule: Rule.RuleModule = {
 
                     if (reportNode !== undefined) {
                         context.report({ node: reportNode, messageId, data });
+                    }
+                };
+
+                const validateContractBlockSpacing = (
+                    firstStatementIndex: number,
+                    consumerStatementIndex: number,
+                    consumerName: string,
+                ) => {
+                    const contractBlock = statements.slice(
+                        firstStatementIndex,
+                        consumerStatementIndex + 1,
+                    );
+
+                    for (let index = 1; index < contractBlock.length; index += 1) {
+                        const previousStatement = contractBlock[index - 1];
+                        const nextStatement = contractBlock[index];
+
+                        if (previousStatement === undefined || nextStatement === undefined) {
+                            continue;
+                        }
+
+                        const textBetweenStatements = sourceFile.text.slice(
+                            previousStatement.end,
+                            nextStatement.getStart(sourceFile),
+                        );
+
+                        if (/\r?\n[\t ]*\r?\n/u.test(textBetweenStatements)) {
+                            continue;
+                        }
+
+                        const previousName =
+                            (ts.isTypeAliasDeclaration(previousStatement) ||
+                                ts.isInterfaceDeclaration(previousStatement)) &&
+                            previousStatement.name.text;
+                        const nextName =
+                            (ts.isTypeAliasDeclaration(nextStatement) ||
+                                ts.isInterfaceDeclaration(nextStatement)) &&
+                            nextStatement.name.text;
+                        const reportNode = parserServices.tsNodeToESTreeNodeMap?.get(nextStatement);
+
+                        if (reportNode !== undefined) {
+                            context.report({
+                                node: reportNode,
+                                messageId: 'contractMustBeSeparated',
+                                data: {
+                                    previousName: previousName || 'the previous declaration',
+                                    nextName: nextName || consumerName,
+                                },
+                                fix: fixer => {
+                                    const { line } = sourceFile.getLineAndCharacterOfPosition(
+                                        nextStatement.getStart(sourceFile),
+                                    );
+                                    const start = sourceFile.getPositionOfLineAndCharacter(line, 0);
+
+                                    return fixer.insertTextBeforeRange([start, start], '\n');
+                                },
+                            });
+                        }
                     }
                 };
 
@@ -289,6 +356,46 @@ export const enforceNamedContractsRule: Rule.RuleModule = {
                             contractName: contract.expectedName,
                         });
                     }
+
+                    const contractDeclarations = requiredContracts.flatMap(contract => {
+                        const declaration = localTypeAliases.get(contract.expectedName);
+
+                        return declaration === undefined ? [] : [declaration];
+                    });
+
+                    if (
+                        contractDeclarations.length !== requiredContracts.length ||
+                        contractDeclarations.some(
+                            declaration => !adjacentTypeNames.includes(declaration.name.text),
+                        )
+                    ) {
+                        return;
+                    }
+
+                    const stateDeclaration = contractDeclarations.find(declaration =>
+                        declaration.name.text.endsWith('State'),
+                    );
+                    const depsDeclaration = contractDeclarations.find(declaration =>
+                        declaration.name.text.endsWith('Deps'),
+                    );
+
+                    if (
+                        stateDeclaration !== undefined &&
+                        depsDeclaration !== undefined &&
+                        statements.indexOf(stateDeclaration) > statements.indexOf(depsDeclaration)
+                    ) {
+                        report(depsDeclaration, 'contractOrder', {
+                            consumerName,
+                            stateName: stateDeclaration.name.text,
+                            depsName: depsDeclaration.name.text,
+                        });
+                    }
+
+                    const firstContractIndex = Math.min(
+                        ...contractDeclarations.map(declaration => statements.indexOf(declaration)),
+                    );
+
+                    validateContractBlockSpacing(firstContractIndex, statementIndex, consumerName);
                 };
 
                 const validateRtkThunk = (
@@ -397,6 +504,7 @@ export const enforceNamedContractsRule: Rule.RuleModule = {
                 const validateDependencyFactory = (
                     factoryName: string,
                     factoryFunction: ts.FunctionLikeDeclaration,
+                    statementIndex: number,
                 ) => {
                     // Composition roots and dependency-object builders wire services together;
                     // they are not factories for the service named after `create`.
@@ -434,8 +542,55 @@ export const enforceNamedContractsRule: Rule.RuleModule = {
                         });
                     }
 
-                    if (getTypeReferenceName(factoryFunction.type) === undefined) {
+                    const returnTypeName = getTypeReferenceName(factoryFunction.type);
+
+                    if (returnTypeName === undefined) {
                         report(factoryFunction, 'dependencyFactoryReturnType', { factoryName });
+                    }
+
+                    const depsDeclaration = localTypeAliases.get(expectedDepsName);
+
+                    if (depsDeclaration !== undefined) {
+                        const depsStatementIndex = statements.indexOf(depsDeclaration);
+                        const serviceDeclaration =
+                            returnTypeName === undefined
+                                ? undefined
+                                : localTypeAliases.get(returnTypeName);
+                        const serviceStatementIndex =
+                            serviceDeclaration === undefined
+                                ? undefined
+                                : statements.indexOf(serviceDeclaration);
+                        const firstContractIndex = Math.min(
+                            depsStatementIndex,
+                            serviceStatementIndex ?? depsStatementIndex,
+                        );
+                        const isInAdjacentTypeBlock = statements
+                            .slice(firstContractIndex, statementIndex)
+                            .every(
+                                statement =>
+                                    ts.isTypeAliasDeclaration(statement) ||
+                                    ts.isInterfaceDeclaration(statement),
+                            );
+
+                        if (isInAdjacentTypeBlock) {
+                            if (
+                                serviceDeclaration !== undefined &&
+                                serviceStatementIndex !== undefined &&
+                                depsStatementIndex > serviceStatementIndex
+                            ) {
+                                report(depsDeclaration, 'dependencyFactoryContractOrder', {
+                                    factoryName,
+                                    depsName: expectedDepsName,
+                                    serviceName: serviceDeclaration.name.text,
+                                });
+                            }
+
+                            validateContractBlockSpacing(
+                                firstContractIndex,
+                                statementIndex,
+                                factoryName,
+                            );
+                        }
                     }
                 };
 
@@ -450,7 +605,11 @@ export const enforceNamedContractsRule: Rule.RuleModule = {
                             }
 
                             if (declarationName.startsWith('create')) {
-                                validateDependencyFactory(declarationName, statement);
+                                validateDependencyFactory(
+                                    declarationName,
+                                    statement,
+                                    statementIndex,
+                                );
                             }
                         }
 
@@ -491,7 +650,11 @@ export const enforceNamedContractsRule: Rule.RuleModule = {
                             const factoryFunction = getVariableFunction(declaration);
 
                             if (factoryFunction !== undefined) {
-                                validateDependencyFactory(declarationName, factoryFunction);
+                                validateDependencyFactory(
+                                    declarationName,
+                                    factoryFunction,
+                                    statementIndex,
+                                );
                             }
                         }
                     }

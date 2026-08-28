@@ -12,6 +12,7 @@ const AUTO_EJECT_PREFIX = '@suite/autoEject';
 
 type SetAutoEjectEnabledThunkProps = { shouldEnable: boolean };
 type SetAutoEjectEnabledThunkState = GotoThunkState & SetDeviceAutoEjectThunkState;
+
 type SetAutoEjectEnabledThunkDeps = GotoThunkDeps;
 
 export const setAutoEjectEnabledThunk = createThunk<

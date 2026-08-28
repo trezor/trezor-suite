@@ -31,7 +31,9 @@ export interface LoadInitialDataThunkProps {
 }
 
 export type GetTradingEnvironment = () => TradeServerEnvironment | undefined;
+
 type LoadInitialDataThunkState = TradingRootStateWithAccounts;
+
 export type LoadInitialDataThunkDeps = WithServices<{
     getSelectedAccount: () => SelectedAccountStatus;
     getTradingEnvironment: GetTradingEnvironment;

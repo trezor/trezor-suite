@@ -13,28 +13,25 @@ type ConnectInitHooksDeps = {
     getState: () => any;
 };
 
-export const createConnectInitHooks = ({
-    dispatch,
-    getState,
-}: ConnectInitHooksDeps): ConnectInitHooks => ({
+export const createConnectInitHooks = (deps: ConnectInitHooksDeps): ConnectInitHooks => ({
     deviceEvent: {
         [DEVICE.CONNECT]: device => {
-            dispatch(markDeviceAsRecentlyConnectedThunk(device));
-            dispatch(bluetoothOnDeviceConnectedThunk(device));
+            deps.dispatch(markDeviceAsRecentlyConnectedThunk(device));
+            deps.dispatch(bluetoothOnDeviceConnectedThunk(device));
         },
         [DEVICE.CONNECT_UNACQUIRED]: device => {
-            dispatch(markDeviceAsRecentlyConnectedThunk(device));
+            deps.dispatch(markDeviceAsRecentlyConnectedThunk(device));
         },
     },
     uiEvent: {
         [UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
-            dispatch(openModal({ type: UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED }));
-            dispatch(preserveModal());
+            deps.dispatch(openModal({ type: UI_REQUEST.INVALID_PIN_ATTEMPTS_DEPLETED }));
+            deps.dispatch(preserveModal());
         },
         [UI_REQUEST.REQUEST_WORD]: () => {
-            if (selectRecoveryStatus(getState()) === 'waiting-for-confirmation') {
+            if (selectRecoveryStatus(deps.getState()) === 'waiting-for-confirmation') {
                 // Since the device asked for a first word, we can safely assume we've received confirmation from the user
-                dispatch(recoveryActions.setStatus('in-progress'));
+                deps.dispatch(recoveryActions.setStatus('in-progress'));
             }
         },
     },

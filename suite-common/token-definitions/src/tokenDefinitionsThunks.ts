@@ -39,8 +39,9 @@ export const getTokenDefinitionThunk = createThunk<
     },
 );
 
-export type InitTokenDefinitionsThunkDeps = WithServices<GetTokenDefinitionsEnabledNetworksDep>;
 export type InitTokenDefinitionsThunkState = TokenDefinitionsRootState;
+
+export type InitTokenDefinitionsThunkDeps = WithServices<GetTokenDefinitionsEnabledNetworksDep>;
 
 export const initTokenDefinitionsThunk = createThunk<
     unknown[],
@@ -82,8 +83,9 @@ export const initTokenDefinitionsThunk = createThunk<
 
 let tokenDefinitionsTimeout: TimerId | null = null;
 
-type PeriodicCheckTokenDefinitionsThunkDeps = InitTokenDefinitionsThunkDeps;
 type PeriodicCheckTokenDefinitionsThunkState = InitTokenDefinitionsThunkState;
+
+type PeriodicCheckTokenDefinitionsThunkDeps = InitTokenDefinitionsThunkDeps;
 
 export const periodicCheckTokenDefinitionsThunk = createThunk<
     void,

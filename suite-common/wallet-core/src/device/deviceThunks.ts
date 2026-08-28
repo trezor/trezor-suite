@@ -206,6 +206,7 @@ type AcquireDeviceThunkParams = {
     startDiscovery?: boolean;
 };
 type AcquireDeviceThunkState = RunDiscoveryThunkState;
+
 type AcquireDeviceThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
     thunks: FetchAndSaveMetadataDep;
 };
@@ -340,11 +341,11 @@ type DeviceConnectThunksParams = {
     device: Device;
 };
 
+export type DeviceConnectThunkState = FirmwareRootState & RunDiscoveryThunkState;
+
 export type DeviceConnectThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
     thunks: FetchAndSaveMetadataDep;
 };
-
-export type DeviceConnectThunkState = FirmwareRootState & RunDiscoveryThunkState;
 
 export const deviceConnectThunks = createThunk<
     void,
@@ -440,11 +441,12 @@ type ForgetDevicePersistentDataThunkParams = {
  * This includes wallets, `persistentDeviceData`, Bluetooth, THP.
  * But not wallets, see `forgetDevice` (ejecting wallets & forgetting the rest are separate features).
  */
+export type ForgetDevicePersistentDataThunkState = DeviceRootState &
+    WithBluetoothState<BluetoothDeviceCommon>;
+
 export type ForgetDevicePersistentDataThunkDeps = {
     thunks: ForgetBluetoothDeviceDep;
 };
-export type ForgetDevicePersistentDataThunkState = DeviceRootState &
-    WithBluetoothState<BluetoothDeviceCommon>;
 
 export const forgetDevicePersistentDataThunk = createThunk<
     void,
@@ -504,6 +506,7 @@ export type ForgetDeviceThunkParams = {
     deviceId?: TrezorDevice['id'];
 };
 export type ForgetDeviceThunkState = ForgetDevicePersistentDataThunkState;
+
 export type ForgetDeviceThunkDeps = {
     thunks: ForgetBluetoothDeviceDep;
 };
@@ -555,11 +558,12 @@ type HandlePostWipeCleanupThunkParams = {
     initialDevice: TrezorDevice;
     deviceInstances: AcquiredDevice[];
 };
+type HandlePostWipeCleanupThunkState = ForgetDevicePersistentDataThunkState;
+
 type HandlePostWipeCleanupThunkDeps = {
     actions: OpenModalDep;
     thunks: ForgetBluetoothDeviceDep;
 };
-type HandlePostWipeCleanupThunkState = ForgetDevicePersistentDataThunkState;
 
 const handlePostWipeCleanupThunk = createThunk<
     void,
@@ -603,6 +607,7 @@ const handlePostWipeCleanupThunk = createThunk<
 );
 
 type DeviceWipedFromDeviceThunkState = ForgetDevicePersistentDataThunkState;
+
 type DeviceWipedFromDeviceThunkDeps = {
     thunks: ForgetBluetoothDeviceDep;
     actions: OpenModalDep;
@@ -627,6 +632,7 @@ export const deviceWipedFromDeviceThunk = createThunk<
 });
 
 type WipeDeviceThunkState = ForgetDevicePersistentDataThunkState;
+
 type WipeDeviceThunkDeps = {
     thunks: ForgetBluetoothDeviceDep;
     actions: OpenModalDep;

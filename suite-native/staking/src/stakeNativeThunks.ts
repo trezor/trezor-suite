@@ -86,6 +86,7 @@ export const signStakeTransactionNativeThunk = createThunk<
 export type PushStakeTransactionNativeThunkState = AccountsRootState &
     MevProtectionRootState &
     PushSendFormTransactionThunkState;
+
 export type PushStakeTransactionNativeThunkDeps = PushSendFormTransactionThunkDeps;
 
 export const pushStakeTransactionNativeThunk = createThunk<

@@ -490,6 +490,7 @@ export type SignAndPushSendFormTransactionThunkState = MevProtectionRootState &
     SignTradingTransactionThunkState &
     PushSendFormTransactionThunkState &
     AddTransactionLabelingThunkState;
+
 export type SignAndPushSendFormTransactionThunkDeps = PushSendFormTransactionThunkDeps &
     AddTransactionLabelingThunkDeps;
 

@@ -61,6 +61,7 @@ export const authenticateUserThunk = createThunk<
 });
 
 type ToggleBiometricsSettingsThunkState = BiometricsSliceRootState;
+
 type ToggleBiometricsSettingsThunkDeps = WithServices<NativeAnalyticsDep>;
 
 export const toggleBiometricsSettingsThunk = createThunk<

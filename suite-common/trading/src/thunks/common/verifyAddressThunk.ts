@@ -26,6 +26,7 @@ export interface VerifyAddressThunk {
 type VerifyAddressThunkState = ConfirmAddressOnDeviceThunkState &
     TradingRootState &
     WalletSettingsRootState;
+
 type VerifyAddressThunkDeps = {
     actions: OpenModalDep;
 };

@@ -209,6 +209,7 @@ export type SendTransactionThunkState = MevProtectionRootState &
     TokensRootState &
     PushSendFormTransactionThunkState &
     AddTransactionLabelingThunkState;
+
 export type SendTransactionThunkDeps = PushSendFormTransactionThunkDeps &
     AddTransactionLabelingThunkDeps &
     WithServices<NativeAnalyticsDep>;

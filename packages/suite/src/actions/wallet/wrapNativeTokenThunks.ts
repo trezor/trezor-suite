@@ -37,6 +37,7 @@ type WrapNativeTokenPayload = {
 
 type SubmitWrapNativeTokenThunkState = ComposeYieldWrapTransactionThunkState &
     SendYieldTransactionState;
+
 type SubmitWrapNativeTokenThunkDeps = SendYieldTransactionDeps & {
     services: AnalyticsDep;
 };

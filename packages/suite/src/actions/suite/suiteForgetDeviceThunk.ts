@@ -19,6 +19,7 @@ export type ForgetDeviceThunkParams = {
 };
 
 type SuiteForgetDeviceThunkState = ForgetDeviceThunkState;
+
 type SuiteForgetDeviceThunkDeps = ForgetDeviceThunkDeps;
 
 export const suiteForgetDeviceThunk = createThunk<

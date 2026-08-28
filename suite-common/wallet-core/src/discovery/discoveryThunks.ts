@@ -307,10 +307,11 @@ type RunDiscoveryParams = {
     callId?: string;
 };
 
+export type RunDiscoveryThunkState = DiscoveryReportingThunkState;
+
 export type RunDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
     thunks: FetchAndSaveMetadataDep;
 };
-export type RunDiscoveryThunkState = DiscoveryReportingThunkState;
 
 export const runDiscoveryThunk = createThunk<
     void,
@@ -624,6 +625,7 @@ type StartDiscoveryThunkParams = {
     useScopedCallIds?: boolean;
 };
 export type StartDiscoveryThunkState = RunDiscoveryThunkState;
+
 export type StartDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
     thunks: FetchAndSaveMetadataDep;
 };
@@ -667,6 +669,7 @@ export const startDiscoveryThunk = createThunk<
 );
 
 type RunAdditionalDiscoveryThunkState = RunDiscoveryThunkState;
+
 type RunAdditionalDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
 export const runAdditionalDiscoveryThunk = createThunk<
@@ -837,6 +840,7 @@ export const submitPassphrase = createThunk<
 );
 
 type StartOrRestartDiscoveryThunkState = RunDiscoveryThunkState;
+
 type StartOrRestartDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
     thunks: FetchAndSaveMetadataDep;
 };

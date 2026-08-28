@@ -46,6 +46,7 @@ const getResetDeviceConfig = (walletBackupType: BackupType): PROTO.ResetDevice =
 };
 
 type CreateAndBackupWalletThunkState = DeviceRootState & MessageSystemRootState;
+
 type CreateAndBackupWalletThunkDeps = WithServices<ReportSecurityCheckDep>;
 
 export const createAndBackupWalletThunk = createThunk<

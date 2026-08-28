@@ -385,8 +385,9 @@ type PeriodicFetchFiatRatesThunkPayload = {
     localCurrency: BaseCurrencyCode;
 };
 
-export type PeriodicFetchFiatRatesThunkDeps = WithServices<GetIsWindowVisibleDep>;
 export type PeriodicFetchFiatRatesThunkState = FetchFiatRatesThunkState;
+
+export type PeriodicFetchFiatRatesThunkDeps = WithServices<GetIsWindowVisibleDep>;
 
 export const periodicFetchFiatRatesThunk = createThunk<
     void,

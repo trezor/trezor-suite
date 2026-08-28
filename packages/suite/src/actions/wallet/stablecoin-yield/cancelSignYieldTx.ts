@@ -7,9 +7,9 @@ import {
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-type CancelSignYieldTxState = StablecoinYieldRootState;
+type CancelSignYieldTxThunkState = StablecoinYieldRootState;
 
-export const cancelSignYieldTx = createThunk<void, void, { state: CancelSignYieldTxState }>(
+export const cancelSignYieldTx = createThunk<void, void, { state: CancelSignYieldTxThunkState }>(
     `${STABLECOIN_YIELD_PREFIX}/thunk/cancelSignYieldTx`,
     (_params, { dispatch, getState }) => {
         const { serializedTx } = selectStablecoinYieldTxReview(getState());

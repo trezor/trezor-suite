@@ -98,8 +98,9 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
     return tokens;
 };
 
-export type ReportWalletBalanceThunkDeps = WithServices<AnalyticsDep>;
 export type ReportWalletBalanceThunkState = AccountsRootState;
+
+export type ReportWalletBalanceThunkDeps = WithServices<AnalyticsDep>;
 
 export const reportWalletBalanceThunk = createThunk<
     void,
@@ -112,8 +113,9 @@ export const reportWalletBalanceThunk = createThunk<
     });
 });
 
-export type ReportAccountInfoThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 export type ReportAccountInfoThunkState = AccountsRootState & TokenDefinitionsRootState;
+
+export type ReportAccountInfoThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
 export const reportAccountInfoThunk = createThunk<
     void,
@@ -150,6 +152,7 @@ export type FetchAndUpdateAccountThunkState = AccountsRootState &
     TokenDefinitionsRootState &
     TransactionsRootState &
     WalletSettingsRootState;
+
 export type FetchAndUpdateAccountThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
 export const fetchAndUpdateAccountThunk = createThunk<

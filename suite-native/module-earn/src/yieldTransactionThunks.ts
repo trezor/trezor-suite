@@ -177,6 +177,7 @@ export type PushYieldActionReviewThunkState = MevProtectionRootState &
     StablecoinYieldRootState &
     SynchronizeSentTransactionThunkState &
     WalletSettingsRootState;
+
 export type PushYieldActionReviewThunkDeps = SynchronizeSentTransactionThunkDeps;
 
 export const pushYieldActionReviewThunk = createThunk<

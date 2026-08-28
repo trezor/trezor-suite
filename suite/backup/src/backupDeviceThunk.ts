@@ -12,9 +12,9 @@ type BackupDeviceThunkParams = {
     skipSuccessToast?: boolean;
 };
 
-export type BackupDeviceThunkDeps = WithServices<DesktopAnalyticsDep>;
-
 export type BackupDeviceThunkState = DeviceRootState;
+
+export type BackupDeviceThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const backupDeviceThunk = createThunk<
     void,

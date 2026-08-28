@@ -38,13 +38,13 @@ export type TransferStorageResult = Result<
     QuotaManagerFetchCommunicationError
 >;
 
-export type TransferStorageFetch = (
-    params: TransferStorageFetchParams,
-) => Promise<TransferStorageResult>;
-
 export type TransferStorageFetchDeps = {
     dispatch: Dispatch;
 } & QuotaManagerFetchDep;
+
+export type TransferStorageFetch = (
+    params: TransferStorageFetchParams,
+) => Promise<TransferStorageResult>;
 
 export type TransferStorageFetchDep = {
     transferStorageFetch: TransferStorageFetch;

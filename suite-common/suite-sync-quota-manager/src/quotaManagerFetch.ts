@@ -31,6 +31,12 @@ export type QuotaManagerFetchParams = {
     queryParams?: Record<string, string | number | boolean>;
 };
 
+export type FetchDep = {
+    fetch: typeof fetch;
+};
+
+export type QuotaManagerFetchDeps = GetQuotaManagerUrlDep & FetchDep;
+
 export type QuotaManagerFetch = (
     params: QuotaManagerFetchParams,
 ) => Promise<QuotaManagerFetchResult>;
@@ -38,12 +44,6 @@ export type QuotaManagerFetch = (
 export type QuotaManagerFetchDep = {
     quotaManagerFetch: QuotaManagerFetch;
 };
-
-export type FetchDep = {
-    fetch: typeof fetch;
-};
-
-export type QuotaManagerFetchDeps = GetQuotaManagerUrlDep & FetchDep;
 
 export const createQuotaManagerFetch =
     (deps: QuotaManagerFetchDeps): QuotaManagerFetch =>

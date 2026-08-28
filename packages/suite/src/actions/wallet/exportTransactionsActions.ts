@@ -31,16 +31,18 @@ type ExportTransactionsThunkParams = {
     type: ExportFileType;
     searchQuery: string;
 };
+
+const selectMetadataState = (state: MetadataRootState) => state.metadata;
+
 type ExportTransactionsThunkState = FiatRatesRootState &
     SelectAccountLabelsForSearchState &
     TokenDefinitionsRootState &
     TransactionsRootState &
     WalletSettingsRootState;
+
 type ExportTransactionsThunkDeps = WithServices<{
     saveAs: (data: Blob, fileName: string) => void;
 }>;
-
-const selectMetadataState = (state: MetadataRootState) => state.metadata;
 
 export const exportTransactionsThunk = createThunk<
     void,
