@@ -25,6 +25,7 @@ export const globalNoExtraneousDependenciesDevDependencies = [
 
 /** @type {Config[]} */
 export const importConfig = [
+    // TODO: Remove the compatibility wrapper when eslint-plugin-import supports ESLint 10.
     ...fixupConfigRules(pluginImport.flatConfigs.recommended),
     {
         settings: {

@@ -72,6 +72,7 @@ export const eslint = [
     ...jestConfig,
     ...localRulesConfig,
 
+    // TODO: Remove the compatibility wrapper when eslint-plugin-jsx-a11y supports ESLint 10.
     ...fixupConfigRules(jsxA11y.flatConfigs.recommended),
 
     // Tests

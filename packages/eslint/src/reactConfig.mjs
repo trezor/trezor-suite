@@ -10,6 +10,7 @@ import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
 /** @type {Config[]} */
 export const reactConfig = [
     // React
+    // TODO: Remove the compatibility wrapper when eslint-plugin-react supports ESLint 10.
     ...fixupConfigRules(pluginReact.configs.flat.recommended),
     {
         languageOptions: pluginReact.configs.flat.recommended.languageOptions,
