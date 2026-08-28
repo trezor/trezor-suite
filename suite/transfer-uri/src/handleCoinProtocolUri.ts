@@ -2,6 +2,7 @@ import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import type { FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import type { Protocol } from '@trezor/network-module-suite-common-types';
@@ -18,9 +19,9 @@ export type CoinProtocol = {
 
 type SaveCoinProtocol = (coinProtocol: CoinProtocol) => UnknownAction;
 
-export type HandleCoinProtocolUriDeps = {
-    services: FindNetworkSymbolForProtocolDep & DesktopAnalyticsDep;
-};
+export type HandleCoinProtocolUriDeps = WithServices<
+    FindNetworkSymbolForProtocolDep & DesktopAnalyticsDep
+>;
 
 /**
  * Fire-and-forget thunk for an incoming transfer URI: decode it, report any

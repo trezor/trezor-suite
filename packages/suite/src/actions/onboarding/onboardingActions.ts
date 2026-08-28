@@ -21,6 +21,7 @@ import {
     selectHasBitcoinOnlyFirmware,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { type WithServices } from '@suite-common/redux-utils';
 import { type BackupType } from '@suite-common/suite-types';
 import {
     type StartDiscoveryThunkDeps,
@@ -101,9 +102,8 @@ type GoToSuiteState = DeviceRootState &
     OnboardingRootState &
     StartDiscoveryThunkState &
     WalletSettingsRootState;
-type GoToSuiteDeps = {
-    services: DesktopAnalyticsDep & SuiteRouterHistoryDep;
-} & StartDiscoveryThunkDeps;
+type GoToSuiteDeps = WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep> &
+    StartDiscoveryThunkDeps;
 
 export type GoToSuiteOptions = {
     skipDeviceSetupCompletedEvent?: boolean;

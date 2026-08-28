@@ -11,7 +11,7 @@ import {
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { type DeviceRootState } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -132,9 +132,7 @@ const sessionAuthenticateThunk = createThunk<
 });
 
 type SessionProposalThunkState = SuccessfulAccountsThunkState;
-type SessionProposalThunkDeps = {
-    services: AnalyticsDep;
-};
+type SessionProposalThunkDeps = WithServices<AnalyticsDep>;
 
 const sessionProposalThunk = createThunk<
     void,
@@ -294,9 +292,7 @@ export const switchSelectedAccountThunk = createThunk<
 );
 
 type SessionProposalApproveThunkState = SuccessfulAccountsThunkState & WalletConnectStateRootState;
-type SessionProposalApproveThunkDeps = {
-    services: AnalyticsDep;
-};
+type SessionProposalApproveThunkDeps = WithServices<AnalyticsDep>;
 
 export const sessionProposalApproveThunk = createThunk<
     void,
@@ -378,9 +374,7 @@ export const sessionProposalApproveThunk = createThunk<
 );
 
 type SessionProposalRejectThunkState = WalletConnectStateRootState;
-type SessionProposalRejectThunkDeps = {
-    services: AnalyticsDep;
-};
+type SessionProposalRejectThunkDeps = WithServices<AnalyticsDep>;
 
 export const sessionProposalRejectThunk = createThunk<
     void,

@@ -3,7 +3,7 @@ import {
     fetchErc4626UnderlyingAsset,
     fetchLastWeekFiatRates,
 } from '@suite-common/fiat-services';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import {
     type TokenDefinitionsRootState,
@@ -385,9 +385,7 @@ type PeriodicFetchFiatRatesThunkPayload = {
     localCurrency: BaseCurrencyCode;
 };
 
-export type PeriodicFetchFiatRatesThunkDeps = {
-    services: GetIsWindowVisibleDep;
-};
+export type PeriodicFetchFiatRatesThunkDeps = WithServices<GetIsWindowVisibleDep>;
 export type PeriodicFetchFiatRatesThunkState = FetchFiatRatesThunkState;
 
 export const periodicFetchFiatRatesThunk = createThunk<

@@ -1,5 +1,5 @@
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type ConnectInitHooksDeps } from '@suite-common/suite-types';
 import { UI_REQUEST } from '@trezor/connect';
 import type { PopupEventMessage, UiEventMessage } from '@trezor/connect-common';
@@ -10,9 +10,7 @@ const MODULE = '@common/wallet-core/uiEvent';
 export type UiEventAction = Without<UiEventMessage | PopupEventMessage, 'event'>;
 
 export type DefaultTrezorUIEventHandlerThunkState = DeviceRootState;
-export type DefaultTrezorUIEventHandlerThunkDeps = {
-    services: ConnectInitHooksDeps;
-};
+export type DefaultTrezorUIEventHandlerThunkDeps = WithServices<ConnectInitHooksDeps>;
 
 export const defaultTrezorUIEventHandlerThunk = createThunk<
     void,

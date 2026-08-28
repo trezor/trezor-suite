@@ -11,6 +11,7 @@ import {
     ProviderErrorAction,
     type Tokens,
 } from '@suite-common/metadata-types';
+import { type WithServices } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exhaustive } from '@trezor/type-utils';
@@ -100,7 +101,7 @@ type DisconnectProviderParams = {
     removeMetadata?: boolean;
 };
 
-type DisconnectProviderDeps = { services: DesktopAnalyticsDep };
+type DisconnectProviderDeps = WithServices<DesktopAnalyticsDep>;
 
 export const disconnectProvider =
     ({ clientId, dataType, removeMetadata = true }: DisconnectProviderParams) =>
@@ -240,7 +241,7 @@ type ConnectProviderParams = {
     clientId?: string;
 };
 
-export type ConnectProviderDeps = { services: DesktopAnalyticsDep };
+export type ConnectProviderDeps = WithServices<DesktopAnalyticsDep>;
 
 export const connectProvider =
     ({ type, dataType = 'labels', clientId }: ConnectProviderParams) =>

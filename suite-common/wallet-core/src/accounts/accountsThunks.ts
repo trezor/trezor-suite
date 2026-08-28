@@ -1,6 +1,6 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type NotificationsRootState,
@@ -102,9 +102,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
     return tokens;
 };
 
-export type ReportWalletBalanceThunkDeps = {
-    services: AnalyticsDep;
-};
+export type ReportWalletBalanceThunkDeps = WithServices<AnalyticsDep>;
 export type ReportWalletBalanceThunkState = AccountsRootState;
 
 export const reportWalletBalanceThunk = createThunk<
@@ -118,9 +116,7 @@ export const reportWalletBalanceThunk = createThunk<
     });
 });
 
-export type ReportAccountInfoThunkDeps = {
-    services: AnalyticsDep & GetTradedAccountKeysDep;
-};
+export type ReportAccountInfoThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 export type ReportAccountInfoThunkState = AccountsRootState & TokenDefinitionsRootState;
 
 export const reportAccountInfoThunk = createThunk<
@@ -149,9 +145,7 @@ export const reportAccountInfoThunk = createThunk<
 
 // Left here for clarity, but shouldn't be called anywhere but in blockchainActions.syncAccounts
 // as we usually want to update all accounts for a single coin at once
-export type FetchAndUpdateAccountThunkDeps = {
-    services: AnalyticsDep & GetTradedAccountKeysDep;
-};
+export type FetchAndUpdateAccountThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 export type FetchAndUpdateAccountThunkState = AccountsRootState &
     BlockchainRootState &
     DeviceRootState &

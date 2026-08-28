@@ -4,7 +4,7 @@ import { isRejected } from '@reduxjs/toolkit';
 import * as LocalAuthentication from 'expo-local-authentication';
 import type { LocalAuthenticationResult } from 'expo-local-authentication';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 
 import {
@@ -61,7 +61,7 @@ export const authenticateUserThunk = createThunk<
 });
 
 type ToggleBiometricsSettingsThunkState = BiometricsSliceRootState;
-type ToggleBiometricsSettingsThunkDeps = { services: NativeAnalyticsDep };
+type ToggleBiometricsSettingsThunkDeps = WithServices<NativeAnalyticsDep>;
 
 export const toggleBiometricsSettingsThunk = createThunk<
     BiometricsToggleFulfilledResult,

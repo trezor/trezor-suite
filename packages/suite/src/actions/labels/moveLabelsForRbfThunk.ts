@@ -6,6 +6,7 @@ import {
 } from '@suite/metadata';
 import { type DeviceRootState } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { type WithServices } from '@suite-common/redux-utils';
 import { findLabelsToBeMovedOrDeleted } from '@suite-common/suite-rbf-labels-migrations';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type WithSuiteSyncState, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
@@ -30,9 +31,7 @@ export type MoveLabelsForRbfThunkState = DeviceRootState &
     MessageSystemRootState &
     MoveLabelsForRbfOldMetadataThunkState &
     WithSuiteSyncState;
-export type MoveLabelsForRbfThunkDeps = {
-    services: MigrateSuiteSyncLabelsForRbfTransactionDep;
-};
+export type MoveLabelsForRbfThunkDeps = WithServices<MigrateSuiteSyncLabelsForRbfTransactionDep>;
 type MoveLabelsForRbfThunkDispatch = ThunkDispatch<
     MoveLabelsForRbfThunkState,
     MoveLabelsForRbfThunkDeps,

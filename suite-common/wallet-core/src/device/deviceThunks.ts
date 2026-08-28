@@ -25,7 +25,7 @@ import {
     selectIsFirmwareInstallationRunning,
 } from '@suite-common/firmware';
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type AcquiredDevice,
     type OpenModalDep,
@@ -206,8 +206,7 @@ type AcquireDeviceThunkParams = {
     startDiscovery?: boolean;
 };
 type AcquireDeviceThunkState = RunDiscoveryThunkState;
-type AcquireDeviceThunkDeps = {
-    services: AnalyticsDep & GetTradedAccountKeysDep;
+type AcquireDeviceThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
     thunks: FetchAndSaveMetadataDep;
 };
 
@@ -341,8 +340,7 @@ type DeviceConnectThunksParams = {
     device: Device;
 };
 
-export type DeviceConnectThunkDeps = {
-    services: AnalyticsDep & GetTradedAccountKeysDep;
+export type DeviceConnectThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
     thunks: FetchAndSaveMetadataDep;
 };
 

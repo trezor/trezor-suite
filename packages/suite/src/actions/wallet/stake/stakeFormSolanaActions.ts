@@ -3,6 +3,7 @@ import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type SelectedAccountRootState } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type WithServices } from '@suite-common/redux-utils';
 import { composeSolanaStakingTransaction, prepareSolanaStakeTxData } from '@suite-common/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -46,11 +47,11 @@ export const composeTransaction =
         });
     };
 
-type SignTransactionThunkDeps = { services: DesktopAnalyticsDep };
 type SignTransactionThunkState = BlockchainRootState &
     DeviceRootState &
     SelectedAccountRootState &
     WalletSettingsRootState;
+type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>

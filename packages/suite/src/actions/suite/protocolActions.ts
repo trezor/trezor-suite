@@ -13,6 +13,7 @@ import {
 } from '@suite/router';
 import { handleCoinProtocolUri } from '@suite/transfer-uri';
 import type { FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type WalletConnectInitThunkDeps,
@@ -40,9 +41,9 @@ export const fillSendForm = createAction<boolean>(PROTOCOL.FILL_SEND_FORM);
 
 export const resetProtocol = createAction(PROTOCOL.RESET);
 
-export type HandleProtocolRequestDeps = {
-    services: DesktopAnalyticsDep & FindNetworkSymbolForProtocolDep & SuiteRouterHistoryDep;
-};
+export type HandleProtocolRequestDeps = WithServices<
+    DesktopAnalyticsDep & FindNetworkSymbolForProtocolDep & SuiteRouterHistoryDep
+>;
 
 export type HandleProtocolRequestState = GotoThunkState & WalletConnectInitThunkState;
 type HandleProtocolRequestDispatchDeps = HandleProtocolRequestDeps & WalletConnectInitThunkDeps;

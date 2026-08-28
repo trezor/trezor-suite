@@ -1,4 +1,4 @@
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type WalletSettingsRootState } from '@suite-common/wallet-core';
 
 import type { SuiteServices } from 'src/support/extraDependencies';
@@ -11,14 +11,10 @@ type UnavailableState = {
         value: string;
     };
 };
-type AvailableExtraDependencies = {
-    services: Pick<SuiteServices, 'getLanguage'>;
-};
-type UnavailableExtraDependencies = {
-    services: {
-        unavailableDependency: () => void;
-    };
-};
+type AvailableExtraDependencies = WithServices<Pick<SuiteServices, 'getLanguage'>>;
+type UnavailableExtraDependencies = WithServices<{
+    unavailableDependency: () => void;
+}>;
 
 const compatibleStateThunk = createThunk<void, void, { state: AvailableState }>(
     'test/compatibleStateThunk',

@@ -11,7 +11,11 @@ import {
     shouldDeviceBeRemembered,
 } from '@suite-common/device';
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
-import { type SuiteCompatibleThunk, createThunk } from '@suite-common/redux-utils';
+import {
+    type SuiteCompatibleThunk,
+    type WithServices,
+    createThunk,
+} from '@suite-common/redux-utils';
 import {
     type AcquiredDevice,
     type AuthorizedDevice,
@@ -55,9 +59,7 @@ const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';
 const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
 
 type DiscoveryReportingThunkState = TokenDefinitionsRootState & WalletCoreCompoundRootState;
-type DiscoveryReportingDeps = {
-    services: AnalyticsDep & GetTradedAccountKeysDep;
-};
+type DiscoveryReportingDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
 type ProgressEvent = BundleProgress<DiscoverAccountsProgress>['payload'];
 
@@ -305,8 +307,7 @@ type RunDiscoveryParams = {
     callId?: string;
 };
 
-export type RunDiscoveryThunkDeps = {
-    services: AnalyticsDep & GetTradedAccountKeysDep;
+export type RunDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
     thunks: FetchAndSaveMetadataDep;
 };
 export type RunDiscoveryThunkState = DiscoveryReportingThunkState;
@@ -623,8 +624,7 @@ type StartDiscoveryThunkParams = {
     useScopedCallIds?: boolean;
 };
 export type StartDiscoveryThunkState = RunDiscoveryThunkState;
-export type StartDiscoveryThunkDeps = {
-    services: AnalyticsDep & GetTradedAccountKeysDep;
+export type StartDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
     thunks: FetchAndSaveMetadataDep;
 };
 
@@ -667,9 +667,7 @@ export const startDiscoveryThunk = createThunk<
 );
 
 type RunAdditionalDiscoveryThunkState = RunDiscoveryThunkState;
-type RunAdditionalDiscoveryThunkDeps = {
-    services: AnalyticsDep & GetTradedAccountKeysDep;
-};
+type RunAdditionalDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
 export const runAdditionalDiscoveryThunk = createThunk<
     void,
@@ -839,8 +837,7 @@ export const submitPassphrase = createThunk<
 );
 
 type StartOrRestartDiscoveryThunkState = RunDiscoveryThunkState;
-type StartOrRestartDiscoveryThunkDeps = {
-    services: AnalyticsDep & GetTradedAccountKeysDep;
+type StartOrRestartDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
     thunks: FetchAndSaveMetadataDep;
 };
 

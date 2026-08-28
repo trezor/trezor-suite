@@ -14,7 +14,7 @@ import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type WithSuiteSyncState, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
@@ -159,7 +159,7 @@ type ApplySendFormMetadataLabelsThunkState = DeviceRootState &
     MetadataRootState &
     SendRootState &
     WithSuiteSyncState;
-type ApplySendFormMetadataLabelsThunkDeps = { services: SuiteSyncDep };
+type ApplySendFormMetadataLabelsThunkDeps = WithServices<SuiteSyncDep>;
 
 const applySendFormMetadataLabelsThunk = createThunk<
     void,
@@ -251,7 +251,8 @@ type SignAndPushSendFormTransactionThunkState = ApplySendFormMetadataLabelsThunk
 type SignAndPushSendFormTransactionThunkDeps = ApplySendFormMetadataLabelsThunkDeps &
     CancelSignSendFormTransactionThunkDeps &
     PushSendFormTransactionThunkDeps &
-    UpdateRbfLabelsThunkDeps & { services: DesktopAnalyticsDep };
+    UpdateRbfLabelsThunkDeps &
+    WithServices<DesktopAnalyticsDep>;
 
 export const signAndPushSendFormTransactionThunk = createThunk<
     any,

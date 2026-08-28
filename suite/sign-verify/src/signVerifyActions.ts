@@ -2,6 +2,7 @@ import { type Dispatch } from 'redux';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type WithServices } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type WalletSettingsRootState, selectAddressDisplayType } from '@suite-common/wallet-core';
@@ -24,7 +25,7 @@ export type SignVerifyRootState = DeviceRootState & WalletSettingsRootState;
 
 type GetState = () => SignVerifyRootState;
 
-type SignVerifyThunkDeps = { services: DesktopAnalyticsDep };
+type SignVerifyThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 const CANCEL_ERROR_CODES: ErrorCode[] = ['Method_Cancel', 'Failure_ActionCancelled'];
 

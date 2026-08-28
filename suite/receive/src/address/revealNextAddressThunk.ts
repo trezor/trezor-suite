@@ -12,6 +12,7 @@ import {
     selectCurrentFreshAddress,
     selectTouchedAddresses,
 } from '@suite-common/receive';
+import { type WithServices } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -26,7 +27,7 @@ type RevealNextAddressState = AccountsRootState &
     ReceiveRootState &
     SelectLabeledUnusedAddressesState;
 
-type RevealNextAddressThunkDeps = { services: DesktopAnalyticsDep };
+type RevealNextAddressThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const revealNextAddressThunk =
     ({ accountKey }: { accountKey: AccountKey }) =>

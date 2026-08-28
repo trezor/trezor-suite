@@ -1,6 +1,6 @@
 import { featureUsed } from '@suite/feature-feedback';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import {
     type EnsureWalletSuiteSyncOnErrors,
@@ -17,7 +17,7 @@ type ProcessMetadataMessageThunkParams = {
     value: string | undefined;
 };
 
-type ProcessLegacyMetadataIntoSuiteSyncThunkDeps = { services: SuiteSyncDep };
+type ProcessLegacyMetadataIntoSuiteSyncThunkDeps = WithServices<SuiteSyncDep>;
 
 /**
  * This is a compatibility thunk to map the old Metadata code to a new Evolu storage.

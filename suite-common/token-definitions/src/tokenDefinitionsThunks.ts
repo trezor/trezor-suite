@@ -1,6 +1,6 @@
 import { D } from '@mobily/ts-belt';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TimerId } from '@trezor/type-utils';
 
@@ -39,9 +39,7 @@ export const getTokenDefinitionThunk = createThunk<
     },
 );
 
-export type InitTokenDefinitionsThunkDeps = {
-    services: GetTokenDefinitionsEnabledNetworksDep;
-};
+export type InitTokenDefinitionsThunkDeps = WithServices<GetTokenDefinitionsEnabledNetworksDep>;
 export type InitTokenDefinitionsThunkState = TokenDefinitionsRootState;
 
 export const initTokenDefinitionsThunk = createThunk<

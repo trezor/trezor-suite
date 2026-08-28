@@ -1,12 +1,11 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { createThunk } from './createThunk';
+import { type WithServices } from './types';
 
-type SelectedExtraDependencies = {
-    services: {
-        selectedDependency: () => void;
-    };
-};
+type SelectedExtraDependencies = WithServices<{
+    selectedDependency: () => void;
+}>;
 
 type SelectedState = {
     selected: {
@@ -88,11 +87,9 @@ type ChildThunkState = {
     };
 };
 
-type ChildThunkDeps = {
-    services: {
-        childDependency: () => void;
-    };
-};
+type ChildThunkDeps = WithServices<{
+    childDependency: () => void;
+}>;
 
 const selectChildValue = (state: ChildThunkState) => state.child.value;
 

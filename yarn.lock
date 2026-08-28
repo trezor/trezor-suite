@@ -15644,6 +15644,7 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/receive": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -15753,6 +15754,7 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/receive": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
@@ -15878,6 +15880,7 @@ __metadata:
   resolution: "@suite/tor-desktop@workspace:suite/tor-desktop"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -15958,6 +15961,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/networks": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/transfer-uri": "workspace:*"
     "@suite-common/wallet-config": "workspace:^"

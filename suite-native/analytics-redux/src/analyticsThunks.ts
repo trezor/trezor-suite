@@ -8,7 +8,7 @@ import {
     selectIsAnalyticsEnabled,
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { isProduction } from '@suite-native/config';
 import { allowSentryReport, setSentryUser } from '@suite-native/sentry';
@@ -17,7 +17,7 @@ import { getCommitHash } from '@trezor/env-utils';
 
 const ACTION_PREFIX = '@suite-native/analytics';
 
-type EnableAnalyticsThunkDeps = { services: NativeAnalyticsDep };
+type EnableAnalyticsThunkDeps = WithServices<NativeAnalyticsDep>;
 
 const enableAnalyticsThunk = createThunk<
     void,
@@ -32,7 +32,7 @@ const enableAnalyticsThunk = createThunk<
     dispatch(analyticsActions.enableAnalytics());
 });
 
-type DisableAnalyticsThunkDeps = { services: NativeAnalyticsDep };
+type DisableAnalyticsThunkDeps = WithServices<NativeAnalyticsDep>;
 
 const disableAnalyticsThunk = createThunk<
     void,
@@ -51,7 +51,7 @@ const disableAnalyticsThunk = createThunk<
 });
 
 export type InitAnalyticsThunkState = AnalyticsRootState;
-export type InitAnalyticsThunkDeps = { services: NativeAnalyticsDep };
+export type InitAnalyticsThunkDeps = WithServices<NativeAnalyticsDep>;
 
 export const initAnalyticsThunk = createThunk<
     void,

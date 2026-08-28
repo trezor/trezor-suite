@@ -8,7 +8,7 @@ import { recoveryActions } from '@suite/recovery';
 import { type RouterRootState, goto, routerAppChanged } from '@suite/router';
 import { updateOnlineStatus } from '@suite/suite-lifecycle';
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { type WithServices, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -56,7 +56,7 @@ const isActionDeviceRelated = (action: UnknownAction): boolean => {
     return false;
 };
 
-export type PrepareSuiteMiddlewareDeps = { services: SuiteSyncDep };
+export type PrepareSuiteMiddlewareDeps = WithServices<SuiteSyncDep>;
 
 const createSuiteMiddleware = createMiddlewareWithExtraDeps<
     PrepareSuiteMiddlewareDeps,

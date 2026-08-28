@@ -1,6 +1,6 @@
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import TrezorConnect, { PROTO, type RecoveryDevice } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -23,7 +23,7 @@ const recoveryInputTypeToInputMethod: Record<RecoveryInputType, PROTO.RecoveryDe
     advanced: PROTO.RecoveryDeviceInputMethod.Matrix,
 };
 
-type CheckSeedThunkDeps = { services: DesktopAnalyticsDep };
+type CheckSeedThunkDeps = WithServices<DesktopAnalyticsDep>;
 type CheckSeedThunkState = DeviceRootState & { recovery: RecoveryState };
 
 export const checkSeedThunk = createThunk<
@@ -123,7 +123,7 @@ export const recoverDeviceThunk = createThunk<void, void, { state: RecoverDevice
     },
 );
 
-type RecoveryRerunThunkDeps = { services: DesktopAnalyticsDep };
+type RecoveryRerunThunkDeps = WithServices<DesktopAnalyticsDep>;
 type RecoveryRerunThunkState = DeviceRootState & { recovery: RecoveryState };
 
 // Recovery mode is persistent on T2T1. This means that device stays in recovery mode even after reconnecting.

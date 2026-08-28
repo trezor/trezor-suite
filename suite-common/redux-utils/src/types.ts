@@ -5,6 +5,10 @@ import {
     type UnknownAction,
 } from '@reduxjs/toolkit';
 
+export type WithServices<TServices extends object> = {
+    services: TServices;
+};
+
 /**
  * Original thunk type in Redux before redux-toolkit
  */

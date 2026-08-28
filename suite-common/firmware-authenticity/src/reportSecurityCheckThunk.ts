@@ -1,4 +1,4 @@
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type ReportSecurityCheckDep,
     type ReportSecurityCheckParams,
@@ -9,7 +9,7 @@ const FIRMWARE_AUTHENTICITY_MODULE_PREFIX = '@common/firmware-authenticity';
 /**
  * Wrapper thunk around extra.services.reportSecurityCheck
  */
-type ReportSecurityCheckThunkDeps = { services: ReportSecurityCheckDep };
+type ReportSecurityCheckThunkDeps = WithServices<ReportSecurityCheckDep>;
 
 export const reportSecurityCheckThunk = createThunk<
     void,

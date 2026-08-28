@@ -53,6 +53,7 @@ import {
     type CommonServices,
     type ExtraDependenciesStatic,
 } from '@suite-common/redux-extra-dependencies';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     createSuiteSyncWriteLabels,
@@ -113,7 +114,8 @@ export type SuiteServices = CommonServices &
     TransportsDep;
 
 export type ExtraDependenciesSuite = ExtraDependenciesStatic &
-    TokenDefinitionsMiddlewareDeps & { services: SuiteServices };
+    TokenDefinitionsMiddlewareDeps &
+    WithServices<SuiteServices>;
 
 export type StoreAPIDep = {
     getState: () => AppState;

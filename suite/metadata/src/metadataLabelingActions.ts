@@ -15,6 +15,7 @@ import {
     ProviderErrorAction,
     type WalletLabels,
 } from '@suite-common/metadata-types';
+import { type WithServices } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
@@ -557,7 +558,7 @@ export const addMetadata =
         return result.success;
     };
 
-export type InitMetadataDeps = { services: DesktopAnalyticsDep };
+export type InitMetadataDeps = WithServices<DesktopAnalyticsDep>;
 
 /**
  * init - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method
