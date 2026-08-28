@@ -1,17 +1,23 @@
 import { View } from 'react-native';
 
-import { Badge, Box, Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
+import {
+    Badge,
+    Box,
+    Card,
+    CardDivider,
+    HStack,
+    Text,
+    TextButton,
+    VStack,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Link } from '@suite-native/link';
+import { useOpenLink } from '@suite-native/link';
 import { MarkdownText } from '@suite-native/markdown';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { GITHUB_REPO_URL } from '@trezor/urls';
 
 import releaseNotesMarkdown from '../../../assets/release-notes.md';
-
-const getMobileReleaseUrl = (version: string) =>
-    `${GITHUB_REPO_URL}/releases#release-v${version}@mobile`;
 
 const headerCardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.surfaceFillSunken,
@@ -30,9 +36,19 @@ const mainCardStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.sp12,
 }));
 
+const buttonStyle = prepareNativeStyle(_ => ({
+    alignSelf: 'flex-start',
+}));
+
 export const ReleaseNotesTabContent = () => {
+    const openLink = useOpenLink();
     const { applyStyle } = useNativeStyles();
+
     const version = getSuiteVersion();
+
+    const openMobileReleaseNotes = () => {
+        openLink(`${GITHUB_REPO_URL}/releases#release-v${version}@mobile`);
+    };
 
     return (
         <Box>
@@ -48,14 +64,16 @@ export const ReleaseNotesTabContent = () => {
                 <VStack spacing="sp12">
                     <MarkdownText markdown={releaseNotesMarkdown} />
                     <CardDivider />
-                    <Link
-                        href={getMobileReleaseUrl(version)}
-                        label={<Translation id="moduleActivityCenter.releaseNotes.viewOnGithub" />}
+                    <TextButton
+                        priority="secondary"
+                        size="small"
                         isUnderlined
-                        showExternalIcon
-                        textVariant="body-sm"
-                        textColor="contentSecondary"
-                    />
+                        iconRight="arrowLineUpRight"
+                        style={applyStyle(buttonStyle)}
+                        onPress={openMobileReleaseNotes}
+                    >
+                        <Translation id="moduleActivityCenter.releaseNotes.viewOnGithub" />
+                    </TextButton>
                 </VStack>
             </Card>
         </Box>
