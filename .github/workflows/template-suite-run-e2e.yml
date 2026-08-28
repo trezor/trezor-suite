@@ -24,6 +24,14 @@ on:
         description: "Test group for orchestration"
         required: true
         type: string
+      caller-job-id:
+        description: >
+          The calling workflow's job id, used to title the performance report section after the job
+          that measured it. `github.job` inside this template is this template's own job id, which
+          is the same for every matrix entry, so the caller has to pass its own.
+        required: false
+        default: ""
+        type: string
       fail-fast:
         description: "Cancel test run if number of tests fail (number | false)"
         default: "false"
@@ -202,7 +210,11 @@ jobs:
           RELEASE_BUILD: ${{ inputs.release-build }}
           RUN_GITHUB_REPORTER: ${{ inputs.run-reporter }} # Read by playwright-base.config.ts to enable the GitHub reporter
           ELECTRON_DISABLE_SANDBOX: 1
+          # Keep these two apart. The label keys this job's section of the shared pull request
+          # comment and must stay stable across runs, or a re-run adds a section instead of
+          # replacing one. The job name is only the title rendered inside it.
           PERF_REPORT_LABEL: "${{ inputs.target }} / group ${{ inputs.test-group }}"
+          PERF_REPORT_JOB: "${{ inputs.caller-job-id && format('{0} ({1})', inputs.caller-job-id, inputs.test-group) || '' }}"
           COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
           COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
         run: |
