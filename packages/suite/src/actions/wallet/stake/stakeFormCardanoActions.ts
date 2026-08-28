@@ -49,6 +49,7 @@ import {
     getStakingPath,
     getUnusedChangeAddress,
     getVotingCertificates,
+    hasCardanoLiveVoteDelegation,
     isCardanoStakedWithEverstake,
     isTestnet,
     networkAmountToSmallestUnit,
@@ -148,7 +149,10 @@ export const prepareTxPlan = async ({
         );
     }
 
-    if (action === 'delegate' || action === 'voteDelegate') {
+    const isKeepingCurrentVote =
+        votingDelegation?.type === 'current' && hasCardanoLiveVoteDelegation(account);
+
+    if ((action === 'delegate' || action === 'voteDelegate') && !isKeepingCurrentVote) {
         const isVotingToAnotherDrep =
             votingDelegation?.type === 'another_drep' &&
             validateCardanoDrep(votingDelegation.drepId);
@@ -180,6 +184,10 @@ export const prepareTxPlan = async ({
                   },
               ]
             : [];
+
+    if (certificates.length === 0 && withdrawals.length === 0) {
+        return null;
+    }
 
     const response = await TrezorConnect.cardanoComposeTransaction({
         account: {
