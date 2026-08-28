@@ -84,7 +84,7 @@ export abstract class TradingFormActions extends TradingActions {
             .withTimeout(this.SHORT_TIMEOUT);
     }
 
-    async selectReceiveAccount(accountName: string, derivationPath?: string) {
+    async selectReceiveAccount(accountName: string, shouldSelectFreshAddress = false) {
         const receiveAccountPicker = this.getElementById('receive-account');
         await waitForVisible(receiveAccountPicker, { timeout: this.SHORT_TIMEOUT });
         await receiveAccountPicker.tap();
@@ -92,9 +92,11 @@ export abstract class TradingFormActions extends TradingActions {
         await waitForVisible(by.text(accountName));
         await element(by.text(accountName)).tap();
 
-        if (derivationPath) {
-            await waitForVisible(by.text(derivationPath));
-            await element(by.text(derivationPath)).tap();
+        if (shouldSelectFreshAddress) {
+            const freshAddressMatcher = by.id('@trading/account-list/fresh-address');
+
+            await waitForVisible(freshAddressMatcher);
+            await element(freshAddressMatcher).tap();
         }
 
         await detoxExpect(this.getElementById('receive-account/selected-account')).toHaveText(
@@ -102,8 +104,8 @@ export abstract class TradingFormActions extends TradingActions {
         );
     }
 
-    async selectBtcReceiveAccount(accountName: string, derivationPath: string) {
-        await this.selectReceiveAccount(accountName, derivationPath);
+    async selectBtcFreshAddress(accountName: string) {
+        await this.selectReceiveAccount(accountName, true);
         await this.expectReceiveAccountBalance('0 BTC');
     }
 

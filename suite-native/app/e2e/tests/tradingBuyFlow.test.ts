@@ -23,7 +23,7 @@ describe('Trade Buy [@noDevice]', () => {
 
     it('Basic buy for 100 PLN flow', async () => {
         await tradingBuyActions.selectReceiveAsset('BTC', undefined, 'Bitcoin');
-        await tradingBuyActions.selectBtcReceiveAccount('BTC SegWit', "m/84'/0'/0'/0/0");
+        await tradingBuyActions.selectBtcFreshAddress('BTC SegWit');
         await tradingBuyActions.selectFiatCurrency('PLN');
         await tradingBuyActions.setFiatAmount('100');
         await tradingBuyActions.selectCountry('Polan', 'Poland', 'POL');
