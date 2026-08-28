@@ -40,6 +40,13 @@ const solanaComposeTransaction: TestCase = {
                 blockHash: 'HaVyjCbyqQa2sbwXTLKskNretcsRVws6VEBYP6xZMKm',
                 lastValidBlockHeight: 290999384,
                 coin: 'sol',
+                recipientAccountOwner: '11111111111111111111111111111111',
+                recipientTokenAccounts: [
+                    {
+                        publicKey: '73rsTqUoMd34Y3YwXtu4An2LkncLF9SeDY6TGUFfksfe',
+                        balance: '10',
+                    },
+                ],
             },
             result: {
                 serializedTx:
