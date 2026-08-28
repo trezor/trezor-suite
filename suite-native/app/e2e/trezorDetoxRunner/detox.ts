@@ -37,6 +37,7 @@ const runDetox = (
         if (testFiles && testFiles.length > 0) {
             args.push(...testFiles);
         }
+        args.push('--', '--detectOpenHandles');
 
         const child = spawn('npx', args, { stdio: 'inherit', env });
 

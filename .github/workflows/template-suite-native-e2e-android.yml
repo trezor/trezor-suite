@@ -42,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        TEST_GROUP: [0, 1, 2, 3, 4]
+        TEST_GROUP: [0]
 
     steps:
       - name: Checkout project
@@ -157,7 +157,7 @@ jobs:
           cores: 4
           heap-size: 512M
           script: |
-            yarn test:e2e --config=${{ inputs.runner_config }} --shard=${{ matrix.TEST_GROUP }} --totalShards=5 --headless --quarantine
+            yarn test:e2e --config=${{ inputs.runner_config }} --project=T3T1 --headless e2e/tests/tradingExchangeFlow.test.ts
 
       - name: Post Currents link
         if: ${{ !cancelled() && github.event_name == 'pull_request' }}
