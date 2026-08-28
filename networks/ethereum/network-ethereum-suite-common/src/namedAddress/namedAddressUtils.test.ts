@@ -1,30 +1,24 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
 
-import {
-    isSymbolSupportingNamedAddress,
-    looksLikeEvmAddress,
-    looksLikeNamedAddress,
-} from './namedAddressUtils';
+import { isAddressLike, isNameLike, supportsNamedAddress } from './namedAddressUtils';
 
-describe('isSymbolSupportingNamedAddress', () => {
+describe('supportsNamedAddress', () => {
     it.each(['eth', 'tsep'] as const)('accepts %s', symbol => {
-        expect(isSymbolSupportingNamedAddress(symbol)).toBe(true);
+        expect(supportsNamedAddress(symbol)).toBe(true);
     });
 
     it.each([
-        'btc',
         'thod',
-        'sol',
         'pol',
         'arb',
         'base',
         'op',
-    ] as const satisfies readonly NetworkSymbol[])('rejects %s', symbol => {
-        expect(isSymbolSupportingNamedAddress(symbol)).toBe(false);
+    ] as const satisfies readonly EthereumNetworkSymbol[])('rejects %s', symbol => {
+        expect(supportsNamedAddress(symbol)).toBe(false);
     });
 });
 
-describe('looksLikeNamedAddress', () => {
+describe('isNameLike', () => {
     it.each([
         ['vitalik.eth'],
         ['foo.box'],
@@ -41,7 +35,7 @@ describe('looksLikeNamedAddress', () => {
         // like `a.eth` are registrable, so no minimum is imposed on the leading label.
         ['.eth'],
     ])('accepts %s', value => {
-        expect(looksLikeNamedAddress(value)).toBe(true);
+        expect(isNameLike(value)).toBe(true);
     });
 
     it.each([
@@ -54,18 +48,18 @@ describe('looksLikeNamedAddress', () => {
         ['vitalik.e', 'one char after last dot'],
         ['a.b.c', 'last segment shorter than two chars'],
     ])('rejects %s (%s)', value => {
-        expect(looksLikeNamedAddress(value)).toBe(false);
+        expect(isNameLike(value)).toBe(false);
     });
 });
 
-describe('looksLikeEvmAddress', () => {
+describe('isAddressLike', () => {
     it.each([
         ['0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', 'checksummed'],
         ['0xd8da6bf26964af9d7eed9e03e53415d37aa96045', 'lowercase'],
         ['0xD8DA6BF26964AF9D7EED9E03E53415D37AA96045', 'uppercase'],
         ['  0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045  ', 'surrounded by whitespace'],
     ])('accepts %s (%s)', value => {
-        expect(looksLikeEvmAddress(value)).toBe(true);
+        expect(isAddressLike(value)).toBe(true);
     });
 
     it.each([
@@ -76,6 +70,6 @@ describe('looksLikeEvmAddress', () => {
         ['0xd8dA6BF26964aF9D7eEd9e03E53415D37aA960455', 'one character too long'],
         ['0xd8dA6BF26964aF9D7eEd9e03E53415D37aA9604g', 'non-hex character'],
     ])('rejects %s (%s)', value => {
-        expect(looksLikeEvmAddress(value)).toBe(false);
+        expect(isAddressLike(value)).toBe(false);
     });
 });

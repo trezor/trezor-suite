@@ -13,29 +13,31 @@ import {
     autocorrectAddress,
     checkAddressChecksum,
     isAddressDeprecated,
+    isEvmAddress,
     isTaprootAddress,
     selectAddressValidatorDep,
     toChecksumAddress,
 } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import {
+    selectFindNetworkSymbolForProtocolDep,
+    selectNetworkModuleRepositoryDep,
+} from '@suite-common/networks';
 import { useQueryClient } from '@suite-common/react-query';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
     NAMED_ADDRESS_RESOLVE_DEBOUNCE_MS,
+    getNamedAddressSupport,
     getResolveNamedAddressQueryOptions,
-    useResolveNamedAddress,
 } from '@suite-common/wallet-core';
+import { useResolveNamedAddress } from '@suite-common/wallet-core/src/named-address/useResolveNamedAddress';
 import type { Output } from '@suite-common/wallet-types';
 import {
     checkIsAddressNotUsedNotChecksummed,
     convertAmountSubunitsToUnits,
     isProgramDerivedAccount,
-    isSymbolSupportingNamedAddress,
-    looksLikeEvmAddress,
-    looksLikeNamedAddress,
 } from '@suite-common/wallet-utils';
 import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
@@ -95,12 +97,15 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         clearErrors,
     } = useSendFormContext();
     const { translationString } = useTranslation();
-    const { analytics, addressValidator, findNetworkSymbolForProtocol } = useServices(
-        selectDesktopAnalyticsDep,
-        selectAddressValidatorDep,
-        selectFindNetworkSymbolForProtocolDep,
-    );
+    const { analytics, addressValidator, findNetworkSymbolForProtocol, networkModuleRepository } =
+        useServices(
+            selectDesktopAnalyticsDep,
+            selectAddressValidatorDep,
+            selectFindNetworkSymbolForProtocolDep,
+            selectNetworkModuleRepositoryDep,
+        );
     const { descriptor, networkType, symbol } = account;
+    const namedAddress = getNamedAddressSupport(networkModuleRepository, symbol);
     const inputName = `outputs.${outputId}.address` as const;
     // NOTE: compose errors are always associated with the amount.
     // If address is not valid then compose process will never be triggered,
@@ -283,8 +288,8 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 // mis-checksummed address to convert, and it is not a risk to knowingly
                 // accept — dismissing the error would compose a transaction to nothing.
                 const isUnresolvedName =
-                    isSymbolSupportingNamedAddress(symbol) &&
-                    looksLikeNamedAddress(address) &&
+                    namedAddress.isSupported &&
+                    namedAddress.isNameLike(address) &&
                     !resolvedNamedAddress;
 
                 if (isUnresolvedName) {
@@ -294,7 +299,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 // Only a hex address can be converted; `toChecksumAddress` throws on anything else.
                 if (
                     networkType === 'ethereum' &&
-                    looksLikeEvmAddress(address) &&
+                    isEvmAddress(address) &&
                     !checkAddressChecksum(address)
                 ) {
                     return {
@@ -397,7 +402,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             },
             valid: (value: string) => {
                 // Named inputs (e.g. ENS) are validated asynchronously in evmChecks
-                if (isSymbolSupportingNamedAddress(symbol) && looksLikeNamedAddress(value)) {
+                if (namedAddress.isSupported && namedAddress.isNameLike(value)) {
                     return;
                 }
                 if (!addressValidator.isAddressValid(value, symbol)) {
@@ -421,9 +426,9 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 // `watch` is scoped to the last render, while validation runs with the value the
                 // field holds now. Validating one value while querying the previous one sent an
                 // empty descriptor to the backend on the first paste.
-                const isNamedInput = looksLikeNamedAddress(checkedAddress);
+                const isNamedInput = namedAddress.isNameLike(checkedAddress);
                 // Unsupported symbol + named input: let `valid:` surface the error.
-                if (isNamedInput && !isSymbolSupportingNamedAddress(symbol)) return;
+                if (isNamedInput && !namedAddress.isSupported) return;
 
                 if (!isOnline) {
                     return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
@@ -443,7 +448,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 const resolvedAddress = isNamedInput
                     ? await queryClient
                           .ensureQueryData(
-                              getResolveNamedAddressQueryOptions(checkedAddress, symbol),
+                              getResolveNamedAddressQueryOptions({
+                                  networkModuleRepository,
+                                  value: checkedAddress,
+                                  symbol,
+                              }),
                           )
                           .catch(() => null)
                     : null;
@@ -624,11 +633,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             rightContent={<Icon as={QrCodeIcon} onClick={handleQrClick} />}
             label={
                 <Translation
-                    id={
-                        isSymbolSupportingNamedAddress(symbol)
-                            ? 'RECIPIENT_ADDRESS_OR_ENS'
-                            : 'RECIPIENT_ADDRESS'
-                    }
+                    id={namedAddress.isSupported ? 'RECIPIENT_ADDRESS_OR_ENS' : 'RECIPIENT_ADDRESS'}
                 />
             }
             labelLeft={

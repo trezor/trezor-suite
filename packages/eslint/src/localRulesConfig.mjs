@@ -79,6 +79,10 @@ export const localRulesConfig = [
                         /^@(?:suite-native|suite|suite-common|trezor)\/[^/]+\/mocks$/,
                         // Suite test setup imports global polyfills through this side-effect-only entry point.
                         /^@suite-common\/test-utils\/globalOverrides$/,
+                        // The Ethereum network module sits behind its own entry point so that the
+                        // package barrel — which UI packages import for the wrapped-native token
+                        // helpers — stays clear of `@trezor/connect` and viem.
+                        /^@trezor\/network-ethereum-suite-common\/network-module$/,
                     ],
                 },
             ],

@@ -119,5 +119,6 @@ export * from './uiEvent/defaultTrezorUIEventHandlerThunk';
 export * from './uiEvent/scopedCallIdRegistry';
 export * from './discovery/passphraseWalletThunks';
 export * from './named-address/namedAddressQuery';
-export * from './named-address/useResolveNamedAddress';
-export * from './named-address/resolveNamedAddress';
+export * from './named-address/namedAddressResolver';
+// useResolveNamedAddress is imported from its own path: this barrel is bundled into the
+// Electron main process, whose webpack resolves .ts/.js only, and the hook reaches a .tsx file.

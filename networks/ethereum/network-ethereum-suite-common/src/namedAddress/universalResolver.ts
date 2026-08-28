@@ -10,9 +10,12 @@ import {
 import { namehash, normalize, packetToBytes, toCoinType } from 'viem/ens';
 
 import { Calldata, EVM_ABI } from '@suite-common/calldata';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import type { NamedAddressProfile } from '@trezor/network-module-suite-common-types';
 import { BigNumber } from '@trezor/utils';
+
+import { getNamedAddressChainId } from './namedAddressUtils';
 
 const RESOLVE_TIMEOUT_MS = 15_000;
 
@@ -33,11 +36,11 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
  * reverse lookup on Sepolia either way. If reverse comes back empty there while forward resolution
  * works, this is the first place to look. Mainnet is unaffected regardless.
  */
-const getReverseCoinType = (symbol: NetworkSymbol) => {
-    const { chainId } = getNetwork(symbol);
+const getReverseCoinType = (symbol: EthereumNetworkSymbol) => {
+    const chainId = getNamedAddressChainId(symbol);
 
     if (chainId === undefined) {
-        throw new Error(`Cannot reverse-resolve on ${symbol}: the network has no chain id.`);
+        throw new Error(`Cannot reverse-resolve on ${symbol}: the network has no name system.`);
     }
 
     return toCoinType(chainId);
@@ -74,11 +77,6 @@ const UNRESOLVABLE_ERROR_NAMES = [
     'ResolverError',
     'ReverseAddressMismatch',
 ];
-
-export type NamedAddressProfile = {
-    address: string | null;
-    texts: Record<string, string>;
-};
 
 const EMPTY_PROFILE: NamedAddressProfile = { address: null, texts: {} };
 
@@ -149,7 +147,7 @@ const isRevertError = (error: unknown) => {
     return /revert/i.test(error instanceof Error ? error.message : String(error));
 };
 
-const callUniversalResolver = async (symbol: NetworkSymbol, data: Hex) => {
+const callUniversalResolver = async (symbol: EthereumNetworkSymbol, data: Hex) => {
     // The loser of the race has to be cleaned up: an uncleared timer keeps the event loop
     // busy for the full timeout after every single resolution.
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -181,7 +179,11 @@ const callUniversalResolver = async (symbol: NetworkSymbol, data: Hex) => {
 };
 
 /** Run one resolver profile call through `UniversalResolver.resolve` and return its raw result. */
-const resolveProfileData = async (name: string, symbol: NetworkSymbol, profileData: Hex) => {
+const resolveProfileData = async (
+    name: string,
+    symbol: EthereumNetworkSymbol,
+    profileData: Hex,
+) => {
     const response = await callUniversalResolver(
         symbol,
         buildCalldata(
@@ -221,7 +223,7 @@ const decodeAddressResult = (result: Hex) => {
 const resolveProfileViaMulticall = async (
     name: string,
     node: Hex,
-    symbol: NetworkSymbol,
+    symbol: EthereumNetworkSymbol,
     textKeys: readonly string[],
 ): Promise<NamedAddressProfile> => {
     const profileCalls = [
@@ -263,7 +265,7 @@ const resolveProfileViaMulticall = async (
     return { address: addressResult ? decodeAddressResult(addressResult) : null, texts };
 };
 
-const resolveAddressOnly = async (name: string, node: Hex, symbol: NetworkSymbol) => {
+const resolveAddressOnly = async (name: string, node: Hex, symbol: EthereumNetworkSymbol) => {
     try {
         const result = await resolveProfileData(
             name,
@@ -288,10 +290,10 @@ const resolveAddressOnly = async (name: string, node: Hex, symbol: NetworkSymbol
  */
 export const resolveNamedProfileOnchain = async (
     value: string,
-    symbol: NetworkSymbol,
+    symbol: EthereumNetworkSymbol,
     textKeys: readonly string[] = [],
 ): Promise<NamedAddressProfile> => {
-    // A name no conformant resolver could hold — `looksLikeNamedAddress` accepts shapes ENSIP-15
+    // A name no conformant resolver could hold — `isNameLike` accepts shapes ENSIP-15
     // rejects, such as an empty label. Answering "no record" beats falling through to a backend
     // that cannot do better either.
     let name: string;
@@ -325,7 +327,7 @@ export const resolveNamedProfileOnchain = async (
  *
  * @returns The resolved address, or `null` when the name has no address record.
  */
-export const resolveNamedAddressOnchain = async (value: string, symbol: NetworkSymbol) =>
+export const resolveNamedAddressOnchain = async (value: string, symbol: EthereumNetworkSymbol) =>
     (await resolveNamedProfileOnchain(value, symbol)).address;
 
 /**
@@ -333,7 +335,10 @@ export const resolveNamedAddressOnchain = async (value: string, symbol: NetworkS
  *
  * @returns The primary name, or `null` when the address has none.
  */
-export const reverseResolveAddressOnchain = async (address: string, symbol: NetworkSymbol) => {
+export const reverseResolveAddressOnchain = async (
+    address: string,
+    symbol: EthereumNetworkSymbol,
+) => {
     const data = buildCalldata(
         Calldata.evm.ens.reverse.encode({
             lookupAddress: asHex(address),

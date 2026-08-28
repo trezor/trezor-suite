@@ -3,8 +3,13 @@ import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
-import { selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
+import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import {
+    getNamedAddressSupport,
+    selectSendFormReviewLastButtonCode,
+} from '@suite-common/wallet-core';
 import type {
     FormState,
     GeneralPrecomposedTransactionFinal,
@@ -17,7 +22,6 @@ import {
     getEvmTransactionPurpose,
     isEvmApprovalTx,
     isEvmYieldTxByTextSignature,
-    looksLikeNamedAddress,
 } from '@suite-common/wallet-utils';
 import { Column, H4 } from '@trezor/components';
 
@@ -80,7 +84,9 @@ export const TransactionReviewOutputList = ({
     const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
     const totalOutputRef = useRef<HTMLDivElement | null>(null);
     const accounts = useSelector(state => state.wallet.accounts);
+    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
     const { networkType, symbol } = account;
+    const namedAddress = getNamedAddressSupport(networkModuleRepository, symbol);
     const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
     const isFirstOutputAddress = outputs[0]?.type === 'address';
 
@@ -163,7 +169,7 @@ export const TransactionReviewOutputList = ({
             !!firstFormOutput.address &&
             !!firstFormOutput.resolvedAddress &&
             firstFormOutput.address !== firstFormOutput.resolvedAddress &&
-            looksLikeNamedAddress(firstFormOutput.address);
+            namedAddress.isNameLike(firstFormOutput.address);
         const ensName = isEnsResolved ? firstFormOutput.address : undefined;
         const ensResolvedAddress = isEnsResolved ? firstFormOutput.resolvedAddress : undefined;
 

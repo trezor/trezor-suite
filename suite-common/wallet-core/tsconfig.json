@@ -12,6 +12,7 @@
         { "path": "../fiat-services" },
         { "path": "../firmware" },
         { "path": "../metadata-types" },
+        { "path": "../networks" },
         { "path": "../react-query" },
         { "path": "../redux-utils" },
         { "path": "../schemas" },
@@ -48,6 +49,9 @@
         { "path": "../../packages/env-utils" },
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        {
+            "path": "../../networks/network-module/network-module-suite-common-types"
         },
         {
             "path": "../../networks/ripple/network-ripple"
