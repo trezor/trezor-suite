@@ -1,43 +1,55 @@
-import type { TransactionScanResponse } from '@blockaid/client/resources/evm';
-
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
+import { exhaustive } from '@trezor/type-utils';
 
 import { client } from '../client';
-import { type GetTxSimulationParams } from '../utils';
+import {
+    type NetworkTxSimulationResult,
+    type SolanaMessageScanResponse,
+    type StellarTxScanResponse,
+    type TransactionScanResponse,
+    type TxSimulationEVMResult,
+    type TxSimulationSolanaResult,
+    type TxSimulationStellarResult,
+} from '../types';
+import {
+    type GetTxSimulationParams,
+    getEvmSimulationFailure,
+    getSolanaSimulationFailure,
+    getStellarSimulationFailure,
+} from '../utils';
 
-type TxSimulationCommonResult = { needsDisclaimer: boolean };
-export type TxSimulationEVMResult = TransactionScanResponse & TxSimulationCommonResult;
+const getEVMNeedsDisclaimer = (response: TransactionScanResponse): boolean =>
+    response.validation?.result_type === 'Malicious' ||
+    response.validation?.result_type === 'Warning' ||
+    getEvmSimulationFailure(response) !== null;
 
-export type NetworkTxSimulationResult = {
-    method: 'ethereumSignTransaction' | 'ethereumSignTypedData';
-    payload: TxSimulationEVMResult;
+const getSolanaNeedsDisclaimer = (response: SolanaMessageScanResponse): boolean =>
+    response.result?.validation?.result_type === 'Malicious' ||
+    response.result?.validation?.result_type === 'Warning' ||
+    getSolanaSimulationFailure(response) !== null;
+
+// Stellar has no envelope status; each half of the response reports its own.
+const getStellarNeedsDisclaimer = (response: StellarTxScanResponse): boolean => {
+    const { validation } = response;
+    const resultType = validation && 'result_type' in validation ? validation.result_type : null;
+
+    return (
+        resultType === 'Malicious' ||
+        resultType === 'Warning' ||
+        validation?.status === 'Error' ||
+        getStellarSimulationFailure(response) !== null
+    );
 };
 
-const getEVMNeedsDisclaimer = ({ validation, simulation }: TransactionScanResponse): boolean =>
-    validation?.result_type === 'Malicious' ||
-    validation?.result_type === 'Warning' ||
-    simulation?.status === 'Error';
-
 async function handleTxScan(input: GetTxSimulationParams): Promise<NetworkTxSimulationResult> {
-    switch (input?.method) {
+    if (!input) {
+        throw new Error('TX Simulation params are missing.');
+    }
+
+    switch (input.method) {
         case 'ethereumSignTransaction':
         case 'ethereumSignTypedData': {
             const scanResult = await client.evm.jsonRpc.scan(input.params);
-
-            if (scanResult.simulation?.status === 'Success') {
-                // Stable order across refetches: outgoing assets first, then incoming, each by USD value desc.
-                const sumUsd = (diffs: ReadonlyArray<{ usd_price?: string }>) =>
-                    diffs.reduce((acc, d) => acc + Number(d.usd_price ?? 0), 0);
-
-                scanResult.simulation.account_summary.assets_diffs =
-                    scanResult.simulation.account_summary.assets_diffs.toSorted((a, b) => {
-                        const aIsOut = a.out.length > 0;
-                        const bIsOut = b.out.length > 0;
-                        if (aIsOut !== bIsOut) return aIsOut ? -1 : 1;
-
-                        return aIsOut ? sumUsd(b.out) - sumUsd(a.out) : sumUsd(b.in) - sumUsd(a.in);
-                    });
-            }
 
             const result: TxSimulationEVMResult = {
                 ...scanResult,
@@ -47,16 +59,39 @@ async function handleTxScan(input: GetTxSimulationParams): Promise<NetworkTxSimu
             return { method: input.method, payload: result } as const;
         }
 
+        case 'solanaSignTransaction': {
+            const scanResult = await client.solana.message.scan(input.params);
+
+            const result: TxSimulationSolanaResult = {
+                ...scanResult,
+                needsDisclaimer: getSolanaNeedsDisclaimer(scanResult),
+            };
+
+            return { method: input.method, payload: result } as const;
+        }
+
+        case 'stellarSignTransaction': {
+            const scanResult = await client.stellar.transaction.scan(input.params);
+
+            const result: TxSimulationStellarResult = {
+                ...scanResult,
+                needsDisclaimer: getStellarNeedsDisclaimer(scanResult),
+            };
+
+            return { method: input.method, payload: result } as const;
+        }
+
         default:
-            // @ts-expect-error
-            throw new Error(`TX Simulation isn't supported for: ${params?.kind}.`);
+            return exhaustive(input);
     }
 }
 
-export function isTxSimulationResultWithMethods<Result extends NetworkTxSimulationResult>(
-    methods: ReadonlyArray<Result['method']>,
-    result?: Result | null,
-): result is Result {
+export function isTxSimulationResultWithMethods<
+    const Methods extends ReadonlyArray<NetworkTxSimulationResult['method']>,
+>(
+    methods: Methods,
+    result?: NetworkTxSimulationResult | null,
+): result is Extract<NetworkTxSimulationResult, { method: Methods[number] }> {
     return result ? methods.includes(result.method) : false;
 }
 

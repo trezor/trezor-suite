@@ -1,9 +1,10 @@
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
+// EVM reports both as decimal strings, Solana as numbers.
 type AssetDiffTransfer = {
-    raw_value: string;
-    value?: string;
+    raw_value: string | number;
+    value?: string | number | null;
 };
 
 /**
@@ -21,5 +22,7 @@ export const getAssetDiffTransferAmount = (
         }
     }
 
-    return transfer.value === undefined ? null : new BigNumber(transfer.value);
+    return transfer.value === undefined || transfer.value === null
+        ? null
+        : new BigNumber(transfer.value);
 };

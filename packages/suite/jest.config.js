@@ -37,7 +37,6 @@ module.exports = {
     ],
     setupFiles: [
         'jest-canvas-mock', // for lottie-react
-        require('path').resolve(__dirname, '../../suite-common/tx-simulation/src/jestSetup.ts'),
     ],
     setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     moduleNameMapper: {

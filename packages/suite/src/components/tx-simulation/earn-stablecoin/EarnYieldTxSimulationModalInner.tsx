@@ -10,10 +10,10 @@ import {
     TxSimulationProvider,
     TxSimulationTitle,
 } from '@suite/tx-simulation/src/common';
-import { EvmTxSimulationDisclaimer } from '@suite/tx-simulation/src/evm';
 import {
     TX_METHODS_WITH_FEES,
     areTxSimulationMethods,
+    getTxSimulationDisclaimerKey,
     isTxSimulationResultWithMethods,
     useTxSimulation,
 } from '@suite-common/tx-simulation';
@@ -24,6 +24,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
 
+import { TxSimulationDisclaimer } from '../common/components/TxSimulationDisclaimer';
+import { TxSimulationErrorBoundary } from '../common/components/TxSimulationErrorBoundary';
 import { TxSimulationHeader } from '../common/components/TxSimulationHeader';
 import { TxSimulationSuccessResult } from '../common/components/TxSimulationSuccessResult';
 import { useEvmTxSimulationFeesForm } from '../common/hooks/useEvmTxSimulationFeesForm';
@@ -41,7 +43,9 @@ export function EarnYieldTxSimulationModalInner({
     decision,
     closeModal,
 }: EarnYieldTxSimulationModalInnerProps) {
-    const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
+    const [acceptedDisclaimerKey, setAcceptedDisclaimerKey] = useState<string | null>(null);
+    const [hasRenderFailure, setHasRenderFailure] = useState(false);
+    const [renderFailureAccepted, setRenderFailureAccepted] = useState(false);
 
     const {
         form,
@@ -77,6 +81,15 @@ export function EarnYieldTxSimulationModalInner({
     if (!simulation) return null;
 
     const { txSimulationQuery, network, targetContract } = simulation;
+
+    // Acceptance is tracked by what was accepted, not by a bare flag: a refetch that starts warning
+    // about something else invalidates it and the user has to acknowledge the new reason.
+    const disclaimerKey = getTxSimulationDisclaimerKey(txSimulationQuery.data);
+    const disclaimerAccepted = disclaimerKey !== null && disclaimerKey === acceptedDisclaimerKey;
+
+    function acceptDisclaimer(isAccepted: boolean) {
+        setAcceptedDisclaimerKey(isAccepted ? disclaimerKey : null);
+    }
 
     if (
         !areTxSimulationMethods(
@@ -117,6 +130,7 @@ export function EarnYieldTxSimulationModalInner({
     const isConfirmDisabled = Boolean(
         txSimulationQuery.isLoading ||
         (txSimulationQuery.data?.payload?.needsDisclaimer && !disclaimerAccepted) ||
+        (hasRenderFailure && !renderFailureAccepted) ||
         composedLevelsError,
     );
 
@@ -141,18 +155,23 @@ export function EarnYieldTxSimulationModalInner({
                     <TxSimulationError error={txSimulationQuery.error?.message}>
                         <TxSimulationLoader isLoading={txSimulationQuery.isLoading}>
                             {txSimulationQuery.isSuccess && (
-                                <>
+                                <TxSimulationErrorBoundary
+                                    isAccepted={renderFailureAccepted}
+                                    onChange={setRenderFailureAccepted}
+                                    onError={setHasRenderFailure}
+                                    resetKey={txSimulationQuery.data}
+                                >
                                     <TxSimulationSuccessResult
                                         result={txSimulationQuery.data}
                                         network={network}
                                         targetContract={targetContract}
                                     />
-                                    <EvmTxSimulationDisclaimer
-                                        result={txSimulationQuery.data.payload}
+                                    <TxSimulationDisclaimer
+                                        result={txSimulationQuery.data}
                                         isAccepted={disclaimerAccepted}
-                                        onChange={setDisclaimerAccepted}
+                                        onChange={acceptDisclaimer}
                                     />
-                                </>
+                                </TxSimulationErrorBoundary>
                             )}
                         </TxSimulationLoader>
                     </TxSimulationError>

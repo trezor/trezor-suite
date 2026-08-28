@@ -4,6 +4,8 @@ import {
     type AccountSummary,
     type NetworkTxSimulationResult,
     getAssetDiffTransferAmount,
+    getEvmSimulationSummary,
+    isTxSimulationResultWithMethods,
 } from '@suite-common/tx-simulation';
 import { BigNumber } from '@trezor/utils';
 
@@ -37,15 +39,22 @@ export const getSimulatedReceiveAmount = (
     result: NetworkTxSimulationResult | undefined,
     quoteReceiveCryptoId: CryptoId | undefined,
 ): string | null => {
-    const simulation = result?.payload.simulation;
+    // Stellar also has a top-level `simulation`, with a differently shaped account summary, so the
+    // narrowing has to be by method. DEX quotes are EVM-only, so nothing else reaches this.
+    const summary = isTxSimulationResultWithMethods(
+        ['ethereumSignTransaction', 'ethereumSignTypedData'],
+        result,
+    )
+        ? getEvmSimulationSummary(result.payload)
+        : null;
 
-    if (!quoteReceiveCryptoId || simulation?.status !== 'Success') {
+    if (!quoteReceiveCryptoId || !summary) {
         return null;
     }
 
     const { contractAddress } = parseCryptoId(quoteReceiveCryptoId);
-    const assetDiff = simulation.account_summary.assets_diffs.find(
-        (diff): diff is ReceiveAssetDiff => isReceiveAssetDiff(diff, contractAddress),
+    const assetDiff = summary.assetsDiffs.find((diff): diff is ReceiveAssetDiff =>
+        isReceiveAssetDiff(diff, contractAddress),
     );
 
     if (!assetDiff || assetDiff.in.length === 0) {
