@@ -51,6 +51,7 @@ type SignTransactionThunkState = BlockchainRootState &
     DeviceRootState &
     SelectedAccountRootState &
     WalletSettingsRootState;
+
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const signTransaction =

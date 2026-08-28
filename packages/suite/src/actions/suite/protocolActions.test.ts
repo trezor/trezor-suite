@@ -8,7 +8,7 @@ import * as protocolConstants from './constants/protocolConstants';
 import * as protocolActions from './protocolActions';
 import {
     type HandleProtocolRequestDispatchDeps,
-    type HandleProtocolRequestState,
+    type HandleProtocolRequestThunkState,
 } from './protocolActions';
 
 jest.mock('@suite-common/walletconnect', () => ({
@@ -19,7 +19,7 @@ const findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol = protocol =>
     protocol === 'bitcoin' ? asNetworkSymbol('btc') : null;
 
 const createHandleProtocolRequestDeps = () => {
-    const getState = (): HandleProtocolRequestState => {
+    const getState = (): HandleProtocolRequestThunkState => {
         throw new Error('This thunk must not read state in this test.');
     };
     const extra: HandleProtocolRequestDispatchDeps = {

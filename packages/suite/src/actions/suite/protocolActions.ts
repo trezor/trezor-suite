@@ -41,24 +41,25 @@ export const fillSendForm = createAction<boolean>(PROTOCOL.FILL_SEND_FORM);
 
 export const resetProtocol = createAction(PROTOCOL.RESET);
 
-export type HandleProtocolRequestDeps = WithServices<
+export type HandleProtocolRequestThunkState = GotoThunkState & WalletConnectInitThunkState;
+
+export type HandleProtocolRequestThunkDeps = WithServices<
     DesktopAnalyticsDep & FindNetworkSymbolForProtocolDep & SuiteRouterHistoryDep
 >;
 
-export type HandleProtocolRequestState = GotoThunkState & WalletConnectInitThunkState;
-export type HandleProtocolRequestDispatchDeps = HandleProtocolRequestDeps &
+export type HandleProtocolRequestDispatchDeps = HandleProtocolRequestThunkDeps &
     WalletConnectInitThunkDeps;
 
 export const handleProtocolRequest =
     (uri: string) =>
     (
         dispatch: ThunkDispatch<
-            HandleProtocolRequestState,
+            HandleProtocolRequestThunkState,
             HandleProtocolRequestDispatchDeps,
             UnknownAction
         >,
-        _getState: () => HandleProtocolRequestState,
-        extra: HandleProtocolRequestDeps,
+        _getState: () => HandleProtocolRequestThunkState,
+        extra: HandleProtocolRequestThunkDeps,
     ) => {
         dispatch(handleCoinProtocolUri(uri, saveCoinProtocol));
 

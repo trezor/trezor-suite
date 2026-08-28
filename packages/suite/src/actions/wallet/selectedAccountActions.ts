@@ -198,9 +198,11 @@ const actions = new Set<UnknownAction['type']>([
 /*
  * Called from WalletMiddleware
  */
+type SyncSelectedAccountThunkState = SelectedAccountState;
+
 export const syncSelectedAccount =
     (action: UnknownAction) =>
-    (dispatch: Dispatch<UnknownAction>, getState: () => SelectedAccountState) => {
+    (dispatch: Dispatch<UnknownAction>, getState: () => SyncSelectedAccountThunkState) => {
         // ignore not listed actions
         if (!actions.has(action.type)) return;
         const state = getState();

@@ -341,6 +341,7 @@ const getPoolDelegation = (
 };
 
 type SignTransactionThunkState = DeviceRootState & SelectedAccountRootState & StakeRootState;
+
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const signTransaction =

@@ -72,6 +72,7 @@ type InitThunkState = ConnectInitThunkState &
     UpdateMissingTxFiatRatesThunkState &
     WalletConnectInitThunkState &
     WalletSettingsRootState;
+
 type InitThunkDeps = ConnectInitThunkDeps &
     GotoThunkDeps &
     InitBlockchainThunkDeps &

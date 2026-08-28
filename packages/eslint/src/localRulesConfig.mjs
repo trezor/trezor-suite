@@ -92,16 +92,11 @@ export const localRulesConfig = [
         },
     },
     {
-        files: [
-            'networks/**/src/**/*.{ts,tsx}',
-            'packages/**/src/**/*.{ts,tsx}',
-            'suite/**/src/**/*.{ts,tsx}',
-            'suite-common/**/src/**/*.{ts,tsx}',
-            'suite-native/**/src/**/*.{ts,tsx}',
-        ],
+        files: ['**/src/**/*.{ts,tsx}'],
         ignores: ['**/__fixtures__/**', '**/*.test.{ts,tsx}', '**/*.type-test.ts'],
         rules: {
-            'local-rules/enforce-named-contracts': 'error',
+            'local-rules/enforce-di-factory-contracts': 'error',
+            'local-rules/enforce-thunk-contracts': 'error',
         },
     },
     ...(areExpensiveChecksEnabled

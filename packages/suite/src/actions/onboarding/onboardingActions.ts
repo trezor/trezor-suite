@@ -97,12 +97,13 @@ const goToPreviousStep =
 
 const resetOnboarding = createAction(ONBOARDING.RESET_ONBOARDING);
 
-type GoToSuiteState = DeviceRootState &
+type GoToSuiteThunkState = DeviceRootState &
     GotoThunkState &
     OnboardingRootState &
     StartDiscoveryThunkState &
     WalletSettingsRootState;
-type GoToSuiteDeps = WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep> &
+
+type GoToSuiteThunkDeps = WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep> &
     StartDiscoveryThunkDeps;
 
 export type GoToSuiteOptions = {
@@ -112,9 +113,9 @@ export type GoToSuiteOptions = {
 const goToSuite =
     ({ skipDeviceSetupCompletedEvent }: GoToSuiteOptions = {}) =>
     (
-        dispatch: ThunkDispatch<GoToSuiteState, GoToSuiteDeps, UnknownAction>,
-        getState: () => GoToSuiteState,
-        extra: GoToSuiteDeps,
+        dispatch: ThunkDispatch<GoToSuiteThunkState, GoToSuiteThunkDeps, UnknownAction>,
+        getState: () => GoToSuiteThunkState,
+        extra: GoToSuiteThunkDeps,
     ) => {
         const device = selectSelectedDevice(getState());
         const onboardingAnalytics = selectOnboardingAnalytics(getState());
@@ -186,6 +187,7 @@ type GoToNextStepThunkState = DeviceRootState &
     StartDiscoveryThunkState &
     SuiteSettingsRootState &
     WalletSettingsRootState;
+
 type GoToNextStepThunkDeps = {
     services: DesktopAnalyticsDep & SuiteRouterHistoryDep;
 } & StartDiscoveryThunkDeps;
@@ -229,6 +231,7 @@ type BeginOnboardingTutorialThunkState = DeviceRootState &
     StartDiscoveryThunkState &
     SuiteSettingsRootState &
     WalletSettingsRootState;
+
 type BeginOnboardingTutorialThunkDeps = {
     services: DesktopAnalyticsDep & SuiteRouterHistoryDep;
 } & StartDiscoveryThunkDeps;
@@ -268,14 +271,15 @@ const resolveNextAfterSkipped =
         return resolvedNextStep?.id;
     };
 
-type RecoveryRerunState = DeviceRootState & GotoThunkState & { recovery: RecoveryState };
-type RecoveryRerunDeps = { services: DesktopAnalyticsDep & SuiteRouterHistoryDep };
+type RecoveryRerunThunkState = DeviceRootState & GotoThunkState & { recovery: RecoveryState };
+
+type RecoveryRerunThunkDeps = { services: DesktopAnalyticsDep & SuiteRouterHistoryDep };
 
 const recoveryRerun =
     () =>
     async (
-        dispatch: ThunkDispatch<RecoveryRerunState, RecoveryRerunDeps, UnknownAction>,
-        getState: () => RecoveryRerunState,
+        dispatch: ThunkDispatch<RecoveryRerunThunkState, RecoveryRerunThunkDeps, UnknownAction>,
+        getState: () => RecoveryRerunThunkState,
     ) => {
         const result = await dispatch(recoveryRerunThunk());
 
