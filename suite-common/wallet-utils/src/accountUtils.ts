@@ -49,6 +49,7 @@ import { BigNumber, arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { isDirectRpcBackendType } from './backendUtils';
+import { getDescriptorForNetworkType } from './deviceAddressUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';
@@ -1307,15 +1308,24 @@ export const prepareNewAccountPayload = async ({
 
     if (!newPath || !device.state?.staticSessionId) return new Error('Missing path');
 
-    const res = await TrezorConnect.getAccountInfo({
+    const descriptorResult = await getDescriptorForNetworkType({
         path: newPath,
-        coin: asCoinSymbol(networkSymbol),
+        coin: networkSymbol,
+        networkType: network.networkType,
         device: {
             path: device.path,
             instance: device.instance,
             state: device.state,
             useEmptyPassphrase: device.useEmptyPassphrase,
         },
+    });
+
+    if (!descriptorResult.success) return new Error(descriptorResult.error.message);
+
+    const { descriptor, ...deviceAccountDetails } = descriptorResult.payload;
+    const res = await TrezorConnect.getAccountInfo({
+        descriptor,
+        coin: asCoinSymbol(networkSymbol),
         details: 'txs',
         protocols: network.networkType === 'ethereum' ? ['erc4626'] : undefined,
     });
@@ -1323,7 +1333,7 @@ export const prepareNewAccountPayload = async ({
     if (!res.success) return new Error(res.error.message);
 
     return {
-        accountInfo: res.payload,
+        accountInfo: { ...res.payload, ...deviceAccountDetails },
         visible: true,
         deviceState: device.state.staticSessionId,
         symbol: networkSymbol,
