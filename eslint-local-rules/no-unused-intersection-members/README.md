@@ -25,22 +25,25 @@ without it.
 3. **Account for structural composition.** A required type can be satisfied by properties spread
    across multiple intersection members. The rule recursively compares their combined properties
    rather than checking each member only in isolation.
-4. **Include transitive thunk requirements.** Dispatching a child thunk implicitly requires the
+4. **Look through service containers.** `WithServices<LoggerDep & StorageDep>` moves the intersection
+   below the `services` property but does not make it a single capability. The inner dependency
+   members are checked against usages such as `deps.services.logger` and child-thunk requirements.
+5. **Include transitive thunk requirements.** Dispatching a child thunk implicitly requires the
    child's `state` and `extra` types. Those requirements count even if the parent thunk never calls
    `getState()` or reads `extra` itself.
-5. **Prefer false negatives over false positives.** When the analysis cannot prove which member is
+6. **Prefer false negatives over false positives.** When the analysis cannot prove which member is
    needed, it keeps the whole contract. The rule should suggest a removal only when that removal is
    demonstrably safe for every usage visible in the file.
-6. **Stay local and predictable.** Candidates are direct type aliases in the current source file,
-   must be intersections, and must end in `State` or `Deps`. Usage collection is file-local: a
-   consumer needing an additional capability should declare it at the consumer instead of relying on
-   a broader upstream alias. This avoids turning lint into an open-ended whole-program dependency
-   analysis.
+7. **Stay local and predictable.** Candidates are type aliases in the current source file, must end
+   in `State` or `Deps`, and must contain either a direct intersection or an intersection inside a
+   transparent `services` container. Usage collection is file-local: a consumer needing an
+   additional capability should declare it at the consumer instead of relying on a broader upstream
+   alias. This avoids turning lint into an open-ended whole-program dependency analysis.
 
 ### Analysis stages
 
-1. At `Program:exit`, collect matching aliases and resolve every intersection member with the
-   TypeScript type checker.
+1. At `Program:exit`, collect matching aliases and resolve every direct or service-wrapped
+   intersection member with the TypeScript type checker.
 2. Mark contracts as opaque when they enter a generic context that the rule cannot safely interpret.
 3. Read `createThunk` configuration and add the state/dependency requirements of dispatched child
    thunks.

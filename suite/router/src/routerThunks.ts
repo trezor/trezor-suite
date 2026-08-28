@@ -1,6 +1,6 @@
 import { type LocksRootState, lockRouter, selectIsRouterLocked } from '@suite/locks';
 import { type ModalRootState } from '@suite/modal';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 
 import { type AnchorType } from './anchors';
 import { type Route } from './route';
@@ -57,7 +57,7 @@ export const onLocationChange = createThunk<
  * Called from `@suite-middlewares/suiteMiddleware`
  */
 type RouterInitThunkState = LocksRootState & ModalRootState & RouterRootState;
-type RouterInitThunkDeps = { services: SuiteRouterHistoryDep };
+type RouterInitThunkDeps = WithServices<SuiteRouterHistoryDep>;
 
 export const routerInit = createThunk<
     void,
@@ -79,7 +79,7 @@ type GotoPayload = {
 };
 
 export type GotoThunkState = LocksRootState & ModalRootState & RouterRootState;
-export type GotoThunkDeps = { services: SuiteRouterHistoryDep };
+export type GotoThunkDeps = WithServices<SuiteRouterHistoryDep>;
 
 export const goto = createThunk<void, GotoPayload, { state: GotoThunkState; extra: GotoThunkDeps }>(
     '@router/goto',

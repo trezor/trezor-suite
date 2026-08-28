@@ -2,7 +2,7 @@ import { type BuyTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type TradingFormAccountRootState,
     buyThunks,
@@ -21,7 +21,7 @@ import { submitRequestForm } from '../tradingCommonActions';
 
 type SelectBuyQuoteThunkParams = { quote: BuyTrade };
 type SelectBuyQuoteThunkState = GotoThunkState & TradingFormAccountRootState;
-type SelectBuyQuoteThunkDeps = GotoThunkDeps & { services: DesktopAnalyticsDep };
+type SelectBuyQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
 
 export const selectBuyQuoteThunk = createThunk<
     void,

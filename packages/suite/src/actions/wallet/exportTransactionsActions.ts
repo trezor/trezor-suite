@@ -1,6 +1,6 @@
 import { type MetadataRootState } from '@suite/metadata';
 import { type AccountLabels } from '@suite-common/metadata-types';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectNetworkTokenDefinitions,
@@ -36,11 +36,9 @@ type ExportTransactionsThunkState = FiatRatesRootState &
     TokenDefinitionsRootState &
     TransactionsRootState &
     WalletSettingsRootState;
-type ExportTransactionsThunkDeps = {
-    services: {
-        saveAs: (data: Blob, fileName: string) => void;
-    };
-};
+type ExportTransactionsThunkDeps = WithServices<{
+    saveAs: (data: Blob, fileName: string) => void;
+}>;
 
 const selectMetadataState = (state: MetadataRootState) => state.metadata;
 

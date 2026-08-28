@@ -15,7 +15,7 @@ import type {
     NetworkModuleRepositoryDep,
 } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { type SuiteCompatibleThunk } from '@suite-common/redux-utils';
+import { type SuiteCompatibleThunk, type WithServices } from '@suite-common/redux-utils';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
@@ -135,4 +135,4 @@ export type ExtraDependenciesStatic = {
     };
 };
 
-export type ExtraDependencies = ExtraDependenciesStatic & { services: CommonServices };
+export type ExtraDependencies = ExtraDependenciesStatic & WithServices<CommonServices>;

@@ -4,7 +4,11 @@ import { isRejected } from '@reduxjs/toolkit';
 import { type AnalyticsDep } from '@suite-common/analytics';
 import { Calldata } from '@suite-common/calldata';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { type ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
+import {
+    type ActionsFromAsyncThunk,
+    type WithServices,
+    createThunk,
+} from '@suite-common/redux-utils';
 import { type GetIsWindowVisibleDep, type OnModalCancelDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -303,9 +307,9 @@ type SynchronizeSentTransactionThunkParams = {
 export type SynchronizeSentTransactionThunkState = FeesRootState &
     SendRootState &
     SyncAccountsWithBlockchainThunkState;
-export type SynchronizeSentTransactionThunkDeps = {
-    services: AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep;
-};
+export type SynchronizeSentTransactionThunkDeps = WithServices<
+    AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
+>;
 
 export const synchronizeSentTransactionThunk = createThunk<
     void,
@@ -577,9 +581,9 @@ type PushSendFormRawTransactionThunkParams = {
     isMevProtectionEnabled: boolean;
 };
 type PushSendFormRawTransactionThunkState = DeviceRootState & SyncAccountsWithBlockchainThunkState;
-type PushSendFormRawTransactionThunkDeps = {
-    services: AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep;
-};
+type PushSendFormRawTransactionThunkDeps = WithServices<
+    AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
+>;
 
 export const pushSendFormRawTransactionThunk = createThunk<
     boolean,

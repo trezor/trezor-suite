@@ -5,13 +5,14 @@ import { type ModalRootState, openDeferredModal, selectModalType } from '@suite/
 import { type RouterRootState, selectRouterUrl } from '@suite/router';
 import { type TorRootState, isOnionUrl, selectTorBootstrap, torActions } from '@suite/tor';
 import { TorStatus } from '@suite/tor-types';
+import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type BlockchainRootState, selectBlockchainState } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 type ToggleTorRootState = TorRootState & ModalRootState & RouterRootState & BlockchainRootState;
-type ToggleTorDeps = { services: DesktopAnalyticsDep };
+type ToggleTorDeps = WithServices<DesktopAnalyticsDep>;
 
 export type ToggleTorDispatch = ThunkDispatch<ToggleTorRootState, ToggleTorDeps, UnknownAction>;
 

@@ -5,7 +5,7 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type EnhancePrecomposedTransactionThunkState,
@@ -210,7 +210,8 @@ export type SendTransactionThunkState = MevProtectionRootState &
     PushSendFormTransactionThunkState &
     AddTransactionLabelingThunkState;
 export type SendTransactionThunkDeps = PushSendFormTransactionThunkDeps &
-    AddTransactionLabelingThunkDeps & { services: NativeAnalyticsDep };
+    AddTransactionLabelingThunkDeps &
+    WithServices<NativeAnalyticsDep>;
 
 export const sendTransactionThunk = createThunk<
     Ok<{ txid: string }>,

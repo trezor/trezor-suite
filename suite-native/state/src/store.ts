@@ -11,6 +11,7 @@ import { type Persistor, persistStore } from 'redux-persist';
 import { logsMiddleware } from '@suite-common/logger';
 import {
     type ReducerState,
+    type WithServices,
     castExtraStore,
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
@@ -78,9 +79,7 @@ export type StoreWithExtra = ReturnType<
 const ENABLE_REDUX_LOGGER = false;
 const enhancers: Array<StoreEnhancer<any, any>> = [];
 
-type GetMiddlewaresDeps = {
-    services: NativeAnalyticsDep & SuiteSyncDep;
-};
+type GetMiddlewaresDeps = WithServices<NativeAnalyticsDep & SuiteSyncDep>;
 
 const getMiddlewares = (getExtra: () => GetMiddlewaresDeps | null) => {
     const middlewares: Middleware[] = [

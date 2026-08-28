@@ -4,6 +4,7 @@ import { type ThunkDispatch } from 'redux-thunk';
 import { type SelectedAccountRootState } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type WithServices } from '@suite-common/redux-utils';
 import {
     getStakeTxGasLimit,
     prepareClaimEthTx,
@@ -119,11 +120,11 @@ export const composeTransaction =
         );
     };
 
-type SignTransactionThunkDeps = { services: DesktopAnalyticsDep };
 type SignTransactionThunkState = DeviceRootState &
     EthereumGetCurrentNonceThunkState &
     SelectedAccountRootState &
     WalletSettingsRootState;
+type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>

@@ -1,5 +1,5 @@
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type GetTokenDefinitionsEnabledNetworksDep,
     type TokenDefinitionsRootState,
@@ -45,7 +45,7 @@ const getAccountTypeFromDescriptor = (descriptor: string, symbol: NetworkSymbol)
 };
 
 type ImportAccountThunkState = AccountsRootState & TokenDefinitionsRootState;
-type ImportAccountThunkDeps = { services: GetTokenDefinitionsEnabledNetworksDep };
+type ImportAccountThunkDeps = WithServices<GetTokenDefinitionsEnabledNetworksDep>;
 
 export const importAccountThunk = createThunk<
     void,

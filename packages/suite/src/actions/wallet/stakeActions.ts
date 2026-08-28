@@ -13,6 +13,7 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
+import { type WithServices } from '@suite-common/redux-utils';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -116,9 +117,8 @@ type PushTransactionThunkState = DeviceRootState &
     StakeRootState &
     SyncAccountsWithBlockchainThunkState &
     WalletSettingsRootState;
-type PushTransactionThunkDeps = {
-    services: DesktopAnalyticsDep;
-} & SyncAccountsWithBlockchainThunkDeps;
+type PushTransactionThunkDeps = WithServices<DesktopAnalyticsDep> &
+    SyncAccountsWithBlockchainThunkDeps;
 
 // private, called from signTransaction only
 const pushTransaction =

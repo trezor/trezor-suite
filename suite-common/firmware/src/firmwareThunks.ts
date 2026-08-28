@@ -1,5 +1,5 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type GetBinFilesBaseUrlDep,
     type GetLanguageDep,
@@ -27,9 +27,9 @@ export type FirmwareUpdateResult = {
     connectResponse?: Awaited<ReturnType<typeof TrezorConnect.firmwareUpdate>>;
 };
 
-export type FirmwareUpdateThunkDeps = {
-    services: GetBinFilesBaseUrlDep & GetLanguageDep & ReportSecurityCheckDep;
-};
+export type FirmwareUpdateThunkDeps = WithServices<
+    GetBinFilesBaseUrlDep & GetLanguageDep & ReportSecurityCheckDep
+>;
 export type FirmwareUpdateThunkState = DeviceRootState & FirmwareRootState;
 
 export const firmwareUpdate = createThunk<

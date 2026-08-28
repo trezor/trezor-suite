@@ -3,7 +3,7 @@ import {
     deviceActions,
     getIsIgnoredEntropyCheckError,
 } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type AcquiredDevice, type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type TrezorConnect from '@trezor/connect';
@@ -15,7 +15,7 @@ type FailEntropyCheckParams = {
     error: SerializedError;
 };
 
-type FailEntropyCheckThunkDeps = { services: ReportSecurityCheckDep };
+type FailEntropyCheckThunkDeps = WithServices<ReportSecurityCheckDep>;
 
 const failEntropyCheckThunk = createThunk<
     void,

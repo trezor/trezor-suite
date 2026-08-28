@@ -19,7 +19,7 @@ import {
 import { onSuiteReady } from '@suite/suite-lifecycle';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { firmwareUpdate } from '@suite-common/firmware';
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { type WithServices, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     getIsDeviceDescriptorApiTypeBluetooth,
@@ -65,7 +65,7 @@ import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
     - transport (webusb/bridge) and its version
     - backup type (shamir/bip39)
 */
-export type PrepareAnalyticsMiddlewareDeps = { services: DesktopAnalyticsDep };
+export type PrepareAnalyticsMiddlewareDeps = WithServices<DesktopAnalyticsDep>;
 
 type AnalyticsMiddlewareState = CoinjoinRootState &
     GetSuiteReadyPayloadState &

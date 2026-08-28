@@ -1,4 +1,4 @@
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import {
@@ -31,12 +31,10 @@ export interface LoadInitialDataThunkProps {
 }
 
 type LoadInitialDataThunkState = TradingRootStateWithAccounts;
-type LoadInitialDataThunkDeps = {
-    services: {
-        getSelectedAccount: () => SelectedAccountStatus;
-        getTradingEnvironment: () => TradeServerEnvironment | undefined;
-    };
-};
+type LoadInitialDataThunkDeps = WithServices<{
+    getSelectedAccount: () => SelectedAccountStatus;
+    getTradingEnvironment: () => TradeServerEnvironment | undefined;
+}>;
 
 export const loadInitialDataThunk = createThunk<
     void,

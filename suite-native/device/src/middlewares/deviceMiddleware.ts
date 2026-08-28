@@ -1,7 +1,7 @@
 import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { type WithServices, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import {
@@ -43,7 +43,7 @@ const isActionDeviceRelated = (action: UnknownAction): boolean => {
     return isAnyDeviceEventAction(action);
 };
 
-type DeviceMiddlewareDeps = { services: SuiteSyncDep & NativeAnalyticsDep };
+type DeviceMiddlewareDeps = WithServices<SuiteSyncDep & NativeAnalyticsDep>;
 type DeviceMiddlewareState = AccountsRootState & DiscoveryRootState & NativeBluetoothRootState;
 
 export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps<

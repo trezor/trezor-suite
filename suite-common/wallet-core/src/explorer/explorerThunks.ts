@@ -1,14 +1,12 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { EXPLORER_MODULE_PREFIX, explorerActions } from './explorerActions';
 import { type ExplorerState } from './explorerReducer';
 import { selectNetworkExplorerType } from './explorerSelectors';
 
-type SetNetworkExplorerThunkDeps = {
-    services: AnalyticsDep;
-};
+type SetNetworkExplorerThunkDeps = WithServices<AnalyticsDep>;
 type SetNetworkExplorerThunkState = ExplorerState;
 type SetNetworkExplorerThunkParams = {
     symbol: NetworkSymbol;

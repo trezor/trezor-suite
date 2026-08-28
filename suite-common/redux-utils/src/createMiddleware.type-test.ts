@@ -2,12 +2,11 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from './createMiddleware';
 import { createThunk } from './createThunk';
+import { type WithServices } from './types';
 
-type SelectedExtraDependencies = {
-    services: {
-        selectedDependency: () => void;
-    };
-};
+type SelectedExtraDependencies = WithServices<{
+    selectedDependency: () => void;
+}>;
 
 type SelectedState = {
     selectedState: string;

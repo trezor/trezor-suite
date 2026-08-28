@@ -1,6 +1,7 @@
 import { type Dispatch } from 'redux';
 
 import { AppUpdateEventStatus, type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
 
@@ -13,7 +14,7 @@ import {
 
 type GetState = () => DesktopUpdateRootState;
 
-type AvailableThunkDeps = { services: DesktopAnalyticsDep };
+type AvailableThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const availableThunk =
     (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState, extra: AvailableThunkDeps) => {
@@ -41,7 +42,7 @@ export const notAvailableThunk = (info: UpdateInfo) => (dispatch: Dispatch) => {
     dispatch(desktopUpdateActions.notAvailable(info));
 };
 
-type DownloadThunkDeps = { services: DesktopAnalyticsDep };
+type DownloadThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const downloadThunk =
     () => (dispatch: Dispatch, getState: GetState, extra: DownloadThunkDeps) => {
@@ -61,7 +62,7 @@ export const downloadThunk =
         dispatch(desktopUpdateActions.download());
     };
 
-type ReadyThunkDeps = { services: DesktopAnalyticsDep };
+type ReadyThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const readyThunk =
     (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState, extra: ReadyThunkDeps) => {
@@ -83,7 +84,7 @@ export const readyThunk =
         dispatch(desktopUpdateActions.ready(info));
     };
 
-type InstallUpdateThunkDeps = { services: DesktopAnalyticsDep };
+type InstallUpdateThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const installUpdateThunk =
     ({ installNow }: { installNow: boolean }) =>
@@ -115,7 +116,7 @@ export const installUpdateThunk =
         }
     };
 
-type ErrorThunkDeps = { services: DesktopAnalyticsDep };
+type ErrorThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const errorThunk = () => (dispatch: Dispatch, getState: GetState, extra: ErrorThunkDeps) => {
     // eslint-disable-next-line no-restricted-syntax

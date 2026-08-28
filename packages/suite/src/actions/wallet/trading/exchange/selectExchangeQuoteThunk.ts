@@ -2,7 +2,7 @@ import { type ExchangeTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
     cryptoIdToNetworkSymbolAndContractAddress,
@@ -19,7 +19,7 @@ type SelectExchangeQuoteThunkProps = {
     fractionButton?: number;
 };
 type SelectExchangeQuoteThunkState = GotoThunkState & TradingRootState;
-type SelectExchangeQuoteThunkDeps = GotoThunkDeps & { services: DesktopAnalyticsDep };
+type SelectExchangeQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
 
 export const selectExchangeQuoteThunk = createThunk<
     void,

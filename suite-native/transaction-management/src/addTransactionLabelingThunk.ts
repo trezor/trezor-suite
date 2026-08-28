@@ -1,5 +1,5 @@
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     selectIsSuiteSyncEnabled,
@@ -25,7 +25,7 @@ type AddTransactionLabelingThunkParams = {
 export type AddTransactionLabelingThunkState = WithSuiteSyncAndDeviceState &
     MessageSystemRootState &
     SendRootState;
-export type AddTransactionLabelingThunkDeps = { services: SuiteSyncDep };
+export type AddTransactionLabelingThunkDeps = WithServices<SuiteSyncDep>;
 
 // Todo: This code below is kinda copy-paste from `applySendFormMetadataLabelsThunk` in Desktop.
 //       However, desktop code is polluted by Legacy Labeling (Metadata) so it cannot be easily reused.

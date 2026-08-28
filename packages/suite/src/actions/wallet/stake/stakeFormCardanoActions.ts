@@ -8,6 +8,7 @@ import {
 } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type AdaPools } from '@suite-common/earn-staking-api';
+import { type WithServices } from '@suite-common/redux-utils';
 import {
     calculate,
     composeStakingTransaction,
@@ -339,8 +340,8 @@ const getPoolDelegation = (
     };
 };
 
-type SignTransactionThunkDeps = { services: DesktopAnalyticsDep };
 type SignTransactionThunkState = DeviceRootState & SelectedAccountRootState & StakeRootState;
+type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>

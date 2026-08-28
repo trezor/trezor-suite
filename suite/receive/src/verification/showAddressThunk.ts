@@ -10,6 +10,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/receive';
+import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type WalletSettingsRootState,
@@ -19,7 +20,7 @@ import {
 } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
-type ShowAddressThunkDeps = { services: DesktopAnalyticsDep };
+type ShowAddressThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const showAddressThunk =
     ({ path }: { path: string }) =>

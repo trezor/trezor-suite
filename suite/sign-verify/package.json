@@ -18,6 +18,7 @@
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/receive": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/validators": "workspace:*",

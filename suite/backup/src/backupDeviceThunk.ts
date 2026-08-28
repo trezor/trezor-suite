@@ -1,6 +1,6 @@
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 
@@ -12,9 +12,7 @@ type BackupDeviceThunkParams = {
     skipSuccessToast?: boolean;
 };
 
-export type BackupDeviceThunkDeps = {
-    services: DesktopAnalyticsDep;
-};
+export type BackupDeviceThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export type BackupDeviceThunkState = DeviceRootState;
 

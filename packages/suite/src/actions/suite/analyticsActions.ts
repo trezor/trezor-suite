@@ -17,6 +17,7 @@ import {
     selectIsAnalyticsEnabled,
     selectLoggerEnabled,
 } from '@suite-common/analytics-redux';
+import { type WithServices } from '@suite-common/redux-utils';
 import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploader';
 import { getCommitHash, getEnvironment, isCodesignBuild } from '@trezor/env-utils';
 
@@ -26,7 +27,7 @@ type SendReportProps = {
     sendReport: boolean;
 };
 
-type EnableAnalyticsThunkDeps = { services: DesktopAnalyticsDep };
+type EnableAnalyticsThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const enableAnalyticsThunk =
     ({ sendReport }: SendReportProps) =>
@@ -46,7 +47,7 @@ export const enableAnalyticsThunk =
         dispatch(analyticsActions.enableAnalytics());
     };
 
-type DisableAnalyticsThunkDeps = { services: DesktopAnalyticsDep };
+type DisableAnalyticsThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const disableAnalyticsThunk =
     ({ sendReport }: SendReportProps) =>
@@ -67,7 +68,7 @@ export const disableAnalyticsThunk =
     };
 
 type InitAnalyticsThunkState = AnalyticsRootState;
-type InitAnalyticsThunkDeps = { services: DesktopAnalyticsDep };
+type InitAnalyticsThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 /**
  * Init analytics, should be always run on application start (see suiteMiddleware). It:

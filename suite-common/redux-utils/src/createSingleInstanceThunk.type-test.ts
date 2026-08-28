@@ -1,10 +1,9 @@
 import { createSingleInstanceThunk } from './createSingleInstanceThunk';
+import { type WithServices } from './types';
 
-type SelectedExtraDependencies = {
-    services: {
-        selectedDependency: () => void;
-    };
-};
+type SelectedExtraDependencies = WithServices<{
+    selectedDependency: () => void;
+}>;
 
 type SelectedState = {
     selected: {

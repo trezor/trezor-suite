@@ -10,7 +10,7 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type BackupType, type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
 import {
@@ -46,7 +46,7 @@ const getResetDeviceConfig = (walletBackupType: BackupType): PROTO.ResetDevice =
 };
 
 type CreateAndBackupWalletThunkState = DeviceRootState & MessageSystemRootState;
-type CreateAndBackupWalletThunkDeps = { services: ReportSecurityCheckDep };
+type CreateAndBackupWalletThunkDeps = WithServices<ReportSecurityCheckDep>;
 
 export const createAndBackupWalletThunk = createThunk<
     Err<SerializedError> | OkWithDevice<PROTO.Success>,
