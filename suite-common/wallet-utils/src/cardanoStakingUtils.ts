@@ -54,6 +54,17 @@ export const getCardanoAccountPoolId = (account?: Account) => {
     return poolId || null;
 };
 
+export const getCardanoAccountDrepId = (account?: Account) => {
+    if (account?.networkType !== 'cardano') return null;
+
+    const drepId = account.misc?.staking?.drep?.drep_id;
+
+    return drepId || null;
+};
+
+export const hasCardanoLiveVoteDelegation = (account?: Account) =>
+    !!isCardanoStakingActive(account ?? null) && !!getCardanoAccountDrepId(account);
+
 export const isCardanoStakedWithEverstake = (
     account: Account,
     cardanoStakingPools?: AdaPools['pools'],
