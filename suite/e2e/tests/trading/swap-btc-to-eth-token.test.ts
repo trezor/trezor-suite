@@ -3,7 +3,6 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { getCompanyNameFromList } from '../../fixtures/trading';
 import { swapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
@@ -39,6 +38,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
         device,
         devicePrompt,
         tradingMockNew,
+        tradingResponses,
     }) => {
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fillSwapForm({
@@ -62,30 +62,27 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         let receiveAmount: string;
         let providerName: string;
-        let liveTradePromise: ReturnType<typeof tradingMockNew.waitForLiveTrade>;
 
         await test.step('Confirm the Swap trade', async () => {
             receiveAmount = await tradingPage.quotes.getBestOfferAmount();
             await tradingPage.fees.waitToBeCalculated();
-            liveTradePromise = tradingMockNew.waitForLiveTrade();
             await tradingPage.swapBestOfferButton.click();
         });
 
         await test.step('Open modal and verify recipient on prompt and device', async () => {
+            const { exchange, sendAddress } = await tradingResponses.swap.trade();
+            providerName = await tradingResponses.swap.companyName(exchange);
+
             await tradingPage.confirmation.openConfirmAndSendModal();
-            await liveTradePromise;
-            providerName = getCompanyNameFromList(tradingMockNew.liveTrade.exchange, 'swapList');
 
             await expect(devicePrompt.header.accountLabel).toHaveText(sendAccountLabel);
             await expect(devicePrompt.outputValueOf('address')).toHaveText(
-                formatAddressWithNewlines(tradingMockNew.liveTrade.sendAddress),
+                formatAddressWithNewlines(sendAddress),
             );
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Send' },
-                    body: [
-                        transformAddress(tradingMockNew.liveTrade.sendAddress, 'fourTetragrams'),
-                    ],
+                    body: [transformAddress(sendAddress, 'fourTetragrams')],
                     actions: { right_button: 'Continue' },
                 },
                 T3T1: {
@@ -145,11 +142,13 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             await page.clock.install();
             await devicePrompt.sendButton.click();
 
+            const { sendStringAmount } = await tradingResponses.swap.trade();
+
             await tradingPage.verifySwapToast({
                 sendAccount: sendAccountLabel,
                 receiveAccount: receiveAccountLabel,
                 // The toast echoes the provider's formatting of the amount, not the one we typed.
-                sendAmount: tradingMockNew.liveTrade.sendStringAmount,
+                sendAmount: sendStringAmount,
                 receiveAmount,
             });
         });

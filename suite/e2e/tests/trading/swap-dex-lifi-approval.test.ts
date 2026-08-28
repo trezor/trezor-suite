@@ -1,13 +1,11 @@
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import { getCompanyNameFromList } from '../../fixtures/trading';
 import { countDecimalPlaces } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 const approvalAmount = '10';
 const accountLabel = 'Ethereum #2';
-const dexProvider = getCompanyNameFromList('lifi', 'swapList');
 const providerName = 'LiFI Diamond';
 const positiveEthereumAmountPattern = /^(?!0+(?:\.0+)?\s*ETH$)\d+(?:\.\d+)?\s*ETH$/;
 
@@ -40,7 +38,10 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
         device,
         tradingMockNew,
         toastSection,
+        tradingResponses,
     }) => {
+        const dexProvider = await tradingResponses.swap.companyName('lifi');
+
         await test.step('Select USDC to ETH LI.FI DEX offer', async () => {
             await tradingPage.fillSwapForm({
                 amount: approvalAmount,

@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import type { CryptoId, ExchangeTrade } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { getSimulatedReceiveAmount } from '@suite-common/trading';
 import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
@@ -7,15 +7,6 @@ import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { TradingChainBackend, createTradingChainBackend } from './tradingChainBackend';
 import { tradeEndpoint } from '../../../fixtures/trading';
 import { step } from '../../common';
-
-// TODO: loose for DEX (no sendAddress, optional fields); revisit in the sell migration PR.
-export type CapturedLiveTrade = ExchangeTrade & {
-    sendAddress: string;
-    exchange: string;
-    sendStringAmount: string;
-    receive: CryptoId;
-    receiveStringAmount: string;
-};
 
 type TxSimulationResult = NonNullable<Parameters<typeof getSimulatedReceiveAmount>[0]>;
 type EvmTxSimulationResult = Extract<TxSimulationResult, { method: 'ethereumSignTransaction' }>;
@@ -25,16 +16,20 @@ type TradeFlow = 'buy' | 'sell' | 'swap';
 type TradeEndpoints = {
     readonly trade: string;
     readonly watch: string;
+    readonly confirm?: string;
 };
 
 const TRADE_ENDPOINTS: Record<TradeFlow, TradeEndpoints> = {
     buy: { trade: tradeEndpoint.buyTrade, watch: tradeEndpoint.buyWatch },
-    sell: { trade: tradeEndpoint.sellTrade, watch: tradeEndpoint.sellWatch },
+    sell: {
+        trade: tradeEndpoint.sellTrade,
+        watch: tradeEndpoint.sellWatch,
+        confirm: tradeEndpoint.sellConfirm,
+    },
     swap: { trade: tradeEndpoint.swapTrade, watch: tradeEndpoint.swapWatch },
 };
 
 const WATCH_POLL_PERIOD = '00:30';
-const TRADE_RESPONSE_TIMEOUT = 90_000;
 const WATCH_POLL_TIMEOUT = 35_000;
 const ADVANCE_ATTEMPTS = 5;
 
@@ -62,8 +57,11 @@ const assertPassphraseEnv = () => {
 export class TradingMockNew {
     private flow?: TradeFlow;
     private backend?: TradingChainBackend;
-    private capturedTrade: CapturedLiveTrade | null = null;
     private capturedTxSimulation: TxSimulationResult | null = null;
+    private rewriteRedirect = false;
+    private mockStatusPage = false;
+    private status?: string;
+    private watchFields: Record<string, string> = {};
 
     constructor(private page: Page) {
         assertPassphraseEnv();
@@ -108,19 +106,15 @@ export class TradingMockNew {
     }
 
     @step()
-    async rewriteTradeRedirect() {
+    async rewriteProviderRedirect() {
         if (this.tradeFlow === 'swap') {
-            throw new Error('rewriteTradeRedirect is buy/sell only; swap has no provider redirect');
+            throw new Error(
+                'rewriteProviderRedirect is buy/sell only; swap has no provider redirect',
+            );
         }
 
-        await this.page.route(this.endpoints.trade, async route => {
-            const response = await route.fetch();
-            const body = await response.json();
-            const { returnUrl } = route.request().postDataJSON();
-            body.trade.partnerData = returnUrl;
-            body.tradeForm.form.formAction = returnUrl;
-            await route.fulfill({ response, json: body });
-        });
+        this.rewriteRedirect = true;
+        await this.routeTrade();
     }
 
     @step()
@@ -129,12 +123,8 @@ export class TradingMockNew {
             throw new Error('mockProviderStatusPage is swap only');
         }
 
-        await this.page.route(this.endpoints.trade, async route => {
-            const response = await route.fetch();
-            const body = await response.json();
-            body.statusUrl = `${MOCK_PROVIDER_STATUS_ORIGIN}/${body.orderId}`;
-            await route.fulfill({ response, json: body });
-        });
+        this.mockStatusPage = true;
+        await this.routeTrade();
 
         await this.page.context().route(`${MOCK_PROVIDER_STATUS_ORIGIN}/*`, async route => {
             const orderId = route.request().url().split('/').pop() ?? '';
@@ -146,46 +136,21 @@ export class TradingMockNew {
         });
     }
 
-    async waitForLiveTrade() {
-        const response = await this.page.waitForResponse(this.endpoints.trade, {
-            timeout: TRADE_RESPONSE_TIMEOUT,
-        });
-        const trade = (await response.json()) as ExchangeTrade;
-        // A DEX trade sends to the provider's router contract (`dexTx`), so it has no sendAddress.
-        const hasDepositAddress = trade.isDex || trade.sendAddress;
-        if (
-            !trade.exchange ||
-            !trade.sendStringAmount ||
-            !trade.receive ||
-            !trade.receiveStringAmount ||
-            !hasDepositAddress
-        ) {
+    // Amount the last captured simulation credits, derived the same way the confirm step derives
+    // the amount it renders. A re-quote refetches the scan, so read this at assertion time.
+    simulatedReceiveAmount(receive: CryptoId): string {
+        if (!this.capturedTxSimulation) {
             throw new Error(
-                'Live trade response is missing exchange, sendStringAmount, receive, receiveStringAmount or sendAddress',
+                'No tx simulation captured - is captureTxSimulation() set up in beforeEach?',
             );
         }
 
-        this.capturedTrade = trade as CapturedLiveTrade;
-    }
-
-    get liveTrade(): CapturedLiveTrade {
-        if (!this.capturedTrade) {
-            throw new Error('Live trade response was not captured yet');
-        }
-
-        return this.capturedTrade;
-    }
-
-    // Amount the last captured simulation credits, derived the same way the confirm step derives
-    // the amount it renders. A re-quote refetches the scan, so read this at assertion time.
-    get simulatedReceiveAmount(): string {
-        const amount = getSimulatedReceiveAmount(
-            this.capturedTxSimulation ?? undefined,
-            this.liveTrade.receive,
-        );
+        const amount = getSimulatedReceiveAmount(this.capturedTxSimulation, receive);
 
         if (!amount) {
-            throw new Error('No captured simulation credits the receive asset of the trade');
+            throw new Error(
+                'The captured simulation does not credit the receive asset of the trade',
+            );
         }
 
         return amount;
@@ -209,13 +174,21 @@ export class TradingMockNew {
     }
 
     @step()
+    async setWatchFields(fields: Record<string, string>) {
+        this.watchFields = fields;
+        await this.routeStatus();
+    }
+
+    @step()
     async setStatus(status: string) {
-        await this.routeWatch(status);
+        this.status = status;
+        await this.routeStatus();
     }
 
     @step()
     async advanceStatus(status: string) {
-        await this.routeWatch(status);
+        this.status = status;
+        await this.routeStatus();
 
         for (let attempt = 0; attempt < ADVANCE_ATTEMPTS; attempt++) {
             const watchResponsePromise = this.page
@@ -236,9 +209,40 @@ export class TradingMockNew {
         await this.backend?.stop();
     }
 
-    private async routeWatch(status: string) {
+    private async routeTrade() {
+        await this.page.route(this.endpoints.trade, async route => {
+            const response = await route.fetch();
+            const body = await response.json();
+
+            if (this.rewriteRedirect) {
+                const { returnUrl } = route.request().postDataJSON();
+                body.trade.partnerData = returnUrl;
+                body.tradeForm.form.formAction = returnUrl;
+            }
+
+            if (this.mockStatusPage) {
+                body.statusUrl = `${MOCK_PROVIDER_STATUS_ORIGIN}/${body.orderId}`;
+            }
+
+            await route.fulfill({ response, json: body });
+        });
+    }
+
+    private async routeStatus() {
         await this.page.route(this.endpoints.watch, async route => {
-            await route.fulfill({ json: { status, sendAddress: this.liveTrade.sendAddress } });
+            await route.fulfill({ json: { status: this.status, ...this.watchFields } });
+        });
+
+        const { confirm } = this.endpoints;
+        if (!confirm) {
+            return; // buy and swap flows have no confirm endpoint
+        }
+
+        // Live Invity rejects a confirm carrying an address it never issued and a txid that is not
+        // on chain, so the posted trade is echoed back with the status the test is driving.
+        await this.page.route(confirm, async route => {
+            const trade = route.request().postDataJSON();
+            await route.fulfill({ json: { ...trade, status: this.status } });
         });
     }
 }

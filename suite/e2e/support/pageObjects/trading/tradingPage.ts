@@ -16,8 +16,9 @@ import { TradingQuotesSection } from './quotesSection';
 import { TradingReceiveAccount } from './receiveAccount';
 import { TransactionDetailSidebar } from './transactionDetailSidebar';
 import { tradeEndpoint } from '../../../fixtures/trading';
-import { step } from '../../common';
+import { isDesktopProject, isWebProject, step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
+import { type PlaywrightTarget } from '../../testExtends/suiteTestOptions';
 import { BuyAsset, SellAsset } from '../../types';
 
 const LIVE_TRADE_RESPONSE_TIMEOUT = 90_000;
@@ -72,6 +73,7 @@ export class TradingPage {
     constructor(
         private page: Page,
         devicePrompt: DevicePrompt,
+        private target: PlaywrightTarget,
     ) {
         this.fees = new FeeSection(page);
         this.assetPicker = new TradingAssetPicker(page);
@@ -410,10 +412,14 @@ export class TradingPage {
 
     @step()
     async waitForRedirectCompletion() {
-        const tradeHeading = this.page.getByRole('heading', { name: 'Trade' });
+        if (isDesktopProject(this.target)) {
+            await expect(this.confirmation.confirmAndSendButton).toBeVisible({ timeout: 30_000 });
+        } else if (isWebProject(this.target)) {
+            const tradeHeading = this.page.getByRole('heading', { name: 'Trade' });
 
-        await expect(tradeHeading).toBeHidden();
-        await expect(tradeHeading).toBeVisible({ timeout: 30_000 });
+            await expect(tradeHeading).toBeHidden();
+            await expect(tradeHeading).toBeVisible({ timeout: 30_000 });
+        }
     }
 
     @step()
