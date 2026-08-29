@@ -7,6 +7,7 @@ import { expect } from '../testExtends/customMatchers';
 export class ToastSection {
     readonly approved: Locator;
     readonly approvedAmount: Locator;
+    readonly txSent: Locator;
     readonly yieldDeposit: Locator;
     readonly toast = (preset: ActivityPreset): Locator => this.page.getByTestId(`@toast/${preset}`);
     readonly toastCloseButton = (preset: ToastActivityPreset): Locator =>
@@ -15,6 +16,7 @@ export class ToastSection {
     constructor(private readonly page: Page) {
         this.approved = this.page.getByTestId('@toast/tx-approved');
         this.approvedAmount = this.page.getByTestId('@toast/tx-approved/amount');
+        this.txSent = this.page.getByTestId('@toast/tx-sent');
         this.yieldDeposit = this.page.getByTestId('@toast/tx-yield-deposit');
     }
 
