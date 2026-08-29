@@ -49,7 +49,14 @@ export const TradingDetailTxId = ({
             }
         >
             <Row gap={4}>
-                <Address isTruncated isChunked={false} isCopyAllowed value={value} intent="brand" />
+                <Address
+                    isTruncated
+                    isChunked={false}
+                    isCopyAllowed
+                    value={value}
+                    intent="brand"
+                    data-testid="@trading/transaction/detail/txid"
+                />
                 <Icon as={CaretRightIcon} size={16} intent="brand" />
             </Row>
         </Link>
