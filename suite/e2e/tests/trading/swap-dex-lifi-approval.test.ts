@@ -203,7 +203,7 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                 await expect(tradingPage.approvalModal.heading).toHaveTranslation(
                     'TR_TRANSACTION_DETAILS',
                 );
-                await expect(tradingPage.transactionDetailTxid).toHaveText(
+                await expect(tradingPage.transactionDetailModalTxid).toHaveText(
                     tradingMockNew.lastBroadcastTxid,
                 );
             });

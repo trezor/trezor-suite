@@ -178,6 +178,12 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(toastSection.txSent).toContainTranslation('TOAST_TX_SENT', {
                     values: { amount: formattedSendAmount, account: accountLabel },
                 });
+
+                // The row truncates the text, so the full txid is only in the id attribute.
+                await expect(tradingPage.transactionDetailTxid).toHaveAttribute(
+                    'id',
+                    tradingMockNew.lastBroadcastTxid,
+                );
             });
 
             for (const phase of sellStatusFlow) {

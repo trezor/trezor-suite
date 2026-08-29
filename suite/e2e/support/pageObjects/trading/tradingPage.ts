@@ -16,7 +16,7 @@ import { TradingQuotesSection } from './quotesSection';
 import { TradingReceiveAccount } from './receiveAccount';
 import { TransactionDetailSidebar } from './transactionDetailSidebar';
 import { tradeEndpoint } from '../../../fixtures/trading';
-import { isDesktopProject, isWebProject, step } from '../../common';
+import { isWebProject, step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 import { type PlaywrightTarget } from '../../testExtends/suiteTestOptions';
 import { BuyAsset, SellAsset } from '../../types';
@@ -64,6 +64,7 @@ export class TradingPage {
     readonly transactionDetailHeader: Locator;
     readonly transactionDetail: Locator;
     readonly transactionDetailTxid: Locator;
+    readonly transactionDetailModalTxid: Locator;
     readonly transactions: TradingTransactionsSection;
 
     // Swap toast notifications
@@ -117,7 +118,8 @@ export class TradingPage {
         );
         this.transactionDetailHeader = this.page.getByTestId('@trading/transaction/detail/header');
         this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
-        this.transactionDetailTxid = this.page.getByTestId('@tx-detail/txid-value');
+        this.transactionDetailTxid = this.page.getByTestId('@trading/transaction/detail/txid');
+        this.transactionDetailModalTxid = this.page.getByTestId('@tx-detail/txid-value');
         this.transactions = new TradingTransactionsSection(page);
 
         // Swap toast notifications
@@ -421,21 +423,16 @@ export class TradingPage {
     }
 
     @step()
-    async waitForRedirectCompletion(flow: 'buy' | 'sell' = 'sell') {
-        if (isDesktopProject(this.target)) {
-            // The desktop app routes in memory, so the return from the provider only shows in the
-            // UI: buy lands on the transaction detail, sell and swap on the confirmation panel.
-            const landing =
-                flow === 'buy'
-                    ? this.transactionDetailStatus
-                    : this.confirmation.confirmAndSendButton;
-            await expect(landing).toBeVisible({ timeout: 30_000 });
-        } else if (isWebProject(this.target)) {
+    async waitForRedirectCompletion() {
+        if (isWebProject(this.target)) {
             const tradeHeading = this.page.getByRole('heading', { name: 'Trade' });
 
             await expect(tradeHeading).toBeHidden({ timeout: 30_000 });
             await expect(tradeHeading).toBeVisible({ timeout: 30_000 });
         }
+
+        // The confirmation panel is completely populated after the redirect
+        await expect(this.confirmation.provider).not.toBeEmpty({ timeout: 30_000 });
     }
 
     @step()
