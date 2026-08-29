@@ -247,6 +247,7 @@ export class WalletPage {
     @step()
     async openBuyTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
         await this.openAccount({ symbol, subAccount: 'tokens' });
+        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins');
         await this.tokenRowMoreButton(tokenName).click();
         await this.tokenBuyButton.click();
     }
@@ -254,6 +255,7 @@ export class WalletPage {
     @step()
     async openSellTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
         await this.openAccount({ symbol, subAccount: 'tokens' });
+        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins');
         await this.tokenRowMoreButton(tokenName).click();
         await this.tokenSellButton.click();
     }
@@ -261,6 +263,7 @@ export class WalletPage {
     @step()
     async openSwapTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
         await this.openAccount({ symbol, subAccount: 'tokens' });
+        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins');
         await this.tokenRowSwapButton(tokenName).click();
     }
 

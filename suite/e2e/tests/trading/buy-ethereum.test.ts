@@ -78,7 +78,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
                 expect(await tradingResponses.buy.companyName(exchange)).toBe(providerName);
             });
 
-            await tradingPage.waitForRedirectCompletion('buy');
+            await tradingPage.waitForRedirectCompletion();
 
             await test.step('Verify transaction detail', async () => {
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
