@@ -111,6 +111,13 @@ export const webSetup = async (browserContext: BrowserContext) => {
     await page.context().addInitScript(() => {
         window.Playwright = true;
     });
+
+    // The same instrumentation electronSetup installs. Registered before the first navigation, so
+    // unlike there no reload is needed. Passive until a test opts in. PERF=0 skips it.
+    if (process.env.PERF !== '0') {
+        await page.addInitScript(installPerfInstrumentation);
+    }
+
     await page.goto('./');
     await mockRemoteMessageSystem(page);
 

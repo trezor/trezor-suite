@@ -1,0 +1,12 @@
+{
+    "ci": {
+        "server": {
+            "port": 9001,
+            "storage": {
+                "storageMethod": "sql",
+                "sqlDialect": "postgres"
+            },
+            "deleteOldBuildsCron": [{ "schedule": "30 4 * * *", "maxAgeInDays": 180 }]
+        }
+    }
+}

@@ -16,6 +16,7 @@ import {
 } from '@trezor/perf-e2e';
 
 import { BASELINES, LIMITS } from './budgets';
+import { isLighthouseEnabled } from './lighthouseConfig';
 
 const BUDGETS_MODULE_PATH = 'suite/e2e/performance/budgets.ts';
 
@@ -190,43 +191,62 @@ class PerfReporter implements Reporter {
             lines.push(chalk.bold.green('Result: within limits.'));
         }
 
-        // Both numbers in one paste: the baseline refreshed to this run, and every limit lifted to
-        // fit it where the run went over. Untouched entries are preserved. Each measurement is
-        // recorded under its own key, so two device models keep two sets of numbers instead of
-        // overwriting one another.
-        const measured = scenarios.map(entry => ({
-            ...entry,
-            key: measurementKey(entry.scenario, entry.project),
-        }));
+        if (isLighthouseEnabled()) {
+            // A run traced by Lighthouse pays for the tracing in its numbers. They are fine for the
+            // relative comparisons the run itself reports, but recording them in budgets.ts would
+            // hold untraced runs to traced costs — so the paste block stays out on purpose.
+            lines.push(
+                '',
+                'Measured with Lighthouse tracing attached (LIGHTHOUSE): the numbers above carry',
+                `tracing overhead and must not be recorded in ${BUDGETS_MODULE_PATH}.`,
+            );
+        } else {
+            // Both numbers in one paste: the baseline refreshed to this run, and every limit lifted
+            // to fit it where the run went over. Untouched entries are preserved. Each measurement
+            // is recorded under its own key, so two device models keep two sets of numbers instead
+            // of overwriting one another.
+            const measured = scenarios.map(entry => ({
+                ...entry,
+                key: measurementKey(entry.scenario, entry.project),
+            }));
 
-        // Nothing is removed, only added to: a run that covers one device model must not delete the
-        // scenario-wide entry the other one still falls back to, and CI is free to measure the models
-        // in separate jobs whose reports are pasted one after the other.
-        const updatedBaselines: Baselines = {
-            ...BASELINES,
-            ...Object.fromEntries(measured.map(entry => [entry.key, entry.median])),
-        };
-        const updatedLimits: Limits = {
-            ...LIMITS,
-            ...suggestLimits(measured.map(entry => ({ ...entry.comparison, scenario: entry.key }))),
-        };
+            // Nothing is removed, only added to: a run that covers one device model must not delete
+            // the scenario-wide entry the other one still falls back to, and CI is free to measure
+            // the models in separate jobs whose reports are pasted one after the other.
+            const updatedBaselines: Baselines = {
+                ...BASELINES,
+                ...Object.fromEntries(measured.map(entry => [entry.key, entry.median])),
+            };
+            const updatedLimits: Limits = {
+                ...LIMITS,
+                ...suggestLimits(
+                    measured.map(entry => ({ ...entry.comparison, scenario: entry.key })),
+                ),
+            };
 
-        lines.push(
-            '',
-            `To record this run's numbers, run from the repo root then commit`,
-            '(the baseline is reference only; a raised limit says the app may cost more):',
-            '',
-            `cat > ${BUDGETS_MODULE_PATH} <<'TS'`,
-            formatBudgetsModule(updatedBaselines, updatedLimits),
-            'TS',
-        );
+            lines.push(
+                '',
+                `To record this run's numbers, run from the repo root then commit`,
+                '(the baseline is reference only; a raised limit says the app may cost more):',
+                '',
+                `cat > ${BUDGETS_MODULE_PATH} <<'TS'`,
+                formatBudgetsModule(updatedBaselines, updatedLimits),
+                'TS',
+            );
+        }
 
         lines.push(headerStyle('━'.repeat(72)), '');
 
         // eslint-disable-next-line no-console
         console.log(lines.join('\n'));
 
-        annotateOverLimit(overLimit.map(entry => measurementKey(entry.scenario, entry.project)));
+        // A traced breach stays out of the run summary too: against untraced limits it is as likely
+        // to be overhead as a regression, and the delta report is where traced numbers are judged.
+        if (!isLighthouseEnabled()) {
+            annotateOverLimit(
+                overLimit.map(entry => measurementKey(entry.scenario, entry.project)),
+            );
+        }
     }
 }
 

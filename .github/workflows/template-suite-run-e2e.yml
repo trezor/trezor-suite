@@ -65,6 +65,11 @@ on:
         description: "Name of the artifact to download (e.g. desktop app build)"
         required: false
         type: string
+      lighthouse:
+        description: "Record Lighthouse timespans around @perf measurements (LIGHTHOUSE=1) and upload the perf-results artifact"
+        required: false
+        default: "false"
+        type: string
     secrets:
       currents-record-key:
         description: "Currents record key for reporting"
@@ -204,6 +209,7 @@ jobs:
           ELECTRON_DISABLE_SANDBOX: 1
           COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
           COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
+          LIGHTHOUSE: ${{ inputs.lighthouse == 'true' && '1' || '' }}
         run: |
           if [[ -z "${{ inputs.base-url }}" ]]; then
             BASE_URL="https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/"
@@ -300,6 +306,26 @@ jobs:
         with:
           target: ${{ inputs.target }}
           test-group: ${{ inputs.test-group }}
+
+      # Consumed by the caller's perf-report job. Any shard may run any @perf test (Currents
+      # distributes specs dynamically), so every shard uploads whatever perf files it produced;
+      # a shard that ran none simply skips (if-no-files-found: ignore). The name stays attempt-less
+      # on purpose — with overwrite, a re-run shard replaces its own artifact while artifacts of
+      # shards that passed on the first attempt stay downloadable under perf-results-*.
+      - name: Upload perf results
+        if: inputs.lighthouse == 'true' && !cancelled()
+        # Perf reporting is informative only; failing to persist it must not red the e2e shard.
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: perf-results-${{ inputs.target }}-group-${{ inputs.test-group }}
+          path: |
+            suite/e2e/test-results/*/lighthouse-flow-result.json
+            suite/e2e/test-results/*/lighthouse-flow-meta.json
+            suite/e2e/test-results/*/perf-report-*.json
+          if-no-files-found: ignore
+          retention-days: 7
+          overwrite: true
 
       - name: Upload per-test coverage map
         if: inputs.enable-coverage == 'true' && !cancelled()
