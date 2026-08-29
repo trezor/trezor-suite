@@ -21,7 +21,7 @@ const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) =
         case MESSAGES.GET_INFO:
             return getInfo(request, isTestnet);
         case MESSAGES.GET_ACCOUNT_INFO:
-            return getAccountInfo(request);
+            return getAccountInfo(request, isTestnet);
         case MESSAGES.ESTIMATE_FEE:
             return estimateFee(request);
         case MESSAGES.PUSH_TRANSACTION:
