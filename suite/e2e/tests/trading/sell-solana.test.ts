@@ -1,172 +1,174 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
-import { capitalizeFirstLetter } from '@trezor/utils';
 
-import {
-    getCompanyNameFromList,
-    sellQuotesSolana,
-    sellTradeSolana,
-    sellWatchSolana,
-    tradeEndpoint,
-} from '../../fixtures/trading';
+import { sellStatusFlow } from '../../fixtures/trading/statusFlow';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
-// Expected values based on our mocked responses
-const fiatAmount = localizeNumber(sellQuotesSolana[0]?.fiatStringAmount ?? '', 'en-US', 2, 2);
-const cryptoAmount = sellQuotesSolana[0]?.cryptoStringAmount ?? '';
-const provider = getCompanyNameFromList(sellQuotesSolana[0]?.exchange ?? '', 'sellList');
-const selectedPaymentMethod = sellQuotesSolana[0]?.paymentMethod ?? '';
-const comparedSellQuotes = [
-    ...new Map(
-        sellQuotesSolana
-            .filter(quote => quote.paymentMethod === selectedPaymentMethod)
-            .map(quote => [quote.exchange, quote]),
-    ).values(),
-];
-const secondComparedOfferQuote = comparedSellQuotes[1];
-// This address belongs to second account in this wallet.
-// So if me make mistake in updating the test case, and actually send crypto.
-// It will be sent to this address and we will not lose it.
-const providerAddress = sellWatchSolana.destinationAddress;
-const formattedCryptoAmount = `${cryptoAmount} SOL`;
-const formattedFiatAmount = `€${fiatAmount}`;
-const { paymentMethodName } = sellTradeSolana.trade;
-const formattedAddress = formatAddressWithNewlines(sellWatchSolana.destinationAddress);
+const sendAmount = '1.5';
+const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
+const accountLabel = 'Solana #1';
 
-test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
-    test.use({
-        deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
-    });
+// Live Invity never hands out a deposit address for a payment its provider page never initiated,
+// so the test supplies one. It is an address of this same wallet: the broadcast is already blocked
+// by the backend, and a self-owned address means even a regression there could not move funds out.
+const depositAddress = 'ENk2eeP4umP6cjAGRsVG4NEVKEVQmRn6JEpN8hubv2Hf';
+
+test.describe('Trading - Sell Solana', { tag: ['@T3W1', '@T3T1'] }, () => {
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(
         async ({
-            page,
-            tradingPage,
-            tradingMock,
             onboardingPage,
             dashboardPage,
             settingsPage,
             walletPage,
+            tradingPage,
+            tradingMockNew,
         }) => {
-            await test.step('Mocking responses', async () => {
-                await page.route(tradeEndpoint.sellQuotes, async route => {
-                    await route.fulfill({ json: sellQuotesSolana });
-                });
-                await tradingMock.routeTrade(tradeEndpoint.sellTrade, sellTradeSolana);
-                //IMPORTANT: Mocking this request prevents from actually sending crypto
-                await tradingMock.routeSolanaSendRequests();
-                await page.route(tradeEndpoint.sellWatch, async route => {
-                    await route.fulfill({ json: sellWatchSolana });
-                });
-            });
+            tradingMockNew.setTradeFlow('sell');
+            await tradingMockNew.rewriteProviderRedirect();
+            await tradingMockNew.setWatchFields({ destinationAddress: depositAddress });
+            await tradingMockNew.setStatus('SEND_CRYPTO');
+            const solBackend = await tradingMockNew.startBackend('sol');
 
             await onboardingPage.completeOnboarding();
-
-            await test.step('Enable Solana and open its sell trading', async () => {
-                await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
-                await dashboardPage.deviceSwitchingOpenButton.click();
-                await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-                await walletPage.openTrading({ symbol: 'sol' });
-                await tradingPage.sellTabButton.click();
+            await settingsPage.changeNetworks({
+                enableNetworks: [{ symbol: 'sol', backend: solBackend }],
             });
+            await dashboardPage.deviceSwitchingOpenButton.click();
+            await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+            await walletPage.openTrading({ symbol: 'sol' });
+            await tradingPage.sellTabButton.click();
         },
     );
 
-    test('Sell Solana', async ({ page, tradingPage, tradingMock, devicePrompt }) => {
+    test('Sell Solana for best offer', async ({
+        tradingPage,
+        page,
+        devicePrompt,
+        tradingMockNew,
+        toastSection,
+        tradingResponses,
+    }) => {
         await test.step('Fill in a sell request', async () => {
             await tradingPage.fillSellForm({
-                cryptoAmount,
+                cryptoAmount: sendAmount,
                 networkSymbolOrTokenId: 'sol',
             });
-            // Automation is too fast, we need to wait for Fees to be resolved
             await tradingPage.fees.waitToBeCalculated();
             await expect(tradingPage.fees.maxFee).toBeVisible();
             await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
-            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(fiatAmount);
-            await expect(tradingPage.quotes.provider).toHaveText(capitalizeFirstLetter(provider));
         });
 
-        await test.step('Confirm sell', async () => {
+        let providerName: string;
+
+        await test.step('Confirm the sell trade and return from the provider', async () => {
+            // Solana fees resolve after the form settles; sending before that fails to compose.
+            await expect(tradingPage.fees.maximumFeeAmountToBeCalculated).toBeHidden();
             await tradingPage.sellBestOfferButton.click();
+            await tradingPage.waitForRedirectCompletion();
         });
-
-        await tradingPage.waitForRedirectCompletion();
 
         await test.step('Verify all confirmation values', async () => {
-            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmation.provider).toHaveText(provider);
-            await expect(tradingPage.confirmation.paymentMethod).toHaveText(paymentMethodName);
-            await expect(tradingPage.confirmation.address).toHaveText(providerAddress);
-            await expect(tradingPage.confirmation.account).toHaveText('Solana #1');
+            const { exchange, cryptoStringAmount, fiatStringAmount } =
+                await tradingResponses.sell.trade();
+            providerName = await tradingResponses.sell.companyName(exchange);
+
+            await expect(tradingPage.confirmation.provider).toHaveText(providerName);
+            await expect(tradingPage.confirmation.paymentMethod).toHaveTranslation(
+                'TR_PAYMENT_METHOD_CREDITCARD',
+            );
+            await expect(tradingPage.confirmation.account).toContainText(accountLabel);
+            await expect(tradingPage.confirmation.address).toHaveText(depositAddress);
+            // Providers pad differently ("1.50000000"), so both amounts are normalised the way
+            // the panel formats them rather than compared to the raw strings. The panel always
+            // renders the fiat amount with two decimals, including a trailing zero.
+            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(
+                `${localizeNumber(cryptoStringAmount)} SOL`,
+            );
+            await expect(tradingPage.confirmation.fiatAmount).toHaveText(
+                `€${localizeNumber(fiatStringAmount, 'en-US', 2, 2)}`,
+            );
         });
 
-        await test.step('Initiate send', async () => {
-            await tradingPage.confirmation.initiateSendConfirmation();
-            await expect(devicePrompt.header.accountLabel).toHaveText('Solana #1');
-            await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
+        await test.step('Verify recipient and amount on prompt', async () => {
+            await tradingPage.confirmation.openConfirmAndSendModal();
+
+            await expect(devicePrompt.header.accountLabel).toHaveText(accountLabel);
+            await expect(devicePrompt.outputValueOf('address')).toHaveText(
+                formatAddressWithNewlines(depositAddress),
+            );
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
-                formattedCryptoAmount,
+                formattedSendAmount,
             );
             await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
+
+            await devicePrompt.compareAddressesOnDeviceAndSuite();
+            await devicePrompt.waitForPromptAndConfirm();
+            await devicePrompt.waitForPromptAndConfirm();
+            await devicePrompt.waitForFinalPromptAndConfirm();
+            await expect(devicePrompt.sendButton).toBeEnabled();
         });
 
-        // Thanks to our mocked responses, the crypto is actually not send.
-        await test.step('Send crypto to provider', async () => {
+        await test.step('Send crypto to provider (broadcast blocked by mock)', async () => {
             await page.clock.install();
             await devicePrompt.sendButton.click();
-            await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                'TR_SELL_DETAIL_SENDING_TRANSACTION',
+
+            await expect(tradingPage.transactionDetailHeader).toHaveTranslation(
+                'TR_SELL_HEADER_TITLE',
             );
-            await expect(page.getByTestId('@toast/tx-sent')).toContainTranslation('TOAST_TX_SENT', {
-                values: { amount: formattedCryptoAmount, account: 'Solana #1' },
+            // Unlike the swap toast, this one carries the composed amount rather than the
+            // provider's own formatting of it, so it matches the amount the test typed.
+            await expect(toastSection.txSent).toContainTranslation('TOAST_TX_SENT', {
+                values: { amount: formattedSendAmount, account: accountLabel },
             });
         });
 
-        await test.step('Wait 30s for watch refresh and status change to Success', async () => {
-            await page.route(tradeEndpoint.sellWatch, async route => {
-                await route.fulfill({ json: { status: 'SUCCESS' } });
+        for (const phase of sellStatusFlow) {
+            await test.step(`Wait for status change to ${phase.status}`, async () => {
+                await tradingMockNew.advanceStatus(phase.status);
+                const values = phase.translationValues?.(providerName);
+                await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                    phase.translationKey,
+                    { values },
+                );
             });
-            await page.clock.fastForward(tradingMock.watchPeriod);
-            await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                'TR_TRADING_DETAIL_PROCESSING',
-                { values: { providerName: provider, type: 'sell' } },
-            );
-            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmation.provider).toHaveText(provider);
-            const supportLink = page.locator('a[href*="support.moonpay.com"]');
-            await expect(supportLink).toBeVisible({ timeout: 10000 });
+        }
+
+        await test.step('Verify the support banner links to the winning provider', async () => {
+            const { exchange } = await tradingResponses.sell.trade();
+            // Which provider wins drifts between runs, and the banner links to that provider's
+            // own support site. Banxa points both its status and support link at the same URL.
+            const { supportUrl } = await tradingResponses.sell.provider(exchange);
+            await expect(page.locator(`a[href="${supportUrl}"]`).first()).toBeVisible();
         });
     });
 
-    test('Sell Solana for compared offer', async ({ page, tradingPage }) => {
-        await test.step('Fill input amount and open offer comparison modal', async () => {
+    test('Sell Solana for compared offer', async ({ tradingPage, tradingResponses }) => {
+        await test.step('Fill in a sell request', async () => {
             await tradingPage.fillSellForm({
-                cryptoAmount,
+                cryptoAmount: sendAmount,
                 networkSymbolOrTokenId: 'sol',
             });
-            // Automation is too fast, we need to wait for Fees to be resolved
             await tradingPage.fees.waitToBeCalculated();
-            await expect(tradingPage.fees.maxFee).toBeVisible();
-            await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
-            await tradingPage.quotes.selectedProvider.click();
         });
 
-        await test.step('Select second offer from modal and check correct values are sent in trade request', async () => {
-            const sellTradePromise = page.waitForRequest(tradeEndpoint.sellTrade);
-            await tradingPage.quotes.selectQuoteByProvider(
-                getCompanyNameFromList(secondComparedOfferQuote?.exchange ?? '', 'sellList'),
-            );
+        let comparedProviderName: string;
+
+        await test.step('Pick an offer other than the best one', async () => {
+            await tradingPage.quotes.chooseDifferentOfferIfAvailable();
+            comparedProviderName = (
+                await tradingPage.quotes.selectedProviderName.innerText()
+            ).trim();
+        });
+
+        await test.step('Verify the trade is created with the picked provider', async () => {
             await tradingPage.sellBestOfferButton.click();
-            await expect.soft(sellTradePromise).toHavePayload(
-                {
-                    trade: secondComparedOfferQuote,
-                },
-                {
-                    omit: ['returnUrl', 'trade.orderId', 'trade.paymentId', 'trade.refundAddress'],
-                },
-            );
+            await tradingPage.waitForRedirectCompletion();
+
+            const { exchange } = await tradingResponses.sell.trade();
+            expect(await tradingResponses.sell.companyName(exchange)).toBe(comparedProviderName);
+            await expect(tradingPage.confirmation.provider).toHaveText(comparedProviderName);
         });
     });
 });
