@@ -237,6 +237,10 @@ export class TradingPage {
         fiatCurrencyCode?: BaseCurrencyCode;
         country?: TradingCountryCode;
     }) {
+        // The form resets to its defaults once sellInfo lands, roughly 2s after it becomes interactive
+        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.sell.sellInfo', {
+            timeout: 30_000,
+        });
         await this.inputs.selectCountryOfResidence(country);
         await this.inputs.selectFiatCurrency(fiatCurrencyCode);
         const isFiatRateLoadingFlag = `wallet.fiat.current.${networkSymbolOrTokenId}-${fiatCurrencyCode}.isLoading`;
@@ -398,7 +402,7 @@ export class TradingPage {
         } else if (isWebProject(this.target)) {
             const tradeHeading = this.page.getByRole('heading', { name: 'Trade' });
 
-            await expect(tradeHeading).toBeHidden();
+            await expect(tradeHeading).toBeHidden({ timeout: 30_000 });
             await expect(tradeHeading).toBeVisible({ timeout: 30_000 });
         }
     }

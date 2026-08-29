@@ -87,7 +87,9 @@ export const tradeGeneralResponses: Partial<
     [tradeEndpoint.sellList]: sellList,
 };
 
-export const getCompanyNameFromList = (name: string, type: 'buyList' | 'sellList' | 'swapList') => {
+type ProviderList = 'buyList' | 'sellList' | 'swapList';
+
+const findProviderInList = (name: string, type: ProviderList) => {
     const listMap = {
         buyList: buyList.providers,
         sellList: sellList.providers,
@@ -103,8 +105,14 @@ export const getCompanyNameFromList = (name: string, type: 'buyList' | 'sellList
         );
     }
 
-    return provider.companyName;
+    return provider;
 };
+
+export const getCompanyNameFromList = (name: string, type: ProviderList) =>
+    findProviderInList(name, type).companyName;
+
+export const getSupportUrlFromList = (name: string, type: ProviderList) =>
+    findProviderInList(name, type).supportUrl;
 
 export {
     info,
