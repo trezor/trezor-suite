@@ -86,7 +86,7 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
                 `${localizeNumber(cryptoStringAmount)} BTC`,
             );
             await expect(tradingPage.confirmation.fiatAmount).toHaveText(
-                `€${localizeNumber(fiatStringAmount, 'en-US', 0, 2)}`,
+                `€${localizeNumber(fiatStringAmount, 'en-US', 2, 2)}`,
             );
         });
 
