@@ -1,14 +1,22 @@
-import type { AccountInfo, MessageTypes } from '@trezor/blockchain-link-types';
+import type { AccountInfo, MessageTypes, TokenInfo } from '@trezor/blockchain-link-types';
 import { CustomError, RESPONSES } from '@trezor/blockchain-link-types';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
-import { STELLAR_DECIMALS, toStroops } from '@trezor/network-stellar/constants';
+import {
+    STELLAR_CONTRACT_TOKENS,
+    STELLAR_DECIMALS,
+    STELLAR_SOROBAN_RPC_URL,
+    toStroops,
+} from '@trezor/network-stellar/constants';
 import stellar from '@trezor/network-stellar/runtime';
 import { BigNumber } from '@trezor/utils';
 
 import { RESERVE } from '../reserve';
 import type { Request } from '../types';
 
-export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
+export const getAccountInfo = async (
+    request: Request<MessageTypes.GetAccountInfo>,
+    isTestnet: boolean,
+) => {
     const { payload } = request;
 
     // initial state (basic)
@@ -32,7 +40,7 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
     };
 
     const api = await request.connect();
-    const { identifyTransaction, isNotFoundError } = await stellar();
+    const { identifyTransaction, isNotFoundError, readSep41Tokens } = await stellar();
     let info;
     try {
         info = await api.accounts().accountId(payload.descriptor).call();
@@ -94,6 +102,49 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
                 decimals: STELLAR_DECIMALS,
             };
         });
+
+    // Soroban contract (type-C / SEP-41) tokens.
+    // Horizon cannot see these, so they are read from a Stellar RPC node.
+    // Tokens are self-describing: balance + metadata (decimals/symbol/name) are
+    // read from each contract's SEP-41 interface. Discovery is a curated
+    // allow-list (no on-chain registry of contract-token holdings exists).
+    // Enabled on mainnet only (the PoC RPC endpoint is mainnet).
+    if (!isTestnet && STELLAR_CONTRACT_TOKENS.length > 0) {
+        try {
+            const sep41Tokens = await readSep41Tokens(
+                STELLAR_SOROBAN_RPC_URL,
+                payload.descriptor,
+                STELLAR_CONTRACT_TOKENS.map(token => token.contract),
+            );
+            const fallbackByContract = new Map(
+                STELLAR_CONTRACT_TOKENS.map(token => [token.contract, token]),
+            );
+
+            const contractTokens: TokenInfo[] = sep41Tokens
+                // Contract tokens have no trustline opt-in, so only surface the ones the
+                // account actually holds (non-zero) rather than the whole allow-list.
+                .filter(token => token.balance !== '0')
+                .map(token => {
+                    // Prefer on-chain SEP-41 metadata; fall back to the curated entry.
+                    const fallback = fallbackByContract.get(token.contract);
+
+                    return {
+                        standard: 'STELLAR-CONTRACT',
+                        contract: token.contract,
+                        balance: token.balance,
+                        name: token.name ?? fallback?.name,
+                        symbol: (token.symbol ?? fallback?.symbol ?? '').toUpperCase(),
+                        decimals: token.decimals ?? fallback?.decimals ?? STELLAR_DECIMALS,
+                    };
+                });
+
+            account.tokens = [...(account.tokens ?? []), ...contractTokens];
+        } catch (error) {
+            // Contract-token enrichment must never break classic account loading.
+            console.warn('Stellar: failed to read Soroban SEP-41 tokens', error);
+        }
+    }
+
     account.empty = false;
 
     if (payload.details !== 'txs') {
