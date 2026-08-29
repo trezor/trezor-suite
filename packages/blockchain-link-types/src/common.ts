@@ -26,7 +26,8 @@ export type TokenStandard =
     | 'SPL'
     | 'SPL-2022'
     | 'BLOCKFROST'
-    | 'STELLAR-CLASSIC';
+    | 'STELLAR-CLASSIC'
+    | 'STELLAR-CONTRACT';
 
 export type FiatRatesBySymbol = {
     [K in BaseCurrencyCode]?: number | undefined;
