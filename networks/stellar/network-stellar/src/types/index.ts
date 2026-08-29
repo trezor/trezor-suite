@@ -8,4 +8,6 @@ export type StellarTransaction = Transaction;
 
 export type RawStellarTransaction = Horizon.ServerApi.TransactionRecord;
 
+export type StellarLedgerRecord = Horizon.ServerApi.LedgerRecord;
+
 export type IdentifiedTransaction = ReturnType<typeof identifyTransaction>;
