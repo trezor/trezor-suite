@@ -41,7 +41,9 @@ export const TradingDetailFiatRow = ({ label, currency, amount }: TradingDetailF
             <Row gap={8} justifyContent="space-between">
                 <Row gap={8} alignItems="center">
                     {flag && <Flag country={flag} size={40} />}
-                    <Text>{currency.toUpperCase()}</Text>
+                    <Text data-testid="@trading/form/info/fiat-currency">
+                        {currency.toUpperCase()}
+                    </Text>
                 </Row>
                 {hasAmount && (
                     <Text

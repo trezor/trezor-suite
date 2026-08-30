@@ -8,15 +8,6 @@ import { calculatePercentageOfBalance, step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 import { PaymentMethods, PercentageOfBalanceParams } from '../../types';
 
-const paymentMethodNameMap: Record<string, PaymentMethods> = {
-    'Credit/Debit Card': 'creditCard',
-    'Bank Transfer': 'bankTransfer',
-    'Google Pay': 'googlePay',
-    'Apple Pay': 'applePay',
-    Paypal: 'paypal',
-    'Revolut Pay': 'revolutPay',
-};
-
 export class TradingFormInputs {
     readonly fiatAmount: Locator;
     readonly cryptoAmount: Locator;
@@ -39,7 +30,7 @@ export class TradingFormInputs {
     readonly paymentMethodValue: Locator;
     readonly paymentMethodOption = (method: PaymentMethods) =>
         this.page.getByTestId(`@trading/form/payment-method-select/option/${method}`);
-    readonly swapAmountCurrencyTicker: Locator;
+    readonly cryptoAmountTicker: Locator;
 
     constructor(private readonly page: Page) {
         this.fiatAmount = this.page.getByTestId('@trading/form/fiat-input');
@@ -61,9 +52,7 @@ export class TradingFormInputs {
         this.paymentMethodValue = this.page.getByTestId(
             '@trading/form/payment-method-select/value',
         );
-        this.swapAmountCurrencyTicker = this.page.getByTestId(
-            '@trading/form/crypto-input/input-addon',
-        );
+        this.cryptoAmountTicker = this.page.getByTestId('@trading/form/crypto-input/input-addon');
     }
 
     @step()
@@ -103,31 +92,14 @@ export class TradingFormInputs {
         await expect(this.currencySelect).toHaveValue(currencyCode.toUpperCase());
     }
 
+    // Selecting also clears the picked provider, so the best offer is recomputed for this method.
     @step()
     async selectPaymentMethod(method: PaymentMethods) {
-        const currentPaymentMethod = await this.paymentMethodSelect.getAttribute('value');
-        if (currentPaymentMethod?.includes(method)) {
-            return;
-        }
         await this.paymentMethodSelect.click();
         await expect(this.page.modalHeader).toHaveTranslation('TR_TRADING_PAYMENT_METHOD');
         await this.paymentMethodOption(method).click();
+        await expect(this.page.modal).toBeHidden();
     }
-
-    getSelectedPaymentMethod = async () => {
-        await expect(this.paymentMethodSelect).not.toBeEmpty();
-        const dropdownText = (await this.paymentMethodSelect.getAttribute('value'))?.trim();
-        if (!dropdownText) {
-            throw new Error('Payment method dropdown is empty');
-        }
-
-        const mapped = paymentMethodNameMap[dropdownText];
-        if (!mapped) {
-            throw new Error(`Unknown payment method "${dropdownText}"`);
-        }
-
-        return mapped;
-    };
 
     @step()
     async expectInputToBe(params: PercentageOfBalanceParams) {

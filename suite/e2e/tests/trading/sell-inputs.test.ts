@@ -110,7 +110,7 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
             await test.step('Try all % inputs on Solana', async () => {
                 await walletPage.openAccount({ symbol: 'sol', atIndex: 0 });
                 await tradingPage.sellTabButton.click();
-                await expect(tradingPage.inputs.swapAmountCurrencyTicker).toHaveText('SOL');
+                await expect(tradingPage.inputs.cryptoAmountTicker).toHaveText('SOL');
                 await tradingPage.inputs.selectFiatCurrency('eur');
 
                 for (const percentage of [10, 25, 50]) {
