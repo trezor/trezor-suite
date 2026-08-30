@@ -125,7 +125,7 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice'] }, () =>
                 // The form is now fully filled, so the read-only assertions about its
                 // resulting state (ticker, amount, offer, provider, fees) all run together.
                 await test.step(`[${asset.label}] Verify filled form state`, async () => {
-                    await expect(tradingPage.inputs.swapAmountCurrencyTicker).toHaveText('USDC', {
+                    await expect(tradingPage.inputs.cryptoAmountTicker).toHaveText('USDC', {
                         ignoreCase: true,
                     });
                     await expect(tradingPage.inputs.cryptoAmount).toHaveValue(amount);

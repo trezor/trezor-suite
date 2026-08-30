@@ -172,13 +172,13 @@ export class TradingPage {
         countrySubdivision?: string;
         selectReceiveAddress?: () => Promise<void>;
     }) {
+        // The form resets to its defaults once buyInfo lands, roughly 2s after it becomes interactive
+        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.buy.buyInfo', {
+            timeout: 30_000,
+        });
+
         const inputField = wantCrypto ? this.inputs.cryptoAmount : this.inputs.fiatAmount;
         await expect(inputField).toHaveValue('');
-        if (wantCrypto) {
-            // The desired value is already set due to sideeffect of mocked response,
-            // We clear it so we can intercept and verify request payload that is triggered by filling value.
-            await inputField.fill('');
-        }
 
         await this.inputs.selectCountryOfResidence(country);
         if (countrySubdivision) {
@@ -351,7 +351,7 @@ export class TradingPage {
         await this.assetPicker.selectBuyAsset(buyAsset);
 
         // We should not fill in amount until account change takes effect = correct ticker is displayed
-        await expect(this.inputs.swapAmountCurrencyTicker).toHaveText(
+        await expect(this.inputs.cryptoAmountTicker).toHaveText(
             sellAsset.tokenSymbol ?? sellAsset.networkSymbol ?? '',
             { ignoreCase: true },
         );
@@ -421,9 +421,15 @@ export class TradingPage {
     }
 
     @step()
-    async waitForRedirectCompletion() {
+    async waitForRedirectCompletion(flow: 'buy' | 'sell' = 'sell') {
         if (isDesktopProject(this.target)) {
-            await expect(this.confirmation.confirmAndSendButton).toBeVisible({ timeout: 30_000 });
+            // The desktop app routes in memory, so the return from the provider only shows in the
+            // UI: buy lands on the transaction detail, sell and swap on the confirmation panel.
+            const landing =
+                flow === 'buy'
+                    ? this.transactionDetailStatus
+                    : this.confirmation.confirmAndSendButton;
+            await expect(landing).toBeVisible({ timeout: 30_000 });
         } else if (isWebProject(this.target)) {
             const tradeHeading = this.page.getByRole('heading', { name: 'Trade' });
 

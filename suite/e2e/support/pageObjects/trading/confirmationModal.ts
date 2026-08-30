@@ -17,6 +17,7 @@ export class TradingConfirmationModal {
     readonly detailSendAccount: Locator;
     readonly detailReceiveAccount: Locator;
     readonly fiatAmount: Locator;
+    readonly fiatCurrency: Locator;
     readonly provider: Locator;
     readonly address: Locator;
     readonly paymentMethod: Locator;
@@ -58,6 +59,7 @@ export class TradingConfirmationModal {
             '@trading/transaction/detail/receive-account',
         );
         this.fiatAmount = this.page.getByTestId('@trading/form/info/fiat-amount');
+        this.fiatCurrency = this.page.getByTestId('@trading/form/info/fiat-currency');
         this.provider = this.page.getByTestId('@trading/form/info/provider');
         this.address = this.page.getByTestId('@trading/form/verify/address');
         this.paymentMethod = this.page.getByTestId('@trading/form/info/payment-method');
