@@ -2871,6 +2871,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@emurgo/csl-mobile-bridge@npm:9.0.1":
+  version: 9.0.1
+  resolution: "@emurgo/csl-mobile-bridge@npm:9.0.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/82c08d7fd2b6a06d2def418556b54f5e6901ba3b75a777abb6ea59853ba444afbc14b68704b96f7b2da27bdf1d4e711680904cb8f6464587c04d8113e9c6e580
+  languageName: node
+  linkType: hard
+
+"@emurgo/csl-mobile-bridge@patch:@emurgo/csl-mobile-bridge@npm%3A9.0.1#~/.yarn/patches/@emurgo-csl-mobile-bridge-npm-9.0.1-cardano-native.patch":
+  version: 9.0.1
+  resolution: "@emurgo/csl-mobile-bridge@patch:@emurgo/csl-mobile-bridge@npm%3A9.0.1#~/.yarn/patches/@emurgo-csl-mobile-bridge-npm-9.0.1-cardano-native.patch::version=9.0.1&hash=1c365d"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/1a994daccfcce6b10871784e09cb776fd3eafaf0afc730e39ffedb88b11e3e386c9171050cc9ccf01f07fb8edb4c37b108da83e157d60474df9a3862ee6cd363
+  languageName: node
+  linkType: hard
+
 "@esbuild/aix-ppc64@npm:0.27.7":
   version: 0.27.7
   resolution: "@esbuild/aix-ppc64@npm:0.27.7"
@@ -11887,6 +11907,7 @@ __metadata:
     "@babel/core": "npm:7.29.7"
     "@config-plugins/detox": "npm:^11.0.0"
     "@currents/cmd": "npm:1.9.7"
+    "@emurgo/csl-mobile-bridge": "patch:@emurgo/csl-mobile-bridge@npm%3A9.0.1#~/.yarn/patches/@emurgo-csl-mobile-bridge-npm-9.0.1-cardano-native.patch"
     "@evolu/common": "npm:8.0.0-next.5"
     "@evolu/react-native": "npm:15.0.0-next.2"
     "@exodus/patch-broken-hermes-typed-arrays": "npm:^1.0.0-alpha.1"
@@ -11931,6 +11952,7 @@ __metadata:
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/blockchain": "workspace:*"
     "@suite-native/bluetooth": "workspace:*"
+    "@suite-native/cardano-native-artifacts": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/connection-status": "workspace:*"
     "@suite-native/device": "workspace:*"
@@ -12270,6 +12292,12 @@ __metadata:
     react-native: "npm:0.86.0"
     react-native-permissions: "npm:5.4.4"
     react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/cardano-native-artifacts@workspace:*, @suite-native/cardano-native-artifacts@workspace:suite-native/cardano-native-artifacts":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/cardano-native-artifacts@workspace:suite-native/cardano-native-artifacts"
   languageName: unknown
   linkType: soft
 

@@ -1,0 +1,9 @@
+{
+    "upstream": "@emurgo/csl-mobile-bridge@9.0.1",
+    "upstreamRevision": "3a3659c3c96e2d10a7a571d18e96c6b99522b59e",
+    "cardanoSerializationLib": "15.0.3",
+    "cargoLockSha256": "52234ec7eda4bb559f948ea49eace7d6f19eadcf5df1b7d2f0fcd76a3bc03894",
+    "rustc": "1.94.0",
+    "androidNdk": "27.0.12077973",
+    "iosDeploymentTarget": "15.1"
+}
