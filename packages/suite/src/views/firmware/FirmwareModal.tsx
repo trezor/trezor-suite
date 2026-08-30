@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import {
     useFirmwareDesktopUpdate,
@@ -8,6 +8,7 @@ import { closeModal } from '@suite/modal';
 import { closeModalApp } from '@suite/router';
 import { ThpPairingStep } from '@suite/thp';
 import { selectSelectedDevice } from '@suite-common/device';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
@@ -20,6 +21,8 @@ import { StepDone } from './Steps/StepDone';
 import { StepError } from './Steps/StepError';
 import { StepInitial } from './Steps/StepInitial';
 import { StepStarted } from './Steps/StepStarted';
+
+const AUTO_CLOSE_AFTER_DONE_MS = 2000;
 
 type FirmwareModalProps = {
     children: ReactNode;
@@ -47,14 +50,26 @@ export const FirmwareModal = ({
     // It can be canceled only via `trezorCancel`
     const isCancelable = ['initial', 'check-seed', 'done', 'error'].includes(status);
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         if (device?.status !== 'available') {
             dispatch(acquireDevice({ requestedDevice: device }));
         }
         dispatch(closeModal());
         dispatch(closeModalApp());
         resetReducer();
-    };
+    }, [device, dispatch, resetReducer]);
+
+    const handleCloseRef = useRef(handleClose);
+    handleCloseRef.current = handleClose;
+
+    useEffect(() => {
+        if (status !== 'done') return;
+
+        dispatch(notificationsActions.addToast({ type: 'firmware-update-success' }));
+        const timeoutId = setTimeout(() => handleCloseRef.current(), AUTO_CLOSE_AFTER_DONE_MS);
+
+        return () => clearTimeout(timeoutId);
+    }, [status, dispatch]);
 
     const getContent = () => {
         switch (status) {

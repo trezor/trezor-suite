@@ -185,6 +185,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
               | 'coinjoin-interrupted'
               | 'firmware-language-changed'
               | 'firmware-language-fetch-error'
+              | 'firmware-update-success'
               | 'estimated-fee-error'
               | 'not-enough-funds-error'
               | 'could-not-parse-csv'

@@ -4164,6 +4164,10 @@ export const messages = defineMessages({
         id: 'TOAST_QR_INCORRECT_ADDRESS',
         defaultMessage: 'QR code contains invalid address for this account',
     },
+    TOAST_FIRMWARE_UPDATE_SUCCESS: {
+        id: 'TOAST_FIRMWARE_UPDATE_SUCCESS',
+        defaultMessage: 'Firmware updated successfully',
+    },
     TOAST_QR_INCORRECT_COIN_SCHEME_PROTOCOL: {
         id: 'TOAST_QR_INCORRECT_COIN_SCHEME_PROTOCOL',
         defaultMessage: 'QR code is defined for {coin} account',

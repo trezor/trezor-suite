@@ -745,6 +745,13 @@ export const NotificationRenderer = ({
                 message: 'TR_FIRMWARE_LANGUAGE_CHANGED',
             });
 
+        case 'firmware-update-success':
+            return renderNotificationView(render, notification, {
+                variant: 'success',
+                message: 'TOAST_FIRMWARE_UPDATE_SUCCESS',
+                icon: 'check',
+            });
+
         case 'firmware-language-fetch-error':
             return renderNotificationView(render, notification, {
                 variant: 'error',
