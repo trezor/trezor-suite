@@ -40,6 +40,10 @@ import {
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
 import { type DeviceReducerState, selectDeviceByStaticSessionId } from '@suite-common/device';
+import {
+    type CommonServices,
+    type ExtraDependenciesStatic,
+} from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
     createFindNetworkSymbolForProtocol,
@@ -49,10 +53,6 @@ import {
 } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type ReceiveState } from '@suite-common/receive';
-import {
-    type CommonServices,
-    type ExtraDependenciesStatic,
-} from '@suite-common/redux-extra-dependencies';
 import { type WithServices } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {

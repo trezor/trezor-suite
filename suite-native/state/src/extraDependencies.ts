@@ -8,13 +8,6 @@ import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { asGetter, toGetter } from '@suite-common/dependency-injection';
 import {
-    createFindNetworkSymbolForProtocol,
-    createGetNetworkConfig,
-    createNetworkModuleRepository,
-    createNetworksCompositionRoot,
-} from '@suite-common/networks';
-import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
-import {
     type CommonServices,
     type ExtraDependenciesStatic,
     notImplementedAction,
@@ -22,7 +15,14 @@ import {
     notImplementedGetter,
     notImplementedReducer,
     notImplementedThunk,
-} from '@suite-common/redux-extra-dependencies';
+} from '@suite-common/extra-dependencies';
+import {
+    createFindNetworkSymbolForProtocol,
+    createGetNetworkConfig,
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
+import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { type NativeAnalyticsDep, analytics } from '@suite-native/analytics';

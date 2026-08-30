@@ -57,6 +57,9 @@
         {
             "path": "../../suite-common/earn-staking-api"
         },
+        {
+            "path": "../../suite-common/extra-dependencies"
+        },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/fiat-services"
@@ -89,9 +92,6 @@
             "path": "../../suite-common/react-query"
         },
         { "path": "../../suite-common/receive" },
-        {
-            "path": "../../suite-common/redux-extra-dependencies"
-        },
         {
             "path": "../../suite-common/redux-utils"
         },
