@@ -10761,6 +10761,30 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/extra-dependencies@workspace:*, @suite-common/extra-dependencies@workspace:suite-common/extra-dependencies":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/extra-dependencies@workspace:suite-common/extra-dependencies"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/address": "workspace:*"
+    "@suite-common/analytics": "workspace:*"
+    "@suite-common/bip329-types": "workspace:*"
+    "@suite-common/delegated-identity-key-types": "workspace:*"
+    "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/networks": "workspace:*"
+    "@suite-common/platform-encryption": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-rbf-labels-migrations-types": "workspace:*"
+    "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/feedback@workspace:*, @suite-common/feedback@workspace:suite-common/feedback":
   version: 0.0.0-use.local
   resolution: "@suite-common/feedback@workspace:suite-common/feedback"
@@ -11065,30 +11089,6 @@ __metadata:
     "@suite-common/wallet-config": "workspace:^"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"@suite-common/redux-extra-dependencies@workspace:*, @suite-common/redux-extra-dependencies@workspace:suite-common/redux-extra-dependencies":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/redux-extra-dependencies@workspace:suite-common/redux-extra-dependencies"
-  dependencies:
-    "@reduxjs/toolkit": "npm:2.12.0"
-    "@suite-common/address": "workspace:*"
-    "@suite-common/analytics": "workspace:*"
-    "@suite-common/bip329-types": "workspace:*"
-    "@suite-common/delegated-identity-key-types": "workspace:*"
-    "@suite-common/dependency-injection": "workspace:*"
-    "@suite-common/metadata-types": "workspace:*"
-    "@suite-common/networks": "workspace:*"
-    "@suite-common/platform-encryption": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/suite-rbf-labels-migrations-types": "workspace:*"
-    "@suite-common/suite-sync-types": "workspace:*"
-    "@suite-common/suite-types": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
-    "@trezor/connect": "workspace:*"
-    "@trezor/requirements": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -14227,6 +14227,7 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/discreet-mode": "workspace:*"
+    "@suite-common/extra-dependencies": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/logger": "workspace:*"
@@ -14234,7 +14235,6 @@ __metadata:
     "@suite-common/networks": "workspace:*"
     "@suite-common/platform-encryption-native": "workspace:*"
     "@suite-common/receive": "workspace:*"
-    "@suite-common/redux-extra-dependencies": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
@@ -17855,6 +17855,7 @@ __metadata:
     "@suite-common/earn-stablecoin": "workspace:^"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
+    "@suite-common/extra-dependencies": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
@@ -17871,7 +17872,6 @@ __metadata:
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/receive": "workspace:*"
-    "@suite-common/redux-extra-dependencies": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/staking": "workspace:*"

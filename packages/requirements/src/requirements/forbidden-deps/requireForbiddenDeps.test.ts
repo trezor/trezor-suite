@@ -7,13 +7,13 @@ describe(getForbiddenDependencyErrors.name, () => {
                 dependencyOccurrences: [
                     {
                         field: 'dependencies',
-                        name: '@suite-common/redux-extra-dependencies',
+                        name: '@suite-common/extra-dependencies',
                     },
                 ],
                 dependencyRule: {
                     'forbidden-deps': [
                         {
-                            packageName: '@suite-common/redux-extra-dependencies',
+                            packageName: '@suite-common/extra-dependencies',
                             reason: 'Redux utilities must stay domain-independent.',
                         },
                     ],
@@ -21,7 +21,7 @@ describe(getForbiddenDependencyErrors.name, () => {
                 workspaceName: '@suite-common/redux-utils',
             }),
         ).toEqual([
-            '@suite-common/redux-utils: "@suite-common/redux-extra-dependencies" is forbidden in dependencies. Reason: Redux utilities must stay domain-independent.',
+            '@suite-common/redux-utils: "@suite-common/extra-dependencies" is forbidden in dependencies. Reason: Redux utilities must stay domain-independent.',
         ]);
     });
 

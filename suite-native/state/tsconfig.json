@@ -20,6 +20,9 @@
         {
             "path": "../../suite-common/discreet-mode"
         },
+        {
+            "path": "../../suite-common/extra-dependencies"
+        },
         { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/geolocation"
@@ -33,9 +36,6 @@
             "path": "../platform-encryption-native"
         },
         { "path": "../../suite-common/receive" },
-        {
-            "path": "../../suite-common/redux-extra-dependencies"
-        },
         {
             "path": "../../suite-common/redux-utils"
         },
