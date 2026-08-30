@@ -30,7 +30,7 @@ test.describe.skip('Earn page', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Staking,
                 priority: TestPriority.High,
-                stream: TestStream.Wallet,
+                stream: TestStream.Earn,
             }),
         },
         async () => {},
