@@ -9,6 +9,7 @@ import {
     type CoinjoinBackend,
     type CoinjoinBackendSettings,
     CoinjoinClient,
+    type CoinjoinClientSettings,
     type LogEvent,
 } from '@trezor/coinjoin';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
@@ -65,6 +66,22 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
     const powerSaveBlocker = new PowerSaveBlocker();
 
     logger.debug(SERVICE_NAME, `Starting service`);
+
+    const emitWhitelistedCoinjoinCoordinatorDomain = ({
+        coin,
+        coordinatorUrl,
+    }: {
+        coin: CoinjoinClientSettings['network'];
+        coordinatorUrl: string | null;
+    }) => {
+        const domain = coordinatorUrl === null ? null : new URL(coordinatorUrl).hostname;
+
+        mainThreadEmitter.emit('module/request-interceptor', {
+            type: 'SET_WHITELISTED_DOMAIN_FOR_COINJOIN_COORDINATOR',
+            coin,
+            domain,
+        });
+    };
 
     const backendProxyOptions: IpcProxyHandlerOptions<CoinjoinBackend> = {
         onCreateInstance: async (settings: CoinjoinBackendSettings) => {
@@ -123,12 +140,10 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
     };
 
     const clientProxyOptions: IpcProxyHandlerOptions<CoinjoinClient> = {
-        onCreateInstance: async (settings: ConstructorParameters<typeof CoinjoinClient>[0]) => {
-            const urlObj = new URL(settings.coordinatorUrl);
-
-            mainThreadEmitter.emit('module/request-interceptor', {
-                type: 'ADD_WHITELISTED_DOMAIN',
-                domain: urlObj.hostname ?? urlObj.host,
+        onCreateInstance: async (settings: CoinjoinClientSettings) => {
+            emitWhitelistedCoinjoinCoordinatorDomain({
+                coin: settings.network,
+                coordinatorUrl: settings.coordinatorUrl,
             });
 
             const coinjoinMiddleware = await synchronize(getCoinjoinProcess);
@@ -164,6 +179,15 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
                         if (clientIndex !== -1) {
                             clients.splice(clientIndex, 1);
                         }
+
+                        // Should `undefined` (only one client per network), but that's only guarded by Renderer process (CoinjoinService), not Main process
+                        const sameNetworkClient = clients.find(
+                            otherClient => otherClient.settings.network === client.settings.network,
+                        );
+                        emitWhitelistedCoinjoinCoordinatorDomain({
+                            coin: client.settings.network,
+                            coordinatorUrl: sameNetworkClient?.settings.coordinatorUrl ?? null,
+                        });
 
                         if (clients.length === 0) {
                             logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} binary stop`);

@@ -64,8 +64,9 @@ export type InterceptedEvent =
           domains: string[];
       }
     | {
-          type: 'ADD_WHITELISTED_DOMAIN';
-          domain: string;
+          type: 'SET_WHITELISTED_DOMAIN_FOR_COINJOIN_COORDINATOR';
+          coin: string;
+          domain: string | null;
       };
 
 export type TorSettings = {
