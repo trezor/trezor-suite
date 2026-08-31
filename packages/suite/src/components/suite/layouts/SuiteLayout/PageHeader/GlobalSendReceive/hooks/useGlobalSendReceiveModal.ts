@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { gotoThunk, selectRouterParams } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -6,7 +7,6 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { type Account, type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
 import { type Route } from 'src/types/suite';
 
 import { useGoToWithAnalytics } from '../../useGoToWithAnalytics';
