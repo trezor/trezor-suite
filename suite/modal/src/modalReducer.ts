@@ -90,11 +90,7 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
     // assign device to modal context
     if (
         isUiRequestOfType(action, UI_REQUESTS.REQUEST_PIN, UI_REQUESTS.REQUEST_PASSPHRASE) ||
-        isUiEventOfType(
-            action,
-            UI_EVENTS.INVALID_PIN_ATTEMPTS_DEPLETED,
-            UI_EVENTS.PASSPHRASE_ON_DEVICE,
-        )
+        isUiEventOfType(action, UI_EVENTS.INVALID_PIN, UI_EVENTS.PASSPHRASE_ON_DEVICE)
     ) {
         return {
             context: MODAL_CONTEXT_DEVICE,
