@@ -85,6 +85,37 @@ The [migration guide](https://connect.trezor.io/10.0.0-beta.1/guides/migrating-t
 - **Thin packages lost their event/settings API.** `on`/`off`/`removeAllListeners`, `uiResponse` and `updateConnectSettings` are removed from the public tier (they were already non-functional in v10, since the host Core does not forward them); calling them now throws `TypeError`.
 - **Type/factory renames.** The exported `TrezorConnect` type is replaced by `TrezorConnectPublicAPI` / `TrezorConnectPrivilegedAPI`, and the `factory` function by `factoryPublic` / `factoryPrivileged`. The API-schema values (`TrezorConnectCallable`, `TrezorConnectBitcoin`, …) are no longer exported as runtime values — the names remain as types only.
 
+### UI events
+
+These affect hosts that run their own Core (`@trezor/connect`) and listen for UI messages; thin-client integrations no longer receive UI events directly (see the event/settings API removal above).
+
+- **`UI_REQUEST` split into `UI_EVENTS` and `UI_REQUESTS`.** The single `UI_REQUEST` constant object that held every UI message type has been split into two groups on distinct channels:
+    - `UI_EVENTS` — fire-and-forget notifications emitted on the `UI_EVENT` channel; no `uiResponse` is expected. Wire values are namespaced as `ui-event_*`.
+    - `UI_REQUESTS` — prompts that require a `TrezorConnect.uiResponse()` reply, emitted on the new `UI_REQUEST` channel. Wire values keep the `ui-request_*` form.
+
+    `UI_REQUEST` is now the request **channel** string (`'UI_REQUEST'`), no longer the map of message types — read message types from `UI_EVENTS` / `UI_REQUESTS` instead. A host that subscribes by channel must listen on **both** `UI_EVENT` and `UI_REQUEST`.
+
+- **Message-type renames:**
+
+    | Old                                       | New                                   |
+    | ----------------------------------------- | ------------------------------------- |
+    | `UI_REQUEST.SELECT_ACCOUNT`               | `UI_REQUESTS.REQUEST_ACCOUNT`         |
+    | `UI_REQUEST.SELECT_FEE`                   | `UI_REQUESTS.REQUEST_FEE`             |
+    | `UI_REQUEST.REQUEST_THP_PAIRING`          | `UI_REQUESTS.REQUEST_THP_PAIRING_TAG` |
+    | `UI_REQUEST.REQUEST_BUTTON`               | `UI_EVENTS.BUTTON_REQUEST`            |
+    | `UI_REQUEST.REQUEST_PASSPHRASE_ON_DEVICE` | `UI_EVENTS.PASSPHRASE_ON_DEVICE`      |
+    | `UI_REQUEST.TRANSPORT`                    | `UI_EVENTS.NO_TRANSPORT`              |
+    | `UI_REQUEST.INITIALIZE`                   | `UI_EVENTS.DEVICE_NOT_INITIALIZED`    |
+    | `UI_REQUEST.BOOTLOADER`                   | `UI_EVENTS.DEVICE_IN_BOOTLOADER`      |
+    | `UI_REQUEST.NOT_IN_BOOTLOADER`            | `UI_EVENTS.DEVICE_NOT_IN_BOOTLOADER`  |
+    | `UI_REQUEST.SEEDLESS`                     | `UI_EVENTS.DEVICE_SEEDLESS`           |
+
+    The remaining types keep their key names but move into the matching group (e.g. `UI_REQUEST.REQUEST_PIN` → `UI_REQUESTS.REQUEST_PIN`, `UI_REQUEST.DEVICE_NEEDS_BACKUP` → `UI_EVENTS.DEVICE_NEEDS_BACKUP`).
+
+- **`UI_EVENTS` wire values changed.** Every `UI_EVENTS` string value is re-namespaced from `ui-*` to `ui-event_*` (e.g. `ui-no_transport` → `ui-event_no_transport`, `ui-device_bootloader_mode` → `ui-event_device_in_bootloader`). Reference the exported constants instead of hardcoding the strings.
+
+- **Device-carrying events are now wrapped.** UI events that carry a device (`DEVICE_NEEDS_BACKUP`, `FIRMWARE_OUTDATED`, and the device-mode / firmware-exception types) use a `{ device }` payload object instead of a bare `Device`; read `event.payload.device`.
+
 ### Methods & parameters
 
 - **`coin` accepts the coin shortcut only** (the `CoinSymbol` set — e.g. `btc`, `bch`, `ada`), narrowed from `string`. Network **names** and **labels** (e.g. `'Bitcoin'`, `'Bitcoin Cash'`) are no longer accepted and now fail both at compile time and at runtime. The shortcut itself is still matched case-insensitively at runtime, so `coin: 'BTC'` works — but the `CoinSymbol` type lists the canonical lowercase forms, so TypeScript users should pass lowercase to type-check. Resolution is uniform across all coin families. Migrate names/labels to the shortcut: `'Bitcoin' → 'btc'`, `'Bitcoin Cash' → 'bch'`, `'cardano' → 'ada'`, etc. Path-taking methods (`getAddress`, `getPublicKey`, …) derive the network from `path` when given a former name/label; methods without a path fallback (`getAccountInfo`, `selectAccount`, `verifyMessage`, `composeTransaction`, `signTransaction`, `signMessage`, `getOwnershipId`, `getOwnershipProof`, the `blockchain*` family) throw `Method_UnknownCoin`. Full list: [supported coins](https://connect.trezor.io/10.0.0-beta.1/details/coins).
