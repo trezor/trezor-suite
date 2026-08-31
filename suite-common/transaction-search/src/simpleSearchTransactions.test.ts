@@ -1,11 +1,32 @@
 import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { type SearchAccountLabels } from './searchLabels';
 import { simpleSearchTransactions } from './simpleSearchTransactions';
 
 const { getWalletTransaction } = testMocks;
 const ethSymbol = asNetworkSymbol('eth');
+
+const sharedAddress = 'tb1q4nytpy37cuz8yndtfqpau4nzsva0jh787ny3yg';
+
+const getTransactionForAddress = (txid: string, address: string): WalletAccountTransaction => {
+    const transaction = getWalletTransaction({ txid });
+    const [target] = transaction.targets;
+    const [vin] = transaction.details.vin;
+    const [vout] = transaction.details.vout;
+
+    return {
+        ...transaction,
+        txid,
+        targets: target ? [{ ...target, addresses: [address] }] : [],
+        details: {
+            ...transaction.details,
+            vin: vin ? [{ ...vin, addresses: [address] }] : [],
+            vout: vout ? [{ ...vout, addresses: [address] }] : [],
+        },
+    };
+};
 
 const emptyLabels: SearchAccountLabels = {
     outputLabels: new Map(),
@@ -131,6 +152,27 @@ describe(simpleSearchTransactions.name, () => {
         });
 
         const result = simpleSearchTransactions([transaction], emptyLabels, 'USDT');
+
+        expect(result).toEqual([transaction]);
+    });
+    it('finds every transaction sharing a searched address', () => {
+        const first = getTransactionForAddress('aaa8', sharedAddress);
+        const second = getTransactionForAddress('aaa9', sharedAddress);
+
+        const result = simpleSearchTransactions([first, second], emptyLabels, sharedAddress);
+
+        expect(result).toEqual([first, second]);
+    });
+
+    it('finds transactions by a partial, differently cased address label', () => {
+        const transaction = getTransactionForAddress('aaa10', sharedAddress);
+        const labels: SearchAccountLabels = {
+            outputLabels: new Map(),
+            addressLabels: new Map([[sharedAddress, 'Savings']]),
+            accountLabel: null,
+        };
+
+        const result = simpleSearchTransactions([transaction], labels, 'sAvIn');
 
         expect(result).toEqual([transaction]);
     });
