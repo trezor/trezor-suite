@@ -26,24 +26,13 @@ interface VerifyAvailabilityProps {
     unavailableCapabilities?: UnavailableCapabilities;
 }
 
-const verifyAvailability = ({
-    coinjoinAccounts,
-    symbol,
-    unavailableCapabilities,
-}: VerifyAvailabilityProps) => {
+const verifyAvailability = ({ coinjoinAccounts, symbol }: VerifyAvailabilityProps) => {
     if (coinjoinAccounts.length > 0) {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED" />;
-    }
-    const capability = unavailableCapabilities?.coinjoin;
-    if (capability === 'no-support') {
-        return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT" />;
     }
     // regtest coinjoin account enabled in web app for development
     if (!isDesktop() && !(isDevEnv && symbol === 'regtest')) {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY" />;
-    }
-    if (capability === 'update-required') {
-        return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED" />;
     }
 };
 
@@ -71,11 +60,7 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
             a.accountType === selectedAccount.accountType,
     );
 
-    const disabledMessage = verifyAvailability({
-        coinjoinAccounts,
-        symbol: network.symbol,
-        unavailableCapabilities: device.unavailableCapabilities,
-    });
+    const disabledMessage = verifyAvailability({ coinjoinAccounts, symbol: network.symbol });
 
     const onCreateCoinjoinAccountClick = async () => {
         const createAccount = async () => {
