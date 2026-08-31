@@ -38,7 +38,7 @@ jest.mock('@trezor/react-utils', () => ({
     useDebouncedValue: <T,>(value: T) => value,
 }));
 
-describe(TradingReceiveAddressPickerScreen.name, () => {
+describe('TradingReceiveAddressPickerScreen', () => {
     const overrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         device: {
             devices: [],

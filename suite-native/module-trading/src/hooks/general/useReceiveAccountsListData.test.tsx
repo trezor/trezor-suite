@@ -15,7 +15,7 @@ import {
     renderHookWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
 
-describe(useReceiveAccountsListData.name, () => {
+describe('useReceiveAccountsListData', () => {
     const defaultOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         device: {
             devices: [],
