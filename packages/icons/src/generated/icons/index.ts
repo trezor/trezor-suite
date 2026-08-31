@@ -919,6 +919,8 @@ export { ReactComponent as DropHalfBottomFilledIcon } from './DropHalfBottomFill
 export { ReactComponent as DropHalfFilledIcon } from './DropHalfFilled';
 export { ReactComponent as DropboxLogoIcon } from './DropboxLogo';
 export { ReactComponent as DropboxLogoFilledIcon } from './DropboxLogoFilled';
+export { ReactComponent as DualCpuIcon } from './DualCpu';
+export { ReactComponent as DualCpuFilledIcon } from './DualCpuFilled';
 export { ReactComponent as EarIcon } from './Ear';
 export { ReactComponent as EarFilledIcon } from './EarFilled';
 export { ReactComponent as EarSlashIcon } from './EarSlash';
