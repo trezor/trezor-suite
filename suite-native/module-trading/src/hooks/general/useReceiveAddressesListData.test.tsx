@@ -25,7 +25,7 @@ jest.mock('@suite-common/suite-sync', () => ({
     selectSuiteSyncAddressLabels: () => mockAddressLabels,
 }));
 
-describe(useReceiveAddressesListData.name, () => {
+describe('useReceiveAddressesListData', () => {
     const overrides: PreloadedStatePartial<TradingTestPreloadedState> = {
         device: {
             devices: [],

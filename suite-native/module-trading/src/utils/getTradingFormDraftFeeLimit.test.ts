@@ -1,6 +1,6 @@
 import { getTradingFormDraftFeeLimit } from './getTradingFormDraftFeeLimit';
 
-describe(getTradingFormDraftFeeLimit.name, () => {
+describe('getTradingFormDraftFeeLimit', () => {
     it('uses the estimated fee limit in SUN for TRON', () => {
         expect(
             getTradingFormDraftFeeLimit({

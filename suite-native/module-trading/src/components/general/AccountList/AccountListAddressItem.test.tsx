@@ -48,7 +48,7 @@ const createAccount = (
     ...values,
 });
 
-describe(AccountListAddressItem.name, () => {
+describe('AccountListAddressItem', () => {
     const onPressMock = jest.fn();
 
     const renderAccountListAddressItem = async (

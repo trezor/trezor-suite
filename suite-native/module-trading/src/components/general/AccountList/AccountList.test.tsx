@@ -42,7 +42,7 @@ jest.mock('@react-navigation/native', () => ({
     useNavigation: jest.fn(),
 }));
 
-describe(AccountList.name, () => {
+describe('AccountList', () => {
     const renderAccountList = async (
         props: Partial<AccountsListProps> = {},
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
