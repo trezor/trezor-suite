@@ -1,8 +1,11 @@
 import { Address } from '@suite/address';
+import { useExternalLink } from '@suite/external-links';
 import { openModal } from '@suite/modal';
 import { useDispatch } from '@suite-common/redux-utils';
+import { getTxExplorerUrl } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
+    selectExplorer,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -15,6 +18,11 @@ import { type Account } from 'src/types/wallet';
 type TradingDetailTxIdProps = {
     value: string;
     account: Account;
+    /**
+     * The other side of a swap. `receiveTxHash` holds the signed send transaction until a status
+     * refresh replaces it with the provider's payout on the receive network, so only the store says
+     * which account the transaction belongs to.
+     */
     receiveAccountKey?: AccountKey;
 };
 
@@ -30,23 +38,32 @@ export const TradingDetailTxId = ({
             ? selectAccountByKey(state, receiveAccountKey)
             : null,
     );
-    const txAccount = payoutAccount ?? account;
+    const isInSendAccount = useSelector(
+        state => !!selectTransactionByAccountKeyAndTxid(state, account.key, value),
+    );
+    const txAccount = payoutAccount ?? (isInSendAccount ? account : null);
+
+    const explorer = useSelector(state => selectExplorer(state, account.symbol));
+    // The transaction detail reads the transaction from the store, so it opens only for a
+    // transaction an account has loaded. Anything else goes to the explorer of its network.
+    const explorerUrl = useExternalLink(txAccount ? undefined : getTxExplorerUrl(explorer, value));
+
+    const openTransactionDetail = txAccount
+        ? () =>
+              dispatch(
+                  openModal({
+                      type: 'transaction-detail',
+                      txid: value,
+                      descriptor: txAccount.descriptor,
+                      symbol: txAccount.symbol,
+                      deviceState: txAccount.deviceState,
+                      flow: 'detail',
+                  }),
+              )
+        : undefined;
 
     return (
-        <Link
-            onClick={() =>
-                dispatch(
-                    openModal({
-                        type: 'transaction-detail',
-                        txid: value,
-                        descriptor: txAccount.descriptor,
-                        symbol: txAccount.symbol,
-                        deviceState: txAccount.deviceState,
-                        flow: 'detail',
-                    }),
-                )
-            }
-        >
+        <Link href={explorerUrl} onClick={openTransactionDetail}>
             <Row gap={4}>
                 <Address isTruncated isChunked={false} isCopyAllowed value={value} intent="brand" />
                 <Icon as={CaretRightIcon} size={16} intent="brand" />
