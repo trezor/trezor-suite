@@ -1,9 +1,7 @@
-import { type PropsWithChildren } from 'react';
 import { Pressable } from 'react-native';
 
-import { HStack } from '@suite-native/atoms';
-import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { type NativeSpacing } from '@trezor/theme';
+import { HStack, type StackProps } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const infoRowStyle = prepareNativeStyle<{
     noBorder?: boolean;
@@ -19,15 +17,12 @@ const infoRowStyle = prepareNativeStyle<{
     minHeight: spacings.sp52,
 }));
 
-type TradeInfoRowProps = PropsWithChildren<{
+type TradeInfoRowProps = StackProps & {
     noBorder?: boolean;
     onPress?: () => void;
-    testID?: string;
-    style?: NativeStyleObject;
     noHorizontalPadding?: boolean;
     noVerticalPadding?: boolean;
-    spacing?: NativeSpacing | number;
-}>;
+};
 
 export const TradeInfoRow = ({
     children,
@@ -37,14 +32,14 @@ export const TradeInfoRow = ({
     style,
     noHorizontalPadding,
     noVerticalPadding,
-    spacing,
+    ...rest
 }: TradeInfoRowProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <Pressable onPress={onPress} testID={testID}>
             <HStack
-                spacing={spacing}
+                {...rest}
                 style={[
                     applyStyle(infoRowStyle, { noBorder, noHorizontalPadding, noVerticalPadding }),
                     style,

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useDispatch } from '@suite-common/redux-utils';
@@ -9,13 +9,7 @@ import { useReloadTimer } from './useReloadTimer';
 
 const REFRESH_SECONDS = 120;
 
-type UseAllTradesReloadTimerProps = {
-    isEnabled?: boolean;
-};
-
-export const useAllTradesReloadTimer = ({
-    isEnabled = true,
-}: UseAllTradesReloadTimerProps = {}) => {
+export const useAllTradesReloadTimer = () => {
     const dispatch = useDispatch();
 
     // For initial refresh
@@ -27,17 +21,11 @@ export const useAllTradesReloadTimer = ({
     const { tradesByAccount, tradesToWatch } = useSelector(selectTradesToWatchByAccount);
 
     const { timer, shouldReload, resetCount } = useReloadTimer({
-        isEnabled: isEnabled && tradesToWatch.length > 0,
+        isEnabled: tradesToWatch.length > 0,
         refreshLimitSeconds: REFRESH_SECONDS,
     });
 
     const { reset } = timer;
-
-    useEffect(() => {
-        if (!isEnabled) {
-            setHasFetchedInitialTrades(false);
-        }
-    }, [isEnabled]);
 
     // Function to refresh all trades that need watching
     const refreshAllTrades = useCallback(async () => {

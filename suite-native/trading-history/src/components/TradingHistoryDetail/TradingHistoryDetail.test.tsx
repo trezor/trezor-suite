@@ -1,9 +1,15 @@
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { type TradingTransaction } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 
 import { TradingHistoryDetail } from './TradingHistoryDetail';
 import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
+
+const services: NetworkModuleRepositoryDep = {
+    networkModuleRepository: mockNetworkModuleRepository(),
+};
 
 describe('TradingHistoryDetail', () => {
     const renderDetail = (trade: TradingTransaction) =>
@@ -17,6 +23,7 @@ describe('TradingHistoryDetail', () => {
                         },
                     },
                 },
+                services,
             },
         );
 

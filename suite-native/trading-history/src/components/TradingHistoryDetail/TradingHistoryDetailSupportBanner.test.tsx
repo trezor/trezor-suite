@@ -17,7 +17,7 @@ describe('TradingHistoryDetailSupportBanner', () => {
     });
 
     it('opens the provider support website', async () => {
-        const { getByTestId, getByText } = renderWithTradingHistoryProvider(
+        const { getByTestId, getByText } = await renderWithTradingHistoryProvider(
             <TradingHistoryDetailSupportBanner
                 providerName={exchangeMercuryo.name}
                 tradeType="exchange"
@@ -42,8 +42,8 @@ describe('TradingHistoryDetailSupportBanner', () => {
         });
     });
 
-    it('does not render without a provider support website', () => {
-        const { toJSON } = renderWithTradingHistoryProvider(
+    it('does not render without a provider support website', async () => {
+        const { toJSON } = await renderWithTradingHistoryProvider(
             <TradingHistoryDetailSupportBanner
                 providerName="unknown-provider"
                 tradeType="exchange"
