@@ -793,26 +793,6 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         const selectedAccountNetwork = getNetwork(selectedAccount.symbol);
         if (!device) return rejectWithValue('Device not found');
 
-        // native RBF is available since FW 1.9.4/2.3.5
-        const nativeRbfAvailable =
-            selectedAccount.networkType === 'bitcoin' &&
-            formValues.rbfParams &&
-            !device.unavailableCapabilities?.replaceTransaction;
-        // decrease output is available since FW 1.10.0/2.4.0
-        const decreaseOutputAvailable =
-            selectedAccount.networkType === 'bitcoin' &&
-            formValues.rbfParams &&
-            !device.unavailableCapabilities?.decreaseOutput;
-
-        const hasDecreasedOutput =
-            formValues.rbfParams && typeof formValues.setMaxOutputId === 'number';
-        // in case where native RBF is NOT available fallback to "legacy" way of signing (regular signing):
-        // - do not enhance inputs/outputs in signFormBitcoinActions
-        // - do not display "rbf mode" in TransactionReviewModal
-        const useNativeRbf =
-            (!hasDecreasedOutput && nativeRbfAvailable) ||
-            (hasDecreasedOutput && decreaseOutputAvailable);
-
         const createRbfEnhancedTransaction = (): GeneralPrecomposedTransactionFinal => {
             if (!isCardanoTx(selectedAccount, precomposedTransaction) && formValues.rbfParams) {
                 // A cancel (zero-value replace) tx is already tagged rbfType: 'cancel' by its own
@@ -839,8 +819,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
                                 : 0,
                         )
                         .toFixed(),
-                    useNativeRbf: !!useNativeRbf,
-                    useDecreaseOutput: !!hasDecreasedOutput,
+                    useNativeRbf: selectedAccount.networkType === 'bitcoin',
                 };
 
                 return enhancedRbfPrecomposedTx;
