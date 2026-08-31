@@ -4,8 +4,8 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { PaymentMethodDisplay } from './PaymentMethodDisplay';
 
 describe('PaymentMethodDisplay', () => {
-    it('renders the payment method icon and translated name accessibly', () => {
-        const { getByLabelText, getByTestId, getByText } = renderWithBasicProvider(
+    it('renders the payment method icon and translated name accessibly', async () => {
+        const { getByLabelText, getByTestId, getByText } = await renderWithBasicProvider(
             <PaymentMethodDisplay
                 accessibilityLabel="Selected payment method"
                 paymentMethod="creditCard"
@@ -21,8 +21,8 @@ describe('PaymentMethodDisplay', () => {
         expect(getByTestId('@test/payment-method')).toBeOnTheScreen();
     });
 
-    it('renders the provider name for an untranslated payment method', () => {
-        const { getByTestId, getByText } = renderWithBasicProvider(
+    it('renders the provider name for an untranslated payment method', async () => {
+        const { getByTestId, getByText } = await renderWithBasicProvider(
             <PaymentMethodDisplay
                 paymentMethod="providerMethod"
                 paymentMethodName="Provider method"

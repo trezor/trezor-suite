@@ -25,13 +25,13 @@ describe('TradingHistoryDetailWatcher', () => {
         getBuyTrade({ status: 'SUBMITTED' }),
         getSellTrade({ status: 'SEND_CRYPTO' }),
         getExchangeTrade({ status: 'CONVERTING' }),
-    ])('should watch a focused $tradeType trade using its associated account', trade => {
+    ])('should watch a focused $tradeType trade using its associated account', async trade => {
         const { orderId } = trade.data;
         if (!orderId) {
             throw new Error('Expected the trade fixture to have an order ID');
         }
 
-        renderWithTradingProvider(<TradingHistoryDetailWatcher orderId={orderId} />, {
+        await renderWithTradingProvider(<TradingHistoryDetailWatcher orderId={orderId} />, {
             overrides: {
                 wallet: {
                     trading: { trades: [trade] },
@@ -50,7 +50,7 @@ describe('TradingHistoryDetailWatcher', () => {
         });
     });
 
-    it('should disable watching when the detail screen is not focused', () => {
+    it('should disable watching when the detail screen is not focused', async () => {
         const trade = getBuyTrade({ status: 'SUBMITTED' });
         const { orderId } = trade.data;
         if (!orderId) {
@@ -58,7 +58,7 @@ describe('TradingHistoryDetailWatcher', () => {
         }
         mockIsFocused = false;
 
-        renderWithTradingProvider(<TradingHistoryDetailWatcher orderId={orderId} />, {
+        await renderWithTradingProvider(<TradingHistoryDetailWatcher orderId={orderId} />, {
             overrides: {
                 wallet: {
                     trading: { trades: [trade] },

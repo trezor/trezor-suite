@@ -36,6 +36,7 @@
         "@suite-native/feedback-form": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/labeling": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/toasts": "workspace:*",
@@ -57,6 +58,7 @@
     },
     "devDependencies": {
         "@suite-common/analytics-redux": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/test-utils": "workspace:*",

@@ -8,7 +8,7 @@ import { type NativeSpacing } from '@trezor/theme';
 import { Box, type BoxProps } from './Box';
 
 type StackOrientation = 'horizontal' | 'vertical';
-interface StackProps extends BoxProps {
+export interface StackProps extends BoxProps {
     children: ReactNode;
     spacing?: NativeSpacing | number;
     orientation?: StackOrientation;

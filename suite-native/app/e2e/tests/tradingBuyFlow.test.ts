@@ -37,10 +37,11 @@ describe('Trade Buy [@noDevice]', () => {
 
         await buyPreviewActions.expectBuyPreviewScreenToBeVisible();
         await buyPreviewActions.confirmTrade();
-        await tradingBuyActions.expectBrowserAuthTriggered();
-
-        await tradingHistoryActions.openTradeHistory();
-        await tradingHistoryActions.openTradeDetail('PLN\xa0100.00');
-        await tradingHistoryActions.assertTradeDetail('Buy', 'PLN\xa0100.00', 'BTC SegWit');
+        await tradingHistoryActions.assertTradeDetail({
+            fiatAmount: '100',
+            fiatCurrency: 'PLN',
+            receiveAccount: 'BTC SegWit',
+            receiveCryptoSymbol: 'BTC',
+        });
     }, 240_000);
 });

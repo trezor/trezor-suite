@@ -2,7 +2,7 @@ import { Platform, Pressable } from 'react-native';
 import { FadeInDown, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import { AnimatedBox, HStack, Text, buttonSizeToDimensionsMap } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -48,9 +48,8 @@ export const HistoryButton = () => {
     const navigation = useNavigation<NavigationProps>();
     const activeTradingType = useSelector(selectActiveTradingType);
     const isMountedRecently = useMountedRecentlyFlag(activeTradingType);
-    const isFocused = useIsFocused();
 
-    const { totalTrades } = useWatchAllTrades({ isEnabled: isFocused });
+    const { totalTrades } = useWatchAllTrades();
     const shouldHideButton = useSelector(selectIsAmountInputActive);
 
     const handleOnPress = () => navigation.navigate(RootStackRoutes.TradingHistory);

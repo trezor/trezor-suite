@@ -19,7 +19,6 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "@suite-native/intl": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
@@ -27,7 +26,6 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
-        "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
         "@types/invity-api": "^1.1.19"

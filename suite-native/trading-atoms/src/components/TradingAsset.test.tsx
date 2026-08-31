@@ -1,4 +1,4 @@
-import { type FiatCurrencyCode } from 'invity-api';
+import type { FiatCurrencyCode } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
@@ -6,8 +6,8 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { TradingAsset } from './TradingAsset';
 
 describe('TradingAsset', () => {
-    it('renders a crypto name with its symbol and network badge by default', () => {
-        const { getByTestId, getByText } = renderWithBasicProvider(
+    it('renders a crypto name with its symbol and network badge by default', async () => {
+        const { getByTestId, getByText } = await renderWithBasicProvider(
             <TradingAsset
                 assetType="crypto"
                 contractAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
@@ -23,8 +23,8 @@ describe('TradingAsset', () => {
         expect(getByText('Ethereum')).toBeOnTheScreen();
     });
 
-    it('renders a crypto symbol with network text without repeating the symbol', () => {
-        const { getByTestId, queryByTestId } = renderWithBasicProvider(
+    it('renders a crypto symbol with network text without repeating the symbol', async () => {
+        const { getByTestId, queryByTestId } = await renderWithBasicProvider(
             <TradingAsset
                 assetType="crypto"
                 name="USD Coin"
@@ -41,8 +41,8 @@ describe('TradingAsset', () => {
         expect(getByTestId('@test/trading-asset/network-text')).toHaveTextContent('Ethereum');
     });
 
-    it('renders a fiat flag with name, symbol, configured size, and right content', () => {
-        const { getByLabelText, getByTestId, getByText } = renderWithBasicProvider(
+    it('renders a fiat flag with name, symbol, configured size, and right content', async () => {
+        const { getByLabelText, getByTestId, getByText } = await renderWithBasicProvider(
             <TradingAsset
                 assetType="fiat"
                 fiatCurrency="usd"
@@ -61,8 +61,8 @@ describe('TradingAsset', () => {
         expect(getByTestId('@test/trading-asset/right-content')).toHaveTextContent('Right content');
     });
 
-    it('renders only the fiat symbol with configured typography and falls back to a coin icon', () => {
-        const { getByTestId, queryByRole, queryByTestId } = renderWithBasicProvider(
+    it('renders only the fiat symbol with configured typography and falls back to a coin icon', async () => {
+        const { getByTestId, queryByRole, queryByTestId } = await renderWithBasicProvider(
             <TradingAsset
                 assetType="fiat"
                 fiatCurrency={'unknown' as FiatCurrencyCode}
