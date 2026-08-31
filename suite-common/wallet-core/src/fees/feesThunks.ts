@@ -1,4 +1,3 @@
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { type FeeInfo } from '@suite-common/wallet-types';
@@ -77,7 +76,7 @@ type UpdateFeeInfoThunkProps = {
     artificialDelay?: number;
 };
 
-export type UpdateFeeInfoThunkState = BlockchainRootState & DeviceRootState & FeesRootState;
+export type UpdateFeeInfoThunkState = BlockchainRootState & FeesRootState;
 
 /**
  * Fetches feeInfo for a given network from backend.
@@ -108,10 +107,8 @@ export const updateFeeInfoThunk = createThunk<
             );
         }
 
-        const device = selectSelectedDevice(getState());
-
         const [newFeeInfo] = await Promise.all([
-            getNewFeeInfo({ network, device }),
+            getNewFeeInfo({ network }),
             resolveAfter(artificialDelay ?? 0),
         ]);
 
