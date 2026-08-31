@@ -2,6 +2,7 @@ import { memo, useCallback, useState } from 'react';
 
 import { type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { Column } from '@trezor/components';
 
 import {
     AssetGroupLabel,
@@ -144,23 +145,25 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
 
     return (
         <AssetsModal onClose={closeModal} heading={{ id: heading }} width={MODAL_WIDTH}>
-            <AssetPickerSearchHeader
-                placeholder="TR_ASSET_PICKER_SEARCH_PLACEHOLDER"
-                search={search}
-                setSearch={setSearch}
-                networkFilter={networkFilter}
-                setNetworkFilter={setNetworkFilter}
-                networks={networks}
-                // eslint-disable-next-line jsx-a11y/no-autofocus
-                autoFocus
-            />
+            <Column gap={16}>
+                <AssetPickerSearchHeader
+                    placeholder="TR_ASSET_PICKER_SEARCH_PLACEHOLDER"
+                    search={search}
+                    setSearch={setSearch}
+                    networkFilter={networkFilter}
+                    setNetworkFilter={setNetworkFilter}
+                    networks={networks}
+                    // eslint-disable-next-line jsx-a11y/no-autofocus
+                    autoFocus
+                />
 
-            <AssetListWrapper
-                listItems={listItems}
-                renderItem={renderItem}
-                getItemHeight={getAssetPickerItemHeight}
-                resetScrollTrigger={`${networkFilter}${search}${listItems.length}`}
-            />
+                <AssetListWrapper
+                    listItems={listItems}
+                    renderItem={renderItem}
+                    getItemHeight={getAssetPickerItemHeight}
+                    resetScrollTrigger={`${networkFilter}${search}${listItems.length}`}
+                />
+            </Column>
         </AssetsModal>
     );
 });
