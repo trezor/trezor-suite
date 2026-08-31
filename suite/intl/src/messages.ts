@@ -4868,14 +4868,6 @@ export const messages = defineMessages({
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED',
         defaultMessage: 'You can have only one coinjoin account per wallet.',
     },
-    MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT: {
-        id: 'MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT',
-        defaultMessage: 'Update your firmware to use coinjoin',
-    },
-    MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED: {
-        id: 'MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED',
-        defaultMessage: 'Update your firmware to enable the coinjoin feature.',
-    },
     MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY',
         defaultMessage: 'Coinjoin account only available in the Trezor Suite desktop app.',
@@ -6391,11 +6383,6 @@ export const messages = defineMessages({
     RECIPIENT_IS_NOT_VALID: {
         defaultMessage: "Address isn't valid",
         id: 'RECIPIENT_IS_NOT_VALID',
-    },
-    RECIPIENT_REQUIRES_UPDATE: {
-        defaultMessage:
-            "Taproot isn't supported by your firmware version. Update your device firmware.",
-        id: 'RECIPIENT_REQUIRES_UPDATE',
     },
     TR_UNSUPPORTED_ADDRESS_FORMAT: {
         defaultMessage: 'Unsupported address format.',
