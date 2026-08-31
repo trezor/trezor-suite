@@ -28,6 +28,7 @@ const renderPreferredModal = ({
     modal?: ModalState;
 }) => {
     const store = configureMockStore({
+        extra: undefined,
         preloadedState: {
             router: { loaded: true, ...getAppWithParams({ pathname, hash }) },
             modal,
