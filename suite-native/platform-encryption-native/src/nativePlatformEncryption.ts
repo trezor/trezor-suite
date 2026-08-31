@@ -21,6 +21,7 @@ type NativePlatformEncryptionDeps = EnsureEncryptionKeyDep;
 const deriveKey = (mmkvKey: string): Buffer =>
     crypto.createHash('sha256').update(mmkvKey, 'hex').digest();
 
+// eslint-disable-next-line local-rules/enforce-di-factory-contracts -- Concrete implementation of the abstract PlatformEncryption contract.
 export const createNativePlatformEncryption = (
     deps: NativePlatformEncryptionDeps,
 ): PlatformEncryption => ({

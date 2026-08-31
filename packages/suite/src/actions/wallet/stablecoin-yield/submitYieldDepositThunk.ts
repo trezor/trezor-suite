@@ -28,6 +28,7 @@ type SubmitYieldDepositPayload = {
     flowData: YieldFlowResolvedData;
     amount: string;
 };
+
 type SubmitYieldDepositThunkState = ComposeYieldDepositTransactionThunkState &
     SendYieldTransactionState;
 

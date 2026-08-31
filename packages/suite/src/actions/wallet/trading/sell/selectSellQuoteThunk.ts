@@ -15,6 +15,7 @@ import {
 import { type RequestSellTradeThunkState, requestSellTradeThunk } from './requestSellTradeThunk';
 
 type SelectSellQuoteThunkParams = { quote: SellFiatTrade; fractionButton?: number };
+
 type SelectSellQuoteThunkState = GotoThunkState & RequestSellTradeThunkState;
 
 type SelectSellQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;

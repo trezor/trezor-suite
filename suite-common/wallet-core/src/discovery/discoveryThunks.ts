@@ -89,6 +89,7 @@ const deviceStateEqualTo = (first: DeviceState) => {
     return (second?: DeviceState) =>
         firstParsed ? firstParsed === second?.staticSessionId?.split(':')[0] : false;
 };
+
 type ApplyDeviceStatesThunkState = DeviceRootState & WalletSettingsRootState;
 
 export const applyDeviceStatesThunk = createThunk<
@@ -231,6 +232,7 @@ type ApplyDeviceStateErrorThunkProps = {
     code: string | undefined;
     devicePath: DeviceUniquePath;
 };
+
 type ApplyDeviceStateErrorThunkState = DiscoveryRootState;
 
 const applyDeviceStateErrorThunk = createThunk<
@@ -624,6 +626,7 @@ type StartDiscoveryThunkParams = {
     isAddingExistingWallet?: boolean;
     useScopedCallIds?: boolean;
 };
+
 export type StartDiscoveryThunkState = RunDiscoveryThunkState;
 
 export type StartDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
@@ -803,6 +806,7 @@ type SubmitPassphraseThunkParams = {
     passphraseOnDevice?: boolean;
     requestId?: string;
 };
+
 type SubmitPassphraseThunkState = DiscoveryRootState;
 
 export const submitPassphrase = createThunk<

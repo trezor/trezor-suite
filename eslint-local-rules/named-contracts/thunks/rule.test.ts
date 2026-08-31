@@ -15,6 +15,7 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
             filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+
                 type SaveThunkState = { value: string };
 
                 type SaveThunkDeps = { save: () => void };
@@ -30,6 +31,7 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
             filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+
                 type SaveThunkState = { value: string };
 
                 type SaveThunkDeps = { save: () => void };
@@ -47,6 +49,7 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
             filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+
                 type SaveThunkState = { value: string };
 
                 const saveThunks = createThunk<void, void, { state: SaveThunkState }>(
@@ -59,6 +62,7 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
             filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+
                 type SaveThunkState = { value: string };
 
                 const saveThunkInner = createThunk<void, void, { state: SaveThunkState }>(
@@ -110,6 +114,50 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
         {
             filename: namedContractsFilename,
             code: `
+                type GetState = () => { value: string };
+
+                type SaveThunkState = ReturnType<GetState>;
+
+                const save = () => (
+                    dispatch: unknown,
+                    getState: () => SaveThunkState,
+                ) => {
+                    void dispatch;
+                    void getState;
+                };
+            `,
+            errors: [
+                {
+                    messageId: 'stateContractMustBeExplicit',
+                    data: { contractName: 'SaveThunkState' },
+                },
+            ],
+        },
+        {
+            filename: namedContractsFilename,
+            code: `
+                type AppState = { value: string };
+
+                type SaveThunkState = AppState;
+
+                const save = () => (
+                    dispatch: unknown,
+                    getState: () => SaveThunkState,
+                ) => {
+                    void dispatch;
+                    void getState;
+                };
+            `,
+            errors: [
+                {
+                    messageId: 'stateContractMustBeExplicit',
+                    data: { contractName: 'SaveThunkState' },
+                },
+            ],
+        },
+        {
+            filename: namedContractsFilename,
+            code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
                 type SaveThunkState = { value: string };
                 type SaveThunkDeps = { save: () => void };
@@ -121,6 +169,7 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
             `,
             output: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+
                 type SaveThunkState = { value: string };
 
                 type SaveThunkDeps = { save: () => void };
@@ -132,6 +181,13 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
                 >('save', () => undefined);
             `,
             errors: [
+                {
+                    messageId: 'contractMustBeSeparated',
+                    data: {
+                        previousName: 'the previous declaration',
+                        nextName: 'SaveThunkState',
+                    },
+                },
                 {
                     messageId: 'contractMustBeSeparated',
                     data: { previousName: 'SaveThunkState', nextName: 'SaveThunkDeps' },
@@ -146,6 +202,7 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
             filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+
                 type SaveThunkDeps = { save: () => void };
 
                 type SaveThunkState = { value: string };
@@ -158,6 +215,7 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
             `,
             output: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+
                 type SaveThunkState = { value: string };
 
                 type SaveThunkDeps = { save: () => void };
@@ -183,6 +241,7 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
             filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+
                 export type SaveThunkDeps = { save: () => void };
 
                 export type SaveThunkState = { value: string };
@@ -195,6 +254,7 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
             `,
             output: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+
                 export type SaveThunkState = { value: string };
 
                 export type SaveThunkDeps = { save: () => void };
@@ -220,6 +280,7 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
             filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+
                 // Saving requires access to this service.
                 type SaveThunkDeps = { save: () => void };
 
@@ -299,6 +360,7 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
             filename: namedContractsFilename,
             code: `
                 declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
+
                 type SaveThunkDeps = { save: () => void };
 
                 const saveThunk = createThunk<void, void, { state: void; extra: SaveThunkDeps }>(

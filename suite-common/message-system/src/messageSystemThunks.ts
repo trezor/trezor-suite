@@ -70,6 +70,7 @@ const shouldFetchConfig = (isLocal: boolean, lastTimestamp: number) => {
 
     return now >= lastTimestamp + interval;
 };
+
 type FetchConfigThunkState = MessageSystemRootState;
 
 export const fetchConfigThunk = createThunk<void, void, { state: FetchConfigThunkState }>(

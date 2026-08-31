@@ -32,7 +32,7 @@ export type CheckStorageByPublicKeyFetch = (
     params: CheckStorageByPublicKeyFetchParams,
 ) => Promise<CheckStorageByPublicKeyResult>;
 
-export type CheckStorageByPublicKeyDep = {
+export type CheckStorageByPublicKeyFetchDep = {
     checkStorageByPublicKeyFetch: CheckStorageByPublicKeyFetch;
 };
 

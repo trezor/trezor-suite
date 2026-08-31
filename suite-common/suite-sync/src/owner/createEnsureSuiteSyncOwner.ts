@@ -3,10 +3,10 @@ import { ok } from '@trezor/type-utils';
 import { isNotNull } from '@trezor/utils';
 
 import { type LoadSuiteSyncOwnerFromStateDep } from './createLoadSuiteSyncOwnerFromState';
-import { type RetrieveSuiteSyncOwnerKeysDep } from './createRetrieveSuiteSyncOwner';
+import { type RetrieveSuiteSyncOwnerDep } from './createRetrieveSuiteSyncOwner';
 import { type SaveSuiteSyncOwnerDep } from './createSaveSuiteSyncOwner';
 
-export type EnsureSuiteSyncOwnerDeps = RetrieveSuiteSyncOwnerKeysDep &
+export type EnsureSuiteSyncOwnerDeps = RetrieveSuiteSyncOwnerDep &
     LoadSuiteSyncOwnerFromStateDep &
     SaveSuiteSyncOwnerDep;
 

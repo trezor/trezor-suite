@@ -141,6 +141,8 @@ export const enforceThunkContractsRule: Rule.RuleModule = {
             emptyThunkConfig: "Use explicit 'void' for dependency-free thunk '{{thunkName}}'.",
             missingThunkConfig:
                 "Give thunk '{{thunkName}}' an explicit third generic: 'void' or a named State/Deps config.",
+            stateContractMustBeExplicit:
+                "Define '{{contractName}}' from the minimal RootState types the thunk reads; do not derive it from GetState or an app-wide state type.",
             thunkConfigMustBeInline:
                 "Inline the RTK config for '{{thunkName}}' so its named State and Deps contracts stay visible.",
             voidContractProperty:
@@ -172,6 +174,25 @@ export const enforceThunkContractsRule: Rule.RuleModule = {
                         });
 
                         return;
+                    }
+
+                    const declaration = localTypeAliases.get(expectedName);
+                    const declaredStateTypeName =
+                        declaration !== undefined && ts.isTypeAliasDeclaration(declaration)
+                            ? getTypeReferenceName(declaration.type)
+                            : undefined;
+
+                    if (
+                        expectedName.endsWith('State') &&
+                        declaration !== undefined &&
+                        ts.isTypeAliasDeclaration(declaration) &&
+                        (declaredStateTypeName === 'AppState' ||
+                            declaredStateTypeName === 'GetState' ||
+                            declaredStateTypeName === 'ReturnType')
+                    ) {
+                        report(declaration.type, 'stateContractMustBeExplicit', {
+                            contractName: expectedName,
+                        });
                     }
 
                     requiredContracts.push({ expectedName, node });

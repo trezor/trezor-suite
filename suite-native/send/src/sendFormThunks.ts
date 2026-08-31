@@ -128,6 +128,7 @@ type CleanupSendFormThunkParams = {
     tokenContract?: TokenAddress;
     shouldDeleteDraft?: boolean;
 };
+
 export type CleanupSendFormThunkState = DeviceRootState;
 
 export const cleanupSendFormThunk = createThunk<

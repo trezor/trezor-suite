@@ -1,7 +1,8 @@
 import TrezorConnectMobile from '@trezor/connect-mobile';
 import TrezorConnect from '@trezor/connect-web';
 
-import type { Dispatch, GetState } from '../types';
+import { type ConnectRootState } from '../reducers/trezorConnectReducer';
+import type { Dispatch } from '../types';
 import {
     type ConnectOptions,
     ON_CHANGE_CONNECT_OPTIONS,
@@ -80,7 +81,9 @@ export const init =
 export const initWithOptions = (options: ConnectOptions) => (dispatch: Dispatch) =>
     dispatch(init(options));
 
-export const onSubmitInit = () => (dispatch: Dispatch, getState: GetState) => {
+type OnSubmitInitThunkState = ConnectRootState;
+
+export const onSubmitInit = () => (dispatch: Dispatch, getState: () => OnSubmitInitThunkState) => {
     const { connect } = getState();
 
     return dispatch(initWithOptions(connect.options ?? {}));

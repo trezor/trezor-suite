@@ -23,6 +23,7 @@ export type MigrateLabelsIfAvailableDeps = {
     ) => TrezorDevice | undefined;
 };
 
+// eslint-disable-next-line local-rules/enforce-di-factory-contracts -- Concrete implementation of the abstract OnStorageEnsured contract.
 export const createMigrateLabelsIfAvailable = (
     deps: MigrateLabelsIfAvailableDeps,
 ): OnStorageEnsured => {

@@ -1,12 +1,21 @@
 import { type Dispatch, createAction } from '@reduxjs/toolkit';
 
-import { selectIsDeviceLocked } from '@suite/locks';
-import { closeModal, openModal } from '@suite/modal';
-import { selectDevices } from '@suite-common/device';
-import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
+import { type LocksRootState, selectIsDeviceLocked } from '@suite/locks';
+import { type ModalRootState, closeModal, openModal } from '@suite/modal';
+import { type DeviceRootState, selectDevices } from '@suite-common/device';
+import {
+    Feature,
+    type MessageSystemRootState,
+    selectIsFeatureDisabled,
+} from '@suite-common/message-system';
 import { getDeviceInstances } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectAccountByKey, selectAddressDisplayType } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    selectAccountByKey,
+    selectAddressDisplayType,
+} from '@suite-common/wallet-core';
 import { type Account, type AccountKey, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import {
@@ -26,7 +35,7 @@ import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/ut
 
 import * as COINJOIN from './coinjoinConstants';
 import {
-    type GetState,
+    type CoinjoinRootState,
     selectCoinjoinAccounts,
     selectRoundsDurationInHours,
     selectRoundsLeftByAccountKey,
@@ -157,8 +166,11 @@ export type CoinjoinClientAction = ReturnType<
 export const getCoinjoinClient = (symbol: CoinjoinSymbol) =>
     CoinjoinService.getInstance(symbol)?.client;
 
+type UnregisterByAccountKeyThunkState = AccountsRootState;
+
 export const unregisterByAccountKey =
-    (accountKey: string) => (_dispatch: Dispatch, getState: GetState) => {
+    (accountKey: string) =>
+    (_dispatch: Dispatch, getState: () => UnregisterByAccountKeyThunkState) => {
         const { accounts } = getState().wallet;
         const realAccount = accounts.find(a => a.key === accountKey);
 
@@ -177,6 +189,8 @@ export const endCoinjoinSession = (accountKey: string) => (dispatch: Dispatch) =
     dispatch(unregisterByAccountKey(accountKey));
 };
 
+type SetBusyScreenThunkState = AccountsRootState & DeviceRootState;
+
 /**
  * Show "do not disconnect" screen on Trezor.
  * Multiple possible setups:
@@ -185,7 +199,8 @@ export const endCoinjoinSession = (accountKey: string) => (dispatch: Dispatch) =
  * - N accounts on X devices (like two physical device)
  */
 export const setBusyScreen =
-    (accountKeys: string[], expiry?: number) => (_dispatch: Dispatch, getState: GetState) => {
+    (accountKeys: string[], expiry?: number) =>
+    (_dispatch: Dispatch, getState: () => SetBusyScreenThunkState) => {
         const {
             wallet: { accounts },
         } = getState();
@@ -228,11 +243,14 @@ export const setBusyScreen =
         );
     };
 
-export const hasCriticalPhaseModal = () => (_: Dispatch, getState: GetState) => {
-    const { modal } = getState();
+type HasCriticalPhaseModalThunkState = ModalRootState;
 
-    return 'payload' in modal && modal.payload.type === 'critical-coinjoin-phase';
-};
+export const hasCriticalPhaseModal =
+    () => (_: Dispatch, getState: () => HasCriticalPhaseModalThunkState) => {
+        const { modal } = getState();
+
+        return 'payload' in modal && modal.payload.type === 'critical-coinjoin-phase';
+    };
 
 export const closeCriticalPhaseModal = () => (dispatch: Dispatch) => {
     if (dispatch(hasCriticalPhaseModal())) {
@@ -240,9 +258,12 @@ export const closeCriticalPhaseModal = () => (dispatch: Dispatch) => {
     }
 };
 
+type PauseCoinjoinSessionThunkState = AccountsRootState;
+
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
 export const pauseCoinjoinSession =
-    (accountKey: AccountKey) => (dispatch: Dispatch, getState: GetState) => {
+    (accountKey: AccountKey) =>
+    (dispatch: Dispatch, getState: () => PauseCoinjoinSessionThunkState) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || !isCoinjoinSupportedSymbol(account.symbol)) {
@@ -258,9 +279,12 @@ export const pauseCoinjoinSession =
         dispatch(coinjoinSessionPause(accountKey));
     };
 
+type StopCoinjoinSessionThunkState = AccountsRootState & CoinjoinRootState & DeviceRootState;
+
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
 export const stopCoinjoinSession =
-    (accountKey: AccountKey) => async (dispatch: Dispatch, getState: GetState) => {
+    (accountKey: AccountKey) =>
+    async (dispatch: Dispatch, getState: () => StopCoinjoinSessionThunkState) => {
         const state = getState();
         const account = selectAccountByKey(state, accountKey);
 
@@ -317,9 +341,11 @@ export const stopCoinjoinSession =
         dispatch(coinjoinAccountUnregister(accountKey));
     };
 
+type OnCoinjoinRoundChangedThunkState = AccountsRootState & CoinjoinRootState;
+
 export const onCoinjoinRoundChanged =
     ({ round }: CoinjoinRoundEvent) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch, getState: () => OnCoinjoinRoundChangedThunkState) => {
         const state = getState();
         const coinjoinAccounts = selectCoinjoinAccounts(state);
         const roundsDurationInHours = selectRoundsDurationInHours(state);
@@ -408,9 +434,14 @@ export const onCoinjoinRoundChanged =
 const coinjoinResponseError = (utxos: CoinjoinRequestEvent['inputs'], error: string) =>
     utxos.map(u => ({ outpoint: u.outpoint, error }));
 
+type GetOwnershipProofThunkState = AccountsRootState &
+    CoinjoinRootState &
+    DeviceRootState &
+    LocksRootState;
+
 const getOwnershipProof =
     (request: Extract<CoinjoinRequestEvent, { type: 'ownership' }>) =>
-    async (_dispatch: Dispatch, getState: GetState) => {
+    async (_dispatch: Dispatch, getState: () => GetOwnershipProofThunkState) => {
         const state = getState();
         const {
             wallet: { coinjoin, accounts },
@@ -528,9 +559,14 @@ export const clientEmitException =
         });
     };
 
+type SignCoinjoinTxThunkState = AccountsRootState &
+    CoinjoinRootState &
+    DeviceRootState &
+    WalletSettingsRootState;
+
 const signCoinjoinTx =
     (request: Extract<CoinjoinRequestEvent, { type: 'signature' }>) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch, getState: () => SignCoinjoinTxThunkState) => {
         const {
             wallet: { coinjoin, accounts },
         } = getState();
@@ -686,8 +722,11 @@ export const onCoinjoinClientRequest = (data: CoinjoinRequestEvent[]) => (dispat
         }),
     );
 
+type InitCoinjoinServiceThunkState = AccountsRootState & CoinjoinRootState & MessageSystemRootState;
+
 export const initCoinjoinService =
-    (symbol: Account['symbol']) => async (dispatch: Dispatch, getState: GetState) => {
+    (symbol: Account['symbol']) =>
+    async (dispatch: Dispatch, getState: () => InitCoinjoinServiceThunkState) => {
         const state = getState();
         const { clients, debug, accounts } = state.wallet.coinjoin;
 

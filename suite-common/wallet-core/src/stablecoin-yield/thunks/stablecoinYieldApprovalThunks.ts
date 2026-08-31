@@ -189,6 +189,7 @@ type HandleYieldApproveSuccessTxidThunkParams = YieldSessionPayload & {
     submittedAt?: number;
     txid: string;
 };
+
 type HandleYieldApproveSuccessTxidThunkState = StablecoinYieldRootState;
 
 export const handleYieldApproveSuccessTxidThunk = createThunk<

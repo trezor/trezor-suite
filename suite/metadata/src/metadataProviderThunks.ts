@@ -65,12 +65,14 @@ const createProviderInstance = (
 
 type GetProviderInstanceParams = { clientId: string; dataType: DataType };
 
+type GetProviderInstanceThunkState = MetadataRootState;
+
 /**
  * Return already existing instance of AbstractProvider or recreate it from token;
  */
 export const getProviderInstance =
     ({ clientId, dataType = 'labels' }: GetProviderInstanceParams) =>
-    (_dispatch: Dispatch, getState: () => MetadataRootState) => {
+    (_dispatch: Dispatch, getState: () => GetProviderInstanceThunkState) => {
         const state = getState();
         const { providers } = state.metadata;
 
@@ -103,12 +105,16 @@ type DisconnectProviderParams = {
 
 type DisconnectProviderDeps = WithServices<DesktopAnalyticsDep>;
 
+type DisconnectProviderThunkState = MetadataRootState;
+
+type DisconnectProviderThunkDeps = DisconnectProviderDeps;
+
 export const disconnectProvider =
     ({ clientId, dataType, removeMetadata = true }: DisconnectProviderParams) =>
     async (
         dispatch: Dispatch,
-        _getState: () => MetadataRootState,
-        extra: DisconnectProviderDeps,
+        _getState: () => DisconnectProviderThunkState,
+        extra: DisconnectProviderThunkDeps,
     ) => {
         typedObjectKeys(fetchIntervals).forEach((id: FetchIntervalTrackingId) => {
             const [trackedDataType, trackedClientId] = id.split('-');
@@ -243,9 +249,17 @@ type ConnectProviderParams = {
 
 export type ConnectProviderDeps = WithServices<DesktopAnalyticsDep>;
 
+type ConnectProviderThunkState = MetadataRootState;
+
+type ConnectProviderThunkDeps = ConnectProviderDeps;
+
 export const connectProvider =
     ({ type, dataType = 'labels', clientId }: ConnectProviderParams) =>
-    async (dispatch: Dispatch, getState: () => MetadataRootState, extra: ConnectProviderDeps) => {
+    async (
+        dispatch: Dispatch,
+        getState: () => ConnectProviderThunkState,
+        extra: ConnectProviderThunkDeps,
+    ) => {
         const providerInstance = createProviderInstance(
             type,
             {},
@@ -293,8 +307,10 @@ export const connectProvider =
         return true;
     };
 
+type ExportMetadataToLocalFileThunkState = MetadataRootState;
+
 export const exportMetadataToLocalFile =
-    () => async (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    () => async (dispatch: Dispatch, getState: () => ExportMetadataToLocalFileThunkState) => {
         const provider = selectSelectedProviderForLabels(getState());
         if (!provider) return;
         const providerInstance = dispatch(

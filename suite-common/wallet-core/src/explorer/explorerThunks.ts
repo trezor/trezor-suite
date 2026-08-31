@@ -10,6 +10,7 @@ type SetNetworkExplorerThunkParams = {
     symbol: NetworkSymbol;
     explorer?: Explorer;
 };
+
 type SetNetworkExplorerThunkState = ExplorerState;
 
 type SetNetworkExplorerThunkDeps = WithServices<AnalyticsDep>;

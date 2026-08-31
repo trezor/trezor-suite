@@ -190,6 +190,7 @@ type UpdateCurrentFiatRatesThunkPayload = {
     forceFetchToken?: boolean;
     skipCache?: boolean;
 };
+
 export type UpdateFiatRatesThunkState = BlockchainRootState & TokenDefinitionsRootState;
 
 export const updateFiatRatesThunk = createThunk<
@@ -285,6 +286,7 @@ type UpdateMissingTxFiatRatesThunkParams = {
     localCurrency: BaseCurrencyCode;
     accountKey?: AccountKey;
 };
+
 export type UpdateMissingTxFiatRatesThunkState = FiatRatesRootState &
     TransactionsRootState &
     UpdateTxsFiatRatesThunkState;

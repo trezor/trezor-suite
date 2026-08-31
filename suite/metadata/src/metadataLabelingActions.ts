@@ -35,8 +35,11 @@ import {
 } from './metadataReducer';
 import * as metadataUtils from './metadataUtils';
 
+type GetLabelableEntitiesThunkState = MetadataRootState;
+
 const getLabelableEntities =
-    (deviceState: StaticSessionId) => (_dispatch: Dispatch, getState: () => MetadataRootState) =>
+    (deviceState: StaticSessionId) =>
+    (_dispatch: Dispatch, getState: () => GetLabelableEntitiesThunkState) =>
         selectLabelableEntities(getState(), deviceState);
 
 type LabelableEntity = ReturnType<ReturnType<typeof getLabelableEntities>>[number];
@@ -103,9 +106,11 @@ const fetchMetadata =
         };
     };
 
+type SetAccountMetadataKeyThunkState = MetadataRootState;
+
 export const setAccountMetadataKey =
     (account: Account, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
-    (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    (dispatch: Dispatch, getState: () => SetAccountMetadataKeyThunkState) => {
         const device = selectDeviceByStaticSessionId(getState(), account.deviceState);
         const deviceMetaKey = device?.metadata[encryptionVersion]?.key;
 
@@ -138,12 +143,14 @@ export const setAccountMetadataKey =
         return account;
     };
 
+type SyncMetadataKeysThunkState = MetadataRootState;
+
 /**
  * Fill any record in reducer that may have metadata with metadata keys (not values).
  */
 const syncMetadataKeys =
     (device: TrezorDevice, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
-    (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    (dispatch: Dispatch, getState: () => SyncMetadataKeysThunkState) => {
         if (!device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]) {
             return;
         }
@@ -161,9 +168,11 @@ const syncMetadataKeys =
         // keys sooner when enabling labeling on device;
     };
 
+type FetchAndSaveMetadataThunkState = MetadataRootState;
+
 export const fetchAndSaveMetadata =
     (deviceStateArg?: StaticSessionId) =>
-    async (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    async (dispatch: Dispatch, getState: () => FetchAndSaveMetadataThunkState) => {
         const provider = selectSelectedProviderForLabels(getState());
         if (!provider) return;
 
@@ -267,8 +276,10 @@ export const fetchAndSaveMetadata =
         }
     };
 
+type FetchAndSaveMetadataForAllDevicesThunkState = MetadataRootState;
+
 export const fetchAndSaveMetadataForAllDevices =
-    () => (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    () => (dispatch: Dispatch, getState: () => FetchAndSaveMetadataForAllDevicesThunkState) => {
         const metadata = selectMetadata(getState());
         if (!metadata.enabled) {
             return;
@@ -284,9 +295,11 @@ export const fetchAndSaveMetadataForAllDevices =
         });
     };
 
+type AddDeviceMetadataThunkState = MetadataRootState;
+
 export const addDeviceMetadata =
     (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) =>
-    (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    (dispatch: Dispatch, getState: () => AddDeviceMetadataThunkState) => {
         const devices = selectDevices(getState());
         const device = devices.find(d => d.state?.staticSessionId === payload.entityKey);
         const provider = selectSelectedProviderForLabels(getState());
@@ -346,6 +359,8 @@ export const addDeviceMetadata =
         });
     };
 
+type AddAccountMetadataThunkState = MetadataRootState;
+
 /**
  * @param payload - metadata payload
  * @param save - should metadata be saved into persistent storage? this is useful when you are updating multiple records
@@ -353,7 +368,7 @@ export const addDeviceMetadata =
  */
 export const addAccountMetadata =
     (payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>) =>
-    (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    (dispatch: Dispatch, getState: () => AddAccountMetadataThunkState) => {
         const account = getState().wallet.accounts.find(a => a.key === payload.entityKey);
         const provider = selectSelectedProviderForLabels(getState());
 
@@ -463,12 +478,14 @@ export const addAccountMetadata =
         });
     };
 
+type SetDeviceMetadataKeyThunkState = MetadataRootState;
+
 /**
  * Generate device master-key
  * */
 export const setDeviceMetadataKey =
     (device: TrezorDevice, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
-    async (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    async (dispatch: Dispatch, getState: () => SetDeviceMetadataKeyThunkState) => {
         if (!device.state?.staticSessionId || !device.connected) return;
 
         const result = await TrezorConnect.cipherKeyValue({
@@ -511,9 +528,11 @@ export const setDeviceMetadataKey =
         return { success: false };
     };
 
+type AddMetadataThunkState = MetadataRootState;
+
 export const addMetadata =
     (payload: MetadataAddPayload) =>
-    async (dispatch: Dispatch, getState: () => MetadataRootState): Promise<boolean> => {
+    async (dispatch: Dispatch, getState: () => AddMetadataThunkState): Promise<boolean> => {
         const result = await dispatch(
             payload.type === 'walletLabel'
                 ? addDeviceMetadata(payload)
@@ -560,6 +579,10 @@ export const addMetadata =
 
 export type InitMetadataDeps = WithServices<DesktopAnalyticsDep>;
 
+type InitThunkState = MetadataRootState;
+
+type InitThunkDeps = InitMetadataDeps;
+
 /**
  * init - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method
  * consists of number of steps of which not all have to necessarily happen. For example
@@ -571,7 +594,7 @@ export type InitMetadataDeps = WithServices<DesktopAnalyticsDep>;
  */
 export const init =
     (force: boolean, deviceStateArg?: StaticSessionId) =>
-    async (dispatch: Dispatch, getState: () => MetadataRootState, extra: InitMetadataDeps) => {
+    async (dispatch: Dispatch, getState: () => InitThunkState, extra: InitThunkDeps) => {
         let device = deviceStateArg
             ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
             : selectSelectedDevice(getState());

@@ -9,7 +9,6 @@ export * from './actions';
 export type Action = MethodAction | TrezorConnectAction;
 
 export type AppState = AppState$;
-export type GetState = () => AppState$;
 
 export interface Dispatch extends ThunkDispatch<AppState$, any, Action> {
     <A>(action: A): A extends (...args: any) => infer R ? R : A;

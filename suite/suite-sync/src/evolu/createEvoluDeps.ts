@@ -35,7 +35,7 @@ export const createEvoluDeps = (deps: EvoluDepsFactoryDeps): EvoluDeps => {
     });
     const run = createRun(evoluDeps);
     const createSuiteStorage = createEvoluStorageFactory({
-        createEvoluInstance: createEvoluInstanceFactory({ run }),
+        evoluInstanceFactory: createEvoluInstanceFactory({ run }),
     });
     const subscribeError: SubscribeSuiteSyncInternalErrorHandler =
         suiteSyncInternalErrorHandler => {

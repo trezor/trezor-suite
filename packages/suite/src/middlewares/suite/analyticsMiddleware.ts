@@ -11,6 +11,7 @@ import {
     updateLastAnonymityReportTimestamp,
 } from '@suite/coinjoin';
 import {
+    type RouterRootState,
     anchorChange,
     routerLocationChange,
     selectRouteName,
@@ -69,6 +70,7 @@ export type PrepareAnalyticsMiddlewareDeps = WithServices<DesktopAnalyticsDep>;
 
 type AnalyticsMiddlewareState = CoinjoinRootState &
     GetSuiteReadyPayloadState &
+    RouterRootState &
     TokenDefinitionsRootState & {
         suite: Pick<SuiteRootState['suite'], 'lifecycle'>;
     };

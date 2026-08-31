@@ -69,6 +69,7 @@ import {
     type WalletSettingsRootState,
     selectIsDeviceAutoEjectEnabled,
 } from '../settings/walletSettingsReducer';
+
 type HandleDeviceDisconnectThunkState = DeviceRootState;
 
 /**
@@ -107,6 +108,7 @@ type ForgetDisconnectedDevicesThunkParams = {
     device: Device | TrezorDevice;
     forceForget?: boolean;
 };
+
 type ForgetDisconnectedDevicesThunkState = DeviceRootState;
 
 /**
@@ -143,6 +145,7 @@ type ObserveSelectedDeviceResult = {
     isDeviceBecomingAcquired: boolean;
     isDeviceBecomingConnected: boolean;
 };
+
 type ObserveSelectedDeviceThunkState = DeviceRootState;
 
 /**
@@ -205,6 +208,7 @@ type AcquireDeviceThunkParams = {
     requestedDevice?: TrezorDevice | null;
     startDiscovery?: boolean;
 };
+
 type AcquireDeviceThunkState = RunDiscoveryThunkState;
 
 type AcquireDeviceThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
@@ -292,6 +296,7 @@ type ConfirmAddressOnDeviceThunk = {
     chunkify: boolean;
     showOnTrezor?: boolean;
 };
+
 export type ConfirmAddressOnDeviceThunkState = AccountsRootState & DeviceRootState;
 
 export const confirmAddressOnDeviceThunk = createThunk<
@@ -376,6 +381,7 @@ export const deviceConnectThunks = createThunk<
 type SetDeviceAutoEjectThunkParams = {
     shouldEnable: boolean;
 };
+
 export type SetDeviceAutoEjectThunkState = DeviceRootState & WalletSettingsRootState;
 
 export const setDeviceAutoEjectThunk = createThunk<
@@ -505,6 +511,7 @@ export type ForgetDeviceThunkParams = {
     skipDisconnect?: boolean;
     deviceId?: TrezorDevice['id'];
 };
+
 export type ForgetDeviceThunkState = ForgetDevicePersistentDataThunkState;
 
 export type ForgetDeviceThunkDeps = {
@@ -558,6 +565,7 @@ type HandlePostWipeCleanupThunkParams = {
     initialDevice: TrezorDevice;
     deviceInstances: AcquiredDevice[];
 };
+
 type HandlePostWipeCleanupThunkState = ForgetDevicePersistentDataThunkState;
 
 type HandlePostWipeCleanupThunkDeps = {

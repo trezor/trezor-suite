@@ -12,6 +12,7 @@ export type LegacyToBip329Deps = {
 
 export type LegacyToBip329Dep = { legacyToBip329: ExportBip329 };
 
+// eslint-disable-next-line local-rules/enforce-di-factory-contracts -- Concrete implementation of the abstract ExportBip329 contract.
 export const createLegacyToBip329 =
     (deps: LegacyToBip329Deps): ExportBip329 =>
     ({ account }) => {

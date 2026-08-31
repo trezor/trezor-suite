@@ -3,12 +3,14 @@ import { type TurnOnSuiteSync, type TurnOnSuiteSyncDep } from '@suite-common/sui
 
 type TurnOnDesktopSuiteSyncDeps = TurnOnSuiteSyncDep & DesktopAnalyticsDep;
 
+type TurnOnDesktopSuiteSync = TurnOnSuiteSync;
+
 /**
  * This is decorator to add a Desktop specific functionality to the "Suite Sync: Turn On"
  * operation.
  */
 export const createTurnOnDesktopSuiteSync =
-    (deps: TurnOnDesktopSuiteSyncDeps): TurnOnSuiteSync =>
+    (deps: TurnOnDesktopSuiteSyncDeps): TurnOnDesktopSuiteSync =>
     params => {
         deps.analytics.report({
             type: events.settingsGeneralLabelingProviderEvent.name,

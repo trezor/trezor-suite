@@ -167,6 +167,7 @@ function assertIsSolanaAccount(
     if (account.networkType !== 'solana')
         throw new Error(`Invalid network type. ${account.networkType}`);
 }
+
 type ComposeSolanaTransactionFeeLevelsThunkState = BlockchainRootState;
 
 export const composeSolanaTransactionFeeLevelsThunk = createThunk<

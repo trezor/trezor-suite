@@ -29,9 +29,9 @@ const suiteSyncOwner: SuiteSyncOwner = {
 };
 
 const createTestStorage = async (run: Run<EvoluPlatformDeps>) => {
-    const createEvoluInstance = createEvoluInstanceFactory({ run });
+    const evoluInstanceFactory = createEvoluInstanceFactory({ run });
 
-    return await createEvoluStorageFactory({ createEvoluInstance })({ suiteSyncOwner });
+    return await createEvoluStorageFactory({ evoluInstanceFactory })({ suiteSyncOwner });
 };
 
 describe(createEvoluStorageFactory.name, () => {

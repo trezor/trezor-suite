@@ -36,6 +36,7 @@ export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDevic
 );
 
 type UnpairCurrentBondThunkParams = Record<never, never>;
+
 type UnpairCurrentBondThunkState = DeviceRootState;
 
 /**

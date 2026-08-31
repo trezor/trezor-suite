@@ -168,6 +168,7 @@ type SubscribeBlockchainThunkParams = {
     fiatRates?: boolean;
     onConnect?: boolean;
 };
+
 export type SubscribeBlockchainThunkState = AccountsRootState;
 
 // called from WalletMiddleware after ACCOUNT.ADD/UPDATE action

@@ -20,6 +20,7 @@ import { createQuoteLink } from 'src/utils/wallet/trading/buyUtils';
 import { submitRequestForm } from '../tradingCommonActions';
 
 type SelectBuyQuoteThunkParams = { quote: BuyTrade };
+
 type SelectBuyQuoteThunkState = GotoThunkState & TradingFormAccountRootState;
 
 type SelectBuyQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;

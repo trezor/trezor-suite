@@ -146,6 +146,7 @@ export const reportAccountInfoThunk = createThunk<
 type FetchAndUpdateAccountThunkParams = {
     accountKey: AccountKey;
 };
+
 export type FetchAndUpdateAccountThunkState = AccountsRootState &
     BlockchainRootState &
     DeviceRootState &

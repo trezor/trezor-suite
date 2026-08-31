@@ -13,7 +13,7 @@ import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 import { type RegisterDeviceDep } from './createRegisterDevice';
 import { QuotaManagerCommunicationFailed } from '../errors';
 import { quotaManagerDeviceFetched } from '../quotaManagerActions';
-import { type CheckStorageByPublicKeyDep } from './createCheckStorageByPublicKeyFetch';
+import { type CheckStorageByPublicKeyFetchDep } from './createCheckStorageByPublicKeyFetch';
 
 export type EnsureDeviceHasQuotaParams = {
     device: TrezorDeviceWithState;
@@ -22,7 +22,7 @@ export type EnsureDeviceHasQuotaParams = {
 
 export type EnsureDeviceHasQuotaDeps = {
     dispatch: Dispatch;
-} & CheckStorageByPublicKeyDep &
+} & CheckStorageByPublicKeyFetchDep &
     RegisterDeviceDep;
 
 export type EnsureDeviceHasQuota = (

@@ -59,6 +59,7 @@ type ComposeYieldDepositTransactionPayload = {
     flowData: YieldFlowResolvedData;
     amount: string;
 };
+
 export type ComposeYieldDepositTransactionThunkState = ComposeYieldEvmTransactionThunkState;
 
 export const composeYieldDepositTransactionThunk = createThunk<
