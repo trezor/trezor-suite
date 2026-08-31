@@ -131,7 +131,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Wait an epoch and amount moved from pending to staked', async () => {
-                solanaStakingMock.advanceEpoch();
+                await solanaStakingMock.advanceEpoch();
                 await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
                 await stakingSection.expectStakingAmounts({
                     expected: {

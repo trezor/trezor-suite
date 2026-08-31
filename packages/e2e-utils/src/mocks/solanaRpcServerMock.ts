@@ -55,10 +55,6 @@ export class SolanaRpcServerMock {
         await new Promise<void>(resolve => this.httpServer!.listen(this.port, resolve));
     }
 
-    dropConnections(): void {
-        this.subscriptionServer?.clients.forEach(client => client.terminate());
-    }
-
     async stop(): Promise<void> {
         this.subscriptionServer?.clients.forEach(client => client.terminate());
         this.subscriptionServer?.close();
