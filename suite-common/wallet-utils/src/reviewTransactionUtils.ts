@@ -11,6 +11,7 @@ import { WRAPPED_NATIVE_MIN_FIRMWARE } from '@suite-common/wallet-constants';
 import {
     type Account,
     type FormState,
+    type GeneralPrecomposedTransaction,
     type GeneralPrecomposedTransactionFinal,
     type ReviewOutput,
     type ReviewOutputState,
@@ -40,6 +41,15 @@ import {
 import { getStakeType } from './ethereumStakingUtils';
 import { isExchangeTradingForm } from './sendFormUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
+
+/**
+ * Transactions whose steps cannot be recreated in Suite (e.g. Solana split unstakes) are not broken
+ * down into review outputs, Suite only asks the user to follow the instructions on the device.
+ */
+export const isDeviceReviewOnlyTransaction = (transaction?: GeneralPrecomposedTransaction) =>
+    transaction !== undefined &&
+    'isDeviceReviewOnly' in transaction &&
+    transaction.isDeviceReviewOnly === true;
 
 export const getTransactionReviewOutputState = (
     index: number,

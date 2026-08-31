@@ -2,7 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { isDeviceReviewOnly, isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import {
+    isDeviceReviewOnlyTransaction,
+    isSupportedSolStakingNetworkSymbol,
+} from '@suite-common/wallet-utils';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -192,7 +195,7 @@ export const StakingTransactionDataReviewScreen = ({
     }, [stakeType, claimableAmount, handlePush, trackPushedTransaction]);
 
     const isFollowDeviceReview =
-        stakeType === 'unstake' && isDeviceReviewOnly(precomposedTransaction);
+        stakeType === 'unstake' && isDeviceReviewOnlyTransaction(precomposedTransaction);
 
     const timer = showTimer && (
         <TxValidityTimer
@@ -230,27 +233,55 @@ export const StakingTransactionDataReviewScreen = ({
         </ScrollToEndOnMount>
     );
 
+    const pendingTxModal = isPending && !!pendingTxid && !!submittedAt && !!account && (
+        <YieldPendingTransactionModal
+            ref={pendingBottomSheetRef}
+            accountLabel={accountLabel}
+            accountSymbol={account.symbol}
+            amount={
+                <CryptoAmountFormatter
+                    value={pendingAmountInBaseUnits}
+                    symbol={account.symbol}
+                    color="contentPrimary"
+                    isBalance={false}
+                    isDiscreetText={false}
+                />
+            }
+            amountLabel={<Translation id={pendingTxModalTitleTranslationId[stakeType]} />}
+            fee={precomposedTransaction?.fee}
+            isExploreDisabled={isExploreDisabled}
+            onExplorePress={openInBlockchain}
+            submittedAt={submittedAt}
+            title={<Translation id={pendingTxModalAmountLabelTranslationId[stakeType]} />}
+            txid={pendingTxid}
+        />
+    );
+
     if (isFollowDeviceReview) {
         return (
-            <Screen
-                isScrollable={false}
-                header={
-                    <ScreenHeader
-                        closeActionType="back"
-                        closeAction={closeReview}
-                        rightIcon={timer}
-                    />
-                }
-            >
-                <VStack flex={1} justifyContent="center" spacing="sp24">
-                    <FollowDeviceScreenContent
-                        titleTxKey="earn.unstakeTransactionDataReviewScreen.followDeviceInstructions"
-                        isTxSigned={isTransactionAlreadySigned}
-                    />
+            <>
+                <Screen
+                    isScrollable={false}
+                    header={
+                        <ScreenHeader
+                            closeActionType="back"
+                            closeAction={closeReview}
+                            rightIcon={timer}
+                        />
+                    }
+                >
+                    <VStack flex={1} justifyContent="center" spacing="sp24">
+                        <FollowDeviceScreenContent
+                            titleTxKey="earn.unstakeTransactionDataReviewScreen.followDeviceInstructions"
+                            isTxSigned={isTransactionAlreadySigned}
+                        />
 
-                    {button}
-                </VStack>
-            </Screen>
+                        {button}
+                    </VStack>
+                </Screen>
+
+                {pendingTxModal}
+            </>
         );
     }
 
@@ -278,29 +309,7 @@ export const StakingTransactionDataReviewScreen = ({
                 {button}
             </VStack>
 
-            {isPending && !!pendingTxid && !!submittedAt && !!account && (
-                <YieldPendingTransactionModal
-                    ref={pendingBottomSheetRef}
-                    accountLabel={accountLabel}
-                    accountSymbol={account.symbol}
-                    amount={
-                        <CryptoAmountFormatter
-                            value={pendingAmountInBaseUnits}
-                            symbol={account.symbol}
-                            color="contentPrimary"
-                            isBalance={false}
-                            isDiscreetText={false}
-                        />
-                    }
-                    amountLabel={<Translation id={pendingTxModalTitleTranslationId[stakeType]} />}
-                    fee={precomposedTransaction?.fee}
-                    isExploreDisabled={isExploreDisabled}
-                    onExplorePress={openInBlockchain}
-                    submittedAt={submittedAt}
-                    title={<Translation id={pendingTxModalAmountLabelTranslationId[stakeType]} />}
-                    txid={pendingTxid}
-                />
-            )}
+            {pendingTxModal}
         </ConfirmOnTrezorWrapper>
     );
 };

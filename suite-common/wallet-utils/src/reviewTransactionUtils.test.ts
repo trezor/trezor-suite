@@ -5,6 +5,7 @@ import {
     type Account,
     type FormState,
     type FormStateTrading,
+    type GeneralPrecomposedTransaction,
     type GeneralPrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
@@ -16,6 +17,7 @@ import {
     constructTransactionReviewOutputs,
     isClearSignedEvmTradingSwapTransaction,
     isClearSignedWrappedNativeTransaction,
+    isDeviceReviewOnlyTransaction,
 } from './reviewTransactionUtils';
 
 const ethSymbol = asNetworkSymbol('eth');
@@ -544,5 +546,31 @@ describe('constructTransactionReviewOutputs', () => {
                 expect.objectContaining({ type: 'data', value: WETH_DEPOSIT_DATA }),
             ]),
         );
+    });
+});
+
+describe('isDeviceReviewOnlyTransaction', () => {
+    const buildTx = (overrides: Record<string, unknown> = {}): GeneralPrecomposedTransaction =>
+        ({
+            type: 'final',
+            totalSpent: '1000000000',
+            fee: '5000',
+            ...overrides,
+        }) as unknown as GeneralPrecomposedTransaction;
+
+    it('returns false when there is no transaction', () => {
+        expect(isDeviceReviewOnlyTransaction(undefined)).toBe(false);
+    });
+
+    it('returns false for a transaction without the flag', () => {
+        expect(isDeviceReviewOnlyTransaction(buildTx())).toBe(false);
+    });
+
+    it('returns false for a transaction Suite can review step by step', () => {
+        expect(isDeviceReviewOnlyTransaction(buildTx({ isDeviceReviewOnly: false }))).toBe(false);
+    });
+
+    it('returns true for a transaction reviewed on the device only', () => {
+        expect(isDeviceReviewOnlyTransaction(buildTx({ isDeviceReviewOnly: true }))).toBe(true);
     });
 });

@@ -45,6 +45,7 @@ const solanaTxMetaMock = {
     feeLamports: '5000',
     rentLamports: '2282880',
     feeIncludingRentLamports: '2287880',
+    hasSplitInstruction: false,
 };
 
 const prepareStakeSolTxMock = jest.fn();
@@ -308,6 +309,62 @@ describe('composeSolanaStakingTransactionFeeLevelsNativeThunk', () => {
         expect(blockchainEstimateFeeMock).toHaveBeenCalled();
         const request = blockchainEstimateFeeMock.mock.calls.at(-1)?.[0];
         expect(request.request.specific).not.toHaveProperty('newAccountProgramName');
+    });
+
+    it('marks a transaction with a split instruction as device review only', async () => {
+        // A split instruction cannot be recreated in Suite, the whole review happens on the device.
+        prepareUnstakeSolTxMock.mockResolvedValue({
+            success: true,
+            txShim: solanaTxShim,
+            solanaTxMeta: { ...solanaTxMetaMock, hasSplitInstruction: true },
+        });
+        const store = buildStore();
+
+        const result = await dispatchCompose(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'unstake',
+            amount: '1',
+        });
+
+        expect(result.ok).toBe(true);
+        const levels = (result as { payload: Record<string, any> }).payload;
+        expect(levels.normal.isDeviceReviewOnly).toBe(true);
+    });
+
+    it('keeps the device review only flag when the fee-aware preparation fails', async () => {
+        // The fee-aware rebuild is only a refinement, losing it must not turn a split into a Suite review.
+        prepareUnstakeSolTxMock.mockReset();
+        prepareUnstakeSolTxMock.mockResolvedValueOnce({
+            success: true,
+            txShim: solanaTxShim,
+            solanaTxMeta: { ...solanaTxMetaMock, hasSplitInstruction: true },
+        });
+        prepareUnstakeSolTxMock.mockResolvedValueOnce({ success: false });
+        const store = buildStore();
+
+        const result = await dispatchCompose(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'unstake',
+            amount: '1',
+        });
+
+        expect(result.ok).toBe(true);
+        const levels = (result as { payload: Record<string, any> }).payload;
+        expect(levels.normal.isDeviceReviewOnly).toBe(true);
+    });
+
+    it('leaves a transaction without a split instruction reviewable in Suite', async () => {
+        const store = buildStore();
+
+        const result = await dispatchCompose(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'unstake',
+            amount: '1',
+        });
+
+        expect(result.ok).toBe(true);
+        const levels = (result as { payload: Record<string, any> }).payload;
+        expect(levels.normal.isDeviceReviewOnly).toBe(false);
     });
 
     it('passes newAccountProgramName when an unstake splits a stake account (reserves rent)', async () => {

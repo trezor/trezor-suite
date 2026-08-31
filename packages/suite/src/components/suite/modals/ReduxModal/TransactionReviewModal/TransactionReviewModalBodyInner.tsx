@@ -24,7 +24,7 @@ import {
     getDecreaseOutputId,
     getStakeType,
     getTxValidityTimeoutInMs,
-    isDeviceReviewOnly,
+    isDeviceReviewOnlyTransaction,
     isEvmApprovalTx,
     isRbfBumpFeeTransaction,
     isRbfCancelTransaction,
@@ -190,7 +190,7 @@ export const TransactionReviewModalBodyInner = ({
         decision?.resolve(false);
     };
 
-    const isDeviceOnlyReview = isDeviceReviewOnly(precomposedTx);
+    const isDeviceOnlyReview = isDeviceReviewOnlyTransaction(precomposedTx);
     const isAwaitingDeviceReview = isDeviceOnlyReview && !serializedTx;
 
     const isCancelRbfAction = isRbfCancelTransaction(precomposedTx);

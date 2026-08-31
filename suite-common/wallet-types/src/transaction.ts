@@ -148,7 +148,6 @@ export type SolanaTxMeta = {
     feeLamports: string;
     rentLamports: string;
     feeIncludingRentLamports: string;
-    hasSplitInstruction: boolean;
 };
 
 type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectResponseNonFinal & {
@@ -160,6 +159,7 @@ type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectResponseNonFi
     accountActivationFee?: string;
     memoFee?: string;
     solanaTxMeta?: SolanaTxMeta;
+    isDeviceReviewOnly?: boolean;
 };
 
 // base of PrecomposedTransactionFinal
@@ -179,6 +179,7 @@ type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     maxFeePerGas?: string;
     maxPriorityFeePerGas?: string;
     solanaTxMeta?: SolanaTxMeta;
+    isDeviceReviewOnly?: boolean;
 };
 
 // base of PrecomposedTransactionFinal
