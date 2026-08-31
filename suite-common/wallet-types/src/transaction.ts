@@ -200,7 +200,6 @@ export type PrecomposedTransactionFinalBumpFeeRbf = PrecomposedTransactionBase &
     feeDifference: string;
     // Native RBF is a firmware feature to recognize an RBF transaction and simplify transaction review flow.
     useNativeRbf: boolean;
-    useDecreaseOutput: boolean;
 };
 
 export type PrecomposedTransactionFinalCancelRbf = PrecomposedTransactionBase & {
