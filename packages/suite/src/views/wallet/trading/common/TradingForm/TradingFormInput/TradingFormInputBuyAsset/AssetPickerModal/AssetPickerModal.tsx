@@ -3,6 +3,7 @@ import { memo, useCallback, useState } from 'react';
 import { type TranslationKey } from '@suite/intl';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { Column } from '@trezor/components';
 
 import { AssetRowAsset, AssetsModal } from 'src/components/suite/asset-picker/components';
 import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
@@ -57,23 +58,25 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
 
     return (
         <AssetsModal onClose={closeModal} heading={{ id: heading }} width={480}>
-            <AssetPickerSearchHeader
-                placeholder="TR_ASSET_PICKER_SEARCH_PLACEHOLDER"
-                search={search}
-                setSearch={setSearch}
-                networkFilter={networkSymbol}
-                setNetworkFilter={setNetworkSymbol}
-                networks={networks}
-                // eslint-disable-next-line jsx-a11y/no-autofocus
-                autoFocus
-            />
+            <Column gap={8}>
+                <AssetPickerSearchHeader
+                    placeholder="TR_ASSET_PICKER_SEARCH_PLACEHOLDER"
+                    search={search}
+                    setSearch={setSearch}
+                    networkFilter={networkSymbol}
+                    setNetworkFilter={setNetworkSymbol}
+                    networks={networks}
+                    // eslint-disable-next-line jsx-a11y/no-autofocus
+                    autoFocus
+                />
 
-            <AssetListWrapper
-                renderItem={renderItem}
-                listItems={listItems}
-                getItemHeight={getItemHeight}
-                resetScrollTrigger={`${networkSymbol}${throttledSearch}${listItems.length}`}
-            />
+                <AssetListWrapper
+                    renderItem={renderItem}
+                    listItems={listItems}
+                    getItemHeight={getItemHeight}
+                    resetScrollTrigger={`${networkSymbol}${throttledSearch}${listItems.length}`}
+                />
+            </Column>
         </AssetsModal>
     );
 });

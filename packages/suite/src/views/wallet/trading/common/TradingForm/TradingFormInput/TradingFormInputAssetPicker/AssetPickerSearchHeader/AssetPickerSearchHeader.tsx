@@ -4,7 +4,6 @@ import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { isNetworkIconSymbol } from '@suite-common/icons';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
-    Box,
     Button,
     type DropdownMenuItemProps,
     Icon,
@@ -20,7 +19,6 @@ import { NetworkIcon, TokenIcon } from '@trezor/product-components';
 import { zIndices } from '@trezor/theme';
 
 const DATA_TESTID_BASE = '@asset-picker/search';
-const SEARCH_HEIGHT = 44;
 
 const NetworkLabel = ({ symbol, name }: { symbol: NetworkSymbol; name: string }) => (
     <Row gap={8}>
@@ -80,43 +78,33 @@ export const AssetPickerSearchHeader = memo(function AssetPickerSearchHeaderInne
     );
 
     return (
-        <Row gap={12} alignItems="center" padding={{ horizontal: 16 }}>
-            <Box
-                flex="1"
-                minWidth={0}
-                height={SEARCH_HEIGHT}
-                borderRadius={12}
-                backgroundColor="surfaceFillRaised"
-                padding={{ horizontal: 16 }}
-            >
-                <Row height="100%" gap={16}>
+        <Row gap={12} padding={{ horizontal: 16 }}>
+            <Input
+                leftContent={
                     <Icon
                         as={MagnifyingGlassIcon}
                         intent="neutral"
                         priority="secondary"
                         size={16}
                     />
-                    <Input
-                        isClean
-                        size="small"
-                        data-testid={`${DATA_TESTID_BASE}/input`}
-                        placeholder={translationString(placeholder)}
-                        value={search}
-                        onChange={event => setSearch(event.target.value)}
-                        onClear={() => setSearch('')}
-                        width="100%"
-                        // eslint-disable-next-line jsx-a11y/no-autofocus
-                        autoFocus={autoFocus}
-                        onBlur={() => {
-                            const trimmedSearch = search.trim();
+                }
+                size="medium"
+                data-testid={`${DATA_TESTID_BASE}/input`}
+                placeholder={translationString(placeholder)}
+                value={search}
+                onChange={event => setSearch(event.target.value)}
+                onClear={() => setSearch('')}
+                width="100%"
+                // eslint-disable-next-line jsx-a11y/no-autofocus
+                autoFocus={autoFocus}
+                onBlur={() => {
+                    const trimmedSearch = search.trim();
 
-                            if (trimmedSearch !== search) {
-                                setSearch(trimmedSearch);
-                            }
-                        }}
-                    />
-                </Row>
-            </Box>
+                    if (trimmedSearch !== search) {
+                        setSearch(trimmedSearch);
+                    }
+                }}
+            />
 
             <Popover
                 ref={popoverRef}
