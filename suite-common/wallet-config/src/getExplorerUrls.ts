@@ -102,3 +102,13 @@ export const getExplorerUrl = (explorer: Explorer | undefined, key: keyof Explor
 
     return `${explorer.base}/${explorer[key]}/`;
 };
+
+/**
+ * The explorer page of one transaction, with the query string the explorer needs (Solana). The id is
+ * encoded: it can come from a trade provider, and must not be able to alter the path or the query.
+ */
+export const getTxExplorerUrl = (explorer: Explorer | undefined, txid: string) => {
+    const txUrl = getExplorerUrl(explorer, 'tx');
+
+    return txUrl ? `${txUrl}${encodeURIComponent(txid)}${explorer?.queryString ?? ''}` : undefined;
+};
