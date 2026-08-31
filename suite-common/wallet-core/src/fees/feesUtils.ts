@@ -32,15 +32,12 @@ type GetEip1559AvailabilityProps = {
     feeLevel: FeeLevel;
     device?: TrezorDevice;
 };
-const getEip1559Availability = ({ symbol, feeLevel, device }: GetEip1559AvailabilityProps) =>
-    getNetwork(symbol).features.includes('eip1559') &&
-    isEip1559(feeLevel) &&
-    !device?.unavailableCapabilities?.['eip1559'];
+const getEip1559Availability = ({ symbol, feeLevel }: GetEip1559AvailabilityProps) =>
+    getNetwork(symbol).features.includes('eip1559') && isEip1559(feeLevel);
 
-type GetNewFeeInfoProps = { network: Network; device?: TrezorDevice };
+type GetNewFeeInfoProps = { network: Network };
 export const getNewFeeInfo = async ({
     network,
-    device,
 }: GetNewFeeInfoProps): Promise<BlockchainEstimatedFeeLevel | undefined> => {
     const { symbol } = network;
 
@@ -64,7 +61,6 @@ export const getNewFeeInfo = async ({
         const isEip1559ActivatedAndAvailable = getEip1559Availability({
             symbol,
             feeLevel: feeLevelBase,
-            device,
         });
 
         if (isEip1559ActivatedAndAvailable) return result.payload;
