@@ -104,6 +104,6 @@
         "@suite-native/trading-fixtures": "workspace:*",
         "@suite-native/trading-types": "workspace:*",
         "@trezor/requirements": "workspace:*",
-        "@types/invity-api": "^1.1.19"
+        "@types/invity-api": "^1.1.20"
     }
 }
