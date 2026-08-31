@@ -11,7 +11,6 @@ import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { type Network, type NetworkAccount, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { type UnavailableCapabilities } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveAfter } from '@trezor/utils';
 
@@ -23,27 +22,15 @@ import { AddButton } from './AddButton';
 interface VerifyAvailabilityProps {
     coinjoinAccounts: Account[];
     symbol: NetworkSymbol;
-    unavailableCapabilities?: UnavailableCapabilities;
 }
 
-const verifyAvailability = ({
-    coinjoinAccounts,
-    symbol,
-    unavailableCapabilities,
-}: VerifyAvailabilityProps) => {
+const verifyAvailability = ({ coinjoinAccounts, symbol }: VerifyAvailabilityProps) => {
     if (coinjoinAccounts.length > 0) {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED" />;
-    }
-    const capability = unavailableCapabilities?.coinjoin;
-    if (capability === 'no-support') {
-        return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT" />;
     }
     // regtest coinjoin account enabled in web app for development
     if (!isDesktop() && !(isDevEnv && symbol === 'regtest')) {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY" />;
-    }
-    if (capability === 'update-required') {
-        return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED" />;
     }
 };
 
@@ -71,11 +58,7 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
             a.accountType === selectedAccount.accountType,
     );
 
-    const disabledMessage = verifyAvailability({
-        coinjoinAccounts,
-        symbol: network.symbol,
-        unavailableCapabilities: device.unavailableCapabilities,
-    });
+    const disabledMessage = verifyAvailability({ coinjoinAccounts, symbol: network.symbol });
 
     const onCreateCoinjoinAccountClick = async () => {
         const createAccount = async () => {
