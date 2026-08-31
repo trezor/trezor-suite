@@ -19,6 +19,7 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI_EVENT,
     UI_EVENTS,
+    UI_REQUEST,
     UI_REQUESTS,
 } from '@trezor/connect';
 
@@ -341,7 +342,9 @@ describe('TrezorConnect Actions', () => {
         expect(onInvalidPinDepleted).toHaveBeenCalledTimes(1);
         expect(onRequestWord).not.toHaveBeenCalled();
 
-        emitTestEvent(UI_EVENT, { type: UI_REQUESTS.REQUEST_WORD, payload: {} });
+        // REQUEST_WORD requires a response, so in production it travels on the
+        // UI_REQUEST channel (createUiRequestMessage) — emit it there.
+        emitTestEvent(UI_REQUEST, { type: UI_REQUESTS.REQUEST_WORD, payload: {} });
 
         expect(onInvalidPinDepleted).toHaveBeenCalledTimes(1);
         expect(onRequestWord).toHaveBeenCalledTimes(1);

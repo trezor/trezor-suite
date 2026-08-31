@@ -21,7 +21,7 @@ import {
 } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { defaultTrezorUIEventHandlerThunk, observeSelectedDevice } from '@suite-common/wallet-core';
-import { UI_EVENT, UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
+import { UI_EVENT, UI_EVENTS, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
 import { noopCreateLogger } from '@trezor/connect-common';
 
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
@@ -96,7 +96,9 @@ describe('buttonRequest middleware', () => {
             type: UI_EVENTS.BUTTON_REQUEST,
             payload: { code: 'ButtonRequest_ProtectCall' },
         });
-        emitTestEvent(UI_EVENT, {
+        // REQUEST_PIN requires a response, so in production it travels on the
+        // UI_REQUEST channel (createUiRequestMessage) — emit it there.
+        emitTestEvent(UI_REQUEST, {
             type: UI_REQUESTS.REQUEST_PIN,
             payload: { type: 'PinMatrixRequestType_NewFirst', device },
         });
