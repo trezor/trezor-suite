@@ -1,4 +1,3 @@
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -62,7 +61,7 @@ const getSequence = ({ account, formValues }: GetSequenceParams) => {
     return undefined; // Must be undefined for final (non-RBF) transaction with no locktime
 };
 
-type ComposeBitcoinTransactionFeeLevelsThunkState = DeviceRootState & WalletSettingsRootState;
+type ComposeBitcoinTransactionFeeLevelsThunkState = WalletSettingsRootState;
 
 export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
@@ -77,12 +76,8 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
         const { account, excludedUtxos, feeInfo, prison } = composeContext;
 
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
-        const device = selectSelectedDevice(getState());
 
-        const isSatoshis =
-            areSatsAmountUnit &&
-            !device?.unavailableCapabilities?.amountUnit &&
-            hasNetworkFeatures(account, 'amount-unit');
+        const isSatoshis = areSatsAmountUnit && hasNetworkFeatures(account, 'amount-unit');
 
         if (!account.addresses || !account.utxo)
             return rejectWithValue({
@@ -333,10 +328,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             );
         }
 
-        if (
-            hasNetworkFeatures(selectedAccount, 'amount-unit') &&
-            !device.unavailableCapabilities?.amountUnit
-        ) {
+        if (hasNetworkFeatures(selectedAccount, 'amount-unit')) {
             signEnhancement.amountUnit = bitcoinAmountUnit;
         }
 
