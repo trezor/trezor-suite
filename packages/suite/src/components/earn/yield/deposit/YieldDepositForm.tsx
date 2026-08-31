@@ -97,16 +97,20 @@ export const YieldDepositForm = () => {
     });
     const hasAllowanceError = allowanceStatus === 'error';
 
+    const shouldCheckWrapAmount = !isAmountInvalidDecimals && !!wrapPendingTransaction;
+    const shouldCheckApproveAmount = !isAmountInvalidDecimals && !!approvalPendingTransaction;
+    const shouldCheckDepositAmount = !isAmountInvalidDecimals && !!depositPendingTransaction;
+
     // Wrapping into the gas reserve is allowed — Max keeps it aside only while the balance covers
     // it — so recommend keeping it rather than blocking. `isAmountTooHigh` only fires above the
     // full balance, and `shouldRecommendWrapReserve` already excludes that over-balance case.
     const showWrapReserveRecommendation =
         flow.currentStep === 'wrap' &&
-        !isAmountInvalidDecimals &&
+        shouldCheckWrapAmount &&
         shouldRecommendWrapReserve(liveAmount, account.formattedBalance);
 
     const renderWrapWarning = () => {
-        if (!isAmountInvalidDecimals && isAmountTooHigh) {
+        if (shouldCheckWrapAmount && isAmountTooHigh) {
             return <YieldActionStepWarning isInsufficientFunds />;
         }
 
@@ -374,10 +378,8 @@ export const YieldDepositForm = () => {
                                         approvalAction={approvalAction}
                                         canRevokeAllowance={canRevokeAllowance}
                                         warning={
-                                            !isAmountInvalidDecimals && isAmountTooHigh ? (
-                                                <YieldActionStepWarning
-                                                    isApproveOverBalance={isAmountTooHigh}
-                                                />
+                                            shouldCheckApproveAmount && isAmountTooHigh ? (
+                                                <YieldActionStepWarning isApproveOverBalance />
                                             ) : undefined
                                         }
                                         isDisabled={
@@ -427,7 +429,7 @@ export const YieldDepositForm = () => {
                                             />
                                         }
                                         warning={
-                                            !isAmountInvalidDecimals ? (
+                                            shouldCheckDepositAmount ? (
                                                 <YieldActionStepWarning
                                                     isInsufficientFunds={isAmountTooHigh}
                                                     isApprovalInsufficient={isApprovalInsufficient}
