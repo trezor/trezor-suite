@@ -39,6 +39,11 @@ export class WalletPage {
         );
     readonly accountDetailsTabButton: Locator;
     readonly accountDetails: Locator;
+    readonly accountType: Locator;
+    readonly accountTypeTech: Locator;
+    readonly derivationPath: Locator;
+    readonly accountNonce: Locator;
+    readonly accountNonceValue: Locator;
     readonly showPublicKeyButton: Locator;
     readonly copyPublicKeyButton: Locator;
     readonly openSendFormButton: Locator;
@@ -107,6 +112,11 @@ export class WalletPage {
         this.tokenSellButton = this.page.getByTestId('@trading/tokens/sell-button');
         this.accountDetailsTabButton = this.page.getByTestId('@wallet/menu/wallet-details');
         this.accountDetails = this.page.getByTestId('@wallet/account-details');
+        this.accountType = this.page.getByTestId('@wallet/account-details/account-type');
+        this.accountTypeTech = this.page.getByTestId('@wallet/account-details/account-type-tech');
+        this.derivationPath = this.page.getByTestId('@wallet/account-details/derivation-path');
+        this.accountNonce = this.page.getByTestId('@wallet/account-details/nonce');
+        this.accountNonceValue = this.page.getByTestId('@wallet/account-details/nonce/value');
         this.showPublicKeyButton = this.page.getByTestId('@wallets/details/show-xpub-button');
         this.copyPublicKeyButton = this.page.getByTestId('@metadata/copy-xpub-button');
         this.openSendFormButton = this.page.getByTestId('@wallet/menu/wallet-send');
@@ -176,6 +186,28 @@ export class WalletPage {
     @step()
     async closeAddAccountModal() {
         await this.addAccountModal.getByTestId('@modal/close-button').click();
+        await expect(this.addAccountModal).toBeHidden();
+    }
+
+    @step()
+    async addAccount({
+        symbol,
+        type,
+    }: {
+        symbol: NetworkSymbol;
+        type?: NonNullable<WalletParams['type']>;
+    }) {
+        await this.addAccountButton.click();
+        await expect(this.addAccountNetworkSearchInput).toBeVisible();
+        await this.addAccountNetworkSearchInput.fill(symbol);
+        await this.addAccountNetworkButton(symbol).click();
+
+        if (type !== undefined && type !== 'normal') {
+            await this.addAccountTypeSelectInput.click();
+            await this.addAccountTypeSelectOption(type).click();
+        }
+
+        await this.addAccountConfirmButton.click();
         await expect(this.addAccountModal).toBeHidden();
     }
 

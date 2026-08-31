@@ -16,10 +16,12 @@ export const AccountNonce = ({ account }: AccountNonceProps) => {
 
     return (
         <>
-            <Paragraph typographyStyle="body-sm">
+            <Paragraph typographyStyle="body-sm" data-testid="@wallet/account-details/nonce">
                 <Translation id="TR_ACCOUNT_DETAILS_NONCE_CONFIRMED" />
                 {': '}
-                {nonceInfo.confirmedNonce}
+                <span data-testid="@wallet/account-details/nonce/value">
+                    {nonceInfo.confirmedNonce}
+                </span>
             </Paragraph>
             {nonceInfo.nextNonce !== nonceInfo.confirmedNonce && (
                 <Paragraph typographyStyle="body-xs" intent="neutral" priority="secondary">

@@ -119,13 +119,19 @@ const Details = () => {
                             />
                         }
                     >
-                        <AccountTypeBadge
-                            accountType={account.accountType}
-                            shouldDisplayNormalType
-                            path={account.path}
-                            networkType={account.networkType}
-                        />
-                        <Paragraph typographyStyle="body-xs" textWrap="nowrap">
+                        <Column data-testid="@wallet/account-details/account-type">
+                            <AccountTypeBadge
+                                accountType={account.accountType}
+                                shouldDisplayNormalType
+                                path={account.path}
+                                networkType={account.networkType}
+                            />
+                        </Column>
+                        <Paragraph
+                            typographyStyle="body-xs"
+                            textWrap="nowrap"
+                            data-testid="@wallet/account-details/account-type-tech"
+                        >
                             (<Translation id={accountTypeTech} />)
                         </Paragraph>
                     </DetailsRow>
@@ -134,7 +140,12 @@ const Details = () => {
                         description={<Translation id="TR_ACCOUNT_DETAILS_PATH_DESC" />}
                         learnMoreUrl={HELP_CENTER_BIP32_URL}
                     >
-                        <Paragraph typographyStyle="body-sm">{account.path}</Paragraph>
+                        <Paragraph
+                            typographyStyle="body-sm"
+                            data-testid="@wallet/account-details/derivation-path"
+                        >
+                            {account.path}
+                        </Paragraph>
                     </DetailsRow>
                     {!isCoinjoinAccount ? (
                         shouldDisplayXpubSection && (
