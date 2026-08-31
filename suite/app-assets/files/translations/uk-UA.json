@@ -1849,7 +1849,6 @@
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING": "Перевірте адресу на вашому Trezor",
   "TR_RECEIVE_ADDRESS_FAILED_BACKUP": "Резервне копіювання гаманця не виконано. Надсилати кошти на цей гаманець небезпечно.",
   "TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED": "Ваш пристрій може бути скомпрометований. Не відправляйте на нього кошти!",
-  "TR_RECEIVE_DESCRIPTION": "Дізнайтеся, <a>як вибрати правильну мережу</a> для отримання токенів",
   "TR_RECEIVE_NETWORK": "Отримати {network}",
   "TR_RECEIVE_SEARCH": "Пошук акаунта",
   "TR_RECEIVING_SYMBOL": "Отримання {multiple, select, true {декількох токенів} false {{symbol}} other {{symbol}}}",

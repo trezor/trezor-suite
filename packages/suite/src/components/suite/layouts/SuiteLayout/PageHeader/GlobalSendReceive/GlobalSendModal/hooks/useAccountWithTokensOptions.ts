@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { useThrottle } from 'react-use';
 
-import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import {
+    type SuiteSyncDataRootState,
+    selectAccountsWithSuiteSyncLabel,
+} from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -21,7 +25,6 @@ import {
     createHiddenTokensOption,
     createTokenOption,
 } from 'src/components/suite/asset-picker/utils';
-import { useSelector } from 'src/hooks/suite';
 import {
     enhanceTokensWithRates,
     getTokens,
@@ -45,7 +48,7 @@ export function useAccountWithTokensOptions({
 }: UseAccountWithTokensOptionsProps): AccountWithTokensOption[] {
     const baseAccounts = useSelector(selectVisibleDeviceAccounts);
 
-    const accounts = useSelector(state =>
+    const accounts = useSelector((state: SuiteSyncDataRootState) =>
         selectAccountsWithSuiteSyncLabel(state, baseAccounts, staticSessionId),
     );
 

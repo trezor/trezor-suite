@@ -1,33 +1,48 @@
-import { type ReactNode } from 'react';
+import { Modal, type ModalProps } from '@trezor/components';
 
-import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
-import { Modal, type ModalWidth } from '@trezor/components';
-
-interface AssetsModalProps {
-    children: ReactNode;
-    heading: ExtendedMessageDescriptor;
-    description?: ExtendedMessageDescriptor;
-    onClose: () => void;
-    width?: ModalWidth;
-    bottomContent?: ReactNode;
-}
+type AssetsModalProps = Required<Pick<ModalProps, 'children' | 'heading'>> &
+    Pick<
+        ModalProps,
+        | 'description'
+        | 'onBackClick'
+        | 'width'
+        | 'height'
+        | 'maxHeight'
+        | 'padding'
+        | 'bottomContent'
+        | 'shadowBottom'
+        | 'data-testid'
+    > & {
+        onClose: NonNullable<ModalProps['onCancel']>;
+    };
 
 export function AssetsModal({
     children,
     heading,
     description,
     onClose,
+    onBackClick,
     width = 600,
+    height,
+    maxHeight,
+    padding = { horizontal: 0, top: 16 },
     bottomContent,
+    shadowBottom,
+    'data-testid': dataTestId,
 }: AssetsModalProps) {
     return (
         <Modal
-            heading={<Translation {...heading} />}
-            description={description ? <Translation {...description} /> : undefined}
+            heading={heading}
+            description={description}
             onCancel={onClose}
+            onBackClick={onBackClick}
             width={width}
-            padding={{ horizontal: 0, top: 16 }}
+            height={height}
+            maxHeight={maxHeight}
+            padding={padding}
             bottomContent={bottomContent}
+            shadowBottom={shadowBottom}
+            data-testid={dataTestId}
         >
             {children}
         </Modal>

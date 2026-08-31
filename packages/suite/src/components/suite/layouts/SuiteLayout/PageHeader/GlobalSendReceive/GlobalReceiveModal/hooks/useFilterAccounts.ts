@@ -1,14 +1,15 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { accountSearchFn } from '@suite-common/wallet-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { type AccountOption } from './useAccountsOptions';
 
 export function useFilterAccounts(accounts: AccountOption[]) {
-    const { search, networkSymbol } = useSelector(globalSendReceiveFiltersSelectors.selectFilters);
+    const search = useSelector(globalSendReceiveFiltersSelectors.selectSearch);
+    const networkSymbol = useSelector(globalSendReceiveFiltersSelectors.selectNetworkSymbol);
 
     return useMemo(
         () =>

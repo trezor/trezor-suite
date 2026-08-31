@@ -688,9 +688,9 @@ export const startDiscoveryThunk = createThunk<
     },
 );
 
-type RunAdditionalDiscoveryThunkState = RunDiscoveryThunkState;
+export type RunAdditionalDiscoveryThunkState = RunDiscoveryThunkState;
 
-type RunAdditionalDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
+export type RunAdditionalDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
 export const runAdditionalDiscoveryThunk = createThunk<
     void,
