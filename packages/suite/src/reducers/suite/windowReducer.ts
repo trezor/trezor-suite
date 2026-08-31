@@ -1,6 +1,7 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type BreakpointFlags, initialBreakpointFlags } from '@trezor/theme';
 
 import { updateBreakpoints, updateWindowVisibility } from 'src/actions/suite/windowActions';
@@ -31,8 +32,9 @@ export default windowReducer;
 
 export const selectIsWindowVisible = (state: WindowRootState) => state.window.isVisible;
 
-export const selectBreakpointFlags = (state: WindowRootState): BreakpointFlags => {
-    const { isVisible, ...breakpointFlags } = state.window;
+const createMemoizedSelector = createWeakMapSelector.withTypes<WindowRootState>();
 
-    return breakpointFlags;
-};
+export const selectBreakpointFlags = createMemoizedSelector(
+    [(state: WindowRootState) => state.window],
+    ({ isVisible, ...breakpointFlags }): BreakpointFlags => breakpointFlags,
+);
