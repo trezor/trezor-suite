@@ -9,6 +9,9 @@ type Descriptor = TrezorDevice['descriptor'];
 // here - it is the only thing tying the bootloader instance below back to `DEVICE_A`.
 const descriptorA: Descriptor = { apiType: 'usb', id: 'descriptor-a' };
 const descriptorB: Descriptor = { apiType: 'usb', id: 'descriptor-b' };
+// USB reports zeroes where the serial number goes while the device runs the bootloader, so this is
+// what the device being updated actually looks like before it restarts.
+const descriptorBootloader: Descriptor = { apiType: 'usb', id: '000000000000000000000000' };
 
 const withDescriptor = (device: TrezorDevice, descriptor: Descriptor): TrezorDevice => ({
     ...device,
@@ -213,6 +216,43 @@ describe('getShouldSelectConnectedDevice during a firmware update', () => {
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
                 firmware: { status: 'error', cachedDevice: DEVICE_A },
+            }),
+        ).toEqual({ shouldSelect: false, reason: 'other-device-firmware-update' });
+    });
+
+    // The device is updated straight from bootloader mode, so the cached device has neither its `id`
+    // nor a real `descriptor.id`, and comes back with both. Regression guard: matching those against
+    // each other fails, which used to leave the updated device unselectable.
+    it('selects the updated device that was cached in bootloader mode', () => {
+        const cachedBootloaderDevice = withDescriptor(
+            mockSuiteDevice({ path: '3', type: 'unacquired', connected: false }),
+            descriptorBootloader,
+        );
+
+        expect(
+            getShouldSelectConnectedDevice({
+                incomingDevice: DEVICE_A,
+                selectedDevice: undefined,
+                physicalDeviceWallets: [DEVICE_A],
+                firmware: { status: 'done', cachedDevice: cachedBootloaderDevice },
+            }),
+        ).toEqual({ shouldSelect: true, reason: 'no-selected-device' });
+    });
+
+    // Zeroes are not an identity, so a device reporting them is not the device being updated even
+    // when that device is known.
+    it('does not take a device reporting zeroes for the identified device being updated', () => {
+        const otherBootloaderDevice = withDescriptor(
+            mockSuiteDevice({ path: '4', type: 'unacquired', connected: true }),
+            descriptorBootloader,
+        );
+
+        expect(
+            getShouldSelectConnectedDevice({
+                incomingDevice: otherBootloaderDevice,
+                selectedDevice: DEVICE_A_REMEMBERED,
+                physicalDeviceWallets: [DEVICE_A_REMEMBERED],
+                firmware: { status: 'started', cachedDevice: DEVICE_A },
             }),
         ).toEqual({ shouldSelect: false, reason: 'other-device-firmware-update' });
     });

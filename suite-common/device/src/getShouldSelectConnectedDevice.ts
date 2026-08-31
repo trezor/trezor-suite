@@ -43,31 +43,53 @@ type GetShouldSelectConnectedDeviceParams = {
 };
 
 /**
+ * A USB device in bootloader mode reports zeroes where its serial number goes, so that value is not
+ * an identity: every device in bootloader mode reports the same one, and each reports its real one
+ * again as soon as the firmware runs.
+ */
+const isDescriptorIdUnknown = (descriptorId: string | null | undefined) =>
+    descriptorId == null || /^0+$/.test(descriptorId);
+
+/**
  * Neither identifier alone recognises a device that comes back, so both are compared:
  *
  * - `descriptor.id` is stable across reconnects, unlike `path`, which is assigned per connection,
- *   and it is reported in bootloader mode, unlike `id`. It is scoped to the transport that reports
- *   it, though - a device reached over USB and over Bluetooth has a different one of each.
+ *   and it is reported in bootloader mode, unlike `id` - though as zeroes, see above. It is scoped
+ *   to the transport that reports it: a device reached over USB and over Bluetooth has a different
+ *   one of each.
  * - `id` is the same on every transport, but a device in bootloader mode does not report it.
  *
- * What is left uncovered is a device in bootloader mode arriving on another transport than it left
- * on, which has nothing in common with the device it was. It is then taken for an unrelated device,
- * which is the safe way to be wrong here: nothing is selected, rather than the wrong wallet.
+ * A device in bootloader mode therefore has nothing in common with the device it was, which is why
+ * the caller has to ask whether an identity exists at all before reading a mismatch as two devices.
  */
+const getPhysicalDeviceIdentity = (device: Device | TrezorDevice | undefined) => {
+    const descriptorId = device?.descriptor?.id;
+
+    return {
+        // Nullish or zeroes both mean "unknown", not "no id", so neither may look like a match:
+        // `descriptor.id` is optional in the transport layer and old bridge does not report it.
+        descriptorId: isDescriptorIdUnknown(descriptorId) ? undefined : descriptorId,
+        deviceId: device?.id ?? undefined,
+    };
+};
+
+const isPhysicalDeviceIdentifiable = (device: Device | TrezorDevice | undefined) => {
+    const { descriptorId, deviceId } = getPhysicalDeviceIdentity(device);
+
+    return descriptorId !== undefined || deviceId !== undefined;
+};
+
 const isSamePhysicalDevice = (
     a: Device | TrezorDevice | undefined,
     b: Device | TrezorDevice | undefined,
 ) => {
-    const descriptorId = a?.descriptor?.id;
+    const first = getPhysicalDeviceIdentity(a);
+    const second = getPhysicalDeviceIdentity(b);
 
-    // A nullish `descriptor.id` means "unknown", not "no id": it is optional in the transport
-    // layer and old bridge does not report it at all. Two unknowns must never look like a match.
-    if (descriptorId != null && descriptorId === b?.descriptor?.id) {
-        return true;
-    }
-
-    // Same as above: a device that reports no `id` must not match another one that reports none.
-    return a?.id != null && a.id === b?.id;
+    return (
+        (first.descriptorId !== undefined && first.descriptorId === second.descriptorId) ||
+        (first.deviceId !== undefined && first.deviceId === second.deviceId)
+    );
 };
 
 /**
@@ -92,9 +114,16 @@ export const getShouldSelectConnectedDevice = ({
     // otherwise let any device take it. Its reconnect is also the only chance to select it again.
     // `status` covers the whole flow, not just the installation: the device also reconnects while
     // pairing over THP, after the update is `done` and after it failed.
-    const isDeviceBeingUpdated = isSamePhysicalDevice(firmware.cachedDevice, incomingDevice);
+    // An update started from bootloader mode caches a device with no identity to recognise it by:
+    // it reports no `id` there, and USB reports zeroes instead of its serial. The device comes back
+    // with a real identity of both, matching neither, so a mismatch against such a cached device
+    // says nothing and must not lock the returning device out of the selection it reconnected for.
+    // Nothing cached at all still blocks everything, as it did before.
+    const isOtherThanUpdatedDevice = isPhysicalDeviceIdentifiable(firmware.cachedDevice)
+        ? !isSamePhysicalDevice(firmware.cachedDevice, incomingDevice)
+        : firmware.cachedDevice === undefined;
 
-    if (firmware.status !== 'initial' && !isDeviceBeingUpdated) {
+    if (firmware.status !== 'initial' && isOtherThanUpdatedDevice) {
         return { shouldSelect: false, reason: 'other-device-firmware-update' };
     }
 
