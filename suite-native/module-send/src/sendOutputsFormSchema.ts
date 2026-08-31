@@ -2,7 +2,6 @@ import {
     type AddressValidator,
     isAddressDeprecated,
     isBech32AddressUppercase,
-    isTaprootAddress,
 } from '@suite-common/address';
 import { formInputsMaxLength, yup } from '@suite-common/validators';
 import { type NetworkSymbol, getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
@@ -26,7 +25,6 @@ export type SendFormFormContext = {
     feeLevelsMaxAmount?: FeeLevelsMaxAmount;
     decimals?: number;
     accountDescriptor?: string;
-    isTaprootAvailable?: boolean;
     accountNativeAvailableBalance?: string;
     networkReserve?: string;
     rippleReserve?: string;
@@ -119,19 +117,14 @@ const outputSchema = yup.object({
                 if (!value || !context) {
                     return false;
                 }
-                const { addressValidator, symbol, isTaprootAvailable } = context;
+                const { addressValidator, symbol } = context;
 
                 if (!addressValidator || !symbol) return false;
-
-                const isTaprootValid =
-                    isTaprootAvailable ||
-                    !isTaprootAddress({ addressValidator, address: value, symbol });
 
                 return (
                     addressValidator.isAddressValid(value, symbol) &&
                     !isAddressDeprecated({ addressValidator, address: value, symbol }) &&
-                    !isBech32AddressUppercase(value) && // bech32 addresses are valid as uppercase but are not accepted by Trezor
-                    isTaprootValid // bech32m/Taproot addresses are valid but may not be supported by older FW
+                    !isBech32AddressUppercase(value) // bech32 addresses are valid as uppercase but are not accepted by Trezor
                 );
             },
         )
