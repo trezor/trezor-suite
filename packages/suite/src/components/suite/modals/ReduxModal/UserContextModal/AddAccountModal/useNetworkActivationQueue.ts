@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { preserveModal } from '@suite/modal';
+import { preserveModal, removePreserveModal } from '@suite/modal';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -36,7 +36,17 @@ export const useNetworkActivationQueue = (device: TrezorDevice) => {
     const [activationErrors, setActivationErrors] = useState<
         Partial<Record<NetworkSymbol, string>>
     >({});
+    const hasPreservedModalRef = useRef(false);
     const isRollingBackRef = useRef(false);
+
+    useEffect(
+        () => () => {
+            if (hasPreservedModalRef.current) {
+                dispatch(removePreserveModal());
+            }
+        },
+        [dispatch],
+    );
 
     useEffect(() => {
         const staticSessionId = device.state?.staticSessionId;
@@ -61,6 +71,7 @@ export const useNetworkActivationQueue = (device: TrezorDevice) => {
 
         // Setting discovery to a running state before enabling the network prevents
         // discoveryMiddleware from starting a duplicate discovery call.
+        hasPreservedModalRef.current = true;
         dispatch(preserveModal());
         dispatch(
             discoveryActions.startDiscovery(device.path, {
