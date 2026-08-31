@@ -15,6 +15,9 @@ const SUITE_DEVICE_UNACQUIRED = mockSuiteDevice({
     type: 'unacquired',
     path: '2',
 });
+// The reducer already holds the incoming device by the time the selection is decided, because
+// `deviceConnectThunks` dispatches `connectDevice` first.
+const SUITE_DEVICE_UNACQUIRED_ENTRY = { ...SUITE_DEVICE_UNACQUIRED, connected: true };
 const SUITE_DEVICE_CONNECTED = mockSuiteDevice({ path: '1', connected: true });
 const SUITE_DEVICE_REMEMBERED = mockSuiteDevice({ connected: false });
 const CONNECT_DEVICE = mockConnectDevice({ path: '1' });
@@ -246,21 +249,61 @@ const selectNewlyConnectedDevice: SelectNewlyConnectedDeviceFixture[] = [
     {
         description: `selects a newly connected device when the selected wallet has no device connected`,
         state: {
-            device: { devices: [SUITE_DEVICE_REMEMBERED], selectedDevice: SUITE_DEVICE_REMEMBERED },
+            device: {
+                devices: [SUITE_DEVICE_REMEMBERED, SUITE_DEVICE_UNACQUIRED_ENTRY],
+                selectedDevice: SUITE_DEVICE_REMEMBERED,
+            },
             suite: {},
         },
         newlyConnectedDevice: SUITE_DEVICE_UNACQUIRED,
         expectedNextActionType: selectNewlyConnectedDeviceThunk.fulfilled.type,
     },
     {
-        description: `doesn't select a newly connected device during a firmware installation`,
+        description: `doesn't select a newly connected device during a firmware installation while another device is present`,
         state: {
-            device: { devices: [SUITE_DEVICE_REMEMBERED], selectedDevice: SUITE_DEVICE_REMEMBERED },
+            device: {
+                devices: [
+                    SUITE_DEVICE_CONNECTED,
+                    SUITE_DEVICE_REMEMBERED,
+                    SUITE_DEVICE_UNACQUIRED_ENTRY,
+                ],
+                selectedDevice: SUITE_DEVICE_REMEMBERED,
+            },
             firmware: { status: 'started' },
             suite: {},
         },
         newlyConnectedDevice: SUITE_DEVICE_UNACQUIRED,
         expectedNextActionType: selectNewlyConnectedDeviceThunk.rejected.type,
+    },
+    {
+        // The device being updated cannot be recognised when it comes back, so it does not take the
+        // selection from a wallet - only an empty one, in the fixture below.
+        description: `doesn't move the selection during a firmware installation`,
+        state: {
+            device: {
+                devices: [SUITE_DEVICE_REMEMBERED, SUITE_DEVICE_UNACQUIRED_ENTRY],
+                selectedDevice: SUITE_DEVICE_REMEMBERED,
+            },
+            firmware: { status: 'started' },
+            suite: {},
+        },
+        newlyConnectedDevice: SUITE_DEVICE_UNACQUIRED,
+        expectedNextActionType: selectNewlyConnectedDeviceThunk.rejected.type,
+    },
+    {
+        // The updated device leaves no selection behind while it reboots, and the only device
+        // present fills it - the update itself goes on the same rule.
+        description: `selects the only device present during a firmware installation`,
+        state: {
+            device: {
+                devices: [SUITE_DEVICE_UNACQUIRED_ENTRY],
+                selectedDevice: undefined,
+            },
+            firmware: { status: 'started' },
+            suite: {},
+        },
+        newlyConnectedDevice: SUITE_DEVICE_UNACQUIRED,
+        expectedNextActionType: selectNewlyConnectedDeviceThunk.fulfilled.type,
     },
 ];
 

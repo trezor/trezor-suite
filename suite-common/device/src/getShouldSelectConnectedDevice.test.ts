@@ -15,6 +15,10 @@ const withDescriptor = (device: TrezorDevice, descriptor: Descriptor): TrezorDev
     descriptor,
 });
 
+// Every device in bootloader mode reports this as its USB serial number, so `descriptor.id` says
+// nothing about which device it is.
+const BOOTLOADER_DESCRIPTOR: Descriptor = { apiType: 'usb', id: '000000000000000000000000' };
+
 const DEVICE_A = withDescriptor(
     mockSuiteDevice({ path: '1', connected: true }, { device_id: 'device-a' }),
     descriptorA,
@@ -24,9 +28,10 @@ const DEVICE_A_REMEMBERED = withDescriptor(
     descriptorA,
 );
 // Reconnecting in bootloader mode, so without an `id`, on a path assigned by the new connection.
+// Its serial number is the placeholder every device in bootloader mode reports.
 const DEVICE_A_BOOTLOADER = withDescriptor(
     mockSuiteDevice({ path: '3', type: 'unacquired', connected: true }),
-    descriptorA,
+    BOOTLOADER_DESCRIPTOR,
 );
 const DEVICE_B = withDescriptor(
     mockSuiteDevice({ path: '2', connected: true }, { device_id: 'device-b' }),
@@ -35,6 +40,18 @@ const DEVICE_B = withDescriptor(
 const DEVICE_B_UNACQUIRED = withDescriptor(
     mockSuiteDevice({ path: '2', type: 'unacquired', connected: true }),
     descriptorB,
+);
+
+// A device with no firmware sits in bootloader mode from the start: no `id` of its own, and a
+// `descriptor.id` shared with every other device in bootloader mode.
+const DEVICE_WITHOUT_FIRMWARE = withDescriptor(
+    mockSuiteDevice({ path: '1', type: 'unacquired', connected: true }),
+    BOOTLOADER_DESCRIPTOR,
+);
+// The same device once the installation rebooted it into firmware mode, reporting both now.
+const DEVICE_AFTER_FRESH_INSTALLATION = withDescriptor(
+    mockSuiteDevice({ path: '4', connected: true }, { device_id: 'device-freshly-installed' }),
+    { apiType: 'usb', id: 'descriptor-freshly-installed' },
 );
 
 const NO_FIRMWARE_UPDATE = { status: 'initial' } as const;
@@ -81,7 +98,7 @@ describe('getShouldSelectConnectedDevice', () => {
                 physicalDeviceWallets: [DEVICE_A, DEVICE_B],
                 firmware: NO_FIRMWARE_UPDATE,
             }),
-        ).toEqual({ shouldSelect: false, reason: 'selected-device-connected' });
+        ).toEqual({ shouldSelect: false, reason: 'other-device-connected' });
     });
 
     it('selects a connected device when the selected wallet has no device present', () => {
@@ -90,6 +107,24 @@ describe('getShouldSelectConnectedDevice', () => {
                 incomingDevice: DEVICE_B,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B],
+                firmware: NO_FIRMWARE_UPDATE,
+            }),
+        ).toEqual({ shouldSelect: true, reason: 'only-connected-device' });
+    });
+
+    // What #30929 asked for: a Bluetooth device connecting while the selected wallet is a remembered
+    // one whose device is elsewhere. The transport is nothing the rules look at, hence one case.
+    it('selects a device connecting over Bluetooth when nothing else is present', () => {
+        const deviceOverBluetooth = withDescriptor(DEVICE_B, {
+            apiType: 'bluetooth',
+            id: 'bluetooth-b',
+        });
+
+        expect(
+            getShouldSelectConnectedDevice({
+                incomingDevice: deviceOverBluetooth,
+                selectedDevice: DEVICE_A_REMEMBERED,
+                physicalDeviceWallets: [DEVICE_A_REMEMBERED, deviceOverBluetooth],
                 firmware: NO_FIRMWARE_UPDATE,
             }),
         ).toEqual({ shouldSelect: true, reason: 'only-connected-device' });
@@ -140,7 +175,7 @@ describe('getShouldSelectConnectedDevice', () => {
                 physicalDeviceWallets: [DEVICE_A_BOOTLOADER, DEVICE_B_UNACQUIRED],
                 firmware: NO_FIRMWARE_UPDATE,
             }),
-        ).toEqual({ shouldSelect: false, reason: 'selected-device-connected' });
+        ).toEqual({ shouldSelect: false, reason: 'other-device-connected' });
     });
 
     // A device in bootloader mode reports `id: null` rather than omitting it.
@@ -149,7 +184,10 @@ describe('getShouldSelectConnectedDevice', () => {
             getShouldSelectConnectedDevice({
                 incomingDevice: { ...DEVICE_B, id: null } as TrezorDevice,
                 selectedDevice: { ...DEVICE_A_REMEMBERED, id: null } as TrezorDevice,
-                physicalDeviceWallets: [{ ...DEVICE_A_REMEMBERED, id: null } as TrezorDevice],
+                physicalDeviceWallets: [
+                    { ...DEVICE_A_REMEMBERED, id: null } as TrezorDevice,
+                    { ...DEVICE_B, id: null } as TrezorDevice,
+                ],
                 firmware: NO_FIRMWARE_UPDATE,
             }),
         ).toEqual({ shouldSelect: true, reason: 'only-connected-device' });
@@ -160,148 +198,114 @@ describe('getShouldSelectConnectedDevice', () => {
 // its `id`, so every state of the flow has to keep an unrelated device from being taken for it,
 // not only the installation itself.
 describe('getShouldSelectConnectedDevice during a firmware update', () => {
-    it('does not select an unrelated device while the installation is running', () => {
+    // The updated device disconnects and reconnects with nothing to recognise it by, so being the
+    // only device present is what tells it apart - the same rule `onCallFirmwareUpdate` follows to
+    // find the device it is updating.
+    it('keeps the selection while another device is present as well', () => {
         expect(
             getShouldSelectConnectedDevice({
                 incomingDevice: DEVICE_B_UNACQUIRED,
                 selectedDevice: DEVICE_A_REMEMBERED,
-                physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
-                firmware: { status: 'started', cachedDevice: DEVICE_A },
-            }),
-        ).toEqual({ shouldSelect: false, reason: 'other-device-firmware-update' });
-    });
-
-    it('does not select an unrelated device while the updated device pairs over THP', () => {
-        expect(
-            getShouldSelectConnectedDevice({
-                incomingDevice: DEVICE_B_UNACQUIRED,
-                selectedDevice: DEVICE_A_REMEMBERED,
-                physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
-                firmware: { status: 'thp-pairing', cachedDevice: DEVICE_A },
-            }),
-        ).toEqual({ shouldSelect: false, reason: 'other-device-firmware-update' });
-    });
-
-    it('does not select an unrelated device while the seed backup is being confirmed', () => {
-        expect(
-            getShouldSelectConnectedDevice({
-                incomingDevice: DEVICE_B_UNACQUIRED,
-                selectedDevice: DEVICE_A_REMEMBERED,
-                physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
-                firmware: { status: 'check-seed', cachedDevice: DEVICE_A },
-            }),
-        ).toEqual({ shouldSelect: false, reason: 'other-device-firmware-update' });
-    });
-
-    // `done` is set the moment Connect resolves, while the device still reboots to normal mode.
-    it('does not select an unrelated device after the update is done', () => {
-        expect(
-            getShouldSelectConnectedDevice({
-                incomingDevice: DEVICE_B_UNACQUIRED,
-                selectedDevice: DEVICE_A_REMEMBERED,
-                physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
-                firmware: { status: 'done', cachedDevice: DEVICE_A },
-            }),
-        ).toEqual({ shouldSelect: false, reason: 'other-device-firmware-update' });
-    });
-
-    // A half-updated device is the one most likely to reconnect erratically.
-    it('does not select an unrelated device after the update failed', () => {
-        expect(
-            getShouldSelectConnectedDevice({
-                incomingDevice: DEVICE_B_UNACQUIRED,
-                selectedDevice: DEVICE_A_REMEMBERED,
-                physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
-                firmware: { status: 'error', cachedDevice: DEVICE_A },
-            }),
-        ).toEqual({ shouldSelect: false, reason: 'other-device-firmware-update' });
-    });
-
-    it('does not select an unrelated device when no device was cached', () => {
-        expect(
-            getShouldSelectConnectedDevice({
-                incomingDevice: DEVICE_B_UNACQUIRED,
-                selectedDevice: DEVICE_A_REMEMBERED,
-                physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_B_UNACQUIRED],
+                physicalDeviceWallets: [DEVICE_A, DEVICE_B_UNACQUIRED],
                 firmware: { status: 'started' },
             }),
         ).toEqual({ shouldSelect: false, reason: 'other-device-firmware-update' });
     });
 
-    it('does not match two devices whose descriptor reports no id', () => {
-        const noDescriptorId: Descriptor = { apiType: 'usb', id: null };
+    it.each(['started', 'thp-pairing', 'check-seed', 'done', 'error'] as const)(
+        'keeps the selection with another device present, in status %s',
+        status => {
+            expect(
+                getShouldSelectConnectedDevice({
+                    incomingDevice: DEVICE_B_UNACQUIRED,
+                    selectedDevice: undefined,
+                    physicalDeviceWallets: [DEVICE_A, DEVICE_B_UNACQUIRED],
+                    firmware: { status },
+                }),
+            ).toEqual({ shouldSelect: false, reason: 'other-device-firmware-update' });
+        },
+    );
 
+    // A fresh installation on a device with no firmware: it was in bootloader mode all along, so
+    // nothing about it before the installation matches what comes back afterwards. The wallet keeps
+    // the selection, because a wallet losing it to a device that cannot be matched by id is what the
+    // onboarding reads as the user having swapped devices.
+    it('leaves the selection where it is when it cannot recognise what came back', () => {
         expect(
             getShouldSelectConnectedDevice({
-                incomingDevice: withDescriptor(DEVICE_B_UNACQUIRED, noDescriptorId),
-                selectedDevice: DEVICE_A_REMEMBERED,
-                physicalDeviceWallets: [DEVICE_A_REMEMBERED],
-                firmware: {
-                    status: 'started',
-                    cachedDevice: withDescriptor(DEVICE_A, noDescriptorId),
-                },
+                incomingDevice: DEVICE_AFTER_FRESH_INSTALLATION,
+                // The entry it connected under before the reboot, no longer present.
+                selectedDevice: { ...DEVICE_WITHOUT_FIRMWARE, connected: false },
+                physicalDeviceWallets: [DEVICE_AFTER_FRESH_INSTALLATION],
+                firmware: { status: 'done' },
             }),
         ).toEqual({ shouldSelect: false, reason: 'other-device-firmware-update' });
     });
 
-    it('selects the updated device when it reconnects in bootloader mode without its id', () => {
+    it('selects the device that comes back from a fresh installation with nothing selected', () => {
+        expect(
+            getShouldSelectConnectedDevice({
+                incomingDevice: DEVICE_AFTER_FRESH_INSTALLATION,
+                selectedDevice: undefined,
+                physicalDeviceWallets: [DEVICE_AFTER_FRESH_INSTALLATION],
+                firmware: { status: 'check-seed' },
+            }),
+        ).toEqual({ shouldSelect: true, reason: 'no-selected-device' });
+    });
+
+    // In bootloader mode it reports no `id`, so the wallet it is being updated for keeps the
+    // selection until it comes back reporting one, in the test below.
+    it('leaves the selection on the wallet while its device sits in bootloader mode', () => {
         expect(
             getShouldSelectConnectedDevice({
                 incomingDevice: DEVICE_A_BOOTLOADER,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_A_BOOTLOADER],
-                firmware: { status: 'started', cachedDevice: DEVICE_A },
-            }),
-        ).toEqual({ shouldSelect: true, reason: 'only-connected-device' });
-    });
-
-    // The updated device is removed from the list while it reboots unless it is remembered, which
-    // leaves nothing selected - and an empty selection must not become a way in for another device.
-    it('does not select an unrelated device while nothing is selected', () => {
-        expect(
-            getShouldSelectConnectedDevice({
-                incomingDevice: DEVICE_B_UNACQUIRED,
-                selectedDevice: undefined,
-                physicalDeviceWallets: [DEVICE_B_UNACQUIRED],
-                firmware: { status: 'done', cachedDevice: DEVICE_A },
+                firmware: { status: 'started' },
             }),
         ).toEqual({ shouldSelect: false, reason: 'other-device-firmware-update' });
     });
 
-    it('selects the updated device while nothing is selected', () => {
+    // What #31911 was about: the onboarding installation leaves no selection behind, so the device
+    // that comes back has to be able to fill it, unrecognisable as it is.
+    it('fills an empty selection with the device that comes back from a fresh installation', () => {
         expect(
             getShouldSelectConnectedDevice({
-                incomingDevice: DEVICE_A,
+                incomingDevice: DEVICE_AFTER_FRESH_INSTALLATION,
                 selectedDevice: undefined,
-                physicalDeviceWallets: [DEVICE_A],
-                firmware: { status: 'done', cachedDevice: DEVICE_A },
+                physicalDeviceWallets: [DEVICE_AFTER_FRESH_INSTALLATION],
+                firmware: { status: 'done' },
             }),
         ).toEqual({ shouldSelect: true, reason: 'no-selected-device' });
     });
 
-    // `descriptor.id` is scoped to the transport, so a device updated over USB and reconnecting
-    // over Bluetooth is recognised by its `id` instead.
-    it('selects the updated device when it comes back over another transport', () => {
-        const bluetoothDescriptor: Descriptor = { apiType: 'bluetooth', id: 'bluetooth-a' };
-
-        expect(
-            getShouldSelectConnectedDevice({
-                incomingDevice: withDescriptor(DEVICE_A, bluetoothDescriptor),
-                selectedDevice: undefined,
-                physicalDeviceWallets: [withDescriptor(DEVICE_A, bluetoothDescriptor)],
-                firmware: { status: 'done', cachedDevice: DEVICE_A },
-            }),
-        ).toEqual({ shouldSelect: true, reason: 'no-selected-device' });
-    });
-
-    it('selects the updated device when it comes back acquired with its id', () => {
+    it('selects the updated device when it comes back with its id', () => {
         expect(
             getShouldSelectConnectedDevice({
                 incomingDevice: DEVICE_A,
                 selectedDevice: DEVICE_A_REMEMBERED,
                 physicalDeviceWallets: [DEVICE_A_REMEMBERED, DEVICE_A],
-                firmware: { status: 'done', cachedDevice: DEVICE_A },
+                firmware: { status: 'done' },
             }),
         ).toEqual({ shouldSelect: true, reason: 'same-device' });
+    });
+
+    // What the update actually suspends: an empty selection, which the updated device leaves behind
+    // while it reboots, is not a way in for another device until the flow is closed and the status
+    // returns to `initial`.
+    it('holds an empty selection against another device until the flow is closed', () => {
+        const params = {
+            incomingDevice: DEVICE_B_UNACQUIRED,
+            selectedDevice: undefined,
+            physicalDeviceWallets: [DEVICE_A, DEVICE_B_UNACQUIRED],
+        };
+
+        expect(
+            getShouldSelectConnectedDevice({ ...params, firmware: { status: 'started' } }),
+        ).toEqual({ shouldSelect: false, reason: 'other-device-firmware-update' });
+
+        expect(getShouldSelectConnectedDevice({ ...params, firmware: NO_FIRMWARE_UPDATE })).toEqual(
+            { shouldSelect: true, reason: 'no-selected-device' },
+        );
     });
 });
