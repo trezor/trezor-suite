@@ -1,4 +1,5 @@
 import { Locator, Page } from '@playwright/test';
+import type { ExchangeTrade } from 'invity-api';
 
 import { messages } from '@suite/intl';
 import type { TradingCountryCode } from '@suite-common/trading';
@@ -18,6 +19,8 @@ import { tradeEndpoint } from '../../../fixtures/trading';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 import { BuyAsset, SellAsset } from '../../types';
+
+const LIVE_TRADE_RESPONSE_TIMEOUT = 90_000;
 
 export class TradingPage {
     readonly fees: FeeSection;
@@ -356,7 +359,7 @@ export class TradingPage {
      * @param params.sendAccount - The account label the swap is sent from (e.g., 'Solana #1')
      * @param params.receiveAccount - The account label the swap is received to (e.g., 'Bitcoin #1')
      * @param params.sendAmount - The expected send amount (e.g., '0.001')
-     * @param params.receiveAmount - The expected receive amount (localized, e.g., '0.00002')
+     * @param params.receiveAmount - The expected receive amount exactly as the provider returned it (e.g., '0.07357510')
      */
     @step()
     async verifySwapToast({
@@ -378,6 +381,22 @@ export class TradingPage {
         });
         await expect(this.swapToastSendAmount).toHaveText(sendAmount);
         await expect(this.swapToastReceiveAmount).toHaveText(receiveAmount);
+    }
+
+    // temporary workaround which should be replaced with soon to be merged fixture tradingResponses
+    @step()
+    async waitForLiveTradeAmounts() {
+        const response = await this.page.waitForResponse(tradeEndpoint.swapTrade, {
+            timeout: LIVE_TRADE_RESPONSE_TIMEOUT,
+        });
+        const { sendStringAmount, receiveStringAmount } = (await response.json()) as ExchangeTrade;
+        if (!sendStringAmount || !receiveStringAmount) {
+            throw new Error(
+                'Live trade response is missing sendStringAmount or receiveStringAmount',
+            );
+        }
+
+        return { sendStringAmount, receiveStringAmount };
     }
 
     @step()
