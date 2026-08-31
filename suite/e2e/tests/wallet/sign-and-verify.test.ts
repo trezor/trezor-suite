@@ -1,4 +1,5 @@
 import { expect, test } from '../../support/fixtures';
+import { captureClipboardWrites } from '../../support/helpers/clipboard';
 
 const PATH = "m/84'/0'/0'/0/3";
 const ADDRESS = 'bc1q6hr68ewf72l6r7cj6ut286x0xkwg5706jq450u';
@@ -55,6 +56,30 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
         await expect(page.getByTestId('@sign-verify/signature')).toHaveValue(SIGNATURE);
         await expect(page.getByTestId('@sign-verify/outcome/signed')).toBeVisible();
         await expect(page.getByTestId('@sign-verify/clear')).toBeVisible();
+
+        const expectCopiedText = await captureClipboardWrites(page);
+
+        await page.getByTestId('@sign-verify/copy-address').click();
+        await expectCopiedText(ADDRESS);
+        await expect(page.getByTestId('@toast/copy-to-clipboard')).toBeVisible();
+
+        await page.getByTestId('@sign-verify/copy-message').click();
+        await expectCopiedText(MESSAGE);
+
+        await page.getByTestId('@sign-verify/copy-signature').click();
+        await expectCopiedText(SIGNATURE);
+
+        await page.getByTestId('@sign-verify/clear').click();
+        await expect(page.getByTestId('@sign-verify/outcome/signed')).toBeHidden();
+        await expect(page.getByTestId('@sign-verify/clear')).toBeHidden();
+        await expect(page.getByTestId('@sign-verify/submit')).toBeVisible();
+        await expect(page.getByTestId('@sign-verify/submitted-address')).toBeHidden();
+        await expect(page.getByTestId('@sign-verify/sign-address/input')).toBeVisible();
+        await expect(page.getByTestId('@sign-verify/message')).toHaveValue('');
+        await expect(page.getByTestId('@sign-verify/signature')).toHaveValue('');
+        await expect(page.getByTestId('@sign-verify/copy-address')).toBeHidden();
+        await expect(page.getByTestId('@sign-verify/copy-message')).toBeHidden();
+        await expect(page.getByTestId('@sign-verify/copy-signature')).toBeHidden();
     });
 
     test('Signs message with Electrum-compatible signature format', async ({
@@ -81,21 +106,11 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
         await devicePrompt.waitForPromptAndConfirm(); // Confirm message
         await expect(page.getByTestId('@sign-verify/signature')).toHaveValue(ELECTRUM_SIGNATURE);
 
-        await page.evaluate(() => {
-            const clipboard = navigator.clipboard as any;
-            const original = clipboard.writeText.bind(clipboard);
-            clipboard.writeText = (text: string) => {
-                (window as any).__clipboardCapture = text;
-
-                return original(text).catch(() => undefined);
-            };
-        });
+        const expectCopiedText = await captureClipboardWrites(page);
 
         // Regression guard for #20504.
         await page.getByTestId('@sign-verify/copy-signature').click();
-        await expect
-            .poll(() => page.evaluate(() => (window as any).__clipboardCapture as string))
-            .toBe(ELECTRUM_SIGNATURE);
+        await expectCopiedText(ELECTRUM_SIGNATURE);
     });
 
     test('Verify message signed with standard Bitcoin signature format', async ({
@@ -114,5 +129,26 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await expect(page.getByTestId('@toast/verify-message-success')).toBeVisible();
         await expect(page.getByTestId('@sign-verify/outcome/verified')).toBeVisible();
+    });
+
+    test.describe('Altered message', () => {
+        test.use({ ignoreToastErrors: ['Message verification error'] });
+
+        test('Verify fails when the message does not match the signature', async ({ page }) => {
+            await page.getByTestId('@sign-verify/navigation/verify').click();
+            await page.getByTestId('@sign-verify/message').fill(`${MESSAGE}!`);
+            await page.getByTestId('@sign-verify/select-address').fill(ADDRESS);
+            await page.getByTestId('@sign-verify/signature').fill(SIGNATURE);
+            await page.getByTestId('@sign-verify/submit').click();
+
+            await expect(page.getByTestId('@sign-verify/outcome/failed')).toHaveTranslation(
+                'TR_VERIFICATION_FAILED_BADGE',
+            );
+            await expect(page.getByTestId('@toast/verify-message-error')).toBeVisible();
+            await expect(page.getByTestId('@sign-verify/outcome/verified')).toBeHidden();
+            await expect(page.getByTestId('@toast/verify-message-success')).toBeHidden();
+            await expect(page.getByTestId('@sign-verify/submit')).toBeVisible();
+            await expect(page.getByTestId('@sign-verify/clear')).toBeHidden();
+        });
     });
 });
