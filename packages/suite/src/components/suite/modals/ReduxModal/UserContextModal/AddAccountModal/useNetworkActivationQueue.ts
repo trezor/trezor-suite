@@ -5,43 +5,35 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import {
-    accountsActions,
-    changeCoinVisibilityThunk,
-    discoveryActions,
-    runAdditionalDiscoveryThunk,
-    selectAccounts,
-} from '@suite-common/wallet-core';
-import { type AccountKey, type DiscoveryStatus } from '@suite-common/wallet-types';
 
-import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { activateNetworkWithDiscoveryThunk } from 'src/actions/wallet/activateNetworkWithDiscoveryThunk';
 
-import { enqueueNetworkActivation, getNewNetworkAccounts } from './addAccountModalUtils';
+import { enqueueNetworkActivation } from './addAccountModalUtils';
 
-type ActiveNetworkActivation = {
-    networkSymbol: NetworkSymbol;
-    existingAccountKeys: Set<AccountKey>;
+type ActivationRequest = {
+    requestId: string;
 };
 
 /**
- * @deprecated Temporary PoC code, will be moved, do not create new imports!
+ * @deprecated Temporary PoC code, will be moved. Do not create new imports.
  * TODO https://github.com/trezor/trezor-suite/issues/31779
  */
 export const useNetworkActivationQueue = (device: TrezorDevice) => {
-    const accounts = useSelector(selectAccounts);
-    const { discovery } = useDiscovery();
     const dispatch = useDispatch();
-
     const [queuedNetworkSymbols, setQueuedNetworkSymbols] = useState<NetworkSymbol[]>([]);
-    const [activeActivation, setActiveActivation] = useState<ActiveNetworkActivation>();
+    const [activeNetworkSymbol, setActiveNetworkSymbol] = useState<NetworkSymbol>();
     const [activationErrors, setActivationErrors] = useState<
         Partial<Record<NetworkSymbol, string>>
     >({});
+    const activationRequestRef = useRef<ActivationRequest | undefined>(undefined);
     const hasPreservedModalRef = useRef(false);
-    const isRollingBackRef = useRef(false);
 
     useEffect(
         () => () => {
+            // Choosing a network commits its activation. Closing Add account only detaches this
+            // hook from the result; discovery must keep running in the background.
+            activationRequestRef.current = undefined;
+
             if (hasPreservedModalRef.current) {
                 dispatch(removePreserveModal());
             }
@@ -53,167 +45,72 @@ export const useNetworkActivationQueue = (device: TrezorDevice) => {
         const staticSessionId = device.state?.staticSessionId;
         const nextNetworkSymbol = queuedNetworkSymbols[0];
 
-        if (activeActivation || !nextNetworkSymbol || !staticSessionId) {
+        if (activeNetworkSymbol || !nextNetworkSymbol || !staticSessionId) {
             return;
         }
 
-        const existingAccountKeys = new Set(
-            accounts
-                .filter(
-                    account =>
-                        account.deviceState === staticSessionId &&
-                        account.symbol === nextNetworkSymbol,
-                )
-                .map(account => account.key),
-        );
-
         setQueuedNetworkSymbols(currentQueue => currentQueue.slice(1));
-        setActiveActivation({ networkSymbol: nextNetworkSymbol, existingAccountKeys });
+        setActiveNetworkSymbol(nextNetworkSymbol);
 
-        // Setting discovery to a running state before enabling the network prevents
-        // discoveryMiddleware from starting a duplicate discovery call.
-        hasPreservedModalRef.current = true;
-        dispatch(preserveModal());
-        dispatch(
-            discoveryActions.startDiscovery(device.path, {
-                isAddingHiddenWallet: false,
-                isAddingExistingWallet: false,
+        if (!hasPreservedModalRef.current) {
+            hasPreservedModalRef.current = true;
+            dispatch(preserveModal());
+        }
+
+        const activationPromise = dispatch(
+            activateNetworkWithDiscoveryThunk({
+                devicePath: device.path,
+                staticSessionId,
+                networkSymbol: nextNetworkSymbol,
             }),
         );
+        activationRequestRef.current = activationPromise;
 
-        void dispatch(
-            changeCoinVisibilityThunk({
-                symbol: nextNetworkSymbol,
-                shouldBeVisible: true,
-            }),
-        )
-            .then(result => {
-                if (changeCoinVisibilityThunk.rejected.match(result)) {
+        void activationPromise.then(action => {
+            if (activationRequestRef.current?.requestId !== activationPromise.requestId) {
+                return;
+            }
+
+            activationRequestRef.current = undefined;
+
+            if (activateNetworkWithDiscoveryThunk.fulfilled.match(action)) {
+                if (action.payload.success) {
                     dispatch(
-                        discoveryActions.updateDiscovery(
-                            {
-                                status: 'failed',
-                                error: result.error.message ?? 'Network activation failed',
-                            },
-                            device.path,
-                        ),
+                        notificationsActions.addToast({
+                            type: 'accounts-discovered',
+                            count: action.payload.discoveredAccountCount,
+                            networkName: getNetwork(nextNetworkSymbol).name,
+                        }),
                     );
-
-                    return;
+                } else if (!action.payload.wasCancelled) {
+                    const { error } = action.payload;
+                    setActivationErrors(currentErrors => ({
+                        ...currentErrors,
+                        [nextNetworkSymbol]: error,
+                    }));
                 }
+            } else if (!action.meta.aborted) {
+                const error = action.error.message ?? 'Network activation failed';
+                setActivationErrors(currentErrors => ({
+                    ...currentErrors,
+                    [nextNetworkSymbol]: error,
+                }));
+                dispatch(notificationsActions.addToast({ type: 'discovery-error', error }));
+            }
 
-                return dispatch(runAdditionalDiscoveryThunk(staticSessionId));
-            })
-            .then(result => {
-                if (result && runAdditionalDiscoveryThunk.rejected.match(result)) {
-                    dispatch(
-                        discoveryActions.updateDiscovery(
-                            {
-                                status: 'failed',
-                                error: result.error.message ?? 'Account discovery failed',
-                            },
-                            device.path,
-                        ),
-                    );
-                }
-            });
+            setActiveNetworkSymbol(undefined);
+        });
     }, [
-        accounts,
-        activeActivation,
+        activeNetworkSymbol,
         device.path,
         device.state?.staticSessionId,
         dispatch,
         queuedNetworkSymbols,
     ]);
 
-    useEffect(() => {
-        if (!activeActivation || !discovery || isRollingBackRef.current) {
-            return;
-        }
-
-        const { networkSymbol, existingAccountKeys } = activeActivation;
-        const staticSessionId = device.state?.staticSessionId;
-
-        if (discovery.status === 'complete') {
-            const discoveredAccountCount = accounts.filter(
-                account =>
-                    account.deviceState === staticSessionId &&
-                    account.symbol === networkSymbol &&
-                    account.visible,
-            ).length;
-
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'accounts-discovered',
-                    count: discoveredAccountCount,
-                    networkName: getNetwork(networkSymbol).name,
-                }),
-            );
-            setActiveActivation(undefined);
-
-            return;
-        }
-
-        const shouldRollbackNetworkActivation = (status: DiscoveryStatus['status']) =>
-            status === 'failed' || status === 'cancelled';
-        if (!shouldRollbackNetworkActivation(discovery.status)) {
-            return;
-        }
-
-        const newNetworkAccounts = getNewNetworkAccounts({
-            accounts,
-            existingAccountKeys,
-            networkSymbol,
-        });
-        const failedStatus = discovery;
-        isRollingBackRef.current = true;
-
-        if (newNetworkAccounts.length > 0) {
-            dispatch(accountsActions.removeAccount(newNetworkAccounts));
-        }
-
-        dispatch(
-            discoveryActions.startDiscovery(device.path, {
-                isAddingHiddenWallet: false,
-                isAddingExistingWallet: false,
-            }),
-        );
-
-        void dispatch(
-            changeCoinVisibilityThunk({
-                symbol: networkSymbol,
-                shouldBeVisible: false,
-            }),
-        ).then(() => {
-            dispatch(discoveryActions.updateDiscovery(failedStatus, device.path));
-
-            if (failedStatus.status === 'failed') {
-                const error = failedStatus.error ?? 'Unknown error';
-                setActivationErrors(currentErrors => ({
-                    ...currentErrors,
-                    [networkSymbol]: error,
-                }));
-                dispatch(notificationsActions.addToast({ type: 'discovery-error', error }));
-            }
-
-            isRollingBackRef.current = false;
-            setActiveActivation(undefined);
-        });
-    }, [
-        accounts,
-        activeActivation,
-        device.path,
-        device.state?.staticSessionId,
-        discovery,
-        dispatch,
-    ]);
-
     const activatingNetworkSymbols = useMemo(
-        () => [
-            ...(activeActivation ? [activeActivation.networkSymbol] : []),
-            ...queuedNetworkSymbols,
-        ],
-        [activeActivation, queuedNetworkSymbols],
+        () => [...(activeNetworkSymbol ? [activeNetworkSymbol] : []), ...queuedNetworkSymbols],
+        [activeNetworkSymbol, queuedNetworkSymbols],
     );
 
     const activateNetwork = (networkSymbol: NetworkSymbol) => {

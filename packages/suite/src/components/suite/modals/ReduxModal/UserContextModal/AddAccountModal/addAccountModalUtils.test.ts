@@ -1,10 +1,8 @@
 import { networks } from '@suite-common/wallet-config';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import {
     enqueueNetworkActivation,
-    getNewNetworkAccounts,
     getSortedNetworks,
     getVisibleAccountCounts,
 } from './addAccountModalUtils';
@@ -65,31 +63,6 @@ describe('addAccountModalUtils', () => {
                 networks.btc.symbol,
                 networks.eth.symbol,
             ]);
-        });
-    });
-
-    describe(getNewNetworkAccounts.name, () => {
-        it('returns only accounts created for the activated network after discovery started', () => {
-            const existingAccount = mockWalletAccount({
-                descriptor: asAccountDescriptor('existingAccount'),
-                symbol: networks.btc.symbol,
-            });
-            const newBitcoinAccount = mockWalletAccount({
-                descriptor: asAccountDescriptor('newBitcoinAccount'),
-                symbol: networks.btc.symbol,
-            });
-            const newEthereumAccount = mockWalletAccount({
-                descriptor: asAccountDescriptor('newEthereumAccount'),
-                symbol: networks.eth.symbol,
-            });
-
-            expect(
-                getNewNetworkAccounts({
-                    accounts: [existingAccount, newBitcoinAccount, newEthereumAccount],
-                    existingAccountKeys: new Set([existingAccount.key]),
-                    networkSymbol: networks.btc.symbol,
-                }),
-            ).toEqual([newBitcoinAccount]);
         });
     });
 });

@@ -2162,7 +2162,6 @@
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING": "Ověřit adresu ve vašem Trezoru",
   "TR_RECEIVE_ADDRESS_FAILED_BACKUP": "Záloha peněženky se nezdařila. Odesílání finančních prostředků do této peněženky není ani bezpečné, ani zabezpečené.",
   "TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED": "Vaše zařízení může být ohroženo. Neposílejte na něj finanční prostředky.",
-  "TR_RECEIVE_DESCRIPTION": "Zjistěte, jak <a>vybrat správnou síť</a> pro příjem vašich tokenů",
   "TR_RECEIVE_NETWORK": "Přijmout {networkDisplaySymbol}",
   "TR_RECEIVE_SEARCH": "Vyhledat účet",
   "TR_RECEIVING_SYMBOL": "Příjem {multiple, select, true {několika tokenů} false {{symbol}} other {{symbol}}}",

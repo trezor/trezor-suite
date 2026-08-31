@@ -3244,9 +3244,49 @@ export const messages = defineMessages({
         defaultMessage: 'Receive',
         id: 'TR_RECEIVE',
     },
-    TR_RECEIVE_DESCRIPTION: {
-        defaultMessage: 'Learn how to <a>select the right network</a> to receive your tokens',
-        id: 'TR_RECEIVE_DESCRIPTION',
+    TR_GLOBAL_RECEIVE_ACCOUNTS_TAB: {
+        defaultMessage: 'Accounts',
+        id: 'TR_GLOBAL_RECEIVE_ACCOUNTS_TAB',
+    },
+    TR_GLOBAL_RECEIVE_ALL_ASSETS: {
+        defaultMessage: 'All assets',
+        id: 'TR_GLOBAL_RECEIVE_ALL_ASSETS',
+    },
+    TR_GLOBAL_RECEIVE_ASSETS_TAB: {
+        defaultMessage: 'Assets',
+        id: 'TR_GLOBAL_RECEIVE_ASSETS_TAB',
+    },
+    TR_GLOBAL_RECEIVE_ASSET_ON_NETWORK: {
+        defaultMessage: '{asset} on {network}',
+        id: 'TR_GLOBAL_RECEIVE_ASSET_ON_NETWORK',
+    },
+    TR_GLOBAL_RECEIVE_DESCRIPTION: {
+        defaultMessage: 'Select the <a>right network</a> to receive your assets',
+        id: 'TR_GLOBAL_RECEIVE_DESCRIPTION',
+    },
+    TR_GLOBAL_RECEIVE_GETTING_ACCOUNT_READY: {
+        defaultMessage: 'Getting your account ready',
+        id: 'TR_GLOBAL_RECEIVE_GETTING_ACCOUNT_READY',
+    },
+    TR_GLOBAL_RECEIVE_NO_ACCOUNT_FOUND: {
+        defaultMessage: 'No receive account was found for the selected network.',
+        id: 'TR_GLOBAL_RECEIVE_NO_ACCOUNT_FOUND',
+    },
+    TR_GLOBAL_RECEIVE_NO_ASSETS: {
+        defaultMessage: 'No assets found',
+        id: 'TR_GLOBAL_RECEIVE_NO_ASSETS',
+    },
+    TR_GLOBAL_RECEIVE_SEARCH_ASSETS: {
+        defaultMessage: 'Search by name or symbol',
+        id: 'TR_GLOBAL_RECEIVE_SEARCH_ASSETS',
+    },
+    TR_GLOBAL_RECEIVE_SELECT_ACCOUNT: {
+        defaultMessage: 'Select receive account:',
+        id: 'TR_GLOBAL_RECEIVE_SELECT_ACCOUNT',
+    },
+    TR_GLOBAL_RECEIVE_SETUP_DESCRIPTION: {
+        defaultMessage: 'Turning on the {network} network and checking for your account.',
+        id: 'TR_GLOBAL_RECEIVE_SETUP_DESCRIPTION',
     },
     TR_RECEIVE_SEARCH: {
         defaultMessage: 'Search account',

@@ -4,6 +4,7 @@ import { type TranslationKey, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { SearchAsset } from '@trezor/product-components';
@@ -19,12 +20,16 @@ export type AssetSearchWithNetworkFilterProps = {
     placeholder: TranslationKey;
     listRef: RefObject<HTMLDivElement | null>;
     modal?: NonNullable<GlobalSendReceiveType>;
+    networks?: readonly NetworkSymbol[];
+    shouldResetSearchOnNetworkChange?: boolean;
 };
 
 export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetworkFilterInner({
     placeholder,
     listRef,
     modal,
+    networks: providedNetworks,
+    shouldResetSearchOnNetworkChange = true,
 }: AssetSearchWithNetworkFilterProps) {
     const { findNetworkSymbolForProtocol } = useServices(selectFindNetworkSymbolForProtocolDep);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
@@ -34,13 +39,15 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         modal,
         listRef,
         resetSearch: () => setSearch(''),
+        availableNetworks: providedNetworks,
+        shouldResetSearchOnNetworkChange,
     });
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const protocolScheme = useSelector(selectProtocolSendFormScheme);
 
     const protocolSymbol = protocolScheme ? findNetworkSymbolForProtocol(protocolScheme) : null;
 
-    const networks = protocolSymbol ? [protocolSymbol] : enabledNetworks;
+    const networks = protocolSymbol ? [protocolSymbol] : (providedNetworks ?? enabledNetworks);
 
     const { translationString } = useTranslation();
 
@@ -49,7 +56,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     const selectConfig = isBitcoinOnlyFirmware
         ? undefined
         : {
-              networks,
+              networks: [...networks],
               selectedNetwork: networkFilter,
               onChange: setNetworkFilter,
               includeAllOption: !protocolSymbol,

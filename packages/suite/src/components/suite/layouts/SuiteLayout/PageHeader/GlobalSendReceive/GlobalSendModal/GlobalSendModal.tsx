@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import { sendFormActions } from '@suite-common/wallet-core';
@@ -141,7 +142,10 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
     );
 
     return (
-        <AssetsModal heading={{ id: 'SEND_TRANSACTION' }} onClose={() => onCancel(filledSearch)}>
+        <AssetsModal
+            heading={<Translation id="SEND_TRANSACTION" />}
+            onClose={() => onCancel(filledSearch)}
+        >
             <Box padding={{ horizontal: 16 }}>
                 <AssetSearchWithNetworkFilter
                     placeholder="TR_SEND_SEARCH"

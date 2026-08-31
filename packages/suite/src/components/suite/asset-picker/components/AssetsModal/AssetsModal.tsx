@@ -1,15 +1,19 @@
 import { type ReactNode } from 'react';
 
-import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
-import { Modal, type ModalWidth } from '@trezor/components';
+import { Modal, type ModalProps, type ModalWidth, type Padding } from '@trezor/components';
 
 interface AssetsModalProps {
     children: ReactNode;
-    heading: ExtendedMessageDescriptor;
-    description?: ExtendedMessageDescriptor;
+    heading: ReactNode;
+    description?: ReactNode;
     onClose: () => void;
+    onBackClick?: () => void;
     width?: ModalWidth;
+    maxHeight?: ModalProps['maxHeight'];
+    padding?: Padding;
     bottomContent?: ReactNode;
+    shadowBottom?: boolean;
+    'data-testid'?: string;
 }
 
 export function AssetsModal({
@@ -17,17 +21,26 @@ export function AssetsModal({
     heading,
     description,
     onClose,
+    onBackClick,
     width = 600,
+    maxHeight,
+    padding = { horizontal: 0, top: 16 },
     bottomContent,
+    shadowBottom,
+    'data-testid': dataTestId,
 }: AssetsModalProps) {
     return (
         <Modal
-            heading={<Translation {...heading} />}
-            description={description ? <Translation {...description} /> : undefined}
+            heading={heading}
+            description={description}
             onCancel={onClose}
+            onBackClick={onBackClick}
             width={width}
-            padding={{ horizontal: 0, top: 16 }}
+            maxHeight={maxHeight}
+            padding={padding}
             bottomContent={bottomContent}
+            shadowBottom={shadowBottom}
+            data-testid={dataTestId}
         >
             {children}
         </Modal>
