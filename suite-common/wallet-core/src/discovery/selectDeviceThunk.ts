@@ -18,6 +18,7 @@ import { isNative } from '@trezor/env-utils';
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
 };
+
 type SelectDeviceThunkState = DeviceRootState;
 
 /**

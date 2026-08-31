@@ -10,6 +10,10 @@ export type ConnectState = {
     initError?: string;
 };
 
+export type ConnectRootState = {
+    connect: ConnectState;
+};
+
 const initialState: ConnectState = {
     options: undefined,
     isInitializing: false,

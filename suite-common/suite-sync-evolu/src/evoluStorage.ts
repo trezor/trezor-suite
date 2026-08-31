@@ -2,20 +2,22 @@ import { type Evolu, createOwnerWebSocketTransport } from '@evolu/common';
 
 import { type CreateSuiteStorage, type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 
-import { type CreateEvoluInstanceDep } from './createEvoluInstance';
+import { type EvoluInstanceFactoryDep } from './createEvoluInstance';
 import { type AccountTableSchema, EvoluAccountTable } from './data/accountTable';
 import { AddressEvoluTable, type AddressTableSchema } from './data/addressTable';
 import { OutputEvoluTable, type OutputTableSchema } from './data/outputTable';
 import { EvoluWalletTable, type WalletTableSchema } from './data/walletTable';
 
-export type EvoluStorageFactoryDeps = CreateEvoluInstanceDep;
+export type CreateEvoluStorageFactoryDeps = EvoluInstanceFactoryDep;
+
+export type EvoluStorageFactory = CreateSuiteStorage;
 
 /**
  * This is intended as Wrapper around Evolu. In case we need to change Evolu for
  * something else, this is the Public API for the rest of the Suite ecosystem.
  */
 export const createEvoluStorageFactory =
-    (deps: EvoluStorageFactoryDeps): CreateSuiteStorage =>
+    (deps: CreateEvoluStorageFactoryDeps): EvoluStorageFactory =>
     async ({ suiteSyncOwner }): Promise<SuiteSyncStorage> => {
         /**
          * Dispose function of the connected owner. When owner is changed
@@ -25,7 +27,7 @@ export const createEvoluStorageFactory =
 
         let unuseOwner = () => {};
 
-        const evolu = await deps.createEvoluInstance({ suiteSyncOwner });
+        const evolu = await deps.evoluInstanceFactory({ suiteSyncOwner });
 
         const disconnectRelay = () => {
             unuseOwner();

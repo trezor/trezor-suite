@@ -23,8 +23,6 @@ import * as SIGN_VERIFY from './signVerifyConstants';
 
 export type SignVerifyRootState = DeviceRootState & WalletSettingsRootState;
 
-type GetState = () => SignVerifyRootState;
-
 const CANCEL_ERROR_CODES: ErrorCode[] = ['Method_Cancel', 'Failure_ActionCancelled'];
 
 const getFailureAttributes = ({ code }: SerializedError) => ({
@@ -50,7 +48,10 @@ const throwWhenFailed = <T>(response: Result<T, SerializedError>) =>
         ? Promise.resolve(response.payload)
         : Promise.reject(new Error(response.error.message));
 
-const getStateParams = (account: Account, getState: GetState): Promise<StateParams> => {
+const getStateParams = (
+    account: Account,
+    getState: () => SignVerifyRootState,
+): Promise<StateParams> => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
 

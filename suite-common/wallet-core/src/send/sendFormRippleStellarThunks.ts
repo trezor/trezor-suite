@@ -111,6 +111,7 @@ const calculate = (
 
     return payloadData;
 };
+
 type ComposeRippleStellarTransactionFeeLevelsThunkState = void;
 
 export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<

@@ -99,8 +99,11 @@ export const createNamedContractRuleListener = (
 
             const validateContractBlockSpacing: NamedContractRuleContext['validateContractBlockSpacing'] =
                 (firstStatementIndex, consumerStatementIndex, consumerName) => {
+                    // Include the declaration immediately before the contracts so the block is
+                    // separated on both sides, not only between its own declarations and consumer.
+                    const spacingBlockStartIndex = Math.max(firstStatementIndex - 1, 0);
                     const contractBlock = statements.slice(
-                        firstStatementIndex,
+                        spacingBlockStartIndex,
                         consumerStatementIndex + 1,
                     );
 
@@ -137,12 +140,18 @@ export const createNamedContractRuleListener = (
                                 nextName: nextName || consumerName,
                             },
                             fixer => {
-                                const { line } = sourceFile.getLineAndCharacterOfPosition(
-                                    nextStatement.getStart(sourceFile),
-                                );
-                                const start = sourceFile.getPositionOfLineAndCharacter(line, 0);
+                                const firstNewline = textBetweenStatements.match(/\r?\n/u);
+                                const start =
+                                    firstNewline?.index === undefined
+                                        ? nextStatement.getStart(sourceFile)
+                                        : previousStatement.end +
+                                          firstNewline.index +
+                                          firstNewline[0].length;
 
-                                return fixer.insertTextBeforeRange([start, start], '\n');
+                                return fixer.insertTextBeforeRange(
+                                    [start, start],
+                                    firstNewline?.[0] ?? '\n\n',
+                                );
                             },
                         );
                     }

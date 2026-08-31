@@ -81,6 +81,16 @@ export const getTypeReferenceName = (node: ts.TypeNode | undefined) =>
         ? node.typeName.text
         : undefined;
 
+export const toLowerCamelCase = (value: string) => {
+    const leadingInitialism = value.match(/^[A-Z]+(?=[A-Z][a-z]|$)/u)?.[0];
+
+    if (leadingInitialism !== undefined) {
+        return `${leadingInitialism.toLowerCase()}${value.slice(leadingInitialism.length)}`;
+    }
+
+    return `${value.charAt(0).toLowerCase()}${value.slice(1)}`;
+};
+
 export const getNodeSourcePath = (node: Rule.Node): string | null => {
     if (
         'source' in node &&

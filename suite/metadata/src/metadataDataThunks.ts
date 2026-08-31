@@ -20,27 +20,32 @@ import * as METADATA_LABELING from './metadataLabelingConstants';
 import { type MetadataRootState, selectSelectedProviderForLabels } from './metadataReducer';
 import * as metadataUtils from './metadataUtils';
 
+type DisposeMetadataThunkState = MetadataRootState;
+
 /**
  * dispose metadata from all labelable objects.
  */
-export const disposeMetadata = () => (dispatch: Dispatch, getState: () => MetadataRootState) => {
-    const provider = selectSelectedProviderForLabels(getState());
+export const disposeMetadata =
+    () => (dispatch: Dispatch, getState: () => DisposeMetadataThunkState) => {
+        const provider = selectSelectedProviderForLabels(getState());
 
-    if (!provider) {
-        return;
-    }
+        if (!provider) {
+            return;
+        }
 
-    dispatch({
-        type: METADATA.SET_DATA,
-        payload: {
-            provider,
-            data: undefined,
-        },
-    });
-};
+        dispatch({
+            type: METADATA.SET_DATA,
+            payload: {
+                provider,
+                data: undefined,
+            },
+        });
+    };
+
+type DisposeMetadataKeysThunkState = MetadataRootState;
 
 export const disposeMetadataKeys =
-    () => (dispatch: Dispatch, getState: () => MetadataRootState) => {
+    () => (dispatch: Dispatch, getState: () => DisposeMetadataKeysThunkState) => {
         const devices = selectDevices(getState());
         const accounts = selectAccounts(getState());
 

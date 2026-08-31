@@ -4,6 +4,7 @@ import { createThunk } from '@suite-common/redux-utils';
 const NATIVE_FIRMWARE_MODULE_PREFIX = 'nativeFirmware';
 
 type SetTemporaryRememberedDeviceThunkPayload = { temporaryRemember: boolean };
+
 type SetTemporaryRememberedDeviceThunkState = DeviceRootState;
 
 export const setTemporaryRememberedDeviceThunk = createThunk<

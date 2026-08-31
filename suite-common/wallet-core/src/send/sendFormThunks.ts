@@ -121,6 +121,7 @@ type ConvertSendFormDraftsBtcAmountUnitsThunkParams = {
     selectedAccountKey?: AccountKey;
     isOnSendPage?: boolean;
 };
+
 type ConvertSendFormDraftsBtcAmountUnitsThunkState = AccountsRootState &
     SendRootState &
     WalletSettingsRootState;
@@ -185,6 +186,7 @@ type CoinSpecificComposeResponse = ActionsFromAsyncThunk<
     | typeof composeSolanaTransactionFeeLevelsThunk
     | typeof composeTronTransactionFeeLevelsThunk
 >;
+
 export type ComposeSendFormTransactionFeeLevelsThunkState = BlockchainRootState &
     DeviceRootState &
     WalletSettingsRootState;
@@ -305,6 +307,7 @@ type SynchronizeSentTransactionThunkParams = {
     // account.misc.nonce (which reads one too high until the backend picks up the real tx).
     ethereumNonce?: string;
 };
+
 export type SynchronizeSentTransactionThunkState = FeesRootState &
     SendRootState &
     SyncAccountsWithBlockchainThunkState;
@@ -583,6 +586,7 @@ type PushSendFormRawTransactionThunkParams = {
     identity?: string;
     isMevProtectionEnabled: boolean;
 };
+
 type PushSendFormRawTransactionThunkState = DeviceRootState & SyncAccountsWithBlockchainThunkState;
 
 type PushSendFormRawTransactionThunkDeps = WithServices<
@@ -656,6 +660,7 @@ type SignTransactionThunkParams = {
     selectedAccount: Account;
     paymentRequests?: PROTO.PaymentRequest[];
 };
+
 export type SignTransactionThunkState = AccountsRootState &
     DeviceRootState &
     TransactionsRootState &

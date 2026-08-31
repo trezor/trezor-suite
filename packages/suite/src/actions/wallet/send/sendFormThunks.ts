@@ -57,6 +57,7 @@ import {
 } from '../../labels/moveLabelsForRbfThunk';
 
 type SaveSendFormDraftThunkParams = { formState: FormState };
+
 type SaveSendFormDraftThunkState = SelectedAccountRootState;
 
 export const saveSendFormDraftThunk = createThunk<
@@ -155,6 +156,7 @@ type ApplySendFormMetadataLabelsThunkParams = {
     precomposedTransaction: GeneralPrecomposedTransactionFinal;
     txid: string;
 };
+
 type ApplySendFormMetadataLabelsThunkState = DeviceRootState &
     MessageSystemRootState &
     MetadataRootState &

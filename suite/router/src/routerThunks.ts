@@ -31,6 +31,7 @@ import { type SuiteRouterHistoryDep } from './suiteRouterHistory';
 type OnLocationChangeThunkParams = RouterPathOptional & {
     anchor?: AnchorType;
 };
+
 type OnLocationChangeThunkState = LocksRootState & ModalRootState & RouterRootState;
 
 export const onLocationChange = createThunk<
@@ -175,6 +176,7 @@ export const closeModalApp = createThunk<
 type InitialRedirectionThunkParams = {
     isInitialRun?: boolean;
 };
+
 type InitialRedirectionThunkState = GotoThunkState;
 
 type InitialRedirectionThunkDeps = GotoThunkDeps;

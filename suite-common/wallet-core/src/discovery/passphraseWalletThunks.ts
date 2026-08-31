@@ -21,6 +21,7 @@ import { registerScopedCallId, unregisterScopedCallId } from '../uiEvent/scopedC
 type RunPassphraseWalletAddingDiscoveryThunkParams = {
     device: TrezorDevice;
 };
+
 type RunPassphraseWalletAddingDiscoveryThunkState = RunDiscoveryThunkState;
 
 type RunPassphraseWalletAddingDiscoveryThunkDeps = WithServices<
@@ -70,6 +71,7 @@ type StartDiscoveryOfExistingPassphraseWalletThunkPayload = {
     isAddingHiddenWallet?: boolean;
     useScopedCallIds?: boolean;
 };
+
 type StartDiscoveryOfExistingPassphraseWalletThunkState = RunDiscoveryThunkState;
 
 type StartDiscoveryOfExistingPassphraseWalletThunkDeps = WithServices<
@@ -123,6 +125,7 @@ type StartAddWalletDiscoveryThunkParams = {
     isAddingHiddenWallet?: boolean;
     isAddingExistingWallet?: boolean;
 };
+
 type StartAddWalletDiscoveryThunkState = StartDiscoveryOfExistingPassphraseWalletThunkState &
     StartDiscoveryThunkState;
 

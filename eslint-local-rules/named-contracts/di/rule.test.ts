@@ -28,6 +28,33 @@ namedContractsRuleTester.run('enforce-di-factory-contracts', enforceDiFactoryCon
         {
             filename: namedContractsFilename,
             code: `
+                type CreateSaveFactoryDeps = { logger: { log: () => void } };
+
+                type SaveFactory = () => () => void;
+
+                type SaveFactoryDep = { saveFactory: SaveFactory };
+
+                const createSaveFactory = (deps: CreateSaveFactoryDeps): SaveFactory =>
+                    () => () => deps.logger.log();
+            `,
+        },
+        {
+            filename: namedContractsFilename,
+            code: `
+                type MMKVStorageDeps = { getEncryptionKey: () => string };
+
+                type MMKVStorage = { get: () => string };
+
+                type MMKVStorageDep = { mmkvStorage: MMKVStorage };
+
+                const createMMKVStorage = (deps: MMKVStorageDeps): MMKVStorage => ({
+                    get: deps.getEncryptionKey,
+                });
+            `,
+        },
+        {
+            filename: namedContractsFilename,
+            code: `
                 type NativeAppDeps = { logger: { log: () => void } };
                 type NativeServices = { save: () => void };
 
@@ -40,6 +67,18 @@ namedContractsRuleTester.run('enforce-di-factory-contracts', enforceDiFactoryCon
             filename: namedContractsFilename,
             code: `
                 const createMockDeps = <T>(deps: T): T => deps;
+            `,
+        },
+        {
+            filename: namedContractsFilename,
+            code: `
+                type ConcreteSaveDeps = { logger: { log: () => void } };
+
+                type AbstractSave = () => void;
+
+                // eslint-disable-next-line rule-to-test/enforce-di-factory-contracts -- Concrete implementation of the abstract AbstractSave contract.
+                const createConcreteSave = (deps: ConcreteSaveDeps): AbstractSave =>
+                    () => deps.logger.log();
             `,
         },
     ],
@@ -66,6 +105,62 @@ namedContractsRuleTester.run('enforce-di-factory-contracts', enforceDiFactoryCon
                 {
                     messageId: 'contractMustBeSeparated',
                     data: { previousName: 'Save', nextName: 'createSave' },
+                },
+            ],
+        },
+        {
+            filename: namedContractsFilename,
+            code: `
+                type CreateSaveFactoryDeps = { logger: { log: () => void } };
+
+                type SaveFactory = () => () => void;
+
+                type CreateSaveDep = { createSave: SaveFactory };
+
+                const createSaveFactory = (deps: CreateSaveFactoryDeps): SaveFactory =>
+                    () => () => deps.logger.log();
+            `,
+            errors: [
+                {
+                    messageId: 'contractMustBeNamed',
+                    data: {
+                        contractName: 'SaveFactoryDep',
+                        consumerName: 'SaveFactory',
+                    },
+                },
+                {
+                    messageId: 'serviceDependencyProperty',
+                    data: {
+                        serviceName: 'SaveFactory',
+                        propertyName: 'saveFactory',
+                    },
+                },
+            ],
+        },
+        {
+            filename: namedContractsFilename,
+            code: `
+                type SaveFactoryDeps = { logger: { log: () => void } };
+
+                type CreateSave = () => () => void;
+
+                const createSaveFactory = (deps: SaveFactoryDeps): CreateSave =>
+                    () => () => deps.logger.log();
+            `,
+            errors: [
+                {
+                    messageId: 'contractMustBeNamed',
+                    data: {
+                        contractName: 'SaveFactory',
+                        consumerName: 'createSaveFactory',
+                    },
+                },
+                {
+                    messageId: 'contractMustBeNamed',
+                    data: {
+                        contractName: 'CreateSaveFactoryDeps',
+                        consumerName: 'createSaveFactory',
+                    },
                 },
             ],
         },
@@ -138,6 +233,28 @@ namedContractsRuleTester.run('enforce-di-factory-contracts', enforceDiFactoryCon
                 {
                     messageId: 'dependencyFactoryParameter',
                     data: { factoryName: 'createSave', contractName: 'SaveDeps' },
+                },
+            ],
+        },
+        {
+            filename: namedContractsFilename,
+            code: `
+                type WrongDeps = { logger: { log: () => void } };
+
+                type AbstractSave = () => void;
+
+                // eslint-disable-next-line rule-to-test/enforce-di-factory-contracts -- Concrete implementation of the abstract AbstractSave contract.
+                const createConcreteSave = (
+                    deps: WrongDeps,
+                ): AbstractSave => () => deps.logger.log();
+            `,
+            errors: [
+                {
+                    messageId: 'contractMustBeNamed',
+                    data: {
+                        contractName: 'ConcreteSaveDeps',
+                        consumerName: 'createConcreteSave',
+                    },
                 },
             ],
         },

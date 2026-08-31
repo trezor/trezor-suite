@@ -1,8 +1,18 @@
 import type { Rule } from 'eslint';
 import ts from 'typescript';
 
-import { getTypeReferenceName, getVariableFunction } from '../../utils';
+import { getTypeReferenceName, getVariableFunction, toLowerCamelCase } from '../../utils';
 import { createNamedContractRuleListener } from '../utils';
+
+const getServiceDependencyMembers = (
+    declaration: ts.TypeAliasDeclaration | ts.InterfaceDeclaration,
+) => {
+    if (ts.isInterfaceDeclaration(declaration)) {
+        return declaration.members;
+    }
+
+    return ts.isTypeLiteralNode(declaration.type) ? declaration.type.members : [];
+};
 
 /** Enforces local, predictably named dependency contracts for DI service factories. */
 export const enforceDiFactoryContractsRule: Rule.RuleModule = {
@@ -26,6 +36,8 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
                 "Pass '{{contractName}}' as a single 'deps' parameter to dependency-injected factory '{{factoryName}}'.",
             dependencyFactoryReturnType:
                 "Give dependency-injected factory '{{factoryName}}' an explicit named service return type.",
+            serviceDependencyProperty:
+                "Expose the '{{serviceName}}' service as '{{propertyName}}' in its dependency contract.",
         },
         schema: [],
     },
@@ -41,6 +53,7 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
             }) => {
                 const validateDependencyFactory = (
                     factoryName: string,
+                    factoryNameNode: ts.Node,
                     factoryFunction: ts.FunctionLikeDeclaration,
                     statementIndex: number,
                 ) => {
@@ -57,7 +70,13 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
                     }
 
                     const serviceName = factoryName.slice('create'.length);
-                    const expectedDepsName = `${serviceName}Deps`;
+                    // `createSave` creates the `Save` service, so it uses `SaveDeps`.
+                    // `createSaveFactory` creates the `SaveFactory` service. Its own creator
+                    // therefore uses `CreateSaveFactoryDeps`, which keeps the two factory
+                    // layers distinguishable.
+                    const expectedDepsName = factoryName.endsWith('Factory')
+                        ? `${factoryName.charAt(0).toUpperCase()}${factoryName.slice(1)}Deps`
+                        : `${serviceName}Deps`;
                     const actualDepsName = getTypeReferenceName(depsParameter.type);
                     const isNamedDepsParameter =
                         ts.isIdentifier(depsParameter.name) && depsParameter.name.text === 'deps';
@@ -84,7 +103,53 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
 
                     if (returnTypeName === undefined) {
                         report(factoryFunction, 'dependencyFactoryReturnType', { factoryName });
+                    } else if (returnTypeName !== serviceName) {
+                        report(factoryNameNode, 'contractMustBeNamed', {
+                            consumerName: factoryName,
+                            contractName: serviceName,
+                        });
                     }
+
+                    const expectedServiceDepName = `${serviceName}Dep`;
+                    const expectedServicePropertyName = toLowerCamelCase(serviceName);
+
+                    // A service does not always need a `Dep` wrapper. When it has one, keep the
+                    // service name everywhere: `SaveFactory` becomes
+                    // `{ saveFactory: SaveFactory }` inside `SaveFactoryDep`.
+                    statements.forEach(statement => {
+                        if (
+                            (!ts.isTypeAliasDeclaration(statement) &&
+                                !ts.isInterfaceDeclaration(statement)) ||
+                            !statement.name.text.endsWith('Dep')
+                        ) {
+                            return;
+                        }
+
+                        const serviceProperties = getServiceDependencyMembers(statement).filter(
+                            member =>
+                                ts.isPropertySignature(member) &&
+                                getTypeReferenceName(member.type) === serviceName,
+                        );
+
+                        serviceProperties.forEach(property => {
+                            if (statement.name.text !== expectedServiceDepName) {
+                                report(statement.name, 'contractMustBeNamed', {
+                                    consumerName: serviceName,
+                                    contractName: expectedServiceDepName,
+                                });
+                            }
+
+                            if (
+                                !ts.isIdentifier(property.name) ||
+                                property.name.text !== expectedServicePropertyName
+                            ) {
+                                report(property.name, 'serviceDependencyProperty', {
+                                    serviceName,
+                                    propertyName: expectedServicePropertyName,
+                                });
+                            }
+                        });
+                    });
 
                     const depsDeclaration = localTypeAliases.get(expectedDepsName);
 
@@ -142,6 +207,7 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
                         if (statement.name?.text.startsWith('create')) {
                             validateDependencyFactory(
                                 statement.name.text,
+                                statement.name,
                                 statement,
                                 statementIndex,
                             );
@@ -167,6 +233,7 @@ export const enforceDiFactoryContractsRule: Rule.RuleModule = {
                         if (factoryFunction !== undefined) {
                             validateDependencyFactory(
                                 declaration.name.text,
+                                declaration.name,
                                 factoryFunction,
                                 statementIndex,
                             );

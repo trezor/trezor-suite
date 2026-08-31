@@ -28,6 +28,7 @@ type SubmitYieldWithdrawPayload = {
     amount: string;
     flowType: YieldWithdrawFlowType;
 };
+
 type SubmitYieldWithdrawThunkState = ComposeYieldWithdrawTransactionThunkState &
     SendYieldTransactionState;
 

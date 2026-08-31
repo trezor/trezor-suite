@@ -42,7 +42,7 @@ export type RetrieveSuiteSyncOwner = (
     >
 >;
 
-export type RetrieveSuiteSyncOwnerKeysDep = {
+export type RetrieveSuiteSyncOwnerDep = {
     retrieveSuiteSyncOwner: RetrieveSuiteSyncOwner;
 };
 

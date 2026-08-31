@@ -16,6 +16,7 @@ export type EnsureWalletSuiteSyncOnWithErrorHandlerDeps = {
  * Decorator for `ensureWalletSuiteSyncOn` that handles dispatching of all
  * suite sync errors to the Redux store.
  */
+// eslint-disable-next-line local-rules/enforce-di-factory-contracts -- Decorator implementing the abstract EnsureWalletSuiteSyncOn contract.
 export const createEnsureWalletSuiteSyncOnWithErrorHandler =
     (deps: EnsureWalletSuiteSyncOnWithErrorHandlerDeps): EnsureWalletSuiteSyncOn =>
     async params => {

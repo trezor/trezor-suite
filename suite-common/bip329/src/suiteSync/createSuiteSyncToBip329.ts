@@ -28,6 +28,7 @@ export type ExportSuiteSyncToBip329Dep = {
     exportSuiteSyncToBip329: ExportBip329;
 };
 
+// eslint-disable-next-line local-rules/enforce-di-factory-contracts -- Concrete implementation of the abstract ExportBip329 contract.
 export const createSuiteSyncToBip329 =
     (deps: SuiteSyncToBip329Deps): ExportBip329 =>
     ({ account }) => {

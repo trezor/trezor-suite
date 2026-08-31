@@ -269,6 +269,7 @@ export const calculate = (
 
     return payloadData;
 };
+
 type ComposeEthereumTransactionFeeLevelsThunkState = DeviceRootState & TransactionsRootState;
 
 export const composeEthereumTransactionFeeLevelsThunk = createThunk<
@@ -540,6 +541,7 @@ interface EthereumGetCurrentNonceThunkParams {
     // See ResolveEthereumNonceParams: temporarily required so no caller can silently fall back to the stale nonce.
     fetchConfirmedNonce?: boolean;
 }
+
 export type EthereumGetCurrentNonceThunkState = TransactionsRootState;
 
 export const ethereumGetCurrentNonceThunk = createThunk<

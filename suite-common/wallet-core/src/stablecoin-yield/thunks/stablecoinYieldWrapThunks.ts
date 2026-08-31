@@ -52,6 +52,7 @@ type ComposeYieldUnwrapTransactionPayload = {
     token: Pick<YieldFlowDisplayToken, 'contractAddress' | 'decimals'>;
     unwrapAmount: string;
 };
+
 export type ComposeYieldWrapTransactionThunkState = ComposeYieldEvmTransactionThunkState;
 
 /**

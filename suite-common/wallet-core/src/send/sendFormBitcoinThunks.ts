@@ -61,6 +61,7 @@ const getSequence = ({ account, formValues }: GetSequenceParams) => {
 
     return undefined; // Must be undefined for final (non-RBF) transaction with no locktime
 };
+
 type ComposeBitcoinTransactionFeeLevelsThunkState = DeviceRootState & WalletSettingsRootState;
 
 export const composeBitcoinTransactionFeeLevelsThunk = createThunk<

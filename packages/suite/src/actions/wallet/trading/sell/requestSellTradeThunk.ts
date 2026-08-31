@@ -15,6 +15,7 @@ import { buildSellReturnUrl } from 'src/utils/wallet/trading/buildSellReturnUrl'
 import { submitRequestForm } from '../tradingCommonActions';
 
 type RequestSellTradeThunkParams = { quote: SellFiatTrade };
+
 export type RequestSellTradeThunkState = TradingFormAccountRootState;
 
 export const requestSellTradeThunk = createThunk<

@@ -1,19 +1,28 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import type { Dispatch, MiddlewareAPI, UnknownAction } from 'redux';
 
-import { lockDevice, selectIsDeviceOrUiLocked } from '@suite/locks';
-import { routerLocationChange, selectRouteName, selectSettingsBackRoute } from '@suite/router';
+import { type SelectedAccountRootState } from '@suite/account';
+import { type LocksRootState, lockDevice, selectIsDeviceOrUiLocked } from '@suite/locks';
+import { type ModalRootState } from '@suite/modal';
+import {
+    type RouterRootState,
+    routerLocationChange,
+    selectRouteName,
+    selectSettingsBackRoute,
+} from '@suite/router';
 import { onSuiteInit, onSuiteReady, updateOnlineStatus } from '@suite/suite-lifecycle';
-import { selectIsTorEnabled, torActions } from '@suite/tor';
-import { deviceActions } from '@suite-common/device';
+import { type TorRootState, selectIsTorEnabled, torActions } from '@suite/tor';
+import { type DeviceRootState, deviceActions } from '@suite-common/device';
 import {
     Feature,
+    type MessageSystemRootState,
     messageSystemActions,
     selectFeatureConfig,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { addToast } from '@suite-common/toast-notifications';
 import {
+    type AccountsRootState,
     accountsActions,
     blockchainActions,
     discoveryActions,
@@ -29,6 +38,7 @@ import * as coinjoinAccountActions from './coinjoinAccountActions';
 import * as coinjoinClientActions from './coinjoinClientActions';
 import {
     type CoinjoinRootState,
+    type SuiteOnlineRootState,
     selectCoinjoinAccountByKey,
     selectCoinjoinSessionBlockerByAccountKey,
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
@@ -37,8 +47,19 @@ import {
 import { CoinjoinService } from './coinjoinService';
 import { isCoinjoinSupportedSymbol } from './coinjoinUtils';
 
+type CoinjoinMiddlewareState = AccountsRootState &
+    CoinjoinRootState &
+    DeviceRootState &
+    LocksRootState &
+    MessageSystemRootState &
+    ModalRootState &
+    RouterRootState &
+    SelectedAccountRootState &
+    SuiteOnlineRootState &
+    TorRootState;
+
 export const coinjoinMiddleware =
-    (api: MiddlewareAPI<Dispatch, CoinjoinRootState>) =>
+    (api: MiddlewareAPI<Dispatch, CoinjoinMiddlewareState>) =>
     (next: Dispatch) =>
     (action: UnknownAction): UnknownAction => {
         // cancel discovery for each CoinjoinBackend
