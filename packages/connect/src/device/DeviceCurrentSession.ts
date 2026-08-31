@@ -23,6 +23,25 @@ const blacklist: Record<string, string[] | true> = {
     PublicKey: ['node', 'xpub'],
     DecryptedMessage: ['message', 'address'],
     Features: true,
+    // WARD entries are user secrets: the leaf `value`/`content` and the restore-capable
+    // `mac`/`auth_*` are as sensitive as a passphrase, and `app_id`/`identifier`/`entry_key` are the
+    // labels that key them -- keep all of it out of the device-call log, as PassphraseAck.passphrase
+    // and CipheredKeyValue.value above already are. Whole-message where the secret dominates (as
+    // `Features`); keyed identity only where non-secret routing fields (counter/remaining/missing)
+    // are worth keeping.
+    WardSetEntry: true,
+    WardQueueSetEntry: true,
+    WardQueueGetAck: true,
+    WardEntryAck: true,
+    WardLeafAck: true,
+    WardFlushQueueAck: true,
+    WardGetEntry: ['app_id', 'identifier'],
+    WardQueueGetEntry: ['app_id', 'identifier'],
+    WardQueueDeleteEntry: ['app_id', 'identifier'],
+    WardFlushQueue: ['app_id', 'identifier'],
+    WardEntryRequest: ['entry_key'],
+    WardMutationApplied: ['entry_key'],
+    WardFlushQueueApplied: ['entry_key'],
 };
 
 type AbortableOptions = {
@@ -267,6 +286,24 @@ export class DeviceCurrentSession implements TypedCallProvider {
                         : { passphrase: promptRes.payload.value.normalize('NFKD') };
 
                     [name, data] = ['PassphraseAck', payload];
+                    break;
+                }
+                case 'WardEntryRequest': {
+                    // WARD's PULL model: the device interrupts the call to ask the host for the
+                    // leaf at a keyed path, and resumes once it has the ack. Answered by the
+                    // `wardProvider` Core registered at init -- no UI, unlike its neighbours here.
+                    const promptRes = await Promise.race([
+                        this.device.prompt(DEVICE.WARD_ENTRY, { request: res.message }),
+                        abortPromise.then(nestedError),
+                    ]);
+
+                    if (!promptRes.success) {
+                        const cancelRes = await this.call('Cancel', {});
+
+                        return cancelRes.success ? promptRes : cancelRes;
+                    }
+
+                    [name, data] = ['WardEntryAck', promptRes.payload];
                     break;
                 }
                 case 'WordRequest': {

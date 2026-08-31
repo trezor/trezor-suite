@@ -17,6 +17,8 @@ import {
     initDebugLink,
     isDebugLinkInteraction,
 } from './transport';
+import { getWardCommand, missingWardParams } from './wardCommands';
+import { runWardCommand } from './wardRunners';
 
 /* eslint-disable no-console */
 
@@ -103,6 +105,101 @@ const runTestCase = async (device: Device) => {
     }
 
     const params = args.params ? JSON.parse(args.params) : {};
+
+    // WARD commands come from their own registry rather than this switch: the registry is what
+    // declares them and what `--help` describes, so a name that exists there must not need a
+    // second entry here to be runnable.
+    const wardCommand = getWardCommand(method);
+    if (wardCommand) {
+        // One place decides what a WARD command's inputs are: `--params` JSON overlaid with the
+        // dedicated flags. That is why the registry can name `appid` and `scope` in the same list
+        // without knowing which spelling the caller used -- and why a flag wins, being the more
+        // specific thing to type.
+        const wardParams = {
+            ...params,
+            ...(args.appid !== undefined ? { appid: args.appid } : {}),
+            ...(args.ident !== undefined ? { ident: args.ident } : {}),
+            ...(args.value !== undefined ? { value: args.value } : {}),
+            ...(args.entry !== undefined ? { entry: args.entry } : {}),
+            ...(args.target !== undefined ? { target: args.target } : {}),
+            ...(args.compact !== undefined ? { compact: args.compact } : {}),
+            ...(args.service !== undefined ? { service: args.service } : {}),
+        };
+        // `scope` was the JSON name for what the flags call `ident`. Aliasing it here means one
+        // vocabulary reaches the registry and the runners, so neither has to know both spellings.
+        if (wardParams.ident === undefined && wardParams.scope !== undefined) {
+            wardParams.ident = wardParams.scope;
+        }
+        if (wardParams.appid === undefined && wardParams.app_id !== undefined) {
+            wardParams.appid = wardParams.app_id;
+        }
+
+        // The registry says whether `--queue` means anything for a command, and now that is
+        // enforced rather than merely declared: `ward_flush` PUBLISHES, which is the opposite of
+        // operating on the device's own store, and a silently ignored flag there would look like a
+        // queue operation and behave like a write to the tree.
+        if (args.queue && !wardCommand.supportsQueue) {
+            console.error(`${wardCommand.name} has no --queue form`);
+            process.exit(1);
+        }
+
+        const missing = missingWardParams(wardCommand, wardParams);
+        if (missing.length) {
+            console.error(`${wardCommand.name} needs: ${missing.join(', ')}`);
+            process.exit(1);
+        }
+
+        const wardResult = await runWardCommand(
+            wardCommand.name,
+            { queue: !!args.queue, params: wardParams },
+            device,
+        );
+
+        console.warn(wardResult);
+
+        // `--then`: A SECOND WARD COMMAND IN THE SAME PROCESS, once the first has finished. What it
+        // buys is a write and the read of what that write produced against ONE connection, one
+        // channel and one daemon -- which is how a real app uses this and is awkward to arrange from
+        // a shell, since each invocation otherwise costs a channel.
+        //
+        // IT DOES NOT SHARE THE DEVICE'S WARD SYNC LATCH, and it was written believing it would.
+        // That latch is SESSION state (`APP_WARD_ONLINE`, in the THP session cache), and connect
+        // opens a NEW device session per method call -- `ThpCreateNewSession` goes out before each
+        // one -- so the second operation starts offline and syncs again. The firmware's own
+        // `test_a_write_is_published_and_adopted` is where the in-session property is pinned; it
+        // cannot be observed through this host. See `e2e/ward-queue.sh` step 26.
+        //
+        // The same inputs are reused deliberately: the pair worth running this way is a write and
+        // then a read of the entry just written, and re-typing the key would be one more thing that
+        // could differ between them.
+        const thenCommand = getWardCommand(args.then);
+        if (args.then !== undefined && !thenCommand) {
+            console.error(`--then names no WARD command: ${args.then}`);
+            process.exit(1);
+        }
+
+        if (thenCommand) {
+            const thenMissing = missingWardParams(thenCommand, wardParams);
+            if (thenMissing.length) {
+                console.error(`--then=${thenCommand.name} needs: ${thenMissing.join(', ')}`);
+                process.exit(1);
+            }
+
+            const thenResult = await runWardCommand(
+                thenCommand.name,
+                // NOT `args.queue`: the flag belongs to the first command. A chained read of a
+                // change that was just published is an ONLINE read, and inheriting --queue would
+                // have it answer from the device's own store instead -- the exact confusion the
+                // two request types exist to prevent.
+                { queue: false, params: wardParams },
+                device,
+            );
+
+            console.warn(thenResult);
+        }
+
+        process.exit(1);
+    }
 
     let result;
     switch (method) {

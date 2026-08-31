@@ -16791,6 +16791,7 @@ __metadata:
   resolution: "@trezor/connect-cli@workspace:packages/connect-cli"
   dependencies:
     "@trezor/connect": "workspace:*"
+    "@trezor/protobuf": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
     "@trezor/transport-common": "workspace:*"

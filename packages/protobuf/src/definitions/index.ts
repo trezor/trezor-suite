@@ -96,6 +96,7 @@ import {
     DebugLinkSetBatteryState,
     DebugLinkSetLogFilter,
 } from './messages-debug';
+import { DisplayAddress } from './messages-display_address';
 import {
     EosGetPublicKey,
     EosPublicKey,
@@ -314,6 +315,55 @@ import {
     TronWithdrawBalance,
     TronWithdrawUnfreeze,
 } from './messages-tron';
+import {
+    WardDeleteEntry,
+    WardEntryAck,
+    WardEraseCachedEntry,
+    WardFlushQueue,
+    WardGetEntry,
+    WardPinCachedEntry,
+    WardQueueDeleteAck,
+    WardQueueDeleteEntry,
+    WardQueueGetAck,
+    WardQueueGetEntry,
+    WardQueueSetAck,
+    WardQueueSetEntry,
+    WardResetApp,
+    WardResetAppAck,
+    WardSetEntry,
+} from './messages-ward';
+import {
+    WardEntryRequest,
+    WardFlushQueueAck,
+    WardIngestAttestation,
+    WardIngestAttestationAck,
+    WardLeafAck,
+    WardReconcile,
+    WardReconcileAck,
+    WardRecoverCounter,
+    WardRecoverCounterAck,
+    WardRollback,
+    WardRollbackAck,
+    WardSync,
+    WardSyncAck,
+    WardVerifyChain,
+    WardVerifyChainAck,
+} from './messages-ward-connect';
+import {
+    WardFlushQueueApplied,
+    WardMutationApplied,
+    WardPublish,
+    WardPublishAck,
+    WardPublishConflict,
+    WardResetService,
+    WardResetServiceAck,
+    WardServiceFetch,
+    WardServiceOpen,
+    WardServiceOpenAck,
+    WardSyncRequest,
+    WardSyncRequired,
+    WardSyncResponse,
+} from './messages-ward-service';
 
 export type * from './options';
 export * from './messages-common';
@@ -325,6 +375,7 @@ export * from './messages-crypto';
 export * from './messages-management';
 export * from './messages-debug';
 export * from './messages-definitions';
+export * from './messages-display_address';
 export * from './messages-eos';
 export * from './messages-ethereum';
 export * from './messages-ethereum-eip712';
@@ -338,6 +389,9 @@ export * from './messages-telemetry';
 export * from './messages-tezos';
 export * from './messages-thp';
 export * from './messages-tron';
+export * from './messages-ward';
+export * from './messages-ward-connect';
+export * from './messages-ward-service';
 export type * from './messages';
 
 export type MessageType = Static<typeof MessageType>;
@@ -482,6 +536,7 @@ export const MessageType = Type.Object(
         DebugLinkN4W1Write,
         DebugLinkN4W1Read,
         DebugLinkN4W1Response,
+        DisplayAddress,
         EosGetPublicKey,
         EosPublicKey,
         EosSignTx,
@@ -633,6 +688,49 @@ export const MessageType = Type.Object(
         TronWithdrawUnfreeze,
         TronWithdrawBalance,
         TronSignature,
+        WardGetEntry,
+        WardSetEntry,
+        WardDeleteEntry,
+        WardEntryAck,
+        WardQueueSetEntry,
+        WardQueueSetAck,
+        WardQueueDeleteEntry,
+        WardQueueDeleteAck,
+        WardQueueGetEntry,
+        WardQueueGetAck,
+        WardPinCachedEntry,
+        WardEraseCachedEntry,
+        WardFlushQueue,
+        WardResetApp,
+        WardResetAppAck,
+        WardEntryRequest,
+        WardLeafAck,
+        WardFlushQueueAck,
+        WardVerifyChain,
+        WardVerifyChainAck,
+        WardSync,
+        WardSyncAck,
+        WardIngestAttestation,
+        WardIngestAttestationAck,
+        WardReconcile,
+        WardReconcileAck,
+        WardRollback,
+        WardRollbackAck,
+        WardRecoverCounter,
+        WardRecoverCounterAck,
+        WardServiceOpen,
+        WardServiceOpenAck,
+        WardSyncRequest,
+        WardSyncResponse,
+        WardServiceFetch,
+        WardSyncRequired,
+        WardPublish,
+        WardPublishAck,
+        WardPublishConflict,
+        WardMutationApplied,
+        WardFlushQueueApplied,
+        WardResetService,
+        WardResetServiceAck,
     },
     { $id: 'MessageType' },
 );
@@ -725,6 +823,7 @@ export type WireInMessage =
     | 'UnlockBootloader'
     | 'SetBrightness'
     | 'GetSerialNumber'
+    | 'DisplayAddress'
     | 'EosGetPublicKey'
     | 'EosSignTx'
     | 'EosTxActionAck'
@@ -812,7 +911,30 @@ export type WireInMessage =
     | 'TronFreezeBalanceV2Contract'
     | 'TronUnfreezeBalanceV2Contract'
     | 'TronWithdrawUnfreeze'
-    | 'TronWithdrawBalance';
+    | 'TronWithdrawBalance'
+    | 'WardGetEntry'
+    | 'WardSetEntry'
+    | 'WardDeleteEntry'
+    | 'WardEntryAck'
+    | 'WardQueueSetEntry'
+    | 'WardQueueDeleteEntry'
+    | 'WardQueueGetEntry'
+    | 'WardPinCachedEntry'
+    | 'WardEraseCachedEntry'
+    | 'WardFlushQueue'
+    | 'WardResetApp'
+    | 'WardVerifyChain'
+    | 'WardSync'
+    | 'WardIngestAttestation'
+    | 'WardReconcile'
+    | 'WardRollback'
+    | 'WardRecoverCounter'
+    | 'WardServiceOpen'
+    | 'WardSyncResponse'
+    | 'WardSyncRequired'
+    | 'WardPublishAck'
+    | 'WardPublishConflict'
+    | 'WardResetService';
 
 export type WireOutMessage =
     | 'Success'
@@ -917,7 +1039,27 @@ export type WireOutMessage =
     | 'ThpEndResponse'
     | 'TronAddress'
     | 'TronContractRequest'
-    | 'TronSignature';
+    | 'TronSignature'
+    | 'WardQueueSetAck'
+    | 'WardQueueDeleteAck'
+    | 'WardQueueGetAck'
+    | 'WardResetAppAck'
+    | 'WardEntryRequest'
+    | 'WardLeafAck'
+    | 'WardFlushQueueAck'
+    | 'WardVerifyChainAck'
+    | 'WardSyncAck'
+    | 'WardIngestAttestationAck'
+    | 'WardReconcileAck'
+    | 'WardRollbackAck'
+    | 'WardRecoverCounterAck'
+    | 'WardServiceOpenAck'
+    | 'WardSyncRequest'
+    | 'WardServiceFetch'
+    | 'WardPublish'
+    | 'WardMutationApplied'
+    | 'WardFlushQueueApplied'
+    | 'WardResetServiceAck';
 
 export type MessageKey = keyof MessageType;
 

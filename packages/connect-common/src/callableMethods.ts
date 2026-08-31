@@ -115,6 +115,15 @@ const connectPublicCallableMethodGroups = {
     tron: ['tronGetAddress', 'tronSignTransaction', 'tronComposeTransaction'],
     evolu: ['evoluGetNode', 'evoluSignRegistrationRequest', 'evoluGetDelegatedIdentityKey'],
     nostr: ['nostrGetPublicKey', 'nostrSignEvent'],
+    ward: [
+        'wardGetEntry',
+        'wardSetEntry',
+        'wardQueueSetEntry',
+        'wardQueueGetEntry',
+        'wardQueueDeleteEntry',
+        'wardFlushQueue',
+        'wardResetApp',
+    ],
 } as const;
 
 export const connectPublicCallableMethods = Object.values(connectPublicCallableMethodGroups).flat();

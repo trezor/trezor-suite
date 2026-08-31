@@ -97,11 +97,30 @@ export const debugLinkState = async (uiEvent: UiRequestThpPairing['payload']) =>
 export const debugLinkDecision = async () => {
     if (!isDebugLinkInteraction('button')) return;
 
+    const delayArg = args['debuglink-delay'];
+    if (delayArg) {
+        const delayMs = parseInt(String(delayArg), 10);
+
+        if (!Number.isNaN(delayMs) && delayMs > 0) {
+            console.log(`DebugLink: confirming in ${delayMs} ms`);
+            await new Promise(resolve => setTimeout(resolve, delayMs));
+        }
+    }
+
     const enumerate = await debugTransport.enumerate();
     if (!enumerate.success) {
         throw new Error(enumerate.error.code);
     }
+
     const { payload } = enumerate;
+    if (!payload.length) {
+        // An emulator built without debuglink binds no debug port, so this list is empty and every
+        // call that shows a screen used to die on `descriptor.session` being undefined -- a
+        // TypeError pointing at this file rather than at the missing device. Say what is wrong.
+        throw new Error(
+            'Debug device not found: nothing is listening on the debuglink port (udp 21325). Build the emulator with --debug-link true, or drop --debuglink and confirm on the device.',
+        );
+    }
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const descriptor: (typeof payload)[number] = payload[0];
     const input = { ...descriptor, previous: descriptor.session };

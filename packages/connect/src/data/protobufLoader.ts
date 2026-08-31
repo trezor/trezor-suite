@@ -21,6 +21,9 @@ import * as telemetryProto from '@trezor/protobuf/src/definitions/messages-telem
 import * as tezosProto from '@trezor/protobuf/src/definitions/messages-tezos_pb';
 import * as thpProto from '@trezor/protobuf/src/definitions/messages-thp_pb';
 import * as tronProto from '@trezor/protobuf/src/definitions/messages-tron_pb';
+import * as wardConnectProto from '@trezor/protobuf/src/definitions/messages-ward-connect_pb';
+import * as wardServiceProto from '@trezor/protobuf/src/definitions/messages-ward-service_pb';
+import * as wardProto from '@trezor/protobuf/src/definitions/messages-ward_pb';
 import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
 import * as optionsProto from '@trezor/protobuf/src/definitions/options_pb';
 
@@ -48,6 +51,17 @@ export const loadProtobufModules = () => {
         tezosProto,
         thpProto,
         tronProto,
+        wardProto,
+        // WARD IS THREE FILES, and all three are needed even though a given firmware speaks only
+        // two of them. The shared types are in `messages-ward`, while the messages that exist only
+        // when WARD is served over the ordinary connection (`WardLeafAck`, `WardEntryRequest`) and
+        // only when it is served over its own channel (`WardMutationApplied`,
+        // `WardFlushQueueApplied`) live in the other two. Which transport a device uses is a build
+        // option it does not report, so this host has to be able to decode either answer -- and a
+        // file left out here type-checks perfectly and then fails to decode at runtime, because
+        // the types come from the definitions and the DESCRIPTORS come from this list.
+        wardConnectProto,
+        wardServiceProto,
         messagesProto,
         optionsProto,
     ];

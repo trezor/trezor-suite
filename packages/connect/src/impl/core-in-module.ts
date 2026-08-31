@@ -225,6 +225,9 @@ export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings>
 
     public dispose() {
         this.eventEmitter.removeAllListeners();
+        // Before the settings are reset, or the reference to a provider holding a resource
+        // (e.g. an open database handle) is lost with it.
+        void this.settings.wardProvider?.dispose?.();
         this.settings = parseConnectSettings();
 
         // Only dispose coreManager if initialization has completed.

@@ -933,7 +933,8 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
             | typeof DEVICE.PIN
             | typeof DEVICE.PASSPHRASE
             | typeof DEVICE.WORD
-            | typeof DEVICE.THP_PAIRING,
+            | typeof DEVICE.THP_PAIRING
+            | typeof DEVICE.WARD_ENTRY,
     >(type: T, args: Omit<DeviceEvents[T], 'callback'>) {
         // TODO I believe this emit/on can be changed into simple async functions
         return new Promise<Parameters<DeviceEvents[T]['callback']>[0]>(callback => {

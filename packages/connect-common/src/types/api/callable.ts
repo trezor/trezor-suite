@@ -13,6 +13,7 @@ import type { TrezorConnectSolana } from './solana';
 import type { TrezorConnectStellar } from './stellar';
 import type { TrezorConnectTezos } from './tezos';
 import type { TrezorConnectTron } from './tron';
+import type { TrezorConnectWard } from './ward';
 
 // The explicit intersection prevents TypeScript from expanding the entire callable API in the
 // generated declaration.
@@ -30,4 +31,5 @@ export type TrezorConnectCallable = TrezorConnectManagement &
     TrezorConnectTezos &
     TrezorConnectTron &
     TrezorConnectEvolu &
-    TrezorConnectNostr;
+    TrezorConnectNostr &
+    TrezorConnectWard;

@@ -40,6 +40,9 @@ export const DEVICE = {
     PASSPHRASE_ON_DEVICE: 'passphrase_on_device',
     WORD: 'word',
     THP_PAIRING: 'thp_pairing', // ask UI for pairing tag
+    // The device interrupted a call to pull a WARD entry from the host. Unlike its neighbours
+    // this one is answered from host state (the registered `wardProvider`), never from the UI.
+    WARD_ENTRY: 'ward_entry',
     THP_PAIRING_STATUS_CHANGED: 'device-thp_pairing_status_changed',
 } as const;
 

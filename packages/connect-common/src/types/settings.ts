@@ -11,6 +11,7 @@ import type { CoinSymbol } from './coinInfo';
 import type { DefinitionsChannel } from './definitions';
 import type { FirmwareChannel } from './firmware';
 import type { PermissionRequest } from './method';
+import type { WardProvider } from './ward';
 
 export const Manifest = Type.Object({
     appName: Type.String(),
@@ -83,6 +84,10 @@ export interface ConnectSettings {
     // it. Orthogonal to `enabledNetworks` (a Core capability); see the note on `EnabledNetwork`
     // above. `coin` is the `coinInfo.shortcut` (matched case-insensitively by the popup).
     requestedPermissions?: PermissionRequest[];
+    // Answers the device's mid-call WARD pulls (`WardEntryRequest` -> `WardEntryAck`), supplied by
+    // the host application. Core registers it at init; when omitted, connect registers a stub that
+    // fails the pull loudly rather than leaving the device call hanging.
+    wardProvider?: WardProvider;
 }
 
 export type ConnectImplSettings = {
