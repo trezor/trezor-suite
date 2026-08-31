@@ -32,10 +32,12 @@ export const arrayToDictionary: ArrayToDictionary = <T, Fn extends GetKey<T>>(
         ? array.reduce<Record<DictionaryKey, T[]>>((prev, cur) => {
               const key = getKey(cur);
               if (validateKey(key)) {
-                  return {
-                      ...prev,
-                      [key]: [...(prev[key] ?? []), cur],
-                  };
+                  const group = prev[key];
+                  if (group) {
+                      group.push(cur);
+                  } else {
+                      prev[key] = [cur];
+                  }
               }
 
               return prev;
@@ -43,10 +45,7 @@ export const arrayToDictionary: ArrayToDictionary = <T, Fn extends GetKey<T>>(
         : array.reduce<Record<DictionaryKey, T>>((prev, cur) => {
               const key = getKey(cur);
               if (validateKey(key)) {
-                  return {
-                      ...prev,
-                      [key]: cur,
-                  };
+                  prev[key] = cur;
               }
 
               return prev;
