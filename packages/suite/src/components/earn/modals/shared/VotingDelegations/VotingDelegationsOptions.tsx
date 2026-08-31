@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
@@ -40,7 +40,11 @@ export const VotingDelegationsOptions = ({
     const selectedVotingDelegation = useSelector(state =>
         selectVotingDelegationOption(state, accountKey),
     );
-    const [hasError, setHasError] = useState<boolean>(false);
+
+    const hasError =
+        selectedVotingDelegation.type === 'another_drep' &&
+        selectedVotingDelegation.drepId !== '' &&
+        !validateCardanoDrep(selectedVotingDelegation.drepId);
 
     // reset voting delegation option on modal open
     useEffect(() => {
@@ -57,8 +61,6 @@ export const VotingDelegationsOptions = ({
         dispatch(stakeActions.setVotingDelegationOption({ accountKey, option }));
 
     const handleOptionSelect = (type: VotingDelegationOption['type']) => {
-        setHasError(false);
-
         switch (type) {
             case 'everstake':
                 setOption({ type: 'everstake' });
@@ -71,9 +73,6 @@ export const VotingDelegationsOptions = ({
     };
 
     const handleDrepIdChange = (value: string) => {
-        const isDrepValid = validateCardanoDrep(value);
-        setHasError(!isDrepValid);
-
         setOption({ type: 'another_drep', drepId: value });
     };
 

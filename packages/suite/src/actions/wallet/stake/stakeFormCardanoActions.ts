@@ -23,8 +23,8 @@ import {
     MIN_CARDANO_FOR_WITHDRAWALS,
 } from '@suite-common/wallet-constants';
 import {
-    type StakeRootState,
     type AccountVotingDelegation,
+    type StakeRootState,
     selectCardanoPoolsInfo,
 } from '@suite-common/wallet-core';
 import {
