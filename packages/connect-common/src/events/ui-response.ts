@@ -93,7 +93,6 @@ export type UiResponseEvent =
     | UiResponseAccount
     | UiResponseFee
     | UiResponseFirmwares
-    | UiResponseDiscoveryAccounts
-    | UiResponseFirmwares;
+    | UiResponseDiscoveryAccounts;
 
 export type UiResponseMessage = UiResponseEvent & { event: typeof UI_REQUEST; requestId?: string };
