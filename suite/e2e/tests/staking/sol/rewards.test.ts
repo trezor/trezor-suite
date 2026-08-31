@@ -35,7 +35,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             solStakingAccountSecond.payload,
             solStakingAccountDeactivating.payload,
         ]);
-        solanaStakingMock.setEpoch(solStakingAccountDeactivating.deactivationEpoch);
+        await solanaStakingMock.setEpoch(solStakingAccountDeactivating.deactivationEpoch);
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
             enableNetworks: [

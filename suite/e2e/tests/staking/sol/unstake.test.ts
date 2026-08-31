@@ -24,7 +24,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
     });
 
     test.beforeEach(async ({ onboardingPage, settingsPage, solanaStakingMock }) => {
-        solanaStakingMock.setupStakedAccount();
+        await solanaStakingMock.setupStakedAccount();
         solanaStakingMock.setSimulatedTransaction(solSimulateUnstakeTransaction);
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
@@ -119,7 +119,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     account: 'Solana #1',
                     amount: stakedAmountFormatted,
                 });
-                solanaStakingMock.setupUnstakingAccount();
+                await solanaStakingMock.setupUnstakingAccount();
                 await stakingSection.expectStakingAmounts({
                     expected: {
                         pending: 'hidden',
@@ -136,7 +136,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             solanaStakingMock.setSimulatedTransaction(solSimulateClaimTransaction);
 
             await test.step('Wait few epochs for claim to be available', async () => {
-                solanaStakingMock.advanceEpoch();
+                await solanaStakingMock.advanceEpoch();
                 await stakingSection.expectStakingAmounts({
                     expected: {
                         pending: 'hidden',
@@ -210,7 +210,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Verify dashboard is back to initial state', async () => {
-                solanaStakingMock.advanceEpoch();
+                await solanaStakingMock.advanceEpoch();
                 await expect(async () => {
                     await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
                     await expect(stakingSection.stakingEmptyCard).toBeVisible();
