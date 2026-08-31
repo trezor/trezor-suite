@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { type Ref, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -20,8 +20,34 @@ import { PortfolioContent } from './components/PortfolioContent';
 import { type PortfolioGraphRef } from './components/PortfolioGraph';
 import { UninitializedConnectedDeviceState } from './components/UninitializedConnectedDeviceState';
 import { selectHomeScreenState } from './homescreenSelectors';
+import { type HomeScreenState } from './homescreenTypes';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { useShowAutoEjectAlert } from './useShowAutoEjectAlert';
+
+const HomeScreenContent = ({
+    homeScreenState,
+    portfolioGraphRef,
+}: {
+    homeScreenState: HomeScreenState;
+    portfolioGraphRef: Ref<PortfolioGraphRef | null>;
+}) => {
+    switch (homeScreenState) {
+        case 'emptyPortfolioCrossroads':
+            return <EmptyPortfolioCrossroads />;
+        case 'emptyPortfolioTracker':
+            return <EmptyPortfolioTrackerState />;
+        case 'uninitializedDevice':
+            return <UninitializedConnectedDeviceState />;
+        case 'noNetworkConfigured':
+            return <NoNetworksConfigured />;
+        case 'discoveryNotFinished':
+            return <DiscoveryNotFinished />;
+        case 'portfolioContent':
+            return <PortfolioContent ref={portfolioGraphRef} />;
+        default:
+            return exhaustive(homeScreenState);
+    }
+};
 
 export const HomeScreen = () => {
     const { showSystemUnpairingAlert } = useBluetoothAlerts();
@@ -48,25 +74,6 @@ export const HomeScreen = () => {
 
     useShowAutoEjectAlert();
 
-    const renderContent = () => {
-        switch (homeScreenState) {
-            case 'emptyPortfolioCrossroads':
-                return <EmptyPortfolioCrossroads />;
-            case 'emptyPortfolioTracker':
-                return <EmptyPortfolioTrackerState />;
-            case 'uninitializedDevice':
-                return <UninitializedConnectedDeviceState />;
-            case 'noNetworkConfigured':
-                return <NoNetworksConfigured />;
-            case 'discoveryNotFinished':
-                return <DiscoveryNotFinished />;
-            case 'portfolioContent':
-                return <PortfolioContent ref={portfolioGraphRef} />;
-            default:
-                return exhaustive(homeScreenState);
-        }
-    };
-
     // Portfolio graph needs to be rendered full width edge to edge.
     const isFullWidthScreenState = homeScreenState === 'portfolioContent';
 
@@ -76,7 +83,10 @@ export const HomeScreen = () => {
             refreshControl={refreshControl}
             noHorizontalPadding={isFullWidthScreenState}
         >
-            {renderContent()}
+            <HomeScreenContent
+                homeScreenState={homeScreenState}
+                portfolioGraphRef={portfolioGraphRef}
+            />
         </Screen>
     );
 };
