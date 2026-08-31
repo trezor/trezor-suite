@@ -248,6 +248,7 @@ const constructOldFlow = ({
     const isClearSignedTradingSwap = clearSignedSwapCoverage !== undefined;
     const outputs: ReviewOutput[] = [];
 
+    const isBitcoin = account.networkType === 'bitcoin';
     const isCardano = isCardanoTx(account, precomposedTx);
     const isStellar = account.networkType === 'stellar';
     const { networkType } = account;
@@ -382,6 +383,7 @@ const constructOldFlow = ({
     if (networkType === 'tron' && precomposedForm.destinationTag) {
         outputs.push({ type: 'note', value: precomposedForm.destinationTag });
     } else if (
+        !isBitcoin &&
         precomposedForm.transactionData &&
         (!precomposedTx.token || isYieldOperation) &&
         !isClearSignedTradingSwap
@@ -434,6 +436,7 @@ const constructNewFlow = ({
     const isClearSignedTradingSwap = clearSignedSwapCoverage !== undefined;
     const outputs: ReviewOutput[] = [];
 
+    const isBitcoin = account.networkType === 'bitcoin';
     const isCardano = isCardanoTx(account, precomposedTx);
     const isSolana = account.networkType === 'solana';
     const isStellar = account.networkType === 'stellar';
@@ -579,6 +582,7 @@ const constructNewFlow = ({
     if (isTron && precomposedForm.destinationTag) {
         outputs.push({ type: 'note', value: precomposedForm.destinationTag });
     } else if (
+        !isBitcoin &&
         ((precomposedForm.transactionData && !precomposedTx.token && !isEvmApproval) ||
             (precomposedForm.transactionData && isEvmApproval && !isApprovalFlowSupported) ||
             (precomposedForm.transactionData && isYieldOp && !isUpdatedEthereumSendFlow) ||
@@ -704,6 +708,7 @@ const constructNewFlow = ({
                     outputs.push({ type: 'address', value: o.address });
                 } else if (
                     !isTron &&
+                    !isBitcoin &&
                     ((precomposedForm.transactionData && !isEvmApproval) ||
                         (isEvmApproval && !isApprovalFlowSupported))
                 ) {

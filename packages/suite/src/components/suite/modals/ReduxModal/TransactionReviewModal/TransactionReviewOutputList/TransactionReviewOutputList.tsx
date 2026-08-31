@@ -80,7 +80,8 @@ export const TransactionReviewOutputList = ({
     const totalOutputRef = useRef<HTMLDivElement | null>(null);
     const accounts = useSelector(state => state.wallet.accounts);
     const { networkType, symbol } = account;
-    const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
+    const isMultirecipient =
+        outputs.filter(({ type }) => ['address', 'opreturn'].includes(type)).length > 1;
     const isFirstOutputAddress = outputs[0]?.type === 'address';
 
     const lastButtonRequestCode = useSelector((state: DeviceRootState) =>
@@ -168,7 +169,7 @@ export const TransactionReviewOutputList = ({
                 const isHeadingShown =
                     isMultirecipient && (output.type === 'address' || index === summaryIndex);
                 const recipientIndex = outputs
-                    .filter(({ type }) => type === 'address')
+                    .filter(({ type }) => ['address', 'opreturn'].includes(type))
                     .indexOf(output);
 
                 return (

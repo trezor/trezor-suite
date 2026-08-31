@@ -344,7 +344,7 @@ export const getBitcoinComposeOutputs = (
     isSatoshis?: boolean,
 ) => {
     const result: ComposeOutput[] = [];
-    if (!values || !Array.isArray(values.outputs)) return result;
+    if (!values || !Array.isArray(values.outputs) || values.transactionData) return result;
 
     const { setMaxOutputId } = values;
 
@@ -601,7 +601,9 @@ export const getSendFormDraftKey = (
     tokenAddress ? (`${accountKey}-${tokenAddress}` as SendFormDraftKey) : accountKey;
 
 type AmountValidationResult =
-    { type: 'ok' } | { type: 'not_enough' } | { type: 'reserve'; reserve: string };
+    | { type: 'ok' }
+    | { type: 'not_enough' }
+    | { type: 'reserve'; reserve: string };
 
 interface GetAmountValidationResultParams {
     amount: string | undefined;

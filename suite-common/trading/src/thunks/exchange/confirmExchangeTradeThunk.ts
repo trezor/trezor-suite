@@ -9,6 +9,7 @@ import { type TradingRootState, tradingActions } from '../../reducers/tradingCom
 import {
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeAccountKey,
+    selectTradingExchangeQuotesRequest,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
@@ -60,6 +61,7 @@ export const confirmExchangeTradeThunk = createThunk<
         triggerAnalyticsTradeConfirmation();
 
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
+        const selectedQuoteRequestData = selectTradingExchangeQuotesRequest(getState());
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
         const { address: refundAddress } = getUnusedAddressFromAccount(account);
@@ -75,7 +77,9 @@ export const confirmExchangeTradeThunk = createThunk<
         if (trade.isDex) {
             trade = { ...trade, receiveAddress };
 
-            if (!trade.fromAddress) {
+            if (selectedQuoteRequestData?.fromAddress) {
+                trade = { ...trade, fromAddress: selectedQuoteRequestData.fromAddress };
+            } else if (!trade.fromAddress) {
                 trade = { ...trade, fromAddress: refundAddress };
             }
         }
