@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore } from '@suite-common/test-utils';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import {
     changellyExchangeQuote,
@@ -85,6 +86,24 @@ describe('tradingExchangeReducer', () => {
             const state = actions.reduce(tradingExchangeReducer, undefined);
 
             expect(state?.selectedQuote?.swapSlippage).toBe('3');
+        });
+    });
+
+    describe('setTradingAccountKey', () => {
+        it('clears selected quote and quotes when the account key is cleared', () => {
+            const actions = [
+                tradingExchangeActions.saveSelectedQuote(changellyExchangeQuote),
+                tradingExchangeActions.saveQuotes([changellyExchangeQuote]),
+                tradingExchangeActions.setTradingAccountKey('account-1' as AccountKey),
+                tradingExchangeActions.setTradingAccountKey(undefined),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.tradingAccountKey).toBeUndefined();
+            expect(state?.selectedQuote).toBeUndefined();
+            expect(state?.quotes).toEqual([]);
+            expect(state?.quotesRequest).toBeUndefined();
         });
     });
 });

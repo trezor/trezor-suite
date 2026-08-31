@@ -1127,13 +1127,13 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
 );
 
 export const selectTradingFormCryptoId = createMemoizedFormAccountSelector(
-    [selectTradingFormAccount, selectPreferredTradingAccount, selectTradingPrefilledFromAccount],
-    (account, preferredAccount, prefilled): CryptoId | undefined => {
+    [selectTradingFormAccount, selectTradingPrefilledFromAccount],
+    (account, prefilled): CryptoId | undefined => {
         if (!account) {
             return undefined;
         }
 
-        if (prefilled.cryptoId && account.key === preferredAccount?.key) {
+        if (prefilled.key && prefilled.cryptoId && account.key === prefilled.key) {
             return prefilled.cryptoId;
         }
 
