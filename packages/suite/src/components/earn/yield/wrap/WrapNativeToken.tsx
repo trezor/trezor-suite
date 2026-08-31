@@ -99,6 +99,8 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
     const isReserveRecommended = shouldRecommendWrapReserve(amountInput, account.formattedBalance);
     const isAmountValid = amount.gt(0) && !isAmountTooHigh && methods.formState.isValid;
 
+    const shouldCheckWrapAmount = !!broadcast;
+
     useEffect(() => {
         if (pendingTxStatus !== 'failed') {
             return;
@@ -161,6 +163,10 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
     };
 
     const renderWrapWarning = () => {
+        if (!shouldCheckWrapAmount) {
+            return null;
+        }
+
         if (isAmountTooHigh) {
             return <YieldActionStepWarning isInsufficientFunds />;
         }

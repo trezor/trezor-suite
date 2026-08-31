@@ -95,6 +95,8 @@ export const UnwrapNativeToken = ({
     const isAmountTooHigh = amount.gt(tokenBalance);
     const isAmountValid = amount.gt(0) && !isAmountTooHigh && methods.formState.isValid;
 
+    const shouldCheckUnwrapAmount = !!broadcast;
+
     const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
 
     const baseCurrency = useSelector(selectBaseCurrency);
@@ -234,7 +236,7 @@ export const UnwrapNativeToken = ({
                         isSubmitting={unwrapMutation.isPending}
                         isSubmitDisabled={!isAmountValid || isDisabled}
                         warning={
-                            isAmountTooHigh ? (
+                            shouldCheckUnwrapAmount && isAmountTooHigh ? (
                                 <YieldActionStepWarning isInsufficientFunds />
                             ) : undefined
                         }

@@ -86,6 +86,9 @@ export const YieldWithdrawForm = () => {
         isWrappedNativeVault: flow.isWrappedNativeVault,
     });
 
+    const shouldCheckWithdrawAmount = !isAmountInvalidDecimals && !!withdrawPendingTransaction;
+    const shouldCheckUnwrapAmount = !isAmountInvalidDecimals && !!unwrapPendingTransaction;
+
     const handleOnWithdraw = () => {
         const apyBreakdown = getApyBreakdown(vault.rewardRate?.components);
         analytics.report({
@@ -153,7 +156,7 @@ export const YieldWithdrawForm = () => {
     // Fire once per form mount when the user first hits the insufficient-funds banner
     // (no actionable button on this banner, so impression is the only signal available).
     const hasFiredInsufficientFundsRef = useRef(false);
-    const showsInsufficientFunds = !isAmountInvalidDecimals && isAmountTooHigh;
+    const showsInsufficientFunds = shouldCheckWithdrawAmount && isAmountTooHigh;
 
     useEffect(() => {
         if (!showsInsufficientFunds || hasFiredInsufficientFundsRef.current) {
@@ -186,8 +189,8 @@ export const YieldWithdrawForm = () => {
     };
 
     const getWithdrawWarning = () => {
-        if (!isAmountInvalidDecimals && isAmountTooHigh) {
-            return <YieldActionStepWarning isInsufficientFunds={isAmountTooHigh} />;
+        if (shouldCheckWithdrawAmount && isAmountTooHigh) {
+            return <YieldActionStepWarning isInsufficientFunds />;
         }
 
         if (isMaxWithdrawInfoVisible) {
@@ -312,7 +315,7 @@ export const YieldWithdrawForm = () => {
                                             isAmountInvalidDecimals
                                         }
                                         warning={
-                                            !isAmountInvalidDecimals && isAmountTooHigh ? (
+                                            shouldCheckUnwrapAmount && isAmountTooHigh ? (
                                                 <YieldActionStepWarning isInsufficientFunds />
                                             ) : undefined
                                         }
