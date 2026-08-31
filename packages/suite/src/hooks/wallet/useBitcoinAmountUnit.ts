@@ -1,6 +1,5 @@
 import { useDispatch } from 'react-redux';
 
-import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import {
     selectBitcoinAmountUnit,
@@ -13,7 +12,6 @@ import { useSelector } from 'src/hooks/suite';
 
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const bitcoinAmountUnit = useSelector(selectBitcoinAmountUnit);
-    const unavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
     const dispatch = useDispatch();
 
     const toggleBitcoinAmountUnitsAction = () => {
@@ -27,16 +25,13 @@ export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const areSatsDisplayed = bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
     const isBtcSatsAmountUnit = areSatsDisplayed && symbol === 'btc';
 
-    const areUnitsSupportedByDevice = !unavailableCapabilities?.amountUnit;
-
     const areUnitsSupportedByNetwork = getNetworkOptional(symbol)?.features.includes('amount-unit');
 
     return {
         bitcoinAmountUnit,
         areSatsDisplayed,
         isBtcSatsAmountUnit,
-        shouldSendInSats:
-            areSatsDisplayed && areUnitsSupportedByNetwork && areUnitsSupportedByDevice,
+        shouldSendInSats: areSatsDisplayed && areUnitsSupportedByNetwork,
         toggleBitcoinAmountUnits: toggleBitcoinAmountUnitsAction,
         setBitcoinAmountUnits: setBitcoinAmountUnitsAction,
         areUnitsSupportedByNetwork,
