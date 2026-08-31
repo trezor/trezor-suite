@@ -1,14 +1,9 @@
-import { Box, HStack, Text } from '@suite-native/atoms';
+import { Box, HStack, Text, TextButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Link } from '@suite-native/link';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { useOpenLink } from '@suite-native/link';
 
 import { ProviderLogo } from '../ProviderLogo';
 import { TradeStatusSubItem } from './TradeStatusSubItem';
-
-const providerStatusLinkTextStyle = prepareNativeStyle(() => ({
-    flexShrink: 1,
-}));
 
 type TradeStatusProviderLinkProps = {
     logo?: string;
@@ -21,7 +16,7 @@ export const TradeStatusProviderLink = ({
     providerName,
     statusUrl,
 }: TradeStatusProviderLinkProps) => {
-    const { applyStyle } = useNativeStyles();
+    const openLink = useOpenLink();
     const isStatusUrlAvailable = !!statusUrl;
     const providerLogo = logo ? <ProviderLogo logo={logo} size="body-sm" /> : null;
 
@@ -47,22 +42,18 @@ export const TradeStatusProviderLink = ({
         <HStack spacing="sp8" alignItems="center">
             {!!logo && <ProviderLogo logo={logo} size="body-sm" />}
             <Box flexShrink={1}>
-                <Link
-                    href={statusUrl}
-                    externalIconName="arrowSquareOut"
+                <TextButton
+                    size="small"
+                    intent="brand"
                     isUnderlined
-                    textVariant="body-sm"
-                    showExternalIcon
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={applyStyle(providerStatusLinkTextStyle)}
-                    label={
-                        <Translation
-                            id="moduleTrading.tradeHistory.detail.statusStepper.provider.checkStatus"
-                            values={{ providerName }}
-                        />
-                    }
-                />
+                    iconRight="arrowSquareOut"
+                    onPress={() => openLink(statusUrl)}
+                >
+                    <Translation
+                        id="moduleTrading.tradeHistory.detail.statusStepper.provider.checkStatus"
+                        values={{ providerName }}
+                    />
+                </TextButton>
             </Box>
         </HStack>
     );
