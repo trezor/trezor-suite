@@ -1,4 +1,3 @@
-import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
@@ -30,17 +29,13 @@ export const sortLevels = (levelA: FeeLevel, levelB: FeeLevel) =>
 type GetEip1559AvailabilityProps = {
     symbol: NetworkSymbol;
     feeLevel: FeeLevel;
-    device?: TrezorDevice;
 };
-const getEip1559Availability = ({ symbol, feeLevel, device }: GetEip1559AvailabilityProps) =>
-    getNetwork(symbol).features.includes('eip1559') &&
-    isEip1559(feeLevel) &&
-    !device?.unavailableCapabilities?.['eip1559'];
+const getEip1559Availability = ({ symbol, feeLevel }: GetEip1559AvailabilityProps) =>
+    getNetwork(symbol).features.includes('eip1559') && isEip1559(feeLevel);
 
-type GetNewFeeInfoProps = { network: Network; device?: TrezorDevice };
+type GetNewFeeInfoProps = { network: Network };
 export const getNewFeeInfo = async ({
     network,
-    device,
 }: GetNewFeeInfoProps): Promise<BlockchainEstimatedFeeLevel | undefined> => {
     const { symbol } = network;
 
@@ -64,7 +59,6 @@ export const getNewFeeInfo = async ({
         const isEip1559ActivatedAndAvailable = getEip1559Availability({
             symbol,
             feeLevel: feeLevelBase,
-            device,
         });
 
         if (isEip1559ActivatedAndAvailable) return result.payload;
