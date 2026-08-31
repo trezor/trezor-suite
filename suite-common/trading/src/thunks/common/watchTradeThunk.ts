@@ -1,11 +1,18 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
+import { tradingBuyActions } from '../../reducers/buyReducer';
+import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
-import { selectTradingSellSelectedQuote } from '../../selectors/tradingSelectors';
+import {
+    selectTradingBuySelectedQuote,
+    selectTradingExchangeSelectedQuote,
+    selectTradingSellSelectedQuote,
+} from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
 import {
     type TradingTradeMapProps,
@@ -30,18 +37,41 @@ type WatchTradeDataResultProps<T extends TradingType> = {
     response: TradingWatchTradeResponsePropsMap[T];
 };
 
+const getDefinedWatchUpdates = <T extends TradingType>(
+    response: TradingWatchTradeResponsePropsMap[T],
+): Partial<TradingTradeMapProps[T]> =>
+    Object.fromEntries(
+        Object.entries(response).filter(([, value]) => value !== undefined),
+    ) as Partial<TradingTradeMapProps[T]>;
+
 const watchTradeData = async <T extends TradingType>({
     trade,
     refreshCount,
 }: WatchTradeDataProps): Promise<WatchTradeDataResultProps<T> | undefined> => {
     const response = await tradeApi.watchTrade<T>(trade.data, trade.tradeType, refreshCount);
 
-    if (!response || !response.status || response.status === trade.data.status) return;
+    if (!response) {
+        return;
+    }
+
+    const updates = getDefinedWatchUpdates(response);
+    const updateKeys = typedObjectKeys(updates);
+
+    if (updateKeys.length === 0) {
+        return;
+    }
+
+    const hasChanges = updateKeys.some(
+        key => trade.data[key as keyof typeof trade.data] !== updates[key],
+    );
+
+    if (!hasChanges) {
+        return;
+    }
 
     const tradeData = {
         ...trade.data,
-        status: response.status,
-        error: response.error,
+        ...updates,
     } as TradingTradeMapProps[T];
 
     return {
@@ -66,7 +96,15 @@ export const watchTradeThunk = createThunk<void, WatchTradeThunk, { state: Watch
                     refreshCount,
                 });
 
-                if (!data) return;
+                if (!data) {
+                    return;
+                }
+
+                const selectedQuote = selectTradingBuySelectedQuote(getState());
+
+                if (selectedQuote?.paymentId === data.tradeData.paymentId) {
+                    dispatch(tradingBuyActions.saveSelectedQuote(data.tradeData));
+                }
 
                 dispatch(
                     tradingActions.saveTrade({
@@ -81,27 +119,20 @@ export const watchTradeThunk = createThunk<void, WatchTradeThunk, { state: Watch
 
                 return;
             }
+
             case 'sell': {
                 const data = await watchTradeData<typeof tradeType>({
                     trade,
                     refreshCount,
                 });
 
-                if (!data) return;
-
-                if (data.response.destinationAddress) {
-                    data.tradeData.destinationAddress = data.response.destinationAddress;
-                    data.tradeData.destinationPaymentExtraId =
-                        data.response.destinationPaymentExtraId;
-                }
-
-                if (data.response.cryptoStringAmount) {
-                    data.tradeData.cryptoStringAmount = data.response.cryptoStringAmount;
+                if (!data) {
+                    return;
                 }
 
                 const selectedQuote = selectTradingSellSelectedQuote(getState());
 
-                if (data.tradeData && selectedQuote?.orderId === data.tradeData.orderId) {
+                if (selectedQuote?.orderId === data.tradeData.orderId) {
                     dispatch(tradingSellActions.saveSelectedQuote(data.tradeData));
                 }
 
@@ -117,17 +148,21 @@ export const watchTradeThunk = createThunk<void, WatchTradeThunk, { state: Watch
 
                 return;
             }
+
             case 'exchange': {
                 const data = await watchTradeData<typeof tradeType>({
                     trade,
                     refreshCount,
                 });
 
-                if (!data) return;
+                if (!data) {
+                    return;
+                }
 
-                if (data.response.sendAddress) {
-                    data.tradeData.sendAddress = data.response.sendAddress;
-                    data.tradeData.partnerPaymentExtraId = data.response.partnerPaymentExtraId;
+                const selectedQuote = selectTradingExchangeSelectedQuote(getState());
+
+                if (selectedQuote?.orderId === data.tradeData.orderId) {
+                    dispatch(tradingExchangeActions.saveSelectedQuote(data.tradeData));
                 }
 
                 dispatch(
@@ -143,6 +178,7 @@ export const watchTradeThunk = createThunk<void, WatchTradeThunk, { state: Watch
 
                 return;
             }
+
             /* istanbul ignore next */
             default:
                 return exhaustive(tradeType);
