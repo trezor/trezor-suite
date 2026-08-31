@@ -15,9 +15,9 @@ const asset: MyAsset = {
 };
 
 describe('MyAssetListItem', () => {
-    it('renders an accessible asset button and calls onPress', () => {
+    it('renders an accessible asset button and calls onPress', async () => {
         const onPress = jest.fn();
-        const { getByRole } = renderWithStoreProvider(
+        const { getByRole } = await renderWithStoreProvider(
             <MyAssetListItem asset={asset} onPress={onPress} />,
         );
         const button = getByRole('button', { name: 'Bitcoin' });
@@ -29,9 +29,9 @@ describe('MyAssetListItem', () => {
         expect(onPress).toHaveBeenCalledTimes(1);
     });
 
-    it('does not call onPress when the asset is disabled', () => {
+    it('does not call onPress when the asset is disabled', async () => {
         const onPress = jest.fn();
-        const { getByRole } = renderWithStoreProvider(
+        const { getByRole } = await renderWithStoreProvider(
             <MyAssetListItem asset={{ ...asset, isEnabled: false }} onPress={onPress} />,
         );
         const button = getByRole('button', { name: 'Bitcoin' });

@@ -9,11 +9,7 @@ import {
 import { useAllTradesReloadTimer } from './useAllTradesReloadTimer';
 import { useTransactionStateChangeAnalyticsReporting } from './useTransactionStateChangeAnalyticsReporting';
 
-type UseWatchAllTradesProps = {
-    isEnabled?: boolean;
-};
-
-export const useWatchAllTrades = ({ isEnabled = true }: UseWatchAllTradesProps = {}) => {
+export const useWatchAllTrades = () => {
     const deviceTrades = useSelector((state: TradingRootStateWithDeviceAndAccounts) =>
         selectDeviceTradingTrades(state),
     );
@@ -29,14 +25,10 @@ export const useWatchAllTrades = ({ isEnabled = true }: UseWatchAllTradesProps =
         isFetching,
         setIsFetching,
         tradesToWatch,
-    } = useAllTradesReloadTimer({ isEnabled });
+    } = useAllTradesReloadTimer();
 
     // Refresh all relevant trades when they need refreshing
     useEffect(() => {
-        if (!isEnabled) {
-            return;
-        }
-
         if ((!hasFetchedInitialTrades || shouldReload) && !isFetching) {
             setIsFetching(true);
             const refreshTrades = async () => {
@@ -52,7 +44,6 @@ export const useWatchAllTrades = ({ isEnabled = true }: UseWatchAllTradesProps =
         refreshAllTrades,
         isFetching,
         setIsFetching,
-        isEnabled,
     ]);
 
     return {

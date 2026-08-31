@@ -3,7 +3,7 @@ import { LinearTransition } from 'react-native-reanimated';
 
 import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { AnimatedBox, Card, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
-import { type NativeTypographyStyle } from '@trezor/theme';
+import type { NativeTypographyStyle } from '@trezor/theme';
 
 import { EmojiRatingButton } from './EmojiRatingButton';
 import { FeedbackFormSheet } from './FeedbackFormSheet';

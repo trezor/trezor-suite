@@ -206,11 +206,11 @@ describe('useWatchTrade', () => {
             expect(mockWatchTradeThunk).not.toHaveBeenCalled();
         });
 
-        it('should not dispatch watch trade thunk when watching is disabled', () => {
+        it('should not dispatch watch trade thunk when watching is disabled', async () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
             const store = getInitializedStore({ trades: [buyTrade] });
 
-            renderUseWatchTrade(store, {
+            await renderUseWatchTrade(store, {
                 accountKey: btc1AccountKey,
                 orderId: buyTrade.data.orderId,
                 isEnabled: false,
@@ -219,26 +219,26 @@ describe('useWatchTrade', () => {
             expect(mockWatchTradeThunk).not.toHaveBeenCalled();
         });
 
-        it('should refresh immediately after watching is re-enabled', () => {
+        it('should refresh immediately after watching is re-enabled', async () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
             const store = getInitializedStore({ trades: [buyTrade] });
             let isEnabled = true;
-            const { rerender } = renderHookWithTradingProvider(
+            const { rerender } = await renderHookWithTradingProvider(
                 () =>
                     useWatchTradeWithReportSpy({
                         accountKey: btc1AccountKey,
                         orderId: buyTrade.data.orderId,
                         isEnabled,
                     }),
-                { store },
+                { store, services },
             );
 
             expect(mockWatchTradeThunk).toHaveBeenCalledTimes(1);
 
             isEnabled = false;
-            rerender({});
+            await rerender({});
             isEnabled = true;
-            rerender({});
+            await rerender({});
 
             expect(mockWatchTradeThunk).toHaveBeenCalledTimes(2);
         });
@@ -298,11 +298,11 @@ describe('useWatchTrade', () => {
             });
         });
 
-        it('should disable timer when watching is disabled', () => {
+        it('should disable timer when watching is disabled', async () => {
             const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
             const store = getInitializedStore({ trades: [buyTrade] });
 
-            renderUseWatchTrade(store, {
+            await renderUseWatchTrade(store, {
                 accountKey: btc1AccountKey,
                 orderId: buyTrade.data.orderId,
                 isEnabled: false,
@@ -315,11 +315,11 @@ describe('useWatchTrade', () => {
         });
     });
 
-    it('should not report status analytics when reporting is disabled', () => {
+    it('should not report status analytics when reporting is disabled', async () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
         const store = getInitializedStore({ trades: [buyTrade] });
 
-        const { result } = renderUseWatchTrade(store, {
+        const { result } = await renderUseWatchTrade(store, {
             accountKey: btc1AccountKey,
             orderId: buyTrade.data.orderId,
             shouldReportAnalytics: false,

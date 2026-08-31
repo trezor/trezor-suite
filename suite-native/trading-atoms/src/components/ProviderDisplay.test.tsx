@@ -4,8 +4,8 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { ProviderDisplay } from './ProviderDisplay';
 
 describe('ProviderDisplay', () => {
-    it('renders the provider logo and name accessibly', () => {
-        const { getByLabelText, getByTestId, getByText } = renderWithBasicProvider(
+    it('renders the provider logo and name accessibly', async () => {
+        const { getByLabelText, getByTestId, getByText } = await renderWithBasicProvider(
             <ProviderDisplay
                 accessibilityLabel="Selected provider"
                 logo="mercuryo.png"
@@ -20,8 +20,8 @@ describe('ProviderDisplay', () => {
         expect(getByTestId('@test/provider')).toBeOnTheScreen();
     });
 
-    it('renders the provider name without a logo', () => {
-        const { getByText, queryByLabelText } = renderWithBasicProvider(
+    it('renders the provider name without a logo', async () => {
+        const { getByText, queryByLabelText } = await renderWithBasicProvider(
             <ProviderDisplay providerName="Unknown provider" />,
         );
 

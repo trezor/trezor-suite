@@ -64,16 +64,8 @@ describe('useWatchAllTrades', () => {
             },
         });
 
-    const renderUseWatchAllTrades = async (store: TestStore, isEnabled = true) =>
-        await renderHookWithTradingProvider(() => useWatchAllTrades({ isEnabled }), { store });
-
-    it('should pass enabled state to the reload timer', () => {
-        const store = getInitializedStore();
-
-        renderUseWatchAllTrades(store, false);
-
-        expect(mockUseAllTradesReloadTimer).toHaveBeenCalledWith({ isEnabled: false });
-    });
+    const renderUseWatchAllTrades = async (store: TestStore) =>
+        await renderHookWithTradingProvider(() => useWatchAllTrades(), { store });
 
     it('should return empty arrays when no trades', async () => {
         const store = getInitializedStore();
@@ -161,26 +153,6 @@ describe('useWatchAllTrades', () => {
         await renderUseWatchAllTrades(store);
 
         // Wait for the effect to run
-        await new Promise(resolve => setTimeout(resolve, 0));
-
-        expect(mockRefreshAllTrades).not.toHaveBeenCalled();
-    });
-
-    it('should not call refreshAllTrades when watching is disabled', async () => {
-        const mockRefreshAllTrades = jest.fn();
-
-        mockUseAllTradesReloadTimer.mockReturnValue({
-            refreshAllTrades: mockRefreshAllTrades,
-            shouldReload: true,
-            hasFetchedInitialTrades: false,
-            isFetching: false,
-            setIsFetching: jest.fn(),
-            tradesToWatch: [getBuyTrade({ status: 'SUBMITTED' })],
-        });
-
-        const store = getInitializedStore();
-        renderUseWatchAllTrades(store, false);
-
         await new Promise(resolve => setTimeout(resolve, 0));
 
         expect(mockRefreshAllTrades).not.toHaveBeenCalled();

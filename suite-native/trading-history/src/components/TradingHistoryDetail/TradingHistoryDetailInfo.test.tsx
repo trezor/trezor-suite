@@ -1,5 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
+import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { type TradingTransaction } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils';
@@ -16,6 +18,9 @@ import { TradingHistoryDetailInfo } from './TradingHistoryDetailInfo';
 import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
 const mockCopyToClipboard = jest.fn(() => Promise.resolve());
+const services: NetworkModuleRepositoryDep = {
+    networkModuleRepository: mockNetworkModuleRepository(),
+};
 
 jest.mock('@suite-native/clipboard', () => ({
     useCopyToClipboard: () => mockCopyToClipboard,
@@ -36,6 +41,7 @@ describe('TradingHistoryDetailInfo', () => {
                         },
                     },
                 },
+                services,
             },
         );
 
@@ -43,14 +49,14 @@ describe('TradingHistoryDetailInfo', () => {
         mockCopyToClipboard.mockClear();
     });
 
-    it('does not render when the trade is not found', () => {
-        const { toJSON } = renderInfo();
+    it('does not render when the trade is not found', async () => {
+        const { toJSON } = await renderInfo();
 
         expect(toJSON()).toBeNull();
     });
 
-    it('renders buy amounts, payment method, provider, and destination account', () => {
-        const { getByLabelText, getByText } = renderInfo(getBuyTrade({ status: 'SUCCESS' }));
+    it('renders buy amounts, payment method, provider, and destination account', async () => {
+        const { getByLabelText, getByText } = await renderInfo(getBuyTrade({ status: 'SUCCESS' }));
 
         expect(
             getByText(getTranslation('moduleTrading.tradeHistory.detail.info.youPay')),
@@ -72,7 +78,7 @@ describe('TradingHistoryDetailInfo', () => {
         expect(getByLabelText('flag-US')).toBeOnTheScreen();
     });
 
-    it('renders sell payout information and source account', () => {
+    it('renders sell payout information and source account', async () => {
         const sellTrade = getSellTrade({ status: 'SUCCESS' });
         const trade = {
             ...sellTrade,
@@ -82,7 +88,7 @@ describe('TradingHistoryDetailInfo', () => {
                 paymentMethodName: 'Bank Transfer',
             },
         };
-        const { getByText, queryByText } = renderInfo(trade);
+        const { getByText, queryByText } = await renderInfo(trade);
 
         expect(getByText('from BTC Account #1')).toBeOnTheScreen();
         expect(
@@ -94,8 +100,10 @@ describe('TradingHistoryDetailInfo', () => {
         ).not.toBeOnTheScreen();
     });
 
-    it('renders the fixed-rate information for a CEX swap', () => {
-        const { getByText, queryByText } = renderInfo(getExchangeTrade({ status: 'SUCCESS' }));
+    it('renders the fixed-rate information for a CEX swap', async () => {
+        const { getByText, queryByText } = await renderInfo(
+            getExchangeTrade({ status: 'SUCCESS' }),
+        );
 
         expect(
             getByText(getTranslation('moduleTrading.tradeHistory.detail.info.rate')),
@@ -108,20 +116,20 @@ describe('TradingHistoryDetailInfo', () => {
         ).not.toBeOnTheScreen();
     });
 
-    it('renders the floating-rate information from provider metadata', () => {
+    it('renders the floating-rate information from provider metadata', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'SUCCESS' });
         const trade = {
             ...exchangeTrade,
             data: { ...exchangeTrade.data, exchange: 'cexdirect' },
         };
-        const { getByText } = renderInfo(trade);
+        const { getByText } = await renderInfo(trade);
 
         expect(
             getByText(getTranslation('moduleTrading.tradeHistory.detail.info.floating')),
         ).toBeOnTheScreen();
     });
 
-    it('falls back to exchange and network names when metadata is missing', () => {
+    it('falls back to exchange and network names when metadata is missing', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'SUCCESS' });
         const trade = {
             ...exchangeTrade,
@@ -129,7 +137,7 @@ describe('TradingHistoryDetailInfo', () => {
             receiveAccountKey: undefined,
             data: { ...exchangeTrade.data, exchange: 'unknown-provider' },
         };
-        const { getByText, queryByLabelText } = renderInfo(trade);
+        const { getByText, queryByLabelText } = await renderInfo(trade);
 
         expect(getByText('from Solana')).toBeOnTheScreen();
         expect(getByText('to Solana')).toBeOnTheScreen();
@@ -137,7 +145,7 @@ describe('TradingHistoryDetailInfo', () => {
         expect(queryByLabelText(getTranslation('tradingAtoms.providerLogo'))).not.toBeOnTheScreen();
     });
 
-    it('renders DEX slippage, minimum received, and the current MEV setting', () => {
+    it('renders DEX slippage, minimum received, and the current MEV setting', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'SUCCESS' });
         const trade = {
             ...exchangeTrade,
@@ -153,7 +161,7 @@ describe('TradingHistoryDetailInfo', () => {
                 status: 'SUCCESS' as const,
             },
         };
-        const { getByTestId, getByText, queryByText } = renderInfo(trade);
+        const { getByTestId, getByText, queryByText } = await renderInfo(trade);
 
         expect(
             getByText(getTranslation('moduleTrading.tradeHistory.detail.info.mevProtection')),
@@ -174,20 +182,20 @@ describe('TradingHistoryDetailInfo', () => {
         ).not.toBeOnTheScreen();
     });
 
-    it('does not show MEV protection for an unsupported send network', () => {
+    it('does not show MEV protection for an unsupported send network', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'SUCCESS' });
         const trade = {
             ...exchangeTrade,
             data: { ...exchangeTrade.data, isDex: true, swapSlippage: '1' },
         };
-        const { queryByText } = renderInfo(trade);
+        const { queryByText } = await renderInfo(trade);
 
         expect(
             queryByText(getTranslation('moduleTrading.tradeHistory.detail.info.mevProtection')),
         ).not.toBeOnTheScreen();
     });
 
-    it('shows disabled MEV protection from the current wallet setting', () => {
+    it('shows disabled MEV protection from the current wallet setting', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'SUCCESS' });
         const trade = {
             ...exchangeTrade,
@@ -201,14 +209,14 @@ describe('TradingHistoryDetailInfo', () => {
                 status: 'SUCCESS' as const,
             },
         };
-        const { getByTestId } = renderInfo(trade, false);
+        const { getByTestId } = await renderInfo(trade, false);
 
         expect(getByTestId('@trading/history/detail/info/mev-disabled')).toBeOnTheScreen();
     });
 
     it('copies the full trade ID', async () => {
         const trade = getBuyTrade({ status: 'SUCCESS' });
-        const { getByTestId } = renderInfo(trade);
+        const { getByTestId } = await renderInfo(trade);
 
         await userEvent.press(getByTestId('@trading/history/detail/info/trade-id'));
 

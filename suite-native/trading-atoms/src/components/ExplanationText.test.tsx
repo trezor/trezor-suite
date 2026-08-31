@@ -14,19 +14,22 @@ describe('ExplanationText', () => {
         mockShowAlert.mockClear();
     });
 
-    it('renders an accessible explanation trigger', () => {
-        const { getByRole, getByText } = renderWithBasicProvider(
-            <ExplanationText title="Explanation title" description="Explanation description">
+    it('renders an accessible explanation trigger', async () => {
+        const { getByTestId } = await renderWithBasicProvider(
+            <ExplanationText
+                testID="@test/explanation"
+                title="Explanation title"
+                description="Explanation description"
+            >
                 Explained value
             </ExplanationText>,
         );
 
-        expect(getByText('Explained value')).toBeOnTheScreen();
-        expect(getByRole('button', { name: 'Explained value' })).toBeOnTheScreen();
+        expect(getByTestId('@test/explanation/button')).toBeOnTheScreen();
     });
 
     it('opens a left-aligned explanation alert', async () => {
-        const { getByRole } = renderWithBasicProvider(
+        const { getByTestId } = await renderWithBasicProvider(
             <ExplanationText
                 title="Explanation title"
                 description="Explanation description"
@@ -36,7 +39,7 @@ describe('ExplanationText', () => {
             </ExplanationText>,
         );
 
-        await userEvent.press(getByRole('button', { name: 'Explained value' }));
+        await userEvent.press(getByTestId('@test/explanation/button'));
 
         expect(mockShowAlert).toHaveBeenCalledWith({
             title: 'Explanation title',

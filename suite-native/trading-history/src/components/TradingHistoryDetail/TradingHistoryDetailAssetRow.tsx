@@ -1,7 +1,5 @@
 import { useFormatters } from '@suite-common/formatters';
-import { useTradingAssets } from '@suite-common/trading';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenSymbol, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoRow, TradingAsset } from '@suite-native/trading-atoms';
@@ -22,17 +20,12 @@ export const TradingHistoryDetailAssetRow = ({
     side,
 }: TradingHistoryDetailAssetRowProps) => {
     const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
-    const { createAssetOptionFromCryptoId } = useTradingAssets();
 
-    const cryptoAsset = createAssetOptionFromCryptoId(
-        asset.type === 'crypto' ? asset.cryptoId : undefined,
-    );
-    const displayedAccountLabel =
-        asset.type === 'crypto' ? (asset.accountLabel ?? cryptoAsset.networkName) : undefined;
+    const displayedAccountLabel = asset.type === 'crypto' ? asset.accountLabel : undefined;
     const formattedAmount =
         asset.type === 'crypto'
             ? CryptoAmountFormatter.format(asset.amount, {
-                  symbol: cryptoAsset.symbol as NetworkSymbol | TokenSymbol,
+                  symbol: asset.symbol,
                   withSymbol: false,
                   isBalance: true,
                   maxDisplayedDecimals: 16,
@@ -82,13 +75,13 @@ export const TradingHistoryDetailAssetRow = ({
                 {asset.type === 'crypto' ? (
                     <TradingAsset
                         assetType="crypto"
-                        contractAddress={cryptoAsset.contractAddress ?? undefined}
-                        name={cryptoAsset.name}
+                        contractAddress={asset.contractAddress}
+                        name={asset.name}
                         networkDisplay="text"
-                        networkSymbol={cryptoAsset.networkSymbol}
+                        networkSymbol={asset.networkSymbol}
                         primaryLabel="symbol"
                         primaryTextVariant="body-md"
-                        symbol={cryptoAsset.displaySymbol}
+                        symbol={asset.displaySymbol}
                         rightContent={
                             <VStack alignItems="flex-end" flexShrink={1} spacing={0}>
                                 <Text variant="body-md-strong" numberOfLines={1}>
