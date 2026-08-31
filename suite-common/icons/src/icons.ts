@@ -923,6 +923,8 @@ export const icons = {
     dropHalfFilled: require('../../../packages/icons/assets/dropHalfFilled.svg'),
     dropboxLogo: require('../../../packages/icons/assets/dropboxLogo.svg'),
     dropboxLogoFilled: require('../../../packages/icons/assets/dropboxLogoFilled.svg'),
+    dualCpu: require('../../../packages/icons/assets/dualCpu.svg'),
+    dualCpuFilled: require('../../../packages/icons/assets/dualCpuFilled.svg'),
     ear: require('../../../packages/icons/assets/ear.svg'),
     earFilled: require('../../../packages/icons/assets/earFilled.svg'),
     earSlash: require('../../../packages/icons/assets/earSlash.svg'),
