@@ -42,7 +42,11 @@ export const EarnYieldClaimRewardsBannerAccountsTooltip = ({
                     {rewards.map(({ account, fiat }) => (
                         <Fragment key={account.key}>
                             <Text>
-                                <AccountLabel account={account} showAccountTypeBadge />
+                                <AccountLabel
+                                    account={account}
+                                    showAccountTypeBadge
+                                    accountTypeBadgeSize="small"
+                                />
                             </Text>
 
                             <HiddenPlaceholder>
