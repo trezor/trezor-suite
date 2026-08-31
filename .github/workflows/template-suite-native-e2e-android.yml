@@ -52,6 +52,7 @@ jobs:
         -no-window -gpu swiftshader_indirect -no-snapshot-load -no-snapshot-save
         -noaudio -no-boot-anim -no-metrics -grpc 8554 -memory 4096
       DIAGNOSTICS_DIR: /tmp/e2e-diagnostics
+      RESOURCE_MONITOR_INTERVAL_SECONDS: "2"
 
     steps:
       - name: Checkout project
@@ -137,23 +138,50 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      # The emulator dies without leaving a trace of its own when the kernel kills
-      # it, so sample host memory and disk next to the run to see what ran out.
+      # A host-side kill leaves no trace in the emulator output. Sample memory,
+      # pressure, and cgroup counters frequently enough to catch short spikes.
       - name: Start host resource monitor
         run: |
           mkdir -p "$DIAGNOSTICS_DIR"
+          # Variables inside the single-quoted script expand in the nested Bash process.
+          # shellcheck disable=SC2016
           nohup bash -c '
+            cgroupPath=$(cut -d: -f3 /proc/self/cgroup | head -n 1)
+            cgroupDir="/sys/fs/cgroup${cgroupPath}"
+
             while true; do
               {
-                date --iso-8601=seconds
+                date --iso-8601=ns
                 free --mebi
                 df --human-readable / /tmp
-                ps -eo pid,rss,comm --sort=-rss | head -n 8
+                cat /proc/pressure/memory
+                for metric in \
+                  memory.current memory.peak memory.max memory.events memory.events.local \
+                  memory.pressure memory.swap.current memory.swap.max; do
+                  if [[ -r "$cgroupDir/$metric" ]]; then
+                    echo "cgroup $metric:"
+                    cat "$cgroupDir/$metric"
+                  fi
+                done
+                for commFile in /proc/[0-9]*/comm; do
+                  read -r commandName < "$commFile" || continue
+                  [[ "$commandName" == qemu-system-* ]] || continue
+                  qemuPid=${commFile#/proc/}
+                  qemuPid=${qemuPid%/comm}
+                  echo "qemu process $qemuPid:"
+                  grep -E "^(Name|State|VmPeak|VmSize|VmRSS|RssAnon|RssFile|RssShmem|VmSwap|Threads):" "/proc/$qemuPid/status" || true
+                  printf "oom_score="
+                  cat "/proc/$qemuPid/oom_score"
+                  printf "oom_score_adj="
+                  cat "/proc/$qemuPid/oom_score_adj"
+                done
+                ps -eo pid,ppid,rss,vsz,etimes,stat,comm --sort=-rss | head -n 12
                 echo
               } >> "$DIAGNOSTICS_DIR/host-resources.log" 2>&1
-              sleep 15
+              sleep "$RESOURCE_MONITOR_INTERVAL_SECONDS"
             done
           ' > /dev/null 2>&1 &
+          echo $! > "$DIAGNOSTICS_DIR/host-resource-monitor.pid"
 
       - name: Run Detox E2E Android tests
         timeout-minutes: 50
@@ -217,26 +245,43 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
         run: |
+          # Diagnostics are best-effort. A missing source must never prevent the
+          # remaining evidence from being collected.
+          set +e
           set -uo pipefail
           DIAG_DIR="suite-native/app/artifacts/diagnostics"
           mkdir -p "$DIAG_DIR"
+
+          if [[ -f "$DIAGNOSTICS_DIR/host-resource-monitor.pid" ]]; then
+            monitorPid=$(< "$DIAGNOSTICS_DIR/host-resource-monitor.pid")
+            kill "$monitorPid" 2>/dev/null || true
+          fi
+
           cp "$DIAGNOSTICS_DIR/host-resources.log" "$DIAG_DIR/" || true
+
           # QEMU stores its Crashpad reports in a directory, so it has to be copied
           # recursively. An empty database means the process was killed from the
           # outside rather than having crashed on its own.
-          find /tmp "$HOME/.android" -maxdepth 3 -name "emu-crash*.db" -print0 2>/dev/null \
-            | while IFS= read -r -d '' crashDb; do
+          for crashRoot in /tmp/android-runner "$HOME/.android"; do
+            [[ -d "$crashRoot" ]] || continue
+            while IFS= read -r -d '' crashDb; do
               cp -r "$crashDb" "$DIAG_DIR/" || true
-            done
-          # An OOM kill leaves no trace in the emulator's own output, the kernel ring
-          # buffer is the only place it shows up.
-          sudo dmesg -T 2>/dev/null \
-            | grep -iE "out of memory|oom-kill|killed process" \
-            > "$DIAG_DIR/kernel-oom.log" || true
+            done < <(find "$crashRoot" -maxdepth 3 -type d -name "emu-crash*.db" -print0 2>/dev/null || true)
+          done
+
+          # Preserve the full sources as well as a filtered OOM view. Kernel OOM
+          # kills and systemd-oomd cgroup kills are reported through different paths.
+          { sudo dmesg --ctime || true; } > "$DIAG_DIR/kernel.log" 2>&1
+          grep -iE "out of memory|oom-kill|oom_reaper|killed process|memory cgroup.*oom" \
+            "$DIAG_DIR/kernel.log" > "$DIAG_DIR/kernel-oom.log" || true
+          { sudo journalctl --no-pager --unit systemd-oomd || true; } \
+            > "$DIAG_DIR/systemd-oomd.log" 2>&1
+          coredumpctl --no-pager list > "$DIAG_DIR/coredumps.log" 2>&1 || true
           free --mebi > "$DIAG_DIR/memory-after-run.log" 2>&1 || true
           df --human-readable > "$DIAG_DIR/disk-after-run.log" 2>&1 || true
           pgrep -a qemu-system > "$DIAG_DIR/qemu-processes.log" 2>&1 || true
           adb devices > "$DIAG_DIR/adb-devices.log" 2>&1 || true
+          true
 
       - name: "Store test artifacts"
         if: ${{ !cancelled() }}
