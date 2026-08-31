@@ -997,6 +997,11 @@ const getEthereumRbfParams = (
     const firstVoutAddresses = firstVout.addresses!;
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const toAddress: string = firstVoutAddresses[0];
+    const nativeOutput = {
+        address: toAddress,
+        amount: firstVout.value!,
+        formattedAmount: formatNetworkAmount(firstVout.value!, account.symbol),
+    };
 
     let output;
     switch (txSignature) {
@@ -1028,8 +1033,9 @@ const getEthereumRbfParams = (
             };
             break;
         }
-        default: {
-            // Token-moving contract calls report value=0 in vout; pull the amount from tokens[0].
+        case 'deposit':
+        case 'withdraw':
+        case 'redeem': {
             const tokenTransfer = tx.tokens?.[0];
             if (tokenTransfer) {
                 output = {
@@ -1042,12 +1048,12 @@ const getEthereumRbfParams = (
                     ),
                 };
             } else {
-                output = {
-                    address: toAddress,
-                    amount: vout[0]!.value!,
-                    formattedAmount: formatNetworkAmount(vout[0]!.value!, account.symbol),
-                };
+                output = nativeOutput;
             }
+            break;
+        }
+        default: {
+            output = nativeOutput;
         }
     }
 

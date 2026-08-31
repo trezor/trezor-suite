@@ -6,6 +6,7 @@ import {
     type WalletAccountTransaction,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import * as fixtures from './__fixtures__/transactionUtils';
 import {
@@ -41,9 +42,87 @@ const btcSymbol = asNetworkSymbol('btc');
 const { getWalletTransaction } = testMocks;
 
 const ACCOUNT_DESCRIPTOR = '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b';
+const RBF_ACCOUNT_DESCRIPTOR = '0x1111111111111111111111111111111111111111';
+const CONTRACT_ADDRESS = '0x2222222222222222222222222222222222222222';
+const TOKEN_RECIPIENT = '0x3333333333333333333333333333333333333333';
+const TOKEN_CONTRACT = '0x4444444444444444444444444444444444444444';
+const TRANSFER_FROM_DATA =
+    '0x23b872dd' +
+    '0000000000000000000000001111111111111111111111111111111111111111' +
+    '0000000000000000000000003333333333333333333333333333333333333333' +
+    '000000000000000000000000000000000000000000000000000000001dcd6500';
+const ERC4626_DEPOSIT_DATA =
+    '0x6e553f65' +
+    '00000000000000000000000000000000000000000000000000000000000f4240' +
+    '0000000000000000000000001111111111111111111111111111111111111111';
 // A stranger who signed (and paid for) a transaction that blockbook indexes against the account
 // because one of its token transfers names the account as the sender.
 const FOREIGN_SIGNER = '0x0F6666bC699aec39b846E898473e9CAec5a6b821';
+
+const ethereumAccount = mockWalletAccount({
+    symbol: ethSymbol,
+    descriptor: asAccountDescriptor(RBF_ACCOUNT_DESCRIPTOR),
+});
+
+const getPendingTokenMovingContractTransaction = ({
+    data,
+    nativeValue,
+    tokenAmount,
+}: {
+    data: string;
+    nativeValue: string;
+    tokenAmount: string;
+}) =>
+    getWalletTransaction({
+        descriptor: asAccountDescriptor(RBF_ACCOUNT_DESCRIPTOR),
+        symbol: ethSymbol,
+        type: 'sent',
+        txid: '0xpending-contract-call',
+        blockHeight: -1,
+        amount: nativeValue,
+        rbf: true,
+        ethereumSpecific: {
+            status: -1,
+            nonce: 45,
+            gasLimit: 100_000,
+            gasPrice: '1000000000',
+            data,
+        },
+        details: {
+            ...getWalletTransaction().details,
+            vin: [
+                {
+                    n: 0,
+                    addresses: [RBF_ACCOUNT_DESCRIPTOR],
+                    isAddress: true,
+                    isOwn: true,
+                    isAccountOwned: true,
+                },
+            ],
+            vout: [
+                {
+                    n: 0,
+                    addresses: [CONTRACT_ADDRESS],
+                    isAddress: true,
+                    value: nativeValue,
+                },
+            ],
+            totalOutput: nativeValue,
+        },
+        tokens: [
+            {
+                type: 'sent',
+                standard: 'ERC20',
+                amount: tokenAmount,
+                from: RBF_ACCOUNT_DESCRIPTOR,
+                to: TOKEN_RECIPIENT,
+                contract: TOKEN_CONTRACT,
+                name: 'USD Coin',
+                symbol: 'USDC',
+                decimals: 6,
+            },
+        ],
+    });
 
 type EvmTransactionParams = {
     nonce: number;
@@ -489,6 +568,50 @@ describe('transaction utils', () => {
             it(f.description, () => {
                 expect(getRbfParams(f.tx as any, f.account as any)).toEqual(f.result);
             });
+        });
+
+        it('preserves zero native value for a token-moving transferFrom call', () => {
+            const transaction = getPendingTokenMovingContractTransaction({
+                data: TRANSFER_FROM_DATA,
+                nativeValue: '0',
+                tokenAmount: '500000000',
+            });
+
+            expect(getRbfParams(transaction, ethereumAccount)).toEqual({
+                type: 'ethereum',
+                txid: transaction.txid,
+                outputs: [
+                    {
+                        type: 'payment',
+                        address: CONTRACT_ADDRESS,
+                        amount: '0',
+                        formattedAmount: '0',
+                    },
+                ],
+                ethereumNonce: 45,
+                transactionData: TRANSFER_FROM_DATA,
+                gasPrice: '1',
+                maxFeePerGas: '',
+                maxPriorityFeePerGas: '',
+            });
+        });
+
+        it('keeps the token amount for an ERC-4626 deposit call', () => {
+            const transaction = getPendingTokenMovingContractTransaction({
+                data: ERC4626_DEPOSIT_DATA,
+                nativeValue: '0',
+                tokenAmount: '1000000',
+            });
+
+            expect(getRbfParams(transaction, ethereumAccount)?.outputs).toEqual([
+                {
+                    type: 'payment',
+                    address: CONTRACT_ADDRESS,
+                    token: TOKEN_CONTRACT,
+                    amount: '1000000',
+                    formattedAmount: '1',
+                },
+            ]);
         });
     });
 
