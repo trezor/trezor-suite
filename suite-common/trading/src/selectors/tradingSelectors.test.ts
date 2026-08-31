@@ -11,10 +11,11 @@ import {
 
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
 import {
+    type TradingFormAccountRootState,
     type TradingRootStateWithDeviceAndAccounts,
     bestBuyQuotePerPaymentMethodProjection,
     bestSellQuotePerPaymentMethodProjection,
@@ -71,6 +72,7 @@ import {
     selectTradingExchangeSelectedQuoteIsDex,
     selectTradingExchangeSelectedQuoteSwapSlippage,
     selectTradingExchangeSellCryptoIds,
+    selectTradingFormCryptoId,
     selectTradingIsSlip24Allowed,
     selectTradingLastErrorMessageByTradeType,
     selectTradingModalAccountKey,
@@ -1574,6 +1576,61 @@ describe('tradingSelectors', () => {
         expect(selectTradingPrefilledFromAccount(state)).toEqual({
             cryptoId: 'bitcoin',
             descriptor: 'btc-desc',
+        });
+    });
+
+    describe(selectTradingFormCryptoId.name, () => {
+        const eligibleBtc = mockWalletAccount({
+            symbol: asNetworkSymbol('btc'),
+            deviceState: accountBtc.deviceState as StaticSessionId,
+            balance: '1000000',
+            formattedBalance: '0.01',
+        });
+        const eligibleEth = mockWalletAccount({
+            symbol: asNetworkSymbol('eth'),
+            deviceState: accountEth.deviceState as StaticSessionId,
+            balance: '1000000000000000000',
+            formattedBalance: '1',
+            tokens: [],
+        });
+
+        let formState: TradingFormAccountRootState;
+
+        beforeEach(() => {
+            formState = {
+                ...state,
+                tokenDefinitions: {},
+                wallet: {
+                    ...state.wallet,
+                    accounts: [eligibleBtc, eligibleEth],
+                    trading: {
+                        ...state.wallet.trading,
+                        exchange: {
+                            ...state.wallet.trading.exchange,
+                            tradingAccountKey: eligibleBtc.key,
+                        },
+                    },
+                },
+            };
+        });
+
+        it('should ignore leftover prefilled cryptoId after prefilled.key is cleared', () => {
+            formState.wallet.trading.prefilledFromAccount = {
+                key: undefined,
+                cryptoId: 'ethereum' as CryptoId,
+            };
+
+            expect(selectTradingFormCryptoId(formState, 'exchange')).toBe('bitcoin');
+        });
+
+        it('should use prefilled cryptoId when prefilled.key matches the form account', () => {
+            formState.wallet.trading.exchange.tradingAccountKey = eligibleEth.key;
+            formState.wallet.trading.prefilledFromAccount = {
+                key: eligibleEth.key,
+                cryptoId: 'ethereum' as CryptoId,
+            };
+
+            expect(selectTradingFormCryptoId(formState, 'exchange')).toBe('ethereum');
         });
     });
 
