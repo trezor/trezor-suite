@@ -72,34 +72,47 @@ const calculateSolanaStakeTransaction = (
     );
 };
 
+// A split instruction cannot be recreated in Suite, such a transaction is reviewed on the device only.
+const applyDeviceReviewOnly = (
+    composed: PrecomposedLevels,
+    isDeviceReviewOnly: boolean,
+): PrecomposedLevels =>
+    Object.fromEntries(
+        Object.entries(composed).map(([key, tx]) =>
+            tx.type === 'error' ? [key, tx] : [key, { ...tx, isDeviceReviewOnly }],
+        ),
+    );
+
 // Merges solanaTxMeta (rent, fee) into each fee level for device review amounts.
 const applySolanaTxMeta = (
     composed: PrecomposedLevels,
     solanaTxMeta: SolanaTxMeta,
 ): PrecomposedLevels =>
     Object.fromEntries(
-        Object.entries(composed).map(([key, tx]) => {
-            if (tx.type === 'error') return [key, tx];
+        Object.entries(applyDeviceReviewOnly(composed, solanaTxMeta.hasSplitInstruction)).map(
+            ([key, tx]) => {
+                if (tx.type === 'error') return [key, tx];
 
-            const nextTx = { ...tx, solanaTxMeta };
+                const nextTx = { ...tx, solanaTxMeta };
 
-            if (tx.type === 'final') {
-                const totalSpent = new BigNumber(solanaTxMeta.deviceAmountLamports)
-                    .plus(solanaTxMeta.feeIncludingRentLamports)
-                    .toString();
+                if (tx.type === 'final') {
+                    const totalSpent = new BigNumber(solanaTxMeta.deviceAmountLamports)
+                        .plus(solanaTxMeta.feeIncludingRentLamports)
+                        .toString();
 
-                return [
-                    key,
-                    {
-                        ...nextTx,
-                        fee: solanaTxMeta.feeIncludingRentLamports,
-                        totalSpent,
-                    },
-                ];
-            }
+                    return [
+                        key,
+                        {
+                            ...nextTx,
+                            fee: solanaTxMeta.feeIncludingRentLamports,
+                            totalSpent,
+                        },
+                    ];
+                }
 
-            return [key, nextTx];
-        }),
+                return [key, nextTx];
+            },
+        ),
     );
 
 // Turns a prepared staking transaction into a message and asks the backend to estimate its fee.
@@ -244,5 +257,9 @@ export const composeSolanaStakingTransaction = async ({
         }
     }
 
-    return composed;
+    // Fee estimation or the fee-aware preparation failed, keep the review-only flag of the first tx.
+    return applyDeviceReviewOnly(
+        composed,
+        !!txData?.success && txData.solanaTxMeta.hasSplitInstruction,
+    );
 };

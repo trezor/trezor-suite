@@ -17,7 +17,7 @@ import {
     getDecreaseOutputId,
     getStakeType,
     getTxValidityTimeoutInMs,
-    isDeviceReviewOnly,
+    isDeviceReviewOnlyTransaction,
     isRbfBumpFeeTransaction,
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
@@ -108,7 +108,7 @@ export const TransactionReviewModalContent = ({
         return <TransactionReviewDetails tx={precomposedTx} txHash={serializedTx?.tx} />;
     }
 
-    if (isDeviceReviewOnly(precomposedTx)) {
+    if (isDeviceReviewOnlyTransaction(precomposedTx)) {
         return <TransactionReviewFollowDevice isSigned={!!serializedTx} />;
     }
 
