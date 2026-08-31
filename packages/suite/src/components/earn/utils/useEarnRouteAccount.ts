@@ -1,9 +1,9 @@
 import { parseEarnParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectDeviceAccounts } from '@suite-common/wallet-core';
 import type { Account, WalletParams } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 
 export type UseEarnRouteAccountResult = {

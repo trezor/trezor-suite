@@ -7,13 +7,14 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { UI_REQUEST } from '@trezor/connect';
 import { WarningIcon } from '@trezor/icons';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { useDiscovery } from 'src/hooks/suite';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 import { SwitchDeviceContent } from 'src/views/suite/SwitchDevice/SwitchDevice';

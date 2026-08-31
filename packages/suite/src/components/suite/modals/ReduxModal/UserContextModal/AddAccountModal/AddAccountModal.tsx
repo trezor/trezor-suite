@@ -8,6 +8,7 @@ import { Translation } from '@suite/intl';
 import { preserveModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Network,
@@ -31,7 +32,7 @@ import { InfoIcon } from '@trezor/icons';
 import { AddAccountBannerAboutNetworks } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountBannerAboutNetworks';
 import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useAccountSearch, useSelector } from 'src/hooks/suite';
+import { useAccountSearch } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 import { NetworkSettingsSearchInput } from 'src/views/settings/SettingsCoins/NetworkSettingsSearchInput';

@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import { type ExchangeTrade } from 'invity-api';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type SlippageFormValues,
     selectTradingExchangeReceiveAccountKey,
@@ -14,7 +15,6 @@ import { ArrowLineUpRightIcon } from '@trezor/icons';
 import { TREZOR_TRADING_DEX_SLIPPAGE_URL } from '@trezor/urls';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { type UnionToIntersection } from '@trezor/type-utils';
 import { typedObjectValues } from '@trezor/utils';
 
@@ -68,5 +68,5 @@ export function useGetter(selectGetterDep: ServiceSelector<any>, ...params: unkn
         return onlyGetter;
     }, [services, selectGetterDep]);
 
-    return useSelector(() => getter(...params), shallowEqual);
+    return useSelector(() => getter(...params));
 }

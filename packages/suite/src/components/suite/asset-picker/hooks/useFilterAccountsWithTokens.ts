@@ -3,10 +3,9 @@ import { useMemo } from 'react';
 import { getDefaultAccountLabel } from '@suite/account';
 import { useTranslation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
+import { useSelector } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { type AccountWithTokensOption } from '../types';
 

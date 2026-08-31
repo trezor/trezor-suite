@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
 import { type Route, selectRouteName } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { Tabs } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
 
 import { AppNavigationTooltip } from '../../AppNavigation/AppNavigationTooltip';
 

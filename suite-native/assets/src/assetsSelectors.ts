@@ -1,11 +1,13 @@
-import { shallowEqual } from 'react-redux';
-
 import {
     type AssetFiatBalanceWithPercentage,
     calculateAssetsPercentage,
 } from '@suite-common/assets';
 import { selectIsDeviceAuthorized } from '@suite-common/device';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import {
+    createWeakMapSelector,
+    returnStableArrayIfEmpty,
+    shallowEqual,
+} from '@suite-common/redux-utils';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,

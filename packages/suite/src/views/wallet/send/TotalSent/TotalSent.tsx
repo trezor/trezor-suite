@@ -3,6 +3,7 @@ import { type PropsWithChildren, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import {
     calculateTronFeeBreakdown,
@@ -12,7 +13,6 @@ import {
 import { Card, Column, InfoItem, Skeleton } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { CardanoSentTokenInfo } from './CardanoSentTokenInfo';

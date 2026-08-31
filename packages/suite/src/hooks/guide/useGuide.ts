@@ -2,9 +2,10 @@ import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 
 import { close, open } from 'src/actions/suite/guideActions';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite';
 
 import { usePreferredModal } from '../suite';
 

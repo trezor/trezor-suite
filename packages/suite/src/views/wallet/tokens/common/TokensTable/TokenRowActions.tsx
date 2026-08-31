@@ -15,6 +15,7 @@ import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     DefinitionType,
     type EnhancedTokenInfo,
@@ -72,7 +73,7 @@ import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { setSendFormPrefill, setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';

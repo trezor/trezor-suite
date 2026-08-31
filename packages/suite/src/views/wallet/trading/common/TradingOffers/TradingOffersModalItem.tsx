@@ -3,6 +3,7 @@ import { memo, useCallback } from 'react';
 import { type ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type TradingTradeType,
     selectTradingExchangeProviders,
@@ -10,7 +11,6 @@ import {
 } from '@suite-common/trading';
 import { CardList, Column, Row, Skeleton, Text } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 

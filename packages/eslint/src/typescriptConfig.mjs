@@ -57,6 +57,13 @@ const electronIpcMainRestrictedImport = {
     message: 'Use the local ipcMain wrapper instead.',
 };
 
+const reactReduxShallowEqualRestrictedImport = {
+    name: 'react-redux',
+    importNames: ['shallowEqual'],
+    message:
+        'Import shallowEqual from "@suite-common/redux-utils" so React Redux equality behavior has one owner.',
+};
+
 export const restrictedImportsPatterns = [
     buildArtifactPatterns,
     suiteInternalPatterns,
@@ -86,6 +93,7 @@ export const typescriptConfig = [
                         { name: '..' },
                         { name: '../..' },
                         electronIpcMainRestrictedImport,
+                        reactReduxShallowEqualRestrictedImport,
                     ],
                     patterns: [
                         buildArtifactPatterns,
@@ -131,6 +139,7 @@ export const typescriptConfig = [
                         { name: '..' },
                         { name: '../..' },
                         electronIpcMainRestrictedImport,
+                        reactReduxShallowEqualRestrictedImport,
                     ],
                     patterns: restrictedImportsPatterns,
                 },

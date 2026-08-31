@@ -8,13 +8,12 @@ import { type TranslationFunction, useTranslation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { isAscii } from '@trezor/utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
-import { useSelector } from 'src/hooks/suite';
-
 const changeDeviceLabelSchema = (t: TranslationFunction) =>
     yup.object({
         deviceLabel: yup

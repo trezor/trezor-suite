@@ -10,12 +10,12 @@ import {
     selectSuiteRouterHistoryDep,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Row } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
 
 import { GlobalSendReceive } from './GlobalSendReceive/GlobalSendReceive';
 import { HeaderActions } from './HeaderActions';

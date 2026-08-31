@@ -8,6 +8,7 @@ import { selectRouterUrl } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useYieldVaultName } from '@suite-common/earn-stablecoin';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { selectStablecoinYieldTxReview } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -19,7 +20,6 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { type Deferred } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';

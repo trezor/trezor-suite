@@ -4,12 +4,12 @@ import { type TranslationKey, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { SearchAsset } from '@trezor/product-components';
 
 import { useListScrollReset } from 'src/components/suite/asset-picker/hooks';
-import { useSelector } from 'src/hooks/suite';
 import { selectProtocolSendFormScheme } from 'src/selectors/suite/protocolSelectors';
 
 import { useNetworkFilter } from './hooks/useNetworkFilter';

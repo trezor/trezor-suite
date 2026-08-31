@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAccountIsStakingActive, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -10,9 +11,6 @@ import {
     isCardanoStakedOutsideEverstake,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
-
 export type StakingAccountStatus =
     | 'insufficient-funds'
     | 'staking-active'

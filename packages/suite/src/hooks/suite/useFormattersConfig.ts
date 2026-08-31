@@ -2,10 +2,8 @@ import { useMemo } from 'react';
 
 import { selectLanguage } from '@suite/settings';
 import { type FormatterProviderConfig } from '@suite-common/formatters';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectBaseCurrency, selectBitcoinAmountUnit } from '@suite-common/wallet-core';
-
-import { useSelector } from 'src/hooks/suite/useSelector';
-
 export const useFormattersConfig = (): FormatterProviderConfig => {
     const locale = useSelector(selectLanguage);
     const bitcoinAmountUnit = useSelector(selectBitcoinAmountUnit);

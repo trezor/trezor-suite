@@ -1,12 +1,12 @@
 import { selectCoinjoinAccountByKey } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Divider, LoadingContent, Modal } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
-import { useSelector } from 'src/hooks/suite';
 
 import { AutoStopButton } from './AutoStopButton';
 import { CoinjoinPhaseProgress } from './CoinjoinPhaseProgress';

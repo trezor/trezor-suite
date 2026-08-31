@@ -12,6 +12,7 @@ import { MODAL_CONTEXT_USER } from '@suite/modal';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -47,7 +48,6 @@ import {
 import { ConfirmOnDevicePill, QrCode, TokenIcon } from '@trezor/product-components';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
-import { useSelector } from 'src/hooks/suite';
 import { type ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 

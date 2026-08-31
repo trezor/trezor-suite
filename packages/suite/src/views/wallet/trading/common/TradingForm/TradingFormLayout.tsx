@@ -4,10 +4,10 @@ import { ContextMessage } from '@suite/message-system';
 import { selectTradeServerEnvironment } from '@suite/settings';
 import { TradingEnvironmentWarning } from '@suite/trading';
 import { Context } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import { Box, Card, Column } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
 import { ContentFlex } from 'src/support/suite/ContentFlex';
 import { TradingFormOffer } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/TradingFormOffer';
 

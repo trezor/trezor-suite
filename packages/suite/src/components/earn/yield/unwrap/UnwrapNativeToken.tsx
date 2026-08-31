@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useSelector } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -20,7 +21,6 @@ import { Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { submitUnwrapNativeTokenThunk } from 'src/actions/wallet/unwrapNativeTokenThunks';
-import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';

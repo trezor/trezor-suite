@@ -2,11 +2,10 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { ForgetDeviceModal } from './ForgetDeviceModal';
 

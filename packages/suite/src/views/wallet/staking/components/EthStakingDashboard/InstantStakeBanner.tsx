@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { getChangedInternalTx, getInstantStakeType } from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
@@ -9,9 +10,6 @@ import { fromWei } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 import { type InternalTransfer } from '@trezor/connect';
 import { LightningIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite';
-
 const getSubheadingTranslationId = (stakeType: StakeType) => {
     if (stakeType === 'stake') return 'TR_EARN_INSTANTLY_STAKED';
 

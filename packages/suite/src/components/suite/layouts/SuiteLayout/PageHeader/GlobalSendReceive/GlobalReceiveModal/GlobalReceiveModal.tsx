@@ -6,13 +6,14 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import { CardList, Column, IconCircle, Link, Modal, Paragraph, Row } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
-import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { useDiscovery } from 'src/hooks/suite';
 import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
 import { type Account, type AccountItemType } from 'src/types/wallet';
 

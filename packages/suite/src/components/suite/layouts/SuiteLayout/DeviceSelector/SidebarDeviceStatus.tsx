@@ -1,8 +1,8 @@
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 import { type TrezorDevice } from 'src/types/suite';
 

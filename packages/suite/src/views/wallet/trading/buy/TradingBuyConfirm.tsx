@@ -1,3 +1,4 @@
+import { useSelector } from '@suite-common/redux-utils';
 import {
     selectTradingBuySelectedQuote,
     selectTradingProviderByNameAndTradeType,
@@ -5,7 +6,6 @@ import {
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { useTradingBuyConfirm } from 'src/hooks/wallet/trading/useTradingBuyConfirm';
 import { DiscoveryWarning } from 'src/views/wallet/staking/components/StakingDashboard/components/DiscoveryWarning';
 import { TradingFooter } from 'src/views/wallet/trading/common/TradingFooter/TradingFooter';

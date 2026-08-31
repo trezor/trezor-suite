@@ -6,6 +6,7 @@ import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     buyThunks,
     selectTradingAccountKeyByTradeType,
@@ -19,7 +20,6 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useSelector } from 'src/hooks/suite';
 import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
 export const useTradingBuyConfirm = () => {

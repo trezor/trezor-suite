@@ -2,6 +2,7 @@ import { selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectRouterParams } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { Row } from '@trezor/components';
 import { ButtonGroup } from '@trezor/components/src/components/buttons/ButtonGroup/ButtonGroup';
 import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
@@ -9,7 +10,6 @@ import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
-import { useSelector } from 'src/hooks/suite';
 import { type WalletParams } from 'src/types/wallet';
 
 import { HeaderDropdown } from './HeaderDropdown';

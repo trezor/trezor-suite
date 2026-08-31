@@ -1,7 +1,7 @@
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { Row, Text } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
 
 interface TradingFormOfferFiatAmountProps {

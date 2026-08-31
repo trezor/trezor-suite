@@ -6,11 +6,11 @@ import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { useSelector } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Paragraph } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { selectProtocolSendFormScheme } from 'src/selectors/suite/protocolSelectors';
 
 interface AssetsListEmptyProps {

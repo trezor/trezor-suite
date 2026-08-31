@@ -4,9 +4,7 @@ import { useDispatch } from 'react-redux';
 import { selectIsConnectionModalOpen, setConnectionModal, setConnectionMode } from '@suite/device';
 import { goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
-
-import { useSelector } from 'src/hooks/suite';
-
+import { useSelector } from '@suite-common/redux-utils';
 export const useFirmwareUpgradeModal = () => {
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);

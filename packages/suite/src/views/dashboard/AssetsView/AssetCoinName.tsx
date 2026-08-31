@@ -1,10 +1,8 @@
+import { useSelector } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
 import { selectVisibleNonEmptyDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { Column, Note, Skeleton } from '@trezor/components';
 import { WalletIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite';
-
 type AssetCoinNameProps = {
     network: Network;
 };

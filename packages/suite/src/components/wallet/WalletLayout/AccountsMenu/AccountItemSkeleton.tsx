@@ -1,7 +1,7 @@
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { useSelector } from '@suite-common/redux-utils';
 import { Column, Row, Skeleton } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 export const AccountItemSkeleton = () => {

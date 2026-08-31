@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { Column, LoadingContent, Text } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 
 import { useFeesContext } from '../context/FeesContext';
 import { type TransactionMaxFee } from './hooks/useTransactionMaxFee';

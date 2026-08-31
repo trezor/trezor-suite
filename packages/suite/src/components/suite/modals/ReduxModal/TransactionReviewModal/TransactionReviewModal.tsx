@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { goto } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     cancelSignSendFormTransactionThunk,
     selectPrecomposedSendForm,
@@ -24,7 +25,6 @@ import {
     signTransaction,
 } from 'src/actions/wallet/stakeActions';
 import { cancelSignTronFreezeTx } from 'src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
-import { useSelector } from 'src/hooks/suite';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';

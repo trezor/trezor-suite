@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { type ActiveView } from '@suite-common/suite-types';
 import { Box, Modal, ResizableBox, variables } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
@@ -21,7 +22,6 @@ import {
 } from 'src/components/guide';
 import { MIN_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { GUIDE_ANIMATION_DURATION_MS, useGuide } from 'src/hooks/guide';
-import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 const getGuideContent = (activeView: ActiveView) => {

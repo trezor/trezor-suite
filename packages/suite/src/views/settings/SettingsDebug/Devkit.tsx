@@ -1,11 +1,9 @@
 import { useDispatch } from 'react-redux';
 
 import { firmwareActions, selectUseDevkit } from '@suite-common/firmware';
+import { useSelector } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const Devkit = () => {
     const dispatch = useDispatch();
     const useDevkit = useSelector(selectUseDevkit);

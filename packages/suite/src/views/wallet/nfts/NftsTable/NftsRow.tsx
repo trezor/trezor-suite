@@ -6,6 +6,7 @@ import { RedactNumericalValue } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     DefinitionType,
     type EnhancedTokenInfo,
@@ -44,7 +45,6 @@ import {
 
 import { setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { DropdownRow } from '../../tokens/DropdownRow';

@@ -2,11 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { getFirstSessionPhaseFromRoundPhase, selectSessionByAccountKey } from '@suite/coinjoin';
 import { type SessionPhase } from '@suite/coinjoin';
+import { useSelector } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { SESSION_PHASE_TRANSITION_DELAY } from 'src/constants/suite/coinjoin';
-import { useSelector } from 'src/hooks/suite/useSelector';
-
 const checkExpiration = (lastChangeTimestamp: number) => {
     const currentTimestamp = Date.now();
     const expirationTimestamp = lastChangeTimestamp + SESSION_PHASE_TRANSITION_DELAY;

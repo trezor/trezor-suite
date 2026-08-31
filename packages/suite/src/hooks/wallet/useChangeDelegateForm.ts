@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo } from 'reac
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import {
     selectBaseCurrency,
@@ -16,7 +17,6 @@ import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { throwError } from '@trezor/utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
 
 import { useFees } from './form/useFees';

@@ -4,6 +4,7 @@ import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { Button, Card, Column, Row } from '@trezor/components';
@@ -13,7 +14,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector, HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import {
     aggregateBalanceHistory,

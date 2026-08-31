@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     noQuotaLeftWarningDismissed,
     selectShouldDisplayOutOfQuotaAlert,
@@ -10,9 +11,6 @@ import {
 import { Banner, Button, IconButton } from '@trezor/components';
 import { InfoIcon, XIcon } from '@trezor/icons';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const OutOfQuotaBanner = () => {
     const dispatch = useDispatch();
 

@@ -5,13 +5,12 @@ import { UNECONOMICAL_COINJOIN_THRESHOLD } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { goto } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { convertAmountSubunitsToUnits, getAccountDecimals } from '@suite-common/wallet-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { ArrowsInIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useSelector } from 'src/hooks/suite/useSelector';
-
 export const UnecoCoinjoinModal = () => {
     const account = useSelector(selectSelectedAccount);
     const dispatch = useDispatch();

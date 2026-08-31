@@ -3,11 +3,9 @@ import { useDispatch } from 'react-redux';
 import { selectSelectedAccount } from '@suite/account';
 import { stopCoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { ArrowsInIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite/useSelector';
-
 type CancelCoinjoinModalProps = {
     onClose: () => void;
 };

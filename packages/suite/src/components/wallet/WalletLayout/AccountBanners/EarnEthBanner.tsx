@@ -6,13 +6,12 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
-import { useSelector } from 'src/hooks/suite';
-
 type EarnEthBannerProps = {
     networkSymbol: NetworkSymbol;
     apy: number | null;

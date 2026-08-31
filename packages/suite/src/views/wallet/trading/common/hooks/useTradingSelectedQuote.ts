@@ -1,5 +1,6 @@
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import { useSelector } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_FORM_PAYMENT_METHOD_SELECT,
@@ -10,9 +11,6 @@ import {
     type TradingType,
     selectTradingSelectedQuoteByFormValues,
 } from '@suite-common/trading';
-
-import { useSelector } from 'src/hooks/suite';
-
 type TradingSelectedQuoteFormFields = {
     provider?: string;
     paymentMethod?: TradingPaymentMethodListProps;

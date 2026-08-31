@@ -12,7 +12,7 @@ jest.mock('@suite/router', () => ({
     goto: () => ({ type: 'goto' }),
 }));
 
-jest.mock('src/hooks/suite', () => ({
+jest.mock('react-redux', () => ({
     useDispatch: () => () => {},
 }));
 

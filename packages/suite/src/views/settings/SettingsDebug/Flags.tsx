@@ -8,12 +8,10 @@ import {
     setFlag,
     setNewContentIndicatorSeen,
 } from '@suite/flags';
+import { useSelector } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { typedObjectEntries, typedObjectValues } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
-
 type FlagEntry = [keyof FlagsState, FlagsState[keyof FlagsState]];
 type BooleanFlagEntry = [BooleanFlagKey, boolean];
 

@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import {
     type FormOptions,
@@ -20,8 +21,6 @@ import { BigNumber } from '@trezor/utils';
 import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
 
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
-import { useSelector } from '../suite';
-
 export type GetCurrentRateParams = {
     currencyCode: BaseCurrencyCode;
     tokenAddress: TokenAddress;

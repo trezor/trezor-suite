@@ -3,6 +3,7 @@ import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     EarnFlow,
     type EarnProvider,
@@ -14,8 +15,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { MORPHO_DISCLAIMER_URL, TREZOR_SUITE_TOS_URL } from '@trezor/urls';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
 import { YieldProviderConsentBanners } from './components/YieldProviderConsentBanners';

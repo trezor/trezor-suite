@@ -4,6 +4,7 @@ import { useDevice } from '@suite/device';
 import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { Column, H2, Modal, Paragraph, Row, StepList } from '@trezor/components';
 import { type Device } from '@trezor/connect';
@@ -17,7 +18,6 @@ import { usePreviousDefined } from '@trezor/react-utils';
 
 import { WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
-import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 const RebootDeviceGraphics = ({

@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { accountSearchFn } from '@suite-common/wallet-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { type AccountOption } from './useAccountsOptions';

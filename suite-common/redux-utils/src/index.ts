@@ -5,5 +5,6 @@ export * from './createMiddleware';
 export * from './createReducerWithExtraDeps';
 export * from './createSingleInstanceThunk';
 export * from './hooks/useSelectorDeepComparison';
+export * from './hooks/useSelector';
 export * from './selectorsUtils';
 export * from './extraWithStoreThunkMiddleware';

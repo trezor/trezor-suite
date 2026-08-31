@@ -1,9 +1,7 @@
 import { Translation } from '@suite/intl';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { Modal } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const PinInvalidModal = ({ onCancel }: { onCancel: () => void }) => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 

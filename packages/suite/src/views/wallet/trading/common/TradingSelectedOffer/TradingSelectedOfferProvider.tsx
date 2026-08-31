@@ -1,6 +1,7 @@
 import { type ComponentType, type ReactNode, useCallback, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type TradingType,
     selectTradingProvidersByTradeType,
@@ -9,7 +10,6 @@ import {
 import { Column, GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     isTradingBuyContext,

@@ -5,6 +5,7 @@ import { type TranslationKey } from '@suite/intl';
 import { type EarnParams, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2, useGetVaultByAddress } from '@suite-common/earn-stablecoin-api';
+import { useSelector } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type EarnAnalyticsStep } from '@suite-common/suite-types/src/staking';
 import { getNetworkByYieldXyzId, getNetworkOptional } from '@suite-common/wallet-config';
@@ -18,7 +19,7 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { YieldPageHeader } from 'src/components/earn';
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
-import { useLayout, useSelector } from 'src/hooks/suite';
+import { useLayout } from 'src/hooks/suite';
 import { type EarnLayoutState } from 'src/types/earn/earnLayout';
 
 type EarnYieldAnalyticsStep = Extract<EarnAnalyticsStep, 'yield-deposit' | 'yield-withdraw'>;

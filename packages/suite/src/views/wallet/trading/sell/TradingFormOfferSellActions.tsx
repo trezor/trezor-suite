@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux';
 
+import { useSelector } from '@suite-common/redux-utils';
 import {
     selectIsTradingNetworkFeeMissing,
     selectTradingSellProviders,
@@ -9,7 +10,6 @@ import {
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 
 import { selectSellQuoteThunk } from 'src/actions/wallet/trading/sell/selectSellQuoteThunk';
-import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { getTradingFirstOutput } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';

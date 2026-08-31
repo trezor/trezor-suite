@@ -1,7 +1,7 @@
 import { type FieldPath, useFormContext, useFormState } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { type FormState } from '@suite-common/wallet-types';
 import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';

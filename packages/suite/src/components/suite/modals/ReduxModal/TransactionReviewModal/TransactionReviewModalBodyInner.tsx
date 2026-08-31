@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import {
     type SerializedTx,
@@ -33,7 +34,6 @@ import { Modal, Row } from '@trezor/components';
 import { type Deferred } from '@trezor/utils';
 
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { useSelector } from 'src/hooks/suite';
 import { getTransactionReviewModalActionTranslation } from 'src/utils/suite/transactionReview';
 
 import { TransactionReviewModalBottomContent } from './TransactionReviewOutputList/TransactionReviewModalBottomContent';

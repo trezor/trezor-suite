@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import { type SellFiatTradeQuoteRequest } from 'invity-api';
 
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type TradingAssetOption,
     type TradingAssetSellOption,
@@ -18,7 +19,6 @@ import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingSellFormRedirectValues = (

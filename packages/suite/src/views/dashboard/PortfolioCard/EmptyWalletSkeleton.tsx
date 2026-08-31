@@ -1,8 +1,6 @@
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { useSelector } from '@suite-common/redux-utils';
 import { Column, Skeleton } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const EmptyWalletSkeleton = () => {
     const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
 

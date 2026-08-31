@@ -11,6 +11,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     YIELD_FLOW_AVAILABLE_STEPS,
     isStablecoinYieldSupported,
@@ -23,7 +24,6 @@ import { Banner, Button, Card, Column, Text } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
 import { claimMerklRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
-import { useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 

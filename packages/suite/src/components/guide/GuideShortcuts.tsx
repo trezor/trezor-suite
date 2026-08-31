@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceProtectedByPassphrase } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     Box,
     CardList,
@@ -16,8 +17,6 @@ import { isDesktop } from '@trezor/env-utils';
 
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
-import { useSelector } from 'src/hooks/suite';
-
 type ShortcutKeys = ShortcutBadgeProps['shortcut'];
 type TranslationId = Parameters<typeof Translation>[0]['id'];
 

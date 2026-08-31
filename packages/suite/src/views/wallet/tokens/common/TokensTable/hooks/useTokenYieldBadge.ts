@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { selectBestEnabledYieldVault } from '@suite-common/earn-stablecoin';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { useSelector } from '@suite-common/redux-utils';
 import { type EnhancedTokenInfo } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -12,8 +13,6 @@ import {
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 import type { TokensTableType } from '../types';
 

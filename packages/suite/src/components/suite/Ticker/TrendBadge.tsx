@@ -1,13 +1,11 @@
 import styled from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { localizePercentage } from '@suite-common/wallet-utils';
 import { Icon, type IconComponent } from '@trezor/components';
 import { TrendDownIcon, TrendUpIcon } from '@trezor/icons';
 import { type Color, typography } from '@trezor/theme';
-
-import { useSelector } from 'src/hooks/suite';
-
 const PercentageWrapper = styled.div<{ $color: Color }>`
     ${typography['body-sm-strong']}
     gap: 4px;

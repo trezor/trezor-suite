@@ -1,9 +1,7 @@
 import { MODAL_CONTEXT_USER } from '@suite/modal';
 import type { State as ModalState } from '@suite/modal';
+import { useSelector } from '@suite-common/redux-utils';
 import { type UserContextPayload } from '@suite-common/suite-types';
-
-import { useSelector } from 'src/hooks/suite';
-
 type ModalContext = ModalState['context'];
 type UserModalType = UserContextPayload['type'];
 type UserModalState = Extract<ModalState, { context: typeof MODAL_CONTEXT_USER }>;

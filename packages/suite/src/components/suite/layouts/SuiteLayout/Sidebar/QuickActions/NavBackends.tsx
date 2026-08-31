@@ -2,11 +2,11 @@ import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useSelector } from '@suite-common/redux-utils';
 import { type BlockchainState } from '@suite-common/wallet-core';
 import { Box, Column, DotIndicator, Note, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
 import type { CustomBackend } from 'src/types/wallet';
 
 const BackendRow = ({

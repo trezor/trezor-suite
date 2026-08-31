@@ -1,7 +1,7 @@
+import { useSelector } from '@suite-common/redux-utils';
 import { Card } from '@trezor/components';
 
 import { PrerequisitesGuide } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 import { type PrerequisiteType } from 'src/utils/suite/prerequisites';
 

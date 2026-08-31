@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import { Address } from '@suite/address';
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     type NetworkSymbolExtended,
@@ -17,8 +18,6 @@ import { ChangeIcon, WalletIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { UtxoAnonymity } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite/useSelector';
-
 const OP_RETURN_REGEX = /^OP_RETURN \(([^)]+)\)/;
 
 const ownershipIcon = {

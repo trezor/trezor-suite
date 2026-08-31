@@ -1,10 +1,8 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { isCrossChainTrade, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { Icon, Row, Spinner, Text } from '@trezor/components';
 import { ShieldCheckIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite';
-
 const ICON_SIZE = 16;
 const SIMULATION_PROVIDER = 'Blockaid';
 

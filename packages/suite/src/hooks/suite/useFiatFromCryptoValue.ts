@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { type RateTypeWithoutHistoric, type TokenAddress } from '@suite-common/wallet-types';
 import { type AmountUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 interface CommonOwnProps {
     amount: string | AmountUnit; // Todo: remove `string` only for back compatibility

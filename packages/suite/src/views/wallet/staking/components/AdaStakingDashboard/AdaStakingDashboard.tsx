@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
     fetchAllTransactionsForAccountThunk,
@@ -15,7 +16,7 @@ import { getStakingDataForNetwork, isCardanoStakedWithEverstake } from '@suite-c
 import { Column, Flex, Grid } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite';
 
 import { CardanoNewProviderCard } from './CardanoNewProviderCard';
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';

@@ -2,11 +2,10 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { addDeviceIdToSeenDisconnectNotification } from '../../actions/suite/suiteActions';
-import { useSelector } from '../../hooks/suite';
-
 export const useNotificationForDisconnectedDevice = () => {
     const dispatch = useDispatch();
 

@@ -2,13 +2,14 @@ import { type MouseEvent, type ReactNode } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { type Route, goto } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useAccountSearch, useSelector } from 'src/hooks/suite';
+import { useAccountSearch } from 'src/hooks/suite';
 
 type AssetActionButtonRoute = Extract<Route['name'], 'wallet-staking' | 'wallet-trading-buy'>;
 

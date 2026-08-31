@@ -2,11 +2,9 @@ import { useDispatch } from 'react-redux';
 
 import { selectIsSessionAutostopped, toggleAutostopCoinjoin } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Checkbox, Text } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite/useSelector';
-
 type AutoStopButtonProps = {
     relatedAccountKey: AccountKey;
 };

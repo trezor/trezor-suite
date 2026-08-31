@@ -7,10 +7,8 @@ import {
     earnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrls,
 } from '@suite-common/earn-stablecoin-api';
+import { useSelector } from '@suite-common/redux-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const EarnApi = () => {
     const dispatch = useDispatch();
     const storedValue = useSelector(selectEarnYieldWorkerBaseUrl);

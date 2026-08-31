@@ -1,6 +1,7 @@
 import { RedactNumericalValue } from '@suite/discreet-mode';
 import { TrezorLink } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type SignValue } from '@suite-common/suite-types';
 import { type NetworkSymbol, getExplorerUrl, getNetworkType } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
@@ -10,7 +11,6 @@ import { type TokenTransfer } from '@trezor/connect';
 import { type TypographyStyle } from '@trezor/theme';
 
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 export interface FormattedNftAmountProps {

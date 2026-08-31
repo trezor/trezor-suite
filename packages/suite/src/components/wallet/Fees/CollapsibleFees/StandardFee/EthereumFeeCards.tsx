@@ -3,6 +3,7 @@ import { useFormState } from 'react-hook-form';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -11,7 +12,7 @@ import { Grid, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite';
-import { useLocales, useSelector } from 'src/hooks/suite';
+import { useLocales } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';
 import { FeeCardsWrapper } from './StandardFee.styles';

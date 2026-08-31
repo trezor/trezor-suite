@@ -6,11 +6,10 @@ import {
     selectCurrentCoinjoinSession,
 } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { isZero } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { CheckIcon, PauseIcon, ShuffleIcon, XIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { CryptoAmountWithHeader } from './CryptoAmountWithHeader';
 

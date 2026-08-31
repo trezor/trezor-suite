@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { goto, selectRouteName } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
@@ -9,7 +10,6 @@ import { Route } from 'src/components/suite/Route';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import { StellarTokenInputModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarTokenInputModal';
 import { WalletLayout } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
 
 import { TokensNavigation } from './TokensNavigation';
 import { CoinsTable } from './coins/CoinsTable';

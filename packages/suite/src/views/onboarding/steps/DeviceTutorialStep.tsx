@@ -5,13 +5,12 @@ import { useDispatch } from 'react-redux';
 import { Translation, messages } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import TrezorConnect from '@trezor/connect';
 import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
 
 import { beginOnboardingTutorial } from 'src/actions/onboarding/onboardingActions';
-import { useSelector } from 'src/hooks/suite';
-
 export const DeviceTutorialStep = () => {
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();

@@ -3,6 +3,7 @@ import { type FieldErrors, useFormContext, useWatch } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type SelectedTradingAsset,
     TRADING_FORM_FIAT_CURRENCY_SELECT,
@@ -26,7 +27,6 @@ import { type BaseCurrencyCode, isFiatBaseCurrencyCode } from '@trezor/blockchai
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';

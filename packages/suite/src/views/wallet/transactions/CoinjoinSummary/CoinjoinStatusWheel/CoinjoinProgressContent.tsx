@@ -8,6 +8,7 @@ import {
     selectRoundsDurationInHours,
 } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Icon, Spinner, Tooltip } from '@trezor/components';
 import { PauseIcon, PlayIcon, StopIcon } from '@trezor/icons';
@@ -15,8 +16,6 @@ import { typography } from '@trezor/theme';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { useSelector } from 'src/hooks/suite/useSelector';
-
 export const Container = styled.div<{ $isWide: boolean }>`
     width: ${({ $isWide }) => `calc(100% - ${$isWide ? 12 : 8}px)`};
     height: ${({ $isWide }) => `calc(100% - ${$isWide ? 12 : 8}px)`};

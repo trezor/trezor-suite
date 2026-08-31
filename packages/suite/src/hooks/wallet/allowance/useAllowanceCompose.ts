@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useMutation } from '@tanstack/react-query';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
     type ComposeAllowanceTransactionThunkParams,
@@ -24,7 +25,6 @@ import {
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { useCurrentRef, useDebounce } from '@trezor/react-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 
 interface UseAllowanceComposeParams {

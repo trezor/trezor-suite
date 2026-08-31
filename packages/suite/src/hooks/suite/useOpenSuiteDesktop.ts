@@ -1,10 +1,10 @@
 import { type TransportName, type TransportsDep } from '@suite-common/connect-init';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 
-import { useSelector } from 'src/hooks/suite';
 import {
     selectActiveTransports,
     selectHasTransportOfType,

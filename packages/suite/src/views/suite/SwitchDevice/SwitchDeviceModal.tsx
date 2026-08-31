@@ -5,10 +5,8 @@ import styled from 'styled-components';
 
 import { TrafficLightOffset } from '@suite/macos';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useSelector } from '@suite-common/redux-utils';
 import { Column, Modal } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite/useSelector';
-
 type SwitchDeviceModalProps = {
     children?: React.ReactNode;
     onCancel?: () => void;

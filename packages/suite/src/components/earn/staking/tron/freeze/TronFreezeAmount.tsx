@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { TRON_STAKING_RESERVE } from '@suite-common/wallet-constants';
@@ -20,7 +21,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useSelector } from 'src/hooks/suite';
 import {
     validateDecimals,
     validateMin,

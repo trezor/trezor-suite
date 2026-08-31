@@ -7,11 +7,9 @@ import {
     selectFeatureConfig,
     validateTradingSurvey,
 } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import { Card, Column, H2, Paragraph } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite';
-
 const safeValidateTradingSurvey = (data: unknown): TradingSurveyPayload | null => {
     try {
         return validateTradingSurvey(data);

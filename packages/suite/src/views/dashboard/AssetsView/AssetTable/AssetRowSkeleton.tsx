@@ -1,7 +1,6 @@
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { useSelector } from '@suite-common/redux-utils';
 import { Row, Skeleton, Table } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { AssetCoinLogoSkeleton } from '../AssetCoinLogo';
 

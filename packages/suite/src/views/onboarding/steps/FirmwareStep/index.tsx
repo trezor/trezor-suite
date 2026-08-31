@@ -10,6 +10,7 @@ import { Translation } from '@suite/intl';
 import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { CircuitryIcon } from '@trezor/icons';
@@ -17,7 +18,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { FirmwareInstallationProgressCheck } from 'src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
 import { ThpPairingStep } from 'src/components/onboarding/ThpPairingStep/ThpPairingStep';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding } from 'src/hooks/suite';
 
 import { FirmwareInitialStep } from './FirmwareInitialStep';
 import { FirmwareInstallationStep } from './FirmwareInstallationStep';

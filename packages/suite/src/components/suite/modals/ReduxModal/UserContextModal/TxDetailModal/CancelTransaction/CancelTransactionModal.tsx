@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
     type ComposeCancelTransactionPartialAccount,
@@ -18,7 +19,6 @@ import {
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Banner, Column, Modal } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { CancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
 import { useEthereumCancelTxCompose } from 'src/hooks/wallet/useEthereumCancelTxCompose';
 

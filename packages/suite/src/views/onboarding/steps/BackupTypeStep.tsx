@@ -6,12 +6,13 @@ import { SelectBackupType as SelectBackupMedium } from '@suite/nfc';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { type BackupType } from '@suite-common/suite-types';
 import { Badge, Column, Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { WalletIcon } from '@trezor/icons';
 
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding } from 'src/hooks/suite';
 
 import { SelectBackupType } from './SelectBackupType/SelectBackupType';
 import { isShamirBackupType } from './utils';

@@ -1,13 +1,12 @@
 import { useWatch } from 'react-hook-form';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
 import { LoadingContent } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { TronFeeContent } from './TronFeeContent';
 import { useFeesContext } from '../../context/FeesContext';

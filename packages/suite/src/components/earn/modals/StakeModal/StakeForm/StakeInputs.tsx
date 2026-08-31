@@ -3,6 +3,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { useSelector } from '@suite-common/redux-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type StakeFormState } from '@suite-common/wallet-types';
@@ -13,7 +14,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
-import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 import { validateStakingMax } from 'src/utils/suite/staking';
 import {

@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { getInstantStakeType } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -23,7 +24,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { CancelTransactionModal } from './CancelTransaction/CancelTransactionModal';

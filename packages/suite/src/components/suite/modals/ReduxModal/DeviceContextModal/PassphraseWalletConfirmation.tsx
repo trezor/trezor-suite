@@ -1,11 +1,11 @@
 import { Translation } from '@suite/intl';
 import { selectDeviceModel } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { Banner, Column, H3 } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 

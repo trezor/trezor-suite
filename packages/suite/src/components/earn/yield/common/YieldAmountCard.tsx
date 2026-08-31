@@ -4,6 +4,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { Translation, useTranslation } from '@suite/intl';
 import type { TranslationKey } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { YieldFlowFormValues } from '@suite-common/wallet-core';
 import { toTokenAddress } from '@suite-common/wallet-types';
@@ -11,7 +12,6 @@ import { Banner, Button, Card, Column, Row, Text, TextButton } from '@trezor/com
 import { NumberInput } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { validateDecimals } from 'src/utils/suite/validation';
 

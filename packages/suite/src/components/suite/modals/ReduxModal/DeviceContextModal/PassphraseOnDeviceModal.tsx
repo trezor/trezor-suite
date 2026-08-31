@@ -4,13 +4,13 @@ import styled from 'styled-components';
 
 import { Translation, messages } from '@suite/intl';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectIsDiscoveryStatusConfirmEmptyPassphrase } from '@suite-common/wallet-core';
 import { H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
-import { useSelector } from 'src/hooks/suite';
 import type { TrezorDevice } from 'src/types/suite';
 
 const ImageWrapper = styled.div`

@@ -12,6 +12,7 @@ import { ContextMessage } from '@suite/message-system';
 import { isRecoveryInProgress } from '@suite/recovery';
 import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device';
 import { Context } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import { getIsDeviceRemembered } from '@suite-common/suite-utils';
 import { Banner } from '@trezor/components';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
@@ -31,7 +32,6 @@ import { breakpoints } from '@trezor/theme';
 
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { useSelector } from 'src/hooks/suite';
 import { selectHasActiveTransport } from 'src/selectors/suite/suiteSelectors';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 import type { TrezorDevice } from 'src/types/suite';

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import type { DeviceRootState } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
@@ -20,7 +21,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { Column, H4 } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
 
 import { TransactionReviewOutput } from './TransactionReviewOutput';

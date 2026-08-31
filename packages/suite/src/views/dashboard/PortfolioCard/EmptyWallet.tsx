@@ -8,13 +8,11 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/components';
 import { ArrowDownIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 import { NetworkIconSet } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
-
 const RoundedBorder = styled.div`
     padding: 4px 6px 4px 12px;
     border: dashed 1px ${({ theme }) => theme.elementBorderField};

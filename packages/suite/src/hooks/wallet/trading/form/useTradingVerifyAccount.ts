@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     cryptoIdToNetworkSymbol,
     getUnusedAddressFromAccount,
@@ -18,7 +19,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useSelector } from 'src/hooks/suite';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import {
     type TradingGetTranslationIdsProps,

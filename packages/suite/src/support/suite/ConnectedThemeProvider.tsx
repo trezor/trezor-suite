@@ -1,8 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { selectTheme } from '@suite/settings';
-
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '@suite-common/redux-utils';
 
 import { ThemeProvider } from './ThemeProvider';
 

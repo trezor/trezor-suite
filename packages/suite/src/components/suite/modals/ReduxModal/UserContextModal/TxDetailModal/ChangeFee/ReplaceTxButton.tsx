@@ -1,9 +1,9 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 export const ReplaceTxButton = () => {

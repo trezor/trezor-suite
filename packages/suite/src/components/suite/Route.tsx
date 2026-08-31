@@ -1,9 +1,7 @@
 import { memo } from 'react';
 
 import { type Route as RouteType, selectRouteName } from '@suite/router';
-
-import { useSelector } from 'src/hooks/suite';
-
+import { useSelector } from '@suite-common/redux-utils';
 const RouteComponent = ({
     children,
     fallback,

@@ -7,6 +7,7 @@ import { openDeferredModal, openModal } from '@suite/modal';
 import { selectIsTorEnabled } from '@suite/tor';
 import { toggleTor } from '@suite/tor-desktop';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { type Network, type NetworkAccount, type NetworkSymbol } from '@suite-common/wallet-config';
@@ -14,7 +15,6 @@ import { type UnavailableCapabilities } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveAfter } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';

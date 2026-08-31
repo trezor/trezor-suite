@@ -1,6 +1,7 @@
 import { selectSelectedAccount } from '@suite/account';
 import { Address } from '@suite/address';
 import { useFormatters } from '@suite-common/formatters';
+import { useSelector } from '@suite-common/redux-utils';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -11,7 +12,6 @@ import { TokenIcon } from '@trezor/product-components';
 
 import { CoinBalance, HiddenPlaceholder } from 'src/components/suite';
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
-import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 
 interface ReceiveAccountItemProps {

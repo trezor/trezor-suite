@@ -1,10 +1,11 @@
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
 
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding } from 'src/hooks/suite';
 
 export const DeviceDifferentStep = () => {
     const { resetOnboarding, enableOnboardingReducer } = useOnboarding();

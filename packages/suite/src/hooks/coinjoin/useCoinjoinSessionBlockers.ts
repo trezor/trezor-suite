@@ -2,10 +2,8 @@ import { selectCoinjoinSessionBlockerByAccountKey } from '@suite/coinjoin';
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { Feature, selectFeatureMessageContent } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const useCoinjoinSessionBlockers = (
     accountKey: AccountKey,
 ): {

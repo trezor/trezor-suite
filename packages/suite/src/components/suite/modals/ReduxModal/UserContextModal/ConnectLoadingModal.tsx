@@ -1,10 +1,9 @@
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useSelector } from '@suite-common/redux-utils';
 import { Card, Column, Modal, Row, Spinner } from '@trezor/components';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { useSelector } from 'src/hooks/suite';
-
 export const ConnectLoadingModal = () => {
     const popupCall = useSelector(selectConnectPopupCall);
 

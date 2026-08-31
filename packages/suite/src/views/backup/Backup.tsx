@@ -4,12 +4,12 @@ import { selectBackup, selectBackupStatus } from '@suite/backup';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Column, Image, Modal, Text } from '@trezor/components';
 import { CheckIcon, WarningIcon } from '@trezor/icons';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
-import { useSelector } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
 
 import { BackupStep1Initial } from './BackupStep1Initial';

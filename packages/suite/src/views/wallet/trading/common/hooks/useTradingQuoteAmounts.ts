@@ -1,5 +1,6 @@
 import { type BuyTrade, type ExchangeTrade, type SellFiatTrade } from 'invity-api';
 
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type TradingTradeType,
     type TradingType,
@@ -9,7 +10,6 @@ import {
 } from '@suite-common/trading';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 
 export const useTradingQuoteAmounts = (

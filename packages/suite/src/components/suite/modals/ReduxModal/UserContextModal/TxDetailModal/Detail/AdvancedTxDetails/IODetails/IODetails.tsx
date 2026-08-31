@@ -1,9 +1,8 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAccountNetworkType, selectIsPhishingTransaction } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
 import { Column, Divider } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite/useSelector';
 
 import { CollapsibleIOSection } from './CollapsibleIOSection';
 import { IOGroup } from './IOGroup';

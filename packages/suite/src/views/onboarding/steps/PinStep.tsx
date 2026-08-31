@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { Button, Column } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { LockKeyIcon } from '@trezor/icons';
@@ -12,7 +13,7 @@ import { LockKeyIcon } from '@trezor/icons';
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PinMatrix } from 'src/components/suite';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding } from 'src/hooks/suite';
 
 export const PinStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);

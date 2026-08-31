@@ -4,6 +4,7 @@ import {
     useSolStakingRewardsWarning,
     useSolanaRewardsHistory,
 } from '@suite-common/earn-staking-api/src/staking';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     selectAccountIsStakingActive,
     selectHasRunningDiscovery,
@@ -19,7 +20,7 @@ import { useCurrentRef } from '@trezor/react-utils';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { usePagination } from 'src/hooks/general/usePagination';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite';
 
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { RewardsList } from './Rewards/RewardsList';

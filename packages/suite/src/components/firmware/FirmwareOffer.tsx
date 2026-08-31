@@ -1,6 +1,7 @@
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { getSuiteFirmwareTypeString, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     getChangelogUrl,
     getFwUpdateVersion,
@@ -12,8 +13,6 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { ArrowRightIcon } from '@trezor/icons';
 
 import { MarkdownWithComponents } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-
 type FirmwareOfferProps = {
     isCustomFirmware?: boolean;
     targetFirmwareType?: FirmwareType;

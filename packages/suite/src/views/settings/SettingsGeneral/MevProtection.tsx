@@ -4,6 +4,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import { getNetworksWithMevProtection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled, setMevProtection } from '@suite-common/wallet-core';
 import { Column, Switch } from '@trezor/components';
@@ -13,9 +14,6 @@ import {
     SettingsRequirementBanner,
     TextColumn,
 } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const MevProtection = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();

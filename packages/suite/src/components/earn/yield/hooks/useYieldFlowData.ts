@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type GetResolvedYieldFlowDataProps,
     type ResolvedYieldFlowData,
@@ -8,9 +9,6 @@ import {
     useMissingRateTickersQuery,
 } from '@suite-common/wallet-core';
 import { type TickerId, toTokenAddress } from '@suite-common/wallet-types';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const useYieldFlowData = ({
     account,
     vault,

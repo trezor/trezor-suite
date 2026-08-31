@@ -11,6 +11,7 @@ import {
 import { Translation } from '@suite/intl';
 import { selectIsMetadataProviderConnected } from '@suite/metadata';
 import { selectRouteName } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectBaseCurrency, selectFees, selectSendRaw } from '@suite-common/wallet-core';
 import { Banner, Column } from '@trezor/components';
@@ -18,7 +19,6 @@ import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals/ConfirmEvmExplanationModal';
 import { WalletLayout } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
 import { SendContext, type UseSendFormProps, useSendForm } from 'src/hooks/wallet/useSendForm';
 import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
 

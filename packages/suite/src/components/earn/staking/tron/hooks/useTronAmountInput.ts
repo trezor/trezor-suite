@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -10,8 +11,6 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { type TronStakeFormValues } from './useTronStakeForm';
 

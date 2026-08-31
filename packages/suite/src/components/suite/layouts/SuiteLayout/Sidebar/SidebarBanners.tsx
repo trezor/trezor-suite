@@ -14,10 +14,9 @@ import {
     SuiteSyncPromoBanner,
     selectShouldShowSuiteSyncPromoBanner,
 } from '@suite/metadata-migration';
+import { useSelector } from '@suite-common/redux-utils';
 import { Box } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
-
-import { useSelector } from 'src/hooks/suite';
 
 import {
     NoDeviceEshopSidebarBanner,

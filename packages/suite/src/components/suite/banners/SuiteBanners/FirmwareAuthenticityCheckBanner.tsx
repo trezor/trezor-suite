@@ -8,12 +8,10 @@ import {
     type SkippedHashCheckError,
     type SkippedRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
+import { useSelector } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { type FirmwareHashCheckError, type FirmwareRevisionCheckError } from '@trezor/connect';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
-
-import { useSelector } from 'src/hooks/suite';
-
 const revisionCheckMessages: Record<
     Exclude<FirmwareRevisionCheckError, SkippedRevisionCheckError>,
     TranslationKey

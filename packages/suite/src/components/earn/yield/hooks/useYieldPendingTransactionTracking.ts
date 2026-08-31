@@ -5,6 +5,7 @@ import { type AnalyticsDesktopEvents, selectDesktopAnalyticsDep } from '@suite/a
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type YieldFlowType,
     type YieldPendingTransactionState,
@@ -26,9 +27,6 @@ import {
 import { type Analytics } from '@trezor/analytics-uploader';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef } from '@trezor/react-utils';
-
-import { useSelector } from 'src/hooks/suite';
-
 const DEFAULT_PENDING_TX_POLL_INTERVAL_MS = 3_000;
 const MIN_PENDING_TX_POLL_INTERVAL_MS = 2_000;
 const BLOCK_TIME_TO_POLL_INTERVAL_RATIO = 2;

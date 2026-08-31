@@ -1,13 +1,12 @@
 import { useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isUtxoBased } from '@suite-common/wallet-utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { ReceiveAccountModal } from './ReceiveAccountModal';
 import { UtxoReceiveAddressModal } from './UtxoReceiveAddressModal';

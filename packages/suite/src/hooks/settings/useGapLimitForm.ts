@@ -1,11 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
-
-import { useSelector } from '../suite';
-
 const DEFAULT_GAP_LIMIT = 20;
 
 export const useGapLimitForm = (symbol: NetworkSymbol) => {

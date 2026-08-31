@@ -1,7 +1,7 @@
+import { useSelector } from '@suite-common/redux-utils';
 import { Checkbox } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
 import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
 import { selectTransportOfType } from 'src/selectors/suite/suiteSelectors';
 

@@ -7,9 +7,9 @@ import { selectFlags, setFlag } from '@suite/flags';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import { type Feature as MessageFeature } from '@suite-common/suite-types';
 
-import { useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { BannerCarousel, type CarouselBanner } from './BannerCarousel';

@@ -3,6 +3,7 @@ import { type JSX } from 'react';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAreSatsAmountUnit,
@@ -15,8 +16,6 @@ import { Skeleton, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/compo
 import { isArrayMember } from '@trezor/utils';
 
 import { BaseCurrencyValue, HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-
 const FiatValueRenderComponent = ({ value }: { value: JSX.Element | null }) => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
     if (discreetMode || value === null) return value;

@@ -4,10 +4,8 @@ import styled from 'styled-components';
 
 import { coinjoinAccountToggleSkipRounds, selectCurrentCoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { H3, Paragraph, Switch, Text } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite/useSelector';
-
 const Row = styled.div`
     display: flex;
     gap: 12px;

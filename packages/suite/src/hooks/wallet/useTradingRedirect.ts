@@ -10,6 +10,7 @@ import {
 } from 'invity-api';
 
 import { goto } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     parseCryptoId,
     tradingActions,
@@ -20,7 +21,6 @@ import {
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type FeeLevel, type TokenInfo } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 interface BuyOfferRedirectParams {

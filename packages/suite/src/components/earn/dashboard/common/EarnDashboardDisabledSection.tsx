@@ -1,9 +1,9 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { EarnAnchor, isEarnYieldRowAnchor, selectRouterAnchor, useAnchor } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { useSelector } from 'src/hooks/suite';
 import {
     type EarnDashboardType,
     useMessageSystemEarnDashboard,

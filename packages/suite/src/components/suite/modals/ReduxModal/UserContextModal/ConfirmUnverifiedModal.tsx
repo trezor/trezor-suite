@@ -8,12 +8,12 @@ import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 import { ShieldWarningIcon } from '@trezor/icons';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { type ShowXpubThunkState } from 'src/actions/wallet/publicKeyActions';
-import { useSelector } from 'src/hooks/suite';
 
 interface ConfirmUnverifiedModalProps {
     action: {

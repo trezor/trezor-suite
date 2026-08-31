@@ -10,11 +10,11 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectRouter } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type FeeLevel } from '@trezor/connect';
 import { typography } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
 import { useTradingRedirect } from 'src/hooks/wallet/useTradingRedirect';
 import { type Account } from 'src/types/wallet';
 

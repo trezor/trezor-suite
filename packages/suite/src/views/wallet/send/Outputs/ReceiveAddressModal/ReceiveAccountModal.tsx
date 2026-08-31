@@ -1,11 +1,11 @@
 import { selectPhysicalDeviceWallets, selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Badge, Column, Modal, Row, Select } from '@trezor/components';
 
 import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
-import { useSelector } from 'src/hooks/suite';
 
 import { ReceiveAccountModalAccountsList } from './ReceiveAccountModalAccountsList';
 

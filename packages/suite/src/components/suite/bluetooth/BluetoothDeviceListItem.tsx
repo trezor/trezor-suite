@@ -11,12 +11,12 @@ import {
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import { Button, Row } from '@trezor/components';
 import { type BluetoothDeviceId } from '@trezor/connect';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
-import { useSelector } from 'src/hooks/suite';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { PairingState } from './PairingState';

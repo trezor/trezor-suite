@@ -8,12 +8,11 @@ import {
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
 } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 
 import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
-import { useSelector } from 'src/hooks/suite';
-
 export const FirmwareAuthenticityChecks = () => {
     const dispatch = useDispatch();
     const isFirmwareHashCheckEnabled = useSelector(selectIsFirmwareHashCheckEnabled);

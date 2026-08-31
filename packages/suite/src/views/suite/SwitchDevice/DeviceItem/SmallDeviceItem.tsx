@@ -1,10 +1,9 @@
 import { Translation } from '@suite/intl';
 import { selectDeviceLabelOrNameById, selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Image, Row } from '@trezor/components';
 import { LinkBreakIcon, LinkIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { DeviceConnectionText } from './DeviceConnectionText';
 import { DeviceDetail } from './DeviceDetail';

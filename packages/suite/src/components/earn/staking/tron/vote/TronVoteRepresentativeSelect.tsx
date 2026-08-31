@@ -3,9 +3,8 @@ import { useFormState, useWatch } from 'react-hook-form';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation, useTranslation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { Column, Input, Row, Select, Text } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { formatApyValue } from '../../../utils/earnApyUtils';
 import { useTronStakeContext } from '../TronStakeContext';

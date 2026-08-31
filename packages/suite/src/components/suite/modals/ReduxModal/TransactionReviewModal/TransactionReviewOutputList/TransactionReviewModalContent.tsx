@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import {
     type SerializedTx,
@@ -21,8 +22,6 @@ import {
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../../UserContextModal/TxDetailModal/ReplaceByFeeFailedOriginalTxConfirmed';
 import { TransactionReviewDetails } from '../TransactionReviewDetails';

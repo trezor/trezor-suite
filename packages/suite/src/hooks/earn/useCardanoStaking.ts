@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { hasPendingStakeTypeTransaction, selectCardanoPoolsInfo } from '@suite-common/wallet-core';
 import {
     type ActionAvailability,
@@ -16,9 +17,6 @@ import {
     selectBestCardanoPool,
 } from '@suite-common/wallet-utils';
 import trezorConnect, { type CardanoCertificate } from '@trezor/connect';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const useCardanoStaking = (): CardanoStaking => {
     const account = useSelector(state => state.wallet.selectedAccount.account);
 

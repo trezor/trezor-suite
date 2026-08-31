@@ -1,11 +1,10 @@
+import { useSelector } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountsByDeviceStateAndNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { CardList, CollapsibleBox, Column, Text } from '@trezor/components';
 import { arrayPartition } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { ReceiveAccountItem } from './ReceiveAccountItem';
 

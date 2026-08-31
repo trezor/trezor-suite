@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { useSelector } from '@suite-common/redux-utils';
 import {
     selectAccountTransactionsWithNulls,
     selectIsLoadingAccountTransactions,
@@ -8,7 +9,6 @@ import { Column } from '@trezor/components';
 
 import { CoinjoinAccountDiscoveryProgress, WalletLayout } from 'src/components/wallet';
 import { SolanaLimitedHistoryBanner } from 'src/components/wallet/WalletLayout/AccountBanners/SolanaLimitedHistoryBanner';
-import { useSelector } from 'src/hooks/suite';
 import { type AppState } from 'src/types/suite';
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 

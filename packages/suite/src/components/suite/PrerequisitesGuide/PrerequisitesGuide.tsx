@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     deviceNeedsAttention,
     getStatus,
@@ -10,7 +11,6 @@ import {
 import { Column, Illustration, Paragraph, Text, motionEasing } from '@trezor/components';
 
 import { getMessageId } from 'src/components/suite/getMessageId';
-import { useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
 import { BannerAndTroubleshooting } from './BannerAndTroubleshooting';

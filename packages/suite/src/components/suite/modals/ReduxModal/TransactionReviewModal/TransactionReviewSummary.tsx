@@ -2,6 +2,7 @@ import { AccountLabel } from '@suite/account';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useSelector } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, networks } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
@@ -19,7 +20,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { useLocales } from 'src/hooks/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 

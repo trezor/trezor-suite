@@ -9,10 +9,10 @@ import {
 import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { Badge, Column, Modal, Paragraph } from '@trezor/components';
 
 import { PreBackupCheckboxes } from 'src/components/backup';
-import { useSelector } from 'src/hooks/suite';
 
 import { BackupStepDescription } from './BackupStepDescription';
 

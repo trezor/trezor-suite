@@ -5,10 +5,9 @@ import styled from 'styled-components';
 
 import { coinjoinAccountUpdateSetupOption, selectCoinjoinAccountByKey } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Banner, Card, Radio, motionAnimation, motionEasing } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite/useSelector';
 
 import { AnonymityLevelSetup } from './AnonymityLevelSetup';
 import { MaxMiningFeeSetup } from './MaxMiningFeeSetup';

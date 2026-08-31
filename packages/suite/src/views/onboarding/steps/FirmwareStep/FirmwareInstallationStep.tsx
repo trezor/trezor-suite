@@ -1,6 +1,7 @@
 import { FirmwareProgressBar, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { useSelector } from '@suite-common/redux-utils';
 import { Card, Column, Paragraph } from '@trezor/components';
 import { CircuitryIcon } from '@trezor/icons';
 
@@ -8,7 +9,6 @@ import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
 import { ReconnectDevicePrompt } from 'src/components/firmware/ReconnectDevicePrompt';
 import { RotatingPhrases } from 'src/components/firmware/RotatingPhrases';
 import { WebUsbButton } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 type FirmwareInstallationStepProps = {

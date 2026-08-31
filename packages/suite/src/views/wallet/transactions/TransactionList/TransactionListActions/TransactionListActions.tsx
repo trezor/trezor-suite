@@ -2,6 +2,7 @@ import { type Dispatch, type SetStateAction, useCallback, useEffect, useState } 
 import { useDispatch } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
@@ -11,7 +12,6 @@ import { Row } from '@trezor/components/src/components/Flex/Flex';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 
 import { setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
-import { useSelector } from 'src/hooks/suite';
 
 import { ExportAction } from './ExportAction';
 import { FilterAction } from './FilterAction';

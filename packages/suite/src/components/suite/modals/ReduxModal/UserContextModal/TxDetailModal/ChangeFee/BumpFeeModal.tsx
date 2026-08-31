@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectTransactionConfirmations } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -8,7 +9,6 @@ import {
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { RbfContext, useRbf } from 'src/hooks/wallet/useRbfForm';
 
 import { ChangeFee } from './ChangeFee';

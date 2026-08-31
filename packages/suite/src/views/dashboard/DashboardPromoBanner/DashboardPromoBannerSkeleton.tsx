@@ -1,7 +1,7 @@
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { useSelector } from '@suite-common/redux-utils';
 import { Box, Skeleton } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 export const DashboardPromoBannerSkeleton = () => {

@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { WarningIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout, WalletLayout } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
 
 import { AdaStakingDashboard } from './components/AdaStakingDashboard/AdaStakingDashboard';
 import { EthStakingDashboard } from './components/EthStakingDashboard/EthStakingDashboard';

@@ -13,6 +13,7 @@ import {
 } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import {
@@ -43,7 +44,7 @@ import { SecurityCheckButton } from 'src/components/suite/SecurityCheck/Security
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
-import { useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useOnboarding } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 

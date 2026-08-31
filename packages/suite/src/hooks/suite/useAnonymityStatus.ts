@@ -1,8 +1,7 @@
 import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
+import { useSelector } from '@suite-common/redux-utils';
 
 import { AnonymityStatus } from 'src/constants/suite/coinjoin';
-
-import { useSelector } from './useSelector';
 
 const getAnonymityStatus = (targetAnonymity: number) => {
     if (targetAnonymity < AnonymityStatus.Bad) {

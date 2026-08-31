@@ -6,6 +6,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     Box,
     Button,
@@ -30,7 +31,6 @@ import {
     selectIsManualPairingRequired,
     selectIsUnpairingDevice,
 } from 'src/actions/bluetooth/desktopBluetoothSelectors';
-import { useSelector } from 'src/hooks/suite';
 
 import { BluetoothAdapterStatusModal } from './BluetoothAdapterStatusModal';
 import { BluetoothConnectionModal } from './BluetoothConnectionModal';

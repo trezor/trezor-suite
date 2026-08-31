@@ -8,6 +8,7 @@ import { goto, selectRouteName } from '@suite/router';
 import { isBech32AddressUppercase } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { useSelector } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type NetworkSymbol,
@@ -21,7 +22,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
 import type { NotificationRendererProps } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { ConditionalActionRenderer } from './ConditionalActionRenderer';

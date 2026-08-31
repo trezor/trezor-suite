@@ -4,13 +4,11 @@ import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { Button, Row } from '@trezor/components';
 import { CaretLeftIcon, CaretRightIcon } from '@trezor/icons';
 import { NumberInput } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
-
-import { useSelector } from 'src/hooks/suite';
-
 const Wrapper = styled.div<{ $hasPages?: boolean }>`
     display: flex;
     align-items: center;

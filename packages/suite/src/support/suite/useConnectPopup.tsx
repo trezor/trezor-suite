@@ -10,6 +10,7 @@ import {
     queuePopupCall,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     CORE_CALL,
     CORE_CALL_CANCEL,
@@ -19,9 +20,6 @@ import {
     RESPONSE_EVENT,
     createPopupMessage,
 } from '@trezor/connect';
-
-import { useSelector } from 'src/hooks/suite';
-
 /**
  * Normalized incoming message from either the web or webextension popup link.
  */

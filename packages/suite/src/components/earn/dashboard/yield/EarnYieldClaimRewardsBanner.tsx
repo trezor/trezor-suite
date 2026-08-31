@@ -4,11 +4,10 @@ import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Banner, Row, Skeleton, Text, Tooltip } from '@trezor/components';
 import { HandCoinsIcon, InfoIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { EarnYieldClaimRewardsBannerAccountsTooltip } from './EarnYieldClaimRewardsBannerAccountsTooltip';
 import { EarnYieldClaimRewardsBannerTokensTooltip } from './EarnYieldClaimRewardsBannerTokensTooltip';

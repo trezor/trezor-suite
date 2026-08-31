@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { isPhishingTransaction } from '@suite-common/token-definitions';
 import {
@@ -14,7 +15,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getSynchronize } from '@trezor/utils';
 
-import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { useDiscovery } from 'src/hooks/suite';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { shouldAttemptToLoadNextPageForVisibleTransactions } from './transaction-fetch-utils';

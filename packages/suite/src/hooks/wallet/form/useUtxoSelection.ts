@@ -1,12 +1,12 @@
 import { useEffect, useMemo } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
 import { type ExcludedUtxos, type FormState, type UtxoSorting } from '@suite-common/wallet-types';
 import { getUtxoOutpoint, isSameUtxo } from '@suite-common/wallet-utils';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
 import {
     type SendContextValues,
     type UseSendFormState,

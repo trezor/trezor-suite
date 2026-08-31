@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { usePreferredCurrencyUsdThreshold } from '@suite-common/trading';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { useFreshRef } from '@trezor/react-utils';
 
 import { type AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
 import { type AssetGroupKey } from 'src/components/suite/asset-picker/utils/assetGroupKey';
-import { useSelector } from 'src/hooks/suite';
 
 import { useAssetsContext } from '../../../TradingFormInputAssetPicker';
 import { buildGroupedAssetOptions } from '../utils/buildGroupedAssetOptions';

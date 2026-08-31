@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { type ConnectionStatus } from '@suite-common/wallet-types';
@@ -13,8 +14,6 @@ import { typography } from '@trezor/theme';
 
 import { StatusLight } from 'src/components/suite';
 import { useBackendReconnection } from 'src/hooks/settings/backends';
-import { useSelector } from 'src/hooks/suite';
-
 const CoinSection = styled.div`
     display: flex;
     flex: 1;

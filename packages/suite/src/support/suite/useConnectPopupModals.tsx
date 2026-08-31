@@ -19,11 +19,9 @@ import {
     connectPopupCallThunkInner,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { useSelector } from '@suite-common/redux-utils';
 import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const useConnectPopupModals = () => {
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);

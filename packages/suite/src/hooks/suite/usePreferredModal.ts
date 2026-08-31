@@ -7,8 +7,8 @@ import {
     selectIsFullscreenApp,
     selectRouterApp,
 } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import type { ForegroundAppRoute } from 'src/types/suite';
 
 const HAS_PRIORITY_OVER_REDUX_MODAL: Record<ForegroundAppRoute['app'], boolean> = {

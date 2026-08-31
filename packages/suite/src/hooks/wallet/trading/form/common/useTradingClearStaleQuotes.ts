@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type TradingType,
     selectTradingQuotesByType,
@@ -8,9 +9,6 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-
-import { useSelector } from 'src/hooks/suite';
-
 type UseTradingClearStaleQuotesProps = {
     type: TradingType;
     isAmountEmpty: boolean;

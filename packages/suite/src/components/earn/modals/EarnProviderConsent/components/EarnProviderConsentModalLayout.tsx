@@ -1,12 +1,11 @@
 import { type ReactNode, useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { selectVotingDelegationOption } from '@suite-common/wallet-core';
 import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Card, Checkbox, Column, Modal } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
 
 interface EarnProviderConsentModalLayoutProps {
     heading: ReactNode;

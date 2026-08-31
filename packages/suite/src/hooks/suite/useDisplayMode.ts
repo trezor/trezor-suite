@@ -1,5 +1,6 @@
 import { selectSelectedAccount } from '@suite/account';
 import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import {
     AddressDisplayOptions,
@@ -8,8 +9,6 @@ import {
 } from '@suite-common/wallet-types';
 
 import { DisplayMode } from 'src/types/suite';
-
-import { useSelector } from './useSelector';
 
 type UseDisplayModeProps = {
     type: ReviewOutput['type'];

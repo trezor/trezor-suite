@@ -10,14 +10,12 @@ import { useExternalLink } from '@suite/external-links';
 import { getReleaseUrl } from '@suite/github';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Button, type ButtonProps } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-
-import { useSelector } from 'src/hooks/suite';
-
 const getUpdateStateMessage = (state: UpdateState) => {
     switch (state) {
         case UpdateState.Downloading:

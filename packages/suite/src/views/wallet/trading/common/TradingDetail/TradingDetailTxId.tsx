@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux';
 
 import { Address } from '@suite/address';
 import { openModal } from '@suite/modal';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     selectAccountByKey,
     selectTransactionByAccountKeyAndTxid,
@@ -9,7 +10,6 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Link, type TextProps } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 type TradingDetailTxIdProps = {

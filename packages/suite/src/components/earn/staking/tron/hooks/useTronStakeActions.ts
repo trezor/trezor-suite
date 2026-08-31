@@ -5,6 +5,7 @@ import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device'
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
+import { useSelector } from '@suite-common/redux-utils';
 import { TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS } from '@suite-common/wallet-constants';
 import {
     type TronFlow,
@@ -22,7 +23,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { getTronStakingRewards, getTronWithdrawableBalance } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { resolveVotedRepresentativeAddress } from '../voteUtils';

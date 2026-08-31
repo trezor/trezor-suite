@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     Banner,
     Button,
@@ -17,9 +18,6 @@ import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { CaretLeftIcon, DotOutlineFilledIcon, QuestionIcon } from '@trezor/icons';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { resolveAfter } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
-
 type WordInputAdvancedProps = {
     count: 6 | 9;
 };

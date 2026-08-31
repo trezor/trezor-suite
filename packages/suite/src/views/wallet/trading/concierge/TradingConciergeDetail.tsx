@@ -1,5 +1,6 @@
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { Translation, type TranslationId } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     Card,
     Column,
@@ -11,7 +12,6 @@ import {
 } from '@trezor/components';
 import { ArrowFatLinesRightIcon, MoneyIcon, UserIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
 
 import { TradingFooter } from '../common';

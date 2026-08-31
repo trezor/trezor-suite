@@ -8,10 +8,9 @@ import {
 import { type TranslationKey } from '@suite/intl';
 import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/device';
 import { type SkippedHashCheckError } from '@suite-common/firmware-authenticity';
+import { useSelector } from '@suite-common/redux-utils';
 import { Card } from '@trezor/components';
 import { type FirmwareHashCheckError } from '@trezor/connect';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { SecurityCheckFail } from './SecurityCheckFail';
 import { hardFailureChecklistItems, softFailureChecklistItems } from './checklistItems';

@@ -6,6 +6,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { type RouteParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { getTokens, selectAllAccountsToList } from '@suite-common/wallet-core';
@@ -15,7 +16,7 @@ import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type BaseItemProps, VirtualizedList } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useAccountSearch, useSelector } from 'src/hooks/suite';
+import { useAccountSearch } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 

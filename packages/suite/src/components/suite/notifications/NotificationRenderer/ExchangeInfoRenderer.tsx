@@ -1,12 +1,12 @@
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectTradingCoinSymbolByCryptoId } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { ExchangeInfoNotification } from '@trezor/product-components';
 
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
-import { useSelector } from 'src/hooks/suite/useSelector';
 
 import { AccountLabeling } from '../../labeling/AccountLabeling';
 

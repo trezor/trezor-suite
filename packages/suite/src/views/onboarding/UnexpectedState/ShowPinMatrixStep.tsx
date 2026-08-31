@@ -4,11 +4,12 @@ import { Translation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { Column } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 
 import { PinMatrix } from 'src/components/suite';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding } from 'src/hooks/suite';
 
 export const ShowPinMatrixStep = () => {
     const [pin, setPin] = useState('');

@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectAccountByKey, selectExplorer } from '@suite-common/wallet-core';
@@ -11,8 +12,6 @@ import {
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 import { GaugeIcon, XIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { TxDetailModalBase } from '../TxDetailModalBase';
 import { AdvancedTxDetails, type TabID } from './AdvancedTxDetails/AdvancedTxDetails';

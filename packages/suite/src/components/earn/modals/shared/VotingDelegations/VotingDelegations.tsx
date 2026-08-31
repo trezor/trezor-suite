@@ -1,12 +1,11 @@
 import React from 'react';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectVotingDelegationOption } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, CollapsibleBox, Row, Text } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { VotingDelegationsOptions } from './VotingDelegationsOptions';
 

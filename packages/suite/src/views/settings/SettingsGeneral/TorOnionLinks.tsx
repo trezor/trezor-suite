@@ -6,11 +6,9 @@ import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectTorOnionLinks, suiteSettingsActions } from '@suite/settings';
 import { selectIsTorEnabled, selectIsTorEnabling } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
-
 /* keep torOnionLinks value as it is but hide this section when tor is off.
    when tor is off this value has no effect anyway (handled by ExternalLink hook) */
 export const TorOnionLinks = () => {

@@ -7,12 +7,12 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
+import { useSelector } from '@suite-common/redux-utils';
 import { isDesktop } from '@trezor/env-utils';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { NEARBY_DEVICES_LAST_UPDATED_LIMIT } from 'src/actions/bluetooth/filterOutNonResponsiveDevices';
 import { isBluetoothDeviceReachable } from 'src/actions/bluetooth/isBluetoothDeviceReachable';
-import { useSelector } from 'src/hooks/suite';
 
 import {
     type UseBluetoothConnectionReturn,

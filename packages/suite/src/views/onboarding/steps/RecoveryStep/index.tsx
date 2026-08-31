@@ -17,6 +17,7 @@ import {
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
 import { Badge, Banner, Column } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -30,7 +31,6 @@ import {
 } from 'src/actions/onboarding/onboardingActions';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
 import * as STEP from 'src/constants/onboarding/steps';
-import { useSelector } from 'src/hooks/suite';
 
 import RecoveryStepBox from './RecoveryStepBox';
 

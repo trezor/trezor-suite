@@ -1,6 +1,7 @@
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
@@ -9,7 +10,7 @@ import { Grid, Modal } from '@trezor/components';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { StakeFormContext, useStakeForm } from 'src/hooks/earn/useStakeForm';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite';
 
 import { StakeButton } from './StakeForm/StakeButton';
 import { StakeForm } from './StakeForm/StakeForm';

@@ -1,5 +1,4 @@
 import { type ComponentType, type JSX } from 'react';
-import { useSelector } from 'react-redux';
 
 import { type ErrorCode } from 'invity-api';
 
@@ -11,6 +10,7 @@ import {
 } from '@suite/intl';
 import { TRADING_ERROR_MESSAGE } from '@suite/trading';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
 import { getTradingErrorDisplay } from '@suite-common/trading';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';

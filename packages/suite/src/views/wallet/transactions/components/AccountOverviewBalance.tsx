@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/wallet-core';
 import { isTestnet } from '@suite-common/wallet-utils';
@@ -8,7 +9,6 @@ import { TokenIcon } from '@trezor/product-components';
 
 import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useSelector } from 'src/hooks/suite';
 import { useAccountHeaderContext } from 'src/support/suite/AccountHeaderProvider';
 import { type AppState } from 'src/types/suite';
 

@@ -7,10 +7,8 @@ import {
     isCoinjoinSupportedSymbol,
 } from '@suite/coinjoin';
 import { type TranslationKey } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type ScanProgressInfo } from '@trezor/coinjoin';
-
-import { useSelector } from 'src/hooks/suite/useSelector';
-
 const INIT_THRESHOLD = 0.05;
 const MEMPOOL_THRESHOLD = 0.85;
 

@@ -4,6 +4,7 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowFormValues,
@@ -13,8 +14,6 @@ import {
 } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {

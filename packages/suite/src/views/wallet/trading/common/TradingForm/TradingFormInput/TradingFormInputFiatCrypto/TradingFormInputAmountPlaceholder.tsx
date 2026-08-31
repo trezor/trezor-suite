@@ -1,12 +1,12 @@
 import { useFormContext } from 'react-hook-form';
 
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectTradingLoadingAndTimestamp } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Spinner } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
 import {
     type TradingAllFormProps,
     type TradingFormInputFiatCryptoProps,

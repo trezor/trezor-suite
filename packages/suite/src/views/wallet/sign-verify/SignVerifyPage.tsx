@@ -1,8 +1,8 @@
 import { selectFullSelectedAccount } from '@suite/account';
 import { SignVerify } from '@suite/sign-verify';
+import { useSelector } from '@suite-common/redux-utils';
 
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
 export const SignVerifyPage = () => {

@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
@@ -15,7 +16,6 @@ import {
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Column } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { DayHeader } from './DayHeader';

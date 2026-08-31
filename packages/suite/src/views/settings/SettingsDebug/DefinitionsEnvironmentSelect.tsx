@@ -1,12 +1,10 @@
 import { useDispatch } from 'react-redux';
 
 import { selectDefinitionsChannel, suiteSettingsActions } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { type DefinitionsChannel } from '@trezor/connect-common';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
-
 const options: { label: string; value: DefinitionsChannel }[] = [
     { label: 'Production', value: 'production' },
     { label: 'Development', value: 'development' },

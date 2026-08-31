@@ -1,7 +1,7 @@
 import { useRef } from 'react';
-import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectThpStep } from '@suite-common/thp';
 
 import { DeviceDisconnectedStep } from 'src/views/onboarding/UnexpectedState/DeviceDisconnectedStep';

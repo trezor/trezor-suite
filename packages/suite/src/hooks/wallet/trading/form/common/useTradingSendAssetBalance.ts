@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type TradingAssetSellOption,
     type TradingComposedTransactionInfo,
@@ -13,7 +14,6 @@ import {
 } from '@suite-common/wallet-types';
 import { isErc4626, isZero } from '@suite-common/wallet-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { getFeeInUnits } from 'src/utils/wallet/trading/tradingUtils';
 

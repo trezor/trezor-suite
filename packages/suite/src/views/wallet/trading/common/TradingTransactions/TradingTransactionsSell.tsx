@@ -4,6 +4,7 @@ import { type SellProviderInfo } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type TradingTransactionSell as TradingTxSell,
     selectTradingComposedTransactionInfo,
@@ -12,7 +13,6 @@ import {
 } from '@suite-common/trading';
 import { Button } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { type Account } from 'src/types/wallet';
 import { TradingTransactionId } from 'src/views/wallet/trading/common';

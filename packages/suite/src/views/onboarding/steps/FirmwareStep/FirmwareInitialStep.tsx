@@ -10,6 +10,7 @@ import {
 import { Translation, useTranslation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDevices } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
@@ -21,7 +22,7 @@ import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatt
 import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PrerequisitesGuide } from 'src/components/suite';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding } from 'src/hooks/suite';
 
 const InstallButton = ({ children, ...rest }: ButtonProps) => (
     <Tooltip

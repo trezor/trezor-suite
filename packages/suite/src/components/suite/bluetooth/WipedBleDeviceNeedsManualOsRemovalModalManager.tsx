@@ -1,6 +1,5 @@
 import { selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
-
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '@suite-common/redux-utils';
 
 import { UnpairBluetoothDeviceFromOsModal } from './UnpairBluetoothDeviceFromOsModal';
 

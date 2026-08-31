@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { type CryptoId } from 'invity-api';
 
 import { selectIsTorEnabled } from '@suite/tor';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
@@ -17,7 +18,6 @@ import {
 } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 
-import { useSelector } from 'src/hooks/suite';
 import { type TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 
 export const useTradingBuyFormDefaultValues = (

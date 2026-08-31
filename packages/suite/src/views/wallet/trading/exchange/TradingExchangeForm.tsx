@@ -3,9 +3,9 @@ import { FormProvider } from 'react-hook-form';
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import { type TradingType, selectTradingSendAccount } from '@suite-common/trading';
 
-import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
 import { AllowanceContext, useAllowance } from 'src/hooks/wallet/allowance';
 import { useTradingExchangeForm } from 'src/hooks/wallet/trading/form/exchange/useTradingExchangeForm';

@@ -4,6 +4,7 @@ import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAccountTokens, selectBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
@@ -11,7 +12,6 @@ import { Badge, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
 import { CoinBalance, HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 
 type WalletConnectAccountOptionProps = {

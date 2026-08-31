@@ -1,8 +1,4 @@
-import {
-    type TypedUseSelectorHook,
-    shallowEqual,
-    useSelector as useReduxSelector,
-} from 'react-redux';
+import { createUseSelector } from '@suite-common/redux-utils';
 
 import { type AccountsRootState } from '../accountsReducer';
 
@@ -12,7 +8,4 @@ import { type AccountsRootState } from '../accountsReducer';
  * Memoized using shallowEqual equality comparison
  * https://react-redux.js.org/api/hooks#equality-comparisons-and-updates
  */
-export const useSelector: TypedUseSelectorHook<AccountsRootState> = (
-    selector,
-    equalityFn = shallowEqual,
-) => useReduxSelector(selector, equalityFn);
+export const useSelector = createUseSelector<AccountsRootState>();

@@ -3,15 +3,13 @@ import { useRef } from 'react';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { getPackagingUrl } from '@suite-common/suite-utils';
 import { Column, Image, Paragraph, Row } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
 import { TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const Hologram = () => {
     const device = useSelector(selectSelectedDevice);
     const hologramRef = useRef<HTMLVideoElement>(null);

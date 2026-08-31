@@ -7,6 +7,7 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
+import { useSelector } from '@suite-common/redux-utils';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
@@ -34,7 +35,6 @@ import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { useSelector } from 'src/hooks/suite';
 
 import { WalletConnectAccountOption } from './WalletConnectAccountOption';
 

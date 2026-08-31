@@ -2,11 +2,9 @@ import styled from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
 import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/discreet-mode';
+import { useSelector } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import { Row, Text } from '@trezor/components';
-
-import { useSelector } from '../../hooks/suite';
-
 const WholeValue = styled.span`
     font-variant-numeric: tabular-nums;
 `;

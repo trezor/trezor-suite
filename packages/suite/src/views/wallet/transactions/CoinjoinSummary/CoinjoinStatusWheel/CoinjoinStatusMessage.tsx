@@ -5,14 +5,13 @@ import {
     selectCurrentSessionDeadlineInfo,
 } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { typography } from '@trezor/theme';
 
 import { CountdownTimer } from 'src/components/suite';
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
-import { useSelector } from 'src/hooks/suite/useSelector';
-
 const Cointainer = styled.div`
     height: 40px;
     margin-top: 4px;

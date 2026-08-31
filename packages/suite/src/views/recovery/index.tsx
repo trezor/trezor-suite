@@ -15,6 +15,7 @@ import {
     selectRecovery,
 } from '@suite/recovery';
 import { usePin } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
@@ -23,7 +24,6 @@ import { CheckIcon, WarningIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
 
 import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';

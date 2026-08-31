@@ -1,4 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { Box, Column, Image } from '@trezor/components';
 import { DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import type { ModelFor } from '@trezor/product-components';
@@ -9,7 +10,6 @@ import {
 } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
 import { ContentFlex } from 'src/support/suite/ContentFlex';
 
 type SecurityCheckLayoutProps = {

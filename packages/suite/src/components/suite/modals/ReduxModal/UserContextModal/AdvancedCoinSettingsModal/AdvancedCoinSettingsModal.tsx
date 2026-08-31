@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
 import { TorModal, type TorResult, toggleTor } from '@suite/tor-desktop';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     Badge,
@@ -22,7 +23,6 @@ import {
 import { useBackendsForm } from 'src/hooks/settings/backends';
 import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
 import { useGapLimitForm } from 'src/hooks/settings/useGapLimitForm';
-import { useSelector } from 'src/hooks/suite';
 
 import { BackendUrls } from './BackendUrls/BackendUrls';
 import { BackendTypeSelect } from './CustomBackends/BackendTypeSelect';

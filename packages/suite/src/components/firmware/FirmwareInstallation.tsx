@@ -1,5 +1,6 @@
 import { FirmwareProgressBar, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { Banner, Card, Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: expose the browser-specific TrezorConnect type via the @trezor/connect barrel and remove this exception (see #27376)
@@ -9,7 +10,6 @@ import { BluetoothIcon, TrezorDevicesFilledIcon } from '@trezor/icons';
 import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
 import { ReconnectDevicePrompt } from 'src/components/firmware/ReconnectDevicePrompt';
 import { RotatingPhrases } from 'src/components/firmware/RotatingPhrases';
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 type FirmwareInstallationProps = {

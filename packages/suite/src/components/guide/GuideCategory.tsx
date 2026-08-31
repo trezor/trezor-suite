@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { CardList } from '@trezor/components';
 
 import { setView } from 'src/actions/suite/guideActions';
@@ -13,7 +14,6 @@ import {
     GuideNode,
     GuideViewWrapper,
 } from 'src/components/guide';
-import { useSelector } from 'src/hooks/suite';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
 const Section = styled.div`

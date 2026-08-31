@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';
 import { FeeCardsWrapper } from './StandardFee.styles';

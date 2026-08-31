@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_CEX,
@@ -23,7 +24,6 @@ import {
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
 import { isExchangeQuotesFetchAllowed } from 'src/utils/wallet/trading/exchangeQuotesRequestUtils';
 
 import { useTradingQuoteRequest } from '../common/useTradingQuoteRequest';

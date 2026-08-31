@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
+import { useSelector } from '@suite-common/redux-utils';
 import { useExcludedUtxos } from '@suite-common/transaction-search';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -33,7 +34,6 @@ import {
     saveSendFormDraftThunk,
     signAndPushSendFormTransactionThunk,
 } from 'src/actions/wallet/send/sendFormThunks';
-import { useSelector } from 'src/hooks/suite';
 import { selectProtocol } from 'src/selectors/suite/protocolSelectors';
 import { type AppState } from 'src/types/suite';
 import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';

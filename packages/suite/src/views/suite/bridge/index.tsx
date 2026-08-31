@@ -2,11 +2,11 @@ import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
 
 import { Metadata } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 import {
     selectHasActiveTransport,

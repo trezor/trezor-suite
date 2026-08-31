@@ -1,5 +1,6 @@
 import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     isSupportedAdaStakingNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
@@ -8,7 +9,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 import { AccountImported } from './AccountImported';

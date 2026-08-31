@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type TronFlow,
     fetchAndUpdateAccountThunk,
@@ -11,9 +12,6 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
-
-import { useSelector } from 'src/hooks/suite';
-
 const DEFAULT_POLL_INTERVAL_MS = 3_000;
 const MIN_POLL_INTERVAL_MS = 2_000;
 const BLOCK_TIME_TO_POLL_RATIO = 2;

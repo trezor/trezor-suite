@@ -7,6 +7,7 @@ import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { AccountTransactionBaseAnchor, useAnchor } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
 import {
     createTargets,
@@ -29,7 +30,6 @@ import { GaugeIcon, WarningIcon, XIcon } from '@trezor/icons';
 import { OutlineHighlight } from '@trezor/product-components';
 
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { EvmBumpFeeTooltip } from './EvmBumpFeeTooltip';

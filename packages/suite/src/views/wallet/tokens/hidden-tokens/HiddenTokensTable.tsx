@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet, sortTokensByName } from '@suite-common/wallet-utils';
 import { Banner, Column, H3 } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 
 import { NoTokens } from '../common/NoTokens';

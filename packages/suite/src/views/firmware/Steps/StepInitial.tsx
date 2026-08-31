@@ -2,14 +2,13 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { type FirmwareStatus } from '@suite-common/suite-types';
 import { Modal, Tooltip } from '@trezor/components';
 import { unique } from '@trezor/utils';
 
 import { updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import { PrerequisitesGuide } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-
 type StepInitialProps = {
     onClose: () => void;
     children: ReactNode;

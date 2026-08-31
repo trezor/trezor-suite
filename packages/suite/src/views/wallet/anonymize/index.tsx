@@ -1,7 +1,7 @@
+import { useSelector } from '@suite-common/redux-utils';
 import { Column } from '@trezor/components';
 
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
 import { CoinjoinConfirmation } from 'src/views/wallet/anonymize/components/CoinjoinConfirmation';
 
 const Anonymize = () => {

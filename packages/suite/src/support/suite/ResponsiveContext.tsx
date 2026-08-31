@@ -2,14 +2,13 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 import { useDispatch } from 'react-redux';
 
 import { selectSidebarWidth, suiteSettingsActions } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { throwError } from '@trezor/utils';
 
 import {
     SIDEBAR_COLLAPSED_WIDTH,
     SIDEBAR_MIN_WIDTH,
 } from '../../components/suite/layouts/SuiteLayout/Sidebar/consts';
-import { useSelector } from '../../hooks/suite';
-
 type ResponsiveContextType = {
     sidebarWidth: number;
     setSidebarWidth: (width: number) => void;

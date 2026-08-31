@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
@@ -13,8 +14,6 @@ import {
     walletConnectActions,
 } from '@suite-common/walletconnect';
 import { Column, Modal, type Option, Select } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { WalletConnectAccountOption } from './WalletConnectAccountOption';
 

@@ -1,9 +1,8 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { Tooltip } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
 
 interface AppNavigationTooltipProps {
     children: ReactNode;

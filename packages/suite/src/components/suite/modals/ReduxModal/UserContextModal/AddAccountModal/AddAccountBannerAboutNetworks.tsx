@@ -4,12 +4,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { selectIsAddAccountNetworksBannerClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { GraduationCapIcon } from '@trezor/icons';
 
 import { bannerAnimationConfig } from 'src/components/suite/modals/ReduxModal/UserContextModal/ActivateAssetsModal';
-import { useSelector } from 'src/hooks/suite';
-
 const AddAccountBannerAboutNetworksInner = () => {
     const dispatch = useDispatch();
     const closeNetworkInfoBanner = () => {

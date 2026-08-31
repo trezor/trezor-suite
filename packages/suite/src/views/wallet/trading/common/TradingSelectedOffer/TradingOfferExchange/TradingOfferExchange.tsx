@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     getSimulatedReceiveAmount,
     selectTradingExchangeActiveTrade,
@@ -22,7 +23,6 @@ import { Button, Card, Column, H2 } from '@trezor/components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { TRADING_DEX_SOURCE_ORIGIN } from 'src/constants/wallet/trading/txSimulation';
-import { useSelector } from 'src/hooks/suite';
 import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
 import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';

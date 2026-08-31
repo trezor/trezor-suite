@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { type UseFormReturn, useForm } from 'react-hook-form';
 
 import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
+import { useSelector } from '@suite-common/redux-utils';
 import { type Network, getNetwork } from '@suite-common/wallet-config';
 import {
     DEFAULT_OPRETURN,
@@ -31,7 +32,6 @@ import {
 import { type AccountUtxo, type FeeLevel } from '@trezor/connect';
 import { BigNumber, throwError } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useCoinjoinRegisteredUtxos } from 'src/hooks/wallet/form/useCoinjoinRegisteredUtxos';
 
 import { useCompose } from './form/useCompose';

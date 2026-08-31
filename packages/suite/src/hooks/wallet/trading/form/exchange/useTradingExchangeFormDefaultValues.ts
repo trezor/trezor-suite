@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
+import { useSelector } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_COMPARATOR_KYC_FILTER,
     TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
@@ -23,7 +24,6 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState, type Output } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingDefaultSellAsset } from '../common/useTradingDefaultSellAsset';

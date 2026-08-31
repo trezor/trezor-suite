@@ -3,11 +3,10 @@ import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { selectHasAnonymitySetError } from '@suite/coinjoin';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectHasAccountTransactionHistory } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Card, Column } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown/BalancePrivacyBreakdown';
 import { CoinjoinBalanceError, type CoinjoinBalanceErrorProps } from './CoinjoinBalanceError';

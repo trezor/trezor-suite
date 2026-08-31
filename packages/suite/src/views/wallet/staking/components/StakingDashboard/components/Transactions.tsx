@@ -1,10 +1,10 @@
+import { useSelector } from '@suite-common/redux-utils';
 import {
     selectAccountStakeTypeTransactions,
     selectAccountTransactionsWithNulls,
     selectAreAllTransactionsLoaded,
 } from '@suite-common/wallet-core';
 
-import { useSelector } from 'src/hooks/suite';
 import { TransactionList } from 'src/views/wallet/transactions/TransactionList/TransactionList';
 
 export const Transactions = () => {

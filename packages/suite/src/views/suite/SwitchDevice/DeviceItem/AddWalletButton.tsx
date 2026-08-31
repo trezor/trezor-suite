@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceOrUiLocked } from '@suite/locks';
 import { closeModalApp, goto } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     selectDeviceThunk,
     selectIsAnyNetworkEnabled,
@@ -13,7 +14,6 @@ import { WalletType } from '@suite-common/wallet-types';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
 import { FolderOpenIcon, PlusCircleFilledIcon, PlusIcon, XIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
 import { type AcquiredDevice, type ForegroundAppProps, type TrezorDevice } from 'src/types/suite';
 
 interface AddWalletButtonProps {

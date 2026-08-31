@@ -16,10 +16,11 @@ import styled from 'styled-components';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectDeviceDefaultBackupType } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { type BackupType } from '@suite-common/suite-types';
 import { Banner, Text } from '@trezor/components';
 
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite';
 
 import { FloatingSelections } from './FloatingSelections';
 import { OptionText, SelectedOption } from './OptionWithContent';

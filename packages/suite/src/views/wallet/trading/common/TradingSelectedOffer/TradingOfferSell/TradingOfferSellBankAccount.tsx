@@ -4,6 +4,7 @@ import { type BankAccount } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     selectTradingSellIsLoading,
     selectTradingSellSelectedQuote,
@@ -13,7 +14,6 @@ import { Button, Column, Divider, Icon, Row, Select, Text } from '@trezor/compon
 import { CheckIcon, PlusIcon } from '@trezor/icons';
 
 import { QuestionTooltip } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
 
 const SelectWrapper = styled.div`

@@ -3,8 +3,8 @@ import { useDispatch } from 'react-redux';
 
 import { preserveModal, removePreserveModal } from '@suite/modal';
 import { prettifyLog, useCommonApplicationLogs } from '@suite-common/logger';
+import { useSelector } from '@suite-common/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import {
     type SuiteLogsApplicationInfoRootState,
     selectRedactedDesktopApplicationInfo,

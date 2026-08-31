@@ -1,6 +1,7 @@
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol, type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import {
@@ -15,8 +16,6 @@ import { BigNumber } from '@trezor/utils';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { FormattedDate } from 'src/components/suite/FormattedDate';
 import { TrendBadge, calculatePercentageDifference } from 'src/components/suite/Ticker/TrendBadge';
-import { useSelector } from 'src/hooks/suite';
-
 // Unit prices are rendered with the same precision as PriceTicker so that
 // low-value assets do not round to zero.
 const UNIT_PRICE_FORMATTER_OPTIONS = {

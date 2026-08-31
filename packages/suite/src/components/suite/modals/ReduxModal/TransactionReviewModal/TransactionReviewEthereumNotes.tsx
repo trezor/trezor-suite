@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     selectResolvedEthereumNonce,
     selectStablecoinYieldTxReview,
@@ -11,7 +12,6 @@ import { Note, Text } from '@trezor/components';
 import { CheckCircleIcon, GasPumpIcon } from '@trezor/icons';
 import { FeeRate } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 

@@ -1,10 +1,9 @@
-import { useSelector } from 'react-redux';
-
 import {
     ThpAutoconnectInfoModal,
     ThpPairingFailedModal,
     ThpPairingPinEntryModal,
 } from '@suite/thp';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectThpAutoconnectStep, selectThpStep } from '@suite-common/thp';
 import { selectSelectedFirstThpDevice } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';

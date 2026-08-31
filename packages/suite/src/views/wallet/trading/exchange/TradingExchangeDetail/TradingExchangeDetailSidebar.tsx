@@ -1,12 +1,12 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import { useSelector } from '@suite-common/redux-utils';
 import { cryptoIdToNetwork, useTradingUtils } from '@suite-common/trading';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { Card, Column } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import type { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import type { Account } from 'src/types/wallet';

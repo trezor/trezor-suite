@@ -4,13 +4,13 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, H3, Icon, LottieAnimation, ProgressBar } from '@trezor/components';
 import { StarFourIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
-import { useSelector } from 'src/hooks/suite';
 
 import { RotatingFacts } from './RotatingFacts';
 

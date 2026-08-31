@@ -7,7 +7,7 @@ import {
     selectLabelingDataForAccount,
     selectLabelingValueBeingEdited,
 } from '@suite/metadata';
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { returnStableArrayIfEmpty, useSelector } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import {
@@ -32,7 +32,6 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';
 import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AccountLabelForOwnAddress';
-import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TargetAddressLabel } from './TargetAddressLabel';

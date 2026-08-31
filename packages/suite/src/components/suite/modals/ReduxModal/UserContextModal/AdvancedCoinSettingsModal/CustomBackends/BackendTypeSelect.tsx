@@ -4,12 +4,10 @@ import styled from 'styled-components';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type Network, type ServerType } from '@suite-common/wallet-config';
 import { Select } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-
-import { useSelector } from 'src/hooks/suite';
-
 const Capitalize = styled.span`
     text-transform: capitalize;
 `;

@@ -1,13 +1,12 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
 import { Column, Icon, InfoSegments, Row, Text } from '@trezor/components';
 import { ArrowRightIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite/useSelector';
 
 import { type IODetailsType } from './IODetailsType';
 import { type AddressOwnership, IOItem } from './IOItem';

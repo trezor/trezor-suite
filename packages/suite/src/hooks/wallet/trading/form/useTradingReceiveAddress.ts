@@ -8,6 +8,7 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type TradingType,
     cryptoIdToNetworkSymbol,
@@ -25,7 +26,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useSelector } from 'src/hooks/suite';
 import {
     type TradingGetTranslationIdsProps,
     type TradingVerifyFormProps,

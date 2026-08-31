@@ -2,10 +2,10 @@ import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectRouteName } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { networks } from '@suite-common/wallet-config';
 
 import { closeEvmExplanationBanner } from 'src/actions/suite/suiteActions';
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { type Account } from 'src/types/wallet';
 
 import { BannerPoints } from './BannerPoints';

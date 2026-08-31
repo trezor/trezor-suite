@@ -6,6 +6,7 @@ import {
     mapCurrenciesToCurrencyPickerOptions,
     mapCurrencyToCurrencyPickerOption,
 } from '@suite/trading';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_CURRENCY,
@@ -17,7 +18,6 @@ import {
 import { buildCurrencyOptions, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     type TradingAllFormProps,

@@ -1,6 +1,7 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
+import { useSelector } from '@suite-common/redux-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
@@ -11,7 +12,6 @@ import { type WithdrawalFormState } from 'src/components/earn/forms/StakeFormCon
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
-import { useSelector } from 'src/hooks/suite';
 import { FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
 import {
     validateCryptoLimits,

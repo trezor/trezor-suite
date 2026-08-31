@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAccountTransactions } from '@suite-common/wallet-core';
 import {
     Column,
@@ -13,7 +14,6 @@ import {
 import type { AccountUtxo } from '@trezor/connect';
 import { typography } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { UtxoSelection } from './UtxoSelection/UtxoSelection';

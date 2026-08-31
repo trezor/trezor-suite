@@ -3,6 +3,7 @@ import { Fragment, type JSX } from 'react';
 import styled from 'styled-components';
 
 import { useDevice } from '@suite/device';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     selectTradingComposedTransactionInfo,
     selectTradingSellActiveTrade,
@@ -14,7 +15,6 @@ import {
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Column, Divider } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 import { TradingOfferSellBankAccount } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSellBankAccount';

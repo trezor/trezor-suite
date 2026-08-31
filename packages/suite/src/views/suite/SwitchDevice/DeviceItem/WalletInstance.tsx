@@ -6,6 +6,7 @@ import { Labeling } from '@suite/labeling';
 import { selectIsLegacyLabelingVisible } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { useWalletLabel } from '@suite/wallet';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     getAccountsByDeviceState,
     selectAllAccountsToList,
@@ -32,7 +33,6 @@ import { AsteriskIcon, EjectIcon, XIcon } from '@trezor/icons';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useSelector } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { type AcquiredDevice, type ForegroundAppProps } from 'src/types/suite';

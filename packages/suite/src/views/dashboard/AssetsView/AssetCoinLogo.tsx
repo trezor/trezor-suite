@@ -6,13 +6,11 @@ import {
 } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectGetNetworkConfigDep } from '@suite-common/networks';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { localizePercentage } from '@suite-common/wallet-utils';
 import { Row, Skeleton, Tooltip } from '@trezor/components';
 import { AssetShareIndicator } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
-
 type AssetCoinLogoProps = {
     symbol: NetworkSymbol;
     assetsFiatBalances?: AssetFiatBalance[];

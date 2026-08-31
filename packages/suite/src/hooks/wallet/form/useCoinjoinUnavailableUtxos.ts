@@ -6,12 +6,11 @@ import {
     selectCoinjoinClient,
 } from '@suite/coinjoin';
 import { useTranslation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import { type AccountUtxo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 interface UseCoinjoinUnavailableUtxosProps {
     account: Account;

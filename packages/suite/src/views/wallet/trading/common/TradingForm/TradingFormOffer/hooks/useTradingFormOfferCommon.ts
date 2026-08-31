@@ -1,5 +1,6 @@
 import { type TranslationKey } from '@suite/intl';
 import { selectIsTorEnabled } from '@suite/tor';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type TradingType,
     selectTradingProviderCompanyName,
@@ -9,7 +10,6 @@ import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/w
 import { type IconComponent } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     getSelectedCryptoId,

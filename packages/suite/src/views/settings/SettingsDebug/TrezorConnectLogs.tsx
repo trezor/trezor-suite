@@ -1,12 +1,10 @@
 import { useDispatch } from 'react-redux';
 
 import { selectShowConnectLogs, suiteSettingsActions } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const TrezorConnectLogs = () => {
     const showConnectLogs = useSelector(selectShowConnectLogs);
     const dispatch = useDispatch();

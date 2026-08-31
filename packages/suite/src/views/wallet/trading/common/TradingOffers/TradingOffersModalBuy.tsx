@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TRADING_FORM_PROVIDER_SELECT,
@@ -10,8 +11,6 @@ import {
     selectTradingBuyOfferQuotes,
 } from '@suite-common/trading';
 import { Box, Modal } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { TradingOffersModalGroup } from './TradingOffersModalGroup';
 

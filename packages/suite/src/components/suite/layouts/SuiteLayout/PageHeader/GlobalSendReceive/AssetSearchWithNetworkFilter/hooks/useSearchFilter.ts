@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useDebounce } from 'react-use';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '@suite-common/redux-utils';
+
 import {
     globalSendReceiveFiltersActions,
     globalSendReceiveFiltersSelectors,

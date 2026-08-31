@@ -6,6 +6,7 @@ import {
     type MessageSystemRootState,
     selectIsYieldFeatureDisabled,
 } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -13,7 +14,6 @@ import { getApyPercent, isApyAvailable } from '@suite-common/wallet-utils';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
-import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
 const emptyVaults: YieldDtoV2[] = [];

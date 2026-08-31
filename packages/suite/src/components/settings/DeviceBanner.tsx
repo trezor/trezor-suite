@@ -1,13 +1,13 @@
 import { type ReactNode } from 'react';
 
 import { useDevice } from '@suite/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Banner, type BannerIntent } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
-import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 import { AcquireDeviceButton } from '../suite/AcquireDeviceButton';

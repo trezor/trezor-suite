@@ -8,6 +8,7 @@ import {
     DisableTorStopCoinjoinModal,
     RequestEnableTorModal,
 } from '@suite/tor-desktop';
+import { useSelector } from '@suite-common/redux-utils';
 import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { UI_REQUEST } from '@trezor/connect';
@@ -24,7 +25,6 @@ import {
 } from 'src/components/earn';
 import { ConnectPopupTxSimulationModal } from 'src/components/tx-simulation/connect-popup';
 import { EarnYieldTxSimulationModal } from 'src/components/tx-simulation/earn-stablecoin';
-import { useSelector } from 'src/hooks/suite';
 
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import { CopyAddressModal } from '../CopyAddressModal';

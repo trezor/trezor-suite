@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { selectRouteName } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import {
     BASE_CURRENCY_ZERO,
@@ -12,7 +13,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 import { type Account } from 'src/types/wallet';
 

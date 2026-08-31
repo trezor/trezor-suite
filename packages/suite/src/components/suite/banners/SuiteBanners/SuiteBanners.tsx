@@ -15,12 +15,12 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { selectBannerMessage } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { isWeb } from '@trezor/env-utils';
 
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
 import { useLocalNetworkAccessPermission } from 'src/hooks/suite/useLocalNetworkAccessPermission';
 
 import { BridgeDeprecated, useLegacyBridgeDetection } from './BridgeDeprecatedBanner';

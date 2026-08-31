@@ -20,7 +20,8 @@ const mockState = {
 
 const mockReport = jest.fn();
 
-jest.mock('src/hooks/suite', () => ({
+jest.mock('@suite-common/redux-utils', () => ({
+    ...jest.requireActual('@suite-common/redux-utils'),
     useSelector: (selector: (state: unknown) => unknown) => selector(mockState),
 }));
 

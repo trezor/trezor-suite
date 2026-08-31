@@ -2,12 +2,11 @@ import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { selectURLSearchParams } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as protocolActions from 'src/actions/suite/protocolActions';
-import { useSelector } from 'src/hooks/suite';
-
 const Protocol = () => {
     const dispatch = useDispatch();
 

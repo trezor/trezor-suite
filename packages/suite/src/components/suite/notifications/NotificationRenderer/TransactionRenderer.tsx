@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { getTxAnchor, goto, selectRouteName, selectRouterApp } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     selectAccounts,
     selectBlockchainState,
@@ -29,8 +30,6 @@ import {
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
-import { useSelector } from 'src/hooks/suite';
-
 type TransactionRendererProps = NotificationViewProps &
     NotificationRendererProps<TransactionNotificationType>;
 

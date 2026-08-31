@@ -4,6 +4,12 @@ import { compose } from 'redux';
 import { type AppState } from 'src/reducers/store';
 import { type ExtraDependenciesSuite } from 'src/support/extraDependencies';
 
+declare module '@suite-common/redux-utils' {
+    export interface UseSelectorStateRegistry {
+        suite: AppState;
+    }
+}
+
 /**
  * Shape accepted by Suite's real store when React Redux returns its ordinary `useDispatch()`.
  *

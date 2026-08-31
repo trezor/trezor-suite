@@ -8,6 +8,7 @@ import {
 } from '@suite/modal';
 import { goto } from '@suite/router';
 import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
@@ -16,8 +17,6 @@ import {
     submitPassphrase,
 } from '@suite-common/wallet-core';
 import { UI_REQUEST } from '@trezor/connect';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { PassphraseWalletExistsFlow } from './PassphraseWalletExistsFlow';
 import { PassphraseWalletIsNotExistFlow } from './PassphraseWalletIsNotExistFlow';

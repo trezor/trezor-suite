@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { selectLanguage } from '@suite/settings';
 import { isSignValuePositive } from '@suite-common/formatters';
+import { useSelector } from '@suite-common/redux-utils';
 import { type SignValue } from '@suite-common/suite-types';
 import {
     type NetworkSymbolExtended,
@@ -20,7 +21,6 @@ import { Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { Sign } from 'src/components/suite/Sign';
-import { useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 

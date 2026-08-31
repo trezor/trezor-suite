@@ -1,13 +1,12 @@
 import { useMemo } from 'react';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectDeviceSupportedNetworks,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { useCryptoCurrentRate } from './useCryptoCurrencyRate';
 import { useStakingAccountsVisibility } from './useStakingAccountsVisibility';

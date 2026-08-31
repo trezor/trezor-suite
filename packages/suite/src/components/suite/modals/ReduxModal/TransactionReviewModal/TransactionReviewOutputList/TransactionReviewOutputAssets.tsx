@@ -4,6 +4,7 @@ import { type CryptoId } from 'invity-api';
 
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getCoingeckoId, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -17,8 +18,6 @@ import { TokenIcon, isCoinSymbol, shouldShowNetworkIcon } from '@trezor/product-
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
-import { useSelector } from 'src/hooks/suite';
-
 export type TransactionReviewOutputAssetsProps = {
     title: ReactNode;
     state: 'active' | 'confirmed' | 'unconfirmed';

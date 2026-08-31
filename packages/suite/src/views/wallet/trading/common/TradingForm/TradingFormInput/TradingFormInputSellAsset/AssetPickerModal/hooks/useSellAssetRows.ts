@@ -3,6 +3,7 @@ import { useThrottle } from 'react-use';
 
 import { type CryptoId } from 'invity-api';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { selectVisibleDeviceAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -10,7 +11,6 @@ import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet
 import { useFreshRef } from '@trezor/react-utils';
 
 import { type AssetRowOption } from 'src/components/suite/asset-picker/types';
-import { useSelector } from 'src/hooks/suite';
 
 import { buildSellAssetRows } from '../utils/buildSellAssetRows';
 

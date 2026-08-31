@@ -5,6 +5,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLabelingDataForSelectedAccount } from '@suite/metadata';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
@@ -14,7 +15,6 @@ import { Dropdown, Note } from '@trezor/components';
 import { ChecksIcon, FileArrowDownIcon, InfoIcon } from '@trezor/icons';
 
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { type Account } from 'src/types/wallet';
 
 export interface ExportActionProps {

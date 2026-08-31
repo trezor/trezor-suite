@@ -9,7 +9,8 @@ import { getYieldOpportunityData, useYieldTableData } from './useYieldTableData'
 
 const ethSymbol = asNetworkSymbol('eth');
 
-jest.mock('src/hooks/suite', () => ({
+jest.mock('@suite-common/redux-utils', () => ({
+    ...jest.requireActual('@suite-common/redux-utils'),
     useSelector: () => [],
 }));
 

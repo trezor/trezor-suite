@@ -4,8 +4,7 @@ import { selectCoinjoinAccounts } from '@suite/coinjoin';
 import { openDeferredModal } from '@suite/modal';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { TorSettings } from '@suite/tor-desktop';
-
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '@suite-common/redux-utils';
 
 import { SettingsGeneral } from './SettingsGeneral';
 

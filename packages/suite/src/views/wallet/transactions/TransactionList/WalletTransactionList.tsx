@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import {
     selectAreAllTransactionsLoaded,
@@ -8,7 +9,6 @@ import {
 } from '@suite-common/wallet-core';
 import { Card, Column, Text } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionList } from './TransactionList';

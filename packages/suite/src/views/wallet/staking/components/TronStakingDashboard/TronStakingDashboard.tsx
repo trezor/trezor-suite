@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Column, Row, TextButton } from '@trezor/components';
@@ -6,7 +7,6 @@ import { QuestionIcon } from '@trezor/icons';
 
 import { WalletLayout } from 'src/components/wallet';
 import { useGuideOpenNode } from 'src/hooks/guide';
-import { useSelector } from 'src/hooks/suite';
 
 import { TronResourcesCard } from './TronResourcesCard/TronResourcesCard';
 import { TronStakedCard } from './TronStakedCard';

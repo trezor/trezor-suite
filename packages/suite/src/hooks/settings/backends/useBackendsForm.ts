@@ -6,6 +6,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     type ServerType,
@@ -16,9 +17,6 @@ import {
 import { blockchainActions } from '@suite-common/wallet-core';
 import { type BackendSettings } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
-
-import { useSelector } from 'src/hooks/suite';
-
 type BackendsFormData = {
     type: ServerType;
     urls: string[];

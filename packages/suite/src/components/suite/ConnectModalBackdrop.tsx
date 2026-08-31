@@ -1,6 +1,5 @@
-import { useSelector } from 'react-redux';
-
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useSelector } from '@suite-common/redux-utils';
 import { Column } from '@trezor/components';
 import {
     ModalBackdrop,

@@ -3,13 +3,11 @@ import { createFilter } from 'react-select';
 
 import { useTranslation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
+import { useSelector } from '@suite-common/redux-utils';
 import { Select, type SelectRef } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { bip39EnglishWordlist } from '@trezor/crypto-utils';
 import { resolveAfter } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
-
 const options = bip39EnglishWordlist.map(item => ({ label: item, value: item }));
 
 type Option = { label: string; value: string };

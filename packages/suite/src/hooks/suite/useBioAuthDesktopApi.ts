@@ -2,14 +2,13 @@ import { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { isMacOs } from '@trezor/env-utils';
 
 import {
     requestBioAuthChangeThunk,
     requestBioAuthValidationThunk,
 } from 'src/actions/suite/bioAuthThunks';
-
-import { useSelector } from './useSelector';
 
 export const useBioAuthDesktopApi = () => {
     const { isBioAuthAvailable, isBioAuthEnabled, isBioAuthValidationRequired, cancelled } =

@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     selectEnabledNetworks,
@@ -10,9 +11,6 @@ import {
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { Button, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
-
 type EarnActivateButtonProps = {
     symbol: NetworkSymbol;
 };

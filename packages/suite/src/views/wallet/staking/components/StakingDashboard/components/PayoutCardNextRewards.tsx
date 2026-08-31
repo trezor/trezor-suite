@@ -2,12 +2,11 @@ import { useMemo } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { BACKUP_REWARD_PAYOUT_DAYS } from '@suite-common/wallet-constants';
 import { getStakingDataForNetwork, secondsToDays } from '@suite-common/wallet-utils';
 import { Paragraph } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { PayoutCard } from './PayoutCard';
 

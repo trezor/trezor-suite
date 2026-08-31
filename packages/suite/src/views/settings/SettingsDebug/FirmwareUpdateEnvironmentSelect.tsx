@@ -2,13 +2,11 @@ import { useDispatch } from 'react-redux';
 
 import { useGetter } from '@suite-common/dependency-injection';
 import { firmwareActions, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectGetAllowPrereleaseDep } from '@suite-common/suite-types';
 import { Column, Text } from '@trezor/components';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const FirmwareUpdateEnvironmentSelect = () => {
     const isAllowPrerelease = useGetter(selectGetAllowPrereleaseDep);
     const firmwareChannel = useSelector(state =>

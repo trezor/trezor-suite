@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
 import {
     type NetworkSymbol,
@@ -17,7 +18,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useComposedLevelsPlaceholder } from 'src/hooks/wallet/form/useComposedLevelsPlaceholder';
 import { type FeesFormValues, useFees } from 'src/hooks/wallet/form/useFees';
 

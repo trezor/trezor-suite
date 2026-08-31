@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { goto } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     selectTradingExchangeActiveTrade,
     selectTradingExchangeIsFromRedirect,
@@ -10,9 +11,6 @@ import {
     tradingExchangeActions,
     tradingThunks,
 } from '@suite-common/trading';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const useTradingExchangeConfirm = () => {
     const dispatch = useDispatch();
 

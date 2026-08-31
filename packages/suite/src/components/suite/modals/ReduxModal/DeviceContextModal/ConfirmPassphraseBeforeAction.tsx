@@ -8,10 +8,10 @@ import {
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { Column, H3, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_REQUEST, UI_RESPONSE } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 

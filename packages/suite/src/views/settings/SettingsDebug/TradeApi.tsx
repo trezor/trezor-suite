@@ -1,11 +1,9 @@
 import { useDispatch } from 'react-redux';
 
 import { selectTradeServerEnvironment, suiteSettingsActions } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { type TradeServerEnvironment, tradeApi } from '@suite-common/trading';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const TradeApi = () => {
     const tradeServerEnvironment = useSelector(selectTradeServerEnvironment);
     const dispatch = useDispatch();

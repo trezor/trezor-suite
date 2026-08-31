@@ -2,12 +2,10 @@ import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 
 import { selectLanguage, selectShowTranslationKeys } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import type { Locale } from '@suite-common/suite-types';
 import { isDevEnv } from '@suite-common/suite-utils';
 import enMessages from '@trezor/suite-data/files/translations/en-US.json';
-
-import { useSelector } from 'src/hooks/suite/useSelector';
-
 const useFetchMessages = (locale: Locale) => {
     const [messages, setMessages] = useState<{ [key: string]: any }>({});
 

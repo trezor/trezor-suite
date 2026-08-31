@@ -6,9 +6,10 @@ import {
     selectIsDeviceAuthenticityCheckEnabled,
     selectIsUnlockedBootloaderAllowed,
 } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { StepList, type StepListItemState, Text } from '@trezor/components';
 
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding } from 'src/hooks/suite';
 
 import { stepCategories } from '../../config/onboarding/steps';
 import { isStepCategoryUsed } from '../../utils/onboarding/steps';

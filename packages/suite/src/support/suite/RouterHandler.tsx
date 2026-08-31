@@ -10,9 +10,7 @@ import {
     selectSuiteRouterHistoryDep,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-
-import { useSelector } from 'src/hooks/suite';
-
+import { useSelector } from '@suite-common/redux-utils';
 export const RouterHandler = () => {
     const dispatch = useDispatch();
     const routerLoaded = useSelector(selectRouterLoaded);

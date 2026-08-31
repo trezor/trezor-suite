@@ -3,9 +3,8 @@ import { type ChangeEventHandler, type KeyboardEventHandler, type ReactNode, use
 import styled from 'styled-components';
 
 import { selectCurrentCoinjoinSession } from '@suite/coinjoin';
+import { useSelector } from '@suite-common/redux-utils';
 import { Paragraph, Range, type RangeProps, Row } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite/useSelector';
 
 import { SliderInput, type SliderInputProps } from './SliderInput';
 

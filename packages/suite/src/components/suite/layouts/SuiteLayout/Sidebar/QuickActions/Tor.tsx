@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { TorStatus, selectIsTorDisabled, selectTorStatus } from '@suite/tor';
+import { useSelector } from '@suite-common/redux-utils';
 import { Column, Icon, type IconComponent, type UIIntent } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import {
@@ -14,9 +15,6 @@ import {
     XIcon,
 } from '@trezor/icons';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
-
 const torStatusTranslationMap: Record<TorStatus, TranslationKey> = {
     [TorStatus.Enabled]: 'TR_TOR_ENABLED',
     [TorStatus.Disabled]: 'TR_TOR_DISABLED',

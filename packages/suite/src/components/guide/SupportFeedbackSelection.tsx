@@ -5,6 +5,7 @@ import { UpdateState } from '@suite/desktop-update';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Box, CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -27,8 +28,6 @@ import {
     GuideViewWrapper,
 } from 'src/components/guide';
 import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopover';
-import { useSelector } from 'src/hooks/suite';
-
 const StatusText = ({ id }: { id: TranslationKey }) => (
     <Text typographyStyle="body-sm" intent="neutral" priority="secondary" as="div">
         <Translation id={id} />

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectBlockchainState } from '@suite-common/wallet-core';
 import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '@suite-common/redux-utils';
 
 import { CoinjoinStatusBar } from './CoinjoinStatusBar';
 

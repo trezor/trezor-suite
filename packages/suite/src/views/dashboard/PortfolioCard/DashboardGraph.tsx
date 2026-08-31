@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
@@ -15,7 +16,6 @@ import { typography } from '@trezor/theme';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import { type AggregatedDashboardHistory } from 'src/types/wallet/graph';
 import { getMinMaxValueFromData, prepareGraphDataAsync } from 'src/utils/wallet/graph';

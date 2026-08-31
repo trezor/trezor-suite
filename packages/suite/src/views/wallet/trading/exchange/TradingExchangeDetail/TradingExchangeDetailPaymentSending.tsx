@@ -1,6 +1,7 @@
 import { type ExchangeTrade } from 'invity-api';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
@@ -9,7 +10,6 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { Card, Column, InfoItem, type StepListItemState } from '@trezor/components';
 
 import { useLocales } from 'src/hooks/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { type Account } from 'src/types/wallet';
 import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
 import { TradingDetailTxId } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTxId';

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getEthereumRbfFeeInfo, selectAccountTransactions } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -17,7 +18,6 @@ import { Card, Column, H4, IconButton, Input, Note, Row, TextButton } from '@tre
 import { InfoIcon, WarningIcon, XIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 type EthereumNonceProps = {

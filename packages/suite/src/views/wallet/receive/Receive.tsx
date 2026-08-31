@@ -2,12 +2,12 @@ import { useDevice } from '@suite/device';
 import { ReceiveContent } from '@suite/receive';
 import { selectIsCoinjoinReceiveWarningHidden } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { Column } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals/ConfirmEvmExplanationModal';
 import { WalletLayout } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
 
 import { CoinjoinReceiveWarning } from './components/CoinjoinReceiveWarning';
 

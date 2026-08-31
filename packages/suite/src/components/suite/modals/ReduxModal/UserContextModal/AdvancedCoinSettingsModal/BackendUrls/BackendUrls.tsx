@@ -1,12 +1,11 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, Column, DotIndicator, Input, List, Row, Text } from '@trezor/components';
 import { PlusIcon, TrashIcon } from '@trezor/icons';
 
 import { useDefaultUrls } from 'src/hooks/settings/backends';
 import { type BackendsForm } from 'src/hooks/settings/backends/useBackendsForm';
-import { useSelector } from 'src/hooks/suite';
-
 type BackendUrlsProps = {
     symbol: NetworkSymbol;
     isEditable: boolean;

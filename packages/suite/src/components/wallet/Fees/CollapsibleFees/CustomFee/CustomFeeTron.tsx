@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useFormContext, useFormState } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { type FormState } from '@suite-common/wallet-types';
 import { isInteger } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';

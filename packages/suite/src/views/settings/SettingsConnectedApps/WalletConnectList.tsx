@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     getSessionNetworks,
     selectSessions,
@@ -16,8 +17,6 @@ import {
 } from '@trezor/icons';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { useSelector } from 'src/hooks/suite';
-
 export const WalletConnectList = () => {
     const dispatch = useDispatch();
     const sessions = useSelector(selectSessions);

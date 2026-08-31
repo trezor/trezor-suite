@@ -2,9 +2,8 @@ import { useMemo } from 'react';
 
 import { type UserContextModalType } from '@suite/modal';
 import { composeStablecoinYieldTxSimulationAction } from '@suite-common/earn-stablecoin';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { EarnYieldTxSimulationModalInner } from './EarnYieldTxSimulationModalInner';
 

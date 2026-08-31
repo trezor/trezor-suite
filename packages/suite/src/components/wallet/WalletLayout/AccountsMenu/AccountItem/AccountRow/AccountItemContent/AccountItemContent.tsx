@@ -1,10 +1,10 @@
 import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
+import { useSelector } from '@suite-common/redux-utils';
 import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getTronAvailableVotingPower } from '@suite-common/wallet-utils';
 import { Column, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { type AccountItemType } from 'src/types/wallet';
 
 import { AccountItemBottomLine } from './AccountItemBottomLine';

@@ -3,12 +3,11 @@ import {
     getTronVotedApr,
     useTronStakingStats,
 } from '@suite-common/earn-staking-api';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountByKey, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getTronVotes } from '@suite-common/wallet-utils';
-
-import { useSelector } from '../suite';
 
 interface UseStakingRateProps {
     symbol?: NetworkSymbol;

@@ -4,11 +4,9 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectDeviceName, selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { Button, Input, Tooltip } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
-
-import { useSelector } from 'src/hooks/suite';
-
 const Container = styled.form<{ $isVertical?: boolean }>`
     display: flex;
     flex-direction: ${({ $isVertical }) => ($isVertical ? 'column' : 'row')};

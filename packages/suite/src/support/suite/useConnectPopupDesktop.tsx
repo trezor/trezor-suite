@@ -16,6 +16,7 @@ import {
 } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import TrezorConnect, {
     type CallMethodKeys,
     type CallMethodPayload,
@@ -25,9 +26,6 @@ import TrezorConnect, {
 import { isMacOs } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { exhaustive } from '@trezor/type-utils';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const useConnectPopupDesktop = () => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);

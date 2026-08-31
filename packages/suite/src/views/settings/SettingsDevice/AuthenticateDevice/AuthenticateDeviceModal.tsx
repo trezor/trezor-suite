@@ -3,9 +3,8 @@ import { useDispatch } from 'react-redux';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
+import { useSelector } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { AuthenticateDeviceFailStep } from './AuthenticateDeviceFailStep';
 import { AuthenticateDeviceInititalStep } from './AuthenticateDeviceInititalStep';

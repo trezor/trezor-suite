@@ -8,13 +8,11 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { compareAccountsByCoin } from '@suite-common/wallet-utils';
 import { CardList, Column, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
-
-import { useSelector } from 'src/hooks/suite';
-
 type EarnYieldClaimSelectAccountModalProps = {
     accountsRewards: YieldAccountsRewards;
     onSelect: (account: YieldAccountsRewards[number]) => void;

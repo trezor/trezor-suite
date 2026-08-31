@@ -1,8 +1,7 @@
 import { Address } from '@suite/address';
+import { useSelector } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { findAccountsByAddress } from '@suite-common/wallet-utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { AccountLabeling } from './AccountLabeling';
 

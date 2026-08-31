@@ -13,6 +13,7 @@ import { selectIsDeviceLocked } from '@suite/locks';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { CheckIcon, TrezorBackupIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -20,8 +21,6 @@ import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboarding
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { BackupSeedCards } from 'src/components/backup';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
-import { useSelector } from 'src/hooks/suite';
-
 export const BackupStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
     const backup = useSelector(selectBackup);

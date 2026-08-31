@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { isTransactionNotification } from '@suite-common/toast-notifications';
 import {
     selectHasUnseenNonPhishingTransactionNotifications,
@@ -17,7 +18,7 @@ import {
 import { NotificationGroup } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationGroup';
 import { ReleaseNotes } from 'src/components/suite/notifications/ReleaseNotes/ReleaseNotes';
 import { TriggerActivityNotification } from 'src/components/suite/notifications/TriggerActivityNotification/TriggerActivityNotification';
-import { useLayout, useSelector } from 'src/hooks/suite';
+import { useLayout } from 'src/hooks/suite';
 
 type ActivityTab = 'transactions' | 'release-notes' | 'all';
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type EnhancedTokenInfo,
     type TokenManagementAction,
@@ -21,7 +22,6 @@ import {
     TrendTicker,
 } from 'src/components/suite';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-import { useSelector } from 'src/hooks/suite';
 
 import { BlurUrls } from '../BlurUrls';
 import { TokenRowActions } from './TokenRowActions';

@@ -1,9 +1,10 @@
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceName } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { CheckIcon } from '@trezor/icons';
 
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding } from 'src/hooks/suite';
 
 export const FinalStep = () => {
     const { goToSuite } = useOnboarding();

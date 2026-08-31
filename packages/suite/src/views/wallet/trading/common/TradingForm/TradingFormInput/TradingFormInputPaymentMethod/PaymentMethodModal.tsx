@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { type UseFormSetValue } from 'react-hook-form';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TRADING_FORM_PROVIDER_SELECT,
@@ -10,7 +11,6 @@ import {
 import { Modal } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     type TradingTradeBuySellType,

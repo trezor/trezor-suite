@@ -3,11 +3,9 @@ import { useDispatch } from 'react-redux';
 import { Translation } from '@suite/intl';
 import { disconnectProvider, selectSelectedProviderForLabels } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
-
 export const DisconnectLabelingProvider = () => {
     const metadata = useSelector(state => state.metadata);
     const selectedProvider = useSelector(selectSelectedProviderForLabels);

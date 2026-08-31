@@ -1,4 +1,5 @@
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type SignOperator } from '@suite-common/suite-types';
 import { selectBaseCurrency, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
 import { type Timestamp } from '@suite-common/wallet-types';
@@ -12,7 +13,6 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionTargetLayout } from './TransactionTargetLayout';

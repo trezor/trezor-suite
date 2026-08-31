@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import { selectKnownDevices, selectNearbyDevices } from '@suite-common/bluetooth';
+import { useSelector } from '@suite-common/redux-utils';
 import { Code, Icon, InfoSegments, Text } from '@trezor/components';
 import { CellSignalFullIcon, FloppyDiskBackFilledIcon } from '@trezor/icons';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
-import { useSelector } from 'src/hooks/suite';
-
 const TimeAgo = ({ timestamp }: { timestamp: number }) => {
     const [secAgo, setSecAgo] = useState(0);
 

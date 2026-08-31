@@ -1,12 +1,11 @@
 import { useCallback } from 'react';
 
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type TradingExchangeType,
     selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { useTradingFormContext } from './useTradingCommonForm';
 

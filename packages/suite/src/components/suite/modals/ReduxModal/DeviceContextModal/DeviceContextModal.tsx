@@ -5,9 +5,8 @@ import { messages } from '@suite/intl';
 import { type MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { ConfirmActionModal } from './ConfirmActionModal';
 import { ConfirmFingerprintModal } from './ConfirmFingerprintModal';

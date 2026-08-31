@@ -1,12 +1,11 @@
 import { useWatch } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import { Note } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { useFeesContext } from './context/FeesContext';
 

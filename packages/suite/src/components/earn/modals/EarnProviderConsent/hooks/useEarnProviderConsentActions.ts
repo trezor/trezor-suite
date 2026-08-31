@@ -4,6 +4,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     EarnFlow,
     type EarnModalAction,
@@ -20,7 +21,6 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { useSelector } from 'src/hooks/suite';
 
 interface UseEarnProviderConsentActionsProps {
     flow: EarnFlow;

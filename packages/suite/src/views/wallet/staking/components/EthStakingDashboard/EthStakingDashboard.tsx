@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api/src/staking';
+import { useSelector } from '@suite-common/redux-utils';
 import { getDaysToAddToPool, getDaysToUnstake } from '@suite-common/staking';
 import {
     fetchAllTransactionsForAccountThunk,
@@ -20,7 +21,7 @@ import {
 import { Column, Flex, Grid } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite';
 
 import { InstantStakeBanner } from './InstantStakeBanner';
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';

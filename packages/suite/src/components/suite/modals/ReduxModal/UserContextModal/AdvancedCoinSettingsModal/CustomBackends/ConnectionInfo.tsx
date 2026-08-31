@@ -1,9 +1,7 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, InfoItem, Paragraph } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
-
 type ConnectionInfoProps = {
     symbol: NetworkSymbol;
 };

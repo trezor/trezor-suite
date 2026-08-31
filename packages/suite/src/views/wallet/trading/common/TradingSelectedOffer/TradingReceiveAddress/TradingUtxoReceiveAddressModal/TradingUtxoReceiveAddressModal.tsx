@@ -2,12 +2,12 @@ import { useMemo, useState } from 'react';
 
 import { selectAddressLabelsForAccount } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { normalizeForSearch } from '@suite-common/suite-utils';
 import { type Address } from '@trezor/blockchain-link-types';
 import { Column, Modal } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
 import { TradingReceiveAddressEmpty } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 

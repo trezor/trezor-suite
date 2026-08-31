@@ -7,6 +7,7 @@ import { Translation } from '@suite/intl';
 import { goto, selectRouter } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { useSelector } from '@suite-common/redux-utils';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
@@ -24,7 +25,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
-import { useSelector } from 'src/hooks/suite';
 
 import { EarnEthBanner } from './EarnEthBanner';
 import { useEarnEthBanner } from './hooks/useEarnEthBanner';

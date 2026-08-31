@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type FormState,
     type GeneralPrecomposedTransactionFinal,
@@ -7,7 +8,6 @@ import {
 } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 import {

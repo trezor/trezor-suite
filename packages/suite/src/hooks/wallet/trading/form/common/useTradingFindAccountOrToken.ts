@@ -2,12 +2,11 @@ import { useCallback } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { getCryptoId, parseCryptoId } from '@suite-common/trading';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 export interface UseTradingFindAccountOrTokenProps {
     accountKey: string;

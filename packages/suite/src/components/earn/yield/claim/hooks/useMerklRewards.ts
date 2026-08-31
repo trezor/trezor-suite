@@ -8,15 +8,13 @@ import {
     usePairRewardsWithAccounts,
     useTotalClaimableRewardsAmountOfAccounts,
 } from '@suite-common/earn-stablecoin-api';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     selectBaseCurrency,
     selectCurrentFiatRates,
     useMissingRateTickersQuery,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-
-import { useSelector } from 'src/hooks/suite';
-
 type YieldRewardsAccounts = (Account | undefined) | (Account | undefined)[];
 
 /**

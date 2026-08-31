@@ -3,10 +3,8 @@ import { useEffect, useState } from 'react';
 import type { Locale as DateFnsLocale } from 'date-fns';
 
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { type Locale as SuiteLocale } from '@suite-common/suite-types';
-
-import { useSelector } from 'src/hooks/suite';
-
 const getDateFnsLocale = (locale: SuiteLocale): DateFnsLocale['code'] => {
     const localeMap: Record<SuiteLocale, DateFnsLocale['code']> = {
         'en-US': 'enUS',

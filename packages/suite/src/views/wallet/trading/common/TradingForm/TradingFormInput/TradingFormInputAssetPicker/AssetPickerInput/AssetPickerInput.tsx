@@ -3,6 +3,7 @@ import { useFormContext } from 'react-hook-form';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { FakeSelect } from '@suite/trading';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     type TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
@@ -14,8 +15,6 @@ import {
 } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type InputProps, Spinner, Text } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { AssetPickerInputContent } from './AssetPickerInputContent';
 

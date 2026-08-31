@@ -1,9 +1,7 @@
 import { selectBackupStatus } from '@suite/backup';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { isArrayMember } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
-
 const nonErrorBackupStatuses = ['initial', 'in-progress', 'finished'] as const;
 
 export const BackupStepDescription = () => {

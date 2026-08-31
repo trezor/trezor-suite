@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { Modal, type ModalProps } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
@@ -14,8 +15,6 @@ import {
     HELP_CENTER_UPGRADING_TO_MULTI_SHARE_URL,
     TREZOR_SUPPORT_RECOVERY_ISSUES_URL,
 } from '@trezor/urls';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { MultiShareBackupStep1 } from './MultiShareBackupStep1';
 import { MultiShareBackupStep2to4 } from './MultiShareBackupStep2to4';

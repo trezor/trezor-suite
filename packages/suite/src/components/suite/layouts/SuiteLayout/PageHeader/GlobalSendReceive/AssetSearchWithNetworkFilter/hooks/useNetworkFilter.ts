@@ -2,11 +2,11 @@ import { type RefObject, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { goto, parseDashboardParams, selectRouterParams } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
 import {
     globalSendReceiveFiltersActions,
     globalSendReceiveFiltersSelectors,

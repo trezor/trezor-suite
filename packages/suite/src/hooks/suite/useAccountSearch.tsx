@@ -1,9 +1,9 @@
 import { createContext, useContext, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { useSelector } from 'src/hooks/suite';
 import {
     accountSearchActions,
     selectAccountSearch,

@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Translation } from '@suite/intl';
 import { closeModal as closeModalAction } from '@suite/modal';
 import { goto } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
@@ -10,7 +11,6 @@ import { PlusIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useSelector } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 

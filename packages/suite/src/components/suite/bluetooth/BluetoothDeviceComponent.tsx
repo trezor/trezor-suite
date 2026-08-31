@@ -1,9 +1,9 @@
 import { selectFlags } from '@suite/flags';
+import { useSelector } from '@suite-common/redux-utils';
 import { Column, Image, type ImageKey, InfoSegments, Row, Text } from '@trezor/components';
 import { type DeviceModelInternal, models } from '@trezor/device-utils';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
-import { useSelector } from 'src/hooks/suite';
 
 import { BluetoothDebugInfo } from './BluetoothDebugInfo';
 

@@ -1,9 +1,8 @@
 import { useCallback } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { useSelector } from '@suite-common/redux-utils';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
-
-import { useSelector } from './useSelector';
 
 export const useDiscovery = () => {
     const device = useSelector(selectSelectedDevice);

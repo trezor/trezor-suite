@@ -1,5 +1,6 @@
 import { selectRouteName } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     hasPendingStakeTypeTransaction,
     selectAccountIsStakingActive,
@@ -10,8 +11,6 @@ import {
     isCardanoStakedOutsideEverstake,
     isCardanoStakedWithFiveBinaries,
 } from '@suite-common/wallet-utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { NewProviderCard } from '../StakingDashboard/components/NewProviderCard';
 

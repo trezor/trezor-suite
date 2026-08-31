@@ -2,10 +2,10 @@ import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { useSelector } from '@suite-common/redux-utils';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useGuide } from 'src/hooks/guide';
-import { useSelector } from 'src/hooks/suite';
 import { getNodeById } from 'src/utils/suite/guide';
 
 export const useGuideOpenNode = () => {

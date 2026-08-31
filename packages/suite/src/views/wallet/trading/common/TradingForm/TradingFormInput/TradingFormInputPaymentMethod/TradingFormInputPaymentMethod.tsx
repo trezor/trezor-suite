@@ -4,6 +4,7 @@ import { useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { PaymentMethodIcon } from '@suite/trading';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     type TradingPaymentMethodListProps,
@@ -15,7 +16,6 @@ import { GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
 import { FakeSelect } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { type TradingTradeBuySellType } from 'src/types/trading/trading';
 import { type TradingFormInputDefaultProps } from 'src/types/trading/tradingForm';

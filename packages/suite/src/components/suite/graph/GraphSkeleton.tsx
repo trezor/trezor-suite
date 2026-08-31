@@ -1,8 +1,6 @@
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { useSelector } from '@suite-common/redux-utils';
 import { Column, Row, Skeleton } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
-
 const barProps = {
     width: 12,
     borderRadius: 4,

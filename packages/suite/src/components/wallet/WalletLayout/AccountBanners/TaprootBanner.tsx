@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { getBip43Type } from '@suite-common/wallet-utils';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { type Account } from 'src/types/wallet';
 
 import { BannerPoints } from './BannerPoints';

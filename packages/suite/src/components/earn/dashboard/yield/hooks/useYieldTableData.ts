@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     getNetworkByYieldXyzId,
@@ -22,8 +23,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 import {
     type YieldAccountOpportunity,

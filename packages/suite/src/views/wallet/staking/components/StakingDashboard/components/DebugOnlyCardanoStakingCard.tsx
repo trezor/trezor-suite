@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
+import { useSelector } from '@suite-common/redux-utils';
 import { EVERSTAKE_POOL_NAMES } from '@suite-common/wallet-constants';
 import { selectCardanoPoolsInfo } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -11,9 +12,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, InfoItem, Paragraph, Row } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite';
-
 const ParagraphWrapper = styled.div`
     white-space: pre-wrap;
     overflow-wrap: anywhere;

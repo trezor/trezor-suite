@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -21,7 +22,6 @@ import {
     createHiddenTokensOption,
     createTokenOption,
 } from 'src/components/suite/asset-picker/utils';
-import { useSelector } from 'src/hooks/suite';
 import {
     enhanceTokensWithRates,
     getTokens,

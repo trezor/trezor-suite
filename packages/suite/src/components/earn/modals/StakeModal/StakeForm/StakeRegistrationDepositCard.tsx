@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
 import {
@@ -10,8 +11,6 @@ import { Banner, Card, Paragraph, Row } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { useSelector } from 'src/hooks/suite';
-
 type StakeRegistrationDepositCardProps = {
     account: Account;
 };

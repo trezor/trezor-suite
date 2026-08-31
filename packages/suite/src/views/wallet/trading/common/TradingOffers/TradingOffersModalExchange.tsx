@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
+import { useSelector } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_CEX,

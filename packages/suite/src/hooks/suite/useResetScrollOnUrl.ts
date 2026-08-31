@@ -1,8 +1,7 @@
 import { type RefObject, useLayoutEffect, useRef } from 'react';
 
 import { selectRoute, selectRouterUrl } from '@suite/router';
-
-import { useSelector } from './useSelector';
+import { useSelector } from '@suite-common/redux-utils';
 
 export const useResetScrollOnUrl = (scrollRef: RefObject<HTMLDivElement | null>) => {
     const url = useSelector(selectRouterUrl);

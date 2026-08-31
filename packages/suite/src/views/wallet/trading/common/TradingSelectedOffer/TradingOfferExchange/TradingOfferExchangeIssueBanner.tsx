@@ -2,12 +2,10 @@ import { type ReactNode, useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useSelector } from '@suite-common/redux-utils';
 import { type ExchangeIssue } from '@suite-common/trading';
 import { Banner, List } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
-
-import { useSelector } from 'src/hooks/suite';
-
 type TradingOfferExchangeIssueContent = {
     title: ReactNode;
     description: ReactNode;

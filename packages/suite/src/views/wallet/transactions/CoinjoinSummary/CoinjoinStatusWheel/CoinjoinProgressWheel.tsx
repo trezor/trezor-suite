@@ -15,11 +15,11 @@ import {
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
+import { useSelector } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Tooltip } from '@trezor/components';
 
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { useSelector } from 'src/hooks/suite/useSelector';
 
 import {
     CoinjoinProgressContent,

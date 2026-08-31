@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { onReceiveAccount } from '@suite/modal';
+import { useSelector } from '@suite-common/redux-utils';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Column, Icon, Modal, Row, Skeleton, SubTabs, Table } from '@trezor/components';
 import { type UiRequestSelectAccount } from '@trezor/connect';
@@ -12,7 +13,6 @@ import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { useSelector } from 'src/hooks/suite';
 
 interface SelectAccountModalProps {
     data: UiRequestSelectAccount['payload'];

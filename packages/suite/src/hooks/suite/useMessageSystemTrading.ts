@@ -4,9 +4,8 @@ import {
     selectFeatureMessageContent,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
+import { useSelector } from '@suite-common/redux-utils';
 import { type TradingTypeWithConcierge } from '@suite-common/trading';
-
-import { useSelector } from './useSelector';
 
 export const useMessageSystemTrading = (type: TradingTypeWithConcierge) => {
     const language = useSelector(selectLanguage);
