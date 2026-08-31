@@ -33,17 +33,25 @@ const preauthorizeState = ({ device, method }: WorkflowContext) => {
     }
 };
 
-// Treat two states as "unexpected" if they describe different (walletDescriptor, deviceId)
-// pairs. Instance is intentionally ignored — the same wallet can be referenced through
-// different host-side instance numbers across reconnects.
-const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId) => {
+// A state is "unexpected" only when it describes a DIFFERENT wallet, i.e. a different
+// `walletDescriptor`. The descriptor is the first Testnet address (44'/1'/0'/0/0), a pure
+// function of (seed, passphrase), so a mismatch is exactly what the "Passphrase is incorrect"
+// (Device_InvalidState) guard exists to catch: a passphrase/seed that derives a wallet the host
+// did not expect.
+//
+// `deviceId` and `instance` are intentionally NOT compared:
+//   - A differing `deviceId` with the same `walletDescriptor` is the same wallet on a
+//     re-provisioned device — wiping and recovering the same seed mints a fresh hardware
+//     `device_id`. Reporting that as "Passphrase is incorrect" (as an earlier revision did) is
+//     wrong: the passphrase is fine, only the device identity changed. Physical-device selection
+//     is enforced upstream in `DeviceList.getDeviceByStaticState`, not here.
+//   - `instance` is a host-side number that can differ across reconnects for the same wallet.
+export const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId) => {
     if (!expected || !current) return false;
-    const parsedExpected = parseStaticSessionId(expected);
-    const parsedCurrent = parseStaticSessionId(current);
 
     return (
-        parsedExpected.walletDescriptor !== parsedCurrent.walletDescriptor ||
-        parsedExpected.deviceId !== parsedCurrent.deviceId
+        parseStaticSessionId(expected).walletDescriptor !==
+        parseStaticSessionId(current).walletDescriptor
     );
 };
 
@@ -172,7 +180,12 @@ const validateThpDeviceState = async (context: WorkflowContext) => {
         throw ERRORS.TypedError('Device_InvalidState');
     }
 
-    if (!expectedState) {
+    // Mirror the non-THP `validate` above: refresh the saved state whenever it changed, not only
+    // when it was absent. Reaching here means the wallet matches (a differing `walletDescriptor`
+    // would have thrown), so a difference is a benign `deviceId` change from a re-provisioned
+    // device — adopt it, otherwise `getState()`/`getDeviceState` would keep leaking the stale
+    // `device_id` and later state-only calls would miss in `getDeviceByStaticState`.
+    if (!expectedState || expectedState !== uniqueState) {
         device.setState({ staticSessionId: uniqueState });
     }
 };
