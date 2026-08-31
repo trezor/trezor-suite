@@ -1,5 +1,7 @@
 import { useCallback, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
+import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -29,7 +31,6 @@ import {
 import { type AssetPickerListItem } from 'src/components/suite/asset-picker/types';
 import { createTokenOption } from 'src/components/suite/asset-picker/utils';
 import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
-import { useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
@@ -142,7 +143,10 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
     );
 
     return (
-        <AssetsModal heading={{ id: 'SEND_TRANSACTION' }} onClose={() => onCancel(filledSearch)}>
+        <AssetsModal
+            heading={<Translation id="SEND_TRANSACTION" />}
+            onClose={() => onCancel(filledSearch)}
+        >
             <Box padding={{ horizontal: 16 }}>
                 <AssetSearchWithNetworkFilter
                     placeholder="TR_SEND_SEARCH"

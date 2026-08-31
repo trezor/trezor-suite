@@ -20,7 +20,7 @@ import {
 import { accountsActions } from '../accounts/accountsActions';
 import { type WalletCoreCompoundRootState, selectAccountsToBeForgotten } from '../selectors';
 
-type ChangeCoinVisibilityThunkState = WalletCoreCompoundRootState & NetworksRootState;
+export type ChangeCoinVisibilityThunkState = WalletCoreCompoundRootState & NetworksRootState;
 
 export const changeCoinVisibilityThunk = createThunk<
     void,

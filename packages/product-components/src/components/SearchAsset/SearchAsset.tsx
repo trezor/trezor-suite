@@ -8,6 +8,7 @@ export type SearchAssetProps<TSymbol extends string = string> = {
     search: string;
     setSearch: (value: string) => void;
     selectConfig?: SearchAssetSelectConfig<TSymbol>;
+    onMenuOpen?: () => void;
     autoFocus?: boolean;
 };
 
@@ -16,6 +17,7 @@ export const SearchAsset = <TSymbol extends string>({
     search,
     setSearch,
     selectConfig,
+    onMenuOpen,
     autoFocus = false,
 }: SearchAssetProps<TSymbol>) => {
     const { options, selectedOption } = useNetworkSelect(selectConfig);
@@ -26,6 +28,7 @@ export const SearchAsset = <TSymbol extends string>({
             options={options}
             value={selectedOption}
             onChange={option => selectConfig.onChange(option.value)}
+            onMenuOpen={onMenuOpen}
             size="small"
             isClean
             formatOptionLabel={(option, meta) => (
@@ -45,6 +48,7 @@ export const SearchAsset = <TSymbol extends string>({
             )}
             data-testid={`${dataTestIdBase}/filter`}
             openMenuOnFocus={false}
+            menuAlign="end"
         />
     ) : undefined;
 

@@ -22,6 +22,7 @@ export * from './device/deviceThunks';
 export * from './device/entropyCheckThunks';
 export * from './device/preparePushNotificationMiddleware';
 export * from './device/publicKeyActions';
+export * from './discovery/activateNetworkWithDiscoveryThunk';
 export * from './discovery/discoveryActions';
 export * from './discovery/discoveryReducer';
 export * from './discovery/discoverySelectors';

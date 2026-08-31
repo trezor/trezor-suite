@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 
-import { useTranslation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
@@ -208,7 +208,7 @@ export function SelectTokenAssetModal({
     );
 
     return (
-        <AssetsModal heading={{ id: 'TR_SELECT_TOKEN' }} onClose={onModalClose}>
+        <AssetsModal heading={<Translation id="TR_SELECT_TOKEN" />} onClose={onModalClose}>
             <Box padding={{ horizontal: 16 }}>
                 <SearchAsset
                     searchPlaceholder={translationString('TR_SEARCH_TOKEN_IN_SEND_FORM_MODAL')}

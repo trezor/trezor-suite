@@ -73,6 +73,7 @@ export const Select = ({
     isLoading = false,
     openMenuOnFocus = true,
     menuPortalZIndex,
+    menuAlign,
     components,
     'data-testid': dataTest,
     ...rest
@@ -95,8 +96,8 @@ export const Select = ({
     );
 
     const menuStyles = useMemo(
-        () => createSharedMenuStyles<OptionType>(menuPortalZIndex),
-        [menuPortalZIndex],
+        () => createSharedMenuStyles<OptionType>({ menuPortalZIndex, menuAlign }),
+        [menuPortalZIndex, menuAlign],
     );
 
     const closeMenuOnScroll = (e: Event) => {

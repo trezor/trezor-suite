@@ -1,5 +1,5 @@
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { arrayPartition } from '@trezor/utils';
 
 export const getSortedNetworks = ({
@@ -34,16 +34,3 @@ export const enqueueNetworkActivation = (
     queuedNetworkSymbols.includes(networkSymbol)
         ? queuedNetworkSymbols
         : [...queuedNetworkSymbols, networkSymbol];
-
-export const getNewNetworkAccounts = ({
-    accounts,
-    existingAccountKeys,
-    networkSymbol,
-}: {
-    accounts: Account[];
-    existingAccountKeys: Set<AccountKey>;
-    networkSymbol: NetworkSymbol;
-}) =>
-    accounts.filter(
-        account => account.symbol === networkSymbol && !existingAccountKeys.has(account.key),
-    );
