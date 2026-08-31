@@ -21,6 +21,7 @@ export const CustomBackend = () => {
             <QuickActionButton
                 tooltip={{ content: <NavBackends customBackends={enabledBackends} /> }}
                 onClick={handleClick}
+                data-testid="@quickActions/customBackend"
                 icon={DatabaseIcon}
                 subIconIntent="brand"
                 subIcon={CheckIcon}
