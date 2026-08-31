@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { isCoinjoinSupportedSymbol, setDebugSettings } from '@suite/coinjoin';
@@ -15,7 +17,7 @@ import { Button } from '@trezor/components';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const CoordinatorVersionContainer = styled.div`
     display: flex;

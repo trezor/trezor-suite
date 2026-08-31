@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import {
     selectAreDeviceMetaChecksEnabled,
     selectIsEntropyCheckEnabled,
@@ -8,7 +10,7 @@ import {
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const CheckFirmwareAuthenticity = () => {
     const dispatch = useDispatch();

@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { type ExchangeTrade } from 'invity-api';
 
@@ -18,7 +19,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
 import { type SendContextValues } from 'src/types/wallet/sendForm';
 

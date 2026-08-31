@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
@@ -31,7 +32,7 @@ import { AsteriskIcon, EjectIcon, XIcon } from '@trezor/icons';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { type AcquiredDevice, type ForegroundAppProps } from 'src/types/suite';

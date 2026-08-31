@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import {
     type DesktopUpdateState,
     UpdateState,
@@ -14,7 +16,7 @@ import { isDesktop } from '@trezor/env-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const getUpdateStateMessage = (state: UpdateState) => {
     switch (state) {

@@ -1,4 +1,5 @@
 import { type Dispatch, type SetStateAction, useCallback, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -10,7 +11,7 @@ import { Row } from '@trezor/components/src/components/Flex/Flex';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 
 import { setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { ExportAction } from './ExportAction';
 import { FilterAction } from './FilterAction';

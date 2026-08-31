@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { AccountLabel } from '@suite/account';
 import { Address, selectAddressLabel } from '@suite/address';
@@ -46,7 +47,7 @@ import {
 import { ConfirmOnDevicePill, QrCode, TokenIcon } from '@trezor/product-components';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 

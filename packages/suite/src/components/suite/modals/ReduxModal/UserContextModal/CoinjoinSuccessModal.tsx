@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { goto, selectRouterParams } from '@suite/router';
@@ -6,7 +8,6 @@ import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { ArrowsInIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
 type CoinjoinSuccessModalProps = {

@@ -1,9 +1,10 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { selectRouteName } from '@suite/router';
 import { networks } from '@suite-common/wallet-config';
 
 import { closeEvmExplanationBanner } from 'src/actions/suite/suiteActions';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { type Account } from 'src/types/wallet';
 

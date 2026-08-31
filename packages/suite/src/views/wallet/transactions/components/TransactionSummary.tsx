@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
@@ -11,7 +13,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector, HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import {
     aggregateBalanceHistory,

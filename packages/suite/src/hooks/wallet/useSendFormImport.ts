@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { openDeferredModal } from '@suite/modal';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -21,7 +22,6 @@ import {
 import { type BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
 import { unique } from '@trezor/utils';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type UseSendFormState } from 'src/types/wallet/sendForm';
 

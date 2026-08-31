@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
@@ -9,7 +10,7 @@ import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { Metadata } from 'src/components/suite';
-import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
+import { useLayout, useSelector } from 'src/hooks/suite';
 import { AutoStart } from 'src/views/settings/SettingsGeneral/AutoStart';
 
 import { ErrorPage } from '../ErrorPage';

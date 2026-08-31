@@ -1,11 +1,11 @@
+import { useDispatch } from 'react-redux';
+
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, goto } from '@suite/router';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 interface CheckRecoverySeedProps {
     isDeviceLocked: boolean;

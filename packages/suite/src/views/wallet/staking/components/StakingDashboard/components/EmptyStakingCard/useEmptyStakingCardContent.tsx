@@ -1,9 +1,12 @@
 import { type ReactNode } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type DesktopAnalyticsDep, events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
+import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
@@ -19,7 +22,6 @@ import {
 } from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
-import { useDispatch } from 'src/hooks/suite';
 
 import { type EmptyStakingCardData } from './useEmptyStakingCardData';
 
@@ -48,7 +50,7 @@ export interface EmptyStakingCardContent {
 
 interface UseNetworkContentProps {
     data: EmptyStakingCardData;
-    dispatch: ReturnType<typeof useDispatch<GotoThunkState, GotoThunkDeps>>;
+    dispatch: Dispatch<UnknownAction>;
 }
 
 const getTronContent = ({
@@ -290,7 +292,7 @@ export const useStakingCardContent = ({
     variant,
     data,
 }: UseStakingCardContentProps): EmptyStakingCardContent => {
-    const dispatch = useDispatch<GotoThunkState, GotoThunkDeps>();
+    const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     switch (variant) {

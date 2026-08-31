@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { setConnectionMode, toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
@@ -8,7 +10,7 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { Button, Column } from '@trezor/components';
 import { TrezorDevicesIcon } from '@trezor/icons';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type ForegroundAppProps } from 'src/types/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';

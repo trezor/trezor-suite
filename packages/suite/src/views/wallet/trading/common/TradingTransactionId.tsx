@@ -1,9 +1,9 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Button, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-
-import { useDispatch } from 'src/hooks/suite';
 
 interface TradingTransactionIdProps {
     transactionId: string;

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { type BuyTrade } from 'invity-api';
 
@@ -8,7 +9,6 @@ import { Button, Card, Column, Paragraph, type StepListItemState } from '@trezor
 import { ArrowSquareOutIcon } from '@trezor/icons';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';

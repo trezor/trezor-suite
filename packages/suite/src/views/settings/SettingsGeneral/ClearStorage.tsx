@@ -1,9 +1,10 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
-import { useDispatch } from 'src/hooks/suite';
 
 export const ClearStorage = () => {
     const dispatch = useDispatch();

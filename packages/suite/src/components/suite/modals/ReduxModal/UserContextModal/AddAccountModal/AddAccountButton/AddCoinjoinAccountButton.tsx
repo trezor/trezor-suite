@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { createCoinjoinAccount } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
@@ -13,7 +14,7 @@ import { type UnavailableCapabilities } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveAfter } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';

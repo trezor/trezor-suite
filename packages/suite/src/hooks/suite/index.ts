@@ -9,7 +9,6 @@ export { useFilteredModal } from './useFilteredModal';
 export { usePreferredModal } from './usePreferredModal';
 export { useFormattersConfig } from './useFormattersConfig';
 export { useAnonymityStatus } from './useAnonymityStatus';
-export { useDispatch } from './useDispatch';
 export { useDisplayMode } from './useDisplayMode';
 export { useAppShortcuts } from './useAppShortcuts';
 

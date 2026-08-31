@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { type TrxStats, useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type UseQueryResult } from '@suite-common/react-query';
 import { type TronFlow, tronStakeActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { useTronAmountInput } from './useTronAmountInput';
 import { type TronStakeActions, useTronStakeActions } from './useTronStakeActions';

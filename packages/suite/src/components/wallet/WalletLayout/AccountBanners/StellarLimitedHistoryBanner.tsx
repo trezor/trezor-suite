@@ -1,7 +1,8 @@
+import { useDispatch } from 'react-redux';
+
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 
-import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
 import { BannerPoints } from './BannerPoints';

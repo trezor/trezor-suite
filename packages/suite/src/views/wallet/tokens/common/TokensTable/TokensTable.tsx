@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
@@ -10,8 +11,6 @@ import { tradingThunks } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Paragraph, Table } from '@trezor/components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { TokenRow } from './TokenRow';
 import type { TokensTableType } from './types';

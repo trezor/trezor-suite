@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { RedactNumericalValue } from '@suite/discreet-mode';
@@ -43,7 +44,7 @@ import {
 
 import { setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { HiddenPlaceholder } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { DropdownRow } from '../../tokens/DropdownRow';

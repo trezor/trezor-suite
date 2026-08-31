@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { lighten, rgba } from 'polished';
 import styled, { type DefaultTheme, css, keyframes } from 'styled-components';
@@ -18,7 +19,6 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { Tooltip } from '@trezor/components';
 
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
 import {

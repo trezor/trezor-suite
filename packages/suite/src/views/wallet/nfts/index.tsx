@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { goto } from '@suite/router';
 import { Column } from '@trezor/components';
 
 import { Route } from 'src/components/suite/Route';
 import { WalletLayout } from 'src/components/wallet';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { NftsTablesSection } from './NftsTablesSection';
 import { TokensNavigation } from '../tokens/TokensNavigation';

@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
@@ -11,7 +12,7 @@ import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/co
 import { WarningIcon } from '@trezor/icons';
 
 import { PrerequisitesGuide } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type StepCheckSeedProps = {
     deviceWillBeWiped: boolean;

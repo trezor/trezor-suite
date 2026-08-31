@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -47,7 +49,7 @@ import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 

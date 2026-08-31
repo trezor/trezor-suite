@@ -1,4 +1,5 @@
 import { useForm, useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
@@ -14,7 +15,7 @@ import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/co
 import { XIcon } from '@trezor/icons';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 const INPUT_NAME = 'rawTx';

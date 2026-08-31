@@ -1,4 +1,5 @@
 import { type MouseEvent } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled, { css } from 'styled-components';
 
@@ -19,7 +20,7 @@ import {
 } from '@trezor/components';
 import { commonFocusStyles } from '@trezor/components/src/utils/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 const Container = styled.button<{ $isActive?: boolean }>`

@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
     MODAL_CONTEXT_DEVICE,
@@ -16,7 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 import { UI_REQUEST } from '@trezor/connect';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { PassphraseWalletExistsFlow } from './PassphraseWalletExistsFlow';
 import { PassphraseWalletIsNotExistFlow } from './PassphraseWalletIsNotExistFlow';

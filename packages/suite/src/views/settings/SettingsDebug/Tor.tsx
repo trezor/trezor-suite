@@ -1,7 +1,7 @@
+import { useDispatch } from 'react-redux';
+
 import { toggleTor } from '@suite/tor-desktop';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 export const Tor = () => {
     const dispatch = useDispatch();

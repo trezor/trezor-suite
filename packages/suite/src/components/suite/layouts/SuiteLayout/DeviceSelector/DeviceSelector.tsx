@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled, { css } from 'styled-components';
 
@@ -11,7 +12,7 @@ import { zIndices } from '@trezor/theme';
 
 import { setRecentlyConnectedDevicePath } from 'src/actions/suite/suiteActions';
 import { openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectRecentlyConnectedDevice } from 'src/selectors/suite/suiteSelectors';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 

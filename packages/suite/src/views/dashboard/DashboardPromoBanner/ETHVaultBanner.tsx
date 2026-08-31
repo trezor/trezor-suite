@@ -1,8 +1,8 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Box, Image } from '@trezor/components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { Banner } from './Banner';
 

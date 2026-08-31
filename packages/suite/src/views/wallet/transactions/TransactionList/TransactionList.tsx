@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
@@ -11,7 +12,7 @@ import { Column } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Pagination } from 'src/components/wallet';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 

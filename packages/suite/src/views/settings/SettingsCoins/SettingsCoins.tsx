@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 
@@ -29,7 +30,7 @@ import { breakpoints } from '@trezor/theme';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';

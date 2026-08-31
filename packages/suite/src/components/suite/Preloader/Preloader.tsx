@@ -1,4 +1,5 @@
 import { type FC, type PropsWithChildren, memo, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
@@ -21,7 +22,7 @@ import { Card } from '@trezor/components';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { init } from 'src/actions/suite/initAction';
 import { useGuideDesktopMenu, useGuideKeyboard } from 'src/hooks/guide';
-import { useAppShortcuts, useDispatch, useSelector } from 'src/hooks/suite';
+import { useAppShortcuts, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
 import {
     selectIsTransportInitialized,

@@ -1,4 +1,5 @@
 import { type ReactNode, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -71,7 +72,7 @@ import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { setSendFormPrefill, setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';

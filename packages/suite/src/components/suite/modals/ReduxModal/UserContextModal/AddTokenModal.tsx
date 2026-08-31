@@ -1,4 +1,5 @@
 import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -11,7 +12,7 @@ import TrezorConnect, { type TokenInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
 import { addToken } from 'src/actions/wallet/tokenActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 type AddTokenModalProps = {

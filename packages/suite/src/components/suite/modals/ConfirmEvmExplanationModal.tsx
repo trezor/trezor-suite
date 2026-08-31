@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { networks } from '@suite-common/wallet-config';
@@ -6,7 +8,7 @@ import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
 import { confirmEvmExplanationModal } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export interface ConfirmNetworkExplanationModalProps {
     account: Account | undefined;

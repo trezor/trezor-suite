@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
@@ -23,7 +24,7 @@ import {
     addDeviceIdToSeenDisconnectNotification,
     setRecentlyDisconnectedDevice,
 } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 import { CardWithDevice } from '../CardWithDevice';

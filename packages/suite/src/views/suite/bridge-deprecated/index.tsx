@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
@@ -6,7 +8,7 @@ import { WarningIcon } from '@trezor/icons';
 import { UNINSTALL_BRIDGE_URL } from '@trezor/urls';
 
 import { Metadata } from 'src/components/suite';
-import { useDispatch, useLayout } from 'src/hooks/suite';
+import { useLayout } from 'src/hooks/suite';
 
 /**
  * modal that should show users basic information how to uninstall old standalone bridge

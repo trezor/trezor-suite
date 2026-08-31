@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -33,7 +34,7 @@ import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { WalletConnectAccountOption } from './WalletConnectAccountOption';
 

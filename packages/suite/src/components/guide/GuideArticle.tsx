@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
@@ -6,7 +8,7 @@ import { selectLanguage } from '@suite/settings';
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideMarkdown, GuideViewWrapper } from 'src/components/guide';
 import { useGuideLoadArticle } from 'src/hooks/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
 
 const ArticleWrapper = styled.div`

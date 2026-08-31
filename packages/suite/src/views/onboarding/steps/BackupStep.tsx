@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
     type BackupDeviceParams,
@@ -19,7 +20,7 @@ import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboarding
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { BackupSeedCards } from 'src/components/backup';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const BackupStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);

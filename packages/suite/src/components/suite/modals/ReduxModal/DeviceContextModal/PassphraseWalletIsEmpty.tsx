@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { closeModal as closeModalAction } from '@suite/modal';
 import { goto } from '@suite/router';
@@ -8,7 +10,7 @@ import { PlusIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
@@ -11,7 +12,7 @@ import {
 import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Column, Input, Radio, Text } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const VOTING_OPTIONS: {
     key: VotingDelegationOption['type'];

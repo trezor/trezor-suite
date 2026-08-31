@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { ensureDeviceSession } from '../hooks/ensureDeviceSession';
 

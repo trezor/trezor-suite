@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectAccountIncludingChosenInTrading } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -18,7 +19,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { type Deferred } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';

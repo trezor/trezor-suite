@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
@@ -6,7 +8,7 @@ import { Box, Column, Icon } from '@trezor/components';
 import { AtomIcon, CheckIcon, DotOutlineFilledIcon, StarFourIcon } from '@trezor/icons';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type DebugAndExperimentalTooltipProps = {
     isDebugMode: boolean;

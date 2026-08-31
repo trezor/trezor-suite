@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
@@ -6,7 +7,7 @@ import { type Account } from '@suite-common/wallet-types';
 
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
 import { type AccountItemType } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';

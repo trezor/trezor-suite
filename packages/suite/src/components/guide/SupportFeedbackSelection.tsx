@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { UpdateState } from '@suite/desktop-update';
 import { Translation, type TranslationKey } from '@suite/intl';
@@ -25,7 +27,7 @@ import {
     GuideViewWrapper,
 } from 'src/components/guide';
 import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopover';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const StatusText = ({ id }: { id: TranslationKey }) => (
     <Text typographyStyle="body-sm" intent="neutral" priority="secondary" as="div">

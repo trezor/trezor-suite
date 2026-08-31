@@ -1,9 +1,11 @@
+import { useDispatch } from 'react-redux';
+
 import { type ConfirmKey, backupActions } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, Grid, Icon, Paragraph, Row } from '@trezor/components';
 import { AnchorIcon, KeyIcon, PencilLineIcon } from '@trezor/icons';
 
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 
 const items = [
     {

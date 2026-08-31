@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
 import { isMacOs } from '@trezor/env-utils';
@@ -8,7 +9,6 @@ import {
     requestBioAuthValidationThunk,
 } from 'src/actions/suite/bioAuthThunks';
 
-import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
 
 export const useBioAuthDesktopApi = () => {

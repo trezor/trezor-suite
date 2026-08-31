@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { sendFormActions } from '@suite-common/wallet-core';
@@ -27,7 +28,7 @@ import {
 import { type AssetPickerListItem } from 'src/components/suite/asset-picker/types';
 import { createTokenOption } from 'src/components/suite/asset-picker/utils';
 import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/utils/assetPickerItemHeights';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';

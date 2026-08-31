@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import {
     type Account,
@@ -9,7 +10,6 @@ import {
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useDispatch } from 'src/hooks/suite';
 
 interface UseAllowanceSendParams {
     account: Account;

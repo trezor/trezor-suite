@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { FormProvider } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
@@ -17,7 +18,7 @@ import { Card, Column, Modal, Tooltip } from '@trezor/components';
 
 import { VotingDelegationsOptions } from 'src/components/earn';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import {
     ChangeDelegateFormContext,

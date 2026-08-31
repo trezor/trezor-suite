@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
@@ -39,7 +40,7 @@ import {
 } from 'src/actions/wallet/stablecoin-yield';
 import { submitUnwrapNativeTokenThunk } from 'src/actions/wallet/unwrapNativeTokenThunks';
 import { submitWrapNativeTokenThunk } from 'src/actions/wallet/wrapNativeTokenThunks';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { useEnsureYieldDeviceSession } from './useEnsureYieldDeviceSession';
 import { useYieldFiatInput } from './useYieldFiatInput';

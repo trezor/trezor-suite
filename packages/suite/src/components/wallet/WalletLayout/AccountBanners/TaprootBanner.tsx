@@ -1,10 +1,11 @@
+import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { getBip43Type } from '@suite-common/wallet-utils';
 
-import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { type Account } from 'src/types/wallet';
 

@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { AccountLabel } from '@suite/account';
@@ -22,7 +24,6 @@ import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { useDispatch } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 const HeaderLayout = styled.div`

@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { type Route, goto } from '@suite/router';
@@ -8,7 +9,6 @@ import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-commo
 import { Button } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 // All action buttons share a fixed minimum so the row reads as a uniform group.

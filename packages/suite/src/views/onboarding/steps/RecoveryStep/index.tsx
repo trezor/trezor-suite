@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { TrezorLink } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
@@ -28,7 +30,7 @@ import {
 } from 'src/actions/onboarding/onboardingActions';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
 import * as STEP from 'src/constants/onboarding/steps';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import RecoveryStepBox from './RecoveryStepBox';
 

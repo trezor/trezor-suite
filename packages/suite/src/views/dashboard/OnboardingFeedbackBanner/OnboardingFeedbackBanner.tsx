@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { ThemeProvider, useTheme } from 'styled-components';
@@ -22,7 +23,7 @@ import {
 import { XIcon } from '@trezor/icons';
 import { DASHBOARD_ONBOARDING_FEEDBACK_URL } from '@trezor/urls';
 
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { selectShouldShowOnboardingFeedbackBanner } from './onboardingFeedbackBannerSelectors';

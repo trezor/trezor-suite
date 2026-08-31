@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import {
     selectTradingBuyReceiveAccountKey,
@@ -7,7 +9,7 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 
 import { selectBuyQuoteThunk } from 'src/actions/wallet/trading/buy/selectBuyQuoteThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingStellarActivation } from 'src/hooks/wallet/trading/useTradingStellarActivation';
 import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';

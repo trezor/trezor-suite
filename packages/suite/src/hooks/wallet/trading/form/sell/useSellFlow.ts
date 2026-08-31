@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
     type TradingTransactionSell,
     tradingSellActions,
     tradingThunks,
 } from '@suite-common/trading';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
 

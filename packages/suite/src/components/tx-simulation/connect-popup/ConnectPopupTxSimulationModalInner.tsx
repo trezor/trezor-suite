@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import {
     TxSimulationError,
@@ -23,7 +24,6 @@ import { ERRORS } from '@trezor/connect-common';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDispatch } from 'src/hooks/suite';
 
 import { TxSimulationHeader } from '../common/components/TxSimulationHeader';
 import { TxSimulationSuccessResult } from '../common/components/TxSimulationSuccessResult';

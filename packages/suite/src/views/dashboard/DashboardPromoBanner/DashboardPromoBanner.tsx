@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -7,7 +9,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
 import { type Feature as MessageFeature } from '@suite-common/suite-types';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { BannerCarousel, type CarouselBanner } from './BannerCarousel';

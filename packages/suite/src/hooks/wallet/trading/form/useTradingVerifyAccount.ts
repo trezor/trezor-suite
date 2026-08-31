@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { openModal } from '@suite/modal';
@@ -17,7 +18,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import {
     type TradingGetTranslationIdsProps,

@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { canContinue } from '@suite/backup';
 import { useDevice } from '@suite/device';
@@ -15,7 +16,7 @@ import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { BackupSeedCards } from 'src/components/backup';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { ConfirmActionModal } from 'src/components/suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';
-import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 
 type SecurityStepStatus = 'initial' | 'in-progress' | 'skipping-backup' | 'finished';
 

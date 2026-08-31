@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 import { type ThunkDispatch } from 'redux-thunk';
@@ -11,7 +13,6 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useTradingExchangeTradeRequest } from 'src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
 
 interface UseExchangeApprovalProps {
@@ -39,7 +40,7 @@ export const useExchangeApproval = ({
     receiveAddress,
     extraField,
 }: UseExchangeApprovalProps) => {
-    const dispatch = useDispatch<VerifyAddressThunkState, VerifyAddressThunkDeps>();
+    const dispatch = useDispatch();
     const { getTradeRequestParams } = useTradingExchangeTradeRequest(account);
 
     const verifyAddress =

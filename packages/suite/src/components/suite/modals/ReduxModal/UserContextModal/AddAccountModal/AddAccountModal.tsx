@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsPublic } from '@suite/coinjoin';
@@ -30,7 +31,7 @@ import { InfoIcon } from '@trezor/icons';
 import { AddAccountBannerAboutNetworks } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountBannerAboutNetworks';
 import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
+import { useAccountSearch, useSelector } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 import { NetworkSettingsSearchInput } from 'src/views/settings/SettingsCoins/NetworkSettingsSearchInput';

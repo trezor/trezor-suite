@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
     CALL_SOURCE_WEB,
@@ -19,7 +20,7 @@ import {
     createPopupMessage,
 } from '@trezor/connect';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 /**
  * Normalized incoming message from either the web or webextension popup link.

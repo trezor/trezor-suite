@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -11,7 +13,7 @@ import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/c
 import { ArrowDownIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 import { NetworkIconSet } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const RoundedBorder = styled.div`
     padding: 4px 6px 4px 12px;

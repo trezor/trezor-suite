@@ -1,4 +1,5 @@
 import { type UseFormSetValue } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { useGetCountryName } from '@suite/trading';
@@ -14,7 +15,6 @@ import { Column, Flag, Icon, Input, Modal, Paragraph, Row } from '@trezor/compon
 import { MagnifyingGlassIcon } from '@trezor/icons';
 import { CardList } from '@trezor/product-components';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { type TradingTradeBuySellType } from 'src/types/trading/trading';
 import { type TradingBuySellFormProps } from 'src/types/trading/tradingForm';

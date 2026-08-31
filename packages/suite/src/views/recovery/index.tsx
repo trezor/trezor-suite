@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useIntl } from 'react-intl';
+import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation, messages } from '@suite/intl';
@@ -22,7 +23,7 @@ import { CheckIcon, WarningIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
 
 import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';

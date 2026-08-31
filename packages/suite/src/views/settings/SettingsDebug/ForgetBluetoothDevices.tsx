@@ -1,9 +1,10 @@
+import { useDispatch } from 'react-redux';
+
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
-import { useDispatch } from 'src/hooks/suite';
 
 export const ForgetAllDevicesButton = () => {
     const dispatch = useDispatch();

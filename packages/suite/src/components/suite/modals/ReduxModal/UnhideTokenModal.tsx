@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectSelectedAccount } from '@suite/account';
 import { setFlag } from '@suite/flags';
@@ -12,7 +13,6 @@ import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
 
 interface UnhideTokenModalProps {
     address: string;

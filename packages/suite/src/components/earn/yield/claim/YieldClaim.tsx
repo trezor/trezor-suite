@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
@@ -22,7 +23,7 @@ import { Banner, Button, Card, Column, Text } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
 import { claimMerklRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 

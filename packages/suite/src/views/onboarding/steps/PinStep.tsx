@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
@@ -11,7 +12,7 @@ import { LockKeyIcon } from '@trezor/icons';
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PinMatrix } from 'src/components/suite';
-import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 
 export const PinStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);

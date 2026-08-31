@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
@@ -17,7 +18,7 @@ import {
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Banner, Column, Modal } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { CancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
 import { useEthereumCancelTxCompose } from 'src/hooks/wallet/useEthereumCancelTxCompose';
 

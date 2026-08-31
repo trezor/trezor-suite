@@ -1,4 +1,5 @@
 import { type ChangeEvent, type ReactNode, useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -24,7 +25,7 @@ import {
     GuideSectionHeadline,
     GuideViewWrapper,
 } from 'src/components/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const AnonymousDataList = styled.ul`
     margin-left: 20px;
