@@ -48,7 +48,7 @@ export const useConnectPopupModals = () => {
             ].includes(modalType);
 
         // During a connect popup call the device may request interaction
-        // (e.g. REQUEST_BUTTON / REQUEST_PIN).  This replaces the current
+        // (e.g. BUTTON_REQUEST / REQUEST_PIN).  This replaces the current
         // MODAL_CONTEXT_USER modal with a MODAL_CONTEXT_DEVICE modal that
         // inherits preserve=true.  After the device interaction finishes,
         // CLOSE_UI_WINDOW is blocked by preserve, leaving the device modal
