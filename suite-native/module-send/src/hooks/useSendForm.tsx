@@ -9,10 +9,7 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
-import {
-    selectDeviceUnavailableCapabilities,
-    selectIsDeviceRemembered,
-} from '@suite-common/device';
+import { selectIsDeviceRemembered } from '@suite-common/device';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
 import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -155,8 +152,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     useSubscribeForSolanaBlockUpdates(account);
 
-    const deviceUnavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
-
     const network = account ? getNetwork(account.symbol) : null;
 
     const networkReserve = account
@@ -184,7 +179,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             isValueInSats: isAmountInSats,
             feeLevelsMaxAmount,
             decimals: tokenInfo?.decimals ?? network?.decimals,
-            isTaprootAvailable: !deviceUnavailableCapabilities?.taproot,
             accountNativeAvailableBalance: account?.availableBalance,
             networkReserve,
             rippleReserve,

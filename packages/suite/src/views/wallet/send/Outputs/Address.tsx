@@ -15,7 +15,6 @@ import {
     checkAddressChecksum,
     isAddressDeprecated,
     isEvmAddress,
-    isTaprootAddress,
     selectAddressValidatorDep,
     toChecksumAddress,
 } from '@suite-common/address';
@@ -408,16 +407,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
                 if (!addressValidator.isAddressValid(value, symbol)) {
                     return translationString('RECIPIENT_IS_NOT_VALID');
-                }
-            },
-            // bech32m/Taproot addresses are valid but may not be supported by older FW
-            firmware: (value: string) => {
-                if (
-                    networkType === 'bitcoin' &&
-                    isTaprootAddress({ addressValidator, address: value, symbol }) &&
-                    device?.unavailableCapabilities?.taproot
-                ) {
-                    return translationString('RECIPIENT_REQUIRES_UPDATE');
                 }
             },
             evmChecks: async (checkedAddress: string) => {
