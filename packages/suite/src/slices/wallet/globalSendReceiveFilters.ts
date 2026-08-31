@@ -37,10 +37,6 @@ const globalSendReceiveFiltersSlice = createSlice({
         selectSearch: state => state.search,
         filledSearch: state => state.search !== '',
         selectNetworkSymbol: state => state.networkSymbol,
-        selectFilters: state => ({
-            search: state.search,
-            networkSymbol: state.networkSymbol,
-        }),
     },
 });
 

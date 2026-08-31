@@ -75,11 +75,16 @@ const orderAssets = ({
         getAssetCryptoId,
     });
 
-const searchAssets = (assets: TestAsset[], search: string) =>
+const searchAssets = (
+    assets: TestAsset[],
+    search: string,
+    compareEqualMatches?: (assetA: TestAsset, assetB: TestAsset) => number,
+) =>
     filterTradeableAssetsBySearch({
         assets,
         searchIndex: buildTradeableAssetSearchIndex({ assets, getSearchFields }),
         search,
+        compareEqualMatches,
     });
 
 describe('orderTradeableAssetsByOwnership', () => {
@@ -180,6 +185,30 @@ describe('filterTradeableAssetsBySearch', () => {
         });
 
         expect(searchAssets([zebraCoin, alphaCoin], 'coin')).toEqual([alphaCoin, zebraCoin]);
+    });
+
+    it('uses a custom tie-breaker before the asset name for equally ranked matches', () => {
+        const preferredAsset = createAsset({
+            cryptoId: 'ethereum' as CryptoId,
+            name: 'Zebra Ether',
+            symbol: 'ETH',
+        });
+        const otherAsset = createAsset({
+            cryptoId: 'ethereum--0xother' as CryptoId,
+            name: 'Alpha Ether',
+            symbol: 'ETH',
+        });
+        const comparePreferredAsset = (assetA: TestAsset, assetB: TestAsset) => {
+            if (assetA === preferredAsset) return -1;
+            if (assetB === preferredAsset) return 1;
+
+            return 0;
+        };
+
+        expect(searchAssets([otherAsset, preferredAsset], 'eth', comparePreferredAsset)).toEqual([
+            preferredAsset,
+            otherAsset,
+        ]);
     });
 
     it('ranks asset matches over network matches and contract matches last', () => {

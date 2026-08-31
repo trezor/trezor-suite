@@ -164,15 +164,18 @@ const getAssetWeight = (searchFields: TradeableAssetSearchFields, query: string)
 /**
  * Keeps only assets matching the search, ranked by how well they match — an exact name hit wins
  * over a symbol hit, an asset hit over a network hit, and a contract address hit comes last.
+ * Equally relevant matches use the optional domain-specific comparator before sorting by name.
  */
 export const filterTradeableAssetsBySearch = <TAsset extends object>({
     assets,
     searchIndex,
     search,
+    compareEqualMatches,
 }: {
     assets: readonly TAsset[];
     searchIndex: TradeableAssetSearchIndex<TAsset>;
     search: string;
+    compareEqualMatches?: (assetA: TAsset, assetB: TAsset) => number;
 }): TAsset[] => {
     const query = normalizeForSearch(search);
 
@@ -198,6 +201,12 @@ export const filterTradeableAssetsBySearch = <TAsset extends object>({
 
         if (weightA !== weightB) {
             return weightA - weightB;
+        }
+
+        const equalMatchOrder = compareEqualMatches?.(assetA, assetB) ?? 0;
+
+        if (equalMatchOrder !== 0) {
+            return equalMatchOrder;
         }
 
         return (searchIndex.get(assetA)?.sortName ?? '').localeCompare(

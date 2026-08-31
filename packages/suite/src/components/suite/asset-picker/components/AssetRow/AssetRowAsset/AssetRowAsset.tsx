@@ -11,11 +11,19 @@ export type AssetRowAssetProps = {
     onClick: (asset: TradingAssetOption) => void;
     balance?: TradeableAssetBalance;
     dataTestId?: string;
+    isDisabled?: boolean;
 };
 
-export function AssetRowAsset({ asset, balance, dataTestId, onClick }: AssetRowAssetProps) {
+export function AssetRowAsset({
+    asset,
+    balance,
+    dataTestId,
+    isDisabled,
+    onClick,
+}: AssetRowAssetProps) {
     return (
         <ItemClickableContainer
+            isDisabled={isDisabled}
             onClick={() => {
                 onClick(asset);
             }}
