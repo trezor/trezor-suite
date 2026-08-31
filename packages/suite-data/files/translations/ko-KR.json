@@ -2162,7 +2162,6 @@
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING": "Trezor에서 주소 확인",
   "TR_RECEIVE_ADDRESS_FAILED_BACKUP": "지갑 백업에 실패했습니다. 이 지갑으로 자금을 전송하는 것은 보안상 위험합니다.",
   "TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED": "기기가 손상되었을 수 있습니다. 자금을 보내지 마세요.",
-  "TR_RECEIVE_DESCRIPTION": "토큰을 수령하기 위해 <a>적합한 네트워크 선택 방법</a>을 알아보세요",
   "TR_RECEIVE_NETWORK": "{networkDisplaySymbol} 수신",
   "TR_RECEIVE_SEARCH": "계정 검색",
   "TR_RECEIVING_SYMBOL": "{multiple, select, true {여러 토큰} false {{symbol}} other {{symbol}}} 수신 중",

@@ -56,6 +56,7 @@ export const SearchAsset = ({
             )}
             data-testid={`${dataTestIdBase}/filter`}
             openMenuOnFocus={false}
+            menuAlign="end"
         />
     ) : undefined;
 
