@@ -47,6 +47,7 @@ import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls
 import { BigNumber, arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
+import { getDescriptorForNetworkType } from './deviceAddressUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';
@@ -1191,15 +1192,23 @@ export const prepareNewAccountPayload = async ({
 
     if (!newPath || !device.state?.staticSessionId) return new Error('Missing path');
 
-    const res = await TrezorConnect.getAccountInfo({
+    const descriptorResult = await getDescriptorForNetworkType({
         path: newPath,
-        coin: asCoinSymbol(networkSymbol),
+        coin: networkSymbol,
+        networkType: network.networkType,
         device: {
             path: device.path,
             instance: device.instance,
             state: device.state,
             useEmptyPassphrase: device.useEmptyPassphrase,
         },
+    });
+
+    if (!descriptorResult.success) return new Error(descriptorResult.error.message);
+
+    const res = await TrezorConnect.getAccountInfo({
+        descriptor: descriptorResult.payload,
+        coin: asCoinSymbol(networkSymbol),
         details: 'txs',
         protocols: network.networkType === 'ethereum' ? ['erc4626'] : undefined,
     });

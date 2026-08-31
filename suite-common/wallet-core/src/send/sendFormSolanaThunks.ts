@@ -24,7 +24,7 @@ import {
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
+import { type CoinSymbol, asCoinSymbol } from '@trezor/connect-common';
 import { SOL_COMPUTE_UNIT_LIMIT } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils';
 
@@ -161,6 +161,23 @@ const calculate = (
     return payloadData;
 };
 
+const getRecipientInfo = async (coin: CoinSymbol, tokenInfo?: TokenInfo, descriptor?: string) => {
+    if (!tokenInfo || !descriptor) return {};
+
+    const recipientAccountInfo = await TrezorConnect.getAccountInfo({ coin, descriptor });
+
+    if (!recipientAccountInfo.success) {
+        return {};
+    }
+
+    const recipientAccountOwner = recipientAccountInfo.payload.misc?.owner;
+    const recipientTokenAccounts = recipientAccountInfo.payload.tokens?.find(
+        t => t.contract === tokenInfo.contract,
+    )?.accounts;
+
+    return { recipientAccountOwner, recipientTokenAccounts };
+};
+
 function assertIsSolanaAccount(
     account: Account,
 ): asserts account is Extract<Account, { networkType: 'solana' }> {
@@ -216,13 +233,17 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             }
         }
 
+        const toAddress = firstOutput.address;
+        const coin = asCoinSymbol(account.symbol);
+        const recipientInfo = await getRecipientInfo(coin, tokenInfo, toAddress);
+
         // To estimate fees on Solana we need to turn a transaction into a message for which fees are estimated.
         // Since all the values don't have to be filled in the form at the time of this function call, we use dummy values
         // for the estimation, since these values don't affect the final fee.
         // The real transaction is constructed in `signTransaction`, this one is used solely for fee estimation and is never submitted.
         const transaction = await TrezorConnect.solanaComposeTransaction({
             fromAddress: account.descriptor,
-            toAddress: firstOutput.address,
+            toAddress,
             amount: firstOutput.amount,
             token: tokenInfo
                 ? {
@@ -235,7 +256,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             blockHash,
             lastValidBlockHeight,
             memo: formState.destinationTag || undefined,
-            coin: asCoinSymbol(account.symbol),
+            coin,
             identity: getAccountIdentity(account),
             priorityFees: {
                 // dummy value so simulation always passes
@@ -243,6 +264,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 computeUnitLimit: formState.feeLimit || SOL_COMPUTE_UNIT_LIMIT.toString(),
             },
             serializedTx: formState.transactionData,
+            ...recipientInfo,
         });
 
         if (!transaction.success) {
@@ -382,9 +404,14 @@ export const signSolanaSendFormTransactionThunk = createThunk<
         const { outputs: signOutputs } = formState;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstSignOutput: (typeof signOutputs)[number] = signOutputs[0];
+
+        const toAddress = firstSignOutput.address;
+        const coin = asCoinSymbol(selectedAccount.symbol);
+        const recipientInfo = await getRecipientInfo(coin, token, toAddress);
+
         const transaction = await TrezorConnect.solanaComposeTransaction({
             fromAddress: selectedAccount.descriptor,
-            toAddress: firstSignOutput.address,
+            toAddress,
             amount: firstSignOutput.amount,
             token: token
                 ? {
@@ -401,9 +428,10 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                 computeUnitPrice: precomposedTransaction.feePerByte,
                 computeUnitLimit: precomposedTransaction.feeLimit,
             },
-            coin: asCoinSymbol(selectedAccount.symbol),
+            coin,
             identity: getAccountIdentity(selectedAccount),
             serializedTx: formState.transactionData,
+            ...recipientInfo,
         });
 
         if (!transaction.success) {

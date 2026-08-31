@@ -12,17 +12,17 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    getAddressForNetworkType,
-    getPublicKeyForNetworkType,
     selectDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
+    getAddressForNetworkType,
     getAddressParameters,
     getDerivationType,
     getNetworkId,
     getProtocolMagic,
+    getPublicKeyForNetworkType,
     prepareNewAccountPayload,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {

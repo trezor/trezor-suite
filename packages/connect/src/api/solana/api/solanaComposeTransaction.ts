@@ -1,22 +1,16 @@
-import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
+import type { PermissionRequest } from '@trezor/connect-common';
 import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import { Assert } from '@trezor/schema-utils';
 
-import { assertBackendSupported, initBlockchain } from '../../../backend/BlockchainLink';
-import type { MethodContext, MethodMessage } from '../../../core/AbstractMethod';
+import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getCoinInfoOrThrow } from '../../../data/coinInfo';
-
-type SolanaComposeTransactionParams = SolanaComposeTransactionSchema & {
-    coinInfo: CoinInfo;
-};
 
 export default class SolanaComposeTransaction extends AbstractMethod<
     'solanaComposeTransaction',
-    SolanaComposeTransactionParams
+    SolanaComposeTransactionSchema
 > {
     constructor(message: MethodMessage<'solanaComposeTransaction'>) {
         const { payload } = message;
@@ -24,11 +18,7 @@ export default class SolanaComposeTransaction extends AbstractMethod<
         // validate bundle type
         Assert(SolanaComposeTransactionSchema, payload);
 
-        const coinInfo = getCoinInfoOrThrow(payload.coin || 'sol');
-        // validate backend
-        assertBackendSupported(coinInfo);
-
-        const params = { coinInfo, ...payload };
+        const params = { ...payload };
 
         super(message, params);
         this.useDevice = false;
@@ -43,13 +33,7 @@ export default class SolanaComposeTransaction extends AbstractMethod<
         return 'Compose Solana transaction';
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
-        const backend = await initBlockchain(
-            this.params.coinInfo,
-            sendCoreMessage,
-            this.params.identity,
-        );
-
+    async run() {
         // if the serializedTx is set, there is nothing to compose
         if (this.params.serializedTx) {
             return {
@@ -68,28 +52,19 @@ export default class SolanaComposeTransaction extends AbstractMethod<
             buildTransferTransaction,
         } = await solana();
 
-        const { token, toAddress } = this.params;
-        const [recipientAccountOwner, recipientTokenAccounts] = token
-            ? await backend.getAccountInfo({ descriptor: toAddress }).then(accountInfo =>
-                  // Fetch data about recipient account owner if this is a token transfer
-                  // We need this in order to validate the address and ensure transfers go through
-                  !accountInfo
-                      ? ([undefined, undefined] as const)
-                      : getAssociatedTokenAccountAddress(toAddress, token.mint, token.program).then(
-                            associatedTokenAccount => {
-                                const accountOwner = accountInfo?.misc?.owner;
-                                const tokenInfo = accountInfo?.tokens
-                                    ?.find(t => t.contract === token.mint)
-                                    ?.accounts?.find(
-                                        account =>
-                                            associatedTokenAccount.toString() === account.publicKey,
-                                    );
+        const { token, toAddress, recipientAccountOwner, recipientTokenAccounts } = this.params;
 
-                                return [accountOwner, tokenInfo] as const;
-                            },
-                        ),
-              )
-            : [undefined, undefined];
+        let recipientTokenAccount;
+        if (token) {
+            const associatedTokenAccount = await getAssociatedTokenAccountAddress(
+                toAddress,
+                token.mint,
+                token.program,
+            );
+            recipientTokenAccount = recipientTokenAccounts?.find(
+                account => associatedTokenAccount.toString() === account.publicKey,
+            );
+        }
 
         const tokenTransferTxAndDestinationAddress = this.params.token?.accounts
             ? await buildTokenTransferTransaction(
@@ -100,7 +75,7 @@ export default class SolanaComposeTransaction extends AbstractMethod<
                   this.params.amount || '0',
                   this.params.token.decimals,
                   this.params.token.accounts,
-                  recipientTokenAccounts,
+                  recipientTokenAccount,
                   this.params.blockHash,
                   this.params.lastValidBlockHeight,
                   this.params.priorityFees,
