@@ -38,6 +38,11 @@ describe('currencyUtils', () => {
             expect(mapFiatCurrencyCodeToBaseCurrencyCode('xyz')).toBeUndefined();
             expect(mapFiatCurrencyCodeToBaseCurrencyCode('invalid')).toBeUndefined();
         });
+
+        it('should return lowercase code for uppercase API currency code', () => {
+            expect(mapFiatCurrencyCodeToBaseCurrencyCode('EUR')).toBe('eur');
+            expect(mapFiatCurrencyCodeToBaseCurrencyCode('Czk')).toBe('czk');
+        });
     });
 
     describe('buildTradingBaseCurrencyOptionFromFiat', () => {
@@ -61,6 +66,13 @@ describe('currencyUtils', () => {
                 label: 'USD',
             });
         });
+
+        it('should keep the currency for uppercase API currency code', () => {
+            expect(buildTradingBaseCurrencyOptionFromFiat('EUR')).toStrictEqual({
+                value: 'eur',
+                label: 'EUR',
+            });
+        });
     });
 
     describe('getCurrencyLabel', () => {
@@ -70,6 +82,10 @@ describe('currencyUtils', () => {
 
         it('should return uppercase code otherwise', () => {
             expect(getCurrencyLabel('xyz')).toBe('XYZ');
+        });
+
+        it('should return label for uppercase API currency code', () => {
+            expect(getCurrencyLabel('EUR')).toBe('Euro');
         });
     });
 
@@ -82,6 +98,10 @@ describe('currencyUtils', () => {
         it('should return usd for unsupported currency', () => {
             expect(getSupportedFiatCurrencyWithFallback('btc')).toBe('usd');
             expect(getSupportedFiatCurrencyWithFallback('xyz')).toBe('usd');
+        });
+
+        it('should return lowercase code for uppercase API currency code', () => {
+            expect(getSupportedFiatCurrencyWithFallback('EUR')).toBe('eur');
         });
     });
 });
