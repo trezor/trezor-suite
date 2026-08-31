@@ -1892,6 +1892,16 @@ export const messages = {
             },
         },
         recoveryInstructionsScreen: {
+            bullet1: {
+                title: 'Get your wallet backup',
+                description:
+                    'Your wallet backup (recovery seed) is one or more lists of words you wrote down when you first set up your previous hardware wallet.',
+            },
+            bullet2: {
+                title: 'Switching to Trezor?',
+                description:
+                    'A wallet created on an exchange or using different hardware may not have the same security as one created on your Trezor. <link>Learn more</link>',
+            },
             callout: 'Recover assets',
             title: 'Get your wallet backup',
             description:
@@ -1917,6 +1927,17 @@ export const messages = {
                     },
                     cta: 'Set up my new Trezor',
                 },
+            },
+            walletEntropyInfo: {
+                title: 'How Trezor generates your wallet',
+                bullet1:
+                    "Your wallet's security depends on the initial randomness, known as entropy, used to generate the private keys and wallet backup. The stronger and more unpredictable it is, the harder your wallet is to guess or recreate.",
+                bullet2:
+                    'Trezor uses multiple independent sources of randomness to guarantee strong entropy, making your private keys unpredictable. You remain protected even if one source is compromised.',
+                bullet3:
+                    "Weak entropy means attackers can recreate the same 'random' numbers used to create a wallet, letting them calculate private keys and steal funds.",
+                bullet4:
+                    'If you have any doubts about the security of your backup, create a new wallet with Trezor and transfer your funds over.',
             },
         },
         walletRecoveryRecapScreen: {
