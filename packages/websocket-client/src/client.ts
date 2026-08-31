@@ -5,7 +5,6 @@ import { TypedEmitter, createDeferred, createDeferredManager } from '@trezor/uti
 type WebsocketOptions = {
     url: string;
     timeout?: number;
-    agent?: WebSocket.ClientOptions['agent'];
     headers?: WebSocket.ClientOptions['headers'];
 };
 
@@ -58,7 +57,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         });
     }
 
-    protected initWebsocket({ url, timeout, headers, agent }: WebsocketOptions) {
+    protected initWebsocket({ url, timeout, headers }: WebsocketOptions) {
         // url validation
         if (typeof url !== 'string') {
             throw new WebsocketError('websocket_no_url');
@@ -74,7 +73,6 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
                 Origin: 'https://node.trezor.io',
                 ...headers,
             },
-            agent,
         });
     }
 

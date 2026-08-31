@@ -22,17 +22,6 @@ export const overloadWebsocketHandshake = ({
     callback,
     validateRequest,
 }: OverloadWebsocketHandshakeParams) => {
-    // @trezor/blockchain-link is adding an SocksProxyAgent to each connection
-    // related to https://github.com/trezor/trezor-suite/issues/7689
-    // this condition should be removed once suite will stop using TrezorConnect.updateConnectSettings
-    if (
-        typeof url === 'object' &&
-        isWhitelistedHost(url.host, context.notRequiredTorDomainsList) &&
-        'agent' in url
-    ) {
-        delete url.agent;
-    }
-
     if (
         typeof url === 'object' &&
         !isWhitelistedHost(url.host, context.notRequiredTorDomainsList) && // difference between overloadHttpRequest

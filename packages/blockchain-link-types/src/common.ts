@@ -1,5 +1,3 @@
-import type { SocksProxyAgentOptions } from 'socks-proxy-agent';
-
 import type { BaseCurrencyCode } from './baseCurrency';
 import type { TokenProtocols, TronAccountExtraData, TronChainExtraData } from './blockbook-api';
 
@@ -141,7 +139,6 @@ export interface BlockchainSettings {
     name: string;
     worker: string | (() => any);
     server: string[];
-    proxy?: { uri: string | URL; opts?: SocksProxyAgentOptions };
     debug?: boolean;
     timeout?: number;
     pingTimeout?: number;

@@ -25,13 +25,6 @@
         "CHANGELOG.md"
     ],
     "main": "src/index.ts",
-    "browser": {
-        "socks-proxy-agent": "./src/utils/socks-proxy-agent.ts"
-    },
-    "react-native": {
-        "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-        "socks-proxy-agent": "@trezor/blockchain-link/src/utils/socks-proxy-agent.ts"
-    },
     "publishConfig": {
         "main": "./lib/index.js",
         "types": "./lib/index.d.ts",
@@ -41,13 +34,6 @@
                 "default": "./lib/index.js"
             },
             "./lib/*": "./lib/*"
-        },
-        "browser": {
-            "socks-proxy-agent": "./lib/utils/socks-proxy-agent.js"
-        },
-        "react-native": {
-            "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-            "socks-proxy-agent": "@trezor/blockchain-link/lib/utils/socks-proxy-agent.js"
         }
     },
     "scripts": {
@@ -85,7 +71,6 @@
         "@trezor/utxo-lib": "workspace:*",
         "@trezor/websocket-client": "workspace:*",
         "@types/web": "^0.0.345",
-        "socks-proxy-agent": "8.0.5",
         "viem": "^2.54.1"
     },
     "peerDependencies": {

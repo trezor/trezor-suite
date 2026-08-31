@@ -1,4 +1,3 @@
-import type { BlockchainSettings } from '@trezor/blockchain-link';
 import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
 import type { Static } from '@trezor/schema-utils';
@@ -22,8 +21,6 @@ export type Manifest = Static<typeof Manifest>;
 
 // timeouts for firmware hash check in milliseconds per model type
 export type FirmwareHashCheckTimeouts = PartialRecord<DeviceModelInternal, number>;
-
-export type Proxy = BlockchainSettings['proxy'];
 
 export type LocalFirmwares = { firmwareDir: string; firmwareList: string[] };
 
