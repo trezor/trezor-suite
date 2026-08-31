@@ -178,7 +178,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         return out;
     }
 
-    public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI_EVENTS.DEVICE_NOT_INITIALIZED)
+    public allowDeviceMode: DeviceMode[]; // used in device management (e.g. ResetDevice allows UI_EVENTS.DEVICE_NOT_INITIALIZED)
 
     protected requiredDeviceCapabilities: Capability[] = [];
     protected requiredFirmwareCapabilities: FirmwareCapability[] = [];
