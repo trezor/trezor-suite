@@ -42,6 +42,44 @@ const fixtures = [
         },
     },
     {
+        // Regression test: `calculateShouldOfferRelease` used to bucket device ids into 101
+        // buckets (0..100 via `getIntegerInRangeFromString(deviceId, 101)`) but compared the
+        // result against a 0..100 rollout_probability with `<`, so bucket 100 could never
+        // satisfy `< 100` at ANY rollout percentage, including 100. This device_id was found by
+        // brute-forcing the real project hash function for one that lands in bucket 100 under
+        // the buggy max=101 - verified independently outside this test suite. Every other
+        // fixture in this file uses the default mocked device_id ('device-id'), which happens
+        // not to land in the excluded bucket, which is exactly why this bug went unnoticed.
+        desc: 'A device id that hashes into the excluded bucket is still offered at rollout_probability 100',
+        releasesOfDevice: releasesT2T1,
+        features: getDeviceFeatures({
+            bootloader_mode: null,
+            major_version: 2,
+            minor_version: 8,
+            patch_version: 7,
+            device_id: '36647600C9CEB95187D31BC5',
+        }),
+        release: latestT2T1,
+        conditions: {
+            environment: { min_suite_version: '25.2.1', min_suite_native_version: '25.2.1' },
+            rollout_probability: 100,
+        },
+        isBitcoinOnlyAvailable: true,
+        firmwareType: FirmwareType.Universal,
+        result: {
+            releaseConditions: {
+                environment: { min_suite_version: '25.2.1', min_suite_native_version: '25.2.1' },
+                rollout_probability: 100,
+                shouldBeOffered: true,
+            },
+            release: latestT2T1,
+            intermediary: undefined,
+            isRequired: false,
+            isNewer: true,
+            translations: latestT2T1.translations,
+        },
+    },
+    {
         desc: 'Having newer version makes release `isNewer` and probability 0 `shouldBeOffered` false',
         releasesOfDevice: releasesT2T1,
         features: getDeviceFeatures({
