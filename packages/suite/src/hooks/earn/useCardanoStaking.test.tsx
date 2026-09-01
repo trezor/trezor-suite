@@ -104,6 +104,26 @@ describe('useCardanoStaking', () => {
         expect(result.current.isStakingDisabled).toBe(true);
     });
 
+    it('keeps only the error code of a failed compose, never the message that may embed the payload', async () => {
+        const utxoAddress = 'addr1q9utxo';
+        cardanoComposeTransactionMock.mockResolvedValue({
+            success: false,
+            error: {
+                code: 'Failure_UnknownCode',
+                message: `Invalid parameter "account.utxo" (= [{"address":"${utxoAddress}"}]): Expected string`,
+            },
+        });
+
+        const { result } = renderCardanoStaking(mockNeverStakedAccount());
+
+        await act(() => result.current.calculateFeeAndDeposit('delegate'));
+
+        expect(result.current.delegatingAvailable).toEqual({
+            status: false,
+            reason: 'Failure_UnknownCode',
+        });
+    });
+
     it('does not make withdrawing available when there is nothing to withdraw', async () => {
         const { result } = renderCardanoStaking(mockNeverStakedAccount());
 

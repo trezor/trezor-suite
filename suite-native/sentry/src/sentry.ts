@@ -1,7 +1,11 @@
 import { captureConsoleIntegration } from '@sentry/core';
 import * as Sentry from '@sentry/react-native';
 
-import { ALLOW_REPORT_TAG, redactSentryEvent } from '@suite-common/sentry';
+import {
+    ALLOW_REPORT_TAG,
+    redactInvalidParameterValue,
+    redactSentryEvent,
+} from '@suite-common/sentry';
 import { getEnv, isDebugEnv, isDetoxTestBuild, isProduction } from '@suite-native/config';
 
 import { ignoreErrors } from './ignoreErrors';
@@ -66,7 +70,7 @@ export const initSentry = () => {
         enableStallTracking: isPerformanceEnabledOnAppStart,
         enableUserInteractionTracing: false,
         enableLogs: true,
-        beforeSend: redactSentryEvent,
+        beforeSend: event => redactSentryEvent(redactInvalidParameterValue(event)),
         beforeSendTransaction: beforeSendPerformanceTransaction,
         ignoreErrors,
 

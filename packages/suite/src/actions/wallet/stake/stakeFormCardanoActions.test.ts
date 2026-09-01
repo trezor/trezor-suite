@@ -6,7 +6,7 @@ import { type Account, type CardanoAction } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 import TrezorConnect, { type CardanoCertificate, PROTO } from '@trezor/connect';
 
-import { prepareTxPlan } from './stakeFormCardanoActions';
+import { CardanoComposeError, prepareTxPlan } from './stakeFormCardanoActions';
 
 jest.mock('@trezor/connect', () => {
     const actual = jest.requireActual('@trezor/connect');
@@ -184,6 +184,27 @@ describe('prepareTxPlan', () => {
                 }),
             ]),
         );
+    });
+
+    it('rejects with the error code only, so a rejected payload cannot leave the device', async () => {
+        const utxoAddress = 'addr1q9utxo';
+        cardanoComposeTransactionMock.mockResolvedValue({
+            success: false,
+            error: {
+                code: 'Failure_UnknownCode',
+                message: `Invalid parameter "account.utxo" (= [{"address":"${utxoAddress}"}]): Expected string`,
+            },
+        });
+
+        const rejection = await prepareTxPlan({
+            account: mockNeverStakedAccount(),
+            action: 'delegate',
+            cardanoPools,
+        }).catch((error: unknown) => error);
+
+        expect(rejection).toBeInstanceOf(CardanoComposeError);
+        expect(rejection).toMatchObject({ code: 'Failure_UnknownCode' });
+        expect((rejection as Error).message).not.toContain(utxoAddress);
     });
 
     it('does not compose a withdrawal when there is nothing to withdraw', async () => {

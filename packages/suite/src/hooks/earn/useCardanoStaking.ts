@@ -11,7 +11,10 @@ import {
     type CardanoStaking,
 } from '@suite-common/wallet-types';
 
-import { prepareTxPlan } from 'src/actions/wallet/stake/stakeFormCardanoActions';
+import {
+    CardanoComposeError,
+    prepareTxPlan,
+} from 'src/actions/wallet/stake/stakeFormCardanoActions';
 import { useSelector } from 'src/hooks/suite';
 
 export const useCardanoStaking = (): CardanoStaking => {
@@ -83,7 +86,9 @@ export const useCardanoStaking = (): CardanoStaking => {
                 // Deserialization failed in Ed25519KeyHash because: Invalid cbor: expected tuple 'hash length' of length 28 but got length Len(0).
                 const actionAvailability: ActionAvailability = {
                     status: false,
-                    reason: err.message,
+                    // A TrezorConnect failure is kept as its code only, never as its message, which
+                    // may embed the composed account payload.
+                    reason: err instanceof CardanoComposeError ? err.code : err.message,
                 };
                 setDelegatingAvailable(actionAvailability);
                 seWithdrawingAvailable(actionAvailability);
