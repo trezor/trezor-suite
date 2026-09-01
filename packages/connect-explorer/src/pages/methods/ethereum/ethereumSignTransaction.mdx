@@ -27,7 +27,7 @@ import signTransaction7702 from '../../../data/methods/ethereum/signTransaction7
 export const paramDescriptions = {
     path: 'minimum length is `3`. [read more](/details/path)',
     transaction:
-        'type of [`EthereumTransactionEIP1559`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/ethereum/common.ts)`|`[`EthereumSignTransaction`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/ethereum/common.ts) "0x" prefix for each field is optional',
+        'type of [`EthereumTransaction`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/ethereum/common.ts)`|`[`EthereumTransactionEIP1559`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/ethereum/common.ts) "0x" prefix for each field is optional',
     chunkify:
         'determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`',
     to: "recipient's address, contract address or `null` in case of contract creation",
