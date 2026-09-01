@@ -62,7 +62,6 @@ const getIssueContent = (
 
 type TradingOfferExchangeIssueBannerProps = {
     issue: ExchangeIssue;
-    isSimulationEnabled: boolean;
     isContinueDisabled: boolean;
     isContinueLoading: boolean;
     onContinueAnywayClick: () => void;
@@ -70,7 +69,6 @@ type TradingOfferExchangeIssueBannerProps = {
 
 export const TradingOfferExchangeIssueBanner = ({
     issue,
-    isSimulationEnabled,
     isContinueDisabled,
     isContinueLoading,
     onContinueAnywayClick,
@@ -95,16 +93,14 @@ export const TradingOfferExchangeIssueBanner = ({
             description={description}
             data-testid="@trading/offer/issue-banner"
             rightContent={
-                isSimulationEnabled ? (
-                    <Banner.Button
-                        isDisabled={isContinueDisabled}
-                        isLoading={isContinueLoading}
-                        onClick={onContinueAnywayClick}
-                        data-testid="@trading/offer/continue-anyway"
-                    >
-                        <Translation id="TR_TRADING_CONTINUE_ANYWAY" />
-                    </Banner.Button>
-                ) : undefined
+                <Banner.Button
+                    isDisabled={isContinueDisabled}
+                    isLoading={isContinueLoading}
+                    onClick={onContinueAnywayClick}
+                    data-testid="@trading/offer/continue-anyway"
+                >
+                    <Translation id="TR_TRADING_CONTINUE_ANYWAY" />
+                </Banner.Button>
             }
         />
     );

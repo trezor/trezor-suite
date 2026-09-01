@@ -88,7 +88,6 @@ export const TradingOfferExchange = () => {
         simulationResult,
         selectedTrade.receive,
     );
-    const hasIssueToResolve = isSimulationEnabled && issue !== null;
 
     const reportConfirmAndSendStep = (action: TradeExchangeAction) => {
         analytics.report({
@@ -163,14 +162,13 @@ export const TradingOfferExchange = () => {
                     {issue && (
                         <TradingOfferExchangeIssueBanner
                             issue={issue}
-                            isSimulationEnabled={isSimulationEnabled}
                             isContinueDisabled={isConfirmDisabled || disabled}
                             isContinueLoading={isLoading || disabled}
                             onContinueAnywayClick={() => handleClick(() => onConfirmAndSendClick())}
                         />
                     )}
 
-                    {hasIssueToResolve ? (
+                    {issue ? (
                         <Button
                             data-testid="@trading/offer/back-to-trade-form"
                             intent="neutral"
