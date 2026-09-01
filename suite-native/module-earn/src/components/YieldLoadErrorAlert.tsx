@@ -1,11 +1,11 @@
 import { BannerFull } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
-type StablecoinYieldLoadErrorAlertProps = {
+interface YieldLoadErrorAlertProps {
     onRetry: () => void;
-};
+}
 
-export const StablecoinYieldLoadErrorAlert = ({ onRetry }: StablecoinYieldLoadErrorAlertProps) => {
+export const YieldLoadErrorAlert = ({ onRetry }: YieldLoadErrorAlertProps) => {
     const { translate } = useTranslate();
 
     return (
