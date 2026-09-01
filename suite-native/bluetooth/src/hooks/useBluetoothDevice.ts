@@ -44,7 +44,8 @@ export const useBluetoothDevice = () => {
             } else if (
                 unwrappedResult.error.code === 'Failure_ActionCancelled' ||
                 unwrappedResult.error.code === 'Failure_PinCancelled' ||
-                unwrappedResult.error.code === 'Method_Interrupted'
+                unwrappedResult.error.code === 'Method_Interrupted' ||
+                unwrappedResult.error.code === 'Method_Cancel'
             ) {
                 onCancel();
             }
