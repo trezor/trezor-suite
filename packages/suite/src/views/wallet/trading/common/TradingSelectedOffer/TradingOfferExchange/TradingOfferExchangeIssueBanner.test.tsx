@@ -46,13 +46,7 @@ const slippageTooLowIssue: ExchangeIssue = {
 
 const onContinueAnywayClick = jest.fn();
 
-const renderIssueBanner = ({
-    issue,
-    isSimulationEnabled = true,
-}: {
-    issue: ExchangeIssue;
-    isSimulationEnabled?: boolean;
-}) => {
+const renderIssueBanner = ({ issue }: { issue: ExchangeIssue }) => {
     const services = { analytics: mockDesktopAnalytics() };
     const root = createTestCompositionRoot({
         extra: { services },
@@ -62,7 +56,6 @@ const renderIssueBanner = ({
         root,
         <TradingOfferExchangeIssueBanner
             issue={issue}
-            isSimulationEnabled={isSimulationEnabled}
             isContinueDisabled={false}
             isContinueLoading={false}
             onContinueAnywayClick={onContinueAnywayClick}
@@ -110,12 +103,5 @@ describe('TradingOfferExchangeIssueBanner', () => {
         await userEvent.click(screen.getByTestId('@trading/offer/continue-anyway'));
 
         expect(onContinueAnywayClick).toHaveBeenCalledTimes(1);
-    });
-
-    it('renders a passive banner without continue anyway when the simulation is off', () => {
-        renderIssueBanner({ issue: priceImpactIssue, isSimulationEnabled: false });
-
-        expect(screen.getByText('TR_TRADING_PRICE_IMPACT_TITLE 15%')).toBeInTheDocument();
-        expect(screen.queryByTestId('@trading/offer/continue-anyway')).not.toBeInTheDocument();
     });
 });

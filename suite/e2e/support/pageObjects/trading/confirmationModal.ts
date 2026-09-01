@@ -25,6 +25,7 @@ export class TradingConfirmationModal {
     readonly transactionId: Locator;
     readonly copyTransactionIdButton: Locator;
     readonly issueBanner: Locator;
+    readonly continueAnywayButton: Locator;
     readonly finishButton: Locator;
     readonly confirmAndSendButton: Locator;
     readonly buyButton: Locator;
@@ -67,6 +68,7 @@ export class TradingConfirmationModal {
             .getByTestId('@trading/form/info')
             .getByRole('button', { name: 'Copy' });
         this.issueBanner = this.page.getByTestId('@trading/offer/issue-banner');
+        this.continueAnywayButton = this.page.getByTestId('@trading/offer/continue-anyway');
         this.finishButton = this.page.getByTestId('@trading/offer/continue-transaction-button');
         this.confirmAndSendButton = this.page.getByTestId(
             '@trading/offer/confirm-on-trezor-and-send',
@@ -101,7 +103,15 @@ export class TradingConfirmationModal {
 
     @step()
     async openConfirmAndSendModal() {
-        await this.confirmAndSendButton.click({ timeout: 30_000 });
+        // Swap quotes and fiat rates are both live, so a price alert can legitimately show up on
+        // any offer. It replaces the confirm button, and the swap continues from the banner.
+        await expect(this.section).toBeVisible();
+        const isPriceAlertShown = await this.issueBanner.isVisible();
+        const continueButton = isPriceAlertShown
+            ? this.continueAnywayButton
+            : this.confirmAndSendButton;
+
+        await continueButton.click({ timeout: 30_000 });
         await expect(this.modal).toBeVisible();
         await expect(this.devicePrompt.sendButton).toBeDisabled();
     }

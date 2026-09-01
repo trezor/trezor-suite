@@ -214,16 +214,18 @@ describe('TradingOfferExchange', () => {
         expect(screen.getByTestId('@trading/offer/confirm-on-trezor-and-send')).toBeEnabled();
     });
 
-    it('keeps the confirmation button next to a passive banner when the simulation is off', () => {
+    it('gates the swap behind the banner even when the simulation is off', () => {
         renderOfferExchange({ isSimulationEnabled: false, issue: PRICE_IMPACT_ISSUE });
 
         expect(screen.getByTestId('@trading/offer/issue-banner')).toBeInTheDocument();
-        expect(screen.queryByTestId('@trading/offer/continue-anyway')).not.toBeInTheDocument();
-        expect(screen.getByTestId('@trading/offer/confirm-on-trezor-and-send')).toBeInTheDocument();
-        expect(screen.queryByTestId('@trading/offer/back-to-trade-form')).not.toBeInTheDocument();
+        expect(screen.getByTestId('@trading/offer/continue-anyway')).toBeInTheDocument();
+        expect(
+            screen.queryByTestId('@trading/offer/confirm-on-trezor-and-send'),
+        ).not.toBeInTheDocument();
+        expect(screen.getByTestId('@trading/offer/back-to-trade-form')).toBeInTheDocument();
     });
 
-    it('replaces the confirmation button with back to trade form on a simulated issue', async () => {
+    it('replaces the confirmation button with back to trade form on an issue', async () => {
         renderOfferExchange({ issue: PRICE_IMPACT_ISSUE });
 
         expect(
