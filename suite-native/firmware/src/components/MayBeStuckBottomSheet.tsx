@@ -13,17 +13,17 @@ import {
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-type MayBeStuckedBottomSheetProps = {
+type MayBeStuckBottomSheetProps = {
     onClose: () => void;
-    onAnalyticsReportStucked: (state: FirmwareUpdateStuckedState) => void;
+    onAnalyticsReportStuck: (state: FirmwareUpdateStuckedState) => void;
     ref: BottomSheetModalRef;
 };
 
-export const MayBeStuckedBottomSheet = ({
+export const MayBeStuckBottomSheet = ({
     onClose,
-    onAnalyticsReportStucked,
+    onAnalyticsReportStuck,
     ref,
-}: MayBeStuckedBottomSheetProps) => {
+}: MayBeStuckBottomSheetProps) => {
     const [visiblePart, setVisiblePart] = useState<1 | 2>(1);
 
     const handleClose = () => {
@@ -33,7 +33,7 @@ export const MayBeStuckedBottomSheet = ({
 
     const handleContinue = () => {
         setVisiblePart(2);
-        onAnalyticsReportStucked('modalPart2');
+        onAnalyticsReportStuck('modalPart2');
     };
 
     return (
