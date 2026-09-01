@@ -26,11 +26,7 @@ import { useEarnDepositsCardData } from '../hooks/useEarnDepositsCardData';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../hooks/useStablecoinYieldFirmwareUpdateAlert';
 import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
 import { useStakingNavigateAnalytics } from '../hooks/useStakingNavigateAnalytics';
-import {
-    type StablecoinYieldClaimSummary,
-    type StablecoinYieldEarnItem,
-    type StakingEarnItem,
-} from '../types';
+import type { StakingEarnItem, YieldClaimSummary, YieldEarnItem } from '../types';
 import {
     type StablecoinYieldClaimItem,
     buildStablecoinYieldClaimItems,
@@ -40,8 +36,8 @@ type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.Y
 
 type EarnDepositsCardProps = {
     stakingActiveItems: StakingEarnItem[];
-    stablecoinYieldActiveItems: StablecoinYieldEarnItem[];
-    stablecoinYieldClaimSummaries: StablecoinYieldClaimSummary[];
+    stablecoinYieldActiveItems: YieldEarnItem[];
+    stablecoinYieldClaimSummaries: YieldClaimSummary[];
     stablecoinYieldTotalFiatClaimableAmount: BaseCurrencyAmount | null;
     isStablecoinYieldLoading: boolean;
     isStablecoinYieldClaimSummariesLoading: boolean;

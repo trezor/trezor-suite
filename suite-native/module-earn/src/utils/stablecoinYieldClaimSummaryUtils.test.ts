@@ -17,7 +17,7 @@ import {
     getTotalFiatClaimableAmount,
     getUniqueStablecoinYieldClaimTokens,
 } from './stablecoinYieldClaimSummaryUtils';
-import { type StablecoinYieldPositionItem } from '../types';
+import { type YieldPositionItem } from '../types';
 
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -209,7 +209,7 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
             account: Account;
             vaultName: string;
             id?: string;
-        }): StablecoinYieldPositionItem => ({
+        }): YieldPositionItem => ({
             id,
             type: 'stablecoin-yield',
             title: vaultName,

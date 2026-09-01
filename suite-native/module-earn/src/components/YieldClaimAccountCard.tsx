@@ -9,7 +9,7 @@ import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { type StablecoinYieldClaimSummary } from '../types';
+import { type YieldClaimSummary } from '../types';
 
 const COMPACT_REWARD_AMOUNT_OPTIONS = {
     maximumSignificantDigits: 4,
@@ -40,7 +40,7 @@ const tokenAmountsStyle = prepareNativeStyle(() => ({
 }));
 
 interface YieldClaimAccountCardProps {
-    summary: StablecoinYieldClaimSummary;
+    summary: YieldClaimSummary;
     onPress: () => void;
 }
 

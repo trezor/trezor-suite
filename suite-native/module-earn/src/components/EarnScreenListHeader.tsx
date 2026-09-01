@@ -2,19 +2,15 @@ import { type AccountKey, type BaseCurrencyAmount } from '@suite-common/wallet-t
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import {
-    type StablecoinYieldClaimSummary,
-    type StablecoinYieldEarnItem,
-    type StakingEarnItem,
-} from '../types';
+import type { StakingEarnItem, YieldClaimSummary, YieldEarnItem } from '../types';
 import { CardanoStakingInfoBanner } from './CardanoStakingInfoBanner';
 import { EarnDepositsCard } from './EarnDepositsCard';
 
 type EarnScreenListHeaderProps = {
     cardanoStakingAccountKey?: AccountKey;
     stakingActiveItems: StakingEarnItem[];
-    stablecoinYieldActiveItems: StablecoinYieldEarnItem[];
-    stablecoinYieldClaimSummaries: StablecoinYieldClaimSummary[];
+    stablecoinYieldActiveItems: YieldEarnItem[];
+    stablecoinYieldClaimSummaries: YieldClaimSummary[];
     stablecoinYieldTotalFiatClaimableAmount: BaseCurrencyAmount | null;
     isStablecoinYieldLoading: boolean;
     isStablecoinYieldClaimSummariesLoading: boolean;

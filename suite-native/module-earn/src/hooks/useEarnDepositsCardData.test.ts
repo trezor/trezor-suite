@@ -4,7 +4,7 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { type StablecoinYieldEarnItem, type StakingEarnItem } from '../types';
+import type { StakingEarnItem, YieldEarnItem } from '../types';
 import { useEarnDepositsCardData } from './useEarnDepositsCardData';
 
 jest.mock('@suite-common/wallet-core', () => ({
@@ -43,7 +43,7 @@ const stakingItem: StakingEarnItem = {
     balance: '2',
 };
 
-const createYieldItem = (underlyingContract: TokenAddress): StablecoinYieldEarnItem => ({
+const createYieldItem = (underlyingContract: TokenAddress): YieldEarnItem => ({
     id: 'vault-1-account-1',
     type: 'stablecoin-yield',
     yieldId: 'vault-1',
@@ -65,7 +65,7 @@ const renderDepositsCardData = async ({
     stakingItems = [],
     currentRates,
 }: {
-    items: StablecoinYieldEarnItem[];
+    items: YieldEarnItem[];
     stakingItems?: StakingEarnItem[];
     currentRates: Record<string, { rate: number }>;
 }) =>

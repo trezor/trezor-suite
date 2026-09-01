@@ -2,7 +2,7 @@ import { Box, Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { type StablecoinYieldClaimToken } from '../types';
+import { type YieldClaimToken } from '../types';
 
 const MAX_ICONS_WITHOUT_OVERFLOW = 3;
 const MAX_VISIBLE_ICONS_WITH_OVERFLOW = 2;
@@ -22,7 +22,7 @@ const overflowBadgeStyle = prepareNativeStyle(utils => ({
 }));
 
 type EarnClaimTokenIconSetProps = {
-    tokens: StablecoinYieldClaimToken[];
+    tokens: YieldClaimToken[];
 };
 
 export const EarnClaimTokenIconSet = ({ tokens }: EarnClaimTokenIconSetProps) => {

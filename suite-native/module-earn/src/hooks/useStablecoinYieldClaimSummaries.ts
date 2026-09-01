@@ -13,14 +13,14 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 
-import { type StablecoinYieldClaimSummary } from '../types';
+import { type YieldClaimSummary } from '../types';
 import {
     buildStablecoinYieldClaimSummaries,
     getTotalFiatClaimableAmount,
 } from '../utils/stablecoinYieldClaimSummaryUtils';
 
 export type StablecoinYieldClaimSummariesState = {
-    stablecoinYieldClaimSummaries: StablecoinYieldClaimSummary[];
+    stablecoinYieldClaimSummaries: YieldClaimSummary[];
     totalFiatClaimableAmount: BaseCurrencyAmount | null;
     isClaimSummariesLoading: boolean;
     isClaimSummariesFiatLoading: boolean;
