@@ -11,11 +11,11 @@ import { Translation } from '@suite-native/intl';
 
 import { EarnClaimTokenIconSet } from './EarnClaimTokenIconSet';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
-import { type StablecoinYieldClaimSummary } from '../types';
+import { type YieldClaimSummary } from '../types';
 import { getUniqueStablecoinYieldClaimTokens } from '../utils/stablecoinYieldClaimSummaryUtils';
 
 interface YieldClaimRewardsCardSectionProps {
-    claimRewards: StablecoinYieldClaimSummary[];
+    claimRewards: YieldClaimSummary[];
     totalFiatClaimableAmount: BaseCurrencyAmount | null;
     isLoading: boolean;
     onPress: () => void;

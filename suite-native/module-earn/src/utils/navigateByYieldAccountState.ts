@@ -8,7 +8,7 @@ import {
 } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
-import { type StablecoinYieldNavigationItem } from '../types';
+import { type YieldNavigationItem } from '../types';
 import {
     getYieldVaultDepositableBalance,
     hasPositiveContractTokenBalance,
@@ -27,7 +27,7 @@ export type YieldAccountNavigationDestination =
 
 export const navigateByYieldAccountState = (
     account: Account,
-    item: StablecoinYieldNavigationItem,
+    item: YieldNavigationItem,
     navigate: YieldNavigateFn,
     isFirmwareSupported: (
         flowType: YieldFlowType,

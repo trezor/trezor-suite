@@ -17,10 +17,10 @@ import { BigNumber } from '@trezor/utils';
 
 import {
     type EarnDepositsCardActiveItem,
-    type StablecoinYieldClaimRewardToken,
-    type StablecoinYieldClaimSummary,
-    type StablecoinYieldClaimToken,
-    type StablecoinYieldPositionItem,
+    type YieldClaimRewardToken,
+    type YieldClaimSummary,
+    type YieldClaimToken,
+    type YieldPositionItem,
 } from '../types';
 
 type BuildStablecoinYieldClaimSummariesParams = {
@@ -130,7 +130,7 @@ export const getStablecoinYieldAccountRewards = ({
 export const buildStablecoinYieldClaimSummaries = ({
     accounts,
     chainsRewardsWithFiat,
-}: BuildStablecoinYieldClaimSummariesParams): StablecoinYieldClaimSummary[] => {
+}: BuildStablecoinYieldClaimSummariesParams): YieldClaimSummary[] => {
     const chainsRewardsByAccountKey = getChainsRewardsByAccountKey(chainsRewardsWithFiat);
 
     return accounts.flatMap(account => {
@@ -143,7 +143,7 @@ export const buildStablecoinYieldClaimSummaries = ({
             return [];
         }
 
-        const tokensByContract = new Map<string, StablecoinYieldClaimRewardToken>();
+        const tokensByContract = new Map<string, YieldClaimRewardToken>();
 
         for (const reward of accountRewards.rewards) {
             const contractAddress = toTokenAddress(reward.token.address);
@@ -179,9 +179,9 @@ export const buildStablecoinYieldClaimSummaries = ({
 };
 
 export const getUniqueStablecoinYieldClaimTokens = (
-    summaries: StablecoinYieldClaimSummary[],
-): StablecoinYieldClaimToken[] => {
-    const tokensByContract = new Map<string, StablecoinYieldClaimToken>();
+    summaries: YieldClaimSummary[],
+): YieldClaimToken[] => {
+    const tokensByContract = new Map<string, YieldClaimToken>();
 
     for (const summary of summaries) {
         for (const token of summary.tokens) {
@@ -198,14 +198,14 @@ export const getUniqueStablecoinYieldClaimTokens = (
 };
 
 export type StablecoinYieldClaimItem = {
-    summary: StablecoinYieldClaimSummary;
+    summary: YieldClaimSummary;
     vaults: YieldClaimVaultParams[];
 };
 
 const getAccountPositions = (
     earnDepositsActiveItems: EarnDepositsCardActiveItem[],
     accountKey: AccountKey,
-): StablecoinYieldPositionItem[] =>
+): YieldPositionItem[] =>
     earnDepositsActiveItems.flatMap(item =>
         item.type === 'stablecoin-yield' && item.accountKey === accountKey ? [item] : [],
     );
@@ -216,7 +216,7 @@ export const buildStablecoinYieldClaimItems = ({
     stablecoinYieldClaimSummaries,
     earnDepositsActiveItems,
 }: {
-    stablecoinYieldClaimSummaries: StablecoinYieldClaimSummary[];
+    stablecoinYieldClaimSummaries: YieldClaimSummary[];
     earnDepositsActiveItems: EarnDepositsCardActiveItem[];
 }): StablecoinYieldClaimItem[] =>
     stablecoinYieldClaimSummaries.map(summary => {
@@ -232,9 +232,7 @@ export const buildStablecoinYieldClaimItems = ({
         };
     });
 
-export const getTotalFiatClaimableAmount = (
-    stablecoinYieldClaimSummaries: StablecoinYieldClaimSummary[],
-) => {
+export const getTotalFiatClaimableAmount = (stablecoinYieldClaimSummaries: YieldClaimSummary[]) => {
     if (stablecoinYieldClaimSummaries.length === 0) {
         return null;
     }

@@ -11,11 +11,11 @@ import {
 } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
 
-import {
-    type EarnDepositsCardActiveItem,
-    type EarnDepositsCardRow,
-    type StablecoinYieldEarnItem,
-    type StakingEarnItem,
+import type {
+    EarnDepositsCardActiveItem,
+    EarnDepositsCardRow,
+    StakingEarnItem,
+    YieldEarnItem,
 } from '../types';
 
 const createSummaryRow = ({
@@ -43,7 +43,7 @@ const createSummaryRow = ({
 
 type UseEarnDepositsCardDataProps = {
     stakingActiveItems: StakingEarnItem[];
-    stablecoinYieldActiveItems: StablecoinYieldEarnItem[];
+    stablecoinYieldActiveItems: YieldEarnItem[];
 };
 
 export const useEarnDepositsCardData = ({

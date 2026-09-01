@@ -3,7 +3,7 @@ import { toTokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { RootStackRoutes, YieldStackRoutes } from '@suite-native/navigation';
 
-import { type StablecoinYieldNavigationItem } from '../types';
+import { type YieldNavigationItem } from '../types';
 import { navigateByYieldAccountState } from './navigateByYieldAccountState';
 
 const ethSymbol = asNetworkSymbol('eth');
@@ -13,8 +13,8 @@ const USDC_ADDRESS = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
 const RECEIPT_ADDRESS = toTokenAddress('0xde6c23e561f3e55846207ec45a91b777e0f7c889');
 
 const createMockItem = (
-    underlyingTokenContract: StablecoinYieldNavigationItem['underlyingTokenContract'],
-): StablecoinYieldNavigationItem => ({
+    underlyingTokenContract: YieldNavigationItem['underlyingTokenContract'],
+): YieldNavigationItem => ({
     yieldId: 'ethereum-vault',
     underlyingTokenContract,
     receiptTokenContract: RECEIPT_ADDRESS,

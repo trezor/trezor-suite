@@ -14,8 +14,8 @@ import {
     type EarnPromoListDataItem,
     type EarnProviderListItem,
     type SkeletonLoaderItem,
-    type StablecoinYieldEarnItem,
-    type StablecoinYieldLoadErrorListItem,
+    type YieldEarnItem,
+    type YieldLoadErrorListItem,
 } from '../types';
 import {
     type StablecoinYieldClaimSummariesState,
@@ -40,10 +40,10 @@ const DEFAULT_STABLECOIN_YIELD_PROMO_LIST_DATA: EarnPromoListDataItem[] = ['stab
 export const STABLECOIN_YIELD_LOAD_ERROR_ITEM = {
     id: 'stablecoin-yield-load-error',
     type: 'stablecoin-yield-load-error',
-} as const satisfies StablecoinYieldLoadErrorListItem;
+} as const satisfies YieldLoadErrorListItem;
 
 type UseStablecoinYieldListDataReturn = {
-    activeItems: StablecoinYieldEarnItem[];
+    activeItems: YieldEarnItem[];
     promoListData: EarnPromoListDataItem[];
     isLoading: boolean;
     isError: boolean;
@@ -78,8 +78,8 @@ export const useStablecoinYieldListData = () => {
             return { activeItems: [], promoListData, isLoading, isError: true };
         }
 
-        const activeItems: StablecoinYieldEarnItem[] = [];
-        const promoItems: StablecoinYieldEarnItem[] = [];
+        const activeItems: YieldEarnItem[] = [];
+        const promoItems: YieldEarnItem[] = [];
 
         for (const vault of yieldOpportunities) {
             const network = getNetworkByYieldXyzId(vault.network);
@@ -112,7 +112,7 @@ export const useStablecoinYieldListData = () => {
                   )
                 : [];
 
-            const defaultYieldItem: StablecoinYieldEarnItem = {
+            const defaultYieldItem: YieldEarnItem = {
                 id: vault.id,
                 type: 'stablecoin-yield',
                 yieldId: vault.id,

@@ -20,7 +20,7 @@ import {
 } from '@suite-native/navigation';
 
 import { useEarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
-import { type ChooseAccountTokenBalance, type StablecoinYieldPromoNavigationItem } from '../types';
+import { type ChooseAccountTokenBalance, type YieldPromoNavigationItem } from '../types';
 import { useStablecoinYieldFirmwareUpdateAlert } from './useStablecoinYieldFirmwareUpdateAlert';
 import {
     type YieldAccountNavigationDestination,
@@ -28,7 +28,7 @@ import {
 } from '../utils/navigateByYieldAccountState';
 
 type UseStablecoinYieldPromoNavigationReturn = {
-    handleStablecoinYieldPromoPress: (item: StablecoinYieldPromoNavigationItem) => void;
+    handleStablecoinYieldPromoPress: (item: YieldPromoNavigationItem) => void;
     handleAccountSelected: (account: Account) => void;
     handleEnableNetworkPress: () => void;
     handleEnableNetworkDismiss: () => void;
@@ -65,8 +65,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
     } = useBottomSheetModalControls();
 
     const [chosenAccounts, setChosenAccounts] = useState<Account[]>([]);
-    const [chosenYieldItem, setChosenYieldItem] =
-        useState<StablecoinYieldPromoNavigationItem | null>(null);
+    const [chosenYieldItem, setChosenYieldItem] = useState<YieldPromoNavigationItem | null>(null);
     const [pendingEnableSymbol, setPendingEnableSymbol] = useState<NetworkSymbol | null>(null);
     const chooseAccountTokenBalance = chosenYieldItem
         ? {
@@ -78,7 +77,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
     const reportYieldEntryNavigation = useCallback(
         (
             destination: YieldAccountNavigationDestination | 'choose-account-sheet',
-            item: StablecoinYieldPromoNavigationItem,
+            item: YieldPromoNavigationItem,
             from: 'earn-dashboard' | 'choose-account-sheet',
         ) => {
             if (destination === 'firmware-update-alert') {
@@ -172,7 +171,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
     }, [closeEnableNetworkModal]);
 
     const handleStablecoinYieldPromoPress = useCallback(
-        (item: StablecoinYieldPromoNavigationItem) => {
+        (item: YieldPromoNavigationItem) => {
             if (isPortfolioTrackerDevice) {
                 openPortfolioTrackerSheet();
 
