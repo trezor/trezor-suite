@@ -24,6 +24,7 @@ import { fixLinuxManufacturerData } from 'src/actions/bluetooth/fixLinuxManufact
 import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
 import { isBluetoothDeviceReachable } from 'src/actions/bluetooth/isBluetoothDeviceReachable';
 import { remapKnownDevicesForLinuxAndWindows } from 'src/actions/bluetooth/remapKnownDevicesForLinuxAndWindows';
+import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type AppState } from 'src/types/suite';
 
 const BACKGROUND_SCAN_INTERVAL = 60_000;
@@ -40,6 +41,10 @@ const createBackgroundScan = (getState: () => AppState) => {
     };
 
     const runCycle = async () => {
+        if (!selectIsWindowVisible(getState())) {
+            return;
+        }
+
         const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
         const hasDisconnectedKnownDevice = knownDevices.some(d => !isBluetoothDeviceReachable(d));
         if (hasDisconnectedKnownDevice) {
@@ -190,6 +195,8 @@ const setupAutoReconnect = (getState: () => AppState, dispatch: Dispatch) => {
             backgroundScan.restartIfNeeded();
         });
     });
+
+    return backgroundScan;
 };
 
 const bluetoothMiddleware =
