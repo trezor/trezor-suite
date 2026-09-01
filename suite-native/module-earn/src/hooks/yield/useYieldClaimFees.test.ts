@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { buildClaimCalldata } from '@suite-common/earn-stablecoin';
-import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { estimateYieldFeeLevel, formDraftReducer } from '@suite-common/wallet-core';
 import { type FeesState, type PrecomposedLevels } from '@suite-common/wallet-types';
 import {
@@ -13,8 +13,8 @@ import {
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
 import { useYieldClaimFees } from './useYieldClaimFees';
-import { type StablecoinYieldAccountRewards } from '../utils/stablecoinYieldClaimSummaryUtils';
-import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../utils/yieldClaimFeeUtils';
+import { type StablecoinYieldAccountRewards } from '../../utils/yield/stablecoinYieldClaimSummaryUtils';
+import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../../utils/yield/yieldClaimFeeUtils';
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -30,7 +30,7 @@ jest.mock('@suite-common/earn-stablecoin', () => ({
     buildUnsignedClaimTransaction: jest.fn(() => ({ type: 'unsigned-claim-transaction' })),
 }));
 
-jest.mock('../utils/yieldClaimFeeUtils', () => ({
+jest.mock('../../utils/yield/yieldClaimFeeUtils', () => ({
     buildYieldClaimFeeLevels: jest.fn(),
     getYieldClaimFee: jest.fn(),
 }));
@@ -93,7 +93,10 @@ const createTestStore = () =>
                 }),
                 fees: createStaticReducer(FEES_STATE),
                 formDrafts: formDraftReducer,
-                send: prepareSendFormReducer(extraDependenciesCommonMock),
+                send: prepareSendFormReducer({
+                    actionTypes: { storageLoad: mockActionType('storageLoad') },
+                    reducers: { storageLoadFormDrafts: mockReducer() },
+                }),
             }),
         },
     });
@@ -134,7 +137,7 @@ describe('useYieldClaimFees', () => {
     });
 
     it('prepares the claim fee', async () => {
-        const { result } = renderYieldClaimFees({
+        const { result } = await renderYieldClaimFees({
             accountRewards: createAccountRewards(),
             isEnabled: true,
         });
@@ -149,7 +152,7 @@ describe('useYieldClaimFees', () => {
     });
 
     it('does not re-prepare when rewards only get a new identity with unchanged values', async () => {
-        const { result, rerender } = renderYieldClaimFees({
+        const { result, rerender } = await renderYieldClaimFees({
             accountRewards: createAccountRewards(),
             isEnabled: true,
         });
@@ -159,7 +162,7 @@ describe('useYieldClaimFees', () => {
         const { preparedAction } = result.current;
 
         // A new deep-equal object, as produced by e.g. an unrelated fiat rates update.
-        rerender({ accountRewards: createAccountRewards(), isEnabled: true });
+        await rerender({ accountRewards: createAccountRewards(), isEnabled: true });
 
         expect(result.current.isPreparingClaimFee).toBe(false);
         expect(result.current.preparedAction).toBe(preparedAction);
@@ -171,14 +174,14 @@ describe('useYieldClaimFees', () => {
     });
 
     it('re-prepares when the claim rewards actually change', async () => {
-        const { result, rerender } = renderYieldClaimFees({
+        const { result, rerender } = await renderYieldClaimFees({
             accountRewards: createAccountRewards(),
             isEnabled: true,
         });
 
         await settleDebounce();
 
-        rerender({ accountRewards: createAccountRewards('200'), isEnabled: true });
+        await rerender({ accountRewards: createAccountRewards('200'), isEnabled: true });
 
         expect(result.current.isPreparingClaimFee).toBe(true);
 
