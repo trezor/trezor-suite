@@ -306,6 +306,25 @@ jobs:
             printf 'No QEMU coredumps found.\n' > "$qemuBacktraces"
           else
             : > "$qemuBacktraces"
+            isGdbAvailable=false
+
+            {
+              printf '===== GDB setup =====\n'
+
+              if ! command -v gdb >/dev/null; then
+                printf 'GDB is not preinstalled. Installing it for QEMU backtraces.\n'
+                sudo apt-get update
+                printf 'apt-get update exited with status %s.\n' "$?"
+                sudo apt-get install --yes --no-install-recommends gdb
+                printf 'GDB installation exited with status %s.\n' "$?"
+              fi
+
+              if gdb --version; then
+                isGdbAvailable=true
+              else
+                printf 'GDB setup failed; QEMU backtraces will be skipped.\n'
+              fi
+            } >> "$qemuBacktraces" 2>&1
 
             for corePid in "${qemuCorePids[@]}"; do
               printf '\n===== QEMU coredump PID %s =====\n' "$corePid" \
@@ -315,7 +334,7 @@ jobs:
 
               printf '\n===== QEMU backtrace PID %s =====\n' "$corePid" \
                 >> "$qemuBacktraces"
-              if command -v gdb >/dev/null; then
+              if [[ "$isGdbAvailable" == true ]]; then
                 DEBUGINFOD_URLS="" timeout --kill-after=10s 60s \
                   coredumpctl --no-pager debug "$corePid" \
                   --debugger-arguments="-batch -quiet -iex 'set debuginfod enabled off' -ex 'set pagination off' -ex 'set print frame-arguments none' -ex 'thread apply all bt 30'" \
@@ -327,7 +346,7 @@ jobs:
                     >> "$qemuBacktraces"
                 fi
               else
-                printf 'GDB is unavailable on this runner.\n' >> "$qemuBacktraces"
+                printf 'Backtrace skipped because GDB setup failed.\n' >> "$qemuBacktraces"
               fi
             done
           fi
