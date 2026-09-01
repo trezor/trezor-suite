@@ -55,6 +55,7 @@ import {
 import {
     type WalletSettingsRootState,
     selectBitcoinAmountUnit,
+    selectEnabledNetworks,
 } from '../settings/walletSettingsReducer';
 
 export const DEFAULT_NETWORK_SYNC_INTERVAL = 60 * 1000; // 1 minute
@@ -105,7 +106,7 @@ const setBackendsToConnect = (backends: CustomBackend[]) =>
         ),
     );
 
-type SetCustomBackendThunkState = BlockchainRootState;
+type SetCustomBackendThunkState = BlockchainRootState & WalletSettingsRootState;
 
 export const setCustomBackendThunk = createThunk<
     unknown,
@@ -116,7 +117,10 @@ export const setCustomBackendThunk = createThunk<
     const backends = [getBackendFromSettings(symbol, blockchain[symbol].backends)];
     const result = await setBackendsToConnect(backends);
 
-    await dispatch(reconnectBlockchainThunk({ symbol }));
+    // a disabled network has nothing to sync, so do not open a connection to its backend
+    if (selectEnabledNetworks(getState()).includes(symbol)) {
+        await dispatch(reconnectBlockchainThunk({ symbol }));
+    }
 
     return result;
 });
