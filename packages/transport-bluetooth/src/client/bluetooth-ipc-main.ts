@@ -172,7 +172,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
             this.scanOwners.delete(owner);
         }
 
-        if (this.scanOwners.size > 0) {
+        if (this.scanOwners.size > 0 || !this.isScanning) {
             return this.result();
         }
 
