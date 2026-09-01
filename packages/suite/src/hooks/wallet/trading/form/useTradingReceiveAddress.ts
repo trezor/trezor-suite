@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { type CryptoId } from 'invity-api';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
@@ -19,12 +21,12 @@ import {
     tradingBuyActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import {
     type TradingGetTranslationIdsProps,
     type TradingVerifyFormProps,
@@ -61,8 +63,8 @@ export const useTradingReceiveAddress = ({
 }: UseTradingReceiveAddressProps) => {
     const dispatch = useDispatch();
     const { addressValidator } = useServices(selectAddressValidatorDep);
-    const accounts = useSelector(state => state.wallet.accounts);
-    const walletSelectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const accounts = useSelector(selectAccounts);
+    const walletSelectedAccount = useSelector(selectFullSelectedAccount);
     const device = useSelector(selectSelectedDevice);
     const sendAccountKey = useSelector(selectTradingExchangeAccountKey);
 

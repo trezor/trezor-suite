@@ -1,10 +1,12 @@
+import { useDispatch } from 'react-redux';
+
 import { selectSelectedAccountSymbol } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const useGoToWithAnalytics = (account?: Account) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);

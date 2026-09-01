@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { goto } from '@suite/router';
-
-import { useDispatch } from 'src/hooks/suite';
 
 export const EarnTronRedirect = () => {
     const dispatch = useDispatch();

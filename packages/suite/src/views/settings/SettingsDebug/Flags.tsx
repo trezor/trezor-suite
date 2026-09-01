@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import {
     type BooleanFlagKey,
     type FlagsState,
@@ -10,7 +12,7 @@ import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { typedObjectEntries, typedObjectValues } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type FlagEntry = [keyof FlagsState, FlagsState[keyof FlagsState]];
 type BooleanFlagEntry = [BooleanFlagKey, boolean];

@@ -1,4 +1,5 @@
 import { type ReactNode, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
     useFirmwareDesktopUpdate,
@@ -13,7 +14,7 @@ import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { FirmwareInstallationProgressCheck } from 'src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { StepCheckSeed } from './Steps/StepCheckSeed';
 import { StepDone } from './Steps/StepDone';

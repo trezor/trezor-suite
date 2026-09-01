@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -20,7 +21,7 @@ import {
 } from '@trezor/icons';
 
 import { openNode } from 'src/actions/suite/guideActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
 import { GuideItem } from './GuideItem';

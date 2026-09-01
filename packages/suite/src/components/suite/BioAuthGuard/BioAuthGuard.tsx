@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -14,7 +15,6 @@ import {
     PageWrapper,
     Wrapper,
 } from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
-import { useDispatch } from 'src/hooks/suite';
 import { useBioAuthDesktopApi } from 'src/hooks/suite/useBioAuthDesktopApi';
 
 const Container = styled.div`

@@ -30,6 +30,7 @@ import {
     TextArea,
     UnionWrapper,
 } from './fields';
+import { selectMethod } from '../reducers/methodReducer';
 
 interface Props {
     actions: {
@@ -228,7 +229,7 @@ const SubmitButton = ({ onClick, text, isLoading }: SubmitButtonProps) => (
 
 export const Method = () => {
     const theme = useTheme();
-    const method = useSelector(state => state.method);
+    const method = useSelector(selectMethod);
     const actions = useActions({
         onSubmit: methodActions.onSubmit,
         onCancelCall: methodActions.onCancelCall,

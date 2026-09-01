@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
 import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectNetworkExplorers, setNetworkExplorerThunk } from '@suite-common/wallet-core';
 import { deepEqual, isUrl } from '@trezor/utils';
 
-import { useDispatch, useSelector } from '../suite';
+import { useSelector } from 'src/hooks/suite';
 
 const useExplorerInput = (currentValues: Explorer) => {
     const {

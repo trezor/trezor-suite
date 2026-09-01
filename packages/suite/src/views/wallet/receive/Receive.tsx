@@ -1,3 +1,4 @@
+import { selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { ReceiveContent } from '@suite/receive';
 import { selectIsCoinjoinReceiveWarningHidden } from '@suite/settings';
@@ -12,7 +13,7 @@ import { useSelector } from 'src/hooks/suite';
 import { CoinjoinReceiveWarning } from './components/CoinjoinReceiveWarning';
 
 export const Receive = () => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
     const device = useSelector(selectSelectedDevice);
     const isCoinjoinReceiveWarningHidden = useSelector(selectIsCoinjoinReceiveWarningHidden);
 

@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { networks } from '@suite-common/wallet-config';
@@ -6,7 +8,8 @@ import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
 import { confirmEvmExplanationModal } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectConfirmExplanationModalClosed } from 'src/selectors/suite/suiteSelectors';
 
 export interface ConfirmNetworkExplanationModalProps {
     account: Account | undefined;
@@ -25,9 +28,7 @@ export const ConfirmEvmExplanationModal = ({
         }
         dispatch(confirmEvmExplanationModal({ symbol: account.symbol, route }));
     };
-    const confirmExplanationModalClosed = useSelector(
-        state => state.suite.evmSettings.confirmExplanationModalClosed,
-    );
+    const confirmExplanationModalClosed = useSelector(selectConfirmExplanationModalClosed);
 
     if (!account) {
         return null;

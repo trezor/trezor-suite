@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { Box, Icon, Row, ShortcutBadge, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 
-import { useDiscovery, useDispatch } from 'src/hooks/suite';
+import { useDiscovery } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {

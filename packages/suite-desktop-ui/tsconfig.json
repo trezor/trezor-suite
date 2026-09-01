@@ -4,7 +4,7 @@
         "outDir": "libDev",
         "paths": { "src/*": ["../suite/src/*"] }
     },
-    "include": ["."],
+    "include": [".", "../suite/global.d.ts"],
     "references": [
         {
             "path": "../../suite-common/dependency-injection"

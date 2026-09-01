@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectIsTorEnabled } from '@suite/tor';
 import {
@@ -16,7 +17,7 @@ import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezo
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 export const QuotaManagerSettings = () => {

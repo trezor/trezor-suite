@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectSelectedAccount } from '@suite/account';
 import { useToggleDebugMode } from '@suite/debug';
@@ -14,8 +15,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
 import { toggleView as toggleGuideView } from 'src/actions/suite/guideActions';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 import { selectIsBioAuthEnabled } from 'src/reducers/bioAuth';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 

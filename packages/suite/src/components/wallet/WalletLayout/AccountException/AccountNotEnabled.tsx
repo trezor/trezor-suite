@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { type Network } from '@suite-common/wallet-config';
@@ -5,7 +7,6 @@ import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { PlusIcon, WarningIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
-import { useDispatch } from 'src/hooks/suite';
 
 interface AccountNotEnabledProps {
     network: Network;

@@ -17,11 +17,10 @@ import {
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
+import { useSelector } from 'src/hooks/suite';
 import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
 
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
-import { useSelector } from '../suite';
-
 export type GetCurrentRateParams = {
     currencyCode: BaseCurrencyCode;
     tokenAddress: TokenAddress;

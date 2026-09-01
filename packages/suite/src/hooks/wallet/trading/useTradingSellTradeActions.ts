@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import type { BankAccount } from 'invity-api';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -24,7 +26,7 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { requestSellTradeThunk } from 'src/actions/wallet/trading/sell/requestSellTradeThunk';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormAccount } from 'src/hooks/wallet/trading/form/useTradingFormAccount';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';

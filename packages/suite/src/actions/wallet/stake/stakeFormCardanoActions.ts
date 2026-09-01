@@ -1,6 +1,6 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import { type SelectedAccountRootState } from '@suite/account';
+import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
 import {
     type DesktopAnalyticsDep,
     type StakingCardanoPoolDelegationPayload,
@@ -294,7 +294,7 @@ type ComposeTransactionThunkState = SelectedAccountRootState & StakeRootState;
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
     async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
-        const { selectedAccount } = getState().wallet;
+        const selectedAccount = selectFullSelectedAccount(getState());
         const cardanoPools = selectCardanoPoolsInfo(getState());
         const votingDelegation = selectStakeVotingDelegation(getState());
 
@@ -394,7 +394,7 @@ export const signTransaction =
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ) => {
-        const { selectedAccount } = getState().wallet;
+        const selectedAccount = selectFullSelectedAccount(getState());
         const cardanoPools = selectCardanoPoolsInfo(getState());
         const votingDelegation = selectStakeVotingDelegation(getState());
         if (!selectedAccount?.account) return;

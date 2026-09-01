@@ -1,10 +1,12 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectIsTorEnabled } from '@suite/tor';
 import { type TradingType } from '@suite-common/trading';
 import { Banner, Column } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 interface TradingUtilsTorWarningProps {
     tradingType: TradingType;

@@ -5,6 +5,7 @@ import { accountsActions, applyDeviceStatesThunk } from '@suite-common/wallet-co
 
 import * as metadataActions from './metadataActions';
 import * as metadataLabelingActions from './metadataLabelingActions';
+import { selectMetadataEditing } from './metadataReducer';
 import * as metadataThunks from './metadataThunks';
 import { selectIsLegacyLabelingVisible } from './selectIsLegacyLabelingVisible';
 
@@ -30,7 +31,7 @@ export const metadataMiddleware = createMiddleware((action, { dispatch, getState
     switch (action.type) {
         case '@router/location-change': // hack: to prevent dependency
             // if there is editing field active, changing route turns it inactive
-            if (getState().metadata.editing) {
+            if (selectMetadataEditing(getState())) {
                 dispatch(metadataActions.setEditing(undefined));
             }
             break;

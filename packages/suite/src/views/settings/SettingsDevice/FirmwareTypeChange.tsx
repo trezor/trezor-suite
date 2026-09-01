@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { useDevice } from '@suite/device';
 import { getSuiteFirmwareTypeString } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
@@ -11,8 +13,6 @@ import {
 } from '@trezor/device-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
-
-import { useDispatch } from 'src/hooks/suite';
 
 interface FirmwareTypeProps {
     isDeviceLocked: boolean;

@@ -1,7 +1,7 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
-import { type SelectedAccountRootState } from '@suite/account';
+import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
 import {
     type DesktopAnalyticsDep,
     type StakingCardanoPoolDelegationPayload,
@@ -27,6 +27,7 @@ import {
     addFakePendingCardanoTxThunk,
     replaceTransactionThunk,
     selectIsMevProtectionEnabled,
+    selectStake,
     stakeActions,
     syncAccountsWithBlockchainThunk,
 } from '@suite-common/wallet-core';
@@ -85,7 +86,7 @@ type CancelSignTxThunkState = StakeRootState;
 export const cancelSignTx =
     (isSuccessTx?: boolean, account?: Account) =>
     (dispatch: Dispatch<UnknownAction>, getState: () => CancelSignTxThunkState) => {
-        const { serializedTx, precomposedForm } = getState().wallet.stake;
+        const { serializedTx, precomposedForm } = selectStake(getState());
         dispatch(stakeActions.requestSignTransaction());
         dispatch(stakeActions.requestPushTransaction());
         // if transaction is not signed yet interrupt signing in TrezorConnect
@@ -129,8 +130,8 @@ const pushTransaction =
         getState: () => PushTransactionThunkState,
         extra: PushTransactionThunkDeps,
     ) => {
-        const { serializedTx, precomposedTx } = getState().wallet.stake;
-        const { account } = getState().wallet.selectedAccount;
+        const { serializedTx, precomposedTx } = selectStake(getState());
+        const account = selectSelectedAccount(getState());
         const device = selectSelectedDevice(getState());
         const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
         const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
@@ -296,7 +297,7 @@ export const signTransaction =
         getState: () => SignTransactionThunkState,
     ) => {
         const device = selectSelectedDevice(getState());
-        const { account } = getState().wallet.selectedAccount;
+        const account = selectSelectedAccount(getState());
 
         if (!device || !account) return;
 

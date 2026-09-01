@@ -8,8 +8,7 @@ import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Card, Column, InfoItem, type StepListItemState } from '@trezor/components';
 
-import { useLocales } from 'src/hooks/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useLocales, useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
 import { TradingDetailTxId } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTxId';

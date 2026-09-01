@@ -1,10 +1,9 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { clamp } from '@trezor/utils';
 
 import { TRADE_API_RELOAD_QUOTES_AFTER_SECONDS } from '../constants';
-import { useSelector } from './useSelector';
 import { tradingActions } from '../reducers/tradingCommonReducer';
 import { selectTradingQuoteRefetchingState } from '../selectors/tradingSelectors';
 

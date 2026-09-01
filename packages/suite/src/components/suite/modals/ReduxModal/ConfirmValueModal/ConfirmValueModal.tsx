@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { AccountLabel } from '@suite/account';
 import { Address, selectAddressLabel } from '@suite/address';
@@ -7,7 +8,7 @@ import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { selectIsMetadataEnabled } from '@suite/metadata';
-import { MODAL_CONTEXT_USER } from '@suite/modal';
+import { MODAL_CONTEXT_USER, selectModalContext } from '@suite/modal';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
@@ -46,7 +47,7 @@ import {
 import { ConfirmOnDevicePill, QrCode, TokenIcon } from '@trezor/product-components';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
@@ -75,7 +76,7 @@ export const ConfirmValueModal = ({
 }: ConfirmValueModalProps) => {
     const [isCopied, setIsCopied] = useState(false);
     const { device } = useDevice();
-    const modalContext = useSelector(state => state.modal.context);
+    const modalContext = useSelector(selectModalContext);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
     const dispatch = useDispatch();

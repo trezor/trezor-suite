@@ -1,14 +1,16 @@
-import { openEarlyAccessSetup } from '@suite/desktop-update';
+import { useDispatch } from 'react-redux';
+
+import { openEarlyAccessSetup, selectDesktopUpdate } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { Row } from '@trezor/components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const EarlyAccess = () => {
-    const desktopUpdate = useSelector(state => state.desktopUpdate);
+    const desktopUpdate = useSelector(selectDesktopUpdate);
     const dispatch = useDispatch();
 
     const setupEarlyAccess = () => {

@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { setFlag } from '@suite/flags';
+import { selectHasSeenDisconnectTooltip, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -23,7 +24,8 @@ import {
     addDeviceIdToSeenDisconnectNotification,
     setRecentlyDisconnectedDevice,
 } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectRecentlyDisconnectedDevice } from 'src/selectors/suite/suiteSelectors';
 import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 import { CardWithDevice } from '../CardWithDevice';
@@ -53,8 +55,8 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
     const dispatch = useDispatch();
     const selectedDevice = useSelector(selectSelectedDevice);
     const deviceId = selectedDevice?.id;
-    const recentlyDisconnectedDevice = useSelector(state => state.suite.recentlyDisconnectedDevice);
-    const hasSeenDisconnectTooltip = useSelector(state => state.flags.hasSeenDisconnectTooltip);
+    const recentlyDisconnectedDevice = useSelector(selectRecentlyDisconnectedDevice);
+    const hasSeenDisconnectTooltip = useSelector(selectHasSeenDisconnectTooltip);
     const [showTooltip, setShowTooltip] = useState(false);
     const deviceModelInternal = device.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
     const instancesWithState = instances.filter(i => i.state);

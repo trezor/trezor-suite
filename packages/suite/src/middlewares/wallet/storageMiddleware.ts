@@ -82,6 +82,7 @@ import {
 } from 'src/actions/suite/suiteActions';
 import { accountGraphFail, accountGraphSuccess } from 'src/actions/wallet/graphActions';
 import { type SuiteState } from 'src/reducers/suite/suiteReducer';
+import { selectGraph } from 'src/reducers/wallet/graphReducer';
 import { type GraphState } from 'src/reducers/wallet/graphReducer';
 import { db } from 'src/storage';
 
@@ -275,7 +276,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
             ),
         save: ({ action }, { getState }) => {
             const { account } = action.payload;
-            const graphEntry = getState().wallet.graph.data.find(
+            const graphEntry = selectGraph(getState()).data.find(
                 d =>
                     d.account.deviceState === account.deviceState &&
                     d.account.descriptor === account.descriptor &&

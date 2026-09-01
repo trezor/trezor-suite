@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { type AnalyticsDesktopEvents, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
@@ -19,7 +20,7 @@ import { type Analytics } from '@trezor/analytics-uploader';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type ResolutionEventType =
     | {

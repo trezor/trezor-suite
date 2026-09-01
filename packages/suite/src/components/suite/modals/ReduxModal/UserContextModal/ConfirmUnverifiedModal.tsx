@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
@@ -12,7 +13,7 @@ import { ShieldWarningIcon } from '@trezor/icons';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { type ShowXpubThunkState } from 'src/actions/wallet/publicKeyActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 interface ConfirmUnverifiedModalProps {
     action: {
@@ -34,7 +35,7 @@ export const ConfirmUnverifiedModal = ({
 }: ConfirmUnverifiedModalProps) => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const { device } = useDevice();
-    const dispatch = useDispatch<ShowXpubThunkState, unknown>();
+    const dispatch = useDispatch();
     const { isLocked } = useDevice();
 
     const isDeviceLocked = isLocked();

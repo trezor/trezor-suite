@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
@@ -9,7 +11,7 @@ import { InfoIcon } from '@trezor/icons';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 

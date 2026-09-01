@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -12,7 +14,6 @@ import { getBorderRadiusCssValue } from '@trezor/theme';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { getYieldOpportunityAnchor } from 'src/components/earn/utils/getYieldOpportunityAnchor';
-import { useDispatch } from 'src/hooks/suite';
 
 // The badge itself is not interactive, so a button carries the click and the focus ring.
 const BadgeButton = styled.button`

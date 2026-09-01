@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
@@ -11,7 +13,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector, HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectGraph, selectGraphSelectedRange } from 'src/reducers/wallet/graphReducer';
 import { type Account } from 'src/types/wallet';
 import {
     aggregateBalanceHistory,
@@ -39,8 +42,8 @@ interface TransactionSummaryProps {
 }
 
 export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
-    const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
-    const graph = useSelector(state => state.wallet.graph);
+    const selectedRange = useSelector(selectGraphSelectedRange);
+    const graph = useSelector(selectGraph);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();

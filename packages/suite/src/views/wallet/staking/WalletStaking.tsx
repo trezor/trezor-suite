@@ -1,3 +1,4 @@
+import { selectFullSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { WarningIcon } from '@trezor/icons';
@@ -11,7 +12,7 @@ import { SolStakingDashboard } from './components/SolStakingDashboard/SolStaking
 import { TronStakingDashboard } from './components/TronStakingDashboard/TronStakingDashboard';
 
 export const WalletStaking = () => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
 
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_NAV_STAKING" account={selectedAccount} />;

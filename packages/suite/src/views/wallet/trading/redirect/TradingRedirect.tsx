@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
     type BuyCryptoPaymentMethod,
@@ -13,7 +14,7 @@ import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type FeeLevel } from '@trezor/connect';
 import { typography } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingRedirect } from 'src/hooks/wallet/useTradingRedirect';
 import { type Account } from 'src/types/wallet';
 

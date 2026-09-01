@@ -21,7 +21,11 @@ import * as metadataActions from './metadataActions';
 import * as METADATA from './metadataConstants';
 import { disposeMetadata } from './metadataDataThunks';
 import * as METADATA_PROVIDER from './metadataProviderConstants';
-import { type MetadataRootState, selectSelectedProviderForLabels } from './metadataReducer';
+import {
+    type MetadataRootState,
+    selectMetadata,
+    selectSelectedProviderForLabels,
+} from './metadataReducer';
 import { type FetchIntervalTrackingId } from './metadataUtils';
 import { DropboxProvider } from './providers/DropboxProvider';
 import { FileSystemProvider } from './providers/FileSystemProvider';
@@ -73,8 +77,7 @@ type GetProviderInstanceThunkState = MetadataRootState;
 export const getProviderInstance =
     ({ clientId, dataType = 'labels' }: GetProviderInstanceParams) =>
     (_dispatch: Dispatch, getState: () => GetProviderInstanceThunkState) => {
-        const state = getState();
-        const { providers } = state.metadata;
+        const { providers } = selectMetadata(getState());
 
         const provider = providers.find(p => p.clientId === clientId);
 
@@ -90,7 +93,7 @@ export const getProviderInstance =
         providerInstance[dataType] = createProviderInstance(
             provider.type,
             provider.tokens,
-            selectOAuthServerEnvironment(state),
+            selectOAuthServerEnvironment(getState()),
             clientId,
         );
 

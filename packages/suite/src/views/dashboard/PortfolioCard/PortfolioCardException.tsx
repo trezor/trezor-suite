@@ -1,4 +1,5 @@
 import { type ComponentProps, type JSX } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
@@ -21,7 +22,6 @@ import {
 import { PlusIcon, RepeatIcon, WarningIcon } from '@trezor/icons';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
 import { type DiscoveryStatusType } from 'src/types/wallet';
 
 interface CTA {

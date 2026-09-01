@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
@@ -12,8 +13,6 @@ import { Box, Button, H2, Icon, IconButton, Image, Paragraph, Row } from '@trezo
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { AppleLogoIcon, LinuxLogoIcon, WindowsLogoIcon, XIcon } from '@trezor/icons';
 import { SUITE_URL } from '@trezor/urls';
-
-import { useDispatch } from 'src/hooks/suite/useDispatch';
 
 import { bannerAnimationConfig } from '../../dashboard/banner-animations';
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -7,8 +8,6 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Checkbox, Column, Select } from '@trezor/components';
 import { DEVICE } from '@trezor/connect';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 const MOCK_TX = {
     formattedAmount: '0.05',

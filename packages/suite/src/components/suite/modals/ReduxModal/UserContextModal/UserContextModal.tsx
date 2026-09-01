@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { MetadataProviderModal } from '@suite/metadata';
 import { type MODAL_CONTEXT_USER, closeModal as closeModalAction } from '@suite/modal';
 import { isOnionUrl } from '@suite/tor';
@@ -22,7 +24,7 @@ import {
 } from 'src/components/earn';
 import { ConnectPopupTxSimulationModal } from 'src/components/tx-simulation/connect-popup';
 import { EarnYieldTxSimulationModal } from 'src/components/tx-simulation/earn-stablecoin';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import { CopyAddressModal } from '../CopyAddressModal';

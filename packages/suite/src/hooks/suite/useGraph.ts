@@ -1,15 +1,17 @@
 import { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { type Account } from '@suite-common/wallet-types';
 
 import * as graphActions from 'src/actions/wallet/graphActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectGraphSelectedRange } from 'src/reducers/wallet/graphReducer';
 import { type GraphRange } from 'src/types/wallet/graph';
 
 export const useGraph = () => {
     const dispatch = useDispatch();
 
-    const selectedRange = useSelector(state => state.wallet.graph.selectedRange);
+    const selectedRange = useSelector(selectGraphSelectedRange);
 
     const actions = useMemo(
         () => ({

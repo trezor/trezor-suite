@@ -1,10 +1,11 @@
+import { useSelector } from 'react-redux';
+
 import {
     selectTradingBuyQuotesRequest,
     selectTradingSellQuotesRequest,
 } from '../selectors/tradingSelectors';
 import type { TradingTradeType } from '../types';
 import { isBuyTrade, isSellFiatTrade } from '../utils';
-import { useSelector } from './useSelector';
 
 export type TradingRequestedSide = 'from' | 'to';
 

@@ -1,11 +1,11 @@
-import { useSelector } from 'react-redux';
-
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { Column } from '@trezor/components';
 import {
     ModalBackdrop,
     type ModalBackdropProps,
 } from '@trezor/components/src/components/Modal/ModalBackdrop';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { ConnectAppBar } from './ConnectAppBar';
 

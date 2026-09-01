@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -50,8 +51,7 @@ import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-
+import { useSelector } from 'src/hooks/suite';
 // The remove button sits next to the permission text and is only revealed when
 // the row is hovered or a child receives keyboard focus, to reduce clutter.
 // Mirrors the reveal styling of EditableText's ActionsContainer.

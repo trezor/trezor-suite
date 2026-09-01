@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { type Route, selectRouteName } from '@suite/router';
 import { Tabs } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
@@ -51,7 +52,7 @@ export const SubpageNavigation = <TId extends string = Route['name']>({
     activeItemId,
 }: SubpageNavigationProps<TId>) => {
     const routeName = useSelector(selectRouteName);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
 
     const isAccountLoading = selectedAccount.status === 'loading';
     const resolvedActiveItemId =

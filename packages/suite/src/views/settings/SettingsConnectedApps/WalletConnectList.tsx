@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import {
@@ -14,7 +16,7 @@ import {
 } from '@trezor/icons';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const WalletConnectList = () => {
     const dispatch = useDispatch();

@@ -17,7 +17,7 @@ import { ChangeIcon, WalletIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { UtxoAnonymity } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 const OP_RETURN_REGEX = /^OP_RETURN \(([^)]+)\)/;
 

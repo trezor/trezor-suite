@@ -1,9 +1,11 @@
+import { useDispatch } from 'react-redux';
+
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { Banner, Column, H4 } from '@trezor/components';
 
 import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const CoinjoinReceiveWarning = () => {
     const account = useSelector(selectSelectedAccount);

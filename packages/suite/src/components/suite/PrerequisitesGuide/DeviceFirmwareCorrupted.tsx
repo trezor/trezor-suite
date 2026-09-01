@@ -1,4 +1,5 @@
 import { type MouseEventHandler } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
@@ -6,7 +7,6 @@ import { Banner } from '@trezor/components';
 import { CpuIcon } from '@trezor/icons';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
-import { useDispatch } from 'src/hooks/suite';
 
 export const DeviceFirmwareCorrupted = () => {
     const dispatch = useDispatch();

@@ -1,9 +1,9 @@
 import { type FunctionComponent } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { CreateWalletBackupModal } from '@suite/backup';
 import { closeModalApp } from '@suite/router';
 
-import { useDispatch } from 'src/hooks/suite';
 import type { ForegroundAppRoute } from 'src/types/suite';
 import { Backup } from 'src/views/backup/Backup';
 import { FirmwareCustom } from 'src/views/firmware/FirmwareCustom';

@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux';
+
 import {
     type BuyTrade,
     type CryptoId,
@@ -15,7 +17,6 @@ import {
 } from '../selectors/tradingSelectors';
 import type { TradingTradeType } from '../types';
 import { isBuyTrade, isExchangeTrade, isSellFiatTrade } from '../utils';
-import { useSelector } from './useSelector';
 
 type UseTradingRequestedAmountShortfallProps = {
     quote: TradingTradeType | undefined;

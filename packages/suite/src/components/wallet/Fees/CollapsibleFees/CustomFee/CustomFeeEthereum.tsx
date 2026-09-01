@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useFormContext, useFormState } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
@@ -11,6 +10,7 @@ import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { InputError } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
 import { validateDecimals } from 'src/utils/suite/validation';
 
 import { type CustomFeeBasicProps } from './CustomFeeBasicProps';

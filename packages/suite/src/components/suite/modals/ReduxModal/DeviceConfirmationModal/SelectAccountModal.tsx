@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
@@ -11,7 +12,7 @@ import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 interface SelectAccountModalProps {
     data: UiRequestSelectAccount['payload'];

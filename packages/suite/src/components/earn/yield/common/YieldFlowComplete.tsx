@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
     feedbackRatingSelectedEvent,
@@ -14,7 +15,6 @@ import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@tre
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
 import { FeedbackCard } from '@trezor/product-components';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 type YieldFlowCompleteProps = {

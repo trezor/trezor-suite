@@ -1,12 +1,15 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
-import { selectIsLegacyLabelingVisible } from '@suite/metadata';
+import { selectIsLegacyLabelingVisible, selectLabelingValueBeingEdited } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { useWalletLabel } from '@suite/wallet';
 import {
     getAccountsByDeviceState,
+    selectAccounts,
     selectAllAccountsToList,
     selectBaseCurrency,
     selectCurrentFiatRates,
@@ -31,7 +34,7 @@ import { AsteriskIcon, EjectIcon, XIcon } from '@trezor/icons';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { type AcquiredDevice, type ForegroundAppProps } from 'src/types/suite';
@@ -53,11 +56,11 @@ export const WalletInstance = ({
     ...rest
 }: WalletInstanceProps) => {
     const [isEjecting, setIsEjecting] = useState(false);
-    const accounts = useSelector(state => state.wallet.accounts);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const accounts = useSelector(selectAccounts);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const editing = useSelector(state => state.metadata.editing);
+    const editing = useSelector(selectLabelingValueBeingEdited);
     const dispatch = useDispatch();
     const store = useStore();
     const { translationString } = useTranslation();

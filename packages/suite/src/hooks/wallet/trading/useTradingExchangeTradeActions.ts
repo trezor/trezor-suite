@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import type { ExchangeTrade } from 'invity-api';
 
 import { useDevice } from '@suite/device';
@@ -18,7 +20,7 @@ import {
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingExchangeTradeRequest } from 'src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
 import { useTradingFormAccount } from 'src/hooks/wallet/trading/form/useTradingFormAccount';

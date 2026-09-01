@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useFreshRef } from '@trezor/react-utils';
 
-import { useSelector } from './useSelector';
 import { selectTradingInfo } from '../selectors/tradingSelectors';
 
 export function useCoinsAndPlatforms() {

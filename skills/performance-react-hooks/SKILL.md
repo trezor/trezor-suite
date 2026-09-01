@@ -136,9 +136,8 @@ at its declaration first: a `useCallback(…, [])` handler is already stable and
 
 - [Components](../components/SKILL.md) — hook order, pass the narrow prop, and don’t optimise until you
   can point at the cost.
-- [Redux](../redux/SKILL.md) — one `useSelector` per value. `packages/suite` wraps `useSelector` with a
-  `shallowEqual` default, which absorbs a fresh object of primitives one level deep; `suite-native` uses
-  react-redux directly, where the same selector re-renders on every dispatch.
+- [Redux](../redux/SKILL.md) — one `useSelector` per value. The `useSelector` exported by
+  `@suite-common/redux-utils`
 
 - [Asymptotic complexity](../performance-complexity/SKILL.md) — indexing, sorting and reducing over
   collections that grow.

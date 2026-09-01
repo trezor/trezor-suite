@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -7,7 +9,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
-import { useDispatch } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet/index';
 
 import { TransactionLayout } from './TransactionLayout';

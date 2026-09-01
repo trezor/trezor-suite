@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Action } from 'history';
 
@@ -10,7 +11,7 @@ import {
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const RouterHandler = () => {
     const dispatch = useDispatch();

@@ -1,4 +1,4 @@
-import { MODAL_CONTEXT_NONE } from '@suite/modal';
+import { MODAL_CONTEXT_NONE, selectModal } from '@suite/modal';
 import {
     type ModalAppParams,
     type RouterAppWithParams,
@@ -51,7 +51,7 @@ export const usePreferredModal = () => {
     const isForegroundAppRoute = useSelector(selectIsForegroundApp);
     const isFullscreenAppRoute = useSelector(selectIsFullscreenApp);
     const params = useSelector(selectForegroundAppParams) as Partial<ModalAppParams>;
-    const modal = useSelector(state => state.modal);
+    const modal = useSelector(selectModal);
 
     const foregroundApp =
         isForegroundAppRoute && !isFullscreenAppRoute && isForegroundApp(routerApp)

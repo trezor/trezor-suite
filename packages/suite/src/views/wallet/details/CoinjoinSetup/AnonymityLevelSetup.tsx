@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
@@ -9,7 +10,7 @@ import { Banner, Icon, motionEasing } from '@trezor/components';
 import { UserIcon, UsersFourIcon, UsersIcon, UsersThreeIcon } from '@trezor/icons';
 
 import { AnonymityStatus } from 'src/constants/suite/coinjoin';
-import { useAnonymityStatus, useDispatch } from 'src/hooks/suite';
+import { useAnonymityStatus } from 'src/hooks/suite';
 
 import { SetupSlider } from './SetupSlider/SetupSlider';
 import {

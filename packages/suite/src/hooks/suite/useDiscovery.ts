@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 
-import { useSelector } from './useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 export const useDiscovery = () => {
     const device = useSelector(selectSelectedDevice);

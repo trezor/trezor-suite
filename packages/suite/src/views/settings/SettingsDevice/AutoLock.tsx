@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import type { Locale } from 'date-fns';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -9,7 +11,7 @@ import { formatDurationStrict } from '@suite-common/suite-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch, useLocales } from 'src/hooks/suite';
+import { useLocales } from 'src/hooks/suite';
 
 // auto lock times in seconds; allowed lock times by device: <1 minute, 6 days>
 const AUTO_LOCK_TIMES = {

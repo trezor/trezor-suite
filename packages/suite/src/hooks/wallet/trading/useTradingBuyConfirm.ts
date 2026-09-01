@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 
@@ -18,7 +19,7 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
 export const useTradingBuyConfirm = () => {

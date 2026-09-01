@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { goto } from '@suite/router';
@@ -10,7 +12,6 @@ import { Banner, type BannerIntent } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
-import { useDispatch } from 'src/hooks/suite';
 import type { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 import { getDeviceResolveStatusCTAMessage } from './getDeviceResolveStatusCTAMessage';

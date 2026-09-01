@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
@@ -15,13 +16,14 @@ import {
     GuideSectionHeadline,
     GuideViewWrapper,
 } from 'src/components/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectGuideIndexNode } from 'src/selectors/suite/guideSelectors';
 
 import { GuideItem } from './GuideItem';
 
 export const Guide = () => {
     const [searchActive, setSearchActive] = useState(false);
-    const indexNode = useSelector(state => state.guide.indexNode);
+    const indexNode = useSelector(selectGuideIndexNode);
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const handleFeedbackButtonClick = () => {

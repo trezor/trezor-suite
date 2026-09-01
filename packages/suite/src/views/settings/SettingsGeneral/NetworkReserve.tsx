@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
@@ -14,7 +16,7 @@ import {
 } from '@trezor/product-components';
 import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const NetworkReserve = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);

@@ -1,10 +1,12 @@
+import { useSelector } from 'react-redux';
+
 import { renderHook } from '@testing-library/react';
 import { type BuyTrade, type CryptoId, type ExchangeTrade, type SellFiatTrade } from 'invity-api';
 
-import { useSelector } from './useSelector';
 import { useTradingRequestedAmountShortfall } from './useTradingRequestedAmountShortfall';
 
-jest.mock('./useSelector', () => ({
+jest.mock('react-redux', () => ({
+    ...jest.requireActual('react-redux'),
     useSelector: jest.fn(),
 }));
 

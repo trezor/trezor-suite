@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { goto } from '@suite/router';
 import { getWrappedNativeToken, isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
@@ -6,7 +7,7 @@ import { getWrappedNativeToken, isWrappedNativeToken } from '@trezor/network-eth
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
 import { WrappedNativePageHeader } from 'src/components/earn/yield/common/WrappedNativePageHeader';
 import { UnwrapNativeToken } from 'src/components/earn/yield/unwrap/UnwrapNativeToken';
-import { useDispatch, useLayout } from 'src/hooks/suite';
+import { useLayout } from 'src/hooks/suite';
 
 import { EarnLayoutFallback } from '../../EarnLayoutFallback';
 

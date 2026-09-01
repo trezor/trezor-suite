@@ -1,9 +1,11 @@
+import { useDispatch } from 'react-redux';
+
 import { GoogleClient } from '@suite/metadata';
 import { selectOAuthServerEnvironment, suiteSettingsActions } from '@suite/settings';
 import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const OAuthApi = () => {
     const oauthServerEnvironment = useSelector(selectOAuthServerEnvironment);

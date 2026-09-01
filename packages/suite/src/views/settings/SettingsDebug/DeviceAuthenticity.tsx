@@ -1,8 +1,10 @@
+import { useDispatch } from 'react-redux';
+
 import { selectIsUnlockedBootloaderAllowed, suiteSettingsActions } from '@suite/settings';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const DeviceAuthenticity = () => {
     const dispatch = useDispatch();

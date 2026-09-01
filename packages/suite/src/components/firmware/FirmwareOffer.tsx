@@ -1,6 +1,7 @@
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { getSuiteFirmwareTypeString, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
+import { selectUseDevkit } from '@suite-common/firmware';
 import {
     getChangelogUrl,
     getFwUpdateVersion,
@@ -20,7 +21,7 @@ type FirmwareOfferProps = {
 };
 
 export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: FirmwareOfferProps) => {
-    const useDevkit = useSelector(state => state.firmware.useDevkit);
+    const useDevkit = useSelector(selectUseDevkit);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { originalDevice } = useFirmwareDesktopUpdate();
     const { translationString } = useTranslation();

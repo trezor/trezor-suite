@@ -1,12 +1,14 @@
-import { type ConfirmKey, backupActions } from '@suite/backup';
+import { useDispatch } from 'react-redux';
+
+import { type ConfirmKey, backupActions, selectBackup } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { Card, Column } from '@trezor/components';
 
 import { CheckItem } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const AfterBackupCheckboxes = () => {
-    const backup = useSelector(state => state.backup);
+    const backup = useSelector(selectBackup);
     const dispatch = useDispatch();
 
     const isChecked = (key: ConfirmKey) => backup.userConfirmed.includes(key);

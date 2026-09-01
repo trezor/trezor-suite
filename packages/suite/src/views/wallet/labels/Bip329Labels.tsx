@@ -1,4 +1,5 @@
 import { type ReactElement } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useAccountLabel } from '@suite/account';
 import { LearnMoreButton } from '@suite/external-links';
@@ -27,7 +28,7 @@ import {
 import { HELP_CENTER_BIP329_URL } from '@trezor/urls';
 
 import { exportMetadataToBip329File } from 'src/actions/labels/exportMetadataToBip329File';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 type Bip329LabelsProps = {

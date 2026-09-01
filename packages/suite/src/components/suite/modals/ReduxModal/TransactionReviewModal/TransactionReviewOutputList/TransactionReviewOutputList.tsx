@@ -8,6 +8,7 @@ import type { DeviceRootState } from '@suite-common/device';
 import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import {
     getNamedAddressSupport,
+    selectAccounts,
     selectSendFormReviewLastButtonCode,
 } from '@suite-common/wallet-core';
 import type {
@@ -83,7 +84,7 @@ export const TransactionReviewOutputList = ({
 }: TransactionReviewOutputListProps) => {
     const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
     const totalOutputRef = useRef<HTMLDivElement | null>(null);
-    const accounts = useSelector(state => state.wallet.accounts);
+    const accounts = useSelector(selectAccounts);
     const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
     const { networkType, symbol } = account;
     const namedAddress = getNamedAddressSupport(networkModuleRepository, symbol);

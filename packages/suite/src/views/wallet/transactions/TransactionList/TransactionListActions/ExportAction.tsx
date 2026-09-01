@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
@@ -13,8 +14,7 @@ import { Dropdown, Note } from '@trezor/components';
 import { ChecksIcon, FileArrowDownIcon, InfoIcon } from '@trezor/icons';
 
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
-import { useDispatch } from 'src/hooks/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 export interface ExportActionProps {

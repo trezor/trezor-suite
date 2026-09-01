@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { type TimerId } from '@trezor/type-utils';
@@ -7,7 +8,6 @@ import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBlueto
 import { bluetoothStartScanningThunk } from 'src/actions/bluetooth/bluetoothStartScanningThunk';
 import { bluetoothStopScanningThunk } from 'src/actions/bluetooth/bluetoothStopScanningThunk';
 import { removeNonResponsiveNearbyDevicesThunk } from 'src/actions/bluetooth/removeNonResponsiveNearbyDevicesThunk';
-import { useDispatch } from 'src/hooks/suite';
 
 type UseBluetoothScanningProps = {
     bluetoothMode: boolean;

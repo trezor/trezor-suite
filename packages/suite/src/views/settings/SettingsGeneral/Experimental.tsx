@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -17,7 +18,7 @@ import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectSuiteServices } from 'src/support/extraDependencies';
 
 type FeatureLineProps = {

@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import {
     TurnOnSuiteSyncModals,
     selectShowEnableSuiteSyncModal,
@@ -6,7 +8,7 @@ import {
 
 import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 
 import { ForegroundAppModal } from './ForegroundAppModal';

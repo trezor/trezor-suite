@@ -1,4 +1,5 @@
 import { type ReactNode, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -12,7 +13,7 @@ import {
     PageHeader,
     SubpageNavigation,
 } from 'src/components/suite/layouts/SuiteLayout';
-import { useDiscovery, useDispatch, useLayout, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useLayout, useSelector } from 'src/hooks/suite';
 import { AccountHeaderProvider } from 'src/support/suite/AccountHeaderProvider';
 import { SettingsLoading } from 'src/views/settings/SettingsLoader';
 

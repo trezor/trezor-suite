@@ -1,4 +1,5 @@
 import { type JSX } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled, { css } from 'styled-components';
 
@@ -10,7 +11,6 @@ import { ArrowLeftIcon, XIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
 import { close } from 'src/actions/suite/guideActions';
-import { useDispatch } from 'src/hooks/suite';
 
 const HeaderWrapper = styled.div<{
     $noLabel?: boolean;

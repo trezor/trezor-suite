@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { usePrevious } from 'react-use';
 
 import { type SellTradeStatus } from 'invity-api';
@@ -12,7 +13,7 @@ import { type TradingSellType, selectTradingComposedTransactionInfo } from '@sui
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Box, Card, Column } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';

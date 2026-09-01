@@ -1,4 +1,5 @@
 import { type FC, type PropsWithChildren, memo, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
@@ -21,11 +22,12 @@ import { Card } from '@trezor/components';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { init } from 'src/actions/suite/initAction';
 import { useGuideDesktopMenu, useGuideKeyboard } from 'src/hooks/guide';
-import { useAppShortcuts, useDispatch, useSelector } from 'src/hooks/suite';
+import { useAppShortcuts, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
 import {
     selectIsTransportInitialized,
     selectPrerequisite,
+    selectSuiteLifecycle,
 } from 'src/selectors/suite/suiteSelectors';
 import { Onboarding } from 'src/views/onboarding';
 import { AnalyticsConsentScreen } from 'src/views/start/AnalyticsConsentScreen';
@@ -56,7 +58,7 @@ const getFullscreenApp = (app: RouterAppWithParams['app']): FC | undefined => {
 // Decides which content should be displayed basing on route and prerequisites.
 // Memoised so that a re-render above it (Main) does not cascade through the whole app.
 export const Preloader = memo(function Preloader({ children }: PropsWithChildren) {
-    const lifecycle = useSelector(state => state.suite.lifecycle);
+    const lifecycle = useSelector(selectSuiteLifecycle);
     const isTransportInitialized = useSelector(selectIsTransportInitialized);
     const isRouterLoaded = useSelector(selectRouterLoaded);
     const routerApp = useSelector(selectRouterApp);

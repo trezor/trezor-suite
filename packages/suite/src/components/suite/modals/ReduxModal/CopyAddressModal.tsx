@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
@@ -7,8 +8,6 @@ import { type AddressType } from '@suite-common/wallet-types';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { WarningIcon } from '@trezor/icons';
-
-import { useDispatch } from 'src/hooks/suite/useDispatch';
 
 const getAddressTypeText = (addressType: AddressType) => {
     switch (addressType) {

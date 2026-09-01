@@ -205,6 +205,7 @@ export const syncSelectedAccount =
     (dispatch: Dispatch<UnknownAction>, getState: () => SyncSelectedAccountThunkState) => {
         // ignore not listed actions
         if (!actions.has(action.type)) return;
+        // eslint-disable-next-line no-restricted-syntax -- This middleware thunk intentionally compares one state snapshot.
         const state = getState();
         // ignore if not in wallet or in global trading routes (buy, sell, exchange, redirect)
         if (selectRouterApp(state) !== 'wallet') {

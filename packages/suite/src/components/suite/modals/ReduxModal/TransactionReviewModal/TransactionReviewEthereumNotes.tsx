@@ -11,7 +11,7 @@ import { Note, Text } from '@trezor/components';
 import { CheckCircleIcon, GasPumpIcon } from '@trezor/icons';
 import { FeeRate } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 

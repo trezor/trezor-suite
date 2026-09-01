@@ -9,7 +9,7 @@ import {
 import { type TranslationKey } from '@suite/intl';
 import { type ScanProgressInfo } from '@trezor/coinjoin';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 const INIT_THRESHOLD = 0.05;
 const MEMPOOL_THRESHOLD = 0.85;

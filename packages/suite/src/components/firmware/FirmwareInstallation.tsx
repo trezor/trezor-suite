@@ -9,7 +9,7 @@ import { BluetoothIcon, TrezorDevicesFilledIcon } from '@trezor/icons';
 import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
 import { ReconnectDevicePrompt } from 'src/components/firmware/ReconnectDevicePrompt';
 import { RotatingPhrases } from 'src/components/firmware/RotatingPhrases';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 type FirmwareInstallationProps = {

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
@@ -7,7 +8,6 @@ import { LaptopIcon, TrezorSafe7Icon } from '@trezor/icons';
 import { StepCard } from '@trezor/product-components';
 
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
-import { useDispatch } from 'src/hooks/suite';
 
 export const OsAndTrezorCleanupModal = ({
     onCancel,

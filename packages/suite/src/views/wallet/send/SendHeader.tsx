@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -10,7 +11,6 @@ import { Button, Dropdown, type DropdownMenuItemProps, Switch, Text } from '@tre
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
 import { WalletSubpageHeading } from 'src/components/wallet';
-import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 const BROADCAST_SUPPORTED_NETWORK_TYPES: NetworkType[] = [

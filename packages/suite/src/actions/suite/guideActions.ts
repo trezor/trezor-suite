@@ -4,6 +4,7 @@ import { type ThunkDispatch } from 'redux-thunk';
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
 
 import { type GuideState } from 'src/reducers/suite/guideReducer';
+import { selectGuideView, selectIsGuideOpen } from 'src/selectors/suite/guideSelectors';
 
 import { GUIDE } from './constants';
 
@@ -33,7 +34,8 @@ export const toggleView =
         dispatch: ThunkDispatch<ToggleViewThunkState, unknown, UnknownAction>,
         getState: () => ToggleViewThunkState,
     ) => {
-        const { open: isOpen, view } = getState().guide;
+        const isOpen = selectIsGuideOpen(getState());
+        const view = selectGuideView(getState());
 
         if (isOpen && view === payload) {
             dispatch(close());

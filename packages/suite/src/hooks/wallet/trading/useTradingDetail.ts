@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { setConnectionModal, useDevice } from '@suite/device';
 import {
@@ -9,7 +10,6 @@ import {
 } from '@suite-common/trading';
 import { throwError } from '@trezor/utils';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import type { TradingDetailContextValues } from 'src/types/trading/tradingDetail';

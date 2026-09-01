@@ -5,8 +5,8 @@ import TrezorConnectMobile from '@trezor/connect-mobile';
 import TrezorConnect from '@trezor/connect-web';
 import { getDeepValue } from '@trezor/schema-utils/src/utils';
 
-import { type MethodRootState } from '../reducers/methodReducer';
-import { type ConnectRootState } from '../reducers/trezorConnectReducer';
+import { type MethodRootState, selectMethod } from '../reducers/methodReducer';
+import { type ConnectRootState, selectConnect } from '../reducers/trezorConnectReducer';
 import type { Dispatch, Field } from '../types';
 import {
     ADD_BATCH,
@@ -68,7 +68,8 @@ export const onSetManualMode = (manualMode: boolean) => ({
 type OnSubmitThunkState = ConnectRootState & MethodRootState;
 
 export const onSubmit = () => async (dispatch: Dispatch, getState: () => OnSubmitThunkState) => {
-    const { method, connect } = getState();
+    const method = selectMethod(getState());
+    const connect = selectConnect(getState());
     if (!method?.name) throw new Error('method name not specified');
     dispatch({ type: SET_METHOD_PROCESSING, payload: true });
     const trezorConnectImpl =
@@ -97,7 +98,7 @@ type OnCodeChangeThunkState = MethodRootState;
 export const onCodeChange =
     (value: string) => (dispatch: Dispatch, getState: () => OnCodeChangeThunkState) => {
         try {
-            const { fields } = getState().method;
+            const { fields } = selectMethod(getState());
             const parsed = JSON5.parse(value);
             const processField = (field: Field<unknown>) => {
                 const valuePath = [...(field.path || []), ...field.name.split('.')].filter(

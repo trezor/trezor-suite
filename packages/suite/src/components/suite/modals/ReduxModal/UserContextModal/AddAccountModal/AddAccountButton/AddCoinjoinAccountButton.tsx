@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { createCoinjoinAccount } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
@@ -9,11 +10,12 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { type Network, type NetworkAccount, type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { type UnavailableCapabilities } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveAfter } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';
@@ -55,7 +57,7 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
 
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const device = useSelector(selectSelectedDevice);
-    const accounts = useSelector(state => state.wallet.accounts);
+    const accounts = useSelector(selectAccounts);
     const dispatch = useDispatch();
 
     if (!device) {

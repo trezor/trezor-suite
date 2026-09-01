@@ -1,11 +1,12 @@
+import { useDispatch } from 'react-redux';
+
 import { selectCurrentCoinjoinWheelStates, stopCoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
 import { StopIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 import { CoinjoinProgressWheel } from './CoinjoinProgressWheel';
 import { CoinjoinStatusMessage } from './CoinjoinStatusMessage';

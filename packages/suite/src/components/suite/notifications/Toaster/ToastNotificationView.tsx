@@ -1,10 +1,10 @@
 import { type ReactNode } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { type ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
 import { type NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
 import { type IconComponent, Toast } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type ToastNotificationVariant } from 'src/types/suite';
 
 import { mapNotificationActionsToToastActions, notificationVariantToIntentMap } from './utils';
