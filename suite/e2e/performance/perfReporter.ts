@@ -15,6 +15,10 @@ import {
     suggestLimits,
 } from '@trezor/perf-e2e';
 
+// TEMPORARY, remove before merge: a change under `suite/e2e/` outside `suite/e2e/tests/` makes
+// `determine-test-strategy` run the whole e2e suite, instead of the handful of specs the LLM picks
+// for a production change. The performance specs only run that way, and without them there are no
+// measurements and no report on the pull request.
 import { BASELINES, LIMITS } from './budgets';
 import { publishPerfReport } from './perfReportPublisher';
 
