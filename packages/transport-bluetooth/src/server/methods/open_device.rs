@@ -1,14 +1,12 @@
 use btleplug::api::{CharPropFlags, Peripheral as _};
 use futures::StreamExt;
 use log::info;
-use tokio::time::{sleep, Duration};
 
 use crate::server::{
     adapter_manager::{AdapterError, AdapterManager},
-    device::{CHARACTERISTIC_BATTERY_LEVEL, CHARACTERISTIC_PUSH_NOTIFICATION, CHARACTERISTIC_TX},
     types::{
-        AbortProcess, ChannelMessage, MethodError, MethodResult, NotificationCharacteristic,
-        NotificationEvent, OpenDeviceParams, WsResponsePayload,
+        ChannelMessage, MethodError, MethodResult, NotificationCharacteristic, NotificationEvent,
+        OpenDeviceParams, WsResponsePayload,
     },
     utils, ConnectionBroadcast,
 };
@@ -19,7 +17,9 @@ pub async fn open_device(
     params: OpenDeviceParams,
 ) -> MethodResult {
     let id = params.id;
-    let characteristic = params.characteristic;
+    let characteristic = params
+        .characteristic
+        .unwrap_or(NotificationCharacteristic::Read);
     info!("open_device {id} characteristic {characteristic:?}");
 
     manager.get_powered_adapter_or_die().await?;
@@ -29,22 +29,14 @@ pub async fn open_device(
         return Err(MethodError::Adapter(AdapterError::PeripheralNotConnected));
     }
 
-    let characteristic = characteristic.unwrap_or(NotificationCharacteristic::Read);
-    let characteristic_uuid = match characteristic {
-        NotificationCharacteristic::Read => CHARACTERISTIC_TX,
-        NotificationCharacteristic::TrezorPushNotification => CHARACTERISTIC_PUSH_NOTIFICATION,
-        NotificationCharacteristic::BatteryLevel => CHARACTERISTIC_BATTERY_LEVEL,
-    };
-
-    // try to terminate/abort previous read (if any)
-    broadcast.send(ChannelMessage::Abort(AbortProcess::NotificationStream(
-        id.clone(),
-        Some(characteristic.clone()),
-    )));
-    sleep(Duration::from_millis(5)).await;
+    // Terminate a previous stream of the same characteristic (if any).
+    manager
+        .close_notification_streams(Some(broadcast.get_peer()), Some(&id), Some(&characteristic))
+        .await;
 
     utils::wait_for_characteristics(&peripheral).await?;
 
+    let characteristic_uuid = characteristic.to_uuid();
     let Some(tx) = peripheral
         .characteristics()
         .into_iter()
@@ -61,11 +53,10 @@ pub async fn open_device(
     let mut notification_stream = peripheral.notifications().await?;
     let device_id = id.clone();
     let current_ch = characteristic.clone();
-    let current_uuid = characteristic_uuid.clone();
     let stream_task = tokio::spawn(async move {
         info!("{device_id} start {current_ch:?} stream");
         while let Some(data) = notification_stream.next().await {
-            if data.uuid != current_uuid {
+            if data.uuid != characteristic_uuid {
                 continue;
             }
             info!("{device_id} {current_ch:?} data");
@@ -80,44 +71,19 @@ pub async fn open_device(
                 info!("{device_id} error in {current_ch:?} stream {err}");
             }
         }
+        info!("{device_id} {current_ch:?} stream ended");
     });
 
-    let manager_ref = manager.clone();
-    let current_id = id.clone();
-    let current_ch = characteristic.clone();
-    let mut receiver = broadcast.subscribe();
-    tokio::spawn(async move {
-        while let Ok(event) = receiver.recv().await {
-            // TODO: if websocket client connection is related to this device
-            // AbortProcess::ClientDisconnected
-            if let ChannelMessage::Abort(AbortProcess::ClientDisconnected(_client)) = event {
-                if manager_ref.is_listeners_empty().await {
-                    stream_task.abort();
-                    let _ = peripheral.unsubscribe(&tx).await;
-                    info!("All clients disconnected, {id} {current_ch:?} stream terminated");
-                }
-                break;
-            }
-
-            // check if id should be disconnected
-            let maybe_id = match event {
-                ChannelMessage::Abort(AbortProcess::NotificationStream(id, maybe_ch)) => {
-                    let matches_ch = maybe_ch.map_or(true, |ch| ch == current_ch);
-                    matches_ch.then_some(id)
-                }
-                ChannelMessage::Abort(AbortProcess::DeviceDisconnected(id)) => Some(id),
-                _ => None,
-            };
-
-            // check current_id == maybe_id
-            if let Some(id) = maybe_id.filter(|id| id == &current_id) {
-                stream_task.abort();
-                let _ = peripheral.unsubscribe(&tx).await;
-                info!("{id} {current_ch:?} stream terminated");
-                break;
-            }
-        }
-    });
+    // The registry aborts the task when this stream, its device or this
+    // websocket connection is closed. The previous per-connection watcher
+    // leaked the task and its BLE subscription whenever any other client was
+    // still connected (https://github.com/trezor/trezor-suite/issues/31948).
+    manager.register_notification_stream(
+        broadcast.get_peer().to_string(),
+        id,
+        characteristic,
+        stream_task,
+    );
 
     Ok(WsResponsePayload::Success { success: true })
 }

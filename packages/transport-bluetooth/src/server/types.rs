@@ -1,11 +1,17 @@
-use crate::server::{adapter_manager::AdapterError, device::TrezorDevice};
+use crate::server::{
+    adapter_manager::AdapterError,
+    device::{
+        TrezorDevice, CHARACTERISTIC_BATTERY_LEVEL, CHARACTERISTIC_PUSH_NOTIFICATION,
+        CHARACTERISTIC_TX,
+    },
+};
 use btleplug::api::CentralState;
+use uuid::Uuid;
 
 #[derive(serde::Serialize, Clone, Debug)]
 pub enum AbortProcess {
     ClientDisconnected(String), // websocket client disconnected
     DeviceDisconnected(String), // device disconnected
-    NotificationStream(String, Option<NotificationCharacteristic>), // device closed/disconnected
     Scan,                       // stop scan
 }
 
@@ -50,6 +56,16 @@ pub enum NotificationCharacteristic {
     Read,
     TrezorPushNotification,
     BatteryLevel,
+}
+
+impl NotificationCharacteristic {
+    pub fn to_uuid(&self) -> Uuid {
+        match self {
+            NotificationCharacteristic::Read => CHARACTERISTIC_TX,
+            NotificationCharacteristic::TrezorPushNotification => CHARACTERISTIC_PUSH_NOTIFICATION,
+            NotificationCharacteristic::BatteryLevel => CHARACTERISTIC_BATTERY_LEVEL,
+        }
+    }
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
