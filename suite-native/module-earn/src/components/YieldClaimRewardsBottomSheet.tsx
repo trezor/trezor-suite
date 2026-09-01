@@ -9,23 +9,23 @@ import {
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { StablecoinYieldClaimAccountCard } from './StablecoinYieldClaimAccountCard';
+import { YieldClaimAccountCard } from './YieldClaimAccountCard';
 import { type StablecoinYieldClaimItem } from '../utils/stablecoinYieldClaimSummaryUtils';
 
-type StablecoinYieldClaimRewardsBottomSheetProps = {
+interface YieldClaimRewardsBottomSheetProps {
     ref: BottomSheetModalRef;
     claimItems: StablecoinYieldClaimItem[];
     onClaimRewardPress: (claimItem: StablecoinYieldClaimItem) => void;
     onClose: () => void;
-};
+}
 
-export const StablecoinYieldClaimRewardsBottomSheet = ({
+export const YieldClaimRewardsBottomSheet = ({
     ref,
     claimItems,
     onClaimRewardPress,
     onClose,
-}: StablecoinYieldClaimRewardsBottomSheetProps) => {
-    const handleClaimRewardsSelect = useCallback(
+}: YieldClaimRewardsBottomSheetProps) => {
+    const onClaimRewardsSelect = useCallback(
         (claimItem: StablecoinYieldClaimItem) => {
             onClose();
             onClaimRewardPress(claimItem);
@@ -46,9 +46,9 @@ export const StablecoinYieldClaimRewardsBottomSheet = ({
                     {claimItems.map((claimItem, index) => (
                         <Fragment key={claimItem.summary.accountKey}>
                             {index > 0 && <Divider />}
-                            <StablecoinYieldClaimAccountCard
+                            <YieldClaimAccountCard
                                 summary={claimItem.summary}
-                                onPress={() => handleClaimRewardsSelect(claimItem)}
+                                onPress={() => onClaimRewardsSelect(claimItem)}
                             />
                         </Fragment>
                     ))}
