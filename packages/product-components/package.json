@@ -33,7 +33,7 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
-        "@trezor/network-ethereum-suite-common": "workspace:*",
+        "@trezor/network-ethereum": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
