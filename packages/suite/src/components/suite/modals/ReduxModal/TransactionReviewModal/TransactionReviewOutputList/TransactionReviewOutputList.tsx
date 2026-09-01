@@ -3,14 +3,10 @@ import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { selectGetNamedAddressSupportDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
-import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
-import {
-    getNamedAddressSupport,
-    selectAccounts,
-    selectSendFormReviewLastButtonCode,
-} from '@suite-common/wallet-core';
+import { selectAccounts, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
     GeneralPrecomposedTransactionFinal,
@@ -85,9 +81,9 @@ export const TransactionReviewOutputList = ({
     const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
     const totalOutputRef = useRef<HTMLDivElement | null>(null);
     const accounts = useSelector(selectAccounts);
-    const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
+    const { getNamedAddressSupport } = useServices(selectGetNamedAddressSupportDep);
     const { networkType, symbol } = account;
-    const namedAddress = getNamedAddressSupport(networkModuleRepository, symbol);
+    const namedAddress = getNamedAddressSupport(symbol);
     const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
     const isFirstOutputAddress = outputs[0]?.type === 'address';
 

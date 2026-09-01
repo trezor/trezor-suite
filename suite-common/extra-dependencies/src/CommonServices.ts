@@ -1,4 +1,4 @@
-import type { AddressValidatorDep } from '@suite-common/address';
+import type { AddressValidatorDep, GetNamedAddressSupportDep } from '@suite-common/address';
 import type { AnalyticsDep } from '@suite-common/analytics';
 import { type Bip329Dep } from '@suite-common/bip329-types';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
@@ -34,6 +34,7 @@ import { type CreateLoggerDep, type ThpSettings } from '@trezor/connect';
 
 export type CommonServices = SuiteSyncDep &
     AddressValidatorDep &
+    GetNamedAddressSupportDep &
     GetNetworkConfigDep &
     FindNetworkSymbolForProtocolDep &
     NetworkModuleRepositoryDep &
