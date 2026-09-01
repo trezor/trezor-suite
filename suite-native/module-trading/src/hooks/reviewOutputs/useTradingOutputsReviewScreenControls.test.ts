@@ -1,9 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { initialWalletSettingsState, sendFormActions } from '@suite-common/wallet-core';
-import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import {
+    type SendState,
+    initialWalletSettingsState,
+    sendFormActions,
+} from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { localeReducer } from '@suite-native/intl';
+import { type ExchangeFlowType } from '@suite-native/navigation';
 import {
     type TestStore,
     act,
@@ -11,26 +16,67 @@ import {
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { getWalletState } from '@suite-native/trading-fixtures';
+import { createPrecomposedTxFinal, getWalletState } from '@suite-native/trading-fixtures';
 import { tradingSlice } from '@suite-native/trading-state';
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
+import TrezorConnect from '@trezor/connect';
 
 import { useTradingOutputsReviewScreenControls } from './useTradingOutputsReviewScreenControls';
 import { type TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
+import { type TradingTransactionSignAndSendProps } from '../general/useTradingTransaction';
 
 const mockReportToAnalytics = jest.fn();
+const mockResolveTransactionSendConsent = jest.fn();
 
-const mockSignAndSendTransaction = jest.fn(() => Promise.resolve(true));
+const mockSignAndSendTransaction = jest.fn<Promise<boolean>, [TradingTransactionSignAndSendProps]>(
+    () => Promise.resolve(true),
+);
 
 const mockUseConfirmOnTrezorController = {
     confirmOnTrezorRef: { current: null },
     closeSheet: jest.fn(),
+    revealConfirmOnTrezorSheet: jest.fn(),
 };
 
 const mockPopToTop = jest.fn();
 const mockPop = jest.fn();
 const mockUseOutputsReviewBackInterceptor = jest.fn();
 const mockShowAlert = jest.fn();
+type MockTxValidityTimerParams = {
+    networkType?: string;
+    createdTimestamp: number;
+    isBroadcasting: boolean;
+    onRetry: () => void | Promise<void>;
+};
+
+type MockTxValidityTimerResult = {
+    showTimer: boolean;
+    secondsLeft: number;
+    isPastDeadline: boolean;
+    isBroadcasting: boolean;
+    onRetry: () => void | Promise<void>;
+    isRetryDisabled: boolean;
+};
+
+const mockUseTxValidityTimer = jest.fn(
+    (_params: MockTxValidityTimerParams): MockTxValidityTimerResult => ({
+        showTimer: false,
+        secondsLeft: 0,
+        isPastDeadline: false,
+        isBroadcasting: false,
+        onRetry: jest.fn(),
+        isRetryDisabled: false,
+    }),
+);
+let mockIsPastDeadline = false;
+
+jest.mock('@trezor/connect', () => ({
+    __esModule: true,
+    ...jest.requireActual('@trezor/connect'),
+    default: {
+        cancel: jest.fn(),
+    },
+}));
 
 jest.mock('@suite-native/confirm-on-trezor', () => ({
     ...jest.requireActual('@suite-native/confirm-on-trezor'),
@@ -49,6 +95,7 @@ jest.mock('@suite-native/transaction-management', () => ({
     ...jest.requireActual('@suite-native/transaction-management'),
     useOutputsReviewBackInterceptor: (onReviewCanceled: () => void) =>
         mockUseOutputsReviewBackInterceptor(onReviewCanceled),
+    useTxValidityTimer: (params: MockTxValidityTimerParams) => mockUseTxValidityTimer(params),
 }));
 
 jest.mock('@suite-native/alerts', () => ({
@@ -59,6 +106,7 @@ jest.mock('@suite-native/alerts', () => ({
 
 describe('useTradingOutputsReviewScreenControls', () => {
     let store: TestStore;
+    const mockTrezorConnectCancel = TrezorConnect.cancel as jest.Mock;
 
     const reducer = {
         locale: localeReducer,
@@ -75,25 +123,41 @@ describe('useTradingOutputsReviewScreenControls', () => {
         }),
     } as const;
 
-    const createTestStore = (tradeType: 'exchange' | 'sell' = 'exchange') => {
+    const createTestStore = (
+        tradeType: 'exchange' | 'sell' = 'exchange',
+        sendOverrides: Partial<SendState> = {},
+    ) => {
         const { settings, accounts, send, trading } = getWalletState({ tradeType });
 
         return createLightStore({
             reducer,
             preloadedState: {
-                wallet: { settings, accounts, send, trading },
+                wallet: { settings, accounts, send: { ...send, ...sendOverrides }, trading },
             },
         });
     };
 
-    const renderUseTradingOutputsReviewScreenControls = async () =>
-        await renderHookWithStoreProvider(
+    const renderUseTradingOutputsReviewScreenControls = ({
+        accountKey,
+        exchangeFlowType = 'swap',
+    }: {
+        accountKey?: AccountKey;
+        exchangeFlowType?: ExchangeFlowType;
+    } = {}) =>
+        renderHookWithStoreProvider(
             () =>
                 useTradingOutputsReviewScreenControls({
                     orderId: 'orderId',
-                    accountKey: mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
+                    accountKey:
+                        accountKey ??
+                        store
+                            .getState()
+                            .wallet.accounts.find((account: Account) => account.symbol === 'btc')!
+                            .key,
                     signAndSendTransaction: mockSignAndSendTransaction,
+                    resolveTransactionSendConsent: mockResolveTransactionSendConsent,
                     reportToAnalytics: mockReportToAnalytics,
+                    exchangeFlowType,
                 }),
             {
                 store,
@@ -102,6 +166,23 @@ describe('useTradingOutputsReviewScreenControls', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockIsPastDeadline = false;
+        mockSignAndSendTransaction.mockResolvedValue(true);
+        mockUseTxValidityTimer.mockImplementation(
+            ({
+                networkType,
+                createdTimestamp,
+                isBroadcasting,
+                onRetry,
+            }: MockTxValidityTimerParams) => ({
+                showTimer: networkType === 'solana' && createdTimestamp > 0,
+                secondsLeft: 30,
+                isPastDeadline: mockIsPastDeadline,
+                isBroadcasting,
+                onRetry,
+                isRetryDisabled: false,
+            }),
+        );
         store = createTestStore();
     });
 
@@ -284,6 +365,94 @@ describe('useTradingOutputsReviewScreenControls', () => {
             await renderUseTradingOutputsReviewScreenControls();
 
             expect(mockUseConfirmOnTrezorController.closeSheet).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('Solana transaction validity', () => {
+        const createSolanaReviewStore = (isSigned = true) => {
+            const serializedTx = isSigned
+                ? { symbol: 'sol' as const, tx: 'signed-solana-tx' }
+                : undefined;
+
+            store = createTestStore('exchange', {
+                precomposedTx: createPrecomposedTxFinal({
+                    createdTimestamp: Date.now() + 1_000,
+                }),
+                serializedTx,
+            });
+
+            return store
+                .getState()
+                .wallet.accounts.find((account: Account) => account.networkType === 'solana')!.key;
+        };
+
+        it('should configure the validity timer for a fresh Solana transaction', async () => {
+            const accountKey = createSolanaReviewStore();
+
+            const { result } = await renderUseTradingOutputsReviewScreenControls({ accountKey });
+
+            expect(mockUseTxValidityTimer).toHaveBeenLastCalledWith(
+                expect.objectContaining({
+                    networkType: 'solana',
+                    createdTimestamp: expect.any(Number),
+                }),
+            );
+            expect(result.current.showTimer).toBe(true);
+        });
+
+        it('should ignore the transaction timestamp for a sign-data flow', async () => {
+            const accountKey = createSolanaReviewStore();
+
+            await renderUseTradingOutputsReviewScreenControls({
+                accountKey,
+                exchangeFlowType: 'sign-data',
+            });
+
+            expect(mockUseTxValidityTimer).toHaveBeenLastCalledWith(
+                expect.objectContaining({ createdTimestamp: 0 }),
+            );
+        });
+
+        it('should release the old consent and sign again on retry', async () => {
+            const accountKey = createSolanaReviewStore();
+            const { result } = await renderUseTradingOutputsReviewScreenControls({ accountKey });
+
+            await act(async () => {
+                await result.current.onRetry();
+            });
+
+            expect(mockResolveTransactionSendConsent).toHaveBeenCalledWith(false);
+            expect(mockTrezorConnectCancel).toHaveBeenCalledWith('tx-timeout');
+            expect(
+                mockUseConfirmOnTrezorController.revealConfirmOnTrezorSheet,
+            ).toHaveBeenCalledTimes(1);
+            expect(mockSignAndSendTransaction).toHaveBeenCalledTimes(1);
+            expect(store.getState().wallet.send.serializedTx).toBeUndefined();
+        });
+
+        it('should start broadcasting only for a valid transaction', async () => {
+            const accountKey = createSolanaReviewStore();
+            const { result } = await renderUseTradingOutputsReviewScreenControls({ accountKey });
+
+            await act(() => {
+                result.current.handleSendTransaction();
+            });
+
+            expect(mockResolveTransactionSendConsent).toHaveBeenCalledWith(true);
+            expect(result.current.isBroadcasting).toBe(true);
+        });
+
+        it('should not broadcast an expired transaction', async () => {
+            mockIsPastDeadline = true;
+            const accountKey = createSolanaReviewStore();
+            const { result } = await renderUseTradingOutputsReviewScreenControls({ accountKey });
+
+            await act(() => {
+                result.current.handleSendTransaction();
+            });
+
+            expect(mockResolveTransactionSendConsent).not.toHaveBeenCalledWith(true);
+            expect(result.current.isBroadcasting).toBe(false);
         });
     });
 

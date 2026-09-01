@@ -1,5 +1,6 @@
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { getTranslation } from '@suite-native/intl';
 
 import { ReviewOutputsContent, type ReviewOutputsContentProps } from './ReviewOutputsContent';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
@@ -52,6 +53,13 @@ describe('ReviewOutputsContent', () => {
         mockUseTradingOutputsReviewScreenControls.mockReturnValue({
             isTransactionAlreadySigned: false,
             confirmOnTrezorRef: { current: null },
+            showTimer: false,
+            secondsLeft: 0,
+            isPastDeadline: false,
+            isBroadcasting: false,
+            onRetry: jest.fn(),
+            isRetryDisabled: false,
+            handleSendTransaction: jest.fn(),
         });
     });
 
@@ -65,9 +73,40 @@ describe('ReviewOutputsContent', () => {
         mockUseTradingOutputsReviewScreenControls.mockReturnValue({
             isTransactionAlreadySigned: true,
             confirmOnTrezorRef: { current: null },
+            showTimer: false,
+            secondsLeft: 0,
+            isPastDeadline: false,
+            isBroadcasting: false,
+            onRetry: jest.fn(),
+            isRetryDisabled: false,
+            handleSendTransaction: jest.fn(),
         });
         const { getByTestId } = await renderReviewOutputsContent({});
 
         expect(getByTestId('@trading/outputs-review/footer')).toBeOnTheScreen();
+    });
+
+    it('should display the transaction validity timer', async () => {
+        mockUseTradingOutputsReviewScreenControls.mockReturnValue({
+            isTransactionAlreadySigned: true,
+            confirmOnTrezorRef: { current: null },
+            showTimer: true,
+            secondsLeft: 30,
+            isPastDeadline: false,
+            isBroadcasting: false,
+            onRetry: jest.fn(),
+            isRetryDisabled: false,
+            handleSendTransaction: jest.fn(),
+        });
+
+        const { getByText } = await renderReviewOutputsContent({});
+
+        expect(
+            getByText(
+                getTranslation('transactionManagement.txValidityTimer.countdown', {
+                    seconds: 30,
+                }),
+            ),
+        ).toBeOnTheScreen();
     });
 });

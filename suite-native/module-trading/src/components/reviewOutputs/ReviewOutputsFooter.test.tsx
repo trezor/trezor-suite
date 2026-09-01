@@ -15,8 +15,10 @@ describe('ReviewOutputsFooter', () => {
     ) =>
         await renderWithTradingProvider(
             <ReviewOutputsFooter
-                resolveConsent={jest.fn()}
+                onSend={jest.fn()}
                 isConsentRequested={true}
+                isPastDeadline={false}
+                isSendInProgress={false}
                 testID="TEST_ID"
                 {...props}
             />,
@@ -40,23 +42,24 @@ describe('ReviewOutputsFooter', () => {
         ).toBeDisabled();
     });
 
-    it('should resolveConsent on press', async () => {
-        const resolveConsent = jest.fn();
-        const { getByTestId } = await renderReviewOutputsFooter({ resolveConsent });
+    it('should be disabled when the transaction validity deadline has passed', async () => {
+        const { getByTestId } = await renderReviewOutputsFooter({ isPastDeadline: true });
 
-        await userEvent.press(getByTestId('TEST_ID/submit-button'));
-
-        expect(resolveConsent).toHaveBeenCalledWith(true);
-        expect(getByTestId('TEST_ID/submit-button/loading')).toBeOnTheScreen();
+        expect(getByTestId('TEST_ID/submit-button')).toBeDisabled();
     });
 
-    it('should resolveConsent only once', async () => {
-        const resolveConsent = jest.fn();
-        const { getByTestId } = await renderReviewOutputsFooter({ resolveConsent });
+    it('should call onSend on press', async () => {
+        const onSend = jest.fn();
+        const { getByTestId } = await renderReviewOutputsFooter({ onSend });
 
         await userEvent.press(getByTestId('TEST_ID/submit-button'));
-        await userEvent.press(getByTestId('TEST_ID/submit-button'));
 
-        expect(resolveConsent).toHaveBeenCalledTimes(1);
+        expect(onSend).toHaveBeenCalledTimes(1);
+    });
+
+    it('should display loading state while sending', async () => {
+        const { getByTestId } = await renderReviewOutputsFooter({ isSendInProgress: true });
+
+        expect(getByTestId('TEST_ID/submit-button/loading')).toBeOnTheScreen();
     });
 });
