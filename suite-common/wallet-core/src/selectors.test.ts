@@ -96,6 +96,12 @@ describe(selectDiscoveryAccountsParam.name, () => {
         expect(getSolKnown([mockSolAccount({ index: 0 })])).toEqual([{ type: 'normal', skip: 1 }]);
     });
 
+    it('skips a used account of a single-account type', () => {
+        expect(getSolKnown([mockSolAccount({ accountType: 'root', index: 0 })])).toEqual([
+            { type: 'root' },
+        ]);
+    });
+
     it('skips a completely discovered account type', () => {
         expect(
             getSolKnown([
@@ -159,6 +165,19 @@ describe(selectShouldRediscover.name, () => {
                 device,
             ),
         ).toBe(true);
+    });
+
+    it('returns false when the used account is the only one its type can have', () => {
+        const device = mockDeviceWithPathAndState();
+        expect(
+            selectShouldRediscover(
+                getState({
+                    device,
+                    accounts: [mockSolAccount({ accountType: 'root', index: 0, empty: false })],
+                }),
+                device,
+            ),
+        ).toBe(false);
     });
 
     it('returns false when the account chain is already fully discovered', () => {
