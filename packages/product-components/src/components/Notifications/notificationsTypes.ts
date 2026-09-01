@@ -1,11 +1,20 @@
 import { type ReactNode } from 'react';
 
-import type {
-    NotificationEntry,
-    TransactionNotificationType,
-} from '@suite-common/toast-notifications';
+import type { NotificationEntry } from '@suite-common/toast-notifications';
 
-export type { TransactionNotificationType };
+export type TransactionNotificationType =
+    | 'tx-sent'
+    | 'tx-received'
+    | 'tx-confirmed'
+    | 'tx-staked'
+    | 'tx-unstaked'
+    | 'tx-claimed'
+    | 'tx-revoked'
+    | 'tx-approved'
+    | 'raw-tx-sent'
+    | 'tx-yield-deposit'
+    | 'tx-yield-withdraw'
+    | 'tx-yield-claim';
 
 type ExchangeToastAssetData = Extract<
     NotificationEntry,
