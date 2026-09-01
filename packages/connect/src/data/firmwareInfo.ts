@@ -390,8 +390,13 @@ const calculateShouldOfferRelease = (
         // unless rolloutProbability is 0, in that case we should never offer it.
         return rolloutProbability > 0;
     } else {
-        // If deviceId is provided, use the deterministic approach.
-        const deterministicValueToCompare = getIntegerInRangeFromString(deviceId, 101);
+        // If deviceId is provided, use the deterministic approach. `rolloutProbability` is a
+        // 0..100 percentage compared with `<`, so the bucket count must be 100 (values 0..99) -
+        // passing 101 here would bucket one extra value (100) that can never satisfy `< 100`,
+        // permanently excluding ~1% of devices from being offered a release at ANY rollout
+        // percentage including 100. See the sibling usage in
+        // suite-common/message-system/src/experimentUtils.ts for the same pattern done right.
+        const deterministicValueToCompare = getIntegerInRangeFromString(deviceId, 100);
 
         return deterministicValueToCompare < rolloutProbability;
     }
