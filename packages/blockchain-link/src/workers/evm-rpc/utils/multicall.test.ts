@@ -1,7 +1,9 @@
 import {
+    HttpRequestError,
     type PublicClient,
     decodeAbiParameters,
     encodeAbiParameters,
+    encodeFunctionData,
     parseAbiParameters,
 } from 'viem';
 
@@ -9,6 +11,7 @@ import { type BatchCall, MULTICALL3_ADDRESS, batchRead } from './multicall';
 
 const CONTRACT = '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e';
 const OTHER_CONTRACT = '0x1111111111111111111111111111111111111111';
+const ACCOUNT = '0x2222222222222222222222222222222222222222' as const;
 
 const TEST_ABI = [
     {
@@ -48,7 +51,7 @@ const balanceOfCall = (address: `0x${string}`): BatchCall => ({
     address,
     abi: TEST_ABI as unknown as BatchCall['abi'],
     functionName: 'balanceOf',
-    args: ['0x2222222222222222222222222222222222222222'],
+    args: [ACCOUNT],
 });
 
 const createClient = ({ multicall3Deployed = true }: { multicall3Deployed?: boolean } = {}) => {
@@ -194,6 +197,42 @@ describe('batchRead', () => {
 
         expect(client.call.mock.calls[afterFirstRead]?.[0].to).toBe(MULTICALL3_ADDRESS);
         expect(results).toEqual([6n]);
+
+        warn.mockRestore();
+    });
+
+    it('logs the failure without the request it failed on', async () => {
+        const { client, asPublicClient } = createClient();
+        const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        const rpcUrl = 'https://rpc.example/an-api-key';
+        client.call
+            .mockRejectedValueOnce(
+                new HttpRequestError({
+                    url: rpcUrl,
+                    body: {
+                        method: 'eth_call',
+                        params: [
+                            {
+                                to: MULTICALL3_ADDRESS,
+                                data: encodeFunctionData({
+                                    abi: TEST_ABI,
+                                    functionName: 'balanceOf',
+                                    args: [ACCOUNT],
+                                }),
+                            },
+                        ],
+                    },
+                }),
+            )
+            .mockResolvedValue({ data: encodeUint(1n) });
+
+        await batchRead(asPublicClient, [balanceOfCall(CONTRACT)]);
+
+        const logged = warn.mock.calls.flat().join(' ');
+        expect(logged).toContain('HttpRequestError');
+        // The account address reaches the RPC inside the calldata, so neither may be logged.
+        expect(logged).not.toContain(ACCOUNT.slice(2));
+        expect(logged).not.toContain(rpcUrl);
 
         warn.mockRestore();
     });

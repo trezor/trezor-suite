@@ -1,6 +1,7 @@
 import { type Abi, type PublicClient, decodeFunctionResult, encodeFunctionData } from 'viem';
 
 import { cachePerClient } from './client';
+import { getErrorName } from './errors';
 
 // Canonical CREATE2 deployment, identical on every chain Multicall3 is deployed to.
 export const MULTICALL3_ADDRESS = '0xcA11bde05977b3631167028862bE2a173976CA11' as const;
@@ -65,7 +66,9 @@ export const hasMulticall3 = (client: PublicClient) =>
 
 // Raised when the address answers with something that is not an aggregate3 result. Unlike a
 // network error this will not fix itself, so the connection stops attempting to batch.
-class NotMulticall3Error extends Error {}
+class NotMulticall3Error extends Error {
+    override name = 'NotMulticall3Error';
+}
 
 const readAggregated = async (client: PublicClient, calls: readonly BatchCall[]) => {
     const data = encodeFunctionData({
@@ -144,7 +147,10 @@ export const batchRead = async (
                 multicall3Support.set(client, Promise.resolve(false));
             }
 
-            console.warn('[evm-rpc] Multicall3 batch failed, reading calls individually:', error);
+            console.warn(
+                '[evm-rpc] Multicall3 batch failed, reading calls individually:',
+                getErrorName(error),
+            );
         }
     }
 
