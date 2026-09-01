@@ -6,6 +6,7 @@ import {
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
+    type Network,
     type NetworkSymbol,
     isSingleAccountType,
     networks,
@@ -103,23 +104,29 @@ const getDeviceAccountsPerEnabledNetwork = (
     return symbols.map(symbol => ({ symbol, accounts: symbolMap[symbol] }));
 };
 
-const getAccountChainsPerAccountType = (accounts: Account[]) =>
+const getAccountChainsPerAccountType = (network: Network, accounts: Account[]) =>
     Object.entries(arrayToDictionary(accounts, acc => acc.accountType, true)).map(
-        ([type, accs]) => ({
-            type,
+        ([type, accs]) => {
             // account with the highest index
-            lastAccount: accs.reduce((last, current) =>
+            const lastAccount = accs.reduce((last, current) =>
                 current.index > last.index ? current : last,
-            ),
-            // failed account with the lowest index; a failed account may sit below other known
-            // accounts when a known-accounts refresh fails for some of them (e.g. flaky backend)
-            firstFailedAccount: accs
-                .filter(isAccountFailed)
-                .reduce<Account | undefined>(
-                    (first, current) => (!first || current.index < first.index ? current : first),
-                    undefined,
-                ),
-        }),
+            );
+
+            return {
+                type,
+                lastAccount,
+                // failed account with the lowest index; a failed account may sit below other known
+                // accounts when a known-accounts refresh fails for some of them (e.g. flaky backend)
+                firstFailedAccount: accs
+                    .filter(isAccountFailed)
+                    .reduce<Account | undefined>(
+                        (first, current) =>
+                            !first || current.index < first.index ? current : first,
+                        undefined,
+                    ),
+                canDiscoverNextAccount: !lastAccount.empty && !isSingleAccountType(network, type),
+            };
+        },
     );
 
 export const selectDiscoveryAccountsParam = (
@@ -145,13 +152,12 @@ export const selectDiscoveryAccountsParam = (
                 gap: bitcoinGap,
             } as DiscoveryAccountsParam[number];
 
-        const known = getAccountChainsPerAccountType(accounts).map(
-            ({ type, lastAccount, firstFailedAccount }) => {
+        const known = getAccountChainsPerAccountType(network, accounts).map(
+            ({ type, lastAccount, firstFailedAccount, canDiscoverNextAccount }) => {
                 // some account failed; rediscover the whole chain from the first failed one
                 if (firstFailedAccount) return { type, skip: firstFailedAccount.index };
                 // last account is a used one; skip it and try to discover next one
-                else if (!lastAccount.empty && !isSingleAccountType(network, type))
-                    return { type, skip: lastAccount.index + 1 };
+                else if (canDiscoverNextAccount) return { type, skip: lastAccount.index + 1 };
                 // last account is an empty one or the only account of its type; skip this type completely
                 else return { type };
             },
@@ -200,10 +206,11 @@ export const selectShouldRediscover = (
     if (!device.discovered) return true;
 
     return getDeviceAccountsPerEnabledNetwork(state, staticSessionId).some(
-        ({ accounts }) =>
+        ({ symbol, accounts }) =>
             !accounts ||
-            getAccountChainsPerAccountType(accounts).some(
-                ({ lastAccount }) => !lastAccount.failed && !lastAccount.empty,
+            getAccountChainsPerAccountType(networks[symbol], accounts).some(
+                ({ lastAccount, canDiscoverNextAccount }) =>
+                    !lastAccount.failed && canDiscoverNextAccount,
             ),
     );
 };
