@@ -19,9 +19,9 @@ import { HowEarnWorksHeaderSection } from '../components/HowEarnWorks/HowEarnWor
 import { HowEarnWorksTimelineCard } from '../components/HowEarnWorks/HowEarnWorksTimelineCard';
 import { useHowYieldWorksPreset } from '../components/HowEarnWorks/yieldPresets';
 import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
-import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
+import { useYieldApyBreakdownAlert } from '../hooks/useYieldApyBreakdownAlert';
 import { useYieldFlowData } from '../hooks/useYieldFlowData';
 
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.HowYieldWorks>;
@@ -43,7 +43,7 @@ export const HowYieldWorksScreen = () => {
         wrappedNativeSymbol,
     } = yieldFlowData;
 
-    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault });
+    const { show: showYieldApyBreakdownAlert } = useYieldApyBreakdownAlert({ account, vault });
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.yieldNavigateEvent.name,
@@ -94,7 +94,7 @@ export const HowYieldWorksScreen = () => {
         tokenSymbol: tokenSymbol ?? '',
         vaultTokenSymbol: vaultTokenSymbol ?? '',
         apy,
-        onApyPress: apyBreakdownAlert.onPress,
+        onApyPress: showYieldApyBreakdownAlert,
         bonusRewardTokenSymbol,
         wrappedNativeSymbol,
     });

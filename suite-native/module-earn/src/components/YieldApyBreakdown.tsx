@@ -11,7 +11,7 @@ import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon, TokenIcon, tokenIconSizes } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 
-const getApyBreakdownDescriptionKey = (
+const getYieldApyBreakdownDescriptionKey = (
     yieldSource: RewardDtoV2['yieldSource'],
 ): TxKeyPath | null => {
     switch (yieldSource) {
@@ -44,16 +44,16 @@ const isAprReward = (reward: RewardDtoV2): boolean => {
     );
 };
 
-type RewardRowProps = {
+interface RewardRowProps {
     reward: RewardDtoV2;
     networkSymbol: NetworkSymbol;
     tokenSymbol: string;
-};
+}
 
 const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
     const rewardRatePercent = getApyPercent(reward.rate);
     const rewardSymbol = reward.token.symbol || reward.token.name || '';
-    const descriptionKey = getApyBreakdownDescriptionKey(reward.yieldSource);
+    const descriptionKey = getYieldApyBreakdownDescriptionKey(reward.yieldSource);
 
     const rateTranslationId = getRateTranslationId(reward.yieldSource);
 
@@ -96,19 +96,19 @@ const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
     );
 };
 
-type StablecoinYieldApyBreakdownProps = {
+interface YieldApyBreakdownProps {
     networkSymbol: NetworkSymbol;
     rewards: RewardDtoV2[];
     underlyingToken: TokenDtoV2 | undefined;
     tokenSymbol: string;
-};
+}
 
-export const StablecoinYieldApyBreakdown = ({
+export const YieldApyBreakdown = ({
     networkSymbol,
     rewards,
     underlyingToken,
     tokenSymbol,
-}: StablecoinYieldApyBreakdownProps) => {
+}: YieldApyBreakdownProps) => {
     const sortedRewards = useMemo(
         () => sortRewardsByUnderlyingToken(rewards, underlyingToken),
         [rewards, underlyingToken],
