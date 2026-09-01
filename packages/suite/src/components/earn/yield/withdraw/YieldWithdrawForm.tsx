@@ -5,7 +5,11 @@ import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { getYieldFlowStepSequence, splitYieldPendingTransaction } from '@suite-common/wallet-core';
+import {
+    getYieldFlowStepSequence,
+    getYieldWithdrawInputToken,
+    splitYieldPendingTransaction,
+} from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 
@@ -32,13 +36,8 @@ export const YieldWithdrawForm = () => {
         maxAmount,
         errorMessage,
         pendingTransaction,
-        isAmountEmpty,
-        isAmountTooHigh,
-        isAmountInvalidDecimals,
+        amountIssues,
         isSubmittingAction,
-        inputTokenSymbol,
-        otherUnitTokenSymbol,
-        canToggleWithdrawUnit,
         flowType,
         completedInput,
         completedOutput,
@@ -68,7 +67,16 @@ export const YieldWithdrawForm = () => {
     );
     const unwrapPendingTransaction =
         pendingTransaction?.type === 'unwrap' ? pendingTransaction : undefined;
-    const withdrawInputUnit = flowType === 'redeem' ? 'shares' : 'asset';
+    const isSharesInput = flowType === 'redeem';
+    const withdrawInputUnit = isSharesInput ? 'shares' : 'asset';
+    const inputTokenSymbol = getYieldWithdrawInputToken({
+        flowData: { account, vault, token, receiptToken },
+        flowType,
+    }).symbol;
+    const otherUnitTokenSymbol = isSharesInput ? token.symbol : receiptToken.symbol;
+    const isAmountTooHigh = amountIssues.includes('amount-too-high');
+    const isAmountInvalidDecimals = amountIssues.includes('amount-invalid-decimals');
+    const hasBlockingAmountIssue = amountIssues.length > 0;
 
     const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
     const withdrawActionToken = flowType === 'redeem' ? receiptToken : token;
@@ -250,18 +258,16 @@ export const YieldWithdrawForm = () => {
                                     }
                                     warning={getWithdrawWarning()}
                                     isDisabled={
-                                        isAmountEmpty ||
-                                        isAmountTooHigh ||
-                                        isAmountInvalidDecimals ||
+                                        hasBlockingAmountIssue ||
                                         isSubmittingAction ||
                                         !!withdrawPendingTransaction
                                     }
                                     isPending={isSubmittingAction}
                                     pendingTransaction={withdrawPendingTransaction}
-                                    // Toggling the unit switches `flowType`, disposing the
-                                    // session — mid-submit that drops a broadcast transaction.
                                     unitToggle={
-                                        canToggleWithdrawUnit && !isSubmittingAction
+                                        // Switching flow mid-submit can dispose its session before
+                                        // the pending transaction is stored.
+                                        !isSubmittingAction
                                             ? {
                                                   otherTokenSymbol: otherUnitTokenSymbol,
                                                   onClick: handleToggleWithdrawInputUnit,
@@ -310,10 +316,7 @@ export const YieldWithdrawForm = () => {
                                         onMaxClick={() => setMaxAmount(token.balance)}
                                         isSubmitting={isSubmittingAction}
                                         isSubmitDisabled={
-                                            isUnwrapDisabled ||
-                                            isAmountEmpty ||
-                                            isAmountTooHigh ||
-                                            isAmountInvalidDecimals
+                                            isUnwrapDisabled || hasBlockingAmountIssue
                                         }
                                         warning={
                                             shouldCheckUnwrapAmount && isAmountTooHigh ? (
