@@ -20,6 +20,7 @@ export type ModalBackdropProps = {
     padding?: Padding;
     zIndex?: ZIndexValues;
     opaque?: boolean;
+    isContentScrollable?: boolean;
     'data-testid'?: string;
 };
 
@@ -47,6 +48,7 @@ export const ModalBackdrop = ({
     padding = 8,
     zIndex = zIndices.modal,
     opaque = false,
+    isContentScrollable = false,
     'data-testid': dataTest,
 }: ModalBackdropProps) => {
     const modalTarget = useModalTarget();
@@ -62,6 +64,7 @@ export const ModalBackdrop = ({
                             justifyContent={mapAlignmentToJustifyContent(alignment)}
                             gap={16}
                             height="100%"
+                            overflow={isContentScrollable ? 'hidden auto' : undefined}
                         >
                             <InnerWrapper onMouseDown={e => e.stopPropagation()}>
                                 {children}
