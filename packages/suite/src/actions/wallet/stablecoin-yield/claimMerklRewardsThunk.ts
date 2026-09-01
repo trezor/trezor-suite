@@ -7,6 +7,7 @@ import {
     buildClaimCalldata,
     buildClaimTransactionReview,
     buildUnsignedClaimTransaction,
+    isUserCancelledSignErrorCode,
 } from '@suite-common/earn-stablecoin';
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { type MessageSystemRootState } from '@suite-common/message-system';
@@ -256,7 +257,7 @@ export const claimMerklRewardsThunk = createThunk<
                     dispatch(closeModal());
 
                     const { code } = signingResponse.error;
-                    if (code === 'Failure_ActionCancelled' || code === 'Method_Cancel') {
+                    if (isUserCancelledSignErrorCode(code)) {
                         return null;
                     }
 

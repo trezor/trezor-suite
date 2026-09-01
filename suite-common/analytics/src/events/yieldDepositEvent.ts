@@ -83,6 +83,10 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 { version: '26.9.0', notes: 'added `wrap-` prefixed values' },
+                {
+                    version: '26.9.0',
+                    notes: 'desktop no longer reports user cancellations of the deposit transaction (device button, PIN entry, review modal) as `submit-failed`',
+                },
             ],
         },
         apyBreakdown: {

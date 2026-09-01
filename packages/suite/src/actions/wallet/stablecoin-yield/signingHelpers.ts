@@ -2,7 +2,10 @@ import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
+import {
+    buildStablecoinYieldTransactionReview,
+    isUserCancelledSignErrorCode,
+} from '@suite-common/earn-stablecoin';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
@@ -64,6 +67,9 @@ type SendYieldTransactionDispatch = ThunkDispatch<
     UnknownAction
 >;
 
+// Genuine failures are thrown — a returned `cancelled` is always the user backing out on purpose.
+export type SendYieldTransactionResult = { status: 'sent'; txid: string } | { status: 'cancelled' };
+
 export type SendYieldTransactionParams = {
     account: Account;
     amount: string;
@@ -86,7 +92,7 @@ export const sendYieldTransaction = async ({
     dispatch,
     getState,
     selectedFee,
-}: SendYieldTransactionParams): Promise<{ txid: string } | undefined> => {
+}: SendYieldTransactionParams): Promise<SendYieldTransactionResult> => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
 
@@ -142,8 +148,8 @@ export const sendYieldTransaction = async ({
             dispatch(closeModal());
 
             const { code } = signingResponse.error;
-            if (code === 'Failure_ActionCancelled' || code === 'Method_Cancel') {
-                return;
+            if (isUserCancelledSignErrorCode(code)) {
+                return { status: 'cancelled' };
             }
 
             throw new Error(`${code}: ${signingResponse.error.message}`, { cause: code });
@@ -161,7 +167,7 @@ export const sendYieldTransaction = async ({
         const isPushConfirmed = await dispatch(openDeferredModal({ type: 'review-transaction' }));
 
         if (!isPushConfirmed) {
-            return;
+            return { status: 'cancelled' };
         }
 
         const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
@@ -196,7 +202,7 @@ export const sendYieldTransaction = async ({
             }),
         );
 
-        return pushResponse.payload;
+        return { status: 'sent', txid: pushResponse.payload.txid };
     } catch (error) {
         console.error(error);
         throw error;

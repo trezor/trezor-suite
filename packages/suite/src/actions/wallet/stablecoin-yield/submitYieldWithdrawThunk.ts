@@ -131,19 +131,8 @@ export const submitYieldWithdrawThunk = createThunk<
 
             userAcceptedTxSimulation?.resolve();
 
-            if (!result) {
-                extra.services.analytics.report({
-                    type: events.yieldWithdrawEvent.name,
-                    payload: {
-                        type: 'error',
-                        operation: flowType,
-                        action: 'continue',
-                        networkSymbol: account.symbol,
-                        vaultId: flowData.vault.id,
-                        errorMessage: 'submit-failed',
-                    },
-                });
-
+            // A deliberate user cancel — not reported as a failure.
+            if (result.status === 'cancelled') {
                 return;
             }
 

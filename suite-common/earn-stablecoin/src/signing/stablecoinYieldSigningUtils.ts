@@ -15,6 +15,17 @@ import {
 import { type EthereumSignTransaction, type TokenInfo } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
+// Codes TrezorConnect returns when the user backs out of signing on purpose (device button, PIN
+// entry, connect popup) — not failures.
+export const USER_CANCELLED_ERROR_CODES = [
+    'Failure_ActionCancelled',
+    'Failure_PinCancelled',
+    'Method_Cancel',
+] as const;
+
+export const isUserCancelledSignErrorCode = (code: string | undefined) =>
+    USER_CANCELLED_ERROR_CODES.some(cancelledCode => cancelledCode === code);
+
 export type StablecoinYieldParsedTransactionForSigning = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
 >;
