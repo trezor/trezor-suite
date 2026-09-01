@@ -1,8 +1,3 @@
-export type NamedAddressProfile = {
-    address: string | null;
-    texts: Record<string, string>;
-};
-
 /**
  * Resolution between human-readable names and onchain addresses (ENS and its equivalents).
  *
@@ -23,10 +18,4 @@ export type NamedAddressResolver<TSymbol extends string> = {
 
     /** Resolves to `null` when the address has no primary name. */
     reverseResolveAddress(address: string, symbol: TSymbol): Promise<string | null>;
-
-    resolveNamedProfile(
-        value: string,
-        symbol: TSymbol,
-        textKeys?: readonly string[],
-    ): Promise<NamedAddressProfile>;
 };

@@ -19,4 +19,4 @@ export const resolveNamedAddress = async (value: string, symbol: EthereumNetwork
 };
 
 // Re-exported so the resolver capability reaches the whole implementation through one import.
-export { resolveNamedProfileOnchain, reverseResolveAddressOnchain } from './universalResolver';
+export { reverseResolveAddressOnchain } from './universalResolver';
