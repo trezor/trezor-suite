@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { Keyboard } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { type Explorer, type Network } from '@suite-common/wallet-config';
 import {

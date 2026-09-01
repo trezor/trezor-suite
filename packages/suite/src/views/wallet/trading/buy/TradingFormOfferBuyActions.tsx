@@ -1,6 +1,5 @@
-import { useDispatch } from 'react-redux';
-
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,

@@ -1,4 +1,6 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { discreetModeActions, selectIsDiscreteModeActive } from './discreetModeSlice';
 

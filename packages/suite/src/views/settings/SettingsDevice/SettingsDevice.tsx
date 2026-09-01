@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import {
     BackupFailed,
     BackupRecoverySeed,
@@ -12,6 +10,7 @@ import { ContextMessage } from '@suite/message-system';
 import { isRecoveryInProgress } from '@suite/recovery';
 import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device';
 import { Context } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getIsDeviceRemembered } from '@suite-common/suite-utils';
 import { Banner } from '@trezor/components';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';

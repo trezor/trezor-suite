@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useFormState } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { TRON_STAKING_RESERVE } from '@suite-common/wallet-constants';

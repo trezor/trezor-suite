@@ -1,9 +1,8 @@
-import { type useDispatch } from 'react-redux';
-
 import { A, D, F, G, O, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
@@ -153,7 +152,7 @@ const getAccountBalanceHistory = async ({
     endOfTimeFrameDate: Date;
     startOfTimeFrameDate: Date | null;
     forceRefetch?: boolean;
-    dispatch: ReturnType<typeof useDispatch>;
+    dispatch: Dispatch;
 }): Promise<AccountBalanceHistoryWithTokens> => {
     const { symbol, identity, descriptor, accountKey, tokensFilter } = accountItem;
     const endTimeFrameTimestamp = getUnixTime(endOfTimeFrameDate);
@@ -378,7 +377,7 @@ type GetMultipleAccountBalanceHistoryWithFiatParams = {
     baseCurrencyCode: BaseCurrencyCode;
     forceRefetch?: boolean;
     isElectrumBackend: boolean;
-    dispatch: ReturnType<typeof useDispatch>;
+    dispatch: Dispatch;
 };
 
 export const getMultipleAccountBalanceHistoryWithFiat = async ({

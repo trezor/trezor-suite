@@ -1,9 +1,10 @@
 import { type JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { FlashList } from '@shopify/flash-list';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type AccountsRootState,

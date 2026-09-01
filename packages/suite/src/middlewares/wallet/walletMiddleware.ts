@@ -1,9 +1,10 @@
-import { type Dispatch, type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
-import type { MiddlewareAPI } from 'redux';
+import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
+import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { selectSelectedAccountKey } from '@suite/account';
 import { routerLocationChange, selectRouteName } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
 import {
@@ -28,8 +29,8 @@ import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonA
 import type { AppState } from 'src/types/suite';
 
 const walletMiddleware =
-    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
-    (next: Dispatch<UnknownAction>) =>
+    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         const prevState = api.getState();
 

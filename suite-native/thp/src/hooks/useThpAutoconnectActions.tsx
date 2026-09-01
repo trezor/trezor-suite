@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
 
 export const useThpAutoconnectActions = () => {

@@ -22,6 +22,7 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/networks": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/transaction-search": "workspace:*",

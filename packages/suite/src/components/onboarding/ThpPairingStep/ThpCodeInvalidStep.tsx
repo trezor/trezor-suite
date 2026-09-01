@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { ThpPairingFailedForFirmwareInstallation, startThpSessionThunk } from '@suite/thp';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Column, Paragraph } from '@trezor/components';
 import { PlugsConnectedIcon } from '@trezor/icons';
 

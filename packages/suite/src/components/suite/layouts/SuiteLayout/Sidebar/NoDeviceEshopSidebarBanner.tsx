@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import styled from 'styled-components';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -15,6 +13,7 @@ import { type RouterRootState, selectRouterApp } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState, selectPhysicalDeviceWallets } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Image } from '@trezor/components';
 import { SidebarBanner } from '@trezor/product-components';
 import { palette } from '@trezor/theme';

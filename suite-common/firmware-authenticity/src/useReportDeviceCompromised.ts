@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useGetter } from '@suite-common/dependency-injection';
 import {
@@ -9,6 +9,7 @@ import {
     selectPersistentDeviceDataById,
 } from '@suite-common/device';
 import { type FirmwareRootState, selectIsProductionFirmwareChannel } from '@suite-common/firmware';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice, selectGetAllowPrereleaseDep } from '@suite-common/suite-types';
 import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';

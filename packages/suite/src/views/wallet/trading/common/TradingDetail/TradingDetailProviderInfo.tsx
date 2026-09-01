@@ -1,6 +1,5 @@
-import { useDispatch } from 'react-redux';
-
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type {
     TradingProviderInfo as TradingProviderInfoType,

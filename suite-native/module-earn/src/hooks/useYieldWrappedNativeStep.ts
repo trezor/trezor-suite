@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type WrappedNativeFlowType,
     type YieldFlowType,

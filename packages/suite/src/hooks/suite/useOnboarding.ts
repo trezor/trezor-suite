@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
 import { selectModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type BackupType } from '@suite-common/suite-types';
 import { UI_REQUESTS } from '@trezor/connect';
 

@@ -1,9 +1,8 @@
-import { useDispatch } from 'react-redux';
-
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { selectIsTorEnabled, selectIsTorLoading } from '@suite/tor';
 import { toggleTor } from '@suite/tor-desktop';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

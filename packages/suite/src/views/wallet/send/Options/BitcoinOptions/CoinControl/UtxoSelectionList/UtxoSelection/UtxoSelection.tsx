@@ -1,5 +1,4 @@
 import { type MouseEventHandler, type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Address, selectAddressLabel } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
@@ -9,7 +8,7 @@ import {
     selectLabelingDataForSelectedAccount,
 } from '@suite/metadata';
 import { openModal } from '@suite/modal';
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { returnStableArrayIfEmpty, useDispatch } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';

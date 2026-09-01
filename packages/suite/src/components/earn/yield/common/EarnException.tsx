@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type IconCircleIntent, type IconComponent } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 

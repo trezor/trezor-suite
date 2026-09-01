@@ -1,5 +1,3 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { selectOAuthServerEnvironment } from '@suite/settings';
 import {
@@ -11,7 +9,7 @@ import {
     ProviderErrorAction,
     type Tokens,
 } from '@suite-common/metadata-types';
-import { type WithServices } from '@suite-common/redux-utils';
+import { type Dispatch, type WithServices } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exhaustive } from '@trezor/type-utils';

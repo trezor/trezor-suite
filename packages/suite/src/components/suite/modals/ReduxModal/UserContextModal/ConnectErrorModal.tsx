@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import { Translation } from '@suite/intl';
 import {
     connectPopupActions,
@@ -7,6 +5,7 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { UI_EVENTS } from '@trezor/connect';
 import { WarningIcon } from '@trezor/icons';

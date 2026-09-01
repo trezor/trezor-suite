@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import {
     selectAutodetectLanguage,
@@ -8,6 +7,7 @@ import {
     selectTheme,
     suiteSettingsActions,
 } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import { desktopApi } from '@trezor/suite-desktop-api';
 

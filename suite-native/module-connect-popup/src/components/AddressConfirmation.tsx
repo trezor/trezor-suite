@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     connectPopupActions,
@@ -7,6 +7,7 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Button, Card, HStack, IconButton, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';

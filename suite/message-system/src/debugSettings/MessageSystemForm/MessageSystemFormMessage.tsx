@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
 import {
@@ -8,6 +7,7 @@ import {
     useConditionControls,
     useMessageSystemMessageForm,
 } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Column, Modal, Row } from '@trezor/components';
 
 import { MessageSystemJsonEditor } from './MessageSystemJsonEditor';

@@ -1,6 +1,5 @@
-import { useDispatch } from 'react-redux';
-
 import { useQuery } from '@suite-common/react-query';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type Account,
     type WalletAccountTransactionWithRequiredRbfParams,
@@ -11,9 +10,9 @@ import { useSelector } from 'src/hooks/suite';
 
 import { useEthereumCancelTxCompose } from './useEthereumCancelTxCompose';
 
-jest.mock('react-redux', () => ({
+jest.mock('@suite-common/redux-utils', () => ({
     __esModule: true,
-    ...jest.requireActual('react-redux'),
+    ...jest.requireActual('@suite-common/redux-utils'),
     useDispatch: jest.fn(),
 }));
 

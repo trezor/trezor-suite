@@ -13,9 +13,9 @@
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.9",
         "@react-navigation/native": "7.1.31",
-        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/alerts": "workspace:*",

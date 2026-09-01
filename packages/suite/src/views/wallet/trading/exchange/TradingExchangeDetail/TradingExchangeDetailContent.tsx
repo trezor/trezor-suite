@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { usePrevious } from 'react-use';
 
 import { type ExchangeTradeStatus } from 'invity-api';
@@ -9,6 +8,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingExchangeType,
     selectTradingComposedTransactionInfo,

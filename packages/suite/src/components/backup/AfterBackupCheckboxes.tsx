@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { type ConfirmKey, backupActions, selectBackup } from '@suite/backup';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Card, Column } from '@trezor/components';
 
 import { CheckItem } from 'src/components/suite';

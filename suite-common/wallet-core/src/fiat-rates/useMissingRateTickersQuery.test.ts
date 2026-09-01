@@ -1,13 +1,12 @@
-import { useDispatch } from 'react-redux';
-
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
+import { useDispatch } from '@suite-common/redux-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TickerId, toTokenAddress } from '@suite-common/wallet-types';
 
 import { updateFiatRatesThunk } from './fiatRatesThunks';
 import { useMissingRateTickersQuery } from './useMissingRateTickersQuery';
 
-jest.mock('react-redux', () => ({
+jest.mock('@suite-common/redux-utils', () => ({
     useDispatch: jest.fn(),
 }));
 

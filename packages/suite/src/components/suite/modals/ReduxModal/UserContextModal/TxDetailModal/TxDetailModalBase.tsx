@@ -1,9 +1,9 @@
 import { type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceRemembered } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type PhishingDetectorId } from '@suite-common/token-definitions';
 import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';

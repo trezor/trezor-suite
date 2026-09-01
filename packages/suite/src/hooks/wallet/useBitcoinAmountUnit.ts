@@ -1,6 +1,5 @@
-import { useDispatch } from 'react-redux';
-
 import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import {
     selectBitcoinAmountUnit,

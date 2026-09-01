@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { type AnalyticsDesktopEvents, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type YieldFlowType,
     type YieldPendingTransactionState,

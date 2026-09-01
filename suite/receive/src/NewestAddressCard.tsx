@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     type SelectAddressLabelState,
@@ -17,6 +17,7 @@ import {
     selectCurrentFreshAddress,
     selectTouchedAddresses,
 } from '@suite-common/receive';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,

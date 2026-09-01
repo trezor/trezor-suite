@@ -1,7 +1,7 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type VotingDelegationOption,
     selectVotingDelegationOption,

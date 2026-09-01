@@ -7,9 +7,10 @@ import {
     request,
     requestMultiple,
 } from 'react-native-permissions';
-import { useDispatch } from 'react-redux';
 
 import Constants from 'expo-constants';
+
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { updatePermissionStatus } from '../bluetoothSlice';
 import { type BluetoothPermissionStatus } from '../types';

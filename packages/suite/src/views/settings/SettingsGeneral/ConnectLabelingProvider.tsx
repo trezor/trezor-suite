@@ -1,9 +1,8 @@
-import { useDispatch } from 'react-redux';
-
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { metadataLabelingActions } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Tooltip } from '@trezor/components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 

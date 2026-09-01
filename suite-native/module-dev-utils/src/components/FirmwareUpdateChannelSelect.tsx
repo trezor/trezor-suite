@@ -1,9 +1,10 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { reloadAppAsync } from 'expo';
 
 import { firmwareActions, selectFirmwareChannel } from '@suite-common/firmware';
+import { useDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';

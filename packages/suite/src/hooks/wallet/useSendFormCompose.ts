@@ -7,11 +7,11 @@ import {
     useState,
 } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { type TranslationKey, isTranslationKey, useTranslation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {

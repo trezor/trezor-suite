@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 export type AccountOverviewRoute = 'wallet-index' | 'wallet-tokens';

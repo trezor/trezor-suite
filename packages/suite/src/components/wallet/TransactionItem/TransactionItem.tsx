@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -7,6 +6,7 @@ import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { AccountTransactionBaseAnchor, useAnchor } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
 import {
     createTargets,

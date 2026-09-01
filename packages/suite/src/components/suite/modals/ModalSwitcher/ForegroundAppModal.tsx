@@ -1,8 +1,8 @@
 import { type FunctionComponent } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { CreateWalletBackupModal } from '@suite/backup';
 import { closeModalApp } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 
 import type { ForegroundAppRoute } from 'src/types/suite';
 import { Backup } from 'src/views/backup/Backup';

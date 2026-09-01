@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { CommonActions, useNavigation } from '@react-navigation/native';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { postOnboardingInit } from '@suite-native/app-init';
 import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { setIsOnboardingFinished } from '@suite-native/settings';

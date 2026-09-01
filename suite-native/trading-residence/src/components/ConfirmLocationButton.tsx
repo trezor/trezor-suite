@@ -1,5 +1,4 @@
-import { useDispatch } from 'react-redux';
-
+import { useDispatch } from '@suite-common/redux-utils';
 import { isCountrySubdivisionRequired } from '@suite-common/trading';
 import { Button } from '@suite-native/atoms';
 import { useFormContext, useWatch } from '@suite-native/forms';

@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import styled from 'styled-components';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -7,6 +5,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { EarnAnchor, goto } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { Badge, type BadgeProps, commonFocusStyles } from '@trezor/components';
 import { TrendUpIcon } from '@trezor/icons';

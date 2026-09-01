@@ -15,6 +15,7 @@
     "dependencies": {
         "@sentry/electron": "^7.16.0",
         "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/desktop-update": "workspace:*",

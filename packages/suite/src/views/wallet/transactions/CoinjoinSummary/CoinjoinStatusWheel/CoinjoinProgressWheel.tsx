@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { lighten, rgba } from 'polished';
 import styled, { type DefaultTheme, css, keyframes } from 'styled-components';
@@ -15,6 +14,7 @@ import {
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Tooltip } from '@trezor/components';
 

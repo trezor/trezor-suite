@@ -1,7 +1,7 @@
 import { memo } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 

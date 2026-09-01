@@ -1,5 +1,4 @@
 import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -8,6 +7,7 @@ import { type TranslationFunction, useTranslation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { isAscii } from '@trezor/utils';
 

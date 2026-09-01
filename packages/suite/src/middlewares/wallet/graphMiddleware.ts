@@ -1,14 +1,15 @@
-import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
-import { type MiddlewareAPI } from 'redux';
+import { type UnknownAction } from '@reduxjs/toolkit';
+import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
+import { type Dispatch } from '@suite-common/redux-utils';
 import { accountsActions, discoveryActions } from '@suite-common/wallet-core';
 
 import * as graphActions from 'src/actions/wallet/graphActions';
 import { type AppState } from 'src/types/suite';
 
 const graphMiddleware =
-    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
-    (next: Dispatch<UnknownAction>) =>
+    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         next(action);
         const currentAccounts = api.getState().wallet.accounts;

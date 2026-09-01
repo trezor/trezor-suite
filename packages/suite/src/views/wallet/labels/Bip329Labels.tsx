@@ -1,5 +1,4 @@
 import { type ReactElement } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useAccountLabel } from '@suite/account';
 import { LearnMoreButton } from '@suite/external-links';
@@ -9,6 +8,7 @@ import { suiteSyncErrorHandler } from '@suite/suite-sync';
 import { shouldDisplayExportImportBip329Labels } from '@suite-common/bip329';
 import { type Bip329Label, bip329LabelSchema, selectBip329Dep } from '@suite-common/bip329-types';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';

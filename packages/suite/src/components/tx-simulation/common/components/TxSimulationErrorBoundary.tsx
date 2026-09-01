@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { useDispatch } from 'react-redux';
 
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { reportToSentry } from 'src/utils/suite/sentry';
 

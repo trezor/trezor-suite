@@ -1,8 +1,7 @@
-import { type useDispatch } from 'react-redux';
-
 import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
+import { type Dispatch } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import type { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -133,7 +132,7 @@ export const getAccountMovementEvents = async ({
     account: AccountItem;
     startOfTimeFrameDate: Date | null;
     endOfTimeFrameDate: Date;
-    dispatch: ReturnType<typeof useDispatch>;
+    dispatch: Dispatch;
 }) => {
     const { symbol, identity, descriptor, tokensFilter, accountKey } = account;
     const tokenAddress = tokensFilter?.[0]; // This is only for graph on detail screen where we have always only one token

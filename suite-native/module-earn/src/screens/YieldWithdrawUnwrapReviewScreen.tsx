@@ -1,8 +1,9 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type StablecoinYieldRootState,
     type YieldWithdrawFlowType,

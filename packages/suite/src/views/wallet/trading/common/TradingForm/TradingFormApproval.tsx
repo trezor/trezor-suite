@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import styled, { type DefaultTheme } from 'styled-components';
 
 import { Address } from '@suite/address';
@@ -7,6 +5,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingExchangeType,
     requiresTokenApproval,

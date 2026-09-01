@@ -1,10 +1,9 @@
-import { useDispatch } from 'react-redux';
-
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { getTxAnchor, goto, selectRouteName, selectRouterApp } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     selectAccounts,
     selectBlockchainState,

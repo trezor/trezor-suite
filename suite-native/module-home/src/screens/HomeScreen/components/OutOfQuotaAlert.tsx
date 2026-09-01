@@ -1,7 +1,8 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { noQuotaLeftWarningDismissed } from '@suite-common/suite-sync-quota-manager';
 import { AnimatedBannerFull } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';

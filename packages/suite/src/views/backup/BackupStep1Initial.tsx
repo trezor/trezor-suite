@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import {
     type BackupDeviceParams,
     type BackupState,
@@ -9,6 +7,7 @@ import {
 import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Badge, Column, Modal, Paragraph } from '@trezor/components';
 
 import { PreBackupCheckboxes } from 'src/components/backup';

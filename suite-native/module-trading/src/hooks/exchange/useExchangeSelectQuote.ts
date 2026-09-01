@@ -1,8 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type ApprovalStatus,
     TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account, type EvmTransactionPurpose } from '@suite-common/wallet-types';
 import {
     type EvmPendingTxStatus,

@@ -1,5 +1,3 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
 import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode } from '@suite/device';
@@ -10,7 +8,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/receive';
-import { type WithServices } from '@suite-common/redux-utils';
+import { type Dispatch, type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type WalletSettingsRootState,

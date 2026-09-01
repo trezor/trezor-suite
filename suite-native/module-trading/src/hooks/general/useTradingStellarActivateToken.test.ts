@@ -20,8 +20,12 @@ jest.mock('@reduxjs/toolkit', () => ({
 }));
 
 jest.mock('react-redux', () => ({
-    useDispatch: () => mockDispatch,
     useSelector: (selector: unknown) => mockUseSelector(selector),
+}));
+
+jest.mock('@suite-common/redux-utils', () => ({
+    ...jest.requireActual('@suite-common/redux-utils'),
+    useDispatch: () => mockDispatch,
 }));
 
 jest.mock('@react-navigation/native', () => ({

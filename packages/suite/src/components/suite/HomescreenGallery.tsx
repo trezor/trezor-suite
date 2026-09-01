@@ -1,8 +1,7 @@
-import { useDispatch } from 'react-redux';
-
 import styled from 'styled-components';
 
 import { useDevice } from '@suite/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Grid } from '@trezor/components';
 import {
     DeviceModelInternal,

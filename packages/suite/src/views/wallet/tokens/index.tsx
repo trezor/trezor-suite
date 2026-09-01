@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { goto, selectRouteName } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 

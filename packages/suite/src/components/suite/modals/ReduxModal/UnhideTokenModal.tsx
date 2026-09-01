@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectSelectedAccount } from '@suite/account';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
     TokenManagementAction,

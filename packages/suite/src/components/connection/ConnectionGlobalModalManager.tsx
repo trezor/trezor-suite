@@ -1,6 +1,5 @@
-import { useDispatch } from 'react-redux';
-
 import { selectIsConnectionModalOpen, setConnectionModal } from '@suite/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectThpStep } from '@suite-common/thp';
 
 import { useSelector } from 'src/hooks/suite';

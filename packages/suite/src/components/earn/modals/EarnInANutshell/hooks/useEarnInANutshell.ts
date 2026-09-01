@@ -1,8 +1,7 @@
-import { useDispatch } from 'react-redux';
-
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     EarnFlow,
     type EarnModalAction,

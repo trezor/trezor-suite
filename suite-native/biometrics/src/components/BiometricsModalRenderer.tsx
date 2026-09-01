@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { BiometricOverlay } from './BiometricOverlay';
 import {

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import { Checkbox, Input } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';

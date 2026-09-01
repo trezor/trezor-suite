@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useDebounce } from 'react-use';
+
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import {

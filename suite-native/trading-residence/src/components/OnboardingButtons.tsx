@@ -1,5 +1,4 @@
-import { useDispatch } from 'react-redux';
-
+import { useDispatch } from '@suite-common/redux-utils';
 import { residenceActions } from '@suite-native/trading-state';
 
 import { ConfirmLocationButton } from './ConfirmLocationButton';

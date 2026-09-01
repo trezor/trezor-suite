@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { isMacOs } from '@trezor/env-utils';
 
 import {

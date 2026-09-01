@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsTorEnabled, selectIsTorEnabling, selectIsTorLoading } from '@suite/tor';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 
-import { type ToggleTorDispatch, toggleTor } from '../toggleTorThunk';
+import { toggleTor } from '../toggleTorThunk';
 
 type TorProps = {
     // Called before Tor is switched off. Resolve `true` to keep Tor running (abort the toggle) —
@@ -22,7 +23,7 @@ export const Tor = ({ onBeforeDisable }: TorProps) => {
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const isTorLoading = useSelector(selectIsTorLoading);
     const isTorEnabling = useSelector(selectIsTorEnabling);
-    const dispatch = useDispatch<ToggleTorDispatch>();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (!hasTorError) {

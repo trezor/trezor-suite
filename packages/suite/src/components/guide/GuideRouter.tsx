@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 import { FreeFocusInside } from 'react-focus-lock';
-import { useDispatch } from 'react-redux';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { type ActiveView } from '@suite-common/suite-types';
 import { Box, Modal, ResizableBox, variables } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';

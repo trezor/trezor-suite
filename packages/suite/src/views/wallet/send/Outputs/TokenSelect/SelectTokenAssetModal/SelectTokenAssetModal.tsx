@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';

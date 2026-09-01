@@ -1,5 +1,4 @@
 import { type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { ThemeProvider, useTheme } from 'styled-components';
@@ -10,6 +9,7 @@ import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     Button,

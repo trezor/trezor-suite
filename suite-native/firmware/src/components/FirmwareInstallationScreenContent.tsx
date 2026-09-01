@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import Animated, { FadeInDown, FadeOutDown, LinearTransition } from 'react-native-reanimated';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 
 import { firmwareActions } from '@suite-common/firmware';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,

@@ -1,9 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import styled, { type RuleSet, css } from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { AddressFormatter, clearAddressPrefix } from '@suite-common/formatters';
+import { useDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import { IconButton, Row, Text, type TextProps, Tooltip } from '@trezor/components';

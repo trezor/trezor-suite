@@ -1,10 +1,10 @@
 import { useWatch } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
 import {

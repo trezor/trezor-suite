@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { setConnectionModal, useDevice } from '@suite/device';
 import { openModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 
 import { useModal } from 'src/components/suite/asset-picker/hooks';

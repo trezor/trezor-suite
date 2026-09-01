@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     DEFAULT_VOTING_OPTION,
     type VotingDelegationOption,

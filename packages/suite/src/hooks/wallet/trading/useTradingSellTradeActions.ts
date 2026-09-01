@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import type { BankAccount } from 'invity-api';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -8,6 +6,7 @@ import { goto } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingSignAndPushSendFormTransactionProps,

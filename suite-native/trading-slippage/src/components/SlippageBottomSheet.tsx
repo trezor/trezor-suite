@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useEffectEvent } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     SLIPPAGE_PRESETS,
     type SlippageFormValues,

@@ -1,6 +1,5 @@
-import { useDispatch } from 'react-redux';
-
 import { selectFlags, setFlag } from '@suite/flags';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Checkbox } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 

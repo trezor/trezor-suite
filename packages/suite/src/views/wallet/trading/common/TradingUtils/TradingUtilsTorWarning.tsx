@@ -1,8 +1,7 @@
-import { useDispatch } from 'react-redux';
-
 import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectIsTorEnabled } from '@suite/tor';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { Banner, Column } from '@trezor/components';
 

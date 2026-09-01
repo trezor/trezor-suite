@@ -1,9 +1,8 @@
-import { useDispatch } from 'react-redux';
-
 import { type SellProviderInfo } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTransactionSell as TradingTxSell,
     selectTradingComposedTransactionInfo,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { goto, selectRouterParams } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { type Account, type GlobalSendReceiveType } from '@suite-common/wallet-types';
 

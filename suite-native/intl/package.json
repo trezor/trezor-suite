@@ -26,6 +26,7 @@
         "@formatjs/intl-listformat": "^8.2.1",
         "@formatjs/intl-locale": "^5.2.1",
         "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/utils": "workspace:*",

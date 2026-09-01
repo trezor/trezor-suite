@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import {
     type TransactionCreatedEventAction,
     events,
@@ -8,6 +6,7 @@ import {
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Account,

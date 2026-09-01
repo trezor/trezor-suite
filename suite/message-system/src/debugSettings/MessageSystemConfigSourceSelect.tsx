@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     type MessageSystemConfigSource,
@@ -7,6 +7,7 @@ import {
     messageSystemActions,
     selectMessageSystemConfigSource,
 } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { SelectBar } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 

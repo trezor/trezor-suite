@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type Route, goto, selectRouteName, selectSettingsBackRoute } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectTradingActiveSection } from '@suite-common/trading';
 import { Box, Button, IconButton, Row } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';

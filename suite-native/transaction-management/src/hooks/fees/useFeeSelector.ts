@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type AccountKey,
     type FeeLevelLabel,

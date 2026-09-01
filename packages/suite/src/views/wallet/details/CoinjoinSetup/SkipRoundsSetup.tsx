@@ -1,9 +1,8 @@
-import { useDispatch } from 'react-redux';
-
 import styled from 'styled-components';
 
 import { coinjoinAccountToggleSkipRounds, selectCurrentCoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { H3, Paragraph, Switch, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

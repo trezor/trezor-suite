@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useIntl } from 'react-intl';
-import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation, messages } from '@suite/intl';
@@ -15,6 +14,7 @@ import {
     selectRecovery,
 } from '@suite/recovery';
 import { usePin } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_REQUESTS } from '@trezor/connect';

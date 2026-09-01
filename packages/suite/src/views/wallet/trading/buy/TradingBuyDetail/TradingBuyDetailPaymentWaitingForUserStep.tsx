@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { type BuyTrade } from 'invity-api';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { tradeApi } from '@suite-common/trading';
 import { Button, Card, Column, Paragraph, type StepListItemState } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';

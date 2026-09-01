@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectSidebarWidth, suiteSettingsActions } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { throwError } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

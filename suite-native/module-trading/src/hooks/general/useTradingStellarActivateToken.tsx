@@ -1,11 +1,12 @@
 import { useCallback, useMemo, useState } from 'react';
 import { FadeIn } from 'react-native-reanimated';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { type BuyTrade, type CryptoId, type ExchangeTrade } from 'invity-api';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { cryptoIdToNetworkAndContractAddress } from '@suite-common/trading';
 import { useAlert } from '@suite-native/alerts';
 import { AnimatedBox, Button } from '@suite-native/atoms';

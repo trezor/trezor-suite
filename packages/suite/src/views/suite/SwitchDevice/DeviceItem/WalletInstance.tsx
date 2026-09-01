@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { Translation, useTranslation } from '@suite/intl';
@@ -7,6 +6,7 @@ import { Labeling } from '@suite/labeling';
 import { selectIsLegacyLabelingVisible, selectLabelingValueBeingEdited } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { useWalletLabel } from '@suite/wallet';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     getAccountsByDeviceState,
     selectAccounts,

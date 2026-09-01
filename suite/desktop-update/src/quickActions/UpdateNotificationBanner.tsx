@@ -1,7 +1,8 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type DeviceRootState } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type DiscoveryRootState, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { SidebarBanner } from '@trezor/product-components';
 

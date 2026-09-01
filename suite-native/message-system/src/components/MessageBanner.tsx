@@ -1,7 +1,7 @@
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useDispatch } from 'react-redux';
 
 import { messageSystemActions } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Message, type Variant } from '@suite-common/suite-types';
 import {
     Box,

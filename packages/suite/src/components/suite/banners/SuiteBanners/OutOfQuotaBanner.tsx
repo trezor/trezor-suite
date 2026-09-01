@@ -1,8 +1,7 @@
-import { useDispatch } from 'react-redux';
-
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     noQuotaLeftWarningDismissed,
     selectShouldDisplayOutOfQuotaAlert,

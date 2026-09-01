@@ -1,8 +1,9 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingAmountLimitProps,
     selectTradingSellQuotesRequest,

@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { BannerFull, Button, HStack, IconButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

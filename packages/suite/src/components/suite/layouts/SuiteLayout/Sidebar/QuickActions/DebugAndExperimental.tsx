@@ -1,10 +1,9 @@
-import { useDispatch } from 'react-redux';
-
 import { selectIsDebugModeActive } from '@suite/debug';
 import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectIsExperimentalEnabled } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Box, Column, Icon } from '@trezor/components';
 import { AtomIcon, CheckIcon, DotOutlineFilledIcon, StarFourIcon } from '@trezor/icons';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';

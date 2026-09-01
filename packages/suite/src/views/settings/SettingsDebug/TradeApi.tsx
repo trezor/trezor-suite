@@ -1,6 +1,5 @@
-import { useDispatch } from 'react-redux';
-
 import { selectTradeServerEnvironment, suiteSettingsActions } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type TradeServerEnvironment, tradeApi } from '@suite-common/trading';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 

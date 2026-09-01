@@ -1,8 +1,7 @@
-import { useDispatch } from 'react-redux';
-
 import styled from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { CardList } from '@trezor/components';
 
 import { setView } from 'src/actions/suite/guideActions';

@@ -16,6 +16,7 @@
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
@@ -35,7 +36,6 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
-        "react-redux": "9.3.0",
-        "redux-thunk": "^3.1.0"
+        "react-redux": "9.3.0"
     }
 }

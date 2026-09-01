@@ -1,5 +1,6 @@
 import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary';
-import { useDispatch } from 'react-redux';
+
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { Error } from 'src/components/suite/Error';
 import { reportToSentry } from 'src/utils/suite/sentry';

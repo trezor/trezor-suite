@@ -1,9 +1,8 @@
-import { useDispatch } from 'react-redux';
-
 import { type ExchangeProviderInfo } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import type { TradingTransactionExchange as TradingTxExchange } from '@suite-common/trading';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { Button } from '@trezor/components';

@@ -1,5 +1,6 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { cryptoIdToNetworkSymbol, tradingExchangeActions } from '@suite-common/trading';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';

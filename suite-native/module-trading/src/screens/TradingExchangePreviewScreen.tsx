@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from 'react';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useFocusEffect } from '@react-navigation/native';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
     hasEip712SignData,

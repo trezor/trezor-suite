@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import {
     TxSimulationError,
@@ -11,6 +10,7 @@ import {
 } from '@suite/tx-simulation/src/common';
 import { EvmInsufficientGasWarning } from '@suite/tx-simulation/src/evm';
 import { connectPopupActions } from '@suite-common/connect-popup';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     TX_METHODS_WITH_FEES,
     areTxSimulationMethods,

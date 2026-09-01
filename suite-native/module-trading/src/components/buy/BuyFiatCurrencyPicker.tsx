@@ -1,8 +1,7 @@
-import { useDispatch } from 'react-redux';
-
 import type { FiatCurrencyCode } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { HStack } from '@suite-native/atoms';
 import { buyActions } from '@suite-native/trading-state';

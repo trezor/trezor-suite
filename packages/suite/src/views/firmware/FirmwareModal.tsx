@@ -1,5 +1,4 @@
 import { type ReactNode, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import {
     useFirmwareDesktopUpdate,
@@ -9,6 +8,7 @@ import { closeModal } from '@suite/modal';
 import { closeModalApp } from '@suite/router';
 import { ThpPairingStep } from '@suite/thp';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';

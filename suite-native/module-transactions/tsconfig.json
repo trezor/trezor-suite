@@ -13,6 +13,9 @@
             "path": "../../suite-common/react-query"
         },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/token-definitions"
         },
         {

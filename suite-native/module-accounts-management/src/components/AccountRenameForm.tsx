@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useWatch } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectUpdateAccountLabelDep } from '@suite-common/suite-sync-types';
 import {
     type AccountsRootState,

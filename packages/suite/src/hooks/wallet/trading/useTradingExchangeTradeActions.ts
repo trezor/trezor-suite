@@ -1,11 +1,10 @@
-import { useDispatch } from 'react-redux';
-
 import type { ExchangeTrade } from 'invity-api';
 
 import { useDevice } from '@suite/device';
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingSignAndPushSendFormTransactionProps,

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import * as graphActions from 'src/actions/wallet/graphActions';

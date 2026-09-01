@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import { Translation } from '@suite/intl';
 import {
     disconnectProvider,
@@ -7,6 +5,7 @@ import {
     selectSelectedProviderForLabels,
 } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 

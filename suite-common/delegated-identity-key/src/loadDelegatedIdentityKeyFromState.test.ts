@@ -12,7 +12,7 @@ import { createLoadDelegatedIdentityKeyFromState } from './loadDelegatedIdentity
 describe(createLoadDelegatedIdentityKeyFromState.name, () => {
     it('gets the encrypted key', async () => {
         const getDelegatedIdentityKey = createLoadDelegatedIdentityKeyFromState({
-            dispatch: () => {},
+            dispatch: action => action,
             getDeviceDelegatedIdentityKey: () => asEncryptedHex('delegated-key-<encrypted>'),
             platformEncryption: {
                 encrypt: () => {
@@ -36,7 +36,7 @@ describe(createLoadDelegatedIdentityKeyFromState.name, () => {
         ['returns null, when key is there but decryption fails', DecryptionFailed()],
     ])('%s', async (_, error) => {
         const getDelegatedIdentityKey = createLoadDelegatedIdentityKeyFromState({
-            dispatch: () => {},
+            dispatch: action => action,
             getDeviceDelegatedIdentityKey: () => asEncryptedHex('delegated-key-<encrypted>'),
             platformEncryption: {
                 encrypt: () => {

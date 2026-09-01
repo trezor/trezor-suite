@@ -1,11 +1,10 @@
-import { useDispatch } from 'react-redux';
-
 import {
     coinjoinAccountUpdateMaxMiningFee,
     selectDefaultMaxMiningFeeByAccountKey,
     selectFeeRateMedianByAccountKey,
 } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';

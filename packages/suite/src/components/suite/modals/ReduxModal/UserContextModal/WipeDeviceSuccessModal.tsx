@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import { H3, Modal } from '@trezor/components';
 import { CheckIcon } from '@trezor/icons';
 

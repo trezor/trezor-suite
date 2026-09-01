@@ -1,13 +1,11 @@
 import { type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
-
-import { type Dispatch } from 'redux';
 
 import { type DesktopAnalyticsDep, events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { type Dispatch, useDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
 import { type IconComponent, Tooltip } from '@trezor/components';

@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
-import { useDispatch } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { Context } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { initStakeDataThunk } from '@suite-common/wallet-core';
 import { isStakingSymbol, parseAccountKey } from '@suite-common/wallet-utils';
 import { ContextMessage } from '@suite-native/message-system';

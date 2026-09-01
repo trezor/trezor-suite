@@ -1,5 +1,5 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import type { Dispatch, MiddlewareAPI, UnknownAction } from 'redux';
+import type { MiddlewareAPI, Dispatch as ReduxDispatch, UnknownAction } from 'redux';
 
 import { type SelectedAccountRootState } from '@suite/account';
 import { type LocksRootState, lockDevice, selectIsDeviceOrUiLocked } from '@suite/locks';
@@ -20,6 +20,7 @@ import {
     selectFeatureConfig,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { addToast } from '@suite-common/toast-notifications';
 import {
     type AccountsRootState,
@@ -60,7 +61,7 @@ type CoinjoinMiddlewareState = AccountsRootState &
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, CoinjoinMiddlewareState>) =>
-    (next: Dispatch) =>
+    (next: ReduxDispatch) =>
     (action: UnknownAction): UnknownAction => {
         // cancel discovery for each CoinjoinBackend
         if (routerLocationChange.match(action) && action.payload.app !== 'wallet') {

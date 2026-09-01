@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
         { "path": "../../suite-common/thp" },
         { "path": "../alerts" },
         { "path": "../atoms" },

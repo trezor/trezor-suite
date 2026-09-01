@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react';
 import { FormProvider } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
     DEFAULT_VOTING_OPTION,

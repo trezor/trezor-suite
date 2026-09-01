@@ -1,9 +1,8 @@
-import { useDispatch } from 'react-redux';
-
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { selectIsAddAccountNetworksBannerClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { GraduationCapIcon } from '@trezor/icons';
 

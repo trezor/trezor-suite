@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import { Keyboard } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
@@ -13,6 +13,7 @@ import {
     selectDeviceUnavailableCapabilities,
     selectIsDeviceRemembered,
 } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
 import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {

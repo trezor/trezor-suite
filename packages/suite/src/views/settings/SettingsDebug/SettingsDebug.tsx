@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import { Translation } from '@suite/intl';
 import {
     ContextMessage,
@@ -8,6 +6,7 @@ import {
 } from '@suite/message-system';
 import { SuiteSyncSettings, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { Context } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { type StaticSessionId } from '@trezor/connect';

@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import { type ExchangeTrade } from 'invity-api';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_FORM_OUTPUT_ADDRESS,

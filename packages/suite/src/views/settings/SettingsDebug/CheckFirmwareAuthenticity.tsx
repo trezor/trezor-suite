@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import {
     selectAreDeviceMetaChecksEnabled,
     selectIsEntropyCheckEnabled,
@@ -7,6 +5,7 @@ import {
     selectIsFirmwareRevisionCheckEnabled,
     suiteSettingsActions,
 } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 

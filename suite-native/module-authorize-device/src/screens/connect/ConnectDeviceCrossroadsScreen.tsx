@@ -1,6 +1,5 @@
-import { useDispatch } from 'react-redux';
-
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     Card,

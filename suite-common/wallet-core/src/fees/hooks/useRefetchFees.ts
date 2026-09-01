@@ -1,18 +1,15 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
-import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
-
+import { useDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FEES_UPDATE_INTERVAL_MILLISECONDS, FEE_UPDATE_DELAY_MILLISECONDS } from '../feesConstants';
-import { type UpdateFeeInfoThunkState, updateFeeInfoThunk } from '../feesThunks';
+import { updateFeeInfoThunk } from '../feesThunks';
 
 type UseRefetchFeesProps = { networkSymbol?: NetworkSymbol; isDisabled?: boolean };
 
 export const useFetchFeesOnce = ({ networkSymbol, isDisabled }: UseRefetchFeesProps) => {
-    const dispatch =
-        useDispatch<ThunkDispatch<UpdateFeeInfoThunkState, Record<never, never>, UnknownAction>>();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (isDisabled || networkSymbol === undefined) return;
@@ -22,8 +19,7 @@ export const useFetchFeesOnce = ({ networkSymbol, isDisabled }: UseRefetchFeesPr
 
 // Refetch fees periodically, incl. loading behavior
 export const useRefetchFees = ({ networkSymbol, isDisabled }: UseRefetchFeesProps) => {
-    const dispatch =
-        useDispatch<ThunkDispatch<UpdateFeeInfoThunkState, Record<never, never>, UnknownAction>>();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (isDisabled || !networkSymbol) return;

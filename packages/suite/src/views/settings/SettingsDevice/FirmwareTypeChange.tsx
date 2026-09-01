@@ -1,10 +1,9 @@
-import { useDispatch } from 'react-redux';
-
 import { useDevice } from '@suite/device';
 import { getSuiteFirmwareTypeString } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, goto } from '@suite/router';
 import { firmwareActions } from '@suite-common/firmware';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
 import {
     getFirmwareVersion,
