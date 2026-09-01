@@ -22,6 +22,7 @@ describe('SlippageBottomSheet', () => {
         const result = await renderWithSlippageTestProvider(
             <SlippageBottomSheet
                 isVisible={false}
+                receiveAmount="1"
                 onClose={mockOnClose}
                 onSlippageConfirmed={mockOnSlippageConfirmed}
             />,

@@ -30,12 +30,14 @@ import { useSlippageForm } from '../hooks/useSlippageForm';
 
 type SlippageBottomSheetProps = {
     isVisible: boolean;
+    receiveAmount: string;
     onClose: () => void;
     onSlippageConfirmed: () => Promise<void>;
 };
 
 export const SlippageBottomSheet = ({
     isVisible,
+    receiveAmount,
     onClose,
     onSlippageConfirmed,
 }: SlippageBottomSheetProps) => {
@@ -84,7 +86,7 @@ export const SlippageBottomSheet = ({
             isCloseDisplayed
         >
             <Form form={form}>
-                <VStack spacing="sp24" paddingBottom="sp24">
+                <VStack spacing="sp24">
                     <Text>
                         <Translation id="moduleTrading.slippage.description" />
                     </Text>
@@ -112,7 +114,7 @@ export const SlippageBottomSheet = ({
                             ))}
                         </HStack>
                     </VStack>
-                    <SlippageSummary />
+                    <SlippageSummary receiveAmount={receiveAmount} />
                     <Box alignSelf="flex-start">
                         <TextButton
                             onPress={() => openLink(TREZOR_TRADING_DEX_SLIPPAGE_URL)}

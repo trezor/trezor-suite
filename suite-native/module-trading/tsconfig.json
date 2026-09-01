@@ -109,6 +109,9 @@
         {
             "path": "../../suite-common/test-utils"
         },
+        {
+            "path": "../../suite-common/tx-simulation"
+        },
         { "path": "../bluetooth" },
         { "path": "../settings" },
         { "path": "../test-utils" },
