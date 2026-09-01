@@ -23,9 +23,10 @@ import {
     MIN_CARDANO_FOR_WITHDRAWALS,
 } from '@suite-common/wallet-constants';
 import {
+    type AccountVotingDelegation,
     type StakeRootState,
-    type VotingDelegationOption,
     selectCardanoPoolsInfo,
+    selectStakeVotingDelegation,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -105,7 +106,7 @@ type PrepareTxPlanParams = {
     account: Account;
     action: CardanoAction;
     cardanoPools: AdaPools['pools'];
-    votingDelegation?: VotingDelegationOption;
+    votingDelegation?: AccountVotingDelegation;
 };
 
 export const prepareTxPlan = async ({
@@ -149,18 +150,24 @@ export const prepareTxPlan = async ({
         );
     }
 
+    // The signing path reads the selection straight from the store, so a selection left over from
+    // another account must never reach the certificates. Everything below derives from the option
+    // confirmed for this very account, falling back to Everstake.
+    const confirmedOption =
+        votingDelegation?.accountKey === account.key ? votingDelegation.option : undefined;
+
     const isKeepingCurrentVote =
-        votingDelegation?.type === 'current' && hasCardanoLiveVoteDelegation(account);
+        confirmedOption?.type === 'current' && hasCardanoLiveVoteDelegation(account);
 
     if ((action === 'delegate' || action === 'voteDelegate') && !isKeepingCurrentVote) {
-        const isVotingToAnotherDrep = votingDelegation?.type === 'another_drep';
+        const isVotingToAnotherDrep = confirmedOption?.type === 'another_drep';
 
-        if (isVotingToAnotherDrep && !validateCardanoDrep(votingDelegation.drepId)) {
+        if (isVotingToAnotherDrep && !validateCardanoDrep(confirmedOption.drepId)) {
             return null;
         }
 
         const drepBech32 = isVotingToAnotherDrep
-            ? votingDelegation.drepId
+            ? confirmedOption.drepId
             : CARDANO_EVERSTAKE_DREP.bech32;
 
         const dRep = parseDrepBech32(drepBech32);
@@ -212,7 +219,7 @@ const getTransactionData = (
     formValues: StakeFormState,
     selectedAccount: SelectedAccountStatus,
     cardanoPools: AdaPools['pools'],
-    votingDelegation?: VotingDelegationOption,
+    votingDelegation?: AccountVotingDelegation,
 ) => {
     const { stakeType } = formValues;
 
@@ -269,8 +276,9 @@ type ComposeTransactionThunkState = SelectedAccountRootState & StakeRootState;
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
     async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
-        const { selectedAccount, stake } = getState().wallet;
+        const { selectedAccount } = getState().wallet;
         const cardanoPools = selectCardanoPoolsInfo(getState());
+        const votingDelegation = selectStakeVotingDelegation(getState());
 
         if (!selectedAccount.account) return;
 
@@ -280,7 +288,7 @@ export const composeTransaction =
             formValues,
             selectedAccount,
             cardanoPools,
-            stake.votingDelegation,
+            votingDelegation,
         );
         const { txPlan } = txData || {};
         if (txPlan?.type !== 'final') return;
@@ -368,8 +376,9 @@ export const signTransaction =
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ) => {
-        const { selectedAccount, stake } = getState().wallet;
+        const { selectedAccount } = getState().wallet;
         const cardanoPools = selectCardanoPoolsInfo(getState());
+        const votingDelegation = selectStakeVotingDelegation(getState());
         if (!selectedAccount?.account) return;
 
         const device = selectSelectedDevice(getState());
@@ -386,7 +395,7 @@ export const signTransaction =
             formValues,
             selectedAccount,
             cardanoPools,
-            stake.votingDelegation,
+            votingDelegation,
         );
 
         if (!txData) {

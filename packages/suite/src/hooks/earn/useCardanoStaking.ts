@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import {
     hasPendingStakeTypeTransaction,
     selectCardanoPoolsInfo,
-    selectVotingDelegationOption,
+    selectStakeVotingDelegation,
 } from '@suite-common/wallet-core';
 import {
     type ActionAvailability,
@@ -20,7 +20,7 @@ export const useCardanoStaking = (): CardanoStaking => {
     const isCardano = account?.networkType === 'cardano';
 
     const cardanoPools = useSelector(selectCardanoPoolsInfo);
-    const votingDelegation = useSelector(selectVotingDelegationOption);
+    const votingDelegation = useSelector(selectStakeVotingDelegation);
     const hasPendingTx = useSelector(state =>
         account ? hasPendingStakeTypeTransaction(state, account.key) : false,
     );

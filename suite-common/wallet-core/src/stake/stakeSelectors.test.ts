@@ -1,7 +1,16 @@
+import { type AccountKey } from '@suite-common/wallet-types';
+
+import { type AccountVotingDelegation } from './stakeActions';
+import { DEFAULT_VOTING_OPTION } from './stakeConstants';
 import { type StakeDataState, stakeDataInitialState } from './stakeDataSlice';
 import { stakeInitialState } from './stakeReducer';
 import type { StakeRootState } from './stakeReducerTypes';
-import { selectCardanoPoolsInfo, selectEthNextRewardPayout } from './stakeSelectors';
+import {
+    selectCardanoPoolsInfo,
+    selectEthNextRewardPayout,
+    selectStakeVotingDelegation,
+    selectVotingDelegationOption,
+} from './stakeSelectors';
 
 const buildStakeState = (data: Partial<StakeDataState['data']>): StakeRootState => ({
     wallet: {
@@ -63,5 +72,56 @@ describe('selectCardanoPoolsInfo', () => {
         const state = createState(pools);
 
         expect(selectCardanoPoolsInfo(state)).toBe(pools);
+    });
+});
+
+describe('selectVotingDelegationOption', () => {
+    const accountKey = 'descriptor-a-ada-session' as AccountKey;
+    const otherAccountKey = 'descriptor-b-ada-session' as AccountKey;
+    const anotherDrep: AccountVotingDelegation['option'] = {
+        type: 'another_drep',
+        drepId: 'drep1abc',
+    };
+
+    const createState = (votingDelegation?: AccountVotingDelegation): StakeRootState => ({
+        wallet: { stake: { ...stakeInitialState, votingDelegation } },
+    });
+
+    // `toBe` throughout: components read this through `useSelector`, so both branches have to return
+    // a reference that only changes when the selection does.
+    it('falls back to Everstake when no option was confirmed', () => {
+        expect(selectVotingDelegationOption(createState(), accountKey)).toBe(DEFAULT_VOTING_OPTION);
+    });
+
+    it('returns the option confirmed for the queried account', () => {
+        const state = createState({ accountKey, option: anotherDrep });
+
+        expect(selectVotingDelegationOption(state, accountKey)).toBe(anotherDrep);
+    });
+
+    it('falls back to Everstake when the option belongs to another account', () => {
+        const state = createState({ accountKey: otherAccountKey, option: anotherDrep });
+
+        expect(selectVotingDelegationOption(state, accountKey)).toBe(DEFAULT_VOTING_OPTION);
+    });
+});
+
+describe('selectStakeVotingDelegation', () => {
+    it('returns the confirmed selection as stored, for prepareTxPlan to accept or reject', () => {
+        const votingDelegation: AccountVotingDelegation = {
+            accountKey: 'descriptor-a-ada-session' as AccountKey,
+            option: { type: 'current' },
+        };
+        const state: StakeRootState = {
+            wallet: { stake: { ...stakeInitialState, votingDelegation } },
+        };
+
+        expect(selectStakeVotingDelegation(state)).toBe(votingDelegation);
+    });
+
+    it('returns undefined when nothing was confirmed', () => {
+        const state: StakeRootState = { wallet: { stake: stakeInitialState } };
+
+        expect(selectStakeVotingDelegation(state)).toBeUndefined();
     });
 });

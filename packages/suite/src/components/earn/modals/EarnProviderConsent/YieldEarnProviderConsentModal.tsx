@@ -126,7 +126,7 @@ export const YieldEarnProviderConsentModal = ({
             }
             onConfirm={handleOnConfirm}
             onCancel={handleOnCancel}
-            networkType={account.networkType}
+            account={account}
         >
             <VotingDelegations account={account} />
         </EarnProviderConsentModalLayout>

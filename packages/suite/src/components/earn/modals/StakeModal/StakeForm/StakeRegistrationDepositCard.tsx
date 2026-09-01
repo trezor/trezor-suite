@@ -19,7 +19,7 @@ type StakeRegistrationDepositCardProps = {
 export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepositCardProps) => {
     const { symbol, key } = account;
 
-    const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
+    const selectedVotingDelegation = useSelector(state => selectVotingDelegationOption(state, key));
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, key ?? ''));
     const isUpdateProviderFlow = isStakingActive && account.networkType === 'cardano';
