@@ -124,10 +124,18 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(signTransaction(values, composedTx));
+            try {
+                const result = await dispatch(signTransaction(values, composedTx));
 
-            if (result?.success) {
-                clearForm();
+                if (result?.success) {
+                    clearForm();
+                }
+            } catch (error) {
+                // The sign thunk reaches TrezorConnect, whose rejection messages may embed the
+                // composed account payload, and `signTx` is submitted fire-and-forget. Handling the
+                // rejection here keeps it from being reported verbatim by Sentry's global
+                // unhandled-rejection handler. Only the error name, never its message, is safe to log.
+                console.warn('Stake signing failed', error instanceof Error ? error.name : error);
             }
         }
     }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);

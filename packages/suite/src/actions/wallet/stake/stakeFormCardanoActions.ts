@@ -60,8 +60,26 @@ import {
     validateCardanoDrep,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, PROTO } from '@trezor/connect';
+import { type ErrorCode } from '@trezor/connect-common/src/constants/errors';
 import type { EstimatedFee } from '@trezor/network-solana/types'; // TODO should be Cardano instead?
 import { BigNumber } from '@trezor/utils';
+
+/**
+ * TrezorConnect error messages may embed the rejected payload verbatim — `@trezor/schema-utils`
+ * builds `Invalid parameter "account.utxo" (= [{"txid":…,"address":…}])` out of the params it
+ * validates. Such a message must never travel any further, because an uncaught rejection ends up
+ * in Sentry through its global unhandled-rejection handler. Only the error code, a fixed enum,
+ * is safe to carry.
+ */
+export class CardanoComposeError extends Error {
+    readonly code: ErrorCode;
+
+    constructor(code: ErrorCode) {
+        super(`cardanoComposeTransaction failed (${code})`);
+        this.name = 'CardanoComposeError';
+        this.code = code;
+    }
+}
 
 const calculateTransaction = (
     availableBalance: string,
@@ -210,7 +228,7 @@ export const prepareTxPlan = async ({
         testnet: isTestnet(account.symbol),
     });
 
-    if (!response.success) throw new Error(response.error.message);
+    if (!response.success) throw new CardanoComposeError(response.error.code);
 
     return { txPlan: response.payload[0], certificates, withdrawals, selectedPool };
 };

@@ -78,6 +78,15 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                 const values = getValues();
 
                 return dispatch(composeTransaction(values, state));
+            }).catch(error => {
+                // The compose thunk reaches TrezorConnect, whose rejection messages may embed the
+                // composed account payload. `composeRequest` is fired without a `.catch` from the
+                // effects below, so a rejection escaping here would become an unhandled rejection
+                // and get reported verbatim by Sentry's global handler. Only the error name, never
+                // its message, is safe to log.
+                console.warn('Stake compose failed', error instanceof Error ? error.name : error);
+
+                return undefined;
             });
 
             // RACE-CONDITION NOTE:
