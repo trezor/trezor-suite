@@ -9,7 +9,10 @@ import {
     TxSimulationTitle,
 } from '@suite/tx-simulation/src/common';
 import { EvmInsufficientGasWarning, EvmTxSimulationDisclaimer } from '@suite/tx-simulation/src/evm';
-import { connectPopupActions } from '@suite-common/connect-popup';
+import {
+    type ConnectCallSource as ConnectCallSourceType,
+    connectPopupActions,
+} from '@suite-common/connect-popup';
 import {
     TX_METHODS_WITH_FEES,
     areTxSimulationMethods,
@@ -32,11 +35,13 @@ import { useEvmTxSimulationFeesForm } from '../common/hooks/useEvmTxSimulationFe
 interface ConnectPopupTxSimulationModalInnerProps {
     action: TxSimulationAction;
     account: Account;
+    source: ConnectCallSourceType;
 }
 
 export function ConnectPopupTxSimulationModalInner({
     action,
     account,
+    source,
 }: ConnectPopupTxSimulationModalInnerProps) {
     const dispatch = useDispatch();
     const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
@@ -55,6 +60,7 @@ export function ConnectPopupTxSimulationModalInner({
         defaultGasLimit: areTxSimulationMethods(TX_METHODS_WITH_FEES, action)
             ? action.payload.transaction.gasLimit
             : undefined,
+        isGasLimitFinal: source.type === 'walletconnect',
     });
 
     const selectedFeeLevel = form.watch('selectedFee') || 'normal';

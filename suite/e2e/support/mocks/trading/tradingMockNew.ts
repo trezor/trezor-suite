@@ -18,7 +18,7 @@ export type CapturedLiveTrade = ExchangeTrade & {
 };
 
 type TxSimulationResult = NonNullable<Parameters<typeof getSimulatedReceiveAmount>[0]>;
-type TxSimulationScan = Omit<TxSimulationResult['payload'], 'needsDisclaimer'>;
+type TxSimulationScan = Omit<TxSimulationResult['payload'], 'needsDisclaimer' | 'isChainSupported'>;
 
 type TradeFlow = 'buy' | 'sell' | 'swap';
 type TradeEndpoints = {
@@ -200,7 +200,7 @@ export class TradingMockNew {
 
             this.capturedTxSimulation = {
                 method: 'ethereumSignTransaction',
-                payload: { ...scan, needsDisclaimer: false },
+                payload: { ...scan, needsDisclaimer: false, isChainSupported: true },
             };
 
             await route.fulfill({ response });

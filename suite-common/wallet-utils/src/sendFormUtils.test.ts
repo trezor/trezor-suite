@@ -1,4 +1,5 @@
 import { asNetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
+import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     mockWalletAccount,
     networkSpecificDefaultRipple,
@@ -18,6 +19,7 @@ import {
     getCryptoAmountWithReserve,
     getCryptoMaxAmountWithReserve,
     getExternalComposeOutput,
+    getGasLimitWithBuffer,
     getLowestFeeFromLevels,
     isAmountWithinNetworkReserve,
     prepareEthereumTransaction,
@@ -787,6 +789,28 @@ describe('sendForm utils', () => {
                     amount: '8.00000001',
                 }),
             ).toBe(false);
+        });
+    });
+
+    describe('getGasLimitWithBuffer', () => {
+        it('adds a buffer on top of the estimate so a state change before mining does not run it out of gas', () => {
+            expect(getGasLimitWithBuffer('130000')).toBe('156000');
+        });
+
+        it('rounds the buffered limit up to a whole unit of gas', () => {
+            expect(getGasLimitWithBuffer('21001')).toBe('25202');
+        });
+
+        it('accepts the hex gas limit that a dApp request carries', () => {
+            expect(getGasLimitWithBuffer('0x6a92')).toBe('32739');
+        });
+
+        it('falls back to the contract call backup limit when the backend could not estimate', () => {
+            expect(getGasLimitWithBuffer(undefined)).toBe(ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT);
+        });
+
+        it('falls back to the backup limit rather than signing a zero gas limit', () => {
+            expect(getGasLimitWithBuffer('0')).toBe(ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT);
         });
     });
 });
