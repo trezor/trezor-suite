@@ -152,6 +152,7 @@ jobs:
           ram-size: 4096M
           force-avd-creation: true
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
+          emulator-port: 5554
           emulator-options: -no-window -gpu swiftshader -no-snapshot-load -no-snapshot-save -noaudio -no-boot-anim -memory 4096
           disable-animations: true
           cores: 4
