@@ -1,8 +1,4 @@
-import {
-    type TypedUseSelectorHook,
-    shallowEqual,
-    useSelector as useReduxSelector,
-} from 'react-redux';
+import { type TypedUseSelectorHook, useSelector as useReduxSelector } from 'react-redux';
 
 import { type AppState } from 'src/types/suite';
 
@@ -12,5 +8,5 @@ import { type AppState } from 'src/types/suite';
  * Memoized using shallowEqual equality comparison
  * https://react-redux.js.org/api/hooks#equality-comparisons-and-updates
  */
-export const useSelector: TypedUseSelectorHook<AppState> = (selector, equalityFn = shallowEqual) =>
-    useReduxSelector(selector, equalityFn);
+export const useSelector: TypedUseSelectorHook<AppState> = selector =>
+    useReduxSelector(selector, () => false);
