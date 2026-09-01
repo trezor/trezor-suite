@@ -21,7 +21,4 @@ export const ethereumNamedAddressResolver: NamedAddressResolver<EthereumNetworkS
 
     reverseResolveAddress: async (address, symbol) =>
         (await loadResolver()).reverseResolveAddressOnchain(address, symbol),
-
-    resolveNamedProfile: async (value, symbol, textKeys) =>
-        (await loadResolver()).resolveNamedProfileOnchain(value, symbol, textKeys),
 };

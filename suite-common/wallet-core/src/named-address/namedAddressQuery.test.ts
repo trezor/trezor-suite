@@ -15,7 +15,6 @@ const namedAddressResolver: SymbolNamedAddressResolver = {
     isAddressLike: value => /^0x[a-fA-F0-9]{40}$/.test(value.trim()),
     resolveNamedAddress: (...args) => mockResolveNamedAddress(...args),
     reverseResolveAddress: (...args) => mockReverseResolveAddress(...args),
-    resolveNamedProfile: jest.fn(),
 };
 
 const networkModuleRepository = {

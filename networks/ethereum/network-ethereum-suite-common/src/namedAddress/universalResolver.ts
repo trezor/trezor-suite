@@ -12,10 +12,14 @@ import { namehash, normalize, packetToBytes, toCoinType } from 'viem/ens';
 import { Calldata, EVM_ABI } from '@suite-common/calldata';
 import TrezorConnect from '@trezor/connect';
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
-import type { NamedAddressProfile } from '@trezor/network-module-suite-common-types';
 import { BigNumber } from '@trezor/utils';
 
 import { getNamedAddressChainId } from './namedAddressUtils';
+
+type NamedAddressProfile = {
+    address: string | null;
+    texts: Record<string, string>;
+};
 
 const RESOLVE_TIMEOUT_MS = 15_000;
 
