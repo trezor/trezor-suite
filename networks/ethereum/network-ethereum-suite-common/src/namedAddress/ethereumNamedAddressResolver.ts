@@ -16,12 +16,12 @@ export const ethereumNamedAddressResolver: NamedAddressResolver<EthereumNetworkS
     isNameLike,
     isAddressLike,
 
-    resolveNamedAddress: async (value, symbol) =>
-        (await loadResolver()).resolveNamedAddress(value, symbol),
+    resolveNamedAddress: async (value, symbol, options) =>
+        (await loadResolver()).resolveNamedAddress(value, symbol, options),
 
-    reverseResolveAddress: async (address, symbol) =>
-        (await loadResolver()).reverseResolveAddressOnchain(address, symbol),
+    reverseResolveAddress: async (address, symbol, options) =>
+        (await loadResolver()).reverseResolveAddressOnchain(address, symbol, options),
 
-    resolveNamedProfile: async (value, symbol, textKeys) =>
-        (await loadResolver()).resolveNamedProfileOnchain(value, symbol, textKeys),
+    resolveNamedProfile: async (value, symbol, options) =>
+        (await loadResolver()).resolveNamedProfileOnchain(value, symbol, options),
 };

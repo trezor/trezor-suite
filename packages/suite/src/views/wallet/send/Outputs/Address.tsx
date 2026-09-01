@@ -38,6 +38,7 @@ import {
     checkIsAddressNotUsedNotChecksummed,
     convertAmountSubunitsToUnits,
     isProgramDerivedAccount,
+    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
@@ -105,6 +106,9 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             selectNetworkModuleRepositoryDep,
         );
     const { descriptor, networkType, symbol } = account;
+    // Every backend call below rides the sending account's connection, so a recipient lookup
+    // cannot be correlated across accounts through the shared default one.
+    const identity = tryGetAccountIdentity(account);
     const namedAddress = getNamedAddressSupport(networkModuleRepository, symbol);
     const inputName = `outputs.${outputId}.address` as const;
     // NOTE: compose errors are always associated with the amount.
@@ -137,7 +141,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         isResolving,
         resolvedAddress: resolvedNamedAddress,
         reverseResolvedName,
-    } = useResolveNamedAddress(address, symbol);
+    } = useResolveNamedAddress(address, symbol, identity);
     // Reverse resolution runs for every hex address typed; it is a bonus lookup, so it must not
     // announce itself or occupy the bottom text the way a name the user typed does.
     const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
@@ -452,6 +456,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                                   networkModuleRepository,
                                   value: checkedAddress,
                                   symbol,
+                                  identity,
                               }),
                           )
                           .catch(() => null)
@@ -464,6 +469,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 const result = await TrezorConnect.getAccountInfo({
                     descriptor: resolvedAddress ?? checkedAddress,
                     coin: asCoinSymbol(symbol),
+                    identity,
                 });
 
                 if (!result.success) {
@@ -520,6 +526,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     const result = await TrezorConnect.getAccountInfo({
                         descriptor: value,
                         coin: asCoinSymbol(symbol),
+                        identity,
                         details: 'basic',
                     });
 
