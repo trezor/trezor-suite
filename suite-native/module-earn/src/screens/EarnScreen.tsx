@@ -26,7 +26,7 @@ import {
 import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
 import { EarnStakingProvidersInfo } from '../components/EarnStakingProvidersInfo';
 import { EnableNetworkForEarnBottomSheet } from '../components/EnableNetworkForEarnBottomSheet';
-import { StablecoinYieldLoadErrorAlert } from '../components/StablecoinYieldLoadErrorAlert';
+import { YieldLoadErrorAlert } from '../components/YieldLoadErrorAlert';
 import { useMessageSystemEarnDashboard } from '../hooks/useMessageSystemEarnDashboard';
 import { useStablecoinYieldListData } from '../hooks/useStablecoinYieldListData';
 import { useStablecoinYieldPromoNavigation } from '../hooks/useStablecoinYieldPromoNavigation';
@@ -197,7 +197,7 @@ const EarnScreenContent = () => {
             if (item.type === 'stablecoin-yield-load-error') {
                 return (
                     <EarnPromoListRowContainer isLastInSection={isLastInSection}>
-                        <StablecoinYieldLoadErrorAlert onRetry={retryLoadStablecoinYield} />
+                        <YieldLoadErrorAlert onRetry={retryLoadStablecoinYield} />
                     </EarnPromoListRowContainer>
                 );
             }
