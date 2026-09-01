@@ -60,6 +60,8 @@ const bytesHexToNumber = (hex: string) => {
 };
 
 // The device returns each EIP-7702 authorization as a tuple [chain_id, delegate, nonce, y_parity, r, s].
+const AUTH7702_TUPLE_LENGTH = 6;
+
 export const parseAuth7702List = (
     list: PROTO.EthereumTxRequest['auth7702_list'],
 ): SignedAuthorization[] | undefined => {
@@ -67,7 +69,25 @@ export const parseAuth7702List = (
     if (tuples.length === 0) return undefined;
 
     return tuples.map(({ items }) => {
-        const [chainId = '', delegate = '', nonce = '', yParity = '', r = '', s = ''] = items;
+        // A well-formed authorization always has all six elements (zero integers are minimal-
+        // encoded as empty byte strings but stay present). Fail loudly on a short tuple instead of
+        // padding it with zeros, which would serialize an authorization the device never signed.
+        if (items.length !== AUTH7702_TUPLE_LENGTH) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                'Malformed EIP-7702 authorization tuple returned by the device.',
+            );
+        }
+        // The guard above ensures all six elements are present; assert the shape so the type
+        // checker (noUncheckedIndexedAccess) does not treat each element as possibly undefined.
+        const [chainId, delegate, nonce, yParity, r, s] = items as [
+            string,
+            string,
+            string,
+            string,
+            string,
+            string,
+        ];
 
         return {
             chainId: bytesHexToNumber(chainId),

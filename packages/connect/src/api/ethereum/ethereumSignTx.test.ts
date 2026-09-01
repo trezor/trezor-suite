@@ -95,5 +95,17 @@ describe('helpers/ethereumSignTx', () => {
                 'exceeds the safe integer range',
             );
         });
+
+        it('rejects a malformed tuple instead of zero-padding it', () => {
+            // A short tuple (three elements) must not be silently padded into a zero-filled
+            // authorization the device never signed.
+            expect(() => parseAuth7702List([{ items: ['01', delegate, '01'] }])).toThrow(
+                'Malformed EIP-7702 authorization tuple',
+            );
+            // A tuple with more than six elements is equally rejected.
+            expect(() =>
+                parseAuth7702List([{ items: ['01', delegate, '01', '01', r, s, '00'] }]),
+            ).toThrow('Malformed EIP-7702 authorization tuple');
+        });
     });
 });
