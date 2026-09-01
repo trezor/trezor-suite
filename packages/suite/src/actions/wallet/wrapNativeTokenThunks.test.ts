@@ -25,7 +25,7 @@ const mockComposeYieldWrapTransactionThunk = jest.fn();
 const mockOpenDeferredModal = jest.fn();
 const mockSendYieldTransaction = jest.fn();
 
-const mockSentResult = (txid: string) => ({ status: 'sent' as const, txid });
+const mockSentResult = (txid: string) => ({ status: 'sent' as const, txid, fee: '31500000000' });
 const mockCancelledResult = { status: 'cancelled' as const };
 
 type WrapNativeTokenThunkDeps = SendYieldTransactionDeps & WithServices<AnalyticsDep>;

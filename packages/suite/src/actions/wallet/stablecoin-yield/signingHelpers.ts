@@ -68,7 +68,8 @@ type SendYieldTransactionDispatch = ThunkDispatch<
 >;
 
 // Genuine failures are thrown — a returned `cancelled` is always the user backing out on purpose.
-export type SendYieldTransactionResult = { status: 'sent'; txid: string } | { status: 'cancelled' };
+export type SendYieldTransactionResult =
+    { status: 'sent'; txid: string; fee: string } | { status: 'cancelled' };
 
 export type SendYieldTransactionParams = {
     account: Account;
@@ -202,7 +203,11 @@ export const sendYieldTransaction = async ({
             }),
         );
 
-        return { status: 'sent', txid: pushResponse.payload.txid };
+        return {
+            status: 'sent',
+            txid: pushResponse.payload.txid,
+            fee: precomposedTransaction.fee,
+        };
     } catch (error) {
         console.error(error);
         throw error;

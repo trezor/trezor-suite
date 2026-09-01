@@ -388,10 +388,10 @@ export const useYieldFlow = ({
 
             dispatch(yieldActions.startSubmittingWrappedNative({ flowType, flowKey }));
             try {
-                let txid: string | undefined;
+                let broadcastTx: { txid: string; fee: string } | undefined;
 
                 if (step === 'wrap') {
-                    const result = await dispatch(
+                    broadcastTx = await dispatch(
                         submitWrapNativeTokenThunk({
                             account,
                             token: wrappedToken,
@@ -399,9 +399,8 @@ export const useYieldFlow = ({
                             yieldFlow: { flowType: 'deposit', flowKey, vaultId: vault.id },
                         }),
                     ).unwrap();
-                    txid = result?.txid;
                 } else if (isYieldWithdrawFlow(flowType)) {
-                    const result = await dispatch(
+                    broadcastTx = await dispatch(
                         submitUnwrapNativeTokenThunk({
                             account,
                             token: wrappedToken,
@@ -409,18 +408,19 @@ export const useYieldFlow = ({
                             yieldFlow: { flowType, flowKey, vaultId: vault.id },
                         }),
                     ).unwrap();
-                    txid = result?.txid;
                 }
 
-                if (txid) {
+                if (broadcastTx) {
                     dispatch(
                         yieldActions.setPendingTx({
                             flowType,
                             flowKey,
                             tx: {
                                 type: step,
-                                txid,
+                                txid: broadcastTx.txid,
                                 amount,
+                                fee: broadcastTx.fee,
+                                submittedAt: Date.now(),
                             },
                         }),
                     );
