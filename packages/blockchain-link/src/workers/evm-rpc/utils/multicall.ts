@@ -1,5 +1,7 @@
 import { type Abi, type PublicClient, decodeFunctionResult, encodeFunctionData } from 'viem';
 
+import { cachePerClient } from './client';
+
 // Canonical CREATE2 deployment, identical on every chain Multicall3 is deployed to.
 export const MULTICALL3_ADDRESS = '0xcA11bde05977b3631167028862bE2a173976CA11' as const;
 
@@ -50,30 +52,8 @@ const decodeCall = ({ abi, functionName }: BatchCall, data: `0x${string}`) => {
     }
 };
 
-// Keyed by client because a client is created per connection, which is also the lifetime of both
-// answers: a chain cannot change under a connection, nor can Multicall3 appear on it.
+// Multicall3 cannot appear on a chain under a running connection.
 const multicall3Support = new WeakMap<PublicClient, Promise<boolean>>();
-const chainIds = new WeakMap<PublicClient, Promise<number>>();
-
-const cachePerClient = <T>(
-    cache: WeakMap<PublicClient, Promise<T>>,
-    client: PublicClient,
-    read: () => Promise<T>,
-) => {
-    const cached = cache.get(client);
-    if (cached) return cached;
-
-    const pending = read().catch(error => {
-        cache.delete(client);
-        throw error;
-    });
-    cache.set(client, pending);
-
-    return pending;
-};
-
-export const getChainId = (client: PublicClient) =>
-    cachePerClient(chainIds, client, () => client.getChainId());
 
 // Custom RPCs may point at a chain without Multicall3, so probe before relying on it.
 export const hasMulticall3 = (client: PublicClient) =>
