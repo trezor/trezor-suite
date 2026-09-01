@@ -3,7 +3,10 @@ use btleplug::{
     platform::Adapter,
 };
 use log::info;
-use tokio::time::{sleep, Duration};
+use tokio::{
+    sync::broadcast::error::RecvError,
+    time::{sleep, Duration},
+};
 
 use crate::server::{
     adapter_manager::{AdapterError, AdapterManager},
@@ -82,20 +85,25 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
     let mut receiver = broadcast.subscribe();
     let manager_ref = manager.clone();
     tokio::spawn(async move {
-        while let Ok(event) = receiver.recv().await {
+        loop {
+            let event = match receiver.recv().await {
+                Ok(event) => event,
+                Err(RecvError::Lagged(skipped)) => {
+                    // Keep watching, exiting here would strand the scan state.
+                    info!("start_scan loop lagged, {skipped} events skipped");
+                    continue;
+                }
+                Err(RecvError::Closed) => break,
+            };
+
             match event {
                 ChannelMessage::Abort(AbortProcess::Scan) => {
-                    stop_scanning(&adapter).await;
-                    manager_ref.set_scanning(false).await;
+                    // Scanning itself was already stopped by the stop_scan method.
                     info!("Abort start_scan loop");
                     break;
                 }
                 ChannelMessage::Abort(AbortProcess::ClientDisconnected(_client)) => {
-                    if manager_ref.is_listeners_empty().await {
-                        info!("All clients disconnected, stopping scanning");
-                        stop_scanning(&adapter).await;
-                        manager_ref.set_scanning(false).await;
-                    }
+                    // Last-client cleanup is owned by AdapterManager::remove_listener.
                     break;
                 }
                 ChannelMessage::Notification(NotificationEvent::AdapterStateChanged { state }) => {

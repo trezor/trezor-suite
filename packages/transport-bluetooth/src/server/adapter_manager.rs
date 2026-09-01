@@ -656,15 +656,28 @@ impl AdapterManager {
         let mut state = self.manager_state.lock().await;
         state.listeners.retain(|item| !item.same_channel(listener));
 
-        if state.listeners.is_empty() {
-            if let Some(adapter_loader) = state.adapter_loader.take() {
-                adapter_loader.abort();
+        if !state.listeners.is_empty() {
+            return;
+        }
+
+        if let Some(adapter_loader) = state.adapter_loader.take() {
+            adapter_loader.abort();
+        }
+
+        let was_scanning = state.is_scanning;
+        state.is_scanning = false;
+        drop(state); // unlock for get_adapter_or_die
+
+        // Scanning must not outlive the last client, even when the client
+        // that originally started it disconnected earlier.
+        if was_scanning {
+            info!("All clients disconnected, stopping scanning");
+            if let Ok(adapter) = self.get_adapter_or_die().await {
+                if let Err(err) = adapter.stop_scan().await {
+                    info!("remove_listener/adapter.stop_scan: {err}");
+                }
             }
         }
-    }
-    pub async fn is_listeners_empty(&self) -> bool {
-        let state = self.manager_state.lock().await;
-        state.listeners.is_empty()
     }
 
     pub fn register_notification_stream(
@@ -804,5 +817,26 @@ mod tests {
 
         assert!(aborted_a.load(Ordering::SeqCst));
         assert!(!aborted_b.load(Ordering::SeqCst));
+    }
+
+    // Finding 3 of https://github.com/trezor/trezor-suite/issues/31948:
+    // scanning must stop with the last client, not with the client that
+    // originally started it.
+    #[tokio::test]
+    async fn scanning_stops_with_the_last_listener() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let client_a = ConnectionBroadcast::new("a".to_string()).expect("broadcast");
+        let client_b = ConnectionBroadcast::new("b".to_string()).expect("broadcast");
+        manager.add_listener(client_a.clone()).await;
+        manager.add_listener(client_b.clone()).await;
+        manager.set_scanning(true).await;
+
+        // The client that started the scan disconnects first.
+        manager.remove_listener(&client_a).await;
+        assert!(manager.is_scanning().await);
+
+        // The last client disconnects.
+        manager.remove_listener(&client_b).await;
+        assert!(!manager.is_scanning().await);
     }
 }
