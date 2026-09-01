@@ -1,14 +1,10 @@
 import {
     DEVICE_MODULE_PREFIX,
     type DeviceRootState,
-    type KeepSelectionReason,
     deviceActions,
-    getShouldSelectConnectedDevice,
     selectDevices,
-    selectPhysicalDeviceWallets,
-    selectSelectedDevice,
+    selectIsSameOrNewDevice,
 } from '@suite-common/device';
-import { type FirmwareRootState, selectFirmware } from '@suite-common/firmware';
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getSelectedDevice, sortByTimestamp } from '@suite-common/suite-utils';
@@ -56,32 +52,19 @@ export const selectDeviceThunk = createThunk<
     },
 );
 
-type SelectNewlyConnectedDeviceThunkState = DeviceRootState & FirmwareRootState;
+type SelectNewlyConnectedDeviceThunkState = DeviceRootState;
 
 export const selectNewlyConnectedDeviceThunk = createThunk<
     void,
     SelectDeviceThunkParams,
-    { state: SelectNewlyConnectedDeviceThunkState; rejectValue: KeepSelectionReason }
+    { state: SelectNewlyConnectedDeviceThunkState }
 >(
     `${DEVICE_MODULE_PREFIX}/selectNewlyConnectedDevice`,
     ({ device }, { dispatch, getState, rejectWithValue }) => {
-        // Mobile has a single device at a time, so it always follows the one that connected.
-        if (isNative()) {
-            dispatch(selectDeviceThunk({ device }));
-
-            return;
-        }
-
-        const { shouldSelect, reason } = getShouldSelectConnectedDevice({
-            incomingDevice: device,
-            selectedDevice: selectSelectedDevice(getState()),
-            physicalDeviceWallets: selectPhysicalDeviceWallets(getState()),
-            firmware: selectFirmware(getState()),
-        });
-
-        if (!shouldSelect) {
-            // Rejected with the reason, so that it is visible in the action and in the logs.
-            return rejectWithValue(reason);
+        if (!isNative() && !selectIsSameOrNewDevice(getState(), device)) {
+            // Select automatically when it is the first known device (none selected),
+            // or when we connected physical device corresponding to a selected remembered wallet.
+            return rejectWithValue('no-need-to-select');
         }
 
         dispatch(selectDeviceThunk({ device }));
