@@ -162,6 +162,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                 symbol: account.symbol,
                 deviceState: account.deviceState,
                 flow: 'detail',
+                showCancelButton: true,
             }),
         );
     };

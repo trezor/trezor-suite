@@ -183,6 +183,7 @@ export const UnwrapNativeToken = ({
                 symbol: account.symbol,
                 deviceState: account.deviceState,
                 flow: 'detail',
+                showCancelButton: true,
             }),
         );
     };

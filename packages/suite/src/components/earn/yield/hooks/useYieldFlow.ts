@@ -465,6 +465,7 @@ export const useYieldFlow = ({
                     symbol: account.symbol,
                     deviceState: account.deviceState,
                     flow: 'detail',
+                    showCancelButton: true,
                 }),
             );
         },
