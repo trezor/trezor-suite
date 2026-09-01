@@ -58,7 +58,7 @@ export const UpdateEarnProviderConsentModal = ({
             }
             onConfirm={proceedToEarnFlow}
             onCancel={onCancelClick}
-            networkType={account.networkType}
+            account={account}
         >
             <VotingDelegations account={account} />
         </EarnProviderConsentModalLayout>

@@ -4,7 +4,7 @@ import { configureMockStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import { DEFAULT_VOTING_OPTION, stakeActions, stakeInitialState } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
@@ -13,10 +13,11 @@ import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState
 
 const CUSTOM_DREP_ID = 'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs';
 const PREDEFINED_DREP_ID = 'drep_always_abstain';
+const ACCOUNT_KEY = 'ada-account-key' as AccountKey;
 
 const createCardanoAccount = (drepId: string | null): Account =>
     ({
-        key: 'ada-account-key',
+        key: ACCOUNT_KEY,
         index: 0,
         symbol: asNetworkSymbol('ada'),
         networkType: 'cardano',
@@ -45,7 +46,10 @@ describe('VotingDelegations', () => {
         const store = renderVotingDelegations(createCardanoAccount(CUSTOM_DREP_ID));
 
         expect(store.getActions()).toContainEqual(
-            stakeActions.setVotingDelegationOption({ type: 'current' }),
+            stakeActions.setAccountVotingDelegation({
+                accountKey: ACCOUNT_KEY,
+                option: { type: 'current' },
+            }),
         );
     });
 
@@ -53,7 +57,10 @@ describe('VotingDelegations', () => {
         const store = renderVotingDelegations(createCardanoAccount(CARDANO_EVERSTAKE_DREP.bech32));
 
         expect(store.getActions()).toContainEqual(
-            stakeActions.setVotingDelegationOption({ type: 'current' }),
+            stakeActions.setAccountVotingDelegation({
+                accountKey: ACCOUNT_KEY,
+                option: { type: 'current' },
+            }),
         );
     });
 
@@ -61,7 +68,10 @@ describe('VotingDelegations', () => {
         const store = renderVotingDelegations(createCardanoAccount(PREDEFINED_DREP_ID));
 
         expect(store.getActions()).toContainEqual(
-            stakeActions.setVotingDelegationOption({ type: 'current' }),
+            stakeActions.setAccountVotingDelegation({
+                accountKey: ACCOUNT_KEY,
+                option: { type: 'current' },
+            }),
         );
     });
 
@@ -69,7 +79,10 @@ describe('VotingDelegations', () => {
         const store = renderVotingDelegations(createCardanoAccount(null));
 
         expect(store.getActions()).toContainEqual(
-            stakeActions.setVotingDelegationOption(DEFAULT_VOTING_OPTION),
+            stakeActions.setAccountVotingDelegation({
+                accountKey: ACCOUNT_KEY,
+                option: DEFAULT_VOTING_OPTION,
+            }),
         );
     });
 });

@@ -7,7 +7,6 @@ import { deviceActions } from '@suite-common/device';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
 import {
-    DEFAULT_VOTING_OPTION,
     WALLET_SETTINGS,
     accountsActions,
     blockchainActions,
@@ -116,7 +115,7 @@ const walletMiddleware =
             api.dispatch(sendFormActions.dispose());
             api.dispatch(tradingActions.setVerifiedAddress(undefined));
             api.dispatch(stakeActions.dispose());
-            api.dispatch(stakeActions.setVotingDelegationOption(DEFAULT_VOTING_OPTION));
+            api.dispatch(stakeActions.clearAccountVotingDelegation());
         }
 
         if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {

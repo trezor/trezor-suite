@@ -245,6 +245,10 @@ const pushTransaction =
                     type: events.stakingConfirmEvent.name,
                     payload: { action: stakeType, networkSymbol: account.symbol },
                 });
+
+                // The confirmed selection is spent by this transaction; keeping it would let it
+                // reach the next plan composed for this account.
+                dispatch(stakeActions.clearAccountVotingDelegation());
             }
 
             // notification from the backend may be delayed.

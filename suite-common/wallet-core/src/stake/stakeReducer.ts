@@ -8,7 +8,7 @@ import type { StakeState } from './stakeReducerTypes';
 export const stakeInitialState: StakeState = {
     precomposedTx: undefined,
     serializedTx: undefined,
-    votingDelegation: { type: 'everstake' },
+    votingDelegation: undefined,
     data: stakeDataInitialState,
 };
 
@@ -43,8 +43,11 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                 delete state.serializedTx;
             }
         })
-        .addCase(stakeActions.setVotingDelegationOption, (state, action) => {
+        .addCase(stakeActions.setAccountVotingDelegation, (state, action) => {
             state.votingDelegation = action.payload;
+        })
+        .addCase(stakeActions.clearAccountVotingDelegation, state => {
+            delete state.votingDelegation;
         })
         .addCase(stakeActions.dispose, state => {
             delete state.precomposedTx;

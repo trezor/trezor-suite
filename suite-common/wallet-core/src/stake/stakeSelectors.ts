@@ -1,13 +1,14 @@
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     getCardanoAccountPoolId,
     secondsToDays,
     selectBestCardanoPool,
 } from '@suite-common/wallet-utils';
 
-import type { VotingDelegationOption } from './stakeActions';
+import type { AccountVotingDelegation, VotingDelegationOption } from './stakeActions';
+import { DEFAULT_VOTING_OPTION } from './stakeConstants';
 import type { StakeRootState } from './stakeReducerTypes';
 
 export const selectStake = (state: StakeRootState) => state.wallet.stake;
@@ -75,8 +76,25 @@ export const selectPoolStatsApy = (
     }
 };
 
-export const selectVotingDelegationOption = (state: StakeRootState): VotingDelegationOption =>
-    selectStake(state).votingDelegation;
+/**
+ * The selection the user last confirmed, together with the account it was confirmed for. Composing
+ * paths pass it to `prepareTxPlan`, which honours it only for that very account; anything reading it
+ * to render a selection wants `selectVotingDelegationOption` instead.
+ */
+export const selectStakeVotingDelegation = (
+    state: StakeRootState,
+): AccountVotingDelegation | undefined => selectStake(state).votingDelegation;
+
+export const selectVotingDelegationOption = (
+    state: StakeRootState,
+    accountKey: AccountKey,
+): VotingDelegationOption => {
+    const votingDelegation = selectStakeVotingDelegation(state);
+
+    return votingDelegation?.accountKey === accountKey
+        ? votingDelegation.option
+        : DEFAULT_VOTING_OPTION;
+};
 
 export const selectStakePrecomposedForm = (state: StakeRootState) =>
     selectStake(state).precomposedForm;

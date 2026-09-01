@@ -2,11 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo } from 'reac
 import { useForm } from 'react-hook-form';
 
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
-import {
-    selectBaseCurrency,
-    selectRawNetworkFeeInfo,
-    selectVotingDelegationOption,
-} from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import {
     type ChangeDelegateFormState,
     type SelectedAccountLoaded,
@@ -38,7 +34,6 @@ export const useChangeDelegateForm = ({
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
-    const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
 
     const feeInfo = getConvertedOrDefaultFeeInfo({
         networkType: account.networkType,
@@ -62,9 +57,8 @@ export const useChangeDelegateForm = ({
             network,
             feeInfo,
             formValues: defaultValues,
-            selectedVotingDelegation,
         }),
-        [account, network, feeInfo, defaultValues, selectedVotingDelegation],
+        [account, network, feeInfo, defaultValues],
     );
 
     const methods = useForm<ChangeDelegateFormState>({
