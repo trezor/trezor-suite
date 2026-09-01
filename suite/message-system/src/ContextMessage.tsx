@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { getTorUrlIfAvailable } from '@suite/external-links';
 import { Translation } from '@suite/intl';
@@ -11,6 +11,7 @@ import {
     messageSystemActions,
     selectContextMessageContent,
 } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 

@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useMutation } from '@tanstack/react-query';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
     type ComposeAllowanceTransactionThunkParams,

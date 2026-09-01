@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { type OptionProps } from 'react-select';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -17,6 +17,7 @@ import { SuiteSyncServers, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     selectIsSuiteSyncEnabled,

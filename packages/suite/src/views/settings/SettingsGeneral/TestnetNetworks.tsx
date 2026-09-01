@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { Translation } from '@suite/intl';
 import { selectIsTestnetNetworksEnabled, suiteSettingsActions } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 

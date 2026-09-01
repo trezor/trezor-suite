@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import {
     type BackupDeviceParams,
@@ -13,6 +12,7 @@ import { selectIsDeviceLocked } from '@suite/locks';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { CheckIcon, TrezorBackupIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 

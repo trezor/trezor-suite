@@ -1,9 +1,8 @@
-import { useDispatch } from 'react-redux';
-
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideMarkdown, GuideViewWrapper } from 'src/components/guide';

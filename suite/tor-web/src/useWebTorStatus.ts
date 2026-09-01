@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { TorStatus, getIsTorDomain, torActions } from '@suite/tor';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getLocationHostname, isWeb } from '@trezor/env-utils';
 
 type UseWebTorStatusParams = {

@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';

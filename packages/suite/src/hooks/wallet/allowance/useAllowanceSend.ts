@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type Account,
     type FormState,

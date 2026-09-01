@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Banner, Column, H3, Modal, Paragraph, Spinner } from '@trezor/components';
 
 import { selectIsUnpairingDevice } from 'src/actions/bluetooth/desktopBluetoothSelectors';

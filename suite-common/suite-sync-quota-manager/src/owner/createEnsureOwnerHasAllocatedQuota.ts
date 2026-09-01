@@ -1,6 +1,5 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
 import { type ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { type SuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
 import {
     type QuotaManagerCommunicationFailedErrType,

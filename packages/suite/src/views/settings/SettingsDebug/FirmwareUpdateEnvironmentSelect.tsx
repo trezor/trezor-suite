@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { useGetter } from '@suite-common/dependency-injection';
 import { firmwareActions, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectGetAllowPrereleaseDep } from '@suite-common/suite-types';
 import { Column, Text } from '@trezor/components';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';

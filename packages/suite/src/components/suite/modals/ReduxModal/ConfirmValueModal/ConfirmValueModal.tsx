@@ -1,5 +1,4 @@
 import { type ReactNode, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { AccountLabel } from '@suite/account';
 import { Address, selectAddressLabel } from '@suite/address';
@@ -12,6 +11,7 @@ import { MODAL_CONTEXT_USER, selectModalContext } from '@suite/modal';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';

@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
-import { useDispatch, useStore } from 'react-redux';
+import { useStore } from 'react-redux';
 
 import { StackActions, useNavigation } from '@react-navigation/native';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type StablecoinYieldRootState,
     selectStablecoinYieldSessionByFlowKey,

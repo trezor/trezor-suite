@@ -1,5 +1,4 @@
 import { type ReactNode, createContext, useContext, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectDeviceDefaultConnectionMode, setConnectionMode } from '@suite/device';
 import {
@@ -7,6 +6,7 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
+import { useDispatch } from '@suite-common/redux-utils';
 import { isDesktop } from '@trezor/env-utils';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';

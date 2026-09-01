@@ -1,5 +1,4 @@
 import { type FC, type PropsWithChildren, memo, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectShouldDisplayDeviceCompromisedOnRoute } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
@@ -17,6 +16,7 @@ import {
     useRetryFwAuthenticityChecks,
 } from '@suite-common/firmware-authenticity';
 import { selectActiveKillswitchMessage } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Card } from '@trezor/components';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';

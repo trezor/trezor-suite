@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectIsDeviceOrUiLocked } from '@suite/locks';
 import { closeModalApp, goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     selectDeviceThunk,
     selectIsAnyNetworkEnabled,

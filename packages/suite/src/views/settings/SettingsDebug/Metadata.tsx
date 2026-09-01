@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { exportMetadataToLocalFile } from '@suite/metadata';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 

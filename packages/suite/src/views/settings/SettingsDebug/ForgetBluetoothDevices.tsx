@@ -1,6 +1,5 @@
-import { useDispatch } from 'react-redux';
-
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 

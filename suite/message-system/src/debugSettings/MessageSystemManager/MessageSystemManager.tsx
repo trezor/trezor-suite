@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     messageSystemActions,
     selectAllManuallyAddedMessageIds,
     selectAllValidMessages,
 } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Action } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';

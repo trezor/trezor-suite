@@ -1,6 +1,5 @@
-import { useDispatch } from 'react-redux';
-
 import { selectShowConnectLogs, suiteSettingsActions } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';

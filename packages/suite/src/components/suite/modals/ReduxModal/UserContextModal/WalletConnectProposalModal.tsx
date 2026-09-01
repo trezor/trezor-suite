@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -7,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
+import { useDispatch } from '@suite-common/redux-utils';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';

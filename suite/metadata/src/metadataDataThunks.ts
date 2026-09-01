@@ -1,5 +1,3 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
 import { selectDevices } from '@suite-common/device';
 import {
     type AbstractMetadataProvider,
@@ -8,6 +6,7 @@ import {
     type PasswordManagerState,
     type WalletLabels,
 } from '@suite-common/metadata-types';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { selectAccounts } from '@suite-common/wallet-core';
 
 import {

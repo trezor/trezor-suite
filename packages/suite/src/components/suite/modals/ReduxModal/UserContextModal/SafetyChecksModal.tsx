@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     Banner,
     Card,

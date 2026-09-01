@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     buyThunks,
     selectTradingAccountKeyByTradeType,

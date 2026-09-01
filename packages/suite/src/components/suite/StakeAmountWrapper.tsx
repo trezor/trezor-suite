@@ -1,10 +1,10 @@
 import { type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { mediaQueries } from '@trezor/styles';
 

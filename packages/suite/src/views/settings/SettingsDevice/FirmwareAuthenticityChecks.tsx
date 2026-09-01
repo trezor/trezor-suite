@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -8,6 +6,7 @@ import {
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
 } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 

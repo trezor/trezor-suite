@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { CommonActions, StackActions, useNavigation } from '@react-navigation/native';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     cancelSignSendFormTransactionThunk,

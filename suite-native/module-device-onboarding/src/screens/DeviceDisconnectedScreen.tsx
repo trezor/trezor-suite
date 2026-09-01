@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import {
     ConnectAndUnlockDeviceScreenContent,

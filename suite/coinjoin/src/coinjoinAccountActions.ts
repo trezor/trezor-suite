@@ -1,4 +1,4 @@
-import { type Dispatch, createAction, isAnyOf } from '@reduxjs/toolkit';
+import { createAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { type SelectedAccountRootState } from '@suite/account';
 import { type LocksRootState, selectIsDeviceLocked } from '@suite/locks';
@@ -7,6 +7,7 @@ import { type RouterRootState, goto, selectRouteName } from '@suite/router';
 import { type TorRootState } from '@suite/tor';
 import { type DeviceRootState, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import type { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';

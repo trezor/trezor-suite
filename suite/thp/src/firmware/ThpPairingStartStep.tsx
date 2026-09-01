@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Card, Column, Modal, Text } from '@trezor/components';
 
 import { startThpSessionThunk } from '../startThpSessionThunk';

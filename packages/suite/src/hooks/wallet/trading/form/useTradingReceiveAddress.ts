@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import { type CryptoId } from 'invity-api';
 
@@ -9,6 +8,7 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,
     cryptoIdToNetworkSymbol,

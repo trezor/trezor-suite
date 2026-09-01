@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     messageSystemActions,
@@ -7,6 +7,7 @@ import {
     selectAllValidMessages,
     selectMessageSystemConfig,
 } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Divider, Text, VStack } from '@suite-native/atoms';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 

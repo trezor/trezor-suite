@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { SlideInDown } from 'react-native-reanimated';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useAtomValue } from 'jotai';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,

@@ -1,8 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Card, Modal, Paragraph } from '@trezor/components';
 
 type FirmwareUpgradeNeededModalProps = {

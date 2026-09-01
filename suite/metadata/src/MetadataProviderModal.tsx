@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { type MetadataProviderType } from '@suite-common/metadata-types';
+import { useDispatch } from '@suite-common/redux-utils';
 import type { Deferred } from '@trezor/utils';
 
 import { MetadataProviderSelectionModal } from './MetadataProviderSelectionModal';

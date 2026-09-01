@@ -1,8 +1,7 @@
-import { useDispatch } from 'react-redux';
-
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceProtectedByPassphrase } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     CardList,

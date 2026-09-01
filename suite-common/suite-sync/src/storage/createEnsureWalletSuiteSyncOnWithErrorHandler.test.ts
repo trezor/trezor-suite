@@ -1,6 +1,4 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
-import { createMockDeps, mock } from '@suite-common/dependency-injection';
+import { createMockDeps } from '@suite-common/dependency-injection';
 import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
@@ -66,7 +64,7 @@ describe(createEnsureWalletSuiteSyncOnWithErrorHandler.name, () => {
         'dispatches correct error for $description and passes result through',
         async ({ innerResult, expectedDispatchedAction }) => {
             const deps = createMockDeps<EnsureWalletSuiteSyncOnWithErrorHandlerDeps>({
-                dispatch: mock<Dispatch>(() => {}),
+                dispatch: jest.fn(),
                 ensureWalletSuiteSyncOn: () => Promise.resolve(innerResult),
             });
 
@@ -86,7 +84,7 @@ describe(createEnsureWalletSuiteSyncOnWithErrorHandler.name, () => {
         const ensureResult = ok({ data: {} } as any);
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnWithErrorHandlerDeps>({
-            dispatch: mock<Dispatch>(() => {}),
+            dispatch: jest.fn(),
             ensureWalletSuiteSyncOn: () => Promise.resolve(ensureResult),
         });
 

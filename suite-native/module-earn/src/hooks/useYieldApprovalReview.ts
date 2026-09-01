@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { StackActions, useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
@@ -7,6 +7,7 @@ import { isRejected } from '@reduxjs/toolkit';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type StablecoinYieldRootState,
     type YieldFlowResolvedData,

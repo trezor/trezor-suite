@@ -1,8 +1,7 @@
-import { useDispatch } from 'react-redux';
-
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor, goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';

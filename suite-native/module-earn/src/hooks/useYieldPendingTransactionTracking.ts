@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowType,

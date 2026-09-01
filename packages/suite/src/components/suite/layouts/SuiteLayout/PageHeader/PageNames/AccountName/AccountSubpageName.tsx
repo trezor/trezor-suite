@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { Translation } from '@suite/intl';
 import { goto, selectSettingsBackRoute } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';

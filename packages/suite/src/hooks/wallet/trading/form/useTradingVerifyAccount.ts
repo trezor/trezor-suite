@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     cryptoIdToNetworkSymbol,
     getUnusedAddressFromAccount,

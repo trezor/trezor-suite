@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Card, Column, H3, H4, Modal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';

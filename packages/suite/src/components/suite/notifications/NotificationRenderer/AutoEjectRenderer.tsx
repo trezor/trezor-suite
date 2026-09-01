@@ -1,6 +1,5 @@
-import { useDispatch } from 'react-redux';
-
 import { SettingsAnchor, goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import type { NotificationRendererProps } from 'src/components/suite';

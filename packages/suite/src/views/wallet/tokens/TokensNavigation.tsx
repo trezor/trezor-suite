@@ -1,5 +1,4 @@
 import { type Dispatch, type SetStateAction, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
@@ -7,6 +6,7 @@ import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type Route, goto, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';

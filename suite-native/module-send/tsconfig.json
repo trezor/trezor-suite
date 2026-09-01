@@ -12,6 +12,9 @@
         },
         { "path": "../../suite-common/networks" },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-sync"
         },
         {

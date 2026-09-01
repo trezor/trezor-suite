@@ -1,7 +1,7 @@
 import { type RefObject, useCallback, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
-import { useDispatch } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { syncAllAccountsWithBlockchainThunk } from '@suite-native/blockchain';
 import { useNativeStyles } from '@trezor/styles-native';
 

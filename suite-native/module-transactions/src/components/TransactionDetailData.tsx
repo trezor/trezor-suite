@@ -1,6 +1,7 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type PhishingDetectorId,
     type TokenDefinitionsRootState,

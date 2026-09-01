@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { type TranslationKey } from '@suite/intl';
@@ -7,6 +6,7 @@ import {
     type RevisionCheckErrorWithNotification,
     getIsRevisionCheckErrorWithNotification,
 } from '@suite-common/firmware-authenticity';
+import { useDispatch } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 

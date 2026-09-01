@@ -1,5 +1,5 @@
-import { type Dispatch, type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
-import { type MiddlewareAPI } from 'redux';
+import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
+import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import {
     clientOnPrisonEvent,
@@ -32,7 +32,7 @@ import { discreetModeActions } from '@suite-common/discreet-mode';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
 import { receiveActions } from '@suite-common/receive';
-import { type ActionFromMatcher, type TypeGuard } from '@suite-common/redux-utils';
+import { type ActionFromMatcher, type Dispatch, type TypeGuard } from '@suite-common/redux-utils';
 import {
     setSuiteSyncOwner,
     setSuiteSyncRelayUrl,
@@ -110,7 +110,7 @@ type RememberedDeviceSaveParams<TAction> = {
 };
 
 type RememberedDeviceSaveDeps = {
-    dispatch: Dispatch<UnknownAction>;
+    dispatch: Dispatch;
     getState: () => StorageMiddlewareState;
 };
 
@@ -318,13 +318,11 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
     }),
 ];
 
-export const storageMiddleware = (
-    api: MiddlewareAPI<Dispatch<UnknownAction>, StorageMiddlewareState>,
-) => {
+export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddlewareState>) => {
     db.onBlocking = () => api.dispatch(storageError('blocking'));
     db.onBlocked = () => api.dispatch(storageError('blocked'));
 
-    return (next: Dispatch<UnknownAction>) =>
+    return (next: ReduxDispatch<UnknownAction>) =>
         (action: UnknownAction): UnknownAction => {
             // pass action
             next(action);

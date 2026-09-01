@@ -1,8 +1,8 @@
 import { type RefObject, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { type ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { type AbortablePromise } from '@suite-native/trading-types';
 import { type useDebounce } from '@trezor/react-utils';
 

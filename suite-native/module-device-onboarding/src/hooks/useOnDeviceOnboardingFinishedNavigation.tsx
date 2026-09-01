@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banners';
 import {
     type DeviceOnboardingStackParamList,

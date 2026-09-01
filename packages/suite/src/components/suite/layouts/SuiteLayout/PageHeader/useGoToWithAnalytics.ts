@@ -1,9 +1,8 @@
-import { useDispatch } from 'react-redux';
-
 import { selectSelectedAccountSymbol } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
 import {
@@ -11,6 +11,7 @@ import {
     useConditionControls,
     validateExperimentForm,
 } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Experiments } from '@suite-common/suite-types';
 import { yup } from '@suite-common/validators';
 import { Button, Column, Row } from '@trezor/components';

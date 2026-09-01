@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     selectAutodetectLanguage,
@@ -7,6 +7,7 @@ import {
     selectShowTranslationKeys,
     suiteSettingsActions,
 } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import { KEYBOARD_CODE } from '@trezor/components';
 

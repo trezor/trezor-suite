@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
@@ -10,6 +8,7 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Box, Icon, Row, Text } from '@trezor/components';
 import { CaretCircleDownIcon, PlugsIcon, WalletConnectIcon } from '@trezor/icons';
 

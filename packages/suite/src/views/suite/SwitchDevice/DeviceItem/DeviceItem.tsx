@@ -1,10 +1,10 @@
 import { type ReactNode, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectHasSeenDisconnectTooltip, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {

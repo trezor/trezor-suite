@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { MODAL_CONTEXT_DEVICE, openModal } from '@suite/modal';
@@ -16,6 +15,7 @@ import {
 } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import TrezorConnect, {
     type CallMethodKeys,
     type CallMethodPayload,

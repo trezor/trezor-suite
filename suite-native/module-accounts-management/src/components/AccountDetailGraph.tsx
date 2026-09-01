@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useAtomValue, useSetAtom } from 'jotai';
 
 import { type FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {

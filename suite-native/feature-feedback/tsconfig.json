@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/feedback" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
         { "path": "../atoms" },
         { "path": "../intl" },
         { "path": "../navigation" },

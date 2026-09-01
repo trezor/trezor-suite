@@ -1,9 +1,9 @@
 import { type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS,
     PendingTransactionInfo,

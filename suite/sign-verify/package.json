@@ -13,7 +13,6 @@
     },
     "dependencies": {
         "@hookform/resolvers": "^5.4.0",
-        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/address": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",

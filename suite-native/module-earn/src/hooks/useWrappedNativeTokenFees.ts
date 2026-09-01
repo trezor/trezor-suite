@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type WrappedNativeFlowType,
@@ -65,17 +65,20 @@ export const useWrappedNativeTokenFees = ({
                         decimals: wrappedNative.decimals,
                     },
                 };
-                const result = await dispatch(
+                const result =
                     flowType === 'wrap'
-                        ? composeYieldWrapTransactionThunk({
-                              ...composePayload,
-                              wrapAmount: composeAmount,
-                          })
-                        : composeYieldUnwrapTransactionThunk({
-                              ...composePayload,
-                              unwrapAmount: composeAmount,
-                          }),
-                ).unwrap();
+                        ? await dispatch(
+                              composeYieldWrapTransactionThunk({
+                                  ...composePayload,
+                                  wrapAmount: composeAmount,
+                              }),
+                          ).unwrap()
+                        : await dispatch(
+                              composeYieldUnwrapTransactionThunk({
+                                  ...composePayload,
+                                  unwrapAmount: composeAmount,
+                              }),
+                          ).unwrap();
 
                 if (result.type !== 'action-ready') {
                     return { type: 'error' };

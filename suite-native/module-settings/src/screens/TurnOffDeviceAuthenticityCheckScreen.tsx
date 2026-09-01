@@ -1,5 +1,4 @@
-import { useDispatch } from 'react-redux';
-
+import { useDispatch } from '@suite-common/redux-utils';
 import { Translation } from '@suite-native/intl';
 import { setDeviceAuthenticityCheckEnabled } from '@suite-native/settings';
 

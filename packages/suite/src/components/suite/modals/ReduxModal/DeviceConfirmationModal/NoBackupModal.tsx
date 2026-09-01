@@ -1,8 +1,7 @@
-import { useDispatch } from 'react-redux';
-
 import { Translation } from '@suite/intl';
 import { onReceiveConfirmation } from '@suite/modal';
 import { SettingsAnchor, goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { H2, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 

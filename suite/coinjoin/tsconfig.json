@@ -1,7 +1,7 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "include": ["src/**/*.ts", "redux.d.ts"],
+    "include": ["src/**/*.ts"],
     "exclude": ["**/node_modules", "**/libDev"],
     "references": [
         { "path": "../../suite-common/device" },

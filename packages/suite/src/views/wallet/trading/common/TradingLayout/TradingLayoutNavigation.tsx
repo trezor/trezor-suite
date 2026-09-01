@@ -1,9 +1,8 @@
-import { useDispatch } from 'react-redux';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type Route, goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type IconComponent, SubTabs } from '@trezor/components';
 import { HandshakeIcon, MinusIcon, PlusIcon, RepeatIcon } from '@trezor/icons';
 

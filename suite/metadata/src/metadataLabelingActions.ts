@@ -1,5 +1,3 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import {
     selectDeviceByStaticSessionId,
@@ -15,7 +13,7 @@ import {
     ProviderErrorAction,
     type WalletLabels,
 } from '@suite-common/metadata-types';
-import { type WithServices } from '@suite-common/redux-utils';
+import { type Dispatch, type WithServices } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';

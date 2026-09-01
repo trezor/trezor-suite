@@ -1,8 +1,7 @@
-import { useDispatch } from 'react-redux';
-
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Link, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { UNINSTALL_BRIDGE_URL } from '@trezor/urls';

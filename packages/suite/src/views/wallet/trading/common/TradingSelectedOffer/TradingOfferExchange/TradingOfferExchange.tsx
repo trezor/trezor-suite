@@ -1,11 +1,10 @@
-import { useDispatch } from 'react-redux';
-
 import { type TradeExchangeAction, events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     getSimulatedReceiveAmount,
     selectTradingExchangeActiveTrade,

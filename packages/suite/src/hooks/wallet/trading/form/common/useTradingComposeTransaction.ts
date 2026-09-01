@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,

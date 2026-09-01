@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { Address } from '@suite/address';
 import { openModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     selectAccountByKey,
     selectTransactionByAccountKeyAndTxid,

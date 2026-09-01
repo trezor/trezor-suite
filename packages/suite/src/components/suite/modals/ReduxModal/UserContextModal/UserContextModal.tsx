@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import { MetadataProviderModal } from '@suite/metadata';
 import { type MODAL_CONTEXT_USER, closeModal as closeModalAction } from '@suite/modal';
 import { isOnionUrl } from '@suite/tor';
@@ -8,6 +6,7 @@ import {
     DisableTorStopCoinjoinModal,
     RequestEnableTorModal,
 } from '@suite/tor-desktop';
+import { useDispatch } from '@suite-common/redux-utils';
 import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { UI_EVENTS } from '@trezor/connect';

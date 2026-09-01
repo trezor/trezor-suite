@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { getReceiveAddressToAdd } from '@suite-common/address';
 import { selectCurrentFreshAddress } from '@suite-common/receive';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { IconButton } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';

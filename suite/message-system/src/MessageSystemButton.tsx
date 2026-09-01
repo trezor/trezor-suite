@@ -1,10 +1,11 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { getTorUrlIfAvailable } from '@suite/external-links';
 import { type Route, goto } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
 import { resolveMessageContent } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Message } from '@suite-common/suite-types';
 import { Banner, type ButtonProps } from '@trezor/components';
 

@@ -1,10 +1,10 @@
 import { type MouseEvent } from 'react';
-import { useDispatch } from 'react-redux';
 
 import styled, { css } from 'styled-components';
 
 import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
 import { type Route, goto, selectRouteName } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     Badge,
     Icon,

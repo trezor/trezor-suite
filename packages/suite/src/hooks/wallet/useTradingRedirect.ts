@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import {
     type BuyCryptoPaymentMethod,
     type BuyTradeQuoteRequest,
@@ -10,6 +8,7 @@ import {
 } from 'invity-api';
 
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     parseCryptoId,
     tradingActions,

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     cancelSignSendFormTransactionThunk,
     handleYieldApproveCancelThunk,

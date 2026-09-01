@@ -1,8 +1,7 @@
-import { useDispatch } from 'react-redux';
-
 import { isRejected } from '@reduxjs/toolkit';
 
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     composeEthereumCancelTransactionThunk,
     selectConvertedNetworkFeeInfo,

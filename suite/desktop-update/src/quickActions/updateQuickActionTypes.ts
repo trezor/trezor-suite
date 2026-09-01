@@ -1,6 +1,5 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
 import { goto } from '@suite/router';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { type IconComponent, type UIIntent } from '@trezor/components';
 import { ArrowDownIcon, ArrowsClockwiseFilledIcon, CheckIcon, PlugsIcon } from '@trezor/icons';
 

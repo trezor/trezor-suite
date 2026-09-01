@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -13,6 +12,7 @@ import {
     permissionIcons,
     selectConnectAppPermissions,
 } from '@suite-common/connect-popup';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     Card,

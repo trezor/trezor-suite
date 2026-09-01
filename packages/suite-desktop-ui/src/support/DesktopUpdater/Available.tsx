@@ -1,8 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { downloadThunk } from '@suite/desktop-update';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { type UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
 

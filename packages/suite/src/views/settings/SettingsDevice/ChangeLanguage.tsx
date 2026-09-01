@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectSupportedDeviceLanguages } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 

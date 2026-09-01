@@ -12,9 +12,9 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/redux-utils": "workspace:*",
         "@suite/tor": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "react": "19.2.3",
-        "react-redux": "9.3.0"
+        "react": "19.2.3"
     }
 }

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { type YieldFlowType, stablecoinYieldActions } from '@suite-common/wallet-core';
 import { type TxKeyPath } from '@suite-native/intl';
 

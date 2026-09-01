@@ -1,5 +1,4 @@
 import { type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -8,6 +7,7 @@ import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { useReceiveDisabled } from '@suite/receive';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { typography } from '@trezor/theme';

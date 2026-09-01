@@ -1,5 +1,5 @@
 import { type JSX, useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { AppUpdateEventStatus, events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import {
@@ -13,6 +13,7 @@ import {
     selectDesktopUpdate,
 } from '@suite/desktop-update';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { isArrayMember } from '@trezor/utils';
 

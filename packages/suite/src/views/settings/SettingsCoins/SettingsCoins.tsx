@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 
@@ -13,6 +12,7 @@ import { openModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     changeCoinVisibility,

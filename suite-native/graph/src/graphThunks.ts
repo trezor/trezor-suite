@@ -1,5 +1,3 @@
-import { type useDispatch } from 'react-redux';
-
 import { A } from '@mobily/ts-belt';
 import { getDefaultStore } from 'jotai';
 
@@ -11,6 +9,7 @@ import {
     fetchGraphData,
     getTimeFrameForHistoryHours,
 } from '@suite-common/graph';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { createThunk } from '@suite-common/redux-utils';
 import { type FetchTransactionsFromNowUntilTimestampThunkState } from '@suite-common/wallet-core';
 
@@ -44,7 +43,7 @@ type FetchGraphDataToAtomsParams = {
     isElectrumBackend: boolean;
     baseCurrencyCode: FetchGraphDataParams['baseCurrencyCode'];
     forceRefetch?: boolean;
-    dispatch: ReturnType<typeof useDispatch>;
+    dispatch: Dispatch;
 };
 
 const getGraphAtomsForInstanceId = (instanceId: GraphInstanceId) => {

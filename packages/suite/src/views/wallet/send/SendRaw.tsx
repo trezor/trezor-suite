@@ -1,10 +1,10 @@
 import { useForm, useWatch } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     pushSendFormRawTransactionThunk,
     selectIsMevProtectionEnabled,

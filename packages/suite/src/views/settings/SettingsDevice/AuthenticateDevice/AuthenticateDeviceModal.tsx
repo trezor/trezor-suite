@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 
 import { useSelector } from 'src/hooks/suite';

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Column, Icon, Row, SubTabs } from '@trezor/components';
 import { TrezorLogoIcon, WalletConnectIcon } from '@trezor/icons';
 

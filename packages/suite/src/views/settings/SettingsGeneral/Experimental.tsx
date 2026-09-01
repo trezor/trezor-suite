@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -11,6 +10,7 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectExperimentalFeatures, suiteSettingsActions } from '@suite/settings';
 import { useImperativeServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';

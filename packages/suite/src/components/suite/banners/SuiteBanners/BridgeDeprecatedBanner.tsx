@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 

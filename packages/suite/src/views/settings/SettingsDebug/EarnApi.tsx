@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectEarnYieldWorkerBaseUrl, suiteSettingsActions } from '@suite/settings';
 import {
@@ -7,6 +6,7 @@ import {
     earnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrls,
 } from '@suite-common/earn-stablecoin-api';
+import { useDispatch } from '@suite-common/redux-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';

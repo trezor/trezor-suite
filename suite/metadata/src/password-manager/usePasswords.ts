@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { type PasswordEntry } from '@suite-common/metadata-types';
+import { useDispatch } from '@suite-common/redux-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
 import * as metadataPasswordsActions from '../metadataPasswordsActions';

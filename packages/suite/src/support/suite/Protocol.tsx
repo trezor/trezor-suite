@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectURLSearchParams } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 

@@ -1,6 +1,6 @@
 import { type ReactNode, type Ref, forwardRef } from 'react';
 import { View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
     type TokenDefinitionsRootState,

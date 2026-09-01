@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type TimerId } from '@trezor/type-utils';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';

@@ -1,5 +1,4 @@
-import { useDispatch } from 'react-redux';
-
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { copyToClipboard } from '@trezor/dom-utils';
 

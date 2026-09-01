@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectIsConnectionModalOpen, setConnectionModal, setConnectionMode } from '@suite/device';
 import { goto } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useTimeoutFn, useUnmount } from 'react-use';
 
 import {
@@ -8,6 +7,7 @@ import {
     type SellTradeFinalStatus,
 } from 'invity-api';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTradeStatusType,
     type TradingTransaction,

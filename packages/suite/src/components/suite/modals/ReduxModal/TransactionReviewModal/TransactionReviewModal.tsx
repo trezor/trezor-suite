@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { selectFullSelectedAccount } from '@suite/account';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     cancelSignSendFormTransactionThunk,
     selectPrecomposedSendForm,

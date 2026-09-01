@@ -1,4 +1,4 @@
-import { type Dispatch, createAction } from '@reduxjs/toolkit';
+import { createAction } from '@reduxjs/toolkit';
 
 import { type LocksRootState, selectIsDeviceLocked } from '@suite/locks';
 import { type ModalRootState, closeModal, openModal, selectModal } from '@suite/modal';
@@ -8,6 +8,7 @@ import {
     type MessageSystemRootState,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { getDeviceInstances } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {

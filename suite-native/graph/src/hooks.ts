@@ -1,11 +1,11 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { type PrimitiveAtom, useSetAtom } from 'jotai';
 
 import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { type AccountItem, type FiatGraphPoint } from '@suite-common/graph';
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { returnStableArrayIfEmpty, useDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,

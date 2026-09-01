@@ -44,6 +44,11 @@ export const noDirectUseSelectorStateSyntax = [
  */
 export const noRestrictedSyntax = [
     {
+        message: 'Import useDispatch from @suite-common/redux-utils instead.',
+        selector:
+            "ImportDeclaration[source.value='react-redux'] > ImportSpecifier[imported.name='useDispatch']",
+    },
+    {
         message:
             "Please don't use createAsyncThunk. Use createThunk from @suite-common/redux-utils instead.",
         selector: "CallExpression[callee.name='createAsyncThunk']",

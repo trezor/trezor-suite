@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     type UnsignedClaimTransaction,
     buildClaimCalldata,
     buildUnsignedClaimTransaction,
 } from '@suite-common/earn-stablecoin';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type EvmHexString } from '@suite-common/schemas/src/evm';
 import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
 import {

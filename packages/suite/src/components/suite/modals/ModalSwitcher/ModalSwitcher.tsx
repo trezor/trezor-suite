@@ -1,10 +1,9 @@
-import { useDispatch } from 'react-redux';
-
 import {
     TurnOnSuiteSyncModals,
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from '@suite/suite-sync';
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';

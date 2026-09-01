@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import styled from 'styled-components';
 
 import { AccountLabel } from '@suite/account';
@@ -10,6 +8,7 @@ import { type EarnParams, goto } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type EarnAnalyticsStep,
     EarnFlow,

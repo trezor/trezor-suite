@@ -11,7 +11,11 @@ describe(createSaveDelegatedIdentityKey.name, () => {
         const actions: UnknownAction[] = [];
 
         const saveDelegatedIdentityKey = createSaveDelegatedIdentityKey({
-            dispatch: (action: any) => actions.push(action),
+            dispatch: (action: any) => {
+                actions.push(action);
+
+                return action;
+            },
             platformEncryption: {
                 encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
                     Promise.resolve(ok(asEncryptedHex<T>(`${value}-<encrypted>`))),

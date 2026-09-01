@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type EnhancedTokenInfo,
     type TokenManagementAction,

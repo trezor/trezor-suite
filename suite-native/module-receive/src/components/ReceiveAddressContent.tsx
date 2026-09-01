@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
 import { selectCurrentFreshAddress } from '@suite-common/receive';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { ErrorMessage, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';

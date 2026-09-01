@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { connectPopupActions } from '@suite-common/connect-popup';
+import { useDispatch } from '@suite-common/redux-utils';
 import { CORE_CALL, CORE_CALL_CANCEL, POPUP } from '@trezor/connect';
 
 import {

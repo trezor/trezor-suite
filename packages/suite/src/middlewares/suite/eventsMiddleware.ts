@@ -1,8 +1,9 @@
-import { type Dispatch, type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
-import { type MiddlewareAPI } from 'redux';
+import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
+import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { routerAppChanged } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { type Dispatch } from '@suite-common/redux-utils';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
@@ -17,8 +18,8 @@ import { reportSecurityCheck } from 'src/utils/suite/sentry';
  */
 
 const eventsMiddleware =
-    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
-    (next: Dispatch<UnknownAction>) =>
+    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         const prevState = api.getState();
         // pass action

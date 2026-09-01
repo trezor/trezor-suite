@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import { TrezorLink } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectRecoveryWordRequestInputType } from '@suite/modal';
@@ -14,6 +12,7 @@ import {
     selectWordsCount,
 } from '@suite/recovery';
 import { selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
 import { Badge, Banner, Column } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';

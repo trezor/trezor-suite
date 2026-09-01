@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import styled, { css } from 'styled-components';
 
 import { selectRoundsDurationInHours, selectSessionProgressByAccountKey } from '@suite/coinjoin';
@@ -7,6 +5,7 @@ import { type CoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { goto, selectRouterParams } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectAccountByKey, selectDeviceThunk } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
 import { ProgressPie } from '@trezor/components';

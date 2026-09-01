@@ -1,5 +1,4 @@
 import { type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
 
 import {
     feedbackRatingSelectedEvent,
@@ -11,6 +10,7 @@ import { goto } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
 import { FeedbackCard } from '@trezor/product-components';

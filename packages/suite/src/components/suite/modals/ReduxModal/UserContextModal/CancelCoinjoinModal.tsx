@@ -1,8 +1,7 @@
-import { useDispatch } from 'react-redux';
-
 import { selectSelectedAccount } from '@suite/account';
 import { stopCoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { ArrowsInIcon } from '@trezor/icons';
 

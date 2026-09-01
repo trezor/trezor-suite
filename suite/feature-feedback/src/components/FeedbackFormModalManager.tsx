@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
     type FeedbackFeatureName,
@@ -14,6 +14,7 @@ import {
     selectPendingFeedbackFeature,
     sendFeedbackAction,
 } from '@suite-common/feedback';
+import { useDispatch } from '@suite-common/redux-utils';
 import { SmileyIcon } from '@trezor/icons';
 import { SidebarBanner } from '@trezor/product-components';
 

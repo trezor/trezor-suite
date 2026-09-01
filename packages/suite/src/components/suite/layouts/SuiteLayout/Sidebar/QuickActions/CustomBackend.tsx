@@ -1,6 +1,5 @@
-import { useDispatch } from 'react-redux';
-
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { CheckIcon, DatabaseIcon } from '@trezor/icons';
 import { QuickActionButton } from '@trezor/product-components';
 

@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { IconCircle, Link } from '@trezor/components';
 import { ShuffleIcon } from '@trezor/icons';

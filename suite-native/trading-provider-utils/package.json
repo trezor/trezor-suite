@@ -15,7 +15,6 @@
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.9",
-        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/trading": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type SpinnerLoadingState } from '@suite-native/atoms';
 import {

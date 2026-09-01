@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     fetchAllTransactionsForAccountThunk,

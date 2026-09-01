@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import styled from 'styled-components';
 
 import {
@@ -15,6 +13,7 @@ import {
     type CoinjoinSymbol,
 } from '@suite/coinjoin';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { selectReloadAppDep } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';

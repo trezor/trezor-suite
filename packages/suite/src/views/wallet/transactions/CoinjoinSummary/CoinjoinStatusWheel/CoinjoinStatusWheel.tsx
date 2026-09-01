@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { selectCurrentCoinjoinWheelStates, stopCoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
 import { StopIcon } from '@trezor/icons';

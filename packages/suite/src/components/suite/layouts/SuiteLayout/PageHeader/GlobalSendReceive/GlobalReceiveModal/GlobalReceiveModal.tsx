@@ -1,11 +1,11 @@
 import { useRef } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { CardList, Column, IconCircle, Link, Modal, Paragraph, Row } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';

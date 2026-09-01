@@ -1,5 +1,4 @@
 import { type ReactNode, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -15,6 +14,7 @@ import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
     type EnhancedTokenInfo,

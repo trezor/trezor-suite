@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectFilterKnownTokens,

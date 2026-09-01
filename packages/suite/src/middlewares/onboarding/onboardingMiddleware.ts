@@ -1,10 +1,11 @@
-import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
-import { type MiddlewareAPI } from 'redux';
+import { type UnknownAction } from '@reduxjs/toolkit';
+import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { routerAppChanged } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { firmwareActions } from '@suite-common/firmware';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { forgetDisconnectedDevices } from '@suite-common/wallet-core';
 import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 
@@ -12,8 +13,8 @@ import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { type AppState } from 'src/types/suite';
 
 const onboardingMiddleware =
-    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
-    (next: Dispatch<UnknownAction>) =>
+    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         const isFwInstallationDone =
             firmwareActions.setStatus.match(action) && action.payload === 'done';

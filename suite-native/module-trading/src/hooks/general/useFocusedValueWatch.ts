@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Control, type FieldValues, type Path, useWatch } from '@suite-native/forms';
 import { tradingActions } from '@suite-native/trading-state';
 import { useDebouncedValue } from '@trezor/react-utils';

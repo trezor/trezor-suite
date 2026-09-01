@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import {
     CALL_SOURCE_WEB,
@@ -10,6 +9,7 @@ import {
     queuePopupCall,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     CORE_CALL,
     CORE_CALL_CANCEL,

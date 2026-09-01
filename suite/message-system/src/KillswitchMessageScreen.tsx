@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
@@ -11,6 +11,7 @@ import {
     resolveMessageContent,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectReloadAppDep } from '@suite-common/suite-types';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';

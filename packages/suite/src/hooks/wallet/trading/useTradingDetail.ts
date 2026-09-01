@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { setConnectionModal, useDevice } from '@suite/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,
     type TradingUseDetailOutputProps,

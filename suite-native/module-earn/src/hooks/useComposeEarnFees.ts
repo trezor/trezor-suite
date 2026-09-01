@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useIsFocused } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk, useDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,

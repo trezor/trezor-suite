@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_AMOUNT_FIELDS,

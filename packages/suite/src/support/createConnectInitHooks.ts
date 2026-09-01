@@ -1,7 +1,6 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
 import { openModal, preserveModal } from '@suite/modal';
 import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { type ConnectInitHooks } from '@suite-common/suite-types';
 import { DEVICE, UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 

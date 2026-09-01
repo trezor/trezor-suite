@@ -1,9 +1,9 @@
 import { type UseFormSetValue } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { useGetCountryName } from '@suite/trading';
 import { getCountryFlag } from '@suite-common/flags';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,

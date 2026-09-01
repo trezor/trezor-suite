@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { onReceiveAccount } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Column, Icon, Modal, Row, Skeleton, SubTabs, Table } from '@trezor/components';
 import { type UiRequestSelectAccount } from '@trezor/connect';

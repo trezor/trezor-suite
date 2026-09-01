@@ -1,11 +1,10 @@
-import { useDispatch } from 'react-redux';
-
 import { AccountLabel } from '@suite/account';
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';

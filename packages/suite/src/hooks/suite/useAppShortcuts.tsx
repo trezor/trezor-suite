@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectSelectedAccount } from '@suite/account';
 import { useToggleDebugMode } from '@suite/debug';
@@ -8,6 +7,7 @@ import { SettingsAnchor, closeModalApp, goto } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';

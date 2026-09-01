@@ -1,9 +1,8 @@
-import { useDispatch } from 'react-redux';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Button, Column } from '@trezor/components';
 
 export const DeviceConnect = () => {

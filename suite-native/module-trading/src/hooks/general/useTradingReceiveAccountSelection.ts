@@ -1,5 +1,4 @@
-import { useDispatch } from 'react-redux';
-
+import { useDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { tradingActions } from '@suite-native/trading-state';
 import { type ReceiveAccount } from '@suite-native/trading-types';

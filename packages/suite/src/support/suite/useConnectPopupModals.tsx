@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectIsConnectionModalOpen } from '@suite/device';
 import {
@@ -20,6 +19,7 @@ import {
     connectPopupCallThunkInner,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
+import { useDispatch } from '@suite-common/redux-utils';
 import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 

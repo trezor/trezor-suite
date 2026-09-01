@@ -1,7 +1,7 @@
 import { type MouseEvent, type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { type Route, goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';

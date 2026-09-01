@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
 import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';

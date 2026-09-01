@@ -1,9 +1,9 @@
 // This is iOS version, see the file name.
 
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { useDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 

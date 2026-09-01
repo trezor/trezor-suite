@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,

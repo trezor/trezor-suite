@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { CloudIcon, GearIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';

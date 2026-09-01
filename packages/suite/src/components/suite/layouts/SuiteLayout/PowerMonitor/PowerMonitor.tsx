@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
+import { useDispatch } from '@suite-common/redux-utils';
 import { isMacOs } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 

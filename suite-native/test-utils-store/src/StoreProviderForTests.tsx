@@ -1,14 +1,16 @@
 import { type ReactNode, useMemo } from 'react';
 import { Provider } from 'react-redux';
 
-import type { EnhancedStore } from '@reduxjs/toolkit';
+import { type EnhancedStore, type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import { BasicProviderForTests } from '@suite-native/test-utils';
 
 import { createStoreFromPreloadedState } from './createStoreFromPreloadedState';
 
-export type TestStore = EnhancedStore;
+export type TestStore = Omit<EnhancedStore, 'dispatch'> & {
+    dispatch: ThunkDispatch<any, any, UnknownAction>;
+};
 
 type ReduxProviderProps = {
     children: ReactNode;

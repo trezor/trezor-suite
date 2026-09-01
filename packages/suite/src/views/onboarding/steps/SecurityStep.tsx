@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { canContinue, selectBackup } from '@suite/backup';
 import { useDevice } from '@suite/device';
@@ -8,6 +7,7 @@ import { CreateNfcBackup, NoNfcTags } from '@suite/nfc';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { goto } from '@suite/router';
 import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Badge, Column } from '@trezor/components';
 import { CheckIcon, TrezorBackupIcon, WalletIcon, WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';

@@ -1,11 +1,10 @@
-import { type Dispatch } from '@reduxjs/toolkit';
-
 import {
     getProofOfDelegatedIdentity,
     getPublicIdentityKeyFromDelegatedKey,
 } from '@suite-common/delegated-identity-key';
 import { type ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
 import { DeviceError } from '@suite-common/device';
+import { type Dispatch } from '@suite-common/redux-utils';
 import { type QuotaManagerCommunicationFailedErrType } from '@suite-common/suite-sync-types';
 import {
     type DelegatedIdentityKey,

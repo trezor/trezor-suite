@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { messageSystemActions, resolveMessageContent } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Message } from '@suite-common/suite-types';
 import { Banner, type BannerProps } from '@trezor/components';
 import { XIcon } from '@trezor/icons';

@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { ContinueOnTrezorScreenContent, recoverWalletThunk } from '@suite-native/device';
 import {
     type DeviceOnboardingStackParamList,

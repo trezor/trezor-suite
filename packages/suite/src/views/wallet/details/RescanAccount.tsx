@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { rescanCoinjoinAccount } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Row } from '@trezor/components';
 import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 

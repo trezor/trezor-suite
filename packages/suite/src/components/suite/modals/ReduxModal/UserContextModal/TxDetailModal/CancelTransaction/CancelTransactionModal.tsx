@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
     type ComposeCancelTransactionPartialAccount,

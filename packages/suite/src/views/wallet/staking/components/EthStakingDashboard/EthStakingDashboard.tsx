@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api/src/staking';
+import { useDispatch } from '@suite-common/redux-utils';
 import { getDaysToAddToPool, getDaysToUnstake } from '@suite-common/staking';
 import {
     fetchAllTransactionsForAccountThunk,

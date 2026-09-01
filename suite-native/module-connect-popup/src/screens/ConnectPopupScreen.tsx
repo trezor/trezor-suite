@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -11,6 +11,7 @@ import {
     selectIsDeviceConnectedAndAuthorized,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Loader } from '@suite-native/atoms';
 import { DeviceManager } from '@suite-native/device-manager';

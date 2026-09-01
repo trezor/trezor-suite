@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux';
-
 import {
     type BuyTradeStatus,
     type ExchangeProviderInfo,
@@ -17,6 +15,7 @@ import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { FeedbackCard } from '@trezor/product-components';
 

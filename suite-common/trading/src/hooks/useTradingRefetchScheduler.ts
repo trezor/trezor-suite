@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { clamp } from '@trezor/utils';
 
 import { TRADE_API_RELOAD_QUOTES_AFTER_SECONDS } from '../constants';

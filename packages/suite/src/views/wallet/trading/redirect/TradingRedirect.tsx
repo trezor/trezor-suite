@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import {
     type BuyCryptoPaymentMethod,
@@ -10,6 +9,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectRouter } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type FeeLevel } from '@trezor/connect';
 import { typography } from '@trezor/theme';

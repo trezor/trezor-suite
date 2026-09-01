@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
 import { TorModal, type TorResult, toggleTor } from '@suite/tor-desktop';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectNetworkExplorers } from '@suite-common/wallet-core';
 import {

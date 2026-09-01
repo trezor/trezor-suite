@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { startThpSessionThunk } from '@suite/thp';
+import { useDispatch } from '@suite-common/redux-utils';
 import { PlugsConnectedIcon } from '@trezor/icons';
 
 // reflection of suite/thp/src/firmware/ThpPairingStartStep.tsx

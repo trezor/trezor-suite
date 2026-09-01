@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk, useDispatch } from '@suite-common/redux-utils';
 import {
     type FeesRootState,
     type FormDraftRootState,

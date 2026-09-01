@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectIsTorError, selectTorBootstrap, torActions } from '@suite/tor';
 import { TorStatus } from '@suite/tor-types';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     Banner,
     Card,
@@ -17,7 +18,7 @@ import {
 } from '@trezor/components';
 import { ClockClockwiseIcon, RepeatIcon, TorBrowserIcon } from '@trezor/icons';
 
-import { type ToggleTorDispatch, toggleTor } from '../toggleTorThunk';
+import { toggleTor } from '../toggleTorThunk';
 
 type TorLoaderProps = {
     callback: (value: boolean) => void;
@@ -31,7 +32,7 @@ export const TorLoader = ({ callback }: TorLoaderProps) => {
     const [isDisabling, setIsDisabling] = useState<boolean>(false);
     const torBootstrap = useSelector(selectTorBootstrap);
     const isTorError = useSelector(selectIsTorError);
-    const dispatch = useDispatch<ToggleTorDispatch>();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         // When Tor is disabling there might still be some bootstrap event coming but

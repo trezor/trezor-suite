@@ -1,4 +1,3 @@
-import { type Dispatch } from '@reduxjs/toolkit';
 import crypto from 'crypto';
 
 import { selectSelectedDevice } from '@suite-common/device';
@@ -7,6 +6,7 @@ import {
     type PasswordEntry,
     ProviderErrorAction,
 } from '@suite-common/metadata-types';
+import { type Dispatch } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 

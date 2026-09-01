@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
-import { useDispatch } from 'react-redux';
 
 import { Translation, messages } from '@suite/intl';
 import { onReceiveFee } from '@suite/modal';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { sortLevels } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
 import type {

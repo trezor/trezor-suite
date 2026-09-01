@@ -1,9 +1,8 @@
-import { useDispatch } from 'react-redux';
-
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectIsDeviceAuthenticityCheckEnabled } from '@suite/settings';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Column } from '@trezor/components';
 import {
     ActionButton,

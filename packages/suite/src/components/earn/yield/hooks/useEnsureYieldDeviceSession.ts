@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type YieldFlowType, stablecoinYieldActions } from '@suite-common/wallet-core';
 
 import { ensureDeviceSession } from './ensureDeviceSession';

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import {
     CATEGORY_OPTIONS,
@@ -7,6 +6,7 @@ import {
     useConditionControls,
     useMessageSystemMessageForm,
 } from '@suite-common/message-system';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Category, type Condition } from '@suite-common/suite-types';
 import { Button, Input, Select, Text, VStack } from '@suite-native/atoms';
 

@@ -1,7 +1,7 @@
 import { type RefObject, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { anchorChange, selectRouterAnchor } from '@suite/router';
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

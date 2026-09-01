@@ -1,11 +1,10 @@
-import { useDispatch } from 'react-redux';
-
 import { closeModalApp } from '@suite/router';
 import {
     TurnOnSuiteSyncModals,
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from '@suite/suite-sync';
+import { useDispatch } from '@suite-common/redux-utils';
 
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
 import { usePreferredModal, useSelector } from 'src/hooks/suite';

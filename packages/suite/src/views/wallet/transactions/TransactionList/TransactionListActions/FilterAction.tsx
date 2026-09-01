@@ -1,9 +1,9 @@
 import { type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectHasActiveModal } from '@suite/modal';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectSuspiciousTransactionsFilter,

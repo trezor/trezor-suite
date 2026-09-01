@@ -1,5 +1,4 @@
 import { type ChangeEvent, type ReactNode, useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -15,6 +14,7 @@ import {
     buildUserFeedbackData,
     sendFeedbackAction,
 } from '@suite-common/feedback';
+import { useDispatch } from '@suite-common/redux-utils';
 import { Box, Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
 import { EmojiRatingSelector } from '@trezor/product-components';
 import { typography } from '@trezor/theme';

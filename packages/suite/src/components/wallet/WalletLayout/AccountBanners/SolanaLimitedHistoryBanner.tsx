@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
-
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';

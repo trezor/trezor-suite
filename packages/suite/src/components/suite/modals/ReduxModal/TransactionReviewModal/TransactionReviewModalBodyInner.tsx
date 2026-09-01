@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
@@ -7,6 +6,7 @@ import { closeModal } from '@suite/modal';
 import { selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
+import { useDispatch } from '@suite-common/redux-utils';
 import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import {
     type SerializedTx,
