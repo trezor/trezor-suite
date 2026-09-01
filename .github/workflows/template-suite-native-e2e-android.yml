@@ -152,7 +152,7 @@ jobs:
           ram-size: 4096M
           force-avd-creation: true
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-load -no-snapshot-save -noaudio -no-boot-anim -grpc 8554 -memory 4096
+          emulator-options: -no-window -gpu swiftshader -no-snapshot-load -no-snapshot-save -noaudio -no-boot-anim -grpc 8554 -memory 4096
           disable-animations: true
           cores: 4
           heap-size: 512M
