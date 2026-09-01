@@ -172,7 +172,7 @@ describe('claimMerklRewardsThunk', () => {
         expect(TrezorConnect.pushTransaction).not.toHaveBeenCalled();
     });
 
-    it('stores the pending claim', async () => {
+    it('stores the pending claim with its fee and submission time', async () => {
         const { store, result } = await dispatchClaim(jest.fn());
 
         expect(result).toEqual({ txid: '0xclaim' });
@@ -188,6 +188,8 @@ describe('claimMerklRewardsThunk', () => {
                 type: 'claim',
                 txid: '0xclaim',
                 amount: '',
+                fee: '777000000000',
+                submittedAt: expect.any(Number),
             },
         });
     });

@@ -69,6 +69,23 @@ type ReportContext = {
     wrappedNative?: boolean;
 };
 
+// The stored submittedAt survives leaving and reopening the page, unlike the mount-scoped ref
+// fallback, which restarts the measurement on every remount.
+const getPendingDurationMs = (
+    pendingTransaction: YieldPendingTransactionState,
+    pendingStart: { txid: string; startedAt: number } | null,
+) => {
+    if (pendingTransaction.submittedAt) {
+        return Date.now() - pendingTransaction.submittedAt;
+    }
+
+    if (pendingStart) {
+        return Date.now() - pendingStart.startedAt;
+    }
+
+    return undefined;
+};
+
 const resolveReportedType = <T extends string>(
     outcome: 'success' | 'error' | 'leftPending',
     successType: T,
@@ -178,7 +195,7 @@ export const useYieldPendingTransactionTracking = ({
 
     const isCurrentlyPending = pendingTxStatus === 'pending';
 
-    // Track start time per pending txid so we can compute durationMs on resolution.
+    // Fallback start time per pending txid for pending transactions stored without submittedAt.
     const pendingStartRef = useRef<{ txid: string; startedAt: number } | null>(null);
     const pendingTxid = pendingTransaction?.txid;
 
@@ -203,9 +220,7 @@ export const useYieldPendingTransactionTracking = ({
         }
 
         const resolution = getResolutionEventType(pendingTransaction.type, flowType);
-        const durationMs = pendingStartRef.current
-            ? Date.now() - pendingStartRef.current.startedAt
-            : undefined;
+        const durationMs = getPendingDurationMs(pendingTransaction, pendingStartRef.current);
         const context: ReportContext = {
             networkSymbol: account.symbol,
             vault,
@@ -318,9 +333,10 @@ export const useYieldPendingTransactionTracking = ({
             );
             if (!resolution) return;
 
-            const durationMs = pendingStartRef.current
-                ? Date.now() - pendingStartRef.current.startedAt
-                : undefined;
+            const durationMs = getPendingDurationMs(
+                snapshot.pendingTransaction,
+                pendingStartRef.current,
+            );
 
             reportResolution(analytics, resolution, 'leftPending', {
                 networkSymbol: snapshot.networkSymbol,

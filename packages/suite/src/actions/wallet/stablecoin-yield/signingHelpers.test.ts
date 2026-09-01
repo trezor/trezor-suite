@@ -141,7 +141,11 @@ describe('sendYieldTransaction', () => {
         });
     });
 
-    it('returns sent with the txid after broadcast', async () => {
-        await expect(sendTransaction()).resolves.toEqual({ status: 'sent', txid: '0xtxid' });
+    it('returns sent with the txid and the precomposed fee after broadcast', async () => {
+        await expect(sendTransaction()).resolves.toEqual({
+            status: 'sent',
+            txid: '0xtxid',
+            fee: '31500000000',
+        });
     });
 });

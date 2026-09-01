@@ -153,6 +153,8 @@ export const submitYieldWithdrawThunk = createThunk<
                         type: flowType,
                         txid: result.txid,
                         amount,
+                        fee: result.fee,
+                        submittedAt: Date.now(),
                     },
                 }),
             );

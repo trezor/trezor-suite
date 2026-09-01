@@ -331,6 +331,8 @@ export const claimMerklRewardsThunk = createThunk<
                             type: 'claim',
                             txid: pushResponse.payload.txid,
                             amount: '',
+                            fee: precomposedTransaction.fee,
+                            submittedAt: Date.now(),
                         },
                     }),
                 );

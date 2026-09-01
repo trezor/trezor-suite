@@ -16,7 +16,7 @@ const mockComposeYieldDepositTransactionThunk = jest.fn();
 const mockOpenDeferredModal = jest.fn();
 const mockSendYieldTransaction = jest.fn();
 
-const mockSentResult = (txid: string) => ({ status: 'sent' as const, txid });
+const mockSentResult = (txid: string) => ({ status: 'sent' as const, txid, fee: '31500000000' });
 const mockCancelledResult = { status: 'cancelled' as const };
 
 type SubmitYieldDepositThunkDeps = SendYieldTransactionDeps & { services: DesktopAnalyticsDep };
@@ -114,7 +114,7 @@ describe('submitYieldDepositThunk', () => {
         ).toHaveLength(0);
     });
 
-    it('stores the broadcast transaction as pending', async () => {
+    it('stores the broadcast transaction with its fee and submission time', async () => {
         const store = await dispatchDeposit(jest.fn());
 
         const pendingTxAction = store
@@ -129,6 +129,8 @@ describe('submitYieldDepositThunk', () => {
                 type: 'deposit',
                 txid: '0xdeposit',
                 amount: '100',
+                fee: '31500000000',
+                submittedAt: expect.any(Number),
             },
         });
 

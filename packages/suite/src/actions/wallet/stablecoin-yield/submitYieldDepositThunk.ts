@@ -149,6 +149,8 @@ export const submitYieldDepositThunk = createThunk<
                         type: flowType,
                         txid: sendResult.txid,
                         amount,
+                        fee: sendResult.fee,
+                        submittedAt: Date.now(),
                     },
                     receiptAmount: result.receiptAmount,
                 }),
