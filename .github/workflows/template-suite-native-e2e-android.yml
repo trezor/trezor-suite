@@ -284,9 +284,10 @@ jobs:
 
           # Linux limits the process name to 15 bytes, so qemu-system-x86 is a
           # stable match even when the Android SDK path changes or is not on PATH.
+          # With a match present, coredumpctl requires the list verb explicitly.
           qemuCorePidOutput="$(
             coredumpctl --no-pager --field=COREDUMP_PID \
-              COREDUMP_COMM=qemu-system-x86 2>&1
+              list COREDUMP_COMM=qemu-system-x86 2>&1
           )"
           qemuCorePidStatus=$?
 
