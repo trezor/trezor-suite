@@ -3,6 +3,8 @@
 ### 0.4.4
 
 - fix: macos scan filters on the Trezor service UUID instead of retaining every nearby BLE advertiser (memory growth)
+- fix: notification stream tasks are owned by a central registry and aborted when their websocket client disconnects, BLE subscriptions are released with the last stream
+- fix: broadcast listeners survive lagged channels instead of exiting silently
 
 ### 0.4.3
 

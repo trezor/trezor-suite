@@ -17,7 +17,11 @@ use tokio::{
 
 use crate::server::{
     device::{DeviceConnectionStatus, TrezorDevice},
-    types::{AbortProcess, AdapterState, ChannelMessage, KnownDevice, NotificationEvent},
+    notification_registry::{NotificationRegistry, RemovedStream},
+    types::{
+        AbortProcess, AdapterState, ChannelMessage, KnownDevice, NotificationCharacteristic,
+        NotificationEvent,
+    },
     utils, ConnectionBroadcast,
 };
 
@@ -36,6 +40,7 @@ pub struct AdapterManager {
     discovered_id: DashSet<String>,
     serviceless_peripherals: DashMap<String, ServicelessDevice>,
     serviceless_peripherals_prune_ts: Arc<Mutex<u128>>,
+    notification_streams: NotificationRegistry,
 }
 
 struct ManagerState {
@@ -100,6 +105,7 @@ impl AdapterManager {
             discovered_id: DashSet::new(),
             serviceless_peripherals: DashMap::new(),
             serviceless_peripherals_prune_ts: Arc::new(Mutex::new(0)),
+            notification_streams: NotificationRegistry::default(),
         })
     }
 
@@ -555,6 +561,12 @@ impl AdapterManager {
                         }
                     }
                     CentralEvent::DeviceDisconnected(id) => {
+                        // The BLE subscriptions died with the connection, abort
+                        // the notification streams reading from this peripheral.
+                        self_ref
+                            .close_notification_streams(None, Some(&id.to_string()), None)
+                            .await;
+
                         if let Some(mut device) = self_ref.get_device(&id).await {
                             info!("DeviceDisconnected: {:?} : {:?}", id, device);
 
@@ -636,6 +648,11 @@ impl AdapterManager {
     }
 
     pub async fn remove_listener(&self, listener: &ConnectionBroadcast) {
+        // Notification streams forward to this connection only, so they must
+        // not outlive it no matter how many other clients stay connected.
+        self.close_notification_streams(Some(listener.get_peer()), None, None)
+            .await;
+
         let mut state = self.manager_state.lock().await;
         state.listeners.retain(|item| !item.same_channel(listener));
 
@@ -648,6 +665,63 @@ impl AdapterManager {
     pub async fn is_listeners_empty(&self) -> bool {
         let state = self.manager_state.lock().await;
         state.listeners.is_empty()
+    }
+
+    pub fn register_notification_stream(
+        &self,
+        peer: String,
+        device_id: String,
+        characteristic: NotificationCharacteristic,
+        task: JoinHandle<()>,
+    ) {
+        self.notification_streams
+            .register(peer, device_id, characteristic, task);
+    }
+
+    /// Aborts matching notification stream tasks and releases BLE
+    /// subscriptions that lost their last stream. `None` filters match
+    /// everything.
+    pub async fn close_notification_streams(
+        &self,
+        peer: Option<&str>,
+        device_id: Option<&str>,
+        characteristic: Option<&NotificationCharacteristic>,
+    ) {
+        let removed = self
+            .notification_streams
+            .remove(peer, device_id, characteristic);
+
+        for stream in removed {
+            info!(
+                "{} {:?} stream terminated",
+                stream.device_id, stream.characteristic
+            );
+            if stream.unsubscribe {
+                self.unsubscribe_characteristic(&stream).await;
+            }
+        }
+    }
+
+    // Best effort BLE-level unsubscribe. The peripheral may already be gone
+    // (device disconnected), errors are only logged.
+    async fn unsubscribe_characteristic(&self, stream: &RemovedStream) {
+        let Ok(peripheral) = self.get_peripheral_or_die(&stream.device_id).await else {
+            return;
+        };
+        let uuid = stream.characteristic.to_uuid();
+        let Some(characteristic) = peripheral
+            .characteristics()
+            .into_iter()
+            .find(|c| c.uuid == uuid)
+        else {
+            return;
+        };
+        if let Err(err) = peripheral.unsubscribe(&characteristic).await {
+            info!(
+                "Unsubscribe {} {:?} error: {err}",
+                stream.device_id, stream.characteristic
+            );
+        }
     }
 
     async fn dispatch_adapter_event(&self) {
@@ -671,5 +745,64 @@ impl AdapterManager {
         for listener in &listeners {
             listener.send(message.clone());
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::atomic::{AtomicBool, Ordering};
+
+    // Sets the flag when the task future is dropped, i.e. when it was aborted.
+    struct SetOnDrop(Arc<AtomicBool>);
+    impl Drop for SetOnDrop {
+        fn drop(&mut self) {
+            self.0.store(true, Ordering::SeqCst);
+        }
+    }
+
+    fn pending_stream_task(aborted: Arc<AtomicBool>) -> JoinHandle<()> {
+        // The guard is captured by the future itself, so it is dropped even
+        // when the task is aborted before its first poll.
+        let guard = SetOnDrop(aborted);
+        tokio::spawn(async move {
+            let _guard = guard;
+            std::future::pending::<()>().await;
+        })
+    }
+
+    // Finding 2 of https://github.com/trezor/trezor-suite/issues/31948:
+    // a disconnecting client must not leave its notification stream task
+    // alive just because another client is still connected.
+    #[tokio::test]
+    async fn remove_listener_aborts_streams_of_disconnected_client_only() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let client_a = ConnectionBroadcast::new("a".to_string()).expect("broadcast");
+        let client_b = ConnectionBroadcast::new("b".to_string()).expect("broadcast");
+        manager.add_listener(client_a.clone()).await;
+        manager.add_listener(client_b.clone()).await;
+
+        let aborted_a = Arc::new(AtomicBool::new(false));
+        let aborted_b = Arc::new(AtomicBool::new(false));
+        manager.register_notification_stream(
+            "a".to_string(),
+            "dev1".to_string(),
+            NotificationCharacteristic::Read,
+            pending_stream_task(aborted_a.clone()),
+        );
+        manager.register_notification_stream(
+            "b".to_string(),
+            "dev1".to_string(),
+            NotificationCharacteristic::Read,
+            pending_stream_task(aborted_b.clone()),
+        );
+
+        // Client "a" disconnects while client "b" stays connected.
+        manager.remove_listener(&client_a).await;
+        // Give the runtime a moment to drop the aborted task.
+        sleep(Duration::from_millis(50)).await;
+
+        assert!(aborted_a.load(Ordering::SeqCst));
+        assert!(!aborted_b.load(Ordering::SeqCst));
     }
 }
