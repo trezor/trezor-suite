@@ -22,8 +22,51 @@ import { bluetoothConnectDeviceThunk } from 'src/actions/bluetooth/bluetoothConn
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { fixLinuxManufacturerData } from 'src/actions/bluetooth/fixLinuxManufacturerData';
 import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
+import { isBluetoothDeviceReachable } from 'src/actions/bluetooth/isBluetoothDeviceReachable';
 import { remapKnownDevicesForLinuxAndWindows } from 'src/actions/bluetooth/remapKnownDevicesForLinuxAndWindows';
 import { type AppState } from 'src/types/suite';
+
+const BACKGROUND_SCAN_INTERVAL = 60_000;
+const BACKGROUND_SCAN_DURATION = 15_000;
+
+const createBackgroundScan = (getState: () => AppState) => {
+    let timerId: ReturnType<typeof setInterval> | null = null;
+
+    const stop = () => {
+        if (timerId !== null) {
+            clearInterval(timerId);
+            timerId = null;
+        }
+    };
+
+    const runCycle = async () => {
+        const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
+        const hasDisconnectedKnownDevice = knownDevices.some(d => !isBluetoothDeviceReachable(d));
+        if (hasDisconnectedKnownDevice) {
+            await bluetoothIpc.startScan('background');
+            resolveAfter(BACKGROUND_SCAN_DURATION).then(() => bluetoothIpc.stopScan('background'));
+        } else {
+            stop();
+        }
+    };
+
+    const start = () => {
+        if (timerId !== null) {
+            return;
+        }
+        runCycle();
+        timerId = setInterval(runCycle, BACKGROUND_SCAN_INTERVAL);
+    };
+
+    const restartIfNeeded = () => {
+        const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
+        if (knownDevices.some(d => !isBluetoothDeviceReachable(d))) {
+            start();
+        }
+    };
+
+    return { start, stop, restartIfNeeded };
+};
 
 const attemptDeviceConnect = async (
     device: DesktopBluetoothDevice,
@@ -120,6 +163,8 @@ const setupBluetoothListeners = (getState: () => AppState, dispatch: Dispatch) =
 };
 
 const setupAutoReconnect = (getState: () => AppState, dispatch: Dispatch) => {
+    const backgroundScan = createBackgroundScan(getState);
+
     // Wait for 3s or until a USB device connects before attempting BT auto-reconnect
     const waitForDevice = new Promise<void>(resolve => {
         const cleanup = () => {
@@ -136,11 +181,13 @@ const setupAutoReconnect = (getState: () => AppState, dispatch: Dispatch) => {
         });
 
         const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
-        // If we already have some paired devices, we assume user will have a BT device,
-        // and therefore we start looking for it.
         if (knownDevices.length > 0) {
-            bluetoothIpc.startScan();
+            backgroundScan.start();
         }
+
+        bluetoothIpc.on('device-update', () => {
+            backgroundScan.restartIfNeeded();
+        });
     });
 };
 
