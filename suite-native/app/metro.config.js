@@ -14,6 +14,8 @@ const defaultSourceExts = [...jsonExpoConfig.resolver.sourceExts, 'md'];
 const additionalSourceExts = process.env.RN_SRC_EXT ? process.env.RN_SRC_EXT.split(',') : [];
 const sourceExts = [...additionalSourceExts, ...defaultSourceExts];
 
+const cjsOnlyPackages = ['@sinclair/typebox', 'kysely'];
+
 /**
  * Metro configuration
  * https://facebook.github.io/metro/docs/configuration
@@ -50,12 +52,21 @@ const config = {
                 originModulePath: context.originModulePath,
             });
 
-            if (moduleName === '@sinclair/typebox' || moduleName.startsWith('@sinclair/typebox/')) {
-                // TypeBox subpaths ('./value', './errors') resolve to the CJS build while the
-                // package root resolves to ESM, which puts two TypeBox instances in the bundle.
-                // Custom kinds registered in one instance's `TypeRegistry` are then invisible to
-                // the validator from the other one. Pin the whole package to the CJS build.
-                // See: https://github.com/expo/expo/issues/37171
+            // Packages whose ESM build Metro would pick via `exports`, but which we need to
+            // resolve to their CommonJS build instead:
+            // - `@sinclair/typebox`: subpaths ('./value', './errors') resolve to CJS while the
+            //   package root resolves to ESM, so two TypeBox instances end up in the bundle.
+            //   Custom kinds registered in one instance's `TypeRegistry` are then invisible to
+            //   the validator from the other one. See https://github.com/expo/expo/issues/37171
+            // - `kysely`: its ESM `FileMigrationProvider` calls `await import()` with a computed
+            //   specifier, which Hermes refuses to compile ('Invalid expression encountered').
+            //   The CJS build emits a plain `require()` there.
+            if (
+                cjsOnlyPackages.some(
+                    packageName =>
+                        moduleName === packageName || moduleName.startsWith(`${packageName}/`),
+                )
+            ) {
                 return context.resolveRequest(
                     { ...context, isESMImport: false },
                     moduleName,
