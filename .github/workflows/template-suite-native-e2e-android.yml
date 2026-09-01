@@ -153,8 +153,9 @@ jobs:
           force-avd-creation: true
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
           emulator-port: 5554
-          emulator-options: -no-window -gpu swiftshader -no-snapshot-load -no-snapshot-save -noaudio -no-boot-anim -memory 4096
+          emulator-options: -no-window -gpu swiftshader -accel on -no-snapshot-load -no-snapshot-save -noaudio -no-boot-anim -memory 4096
           disable-spellchecker: true
+          disable-linux-hw-accel: false
           disable-animations: true
           cores: 4
           heap-size: 512M
