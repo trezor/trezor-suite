@@ -14,34 +14,34 @@ import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { type StablecoinYieldClaimSummary } from '../types';
 import { getUniqueStablecoinYieldClaimTokens } from '../utils/stablecoinYieldClaimSummaryUtils';
 
-type StablecoinYieldClaimRewardsCardSectionProps = {
+interface YieldClaimRewardsCardSectionProps {
     claimRewards: StablecoinYieldClaimSummary[];
     totalFiatClaimableAmount: BaseCurrencyAmount | null;
     isLoading: boolean;
     onPress: () => void;
-};
+}
 
-export const StablecoinYieldClaimRewardsCardSection = ({
+export const YieldClaimRewardsCardSection = ({
     claimRewards,
     totalFiatClaimableAmount,
     isLoading,
     onPress,
-}: StablecoinYieldClaimRewardsCardSectionProps) => {
+}: YieldClaimRewardsCardSectionProps) => {
+    const { analytics } = useServices(selectNativeAnalyticsDep);
+
     const {
         isDisabled: isClaimFeatureDisabled,
         content: claimDisabledContent,
         variant: claimDisabledVariant,
     } = useMessageSystemYield('claim');
+
     const isDisabled = claimRewards.length === 0 || isLoading || isClaimFeatureDisabled;
+
     const tokens = getUniqueStablecoinYieldClaimTokens(claimRewards);
     const firstToken = tokens[0];
 
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-
-    const handlePress = useCallback(() => {
-        if (isDisabled) {
-            return;
-        }
+    const onClaimRewardsPress = useCallback(() => {
+        if (isDisabled) return;
 
         analytics.report({
             type: events.yieldInteractionEvent.name,
@@ -51,7 +51,7 @@ export const StablecoinYieldClaimRewardsCardSection = ({
         });
 
         onPress();
-    }, [isDisabled, onPress, analytics]);
+    }, [isDisabled, analytics, onPress]);
 
     return (
         <Box padding="sp16">
@@ -116,7 +116,7 @@ export const StablecoinYieldClaimRewardsCardSection = ({
                         priority="secondary"
                         isDisabled={isDisabled}
                         isLoading={isLoading}
-                        onPress={handlePress}
+                        onPress={onClaimRewardsPress}
                     >
                         <Translation id="earn.earnScreen.depositsCard.claimRewardsButton" />
                     </Button>

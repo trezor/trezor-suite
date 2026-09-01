@@ -21,7 +21,7 @@ import { EarnActiveItemsBottomSheet } from './EarnActiveItemsBottomSheet';
 import { EarnBalanceCard } from './EarnBalanceCard';
 import { EarnDepositsCardRow } from './EarnDepositsCardRow';
 import { YieldClaimRewardsBottomSheet } from './YieldClaimRewardsBottomSheet';
-import { StablecoinYieldClaimRewardsCardSection } from './StablecoinYieldClaimRewardsCardSection';
+import { YieldClaimRewardsCardSection } from './YieldClaimRewardsCardSection';
 import { useEarnDepositsCardData } from '../hooks/useEarnDepositsCardData';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../hooks/useStablecoinYieldFirmwareUpdateAlert';
 import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
@@ -216,7 +216,7 @@ export const EarnDepositsCard = ({
                                 {(stablecoinYieldRow !== null || isStablecoinYieldLoading) && (
                                     <Divider />
                                 )}
-                                <StablecoinYieldClaimRewardsCardSection
+                                <YieldClaimRewardsCardSection
                                     claimRewards={stablecoinYieldClaimSummaries}
                                     totalFiatClaimableAmount={
                                         stablecoinYieldTotalFiatClaimableAmount
