@@ -4,7 +4,8 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     getWrappedNativeAddress,
     getWrappedNativeSymbol,
-} from '@trezor/network-ethereum-suite-common';
+    isSupportedEthereumNetwork,
+} from '@trezor/network-ethereum/constants';
 
 import {
     type TransactionNotificationToken,
@@ -48,20 +49,18 @@ export const TransactionIcon = ({
 
     // A wrap (ETH→WETH) is denominated in the wrapped-native token, so show its logo (e.g. WETH) to
     // match the amount. An unwrap is denominated in the native coin and uses the native icon below.
-    if (notificationType === 'tx-wrap') {
+    if (notificationType === 'tx-wrap' && isSupportedEthereumNetwork(symbol)) {
         const wrappedNativeAddress = getWrappedNativeAddress(symbol);
 
-        if (wrappedNativeAddress) {
-            return (
-                <TokenIcon
-                    symbol={symbol}
-                    contractAddress={wrappedNativeAddress}
-                    placeholder={getWrappedNativeSymbol(symbol) ?? symbol}
-                    size={20}
-                    shouldTryToFetch
-                />
-            );
-        }
+        return (
+            <TokenIcon
+                symbol={symbol}
+                contractAddress={wrappedNativeAddress}
+                placeholder={getWrappedNativeSymbol(symbol)}
+                size={20}
+                shouldTryToFetch
+            />
+        );
     }
 
     if (shouldDisplayAssetLogo({ notificationType, token }) && token) {
