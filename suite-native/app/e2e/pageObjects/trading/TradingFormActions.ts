@@ -145,7 +145,7 @@ export abstract class TradingFormActions extends TradingActions {
         await waitForVisible(providersPicker);
     }
 
-    async selectProvider(providerName: string, filter: 'DEX' | 'CEX' | 'FIXED') {
+    async selectProvider(providerName: string, filter: 'dex' | 'cex' | 'all') {
         const providersPicker = this.getElementById('provider-picker');
         await waitForVisible(providersPicker, { timeout: this.SHORT_TIMEOUT });
         await providersPicker.tap();
