@@ -280,34 +280,43 @@ jobs:
 
           qemuCoredumpInfo="$DIAG_DIR/qemu-coredump-info.log"
           qemuBacktraces="$DIAG_DIR/qemu-backtraces.log"
-          emulatorExecutable="$(command -v emulator || true)"
           qemuCorePids=()
 
-          if [[ -n "$emulatorExecutable" ]]; then
-            qemuExecutable="$(dirname "$emulatorExecutable")/qemu/linux-x86_64/qemu-system-x86_64-headless"
+          # Linux limits the process name to 15 bytes, so qemu-system-x86 is a
+          # stable match even when the Android SDK path changes or is not on PATH.
+          qemuCorePidOutput="$(
+            coredumpctl --no-pager --field=COREDUMP_PID \
+              COREDUMP_COMM=qemu-system-x86 2>&1
+          )"
+          qemuCorePidStatus=$?
+
+          printf 'QEMU coredump PID query exited with status %s.\n' "$qemuCorePidStatus" \
+            > "$qemuCoredumpInfo"
+          printf '%s\n' "$qemuCorePidOutput" >> "$qemuCoredumpInfo"
+
+          if [[ "$qemuCorePidStatus" -eq 0 ]]; then
             mapfile -t qemuCorePids < <(
-              coredumpctl --no-pager --field=COREDUMP_PID "$qemuExecutable" 2>/dev/null || true
+              printf '%s\n' "$qemuCorePidOutput" | grep -E '^[0-9]+$' | sort -nu
             )
           fi
 
           if [[ "${#qemuCorePids[@]}" -eq 0 ]]; then
-            printf 'No QEMU coredumps found.\n' > "$qemuCoredumpInfo"
+            printf 'No QEMU coredumps found.\n' >> "$qemuCoredumpInfo"
             printf 'No QEMU coredumps found.\n' > "$qemuBacktraces"
           else
-            : > "$qemuCoredumpInfo"
             : > "$qemuBacktraces"
 
             for corePid in "${qemuCorePids[@]}"; do
               printf '\n===== QEMU coredump PID %s =====\n' "$corePid" \
                 >> "$qemuCoredumpInfo"
-              coredumpctl --no-pager info "$corePid" "$qemuExecutable" \
+              coredumpctl --no-pager info "$corePid" \
                 >> "$qemuCoredumpInfo" 2>&1 || true
 
               printf '\n===== QEMU backtrace PID %s =====\n' "$corePid" \
                 >> "$qemuBacktraces"
               if command -v gdb >/dev/null; then
                 DEBUGINFOD_URLS="" timeout --kill-after=10s 60s \
-                  coredumpctl --no-pager debug "$corePid" "$qemuExecutable" \
+                  coredumpctl --no-pager debug "$corePid" \
                   --debugger-arguments="-batch -quiet -iex 'set debuginfod enabled off' -ex 'set pagination off' -ex 'set print frame-arguments none' -ex 'thread apply all bt 30'" \
                   >> "$qemuBacktraces" 2>&1
                 backtraceStatus=$?
