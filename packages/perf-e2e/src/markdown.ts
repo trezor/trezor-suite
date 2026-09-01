@@ -63,6 +63,76 @@ const sectionMarkers = (label: string) => ({
     end: `<!-- PERF-E2E-SECTION:${safeLabel(label)}:END -->`,
 });
 
+/**
+ * The measurements a section was rendered from, carried inside it so the next publisher can add to
+ * them instead of replacing them. The orchestrator runs a Playwright process per test file, so one
+ * job publishes several times under the same section label, each time knowing only its own file's
+ * scenarios.
+ */
+const DATA_START = '<!-- PERF-E2E-DATA:';
+const DATA_END = ' -->';
+
+const encodeMeasurements = (measurements: readonly ReportedMeasurement[]) =>
+    `${DATA_START}${Buffer.from(JSON.stringify(measurements), 'utf8').toString('base64')}${DATA_END}`;
+
+const decodeMeasurements = (encoded: string): ReportedMeasurement[] => {
+    try {
+        const parsed: unknown = JSON.parse(Buffer.from(encoded, 'base64').toString('utf8'));
+
+        return Array.isArray(parsed) ? (parsed as ReportedMeasurement[]) : [];
+    } catch {
+        // A section written by an older run, or one somebody edited by hand. Nothing to keep, and
+        // failing here would cost the measurements this run does have.
+        return [];
+    }
+};
+
+/**
+ * What a section already reported, or nothing when it is absent or unreadable.
+ */
+export const readSectionMeasurements = ({
+    body = '',
+    label,
+}: {
+    body?: string;
+    label: string;
+}): ReportedMeasurement[] => {
+    const { start, end } = sectionMarkers(label);
+    const startIndex = body.indexOf(start);
+    const endIndex = body.indexOf(end);
+
+    if (startIndex === -1 || endIndex <= startIndex) {
+        return [];
+    }
+
+    const section = body.slice(startIndex, endIndex);
+    const dataStart = section.indexOf(DATA_START);
+
+    if (dataStart === -1) {
+        return [];
+    }
+
+    const dataEnd = section.indexOf(DATA_END, dataStart);
+
+    return dataEnd === -1
+        ? []
+        : decodeMeasurements(section.slice(dataStart + DATA_START.length, dataEnd));
+};
+
+/**
+ * The fresher measurement of a scenario wins, everything else the section held is kept. Sorted, so
+ * that the table does not reshuffle between publishes of the same section.
+ */
+export const mergeMeasurements = (
+    previous: readonly ReportedMeasurement[],
+    incoming: readonly ReportedMeasurement[],
+): ReportedMeasurement[] => {
+    const merged = new Map(previous.map(measurement => [measurement.key, measurement]));
+    incoming.forEach(measurement => merged.set(measurement.key, measurement));
+
+    return [...merged.values()].sort((a, b) => a.key.localeCompare(b.key));
+};
+
 /** For a table cell, where an unescaped pipe would start a new column. */
 const escapeCell = (value: string) => value.replace(/\\/g, '\\\\').replace(/\|/g, '\\|');
 
@@ -237,6 +307,7 @@ export const formatMarkdownReport = (
         ...overLimit.flatMap(measurement => overLimitShowcase(measurement, budgetsPath)),
         '',
         '</details>',
+        encodeMeasurements(measurements),
     ].join('\n');
 };
 
