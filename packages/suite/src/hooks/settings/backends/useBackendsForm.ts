@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
@@ -12,11 +13,11 @@ import {
     getServerAddressExample,
     validateServerAddress,
 } from '@suite-common/wallet-config';
-import { blockchainActions } from '@suite-common/wallet-core';
+import { blockchainActions, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { type BackendSettings } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type BackendsFormData = {
     type: ServerType;
@@ -72,7 +73,7 @@ const getStoredState = (
 
 export const useBackendsForm = (symbol: NetworkSymbol) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const backends = useSelector(state => state.wallet.blockchain[symbol].backends);
+    const backends = useSelector(state => selectNetworkBlockchainInfo(state, symbol).backends);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const [currentValues, setCurrentValues] = useState(() =>

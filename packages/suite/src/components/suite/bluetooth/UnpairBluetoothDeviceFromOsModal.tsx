@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
@@ -7,7 +8,7 @@ import { Banner, Column, H3, Modal, Paragraph, Spinner } from '@trezor/component
 
 import { selectIsUnpairingDevice } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type UnpairBluetoothDeviceFromOsModalProps = {
     onFinish?: () => void;

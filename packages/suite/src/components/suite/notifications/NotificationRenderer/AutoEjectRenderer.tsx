@@ -1,8 +1,9 @@
+import { useDispatch } from 'react-redux';
+
 import { SettingsAnchor, goto } from '@suite/router';
 
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import type { NotificationRendererProps } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
 
 export const AutoEjectRenderer = ({ render: View, notification }: NotificationRendererProps) => {
     const dispatch = useDispatch();

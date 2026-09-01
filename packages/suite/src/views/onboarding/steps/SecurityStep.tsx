@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { canContinue } from '@suite/backup';
+import { canContinue, selectBackup } from '@suite/backup';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { CreateNfcBackup, NoNfcTags } from '@suite/nfc';
@@ -15,7 +16,7 @@ import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { BackupSeedCards } from 'src/components/backup';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { ConfirmActionModal } from 'src/components/suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';
-import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 
 type SecurityStepStatus = 'initial' | 'in-progress' | 'skipping-backup' | 'finished';
 
@@ -35,7 +36,7 @@ export const SecurityStep = () => {
     const { isLocked } = useDevice();
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
-    const backup = useSelector(state => state.backup);
+    const backup = useSelector(selectBackup);
     const isDeviceLocked = isLocked();
     const isBackupRequired = useSelector(selectIsDeviceBackupRequired);
     const isNfcBackup = backupMedium === 'nfc';

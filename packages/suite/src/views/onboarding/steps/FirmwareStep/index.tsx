@@ -7,7 +7,7 @@ import {
     useFirmwareInstallationProgressCheck,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
-import { MODAL_CONTEXT_DEVICE } from '@suite/modal';
+import { MODAL_CONTEXT_DEVICE, selectModal } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Card } from '@trezor/components';
@@ -25,7 +25,7 @@ import { DeviceDisconnectedStep } from '../../UnexpectedState/DeviceDisconnected
 
 export const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
-    const modal = useSelector(state => state.modal);
+    const modal = useSelector(selectModal);
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const { error, resetReducer, firmwareUpdate, targetType, status } = useFirmwareDesktopUpdate();
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =

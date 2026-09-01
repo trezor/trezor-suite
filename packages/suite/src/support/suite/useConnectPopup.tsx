@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
     CALL_SOURCE_WEB,
@@ -19,7 +20,8 @@ import {
     createPopupMessage,
 } from '@trezor/connect';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
 
 /**
  * Normalized incoming message from either the web or webextension popup link.
@@ -73,7 +75,7 @@ export const useConnectPopup = (
     onMessagesConsumed: () => void,
 ) => {
     const dispatch = useDispatch();
-    const lifecycle = useSelector(state => state.suite.lifecycle);
+    const lifecycle = useSelector(selectSuiteLifecycle);
     const popupCall = useSelector(selectConnectPopupCall);
     const manifest = useRef<ManifestPartial | undefined>(undefined);
     const requestedPermissions = useRef<PermissionRequest[] | undefined>(undefined);

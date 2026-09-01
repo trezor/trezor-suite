@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -10,7 +11,7 @@ import {
 import { Button, Input, Row, Switch, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const DustPhishing = () => {
     const dispatch = useDispatch();

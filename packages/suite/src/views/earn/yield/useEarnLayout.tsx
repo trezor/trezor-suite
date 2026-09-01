@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { type TranslationKey } from '@suite/intl';
 import { type EarnParams, goto } from '@suite/router';
@@ -17,7 +18,7 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { YieldPageHeader } from 'src/components/earn';
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
-import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
+import { useLayout, useSelector } from 'src/hooks/suite';
 import { type EarnLayoutState } from 'src/types/earn/earnLayout';
 
 type EarnYieldAnalyticsStep = Extract<EarnAnalyticsStep, 'yield-deposit' | 'yield-withdraw'>;

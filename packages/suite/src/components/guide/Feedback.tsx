@@ -1,10 +1,12 @@
 import { type ChangeEvent, type ReactNode, useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { selectRouter } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import {
     type FeedbackCategory,
@@ -24,7 +26,7 @@ import {
     GuideSectionHeadline,
     GuideViewWrapper,
 } from 'src/components/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const AnonymousDataList = styled.ul`
     margin-left: 20px;
@@ -52,7 +54,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
     const { device } = useDevice();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
-    const router = useSelector(state => state.router);
+    const router = useSelector(selectRouter);
     const [description, setDescription] = useState('');
     const [rating, setRating] = useState<Rating | undefined>();
 

@@ -109,7 +109,7 @@ const receiveSlice = createSliceWithExtraDeps({
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<ReceiveRootState>();
 
-const selectReceiveAccountState = (state: ReceiveRootState, accountKey?: AccountKey) =>
+export const selectReceiveAccountState = (state: ReceiveRootState, accountKey?: AccountKey) =>
     accountKey ? state.receive.accounts[accountKey] : undefined;
 
 export const selectTouchedAddresses = createMemoizedSelector(

@@ -21,7 +21,7 @@ import {
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
 
 import {

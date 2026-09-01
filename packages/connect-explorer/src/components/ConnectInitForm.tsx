@@ -21,6 +21,11 @@ import * as trezorConnectActions from '../actions/trezorConnectActions';
 import { allCoinsSelect } from '../constants/coins';
 import { useActions, useSelector } from '../hooks';
 import { RequestedPermissions } from './RequestedPermissions';
+import {
+    selectConnectInitError,
+    selectIsConnectInitSuccess,
+    selectIsConnectInitializing,
+} from '../reducers/trezorConnectReducer';
 import type { ConnectOptions } from '../types/actions';
 
 type CoreMode = 'auto' | 'deeplink' | 'suite-desktop' | 'suite-web';
@@ -164,9 +169,9 @@ const CopyWrapper = styled.div`
 `;
 
 export const ConnectInitForm = () => {
-    const isInitializing = useSelector(state => state.connect?.isInitializing ?? false);
-    const isInitSuccess = useSelector(state => state.connect?.isInitSuccess ?? false);
-    const initError = useSelector(state => state.connect?.initError);
+    const isInitializing = useSelector(selectIsConnectInitializing);
+    const isInitSuccess = useSelector(selectIsConnectInitSuccess);
+    const initError = useSelector(selectConnectInitError);
 
     const actions = useActions({ initWithOptions: trezorConnectActions.initWithOptions });
 

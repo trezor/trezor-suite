@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey } from '@suite/intl';
@@ -10,7 +11,7 @@ import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
 
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 
 const items: { id: string; icon: IconComponent; text: TranslationKey }[] = [
     { id: 'security', icon: ShieldCheckIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },

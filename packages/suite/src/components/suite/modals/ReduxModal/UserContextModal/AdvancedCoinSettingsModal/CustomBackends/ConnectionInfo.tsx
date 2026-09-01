@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectBlockchainState } from '@suite-common/wallet-core';
 import { Column, InfoItem, Paragraph } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -9,7 +10,7 @@ type ConnectionInfoProps = {
 };
 
 const ConnectionInfo = ({ symbol }: ConnectionInfoProps) => {
-    const blockchain = useSelector(state => state.wallet.blockchain);
+    const blockchain = useSelector(selectBlockchainState);
 
     const { connected, url, blockHash: hash, blockHeight: height, version } = blockchain[symbol];
 

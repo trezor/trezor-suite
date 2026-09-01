@@ -6,6 +6,13 @@ import { desktopHandshake } from 'src/actions/suite/suiteActions';
 
 export type DesktopState = null | Pick<HandshakeElectron, 'paths' | 'urls'>;
 
+export type DesktopRootState = {
+    desktop: DesktopState;
+};
+
+export const selectDesktopUserDataDirectory = (state: DesktopRootState) =>
+    state.desktop?.paths.userDir;
+
 const initialState: DesktopState = null;
 
 export const desktopReducer = (

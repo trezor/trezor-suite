@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import styled, { type DefaultTheme } from 'styled-components';
 
 import { Address } from '@suite/address';
@@ -21,7 +23,7 @@ import { PendingTransactionInfo } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';

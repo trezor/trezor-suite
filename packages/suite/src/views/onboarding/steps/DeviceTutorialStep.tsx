@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useIntl } from 'react-intl';
+import { useDispatch } from 'react-redux';
 
 import { Translation, messages } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
@@ -9,7 +10,7 @@ import TrezorConnect from '@trezor/connect';
 import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
 
 import { beginOnboardingTutorial } from 'src/actions/onboarding/onboardingActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const DeviceTutorialStep = () => {
     const device = useSelector(selectSelectedDevice);

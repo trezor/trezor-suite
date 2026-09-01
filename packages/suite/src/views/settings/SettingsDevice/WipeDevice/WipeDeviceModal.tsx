@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
@@ -12,8 +13,6 @@ import { Button, Column, Modal } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { NewspaperIcon, TrashIcon } from '@trezor/icons';
 import { StepCard } from '@trezor/product-components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 type WipeDeviceModalProps = {
     onCancel: () => void;

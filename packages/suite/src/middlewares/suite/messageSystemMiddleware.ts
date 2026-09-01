@@ -6,6 +6,7 @@ import {
     getValidExperimentIds,
     getValidMessages,
     messageSystemActions,
+    selectMessageSystemConfig,
 } from '@suite-common/message-system';
 import { createMiddleware } from '@suite-common/redux-utils';
 import { changeNetworks } from '@suite-common/wallet-core';
@@ -32,9 +33,8 @@ const messageSystemMiddleware = createMiddleware((action, { next, dispatch, getS
     next(action);
 
     if (actions.includes(action.type)) {
-        const state = getState();
-        const { config } = state.messageSystem;
-        const validationParams = selectMessageSystemValidationParams(state);
+        const config = selectMessageSystemConfig(getState());
+        const validationParams = selectMessageSystemValidationParams(getState());
 
         const validMessages = getValidMessages(config, validationParams);
         const validExperimentIds = getValidExperimentIds(config, validationParams);

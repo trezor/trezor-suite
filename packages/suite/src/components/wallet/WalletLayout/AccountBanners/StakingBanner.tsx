@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
@@ -23,7 +24,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { EarnEthBanner } from './EarnEthBanner';
 import { useEarnEthBanner } from './hooks/useEarnEthBanner';

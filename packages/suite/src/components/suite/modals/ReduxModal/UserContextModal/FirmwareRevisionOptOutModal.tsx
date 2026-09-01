@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { Banner, Card, Column, H3, Modal, Paragraph } from '@trezor/components';
@@ -6,7 +7,6 @@ import { QuestionFilledIcon, ShieldWarningIcon, WarningFilledIcon } from '@trezo
 
 import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
 import { CheckItem } from 'src/components/suite/CheckItem';
-import { useDispatch } from 'src/hooks/suite';
 
 type DeviceAuthenticityOptOutModalProps = {
     onCancel: () => void;

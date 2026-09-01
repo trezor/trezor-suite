@@ -1,10 +1,13 @@
+import { selectFullSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectBlockchainState } from '@suite-common/wallet-core';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 
 import { useBackendReconnection } from 'src/hooks/settings/backends';
 import { useSelector } from 'src/hooks/suite';
+import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
 
 const DisconnectedNotification = ({
     symbol,
@@ -44,9 +47,9 @@ const DisconnectedNotification = ({
 };
 
 export const BackendDisconnected = () => {
-    const blockchain = useSelector(state => state.wallet.blockchain);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const online = useSelector(state => state.suite.online);
+    const blockchain = useSelector(selectBlockchainState);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
+    const online = useSelector(selectIsSuiteOnline);
 
     if (!online) return null;
 

@@ -18,8 +18,7 @@ import { FeeRate, TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { useLocales } from 'src/hooks/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useLocales, useSelector } from 'src/hooks/suite';
 import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 

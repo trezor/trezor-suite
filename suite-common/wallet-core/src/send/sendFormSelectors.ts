@@ -17,6 +17,7 @@ import { type SendFormDrafts, type SendRootState } from './sendFormReducer';
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
 export const selectSendPrecomposedTx = (state: SendRootState) => state.wallet.send.precomposedTx;
+export const selectSend = (state: SendRootState) => state.wallet.send;
 export const selectSendSerializedTx = (state: SendRootState) => state.wallet.send.serializedTx;
 export const selectSendSignedTx = (state: SendRootState) => state.wallet.send.signedTx;
 export const selectSendFormDrafts = (state: SendRootState): SendFormDrafts =>

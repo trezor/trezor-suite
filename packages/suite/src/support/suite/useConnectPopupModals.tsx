@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectIsConnectionModalOpen } from '@suite/device';
 import {
@@ -10,6 +11,7 @@ import {
     openModal,
     preserveModal,
     removePreserveModal,
+    selectModalContext,
     selectModalType,
 } from '@suite/modal';
 import { goto, selectRouteName } from '@suite/router';
@@ -21,7 +23,7 @@ import {
 import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const useConnectPopupModals = () => {
     const dispatch = useDispatch();
@@ -30,7 +32,7 @@ export const useConnectPopupModals = () => {
     const isInDiscoveryFlow = isDiscoveryInProgress(discovery);
 
     // Modal opening control
-    const modalContext = useSelector(state => state.modal.context);
+    const modalContext = useSelector(selectModalContext);
     const modalType = useSelector(selectModalType);
     const activeRoute = useSelector(selectRouteName);
     const isConnectionModalOpen = useSelector(selectIsConnectionModalOpen);

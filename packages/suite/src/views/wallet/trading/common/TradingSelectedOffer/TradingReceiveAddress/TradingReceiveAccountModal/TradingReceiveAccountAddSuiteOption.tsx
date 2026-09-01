@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -6,7 +8,7 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { IconCircle, Row } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { TradingReceiveOptionRow } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 

@@ -98,6 +98,8 @@ const suiteSyncSlice = createSliceWithExtraDeps({
     },
 });
 
+export const selectSuiteSync = (state: DesktopSuiteSyncRootState) => state.suiteSync;
+
 export const selectShowEnableSuiteSyncModal = (
     state: DesktopSuiteSyncRootState,
 ): StaticSessionId | null => state.suiteSync.showEnableSuiteSyncModal;

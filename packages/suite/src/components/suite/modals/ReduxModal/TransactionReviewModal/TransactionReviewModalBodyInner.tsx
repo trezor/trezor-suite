@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
+import { selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
 import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
@@ -33,7 +35,7 @@ import { Modal, Row } from '@trezor/components';
 import { type Deferred } from '@trezor/utils';
 
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { getTransactionReviewModalActionTranslation } from 'src/utils/suite/transactionReview';
 
 import { TransactionReviewModalBottomContent } from './TransactionReviewOutputList/TransactionReviewModalBottomContent';
@@ -114,7 +116,7 @@ export const TransactionReviewModalBodyInner = ({
     const { symbol, networkType } = account;
     const { options } = precomposedForm;
     const { serializedTx } = txInfoState;
-    const routeName = useSelector(state => state.router.route?.name);
+    const routeName = useSelector(selectRouteName);
     const tradingToken = useSelector(selectTradingComposedTransactionInfo).composed?.token;
 
     const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);

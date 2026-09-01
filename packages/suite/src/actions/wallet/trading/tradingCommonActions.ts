@@ -5,7 +5,10 @@ import {
     type FormDraftRootState,
     type WalletSettingsRootState,
     formDraftActions,
+    selectAccounts,
+    selectBitcoinAmountUnit,
     selectDeepCopyOfFormDraft,
+    selectFormDraftKeys,
 } from '@suite-common/wallet-core';
 import type { Output } from '@suite-common/wallet-types';
 import {
@@ -48,8 +51,9 @@ type ConvertDraftsThunkState = AccountsRootState & FormDraftRootState & WalletSe
 
 export const convertDrafts =
     () => (dispatch: Dispatch<UnknownAction>, getState: () => ConvertDraftsThunkState) => {
-        const { accounts, formDrafts, settings } = getState().wallet;
-        const formDraftKeys = Object.keys(formDrafts);
+        const accounts = selectAccounts(getState());
+        const formDraftKeys = selectFormDraftKeys(getState());
+        const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
 
         formDraftKeys.forEach(formDraftKey => {
             const [_prefix, accountKey] = parseFormDraftKey(formDraftKey);
@@ -63,7 +67,7 @@ export const convertDrafts =
                 FormState | undefined;
 
             if (draft) {
-                const areSatsSelected = settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
+                const areSatsSelected = bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
                 const conversion = areSatsSelected
                     ? convertAmountUnitsToSubunits
                     : convertAmountSubunitsToUnits;

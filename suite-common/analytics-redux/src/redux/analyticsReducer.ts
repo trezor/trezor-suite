@@ -62,6 +62,8 @@ export const prepareAnalyticsReducer = createReducerWithExtraDeps(
 );
 
 // if instanceId does not exist yet (was not loaded from storage), create a new one
+export const selectAnalytics = (state: AnalyticsRootState) => state.analytics;
+
 export const selectAnalyticsInstanceId = (state: AnalyticsRootState) => state.analytics.instanceId;
 
 export const selectAnalyticsSessionId = (state: AnalyticsRootState) => state.analytics.sessionId;

@@ -1,9 +1,9 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { ArrowsInIcon } from '@trezor/icons';
-
-import { useDispatch } from 'src/hooks/suite';
 
 export const MoreRoundsNeededModal = () => {
     const dispatch = useDispatch();

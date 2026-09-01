@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
@@ -7,7 +9,7 @@ import { Modal, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
 import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 

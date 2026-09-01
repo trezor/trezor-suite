@@ -1,4 +1,5 @@
 import { type MouseEventHandler } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
@@ -10,7 +11,6 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { CpuIcon } from '@trezor/icons';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
-import { useDispatch } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
 
 export const DeviceNoFirmware = () => {

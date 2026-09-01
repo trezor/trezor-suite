@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { setConnectionModal } from '@suite/device';
@@ -10,7 +11,7 @@ import { type BluetoothDeviceId } from '@trezor/connect';
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from 'src/actions/bluetooth/bluetoothConnectDeviceThunk';
 import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type UseBluetoothConnectionProps = {
     devices: DesktopBluetoothDevice[];
@@ -34,7 +35,7 @@ export const useBluetoothConnection = ({
     const dispatch = useDispatch();
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
 
-    const knownDevices = useSelector(selectKnownDevices);
+    const knownDevices = useSelector(selectKnownDevices<DesktopBluetoothDevice>);
 
     const selectedDevice = useMemo(
         () =>

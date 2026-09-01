@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { goto, selectRouteName } from '@suite/router';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
@@ -8,7 +10,7 @@ import { Route } from 'src/components/suite/Route';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import { StellarTokenInputModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarTokenInputModal';
 import { WalletLayout } from 'src/components/wallet';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { TokensNavigation } from './TokensNavigation';
 import { CoinsTable } from './coins/CoinsTable';
@@ -21,7 +23,7 @@ export const Tokens = () => {
     const [showManualInput, setShowManualInput] = useState(false);
     const [manualTokenContract, setManualTokenContract] = useState<string | null>(null);
 
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccount = useSelector(selectFullSelectedAccount);
     const dispatch = useDispatch();
     const routeName = useSelector(selectRouteName);
 

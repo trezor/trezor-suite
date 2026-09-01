@@ -1,8 +1,8 @@
+import { useDispatch } from 'react-redux';
+
 import { goto } from '@suite/router';
 import { CheckIcon, DatabaseIcon } from '@trezor/icons';
 import { QuickActionButton } from '@trezor/product-components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { NavBackends } from './NavBackends';
 import { useEnabledBackends } from '../../utils';

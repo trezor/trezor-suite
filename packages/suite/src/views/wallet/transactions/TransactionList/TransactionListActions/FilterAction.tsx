@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
@@ -27,7 +28,7 @@ import {
 import { FunnelSimpleIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type FilterOption<TValue> = {
     value: TValue;

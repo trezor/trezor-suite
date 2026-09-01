@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import type { CryptoId } from 'invity-api';
 
@@ -13,7 +14,7 @@ import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
 
 import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingStellarActivation } from 'src/hooks/wallet/trading/useTradingStellarActivation';
 import { getTradingFirstOutput } from 'src/utils/wallet/trading/tradingUtils';

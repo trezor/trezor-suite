@@ -9,4 +9,4 @@ export {
     debugInitialState,
     prepareDebugReducer,
 } from './debugSlice';
-export { selectIsDebugModeActive } from './debugSelectors';
+export { selectDebug, selectIsDebugModeActive } from './debugSelectors';

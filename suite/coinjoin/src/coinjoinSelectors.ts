@@ -56,6 +56,8 @@ export const selectCoinjoinIsPreloading = (state: CoinjoinRootState) =>
 
 export const selectCoinjoinClients = (state: CoinjoinRootState) => state.wallet.coinjoin.clients;
 
+export const selectCoinjoinDebug = (state: CoinjoinRootState) => state.wallet.coinjoin.debug;
+
 export const selectRoundsDurationInHours = (state: CoinjoinRootState) =>
     state.wallet.coinjoin.config.roundsDurationInHours;
 

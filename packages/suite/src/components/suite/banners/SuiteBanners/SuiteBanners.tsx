@@ -22,6 +22,7 @@ import { isWeb } from '@trezor/env-utils';
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useLocalNetworkAccessPermission } from 'src/hooks/suite/useLocalNetworkAccessPermission';
+import { selectIsSuiteOnline, selectSuiteTransport } from 'src/selectors/suite/suiteSelectors';
 
 import { BridgeDeprecated, useLegacyBridgeDetection } from './BridgeDeprecatedBanner';
 import { CardanoOutdatedStakingBanner } from './CardanoOutdatedStakingBanner';
@@ -50,13 +51,13 @@ type SuiteBannersProps = {
 export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const legacyBridgeDetected = useLegacyBridgeDetection();
     const device = useSelector(selectSelectedDevice);
-    const isOnline = useSelector(state => state.suite.online);
+    const isOnline = useSelector(selectIsSuiteOnline);
     const bannerMessage = useSelector(selectBannerMessage);
     const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const firmwareHashError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
     const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
-    const transport = useSelector(state => state.suite.transport);
+    const transport = useSelector(selectSuiteTransport);
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const { localNetworkAccessPermission } = useLocalNetworkAccessPermission();
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);

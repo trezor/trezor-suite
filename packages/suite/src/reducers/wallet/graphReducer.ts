@@ -23,6 +23,15 @@ export interface GraphState {
     selectedRange: GraphRange;
 }
 
+export type GraphRootState = {
+    wallet: {
+        graph: GraphState;
+    };
+};
+
+export const selectGraph = (state: GraphRootState) => state.wallet.graph;
+export const selectGraphSelectedRange = (state: GraphRootState) => state.wallet.graph.selectedRange;
+
 const initialState: GraphState = {
     data: [],
     selectedRange: SETTINGS.DEFAULT_GRAPH_RANGE,

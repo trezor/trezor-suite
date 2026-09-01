@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -7,8 +9,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-
+import { useSelector } from 'src/hooks/suite';
 /* keep torOnionLinks value as it is but hide this section when tor is off.
    when tor is off this value has no effect anyway (handled by ExternalLink hook) */
 export const TorOnionLinks = () => {

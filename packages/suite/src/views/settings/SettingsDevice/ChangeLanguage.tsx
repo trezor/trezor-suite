@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
@@ -8,7 +9,7 @@ import { type Locale } from '@suite-common/suite-types';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { changeLanguage } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 interface ChangeLanguageProps {
     isDeviceLocked: boolean;

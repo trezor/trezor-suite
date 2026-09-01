@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
@@ -6,7 +8,6 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 
-import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderInfo';
 import { TradingDetailSupportBanner } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSupportBanner';

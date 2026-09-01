@@ -6,6 +6,9 @@ import { type FormDraftRootState } from './formDraftSlice';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<FormDraftRootState>();
 
+export const selectFormDraftKeys = (state: FormDraftRootState) =>
+    Object.keys(state.wallet.formDrafts);
+
 export const selectFormDraft = <T extends FieldValues>(
     { wallet }: FormDraftRootState,
     formDraftKey: string,

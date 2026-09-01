@@ -12,6 +12,7 @@ import {
 import {
     type SuiteSettingsRootState,
     selectEarnYieldWorkerBaseUrl,
+    selectLanguage,
     suiteSettingsActions,
 } from '@suite/settings';
 import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
@@ -42,6 +43,7 @@ import {
     initDevices,
     periodicCheckStakeDataThunk,
     periodicFetchFiatRatesThunk,
+    selectBaseCurrency,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import {
@@ -54,6 +56,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
+import { selectSuiteLifecycleStatus } from 'src/selectors/suite/suiteSelectors';
 
 import { setSuiteError } from './suiteActions';
 
@@ -86,15 +89,9 @@ export const init =
         dispatch: ThunkDispatch<InitThunkState, InitThunkDeps, UnknownAction>,
         getState: () => InitThunkState,
     ) => {
-        const {
-            suite: {
-                lifecycle: { status },
-            },
-            suiteSettings: { language },
-            wallet: {
-                settings: { localCurrency },
-            },
-        } = getState();
+        const status = selectSuiteLifecycleStatus(getState());
+        const language = selectLanguage(getState());
+        const localCurrency = selectBaseCurrency(getState());
         const { enableAutoupdateOnNextRun } = selectFlags(getState());
 
         if (status !== 'initial') return;

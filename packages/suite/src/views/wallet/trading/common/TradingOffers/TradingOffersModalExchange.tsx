@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import {
@@ -13,6 +12,8 @@ import {
     selectGroupedTradingExchangeQuotes,
 } from '@suite-common/trading';
 import { Box, Column, Modal, SubTabs } from '@trezor/components';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { TradingOffersModalEmpty } from './TradingOffersModalEmpty';
 import { TradingOffersModalGroup } from './TradingOffersModalGroup';

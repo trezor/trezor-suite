@@ -1,10 +1,7 @@
 import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 
-import {
-    MODAL_CONTEXT_DEVICE,
-    MODAL_CONTEXT_DEVICE_CONFIRMATION,
-    selectModalRequestId,
-} from '@suite/modal';
+import { selectIsDeviceInteractionModalActive, selectModalRequestId } from '@suite/modal';
 import { goto } from '@suite/router';
 import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -16,7 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { UI_EVENTS } from '@trezor/connect';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { PassphraseWalletExistsFlow } from './PassphraseWalletExistsFlow';
 import { PassphraseWalletIsNotExistFlow } from './PassphraseWalletIsNotExistFlow';
@@ -28,11 +25,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device?.path));
     const requestId = useSelector(selectModalRequestId);
     const dispatch = useDispatch();
-    const isDeviceInteractionModalActive = useSelector(
-        state =>
-            state.modal.context === MODAL_CONTEXT_DEVICE ||
-            state.modal.context === MODAL_CONTEXT_DEVICE_CONFIRMATION,
-    );
+    const isDeviceInteractionModalActive = useSelector(selectIsDeviceInteractionModalActive);
     const onPassphraseConfirm = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
             if (!discovery) return;

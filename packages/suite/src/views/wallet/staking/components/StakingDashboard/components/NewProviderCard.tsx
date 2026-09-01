@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
@@ -9,7 +11,7 @@ import { Banner, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 interface NewProviderCardProps {

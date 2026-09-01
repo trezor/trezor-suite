@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import {
     type BuyTradeStatus,
     type ExchangeProviderInfo,
@@ -18,7 +20,7 @@ import {
 import { type TradingType } from '@suite-common/trading';
 import { FeedbackCard } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 
 interface TradingDetailFeedbackProps {

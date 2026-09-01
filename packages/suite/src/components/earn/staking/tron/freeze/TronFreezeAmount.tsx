@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useFormState } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
@@ -19,7 +20,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import {
     validateDecimals,
     validateMin,

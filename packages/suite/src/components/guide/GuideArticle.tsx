@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
@@ -6,7 +8,8 @@ import { selectLanguage } from '@suite/settings';
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideMarkdown, GuideViewWrapper } from 'src/components/guide';
 import { useGuideLoadArticle } from 'src/hooks/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectGuideCurrentNode, selectGuideIndexNode } from 'src/selectors/suite/guideSelectors';
 import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
 
 const ArticleWrapper = styled.div`
@@ -14,8 +17,8 @@ const ArticleWrapper = styled.div`
 `;
 
 export const GuideArticle = () => {
-    const currentNode = useSelector(state => state.guide.currentNode);
-    const indexNode = useSelector(state => state.guide.indexNode);
+    const currentNode = useSelector(selectGuideCurrentNode);
+    const indexNode = useSelector(selectGuideIndexNode);
     const language = useSelector(selectLanguage);
     const dispatch = useDispatch();
 

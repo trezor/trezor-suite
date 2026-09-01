@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
@@ -8,7 +10,6 @@ import { Banner, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 interface TronWithdrawReadyBannerProps {

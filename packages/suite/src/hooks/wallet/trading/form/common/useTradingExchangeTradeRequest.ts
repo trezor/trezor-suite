@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import type { ExchangeTrade } from 'invity-api';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -11,7 +13,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 
 export const useTradingExchangeTradeRequest = (account: Account | undefined) => {

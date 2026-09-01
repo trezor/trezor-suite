@@ -1,11 +1,11 @@
+import { useDispatch } from 'react-redux';
+
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { metadataLabelingActions } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { Tooltip } from '@trezor/components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-
-import { useDispatch } from 'src/hooks/suite';
 
 export const ConnectLabelingProvider = () => {
     const dispatch = useDispatch();

@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
 
+import { selectCoinjoinAccounts } from '@suite/coinjoin';
+
 import { useSelector } from 'src/hooks/suite';
 
 import { CoinjoinStatusBar } from './CoinjoinStatusBar';
 
 export const CoinjoinBars = () => {
-    const coinjoinAccounts = useSelector(state => state.wallet.coinjoin.accounts);
+    const coinjoinAccounts = useSelector(selectCoinjoinAccounts);
 
     const sessionCount = coinjoinAccounts.filter(account => account.session).length;
 

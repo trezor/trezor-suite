@@ -1,9 +1,9 @@
-import { useSelector } from 'react-redux';
-
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type SerializedTx } from '@suite-common/wallet-core';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
+
+import { useSelector } from 'src/hooks/suite';
 
 interface GetActiveStepProps {
     totalSteps: number | undefined;

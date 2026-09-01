@@ -1,9 +1,10 @@
+import { useDispatch } from 'react-redux';
+
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 import { BannerPoints } from './BannerPoints';
 import { CloseableBanner } from './CloseableBanner';

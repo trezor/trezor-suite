@@ -14,6 +14,13 @@ export type ConnectRootState = {
     connect: ConnectState;
 };
 
+export const selectConnect = (state: ConnectRootState) => state.connect;
+export const selectIsConnectInitializing = (state: ConnectRootState) =>
+    state.connect?.isInitializing ?? false;
+export const selectIsConnectInitSuccess = (state: ConnectRootState) =>
+    state.connect?.isInitSuccess ?? false;
+export const selectConnectInitError = (state: ConnectRootState) => state.connect?.initError;
+
 const initialState: ConnectState = {
     options: undefined,
     isInitializing: false,

@@ -1,4 +1,5 @@
 import { type MouseEventHandler, type ReactNode } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Address, selectAddressLabel } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
@@ -30,7 +31,7 @@ import { ChangeIcon, ClockIcon, TagFilledIcon, TagIcon, XCircleIcon } from '@tre
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
 import { type WalletAccountTransaction } from 'src/types/wallet';

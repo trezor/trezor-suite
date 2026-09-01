@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -18,7 +19,6 @@ import {
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 
-import { useDispatch } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
 import { isSellQuotesFetchAllowed } from 'src/utils/wallet/trading/sellQuotesRequestUtils';
 

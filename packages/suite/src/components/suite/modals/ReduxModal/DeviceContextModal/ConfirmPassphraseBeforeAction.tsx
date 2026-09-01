@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
-import { MODAL_CONTEXT_DEVICE, selectModalRequestId } from '@suite/modal';
+import { MODAL_CONTEXT_DEVICE, selectModal, selectModalRequestId } from '@suite/modal';
 import {
     selectDeviceModel,
     selectHasDevicePassphraseEntryCapability,
@@ -21,7 +21,7 @@ export const ConfirmPassphraseBeforeAction = () => {
     const device = useSelector(selectSelectedDevice);
     const deviceModel = useSelector(selectDeviceModel);
     const requestId = useSelector(selectModalRequestId);
-    const modal = useSelector(state => state.modal);
+    const modal = useSelector(selectModal);
 
     // Global passphrase modal: the device is ready once Connect raises REQUEST_PASSPHRASE.
     const isDeviceLoading = !(

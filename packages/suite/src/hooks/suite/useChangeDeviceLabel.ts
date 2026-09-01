@@ -1,4 +1,5 @@
 import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -12,7 +13,7 @@ import { isAscii } from '@trezor/utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const changeDeviceLabelSchema = (t: TranslationFunction) =>
     yup.object({

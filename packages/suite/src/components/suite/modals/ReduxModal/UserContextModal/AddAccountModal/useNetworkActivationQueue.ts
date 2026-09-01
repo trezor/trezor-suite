@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { preserveModal, removePreserveModal } from '@suite/modal';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -13,7 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type DiscoveryStatus } from '@suite-common/wallet-types';
 
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 
 import { enqueueNetworkActivation, getNewNetworkAccounts } from './addAccountModalUtils';
 

@@ -29,12 +29,12 @@ type BluetoothDeviceProps = {
 };
 
 export const BluetoothDebugInfo = ({ device }: BluetoothDeviceProps) => {
-    const nearbyDevices = useSelector(selectNearbyDevices);
+    const nearbyDevices = useSelector(selectNearbyDevices<DesktopBluetoothDevice>);
     const isNearbyDevice = (nearbyDevices ?? []).find(
         nearbyDevice => nearbyDevice.id === device.id,
     );
 
-    const knownDevices = useSelector(selectKnownDevices);
+    const knownDevices = useSelector(selectKnownDevices<DesktopBluetoothDevice>);
     const isKnownDevice = knownDevices.find(knownDevice => knownDevice.id === device.id);
 
     return (

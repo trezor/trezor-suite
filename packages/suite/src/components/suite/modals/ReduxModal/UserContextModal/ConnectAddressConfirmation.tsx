@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
@@ -18,7 +19,7 @@ import { ConfirmOnDevicePill, mapTrezorModelToIcon } from '@trezor/product-compo
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const ConnectAddressConfirmation = () => {
     const { device } = useDevice();

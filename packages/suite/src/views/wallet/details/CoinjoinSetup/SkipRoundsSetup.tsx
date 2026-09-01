@@ -6,7 +6,7 @@ import { coinjoinAccountToggleSkipRounds, selectCurrentCoinjoinSession } from '@
 import { Translation } from '@suite/intl';
 import { H3, Paragraph, Switch, Text } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 const Row = styled.div`
     display: flex;

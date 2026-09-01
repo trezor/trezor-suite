@@ -88,6 +88,8 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
         // NOTE: pass action on, keep the result
         const result = next(action);
 
+        // Keep one post-action state snapshot for all analytics derived from this action.
+        // eslint-disable-next-line no-restricted-syntax
         const state = getState();
         const { analytics } = extra.services;
 

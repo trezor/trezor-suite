@@ -1,10 +1,12 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { selectRouteName } from '@suite/router';
 import { networks } from '@suite-common/wallet-config';
 
 import { closeEvmExplanationBanner } from 'src/actions/suite/suiteActions';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
+import { selectEvmSettings } from 'src/selectors/suite/suiteSelectors';
 import { type Account } from 'src/types/wallet';
 
 import { BannerPoints } from './BannerPoints';
@@ -15,7 +17,7 @@ interface EvmExplanationBannerProps {
 }
 
 export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => {
-    const { explanationBannerClosed } = useSelector(state => state.suite.evmSettings);
+    const { explanationBannerClosed } = useSelector(selectEvmSettings);
     const routeName = useSelector(selectRouteName);
     const dispatch = useDispatch();
 

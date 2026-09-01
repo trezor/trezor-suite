@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import {
     connectPopupActions,
@@ -11,7 +13,7 @@ import { WarningIcon } from '@trezor/icons';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 import { SwitchDeviceContent } from 'src/views/suite/SwitchDevice/SwitchDevice';

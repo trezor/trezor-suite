@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { selectDesktopUpdate } from '@suite/desktop-update';
 import { selectIsSettingsDesktopAppPromoBannerShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { LabelingSettings } from '@suite/labeling';
@@ -69,7 +70,7 @@ export const SettingsGeneral = ({ torSettings }: SettingsGeneralProps) => {
     );
 
     const enabledNetworks = useSelector(selectEnabledNetworks);
-    const desktopUpdate = useSelector(state => state.desktopUpdate);
+    const desktopUpdate = useSelector(selectDesktopUpdate);
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.tablet);
     const hasContentBelowMobileWidth = useIsContentBelowBreakpoint(breakpoints.mobile);

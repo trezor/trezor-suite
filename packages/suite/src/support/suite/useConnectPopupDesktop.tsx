@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { MODAL_CONTEXT_DEVICE, openModal } from '@suite/modal';
@@ -26,7 +27,8 @@ import { isMacOs } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
 
 export const useConnectPopupDesktop = () => {
     const dispatch = useDispatch();
@@ -35,7 +37,7 @@ export const useConnectPopupDesktop = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const selectedDeviceRef = useRef(selectedDevice);
     selectedDeviceRef.current = selectedDevice;
-    const lifecycle = useSelector(state => state.suite.lifecycle);
+    const lifecycle = useSelector(selectSuiteLifecycle);
     const initialized = useRef(false);
 
     useEffect(() => {

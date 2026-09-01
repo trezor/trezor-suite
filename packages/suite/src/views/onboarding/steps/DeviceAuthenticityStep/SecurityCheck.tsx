@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { TrezorLink } from '@suite/external-links';
@@ -42,7 +43,7 @@ import { SecurityCheckButton } from 'src/components/suite/SecurityCheck/Security
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
-import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 

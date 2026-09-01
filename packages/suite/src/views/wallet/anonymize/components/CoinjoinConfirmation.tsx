@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -14,7 +15,7 @@ import { CircuitryIcon, ClockIcon, LockKeyIcon } from '@trezor/icons';
 
 import { Error } from 'src/components/suite/Error';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { Tile, type TileProps } from './Tile';
 

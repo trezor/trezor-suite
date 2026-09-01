@@ -2,7 +2,7 @@ import { type RefObject, useLayoutEffect, useRef } from 'react';
 
 import { selectRoute, selectRouterUrl } from '@suite/router';
 
-import { useSelector } from './useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 export const useResetScrollOnUrl = (scrollRef: RefObject<HTMLDivElement | null>) => {
     const url = useSelector(selectRouterUrl);

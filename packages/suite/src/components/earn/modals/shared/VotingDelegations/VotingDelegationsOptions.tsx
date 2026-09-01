@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
@@ -10,7 +11,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Column, Input, Radio, Text } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const VOTING_OPTION_LABELS = {
     everstake: 'TR_STAKING_DELEGATE_TO_EVERSTAKE',

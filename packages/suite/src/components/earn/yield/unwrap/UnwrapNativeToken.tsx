@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { useMutation } from '@tanstack/react-query';
 
@@ -19,7 +20,7 @@ import { Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { submitUnwrapNativeTokenThunk } from 'src/actions/wallet/unwrapNativeTokenThunks';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';

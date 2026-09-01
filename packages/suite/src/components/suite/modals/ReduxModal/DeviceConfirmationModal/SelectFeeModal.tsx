@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
+import { useDispatch } from 'react-redux';
 
 import { Translation, messages } from '@suite/intl';
 import { onReceiveFee } from '@suite/modal';
@@ -14,7 +15,7 @@ import type { ComposeOutput, UiRequestSelectFee } from '@trezor/connect';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 
 import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';

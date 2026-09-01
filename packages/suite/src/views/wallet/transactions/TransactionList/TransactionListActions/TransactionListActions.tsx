@@ -1,4 +1,5 @@
 import { type Dispatch, type SetStateAction, useCallback, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -10,7 +11,8 @@ import { Row } from '@trezor/components/src/components/Flex/Flex';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 
 import { setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectTransactionHistoryPrefill } from 'src/selectors/suite/suiteSelectors';
 
 import { ExportAction } from './ExportAction';
 import { FilterAction } from './FilterAction';
@@ -34,9 +36,7 @@ export const TransactionListActions = ({
 }: TransactionListActionsProps) => {
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
 
-    const transactionHistoryPrefill = useSelector(
-        state => state.suite.prefillFields.transactionHistory,
-    );
+    const transactionHistoryPrefill = useSelector(selectTransactionHistoryPrefill);
 
     const dispatch = useDispatch();
     const { translationString } = useTranslation();

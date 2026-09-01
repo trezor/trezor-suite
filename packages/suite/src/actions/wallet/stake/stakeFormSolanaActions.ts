@@ -1,6 +1,6 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import { type SelectedAccountRootState } from '@suite/account';
+import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type WithServices } from '@suite-common/redux-utils';
@@ -10,6 +10,7 @@ import {
     type BlockchainRootState,
     type WalletSettingsRootState,
     selectAddressDisplayType,
+    selectBlockchainState,
 } from '@suite-common/wallet-core';
 import {
     AddressDisplayOptions,
@@ -29,7 +30,8 @@ type ComposeTransactionThunkState = BlockchainRootState & SelectedAccountRootSta
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
     async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
-        const { selectedAccount, blockchain } = getState().wallet;
+        const selectedAccount = selectFullSelectedAccount(getState());
+        const blockchain = selectBlockchainState(getState());
 
         if (selectedAccount.status !== 'loaded') return;
 
@@ -61,7 +63,8 @@ export const signTransaction =
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ) => {
-        const { selectedAccount, blockchain } = getState().wallet;
+        const selectedAccount = selectFullSelectedAccount(getState());
+        const blockchain = selectBlockchainState(getState());
 
         const device = selectSelectedDevice(getState());
         if (selectedAccount.status !== 'loaded' || !device || transactionInfo?.type !== 'final') {

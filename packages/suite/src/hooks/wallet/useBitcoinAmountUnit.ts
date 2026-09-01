@@ -1,12 +1,18 @@
+import { useDispatch } from 'react-redux';
+
 import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
 import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
-import { setBitcoinAmountUnits, toggleBitcoinAmountUnits } from '@suite-common/wallet-core';
+import {
+    selectBitcoinAmountUnit,
+    setBitcoinAmountUnits,
+    toggleBitcoinAmountUnits,
+} from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
-    const bitcoinAmountUnit = useSelector(state => state.wallet.settings.bitcoinAmountUnit);
+    const bitcoinAmountUnit = useSelector(selectBitcoinAmountUnit);
     const unavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
     const dispatch = useDispatch();
 

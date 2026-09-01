@@ -1,7 +1,7 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
-import { type SelectedAccountRootState } from '@suite/account';
+import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
 import { closeModal, openModal, preserveModal } from '@suite/modal';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type UserContextPayload } from '@suite-common/suite-types';
@@ -23,7 +23,7 @@ export const showXpub =
         getState: () => ShowXpubThunkState,
     ) => {
         const device = selectSelectedDevice(getState());
-        const { account } = getState().wallet.selectedAccount;
+        const account = selectSelectedAccount(getState());
 
         if (!device || !account) return;
 

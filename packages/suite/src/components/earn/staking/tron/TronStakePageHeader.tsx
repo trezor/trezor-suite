@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { AccountLabel } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
@@ -13,7 +15,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { TRON_FLOW_BY_ROUTE } from 'src/constants/suite/staking';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 type TronStakePageHeaderProps = {

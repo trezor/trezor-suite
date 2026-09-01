@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
@@ -11,7 +13,7 @@ import { typography } from '@trezor/theme';
 
 import { StatusLight } from 'src/components/suite';
 import { useBackendReconnection } from 'src/hooks/settings/backends';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const CoinSection = styled.div`
     display: flex;

@@ -5,7 +5,7 @@ import { type SessionPhase } from '@suite/coinjoin';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { SESSION_PHASE_TRANSITION_DELAY } from 'src/constants/suite/coinjoin';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 const checkExpiration = (lastChangeTimestamp: number) => {
     const currentTimestamp = Date.now();

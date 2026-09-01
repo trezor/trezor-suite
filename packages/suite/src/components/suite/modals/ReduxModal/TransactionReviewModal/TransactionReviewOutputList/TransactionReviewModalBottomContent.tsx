@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import {
     type TransactionCreatedEventAction,
@@ -25,6 +25,8 @@ import { type StakeType } from '@trezor/blockchain-link-types';
 import { Modal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { type Deferred } from '@trezor/utils';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { type TxInfoState, getTxType, hasTxValidityExpired } from '../utils';
 

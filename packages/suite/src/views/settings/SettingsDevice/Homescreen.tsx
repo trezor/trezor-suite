@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -9,7 +10,6 @@ import { Paragraph, Tooltip } from '@trezor/components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
 import {
     ImageValidationError,
     convertImage,

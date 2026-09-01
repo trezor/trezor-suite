@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
@@ -11,7 +12,7 @@ import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
 import { type Account, type AccountItemType } from 'src/types/wallet';
 

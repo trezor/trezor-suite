@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
@@ -14,7 +16,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 interface UseEarnProviderConsentActionsProps {
     flow: EarnFlow;

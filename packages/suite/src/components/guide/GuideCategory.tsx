@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
@@ -11,7 +13,8 @@ import {
     GuideNode,
     GuideViewWrapper,
 } from 'src/components/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectGuideCurrentNode } from 'src/selectors/suite/guideSelectors';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
 const Section = styled.div`
@@ -23,7 +26,7 @@ const Section = styled.div`
 `;
 
 export const GuideCategory = () => {
-    const currentNode = useSelector(state => state.guide.currentNode);
+    const currentNode = useSelector(selectGuideCurrentNode);
     const language = useSelector(selectLanguage);
     const dispatch = useDispatch();
 

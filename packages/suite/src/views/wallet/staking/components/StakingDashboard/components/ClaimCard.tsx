@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -12,7 +13,7 @@ import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/comp
 import { ChecksIcon, InfoIcon, LightningIcon, SpinnerGapIcon } from '@trezor/icons';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 export const ClaimCard = () => {

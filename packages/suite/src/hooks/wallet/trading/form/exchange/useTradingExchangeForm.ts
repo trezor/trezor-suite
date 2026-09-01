@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import {
     TRADING_EXCHANGE_FORM,
@@ -26,7 +27,7 @@ import {
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';

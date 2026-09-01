@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useMutation } from '@tanstack/react-query';
@@ -23,7 +24,7 @@ import {
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { useCurrentRef, useDebounce } from '@trezor/react-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 
 interface UseAllowanceComposeParams {

@@ -1,8 +1,11 @@
 import { useState } from 'react';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
-import { Translation } from '@suite/intl';
-import { isTransactionNotification } from '@suite-common/toast-notifications';
+import { Translation, type TranslationKey } from '@suite/intl';
+import {
+    type NotificationsState,
+    isTransactionNotification,
+} from '@suite-common/toast-notifications';
 import {
     selectHasUnseenNonPhishingTransactionNotifications,
     selectNonPhishingTransactionNotifications,
@@ -21,11 +24,17 @@ import { useLayout, useSelector } from 'src/hooks/suite';
 
 type ActivityTab = 'transactions' | 'release-notes' | 'all';
 
+type NotificationsViewState = {
+    notifications: NotificationsState<TranslationKey>;
+};
+
+const selectSuiteNotifications = (state: NotificationsViewState) => state.notifications;
+
 const NotificationsView = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const [selectedTab, setSelectedTab] = useState<ActivityTab>('transactions');
 
-    const notifications = useSelector(state => state.notifications);
+    const notifications = useSelector(selectSuiteNotifications);
     const hasUnseenNotifications = useSelector(selectHasUnseenNonPhishingTransactionNotifications);
     const transactionNotifications = useSelector(selectNonPhishingTransactionNotifications);
     const activityNotifications = notifications.filter(

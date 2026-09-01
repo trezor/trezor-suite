@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useIntl } from 'react-intl';
+import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation, messages } from '@suite/intl';
-import { MODAL_CONTEXT_DEVICE, selectModalRequestId } from '@suite/modal';
+import { MODAL_CONTEXT_DEVICE, selectModal, selectModalRequestId } from '@suite/modal';
 import {
     type RecoveryInputType,
     type SeedInputStatus,
@@ -22,7 +23,7 @@ import { CheckIcon, WarningIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
 
 import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';
@@ -34,7 +35,7 @@ import { WordInputStep } from './steps/WordInputStep';
 
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const recovery = useSelector(selectRecovery);
-    const modal = useSelector(state => state.modal);
+    const modal = useSelector(selectModal);
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
     const [isUnderstood, setIsUnderstood] = useState(false);

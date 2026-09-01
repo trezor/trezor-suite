@@ -1,4 +1,5 @@
 import { type MouseEvent } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
@@ -16,7 +17,7 @@ import {
     getWrappedNativeSymbol,
 } from '@trezor/network-ethereum-suite-common';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 import { type Account } from 'src/types/wallet';

@@ -29,6 +29,15 @@ export const noCastedObjectHelpersSyntax = [
     },
 ];
 
+export const noDirectUseSelectorStateSyntax = [
+    {
+        message:
+            'Please don\'t use "state" directly because it\'s typed as "any". Always use it only as parameter for strongly typed selector function.',
+        selector:
+            "CallExpression[callee.name='useSelector'] MemberExpression[object.name='state']:matches([property.type='Identifier'])",
+    },
+];
+
 /**
  * Base `no-restricted-syntax` selectors. Exported so configs that add their own selectors can
  * spread these back in — the rule's options are replaced, not merged, when it is re-declared.
@@ -51,12 +60,7 @@ export const noRestrictedSyntax = [
         selector:
             "VariableDeclarator[init.type='CallExpression']:matches([init.callee.name='getState'])",
     },
-    {
-        message:
-            'Please don\'t use "state" directly because it\'s typed as "any". Always use it only as parameter for strongly typed selector function.',
-        selector:
-            "CallExpression[callee.name='useSelector'] MemberExpression[object.name='state']:matches([property.type='Identifier'])",
-    },
+    ...noDirectUseSelectorStateSyntax,
     {
         message:
             'Use Array/String .includes() instead of .indexOf() comparison (e.g. `arr.indexOf(x) >= 0` → `arr.includes(x)`, `arr.indexOf(x) === -1` → `!arr.includes(x)`).',

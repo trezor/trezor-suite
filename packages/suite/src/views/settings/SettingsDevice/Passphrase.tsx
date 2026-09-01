@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
@@ -9,7 +11,6 @@ import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-component
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
 
 interface PassphraseProps {
     isDeviceLocked: boolean;

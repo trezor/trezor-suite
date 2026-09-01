@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import styled, { css } from 'styled-components';
 
 import { selectRoundsDurationInHours, selectSessionProgressByAccountKey } from '@suite/coinjoin';
@@ -13,8 +15,7 @@ import { typography } from '@trezor/theme';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
-import { useDispatch } from 'src/hooks/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 const SPACING = 6;
 

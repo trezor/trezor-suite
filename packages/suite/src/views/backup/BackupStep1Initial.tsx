@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import {
     type BackupDeviceParams,
     type BackupState,
@@ -10,7 +12,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { Badge, Column, Modal, Paragraph } from '@trezor/components';
 
 import { PreBackupCheckboxes } from 'src/components/backup';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { BackupStepDescription } from './BackupStepDescription';
 

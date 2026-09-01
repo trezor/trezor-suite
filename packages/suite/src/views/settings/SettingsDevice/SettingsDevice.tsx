@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import {
     BackupFailed,
     BackupRecoverySeed,
@@ -29,7 +31,7 @@ import { breakpoints } from '@trezor/theme';
 
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectHasActiveTransport } from 'src/selectors/suite/suiteSelectors';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 import type { TrezorDevice } from 'src/types/suite';

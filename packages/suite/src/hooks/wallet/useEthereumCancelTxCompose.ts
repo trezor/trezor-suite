@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { isRejected } from '@reduxjs/toolkit';
 
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
@@ -10,7 +12,7 @@ import {
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 interface UseEthereumCancelTxComposeParams {
     account: Account;

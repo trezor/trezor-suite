@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
     type TronStakeStepId,
@@ -13,7 +14,7 @@ import { type Account, type FeeInfo, type PrecomposedLevels } from '@suite-commo
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { resolveVotedRepresentativeAddress } from '../voteUtils';
 import { type useTronStakeForm } from './useTronStakeForm';

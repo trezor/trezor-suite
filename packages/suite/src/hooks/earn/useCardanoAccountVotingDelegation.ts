@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
     DEFAULT_VOTING_OPTION,
@@ -9,7 +10,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { hasCardanoLiveVoteDelegation } from '@suite-common/wallet-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const useCardanoAccountVotingDelegation = (
     account: Account,

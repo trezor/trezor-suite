@@ -15,9 +15,7 @@ const PositionedSwitch = styled.div`
 
 export const AutomaticUpdate = () => {
     const isUpdateEnabled = useSelector(selectDesktopUpdateEnabled);
-    const isAutomaticUpdateEnabled = useSelector(
-        state => state.desktopUpdate.isAutomaticUpdateEnabled,
-    );
+    const isAutomaticUpdateEnabled = useSelector(selectDesktopUpdateEnabled);
 
     if (!isUpdateEnabled) {
         return null;

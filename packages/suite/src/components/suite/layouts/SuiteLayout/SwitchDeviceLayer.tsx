@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { closeModalApp } from '@suite/router';
 import {
     TurnOnSuiteSyncModals,
@@ -6,7 +8,7 @@ import {
 } from '@suite/suite-sync';
 
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
-import { useDispatch, usePreferredModal, useSelector } from 'src/hooks/suite';
+import { usePreferredModal, useSelector } from 'src/hooks/suite';
 import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 
 export const SwitchDeviceLayer = () => {

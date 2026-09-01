@@ -1,6 +1,10 @@
 import { useWatch } from 'react-hook-form';
 
-import { MODAL_CONTEXT_DEVICE, REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES } from '@suite/modal';
+import {
+    MODAL_CONTEXT_DEVICE,
+    REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES,
+    selectModal,
+} from '@suite/modal';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useFetchFeesOnce, useRefetchFees } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -8,7 +12,7 @@ import { type FormState } from '@suite-common/wallet-types';
 import { useSelector } from 'src/hooks/suite';
 
 function useIsRefetchDisabled() {
-    const modal = useSelector(state => state.modal);
+    const modal = useSelector(selectModal);
     const setMaxOutputId = useWatch<FormState, 'setMaxOutputId'>({ name: 'setMaxOutputId' });
 
     if (setMaxOutputId !== undefined) {

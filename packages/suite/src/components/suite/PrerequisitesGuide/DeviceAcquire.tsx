@@ -1,4 +1,5 @@
 import { type MouseEventHandler } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
@@ -10,7 +11,6 @@ import {
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
     TROUBLESHOOTING_TIP_RECONNECT,
 } from 'src/components/suite/troubleshooting/tips';
-import { useDispatch } from 'src/hooks/suite';
 
 export const DeviceAcquire = () => {
     const { isLocked } = useDevice();

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
@@ -22,7 +23,7 @@ import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Pagination } from 'src/components/wallet/Pagination';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { SelectAccountRow } from './SelectAccountRow';
 

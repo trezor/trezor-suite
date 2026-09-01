@@ -1,4 +1,5 @@
 import { type MouseEventHandler } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
@@ -7,8 +8,6 @@ import { deviceActions } from '@suite-common/device';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
 import { EjectIcon } from '@trezor/icons';
-
-import { useDispatch } from 'src/hooks/suite';
 
 type EjectConfirmationProps = {
     onCancel: MouseEventHandler<HTMLButtonElement> | undefined;

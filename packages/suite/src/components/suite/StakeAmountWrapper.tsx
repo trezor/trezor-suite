@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -6,8 +7,6 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { mediaQueries } from '@trezor/styles';
-
-import { useDispatch } from 'src/hooks/suite';
 
 const Container = styled.div`
     position: relative;

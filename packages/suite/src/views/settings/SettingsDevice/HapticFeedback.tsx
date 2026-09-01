@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
@@ -7,7 +9,6 @@ import { Switch, Tooltip } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
 
 interface DeviceLabelProps {
     isDeviceLocked: boolean;

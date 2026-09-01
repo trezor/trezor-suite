@@ -1,9 +1,10 @@
+import { useDispatch } from 'react-redux';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { suiteForgetDeviceThunk } from 'src/actions/suite/suiteForgetDeviceThunk';
-import { useDispatch } from 'src/hooks/suite';
 
 /**
  * Hook that wraps `forgetDeviceThunk` with toast and analytics.

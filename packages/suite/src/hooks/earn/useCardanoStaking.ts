@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import { selectSelectedAccount } from '@suite/account';
 import {
     hasPendingStakeTypeTransaction,
     selectCardanoPoolsInfo,
@@ -15,7 +16,7 @@ import { prepareTxPlan } from 'src/actions/wallet/stake/stakeFormCardanoActions'
 import { useSelector } from 'src/hooks/suite';
 
 export const useCardanoStaking = (): CardanoStaking => {
-    const account = useSelector(state => state.wallet.selectedAccount.account);
+    const account = useSelector(selectSelectedAccount);
 
     const isCardano = account?.networkType === 'cardano';
 

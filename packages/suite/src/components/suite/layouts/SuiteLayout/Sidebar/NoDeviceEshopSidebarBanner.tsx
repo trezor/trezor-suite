@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -17,8 +19,6 @@ import { Image } from '@trezor/components';
 import { SidebarBanner } from '@trezor/product-components';
 import { palette } from '@trezor/theme';
 import { ESHOP_STORE_URL, withGetTrezorCtaUtm } from '@trezor/urls';
-
-import { useDispatch } from 'src/hooks/suite';
 
 const HeroContainer = styled.div`
     display: flex;

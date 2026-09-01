@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
@@ -9,7 +11,7 @@ import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 type EarnEthBannerProps = {
     networkSymbol: NetworkSymbol;

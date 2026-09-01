@@ -1,10 +1,12 @@
+import { useDispatch } from 'react-redux';
+
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { selectIsTorEnabled, selectIsTorLoading } from '@suite/tor';
 import { toggleTor } from '@suite/tor-desktop';
 import { Banner } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const TorDisconnected = () => {
     const account = useSelector(selectSelectedAccount);

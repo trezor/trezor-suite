@@ -1,9 +1,9 @@
 import { type RefObject, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { anchorChange, selectRouterAnchor } from '@suite/router';
 
-import { useDispatch } from './useDispatch';
-import { useSelector } from './useSelector';
+import { useSelector } from 'src/hooks/suite';
 
 export const useClearAnchorHighlightOnClick = (elementRef: RefObject<HTMLElement | null>) => {
     const anchor = useSelector(selectRouterAnchor);

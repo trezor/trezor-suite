@@ -75,6 +75,8 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
         // this action needs to be processed before propagation to deviceReducer
         // otherwise device will not be accessible and related data will not be removed (accounts, txs...)
         if (deviceActions.deviceDisconnect.match(action)) {
+            // Keep the pre-disconnect state snapshot used by the delayed tooltip decision.
+            // eslint-disable-next-line no-restricted-syntax
             const state = getState();
             const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(state);
             dispatch(

@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
@@ -20,7 +22,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { getTronStakingRewards, getTronWithdrawableBalance } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { resolveVotedRepresentativeAddress } from '../voteUtils';

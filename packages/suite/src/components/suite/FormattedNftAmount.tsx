@@ -10,7 +10,7 @@ import { type TokenTransfer } from '@trezor/connect';
 import { type TypographyStyle } from '@trezor/theme';
 
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useSelector } from 'src/hooks/suite';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 export interface FormattedNftAmountProps {

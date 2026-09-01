@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useFormContext, useFormState } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
@@ -10,6 +9,7 @@ import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { InputError } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
 
 import { FEE_LIMIT } from './constants';
 import { useFeesContext } from '../../context/FeesContext';

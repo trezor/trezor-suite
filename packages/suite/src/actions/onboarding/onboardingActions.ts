@@ -10,6 +10,7 @@ import {
     type SuiteRouterHistoryDep,
     closeModalApp,
     goto,
+    selectRouterApp,
 } from '@suite/router';
 import { type SuiteSettingsRootState } from '@suite/settings';
 import {
@@ -37,7 +38,11 @@ import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
 import { type OnboardingRootState } from 'src/reducers/onboarding/onboardingReducer';
-import { selectOnboardingAnalytics } from 'src/selectors/onboarding/onboardingSelectors';
+import {
+    selectOnboardingActiveStepId,
+    selectOnboardingAnalytics,
+    selectOnboardingPath,
+} from 'src/selectors/onboarding/onboardingSelectors';
 import { type AnyPath, type AnyStepId, type BackupMedium } from 'src/types/onboarding';
 import {
     findNextStep,
@@ -59,7 +64,7 @@ const getAllStepsInPath = (getState: () => GetAllStepsInPathState) => {
 
     const isStepUsedProps = {
         device: selectSelectedDevice(getState()),
-        onboardingPath: getState().onboarding.path,
+        onboardingPath: selectOnboardingPath(getState()),
         isDeviceAuthenticityCheckEnabled: selectIsDeviceAuthenticityCheckEnabled(getState()),
         isUnlockedBootloaderAllowed: selectIsUnlockedBootloaderAllowed(getState()),
     };
@@ -76,7 +81,7 @@ const goToPreviousStep =
             return dispatch(goToStep(stepId));
         }
         const stepsInPath = getAllStepsInPath(getState);
-        const prevStep = findPrevStep(getState().onboarding.activeStepId, stepsInPath);
+        const prevStep = findPrevStep(selectOnboardingActiveStepId(getState()), stepsInPath);
 
         if (!prevStep) {
             return;
@@ -127,7 +132,7 @@ const goToSuite =
 
         // A non-empty onboarding path means the user went through a create or recovery flow, i.e. set up
         // a device from scratch. Pairing an already set up device leaves the path empty.
-        const isFreshDeviceSetup = getState().onboarding.path.length > 0;
+        const isFreshDeviceSetup = selectOnboardingPath(getState()).length > 0;
 
         dispatch(initialRunCompleted({ isFreshDeviceSetup }));
         dispatch(resetOnboarding());
@@ -204,7 +209,7 @@ const goToNextStep =
         const device = selectSelectedDevice(getState());
         const stepsInPath = getAllStepsInPath(getState);
         const nextStep = findNextStep(
-            getState().onboarding.activeStepId,
+            selectOnboardingActiveStepId(getState()),
             stepsInPath,
             device ?? null,
         );
@@ -288,12 +293,10 @@ const recoveryRerun =
         }
 
         const { initialized } = result.payload;
-        const { router } = getState();
-
         if (initialized) {
             dispatch(goto({ routeName: 'recovery-index' }));
         } else {
-            if (router.app !== 'onboarding') {
+            if (selectRouterApp(getState()) !== 'onboarding') {
                 dispatch(goto({ routeName: 'onboarding-index' }));
             }
             dispatch(goToStep('recovery'));

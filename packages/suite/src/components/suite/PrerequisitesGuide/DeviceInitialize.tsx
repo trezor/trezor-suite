@@ -1,4 +1,5 @@
 import { type MouseEvent } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
@@ -15,7 +16,6 @@ import {
     updateAnalytics,
 } from 'src/actions/onboarding/onboardingActions';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
-import { useDispatch } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
 
 export const DeviceInitialize = () => {

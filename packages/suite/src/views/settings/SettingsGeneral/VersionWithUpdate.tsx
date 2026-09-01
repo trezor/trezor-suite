@@ -1,8 +1,11 @@
+import { useDispatch } from 'react-redux';
+
 import {
     type DesktopUpdateState,
     UpdateState,
     desktopUpdateActions,
     installUpdateThunk,
+    selectDesktopUpdate,
 } from '@suite/desktop-update';
 import { useExternalLink } from '@suite/external-links';
 import { getReleaseUrl } from '@suite/github';
@@ -14,7 +17,7 @@ import { isDesktop } from '@trezor/env-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const getUpdateStateMessage = (state: UpdateState) => {
     switch (state) {
@@ -95,7 +98,7 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
 };
 
 export const VersionWithUpdate = () => {
-    const desktopUpdateState = useSelector(state => state.desktopUpdate);
+    const desktopUpdateState = useSelector(selectDesktopUpdate);
     const dispatch = useDispatch();
 
     const checkForUpdates = () => desktopApi.checkForUpdates({ isManual: true });

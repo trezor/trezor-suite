@@ -1,3 +1,4 @@
+import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils/src/accountUtils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -10,7 +11,7 @@ export const useTotalFiatBalance = (
     baseCurrencyCode: BaseCurrencyCode,
     rates?: RatesByKey,
 ) => {
-    const tokenDefinitions = useSelector(state => state.tokenDefinitions);
+    const tokenDefinitions = useSelector(selectTokenDefinitions);
     const deviceAccounts: Account[] = accounts.map(account => {
         const coinDefinitions = tokenDefinitions?.[account.symbol]?.coin;
         const tokens = getTokens({

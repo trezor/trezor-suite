@@ -1,4 +1,5 @@
 import { useWatch } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -18,7 +19,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 const Container = styled.div`

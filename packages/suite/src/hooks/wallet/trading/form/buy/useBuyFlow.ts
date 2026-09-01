@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { goto } from '@suite/router';
 import { type selectTradingBuyQuotesRequest, tradingThunks } from '@suite-common/trading';
-
-import { useDispatch } from 'src/hooks/suite';
 
 import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
 

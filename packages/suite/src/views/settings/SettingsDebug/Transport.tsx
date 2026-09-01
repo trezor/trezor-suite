@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import {
     type DebugModeOptions,
@@ -13,7 +14,7 @@ import { isDesktop } from '@trezor/env-utils';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { type ArrayElement } from '@trezor/type-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 
 type Transport = ArrayElement<NonNullable<DebugModeOptions['transports']>>;

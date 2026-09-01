@@ -1,10 +1,12 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { type BlockchainState } from '@suite-common/wallet-core';
+import { type BlockchainState, selectBlockchainState } from '@suite-common/wallet-core';
 import { Box, Column, DotIndicator, Note, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import type { CustomBackend } from 'src/types/wallet';
 
 const BackendRow = ({
@@ -49,7 +51,7 @@ type NavBackendsProps = {
 };
 
 export const NavBackends = ({ customBackends }: NavBackendsProps) => {
-    const blockchain = useSelector(state => state.wallet.blockchain);
+    const blockchain = useSelector(selectBlockchainState);
 
     return (
         <Column gap={16} padding={4}>

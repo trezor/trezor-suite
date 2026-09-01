@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -16,7 +17,7 @@ import { InfoIcon } from '@trezor/icons';
 
 import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 

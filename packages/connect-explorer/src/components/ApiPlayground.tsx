@@ -9,6 +9,7 @@ import { Method, MethodContent } from './Method';
 import * as methodActions from '../actions/methodActions';
 import { useActions, useSelector } from '../hooks';
 import { type MethodState } from '../reducers/methodCommon';
+import { selectMethod } from '../reducers/methodReducer';
 
 const ApiPlaygroundWrapper = styled.div`
     display: block;
@@ -82,7 +83,7 @@ interface ApiPlaygroundProps {
 }
 export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
     const [selectedOption, setSelectedOption] = useState(0);
-    const method = useSelector(state => state.method);
+    const method = useSelector(selectMethod);
     const actions = useActions({
         onSetSchema: methodActions.onSetSchema,
         onSetMethod: methodActions.onSetMethod,

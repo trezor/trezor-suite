@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -7,7 +9,7 @@ import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/pro
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { type ThemeColorVariant } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { getOsTheme } from 'src/utils/suite/env';
 
 type ThemeColorVariantWithSystem = ThemeColorVariant | 'system';

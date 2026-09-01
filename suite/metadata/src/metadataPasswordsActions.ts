@@ -81,6 +81,8 @@ const fetchPasswords =
         );
     };
 
+const selectIsSuiteOnline = (state: MetadataRootState) => state.suite.online;
+
 type InitThunkState = MetadataRootState;
 
 export const init = () => async (dispatch: Dispatch, getState: () => InitThunkState) => {
@@ -185,7 +187,7 @@ export const init = () => async (dispatch: Dispatch, getState: () => InitThunkSt
             device = selectSelectedDevice(getState());
             const { fileName, aesKey } = device?.passwords?.[1] || {};
 
-            if (!getState().suite.online || !device?.state || !fileName || !aesKey) {
+            if (!selectIsSuiteOnline(getState()) || !device?.state || !fileName || !aesKey) {
                 return;
             }
             dispatch(

@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
@@ -12,7 +14,7 @@ import {
     TextColumn,
 } from '@trezor/product-components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 export const MevProtection = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);

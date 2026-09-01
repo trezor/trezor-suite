@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
@@ -23,7 +24,7 @@ import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button, Card, Column, Table } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 

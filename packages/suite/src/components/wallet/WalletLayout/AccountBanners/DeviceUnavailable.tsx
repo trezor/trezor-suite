@@ -1,9 +1,10 @@
+import { useDispatch } from 'react-redux';
+
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Banner } from '@trezor/components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch } from 'src/hooks/suite';
 
 export const DeviceUnavailable = () => {
     const dispatch = useDispatch();

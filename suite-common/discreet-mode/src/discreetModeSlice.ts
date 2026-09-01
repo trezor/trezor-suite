@@ -40,5 +40,6 @@ export type DiscreetModeRootState = {
 export const discreetModeActions = discreetModeSlice.actions;
 export const discreetModeReducer = discreetModeSlice.reducer;
 
+export const selectDiscreetMode = (state: DiscreetModeRootState) => state.discreetMode;
 export const selectIsDiscreteModeActive = (state: DiscreetModeRootState) =>
     state.discreetMode.isActive;

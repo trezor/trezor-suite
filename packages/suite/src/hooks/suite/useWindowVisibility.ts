@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
-
-import { useDispatch } from './useDispatch';
 
 export const useWindowVisibility = () => {
     const dispatch = useDispatch();

@@ -59,9 +59,13 @@ export type SuiteRootStateSliceForMetadata = {
 };
 
 /** @deprecated Legacy labeling */
-export type MetadataRootState = {
+type MetadataSliceRootState = {
     metadata: MetadataState;
-} & AccountsRootState &
+};
+
+/** @deprecated Legacy labeling */
+export type MetadataRootState = MetadataSliceRootState &
+    AccountsRootState &
     DeviceRootState &
     SuiteSettingsRootState & { suite: SuiteRootStateSliceForMetadata };
 
@@ -150,7 +154,16 @@ export const metadataReducer = (
 /**
  * @deprecated Legacy Labeling
  */
-export const selectMetadata = (state: MetadataRootState) => state.metadata;
+export const selectMetadata = (state: MetadataSliceRootState) => state.metadata;
+
+export const selectMetadataEnabled = (state: MetadataSliceRootState) => state.metadata.enabled;
+
+export const selectMetadataError = (state: MetadataSliceRootState) => state.metadata.error;
+
+export const selectMetadataInitiating = (state: MetadataSliceRootState) =>
+    state.metadata.initiating;
+
+export const selectMetadataEditing = (state: MetadataSliceRootState) => state.metadata.editing;
 
 /**
  * @deprecated Legacy Labeling

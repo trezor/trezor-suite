@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
+import { selectModal } from '@suite/modal';
 import { type BackupType } from '@suite-common/suite-types';
 import { UI_REQUESTS } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { type GoToSuiteOptions } from 'src/actions/onboarding/onboardingActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+import { selectOnboarding } from 'src/selectors/onboarding/onboardingSelectors';
 import { type AnyPath, type AnyStepId, type BackupMedium } from 'src/types/onboarding';
 
 import { parseStepId } from '../../utils/onboarding/steps';
@@ -14,8 +17,8 @@ import { parseStepId } from '../../utils/onboarding/steps';
 export const useOnboarding = () => {
     const dispatch = useDispatch();
 
-    const onboarding = useSelector(state => state.onboarding);
-    const modal = useSelector(state => state.modal);
+    const onboarding = useSelector(selectOnboarding);
+    const modal = useSelector(selectModal);
 
     const showPinMatrix =
         modal.context === '@modal/context-device' && modal.windowType === UI_REQUESTS.REQUEST_PIN;

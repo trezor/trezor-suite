@@ -1,5 +1,4 @@
 import { type ComponentType, type JSX } from 'react';
-import { useSelector } from 'react-redux';
 
 import { type ErrorCode } from 'invity-api';
 
@@ -24,6 +23,8 @@ import {
     TorBrowserIcon,
 } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { ActionRenderer } from './ActionRenderer';
 import { AutoEjectRenderer } from './AutoEjectRenderer';

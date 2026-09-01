@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -11,7 +12,7 @@ import { FunnelSimpleIcon } from '@trezor/icons';
 
 import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
+import { useAccountSearch, useSelector } from 'src/hooks/suite';
 
 import { AccountSearchBox } from './AccountSearchBox';
 import { AddAccountButton } from './AddAccountButton';

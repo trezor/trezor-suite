@@ -7,14 +7,13 @@ import { networks } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { Card, Column, InfoItem, type StepListItemState } from '@trezor/components';
 
-import { useLocales } from 'src/hooks/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useLocales, useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
 import { TradingDetailTxId } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTxId';
 import { getTxEstimatedTimeSeconds } from 'src/views/wallet/trading/common/TradingDetail/utils';
 
-const getState = (trade: SellFiatTrade): StepListItemState =>
+const getStepState = (trade: SellFiatTrade): StepListItemState =>
     trade.status === 'SUCCESS' ? 'done' : 'active';
 
 const getTitleId = (state: StepListItemState): TranslationKey => {
@@ -42,7 +41,7 @@ export const TradingSellDetailPaymentSending = ({
         account ? selectRawNetworkFeeInfo(state, account.symbol) : undefined,
     );
 
-    const state = getState(trade);
+    const state = getStepState(trade);
     const networkType = account ? networks[account.symbol]?.networkType : undefined;
     const estimatedTimeSeconds = getTxEstimatedTimeSeconds(
         networkType,

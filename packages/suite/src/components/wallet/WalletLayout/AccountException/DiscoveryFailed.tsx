@@ -1,9 +1,11 @@
+import { useDispatch } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { RepeatIcon, WarningIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
-import { useDiscovery, useDispatch } from 'src/hooks/suite';
+import { useDiscovery } from 'src/hooks/suite';
 
 /**
  * Handler for discovery "hard" error (other than bundle-error)

@@ -1,7 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
-import { type SelectedAccountRootState } from '@suite/account';
+import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type WithServices } from '@suite-common/redux-utils';
@@ -134,7 +134,7 @@ export const signTransaction =
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ) => {
-        const { selectedAccount } = getState().wallet;
+        const selectedAccount = selectFullSelectedAccount(getState());
         const device = selectSelectedDevice(getState());
         if (selectedAccount.status !== 'loaded' || !device || transactionInfo?.type !== 'final')
             return;

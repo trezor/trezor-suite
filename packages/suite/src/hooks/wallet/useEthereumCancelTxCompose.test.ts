@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux';
+
 import { useQuery } from '@suite-common/react-query';
 import {
     type Account,
@@ -5,13 +7,18 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { useEthereumCancelTxCompose } from './useEthereumCancelTxCompose';
 
+jest.mock('react-redux', () => ({
+    __esModule: true,
+    ...jest.requireActual('react-redux'),
+    useDispatch: jest.fn(),
+}));
+
 jest.mock('src/hooks/suite', () => ({
     __esModule: true,
-    useDispatch: jest.fn(),
     useSelector: jest.fn(),
 }));
 

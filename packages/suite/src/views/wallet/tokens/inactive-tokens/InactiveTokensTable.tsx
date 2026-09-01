@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
@@ -12,7 +13,6 @@ import { TokenIcon } from '@trezor/product-components';
 
 import { Loading } from 'src/components/suite';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-import { useDispatch } from 'src/hooks/suite';
 
 import { NoTokens } from '../common/NoTokens';
 import { NoSearchResultsWrapped } from '../common/TokensTable/TokensTable';

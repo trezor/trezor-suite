@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
@@ -6,7 +7,6 @@ import { Column, Icon, Row, SubTabs } from '@trezor/components';
 import { TrezorLogoIcon, WalletConnectIcon } from '@trezor/icons';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { useDispatch } from 'src/hooks/suite';
 
 import { ConnectPermissions } from './ConnectPermissions';
 import { WalletConnectButton } from './WalletConnectButton';

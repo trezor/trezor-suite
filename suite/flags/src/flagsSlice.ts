@@ -161,6 +161,8 @@ export const selectIsNoDeviceEshopSidebarBannerShown = (state: FlagsRootState) =
     state.flags.showNoDeviceEshopSidebarBanner;
 export const selectAreNoDeviceEshopBannersDisabled = (state: FlagsRootState) =>
     state.flags.areNoDeviceEshopBannersDisabled;
+export const selectHasSeenDisconnectTooltip = (state: FlagsRootState) =>
+    state.flags.hasSeenDisconnectTooltip;
 export const selectIsNewContentIndicatorVisible =
     (indicatorId: NewContentIndicatorId) => (state: FlagsRootState) =>
         state.flags.seenNewContentIndicators[indicatorId] !== true;
