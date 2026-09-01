@@ -4,7 +4,8 @@ import type { StakingPool } from '@trezor/blockchain-link-types';
 
 import { EVERSTAKE_ACCOUNTING_ABI } from './abi';
 import { STAKING_POOL_CONTRACTS } from './constants';
-import { type BatchCall, batchRead, getChainId } from '../utils/multicall';
+import { getChainId } from '../utils/client';
+import { type BatchCall, batchRead } from '../utils/multicall';
 
 type EverstakeAccountingFunctionName = Extract<
     (typeof EVERSTAKE_ACCOUNTING_ABI)[number],

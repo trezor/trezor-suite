@@ -15,6 +15,7 @@ import { rpcCall } from './handlers/rpcCall';
 import { cleanupSubscriptions, subscribe, unsubscribe } from './handlers/subscribe';
 import { validateRpcUrl } from './handlers/validateRpcUrl';
 import type { Request } from './types';
+import { getChainId } from './utils/client';
 import { getTransportType } from './utils/transportType';
 
 const onRequest = (request: Request<MessageTypes.Message>) => {
@@ -68,7 +69,8 @@ export class EvmRpcWorker extends BaseWorker<PublicClient> {
             transport: transportType(url),
         });
 
-        await client.getChainId();
+        // Doubles as the connectivity probe, and primes the cache the handlers read from.
+        await getChainId(client);
 
         this.post({ id: -1, type: RESPONSES.CONNECTED });
 
