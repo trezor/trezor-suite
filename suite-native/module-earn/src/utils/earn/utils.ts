@@ -1,6 +1,5 @@
+import { isUserCancelledSignErrorCode } from '@suite-common/earn-stablecoin';
 import { type FormState } from '@suite-common/wallet-types';
-
-import { USER_CANCELLED_ERROR_CODES } from '../../constants';
 
 export const buildEarnComposeFormState = (
     contractAddress: string,
@@ -31,7 +30,7 @@ export const isUserCancelledSignError = (
     payload: { errorCode?: string; message?: string } | undefined,
 ) =>
     payload?.message === 'tx-cancelled' ||
-    (!!payload?.errorCode && USER_CANCELLED_ERROR_CODES.some(code => code === payload.errorCode));
+    (!!payload?.errorCode && isUserCancelledSignErrorCode(payload.errorCode));
 
 export type EarnReviewErrorPayload =
     { error?: string; errorCode?: string; message?: string } | undefined;
@@ -64,7 +63,7 @@ export const getEarnReviewErrorReaction = (
 
     const errorCode = payload?.errorCode;
 
-    if (USER_CANCELLED_ERROR_CODES.some(code => code === errorCode)) {
+    if (isUserCancelledSignErrorCode(errorCode)) {
         return 'popScreen';
     }
 

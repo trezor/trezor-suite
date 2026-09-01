@@ -46,7 +46,13 @@ export const yieldClaimEvent: EventDef<Attributes, EventType.YieldClaim> = {
             changelog: [{ version: '26.5.2', notes: 'added' }],
         },
         errorMessage: {
-            changelog: [{ version: '26.5.0', notes: 'added' }],
+            changelog: [
+                { version: '26.5.0', notes: 'added' },
+                {
+                    version: '26.9.0',
+                    notes: 'desktop no longer reports a cancelled PIN entry as `submit-failed`',
+                },
+            ],
         },
     },
 };

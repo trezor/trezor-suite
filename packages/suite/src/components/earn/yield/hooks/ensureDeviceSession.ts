@@ -1,3 +1,4 @@
+import { isUserCancelledSignErrorCode } from '@suite-common/earn-stablecoin';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type YieldTranslationKey } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
@@ -29,7 +30,7 @@ export const ensureDeviceSession = async (
 
     const { code } = response.error;
 
-    if (code === 'Failure_ActionCancelled' || code === 'Method_Cancel') {
+    if (isUserCancelledSignErrorCode(code)) {
         return { success: false };
     }
 

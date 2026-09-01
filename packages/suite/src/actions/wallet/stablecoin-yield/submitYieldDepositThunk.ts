@@ -127,18 +127,8 @@ export const submitYieldDepositThunk = createThunk<
 
             userAcceptedTxSimulation?.resolve();
 
-            if (!sendResult) {
-                extra.services.analytics.report({
-                    type: events.yieldDepositEvent.name,
-                    payload: {
-                        type: 'error',
-                        action: 'continue',
-                        networkSymbol: flowData.account.symbol,
-                        vaultId: flowData.vault.id,
-                        errorMessage: 'submit-failed',
-                    },
-                });
-
+            // A deliberate user cancel — not reported as a failure.
+            if (sendResult.status === 'cancelled') {
                 return;
             }
 

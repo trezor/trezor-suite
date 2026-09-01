@@ -151,7 +151,9 @@ export const submitWrapNativeTokenThunk = createThunk<
 
             userAcceptedTxSimulation?.resolve();
 
-            if (!sendResult) {
+            // Unlike the main yield transactions, a cancelled wrap is reported: the wrap-step
+            // failure values documented on the deposit event include user rejections.
+            if (sendResult.status === 'cancelled') {
                 reportError('submit-failed');
 
                 return undefined;
@@ -214,7 +216,7 @@ export const submitWrapNativeTokenThunk = createThunk<
                 }),
             );
 
-            return sendResult;
+            return { txid: sendResult.txid };
         } catch (error) {
             console.error(error);
             reportError(getYieldSubmitErrorAnalyticsMessage(error));

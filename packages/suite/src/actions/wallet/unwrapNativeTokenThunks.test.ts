@@ -16,6 +16,9 @@ const mockComposeYieldUnwrapTransactionThunk = jest.fn();
 const mockOpenDeferredModal = jest.fn();
 const mockSendYieldTransaction = jest.fn();
 
+const mockSentResult = (txid: string) => ({ status: 'sent' as const, txid });
+const mockCancelledResult = { status: 'cancelled' as const };
+
 type UnwrapNativeTokenThunkDeps = SendYieldTransactionDeps & WithServices<AnalyticsDep>;
 
 const createExtra = (report: jest.Mock = jest.fn()): UnwrapNativeTokenThunkDeps => ({
@@ -78,7 +81,7 @@ describe('submitUnwrapNativeTokenThunk', () => {
                 }),
         }));
         mockOpenDeferredModal.mockImplementation(() => () => Promise.resolve({ value: false }));
-        mockSendYieldTransaction.mockResolvedValue(undefined);
+        mockSendYieldTransaction.mockResolvedValue(mockCancelledResult);
     });
 
     it('uses the shared unwrap composition from wallet-core', async () => {
@@ -102,7 +105,7 @@ describe('submitUnwrapNativeTokenThunk', () => {
         mockOpenDeferredModal.mockImplementation(
             () => () => Promise.resolve({ value: true, resolve: jest.fn() }),
         );
-        mockSendYieldTransaction.mockResolvedValue({ txid: '0xunwrap' });
+        mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xunwrap'));
 
         await store
             .dispatch(
@@ -131,7 +134,7 @@ describe('submitUnwrapNativeTokenThunk', () => {
         mockOpenDeferredModal.mockImplementation(
             () => () => Promise.resolve({ value: true, resolve: jest.fn() }),
         );
-        mockSendYieldTransaction.mockResolvedValue({ txid: '0xunwrap' });
+        mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xunwrap'));
 
         await store
             .dispatch(submitUnwrapNativeTokenThunk({ account, token, unwrapAmount: '1.5' }))
@@ -166,7 +169,7 @@ describe('submitUnwrapNativeTokenThunk', () => {
         mockOpenDeferredModal.mockImplementation(
             () => () => Promise.resolve({ value: true, resolve: jest.fn() }),
         );
-        mockSendYieldTransaction.mockResolvedValue({ txid: '0xunwrap' });
+        mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xunwrap'));
 
         await buildStore(report)
             .dispatch(
@@ -236,7 +239,7 @@ describe('submitUnwrapNativeTokenThunk', () => {
             mockOpenDeferredModal.mockImplementation(
                 () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
             );
-            mockSendYieldTransaction.mockResolvedValue(undefined);
+            mockSendYieldTransaction.mockResolvedValue(mockCancelledResult);
 
             await dispatchInFlowUnwrap(report);
 
@@ -260,7 +263,7 @@ describe('submitUnwrapNativeTokenThunk', () => {
             mockOpenDeferredModal.mockImplementation(
                 () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
             );
-            mockSendYieldTransaction.mockResolvedValue({ txid: '0xunwrap' });
+            mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xunwrap'));
 
             await dispatchInFlowUnwrap(report);
 
@@ -339,7 +342,7 @@ describe('submitUnwrapNativeTokenThunk', () => {
         mockOpenDeferredModal.mockImplementation(
             () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
         );
-        mockSendYieldTransaction.mockResolvedValue({ txid: '0xabc' });
+        mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xabc'));
 
         await dispatchUnwrap(report);
 
