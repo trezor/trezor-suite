@@ -87,6 +87,20 @@ export const handleDeviceDisconnect = createThunk<
 
     const devices = selectDevices(getState());
 
+    // @ts-expect-error - router is not in DeviceRootState but we know it's there
+    // eslint-disable-next-line no-restricted-syntax
+    const routerApp = getState().router.app;
+
+    /**
+     * Under normal circumstances, after device is disconnected we want suite to select another existing device (either remembered or physically connected)
+     * This is not the case in firmware update and onboarding; In this case we simply wan't suite.device to be empty until user reconnects a device again
+     */
+    if (['onboarding', 'firmware', 'firmware-type'].includes(routerApp)) {
+        dispatch(selectDeviceThunk({ device: undefined }));
+
+        return;
+    }
+
     // selected device is disconnected, decide what to do next
     // device is still present in reducer (remembered or candidate to remember)
     const devicePresent = getSelectedDevice(selectedDevice, devices);
