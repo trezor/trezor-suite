@@ -20,7 +20,7 @@ import {
 import { EarnActiveItemsBottomSheet } from './EarnActiveItemsBottomSheet';
 import { EarnBalanceCard } from './EarnBalanceCard';
 import { EarnDepositsCardRow } from './EarnDepositsCardRow';
-import { StablecoinYieldClaimRewardsBottomSheet } from './StablecoinYieldClaimRewardsBottomSheet';
+import { YieldClaimRewardsBottomSheet } from './YieldClaimRewardsBottomSheet';
 import { StablecoinYieldClaimRewardsCardSection } from './StablecoinYieldClaimRewardsCardSection';
 import { useEarnDepositsCardData } from '../hooks/useEarnDepositsCardData';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../hooks/useStablecoinYieldFirmwareUpdateAlert';
@@ -236,6 +236,7 @@ export const EarnDepositsCard = ({
                 items={stakingRow?.activeItems ?? []}
                 onClose={closeStakingSheet}
             />
+
             <EarnActiveItemsBottomSheet
                 ref={stablecoinYieldSheetRef}
                 type="stablecoin-yield"
@@ -243,7 +244,7 @@ export const EarnDepositsCard = ({
                 onClose={closeStablecoinYieldSheet}
             />
 
-            <StablecoinYieldClaimRewardsBottomSheet
+            <YieldClaimRewardsBottomSheet
                 ref={stablecoinYieldClaimRewardsSheetRef}
                 claimItems={stablecoinYieldClaimItems}
                 onClaimRewardPress={handleStablecoinYieldClaimRewardPress}

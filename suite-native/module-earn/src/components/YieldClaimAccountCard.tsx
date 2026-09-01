@@ -39,20 +39,19 @@ const tokenAmountsStyle = prepareNativeStyle(() => ({
     fontVariant: ['tabular-nums'],
 }));
 
-type StablecoinYieldClaimAccountCardProps = {
+interface YieldClaimAccountCardProps {
     summary: StablecoinYieldClaimSummary;
     onPress: () => void;
-};
+}
 
-export const StablecoinYieldClaimAccountCard = ({
-    summary,
-    onPress,
-}: StablecoinYieldClaimAccountCardProps) => {
+export const YieldClaimAccountCard = ({ summary, onPress }: YieldClaimAccountCardProps) => {
     const { applyStyle } = useNativeStyles();
     const { CryptoAmountFormatter } = useFormatters();
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, summary.accountKey),
     );
+
     const formattedRewardTokenAmounts = summary.tokens
         .map(({ claimableAmount, decimals, symbol }) => {
             const compactAmount = getCompactAmount({
