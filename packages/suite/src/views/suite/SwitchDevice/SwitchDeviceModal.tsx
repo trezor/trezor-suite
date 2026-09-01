@@ -47,6 +47,7 @@ export const SwitchDeviceModal = ({
             alignment={{ x: 'start', y: 'start' }}
             padding={8}
             opaque={isInConnectPopup}
+            isContentScrollable
         >
             <TrafficLightOffset expand={false}>
                 <Container data-testid={`${dataTest}/switch-device`}>
