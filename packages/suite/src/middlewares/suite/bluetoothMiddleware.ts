@@ -172,9 +172,10 @@ const setupAutoReconnect = (getState: () => AppState, dispatch: Dispatch) => {
             resolve();
         };
         TrezorConnect.on('device-connect', cleanup);
+        resolveAfter(3000).then(cleanup);
     });
 
-    Promise.race([waitForDevice, resolveAfter(3000)]).then(() => {
+    waitForDevice.then(() => {
         bluetoothIpc.on('device-update', async (deviceIpc: BluetoothDevice) => {
             const device = fromBluetoothDevice(deviceIpc);
             await attemptDeviceConnect(device, getState, dispatch);
