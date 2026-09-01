@@ -13,7 +13,7 @@ const iconBackgroundStyle = prepareNativeStyle<{
     borderColor: Color;
     borderRadius: NativeRadius;
 }>((utils, { iconSize, backgroundColor, borderColor, borderRadius }) => ({
-    width: iconSize + 2 * (utils.spacings.sp8 + utils.borders.widths.small),
+    width: iconSize + 2 * utils.spacings.sp8,
     aspectRatio: 1,
     alignItems: 'center',
     justifyContent: 'center',
