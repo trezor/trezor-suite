@@ -4,7 +4,6 @@ export type * from './deviceDeps';
 export * from './deviceReducer';
 export * from './deviceSelectors';
 export * from './deviceUtils';
-export * from './getShouldSelectConnectedDevice';
 export * from './sortDevices';
 export * from './usePinHook';
 export { getIsIgnoredEntropyCheckError } from './services/getIsIgnoredEntropyCheckError';

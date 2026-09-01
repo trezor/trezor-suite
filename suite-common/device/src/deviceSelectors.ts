@@ -24,7 +24,7 @@ import {
     getSortedDevicesWithoutInstances,
     getStatus,
 } from '@suite-common/suite-utils';
-import { type DeviceState, type StaticSessionId } from '@trezor/connect';
+import { type Device, type DeviceState, type StaticSessionId } from '@trezor/connect';
 import {
     DeviceModelInternal,
     getFirmwareRevision,
@@ -617,6 +617,11 @@ export const selectDeviceDefaultBackupType = createMemoizedSelector(
 
         return deviceModel ? defaultBackupTypeMap[deviceModel] : 'shamir-single';
     },
+);
+
+export const selectIsSameOrNewDevice = createMemoizedSelector(
+    [selectSelectedDevice, (_state, device: Device | TrezorDevice | undefined) => device],
+    (selectedDevice, device) => selectedDevice === undefined || device?.id === selectedDevice.id,
 );
 
 export const selectDeviceFirmwareRevision = createMemoizedSelector([selectSelectedDevice], device =>
