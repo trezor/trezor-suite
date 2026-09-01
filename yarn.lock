@@ -13900,6 +13900,7 @@ __metadata:
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/trading": "workspace:*"
+    "@suite-common/tx-simulation": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"

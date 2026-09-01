@@ -97,6 +97,7 @@
     "devDependencies": {
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
+        "@suite-common/tx-simulation": "workspace:*",
         "@suite-native/bluetooth": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/test-utils": "workspace:*",

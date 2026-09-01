@@ -16,6 +16,7 @@ import { SlippageBottomSheet } from './SlippageBottomSheet';
 export const SLIPPAGE_PICKER_TEST_ID = '@trading/exchange/slippage-picker';
 
 type SlippagePickerProps = {
+    receiveAmount: string;
     onSlippageConfirmed: () => Promise<void>;
 };
 
@@ -23,7 +24,7 @@ const slippagePickerStyle = prepareNativeStyle(({ spacings }) => ({
     height: spacings.sp56,
 }));
 
-export const SlippagePicker = ({ onSlippageConfirmed }: SlippagePickerProps) => {
+export const SlippagePicker = ({ receiveAmount, onSlippageConfirmed }: SlippagePickerProps) => {
     const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
     const isDex = useSelector(selectTradingExchangeSelectedQuoteIsDex);
     const swapSlippage = useSelector(selectTradingExchangeSelectedQuoteSwapSlippage);
@@ -64,6 +65,7 @@ export const SlippagePicker = ({ onSlippageConfirmed }: SlippagePickerProps) => 
             </TradeInfoRow>
             <SlippageBottomSheet
                 isVisible={isSheetVisible}
+                receiveAmount={receiveAmount}
                 onClose={hideSheet}
                 onSlippageConfirmed={onSlippageConfirmed}
             />

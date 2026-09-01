@@ -28,7 +28,10 @@ describe('SlippagePicker', () => {
 
     const renderSlippagePicker = async (quote: ExchangeTrade = mercuryoDexQuote) => {
         const result = await renderWithSlippageTestProvider(
-            <SlippagePicker onSlippageConfirmed={mockOnSlippageConfirmed} />,
+            <SlippagePicker
+                receiveAmount={mercuryoDexQuote.receiveStringAmount!}
+                onSlippageConfirmed={mockOnSlippageConfirmed}
+            />,
             { quote },
         );
 

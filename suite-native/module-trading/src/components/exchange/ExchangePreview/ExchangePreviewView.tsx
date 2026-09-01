@@ -12,12 +12,12 @@ import {
 import { AnimatedVStack, BannerInline, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-provider-utils';
-import { SlippagePicker } from '@suite-native/trading-slippage';
 
 import { ExchangeEIP712Info } from './ExchangeEIP712Info';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
 import { ExchangeInfo } from './ExchangeInfo';
 import { ExchangePreviewIssueBanner } from './ExchangePreviewIssueBanner';
+import { ExchangeSlippagePicker } from './ExchangeSlippagePicker';
 import { ExchangeToAccountTradePreviewCard } from './ExchangeToAccountTradePreviewCard';
 import { LastErrorMessage } from '../../general/Error/LastErrorMessage';
 
@@ -67,11 +67,17 @@ export const ExchangePreviewView = memo(
                     <ExchangeToAccountTradePreviewCard quote={quote} />
                     {hasEIP712SignData ? (
                         <ExchangeEIP712Info exchange={quote?.exchange}>
-                            <SlippagePicker onSlippageConfirmed={onSlippageConfirmed} />
+                            <ExchangeSlippagePicker
+                                quote={quote}
+                                onSlippageConfirmed={onSlippageConfirmed}
+                            />
                         </ExchangeEIP712Info>
                     ) : (
                         <ExchangeInfo quote={quote} isTxnError={isTxnError}>
-                            <SlippagePicker onSlippageConfirmed={onSlippageConfirmed} />
+                            <ExchangeSlippagePicker
+                                quote={quote}
+                                onSlippageConfirmed={onSlippageConfirmed}
+                            />
                         </ExchangeInfo>
                     )}
 
