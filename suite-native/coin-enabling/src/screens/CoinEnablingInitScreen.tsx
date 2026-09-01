@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { LinearTransition } from 'react-native-reanimated';
 import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -8,7 +7,6 @@ import { events as commonEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { AnimatedBox } from '@suite-native/atoms';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -88,12 +86,11 @@ export const CoinEnablingInitScreen = () => {
         <Screen
             header={header}
             footer={hasEnabledCoin && <CoinEnablingInitFooter onSubmit={handleSubmit} />}
+            isScrollable={false}
         >
-            <AnimatedBox layout={LinearTransition} flex={1}>
-                <Form form={form}>
-                    <DiscoveryCoinsFilter searchQuery={searchQuery} />
-                </Form>
-            </AnimatedBox>
+            <Form form={form}>
+                <DiscoveryCoinsFilter searchQuery={searchQuery} />
+            </Form>
         </Screen>
     );
 };

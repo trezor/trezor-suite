@@ -1,10 +1,8 @@
 import { useCallback } from 'react';
-import { LinearTransition } from 'react-native-reanimated';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { AnimatedBox } from '@suite-native/atoms';
 import { CoinEnablingForm } from '@suite-native/coin-enabling';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
@@ -29,10 +27,8 @@ export const SettingsNetworksScreen = () => {
     });
 
     return (
-        <Screen header={header}>
-            <AnimatedBox layout={LinearTransition} flex={1}>
-                <CoinEnablingForm searchQuery={searchQuery} />
-            </AnimatedBox>
+        <Screen header={header} isScrollable={false}>
+            <CoinEnablingForm searchQuery={searchQuery} />
         </Screen>
     );
 };

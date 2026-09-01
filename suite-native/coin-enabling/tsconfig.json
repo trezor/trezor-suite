@@ -26,8 +26,12 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
+        { "path": "../scrollview" },
         { "path": "../search" },
         { "path": "../toasts" },
-        { "path": "../../packages/styles-native" }
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/theme" }
     ]
 }

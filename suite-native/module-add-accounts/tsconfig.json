@@ -29,6 +29,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../passphrase" },
+        { "path": "../scrollview" },
         { "path": "../search" },
         {
             "path": "../../packages/styles-native"
