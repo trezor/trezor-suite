@@ -5,6 +5,7 @@ import type { StakingPool } from '@trezor/blockchain-link-types';
 import { EVERSTAKE_ACCOUNTING_ABI } from './abi';
 import { STAKING_POOL_CONTRACTS } from './constants';
 import { getChainId } from '../utils/client';
+import { getErrorName } from '../utils/errors';
 import { type BatchCall, batchRead } from '../utils/multicall';
 
 type EverstakeAccountingFunctionName = Extract<
@@ -96,7 +97,7 @@ export const getStakingPoolData = async (
             },
         ];
     } catch (error) {
-        console.warn('[evm-rpc] Failed to fetch staking pool data:', error);
+        console.warn('[evm-rpc] Failed to fetch staking pool data:', getErrorName(error));
 
         return undefined;
     }
