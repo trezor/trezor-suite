@@ -1,7 +1,6 @@
-import type { NetworkModuleRepositoryDep, NetworkSymbol } from '@suite-common/networks';
+import type { GetNamedAddressSupportDep, SymbolNamedAddressResolver } from '@suite-common/address';
+import type { NetworkSymbol } from '@suite-common/networks';
 import { commonQueryKeys } from '@suite-common/react-query';
-
-import { type SymbolNamedAddressResolver, getNamedAddressSupport } from './namedAddressResolver';
 
 const STALE_TIME_MS = 10 * 60 * 1000;
 const GC_TIME_MS = 60 * 60 * 1000;
@@ -29,7 +28,7 @@ export const getResolveMode = (
     return 'idle';
 };
 
-export type ResolveNamedAddressQueryParams = NetworkModuleRepositoryDep & {
+export type ResolveNamedAddressQueryParams = GetNamedAddressSupportDep & {
     value: string;
     symbol: NetworkSymbol | null | undefined;
 };
@@ -43,12 +42,12 @@ export type ResolveNamedAddressQueryParams = NetworkModuleRepositoryDep & {
  * "vitalik.eth" and " vitalik.eth " into two entries.
  */
 export const getResolveNamedAddressQueryOptions = ({
-    networkModuleRepository,
+    getNamedAddressSupport,
     value,
     symbol,
 }: ResolveNamedAddressQueryParams) => {
     const trimmedValue = value.trim();
-    const { resolver } = getNamedAddressSupport(networkModuleRepository, symbol);
+    const { resolver } = getNamedAddressSupport(symbol);
 
     // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is symbol + value; the resolver is the network module those two select, and a live object never belongs in a key
     return {

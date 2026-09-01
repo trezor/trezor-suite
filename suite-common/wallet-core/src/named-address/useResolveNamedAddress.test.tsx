@@ -3,11 +3,11 @@
  */
 import { type ReactNode } from 'react';
 
+import type { GetNamedAddressSupport, SymbolNamedAddressResolver } from '@suite-common/address';
 import { ServicesProvider } from '@suite-common/dependency-injection';
-import type { NetworkModuleRepository, NetworkSymbol } from '@suite-common/networks';
+import type { NetworkSymbol } from '@suite-common/networks';
 import { renderHookWithQueryClient, waitFor } from '@suite-common/test-utils';
 
-import type { SymbolNamedAddressResolver } from './namedAddressResolver';
 import { useResolveNamedAddress } from './useResolveNamedAddress';
 
 jest.mock('@trezor/react-utils', () => ({
@@ -28,14 +28,20 @@ const namedAddressResolver: SymbolNamedAddressResolver = {
     reverseResolveAddress: (...args) => mockReverseResolveAddress(...args),
 };
 
-const networkModuleRepository = {
-    get: () => ({ namedAddressResolver }),
-} as unknown as NetworkModuleRepository;
+const getNamedAddressSupport: GetNamedAddressSupport = symbol => {
+    const isSupported = symbol === 'eth' || symbol === 'tsep';
+
+    return {
+        isSupported,
+        isNameLike: namedAddressResolver.isNameLike,
+        resolver: isSupported ? namedAddressResolver : undefined,
+    };
+};
 
 const renderResolveHook = (value: string, symbol: NetworkSymbol | null) =>
     renderHookWithQueryClient(() => useResolveNamedAddress(value, symbol), {
         wrapper: ({ children }: { children: ReactNode }) => (
-            <ServicesProvider services={{ networkModuleRepository }}>{children}</ServicesProvider>
+            <ServicesProvider services={{ getNamedAddressSupport }}>{children}</ServicesProvider>
         ),
     });
 

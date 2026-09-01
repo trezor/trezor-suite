@@ -16,7 +16,7 @@ import {
 } from '@suite/router';
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
-import { createAddressValidator } from '@suite-common/address';
+import { createAddressValidator, createGetNamedAddressSupport } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
     type ConnectInitSettings,
@@ -151,6 +151,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     const addressValidator = createAddressValidator({
         networkModuleRepository,
     });
+    const getNamedAddressSupport = createGetNamedAddressSupport({ networkModuleRepository });
 
     const createTransports: CreateTransports = transports => {
         const factories = deps.getTransportsFactories();
@@ -170,6 +171,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getNetworkConfig,
         findNetworkSymbolForProtocol,
         addressValidator,
+        getNamedAddressSupport,
         suiteSync,
         bip329,
         migrateLegacyLabelsToSuiteSync,

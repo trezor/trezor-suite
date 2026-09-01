@@ -11655,6 +11655,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@scure/base": "npm:^2.0.0"
     "@sentry/core": "npm:10.69.0"
+    "@suite-common/address": "workspace:*"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/calldata": "workspace:*"

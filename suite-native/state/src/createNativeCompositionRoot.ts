@@ -3,7 +3,7 @@ import RNRestart from 'react-native-restart';
 
 import * as Device from 'expo-device';
 
-import { createAddressValidator } from '@suite-common/address';
+import { createAddressValidator, createGetNamedAddressSupport } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { asGetter, toGetter } from '@suite-common/dependency-injection';
@@ -98,6 +98,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         networkModuleRepository,
     });
     const addressValidator = createAddressValidator({ networkModuleRepository });
+    const getNamedAddressSupport = createGetNamedAddressSupport({ networkModuleRepository });
 
     const createLogger: ConnectSettings['createLogger'] = (prefix: string) =>
         initLog(prefix, false);
@@ -109,6 +110,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         getNetworkConfig,
         findNetworkSymbolForProtocol,
         addressValidator,
+        getNamedAddressSupport,
         suiteSync,
         bip329,
         ensureDelegatedIdentityKey,

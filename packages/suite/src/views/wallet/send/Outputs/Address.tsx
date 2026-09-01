@@ -16,13 +16,11 @@ import {
     isEvmAddress,
     isTaprootAddress,
     selectAddressValidatorDep,
+    selectGetNamedAddressSupportDep,
     toChecksumAddress,
 } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
-import {
-    selectFindNetworkSymbolForProtocolDep,
-    selectNetworkModuleRepositoryDep,
-} from '@suite-common/networks';
+import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { useQueryClient } from '@suite-common/react-query';
 import { useDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -30,7 +28,6 @@ import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
     NAMED_ADDRESS_RESOLVE_DEBOUNCE_MS,
-    getNamedAddressSupport,
     getResolveNamedAddressQueryOptions,
 } from '@suite-common/wallet-core';
 import { useResolveNamedAddress } from '@suite-common/wallet-core/src/named-address/useResolveNamedAddress';
@@ -98,15 +95,15 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         clearErrors,
     } = useSendFormContext();
     const { translationString } = useTranslation();
-    const { analytics, addressValidator, findNetworkSymbolForProtocol, networkModuleRepository } =
+    const { analytics, addressValidator, findNetworkSymbolForProtocol, getNamedAddressSupport } =
         useServices(
             selectDesktopAnalyticsDep,
             selectAddressValidatorDep,
             selectFindNetworkSymbolForProtocolDep,
-            selectNetworkModuleRepositoryDep,
+            selectGetNamedAddressSupportDep,
         );
     const { descriptor, networkType, symbol } = account;
-    const namedAddress = getNamedAddressSupport(networkModuleRepository, symbol);
+    const namedAddress = getNamedAddressSupport(symbol);
     const inputName = `outputs.${outputId}.address` as const;
     // NOTE: compose errors are always associated with the amount.
     // If address is not valid then compose process will never be triggered,
@@ -450,7 +447,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     ? await queryClient
                           .ensureQueryData(
                               getResolveNamedAddressQueryOptions({
-                                  networkModuleRepository,
+                                  getNamedAddressSupport,
                                   value: checkedAddress,
                                   symbol,
                               }),
