@@ -6,24 +6,21 @@ import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type Account } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
-import { StablecoinYieldApyBreakdown } from '../components/StablecoinYieldApyBreakdown';
+import { YieldApyBreakdown } from '../components/YieldApyBreakdown';
 
-interface UseApyBreakdownAlertProps {
+interface UseYieldApyBreakdownAlertProps {
     account?: Account | null;
     vault?: YieldDtoV2 | null;
 }
 
-export const useApyBreakdownAlert = ({ account, vault }: UseApyBreakdownAlertProps) => {
+export const useYieldApyBreakdownAlert = ({ account, vault }: UseYieldApyBreakdownAlertProps) => {
     const { showAlert } = useAlert();
-    const { translate } = useTranslate();
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
-    const onPress = useCallback(() => {
-        if (!account || !vault) {
-            return;
-        }
+    const show = useCallback(() => {
+        if (!account || !vault?.outputToken?.name) return;
 
         analytics.report({
             type: events.yieldInteractionEvent.name,
@@ -35,9 +32,9 @@ export const useApyBreakdownAlert = ({ account, vault }: UseApyBreakdownAlertPro
         });
 
         showAlert({
-            title: vault.outputToken?.name ?? '',
+            title: vault.outputToken.name,
             appendix: (
-                <StablecoinYieldApyBreakdown
+                <YieldApyBreakdown
                     networkSymbol={account.symbol}
                     rewards={vault.rewardRate.components}
                     underlyingToken={vault.token}
@@ -46,10 +43,10 @@ export const useApyBreakdownAlert = ({ account, vault }: UseApyBreakdownAlertPro
             ),
             textAlign: 'center',
             titleSpacing: 'sp4',
-            primaryButtonTitle: translate('generic.buttons.close'),
+            primaryButtonTitle: <Translation id="generic.buttons.close" />,
             isClosableByOutsidePress: true,
         });
-    }, [account, analytics, vault, showAlert, translate]);
+    }, [account, vault, analytics, showAlert]);
 
-    return { onPress };
+    return { show };
 };

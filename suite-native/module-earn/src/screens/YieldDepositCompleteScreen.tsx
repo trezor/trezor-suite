@@ -26,7 +26,7 @@ import { ApyDottedUnderline } from '../components/ApyDottedUnderline';
 import { ApyValue } from '../components/ApyValue';
 import { EarnCompleteScreenContent } from '../components/EarnCompleteScreenContent';
 import { getYieldDepositCompleteRows } from '../components/YieldCompleteScreenPresets';
-import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
+import { useYieldApyBreakdownAlert } from '../hooks/useYieldApyBreakdownAlert';
 import { useYieldFlowData } from '../hooks/useYieldFlowData';
 import { formatEarnTokenAmount } from '../utils/earnAmountUtils';
 
@@ -50,7 +50,7 @@ export const YieldDepositCompleteScreen = () => {
         selectStablecoinYieldSessionByFlowKey(state, 'deposit', flowKey),
     );
 
-    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault });
+    const { show: showYieldApyBreakdownAlert } = useYieldApyBreakdownAlert({ account, vault });
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const handleExit = useCallback(() => {
@@ -111,7 +111,7 @@ export const YieldDepositCompleteScreen = () => {
         return getYieldDepositCompleteRows({
             accountSymbol: account.symbol,
             apyValue: (
-                <ApyDottedUnderline onPress={apyBreakdownAlert.onPress}>
+                <ApyDottedUnderline onPress={showYieldApyBreakdownAlert}>
                     <Text variant="body-md" color="contentPrimary">
                         <ApyValue apy={apy} />
                     </Text>
@@ -125,7 +125,7 @@ export const YieldDepositCompleteScreen = () => {
                 : (flowData.token.contractAddress ?? undefined),
         });
     }, [
-        apyBreakdownAlert.onPress,
+        showYieldApyBreakdownAlert,
         account,
         apy,
         flowData,

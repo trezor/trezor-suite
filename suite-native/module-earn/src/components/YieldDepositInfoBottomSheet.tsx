@@ -13,7 +13,7 @@ import {
 import { Translation } from '@suite-native/intl';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
-import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
+import { useYieldApyBreakdownAlert } from '../hooks/useYieldApyBreakdownAlert';
 import { HowEarnWorksBenefitsSection } from './HowEarnWorks/HowEarnWorksBenefitsSection';
 import { HowEarnWorksTimelineCard } from './HowEarnWorks/HowEarnWorksTimelineCard';
 import { useHowYieldWorksPreset } from './HowEarnWorks/yieldPresets';
@@ -41,7 +41,7 @@ export const YieldDepositInfoBottomSheet = ({
     vault,
     wrappedNativeSymbol,
 }: YieldDepositInfoBottomSheetProps) => {
-    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault });
+    const { show: showYieldApyBreakdownAlert } = useYieldApyBreakdownAlert({ account, vault });
 
     const isWrappedNativeVault =
         !!vault && !!account && isWrappedNativeToken(account.symbol, vault.token.address);
@@ -49,7 +49,7 @@ export const YieldDepositInfoBottomSheet = ({
 
     const { benefitItems, timelineSections } = useHowYieldWorksPreset({
         apy,
-        onApyPress: apyBreakdownAlert.onPress,
+        onApyPress: showYieldApyBreakdownAlert,
         bonusRewardTokenSymbol,
         tokenSymbol,
         vaultTokenSymbol,

@@ -30,8 +30,8 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
 import { ApyDottedUnderline } from '../components/ApyDottedUnderline';
-import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../hooks/useStablecoinYieldFirmwareUpdateAlert';
+import { useYieldApyBreakdownAlert } from '../hooks/useYieldApyBreakdownAlert';
 import { useYieldFlowData } from '../hooks/useYieldFlowData';
 
 const stakedSectionStyle = prepareNativeStyle(utils => ({
@@ -79,7 +79,7 @@ export const YieldVaultDetailScreenContent = ({
 
     const apyValue = apy && isApyAvailable(apy) ? apy.toFixed(2) : null;
 
-    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault });
+    const { show: showYieldApyBreakdownAlert } = useYieldApyBreakdownAlert({ account, vault });
 
     const depositedPosition = useMemo(() => {
         if (depositedSharesAmount === null || !vault || !token?.contractAddress) {
@@ -356,7 +356,7 @@ export const YieldVaultDetailScreenContent = ({
                         style={applyStyle(stakedSectionStyleWithBorder)}
                     >
                         {apyValue ? (
-                            <ApyDottedUnderline onPress={apyBreakdownAlert.onPress}>
+                            <ApyDottedUnderline onPress={showYieldApyBreakdownAlert}>
                                 <Text variant="body-sm">
                                     <Translation
                                         id={

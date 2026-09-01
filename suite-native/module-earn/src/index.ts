@@ -5,7 +5,7 @@ export { useStakingRate } from './hooks/useStakingRate';
 export { TokenSettingsBottomSheet } from './components/TokenSettingsBottomSheet';
 export { YieldDisabledAlert } from './components/YieldDisabledAlert';
 export { TokenYieldRateBadge } from './components/TokenYieldRateBadge';
-export { useApyBreakdownAlert } from './hooks/useApyBreakdownAlert';
+export { useYieldApyBreakdownAlert } from './hooks/useYieldApyBreakdownAlert';
 export { useMessageSystemWrappedNative } from './hooks/useMessageSystemWrappedNative';
 export { useMessageSystemYield } from './hooks/useMessageSystemYield';
 export { useYieldFlowData } from './hooks/useYieldFlowData';
