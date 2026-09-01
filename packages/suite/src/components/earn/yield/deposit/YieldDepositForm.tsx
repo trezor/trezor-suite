@@ -49,9 +49,7 @@ export const YieldDepositForm = () => {
         approvalAction,
         canRevokeAllowance,
         hasWrappedTokenBalance,
-        isAmountEmpty,
-        isAmountTooHigh,
-        isAmountInvalidDecimals,
+        amountIssues,
         isApprovalInsufficient,
         isSubmittingApprove,
         isSubmittingAction,
@@ -96,6 +94,10 @@ export const YieldDepositForm = () => {
         isWrappedNativeVault: flow.isWrappedNativeVault,
     });
     const hasAllowanceError = allowanceStatus === 'error';
+    const isAmountEmpty = amountIssues.includes('amount-empty');
+    const isAmountTooHigh = amountIssues.includes('amount-too-high');
+    const isAmountInvalidDecimals = amountIssues.includes('amount-invalid-decimals');
+    const hasBlockingAmountIssue = amountIssues.length > 0;
 
     const shouldCheckWrapAmount = !isAmountInvalidDecimals && !!wrapPendingTransaction;
     const shouldCheckApproveAmount = !isAmountInvalidDecimals && !!approvalPendingTransaction;
@@ -327,10 +329,7 @@ export const YieldDepositForm = () => {
                                             receivingAmount={liveAmount || '0'}
                                             isSubmitting={isSubmittingAction}
                                             isSubmitDisabled={
-                                                isWrapDisabled ||
-                                                isAmountEmpty ||
-                                                isAmountTooHigh ||
-                                                isAmountInvalidDecimals
+                                                isWrapDisabled || hasBlockingAmountIssue
                                             }
                                             warning={renderWrapWarning()}
                                             pendingTransaction={wrapPendingTransaction}
@@ -438,9 +437,7 @@ export const YieldDepositForm = () => {
                                             ) : undefined
                                         }
                                         isDisabled={
-                                            isAmountEmpty ||
-                                            isAmountTooHigh ||
-                                            isAmountInvalidDecimals ||
+                                            hasBlockingAmountIssue ||
                                             isApprovalInsufficient ||
                                             isSubmittingAction ||
                                             !!depositPendingTransaction
