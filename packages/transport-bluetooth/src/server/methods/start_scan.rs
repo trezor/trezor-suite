@@ -7,6 +7,7 @@ use tokio::time::{sleep, Duration};
 
 use crate::server::{
     adapter_manager::{AdapterError, AdapterManager},
+    device::SERVICE_UUID,
     types::{
         AbortProcess, AdapterState, ChannelMessage, MethodResult, NotificationEvent,
         WsResponsePayload,
@@ -14,11 +15,36 @@ use crate::server::{
     ConnectionBroadcast,
 };
 
+fn trezor_scan_filter() -> ScanFilter {
+    // Unfiltered discovery retains every nearby BLE advertiser inside btleplug
+    // for the lifetime of the adapter and grows without bound
+    // (https://github.com/trezor/trezor-suite/issues/31948).
+    //
+    // macos: CoreBluetooth matches the filter inside the system daemon, against
+    // advertisement, scan response and the hashed overflow area, so only Trezor
+    // peripherals are ever surfaced. Some macs fail to update advertised
+    // services in peripheral properties (the reason the previous filter was
+    // removed in #21093) — the serviceless retry in AdapterManager still
+    // handles those once the peripheral is delivered.
+    //
+    // linux: never pass service uuids to discovery — a uuid filter crashes
+    // bluetoothd on bluez 5.87, and paired devices may not advertise services
+    // at all. windows: ScanFilter does not work reliably
+    // (https://github.com/deviceplug/btleplug/issues/249).
+    if cfg!(target_os = "macos") {
+        ScanFilter {
+            services: vec![SERVICE_UUID],
+        }
+    } else {
+        ScanFilter::default()
+    }
+}
+
 async fn start_scanning(adapter: &Adapter) -> Result<(), AdapterError> {
     // stop previous process just to be sure
     stop_scanning(adapter).await;
 
-    if let Err(err) = adapter.start_scan(ScanFilter::default()).await {
+    if let Err(err) = adapter.start_scan(trezor_scan_filter()).await {
         info!("Start scan error {err}");
         return Err(err.into());
     }

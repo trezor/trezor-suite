@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.4.4
+
+- fix: macos scan filters on the Trezor service UUID instead of retaining every nearby BLE advertiser (memory growth)
+
 ### 0.4.3
 
 - feat: add linux pairing Agent and handle pairing PIN request
