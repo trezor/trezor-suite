@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { AddressLabeling, copyAddressToClipboard } from '@suite/address';
+import { Address, AddressLabeling, copyAddressToClipboard } from '@suite/address';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
@@ -8,15 +8,13 @@ import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isUtxoBased } from '@suite-common/wallet-utils';
-import { Box, Button, Column, Flex, Row, Text, useMediaQuery } from '@trezor/components';
+import { Box, Button, Column, Grid, Row, Text, useMediaQuery } from '@trezor/components';
 import { CopyIcon, ShareNetworkIcon, ShieldCheckIcon } from '@trezor/icons';
 import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
 import { CoinQrCode } from './CoinQrCode';
 import { type ReceiveAddressItem } from './address/buildReceiveAddressItems';
 import { canShareAddress, shareAddress } from './sharing/share';
-
-const QR_SIZE = 148;
 
 type AddressCardDetailProps = {
     item: ReceiveAddressItem;
@@ -66,14 +64,14 @@ export const AddressCardDetail = ({
     }
 
     const isUtxo = isUtxoBased(account);
+    const hasLabel = !!item.label;
 
     return (
         <Box padding={24}>
-            <Flex
-                direction={isBelowTablet ? 'column' : 'row'}
+            <Grid
+                columns={isBelowTablet ? '1fr' : 'minmax(max-content, 1fr) auto'}
                 gap={24}
                 alignItems="stretch"
-                justifyContent="space-between"
             >
                 <Column gap={32} alignItems="flex-start" justifyContent="space-between">
                     <Column gap={isUtxo ? 8 : 16} alignItems="flex-start">
@@ -92,15 +90,27 @@ export const AddressCardDetail = ({
                                 <Translation id="RECEIVE_ADDRESS_TITLE" />
                             </Text>
                         )}
-                        <Text typographyStyle="headline-md" data-testid="@wallet/receive/address">
-                            <AddressLabeling
-                                accountDescriptor={account.descriptor}
-                                networkSymbol={account.symbol}
-                                deviceStaticSessionId={account.deviceState}
-                                address={item.address}
-                                label={item.label}
-                            />
-                        </Text>
+                        <Column gap={8} alignItems="flex-start">
+                            <Text
+                                typographyStyle={hasLabel ? 'headline-sm' : 'headline-md'}
+                                data-testid="@wallet/receive/address"
+                            >
+                                <AddressLabeling
+                                    accountDescriptor={account.descriptor}
+                                    networkSymbol={account.symbol}
+                                    deviceStaticSessionId={account.deviceState}
+                                    address={item.address}
+                                    label={item.label}
+                                />
+                            </Text>
+                            {hasLabel && (
+                                <Address
+                                    value={item.address}
+                                    isTruncated
+                                    typographyStyle="headline-sm"
+                                />
+                            )}
+                        </Column>
                     </Column>
                     <Row gap={12} flexWrap="wrap">
                         <Button
@@ -137,10 +147,15 @@ export const AddressCardDetail = ({
                         </Button>
                     </Row>
                 </Column>
-                <Box aspectRatio="1" width={QR_SIZE} height={QR_SIZE} flex="none">
+                <Box
+                    aspectRatio="1"
+                    width={isBelowTablet ? 148 : undefined}
+                    height={isBelowTablet ? 148 : '100%'}
+                    maxHeight={200}
+                >
                     <CoinQrCode value={item.address} symbol={account.symbol} />
                 </Box>
-            </Flex>
+            </Grid>
         </Box>
     );
 };
