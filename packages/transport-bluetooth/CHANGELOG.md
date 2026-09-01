@@ -4,6 +4,8 @@
 
 - feat: connection token authorization
 - update dependencies (forked btleplug 0.13.4 with additional fixes)
+- update dependencies (forked btleplug 0.13.4 additional fixes)
+- fix: notification stream tasks are owned by a central registry and aborted when their websocket client disconnects, BLE subscriptions are released with the last stream
 
 ### 0.4.3
 
