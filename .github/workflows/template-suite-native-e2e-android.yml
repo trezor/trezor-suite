@@ -49,7 +49,7 @@ jobs:
       # `-no-metrics` keeps the emulator non-interactive (the metrics-collection
       # prompt is planned to become blocking in a future release).
       EMULATOR_OPTIONS: >-
-        -no-window -gpu swiftshader_indirect -no-snapshot-load -no-snapshot-save
+        -no-window -gpu swiftshader -no-snapshot-load -no-snapshot-save
         -noaudio -no-boot-anim -no-metrics -grpc 8554 -memory 4096
       DIAGNOSTICS_DIR: /tmp/e2e-diagnostics
       RESOURCE_MONITOR_INTERVAL_SECONDS: "2"
@@ -260,8 +260,8 @@ jobs:
           cp "$DIAGNOSTICS_DIR/host-resources.log" "$DIAG_DIR/" || true
 
           # QEMU stores its Crashpad reports in a directory, so it has to be copied
-          # recursively. An empty database means the process was killed from the
-          # outside rather than having crashed on its own.
+          # recursively. Crashpad can remain empty even when QEMU crashes, so keep
+          # it alongside the systemd coredump diagnostics below.
           for crashRoot in /tmp/android-runner "$HOME/.android"; do
             [[ -d "$crashRoot" ]] || continue
             while IFS= read -r -d '' crashDb; do
@@ -277,6 +277,51 @@ jobs:
           { sudo journalctl --no-pager --unit systemd-oomd || true; } \
             > "$DIAG_DIR/systemd-oomd.log" 2>&1
           coredumpctl --no-pager list > "$DIAG_DIR/coredumps.log" 2>&1 || true
+
+          qemuCoredumpInfo="$DIAG_DIR/qemu-coredump-info.log"
+          qemuBacktraces="$DIAG_DIR/qemu-backtraces.log"
+          emulatorExecutable="$(command -v emulator || true)"
+          qemuCorePids=()
+
+          if [[ -n "$emulatorExecutable" ]]; then
+            qemuExecutable="$(dirname "$emulatorExecutable")/qemu/linux-x86_64/qemu-system-x86_64-headless"
+            mapfile -t qemuCorePids < <(
+              coredumpctl --no-pager --field=COREDUMP_PID "$qemuExecutable" 2>/dev/null || true
+            )
+          fi
+
+          if [[ "${#qemuCorePids[@]}" -eq 0 ]]; then
+            printf 'No QEMU coredumps found.\n' > "$qemuCoredumpInfo"
+            printf 'No QEMU coredumps found.\n' > "$qemuBacktraces"
+          else
+            : > "$qemuCoredumpInfo"
+            : > "$qemuBacktraces"
+
+            for corePid in "${qemuCorePids[@]}"; do
+              printf '\n===== QEMU coredump PID %s =====\n' "$corePid" \
+                >> "$qemuCoredumpInfo"
+              coredumpctl --no-pager info "$corePid" "$qemuExecutable" \
+                >> "$qemuCoredumpInfo" 2>&1 || true
+
+              printf '\n===== QEMU backtrace PID %s =====\n' "$corePid" \
+                >> "$qemuBacktraces"
+              if command -v gdb >/dev/null; then
+                DEBUGINFOD_URLS="" timeout --kill-after=10s 60s \
+                  coredumpctl --no-pager debug "$corePid" "$qemuExecutable" \
+                  --debugger-arguments="-batch -quiet -iex 'set debuginfod enabled off' -ex 'set pagination off' -ex 'set print frame-arguments none' -ex 'thread apply all bt 30'" \
+                  >> "$qemuBacktraces" 2>&1
+                backtraceStatus=$?
+
+                if [[ "$backtraceStatus" -ne 0 ]]; then
+                  printf 'Backtrace collection exited with status %s.\n' "$backtraceStatus" \
+                    >> "$qemuBacktraces"
+                fi
+              else
+                printf 'GDB is unavailable on this runner.\n' >> "$qemuBacktraces"
+              fi
+            done
+          fi
+
           free --mebi > "$DIAG_DIR/memory-after-run.log" 2>&1 || true
           df --human-readable > "$DIAG_DIR/disk-after-run.log" 2>&1 || true
           pgrep -a qemu-system > "$DIAG_DIR/qemu-processes.log" 2>&1 || true
