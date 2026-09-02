@@ -7,7 +7,7 @@ import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definiti
 import {
     type WalletCoreCompoundRootState,
     accountsActions,
-    changeCoinVisibility,
+    changeCoinVisibilityThunk,
     changeNetworks,
     discoveryActions,
     selectDiscoveryForSelectedDevice,
@@ -71,7 +71,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
             const pendingSymbols = selectPendingCoinVisibilitySymbols(getState());
 
             for (const symbol of pendingSymbols) {
-                dispatch(changeCoinVisibility({ symbol, shouldBeVisible: false }));
+                dispatch(changeCoinVisibilityThunk({ symbol, shouldBeVisible: false }));
             }
 
             dispatch(clearPendingCoinVisibility());
@@ -84,7 +84,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
         const newDevice = action.payload;
         if (newDevice?.connected && hasBitcoinOnlyFirmware(newDevice)) {
             if (!isBitcoinEnabled) {
-                dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
+                dispatch(changeCoinVisibilityThunk({ symbol: 'btc', shouldBeVisible: true }));
             }
         }
     }
@@ -97,7 +97,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     if (
         action.type === DEVICE.CONNECT ||
         deviceActions.selectDevice.match(action) ||
-        changeCoinVisibility.fulfilled.match(action) ||
+        changeCoinVisibilityThunk.fulfilled.match(action) ||
         deviceActions.dismissFirmwareAuthenticityCheck.match(action) || // may no longer be device compromised
         accountsActions.updateAccount.match(action) || // empty account can become nonempty
         accountsActions.changeAccountVisibility.match(action) ||
@@ -112,7 +112,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
         ) {
             // Track every enabled coin for revert on passphrase failure
             if (
-                changeCoinVisibility.fulfilled.match(action) &&
+                changeCoinVisibilityThunk.fulfilled.match(action) &&
                 action.meta.arg?.shouldBeVisible === true
             ) {
                 dispatch(addPendingCoinVisibility(action.meta.arg.symbol));
@@ -121,7 +121,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
             // Don't restart discovery when reverting after passphrase failure (we dispatch
             // changeCoinVisibility(false) for each pending coin, which would retrigger discovery).
             const isRevertingAfterPassphraseFailure =
-                changeCoinVisibility.fulfilled.match(action) &&
+                changeCoinVisibilityThunk.fulfilled.match(action) &&
                 action.meta.arg?.shouldBeVisible === false &&
                 isPassphraseDiscoveryFailure(selectDiscoveryForSelectedDevice(getState()));
 

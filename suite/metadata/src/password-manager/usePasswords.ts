@@ -32,7 +32,7 @@ export const usePasswords = () => {
 
     const connect = () => {
         setProviderConnecting(true);
-        dispatch(metadataPasswordsActions.init()).finally(() => {
+        dispatch(metadataPasswordsActions.initThunk()).finally(() => {
             setProviderConnecting(false);
         });
     };
@@ -42,7 +42,7 @@ export const usePasswords = () => {
         if (!selectedProvider) return;
 
         dispatch(
-            metadataProviderActions.disconnectProvider({
+            metadataProviderActions.disconnectProviderThunk({
                 clientId: selectedProvider.clientId,
                 dataType: 'passwords',
                 removeMetadata: false,
@@ -53,7 +53,12 @@ export const usePasswords = () => {
     const savePasswords = (nextId: number, passwordEntry: PasswordEntry) => {
         if (!fileName || !aesKey) return;
         dispatch(
-            metadataPasswordsActions.addPasswordMetadata(nextId, passwordEntry, fileName, aesKey),
+            metadataPasswordsActions.addPasswordMetadataThunk(
+                nextId,
+                passwordEntry,
+                fileName,
+                aesKey,
+            ),
         );
     };
 
@@ -62,7 +67,7 @@ export const usePasswords = () => {
             if (!fileName || !aesKey) return;
 
             return dispatch(
-                metadataPasswordsActions.removePasswordMetadata(index, fileName, aesKey),
+                metadataPasswordsActions.removePasswordMetadataThunk(index, fileName, aesKey),
             );
         },
         [fileName, aesKey, dispatch],

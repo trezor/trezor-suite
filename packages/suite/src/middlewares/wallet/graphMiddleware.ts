@@ -18,7 +18,7 @@ const graphMiddleware =
             // fetch graph data for selected account and range if needed
             if (action.payload.account) {
                 api.dispatch(
-                    graphActions.updateGraphData({
+                    graphActions.updateGraphDataThunk({
                         accounts: [action.payload.account],
                     }),
                 );
@@ -30,7 +30,7 @@ const graphMiddleware =
             action.payload.status.status === 'complete'
         ) {
             api.dispatch(
-                graphActions.updateGraphData({
+                graphActions.updateGraphDataThunk({
                     accounts: currentAccounts,
                 }),
             );

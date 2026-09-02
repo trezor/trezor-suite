@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Action } from 'history';
 
 import {
-    onLocationChange,
+    onLocationChangeThunk,
     selectCanNavigate,
     selectRouterLoaded,
     selectSuiteRouterHistoryDep,
@@ -23,7 +23,7 @@ export const RouterHandler = () => {
         const emitLocation = () => {
             if (routerLoaded) {
                 const location = suiteRouterHistory.getLocation();
-                dispatch(onLocationChange(location));
+                dispatch(onLocationChangeThunk(location));
             }
         };
 

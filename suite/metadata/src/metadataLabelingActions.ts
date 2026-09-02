@@ -39,12 +39,12 @@ import * as metadataUtils from './metadataUtils';
 
 type GetLabelableEntitiesThunkState = MetadataRootState;
 
-const getLabelableEntities =
+const getLabelableEntitiesThunk =
     (deviceState: StaticSessionId) =>
     (_dispatch: Dispatch, getState: () => GetLabelableEntitiesThunkState) =>
         selectLabelableEntities(getState(), deviceState);
 
-type LabelableEntity = ReturnType<ReturnType<typeof getLabelableEntities>>[number];
+type LabelableEntity = ReturnType<ReturnType<typeof getLabelableEntitiesThunk>>[number];
 
 const fetchMetadata =
     ({
@@ -60,7 +60,7 @@ const fetchMetadata =
         const dataType = 'labels';
 
         const providerInstance = dispatch(
-            metadataProviderActions.getProviderInstance({
+            metadataProviderActions.getProviderInstanceThunk({
                 clientId: provider.clientId,
                 dataType,
             }),
@@ -110,7 +110,7 @@ const fetchMetadata =
 
 type SetAccountMetadataKeyThunkState = MetadataRootState;
 
-export const setAccountMetadataKey =
+export const setAccountMetadataKeyThunk =
     (account: Account, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
     (dispatch: Dispatch, getState: () => SetAccountMetadataKeyThunkState) => {
         const device = selectDeviceByStaticSessionId(getState(), account.deviceState);
@@ -150,7 +150,7 @@ type SyncMetadataKeysThunkState = MetadataRootState;
 /**
  * Fill any record in reducer that may have metadata with metadata keys (not values).
  */
-const syncMetadataKeys =
+const syncMetadataKeysThunk =
     (device: TrezorDevice, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
     (dispatch: Dispatch, getState: () => SyncMetadataKeysThunkState) => {
         if (!device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]) {
@@ -163,7 +163,9 @@ const syncMetadataKeys =
         );
 
         targetAccounts.forEach(account => {
-            const accountWithMetadata = dispatch(setAccountMetadataKey(account, encryptionVersion));
+            const accountWithMetadata = dispatch(
+                setAccountMetadataKeyThunk(account, encryptionVersion),
+            );
             dispatch(metadataActions.setAccountAdd(accountWithMetadata));
         });
         // note that devices are intentionally omitted here - device receives metadata
@@ -172,7 +174,7 @@ const syncMetadataKeys =
 
 type FetchAndSaveMetadataThunkState = MetadataRootState;
 
-export const fetchAndSaveMetadata =
+export const fetchAndSaveMetadataThunk =
     (deviceStateArg?: StaticSessionId) =>
     async (dispatch: Dispatch, getState: () => FetchAndSaveMetadataThunkState) => {
         const provider = selectSelectedProviderForLabels(getState());
@@ -195,7 +197,7 @@ export const fetchAndSaveMetadata =
         );
 
         const providerInstance = dispatch(
-            metadataProviderActions.getProviderInstance({
+            metadataProviderActions.getProviderInstanceThunk({
                 clientId: provider.clientId,
                 dataType: 'labels',
             }),
@@ -218,7 +220,7 @@ export const fetchAndSaveMetadata =
             )
                 return;
 
-            dispatch(syncMetadataKeys(device));
+            dispatch(syncMetadataKeysThunk(device));
 
             if (!response.success) {
                 dispatch(
@@ -242,7 +244,9 @@ export const fetchAndSaveMetadata =
                 return;
             }
 
-            const labelableEntities = dispatch(getLabelableEntities(device.state.staticSessionId));
+            const labelableEntities = dispatch(
+                getLabelableEntitiesThunk(device.state.staticSessionId),
+            );
             const promises = labelableEntities.map(entity =>
                 dispatch(fetchMetadata({ provider, entity })).then(result => {
                     if (result) {
@@ -259,7 +263,7 @@ export const fetchAndSaveMetadata =
             // already existing label
             if (device?.state && metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
                 return dispatch(
-                    metadataProviderActions.disconnectProvider({
+                    metadataProviderActions.disconnectProviderThunk({
                         removeMetadata: false,
                         dataType: 'labels',
                         clientId: provider.clientId,
@@ -280,7 +284,7 @@ export const fetchAndSaveMetadata =
 
 type FetchAndSaveMetadataForAllDevicesThunkState = MetadataRootState;
 
-export const fetchAndSaveMetadataForAllDevices =
+export const fetchAndSaveMetadataForAllDevicesThunk =
     () => (dispatch: Dispatch, getState: () => FetchAndSaveMetadataForAllDevicesThunkState) => {
         const metadata = selectMetadata(getState());
         if (!metadata.enabled) {
@@ -293,13 +297,13 @@ export const fetchAndSaveMetadataForAllDevices =
                 !device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]
             )
                 return;
-            dispatch(fetchAndSaveMetadata(device.state.staticSessionId));
+            dispatch(fetchAndSaveMetadataThunk(device.state.staticSessionId));
         });
     };
 
 type AddDeviceMetadataThunkState = MetadataRootState;
 
-export const addDeviceMetadata =
+export const addDeviceMetadataThunk =
     (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) =>
     (dispatch: Dispatch, getState: () => AddDeviceMetadataThunkState) => {
         const devices = selectDevices(getState());
@@ -343,7 +347,7 @@ export const addDeviceMetadata =
         );
 
         const providerInstance = dispatch(
-            metadataProviderActions.getProviderInstance({
+            metadataProviderActions.getProviderInstanceThunk({
                 clientId: provider.clientId,
                 dataType: 'labels',
             }),
@@ -368,7 +372,7 @@ type AddAccountMetadataThunkState = MetadataRootState;
  * @param save - should metadata be saved into persistent storage? this is useful when you are updating multiple records
  *               in a single account you may want to set "save" param to true only for the last call
  */
-export const addAccountMetadata =
+export const addAccountMetadataThunk =
     (payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>) =>
     (dispatch: Dispatch, getState: () => AddAccountMetadataThunkState) => {
         const account = selectAccounts(getState()).find(({ key }) => key === payload.entityKey);
@@ -458,7 +462,7 @@ export const addAccountMetadata =
         }
 
         const providerInstance = dispatch(
-            metadataProviderActions.getProviderInstance({
+            metadataProviderActions.getProviderInstanceThunk({
                 clientId: provider.clientId,
                 dataType: 'labels',
             }),
@@ -485,7 +489,7 @@ type SetDeviceMetadataKeyThunkState = MetadataRootState;
 /**
  * Generate device master-key
  * */
-export const setDeviceMetadataKey =
+export const setDeviceMetadataKeyThunk =
     (device: TrezorDevice, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
     async (dispatch: Dispatch, getState: () => SetDeviceMetadataKeyThunkState) => {
         if (!device.state?.staticSessionId || !device.connected) return;
@@ -532,13 +536,13 @@ export const setDeviceMetadataKey =
 
 type AddMetadataThunkState = MetadataRootState;
 
-export const addMetadata =
+export const addMetadataThunk =
     (payload: MetadataAddPayload) =>
     async (dispatch: Dispatch, getState: () => AddMetadataThunkState): Promise<boolean> => {
         const result = await dispatch(
             payload.type === 'walletLabel'
-                ? addDeviceMetadata(payload)
-                : addAccountMetadata(payload),
+                ? addDeviceMetadataThunk(payload)
+                : addAccountMetadataThunk(payload),
         );
 
         if (!result.success) {
@@ -551,7 +555,7 @@ export const addMetadata =
                 // unknown error, need to generate a custom one from the provider instance
                 if (provider !== undefined) {
                     const providerInstance = dispatch(
-                        metadataProviderActions.getProviderInstance({
+                        metadataProviderActions.getProviderInstanceThunk({
                             clientId: provider.clientId,
                             dataType: 'labels',
                         }),
@@ -596,7 +600,7 @@ type InitThunkState = MetadataRootState;
 
 type InitThunkDeps = InitMetadataDeps;
 
-export const init =
+export const initThunk =
     (force: boolean, deviceStateArg?: StaticSessionId) =>
     async (dispatch: Dispatch, getState: () => InitThunkState, extra: InitThunkDeps) => {
         let device = deviceStateArg
@@ -630,7 +634,7 @@ export const init =
 
         if (!device.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) {
             const result = await dispatch(
-                setDeviceMetadataKey(device, METADATA_LABELING.ENCRYPTION_VERSION),
+                setDeviceMetadataKeyThunk(device, METADATA_LABELING.ENCRYPTION_VERSION),
             );
             if (!result?.success) {
                 dispatch({ type: METADATA.SET_INITIATING, payload: false });
@@ -653,7 +657,7 @@ export const init =
         }
 
         // 3. we have master key. use it to derive account keys
-        dispatch(syncMetadataKeys(device, METADATA_LABELING.ENCRYPTION_VERSION));
+        dispatch(syncMetadataKeysThunk(device, METADATA_LABELING.ENCRYPTION_VERSION));
 
         device = deviceStateArg
             ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
@@ -687,7 +691,7 @@ export const init =
         // todo: 5. migration
 
         // 6. fetch metadata
-        await dispatch(fetchAndSaveMetadata(device.state?.staticSessionId));
+        await dispatch(fetchAndSaveMetadataThunk(device.state?.staticSessionId));
 
         // now we may allow user to edit labels. everything is ready, local data is synced with provider
         if (selectMetadataInitiating(getState())) {
@@ -718,7 +722,7 @@ export const init =
                 if (!selectIsSuiteOnline(getState()) || !device?.state?.staticSessionId) {
                     return;
                 }
-                dispatch(fetchAndSaveMetadata(device.state.staticSessionId));
+                dispatch(fetchAndSaveMetadataThunk(device.state.staticSessionId));
             }, METADATA_LABELING.FETCH_INTERVAL);
         }
 

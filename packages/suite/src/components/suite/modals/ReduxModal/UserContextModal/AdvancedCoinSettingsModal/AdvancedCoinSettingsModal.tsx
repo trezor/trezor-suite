@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Translation } from '@suite/intl';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
-import { TorModal, type TorResult, toggleTor } from '@suite/tor-desktop';
+import { TorModal, type TorResult, toggleTorThunk } from '@suite/tor-desktop';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectNetworkExplorers } from '@suite-common/wallet-core';
@@ -77,7 +77,7 @@ export const AdvancedCoinSettingsModal = ({
     const onTorResult = async (result: TorResult) => {
         switch (result) {
             case 'enable-tor':
-                await dispatch(toggleTor(true));
+                await dispatch(toggleTorThunk(true));
 
                 setTorModalOpen(false);
                 backendsForm.save().then(success => {

@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Box, Column, motionEasing } from '@trezor/components';
 
@@ -36,7 +36,7 @@ const SettingsHeader = () => {
                 position: 'primary',
                 'data-testid': '@settings/menu/general',
                 callback: () =>
-                    dispatch(goto({ routeName: 'settings-index', preserveParams: true })),
+                    dispatch(gotoThunk({ routeName: 'settings-index', preserveParams: true })),
             },
             {
                 id: 'settings-device',
@@ -44,7 +44,7 @@ const SettingsHeader = () => {
                 position: 'primary',
                 'data-testid': '@settings/menu/device',
                 callback: () =>
-                    dispatch(goto({ routeName: 'settings-device', preserveParams: true })),
+                    dispatch(gotoThunk({ routeName: 'settings-device', preserveParams: true })),
             },
             {
                 id: 'settings-coins',
@@ -52,7 +52,7 @@ const SettingsHeader = () => {
                 position: 'primary',
                 'data-testid': '@settings/menu/wallet',
                 callback: () =>
-                    dispatch(goto({ routeName: 'settings-coins', preserveParams: true })),
+                    dispatch(gotoThunk({ routeName: 'settings-coins', preserveParams: true })),
             },
             {
                 id: 'settings-connected-apps',
@@ -60,7 +60,9 @@ const SettingsHeader = () => {
                 position: 'primary',
                 'data-testid': '@settings/menu/connected-apps',
                 callback: () =>
-                    dispatch(goto({ routeName: 'settings-connected-apps', preserveParams: true })),
+                    dispatch(
+                        gotoThunk({ routeName: 'settings-connected-apps', preserveParams: true }),
+                    ),
             },
             {
                 id: 'settings-debug',
@@ -69,7 +71,7 @@ const SettingsHeader = () => {
                 isHidden: !isDebugModeActive,
                 'data-testid': '@settings/menu/debug',
                 callback: () =>
-                    dispatch(goto({ routeName: 'settings-debug', preserveParams: true })),
+                    dispatch(gotoThunk({ routeName: 'settings-debug', preserveParams: true })),
             },
         ],
         [dispatch, isDebugModeActive],

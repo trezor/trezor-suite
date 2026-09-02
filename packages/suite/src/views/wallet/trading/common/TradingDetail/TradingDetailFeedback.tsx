@@ -9,7 +9,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
 import { selectCountryCode } from '@suite-common/geolocation';
 import {
     formatExperimentVariantsForAnalytics,
@@ -56,7 +56,7 @@ export const TradingDetailFeedback = ({
         const userData = buildUserFeedbackData(device);
 
         dispatch(
-            sendFeedbackAction({
+            sendFeedbackThunk({
                 type: 'SUGGESTION',
                 payload: {
                     category: 'trade',

@@ -6,33 +6,33 @@ import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
 
 export default [
     {
-        description: 'goToNextStep (without param)',
+        description: 'goToNextStepThunk (without param)',
         initialState: {
             device: mockSuiteDevice(),
         },
-        action: () => onboardingActions.goToNextStep(),
+        action: () => onboardingActions.goToNextStepThunk(),
         expect: {
             toMatchObject: { activeStepId: STEP.ID_AUTHENTICATE_DEVICE_STEP },
         },
     },
     {
-        description: 'goToNextStep (with param)',
+        description: 'goToNextStepThunk (with param)',
         initialState: {
             device: mockSuiteDevice(),
         },
-        action: () => onboardingActions.goToNextStep('firmware'),
+        action: () => onboardingActions.goToNextStepThunk('firmware'),
         expect: {
             toMatchObject: { activeStepId: STEP.ID_FIRMWARE_STEP },
         },
     },
     {
-        description: 'goToPreviousStep',
+        description: 'goToPreviousStepThunk',
         initialState: {
             onboarding: {
                 activeStepId: STEP.ID_RECOVERY_STEP,
             },
         },
-        action: () => onboardingActions.goToPreviousStep(),
+        action: () => onboardingActions.goToPreviousStepThunk(),
         expect: {
             toMatchObject: { activeStepId: STEP.ID_BACKUP_TYPE_STEP },
         },

@@ -27,7 +27,7 @@ import {
 } from '@trezor/product-components';
 import { HELP_CENTER_BIP329_URL } from '@trezor/urls';
 
-import { exportMetadataToBip329File } from 'src/actions/labels/exportMetadataToBip329File';
+import { exportMetadataToBip329FileThunk } from 'src/actions/labels/exportMetadataToBip329File';
 import { useSelector } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
@@ -58,7 +58,7 @@ export const Bip329Labels = ({ account, isLoading }: Bip329LabelsProps) => {
     }
 
     const handleExportBip329 = () =>
-        dispatch(exportMetadataToBip329File({ account, defaultAccountLabel: defaultLabel }));
+        dispatch(exportMetadataToBip329FileThunk({ account, defaultAccountLabel: defaultLabel }));
 
     const handleImportBip329 = async (bip329Labels: Bip329Label[]) => {
         const result = await bip329.import({

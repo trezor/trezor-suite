@@ -8,9 +8,9 @@ import {
     type AccountsRootState,
     type DiscoveryRootState,
     accountsActions,
-    forgetDisconnectedDevices,
-    handleDeviceDisconnect,
-    observeSelectedDevice,
+    forgetDisconnectedDevicesThunk,
+    handleDeviceDisconnectThunk,
+    observeSelectedDeviceThunk,
     selectAccountsByDeviceState,
     selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
@@ -53,7 +53,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps<
 >((action, { dispatch, next, getState, extra }) => {
     if (deviceActions.deviceDisconnect.match(action)) {
         dispatch(
-            forgetDisconnectedDevices({
+            forgetDisconnectedDevicesThunk({
                 device: action.payload,
                 forceForget: selectIsBluetoothDeviceOsUnpairingRequired(getState()),
             }),
@@ -72,7 +72,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps<
     if (deviceActions.forgetDevice.match(action)) {
         const { device } = action.payload;
 
-        dispatch(handleDeviceDisconnect(device));
+        dispatch(handleDeviceDisconnectThunk(device));
 
         if (isTrezorDeviceWithState(device)) {
             const accountsToRemove = selectAccountsByDeviceState(getState(), device.state);
@@ -86,7 +86,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps<
     if (deviceActions.connectDevice.match(action)) {
         reportDeviceConnectionAnalytics(action.payload.device, extra.services.analytics);
     } else if (deviceActions.deviceDisconnect.match(action)) {
-        dispatch(handleDeviceDisconnect(action.payload));
+        dispatch(handleDeviceDisconnectThunk(action.payload));
 
         clearAndUnlockDeviceAccessQueue();
     } else if (isDeviceEventOfType(action, DEVICE.FIRMWARE_VERSION_CHANGED)) {
@@ -106,7 +106,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps<
     }
 
     if (isActionDeviceRelated(action)) {
-        dispatch(observeSelectedDevice());
+        dispatch(observeSelectedDeviceThunk());
     }
 
     return action;

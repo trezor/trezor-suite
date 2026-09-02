@@ -11,7 +11,7 @@ import { CaretCircleDownIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
 import { setRecentlyConnectedDevicePath } from 'src/actions/suite/suiteActions';
-import { openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
+import { openSwitchDeviceDialogThunk } from 'src/actions/wallet/addWalletThunk';
 import { useSelector } from 'src/hooks/suite';
 import { selectRecentlyConnectedDevice } from 'src/selectors/suite/suiteSelectors';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
@@ -73,7 +73,7 @@ const RecentlyConnectedDeviceTooltipContent = () => {
     if (deviceNameRef.current === undefined) return null;
 
     const handleClick = () => {
-        dispatch(openSwitchDeviceDialog());
+        dispatch(openSwitchDeviceDialogThunk());
         dispatch(setRecentlyConnectedDevicePath(null));
     };
 
@@ -90,7 +90,7 @@ export const DeviceSelector = () => {
     const dispatch = useDispatch();
 
     const handleSwitchDeviceClick = () => {
-        dispatch(openSwitchDeviceDialog());
+        dispatch(openSwitchDeviceDialogThunk());
         dispatch(setRecentlyConnectedDevicePath(null));
     };
 

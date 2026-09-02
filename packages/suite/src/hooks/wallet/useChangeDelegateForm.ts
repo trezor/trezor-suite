@@ -16,7 +16,7 @@ import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 import { throwError } from '@trezor/utils';
 
-import { signTransaction } from 'src/actions/wallet/stakeActions';
+import { signTransactionThunk } from 'src/actions/wallet/stakeActions';
 import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
 
@@ -119,7 +119,7 @@ export const useChangeDelegateForm = ({
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(signTransaction(values, composedTx));
+            const result = await dispatch(signTransactionThunk(values, composedTx));
 
             if (result?.success) {
                 clearForm();

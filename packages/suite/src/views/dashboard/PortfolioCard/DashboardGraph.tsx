@@ -13,7 +13,7 @@ import { Box, Button } from '@trezor/components';
 import { RepeatIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 
-import { updateGraphData } from 'src/actions/wallet/graphActions';
+import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';
 import { HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectGraph } from 'src/reducers/wallet/graphReducer';
@@ -66,7 +66,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
         accounts.every(a => failedAccounts.some(fa => fa.descriptor === a.descriptor));
 
     const onRefresh = useCallback(
-        () => dispatch(updateGraphData({ accounts })).unwrap(),
+        () => dispatch(updateGraphDataThunk({ accounts })).unwrap(),
         [accounts, dispatch],
     );
 

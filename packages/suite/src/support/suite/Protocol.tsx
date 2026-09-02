@@ -11,9 +11,9 @@ import { useSelector } from 'src/hooks/suite';
 const Protocol = () => {
     const dispatch = useDispatch();
 
-    const handleProtocolRequest = useCallback(
+    const handleProtocolRequestThunk = useCallback(
         (uri: string) => {
-            dispatch(protocolActions.handleProtocolRequest(uri));
+            dispatch(protocolActions.handleProtocolRequestThunk(uri));
         },
         [dispatch],
     );
@@ -24,10 +24,10 @@ const Protocol = () => {
         if (searchParams) {
             const uri = searchParams.get('uri');
             if (uri) {
-                handleProtocolRequest(uri);
+                handleProtocolRequestThunk(uri);
             }
         }
-    }, [handleProtocolRequest, searchParams]);
+    }, [handleProtocolRequestThunk, searchParams]);
 
     useEffect(() => {
         processSearch();
@@ -45,11 +45,11 @@ const Protocol = () => {
         }
 
         if (isDesktop()) {
-            desktopApi.on('protocol/open', handleProtocolRequest);
+            desktopApi.on('protocol/open', handleProtocolRequestThunk);
 
             return () => desktopApi.removeAllListeners('protocol/open');
         }
-    }, [handleProtocolRequest]);
+    }, [handleProtocolRequestThunk]);
 
     return null;
 };

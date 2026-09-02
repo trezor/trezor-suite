@@ -11,7 +11,7 @@ import {
     selectIsDeviceThpLocked,
 } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import { acquireDevice } from '@suite-common/wallet-core';
+import { acquireDeviceThunk } from '@suite-common/wallet-core';
 import {
     AuthorizeDeviceStackRoutes,
     type HomeStackParamList,
@@ -39,7 +39,7 @@ export const useConnectDeviceHandler = () => {
 
     const onConnectDevicePress = useCallback(() => {
         if (!isDeviceAuthorized || isDeviceThpLocked) {
-            dispatch(acquireDevice({}));
+            dispatch(acquireDeviceThunk({}));
         } else if (isAnyPhysicalDeviceConnectedViaUsb || Platform.OS === 'ios') {
             // Make sure auto-connect is enabled in case some device was manually disconnected.
             dispatch(bluetoothActions.enableAutoConnect());

@@ -15,7 +15,7 @@ import { Context } from '@suite-common/message-system';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    changeCoinVisibility,
+    changeCoinVisibilityThunk,
     selectDeviceSupportedNetworks,
     selectEnabledNetworks,
     selectShowRediscoverButton,
@@ -140,7 +140,7 @@ export const SettingsCoins = () => {
 
     const onToggle = (symbol: NetworkSymbol, isEnabled?: boolean) => {
         dispatch(
-            changeCoinVisibility({
+            changeCoinVisibilityThunk({
                 symbol,
                 shouldBeVisible: isEnabled ?? true,
             }),

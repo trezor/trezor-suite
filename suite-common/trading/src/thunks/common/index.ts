@@ -2,7 +2,7 @@ import { clearQuotesAndParamsByTradingTypeThunk } from './clearQuotesAndParamsBy
 import { createPaymentRequestsThunk } from './createPaymentRequestsThunk';
 import { loadInitialDataThunk } from './loadInitialDataThunk';
 import { recomposeAndSignTxThunk } from './recomposeAndSignTxThunk';
-import { setLastErrorMessageByTradingType } from './setLastErrorMessageByTradingType';
+import { setLastErrorMessageByTradingTypeThunk } from './setLastErrorMessageByTradingType';
 import { verifyAddressThunk } from './verifyAddressThunk';
 import { watchTradeThunk } from './watchTradeThunk';
 
@@ -12,6 +12,6 @@ export const tradingThunks = {
     recomposeAndSignTxThunk,
     watchTradeThunk,
     createPaymentRequestsThunk,
-    setLastErrorMessageByTradingType,
+    setLastErrorMessageByTradingTypeThunk,
     clearQuotesAndParamsByTradingTypeThunk,
 };

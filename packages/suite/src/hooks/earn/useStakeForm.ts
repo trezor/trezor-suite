@@ -25,7 +25,7 @@ import {
 import { isChanged, throwError } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { signTransaction } from 'src/actions/wallet/stakeActions';
+import { signTransactionThunk } from 'src/actions/wallet/stakeActions';
 import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
@@ -353,7 +353,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         if (composedTx?.type === 'final') {
             setIsLoading(true);
             try {
-                const result = await dispatch(signTransaction(values, composedTx));
+                const result = await dispatch(signTransactionThunk(values, composedTx));
 
                 if (result?.success) {
                     clearForm();

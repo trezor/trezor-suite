@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { selectIsDeviceInteractionModalActive, selectModalRequestId } from '@suite/modal';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -9,7 +9,7 @@ import {
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
     selectIsDiscoveryStatusConfirmEmptyPassphrase,
-    submitPassphrase,
+    submitPassphraseThunk,
 } from '@suite-common/wallet-core';
 import { UI_EVENTS } from '@trezor/connect';
 
@@ -31,7 +31,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
             if (!discovery) return;
 
             dispatch(
-                submitPassphrase({
+                submitPassphraseThunk({
                     device,
                     passphrase: value,
                     passphraseOnDevice,
@@ -49,7 +49,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const onBackToInitial = () => {
         dispatch(cancelDiscoveryThunk(device));
         dispatch({ type: UI_EVENTS.CLOSE_UI_WINDOW });
-        dispatch(goto({ routeName: 'suite-switch-device', params: { cancelable: true } }));
+        dispatch(gotoThunk({ routeName: 'suite-switch-device', params: { cancelable: true } }));
     };
 
     const onCancel = () => {
@@ -68,7 +68,7 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
             }
 
             dispatch(
-                submitPassphrase({
+                submitPassphraseThunk({
                     device,
                     passphrase: value,
                     passphraseOnDevice,

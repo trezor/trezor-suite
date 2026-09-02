@@ -13,7 +13,7 @@ import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { typography } from '@trezor/theme';
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, type Url } from '@trezor/urls';
 
-import { showXpub } from 'src/actions/wallet/publicKeyActions';
+import { showXpubThunk } from 'src/actions/wallet/publicKeyActions';
 import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
 import { WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
@@ -94,7 +94,7 @@ const Details = () => {
     const shouldDisplayXpubSection =
         account.networkType === 'bitcoin' || account.networkType === 'cardano';
 
-    const handleXpubClick = () => dispatch(showXpub());
+    const handleXpubClick = () => dispatch(showXpubThunk());
 
     return (
         <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>

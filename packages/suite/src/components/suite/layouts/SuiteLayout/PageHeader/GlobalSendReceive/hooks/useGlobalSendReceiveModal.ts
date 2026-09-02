@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { goto, selectRouterParams } from '@suite/router';
+import { gotoThunk, selectRouterParams } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { type Account, type GlobalSendReceiveType } from '@suite-common/wallet-types';
@@ -51,7 +51,7 @@ export function useGlobalSendReceiveModal() {
 
     const openModal = (modal: NonNullable<GlobalSendReceiveType>) => {
         setActiveModal(modal);
-        dispatch(goto({ routeName: 'suite-index', params: { modal } }));
+        dispatch(gotoThunk({ routeName: 'suite-index', params: { modal } }));
     };
 
     const closeModal = (routeName?: Route['name'], account?: Account) => {
@@ -67,7 +67,7 @@ export function useGlobalSendReceiveModal() {
                 },
             });
         } else {
-            dispatch(goto({ routeName: 'suite-index' }));
+            dispatch(gotoThunk({ routeName: 'suite-index' }));
         }
     };
 

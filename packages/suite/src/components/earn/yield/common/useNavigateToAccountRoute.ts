@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -18,7 +18,7 @@ export const useNavigateToAccountRoute = (
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName,
                 params: {
                     symbol: account.symbol,

@@ -3,7 +3,7 @@ import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary';
 import { useDispatch } from '@suite-common/redux-utils';
 
 import { Error } from 'src/components/suite/Error';
-import { reportToSentry } from 'src/utils/suite/sentry';
+import { reportToSentryThunk } from 'src/utils/suite/sentry';
 
 const Fallback = ({ error }: { error: Error }) => <Error error={error.message} />;
 
@@ -14,7 +14,7 @@ export const ErrorBoundary = ({ children }: { children: React.ReactNode }) => {
         <ReactErrorBoundary
             FallbackComponent={Fallback}
             onError={error => {
-                dispatch(reportToSentry(error));
+                dispatch(reportToSentryThunk(error));
             }}
         >
             {children}

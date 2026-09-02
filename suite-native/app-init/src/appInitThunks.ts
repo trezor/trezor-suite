@@ -28,7 +28,7 @@ import {
     type PeriodicFetchFiatRatesThunkState,
     createImportedDeviceThunk,
     initBlockchainThunk,
-    initDevices,
+    initDevicesThunk,
     initStakeDataThunk,
     periodicFetchFiatRatesThunk,
     selectBaseCurrency,
@@ -66,7 +66,7 @@ type PostOnboardingInitThunkDeps = ConnectInitThunkDeps &
     PeriodicFetchFiatRatesThunkDeps &
     WalletConnectInitThunkDeps;
 
-export const postOnboardingInit = createThunk<
+export const postOnboardingInitThunk = createThunk<
     void,
     void,
     { state: PostOnboardingInitThunkState; extra: PostOnboardingInitThunkDeps }
@@ -111,7 +111,7 @@ type ApplicationInitThunkState = SettingsSliceRootState &
 
 type ApplicationInitThunkDeps = InitAnalyticsThunkDeps & PostOnboardingInitThunkDeps;
 
-export const applicationInit = createThunk<
+export const applicationInitThunk = createThunk<
     void,
     void,
     { state: ApplicationInitThunkState; extra: ApplicationInitThunkDeps }
@@ -127,10 +127,10 @@ export const applicationInit = createThunk<
     dispatch(initMessageSystemThunk());
 
     // Select latest remembered device or Portfolio Tracker device.
-    dispatch(initDevices());
+    dispatch(initDevicesThunk());
 
     if (selectIsOnboardingFinished(getState())) {
-        await dispatch(postOnboardingInit());
+        await dispatch(postOnboardingInitThunk());
     }
 
     // Tell the application to render

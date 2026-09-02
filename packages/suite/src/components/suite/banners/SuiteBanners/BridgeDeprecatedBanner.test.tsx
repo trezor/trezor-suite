@@ -9,7 +9,7 @@ jest.mock('@suite/intl', () => ({
 }));
 
 jest.mock('@suite/router', () => ({
-    goto: () => ({ type: 'goto' }),
+    gotoThunk: () => ({ type: 'goto' }),
 }));
 
 jest.mock('@trezor/env-utils', () => ({

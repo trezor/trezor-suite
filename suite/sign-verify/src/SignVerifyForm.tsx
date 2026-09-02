@@ -14,7 +14,7 @@ import { SignVerifyMessageField } from './SignVerifyMessageField';
 import { SignVerifyPubKeyField } from './SignVerifyPubKeyField';
 import { SignVerifySignatureField } from './SignVerifySignatureField';
 import { SignVerifyTabs } from './SignVerifyTabs';
-import { isVerifySupported, sign, verify } from './signVerifyActions';
+import { isVerifySupported, signThunk, verifyThunk } from './signVerifyActions';
 import { getHasSelectableSignatureFormat } from './signVerifyUtils';
 import { type SignVerifyOutcome, type SignVerifyPage } from './types';
 import { useSignVerifyCopyValue } from './useSignVerifyCopyValue';
@@ -90,7 +90,7 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
 
         if (isSignPage && path !== undefined) {
             const result = await dispatch(
-                sign(account, path, message, hex, isElectrum, cardanoPubKeyCose),
+                signThunk(account, path, message, hex, isElectrum, cardanoPubKeyCose),
             );
 
             if (result) {
@@ -98,7 +98,7 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
                 setOutcome('signed');
             }
         } else if (signature !== undefined) {
-            const result = await dispatch(verify(account, address, message, signature, hex));
+            const result = await dispatch(verifyThunk(account, address, message, signature, hex));
 
             setOutcome(result ? 'verified' : 'failed');
         }

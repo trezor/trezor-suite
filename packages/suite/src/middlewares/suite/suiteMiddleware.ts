@@ -4,7 +4,12 @@ import { type FlagsRootState } from '@suite/flags';
 import { METADATA } from '@suite/metadata';
 import { type ModalRootState } from '@suite/modal';
 import { recoveryActions } from '@suite/recovery';
-import { type RouterRootState, goto, routerAppChanged, selectCanSwitchDevice } from '@suite/router';
+import {
+    type RouterRootState,
+    gotoThunk,
+    routerAppChanged,
+    selectCanSwitchDevice,
+} from '@suite/router';
 import { updateOnlineStatus } from '@suite/suite-lifecycle';
 import {
     type DeviceRootState,
@@ -20,14 +25,14 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type AccountsRootState,
     type WalletSettingsRootState,
-    forgetDisconnectedDevices,
-    handleDeviceDisconnect,
-    observeSelectedDevice,
+    forgetDisconnectedDevicesThunk,
+    handleDeviceDisconnectThunk,
+    observeSelectedDeviceThunk,
     selectIsDeviceAutoEjectEnabled,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 
-import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
+import { handleProtocolRequestThunk } from 'src/actions/suite/protocolActions';
 import { desktopHandshake, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
 
 type SuiteMiddlewareState = AccountsRootState &
@@ -87,7 +92,7 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
             const state = getState();
             const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(state);
             dispatch(
-                forgetDisconnectedDevices({
+                forgetDisconnectedDevicesThunk({
                     device: action.payload,
                     forceForget: isAutoEjectEnabled,
                 }),
@@ -110,7 +115,7 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
                         !isModalActive
                     ) {
                         dispatch(
-                            goto({
+                            gotoThunk({
                                 routeName: 'suite-switch-device',
                                 params: { cancelable: true },
                             }),
@@ -132,12 +137,12 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
                 });
             }
 
-            dispatch(handleDeviceDisconnect(device));
+            dispatch(handleDeviceDisconnectThunk(device));
         }
 
         if (desktopHandshake.match(action)) {
             if (action.payload.protocol) {
-                dispatch(handleProtocolRequest(action.payload.protocol));
+                dispatch(handleProtocolRequestThunk(action.payload.protocol));
             }
             if (action.payload.desktopUpdate?.firstRun) {
                 dispatch(
@@ -153,7 +158,7 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
             if (selectedDevicePath === action.payload.path && !canSwitchDevice) {
                 dispatch(selectDeviceThunk({ device: undefined }));
             } else {
-                dispatch(handleDeviceDisconnect(action.payload));
+                dispatch(handleDeviceDisconnectThunk(action.payload));
             }
         } else if (updateOnlineStatus.match(action) && action.payload) {
             // Restart discovery to reconnect to backends when user goes offline -> online.
@@ -161,7 +166,7 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
         }
         if (isActionDeviceRelated(action)) {
             // keep suite reducer synchronized with other reducers (selected device)
-            dispatch(observeSelectedDevice());
+            dispatch(observeSelectedDeviceThunk());
         }
 
         return action;

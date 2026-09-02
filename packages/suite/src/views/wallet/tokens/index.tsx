@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { selectFullSelectedAccount } from '@suite/account';
-import { goto, selectRouteName } from '@suite/router';
+import { gotoThunk, selectRouteName } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
@@ -33,7 +33,7 @@ export const Tokens = () => {
             !hasNetworkFeatures(selectedAccount.account, 'tokens') &&
             routeName !== 'wallet-index'
         ) {
-            dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
+            dispatch(gotoThunk({ routeName: 'wallet-index', preserveParams: true }));
         }
     }, [selectedAccount, dispatch, routeName]);
 

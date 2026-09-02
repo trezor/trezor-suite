@@ -1,4 +1,4 @@
-import { toggleTor } from '@suite/tor-desktop';
+import { toggleTorThunk } from '@suite/tor-desktop';
 import { useDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -16,7 +16,7 @@ export const Tor = () => {
                     <ActionButton
                         intent="critical"
                         onClick={() => {
-                            dispatch(toggleTor(false));
+                            dispatch(toggleTorThunk(false));
                         }}
                     >
                         Stop Tor

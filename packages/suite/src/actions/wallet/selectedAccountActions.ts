@@ -200,7 +200,7 @@ const actions = new Set<UnknownAction['type']>([
  */
 type SyncSelectedAccountThunkState = SelectedAccountState;
 
-export const syncSelectedAccount =
+export const syncSelectedAccountThunk =
     (action: UnknownAction) =>
     (dispatch: Dispatch<UnknownAction>, getState: () => SyncSelectedAccountThunkState) => {
         // ignore not listed actions

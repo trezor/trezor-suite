@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
@@ -22,7 +22,7 @@ export const BridgeUnavailable = () => {
 
     const handleOpenSuite = useOpenSuiteDesktop();
 
-    const goToWallet = () => dispatch(goto({ routeName: 'wallet-index' }));
+    const goToWallet = () => dispatch(gotoThunk({ routeName: 'wallet-index' }));
 
     // if bridge is running, user will never be directed to this page, but since this page is accessible directly over /bridge url
     // it makes sense to show some meaningful information here

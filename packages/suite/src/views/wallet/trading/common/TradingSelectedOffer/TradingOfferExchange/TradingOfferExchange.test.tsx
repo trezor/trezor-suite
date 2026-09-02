@@ -41,7 +41,7 @@ jest.mock('@suite/intl', () => ({
 
 jest.mock('@suite/router', () => ({
     ...jest.requireActual('@suite/router'),
-    goto: (payload: unknown) => mockGoto(payload),
+    gotoThunk: (payload: unknown) => mockGoto(payload),
 }));
 
 jest.mock('@suite-common/trading', () => ({

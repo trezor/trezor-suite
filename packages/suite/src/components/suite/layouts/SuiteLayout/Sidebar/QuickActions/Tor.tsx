@@ -1,5 +1,5 @@
 import { Translation, type TranslationKey } from '@suite/intl';
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { TorStatus, selectIsTorDisabled, selectTorStatus } from '@suite/tor';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Column, Icon, type IconComponent, type UIIntent } from '@trezor/components';
@@ -70,7 +70,7 @@ export const Tor = () => {
                     ),
                 }}
                 onClick={() =>
-                    dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.Tor }))
+                    dispatch(gotoThunk({ routeName: 'settings-index', anchor: SettingsAnchor.Tor }))
                 }
                 icon={TorBrowserIcon}
                 subIconIntent={torIntentMap[torStatus]}

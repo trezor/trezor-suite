@@ -1,7 +1,7 @@
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { getTxAnchor, goto, selectRouteName, selectRouterApp } from '@suite/router';
+import { getTxAnchor, gotoThunk, selectRouteName, selectRouterApp } from '@suite/router';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
@@ -71,7 +71,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
 
         const txAnchor = getTxAnchor(tx?.txid);
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: destinationRoute,
                 params: {
                     accountIndex: account.index,

@@ -86,7 +86,7 @@ describe('coinjoinAccountActions', () => {
             jest.spyOn(console, 'log').mockImplementation(() => {});
 
             await store.dispatch(
-                coinjoinAccountActions.createCoinjoinAccount(
+                coinjoinAccountActions.createCoinjoinAccountThunk(
                     f.params.network as any,
                     f.params.account as any,
                 ),
@@ -102,7 +102,7 @@ describe('coinjoinAccountActions', () => {
             const store = initStore(f.state as Wallet);
             testMocks.setTrezorConnectFixtures(f.connect);
             // @ts-expect-error params are incomplete
-            await store.dispatch(coinjoinAccountActions.startCoinjoinSession(f.params, {}));
+            await store.dispatch(coinjoinAccountActions.startCoinjoinSessionThunk(f.params, {}));
 
             const actions = store.getActions();
             expect(actions.map(a => a.type)).toEqual(f.result.actions);
@@ -117,7 +117,7 @@ describe('coinjoinAccountActions', () => {
                 await CoinjoinService.createInstance({ symbol: f.client as any });
             }
 
-            await store.dispatch(coinjoinClientActions.stopCoinjoinSession(f.param));
+            await store.dispatch(coinjoinClientActions.stopCoinjoinSessionThunk(f.param));
 
             const actions = store.getActions();
             expect(actions.map(a => a.type)).toEqual(f.result.actions);
@@ -128,7 +128,7 @@ describe('coinjoinAccountActions', () => {
         it(`restoreCoinjoinAccounts: ${f.description}`, async () => {
             const store = initStore(f.state as Wallet);
 
-            await store.dispatch(coinjoinAccountActions.restoreCoinjoinAccounts());
+            await store.dispatch(coinjoinAccountActions.restoreCoinjoinAccountsThunk());
 
             const actions = store.getActions();
             expect(actions.map(a => a.type)).toEqual(f.result.actions);
@@ -143,7 +143,7 @@ describe('coinjoinAccountActions', () => {
                 await CoinjoinService.createInstance({ symbol: f.client as any });
             }
 
-            await store.dispatch(coinjoinAccountActions.restoreCoinjoinSession(f.param));
+            await store.dispatch(coinjoinAccountActions.restoreCoinjoinSessionThunk(f.param));
 
             const actions = store.getActions();
 

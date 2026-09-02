@@ -15,7 +15,7 @@ import { handleDeviceDisconnectFixture } from './__fixtures__/handleDeviceDiscon
 import {
     type ForgetDevicePersistentDataThunkDeps,
     forgetDevicePersistentDataThunk,
-    handleDeviceDisconnect,
+    handleDeviceDisconnectThunk,
 } from './deviceThunks';
 
 const deviceReducer = prepareDeviceReducer({
@@ -126,7 +126,7 @@ const initDisconnectStore = (state: DisconnectState) =>
         preloadedState: state,
     });
 
-describe(handleDeviceDisconnect.name, () => {
+describe(handleDeviceDisconnectThunk.name, () => {
     handleDeviceDisconnectFixture.forEach(fixture => {
         it(`handleDeviceDisconnect: ${fixture.description}`, async () => {
             const state = getDisconnectInitialState(fixture.state);
@@ -136,7 +136,7 @@ describe(handleDeviceDisconnect.name, () => {
                 type: DEVICE.DISCONNECT,
                 payload: fixture.device,
             });
-            await store.dispatch(handleDeviceDisconnect(fixture.device));
+            await store.dispatch(handleDeviceDisconnectThunk(fixture.device));
 
             const actions = filterThunkActionTypes(store.getActions());
 

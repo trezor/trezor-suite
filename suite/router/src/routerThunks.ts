@@ -34,7 +34,7 @@ type OnLocationChangeThunkParams = RouterPathOptional & {
 
 type OnLocationChangeThunkState = LocksRootState & ModalRootState & RouterRootState;
 
-export const onLocationChange = createThunk<
+export const onLocationChangeThunk = createThunk<
     ReturnType<typeof routerLocationChange> | null | undefined,
     OnLocationChangeThunkParams,
     { state: OnLocationChangeThunkState }
@@ -61,7 +61,7 @@ type RouterInitThunkState = LocksRootState & ModalRootState & RouterRootState;
 
 type RouterInitThunkDeps = WithServices<SuiteRouterHistoryDep>;
 
-export const routerInit = createThunk<
+export const routerInitThunk = createThunk<
     void,
     void,
     { state: RouterInitThunkState; extra: RouterInitThunkDeps }
@@ -69,7 +69,7 @@ export const routerInit = createThunk<
     // check if location was not already changed by initialRedirection
     if (selectRouterApp(getState()) === 'unknown') {
         const location = extra.services.suiteRouterHistory.getLocation();
-        dispatch(onLocationChange(location));
+        dispatch(onLocationChangeThunk(location));
     }
 });
 
@@ -84,7 +84,11 @@ export type GotoThunkState = LocksRootState & ModalRootState & RouterRootState;
 
 export type GotoThunkDeps = WithServices<SuiteRouterHistoryDep>;
 
-export const goto = createThunk<void, GotoPayload, { state: GotoThunkState; extra: GotoThunkDeps }>(
+export const gotoThunk = createThunk<
+    void,
+    GotoPayload,
+    { state: GotoThunkState; extra: GotoThunkDeps }
+>(
     '@router/goto',
     ({ routeName, params, preserveParams, anchor }, { dispatch, getState, extra }) => {
         const hasRouterLock = selectIsRouterLocked(getState());
@@ -112,7 +116,7 @@ export const goto = createThunk<void, GotoPayload, { state: GotoThunkState; extr
             return;
         }
 
-        dispatch(onLocationChange({ pathname, hash, anchor }));
+        dispatch(onLocationChangeThunk({ pathname, hash, anchor }));
         if (route?.isForegroundApp) {
             dispatch(lockRouter(true));
 
@@ -144,7 +148,7 @@ type CloseModalAppThunkState = GotoThunkState;
 
 type CloseModalAppThunkDeps = GotoThunkDeps;
 
-export const closeModalApp = createThunk<
+export const closeModalAppThunk = createThunk<
     void,
     boolean | undefined,
     { state: CloseModalAppThunkState; extra: CloseModalAppThunkDeps }
@@ -155,7 +159,7 @@ export const closeModalApp = createThunk<
     const route = findRoute(location.pathname);
 
     if (route?.isForegroundApp) {
-        dispatch(goto({ routeName: 'suite-index' }));
+        dispatch(gotoThunk({ routeName: 'suite-index' }));
 
         return;
     }
@@ -165,7 +169,7 @@ export const closeModalApp = createThunk<
             pathname: location.pathname,
         });
     } else {
-        dispatch(onLocationChange(location));
+        dispatch(onLocationChangeThunk(location));
     }
 });
 
@@ -181,7 +185,7 @@ type InitialRedirectionThunkState = GotoThunkState;
 
 type InitialRedirectionThunkDeps = GotoThunkDeps;
 
-export const initialRedirection = createThunk<
+export const initialRedirectionThunk = createThunk<
     void,
     InitialRedirectionThunkParams,
     { state: InitialRedirectionThunkState; extra: InitialRedirectionThunkDeps }
@@ -196,8 +200,8 @@ export const initialRedirection = createThunk<
     }
 
     if (route.isForegroundApp) {
-        dispatch(goto({ routeName: route.name }));
+        dispatch(gotoThunk({ routeName: route.name }));
     } else if (isInitialRun) {
-        dispatch(goto({ routeName: 'suite-start' }));
+        dispatch(gotoThunk({ routeName: 'suite-start' }));
     }
 });

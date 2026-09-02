@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectIsDeviceOrUiLocked } from '@suite/locks';
-import { closeModalApp, goto } from '@suite/router';
+import { closeModalAppThunk, gotoThunk } from '@suite/router';
 import { selectDeviceThunk } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import { selectIsAnyNetworkEnabled, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
@@ -37,8 +37,8 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
 
     const goToCoinsSettings = () => {
         onCancel?.(false);
-        dispatch(closeModalApp());
-        dispatch(goto({ routeName: 'settings-coins' }));
+        dispatch(closeModalAppThunk());
+        dispatch(gotoThunk({ routeName: 'settings-coins' }));
     };
 
     const noNetworksTooltipContent = (
@@ -69,7 +69,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     }) => {
         onCancel?.(false);
         dispatch(selectDeviceThunk({ device }));
-        dispatch(closeModalApp());
+        dispatch(closeModalAppThunk());
         // TODO: when creating a new hidden wallet, we should not start discovery yet, but only after going through the best practices flow
         dispatch(
             startAddWalletDiscoveryThunk({
@@ -78,7 +78,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                 isAddingExistingWallet: isExisting,
             }),
         );
-        dispatch(goto({ routeName: 'suite-index' }));
+        dispatch(gotoThunk({ routeName: 'suite-index' }));
     };
 
     const ExpandedPassphraseContainer = () => (

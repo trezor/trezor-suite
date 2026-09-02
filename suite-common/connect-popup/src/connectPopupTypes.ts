@@ -37,7 +37,7 @@ export type ConnectProcessInfo = {
 export type ConnectCallSource = {
     origin: string;
     // Permissions the host declared up front (via ConnectSettings.requestedPermissions), carried on
-    // the handshake. Sanitized in connectPopupCallThunkInner so the first consent covers the set.
+    // the handshake. Sanitized in connectPopupCallInnerThunk so the first consent covers the set.
     requestedPermissions?: PermissionRequest[];
 } & (
     | {

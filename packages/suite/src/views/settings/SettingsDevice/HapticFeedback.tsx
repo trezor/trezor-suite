@@ -7,7 +7,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { Switch, Tooltip } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 
 interface DeviceLabelProps {
     isDeviceLocked: boolean;
@@ -26,7 +26,7 @@ export const HapticFeedback = ({ isDeviceLocked }: DeviceLabelProps) => {
     const hapticEnabled = device?.features?.haptic_feedback ?? false;
 
     const handleChange = async () => {
-        const result = await dispatch(applySettings({ haptic_feedback: !hapticEnabled }));
+        const result = await dispatch(applySettingsThunk({ haptic_feedback: !hapticEnabled }));
 
         if (result?.success) {
             analytics.report({

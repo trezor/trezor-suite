@@ -1,7 +1,7 @@
 import { type SellFiatTrade, type SellProviderInfo } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
@@ -23,7 +23,7 @@ export const TradingSellDetailPaymentFailed = ({
 }: TradingSellDetailPaymentFailedProps) => {
     const dispatch = useDispatch();
 
-    const handleClick = () => dispatch(goto({ routeName: 'wallet-trading-sell' }));
+    const handleClick = () => dispatch(gotoThunk({ routeName: 'wallet-trading-sell' }));
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>

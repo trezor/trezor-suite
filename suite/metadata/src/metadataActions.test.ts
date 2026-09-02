@@ -144,7 +144,7 @@ const initStore = (state: State) => {
             switch (action.payload.type) {
                 case 'metadata-provider':
                     await store.dispatch(
-                        metadataProviderActions.connectProvider({ type: 'dropbox' }),
+                        metadataProviderActions.connectProviderThunk({ type: 'dropbox' }),
                     );
                     action.payload.decision.resolve(true);
                     break;
@@ -208,7 +208,7 @@ describe('Metadata Actions', () => {
     fixtures.setDeviceMetadataKey.forEach(f => {
         it(`setDeviceMetadataKey - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataLabelingActions.setDeviceMetadataKey(...f.params));
+            await store.dispatch(metadataLabelingActions.setDeviceMetadataKeyThunk(...f.params));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -221,7 +221,7 @@ describe('Metadata Actions', () => {
         it(`setAccountMetadataKey - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
             const account = await store.dispatch(
-                metadataLabelingActions.setAccountMetadataKey(...f.params),
+                metadataLabelingActions.setAccountMetadataKeyThunk(...f.params),
             );
             expect(account).toMatchObject(f.result);
         });
@@ -230,7 +230,7 @@ describe('Metadata Actions', () => {
     fixtures.addDeviceMetadata.forEach(f => {
         it(`addDeviceMetadata - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataLabelingActions.addDeviceMetadata(...f.params));
+            await store.dispatch(metadataLabelingActions.addDeviceMetadataThunk(...f.params));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             }
@@ -240,7 +240,7 @@ describe('Metadata Actions', () => {
     fixtures.addAccountMetadata.forEach(f => {
         it(`addAccountMetadata - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataLabelingActions.addAccountMetadata(...f.params));
+            await store.dispatch(metadataLabelingActions.addAccountMetadataThunk(...f.params));
 
             const result = store.getActions();
             if (!f.result) {
@@ -254,7 +254,7 @@ describe('Metadata Actions', () => {
     fixtures.connectProvider.forEach(f => {
         it(`connectProvider - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataProviderActions.connectProvider(...f.params));
+            await store.dispatch(metadataProviderActions.connectProviderThunk(...f.params));
 
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
@@ -268,7 +268,7 @@ describe('Metadata Actions', () => {
         it(`add metadata - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
 
-            await store.dispatch(metadataLabelingActions.addMetadata(...f.params));
+            await store.dispatch(metadataLabelingActions.addMetadataThunk(...f.params));
 
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
@@ -305,7 +305,7 @@ describe('Metadata Actions', () => {
     fixtures.init.forEach(f => {
         it(`initMetadata - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataLabelingActions.init(...f.params));
+            await store.dispatch(metadataLabelingActions.initThunk(...f.params));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -317,7 +317,7 @@ describe('Metadata Actions', () => {
     fixtures.disposeMetadata.forEach(f => {
         it(`disposeMetadata - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataThunks.disposeMetadata(...f.params));
+            await store.dispatch(metadataThunks.disposeMetadataThunk(...f.params));
             if (f.result) {
                 expect(store.getState()).toMatchObject(f.result);
             }
@@ -327,7 +327,7 @@ describe('Metadata Actions', () => {
     fixtures.disposeMetadataKeys.forEach(f => {
         it(`disposeMetadataKeys - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataThunks.disposeMetadataKeys(...f.params));
+            await store.dispatch(metadataThunks.disposeMetadataKeysThunk(...f.params));
             if (f.result) {
                 expect(store.getState()).toMatchObject(f.result);
             }

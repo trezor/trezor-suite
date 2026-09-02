@@ -18,7 +18,7 @@ import {
 } from '@trezor/components';
 import { ClockClockwiseIcon, RepeatIcon, TorBrowserIcon } from '@trezor/icons';
 
-import { toggleTor } from '../toggleTorThunk';
+import { toggleTorThunk } from '../toggleTorThunk';
 
 type TorLoaderProps = {
     callback: (value: boolean) => void;
@@ -58,7 +58,7 @@ export const TorLoader = ({ callback }: TorLoaderProps) => {
         dispatch(torActions.setTorStatus(TorStatus.Enabling));
 
         try {
-            await dispatch(toggleTor(true));
+            await dispatch(toggleTorThunk(true));
         } catch {
             dispatch(torActions.setTorStatus(TorStatus.Error));
         }
@@ -69,7 +69,7 @@ export const TorLoader = ({ callback }: TorLoaderProps) => {
         let fakeProgress = 0;
         // We do not wait until toggleTor is done since we want to display fake progress.
         // Errors are swallowed on purpose so the fake disabling progress always completes.
-        void dispatch(toggleTor(false)).catch(() => {});
+        void dispatch(toggleTorThunk(false)).catch(() => {});
 
         // This is a total fake progress, otherwise it would be too fast for user.
         await new Promise(resolve => {

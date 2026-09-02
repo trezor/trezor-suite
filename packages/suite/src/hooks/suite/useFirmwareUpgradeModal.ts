@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { selectIsConnectionModalOpen, setConnectionModal, setConnectionMode } from '@suite/device';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 
@@ -19,7 +19,7 @@ export const useFirmwareUpgradeModal = () => {
             setIsAwaitingConnectionForFwUpdate(false);
             if (device?.connected) {
                 setIsFirmwareModalOpen(false);
-                dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
+                dispatch(gotoThunk({ routeName: 'firmware-index', params: { cancelable: true } }));
             }
         }
     }, [isAwaitingConnectionForFwUpdate, isConnectionModalOpen, device?.connected, dispatch]);
@@ -43,7 +43,7 @@ export const useFirmwareUpgradeModal = () => {
         }
 
         setIsFirmwareModalOpen(false);
-        dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
+        dispatch(gotoThunk({ routeName: 'firmware-index', params: { cancelable: true } }));
     };
 
     return { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware };

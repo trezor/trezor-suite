@@ -1,6 +1,6 @@
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
-import { Anchor, SettingsAnchor, goto } from '@suite/router';
+import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, Tooltip } from '@trezor/components';
@@ -43,7 +43,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const changelogUrl = getChangelogUrl(device, revision);
 
     const handleUpdate = () => {
-        dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
+        dispatch(gotoThunk({ routeName: 'firmware-index', params: { cancelable: true } }));
     };
 
     return (

@@ -1,7 +1,7 @@
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { selectIsTorEnabled, selectIsTorLoading } from '@suite/tor';
-import { toggleTor } from '@suite/tor-desktop';
+import { toggleTorThunk } from '@suite/tor-desktop';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 
@@ -15,7 +15,7 @@ export const TorDisconnected = () => {
 
     if (account?.accountType !== 'coinjoin' || isTorEnabled) return null;
 
-    const handleButtonClick = () => dispatch(toggleTor(true));
+    const handleButtonClick = () => dispatch(toggleTorThunk(true));
 
     return (
         <Banner

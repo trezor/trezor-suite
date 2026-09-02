@@ -17,7 +17,7 @@ export const useGraph = () => {
         () => ({
             setSelectedRange: (range: GraphRange) => dispatch(graphActions.setSelectedRange(range)),
             updateGraphData: (accounts: Account[]) =>
-                dispatch(graphActions.updateGraphData({ accounts })),
+                dispatch(graphActions.updateGraphDataThunk({ accounts })),
         }),
         [dispatch],
     );

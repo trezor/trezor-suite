@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { exportMetadataToLocalFile } from '@suite/metadata';
+import { exportMetadataToLocalFileThunk } from '@suite/metadata';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -11,7 +11,7 @@ export const Metadata = () => {
 
     const onClick = () => {
         setExporting(true);
-        dispatch(exportMetadataToLocalFile()).finally(() => {
+        dispatch(exportMetadataToLocalFileThunk()).finally(() => {
             setExporting(false);
         });
     };

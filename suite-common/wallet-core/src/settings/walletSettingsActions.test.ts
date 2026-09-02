@@ -6,7 +6,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { walletSettingsFixtures } from './__fixtures__/walletSettingsActions.fixtures';
 import { prepareWalletSettingsReducer } from './walletSettingsReducer';
-import { changeCoinVisibility } from './walletSettingsThunks';
+import { changeCoinVisibilityThunk } from './walletSettingsThunks';
 
 const btcSymbol = asNetworkSymbol('btc');
 const adaSymbol = asNetworkSymbol('ada');
@@ -44,7 +44,7 @@ describe('walletSettings Actions', () => {
             const { updateConnectSettings } = wireEnabledNetworksMock();
 
             await store.dispatch(
-                changeCoinVisibility({
+                changeCoinVisibilityThunk({
                     symbol: adaSymbol,
                     shouldBeVisible: true,
                 }) as any,
@@ -61,7 +61,7 @@ describe('walletSettings Actions', () => {
             const { updateConnectSettings } = wireEnabledNetworksMock();
 
             await store.dispatch(
-                changeCoinVisibility({
+                changeCoinVisibilityThunk({
                     symbol: adaSymbol,
                     shouldBeVisible: false,
                 }) as any,
@@ -75,7 +75,7 @@ describe('walletSettings Actions', () => {
             const { updateConnectSettings } = wireEnabledNetworksMock();
 
             await store.dispatch(
-                changeCoinVisibility({
+                changeCoinVisibilityThunk({
                     symbol: adaSymbol,
                     shouldBeVisible: true,
                 }) as any,
@@ -97,7 +97,7 @@ describe('walletSettings Actions', () => {
             );
 
             const dispatched = store.dispatch(
-                changeCoinVisibility({
+                changeCoinVisibilityThunk({
                     symbol: adaSymbol,
                     shouldBeVisible: true,
                 }) as any,

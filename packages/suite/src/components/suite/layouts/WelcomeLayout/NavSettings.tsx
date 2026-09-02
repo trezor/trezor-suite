@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { IconButton } from '@trezor/components';
 import { GearIcon } from '@trezor/icons';
@@ -7,7 +7,7 @@ import { GearIcon } from '@trezor/icons';
 export const NavSettings = () => {
     const dispatch = useDispatch();
 
-    const handleClick = () => dispatch(goto({ routeName: 'settings-index' }));
+    const handleClick = () => dispatch(gotoThunk({ routeName: 'settings-index' }));
 
     return (
         <IconButton

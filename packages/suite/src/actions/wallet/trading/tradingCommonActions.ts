@@ -49,7 +49,7 @@ export const submitRequestForm =
 
 type ConvertDraftsThunkState = AccountsRootState & FormDraftRootState & WalletSettingsRootState;
 
-export const convertDrafts =
+export const convertDraftsThunk =
     () => (dispatch: Dispatch<UnknownAction>, getState: () => ConvertDraftsThunkState) => {
         const accounts = selectAccounts(getState());
         const formDraftKeys = selectFormDraftKeys(getState());

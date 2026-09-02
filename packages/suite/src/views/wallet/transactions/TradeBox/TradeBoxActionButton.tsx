@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { type Route, goto } from '@suite/router';
+import { type Route, gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -49,7 +49,7 @@ export const TradeBoxActionButton = ({
                     ),
                 );
 
-                dispatch(goto({ routeName: gotoRouteName }));
+                dispatch(gotoThunk({ routeName: gotoRouteName }));
 
                 analytics.report({
                     type: events.tradeNavigateEvent.name,
@@ -64,7 +64,7 @@ export const TradeBoxActionButton = ({
                 break;
             }
             case 'earn': {
-                dispatch(goto({ routeName: 'suite-earn' }));
+                dispatch(gotoThunk({ routeName: 'suite-earn' }));
 
                 analytics.report({
                     type: sharedEvents.yieldNavigateEvent.name,

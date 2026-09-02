@@ -1,4 +1,4 @@
-import { selectIsSessionAutostopped, toggleAutostopCoinjoin } from '@suite/coinjoin';
+import { selectIsSessionAutostopped, toggleAutostopCoinjoinThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -15,7 +15,7 @@ export const AutoStopButton = ({ relatedAccountKey }: AutoStopButtonProps) => {
     const dispatch = useDispatch();
 
     const handleClick = () => {
-        dispatch(toggleAutostopCoinjoin(relatedAccountKey));
+        dispatch(toggleAutostopCoinjoinThunk(relatedAccountKey));
     };
 
     return (

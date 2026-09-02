@@ -1,12 +1,12 @@
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 
 export const UpdateGoToSettingsDescription = () => {
     const dispatch = useDispatch();
 
-    const gotToDeviceSettings = () => dispatch(goto({ routeName: 'settings-device' }));
+    const gotToDeviceSettings = () => dispatch(gotoThunk({ routeName: 'settings-device' }));
 
     return (
         <Translation

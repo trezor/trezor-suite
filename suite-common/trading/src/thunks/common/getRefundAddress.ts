@@ -23,7 +23,7 @@ type GetRefundAddressFulfillValue = {
 
 export type GetRefundAddressThunkState = ConfirmAddressOnDeviceThunkState & WalletSettingsRootState;
 
-export const getRefundAddress = createThunk<
+export const getRefundAddressThunk = createThunk<
     GetRefundAddressFulfillValue,
     GetRefundAddressProps,
     {

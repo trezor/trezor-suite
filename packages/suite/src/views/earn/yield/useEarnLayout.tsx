@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { type TranslationKey } from '@suite/intl';
-import { type EarnParams, goto } from '@suite/router';
+import { type EarnParams, gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2, useGetVaultByAddress } from '@suite-common/earn-stablecoin-api';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -168,7 +168,7 @@ export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): E
 
     useEffect(() => {
         if (!routeParams) {
-            dispatch(goto({ routeName: 'suite-earn' }));
+            dispatch(gotoThunk({ routeName: 'suite-earn' }));
         }
     }, [dispatch, routeParams]);
 
@@ -188,7 +188,7 @@ export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): E
 
     useEffect(() => {
         if (isFirmwareNotSupported) {
-            dispatch(goto({ routeName: 'suite-earn' }));
+            dispatch(gotoThunk({ routeName: 'suite-earn' }));
         }
     }, [dispatch, isFirmwareNotSupported]);
 

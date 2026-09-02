@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { doesSupportMultiShare } from '@suite-common/backup';
 import { useServices } from '@suite-common/dependency-injection';
@@ -36,7 +36,7 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
             payload: { action: 'start' },
         });
 
-        dispatch(goto({ routeName: 'create-multi-share-backup' }));
+        dispatch(gotoThunk({ routeName: 'create-multi-share-backup' }));
     };
 
     return (

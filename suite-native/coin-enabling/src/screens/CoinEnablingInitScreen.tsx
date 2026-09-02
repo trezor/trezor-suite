@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { events as commonEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
-import { changeCoinVisibility } from '@suite-common/wallet-core';
+import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { AnimatedBox } from '@suite-native/atoms';
 import { Form, useForm } from '@suite-native/forms';
@@ -71,7 +71,7 @@ export const CoinEnablingInitScreen = () => {
         const enabledCoins = getNetworkSymbolsFromEnabledCoins(values.enabledCoins);
 
         enabledCoins.forEach(symbol => {
-            dispatch(changeCoinVisibility({ symbol, shouldBeVisible: true }));
+            dispatch(changeCoinVisibilityThunk({ symbol, shouldBeVisible: true }));
         });
 
         analytics.report({

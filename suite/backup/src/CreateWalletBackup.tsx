@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { hasSlip39Backup, isBackupComplete } from '@suite-common/backup';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -36,7 +36,7 @@ export const CreateWalletBackup = ({ isDeviceLocked }: CreateWalletBackupProps) 
     const isActionDisabled = isDeviceLocked || !isBackupDone;
 
     const handleClick = () => {
-        dispatch(goto({ routeName: 'create-wallet-backup' }));
+        dispatch(gotoThunk({ routeName: 'create-wallet-backup' }));
     };
 
     return (

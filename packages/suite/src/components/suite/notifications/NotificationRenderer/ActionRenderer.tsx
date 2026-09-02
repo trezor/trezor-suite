@@ -1,6 +1,6 @@
 import { selectDeviceThunk } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import { acquireDevice } from '@suite-common/wallet-core';
+import { acquireDeviceThunk } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
@@ -24,7 +24,7 @@ export const ActionRenderer = ({ render: View, ...props }: ActionRendererProps) 
         case DEVICE.CONNECT_UNACQUIRED:
             action = {
                 label: 'TR_SOLVE_ISSUE',
-                onClick: () => dispatch(acquireDevice({ requestedDevice: device })),
+                onClick: () => dispatch(acquireDeviceThunk({ requestedDevice: device })),
             };
             break;
         // no default

@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { selectRoundsDurationInHours, selectSessionProgressByAccountKey } from '@suite/coinjoin';
 import { type CoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
-import { goto, selectRouterParams } from '@suite/router';
+import { gotoThunk, selectRouterParams } from '@suite/router';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import { selectAccountByKey } from '@suite-common/wallet-core';
@@ -100,7 +100,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-index',
                 params: {
                     symbol,

@@ -1,6 +1,6 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -53,7 +53,7 @@ export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocation
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-tron-vote',
                 params: {
                     symbol: account.symbol,

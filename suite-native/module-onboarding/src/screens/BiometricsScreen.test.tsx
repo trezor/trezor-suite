@@ -34,7 +34,7 @@ jest.mock('@react-navigation/native', () => ({
 // because the global Request constructor is not available.
 jest.mock('@suite-native/app-init', () => ({
     ...jest.requireActual('@suite-native/app-init'),
-    postOnboardingInit: () => ({
+    postOnboardingInitThunk: () => ({
         type: 'postOnboardingInitMock',
     }),
 }));

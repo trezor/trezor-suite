@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import {
     connectPopupActions,
-    connectPopupCallThunkInner,
+    connectPopupCallInnerThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
@@ -33,7 +33,7 @@ export const ConnectSelectDeviceModal = () => {
     const onResume = () => {
         if (popupCall?.state === 'call-error')
             dispatch(
-                connectPopupCallThunkInner({
+                connectPopupCallInnerThunk({
                     ...popupCall,
                     payload: {
                         ...popupCall.payload,

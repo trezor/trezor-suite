@@ -6,7 +6,7 @@ import { routerAppChanged } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { firmwareActions } from '@suite-common/firmware';
 import { type Dispatch } from '@suite-common/redux-utils';
-import { forgetDisconnectedDevices } from '@suite-common/wallet-core';
+import { forgetDisconnectedDevicesThunk } from '@suite-common/wallet-core';
 import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
@@ -25,7 +25,7 @@ const onboardingMiddleware =
             // After the THP pairing is finished we want to jump to the next step automatically.
             // User already drifted away from the installation flow and is not aware that THP is actually in the middle
             // of the Firmware installation.
-            api.dispatch(onboardingActions.goToNextStep());
+            api.dispatch(onboardingActions.goToNextStepThunk());
             api.dispatch(firmwareActions.resetReducer());
         } else {
             // pass action
@@ -35,7 +35,7 @@ const onboardingMiddleware =
         // seed is wiped when switching firmware type so we need to forget all device instances as well
         if (isUiEventOfType(action, UI_EVENTS.FIRMWARE_TYPE_CHANGED)) {
             api.dispatch(
-                forgetDisconnectedDevices({
+                forgetDisconnectedDevicesThunk({
                     device: firmware.cachedDevice || action.payload.device,
                     forceForget: true,
                 }),
@@ -66,7 +66,7 @@ const onboardingMiddleware =
                 // If you connect T2T1 in recovery mode to fresh Suite, you should see analytics opt-out option first.
                 api.dispatch(recoveryActions.setStatus('in-progress'));
             } else {
-                api.dispatch(onboardingActions.recoveryRerun());
+                api.dispatch(onboardingActions.rerunRecoveryThunk());
             }
         }
 

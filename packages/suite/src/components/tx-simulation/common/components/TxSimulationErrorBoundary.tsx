@@ -4,7 +4,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { useDispatch } from '@suite-common/redux-utils';
 
-import { reportToSentry } from 'src/utils/suite/sentry';
+import { reportToSentryThunk } from 'src/utils/suite/sentry';
 
 export interface TxSimulationErrorBoundaryProps {
     children: ReactNode;
@@ -42,7 +42,7 @@ export function TxSimulationErrorBoundary({
                 onError(true);
                 // The error itself only ever carries a React message; the scan payload behind it
                 // holds addresses and balances and must never be reported.
-                dispatch(reportToSentry(error));
+                dispatch(reportToSentryThunk(error));
             }}
             // A later refetch can still deliver a renderable result.
             resetKeys={[resetKey]}

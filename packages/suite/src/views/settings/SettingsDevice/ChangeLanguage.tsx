@@ -8,7 +8,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { changeLanguage } from 'src/actions/settings/deviceSettingsActions';
+import { changeLanguageThunk } from 'src/actions/settings/deviceSettingsActions';
 import { useSelector } from 'src/hooks/suite';
 
 interface ChangeLanguageProps {
@@ -22,7 +22,7 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
     const supportedDeviceLanguages = useSelector(selectSupportedDeviceLanguages);
 
     const onChange = ({ value }: { value: Locale }) => {
-        dispatch(changeLanguage({ device, language: value }));
+        dispatch(changeLanguageThunk({ device, language: value }));
     };
 
     const languageOptions = useMemo(

@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -289,7 +289,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             setLoading(false);
             if (result?.success) {
                 resetContext();
-                dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
+                dispatch(gotoThunk({ routeName: 'wallet-index', preserveParams: true }));
             }
         }
     }, [getValues, composedLevels, dispatch, resetContext, selectedAccount.account]);

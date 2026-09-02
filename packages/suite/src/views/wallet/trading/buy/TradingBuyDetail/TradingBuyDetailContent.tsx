@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type TradingBuyType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
@@ -97,7 +97,7 @@ export const TradingBuyDetailContent = () => {
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default trading page, the trade is shown there in the previous trades
     if (!trade) {
-        dispatch(goto({ routeName: 'wallet-trading-buy' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
 
         return null;
     }

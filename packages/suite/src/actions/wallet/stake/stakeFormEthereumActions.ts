@@ -127,7 +127,7 @@ type SignTransactionThunkState = DeviceRootState &
 
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
-export const signTransaction =
+export const signTransactionThunk =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (
         dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,

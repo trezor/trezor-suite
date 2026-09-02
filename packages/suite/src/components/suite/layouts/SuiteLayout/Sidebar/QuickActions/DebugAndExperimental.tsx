@@ -1,7 +1,7 @@
 import { selectIsDebugModeActive } from '@suite/debug';
 import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectIsExperimentalEnabled } from '@suite/settings';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Box, Column, Icon } from '@trezor/components';
@@ -64,7 +64,7 @@ export const DebugAndExperimental = () => {
     const position = { type: 'absolute', top: 0, left: 0 } as const;
 
     const handleEapClick = () => {
-        dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.EarlyAccess }));
+        dispatch(gotoThunk({ routeName: 'settings-index', anchor: SettingsAnchor.EarlyAccess }));
     };
 
     if (!isEapEnabled && !isExperimental && !isDebug) return null;

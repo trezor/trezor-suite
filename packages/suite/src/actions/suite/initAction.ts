@@ -6,8 +6,8 @@ import { type MetadataRootState, metadataLabelingActions } from '@suite/metadata
 import {
     type GotoThunkDeps,
     type GotoThunkState,
-    initialRedirection,
-    routerInit,
+    initialRedirectionThunk,
+    routerInitThunk,
 } from '@suite/router';
 import {
     type SuiteSettingsRootState,
@@ -40,7 +40,7 @@ import {
     type UpdateMissingTxFiatRatesThunkState,
     type WalletSettingsRootState,
     initBlockchainThunk,
-    initDevices,
+    initDevicesThunk,
     periodicCheckStakeDataThunk,
     periodicFetchFiatRatesThunk,
     selectBaseCurrency,
@@ -83,7 +83,7 @@ type InitThunkDeps = ConnectInitThunkDeps &
     PeriodicFetchFiatRatesThunkDeps &
     WalletConnectInitThunkDeps;
 
-export const init =
+export const initThunk =
     () =>
     async (
         dispatch: ThunkDispatch<InitThunkState, InitThunkDeps, UnknownAction>,
@@ -101,7 +101,7 @@ export const init =
         // apply the earn yield worker base url from debug settings (or the default for this build)
         earnYieldWorkerBaseUrl.set(selectEarnYieldWorkerBaseUrl(getState()));
 
-        await dispatch(initDevices());
+        await dispatch(initDevicesThunk());
 
         /**
          * ----------------------------------------------
@@ -127,7 +127,7 @@ export const init =
         }
 
         // 5. redirecting user into welcome screen (if needed)
-        dispatch(initialRedirection({ isInitialRun: selectFlags(getState()).initialRun }));
+        dispatch(initialRedirectionThunk({ isInitialRun: selectFlags(getState()).initialRun }));
 
         // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
         const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
@@ -170,12 +170,12 @@ export const init =
         await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
 
         // 11. dispatch initial location change
-        dispatch(routerInit());
+        dispatch(routerInitThunk());
 
         // 12. fetch metadata. metadata is not saved together with other data in storage.
         // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
         // immediately after suite start.
-        dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevices());
+        dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevicesThunk());
 
         // 13. start fetching staking data if needed, does need to be waited
         dispatch(periodicCheckStakeDataThunk());
@@ -184,7 +184,7 @@ export const init =
         dispatch(walletConnectActions.walletConnectInitThunk());
         // 15. bio auth
         if (isDesktop()) {
-            dispatch(bioAuthThunks.init());
+            dispatch(bioAuthThunks.initBioAuthThunk());
         }
         // 16. backend connected, suite is ready to use
         dispatch(onSuiteReady());

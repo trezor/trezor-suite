@@ -1,13 +1,13 @@
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectDeviceThunk } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     type DeviceStatus as ConnectedDeviceStatus,
     type getStatus,
 } from '@suite-common/suite-utils';
-import { acquireDevice } from '@suite-common/wallet-core';
+import { acquireDeviceThunk } from '@suite-common/wallet-core';
 import { Banner, type BannerIntent } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -110,7 +110,7 @@ export const NeedsAttentionBanner = ({
                 return () => {
                     onCancel?.(false);
                     dispatch(selectDeviceThunk({ device }));
-                    dispatch(goto({ routeName: 'firmware-index' }));
+                    dispatch(gotoThunk({ routeName: 'firmware-index' }));
                 };
             // If onboarding is pending, then it should pass through Manual Device Check.
             case 'initialize': // Wiped device with firmware present.
@@ -118,7 +118,7 @@ export const NeedsAttentionBanner = ({
                 // but we cannot tell (device.features.initialized is null)
                 return () => {
                     selectDevice();
-                    dispatch(goto({ routeName: 'suite-start' }));
+                    dispatch(gotoThunk({ routeName: 'suite-start' }));
                 };
 
             case 'seedless':
@@ -134,11 +134,11 @@ export const NeedsAttentionBanner = ({
             case 'used-in-other-window':
             case 'was-used-in-other-window':
             case 'unacquired':
-                return () => dispatch(acquireDevice({ requestedDevice: device }));
+                return () => dispatch(acquireDeviceThunk({ requestedDevice: device }));
             case 'device-thp-locked':
                 return () => {
                     onCancel?.(false);
-                    dispatch(acquireDevice({ requestedDevice: device }));
+                    dispatch(acquireDeviceThunk({ requestedDevice: device }));
                 };
 
             case 'device-busy':

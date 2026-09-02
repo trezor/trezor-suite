@@ -1,7 +1,7 @@
 import { type BuyTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
-import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
+import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type TradingFormAccountRootState,
@@ -76,7 +76,7 @@ export const selectBuyQuoteThunk = createThunk<
                 dispatch(submitRequestForm(form));
             },
             nextStep: () => {
-                dispatch(goto({ routeName: 'wallet-trading-buy-confirm' }));
+                dispatch(gotoThunk({ routeName: 'wallet-trading-buy-confirm' }));
             },
         }),
     );

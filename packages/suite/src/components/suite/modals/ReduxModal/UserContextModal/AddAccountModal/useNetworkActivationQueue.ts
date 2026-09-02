@@ -7,7 +7,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     accountsActions,
-    changeCoinVisibility,
+    changeCoinVisibilityThunk,
     discoveryActions,
     runAdditionalDiscoveryThunk,
     selectAccounts,
@@ -82,13 +82,13 @@ export const useNetworkActivationQueue = (device: TrezorDevice) => {
         );
 
         void dispatch(
-            changeCoinVisibility({
+            changeCoinVisibilityThunk({
                 symbol: nextNetworkSymbol,
                 shouldBeVisible: true,
             }),
         )
             .then(result => {
-                if (changeCoinVisibility.rejected.match(result)) {
+                if (changeCoinVisibilityThunk.rejected.match(result)) {
                     dispatch(
                         discoveryActions.updateDiscovery(
                             {
@@ -180,7 +180,7 @@ export const useNetworkActivationQueue = (device: TrezorDevice) => {
         );
 
         void dispatch(
-            changeCoinVisibility({
+            changeCoinVisibilityThunk({
                 symbol: networkSymbol,
                 shouldBeVisible: false,
             }),

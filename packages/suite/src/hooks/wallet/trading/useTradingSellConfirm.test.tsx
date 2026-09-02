@@ -10,7 +10,7 @@ import { useTradingSellConfirm } from './useTradingSellConfirm';
 
 jest.mock('@suite/router', () => ({
     ...jest.requireActual('@suite/router'),
-    goto: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
+    gotoThunk: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
 }));
 
 jest.mock('src/hooks/wallet/trading/useServerEnviroment', () => ({

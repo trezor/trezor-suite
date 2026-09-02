@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
-import { onReceiveConfirmation } from '@suite/modal';
-import { SettingsAnchor, goto } from '@suite/router';
+import { onReceiveConfirmationThunk } from '@suite/modal';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { H2, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
@@ -8,11 +8,13 @@ import { WarningIcon } from '@trezor/icons';
 export const NoBackupModal = () => {
     const dispatch = useDispatch();
 
-    const confirm = () => dispatch(onReceiveConfirmation(true));
-    const close = () => dispatch(onReceiveConfirmation(false));
+    const confirm = () => dispatch(onReceiveConfirmationThunk(true));
+    const close = () => dispatch(onReceiveConfirmationThunk(false));
     const goToSettings = () => {
         close();
-        dispatch(goto({ routeName: 'settings-device', anchor: SettingsAnchor.BackupRecoverySeed }));
+        dispatch(
+            gotoThunk({ routeName: 'settings-device', anchor: SettingsAnchor.BackupRecoverySeed }),
+        );
     };
 
     return (

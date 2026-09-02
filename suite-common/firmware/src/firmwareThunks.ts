@@ -33,7 +33,7 @@ export type FirmwareUpdateThunkDeps = WithServices<
     GetBinFilesBaseUrlDep & GetLanguageDep & ReportSecurityCheckDep
 >;
 
-export const firmwareUpdate = createThunk<
+export const firmwareUpdateThunk = createThunk<
     FirmwareUpdateResult,
     FirmwareUpdateProps,
     {

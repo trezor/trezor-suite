@@ -8,7 +8,12 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type SignVerifyRootState, showAddress, sign, verify } from './signVerifyActions';
+import {
+    type SignVerifyRootState,
+    showAddressThunk,
+    signThunk,
+    verifyThunk,
+} from './signVerifyActions';
 
 const PATH = 'PATH';
 const ADDRESS = 'ADDRESS';
@@ -46,7 +51,7 @@ describe('Sign/Verify actions', () => {
             success: true,
             payload: { address: ADDRESS },
         });
-        const res = await showAddress(ACCOUNT, ADDRESS, PATH)(dispatch, getState);
+        const res = await showAddressThunk(ACCOUNT, ADDRESS, PATH)(dispatch, getState);
         expect(res).toStrictEqual({ address: ADDRESS });
     });
 
@@ -58,7 +63,7 @@ describe('Sign/Verify actions', () => {
                 signature: SIGNATURE,
             },
         });
-        const res = await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+        const res = await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
         expect(res).toStrictEqual({ address: ADDRESS, signature: SIGNATURE });
     });
 
@@ -67,7 +72,12 @@ describe('Sign/Verify actions', () => {
             success: true,
             payload: { message: MESSAGE },
         });
-        const res = await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
+        const res = await verifyThunk(
+            ACCOUNT,
+            ADDRESS,
+            MESSAGE,
+            SIGNATURE,
+        )(dispatch, getState, deps);
         expect(res).toStrictEqual(true);
     });
 
@@ -80,7 +90,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await sign(ACCOUNT, PATH, MESSAGE, true)(dispatch, getState, deps);
+            await signThunk(ACCOUNT, PATH, MESSAGE, true)(dispatch, getState, deps);
 
             expect(connect().signMessage).toHaveBeenLastCalledWith(
                 expect.objectContaining({ message: MESSAGE, hex: true, no_script_type: false }),
@@ -93,7 +103,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
 
             expect(connect().signMessage).toHaveBeenLastCalledWith(
                 expect.objectContaining({ message: MESSAGE, hex: false }),
@@ -103,7 +113,7 @@ describe('Sign/Verify actions', () => {
         it('verifies against the same reading of the message', async () => {
             testMocks.setTrezorConnectFixtures({ success: true, payload: { message: MESSAGE } });
 
-            await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true)(dispatch, getState, deps);
+            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true)(dispatch, getState, deps);
 
             expect(connect().verifyMessage).toHaveBeenLastCalledWith(
                 expect.objectContaining({
@@ -121,7 +131,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await sign(ACCOUNT, PATH, MESSAGE, true)(dispatch, getState, deps);
+            await signThunk(ACCOUNT, PATH, MESSAGE, true)(dispatch, getState, deps);
 
             expect(deps.services.analytics.report).toHaveBeenCalledWith(
                 expect.objectContaining({ payload: expect.objectContaining({ hex: true }) }),
@@ -136,7 +146,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await sign(ACCOUNT, PATH, MESSAGE, true, true)(dispatch, getState, deps);
+            await signThunk(ACCOUNT, PATH, MESSAGE, true, true)(dispatch, getState, deps);
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
@@ -159,7 +169,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await sign(account, PATH, MESSAGE)(dispatch, getState, deps);
+            await signThunk(account, PATH, MESSAGE)(dispatch, getState, deps);
 
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
                 type: events.coinSignMessageEvent.name,
@@ -173,7 +183,7 @@ describe('Sign/Verify actions', () => {
                 error: { message: 'Signing failed', code: 'Failure_DataError' },
             });
 
-            await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
@@ -196,7 +206,7 @@ describe('Sign/Verify actions', () => {
                     error: { message: 'Cancelled', code },
                 });
 
-                await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+                await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
 
                 expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
                 expect(deps.services.analytics.report).toHaveBeenCalledWith(
@@ -211,7 +221,7 @@ describe('Sign/Verify actions', () => {
         it('reports a sign that never reached the device as an error', async () => {
             const getStateWithoutDevice = () => createState(undefined);
 
-            await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getStateWithoutDevice, deps);
+            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getStateWithoutDevice, deps);
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
@@ -232,7 +242,7 @@ describe('Sign/Verify actions', () => {
                 payload: { message: MESSAGE },
             });
 
-            await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true)(dispatch, getState, deps);
+            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true)(dispatch, getState, deps);
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
@@ -247,7 +257,7 @@ describe('Sign/Verify actions', () => {
                 error: { message: 'Invalid signature', code: 'Failure_DataError' },
             });
 
-            await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
+            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
@@ -267,7 +277,7 @@ describe('Sign/Verify actions', () => {
                 error: { message: 'Cancelled', code: 'Failure_ActionCancelled' },
             });
 
-            await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
+            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith(
@@ -283,8 +293,8 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await sign(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
-            await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
+            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
 
             const reported = JSON.stringify(deps.services.analytics.report.mock.calls);
 

@@ -30,7 +30,7 @@ export type HandleCoinProtocolUriThunkDeps = WithServices<
  * The protocol send-form reducer lives in the app, so its `saveCoinProtocol`
  * action is injected to keep this package free of an app import cycle.
  */
-export const handleCoinProtocolUri =
+export const handleCoinProtocolUriThunk =
     (uri: string, saveCoinProtocol: SaveCoinProtocol) =>
     (dispatch: Dispatch, _getState: unknown, extra: HandleCoinProtocolUriThunkDeps) => {
         // Report any URI carrying a recognizable scheme (incl. unknown-protocol deeplinks).

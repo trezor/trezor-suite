@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -37,7 +37,7 @@ export const Onboarding = () => {
     // we redirect user to the dashboard where onboarding starts over and picks up where it ended.
     useEffect(() => {
         if (activeStepId !== STEP.ID_FIRMWARE_STEP && thpStep === 'ConfirmOnlyConnection') {
-            dispatch(goto({ routeName: 'suite-index' }));
+            dispatch(gotoThunk({ routeName: 'suite-index' }));
         }
     }, [device, thpStep, activeStepId, dispatch]);
 

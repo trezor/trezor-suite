@@ -8,7 +8,7 @@ import { preserveModal, removePreserveModal } from '@suite/modal';
 import { useDispatch } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    changeCoinVisibility,
+    changeCoinVisibilityThunk,
     selectEnabledNetworks,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
@@ -91,10 +91,10 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
         const toDisable = enabledNetworks.filter(symbol => !pendingNetworks.includes(symbol));
 
         toEnable.forEach(symbol =>
-            dispatch(changeCoinVisibility({ symbol, shouldBeVisible: true })),
+            dispatch(changeCoinVisibilityThunk({ symbol, shouldBeVisible: true })),
         );
         toDisable.forEach(symbol =>
-            dispatch(changeCoinVisibility({ symbol, shouldBeVisible: false })),
+            dispatch(changeCoinVisibilityThunk({ symbol, shouldBeVisible: false })),
         );
 
         if (toEnable.length > 0) {

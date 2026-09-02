@@ -24,7 +24,7 @@ type GetPurchaseAddressFulfillValue = {
 export type GetPurchaseAddressThunkState = ConfirmAddressOnDeviceThunkState &
     WalletSettingsRootState;
 
-export const getPurchaseAddress = createThunk<
+export const getPurchaseAddressThunk = createThunk<
     GetPurchaseAddressFulfillValue,
     GetPurchaseAddressProps,
     {

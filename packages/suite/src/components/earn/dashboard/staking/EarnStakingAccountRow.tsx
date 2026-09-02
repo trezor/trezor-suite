@@ -1,7 +1,7 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -93,7 +93,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 getTradingPrefilledFromAccountData(account),
             ),
         );
-        dispatch(goto({ routeName: 'wallet-trading-buy' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
 
         analytics.report({
             type: events.tradeNavigateEvent.name,
@@ -110,7 +110,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         event?.stopPropagation();
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-staking',
                 params: {
                     symbol: account.symbol,
@@ -138,7 +138,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-staking',
                 params: {
                     symbol: account.symbol,
@@ -167,7 +167,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-staking',
                 params: {
                     symbol: account.symbol,
@@ -247,7 +247,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         event.stopPropagation();
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-tron-stake',
                 params: {
                     symbol: account.symbol,
@@ -275,7 +275,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         event.stopPropagation();
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-tron-vote',
                 params: {
                     symbol: account.symbol,

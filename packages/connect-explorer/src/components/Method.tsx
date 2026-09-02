@@ -34,7 +34,7 @@ import { selectMethod } from '../reducers/methodReducer';
 
 interface Props {
     actions: {
-        onSubmit: typeof methodActions.onSubmit;
+        onSubmit: typeof methodActions.onSubmitThunk;
         onBatchAdd: typeof methodActions.onBatchAdd;
         onBatchRemove: typeof methodActions.onBatchRemove;
         onFieldChange: typeof methodActions.onFieldChange;
@@ -231,13 +231,13 @@ export const Method = () => {
     const theme = useTheme();
     const method = useSelector(selectMethod);
     const actions = useActions({
-        onSubmit: methodActions.onSubmit,
+        onSubmit: methodActions.onSubmitThunk,
         onCancelCall: methodActions.onCancelCall,
         onBatchAdd: methodActions.onBatchAdd,
         onBatchRemove: methodActions.onBatchRemove,
         onFieldChange: methodActions.onFieldChange,
         onSetUnion: methodActions.onSetUnion,
-        onCodeChange: methodActions.onCodeChange,
+        onCodeChange: methodActions.onCodeChangeThunk,
     });
 
     const { onSubmit } = actions;

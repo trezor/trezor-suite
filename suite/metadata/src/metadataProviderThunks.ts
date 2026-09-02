@@ -17,7 +17,7 @@ import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
 
 import * as metadataActions from './metadataActions';
 import * as METADATA from './metadataConstants';
-import { disposeMetadata } from './metadataDataThunks';
+import { disposeMetadataThunk } from './metadataDataThunks';
 import * as METADATA_PROVIDER from './metadataProviderConstants';
 import {
     type MetadataRootState,
@@ -72,7 +72,7 @@ type GetProviderInstanceThunkState = MetadataRootState;
 /**
  * Return already existing instance of AbstractProvider or recreate it from token;
  */
-export const getProviderInstance =
+export const getProviderInstanceThunk =
     ({ clientId, dataType = 'labels' }: GetProviderInstanceParams) =>
     (_dispatch: Dispatch, getState: () => GetProviderInstanceThunkState) => {
         const { providers } = selectMetadata(getState());
@@ -110,7 +110,7 @@ type DisconnectProviderThunkState = MetadataRootState;
 
 type DisconnectProviderThunkDeps = DisconnectProviderDeps;
 
-export const disconnectProvider =
+export const disconnectProviderThunk =
     ({ clientId, dataType, removeMetadata = true }: DisconnectProviderParams) =>
     async (
         dispatch: Dispatch,
@@ -127,10 +127,10 @@ export const disconnectProvider =
 
         // dispose metadata values (not keys)
         if (removeMetadata) {
-            dispatch(disposeMetadata());
+            dispatch(disposeMetadataThunk());
         }
 
-        const provider = dispatch(getProviderInstance({ clientId, dataType }));
+        const provider = dispatch(getProviderInstanceThunk({ clientId, dataType }));
 
         if (provider !== undefined) {
             await provider.disconnect();
@@ -189,9 +189,9 @@ export const handleProviderError =
                 case 'ACCESS_ERROR':
                 case 'BAD_INPUT_ERROR':
                 case 'OTHER_ERROR':
-                    dispatch(disposeMetadata());
+                    dispatch(disposeMetadataThunk());
                     dispatch(
-                        disconnectProvider({
+                        disconnectProviderThunk({
                             clientId,
                             dataType: 'labels',
                         }),
@@ -202,7 +202,7 @@ export const handleProviderError =
                 case 'RATE_LIMIT_ERROR':
                 case 'AUTH_ERROR':
                     dispatch(
-                        disconnectProvider({
+                        disconnectProviderThunk({
                             clientId,
                             dataType: 'labels',
                         }),
@@ -254,7 +254,7 @@ type ConnectProviderThunkState = MetadataRootState;
 
 type ConnectProviderThunkDeps = ConnectProviderDeps;
 
-export const connectProvider =
+export const connectProviderThunk =
     ({ type, dataType = 'labels', clientId }: ConnectProviderParams) =>
     async (
         dispatch: Dispatch,
@@ -310,12 +310,12 @@ export const connectProvider =
 
 type ExportMetadataToLocalFileThunkState = MetadataRootState;
 
-export const exportMetadataToLocalFile =
+export const exportMetadataToLocalFileThunk =
     () => async (dispatch: Dispatch, getState: () => ExportMetadataToLocalFileThunkState) => {
         const provider = selectSelectedProviderForLabels(getState());
         if (!provider) return;
         const providerInstance = dispatch(
-            getProviderInstance({
+            getProviderInstanceThunk({
                 clientId: provider.clientId,
                 dataType: 'labels',
             }),

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Translation } from '@suite/intl';
 import {
     MetadataProviderSelectionModal,
-    connectProvider,
+    connectProviderThunk,
     metadataActions,
     metadataLabelingActions,
     selectSelectedProviderForLabels,
@@ -59,7 +59,7 @@ export const LegacyLabelingMigrationModal = ({
         const isProviderAlreadyConnected = selectedProvider?.type === providerType;
 
         if (!isProviderAlreadyConnected) {
-            const providerConnected = await dispatch(connectProvider({ type: providerType }));
+            const providerConnected = await dispatch(connectProviderThunk({ type: providerType }));
 
             if (providerConnected === 'window closed') {
                 setProviderLoading(null);
@@ -83,7 +83,7 @@ export const LegacyLabelingMigrationModal = ({
         }
 
         const initialized = await dispatch(
-            metadataLabelingActions.init(true, selectedDevice.state.staticSessionId),
+            metadataLabelingActions.initThunk(true, selectedDevice.state.staticSessionId),
         );
 
         if (!initialized) {

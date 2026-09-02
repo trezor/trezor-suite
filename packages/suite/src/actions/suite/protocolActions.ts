@@ -7,11 +7,11 @@ import {
     type GotoThunkState,
     SettingsAnchor,
     type SuiteRouterHistoryDep,
-    goto,
+    gotoThunk,
     mapAnchorToRoute,
-    onLocationChange,
+    onLocationChangeThunk,
 } from '@suite/router';
-import { handleCoinProtocolUri } from '@suite/transfer-uri';
+import { handleCoinProtocolUriThunk } from '@suite/transfer-uri';
 import type { FindNetworkSymbolForProtocolDep } from '@suite-common/networks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -50,7 +50,7 @@ export type HandleProtocolRequestThunkDeps = WithServices<
 export type HandleProtocolRequestDispatchDeps = HandleProtocolRequestThunkDeps &
     WalletConnectInitThunkDeps;
 
-export const handleProtocolRequest =
+export const handleProtocolRequestThunk =
     (uri: string) =>
     (
         dispatch: ThunkDispatch<
@@ -61,10 +61,12 @@ export const handleProtocolRequest =
         _getState: () => HandleProtocolRequestThunkState,
         extra: HandleProtocolRequestThunkDeps,
     ) => {
-        dispatch(handleCoinProtocolUri(uri, saveCoinProtocol));
+        dispatch(handleCoinProtocolUriThunk(uri, saveCoinProtocol));
 
         if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {
-            dispatch(goto({ routeName: 'suite-bridge-requested', params: { cancelable: true } }));
+            dispatch(
+                gotoThunk({ routeName: 'suite-bridge-requested', params: { cancelable: true } }),
+            );
         } else if (uri?.startsWith(SUITE_WALLETCONNECT_DEEPLINK)) {
             const parsedUri = safeParseUrl(uri);
             const wcUri = parsedUri?.searchParams?.get('uri');
@@ -88,7 +90,7 @@ export const handleProtocolRequest =
 
                 const targetRoute =
                     mapAnchorToRoute[domain?.replace(/^@/, '') as AnchorSettingSection];
-                dispatch(goto({ routeName: targetRoute, anchor }));
+                dispatch(gotoThunk({ routeName: targetRoute, anchor }));
             }
         } else if (SUITE_TRADING_REDIRECT_DEEPLINKS.some(deeplink => uri?.startsWith(deeplink))) {
             const parsedUri = safeParseUrl(decodeURIComponent(uri));
@@ -100,7 +102,7 @@ export const handleProtocolRequest =
                 if (hash) {
                     const path = { pathname: '/coinmarket-redirect', hash: `#${hash}` } as const;
                     extra.services.suiteRouterHistory.navigate(path);
-                    dispatch(onLocationChange(path));
+                    dispatch(onLocationChangeThunk(path));
                 }
             }
         }

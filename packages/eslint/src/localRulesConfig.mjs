@@ -101,6 +101,7 @@ export const localRulesConfig = [
         rules: {
             'local-rules/enforce-di-factory-contracts': 'error',
             'local-rules/enforce-thunk-contracts': 'error',
+            'local-rules/enforce-thunk-names': 'error',
         },
     },
     ...(areExpensiveChecksEnabled

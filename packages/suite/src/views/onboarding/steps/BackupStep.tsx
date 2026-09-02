@@ -10,13 +10,13 @@ import {
 import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import { CheckIcon, TrezorBackupIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
-import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
+import { goToNextStepThunk, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { BackupSeedCards } from 'src/components/backup';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
@@ -53,7 +53,7 @@ export const BackupStep = () => {
 
     const handleResetOnboarding = () => {
         dispatch(onboardingActions.resetOnboarding());
-        dispatch(goto({ routeName: 'settings-device', anchor: SettingsAnchor.WipeDevice }));
+        dispatch(gotoThunk({ routeName: 'settings-device', anchor: SettingsAnchor.WipeDevice }));
     };
 
     const getContent = () => {
@@ -105,7 +105,7 @@ export const BackupStep = () => {
                         innerActions={
                             <OnboardingCard.Button
                                 data-testid="@backup/close-button"
-                                onClick={() => dispatch(goToNextStep())}
+                                onClick={() => dispatch(goToNextStepThunk())}
                                 isDisabled={!canContinue(backup.userConfirmed)}
                             >
                                 <Translation id="TR_BACKUP_FINISHED_BUTTON" />

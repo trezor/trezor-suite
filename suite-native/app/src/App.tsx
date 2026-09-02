@@ -12,7 +12,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { FormatterProvider } from '@suite-common/formatters';
 import { ReactNativeQueryProvider } from '@suite-common/react-query/src/components/ReactNativeQueryProvider';
 import { useDispatch } from '@suite-common/redux-utils';
-import { applicationInit } from '@suite-native/app-init';
+import { applicationInitThunk } from '@suite-native/app-init';
 import { selectShouldUserBeAuthenticated } from '@suite-native/biometrics';
 import { launchArguments } from '@suite-native/config';
 import { configureNetInfo } from '@suite-native/connection-status';
@@ -74,7 +74,7 @@ const AppComponent = () => {
 
     useEffect(() => {
         if (!isApplicationInitDispatchedRef.current) {
-            dispatch(applicationInit());
+            dispatch(applicationInitThunk());
             isApplicationInitDispatchedRef.current = true;
         }
     }, [dispatch]);

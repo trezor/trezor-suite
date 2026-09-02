@@ -3,7 +3,7 @@ import { type MouseEventHandler } from 'react';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
-import { acquireDevice } from '@suite-common/wallet-core';
+import { acquireDeviceThunk } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
@@ -15,7 +15,7 @@ export const DeviceTrezorHostProtocolPair = () => {
     const isDeviceLocked = isLocked();
 
     const handleStartPairing: MouseEventHandler = () => {
-        dispatch(acquireDevice({ requestedDevice: device }));
+        dispatch(acquireDeviceThunk({ requestedDevice: device }));
     };
 
     const ctaButton = (

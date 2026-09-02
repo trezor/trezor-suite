@@ -81,12 +81,12 @@ export const coinjoinMiddleware =
         }
 
         if (onSuiteInit.match(action)) {
-            api.dispatch(coinjoinAccountActions.logCoinjoinAccounts());
+            api.dispatch(coinjoinAccountActions.logCoinjoinAccountsThunk());
         }
 
         if (accountsActions.removeAccount.match(action)) {
             action.payload.forEach(account =>
-                api.dispatch(coinjoinAccountActions.stopCoinjoinAccount(account)),
+                api.dispatch(coinjoinAccountActions.stopCoinjoinAccountThunk(account)),
             );
         }
 
@@ -101,7 +101,7 @@ export const coinjoinMiddleware =
                 .forEach(
                     symbol =>
                         isCoinjoinSupportedSymbol(symbol) &&
-                        api.dispatch(coinjoinAccountActions.clearCoinjoinInstances(symbol)),
+                        api.dispatch(coinjoinAccountActions.clearCoinjoinInstancesThunk(symbol)),
                 );
         }
 
@@ -116,7 +116,7 @@ export const coinjoinMiddleware =
             } = action.payload;
             accountKeys.forEach((accountKey: string) => {
                 api.dispatch(
-                    coinjoinAccountActions.createPendingTransaction(
+                    coinjoinAccountActions.createPendingTransactionThunk(
                         accountKey as AccountKey,
                         broadcastedTxDetails,
                     ),
@@ -131,7 +131,7 @@ export const coinjoinMiddleware =
             action.payload.transactions.some(tx => 'deadline' in tx)
         ) {
             api.dispatch(
-                coinjoinAccountActions.updatePendingAccountInfo(action.payload.account.key),
+                coinjoinAccountActions.updatePendingAccountInfoThunk(action.payload.account.key),
             );
         }
 
@@ -139,7 +139,7 @@ export const coinjoinMiddleware =
             const state = api.getState();
             const isCoinjoinBlockedByTor = !selectIsTorEnabled(state);
             if (!isCoinjoinBlockedByTor) {
-                api.dispatch(coinjoinAccountActions.restoreCoinjoinAccounts());
+                api.dispatch(coinjoinAccountActions.restoreCoinjoinAccountsThunk());
             }
         }
 
@@ -156,7 +156,7 @@ export const coinjoinMiddleware =
                     a => a.accountType === 'coinjoin' && (!symbol || a.symbol === symbol),
                 );
                 coinjoinAccounts.forEach(a =>
-                    api.dispatch(coinjoinAccountActions.fetchAndUpdateAccount(a)),
+                    api.dispatch(coinjoinAccountActions.fetchAndUpdateAccountThunk(a)),
                 );
             }
         }
@@ -164,7 +164,9 @@ export const coinjoinMiddleware =
         // Pause coinjoin session when device disconnects.
         // This is not treated a temporary interruption with automatic restore because the user probably disconnects the device willingly.
         if (deviceActions.deviceDisconnect.match(action) && action.payload.id) {
-            api.dispatch(coinjoinAccountActions.stopCoinjoinSessionByDeviceId(action.payload.id));
+            api.dispatch(
+                coinjoinAccountActions.stopCoinjoinSessionByDeviceIdThunk(action.payload.id),
+            );
         }
 
         // Pause/restore coinjoin session when Suite goes offline/online.
@@ -179,10 +181,10 @@ export const coinjoinMiddleware =
                     );
                 } else {
                     // pause **only** if not in critical phase
-                    api.dispatch(coinjoinAccountActions.pauseAllCoinjoinSessions());
+                    api.dispatch(coinjoinAccountActions.pauseAllCoinjoinSessionsThunk());
                 }
             } else if (action.payload === true) {
-                api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessions());
+                api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessionsThunk());
             }
         }
 
@@ -197,9 +199,9 @@ export const coinjoinMiddleware =
                         ),
                     );
                 }
-                api.dispatch(coinjoinAccountActions.pauseAllCoinjoinSessions());
+                api.dispatch(coinjoinAccountActions.pauseAllCoinjoinSessionsThunk());
             } else if (action.payload === 'Enabled') {
-                api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessions());
+                api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessionsThunk());
             }
         }
 
@@ -213,14 +215,16 @@ export const coinjoinMiddleware =
                 const isAccountInCriticalPhase =
                     selectIsAccountWithSessionInCriticalPhaseByAccountKey(state, accountKey);
                 if (!isAccountInCriticalPhase) {
-                    api.dispatch(coinjoinClientActions.pauseCoinjoinSession(accountKey));
+                    api.dispatch(coinjoinClientActions.pauseCoinjoinSessionThunk(accountKey));
                 }
             } else if (status === 'ready' && session?.paused) {
                 const account = selectAccountByKey(state, accountKey);
                 if (account) {
                     const blocker = selectCoinjoinSessionBlockerByAccountKey(state, account.key);
                     if (!blocker)
-                        api.dispatch(coinjoinAccountActions.restoreCoinjoinSession(account.key));
+                        api.dispatch(
+                            coinjoinAccountActions.restoreCoinjoinSessionThunk(account.key),
+                        );
                 }
             }
         }
@@ -233,7 +237,7 @@ export const coinjoinMiddleware =
             if (!isDeviceOrUiLocked) {
                 const previousRoute = selectSettingsBackRoute(state).name;
                 if (previousRoute === 'wallet-send') {
-                    api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessions());
+                    api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessionsThunk());
                 } else {
                     const accountKey = state.wallet.selectedAccount.account?.key;
                     if (accountKey) {
@@ -243,7 +247,9 @@ export const coinjoinMiddleware =
                             !session?.paused &&
                             !session?.starting
                         ) {
-                            api.dispatch(coinjoinClientActions.pauseCoinjoinSession(accountKey));
+                            api.dispatch(
+                                coinjoinClientActions.pauseCoinjoinSessionThunk(accountKey),
+                            );
                         }
                     }
                 }
@@ -296,7 +302,7 @@ export const coinjoinMiddleware =
                     action.payload.round.phase === RoundPhase.Ended;
 
                 if (!isAnySessionInCriticalPhase || hasCriticalPhaseJustEnded) {
-                    api.dispatch(coinjoinAccountActions.pauseAllCoinjoinSessions());
+                    api.dispatch(coinjoinAccountActions.pauseAllCoinjoinSessionsThunk());
                 }
             }
         }
@@ -310,7 +316,9 @@ export const coinjoinMiddleware =
 
             if (action.payload.phase === SessionPhase.CriticalError && !isAlreadyPaused) {
                 action.payload.accountKeys.forEach((key: string) =>
-                    api.dispatch(coinjoinClientActions.pauseCoinjoinSession(key as AccountKey)),
+                    api.dispatch(
+                        coinjoinClientActions.pauseCoinjoinSessionThunk(key as AccountKey),
+                    ),
                 );
                 api.dispatch(addToast({ type: 'coinjoin-interrupted' }));
             }

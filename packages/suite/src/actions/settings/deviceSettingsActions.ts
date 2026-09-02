@@ -29,7 +29,7 @@ import {
 
 type ApplySettingsThunkState = DeviceRootState;
 
-export const applySettings =
+export const applySettingsThunk =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
     async (dispatch: Dispatch<UnknownAction>, getState: () => ApplySettingsThunkState) => {
         const device = selectSelectedDevice(getState());
@@ -51,7 +51,7 @@ export const applySettings =
 
 type ChangePinThunkState = DeviceRootState;
 
-export const changePin =
+export const changePinThunk =
     (params: Parameters<typeof TrezorConnect.changePin>[0] = {}, skipSuccessToast?: boolean) =>
     async (dispatch: Dispatch<UnknownAction>, getState: () => ChangePinThunkState) => {
         const device = selectSelectedDevice(getState());
@@ -86,7 +86,7 @@ export const changePin =
 
 type ChangeWipeCodeThunkState = DeviceRootState;
 
-export const changeWipeCode =
+export const changeWipeCodeThunk =
     ({ remove }: Parameters<typeof TrezorConnect.changeWipeCode>[0] = {}) =>
     async (dispatch: Dispatch<UnknownAction>, getState: () => ChangeWipeCodeThunkState) => {
         const device = selectSelectedDevice(getState());
@@ -116,7 +116,7 @@ type ResetDeviceThunkState = DeviceRootState & SuiteSettingsRootState & MessageS
 
 type ResetDeviceThunkDeps = { services: ReportSecurityCheckDep };
 
-export const resetDevice =
+export const resetDeviceThunk =
     (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>
     async (
         dispatch: ThunkDispatch<ResetDeviceThunkState, ResetDeviceThunkDeps, UnknownAction>,
@@ -201,7 +201,7 @@ export const resetDevice =
 
 type ChangeLanguageThunkState = DeviceRootState;
 
-export const changeLanguage = createThunk<
+export const changeLanguageThunk = createThunk<
     Awaited<ReturnType<typeof TrezorConnect.changeLanguage>> | undefined,
     Parameters<typeof TrezorConnect.changeLanguage>[0],
     { state: ChangeLanguageThunkState }

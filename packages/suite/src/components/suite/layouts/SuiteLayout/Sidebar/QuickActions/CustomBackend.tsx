@@ -1,4 +1,4 @@
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { CheckIcon, DatabaseIcon } from '@trezor/icons';
 import { QuickActionButton } from '@trezor/product-components';
@@ -12,7 +12,7 @@ export const CustomBackend = () => {
     const isCustomBackendIconVisible = enabledBackends.length > 0;
 
     const handleClick = () => {
-        dispatch(goto({ routeName: 'settings-coins' }));
+        dispatch(gotoThunk({ routeName: 'settings-coins' }));
     };
 
     return (

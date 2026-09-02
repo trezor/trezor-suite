@@ -1,7 +1,7 @@
 import { type BuyProviderInfo } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTransactionBuy as TradingTxBuy,
@@ -36,7 +36,7 @@ export const TradingTransactionBuy = ({
 
     const handleViewDetailsButtonClick = () => {
         dispatch(tradingBuyActions.saveTransactionId(trade.key ?? ''));
-        dispatch(goto({ routeName: 'wallet-trading-buy-detail' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-buy-detail' }));
     };
 
     useTradingWatchTrade({

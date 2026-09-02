@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { CloudIcon, GearIcon } from '@trezor/icons';
 
@@ -12,7 +12,7 @@ import { AccountExceptionLayout } from 'src/components/wallet';
 export const DiscoveryEmpty = () => {
     const dispatch = useDispatch();
 
-    const goToCoinsSettings = () => dispatch(goto({ routeName: 'settings-coins' }));
+    const goToCoinsSettings = () => dispatch(gotoThunk({ routeName: 'settings-coins' }));
 
     return (
         <AccountExceptionLayout

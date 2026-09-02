@@ -1,7 +1,7 @@
 import { type ExchangeProviderInfo } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import type { TradingTransactionExchange as TradingTxExchange } from '@suite-common/trading';
 import { tradingExchangeActions } from '@suite-common/trading';
@@ -32,7 +32,7 @@ export const TradingTransactionExchange = ({
 
     const viewDetail = () => {
         dispatch(tradingExchangeActions.saveTransactionId(trade.key || ''));
-        dispatch(goto({ routeName: 'wallet-trading-exchange-detail' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-exchange-detail' }));
     };
 
     useTradingWatchTrade({ account, trade });

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingSellActiveTrade,
@@ -30,7 +30,7 @@ export const useTradingSellConfirm = () => {
 
     useEffect(() => {
         if (!quotesRequest) {
-            dispatch(goto({ routeName: 'wallet-trading-sell' }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-sell' }));
         }
     }, [quotesRequest, dispatch]);
 

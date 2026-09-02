@@ -264,7 +264,7 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Apply settings',
-        action: () => deviceSettingsActions.applySettings({ label: 'foo' }),
+        action: () => deviceSettingsActions.applySettingsThunk({ label: 'foo' }),
         mocks: { success: true, payload: { message: 'huraa' } },
         result: {
             actions: [
@@ -278,7 +278,7 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Apply settings - connect error',
-        action: () => deviceSettingsActions.applySettings({ label: 'foo' }),
+        action: () => deviceSettingsActions.applySettingsThunk({ label: 'foo' }),
         mocks: { success: false, error: { message: 'eeeh', code: 'Failure_UnknownCode' } },
         result: {
             actions: [
@@ -297,7 +297,7 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Change pin',
-        action: () => deviceSettingsActions.changePin({}),
+        action: () => deviceSettingsActions.changePinThunk({}),
         mocks: { success: true, payload: { message: 'huraa' } },
         result: {
             actions: [
@@ -311,7 +311,7 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Change pin - connect error',
-        action: () => deviceSettingsActions.changePin({}),
+        action: () => deviceSettingsActions.changePinThunk({}),
         mocks: { success: false, error: { message: 'eeeh', code: 'Failure_UnknownCode' } },
         result: {
             actions: [
@@ -330,7 +330,7 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Reset device - Cancel - Entropy check not triggered',
-        action: () => deviceSettingsActions.resetDevice(),
+        action: () => deviceSettingsActions.resetDeviceThunk(),
         mocks: { success: false, error: { message: 'Canceled', code: 'Method_Cancel' } },
         result: {
             actions: [
@@ -356,7 +356,7 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Reset device - Entropy check success',
-        action: () => deviceSettingsActions.resetDevice(),
+        action: () => deviceSettingsActions.resetDeviceThunk(),
         mocks: { success: true, payload: { message: 'whatever' } },
         result: {
             actions: [
@@ -375,7 +375,7 @@ const fixture: Fixture[] = [
     },
     {
         description: 'Reset device - Entropy check errored - show Device compromised',
-        action: () => deviceSettingsActions.resetDevice(),
+        action: () => deviceSettingsActions.resetDeviceThunk(),
         mocks: {
             success: false,
             error: { message: 'Entropy check failed', code: 'Failure_EntropyCheck' },

@@ -29,7 +29,7 @@ const deleteDanglingLabels = async ({
 }: DeleteAllOutputLabelsParams) => {
     for (const outputIndex of typedObjectKeys(labels)) {
         await dispatch(
-            metadataLabelingActions.addMetadata({
+            metadataLabelingActions.addMetadataThunk({
                 type: 'outputLabel',
                 entityKey: accountKey,
                 txid,
@@ -64,7 +64,7 @@ const copyLabelToNewTransaction = async ({
         const value = accountOutputLabels[outputIndex];
 
         await dispatch(
-            metadataLabelingActions.addMetadata({
+            metadataLabelingActions.addMetadataThunk({
                 type: 'outputLabel',
                 entityKey: accountKey,
                 txid: newTxid,

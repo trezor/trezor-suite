@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
-import { goto, selectRouteName } from '@suite/router';
+import { gotoThunk, selectRouteName } from '@suite/router';
 import { isBech32AddressUppercase } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectFindNetworkSymbolForProtocolDep } from '@suite-common/networks';
@@ -65,7 +65,7 @@ export const CoinProtocolRenderer = ({
                 const firstAccount = networkAccounts[0];
                 if (networkAccounts.length === 1 && firstAccount) {
                     dispatch(
-                        goto({
+                        gotoThunk({
                             routeName: 'wallet-send',
                             params: {
                                 symbol: firstAccount.symbol,
@@ -77,7 +77,7 @@ export const CoinProtocolRenderer = ({
                 } else {
                     dispatch(globalSendReceiveFiltersActions.setNetworkSymbol(networkSymbol));
                     dispatch(
-                        goto({
+                        gotoThunk({
                             routeName: 'suite-index',
                             params: {
                                 modal: 'send',

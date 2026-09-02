@@ -7,7 +7,7 @@ import {
     type ResolvedTradeError,
     isResolvedTradeError,
 } from '../../utils/exchange/resolveExchangeTradeError';
-import { setLastErrorMessageByTradingType } from '../common/setLastErrorMessageByTradingType';
+import { setLastErrorMessageByTradingTypeThunk } from '../common/setLastErrorMessageByTradingType';
 
 export type LogErrorThunkProps = {
     errorMessage: string | ResolvedTradeError;
@@ -28,7 +28,7 @@ export const logErrorThunk = createThunk<void, LogErrorThunkProps, void>(
                 }),
             );
             dispatch(
-                setLastErrorMessageByTradingType({
+                setLastErrorMessageByTradingTypeThunk({
                     tradingType,
                     errorMessage: errorMessage.message ?? '',
                 }),
@@ -38,6 +38,6 @@ export const logErrorThunk = createThunk<void, LogErrorThunkProps, void>(
         }
 
         dispatch(notificationsActions.addToast({ type: toastType, error: errorMessage }));
-        dispatch(setLastErrorMessageByTradingType({ tradingType, errorMessage }));
+        dispatch(setLastErrorMessageByTradingTypeThunk({ tradingType, errorMessage }));
     },
 );

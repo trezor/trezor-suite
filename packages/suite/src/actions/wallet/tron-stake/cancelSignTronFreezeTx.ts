@@ -9,7 +9,7 @@ import TrezorConnect from '@trezor/connect';
 
 type CancelSignTronFreezeTxThunkState = TronStakeRootState;
 
-export const cancelSignTronFreezeTx = createThunk<
+export const cancelSignTronFreezeTxThunk = createThunk<
     void,
     void,
     { state: CancelSignTronFreezeTxThunkState }

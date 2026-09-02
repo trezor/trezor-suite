@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type selectTradingBuyQuotesRequest, tradingThunks } from '@suite-common/trading';
 
@@ -23,7 +23,7 @@ export const useBuyFlow = ({ isFromRedirect, quotesRequest, isAmountEmpty }: Use
 
     useEffect(() => {
         if (isFromRedirect && quotesRequest) {
-            dispatch(goto({ routeName: 'wallet-trading-buy-confirm' }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-buy-confirm' }));
         }
     }, [isFromRedirect, quotesRequest, dispatch]);
 };

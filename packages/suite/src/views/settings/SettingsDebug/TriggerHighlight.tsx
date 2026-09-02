@@ -1,4 +1,4 @@
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -16,7 +16,10 @@ export const TriggerHighlight = () => {
                     intent="brand"
                     onClick={() =>
                         dispatch(
-                            goto({ routeName: 'settings-index', anchor: SettingsAnchor.Labeling }),
+                            gotoThunk({
+                                routeName: 'settings-index',
+                                anchor: SettingsAnchor.Labeling,
+                            }),
                         )
                     }
                 >

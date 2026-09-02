@@ -1,6 +1,6 @@
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
@@ -63,7 +63,7 @@ export const useEarnProviderConsentActions = ({
             case EarnFlow.Yield:
                 if (yieldContext?.vaultAddress) {
                     dispatch(
-                        goto({
+                        gotoThunk({
                             routeName: 'earn-yield-deposit',
                             params: getEarnRouteParams({
                                 account,

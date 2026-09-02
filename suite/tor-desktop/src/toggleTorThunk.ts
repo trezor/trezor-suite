@@ -21,7 +21,7 @@ export type ToggleTorDispatch = ThunkDispatch<
     UnknownAction
 >;
 
-export const toggleTor =
+export const toggleTorThunk =
     (shouldEnable: boolean) =>
     async (
         dispatch: ToggleTorDispatch,

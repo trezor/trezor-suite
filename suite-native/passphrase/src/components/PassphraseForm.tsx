@@ -14,7 +14,7 @@ import {
     formInputsMaxLength,
     passphraseFormSchema,
 } from '@suite-common/validators';
-import { submitPassphrase } from '@suite-common/wallet-core';
+import { submitPassphraseThunk } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { selectPassphraseRequestId } from '@suite-native/device-authorization';
@@ -74,7 +74,9 @@ export const PassphraseForm = ({
 
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
         if (!device) return;
-        dispatch(submitPassphrase({ device, passphrase, passphraseOnDevice: false, requestId }));
+        dispatch(
+            submitPassphraseThunk({ device, passphrase, passphraseOnDevice: false, requestId }),
+        );
         // Reset values so when user comes back to this screen,
         // it's clean (for example if try again is triggered later in the flow)
         reset();

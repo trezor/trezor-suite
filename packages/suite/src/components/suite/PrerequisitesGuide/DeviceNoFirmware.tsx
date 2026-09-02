@@ -2,7 +2,7 @@ import { type MouseEventHandler } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -31,7 +31,7 @@ export const DeviceNoFirmware = () => {
             },
             { force: true },
         );
-        dispatch(goto({ routeName: 'onboarding-index' }));
+        dispatch(gotoThunk({ routeName: 'onboarding-index' }));
     };
 
     return (

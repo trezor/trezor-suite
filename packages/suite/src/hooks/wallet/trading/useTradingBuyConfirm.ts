@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
@@ -38,7 +38,7 @@ export const useTradingBuyConfirm = () => {
 
     useEffect(() => {
         if (!isReady) {
-            dispatch(goto({ routeName: 'wallet-trading-buy' }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
         }
     }, [isReady, dispatch]);
 
@@ -56,7 +56,7 @@ export const useTradingBuyConfirm = () => {
                 if (response.trade.paymentId) {
                     dispatch(tradingBuyActions.saveTransactionId(response.trade.paymentId));
                 }
-                dispatch(goto({ routeName: 'wallet-trading-buy-detail' }));
+                dispatch(gotoThunk({ routeName: 'wallet-trading-buy-detail' }));
             }
         };
 

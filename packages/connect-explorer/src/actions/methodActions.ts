@@ -67,35 +67,36 @@ export const onSetManualMode = (manualMode: boolean) => ({
 
 type OnSubmitThunkState = ConnectRootState & MethodRootState;
 
-export const onSubmit = () => async (dispatch: Dispatch, getState: () => OnSubmitThunkState) => {
-    const method = selectMethod(getState());
-    const connect = selectConnect(getState());
-    if (!method?.name) throw new Error('method name not specified');
-    dispatch({ type: SET_METHOD_PROCESSING, payload: true });
-    const trezorConnectImpl =
-        connect.options?.coreMode === 'deeplink' ? TrezorConnectMobile : TrezorConnect;
-    const connectMethod = trezorConnectImpl[method.name];
-    if (typeof connectMethod !== 'function') {
-        dispatch(
-            onResponse({
-                error: `Method "${method.name}" not found in TrezorConnect`,
-            }),
-        );
+export const onSubmitThunk =
+    () => async (dispatch: Dispatch, getState: () => OnSubmitThunkState) => {
+        const method = selectMethod(getState());
+        const connect = selectConnect(getState());
+        if (!method?.name) throw new Error('method name not specified');
+        dispatch({ type: SET_METHOD_PROCESSING, payload: true });
+        const trezorConnectImpl =
+            connect.options?.coreMode === 'deeplink' ? TrezorConnectMobile : TrezorConnect;
+        const connectMethod = trezorConnectImpl[method.name];
+        if (typeof connectMethod !== 'function') {
+            dispatch(
+                onResponse({
+                    error: `Method "${method.name}" not found in TrezorConnect`,
+                }),
+            );
 
-        return;
-    }
+            return;
+        }
 
-    // @ts-expect-error params type is unknown
-    const response = await connectMethod({
-        ...method.params,
-    });
-    dispatch({ type: SET_METHOD_PROCESSING, payload: false });
-    dispatch(onResponse(response));
-};
+        // @ts-expect-error params type is unknown
+        const response = await connectMethod({
+            ...method.params,
+        });
+        dispatch({ type: SET_METHOD_PROCESSING, payload: false });
+        dispatch(onResponse(response));
+    };
 
 type OnCodeChangeThunkState = MethodRootState;
 
-export const onCodeChange =
+export const onCodeChangeThunk =
     (value: string) => (dispatch: Dispatch, getState: () => OnCodeChangeThunkState) => {
         try {
             const { fields } = selectMethod(getState());

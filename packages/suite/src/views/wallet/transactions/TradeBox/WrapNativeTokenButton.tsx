@@ -4,7 +4,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -76,7 +76,7 @@ export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) =
         });
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-yield-wrap',
                 params: {
                     symbol: account.symbol,

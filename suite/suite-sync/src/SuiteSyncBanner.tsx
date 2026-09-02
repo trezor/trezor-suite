@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
@@ -107,7 +107,7 @@ export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps)
                             <Banner.Button
                                 onClick={() =>
                                     dispatch(
-                                        goto({
+                                        gotoThunk({
                                             routeName: 'firmware-index',
                                             params: { cancelable: true },
                                         }),

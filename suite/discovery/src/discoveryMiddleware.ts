@@ -6,7 +6,7 @@ import {
 } from '@suite/authenticity-checks';
 import { type LocksRootState } from '@suite/locks';
 import { type RouterRootState, routerAppChanged } from '@suite/router';
-import { connectPopupCallThunkInner } from '@suite-common/connect-popup';
+import { connectPopupCallInnerThunk } from '@suite-common/connect-popup';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type ThpRootState, selectThpAutoconnectStep, thpActions } from '@suite-common/thp';
@@ -14,7 +14,7 @@ import {
     type WalletCoreCompoundRootState,
     accountsActions,
     changeNetworks,
-    observeSelectedDevice,
+    observeSelectedDeviceThunk,
     selectShouldRediscover,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
@@ -42,7 +42,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     const device = selectSelectedDevice(getState());
     if (!device) return action;
 
-    const isObserveSelectedDeviceMatch = observeSelectedDevice.fulfilled.match(action);
+    const isObserveSelectedDeviceMatch = observeSelectedDeviceThunk.fulfilled.match(action);
     const { isDeviceBecomingAcquired, isDeviceBecomingConnected } = isObserveSelectedDeviceMatch
         ? action.payload
         : { isDeviceBecomingAcquired: false, isDeviceBecomingConnected: false };
@@ -76,7 +76,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
         isTHPAutoconnectFinished || // now that the THP Autoconnect was finished, resume the delayed discovery
         routerAppChanged.match(action) || // may no longer be one of the apps where discovery is disabled
         deviceActions.dismissFirmwareAuthenticityCheck.match(action) || // may no longer be device compromised
-        connectPopupCallThunkInner.fulfilled.match(action) ||
+        connectPopupCallInnerThunk.fulfilled.match(action) ||
         deviceActions.selectDevice.match(action) ||
         changeNetworks.match(action) ||
         accountsActions.updateAccount.match(action) || // empty account can become nonempty

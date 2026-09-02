@@ -70,17 +70,21 @@ type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     source: ConnectCallSource;
 };
 
-export type ConnectPopupCallThunkState = DeviceRootState & ConnectPopupStateRootState;
+export type ConnectPopupCallInnerThunkState = DeviceRootState & ConnectPopupStateRootState;
 
-export type ConnectPopupCallThunkDeps = {
+export type ConnectPopupCallInnerThunkDeps = {
     actions: LockDeviceDep;
     services: AnalyticsDep;
 };
 
-export const connectPopupCallThunkInner = createThunk<
+export type ConnectPopupCallThunkState = ConnectPopupCallInnerThunkState;
+
+export type ConnectPopupCallThunkDeps = ConnectPopupCallInnerThunkDeps;
+
+export const connectPopupCallInnerThunk = createThunk<
     void,
     ConnectPopupCallThunkParams<CallMethodKeys>,
-    { state: ConnectPopupCallThunkState; extra: ConnectPopupCallThunkDeps }
+    { state: ConnectPopupCallInnerThunkState; extra: ConnectPopupCallInnerThunkDeps }
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
     async ({ source, ...params }, { dispatch, getState, extra }) => {
@@ -305,7 +309,7 @@ export const connectPopupCallThunk = <M extends CallMethodKeys>(
     void,
     ConnectPopupCallThunkParams<M>,
     { state: ConnectPopupCallThunkState; extra: ConnectPopupCallThunkDeps }
-> => connectPopupCallThunkInner(params) as any;
+> => connectPopupCallInnerThunk(params) as any;
 
 type ConnectPopupDeeplinkThunkState = DeviceRootState & ConnectPopupStateRootState;
 
@@ -1106,7 +1110,7 @@ export const connectPopupCancelThunk = createThunk<void, { error?: string; callI
         // reaches the caller immediately.  Without this, the response
         // depends on TrezorConnect.cancel() propagating through the
         // internal core, interrupting the device, and eventually causing
-        // the catch block in connectPopupCallThunkInner to resolve the
+        // the catch block in connectPopupCallInnerThunk to resolve the
         // deferred — which may not happen reliably (e.g. the device
         // interrupt doesn't complete, or the Suite popup tab closes
         // before RESPONSE_EVENT is sent).

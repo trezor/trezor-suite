@@ -50,7 +50,7 @@ type ReportToSentryThunkState = AnalyticsRootState &
     LogsSliceRootState &
     WalletSettingsRootState;
 
-export const reportToSentry =
+export const reportToSentryThunk =
     (error: any) => (_: Dispatch<UnknownAction>, getState: () => ReportToSentryThunkState) => {
         const instanceId = selectAnalyticsInstanceId(getState());
         const enabledNetworks = selectEnabledNetworks(getState());

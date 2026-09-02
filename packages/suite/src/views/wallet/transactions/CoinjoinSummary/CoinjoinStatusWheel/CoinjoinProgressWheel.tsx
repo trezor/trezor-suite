@@ -8,12 +8,12 @@ import {
     selectCurrentCoinjoinWheelStates,
     selectSessionProgressByAccountKey,
     selectStartCoinjoinSessionArguments,
-    startCoinjoinSession,
-    stopCoinjoinSession,
+    startCoinjoinSessionThunk,
+    stopCoinjoinSessionThunk,
 } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Tooltip } from '@trezor/components';
@@ -199,7 +199,7 @@ export const CoinjoinProgressWheel = ({ accountKey }: CoinjoinProgressWheelProps
             if (isCriticalPhase) {
                 dispatch(coinjoinSessionAutostop(accountKey, !isAutoStopEnabled));
             } else if (!isAutoStopEnabled) {
-                dispatch(stopCoinjoinSession(accountKey));
+                dispatch(stopCoinjoinSessionThunk(accountKey));
             }
 
             return;
@@ -212,12 +212,12 @@ export const CoinjoinProgressWheel = ({ accountKey }: CoinjoinProgressWheelProps
         }
 
         if (isLegalDocumentConfirmed && startCoinjoinArgs) {
-            dispatch(startCoinjoinSession(...startCoinjoinArgs));
+            dispatch(startCoinjoinSessionThunk(...startCoinjoinArgs));
 
             return;
         }
 
-        dispatch(goto({ routeName: 'wallet-anonymize', preserveParams: true }));
+        dispatch(gotoThunk({ routeName: 'wallet-anonymize', preserveParams: true }));
     }, [
         isCoinjoinSessionBlocked,
         isAllPrivate,

@@ -31,7 +31,7 @@ jest.unmock('@trezor/connect');
 
 jest.mock('@suite/router', () => ({
     ...jest.requireActual('@suite/router'),
-    goto: () => ({ type: 'mock-redirect' }),
+    gotoThunk: () => ({ type: 'mock-redirect' }),
 }));
 
 // !!! Must be a stable reference, else it will break some hooks / memoization and causes inf. re-renders

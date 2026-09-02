@@ -5,14 +5,14 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { CreateNfcBackup, NoNfcTags } from '@suite/nfc';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Badge, Column } from '@trezor/components';
 import { CheckIcon, TrezorBackupIcon, WalletIcon, WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
-import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
+import { resetDeviceThunk } from 'src/actions/settings/deviceSettingsActions';
 import { BackupSeedCards } from 'src/components/backup';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { ConfirmActionModal } from 'src/components/suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';
@@ -20,7 +20,7 @@ import { useOnboarding, useSelector } from 'src/hooks/suite';
 
 type SecurityStepStatus = 'initial' | 'in-progress' | 'skipping-backup' | 'finished';
 
-type ResetDeviceParams = NonNullable<Parameters<typeof resetDevice>[0]>;
+type ResetDeviceParams = NonNullable<Parameters<typeof resetDeviceThunk>[0]>;
 
 export const SecurityStep = () => {
     const [status, setStatus] = useState<SecurityStepStatus>('initial');
@@ -82,13 +82,13 @@ export const SecurityStep = () => {
 
         // Wallet creation + backup in one atomic call, same as native device onboarding.
         // If backup fails, the device wipes itself (skip_backup: false).
-        const result = await dispatch(resetDevice(getResetDeviceParams()));
+        const result = await dispatch(resetDeviceThunk(getResetDeviceParams()));
 
         if (result?.success) {
             setStatus('finished');
         } else {
             // TODO: why should we go to the default dashboard when there is an error??
-            dispatch(goto({ routeName: 'suite-index' }));
+            dispatch(gotoThunk({ routeName: 'suite-index' }));
         }
     }, [dispatch, getResetDeviceParams, updateAnalytics]);
 
@@ -97,7 +97,7 @@ export const SecurityStep = () => {
             updateAnalytics({ backup: 'skip' });
             setShowSkipConfirmation(false);
             setStatus('skipping-backup');
-            const result = await dispatch(resetDevice(getResetDeviceParams(true)));
+            const result = await dispatch(resetDeviceThunk(getResetDeviceParams(true)));
             if (result?.success) {
                 if (showFinishedScreen) {
                     setStatus('finished');
@@ -105,7 +105,7 @@ export const SecurityStep = () => {
                     goToNextStep('set-pin');
                 }
             } else {
-                dispatch(goto({ routeName: 'suite-index' }));
+                dispatch(gotoThunk({ routeName: 'suite-index' }));
             }
         },
         [dispatch, getResetDeviceParams, goToNextStep, updateAnalytics],

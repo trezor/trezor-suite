@@ -9,7 +9,7 @@ import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -157,14 +157,14 @@ const TokenRowBasicActions = ({
 
     if (!unusedAddress || !device) return null;
 
-    const goToWithAnalytics = (...[payload]: Parameters<typeof goto>) => {
+    const goToWithAnalytics = (...[payload]: Parameters<typeof gotoThunk>) => {
         if (network.networkType) {
             analytics.report({
                 type: events.accountsActionsEvent.name,
                 payload: { symbol: network.symbol, action: payload.routeName },
             });
         }
-        dispatch(goto(payload));
+        dispatch(gotoThunk(payload));
     };
 
     // This table renders on both the Tokens and the DeFi tab, so the reported origin has to follow
@@ -186,7 +186,7 @@ const TokenRowBasicActions = ({
         });
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-yield-deposit',
                 params: getEarnRouteParams({
                     account,
@@ -211,7 +211,7 @@ const TokenRowBasicActions = ({
         });
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-yield-withdraw',
                 params: getEarnRouteParams({
                     account,
@@ -221,7 +221,7 @@ const TokenRowBasicActions = ({
         );
     };
 
-    const onTradeButtonClick = (type: TradingType, ...[payload]: Parameters<typeof goto>) => {
+    const onTradeButtonClick = (type: TradingType, ...[payload]: Parameters<typeof gotoThunk>) => {
         dispatch(
             tradingActions.setTradingFromPrefilledAccount(
                 getTradingPrefilledFromAccountData(account, tokenCryptoId),
@@ -328,7 +328,7 @@ const TokenRowBasicActions = ({
         });
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-yield-unwrap',
                 params: {
                     symbol: account.symbol,

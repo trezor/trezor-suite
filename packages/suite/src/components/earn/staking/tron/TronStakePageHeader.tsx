@@ -2,7 +2,7 @@ import { AccountLabel } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { goto, selectRouteName, selectSettingsBackRoute } from '@suite/router';
+import { gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import { selectTronStakeSession } from '@suite-common/wallet-core';
@@ -79,7 +79,7 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
 
     const onBackClick = () => {
         reportFlowClose();
-        dispatch(goto({ routeName: previousRoute.name, params: previousRoute.params }));
+        dispatch(gotoThunk({ routeName: previousRoute.name, params: previousRoute.params }));
     };
 
     const onHowItWorksClick = () => {

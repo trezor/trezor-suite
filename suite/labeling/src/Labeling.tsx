@@ -110,7 +110,7 @@ export const Labeling = ({
                 }
             } else {
                 return await dispatch(
-                    metadataLabelingActions.init(
+                    metadataLabelingActions.initThunk(
                         // Provide force=true argument (user wants to enable metadata).
                         true,
                         // If this is wallet(device) label, provide unique identifier entityKey which equals to device.state.
@@ -164,7 +164,10 @@ export const Labeling = ({
                 return true;
             } else {
                 return await dispatch(
-                    metadataLabelingActions.addMetadata({ ...payload, value: value || undefined }),
+                    metadataLabelingActions.addMetadataThunk({
+                        ...payload,
+                        value: value || undefined,
+                    }),
                 );
             }
         },

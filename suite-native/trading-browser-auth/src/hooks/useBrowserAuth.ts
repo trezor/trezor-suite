@@ -40,7 +40,7 @@ const useLastErrorMessageDispatcher = (tradingType: TradingType | undefined) => 
             invariant(tradingType, 'tradingType must be defined for browser auth');
 
             dispatch(
-                tradingThunks.setLastErrorMessageByTradingType({
+                tradingThunks.setLastErrorMessageByTradingTypeThunk({
                     errorMessage,
                     tradingType,
                 }),

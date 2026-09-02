@@ -26,7 +26,7 @@ import { isArrayMember } from '@trezor/utils';
 
 import { firmwareActions } from '../firmwareActions';
 import { selectFirmware, selectSwitchFirmwareType } from '../firmwareReducer';
-import { type FirmwareUpdateProps, firmwareUpdate as firmwareUpdateThunk } from '../firmwareThunks';
+import { type FirmwareUpdateProps, firmwareUpdateThunk } from '../firmwareThunks';
 
 /*
 There are three firmware update flows, depending on current firmware version:

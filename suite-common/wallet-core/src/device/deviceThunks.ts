@@ -77,7 +77,7 @@ type HandleDeviceDisconnectThunkState = DeviceRootState;
  * Triggered by `@trezor/connect DEVICE_EVENT`
  * @param {Device} device
  */
-export const handleDeviceDisconnect = createThunk<
+export const handleDeviceDisconnectThunk = createThunk<
     void,
     Device | TrezorDevice,
     { state: HandleDeviceDisconnectThunkState }
@@ -117,7 +117,7 @@ type ForgetDisconnectedDevicesThunkState = DeviceRootState;
  * Remove all data related to all instances of disconnected device if they are not remembered
  * @param {Device} device
  */
-export const forgetDisconnectedDevices = createThunk<
+export const forgetDisconnectedDevicesThunk = createThunk<
     void,
     ForgetDisconnectedDevicesThunkParams,
     { state: ForgetDisconnectedDevicesThunkState }
@@ -154,7 +154,7 @@ type ObserveSelectedDeviceThunkState = DeviceRootState;
  * of one of the `devices` (and those are updated via DEVICE.CHANGED. etc.).
  * Called from `suiteMiddleware` (Desktop) or `deviceMiddleware` (Mobile).
  */
-export const observeSelectedDevice = createThunk<
+export const observeSelectedDeviceThunk = createThunk<
     ObserveSelectedDeviceResult,
     void,
     { state: ObserveSelectedDeviceThunkState }
@@ -216,7 +216,7 @@ type AcquireDeviceThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDe
     thunks: FetchAndSaveMetadataDep;
 };
 
-export const acquireDevice = createThunk<
+export const acquireDeviceThunk = createThunk<
     void,
     AcquireDeviceThunkParams,
     { state: AcquireDeviceThunkState; extra: AcquireDeviceThunkDeps }
@@ -251,7 +251,7 @@ export const acquireDevice = createThunk<
 
 type InitDevicesThunkState = DeviceRootState;
 
-export const initDevices = createThunk<void, void, { state: InitDevicesThunkState }>(
+export const initDevicesThunk = createThunk<void, void, { state: InitDevicesThunkState }>(
     `${DEVICE_MODULE_PREFIX}/initDevices`,
     (_, { dispatch, getState }) => {
         const devices = selectDevices(getState());
@@ -342,7 +342,7 @@ export const confirmAddressOnDeviceThunk = createThunk<
 
 type DeviceConnectThunkEventType = typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED;
 
-type DeviceConnectThunksParams = {
+type DeviceConnectThunkParams = {
     type: DeviceConnectThunkEventType;
     device: Device;
 };
@@ -353,9 +353,9 @@ export type DeviceConnectThunkDeps = WithServices<AnalyticsDep & GetTradedAccoun
     thunks: FetchAndSaveMetadataDep;
 };
 
-export const deviceConnectThunks = createThunk<
+export const deviceConnectThunk = createThunk<
     void,
-    DeviceConnectThunksParams,
+    DeviceConnectThunkParams,
     { state: DeviceConnectThunkState; extra: DeviceConnectThunkDeps }
 >(`${DEVICE_MODULE_PREFIX}/deviceConnectThunk`, ({ type, device }, { dispatch, getState }) => {
     // TODO (THP phase): Using selectIsFirmwareInstallationRunning = (hidden) circular dependency.
@@ -370,7 +370,7 @@ export const deviceConnectThunks = createThunk<
             if (getIsThpDevice(device) && !isFwInstallation) {
                 // This needs to be re-selected to convert Device to TrezorDevice.
                 const requestedDevice = selectDevices(getState()).find(d => d.path === device.path);
-                dispatch(acquireDevice({ requestedDevice }));
+                dispatch(acquireDeviceThunk({ requestedDevice }));
             }
             dispatch(selectNewlyConnectedDeviceThunk({ device }));
             break;
@@ -417,7 +417,7 @@ export const setDeviceAutoEjectThunk = createThunk<
         );
 
         if (shouldEnable && !wallet.connected) {
-            dispatch(forgetDisconnectedDevices({ device: wallet, forceForget: true }));
+            dispatch(forgetDisconnectedDevicesThunk({ device: wallet, forceForget: true }));
         }
     });
 });

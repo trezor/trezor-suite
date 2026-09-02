@@ -809,7 +809,7 @@ type SubmitPassphraseThunkParams = {
 
 type SubmitPassphraseThunkState = DiscoveryRootState;
 
-export const submitPassphrase = createThunk<
+export const submitPassphraseThunk = createThunk<
     void,
     SubmitPassphraseThunkParams,
     { state: SubmitPassphraseThunkState }
@@ -879,7 +879,7 @@ export const startOrRestartDiscoveryThunk = createThunk<
 
 type SwitchToDuplicatedWalletThunkState = DeviceRootState & DiscoveryRootState;
 
-export const switchToDuplicatedWallet = createThunk<
+export const switchToDuplicatedWalletThunk = createThunk<
     void,
     void,
     { state: SwitchToDuplicatedWalletThunkState }

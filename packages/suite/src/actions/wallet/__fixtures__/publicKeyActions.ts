@@ -25,7 +25,7 @@ export default [
         description: 'Show public key success (bitcoin)',
         initialState: undefined,
         mocks: {},
-        action: publicKeyActions.showXpub,
+        action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -45,7 +45,7 @@ export default [
             networkType: 'cardano',
         },
         mocks: {},
-        action: publicKeyActions.showXpub,
+        action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -64,7 +64,7 @@ export default [
             networkType: 'ethereum',
         },
         mocks: {},
-        action: publicKeyActions.showXpub,
+        action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -90,7 +90,7 @@ export default [
             },
         },
         mocks: {},
-        action: publicKeyActions.showXpub,
+        action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -110,7 +110,7 @@ export default [
             },
         },
         mocks: {},
-        action: publicKeyActions.showXpub,
+        action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -124,7 +124,7 @@ export default [
         mocks: {
             getPublicKey: { success: false, error: { message: 'Runtime error' } },
         },
-        action: publicKeyActions.showXpub,
+        action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },
@@ -151,7 +151,7 @@ export default [
                 error: { message: 'Runtime error', code: 'Method_PermissionsNotGranted' },
             },
         },
-        action: publicKeyActions.showXpub,
+        action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
                 { type: connectInitThunk.pending.type, payload: undefined },

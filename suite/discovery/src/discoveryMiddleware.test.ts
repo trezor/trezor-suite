@@ -151,7 +151,7 @@ const createObserveSelectedDeviceFulfilledAction = (payload: {
     isDeviceChanged: boolean;
     isDeviceBecomingAcquired: boolean;
     isDeviceBecomingConnected: boolean;
-}) => walletCore.observeSelectedDevice.fulfilled(payload, 'request-id', undefined);
+}) => walletCore.observeSelectedDeviceThunk.fulfilled(payload, 'request-id', undefined);
 
 const fixtures: Fixture[] = [
     {

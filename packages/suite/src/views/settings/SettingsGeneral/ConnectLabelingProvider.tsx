@@ -10,7 +10,7 @@ export const ConnectLabelingProvider = () => {
     const dispatch = useDispatch();
     const { device } = useDevice();
     const isDeviceConnected = device?.connected && device?.available;
-    const handleClick = () => dispatch(metadataLabelingActions.init(true));
+    const handleClick = () => dispatch(metadataLabelingActions.initThunk(true));
 
     return (
         <Anchor anchorId={SettingsAnchor.LabelingConnect}>

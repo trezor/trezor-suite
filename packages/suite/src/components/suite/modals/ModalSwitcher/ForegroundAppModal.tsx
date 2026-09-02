@@ -1,7 +1,7 @@
 import { type FunctionComponent } from 'react';
 
 import { CreateWalletBackupModal } from '@suite/backup';
-import { closeModalApp } from '@suite/router';
+import { closeModalAppThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 
 import type { ForegroundAppRoute } from 'src/types/suite';
@@ -49,7 +49,7 @@ type ForegroundAppModalProps = {
 export const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
     const dispatch = useDispatch();
 
-    const onCancel = () => dispatch(closeModalApp());
+    const onCancel = () => dispatch(closeModalAppThunk());
 
     // check if current route is a "foreground application" marked as isForegroundApp in router config
     // display it above requested physical route (route in url) or as fullscreen app

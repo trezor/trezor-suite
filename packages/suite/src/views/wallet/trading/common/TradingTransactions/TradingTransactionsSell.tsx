@@ -1,7 +1,7 @@
 import { type SellProviderInfo } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTransactionSell as TradingTxSell,
@@ -68,12 +68,12 @@ export const TradingTransactionSell = ({
                     },
                 }),
             );
-            dispatch(goto({ routeName: 'wallet-trading-sell-confirm' }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-sell-confirm' }));
 
             return;
         }
 
-        dispatch(goto({ routeName: 'wallet-trading-sell-detail' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-sell-detail' }));
     };
 
     useTradingWatchTrade({ account, trade });

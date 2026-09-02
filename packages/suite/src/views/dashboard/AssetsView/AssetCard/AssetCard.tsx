@@ -1,6 +1,6 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
@@ -94,7 +94,7 @@ export const AssetCard = ({
 
     const handleCardClick = () => {
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-index',
                 params: {
                     symbol,

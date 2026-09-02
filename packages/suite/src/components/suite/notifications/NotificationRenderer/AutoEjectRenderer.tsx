@@ -1,4 +1,4 @@
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 
 import { resetProtocol } from 'src/actions/suite/protocolActions';
@@ -10,7 +10,7 @@ export const AutoEjectRenderer = ({ render: View, notification }: NotificationRe
     const onCancel = () => dispatch(resetProtocol());
 
     const handleActionClick = () => {
-        dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.AutoEject }));
+        dispatch(gotoThunk({ routeName: 'settings-index', anchor: SettingsAnchor.AutoEject }));
     };
 
     return (

@@ -12,7 +12,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 
 type Rotation = { label: JSX.Element; value: DisplayRotationType };
 
@@ -95,7 +95,7 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                                 options={DISPLAY_ROTATIONS}
                                 size="small"
                                 onChange={(value: DisplayRotationType) => {
-                                    dispatch(applySettings({ display_rotation: value }));
+                                    dispatch(applySettingsThunk({ display_rotation: value }));
                                     analytics.report({
                                         type: events.settingsDeviceChangeOrientationEvent.name,
                                         payload: {
