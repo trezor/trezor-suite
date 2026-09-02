@@ -40,6 +40,8 @@ const SUPPORTED_OPERATION_TYPES = new Set([
     'manageData',
     'bumpSequence',
     'claimClaimableBalance',
+    // Soroban, limited to a single contract invocation per transaction
+    'invokeHostFunction',
 ]);
 
 const resolveStellarRequestContext = (event: WalletKitTypes.SessionRequest) => {

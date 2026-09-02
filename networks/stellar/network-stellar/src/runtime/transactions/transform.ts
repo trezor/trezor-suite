@@ -12,6 +12,7 @@ import {
     type Transaction,
 } from '@stellar/stellar-sdk';
 
+import { transformInvokeHostFunctionOperation } from './sorobanTransform';
 import { toStroops } from '../../constants';
 
 /**
@@ -92,9 +93,24 @@ const transformTimebounds = (timebounds: Transaction['timeBounds']) => {
 };
 
 /**
+ * Reads the Soroban transaction data (footprint and resource limits) the envelope carries. The
+ * device commits to it through the signed digest, so it has to be passed along with the operation.
+ */
+const readSorobanData = (transaction: Transaction) => {
+    const envelope = transaction.toEnvelope();
+    if (envelope.switch().name !== 'envelopeTypeTx') return undefined;
+
+    const ext = envelope.v1().tx().ext();
+
+    return ext.switch() === 1 ? ext.sorobanData().toXDR('base64') : undefined;
+};
+
+/**
  * Transforms Transaction to TrezorConnect.StellarTransaction
  */
 export const transformTransaction = (transaction: Transaction) => {
+    const sorobanData = readSorobanData(transaction);
+
     const amounts = [
         'amount',
         'sendMax',
@@ -108,6 +124,12 @@ export const transformTransaction = (transaction: Transaction) => {
     const assets = ['asset', 'sendAsset', 'destAsset', 'selling', 'buying', 'line'];
 
     const operations = transaction.operations.map((o, i) => {
+        // Soroban operations are decoded as raw XDR objects, so none of the field mapping below
+        // applies to them.
+        if (o.type === 'invokeHostFunction') {
+            return transformInvokeHostFunctionOperation(o);
+        }
+
         const operation: any = { ...o };
 
         // stellar-sdk 16 returns null for absent optional setOptions fields; connect expects
@@ -181,5 +203,6 @@ export const transformTransaction = (transaction: Transaction) => {
         memo: transformMemo(transaction.memo),
         timebounds: transformTimebounds(transaction.timeBounds),
         operations,
+        ...(sorobanData && { ext: { v: 1, sorobanData } }),
     };
 };
