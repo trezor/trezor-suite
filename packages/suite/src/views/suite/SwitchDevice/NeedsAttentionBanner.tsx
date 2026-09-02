@@ -1,13 +1,12 @@
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { selectDeviceThunk } from '@suite-common/device';
+import { acquireDeviceThunk, selectDeviceThunk } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     type DeviceStatus as ConnectedDeviceStatus,
     type getStatus,
 } from '@suite-common/suite-utils';
-import { acquireDeviceThunk } from '@suite-common/wallet-core';
 import { Banner, type BannerIntent } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 

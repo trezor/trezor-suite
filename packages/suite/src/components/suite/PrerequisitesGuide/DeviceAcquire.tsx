@@ -2,8 +2,8 @@ import { type MouseEventHandler } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { acquireDeviceThunk } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import { acquireDeviceThunk } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';

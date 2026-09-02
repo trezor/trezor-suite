@@ -17,6 +17,7 @@ import {
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
 import {
+    acquireDeviceThunk,
     deviceActions,
     prepareDeviceReducer,
     selectDeviceThunk,
@@ -35,7 +36,6 @@ import {
 } from '@suite-common/suite-types/mocks';
 import { createTestStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
-    acquireDeviceThunk,
     forgetDisconnectedDevicesThunk,
     observeSelectedDeviceThunk,
 } from '@suite-common/wallet-core';

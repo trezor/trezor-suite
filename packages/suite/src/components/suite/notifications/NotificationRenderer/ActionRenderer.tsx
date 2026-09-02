@@ -1,6 +1,5 @@
-import { selectDeviceThunk } from '@suite-common/device';
+import { acquireDeviceThunk, selectDeviceThunk } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import { acquireDeviceThunk } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';

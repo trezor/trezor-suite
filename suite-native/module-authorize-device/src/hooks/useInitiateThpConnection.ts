@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { selectSelectedDevice } from '@suite-common/device';
+import { acquireDeviceThunk, selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import { acquireDeviceThunk } from '@suite-common/wallet-core';
 import {
     type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,

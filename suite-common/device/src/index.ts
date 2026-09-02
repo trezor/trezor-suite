@@ -1,3 +1,4 @@
+export * from './acquireDeviceThunk';
 export * from './deviceActions';
 export * from './deviceConstants';
 export type * from './deviceDeps';

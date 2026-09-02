@@ -10,6 +10,7 @@ import {
     DEVICE_MODULE_PREFIX,
     type DeviceRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
+    acquireDeviceThunk,
     deviceActions,
     portfolioTrackerDevice,
     selectDeviceById,
@@ -26,7 +27,6 @@ import {
     type FirmwareRootState,
     selectIsFirmwareInstallationRunning,
 } from '@suite-common/firmware';
-import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type AcquiredDevice,
@@ -64,7 +64,6 @@ import { isChanged } from '@trezor/utils';
 import { getAddressForNetworkType } from './deviceAddressUtils';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
-import { type RunDiscoveryThunkState, startDiscoveryThunk } from '../discovery/discoveryThunks';
 import { setAutoEjectEnabled } from '../settings/walletSettingsActions';
 import {
     type WalletSettingsRootState,
@@ -200,55 +199,6 @@ export const observeSelectedDeviceThunk = createThunk<
     },
 );
 
-/**
- * Called from <AcquireDevice /> component
- * Fetch device features without asking for pin/passphrase
- * this is the only place where useEmptyPassphrase should be always set to "true"
- */
-type AcquireDeviceThunkParams = {
-    requestedDevice?: TrezorDevice | null;
-    startDiscovery?: boolean;
-};
-
-type AcquireDeviceThunkState = RunDiscoveryThunkState;
-
-type AcquireDeviceThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
-    thunks: FetchAndSaveMetadataDep;
-};
-
-export const acquireDeviceThunk = createThunk<
-    void,
-    AcquireDeviceThunkParams,
-    { state: AcquireDeviceThunkState; extra: AcquireDeviceThunkDeps }
->(
-    `${DEVICE_MODULE_PREFIX}/acquireDevice`,
-    async ({ requestedDevice, startDiscovery }, { dispatch, getState }) => {
-        const device = requestedDevice ?? selectSelectedDevice(getState());
-
-        if (!device) return;
-
-        const response = await TrezorConnect.getFeatures({ device });
-
-        if (!response.success) {
-            if (response.error.code !== 'Device_ThpPairingTagInvalid') {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'acquire-error',
-                        device,
-                        error: response.error.message,
-                    }),
-                );
-            }
-        } else if (startDiscovery) {
-            dispatch(
-                startDiscoveryThunk({
-                    device,
-                }),
-            );
-        }
-    },
-);
-
 type InitDevicesThunkState = DeviceRootState;
 
 export const initDevicesThunk = createThunk<void, void, { state: InitDevicesThunkState }>(
@@ -347,11 +297,9 @@ type DeviceConnectThunkParams = {
     device: Device;
 };
 
-export type DeviceConnectThunkState = FirmwareRootState & RunDiscoveryThunkState;
+export type DeviceConnectThunkState = FirmwareRootState & DeviceRootState;
 
-export type DeviceConnectThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
-    thunks: FetchAndSaveMetadataDep;
-};
+export type DeviceConnectThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
 export const deviceConnectThunk = createThunk<
     void,
