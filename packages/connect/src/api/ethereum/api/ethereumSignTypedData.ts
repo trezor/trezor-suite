@@ -123,11 +123,6 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         super(message, params);
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
         this.requiredFirmwareCoins = [network];
-        // Only newer firmwares support this feature
-        // Older firmwares will give wrong results / throw errors
-        if (params.data.primaryType === 'EIP712Domain') {
-            this.requiredFirmwareCapabilities = ['eip712-domain-only'];
-        }
     }
 
     get requiredPermissions(): PermissionRequest[] {
