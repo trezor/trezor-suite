@@ -7,9 +7,8 @@ import {
 import { closeModal } from '@suite/modal';
 import { closeModalAppThunk } from '@suite/router';
 import { ThpPairingStep } from '@suite/thp';
-import { selectSelectedDevice } from '@suite-common/device';
+import { acquireDeviceThunk, selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import { acquireDeviceThunk } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 

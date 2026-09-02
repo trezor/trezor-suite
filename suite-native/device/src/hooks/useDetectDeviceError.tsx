@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import {
+    acquireDeviceThunk,
     deviceActions,
     selectHasDeviceFirmwareInstalled,
     selectIsConnectedDeviceUninitialized,
@@ -16,7 +17,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import { acquireDeviceThunk } from '@suite-common/wallet-core';
+import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
@@ -95,6 +96,7 @@ export const useDetectDeviceError = () => {
     // we cannot work with device anymore. Shouldn't happen on mobile app but just in case.
     useEffect(() => {
         if (
+            selectedDevice &&
             isOnboardingFinished &&
             isUnacquiredDevice &&
             !isDevicePinLocked &&
@@ -108,12 +110,13 @@ export const useDetectDeviceError = () => {
                 pictogramVariant: 'critical',
                 primaryButtonTitle: <Translation id="moduleDevice.unacquiredDeviceModal.button" />,
                 appendix: <UnacquiredDeviceModalAppendix />,
-                onPressPrimaryButton: () => {
-                    dispatch(
-                        acquireDeviceThunk({
-                            startDiscovery: true,
-                        }),
+                onPressPrimaryButton: async () => {
+                    const acquireResult = await dispatch(
+                        acquireDeviceThunk({ requestedDevice: selectedDevice }),
                     );
+                    if (acquireResult.type === acquireDeviceThunk.fulfilled.type) {
+                        dispatch(startDiscoveryThunk({ device: selectedDevice }));
+                    }
                 },
                 testID: '@device/errors/alert/unacquired-device',
             });
@@ -121,6 +124,7 @@ export const useDetectDeviceError = () => {
             hideAlert('deviceError');
         }
     }, [
+        selectedDevice,
         isDevicePinLocked,
         isOnboardingFinished,
         isUnacquiredDevice,

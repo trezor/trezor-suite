@@ -6,12 +6,12 @@ import { useNavigation } from '@react-navigation/native';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
 import {
+    acquireDeviceThunk,
     selectIsAnyPhysicalDeviceConnectedViaUsb,
     selectIsDeviceAuthorized,
     selectIsDeviceThpLocked,
 } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import { acquireDeviceThunk } from '@suite-common/wallet-core';
 import {
     AuthorizeDeviceStackRoutes,
     type HomeStackParamList,

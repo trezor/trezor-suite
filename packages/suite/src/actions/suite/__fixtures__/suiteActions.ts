@@ -1,7 +1,10 @@
 import { onSuiteInit, onSuiteReady, updateOnlineStatus } from '@suite/suite-lifecycle';
-import { deviceActions, selectNewlyConnectedDeviceThunk } from '@suite-common/device';
+import {
+    acquireDeviceThunk,
+    deviceActions,
+    selectNewlyConnectedDeviceThunk,
+} from '@suite-common/device';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEVICE, type Device, TRANSPORT } from '@trezor/connect';
 
 import { type AppState } from 'src/types/suite';
@@ -521,11 +524,12 @@ const acquireDevice = [
                 message: 'getFeatures error',
             },
         },
-        result: notificationsActions.addToast.type,
+        result: acquireDeviceThunk.rejected.type,
     },
     {
         description: `without device`,
         state: { selectedDevice: {} },
+        result: acquireDeviceThunk.rejected.type,
     },
 ];
 

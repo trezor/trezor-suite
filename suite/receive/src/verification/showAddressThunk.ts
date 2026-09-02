@@ -4,6 +4,7 @@ import { setConnectionModal, setConnectionMode } from '@suite/device';
 import { closeModal, preserveModal, removePreserveModal } from '@suite/modal';
 import {
     type DeviceRootState,
+    acquireDeviceThunk,
     selectIsDevicePinLocked,
     selectSelectedDevice,
 } from '@suite-common/device';
@@ -12,7 +13,6 @@ import { type Dispatch, type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type WalletSettingsRootState,
-    acquireDeviceThunk,
     confirmAddressOnDeviceThunk,
     selectAddressDisplayType,
 } from '@suite-common/wallet-core';
@@ -55,10 +55,10 @@ export const showAddressThunk =
         }
 
         // A PIN-locked device stays connected & available, so nothing stops the user from asking for
-        // a verification it cannot answer. Unlock it first — acquireDevice reads features, which
+        // a verification it cannot answer. Unlock it first — acquireDeviceThunk reads features, which
         // makes the device prompt for the PIN. It emits device-change before it resolves, so the
         // status below is already up to date; still locked means the user dismissed the prompt, and
-        // acquireDevice has reported any real failure itself.
+        // acquireDeviceThunk has reported any real failure itself.
         if (selectIsDevicePinLocked(getState())) {
             await dispatch(acquireDeviceThunk({ requestedDevice: device }));
 

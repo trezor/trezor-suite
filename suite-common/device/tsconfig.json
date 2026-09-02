@@ -6,6 +6,7 @@
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
+        { "path": "../toast-notifications" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"

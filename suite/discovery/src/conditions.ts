@@ -16,7 +16,7 @@ type DeviceReadyRootState = DeviceRootState & LocksRootState;
 /**
  * Determines if device is ready for discovery, either:
  * - unlocked
- * - edge case: locked, and just has been acquired. In that case, device-change is emitted right before acquireDevice ends (and unlocks the device).
+ * - edge case: locked, and just has been acquired. In that case, device-change is emitted right before acquireDeviceThunk ends (and unlocks the device).
  *   TODO investigate if the lock state can be synced sooner, so that this case can be removed.
  */
 export const selectIsDeviceReadyToStartDiscovery = (
