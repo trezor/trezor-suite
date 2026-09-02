@@ -87,6 +87,7 @@ interface TokenRowBasicActionsProps {
     account: Account;
     network: Network;
     isUnverifiedTable?: boolean;
+    isRemovableContractToken?: boolean;
     yieldOpportunities?: YieldDtoV2[];
     onDeactivateToken: () => void;
 }
@@ -98,6 +99,7 @@ const TokenRowBasicActions = ({
     account,
     network,
     isUnverifiedTable,
+    isRemovableContractToken,
     yieldOpportunities,
     onDeactivateToken,
 }: TokenRowBasicActionsProps) => {
@@ -512,7 +514,9 @@ const TokenRowBasicActions = ({
                     },
                     {
                         // A contract token has no trustline to deactivate; it is only dropped
-                        // from the list of contracts the account reads balances for.
+                        // from the list of contracts the account reads balances for. Curated
+                        // contract tokens the user never added have nothing to remove — the
+                        // worker would resurface them — so they only offer the hide action.
                         label: (
                             <Translation
                                 id={isReadOnly ? 'TR_REMOVE_TOKEN' : 'TR_DEACTIVATE_TOKEN'}
@@ -520,8 +524,9 @@ const TokenRowBasicActions = ({
                         ),
                         icon: XIcon,
                         onClick: onDeactivateToken,
-                        // Only show for Stellar tokens
-                        isHidden: network.networkType !== 'stellar',
+                        isHidden:
+                            network.networkType !== 'stellar' ||
+                            (isReadOnly && !isRemovableContractToken),
                     },
                 ]}
             />
@@ -626,7 +631,7 @@ const TokenRowBasicActions = ({
                                 />
 
                                 <IconButton
-                                    isDisabled={token.balance === '0'}
+                                    isDisabled={token.balance === '0' || isReadOnly}
                                     key="token-send"
                                     icon={ArrowUpIcon}
                                     onClick={onSendButtonClick}
@@ -651,6 +656,7 @@ interface TokenRowActionsProps {
     network: Network;
     yieldOpportunities?: YieldDtoV2[];
     isUnverifiedTable?: boolean;
+    isRemovableContractToken?: boolean;
     onDeactivateToken: () => void;
 }
 
@@ -662,6 +668,7 @@ export const TokenRowActions = ({
     network,
     yieldOpportunities,
     isUnverifiedTable,
+    isRemovableContractToken,
     onDeactivateToken,
 }: TokenRowActionsProps) => (
     <TokenRowBasicActions
@@ -671,6 +678,7 @@ export const TokenRowActions = ({
         account={account}
         network={network}
         isUnverifiedTable={isUnverifiedTable}
+        isRemovableContractToken={isRemovableContractToken}
         yieldOpportunities={yieldOpportunities}
         onDeactivateToken={onDeactivateToken}
     />
