@@ -43,6 +43,7 @@ import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
     isErc4626,
+    isReadOnlyToken,
 } from '@suite-common/wallet-utils';
 import {
     Button,
@@ -88,7 +89,7 @@ interface TokenRowBasicActionsProps {
     network: Network;
     isUnverifiedTable?: boolean;
     yieldOpportunities?: YieldDtoV2[];
-    setShowDeactivateModal: (value: boolean) => void;
+    onDeactivateToken: () => void;
 }
 
 const TokenRowBasicActions = ({
@@ -99,7 +100,7 @@ const TokenRowBasicActions = ({
     network,
     isUnverifiedTable,
     yieldOpportunities,
-    setShowDeactivateModal,
+    onDeactivateToken,
 }: TokenRowBasicActionsProps) => {
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const device = useSelector(selectSelectedDevice);
@@ -127,6 +128,7 @@ const TokenRowBasicActions = ({
         !!tokenTradingOptions && tokenTradingOptions.exchange && token.balance !== '0';
     const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
     const canReceiveToken = !isDeviceLocked && !isDeviceCompromised;
+    const isReadOnly = isReadOnlyToken(token);
 
     const availableVault = useMemo(
         () =>
@@ -348,10 +350,6 @@ const TokenRowBasicActions = ({
         window.open(explorerUrl, '_blank');
     };
 
-    const onDeactivateTokenButtonClick = () => {
-        setShowDeactivateModal(true);
-    };
-
     const TokenAddressItem = ({
         label,
         address,
@@ -464,7 +462,7 @@ const TokenRowBasicActions = ({
                         'data-testid': '@trading/tokens/send-button',
                         icon: ArrowUpIcon,
                         onClick: onSendButtonClick,
-                        isDisabled: token.balance === '0',
+                        isDisabled: token.balance === '0' || isReadOnly,
                         isHidden:
                             type !== 'defi' &&
                             (tokenStatusType === TokenManagementAction.HIDE
@@ -518,9 +516,15 @@ const TokenRowBasicActions = ({
                         onClick: onViewInExplorerButtonClick,
                     },
                     {
-                        label: <Translation id="TR_DEACTIVATE_TOKEN" />,
+                        // A contract token has no trustline to deactivate; it is only dropped
+                        // from the list of contracts the account reads balances for.
+                        label: (
+                            <Translation
+                                id={isReadOnly ? 'TR_REMOVE_TOKEN' : 'TR_DEACTIVATE_TOKEN'}
+                            />
+                        ),
                         icon: XIcon,
-                        onClick: onDeactivateTokenButtonClick,
+                        onClick: onDeactivateToken,
                         // Only show for Stellar tokens
                         isHidden: network.networkType !== 'stellar',
                     },
@@ -652,7 +656,7 @@ interface TokenRowActionsProps {
     network: Network;
     yieldOpportunities?: YieldDtoV2[];
     isUnverifiedTable?: boolean;
-    setShowDeactivateModal: (value: boolean) => void;
+    onDeactivateToken: () => void;
 }
 
 export const TokenRowActions = ({
@@ -663,7 +667,7 @@ export const TokenRowActions = ({
     network,
     yieldOpportunities,
     isUnverifiedTable,
-    setShowDeactivateModal,
+    onDeactivateToken,
 }: TokenRowActionsProps) => (
     <TokenRowBasicActions
         type={type}
@@ -673,6 +677,6 @@ export const TokenRowActions = ({
         network={network}
         isUnverifiedTable={isUnverifiedTable}
         yieldOpportunities={yieldOpportunities}
-        setShowDeactivateModal={setShowDeactivateModal}
+        onDeactivateToken={onDeactivateToken}
     />
 );

@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { useDispatch } from '@suite-common/redux-utils';
 import {
     type TokenInfo,
     type TokenManagementAction,
@@ -9,6 +10,10 @@ import {
 } from '@suite-common/token-definitions';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
+import {
+    fetchAndUpdateAccountThunk,
+    stellarContractTokensActions,
+} from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
@@ -51,6 +56,7 @@ export const TokenRow = ({
     isCollapsed,
     yieldOpportunities,
 }: TokenRowProps) => {
+    const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const isTokenKnown = useSelector(state =>
         selectIsSpecificCoinDefinitionKnown(state, account.symbol, token.contract as TokenAddress),
@@ -64,6 +70,24 @@ export const TokenRow = ({
     });
 
     const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+
+    // A contract token is only watched locally — there is no trustline to close, so removing it
+    // from the watch list is the whole operation and nothing has to be signed.
+    const handleDeactivateToken = () => {
+        if (token.standard !== 'STELLAR-CONTRACT') {
+            setShowDeactivateModal(true);
+
+            return;
+        }
+
+        dispatch(
+            stellarContractTokensActions.removeContractToken({
+                accountKey: account.key,
+                contract: token.contract,
+            }),
+        );
+        dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+    };
 
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
 
@@ -148,7 +172,7 @@ export const TokenRow = ({
                         network={network}
                         yieldOpportunities={yieldOpportunities}
                         isUnverifiedTable={isUnverifiedTable}
-                        setShowDeactivateModal={setShowDeactivateModal}
+                        onDeactivateToken={handleDeactivateToken}
                     />
                 </Table.Cell>
             </Table.Row>
