@@ -92,6 +92,12 @@ export interface Sep41Metadata {
     name?: string;
 }
 
+// A token's decimals/symbol/name never change, while balances are re-read on every account
+// refresh — so the descriptive half of the read is kept for the lifetime of the worker. Three of
+// the four simulations per token would otherwise repeat on every refresh, for every watched
+// contract, against a rate-limited public endpoint.
+const metadataCache = new Map<string, Sep41Metadata>();
+
 /**
  * Reads a token's SEP-41 metadata (`decimals`/`symbol`/`name`) from the contract.
  * Makes tokens self-describing, so callers need only supply contract addresses.
@@ -101,6 +107,10 @@ export const getContractTokenMetadata = async (
     contractId: string,
     networkPassphrase: string = Networks.PUBLIC,
 ): Promise<Sep41Metadata> => {
+    const cacheKey = `${networkPassphrase}:${contractId}`;
+    const cached = metadataCache.get(cacheKey);
+    if (cached) return cached;
+
     const [decimals, symbol, name] = await Promise.all([
         simulateContractRead(server, contractId, 'decimals', [], networkPassphrase),
         simulateContractRead(server, contractId, 'symbol', [], networkPassphrase),
@@ -110,11 +120,18 @@ export const getContractTokenMetadata = async (
     // `decimals` is a u32 -> number; be tolerant of a bigint too.
     const isNumeric = typeof decimals === 'number' || typeof decimals === 'bigint';
 
-    return {
+    const metadata: Sep41Metadata = {
         decimals: isNumeric ? Number(decimals) : undefined,
         symbol: typeof symbol === 'string' ? symbol : undefined,
         name: typeof name === 'string' ? name : undefined,
     };
+
+    // A failed read says nothing about the contract, so only a real answer is kept.
+    if (metadata.decimals != null) {
+        metadataCache.set(cacheKey, metadata);
+    }
+
+    return metadata;
 };
 
 /** A fully-described SEP-41 token holding for an account. */
