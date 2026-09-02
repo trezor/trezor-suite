@@ -1,3 +1,11 @@
+import type {
+    DeviceModel,
+    TestCategory,
+    TestOsMatrix,
+    TestPriority,
+    TestStream,
+} from '../enums/testAnnotations';
+
 export interface LoggingFunctions {
     log: (...args: any[]) => void;
     logError: (...args: any[]) => void;
@@ -110,13 +118,16 @@ export interface TestDetailsAnnotation {
     description?: string | undefined;
 }
 
+// NotDefined is the reporter's fallback for tests that carry no annotation, never an assignment.
+export type AssignedTestStream = Exclude<TestStream, TestStream.NotDefined>;
+
 export interface TestMetadataInput {
     testCase?: string;
     prerequisites?: string[];
     steps?: string[];
-    category?: string;
-    priority?: string;
-    stream?: string;
-    deviceModel?: string;
-    osMatrix?: string[];
+    category?: TestCategory;
+    priority?: TestPriority;
+    stream: AssignedTestStream;
+    deviceModel?: DeviceModel;
+    osMatrix?: TestOsMatrix[];
 }

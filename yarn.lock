@@ -45559,6 +45559,7 @@ __metadata:
     "@swc/core": "npm:^1.15.47"
     "@swc/jest": "npm:^0.2.39"
     "@trezor/eslint": "workspace:*"
+    "@types/estree": "npm:^1.0.8"
     "@types/jest": "npm:30.0.0"
     "@types/node": "npm:22.13.10"
     "@typescript/native-preview": "npm:typescript@^7.0.2"
