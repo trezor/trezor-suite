@@ -11700,6 +11700,7 @@ __metadata:
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/eslint": "workspace:*"
     "@trezor/network-ethereum-suite-common": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-ripple": "workspace:*"

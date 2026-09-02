@@ -47,6 +47,7 @@
         { "path": "../../packages/crypto-utils" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/eslint" },
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
