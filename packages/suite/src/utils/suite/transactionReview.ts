@@ -1,27 +1,31 @@
 import { type ExtendedMessageDescriptor } from '@suite/intl';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getDisplaySymbol,
+    getNetworkDisplaySymbol,
+} from '@suite-common/wallet-config';
 import { type FormState, type StakeFormState } from '@suite-common/wallet-types';
 import { getEvmTransactionPurpose } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 
-interface GetTransactionReviewModalActionTranslationParams {
+type GetTransactionReviewModalActionTranslationParams = {
     symbol: NetworkSymbol;
     stakeType: StakeFormState['stakeType'] | null;
     precomposedForm: FormState | StakeFormState;
-    tradingToken: TokenInfo | undefined;
+    approvalToken: TokenInfo | undefined;
     routeName?: string;
     isBumpFeeRbfAction: boolean;
     isCancelRbfAction: boolean;
     isSending?: boolean;
     source: 'heading' | 'button';
-}
+};
 
 export const getTransactionReviewModalActionTranslation = ({
     symbol,
     stakeType,
     precomposedForm,
-    tradingToken,
+    approvalToken,
     routeName,
     isBumpFeeRbfAction,
     isCancelRbfAction,
@@ -53,48 +57,41 @@ export const getTransactionReviewModalActionTranslation = ({
         // no default
     }
 
-    if (precomposedForm?.trading?.activeSection === 'sell') {
-        return { id: 'TR_TRADING_SELL' };
-    }
-
-    if (precomposedForm?.trading?.activeSection === 'exchange') {
-        switch (txPurpose) {
-            case 'approve':
-                return {
-                    id:
-                        source === 'heading'
-                            ? 'TR_TRADING_APPROVE_TOKEN'
-                            : 'TR_TRADING_APPROVE_TOKEN_BUTTON',
-                    values: { tokenSymbol: tradingToken?.symbol },
-                };
-            case 'revoke':
-                return {
-                    id:
-                        source === 'heading'
-                            ? 'TR_TRADING_REVOKE_TOKEN'
-                            : 'TR_TRADING_REVOKE_TOKEN_BUTTON',
-                    values: { tokenSymbol: tradingToken?.symbol },
-                };
-            default:
-                return { id: 'TR_TRADING_SWAP' };
-        }
-    }
-
-    if (
-        (routeName === 'earn-yield-deposit' || routeName === 'earn-yield-withdraw') &&
-        (txPurpose === 'approve' || txPurpose === 'revoke')
-    ) {
-        return {
-            id: txPurpose === 'approve' ? 'TR_APPROVE_DATA_TITLE' : 'TR_REVOKE_DATA_TITLE',
-        };
-    }
-
     if (isBumpFeeRbfAction) {
         return { id: 'TR_REPLACE_TX' };
     }
 
     if (isCancelRbfAction) {
         return { id: 'TR_CANCEL_TX_BUTTON' };
+    }
+
+    // Approvals are signed from flows that do not share a single form state (trading composes
+    // through the trading thunks, earn through the allowance ones), so the action is resolved
+    // from the calldata rather than from the originating form or route.
+    if (txPurpose === 'approve' || txPurpose === 'revoke') {
+        const isApprove = txPurpose === 'approve';
+        const displaySymbol = approvalToken?.symbol
+            ? getDisplaySymbol(approvalToken.symbol, approvalToken.contract)
+            : undefined;
+
+        if (source === 'button' || !displaySymbol) {
+            return { id: isApprove ? 'TR_APPROVE_DATA_TITLE' : 'TR_REVOKE_DATA_TITLE' };
+        }
+
+        return {
+            id: isApprove
+                ? 'TR_APPROVAL_APPROVE_TOKEN_SPENDING'
+                : 'TR_APPROVAL_REVOKE_TOKEN_SPENDING',
+            values: { displaySymbol },
+        };
+    }
+
+    if (precomposedForm?.trading?.activeSection === 'sell') {
+        return { id: 'TR_TRADING_SELL' };
+    }
+
+    if (precomposedForm?.trading?.activeSection === 'exchange') {
+        return { id: 'TR_TRADING_SWAP' };
     }
 
     if (txPurpose === 'wrap' || txPurpose === 'unwrap') {

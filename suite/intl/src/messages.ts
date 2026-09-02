@@ -1390,22 +1390,6 @@ export const messages = defineMessages({
         defaultMessage: 'Swap unavailable',
         id: 'TR_TRADING_SWAP_UNAVAILABLE',
     },
-    TR_TRADING_APPROVE_TOKEN: {
-        defaultMessage: 'Approve {tokenSymbol} spending',
-        id: 'TR_TRADING_APPROVE_TOKEN',
-    },
-    TR_TRADING_APPROVE_TOKEN_BUTTON: {
-        defaultMessage: 'Approve {tokenSymbol}',
-        id: 'TR_TRADING_APPROVE_TOKEN_BUTTON',
-    },
-    TR_TRADING_REVOKE_TOKEN: {
-        defaultMessage: 'Revoke {tokenSymbol} spending',
-        id: 'TR_TRADING_REVOKE_TOKEN',
-    },
-    TR_TRADING_REVOKE_TOKEN_BUTTON: {
-        defaultMessage: 'Revoke {tokenSymbol}',
-        id: 'TR_TRADING_REVOKE_TOKEN_BUTTON',
-    },
     TR_TRADING_TRANS_ID: {
         defaultMessage: 'Trade ID:',
         id: 'TR_TRADING_TRANS_ID',
