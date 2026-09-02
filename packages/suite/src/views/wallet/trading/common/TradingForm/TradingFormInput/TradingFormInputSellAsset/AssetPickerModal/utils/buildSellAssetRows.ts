@@ -4,7 +4,11 @@ import { type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { getCryptoId } from '@suite-common/trading';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import { type RatesByKey } from '@suite-common/wallet-types';
-import { filterAccountsByNetworkSymbol, isTestnet } from '@suite-common/wallet-utils';
+import {
+    filterAccountsByNetworkSymbol,
+    isReadOnlyToken,
+    isTestnet,
+} from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -38,7 +42,8 @@ export const buildSellAssetRows = ({
 }: BuildSellAssetRowsProps): { assetRows: AssetRowOption[]; networks: NetworkSymbol[] } => {
     const getTokensWithBalance = (account: AccountWithOptionalLabel) => {
         const { shownWithBalance, hiddenWithBalance } = getTokens({
-            tokens: account.tokens ?? [],
+            // Read-only tokens cannot be spent, so they are not offered as a sell source.
+            tokens: (account.tokens ?? []).filter(token => !isReadOnlyToken(token)),
             symbol: account.symbol,
             tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
         });
