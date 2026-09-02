@@ -209,6 +209,7 @@ export const composeTradingTransactionThunk = createThunk<
                     maxPriorityFeePerGas: maxPriorityFeePerGas ?? '',
                 },
                 isSlip24Active,
+                networkType: account.networkType,
                 sendAccountKey: account.key,
                 receiveAccountKey,
             });

@@ -31,6 +31,7 @@ describe('createFormStateForSendForm', () => {
             const formState = createFormStateForSendForm({
                 quote: exchangeQuote,
                 feeLevel,
+                networkType: 'solana',
                 providers,
                 sendAccountKey,
             });
@@ -76,6 +77,7 @@ describe('createFormStateForSendForm', () => {
             const providers = { invity: sellInvity };
             const formState = createFormStateForSendForm({
                 quote: sellQuote,
+                networkType: 'bitcoin',
                 providers,
                 sendAccountKey,
             });
@@ -108,6 +110,7 @@ describe('createFormStateForSendForm', () => {
             const providers = { invity: exchangeInvity };
             const formState = createFormStateForSendForm({
                 quote: tokenQuote,
+                networkType: 'ethereum',
                 providers,
                 sendAccountKey,
             });
@@ -136,6 +139,7 @@ describe('createFormStateForSendForm', () => {
             const providers = { changelly: exchangeInvity };
             const formState = createFormStateForSendForm({
                 quote: xrpQuote,
+                networkType: 'ripple',
                 providers,
                 sendAccountKey,
             });
@@ -170,6 +174,7 @@ describe('createFormStateForSendForm', () => {
             const formState = createFormStateForSendForm({
                 quote,
                 extraField: customExtraField,
+                networkType: 'bitcoin',
                 providers,
                 sendAccountKey,
             });
@@ -190,6 +195,7 @@ describe('createFormStateForSendForm', () => {
             expect(() =>
                 createFormStateForSendForm({
                     quote: invalidQuote as any,
+                    networkType: 'bitcoin',
                     providers,
                     sendAccountKey,
                 }),
@@ -219,6 +225,7 @@ describe('createFormStateForSendForm', () => {
             const providers = { '1inch': exchangeInvity };
             const formState = createFormStateForSendForm({
                 quote: dexQuote,
+                networkType: 'ethereum',
                 providers,
                 sendAccountKey,
             });
@@ -227,6 +234,37 @@ describe('createFormStateForSendForm', () => {
             expect(formState.outputs[0]?.address).toBe('0xDexRouterAddress');
             expect(formState.transactionData).toBe('0xabcdef1234567890');
             expect(formState.ethereumAdjustGasLimit).toBe('1.25');
+        });
+
+        it('should convert Solana DEX transaction data from base64 to hex', () => {
+            const dexQuote: ExchangeTrade = {
+                exchange: 'jupiter',
+                send: 'solana' as any,
+                sendStringAmount: '1.0',
+                sendAddress: 'sender',
+                receive: 'solana' as any,
+                receiveStringAmount: '1.0',
+                receiveAddress: 'receiver',
+                status: 'CONFIRM',
+                orderId: 'dex-order-123',
+                quoteId: 'dex-quote-456',
+                isDex: true,
+                dexTx: {
+                    from: 'sender',
+                    to: 'receiver',
+                    data: 'AQID/w==',
+                    value: '1000000000',
+                },
+            };
+
+            const formState = createFormStateForSendForm({
+                quote: dexQuote,
+                networkType: 'solana',
+                providers: { jupiter: exchangeInvity },
+                sendAccountKey,
+            });
+
+            expect(formState.transactionData).toBe('010203ff');
         });
 
         it('should apply gas limit adjustment for DEX approval transactions', () => {
@@ -252,6 +290,7 @@ describe('createFormStateForSendForm', () => {
             const providers = { '1inch': exchangeInvity };
             const formState = createFormStateForSendForm({
                 quote: dexApprovalQuote,
+                networkType: 'ethereum',
                 providers,
                 sendAccountKey,
             });
@@ -279,6 +318,7 @@ describe('createFormStateForSendForm', () => {
             const providers = { changelly: exchangeInvity };
             const formState = createFormStateForSendForm({
                 quote: cexQuote,
+                networkType: 'ethereum',
                 providers,
                 sendAccountKey,
             });
@@ -302,7 +342,12 @@ describe('createFormStateForSendForm', () => {
             };
 
             const providers = { test: exchangeInvity };
-            const formState = createFormStateForSendForm({ quote, providers, sendAccountKey });
+            const formState = createFormStateForSendForm({
+                quote,
+                networkType: 'bitcoin',
+                providers,
+                sendAccountKey,
+            });
 
             expect(formState.selectedFee).toBe('normal');
             expect(formState.feePerUnit).toBe('');
