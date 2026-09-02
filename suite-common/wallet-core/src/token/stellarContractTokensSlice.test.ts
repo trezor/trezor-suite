@@ -1,11 +1,17 @@
+import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import {
     type StellarContractTokensState,
+    prepareStellarContractTokensReducer,
     selectStellarContractTokens,
     stellarContractTokensActions,
-    stellarContractTokensReducer,
 } from './stellarContractTokensSlice';
+
+const stellarContractTokensReducer = prepareStellarContractTokensReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadStellarContractTokens: mockReducer() },
+});
 
 const accountKey = 'descriptor-xlm-session' as AccountKey;
 const otherAccountKey = 'other-xlm-session' as AccountKey;
