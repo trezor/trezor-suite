@@ -1,7 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
 import { openApp } from '../support/setup';
-import { wait, waitForVisible } from '../support/utils';
+import { wait, waitForVisible, waitToHaveRegex, waitToHaveText } from '../support/utils';
 
 const STRESS_DURATION_MS = 15 * 60 * 1000;
 const TEST_TIMEOUT_MS = STRESS_DURATION_MS + 2 * 60 * 1000;
@@ -12,10 +12,15 @@ describe('NetworkIcon surface lifecycle stress [@noDevice]', () => {
         async () => {
             await openApp({});
             await waitForVisible(by.id('@screen/NetworkIconStress'));
+            await waitToHaveText(by.id('@networkIconStress/status'), 'Idle');
 
             await device.disableSynchronization();
             await element(by.id('@networkIconStress/start')).tap();
             await waitForVisible(by.id('@networkIconStress/icons'));
+            await waitToHaveRegex(
+                by.id('@networkIconStress/status'),
+                /^Running cycle [1-9]\d* with 112 icons per mount$/,
+            );
 
             await wait(STRESS_DURATION_MS);
 

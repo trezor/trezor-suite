@@ -6,11 +6,13 @@ const TEARDOWN_TIMEOUT = 30_000;
 // 1) afterAll - to cover normal test run teardowns
 // 2) beforeEach - to cover cases where previous tests hang and afterAll is not called
 const stopTrezorUserEnv = async () => {
-    if (device.getPlatform() === 'android') {
-        await TrezorUserEnvLink.stopEmu();
-        await TrezorUserEnvLink.stopBridge();
-        await TrezorUserEnvLink.disconnect();
+    if (device.getPlatform() !== 'android' || process.env.TDR_SKIP_TREZOR_USER_ENV === 'true') {
+        return;
     }
+
+    await TrezorUserEnvLink.stopEmu();
+    await TrezorUserEnvLink.stopBridge();
+    await TrezorUserEnvLink.disconnect();
 };
 
 const teardownPromises = async () => {

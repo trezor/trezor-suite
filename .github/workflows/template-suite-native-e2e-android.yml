@@ -53,6 +53,7 @@ jobs:
         -noaudio -no-boot-anim -no-metrics -grpc 8554 -memory 4096
       DIAGNOSTICS_DIR: /tmp/e2e-diagnostics
       RESOURCE_MONITOR_INTERVAL_SECONDS: "2"
+      TDR_SKIP_TREZOR_USER_ENV: "true"
 
     steps:
       - name: Checkout project
