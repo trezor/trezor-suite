@@ -3,12 +3,17 @@ import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
-import { selectBaseCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
+import {
+    selectBaseCurrency,
+    selectRawNetworkFeeInfo,
+    selectVotingDelegationOption,
+} from '@suite-common/wallet-core';
 import {
     type ChangeDelegateFormState,
     type SelectedAccountLoaded,
 } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { useCurrentRef } from '@trezor/react-utils';
 import { throwError } from '@trezor/utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
@@ -35,6 +40,9 @@ export const useChangeDelegateForm = ({
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
+    const selectedVotingDelegation = useSelector(state =>
+        selectVotingDelegationOption(state, account.key),
+    );
 
     const feeInfo = getConvertedOrDefaultFeeInfo({
         networkType: account.networkType,
@@ -85,6 +93,12 @@ export const useChangeDelegateForm = ({
         ...methods,
         state,
     });
+
+    const composeRequestRef = useCurrentRef(composeRequest);
+
+    useEffect(() => {
+        composeRequestRef.current();
+    }, [composeRequestRef, selectedVotingDelegation]);
 
     const { changeFeeLevel, selectedFee: _selectedFee } = useFees({
         defaultValue: 'normal',

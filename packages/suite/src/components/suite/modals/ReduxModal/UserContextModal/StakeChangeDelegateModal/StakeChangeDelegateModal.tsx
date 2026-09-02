@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
@@ -7,14 +7,17 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
-import { selectVotingDelegationOption, stakeActions } from '@suite-common/wallet-core';
+import {
+    DEFAULT_VOTING_OPTION,
+    selectVotingDelegationOption,
+    stakeActions,
+} from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getCardanoAccountDrepId, validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Card, Column, Modal, Tooltip } from '@trezor/components';
 
 import { VotingDelegationsOptions } from 'src/components/earn';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useSeededCardanoVotingDelegation } from 'src/hooks/earn/useCardanoAccountVotingDelegation';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import {
@@ -52,7 +55,18 @@ export const StakeChangeDelegateModalLoaded = ({
     const currentDrepId = getCardanoAccountDrepId(account);
     const isEverstake = currentDrepId === CARDANO_EVERSTAKE_DREP.bech32;
 
-    const drepIdOptionValue = useSeededCardanoVotingDelegation(account);
+    // we don't want to show current delegation option in this modal
+    // if it was pre-selected, select the default option instead
+    useEffect(() => {
+        if (selectedVotingDelegation.type !== 'current') return;
+
+        dispatch(
+            stakeActions.setAccountVotingDelegation({
+                accountKey: account.key,
+                option: DEFAULT_VOTING_OPTION,
+            }),
+        );
+    }, [dispatch, selectedVotingDelegation, account.key]);
 
     const handleCancel = () => {
         dispatch(stakeActions.clearAccountVotingDelegation());
@@ -145,11 +159,7 @@ export const StakeChangeDelegateModalLoaded = ({
                     <Card>
                         <Column gap={20} hasDivider>
                             <CurrentDelegate account={account} />
-                            <VotingDelegationsOptions
-                                account={account}
-                                hasTitle
-                                hasKeepCurrentOption={!!drepIdOptionValue}
-                            />
+                            <VotingDelegationsOptions account={account} hasTitle />
 
                             <Fees
                                 feeInfo={feeInfo}
