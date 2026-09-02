@@ -9,21 +9,21 @@ describe('api/bitcoin/enhanceSignTx', () => {
                 overwintered: true,
                 version: 5,
                 version_group_id: 0x26a7270a,
-                branch_id: 0x5437f330,
+                branch_id: 0x37a5165b,
             });
 
             expect(enhanceSignTx({ version: 4 }, coinInfo)).toEqual({
                 overwintered: true,
                 version: 4,
                 version_group_id: 0x26a7270a,
-                branch_id: 0x5437f330,
+                branch_id: 0x37a5165b,
             });
 
             expect(enhanceSignTx({ version: 4, version_group_id: 1 }, coinInfo)).toEqual({
                 overwintered: true,
                 version: 4,
                 version_group_id: 1,
-                branch_id: 0x5437f330,
+                branch_id: 0x37a5165b,
             });
 
             expect(
