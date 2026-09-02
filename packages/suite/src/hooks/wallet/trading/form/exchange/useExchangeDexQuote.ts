@@ -14,7 +14,7 @@ import {
     requiresErc20Approval,
 } from '@suite-common/trading';
 import { isAccountBasedNetwork } from '@suite-common/wallet-config';
-import { ETHEREUM_ADJUST_GAS_LIMIT, updateFeeInfoThunk } from '@suite-common/wallet-core';
+import { ETHEREUM_ADJUST_GAS_LIMIT_RESERVE, updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
@@ -111,7 +111,7 @@ export const useExchangeDexQuote = ({
 
         setValue('transactionData', getDexEstimationData(quote) ?? '');
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
-        setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT);
+        setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT_RESERVE);
     }, [
         dexQuotes,
         selectedQuote,

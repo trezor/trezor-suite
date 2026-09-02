@@ -20,6 +20,8 @@ const NETWORK_FEE_OVERRIDES: Record<
 
 export const ETHEREUM_ADJUST_GAS_LIMIT = '1.25';
 
+export const ETHEREUM_ADJUST_GAS_LIMIT_RESERVE = '1.5';
+
 // sort FeeLevels in reversed order (Low > High)
 // TODO: consider to use same order in @trezor/connect to avoid double sorting
 const order: FeeLevel['label'][] = ['low', 'economy', 'normal', 'high'];
