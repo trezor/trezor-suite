@@ -992,11 +992,10 @@ export class Core extends EventEmitter {
             // settingsStore so no reader picks up a stale, unsanitized snapshot.
             settingsStore.set({ ...settings, enabledNetworks: undefined });
             enabledNetworksStore.set(settings.enabledNetworks ?? []);
-            await firmwareReleaseStore.init(
-                settings.firmwareChannel,
-                false,
-                initializeFirmwareConfig,
-            );
+
+            const result = await initializeFirmwareConfig(settings.firmwareChannel);
+            firmwareReleaseStore.init(result);
+
             const localFirmwares =
                 settings.localFirmwares && parseLocalFirmwares(settings.localFirmwares);
             if (localFirmwares) {
@@ -1004,9 +1003,7 @@ export class Core extends EventEmitter {
             }
             await loadProtobufModules();
 
-            this._deviceList = new DeviceList({
-                createLogger: this.createLogger,
-            });
+            this._deviceList = new DeviceList({ createLogger: this.createLogger });
             initDeviceList(this.getCoreContext());
 
             this.on(CORE_EVENT, onCoreEventThrottled);
