@@ -5,30 +5,25 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import {
-    cancelDiscoveryThunk,
-    selectIsCreatingNewPassphraseWallet,
-} from '@suite-common/wallet-core';
+import { cancelDiscoveryThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
-    type AuthorizeDeviceStackParamList,
-    type AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
+    type PassphraseStackParamList,
+    type PassphraseStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     type StackToTabCompositeProps,
     useInterceptNativeNavigation,
-    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import TrezorConnect from '@trezor/connect';
 
 type NavigationProp = StackToTabCompositeProps<
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
+    PassphraseStackParamList,
+    PassphraseStackRoutes,
     RootStackParamList
 >;
 
@@ -40,10 +35,6 @@ export const PassphraseScreenHeader = () => {
     const dispatch = useDispatch();
 
     const { showAlert } = useAlert();
-
-    const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
-
-    const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const handleClose = useCallback(() => {
         navigation.navigate(RootStackRoutes.AppTabs, {
@@ -63,25 +54,20 @@ export const PassphraseScreenHeader = () => {
     }, [navigation, analytics, route.name, device, dispatch]);
 
     const handleCancel = useCallback(() => {
-        if (isCreatingNewWalletInstance) {
-            showAlert({
-                title: <Translation id="modulePassphrase.confirmOnDevice.warningSheet.title" />,
-                description: undefined,
-                primaryButtonTitle: (
-                    <Translation id="modulePassphrase.confirmOnDevice.warningSheet.primaryButton" />
-                ),
-                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
-                onPressPrimaryButton: handleClose,
-                secondaryButtonTitle: (
-                    <Translation id="modulePassphrase.confirmOnDevice.warningSheet.secondaryButton" />
-                ),
-                secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
-            });
-        } else {
-            TrezorConnect.cancel();
-            navigateToInitialScreen();
-        }
-    }, [handleClose, navigateToInitialScreen, isCreatingNewWalletInstance, showAlert]);
+        showAlert({
+            title: <Translation id="modulePassphrase.confirmOnDevice.warningSheet.title" />,
+            description: undefined,
+            primaryButtonTitle: (
+                <Translation id="modulePassphrase.confirmOnDevice.warningSheet.primaryButton" />
+            ),
+            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+            onPressPrimaryButton: handleClose,
+            secondaryButtonTitle: (
+                <Translation id="modulePassphrase.confirmOnDevice.warningSheet.secondaryButton" />
+            ),
+            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
+        });
+    }, [handleClose, showAlert]);
 
     useInterceptNativeNavigation({ onPress: handleCancel });
 

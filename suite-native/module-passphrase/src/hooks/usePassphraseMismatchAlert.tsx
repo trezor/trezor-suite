@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -6,44 +5,44 @@ import { useNavigation } from '@react-navigation/native';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
+    type DiscoveryRootState,
     cancelDiscoveryThunk,
     runDiscoveryThunk,
+    selectDiscoveryByDevicePath,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
-    type AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
+    type PassphraseStackParamList,
+    PassphraseStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
-import { selectHasPassphraseMismatchError } from '../passphraseSelectors';
-
 type NavigationProp = StackToStackCompositeNavigationProps<
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes.PassphraseForm,
+    PassphraseStackParamList,
+    PassphraseStackRoutes.PassphraseForm,
     RootStackParamList
 >;
 
-export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNode }) => {
-    const dispatch = useDispatch();
+export const usePassphraseMismatchAlert = () => {
+    const { showAlert } = useAlert();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const navigation = useNavigation<NavigationProp>();
+    const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const navigateToInitialScreen = useNavigateToInitialScreen();
+    const discovery = useSelector((state: DiscoveryRootState) =>
+        selectDiscoveryByDevicePath(state, device?.path),
+    );
 
-    const { showAlert } = useAlert();
-
-    const hasPassphraseMismatchError = useSelector(selectHasPassphraseMismatchError);
-
-    useEffect(() => {
+    const onPassphraseMismatchAlert = () => {
         // Wrong passphrase was entered during verifying empty wallet
-        if (hasPassphraseMismatchError) {
+        if (discovery?.status === 'passphrase-mismatch') {
             analytics.report({ type: events.passphraseMismatchEvent.name });
             showAlert({
                 title: (
@@ -67,8 +66,8 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                         }),
                     );
                     dispatch(runDiscoveryThunk({ device }));
-                    navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                        screen: AuthorizeDeviceStackRoutes.PassphraseForm,
+                    navigation.navigate(RootStackRoutes.PassphraseStack, {
+                        screen: PassphraseStackRoutes.PassphraseForm,
                     });
                 },
                 primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
@@ -82,22 +81,14 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
 
                     analytics.report({
                         type: events.passphraseExitEvent.name,
-                        payload: { screen: AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor },
+                        payload: { screen: PassphraseStackRoutes.PassphraseConfirmOnTrezor },
                     });
                 },
                 secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 pictogramVariant: 'critical',
             });
         }
-    }, [
-        device,
-        dispatch,
-        hasPassphraseMismatchError,
-        analytics,
-        navigateToInitialScreen,
-        navigation,
-        showAlert,
-    ]);
+    };
 
-    return children ?? null;
+    return { onPassphraseMismatchAlert };
 };

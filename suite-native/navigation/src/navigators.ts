@@ -489,7 +489,8 @@ export type PassphraseStackParamList = {
     [PassphraseStackRoutes.PassphraseEnterOnTrezor]: undefined;
     [PassphraseStackRoutes.PassphraseConfirmOnTrezor]: undefined;
     [PassphraseStackRoutes.PassphraseLoading]: undefined;
-    [PassphraseStackRoutes.PassphraseRedirecting]: undefined;
+    [PassphraseStackRoutes.PassphraseRedirectingSuccess]: undefined;
+    [PassphraseStackRoutes.PassphraseRedirectingFailure]: undefined;
     [PassphraseStackRoutes.PassphraseDuplicateAlert]: undefined;
     [PassphraseStackRoutes.PassphraseEmptyWallet]: undefined;
     [PassphraseStackRoutes.PassphraseMismatchAlert]: undefined;

@@ -17,13 +17,11 @@ import {
     Screen,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import {
-    PassphraseForm,
-    PassphraseScreenHeader,
-    useHandleUiRequestPassphraseOnDevice,
-} from '@suite-native/passphrase';
+import { PassphraseForm, useHandleUiRequestPassphraseOnDevice } from '@suite-native/passphrase';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
+
+import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 
 const ANIMATION_DURATION = 300;
 
