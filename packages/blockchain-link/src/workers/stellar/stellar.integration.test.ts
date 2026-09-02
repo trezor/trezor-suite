@@ -213,23 +213,41 @@ describe('Stellar', () => {
 
     it('Horizon decodes Stellar Asset Contract transfers', async () => {
         // The account history depends on Horizon pre-decoding SAC transfers into
-        // asset_balance_changes; the amounts are not recoverable from the envelope.
-        const maxPages = 5;
+        // asset_balance_changes; the amounts are not recoverable from the envelope. Most host
+        // function calls move no balances at all, and Horizon reports those as `null` rather
+        // than an empty array, so keep paging until one that actually carries changes shows up.
+        const maxPages = 10;
+        const balanceChangesOf = (record: unknown) =>
+            (record as { asset_balance_changes?: unknown[] | null }).asset_balance_changes;
+        const decodesTransfers = (record: unknown) => {
+            const changes = balanceChangesOf(record);
+
+            return Array.isArray(changes) && changes.length > 0;
+        };
+
         let page = await horizonServer.operations().order('desc').limit(200).call();
-        let hostFunctionOp = page.records.find(record => 'asset_balance_changes' in record);
+        let hostFunctionOp = page.records.find(decodesTransfers);
         for (let i = 1; !hostFunctionOp && i < maxPages; i++) {
             page = await page.next();
             if (!page.records.length) break;
-            hostFunctionOp = page.records.find(record => 'asset_balance_changes' in record);
+            hostFunctionOp = page.records.find(decodesTransfers);
         }
         if (!hostFunctionOp) {
-            throw new Error(`No host function operations found in the last ${maxPages} pages`);
+            throw new Error(
+                `No host function operation carrying asset_balance_changes found in the last ${maxPages} pages`,
+            );
         }
 
-        expect(
-            (hostFunctionOp as { asset_balance_changes: unknown }).asset_balance_changes,
-        ).toBeInstanceOf(Array);
-    });
+        // Every change has to carry the fields `identifyBalanceChanges` reads off it.
+        (balanceChangesOf(hostFunctionOp) as unknown[]).forEach(change =>
+            expect(change).toMatchObject({
+                type: expect.any(String),
+                asset_type: expect.any(String),
+                amount: expect.any(String),
+            }),
+        );
+        // Paging the global operations feed needs more than the 5s default.
+    }, 30_000);
 
     it('joins the transaction into the operations response', async () => {
         const descriptor = 'GBSXTBPFJOJ64NSYRFE2F6P6TPMMSD45KQZH5TEWIBEAHICY6IZVGCET';

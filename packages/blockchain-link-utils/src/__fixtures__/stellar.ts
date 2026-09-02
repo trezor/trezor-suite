@@ -43,7 +43,7 @@ const payment = (overrides: Overrides = {}) =>
         ...overrides,
     });
 
-const invokeHostFunction = (assetBalanceChanges: Overrides[]) =>
+const invokeHostFunction = (assetBalanceChanges: Overrides[] | null) =>
     operation('invoke_host_function', {
         function: 'HostFunctionTypeHostFunctionTypeInvokeContract',
         asset_balance_changes: assetBalanceChanges,
@@ -454,6 +454,16 @@ export const fixtures = {
                 tx: transaction(),
             },
             expectedOutput: output({ type: 'recv', tokens: [token({ amount: '20000000' })] }),
+        },
+        {
+            description: 'host function call that moved no balances at all',
+            input: {
+                descriptor: DESCRIPTOR,
+                // Horizon sends `null` here, not an empty array.
+                operations: [invokeHostFunction(null)],
+                tx: transaction(),
+            },
+            expectedOutput: output({ type: 'unknown' }),
         },
         {
             description: 'host function call the account does not take part in',
