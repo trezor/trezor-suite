@@ -67,7 +67,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user see rewards on his Solana staking account.',
                 category: TestCategory.Solana,
                 priority: TestPriority.Critical,
-                stream: TestStream.Trends,
+                stream: TestStream.Earn,
             }),
         },
         async ({ page, walletPage, tradingPage, stakingSection }) => {

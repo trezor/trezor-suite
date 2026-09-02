@@ -1,6 +1,9 @@
 import { readFileSync } from 'fs-extra';
 
+import { TestStream } from '@trezor/e2e-utils';
+
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Application Logs', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
@@ -10,7 +13,10 @@ test.describe('Application Logs', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test(
         'Display and export application logs',
-        { tag: ['@webOnly', '@T3W1', '@T3T1'] },
+        {
+            annotation: createTestAnnotation({ stream: TestStream.Growth }),
+            tag: ['@webOnly', '@T3W1', '@T3T1'],
+        },
         async ({ page }, testInfo) => {
             const displayedLogs = await test.step('Display application logs', async () => {
                 await page.getByTestId('@settings/menu/general').click();
@@ -46,7 +52,10 @@ test.describe('Application Logs', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test(
         'Display application logs',
-        { tag: ['@desktopOnly', '@T3W1', '@T3T1'] },
+        {
+            annotation: createTestAnnotation({ stream: TestStream.Growth }),
+            tag: ['@desktopOnly', '@T3W1', '@T3T1'],
+        },
         async ({ page }) => {
             await page.getByTestId('@settings/menu/general').click();
             await page.getByTestId('@settings/show-log-button').click();

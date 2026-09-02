@@ -14,7 +14,7 @@ describe.skip('Manual', () => {
             ],
             category: TestCategory.Device,
             priority: TestPriority.High,
-            stream: TestStream.Foundation,
+            stream: TestStream.Firmware,
         },
         async () => {},
     );

@@ -17,7 +17,7 @@ test.describe.skip('Check for update', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Settings,
                 priority: TestPriority.High,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
             }),
         },
         async () => {},

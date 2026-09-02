@@ -54,7 +54,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'Verifies that a user can do first stake from his clean Ethereum account.',
                 category: TestCategory.ETH,
                 priority: TestPriority.Critical,
-                stream: TestStream.Trends,
+                stream: TestStream.Earn,
             }),
         },
         async ({ page, device, walletPage, stakingSection, devicePrompt, blockbookMock }) => {

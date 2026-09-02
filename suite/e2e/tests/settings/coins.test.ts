@@ -18,7 +18,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'Verifies that a user can navigate to the wallet settings page, check BTC, activate few networks, deactivate them, and set a custom backend.',
                 category: TestCategory.Settings,
                 priority: TestPriority.Critical,
-                stream: TestStream.Foundation,
+                stream: TestStream.Network,
             }),
         },
         async ({ page, dashboardPage, settingsPage, assetsSection }) => {

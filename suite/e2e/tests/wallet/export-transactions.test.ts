@@ -1,7 +1,7 @@
 import fs from 'fs';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { ExportType } from '../../support/pageObjects/walletPage';
@@ -59,6 +59,7 @@ test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
                 testCase: 'Verify that a user can successfully export transactions in all formats.',
                 category: TestCategory.Wallets,
                 priority: TestPriority.Medium,
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, settingsPage, walletPage, onboardingPage }) => {
@@ -79,6 +80,7 @@ test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
                 testCase: 'Verify that a user can successfully export transactions in all formats.',
                 category: TestCategory.Wallets,
                 priority: TestPriority.Medium,
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, settingsPage, walletPage, onboardingPage }) => {

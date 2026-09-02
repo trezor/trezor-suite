@@ -23,7 +23,7 @@ test.describe('Analytics Events - Staking Navigate', { tag: ['@T3W1', '@nightlyO
                     testCase: `Verify that the ${EventType.StakingNavigate} event is logged for ${coin.toUpperCase()} when navigating from the account menu`,
                     category: TestCategory.General,
                     priority: TestPriority.Medium,
-                    stream: TestStream.Foundation,
+                    stream: TestStream.Growth,
                 }),
             },
             async ({ analyticsHelper, walletPage }) => {
@@ -55,7 +55,7 @@ test.describe('Analytics Events - Staking Navigate', { tag: ['@T3W1', '@nightlyO
                     testCase: `Verify that the ${EventType.StakingNavigate} event is logged for ${coin.toUpperCase()} when navigating from the dashboard`,
                     category: TestCategory.General,
                     priority: TestPriority.Medium,
-                    stream: TestStream.Foundation,
+                    stream: TestStream.Growth,
                 }),
             },
             async ({ analyticsHelper, dashboardPage }) => {

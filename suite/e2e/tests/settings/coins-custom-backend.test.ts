@@ -49,7 +49,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                     testCase: `Verifies that settings up a custom ${backendType} server for ${coin.toUpperCase()} with correct url ${customBackendUrlRight} will succeed.`,
                     category: TestCategory.Settings,
                     priority: TestPriority.Medium,
-                    stream: TestStream.Foundation,
+                    stream: TestStream.Network,
                 }),
             },
             async ({ page, settingsPage, walletPage }) => {
@@ -89,7 +89,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                     testCase: `Verifies that settings up a custom ${backendType} server for ${coin.toUpperCase()} with wrong url ${customBackendUrlWrong} will fail.`,
                     category: TestCategory.Settings,
                     priority: TestPriority.Medium,
-                    stream: TestStream.Foundation,
+                    stream: TestStream.Network,
                 }),
             },
             async ({ page, settingsPage, walletPage }) => {
@@ -131,7 +131,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'Verifies that a custom Bitcoin blockbook backend can be configured while the network is still disabled, that no communication reaches the backend until the network is enabled, that the sidebar custom-backend icon appears, and that reverting to the default backend reconnects away from the custom server.',
                 category: TestCategory.Settings,
                 priority: TestPriority.Medium,
-                stream: TestStream.Foundation,
+                stream: TestStream.Network,
             }),
         },
         async ({ page, dashboardPage, settingsPage, walletPage }) => {

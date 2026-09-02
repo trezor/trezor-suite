@@ -1,7 +1,10 @@
 import { devices } from '@playwright/test';
 
+import { TestStream } from '@trezor/e2e-utils';
+
 import { skipFixture } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const safariAria = `
     - heading "Your browser is not supported" [level=1]
@@ -24,12 +27,16 @@ test.use({
 });
 
 test.describe('Safari', { tag: ['@webOnly', '@noDevice'] }, () => {
-    test('Suite does not support Safari', async ({ page, onboardingPage }) => {
-        await expect(page.locator('body')).toMatchAriaSnapshot(safariAria);
-        await expect(onboardingPage.continueAtYourOwnRiskButton).toHaveText(
-            'Continue at my own risk',
-        );
-        await onboardingPage.continueAtYourOwnRiskButton.click({ force: true });
-        await onboardingPage.verifySuiteIsLoaded();
-    });
+    test(
+        'Suite does not support Safari',
+        { annotation: createTestAnnotation({ stream: TestStream.Growth }) },
+        async ({ page, onboardingPage }) => {
+            await expect(page.locator('body')).toMatchAriaSnapshot(safariAria);
+            await expect(onboardingPage.continueAtYourOwnRiskButton).toHaveText(
+                'Continue at my own risk',
+            );
+            await onboardingPage.continueAtYourOwnRiskButton.click({ force: true });
+            await onboardingPage.verifySuiteIsLoaded();
+        },
+    );
 });

@@ -9,9 +9,11 @@ import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { asWalletDescriptor } from '@trezor/device-utils';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
+import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 const defaultWalletOwnerSecret = mnemonic12Fixtures.ownerSecret;
 const walletOneOwnerSecret = asSuiteSyncOwnerSecretHex(
@@ -89,97 +91,94 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, ()
         await metadataPage.enableSuiteSync();
     });
 
-    test('Labels on multiple wallets', async ({
-        page,
-        evoluClient,
-        dashboardPage,
-        metadataPage,
-        walletPage,
-        devicePrompt,
-    }) => {
-        await test.step('Change default wallet label', async () => {
-            await dashboardPage.openDeviceSwitcher();
-            await metadataPage.wallet.changeLabel({
-                index: 0,
-                label: expectedDefaultWalletLabel.label,
-                confirmSuiteSync: true,
+    test(
+        'Labels on multiple wallets',
+        { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+        async ({ page, evoluClient, dashboardPage, metadataPage, walletPage, devicePrompt }) => {
+            await test.step('Change default wallet label', async () => {
+                await dashboardPage.openDeviceSwitcher();
+                await metadataPage.wallet.changeLabel({
+                    index: 0,
+                    label: expectedDefaultWalletLabel.label,
+                    confirmSuiteSync: true,
+                });
             });
-        });
 
-        await test.step('Add passphrase #1 and enable Suite sync', async () => {
-            await dashboardPage.addUnusedHiddenWallet(walletOne.passphrase, {
-                suiteSync: 'enable',
+            await test.step('Add passphrase #1 and enable Suite sync', async () => {
+                await dashboardPage.addUnusedHiddenWallet(walletOne.passphrase, {
+                    suiteSync: 'enable',
+                });
+                await expect(metadataPage.suiteSyncBanner).toBeHidden();
             });
-            await expect(metadataPage.suiteSyncBanner).toBeHidden();
-        });
 
-        await test.step('Set label for passphrase wallet #1', async () => {
-            await dashboardPage.openDeviceSwitcher();
-            await page.waitForTimeout(500); // wait for the walletSwitcher to completely open
-            await metadataPage.wallet.changeLabel({
-                index: walletOne.index,
-                label: expectedWalletOneLabel.label,
-                confirmSuiteSync: true,
+            await test.step('Set label for passphrase wallet #1', async () => {
+                await dashboardPage.openDeviceSwitcher();
+                await page.waitForTimeout(500); // wait for the walletSwitcher to completely open
+                await metadataPage.wallet.changeLabel({
+                    index: walletOne.index,
+                    label: expectedWalletOneLabel.label,
+                    confirmSuiteSync: true,
+                });
             });
-        });
 
-        await test.step('Add passphrase #2 and decline Suite sync', async () => {
-            await dashboardPage.addUnusedHiddenWallet(walletTwo.passphrase, {
-                suiteSync: 'decline',
+            await test.step('Add passphrase #2 and decline Suite sync', async () => {
+                await dashboardPage.addUnusedHiddenWallet(walletTwo.passphrase, {
+                    suiteSync: 'decline',
+                });
+                await expect(metadataPage.suiteSyncBanner).toContainTranslation(
+                    'TR_SUITE_SYNC_KEYS_NEEDED_BANNER',
+                );
             });
-            await expect(metadataPage.suiteSyncBanner).toContainTranslation(
-                'TR_SUITE_SYNC_KEYS_NEEDED_BANNER',
-            );
-        });
 
-        await test.step('Set account label for passphrase wallet #1', async () => {
-            await dashboardPage.openDeviceSwitcher();
-            await dashboardPage.openDevice(walletOne.index);
-            await expect(metadataPage.suiteSyncBanner).toBeHidden();
-            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
-            await metadataPage.account.changeLabel({
-                accountId: AccountLabelId.BitcoinDefault1,
-                label: expectedAccountLabelWalletOne.label,
+            await test.step('Set account label for passphrase wallet #1', async () => {
+                await dashboardPage.openDeviceSwitcher();
+                await dashboardPage.openDevice(walletOne.index);
+                await expect(metadataPage.suiteSyncBanner).toBeHidden();
+                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await metadataPage.account.changeLabel({
+                    accountId: AccountLabelId.BitcoinDefault1,
+                    label: expectedAccountLabelWalletOne.label,
+                });
             });
-        });
 
-        await test.step('Enable Suite sync on passphrase wallet #2 thru banner', async () => {
-            await dashboardPage.openDeviceSwitcher();
-            await dashboardPage.openDevice(walletTwo.index);
-            await metadataPage.suiteSyncBannerButton.click();
-            await devicePrompt.confirmSuiteSyncSetup();
-            await expect(metadataPage.suiteSyncBanner).toBeHidden();
-        });
+            await test.step('Enable Suite sync on passphrase wallet #2 thru banner', async () => {
+                await dashboardPage.openDeviceSwitcher();
+                await dashboardPage.openDevice(walletTwo.index);
+                await metadataPage.suiteSyncBannerButton.click();
+                await devicePrompt.confirmSuiteSyncSetup();
+                await expect(metadataPage.suiteSyncBanner).toBeHidden();
+            });
 
-        await test.step('Set label for passphrase wallet #2', async () => {
-            await dashboardPage.openDeviceSwitcher();
-            await page.waitForTimeout(500); // wait for the walletSwitcher to completely open
-            await metadataPage.wallet.changeLabel({
-                index: walletTwo.index,
-                label: expectedWalletTwoLabel.label,
-                confirmSuiteSync: true,
+            await test.step('Set label for passphrase wallet #2', async () => {
+                await dashboardPage.openDeviceSwitcher();
+                await page.waitForTimeout(500); // wait for the walletSwitcher to completely open
+                await metadataPage.wallet.changeLabel({
+                    index: walletTwo.index,
+                    label: expectedWalletTwoLabel.label,
+                    confirmSuiteSync: true,
+                });
             });
-        });
 
-        await test.step('Verify data are synced to Relay', async () => {
-            // Default wallet data
-            await evoluClient.init({ ownerSecret: defaultWalletOwnerSecret });
-            await evoluClient.expectInTable('wallet', [expectedDefaultWalletLabel], {
-                softExpect: true,
+            await test.step('Verify data are synced to Relay', async () => {
+                // Default wallet data
+                await evoluClient.init({ ownerSecret: defaultWalletOwnerSecret });
+                await evoluClient.expectInTable('wallet', [expectedDefaultWalletLabel], {
+                    softExpect: true,
+                });
+                // Passphrase #1 data
+                await evoluClient.init({ ownerSecret: walletOne.ownerSecret });
+                await evoluClient.expectInTable('wallet', [expectedWalletOneLabel], {
+                    softExpect: true,
+                });
+                await evoluClient.expectInTable('account', [expectedAccountLabelWalletOne], {
+                    softExpect: true,
+                });
+                // Passphrase #2 data
+                await evoluClient.init({ ownerSecret: walletTwo.ownerSecret });
+                await evoluClient.expectInTable('wallet', [expectedWalletTwoLabel], {
+                    softExpect: true,
+                });
             });
-            // Passphrase #1 data
-            await evoluClient.init({ ownerSecret: walletOne.ownerSecret });
-            await evoluClient.expectInTable('wallet', [expectedWalletOneLabel], {
-                softExpect: true,
-            });
-            await evoluClient.expectInTable('account', [expectedAccountLabelWalletOne], {
-                softExpect: true,
-            });
-            // Passphrase #2 data
-            await evoluClient.init({ ownerSecret: walletTwo.ownerSecret });
-            await evoluClient.expectInTable('wallet', [expectedWalletTwoLabel], {
-                softExpect: true,
-            });
-        });
-    });
+        },
+    );
 });

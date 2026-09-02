@@ -1,7 +1,9 @@
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const sendAmount = '9';
 const accountLabel = 'Stellar #1';
@@ -24,34 +26,36 @@ test.describe(
             await walletPage.openSwapTrading({ symbol: 'sol' });
         });
 
-        test('Show provider info for disabled network asset XLM and enable it', async ({
-            tradingPage,
-        }) => {
-            await test.step('Fill in a Swap form with Stellar buy asset', async () => {
-                await tradingPage.fillSwapForm({
-                    amount: sendAmount,
-                    sellAsset: {
-                        networkSymbol: 'sol',
-                        tokenSymbol: 'USDT',
-                    },
-                    buyAsset: {
-                        searchFilter: 'XLM',
-                        networkFilter: 'xlm',
-                        assetCryptoId: getCryptoId(asNetworkSymbol('xlm')),
-                    },
+        test(
+            'Show provider info for disabled network asset XLM and enable it',
+            { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+            async ({ tradingPage }) => {
+                await test.step('Fill in a Swap form with Stellar buy asset', async () => {
+                    await tradingPage.fillSwapForm({
+                        amount: sendAmount,
+                        sellAsset: {
+                            networkSymbol: 'sol',
+                            tokenSymbol: 'USDT',
+                        },
+                        buyAsset: {
+                            searchFilter: 'XLM',
+                            networkFilter: 'xlm',
+                            assetCryptoId: getCryptoId(asNetworkSymbol('xlm')),
+                        },
+                    });
                 });
-            });
 
-            await test.step('Verify provider info is visible in quotes', async () => {
-                await expect(tradingPage.quotes.selectedProvider).toBeVisible();
-            });
+                await test.step('Verify provider info is visible in quotes', async () => {
+                    await expect(tradingPage.quotes.selectedProvider).toBeVisible();
+                });
 
-            await test.step('Enable the Stellar network from the receive account picker', async () => {
-                await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0, 'xlm');
-                await expect(tradingPage.receiveAccount.selectedReceiveAccount).toContainText(
-                    accountLabel,
-                );
-            });
-        });
+                await test.step('Enable the Stellar network from the receive account picker', async () => {
+                    await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0, 'xlm');
+                    await expect(tradingPage.receiveAccount.selectedReceiveAccount).toContainText(
+                        accountLabel,
+                    );
+                });
+            },
+        );
     },
 );

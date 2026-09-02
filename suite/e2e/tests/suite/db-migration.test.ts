@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { expect, test } from '../../support/fixtures';
@@ -35,6 +35,7 @@ test.describe(
                         'Navigate to new version, develop instance, which should trigger indexdb migration',
                         'Check that auto eject setting is still true',
                     ],
+                    stream: TestStream.Growth,
                 }),
             },
             async ({ page, device, indexedDb, settingsPage }) => {

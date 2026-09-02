@@ -51,7 +51,7 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
                     testCase: `Verifies that a user can receive a ${coin.toUpperCase()} transaction.`,
                     category,
                     priority: TestPriority.Critical,
-                    stream: TestStream.Engagement,
+                    stream: TestStream.Wallet,
                 }),
             },
             async ({ devicePrompt, settingsPage, walletPage, clipboard }) => {

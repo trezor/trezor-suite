@@ -22,7 +22,7 @@ test.describe.skip('Factory reset', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Settings,
                 priority: TestPriority.Critical,
-                stream: TestStream.Foundation,
+                stream: TestStream.Firmware,
             }),
         },
         async () => {},

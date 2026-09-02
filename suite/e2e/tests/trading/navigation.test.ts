@@ -1,3 +1,5 @@
+import { TestStream } from '@trezor/e2e-utils';
+
 import { test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -18,6 +20,7 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
         {
             annotation: createTestAnnotation({
                 testCase: 'Verifies navigation to all Trading Forms.',
+                stream: TestStream.Trade,
             }),
         },
         async ({ dashboardPage, tradingPage, walletPage }) => {

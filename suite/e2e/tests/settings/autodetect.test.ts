@@ -1,4 +1,5 @@
 import { messages } from '@suite/intl';
+import { TestStream } from '@trezor/e2e-utils';
 import { TR_ONBOARDING_DATA_COLLECTION_HEADING as SPANISH_TR_ONBOARDING_DATA_COLLECTION_HEADING } from '@trezor/suite-data/files/translations/es-ES.json';
 import { colorVariants } from '@trezor/theme';
 
@@ -60,6 +61,7 @@ testCases.forEach(({ testName, userPreferences, text, textColor, bodyBackgroundC
             {
                 annotation: createTestAnnotation({
                     testCase: `Suite adopts preferences of the browser: ${testName}`,
+                    stream: TestStream.Growth,
                 }),
             },
             async ({ onboardingPage, analyticsSection }) => {

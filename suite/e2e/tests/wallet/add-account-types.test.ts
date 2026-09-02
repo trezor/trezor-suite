@@ -1,6 +1,6 @@
 import { events } from '@suite/analytics';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -25,6 +25,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'Verifies that a user can add different account types for BTC-like coins.',
                 category: TestCategory.Accounts,
                 priority: TestPriority.Critical,
+                stream: TestStream.Wallet,
             }),
         },
         async ({ dashboardPage, settingsPage, walletPage }) => {
@@ -133,6 +134,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can add different account types for non-BTC coins.',
                 category: TestCategory.Accounts,
                 priority: TestPriority.High,
+                stream: TestStream.Wallet,
             }),
         },
         async ({ dashboardPage, settingsPage, walletPage, analytics }) => {
@@ -154,6 +156,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can add different account types for non-BTC coins.',
                 category: TestCategory.Accounts,
                 priority: TestPriority.High,
+                stream: TestStream.Wallet,
             }),
         },
         async ({ dashboardPage, settingsPage, walletPage, analytics }) => {

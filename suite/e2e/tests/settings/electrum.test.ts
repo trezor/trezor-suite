@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -22,6 +22,7 @@ test.describe(
                     testCase: 'Verify that a user can successfully set up Electrum backend.',
                     category: TestCategory.Dashboard,
                     priority: TestPriority.High,
+                    stream: TestStream.Network,
                 }),
             },
             async ({ dashboardPage, assetsSection, settingsPage, walletPage }) => {

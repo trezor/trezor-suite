@@ -32,7 +32,7 @@ test.describe.skip('Auto update', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Application,
                 priority: TestPriority.Critical,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
                 osMatrix: [
                     TestOsMatrix.Linux,
                     TestOsMatrix.Windows,

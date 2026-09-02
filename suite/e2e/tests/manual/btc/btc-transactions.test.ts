@@ -32,7 +32,7 @@ test.describe.skip('Btc transactions', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.BTC,
                 priority: TestPriority.Critical,
-                stream: TestStream.Foundation,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},

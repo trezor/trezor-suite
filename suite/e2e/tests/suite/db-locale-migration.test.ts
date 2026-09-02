@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { expect, test } from '../../support/fixtures';
@@ -28,6 +28,7 @@ test.describe(
                         'Verify that a user can successfully migrate from old version to new version.',
                     category: TestCategory.General,
                     priority: TestPriority.Medium,
+                    stream: TestStream.Growth,
                 }),
             },
             async ({ onboardingPage, page }) => {
