@@ -3075,17 +3075,13 @@ export const messages = {
                     description: 'Network fee',
                 },
                 second: {
-                    title: {
-                        ethereum: 'Enter staking pool',
-                        solana: 'Enter warm-up period',
-                    },
+                    titleEthereum: 'Enter staking pool',
+                    titleSolana: 'Enter warm-up period',
                     description: '~{entryPeriod} days',
                 },
                 third: {
-                    title: {
-                        ethereum: 'Receive weekly rewards',
-                        solana: 'Receive rewards every ~{days} days',
-                    },
+                    titleEthereum: 'Receive weekly rewards',
+                    titleSolana: 'Receive rewards every ~{days} days',
                     description: '~{apy}% yearly',
                 },
             },
@@ -3096,10 +3092,8 @@ export const messages = {
                     description: 'Network fee',
                 },
                 second: {
-                    title: {
-                        ethereum: 'Leave staking pool',
-                        solana: 'Enter cool-down period',
-                    },
+                    titleEthereum: 'Leave staking pool',
+                    titleSolana: 'Enter cool-down period',
                     description: '~{unstakingPeriod} days',
                 },
                 third: {
