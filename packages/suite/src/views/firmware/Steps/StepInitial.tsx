@@ -1,7 +1,8 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { selectConnectedDevices } from '@suite-common/device';
+import { selectFirmwareOriginalDevice } from '@suite-common/firmware';
 import { type FirmwareStatus } from '@suite-common/suite-types';
 import { Modal, Tooltip } from '@trezor/components';
 import { unique } from '@trezor/utils';
@@ -27,14 +28,13 @@ export const StepInitial = ({
     isCustomFirmwareUploaded,
     modalHeading,
 }: StepInitialProps) => {
-    const device = useSelector(selectSelectedDevice);
+    const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
 
-    const devices = useSelector(selectDevices);
-    const devicesConnected = devices.filter(device => device?.connected);
-    const multipleDevicesConnected = unique(devicesConnected.map(d => d.path)).length > 1;
-    const shouldCheckSeed = device?.mode !== 'initialize';
+    const connectedDevices = useSelector(selectConnectedDevices);
+    const multipleDevicesConnected = unique(connectedDevices.map(d => d.path)).length > 1;
+    const shouldCheckSeed = firmwareUpdateDevice?.mode !== 'initialize';
 
-    if (!device?.connected || !device?.features) {
+    if (!firmwareUpdateDevice?.connected || !firmwareUpdateDevice?.features) {
         return <PrerequisitesGuide />;
     }
 

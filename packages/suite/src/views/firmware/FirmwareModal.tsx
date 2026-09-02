@@ -2,13 +2,15 @@ import { type ReactNode, useState } from 'react';
 
 import {
     useFirmwareDesktopUpdate,
+    useFirmwareDeviceTrackingListener,
     useFirmwareInstallationProgressCheck,
 } from '@suite/firmware-upgrade';
 import { closeModal } from '@suite/modal';
 import { closeModalAppThunk } from '@suite/router';
 import { ThpPairingStep } from '@suite/thp';
 import { useServices } from '@suite-common/dependency-injection';
-import { acquireDeviceThunk, selectSelectedDevice } from '@suite-common/device';
+import { acquireDeviceThunk } from '@suite-common/device';
+import { selectFirmwareOriginalDevice } from '@suite-common/firmware';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
@@ -38,7 +40,11 @@ export const FirmwareModal = ({
 }: FirmwareModalProps) => {
     const { resetReducer, status, setStatus, deviceWillBeWiped, error } =
         useFirmwareDesktopUpdate();
-    const device = useSelector(selectSelectedDevice);
+    // The update reboots the device several times under new paths, so the flow addresses it through
+    // the firmware device ref rather than the global selection, which may point at a different
+    // device — or at none — by the time the user closes this modal.
+    useFirmwareDeviceTrackingListener();
+    const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
 
     const { dispatch } = useServices(selectDispatch);
     const [isChecked, setIsChecked] = useState(false);
@@ -50,8 +56,8 @@ export const FirmwareModal = ({
     const isCancelable = ['initial', 'check-seed', 'done', 'error'].includes(status);
 
     const handleClose = () => {
-        if (device?.status !== 'available') {
-            dispatch(acquireDeviceThunk({ requestedDevice: device }));
+        if (firmwareUpdateDevice && firmwareUpdateDevice.status !== 'available') {
+            dispatch(acquireDeviceThunk({ requestedDevice: firmwareUpdateDevice }));
         }
         dispatch(closeModal());
         dispatch(closeModalAppThunk());

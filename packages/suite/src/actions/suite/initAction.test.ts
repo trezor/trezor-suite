@@ -34,7 +34,7 @@ import {
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
 import { asGetter } from '@suite-common/dependency-injection';
-import { prepareDeviceReducer } from '@suite-common/device';
+import { createDeviceReceiver, prepareDeviceReducer } from '@suite-common/device';
 import {
     fetchConfigThunk,
     initMessageSystemThunk,
@@ -349,6 +349,7 @@ const initStore = (state: State) => {
             services: {
                 analytics: mockDesktopAnalytics(),
                 connectInitHooks: mockConnectInitHooks(),
+                deviceReceiver: createDeviceReceiver(),
                 connectInitSettings: mockConnectInitSettings(),
                 createLogger: noopCreateLogger,
                 createTransports: mockCreateTransports(),

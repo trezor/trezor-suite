@@ -1,9 +1,8 @@
 import * as semver from 'semver';
 
-import { useDevice } from '@suite/device';
 import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { selectFirmwareDevice, selectFirmwareDeviceLabelOrName } from '@suite-common/firmware';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { Column, H2, Modal, Paragraph, Row, StepList } from '@trezor/components';
 import { type Device } from '@trezor/connect';
@@ -84,7 +83,7 @@ interface ReconnectDevicePromptProps {
 }
 
 export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePromptProps) => {
-    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
+    const deviceLabel = useSelector(selectFirmwareDeviceLabelOrName);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const {
         showManualReconnectPrompt,
@@ -94,9 +93,13 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         deviceIsWaitingForConfirmationToInitiateConnection,
         pinRequested,
     } = useFirmwareDesktopUpdate();
-    const { device } = useDevice();
+    // Must be the tracked device, not the selection. This prompt is on screen precisely while
+    // our device is rebooting and absent from the device list, so the selection has moved on — and
+    // a connected bystander in normal mode would make `getRebootPhase` report 'waiting-for-reboot'
+    // as if the user had cancelled the reboot.
+    const firmwareUpdateDevice = useSelector(selectFirmwareDevice);
 
-    const eventDevice = usePreviousDefined(buttonEvent?.device || device);
+    const eventDevice = usePreviousDefined(buttonEvent?.device || firmwareUpdateDevice);
 
     const isManualRebootRequired =
         // Automatic reboot isn't supported:
@@ -105,11 +108,12 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         status === 'error';
 
     const getRebootPhase = () => {
-        if (device?.mode === 'bootloader' && buttonEvent && isManualRebootRequired) {
+        if (firmwareUpdateDevice?.mode === 'bootloader' && buttonEvent && isManualRebootRequired) {
             return 'done';
         }
         const rebootToBootloaderNotSupported = reconnectEvent && !reconnectEvent.disconnected;
-        const rebootToBootloaderCancelled = device?.connected && device?.mode !== 'bootloader';
+        const rebootToBootloaderCancelled =
+            firmwareUpdateDevice?.connected && firmwareUpdateDevice?.mode !== 'bootloader';
 
         return rebootToBootloaderNotSupported || rebootToBootloaderCancelled
             ? 'waiting-for-reboot'

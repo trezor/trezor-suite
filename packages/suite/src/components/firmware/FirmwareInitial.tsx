@@ -1,10 +1,10 @@
-import { useDevice } from '@suite/device';
 import {
     FirmwareWarningsList,
     FirmwareWipeWarning,
     useFirmwareDesktopUpdate,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
+import { selectFirmwareOriginalDevice } from '@suite-common/firmware';
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { Banner, Card, Column } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
@@ -12,6 +12,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { InfoIcon } from '@trezor/icons';
 
 import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
+import { useSelector } from 'src/hooks/suite';
 
 type GetDescriptionProps = {
     required: boolean;
@@ -46,19 +47,20 @@ const getDescription = ({
 };
 
 export const FirmwareInitial = () => {
-    const { device } = useDevice();
+    const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
     const { deviceWillBeWiped, switchFirmwareType, targetFirmwareType } =
         useFirmwareDesktopUpdate();
 
     // Just to satisfy TS, disconnected device should be handled upstream.
-    if (!device?.connected || !device?.features) {
+    if (!firmwareUpdateDevice?.connected || !firmwareUpdateDevice?.features) {
         return null;
     }
 
     // Bitcoin-only firmware is only available on T2T1 from v2.0.8 - older devices must first upgrade to 2.1.1 which does not have a Bitcoin-only variant
-    const isBitcoinOnlyAvailable = !!device.firmwareReleaseConfigInfo?.isBitcoinOnlyAvailable;
-    const currentFwVersion = getFirmwareVersion(device);
-    const availableFwVersion = getFwUpdateVersion(device);
+    const isBitcoinOnlyAvailable =
+        !!firmwareUpdateDevice.firmwareReleaseConfigInfo?.isBitcoinOnlyAvailable;
+    const currentFwVersion = getFirmwareVersion(firmwareUpdateDevice);
+    const availableFwVersion = getFwUpdateVersion(firmwareUpdateDevice);
     const hasLatestAvailableFw = !!(
         availableFwVersion &&
         currentFwVersion &&
@@ -74,15 +76,16 @@ export const FirmwareInitial = () => {
                     <Translation
                         id={getDescription({
                             /**
-                             * `device.firmware` is status of the firmware currently installed on the device.
+                             * `firmwareUpdateDevice.firmware` is status of the firmware currently installed on the device.
                              *  available values: 'valid' | 'outdated' | 'required' | 'unknown' | 'none'
                              *
-                             *  `device.firmwareReleaseConfigInfo` on the other hand contains latest available firmware to update to
+                             *  `firmwareUpdateDevice.firmwareReleaseConfigInfo` on the other hand contains latest available firmware to update to
                              *   (it is whatever returns getInfo() method from connect)
                              *   so it should not be used here.
                              */
-                            required: device.firmware === 'required',
-                            reinstall: device.firmware === 'valid' || hasLatestAvailableFw,
+                            required: firmwareUpdateDevice.firmware === 'required',
+                            reinstall:
+                                firmwareUpdateDevice.firmware === 'valid' || hasLatestAvailableFw,
                             targetType: targetFirmwareType,
                             switchFirmwareType,
                             isBitcoinOnlyAvailable,

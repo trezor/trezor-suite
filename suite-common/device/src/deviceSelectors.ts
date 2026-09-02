@@ -35,12 +35,13 @@ import {
 import { getSuiteVersion } from '@trezor/env-utils';
 import { versionUtils } from '@trezor/utils';
 
-import {
-    DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
-    PORTFOLIO_TRACKER_DEVICE_ID,
-} from './deviceConstants';
+import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 import { type DeviceRootState } from './deviceReducer';
-import { isTrezorDeviceWithState } from './deviceUtils';
+import {
+    getDeviceLabelOrName,
+    getIsDeviceConnectedViaBluetoothLowOnBattery,
+    isTrezorDeviceWithState,
+} from './deviceUtils';
 import {
     deviceInvariabilityCheck,
     rawDataToDeviceInvariabilityCheckDTO,
@@ -51,6 +52,10 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>(
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
 
 export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
+
+export const selectConnectedDevices = createMemoizedSelector([selectDevices], devices =>
+    returnStableArrayIfEmpty(devices.filter(device => device.connected)),
+);
 
 export const selectSelectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
 
@@ -235,29 +240,8 @@ export const selectIsThpDevice = createMemoizedSelector(
 );
 
 export const selectIsDeviceConnectedViaBluetoothLowOnBattery = createMemoizedSelector(
-    [selectIsDeviceConnectedViaBluetooth, selectDeviceFeatures],
-    (isDeviceConnectedViaBluetooth, features) => {
-        const { usb_connected, wireless_connected, soc } = features || {};
-
-        // If not connected via Bluetooth, then there is no low battery.
-        if (!isDeviceConnectedViaBluetooth) {
-            return false;
-        }
-
-        // If it is connected via USB or wireless charger, we assume it's charging/fine,
-        if (usb_connected || wireless_connected) {
-            return false;
-        }
-
-        const isBatteryDataValid = typeof soc === 'number';
-
-        if (!isBatteryDataValid) {
-            // If we cannot read battery status, we assume the worst.
-            return true;
-        }
-
-        return soc < DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD;
-    },
+    [selectSelectedDevice],
+    getIsDeviceConnectedViaBluetoothLowOnBattery,
 );
 
 export const selectIsConnectedDeviceUninitialized = createMemoizedSelector(
@@ -290,6 +274,15 @@ export const selectDeviceByState = createMemoizedSelector(
         deviceState
             ? devices.find(d => d.state?.staticSessionId === deviceState.staticSessionId)
             : undefined,
+);
+
+/**
+ * The device currently reachable at `path`. Several passphrase-wallet instances of one physical
+ * device share a path, so this answers "which device is on this connection", not "which wallet".
+ */
+export const selectDeviceByPath = createMemoizedSelector(
+    [selectDevices, (_state, path: TrezorDevice['path']) => path],
+    (devices, path) => devices.find(device => device.path === path),
 );
 
 export const selectDeviceByStaticSessionId = createMemoizedSelector(
@@ -388,16 +381,12 @@ export const selectDeviceName = createMemoizedSelector(
 
 export const selectDeviceLabelOrNameById = createMemoizedSelector(
     [state => state.device.devices, (_state, id: TrezorDevice['id']) => id],
-    (devices, id) => {
-        const device = devices.find(d => d.id === id);
-
-        return device?.features?.label || device?.name || '';
-    },
+    (devices, id) => getDeviceLabelOrName(devices.find(d => d.id === id)),
 );
 
 export const selectSelectedDeviceLabelOrName = createMemoizedSelector(
     [selectSelectedDevice],
-    selectedDevice => selectedDevice?.features?.label || selectedDevice?.name || '',
+    getDeviceLabelOrName,
 );
 
 export const selectDeviceId = createMemoizedSelector(

@@ -1,14 +1,18 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
     "references": [
         { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
+        { "path": "../suite-utils" },
         { "path": "../thp" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
 }

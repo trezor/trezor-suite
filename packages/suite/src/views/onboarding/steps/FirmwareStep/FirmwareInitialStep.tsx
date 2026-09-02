@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { selectIsDebugModeActive } from '@suite/debug';
-import { useDevice } from '@suite/device';
 import {
     FirmwareWarningsList,
     FirmwareWipeWarning,
@@ -9,7 +8,8 @@ import {
 } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { selectDevices } from '@suite-common/device';
+import { selectConnectedDevices } from '@suite-common/device';
+import { selectFirmwareOriginalDevice } from '@suite-common/firmware';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
@@ -88,7 +88,7 @@ type FirmwareInitialStepProps = {
 };
 
 export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
-    const { device } = useDevice();
+    const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
     const {
         deviceWillBeWiped,
         firmwareUpdate,
@@ -100,14 +100,14 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
     } = useFirmwareDesktopUpdate();
     const { isActive: isOnboarding, updateAnalytics } = useOnboarding();
     const { translationString } = useTranslation();
-    const devices = useSelector(selectDevices);
+    const connectedDevices = useSelector(selectConnectedDevices);
     const isDebug = useSelector(selectIsDebugModeActive);
 
     const [bitcoinOnlyOffer, setBitcoinOnlyOffer] = useState(false);
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
 
     // Just to satisfy TS, disconnected device should be handled upstream.
-    if (!device?.connected || !device?.features) {
+    if (!firmwareUpdateDevice?.connected || !firmwareUpdateDevice?.features) {
         return null;
     }
 
@@ -116,23 +116,22 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
     // In debug mode you may bypass it.
     // See: https://github.com/trezor/trezor-suite/issues/19157
     const isFirmwareInstallationMandatory =
-        device.features.internal_model === DeviceModelInternal.T1B1 && !isDebug;
+        firmwareUpdateDevice.features.internal_model === DeviceModelInternal.T1B1 && !isDebug;
 
-    // todo: move to utils device.ts
-    const devicesConnected = devices.filter(device => device?.connected);
-    const multipleDevicesConnected = unique(devicesConnected.map(d => d.path)).length > 1;
+    const multipleDevicesConnected = unique(connectedDevices.map(d => d.path)).length > 1;
 
     // The first condition is a defensive measure against https://github.com/trezor/trezor-suite/issues/17246, I could not reproduce the error.
-    const shouldCheckSeed = !isOnboarding && device?.mode !== 'initialize';
+    const shouldCheckSeed = !isOnboarding && firmwareUpdateDevice?.mode !== 'initialize';
 
     let content;
 
     const targetType = bitcoinOnlyOffer ? FirmwareType.BitcoinOnly : targetFirmwareType;
     // Bitcoin-only firmware is only available on T2T1 from v2.0.8 - older devices must first upgrade to 2.1.1 which does not have a Bitcoin-only variant
-    const isBitcoinOnlyAvailable = !!device.firmwareReleaseConfigInfo?.isBitcoinOnlyAvailable;
+    const isBitcoinOnlyAvailable =
+        !!firmwareUpdateDevice.firmwareReleaseConfigInfo?.isBitcoinOnlyAvailable;
 
     const installFirmware = (firmwareType: FirmwareType) => {
-        firmwareUpdate({ firmwareType });
+        firmwareUpdate({ device: firmwareUpdateDevice, firmwareType });
         updateAnalytics({ firmware: 'install' });
     };
 
@@ -188,14 +187,14 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
                 </Row>
             ),
         };
-    } else if (['none', 'unknown'].includes(device.firmware)) {
+    } else if (['none', 'unknown'].includes(firmwareUpdateDevice.firmware)) {
         // No firmware installed
         // Device without firmware is already in bootloader mode even if it doesn't report it
         content = {
             heading: <Translation id="TR_INSTALL_FIRMWARE" />,
             description: (
                 <Translation
-                    id={getNoFirmwareInstalledSubheading(device)}
+                    id={getNoFirmwareInstalledSubheading(firmwareUpdateDevice)}
                     values={{
                         i: chunks => <i>{chunks}</i>,
                         button: chunks => (
@@ -214,8 +213,8 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
                 </InstallButton>
             ),
         };
-    } else if (device.mode === 'bootloader') {
-        // We can check if device.mode is bootloader only after checking that firmware !== none (condition above)
+    } else if (firmwareUpdateDevice.mode === 'bootloader') {
+        // We can check if firmwareUpdateDevice.mode is bootloader only after checking that firmware !== none (condition above)
         // because device without firmware always reports that it is in bootloader mode.
         //
         // We want to prevent FW installation directly from bootloader only during onboarding,
@@ -223,7 +222,10 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
         // But for standalone FW update we need to allow bootloader mode directly, because
         // the device could be stucked in bootloader (e.g. wrong intermediary FW installation).
         return <PrerequisitesGuide />;
-    } else if (device.firmware === 'required' || device.firmware === 'outdated') {
+    } else if (
+        firmwareUpdateDevice.firmware === 'required' ||
+        firmwareUpdateDevice.firmware === 'outdated'
+    ) {
         content = {
             heading: switchFirmwareType ? (
                 <Translation
@@ -247,14 +249,14 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
                 <Translation
                     id={getDescription({
                         /**
-                         * `device.firmware` is status of the firmware currently installed on the device.
+                         * `firmwareUpdateDevice.firmware` is status of the firmware currently installed on the device.
                          *  available values: 'valid' | 'outdated' | 'required' | 'unknown' | 'none'
                          *
-                         *  `device.firmwareReleaseConfigInfo` on the other hand contains latest available firmware to update to
+                         *  `firmwareUpdateDevice.firmwareReleaseConfigInfo` on the other hand contains latest available firmware to update to
                          *   (it is whatever returns getInfo() method from connect)
                          *   so it should not be used here.
                          */
-                        required: device.firmware === 'required',
+                        required: firmwareUpdateDevice.firmware === 'required',
                         targetType,
                         switchFirmwareType,
                         isBitcoinOnlyAvailable,
@@ -287,7 +289,7 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
                 </Row>
             ),
             outerActions:
-                device.firmware === 'outdated' && !isFirmwareInstallationMandatory ? (
+                firmwareUpdateDevice.firmware === 'outdated' && !isFirmwareInstallationMandatory ? (
                     <OnboardingCard.SecondaryButton
                         onClick={() => {
                             setShowSkipConfirmation(true);

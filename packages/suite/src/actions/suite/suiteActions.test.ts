@@ -18,6 +18,7 @@ import {
 } from '@suite-common/connect-init/mocks';
 import {
     acquireDeviceThunk,
+    createDeviceReceiver,
     deviceActions,
     prepareDeviceReducer,
     selectDeviceThunk,
@@ -79,6 +80,7 @@ const extra: SuiteActionsTestDeps = {
     services: {
         analytics: mockDesktopAnalytics(),
         connectInitHooks: mockConnectInitHooks(),
+        deviceReceiver: createDeviceReceiver(),
         connectInitSettings: mockConnectInitSettings(),
         createLogger: noopCreateLogger,
         createTransports: mockCreateTransports(),

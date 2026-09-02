@@ -42,7 +42,8 @@ const firmwareUpdateResponsePayload = {
 export const actions = [
     {
         description: 'Success T2T1',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
+        action: () =>
+            firmwareUpdateThunk({ device: bootloaderDevice, firmwareType: FirmwareType.Universal }),
         mocks: {
             connect: {
                 success: true,
@@ -60,6 +61,7 @@ export const actions = [
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
                 { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
+                { type: firmwareActions.armDeviceTracking.type, payload: bootloaderDevice },
                 { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
                 { type: firmwareActions.setStatus.type, payload: 'done' },
             ],
@@ -68,7 +70,11 @@ export const actions = [
     },
     {
         description: 'Success T2T1 - install Bitcoin-only firmware',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.BitcoinOnly }),
+        action: () =>
+            firmwareUpdateThunk({
+                device: bootloaderDevice,
+                firmwareType: FirmwareType.BitcoinOnly,
+            }),
         mocks: {
             connect: {
                 success: true,
@@ -86,6 +92,7 @@ export const actions = [
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
                 { type: firmwareActions.setTargetType.type, payload: FirmwareType.BitcoinOnly },
+                { type: firmwareActions.armDeviceTracking.type, payload: bootloaderDevice },
                 { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
                 { type: firmwareActions.setStatus.type, payload: 'done' },
             ],
@@ -94,7 +101,11 @@ export const actions = [
     },
     {
         description: 'Success T1B1 (with intermediary)',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
+        action: () =>
+            firmwareUpdateThunk({
+                device: bootloaderDeviceNeedsIntermediary,
+                firmwareType: FirmwareType.Universal,
+            }),
         mocks: {
             connect: {
                 success: true,
@@ -113,6 +124,10 @@ export const actions = [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
                 { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
                 {
+                    type: firmwareActions.armDeviceTracking.type,
+                    payload: bootloaderDeviceNeedsIntermediary,
+                },
+                {
                     type: firmwareActions.cacheDevice.type,
                     payload: bootloaderDeviceNeedsIntermediary,
                 },
@@ -123,7 +138,11 @@ export const actions = [
     },
     {
         description: 'Success T1B1 (without intermediary)',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
+        action: () =>
+            firmwareUpdateThunk({
+                device: bootloaderDeviceNoIntermediaryT1,
+                firmwareType: FirmwareType.Universal,
+            }),
         mocks: {
             connect: {
                 success: true,
@@ -142,6 +161,10 @@ export const actions = [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
                 { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
                 {
+                    type: firmwareActions.armDeviceTracking.type,
+                    payload: bootloaderDeviceNoIntermediaryT1,
+                },
+                {
                     type: firmwareActions.cacheDevice.type,
                     payload: bootloaderDeviceNoIntermediaryT1,
                 },
@@ -151,11 +174,15 @@ export const actions = [
         },
     },
     {
+        // An update always names a device; this one is not in the device list, so there is nothing
+        // to pin the update to.
         description: 'Errors for missing device',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
+        action: () =>
+            firmwareUpdateThunk({ device: bootloaderDevice, firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
                 selectedDevice: undefined,
+                devices: [],
             },
             suite: {},
         },
@@ -165,7 +192,8 @@ export const actions = [
     },
     {
         description: 'FirmwareUpdate call to connect errors',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
+        action: () =>
+            firmwareUpdateThunk({ device: bootloaderDevice, firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
                 selectedDevice: bootloaderDevice,
@@ -185,6 +213,7 @@ export const actions = [
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
                 { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
+                { type: firmwareActions.armDeviceTracking.type, payload: bootloaderDevice },
                 { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
                 { type: firmwareActions.setStatus.type, payload: 'error' },
                 { type: firmwareActions.setFirmwareUpdateError.type, payload: 'foo' },
@@ -202,7 +231,8 @@ export const actions = [
     },
     {
         description: 'FirmwareUpdate call to connect errors due to cancelling on device',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
+        action: () =>
+            firmwareUpdateThunk({ device: bootloaderDevice, firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
                 selectedDevice: bootloaderDevice,
@@ -222,6 +252,7 @@ export const actions = [
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
                 { type: firmwareActions.setTargetType.type, payload: FirmwareType.Universal },
+                { type: firmwareActions.armDeviceTracking.type, payload: bootloaderDevice },
                 { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
                 { type: firmwareActions.setStatus.type, payload: 'error' },
                 {
