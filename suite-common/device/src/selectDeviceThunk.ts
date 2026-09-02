@@ -1,15 +1,13 @@
-import {
-    DEVICE_MODULE_PREFIX,
-    type DeviceRootState,
-    deviceActions,
-    selectDevices,
-    selectIsSameOrNewDevice,
-} from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getSelectedDevice, sortByTimestamp } from '@suite-common/suite-utils';
 import { type Device } from '@trezor/connect';
 import { isNative } from '@trezor/env-utils';
+
+import { deviceActions } from './deviceActions';
+import { DEVICE_MODULE_PREFIX } from './deviceConstants';
+import { type DeviceRootState } from './deviceReducer';
+import { selectDevices, selectIsSameOrNewDevice } from './deviceSelectors';
 
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;

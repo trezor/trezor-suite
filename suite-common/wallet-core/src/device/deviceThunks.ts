@@ -13,7 +13,9 @@ import {
     deviceActions,
     portfolioTrackerDevice,
     selectDeviceById,
+    selectDeviceThunk,
     selectDevices,
+    selectNewlyConnectedDeviceThunk,
     selectPersistentDeviceDataById,
     selectPhysicalDeviceWallets,
     selectSelectedDevice,
@@ -63,7 +65,6 @@ import { getAddressForNetworkType } from './deviceAddressUtils';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { type RunDiscoveryThunkState, startDiscoveryThunk } from '../discovery/discoveryThunks';
-import { selectDeviceThunk, selectNewlyConnectedDeviceThunk } from '../discovery/selectDeviceThunk';
 import { setAutoEjectEnabled } from '../settings/walletSettingsActions';
 import {
     type WalletSettingsRootState,

@@ -10,6 +10,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import {
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceStaticSessionId,
+    selectDeviceThunk,
     selectIsDeviceConnected,
     selectIsDeviceInitialized,
     selectIsDeviceProtectedByPassphrase,
@@ -17,7 +18,7 @@ import {
 } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { selectDeviceThunk, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { AnimatedVStack, VStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';

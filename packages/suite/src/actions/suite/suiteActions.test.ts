@@ -16,7 +16,12 @@ import {
     mockGetDebugSettings,
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
-import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
+import {
+    deviceActions,
+    prepareDeviceReducer,
+    selectDeviceThunk,
+    selectNewlyConnectedDeviceThunk,
+} from '@suite-common/device';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { mockFetchAndSaveMetadata } from '@suite-common/metadata-types/mocks';
@@ -33,8 +38,6 @@ import {
     acquireDevice,
     forgetDisconnectedDevices,
     observeSelectedDevice,
-    selectDeviceThunk,
-    selectNewlyConnectedDeviceThunk,
 } from '@suite-common/wallet-core';
 import { type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';

@@ -10,6 +10,7 @@ import {
     selectSelectedDevice,
     shouldDeviceBeRemembered,
 } from '@suite-common/device';
+import { selectDeviceThunk } from '@suite-common/device';
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import {
     type SuiteCompatibleThunk,
@@ -41,7 +42,6 @@ import type { Bip43Path } from '@trezor/crypto-utils';
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { type DiscoveryRootState } from './discoveryReducer';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
-import { selectDeviceThunk } from './selectDeviceThunk';
 import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
 import { reportAccountInfoThunk, reportWalletBalanceThunk } from '../accounts/accountsThunks';

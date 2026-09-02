@@ -18,7 +18,7 @@ import {
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err } from '@trezor/type-utils';
 
-export const DEVICE_MODULE_PREFIX = '@suite/device';
+import { DEVICE_MODULE_PREFIX } from './deviceConstants';
 
 export type DeviceConnectActionPayload = {
     device: Device;
