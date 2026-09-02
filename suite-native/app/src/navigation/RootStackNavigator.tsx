@@ -29,10 +29,10 @@ import {
 } from '@suite-native/module-device-onboarding';
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import {
-    ClaimReviewScreen,
     EarnConsentsScreen,
     EarnFormScreen,
     HowStakeWorksScreen,
+    StakingClaimReviewScreen,
     StakingDetailScreen,
     StakingManagementScreen,
     StakingTransactionCompleteScreen,
@@ -192,9 +192,9 @@ export const RootStackNavigator = () => {
                 component={StakingTransactionCompleteScreen}
             />
             <RootStack.Screen
-                options={{ title: RootStackRoutes.ClaimReview }}
-                name={RootStackRoutes.ClaimReview}
-                component={ClaimReviewScreen}
+                options={{ title: RootStackRoutes.StakingClaimReview }}
+                name={RootStackRoutes.StakingClaimReview}
+                component={StakingClaimReviewScreen}
             />
             {/* Trading screens */}
             <RootStack.Group>

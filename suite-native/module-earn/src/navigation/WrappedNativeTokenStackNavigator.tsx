@@ -7,12 +7,12 @@ import {
     useDisableIOSGesture,
 } from '@suite-native/navigation';
 
-import { UnwrapNativeTokenCompleteScreen } from '../screens/UnwrapNativeTokenCompleteScreen';
-import { UnwrapNativeTokenReviewScreen } from '../screens/UnwrapNativeTokenReviewScreen';
-import { UnwrapNativeTokenScreen } from '../screens/UnwrapNativeTokenScreen';
-import { WrapNativeTokenCompleteScreen } from '../screens/WrapNativeTokenCompleteScreen';
-import { WrapNativeTokenReviewScreen } from '../screens/WrapNativeTokenReviewScreen';
-import { WrapNativeTokenScreen } from '../screens/WrapNativeTokenScreen';
+import { UnwrapNativeTokenCompleteScreen } from '../screens/earn/UnwrapNativeTokenCompleteScreen';
+import { UnwrapNativeTokenReviewScreen } from '../screens/earn/UnwrapNativeTokenReviewScreen';
+import { UnwrapNativeTokenScreen } from '../screens/earn/UnwrapNativeTokenScreen';
+import { WrapNativeTokenCompleteScreen } from '../screens/earn/WrapNativeTokenCompleteScreen';
+import { WrapNativeTokenReviewScreen } from '../screens/earn/WrapNativeTokenReviewScreen';
+import { WrapNativeTokenScreen } from '../screens/earn/WrapNativeTokenScreen';
 
 const WrappedNativeTokenStack = createNativeStackNavigator<WrappedNativeTokenStackParamList>();
 

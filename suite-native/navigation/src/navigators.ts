@@ -542,7 +542,7 @@ export type RootStackParamList = {
         amountInBaseUnits: string;
     };
     [RootStackRoutes.UnstakeFlow]: { accountKey: AccountKey };
-    [RootStackRoutes.ClaimReview]: {
+    [RootStackRoutes.StakingClaimReview]: {
         accountKey: AccountKey;
         symbol: NetworkSymbol;
     };
