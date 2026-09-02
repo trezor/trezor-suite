@@ -30,11 +30,11 @@
         "reporter-watchdog:verify": "tsx src/githubReporter/watchdog/verify.ts"
     },
     "dependencies": {
-        "@octokit/rest": "^21.1.1",
+        "@octokit/rest": "^22.0.1",
         "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "dotenv": "17.2.3",
+        "dotenv": "17.4.2",
         "express": "^5.2.1",
         "ws": "^8.20.0",
         "zod": "4.3.6"
@@ -42,7 +42,7 @@
     "devDependencies": {
         "@anthropic-ai/claude-agent-sdk": "0.3.218",
         "@anthropic-ai/claude-code": "2.1.218",
-        "@anthropic-ai/sdk": "0.100.0",
+        "@anthropic-ai/sdk": "0.117.1",
         "@currents/mcp": "^2.3.3",
         "@currents/playwright": "^2.5.0",
         "@playwright/test": "1.62.1",

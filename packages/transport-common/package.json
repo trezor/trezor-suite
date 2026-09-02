@@ -57,7 +57,7 @@
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
         "@types/node": "22.13.10",
-        "fast-check": "3.23.2",
+        "fast-check": "4.9.0",
         "jest": "29.7.0"
     },
     "dependencies": {
