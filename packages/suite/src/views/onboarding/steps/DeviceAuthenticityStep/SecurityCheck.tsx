@@ -5,7 +5,7 @@ import { TrezorLink } from '@suite/external-links';
 import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import {
     selectIsDeviceAuthenticityCheckEnabled,
     selectIsUnlockedBootloaderAllowed,
@@ -176,9 +176,9 @@ const SecurityCheckContent = ({
         } else if (isOnboardingActive) {
             goToNextStep('firmware');
             // ensure that we are not stuck in the 'start' FullscreenApp
-            dispatch(goto({ routeName: 'onboarding-index' }));
+            dispatch(gotoThunk({ routeName: 'onboarding-index' }));
         } else {
-            dispatch(goto({ routeName: 'onboarding-index' }));
+            dispatch(gotoThunk({ routeName: 'onboarding-index' }));
         }
     };
 

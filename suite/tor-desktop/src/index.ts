@@ -6,5 +6,5 @@ export { setTorBootstrapSlowThunk } from './bootstrap/setTorBootstrapSlowThunk';
 export { TorLoader } from './bootstrap/TorLoader';
 export { TorModal, type TorResult } from './TorModal';
 export { TorSettings } from './settings/TorSettings';
-export { toggleTor } from './toggleTorThunk';
+export { toggleTorThunk } from './toggleTorThunk';
 export { useDesktopTorStatus } from './useDesktopTorStatus';

@@ -28,7 +28,7 @@ export const setView = (payload: ActiveView) => (dispatch: Dispatch<UnknownActio
 // a keyboard-shortcut handler's render closure, so the toggle can't act on a stale open/view.
 type ToggleViewThunkState = { guide: GuideState };
 
-export const toggleView =
+export const toggleViewThunk =
     (payload: ActiveView) =>
     (
         dispatch: ThunkDispatch<ToggleViewThunkState, unknown, UnknownAction>,

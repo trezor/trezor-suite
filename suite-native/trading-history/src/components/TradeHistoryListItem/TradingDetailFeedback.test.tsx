@@ -1,4 +1,4 @@
-import { sendFeedbackAction } from '@suite-common/feedback';
+import { sendFeedbackThunk } from '@suite-common/feedback';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -9,10 +9,10 @@ import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistor
 
 jest.mock('@suite-common/feedback', () => ({
     ...jest.requireActual('@suite-common/feedback'),
-    sendFeedbackAction: jest.fn(() => ({ type: 'mock/sendFeedbackAction' })),
+    sendFeedbackThunk: jest.fn(() => ({ type: 'mock/sendFeedbackAction' })),
 }));
 
-const sendFeedbackActionMock = sendFeedbackAction as unknown as jest.Mock;
+const sendFeedbackActionMock = sendFeedbackThunk as unknown as jest.Mock;
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(reportMock) };

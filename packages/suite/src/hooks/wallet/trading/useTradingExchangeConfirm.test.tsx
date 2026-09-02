@@ -10,7 +10,7 @@ import { useTradingExchangeConfirm } from './useTradingExchangeConfirm';
 
 jest.mock('@suite/router', () => ({
     ...jest.requireActual('@suite/router'),
-    goto: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
+    gotoThunk: jest.fn((payload: unknown) => ({ type: '@router/goto', payload })),
 }));
 
 const mockLoadInitialDataThunk = jest.fn((args: unknown) =>

@@ -3,13 +3,13 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { H3, Modal } from '@trezor/components';
 import { PasswordIcon } from '@trezor/icons';
 
-import { changePin } from 'src/actions/settings/deviceSettingsActions';
+import { changePinThunk } from 'src/actions/settings/deviceSettingsActions';
 
 export const PinMismatchModal = () => {
     const dispatch = useDispatch();
 
     const onTryAgain = () => {
-        dispatch(changePin({}));
+        dispatch(changePinThunk({}));
     };
 
     return (

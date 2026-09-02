@@ -10,7 +10,7 @@ import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 
-import { toggleTor } from '../toggleTorThunk';
+import { toggleTorThunk } from '../toggleTorThunk';
 
 type TorProps = {
     // Called before Tor is switched off. Resolve `true` to keep Tor running (abort the toggle) —
@@ -41,7 +41,7 @@ export const Tor = ({ onBeforeDisable }: TorProps) => {
         }
         const shouldEnableTor = !isTorEnabled && !isTorLoading;
         try {
-            await dispatch(toggleTor(shouldEnableTor));
+            await dispatch(toggleTorThunk(shouldEnableTor));
         } catch {
             setHasTorError(true);
         }

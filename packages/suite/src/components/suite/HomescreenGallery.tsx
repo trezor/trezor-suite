@@ -12,7 +12,7 @@ import { resolveStaticPath } from '@trezor/env-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 import { getDefaultHomeScreenImage, getHomescreens } from 'src/constants/suite/homescreens';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
 
@@ -72,13 +72,13 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
                 fwVersion !== null && versionUtils.isNewerOrEqual(fwVersion, '2.9.0');
 
             dispatch(
-                applySettings(
+                applySettingsThunk(
                     supportsHomescreenLength ? { homescreen_length: 0 } : { homescreen: '' },
                 ),
             );
         } else {
             const hex = await imagePathToHex(imagePath, deviceModelInternal);
-            dispatch(applySettings({ homescreen: hex }));
+            dispatch(applySettingsThunk({ homescreen: hex }));
         }
 
         onConfirm?.();

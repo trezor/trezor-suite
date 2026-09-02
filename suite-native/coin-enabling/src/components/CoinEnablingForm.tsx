@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
-import { changeCoinVisibility } from '@suite-common/wallet-core';
+import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
@@ -63,7 +63,7 @@ export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
 
         changedCoins.forEach(symbol => {
             const isEnabled = enabledCoins.includes(symbol);
-            dispatch(changeCoinVisibility({ symbol, shouldBeVisible: isEnabled }));
+            dispatch(changeCoinVisibilityThunk({ symbol, shouldBeVisible: isEnabled }));
 
             analytics.report({
                 type: events.settingsChangeCoinEnabledEvent.name,

@@ -12,10 +12,10 @@ import { type PROTO } from '@trezor/connect';
 import { getSlip44ByPath, validatePath } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { type GetNonceThunkState, getNonce } from './getNonce';
-import { getPaymentRequestOutputs } from './getPaymentRequestOutputs';
-import { type GetPurchaseAddressThunkState, getPurchaseAddress } from './getPurchaseAddress';
-import { type GetRefundAddressThunkState, getRefundAddress } from './getRefundAddress';
+import { type GetNonceThunkState, getNonceThunk } from './getNonce';
+import { getPaymentRequestOutputsThunk } from './getPaymentRequestOutputs';
+import { type GetPurchaseAddressThunkState, getPurchaseAddressThunk } from './getPurchaseAddress';
+import { type GetRefundAddressThunkState, getRefundAddressThunk } from './getRefundAddress';
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { type TradingRootState } from '../../reducers/tradingCommonReducer';
 import {
@@ -65,9 +65,9 @@ export const createPaymentRequestsThunk = createThunk<
         { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
         const { mac: macRefund, path: pathRefund } = await dispatch(
-            getRefundAddress({ account }),
+            getRefundAddressThunk({ account }),
         ).unwrap();
-        const nonce = await dispatch(getNonce()).unwrap();
+        const nonce = await dispatch(getNonceThunk()).unwrap();
 
         if (!('outputs' in composedLevels)) {
             return rejectWithValue({
@@ -108,11 +108,11 @@ export const createPaymentRequestsThunk = createThunk<
                 }
 
                 const { mac: macPurchase, path: pathPurchase } = await dispatch(
-                    getPurchaseAddress({ account: receiveAccount, address: receiveAddress }),
+                    getPurchaseAddressThunk({ account: receiveAccount, address: receiveAddress }),
                 ).unwrap();
 
                 const outputs = await dispatch(
-                    getPaymentRequestOutputs({
+                    getPaymentRequestOutputsThunk({
                         network: sendNetwork,
                         composedLevels,
                         destinationTag,
@@ -213,7 +213,7 @@ export const createPaymentRequestsThunk = createThunk<
                 const memoText = `Selling ${quote.cryptoStringAmount} ${cryptoSymbol?.symbol} for ${quote.fiatStringAmount} ${quote.fiatCurrency}`;
 
                 const outputs = await dispatch(
-                    getPaymentRequestOutputs({
+                    getPaymentRequestOutputsThunk({
                         network: sendNetwork,
                         composedLevels,
                         destinationTag,

@@ -77,7 +77,7 @@ type InitThunkDeps = WithServices<DesktopAnalyticsDep>;
  * - set sentry user id
  * @param state - tracking state loaded from storage
  */
-export const init =
+export const initThunk =
     () =>
     (
         dispatch: ThunkDispatch<InitThunkState, InitThunkDeps, UnknownAction>,

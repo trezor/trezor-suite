@@ -1,7 +1,7 @@
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { Anchor, SettingsAnchor, goto } from '@suite/router';
+import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -18,7 +18,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
     const learnMoreUrl = getCheckBackupUrl(device);
 
     const handleClick = () =>
-        dispatch(goto({ routeName: 'recovery-index', params: { cancelable: true } }));
+        dispatch(gotoThunk({ routeName: 'recovery-index', params: { cancelable: true } }));
 
     if (needsBackup) return null;
 

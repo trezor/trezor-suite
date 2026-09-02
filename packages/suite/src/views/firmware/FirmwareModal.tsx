@@ -5,11 +5,11 @@ import {
     useFirmwareInstallationProgressCheck,
 } from '@suite/firmware-upgrade';
 import { closeModal } from '@suite/modal';
-import { closeModalApp } from '@suite/router';
+import { closeModalAppThunk } from '@suite/router';
 import { ThpPairingStep } from '@suite/thp';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import { acquireDevice } from '@suite-common/wallet-core';
+import { acquireDeviceThunk } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -50,10 +50,10 @@ export const FirmwareModal = ({
 
     const handleClose = () => {
         if (device?.status !== 'available') {
-            dispatch(acquireDevice({ requestedDevice: device }));
+            dispatch(acquireDeviceThunk({ requestedDevice: device }));
         }
         dispatch(closeModal());
-        dispatch(closeModalApp());
+        dispatch(closeModalAppThunk());
         resetReducer();
     };
 

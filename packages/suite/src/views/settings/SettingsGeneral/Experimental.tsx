@@ -7,7 +7,7 @@ import { type ExperimentalFeature } from '@suite/experimental';
 import { LearnMoreButton } from '@suite/external-links';
 import { feedbackRequested } from '@suite/feature-feedback';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectExperimentalFeatures, suiteSettingsActions } from '@suite/settings';
 import { useImperativeServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -57,7 +57,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
 
     const handleClick = () => {
         if (!config.routeName) return;
-        dispatch(goto({ routeName: config.routeName }));
+        dispatch(gotoThunk({ routeName: config.routeName }));
     };
 
     return (

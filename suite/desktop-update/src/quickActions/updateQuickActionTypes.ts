@@ -1,4 +1,4 @@
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { type Dispatch } from '@suite-common/redux-utils';
 import { type IconComponent, type UIIntent } from '@trezor/components';
 import { ArrowDownIcon, ArrowsClockwiseFilledIcon, CheckIcon, PlugsIcon } from '@trezor/icons';
@@ -40,7 +40,7 @@ type OnClickCallback = ((params: { dispatch: Dispatch }) => void) | null;
 export const mapDeviceUpdateToClick: Record<UpdateStatusDevice, OnClickCallback> = {
     disconnected: null,
     'up-to-date': null,
-    'update-available': ({ dispatch }) => dispatch(goto({ routeName: 'firmware-index' })),
+    'update-available': ({ dispatch }) => dispatch(gotoThunk({ routeName: 'firmware-index' })),
 };
 
 export const mapSuiteUpdateToClick: Record<UpdateStatusSuite, OnClickCallback> = {

@@ -26,12 +26,13 @@ export const useOnboarding = () => {
     const actions = useMemo(
         () => ({
             goToStep: (stepId: AnyStepId) => dispatch(onboardingActions.goToStep(stepId)),
-            goToNextStep: (stepId?: AnyStepId) => dispatch(onboardingActions.goToNextStep(stepId)),
-            goToPreviousStep: () => dispatch(onboardingActions.goToPreviousStep()),
+            goToNextStep: (stepId?: AnyStepId) =>
+                dispatch(onboardingActions.goToNextStepThunk(stepId)),
+            goToPreviousStep: () => dispatch(onboardingActions.goToPreviousStepThunk()),
             resetOnboarding: () => dispatch(onboardingActions.resetOnboarding()),
             enableOnboardingReducer: (enabled: boolean) =>
                 dispatch(onboardingActions.enableOnboardingReducer(enabled)),
-            rerun: () => dispatch(onboardingActions.recoveryRerun()),
+            rerun: () => dispatch(onboardingActions.rerunRecoveryThunk()),
             updateAnalytics: (payload: Partial<OnboardingAnalytics>) =>
                 dispatch(onboardingActions.updateAnalytics(payload)),
             addPath: (payload: AnyPath) => dispatch(onboardingActions.addPath(payload)),
@@ -40,9 +41,9 @@ export const useOnboarding = () => {
             updateBackupMedium: (payload: BackupMedium) =>
                 dispatch(onboardingActions.updateBackupMedium(payload)),
             goToSuite: (options?: GoToSuiteOptions) =>
-                dispatch(onboardingActions.goToSuite(options)),
+                dispatch(onboardingActions.goToSuiteThunk(options)),
             resolveNextAfterSkipped: (requestedStepId: AnyStepId) =>
-                dispatch(onboardingActions.resolveNextAfterSkipped(requestedStepId)),
+                dispatch(onboardingActions.resolveNextAfterSkippedThunk(requestedStepId)),
         }),
         [dispatch],
     );

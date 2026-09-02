@@ -12,7 +12,7 @@ import {
     type FeedbackType,
     type Rating,
     buildUserFeedbackData,
-    sendFeedbackAction,
+    sendFeedbackThunk,
 } from '@suite-common/feedback';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Box, Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
@@ -108,7 +108,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
 
         if (type === 'BUG') {
             dispatch(
-                sendFeedbackAction({
+                sendFeedbackThunk({
                     type: 'BUG',
                     payload: {
                         description,
@@ -121,7 +121,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
             );
         } else {
             dispatch(
-                sendFeedbackAction({
+                sendFeedbackThunk({
                     type: 'SUGGESTION',
                     payload: {
                         description,

@@ -1,7 +1,7 @@
 import { type SellFiatTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
-import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
+import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     cryptoIdToNetworkSymbolAndContractAddress,
@@ -63,7 +63,7 @@ export const selectSellQuoteThunk = createThunk<
         });
 
         const nextStep = () => {
-            dispatch(goto({ routeName: 'wallet-trading-sell-confirm' }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-sell-confirm' }));
 
             // Empty quoteId means the partner requests login first; keep the UI moving
             // to confirm while the partner request continues in the background.

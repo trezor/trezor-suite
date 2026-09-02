@@ -1,7 +1,7 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
@@ -48,7 +48,7 @@ export const useTradingExchangeTradeRequest = (account: Account | undefined) => 
         };
 
         const nextStep = () => {
-            dispatch(goto({ routeName: 'wallet-trading-exchange-detail' }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-exchange-detail' }));
         };
 
         return {

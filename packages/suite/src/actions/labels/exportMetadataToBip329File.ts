@@ -8,7 +8,7 @@ import { sanitizeFilename } from '@trezor/utils';
 
 type ExportMetadataToBip329FileThunkDeps = WithServices<Bip329Dep>;
 
-export const exportMetadataToBip329File = createThunk<
+export const exportMetadataToBip329FileThunk = createThunk<
     void,
     {
         account: Account;

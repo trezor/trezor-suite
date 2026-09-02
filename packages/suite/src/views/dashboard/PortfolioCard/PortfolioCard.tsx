@@ -26,7 +26,7 @@ import {
 import { CaretDownIcon, CaretUpIcon, InfoIcon } from '@trezor/icons';
 import { breakpoints } from '@trezor/theme';
 
-import { updateGraphData } from 'src/actions/wallet/graphActions';
+import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { GraphRangeSelector, GraphSkeleton } from 'src/components/suite';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
@@ -128,7 +128,7 @@ export const PortfolioCard = memo(() => {
 
     const onSelectedRange = () =>
         dispatch(
-            updateGraphData({
+            updateGraphDataThunk({
                 accounts,
             }),
         );

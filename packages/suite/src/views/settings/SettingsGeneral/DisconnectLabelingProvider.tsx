@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import {
-    disconnectProvider,
+    disconnectProviderThunk,
     selectMetadata,
     selectSelectedProviderForLabels,
 } from '@suite/metadata';
@@ -21,7 +21,7 @@ export const DisconnectLabelingProvider = () => {
 
     const handleClick = () =>
         dispatch(
-            disconnectProvider({
+            disconnectProviderThunk({
                 clientId: metadata.selectedProvider.labels,
                 dataType: 'labels',
             }),

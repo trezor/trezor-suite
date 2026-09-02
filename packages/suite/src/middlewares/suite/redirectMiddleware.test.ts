@@ -2,7 +2,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
-import { goto, routerReducer } from '@suite/router';
+import { gotoThunk, routerReducer } from '@suite/router';
 import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
@@ -18,7 +18,7 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
 jest.mock('@suite/router', () => ({
     ...jest.requireActual('@suite/router'),
-    goto: jest.fn(() => ({ type: '@router/goto/mocked' })),
+    gotoThunk: jest.fn(() => ({ type: '@router/goto/mocked' })),
 }));
 
 const deviceReducer = prepareDeviceReducer({
@@ -90,7 +90,7 @@ const initStore = (state: State) => {
 
 describe('redirectMiddleware', () => {
     describe('redirects on DEVICE.CONNECT event', () => {
-        const gotoMock = jest.mocked(goto);
+        const gotoMock = jest.mocked(gotoThunk);
 
         afterEach(() => {
             gotoMock.mockClear();

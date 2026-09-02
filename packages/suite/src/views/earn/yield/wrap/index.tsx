@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
@@ -20,7 +20,7 @@ export const EarnWrap = () => {
 
     useEffect(() => {
         if (!routeParams) {
-            dispatch(goto({ routeName: 'suite-earn' }));
+            dispatch(gotoThunk({ routeName: 'suite-earn' }));
         }
     }, [dispatch, routeParams]);
 

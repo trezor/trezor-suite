@@ -3,7 +3,7 @@ import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { type Dispatch } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
+import { fetchTransactionsFromNowUntilTimestampThunk } from '@suite-common/wallet-core';
 import type { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect from '@trezor/connect';
@@ -143,7 +143,7 @@ export const getAccountMovementEvents = async ({
         }
         if (isLocalBalanceHistoryCoin(symbol)) {
             const allTransactions = await dispatch(
-                fetchTransactionsFromNowUntilTimestamp({
+                fetchTransactionsFromNowUntilTimestampThunk({
                     accountKey: account.accountKey,
                     timestamp: startOfTimeFrameDate
                         ? (getUnixTime(startOfTimeFrameDate) as Timestamp)

@@ -8,7 +8,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 
-import { changeWipeCode } from 'src/actions/settings/deviceSettingsActions';
+import { changeWipeCodeThunk } from 'src/actions/settings/deviceSettingsActions';
 import { useSelector } from 'src/hooks/suite';
 
 interface Props {
@@ -21,7 +21,7 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
     const isDeviceProtectedByWipeCode = useSelector(selectIsDeviceProtectedByWipeCode);
 
     const enableWipeCode = () => {
-        dispatch(changeWipeCode({ remove: false }));
+        dispatch(changeWipeCodeThunk({ remove: false }));
         analytics.report({
             type: isDeviceProtectedByWipeCode
                 ? events.settingsDeviceChangeWipeCodeEvent.name
@@ -30,7 +30,7 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
     };
 
     const disableWipeCode = () => {
-        dispatch(changeWipeCode({ remove: true }));
+        dispatch(changeWipeCodeThunk({ remove: true }));
         analytics.report({
             type: events.settingsDeviceDisableWipeCodeEvent.name,
         });

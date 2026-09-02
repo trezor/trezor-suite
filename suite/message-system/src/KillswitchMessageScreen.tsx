@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { type Route, goto } from '@suite/router';
+import { type Route, gotoThunk } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import {
@@ -32,7 +32,7 @@ export const CtaButton = ({ ctaLabel, ctaLink, isExternalCta }: CtaButtonProps) 
         if (isExternalCta) {
             window.open(externalLink, '_blank');
         } else {
-            dispatch(goto({ routeName: ctaLink as Route['name'], preserveParams: true }));
+            dispatch(gotoThunk({ routeName: ctaLink as Route['name'], preserveParams: true }));
         }
     };
 

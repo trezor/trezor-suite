@@ -1,6 +1,6 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
@@ -27,7 +27,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const networkName = getNetwork(account.symbol).name;
 
     const handleNavigateToReceivePage = () => {
-        dispatch(goto({ routeName: 'wallet-receive', preserveParams: true }));
+        dispatch(gotoThunk({ routeName: 'wallet-receive', preserveParams: true }));
         analytics.report({
             type: events.accountsEmptyAccountReceiveEvent.name,
             payload: {
@@ -41,7 +41,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                 getTradingPrefilledFromAccountData(account),
             ),
         );
-        dispatch(goto({ routeName: 'wallet-trading-buy' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
 
         analytics.report({
             type: events.tradeNavigateEvent.name,

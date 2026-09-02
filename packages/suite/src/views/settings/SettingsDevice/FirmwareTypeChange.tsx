@@ -1,7 +1,7 @@
 import { useDevice } from '@suite/device';
 import { getSuiteFirmwareTypeString } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
-import { Anchor, SettingsAnchor, goto } from '@suite/router';
+import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
 import { firmwareActions } from '@suite-common/firmware';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
@@ -33,7 +33,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
         : 'TR_SWITCH_TO_BITCOIN_ONLY';
 
     const handleAction = () => {
-        dispatch(goto({ routeName: 'firmware-type', params: { cancelable: true } }));
+        dispatch(gotoThunk({ routeName: 'firmware-type', params: { cancelable: true } }));
         dispatch(firmwareActions.setSwitchFirmwareType(true));
     };
 

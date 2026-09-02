@@ -122,7 +122,7 @@ const sentryMiddleware =
             const { result } = action.payload;
             if (!result) return action;
 
-            const reportToSentry = (error: string, errorDetails?: string) => {
+            const reportToSentryThunk = (error: string, errorDetails?: string) => {
                 withSentryScope(scope => {
                     scope.setLevel('error');
                     scope.setTag('deviceAuthenticityError', error);
@@ -136,20 +136,20 @@ const sentryMiddleware =
 
             // report error from the TrezorConnect call itself
             if ('error' in result) {
-                reportToSentry(result.error);
+                reportToSentryThunk(result.error);
             }
             // report errors from either one of the secure elements (or both)
             if ('optigaResult' in result && result.optigaResult.error) {
                 const { error, errorDetails } = result.optigaResult;
-                reportToSentry(error, errorDetails);
+                reportToSentryThunk(error, errorDetails);
             }
             if ('tropicResult' in result && result.tropicResult?.error) {
                 const { error, errorDetails } = result.tropicResult;
-                reportToSentry(error, errorDetails);
+                reportToSentryThunk(error, errorDetails);
             }
             if ('mcuResult' in result && result.mcuResult?.error) {
                 const { error, errorDetails } = result.mcuResult;
-                reportToSentry(error, errorDetails);
+                reportToSentryThunk(error, errorDetails);
             }
         }
 

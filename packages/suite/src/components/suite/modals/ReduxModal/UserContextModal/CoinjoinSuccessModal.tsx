@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
-import { goto, selectRouterParams } from '@suite/router';
+import { gotoThunk, selectRouterParams } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
@@ -29,7 +29,7 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
     const navigateToRelatedAccount = () => {
         dispatch(closeModal());
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-index',
                 params: {
                     symbol,

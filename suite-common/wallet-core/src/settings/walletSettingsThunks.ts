@@ -21,7 +21,7 @@ import { type WalletCoreCompoundRootState, selectAccountsToBeForgotten } from '.
 
 type ChangeCoinVisibilityThunkState = WalletCoreCompoundRootState;
 
-export const changeCoinVisibility = createThunk<
+export const changeCoinVisibilityThunk = createThunk<
     void,
     {
         symbol: NetworkSymbol;
@@ -64,7 +64,7 @@ export const changeCoinVisibility = createThunk<
 
 type ToggleBitcoinAmountUnitsThunkState = WalletSettingsRootState;
 
-export const toggleBitcoinAmountUnits =
+export const toggleBitcoinAmountUnitsThunk =
     () => (dispatch: Dispatch, getState: () => ToggleBitcoinAmountUnitsThunkState) => {
         const currentUnits = selectBitcoinAmountUnit(getState());
 

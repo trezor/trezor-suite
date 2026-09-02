@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useState } from 'react';
 
 import { selectHasSeenDisconnectTooltip, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
@@ -142,7 +142,7 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                 onClick={() => {
                                                     onTooltipClose();
                                                     dispatch(
-                                                        goto({
+                                                        gotoThunk({
                                                             routeName: 'settings-index',
                                                             anchor: SettingsAnchor.AutoEject,
                                                         }),

@@ -7,7 +7,7 @@ import {
     type FeedbackCategory,
     type Rating,
     buildUserFeedbackData,
-    sendFeedbackAction,
+    sendFeedbackThunk,
 } from '@suite-common/feedback';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type WrappedNativeFlowType, type YieldFlowType } from '@suite-common/wallet-core';
@@ -111,7 +111,7 @@ export const EarnCompleteScreenContent = ({
         const userData = buildUserFeedbackData(device);
 
         dispatch(
-            sendFeedbackAction({
+            sendFeedbackThunk({
                 type: 'SUGGESTION',
                 payload: {
                     category: feedbackCategory,

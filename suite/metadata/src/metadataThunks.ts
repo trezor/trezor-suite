@@ -25,7 +25,7 @@ export const initNewDeviceStateMetadataThunk = createThunk<
         const metadataPresentOnDevice = device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
 
         if (!metadataPresentOnDevice) {
-            await dispatch(metadataLabelingActions.init(false));
+            await dispatch(metadataLabelingActions.initThunk(false));
         }
     },
 );

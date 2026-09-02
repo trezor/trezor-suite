@@ -49,9 +49,9 @@ export const suiteForgetDeviceThunk = createThunk<
             }),
         ).unwrap();
 
-        await dispatch(storageActions.savePersistentDeviceData());
+        await dispatch(storageActions.savePersistentDeviceDataThunk());
         if (device?.state) {
-            await dispatch(storageActions.forgetDevice(device));
+            await dispatch(storageActions.forgetDeviceThunk(device));
         }
     },
 );

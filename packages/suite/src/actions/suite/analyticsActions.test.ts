@@ -9,7 +9,7 @@ import {
 import { type WithServices } from '@suite-common/redux-utils';
 import { createTestStore } from '@suite-common/test-utils';
 
-import { init } from 'src/actions/suite/analyticsActions';
+import { initThunk } from 'src/actions/suite/analyticsActions';
 
 const extra: WithServices<DesktopAnalyticsDep> = {
     services: { analytics: mockDesktopAnalytics() },
@@ -32,7 +32,7 @@ const mockStore = (preloadedState: AnalyticsRootState) =>
         preloadedState,
     });
 
-describe('analytics init thunks ', () => {
+describe('analytics initThunk', () => {
     beforeAll(() => {
         jest.spyOn(console, 'error').mockImplementation();
     });
@@ -40,7 +40,7 @@ describe('analytics init thunks ', () => {
         jest.clearAllMocks();
     });
 
-    it('analytics init with unconfirmed', () => {
+    it('analytics initThunk with unconfirmed', () => {
         const state = getInitialState({
             analytics: {
                 enabled: undefined,
@@ -50,7 +50,7 @@ describe('analytics init thunks ', () => {
         });
         const store = mockStore(state);
 
-        store.dispatch(init());
+        store.dispatch(initThunk());
         expect(store.getActions()).toMatchObject([
             {
                 type: analyticsActions.initAnalytics.type,
@@ -63,7 +63,7 @@ describe('analytics init thunks ', () => {
         ]);
     });
 
-    it('analytics init with confirmed', () => {
+    it('analytics initThunk with confirmed', () => {
         const state = getInitialState({
             analytics: {
                 enabled: undefined,
@@ -73,7 +73,7 @@ describe('analytics init thunks ', () => {
         });
         const store = mockStore(state);
 
-        store.dispatch(init());
+        store.dispatch(initThunk());
         expect(store.getActions()).toMatchObject([
             {
                 type: analyticsActions.initAnalytics.type,
@@ -86,7 +86,7 @@ describe('analytics init thunks ', () => {
         ]);
     });
 
-    it('analytics init with confirmed but not enabled', () => {
+    it('analytics initThunk with confirmed but not enabled', () => {
         const state = getInitialState({
             analytics: {
                 enabled: false,
@@ -96,7 +96,7 @@ describe('analytics init thunks ', () => {
         });
         const store = mockStore(state);
 
-        store.dispatch(init());
+        store.dispatch(initThunk());
         expect(store.getActions()).toMatchObject([
             {
                 type: analyticsActions.initAnalytics.type,

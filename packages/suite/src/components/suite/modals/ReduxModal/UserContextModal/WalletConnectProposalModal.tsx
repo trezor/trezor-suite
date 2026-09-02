@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { useDispatch } from '@suite-common/redux-utils';
 import { useDappScan } from '@suite-common/tx-simulation';
@@ -100,7 +100,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     };
     const handleGoToCoinSettings = async () => {
         await dispatch(closeModal());
-        dispatch(goto({ routeName: 'settings-coins' }));
+        dispatch(gotoThunk({ routeName: 'settings-coins' }));
     };
 
     const getTooltipContent = (network: PendingConnectionProposalNetwork) => {

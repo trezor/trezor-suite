@@ -11,7 +11,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { isAscii } from '@trezor/utils';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { useSelector } from 'src/hooks/suite';
 
@@ -61,7 +61,7 @@ export const useChangeDeviceLabel = (): {
     const currentLabel = useWatch({ control, name: 'deviceLabel' });
 
     const onSubmit = form.handleSubmit(({ deviceLabel }) => {
-        dispatch(applySettings({ label: deviceLabel }));
+        dispatch(applySettingsThunk({ label: deviceLabel }));
         analytics.report({
             type: events.settingsDeviceChangeLabelEvent.name,
         });

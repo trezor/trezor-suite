@@ -2,14 +2,14 @@ import { type Dispatch, type UnknownAction, createAction } from '@reduxjs/toolki
 import { type ThunkDispatch } from 'redux-thunk';
 
 import { type DesktopAnalyticsDep, type OnboardingAnalytics, events } from '@suite/analytics';
-import { initialRunCompleted } from '@suite/flags';
+import { initialRunCompletedThunk } from '@suite/flags';
 import { closeModal } from '@suite/modal';
 import { type RecoveryState, recoveryRerunThunk } from '@suite/recovery';
 import {
     type GotoThunkState,
     type SuiteRouterHistoryDep,
-    closeModalApp,
-    goto,
+    closeModalAppThunk,
+    gotoThunk,
     selectRouterApp,
 } from '@suite/router';
 import { type SuiteSettingsRootState } from '@suite/settings';
@@ -28,7 +28,7 @@ import {
     type StartDiscoveryThunkDeps,
     type StartDiscoveryThunkState,
     type WalletSettingsRootState,
-    changeCoinVisibility,
+    changeCoinVisibilityThunk,
     selectEnabledNetworks,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
@@ -74,7 +74,7 @@ const getAllStepsInPath = (getState: () => GetAllStepsInPathState) => {
 
 type GoToPreviousStepThunkState = DeviceRootState & OnboardingRootState & SuiteSettingsRootState;
 
-const goToPreviousStep =
+const goToPreviousStepThunk =
     (stepId?: AnyStepId) =>
     (dispatch: Dispatch<UnknownAction>, getState: () => GoToPreviousStepThunkState) => {
         if (stepId) {
@@ -115,7 +115,7 @@ export type GoToSuiteOptions = {
     skipDeviceSetupCompletedEvent?: boolean;
 };
 
-const goToSuite =
+const goToSuiteThunk =
     ({ skipDeviceSetupCompletedEvent }: GoToSuiteOptions = {}) =>
     (
         dispatch: ThunkDispatch<GoToSuiteThunkState, GoToSuiteThunkDeps, UnknownAction>,
@@ -134,9 +134,9 @@ const goToSuite =
         // a device from scratch. Pairing an already set up device leaves the path empty.
         const isFreshDeviceSetup = selectOnboardingPath(getState()).length > 0;
 
-        dispatch(initialRunCompleted({ isFreshDeviceSetup }));
+        dispatch(initialRunCompletedThunk({ isFreshDeviceSetup }));
         dispatch(resetOnboarding());
-        dispatch(closeModalApp(true));
+        dispatch(closeModalAppThunk(true));
 
         // For Bitcoin-only firmware, pre-activate BTC so the user lands on a populated dashboard
         // instead of the empty "activate assets" state. Only do this on initial setup, when no
@@ -144,7 +144,7 @@ const goToSuite =
         const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(getState());
         const enabledNetworks = selectEnabledNetworks(getState());
         if (isBitcoinOnlyFirmware && enabledNetworks.length === 0) {
-            dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
+            dispatch(changeCoinVisibilityThunk({ symbol: 'btc', shouldBeVisible: true }));
         }
 
         // there must be a device to progress with onboarding
@@ -197,7 +197,7 @@ type GoToNextStepThunkDeps = {
     services: DesktopAnalyticsDep & SuiteRouterHistoryDep;
 } & StartDiscoveryThunkDeps;
 
-const goToNextStep =
+const goToNextStepThunk =
     (nextStepId?: AnyStepId) =>
     (
         dispatch: ThunkDispatch<GoToNextStepThunkState, GoToNextStepThunkDeps, UnknownAction>,
@@ -215,7 +215,7 @@ const goToNextStep =
         );
         // we are at last step, so go to Suite
         if (nextStep === null) {
-            dispatch(goToSuite());
+            dispatch(goToSuiteThunk());
 
             return;
         }
@@ -241,7 +241,7 @@ type BeginOnboardingTutorialThunkDeps = {
     services: DesktopAnalyticsDep & SuiteRouterHistoryDep;
 } & StartDiscoveryThunkDeps;
 
-const beginOnboardingTutorial =
+const beginOnboardingTutorialThunk =
     () =>
     async (
         dispatch: ThunkDispatch<
@@ -255,14 +255,14 @@ const beginOnboardingTutorial =
         if (!device) return;
 
         await TrezorConnect.showDeviceTutorial({ device });
-        dispatch(goToNextStep());
+        dispatch(goToNextStepThunk());
     };
 
 type ResolveNextAfterSkippedThunkState = DeviceRootState &
     OnboardingRootState &
     SuiteSettingsRootState;
 
-const resolveNextAfterSkipped =
+const resolveNextAfterSkippedThunk =
     (skippedToStepId: AnyStepId) =>
     (_dispatch: Dispatch<UnknownAction>, getState: () => ResolveNextAfterSkippedThunkState) => {
         const device = selectSelectedDevice(getState());
@@ -276,15 +276,15 @@ const resolveNextAfterSkipped =
         return resolvedNextStep?.id;
     };
 
-type RecoveryRerunThunkState = DeviceRootState & GotoThunkState & { recovery: RecoveryState };
+type RerunRecoveryThunkState = DeviceRootState & GotoThunkState & { recovery: RecoveryState };
 
-type RecoveryRerunThunkDeps = { services: DesktopAnalyticsDep & SuiteRouterHistoryDep };
+type RerunRecoveryThunkDeps = { services: DesktopAnalyticsDep & SuiteRouterHistoryDep };
 
-const recoveryRerun =
+const rerunRecoveryThunk =
     () =>
     async (
-        dispatch: ThunkDispatch<RecoveryRerunThunkState, RecoveryRerunThunkDeps, UnknownAction>,
-        getState: () => RecoveryRerunThunkState,
+        dispatch: ThunkDispatch<RerunRecoveryThunkState, RerunRecoveryThunkDeps, UnknownAction>,
+        getState: () => RerunRecoveryThunkState,
     ) => {
         const result = await dispatch(recoveryRerunThunk());
 
@@ -294,10 +294,10 @@ const recoveryRerun =
 
         const { initialized } = result.payload;
         if (initialized) {
-            dispatch(goto({ routeName: 'recovery-index' }));
+            dispatch(gotoThunk({ routeName: 'recovery-index' }));
         } else {
             if (selectRouterApp(getState()) !== 'onboarding') {
-                dispatch(goto({ routeName: 'onboarding-index' }));
+                dispatch(gotoThunk({ routeName: 'onboarding-index' }));
             }
             dispatch(goToStep('recovery'));
             dispatch(addPath('recovery'));
@@ -306,17 +306,17 @@ const recoveryRerun =
 
 export {
     enableOnboardingReducer,
-    goToNextStep,
+    goToNextStepThunk,
     goToStep,
-    goToPreviousStep,
+    goToPreviousStepThunk,
     addPath,
     removePath,
     resetOnboarding,
-    goToSuite,
+    goToSuiteThunk,
     updateAnalytics,
-    beginOnboardingTutorial,
+    beginOnboardingTutorialThunk,
     updateBackupType,
     updateBackupMedium,
-    resolveNextAfterSkipped,
-    recoveryRerun,
+    resolveNextAfterSkippedThunk,
+    rerunRecoveryThunk,
 };

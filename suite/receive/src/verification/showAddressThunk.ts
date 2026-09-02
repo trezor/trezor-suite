@@ -12,7 +12,7 @@ import { type Dispatch, type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type WalletSettingsRootState,
-    acquireDevice,
+    acquireDeviceThunk,
     confirmAddressOnDeviceThunk,
     selectAddressDisplayType,
 } from '@suite-common/wallet-core';
@@ -60,7 +60,7 @@ export const showAddressThunk =
         // status below is already up to date; still locked means the user dismissed the prompt, and
         // acquireDevice has reported any real failure itself.
         if (selectIsDevicePinLocked(getState())) {
-            await dispatch(acquireDevice({ requestedDevice: device }));
+            await dispatch(acquireDeviceThunk({ requestedDevice: device }));
 
             if (selectIsDevicePinLocked(getState())) return;
         }

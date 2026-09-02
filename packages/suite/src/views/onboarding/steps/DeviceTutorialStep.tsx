@@ -9,7 +9,7 @@ import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import TrezorConnect from '@trezor/connect';
 import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
 
-import { beginOnboardingTutorial } from 'src/actions/onboarding/onboardingActions';
+import { beginOnboardingTutorialThunk } from 'src/actions/onboarding/onboardingActions';
 import { useSelector } from 'src/hooks/suite';
 
 export const DeviceTutorialStep = () => {
@@ -18,7 +18,7 @@ export const DeviceTutorialStep = () => {
     const intl = useIntl();
 
     useEffect(() => {
-        dispatch(beginOnboardingTutorial());
+        dispatch(beginOnboardingTutorialThunk());
     }, [dispatch]);
 
     // Cancelling before the `showDeviceTutorial` call reaches the device (and registers in Connect

@@ -9,7 +9,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { throwError } from '@trezor/utils';
 
-import { signTransaction } from 'src/actions/wallet/stakeActions';
+import { signTransactionThunk } from 'src/actions/wallet/stakeActions';
 import { useSelector } from 'src/hooks/suite';
 import { type ClaimContextValues, type ClaimFormState } from 'src/types/earn/claimForm';
 import { CRYPTO_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
@@ -126,7 +126,7 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
             try {
-                const result = await dispatch(signTransaction(values, composedTx));
+                const result = await dispatch(signTransactionThunk(values, composedTx));
 
                 if (result?.success) {
                     clearForm();

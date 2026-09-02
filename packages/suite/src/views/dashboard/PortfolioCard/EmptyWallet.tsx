@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsOnboardingFeedbackBannerShown, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -39,7 +39,7 @@ export const EmptyWallet = () => {
             type: events.dashboardReceiveModalEvent.name,
             payload: { source: 'empty-wallet' },
         });
-        dispatch(goto({ routeName: 'suite-index', params: { modal: 'receive' } }));
+        dispatch(gotoThunk({ routeName: 'suite-index', params: { modal: 'receive' } }));
     };
 
     const handleBuy = () => {
@@ -52,7 +52,7 @@ export const EmptyWallet = () => {
                 from: 'dashboard/empty-wallet',
             },
         });
-        dispatch(goto({ routeName: 'wallet-trading-buy' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
     };
 
     return (

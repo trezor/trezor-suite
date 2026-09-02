@@ -23,7 +23,7 @@ const handleError = (error: string, dispatch: Dispatch<UnknownAction>, message: 
     );
 };
 
-export const init = createThunk<void, void, void>(
+export const initBioAuthThunk = createThunk<void, void, void>(
     `${BIO_AUTH_PREFIX}/init`,
     (_args, { dispatch }) => {
         // only fetches settings from electron-store, not dependent on BioAuthModule, see bio-auth/get-bio-auth-settings

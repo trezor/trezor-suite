@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { getTronVotedApr, useTronStakingStats } from '@suite-common/earn-staking-api';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -74,7 +74,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName,
                 params: {
                     symbol: account.symbol,

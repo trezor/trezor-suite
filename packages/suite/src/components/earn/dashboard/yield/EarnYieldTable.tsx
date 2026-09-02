@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import {
     EarnAnchor,
-    goto,
+    gotoThunk,
     isEarnYieldRowAnchor,
     selectRouterAnchor,
     useAnchor,
@@ -158,7 +158,7 @@ export const EarnYieldTable = () => {
 
     const handleClaimableAccountSelect = ({ account }: YieldAccountRewards) => {
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-yield-claim',
                 params: {
                     symbol: account.symbol,

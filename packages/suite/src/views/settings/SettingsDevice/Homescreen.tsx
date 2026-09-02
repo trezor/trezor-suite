@@ -9,7 +9,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { Paragraph, Tooltip } from '@trezor/components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 import {
     ImageValidationError,
     convertImage,
@@ -82,7 +82,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     const onChangeHomescreen = async () => {
         const hex = await imagePathToHex(customHomescreen, deviceModelInternal);
 
-        await dispatch(applySettings({ homescreen: hex }));
+        await dispatch(applySettingsThunk({ homescreen: hex }));
         resetUpload();
     };
 

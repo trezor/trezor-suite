@@ -18,7 +18,7 @@ import { Badge, Banner, Column } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 
-import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
+import { goToNextStepThunk, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
 import { useSelector } from 'src/hooks/suite';
 
@@ -223,7 +223,7 @@ export const RecoveryStep = () => {
 
     if (device?.mode === 'normal') {
         // Ready to continue to the next step
-        const handleClick = () => dispatch(goToNextStep('set-pin'));
+        const handleClick = () => dispatch(goToNextStepThunk('set-pin'));
 
         return (
             <RecoveryStepBox

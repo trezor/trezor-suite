@@ -1,5 +1,5 @@
 import { Translation, type TranslationKey } from '@suite/intl';
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectIsTorEnabled } from '@suite/tor';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
@@ -40,7 +40,7 @@ export const TradingUtilsTorWarning = ({
     if (!isTorEnabled) return null;
 
     const handleGoToSettings = () => {
-        dispatch(goto({ routeName: 'settings-index', anchor: SettingsAnchor.Tor }));
+        dispatch(gotoThunk({ routeName: 'settings-index', anchor: SettingsAnchor.Tor }));
     };
 
     const translationId = getTorWarningTranslationId(tradingType, noOffer);

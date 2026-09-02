@@ -7,7 +7,7 @@ import { type TradingSendRejectedProps } from '../../types';
 
 export type GetNonceThunkState = DeviceRootState;
 
-export const getNonce = createThunk<
+export const getNonceThunk = createThunk<
     string,
     void,
     { rejectValue: TradingSendRejectedProps; state: GetNonceThunkState }

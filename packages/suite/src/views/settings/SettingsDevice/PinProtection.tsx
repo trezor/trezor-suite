@@ -7,7 +7,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { Switch, Tooltip } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { changePin } from 'src/actions/settings/deviceSettingsActions';
+import { changePinThunk } from 'src/actions/settings/deviceSettingsActions';
 
 interface PinProtectionProps {
     isDeviceLocked: boolean;
@@ -21,7 +21,7 @@ export const PinProtection = ({ isDeviceLocked }: PinProtectionProps) => {
     const pinProtection = device?.features?.pin_protection ?? null;
 
     const handleChange = () => {
-        dispatch(changePin({ remove: !!pinProtection }));
+        dispatch(changePinThunk({ remove: !!pinProtection }));
         analytics.report({
             type: events.settingsDeviceChangePinProtectionEvent.name,
             payload: {

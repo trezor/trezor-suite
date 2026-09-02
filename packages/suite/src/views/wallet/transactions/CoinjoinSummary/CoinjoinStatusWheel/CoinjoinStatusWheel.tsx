@@ -1,4 +1,4 @@
-import { selectCurrentCoinjoinWheelStates, stopCoinjoinSession } from '@suite/coinjoin';
+import { selectCurrentCoinjoinWheelStates, stopCoinjoinSessionThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -39,7 +39,7 @@ export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) =>
                         intent="neutral"
                         priority="secondary"
                         iconRight={StopIcon}
-                        onClick={() => dispatch(stopCoinjoinSession(accountKey))}
+                        onClick={() => dispatch(stopCoinjoinSessionThunk(accountKey))}
                         size="small"
                         margin={{ top: 8 }}
                     >

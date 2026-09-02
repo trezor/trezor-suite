@@ -4,7 +4,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import {
     cancelDiscoveryThunk,
     startAddWalletDiscoveryThunk,
-    switchToDuplicatedWallet,
+    switchToDuplicatedWalletThunk,
 } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
@@ -28,7 +28,7 @@ export const PassphraseDuplicateModal = ({
     const isDeviceLocked = isLocked();
 
     const handleDuplicateDevicePassphrase = () => {
-        dispatch(switchToDuplicatedWallet());
+        dispatch(switchToDuplicatedWalletThunk());
     };
 
     const onTryDifferentPassphrase = () => {

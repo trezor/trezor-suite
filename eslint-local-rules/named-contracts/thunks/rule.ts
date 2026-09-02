@@ -2,11 +2,11 @@ import type { Rule } from 'eslint';
 import ts from 'typescript';
 
 import {
-    getFunctionExpression,
-    getTypeReferenceName,
-    getVariableFunction,
-    unwrapExpression,
-} from '../../utils';
+    getRtkThunkCallExpression,
+    getThunkImplementation,
+    getThunkImplementationFromFunction,
+} from '../../thunks/utils';
+import { getTypeReferenceName } from '../../utils';
 import { createNamedContractRuleListener } from '../utils';
 
 type RequiredContract = {
@@ -14,53 +14,12 @@ type RequiredContract = {
     node: ts.TypeNode;
 };
 
-const thunkCreators = new Set(['createSingleInstanceThunk', 'createThunk']);
-
 const capitalize = (name: string) => `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
 
 const getThunkContractBaseName = (name: string) => {
     const capitalizedName = capitalize(name);
 
-    if (capitalizedName.endsWith('Thunks')) {
-        return capitalizedName.slice(0, -1);
-    }
-
-    if (capitalizedName.endsWith('ThunkInner')) {
-        return capitalizedName.slice(0, -'Inner'.length);
-    }
-
     return capitalizedName.endsWith('Thunk') ? capitalizedName : `${capitalizedName}Thunk`;
-};
-
-const getReturnedFunction = (functionNode: ts.FunctionLikeDeclaration) => {
-    if (functionNode.body === undefined) {
-        return undefined;
-    }
-
-    if (!ts.isBlock(functionNode.body)) {
-        return getFunctionExpression(functionNode.body);
-    }
-
-    const returnStatements = functionNode.body.statements.filter(ts.isReturnStatement);
-    const [returnStatement] = returnStatements;
-
-    if (returnStatements.length !== 1 || returnStatement?.expression === undefined) {
-        return undefined;
-    }
-
-    return getFunctionExpression(returnStatement.expression);
-};
-
-const getInnermostReturnedFunction = (functionNode: ts.FunctionLikeDeclaration) => {
-    let currentFunction = functionNode;
-    let returnedFunction = getReturnedFunction(currentFunction);
-
-    while (returnedFunction !== undefined) {
-        currentFunction = returnedFunction;
-        returnedFunction = getReturnedFunction(currentFunction);
-    }
-
-    return currentFunction;
 };
 
 const getPropertyName = (node: ts.TypeElement) => {
@@ -89,27 +48,6 @@ const isEmptyContractType = (node: ts.TypeNode | undefined) => {
         node.typeName.text === 'Record' &&
         node.typeArguments?.[0]?.kind === ts.SyntaxKind.NeverKeyword
     );
-};
-
-const getThunkImplementationFromFunction = (outerFunction: ts.FunctionLikeDeclaration) => {
-    const implementation = getInnermostReturnedFunction(outerFunction);
-    const rawParameterNames = implementation.parameters.map(parameter =>
-        ts.isIdentifier(parameter.name) ? parameter.name.text : '',
-    );
-    const parameterNames = rawParameterNames.map(name => name.replace(/^_/, ''));
-
-    return (parameterNames[0] === 'dispatch' || rawParameterNames[0] === '_') &&
-        (parameterNames[1] === 'getState' || parameterNames[2] === 'extra')
-        ? implementation
-        : undefined;
-};
-
-const getThunkImplementation = (declaration: ts.VariableDeclaration) => {
-    const outerFunction = getVariableFunction(declaration);
-
-    return outerFunction === undefined
-        ? undefined
-        : getThunkImplementationFromFunction(outerFunction);
 };
 
 const getGetStateReturnType = (parameter: ts.ParameterDeclaration | undefined) => {
@@ -419,14 +357,10 @@ export const enforceThunkContractsRule: Rule.RuleModule = {
                         }
 
                         const declarationName = declaration.name.text;
-                        const unwrappedInitializer = unwrapExpression(declaration.initializer);
+                        const rtkThunk = getRtkThunkCallExpression(declaration.initializer);
 
-                        if (
-                            ts.isCallExpression(unwrappedInitializer) &&
-                            ts.isIdentifier(unwrappedInitializer.expression) &&
-                            thunkCreators.has(unwrappedInitializer.expression.text)
-                        ) {
-                            validateRtkThunk(declarationName, unwrappedInitializer, statementIndex);
+                        if (rtkThunk !== undefined) {
+                            validateRtkThunk(declarationName, rtkThunk, statementIndex);
                             continue;
                         }
 

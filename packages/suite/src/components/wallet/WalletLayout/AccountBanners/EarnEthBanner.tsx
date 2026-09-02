@@ -1,7 +1,7 @@
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -39,7 +39,7 @@ export const EarnEthBanner = ({ networkSymbol, apy }: EarnEthBannerProps) => {
     };
 
     const goToEarnDashboard = () => {
-        dispatch(goto({ routeName: 'suite-earn' }));
+        dispatch(gotoThunk({ routeName: 'suite-earn' }));
 
         analytics.report({
             type: sharedEvents.yieldNavigateEvent.name,

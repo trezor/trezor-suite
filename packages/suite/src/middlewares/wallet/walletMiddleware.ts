@@ -128,10 +128,10 @@ const walletMiddleware =
                     isOnSendPage: suiteRouteName === 'wallet-send',
                 }),
             );
-            api.dispatch(tradingCommonActions.convertDrafts());
+            api.dispatch(tradingCommonActions.convertDraftsThunk());
         }
 
-        api.dispatch(selectedAccountActions.syncSelectedAccount(action));
+        api.dispatch(selectedAccountActions.syncSelectedAccountThunk(action));
 
         return action;
     };

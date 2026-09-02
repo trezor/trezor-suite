@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { selectFullSelectedAccount } from '@suite/account';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Column } from '@trezor/components';
 
@@ -24,7 +24,7 @@ export const Nfts = () => {
             selectedAccount.status === 'loaded' &&
             !selectedAccount.network?.features.includes('nfts')
         ) {
-            dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
+            dispatch(gotoThunk({ routeName: 'wallet-index', preserveParams: true }));
         }
     }, [selectedAccount, dispatch]);
 

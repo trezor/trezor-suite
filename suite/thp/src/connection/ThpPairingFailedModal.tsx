@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Translation } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
 import { selectThpLastCode, thpActions } from '@suite-common/thp';
-import { acquireDevice, selectSelectedFirstThpDevice } from '@suite-common/wallet-core';
+import { acquireDeviceThunk, selectSelectedFirstThpDevice } from '@suite-common/wallet-core';
 import { Column, Modal, Paragraph } from '@trezor/components';
 
 import { ThpPairingCodeEntry } from './ThpPairingCodeEntry';
@@ -18,7 +18,7 @@ export const ThpPairingFailedModal = () => {
     const handleRetry = () => {
         setIsLoading(true);
         // Re-try is simply acquiring the device again which triggers the THP flow
-        dispatch(acquireDevice({ requestedDevice: device }));
+        dispatch(acquireDeviceThunk({ requestedDevice: device }));
     };
 
     const onCancel = () => {

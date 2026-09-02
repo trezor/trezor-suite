@@ -1,5 +1,5 @@
 import { selectFullSelectedAccount } from '@suite/account';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     cancelSignSendFormTransactionThunk,
@@ -18,12 +18,12 @@ import {
     removeSendFormDraftThunk,
     signAndPushSendFormTransactionThunk,
 } from 'src/actions/wallet/send/sendFormThunks';
-import { cancelSignYieldTx } from 'src/actions/wallet/stablecoin-yield';
+import { cancelSignYieldTxThunk } from 'src/actions/wallet/stablecoin-yield';
 import {
-    cancelSignTx as cancelSignStakingTx,
-    signTransaction,
+    cancelSignTxThunk as cancelSignStakingTx,
+    signTransactionThunk,
 } from 'src/actions/wallet/stakeActions';
-import { cancelSignTronFreezeTx } from 'src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
+import { cancelSignTronFreezeTxThunk } from 'src/actions/wallet/tron-stake/cancelSignTronFreezeTx';
 import { useSelector } from 'src/hooks/suite';
 
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
@@ -53,14 +53,14 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
             return {
                 txInfoState: tronStakeTxReview,
                 precomposedForm: tronStakeTxReview.precomposedForm,
-                cancelSignTx: () => dispatch(cancelSignTronFreezeTx()),
+                cancelSignTx: () => dispatch(cancelSignTronFreezeTxThunk()),
             };
         }
         if (yieldTxReview.precomposedTx) {
             return {
                 txInfoState: yieldTxReview,
                 precomposedForm: yieldTxReview.precomposedForm,
-                cancelSignTx: () => dispatch(cancelSignYieldTx()),
+                cancelSignTx: () => dispatch(cancelSignYieldTxThunk()),
             };
         }
         if (send?.precomposedTx) {
@@ -96,7 +96,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
 
             if (result?.success) {
                 dispatch(removeSendFormDraftThunk());
-                dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
+                dispatch(gotoThunk({ routeName: 'wallet-index', preserveParams: true }));
             }
         } catch {
             // Error state is handled by signAndPushSendFormTransactionThunk.
@@ -106,7 +106,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const handleStakeTx = async () => {
         dispatch(stakeActions.dispose());
         await dispatch(
-            signTransaction(
+            signTransactionThunk(
                 stake.precomposedForm!,
                 stake.precomposedTx as PrecomposedTransactionFinal,
             ),

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Card, Column, H3, H4, Modal, Paragraph } from '@trezor/components';
@@ -24,7 +24,10 @@ export const BridgeRequested = () => {
 
     const dispatch = useDispatch();
 
-    const goToWallet = useCallback(() => dispatch(goto({ routeName: 'wallet-index' })), [dispatch]);
+    const goToWallet = useCallback(
+        () => dispatch(gotoThunk({ routeName: 'wallet-index' })),
+        [dispatch],
+    );
 
     useEffect(() => {
         // Popup flow started, exit the bridge requested foreground app

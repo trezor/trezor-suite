@@ -6,7 +6,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { TrezorBackupIcon } from '@trezor/icons';
 
-import { goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
+import { goToPreviousStepThunk } from 'src/actions/onboarding/onboardingActions';
 import { useSelector } from 'src/hooks/suite';
 
 const RecoveryStepBox = (props: OnboardingCardProps) => {
@@ -35,7 +35,7 @@ const RecoveryStepBox = (props: OnboardingCardProps) => {
             return dispatch(recoveryActions.setStatus('initial'));
         }
 
-        return dispatch(goToPreviousStep());
+        return dispatch(goToPreviousStepThunk());
     };
 
     const isBackButtonVisible = () => {

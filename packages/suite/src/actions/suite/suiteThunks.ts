@@ -1,9 +1,9 @@
-import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
+import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
 import { createThunk } from '@suite-common/redux-utils';
 import { type ReloadAppDep } from '@suite-common/suite-types';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { removeDatabase } from './storageActions';
+import { removeDatabaseThunk } from './storageActions';
 
 type ResetSuiteAppThunkState = GotoThunkState;
 
@@ -17,7 +17,7 @@ export const resetSuiteAppThunk = createThunk<
     { state: ResetSuiteAppThunkState; extra: ResetSuiteAppThunkDeps }
 >('@suite/reset-app', async (_, { dispatch, extra }) => {
     localStorage.clear();
-    dispatch(removeDatabase());
+    dispatch(removeDatabaseThunk());
 
     if (desktopApi.available) {
         // Reset the desktop-specific store.
@@ -25,7 +25,7 @@ export const resetSuiteAppThunk = createThunk<
         desktopApi.appAutoStart(false);
     } else {
         // redirect to / and reload the web
-        await dispatch(goto({ routeName: 'suite-index' }));
+        await dispatch(gotoThunk({ routeName: 'suite-index' }));
     }
 
     extra.services.reloadApp();

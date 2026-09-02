@@ -1,6 +1,6 @@
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Link, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
@@ -19,7 +19,7 @@ export const BridgeDeprecated = () => {
     useLayout('Bridge');
 
     const onClose = () => {
-        dispatch(goto({ routeName: 'wallet-index' }));
+        dispatch(gotoThunk({ routeName: 'wallet-index' }));
     };
 
     return (

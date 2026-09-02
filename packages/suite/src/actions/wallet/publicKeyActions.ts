@@ -16,7 +16,7 @@ export const openXpubModal =
 
 export type ShowXpubThunkState = DeviceRootState & SelectedAccountRootState;
 
-export const showXpub =
+export const showXpubThunk =
     () =>
     async (
         dispatch: ThunkDispatch<ShowXpubThunkState, unknown, UnknownAction>,

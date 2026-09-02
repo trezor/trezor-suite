@@ -8,7 +8,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    changeCoinVisibility,
+    changeCoinVisibilityThunk,
     selectDeviceAccountsByNetworkSymbol,
     selectDiscoveryForSelectedDevice,
     selectHasRunningDiscovery,
@@ -101,7 +101,7 @@ export const AddCoinDiscoveryRunningScreen = ({
             !isBlockedByPassphraseError
         ) {
             dispatch(
-                changeCoinVisibility({
+                changeCoinVisibilityThunk({
                     symbol: networkSymbol,
                     shouldBeVisible: true,
                 }),

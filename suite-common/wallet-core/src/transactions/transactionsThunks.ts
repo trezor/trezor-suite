@@ -811,7 +811,7 @@ export type FetchTransactionsFromNowUntilTimestampThunkState = AccountsRootState
     FetchAllTransactionsForAccountThunkState &
     FetchTransactionsPageThunkState;
 
-export const fetchTransactionsFromNowUntilTimestamp = createSingleInstanceThunk<
+export const fetchTransactionsFromNowUntilTimestampThunk = createSingleInstanceThunk<
     FetchTransactionsFromNowUntilTimestampParams,
     WalletAccountTransaction[],
     { state: FetchTransactionsFromNowUntilTimestampThunkState }

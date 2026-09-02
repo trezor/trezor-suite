@@ -20,7 +20,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { Card } from '@trezor/components';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
-import { init } from 'src/actions/suite/initAction';
+import { initThunk } from 'src/actions/suite/initAction';
 import { useGuideDesktopMenu, useGuideKeyboard } from 'src/hooks/guide';
 import { useAppShortcuts, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
@@ -81,14 +81,14 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
 
     useEffect(() => {
         // Analytics needs to be resolved before we show anything to the user. Until this is solved,
-        // we do not init anything. Especially nothing related to the devices/connect. With THP,
+        // we do not initialize anything. Especially nothing related to the devices/connect. With THP,
         // the autoconnect flow may be automatically triggered, resulting in Suite vs. Device Screen inconsistency.
-        dispatch(analyticsActions.init());
+        dispatch(analyticsActions.initThunk());
     }, [dispatch]);
 
     useEffect(() => {
         if (isAnalyticsConsentConfirmed) {
-            dispatch(init());
+            dispatch(initThunk());
         }
     }, [dispatch, isAnalyticsConsentConfirmed]);
 

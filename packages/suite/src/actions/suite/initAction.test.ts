@@ -9,11 +9,11 @@ import { modalReducer } from '@suite/modal';
 import type { PathString } from '@suite/router';
 import {
     createSuiteRouterHistory,
-    goto,
-    initialRedirection,
-    onLocationChange,
+    gotoThunk,
+    initialRedirectionThunk,
+    onLocationChangeThunk,
     routerAppChanged,
-    routerInit,
+    routerInitThunk,
     routerLocationChange,
     routerMiddleware,
     routerReducer,
@@ -54,7 +54,7 @@ import {
     feesActions,
     fetchFiatRatesThunk,
     initBlockchainThunk,
-    initDevices,
+    initDevicesThunk,
     initStakeDataThunk,
     periodicCheckStakeDataThunk,
     periodicFetchFiatRatesThunk,
@@ -68,7 +68,7 @@ import { noopCreateLogger } from '@trezor/connect-common';
 import { initialBreakpointFlags } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { init } from 'src/actions/suite/initAction';
+import { initThunk } from 'src/actions/suite/initAction';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import windowReducer from 'src/reducers/suite/windowReducer';
@@ -156,24 +156,24 @@ const fixtures: Fixture[] = [
         },
         actions: [
             onSuiteInit.type,
-            initDevices.pending.type,
-            initDevices.fulfilled.type,
+            initDevicesThunk.pending.type,
+            initDevicesThunk.fulfilled.type,
             suiteSettingsActions.setLanguage.type,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
             messageSystemActions.fetchSuccessUpdate.type,
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
-            initialRedirection.pending.type,
-            goto.pending.type,
-            onLocationChange.pending.type,
+            initialRedirectionThunk.pending.type,
+            gotoThunk.pending.type,
+            onLocationChangeThunk.pending.type,
             routerLocationChange.type,
             routerAppChanged.type,
             lockRouter.type,
             connectInitThunk.pending.type,
-            onLocationChange.fulfilled.type,
-            goto.fulfilled.type,
-            initialRedirection.fulfilled.type,
+            onLocationChangeThunk.fulfilled.type,
+            gotoThunk.fulfilled.type,
+            initialRedirectionThunk.fulfilled.type,
             connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
@@ -194,7 +194,7 @@ const fixtures: Fixture[] = [
             periodicFetchFiatRatesThunk.fulfilled.type,
             updateMissingTxFiatRatesThunk.pending.type,
             updateMissingTxFiatRatesThunk.fulfilled.type,
-            routerInit.pending.type,
+            routerInitThunk.pending.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
             stakeDataActions.fetchStakeDataRequest.type,
@@ -212,17 +212,17 @@ const fixtures: Fixture[] = [
         },
         actions: [
             onSuiteInit.type,
-            initDevices.pending.type,
-            initDevices.fulfilled.type,
+            initDevicesThunk.pending.type,
+            initDevicesThunk.fulfilled.type,
             suiteSettingsActions.setLanguage.type,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
             messageSystemActions.fetchSuccessUpdate.type,
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
-            initialRedirection.pending.type,
+            initialRedirectionThunk.pending.type,
             connectInitThunk.pending.type,
-            initialRedirection.fulfilled.type,
+            initialRedirectionThunk.fulfilled.type,
             connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
@@ -243,8 +243,8 @@ const fixtures: Fixture[] = [
             periodicFetchFiatRatesThunk.fulfilled.type,
             updateMissingTxFiatRatesThunk.pending.type,
             updateMissingTxFiatRatesThunk.fulfilled.type,
-            routerInit.pending.type,
-            onLocationChange.pending.type,
+            routerInitThunk.pending.type,
+            onLocationChangeThunk.pending.type,
             routerLocationChange.type,
             routerAppChanged.type,
             periodicCheckStakeDataThunk.pending.type,
@@ -263,17 +263,17 @@ const fixtures: Fixture[] = [
         },
         actions: [
             onSuiteInit.type,
-            initDevices.pending.type,
-            initDevices.fulfilled.type,
+            initDevicesThunk.pending.type,
+            initDevicesThunk.fulfilled.type,
             suiteSettingsActions.setLanguage.type,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
             messageSystemActions.fetchSuccessUpdate.type,
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
-            initialRedirection.pending.type,
+            initialRedirectionThunk.pending.type,
             connectInitThunk.pending.type,
-            initialRedirection.fulfilled.type,
+            initialRedirectionThunk.fulfilled.type,
             connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
@@ -294,8 +294,8 @@ const fixtures: Fixture[] = [
             periodicFetchFiatRatesThunk.fulfilled.type,
             updateMissingTxFiatRatesThunk.pending.type,
             updateMissingTxFiatRatesThunk.fulfilled.type,
-            routerInit.pending.type,
-            onLocationChange.pending.type,
+            routerInitThunk.pending.type,
+            onLocationChangeThunk.pending.type,
             routerLocationChange.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
@@ -314,24 +314,24 @@ const fixtures: Fixture[] = [
         },
         actions: [
             onSuiteInit.type,
-            initDevices.pending.type,
-            initDevices.fulfilled.type,
+            initDevicesThunk.pending.type,
+            initDevicesThunk.fulfilled.type,
             suiteSettingsActions.setLanguage.type,
             initMessageSystemThunk.pending.type,
             fetchConfigThunk.pending.type,
             messageSystemActions.fetchSuccessUpdate.type,
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
-            initialRedirection.pending.type,
-            goto.pending.type,
-            onLocationChange.pending.type,
+            initialRedirectionThunk.pending.type,
+            gotoThunk.pending.type,
+            onLocationChangeThunk.pending.type,
             routerLocationChange.type,
             routerAppChanged.type,
             lockRouter.type,
             connectInitThunk.pending.type,
-            onLocationChange.fulfilled.type,
-            goto.fulfilled.type,
-            initialRedirection.fulfilled.type,
+            onLocationChangeThunk.fulfilled.type,
+            gotoThunk.fulfilled.type,
+            initialRedirectionThunk.fulfilled.type,
             connectInitThunk.rejected.type,
             SUITE.ERROR,
         ],
@@ -383,7 +383,7 @@ const initStore = (state: State) => {
     };
 };
 
-describe('Suite init action', () => {
+describe('Suite init thunk', () => {
     fixtures.forEach(({ description, options, actions }) => {
         it(description, async () => {
             const { store, suiteRouterHistory } = initStore(getInitialState(options.initialRun));
@@ -398,12 +398,12 @@ describe('Suite init action', () => {
                 });
 
                 try {
-                    await store.dispatch(init());
+                    await store.dispatch(initThunk());
                 } catch (err) {
                     expect(err.message).toEqual(options.trezorConnectError);
                 }
             } else {
-                await expect(store.dispatch(init())).resolves.not.toThrow();
+                await expect(store.dispatch(initThunk())).resolves.not.toThrow();
             }
 
             expect(store.getActions().map(({ type }) => type)).toEqual(actions);

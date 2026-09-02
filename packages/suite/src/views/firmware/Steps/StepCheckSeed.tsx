@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
@@ -125,7 +125,7 @@ export const StepCheckSeed = ({
                         onClick={() => {
                             resetReducer();
                             dispatch(
-                                goto({
+                                gotoThunk({
                                     routeName: isDeviceBackedUp ? 'recovery-index' : 'backup-index',
                                 }),
                             );

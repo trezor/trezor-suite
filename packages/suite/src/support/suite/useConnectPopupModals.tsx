@@ -13,10 +13,10 @@ import {
     selectModalContext,
     selectModalType,
 } from '@suite/modal';
-import { goto, selectRouteName } from '@suite/router';
+import { gotoThunk, selectRouteName } from '@suite/router';
 import {
     connectPopupActions,
-    connectPopupCallThunkInner,
+    connectPopupCallInnerThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -133,7 +133,7 @@ export const useConnectPopupModals = () => {
                     dispatch(removePreserveModal());
                     dispatch(cancelModal());
                     dispatch(
-                        goto({
+                        gotoThunk({
                             routeName: 'suite-switch-device',
                             params: {
                                 cancelable: true,
@@ -185,7 +185,7 @@ export const useConnectPopupModals = () => {
             !isConnectionModalOpen
         ) {
             dispatch(
-                connectPopupCallThunkInner({
+                connectPopupCallInnerThunk({
                     ...popupCall,
                 }),
             );

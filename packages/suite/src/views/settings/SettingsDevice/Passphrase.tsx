@@ -9,7 +9,7 @@ import { Switch, Tooltip } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 
 interface PassphraseProps {
     isDeviceLocked: boolean;
@@ -22,7 +22,7 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
     const passphraseProtection = !!device?.features?.passphrase_protection;
 
     const handleChange = () => {
-        dispatch(applySettings({ use_passphrase: !passphraseProtection }));
+        dispatch(applySettingsThunk({ use_passphrase: !passphraseProtection }));
         analytics.report({
             type: events.settingsDeviceChangePassphraseProtectionEvent.name,
             payload: {

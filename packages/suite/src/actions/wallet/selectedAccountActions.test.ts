@@ -2,7 +2,7 @@ import { selectedAccountReducer } from '@suite/account';
 import { createTestStore } from '@suite-common/test-utils';
 
 import fixtures from './__fixtures__/selectedAccountActions';
-import { syncSelectedAccount } from './selectedAccountActions';
+import { syncSelectedAccountThunk } from './selectedAccountActions';
 
 const getInitialState = (initialState: any = {}) => ({
     suite: {},
@@ -47,7 +47,7 @@ describe('selectedAccount Actions', () => {
         it(f.description, () => {
             const state = getInitialState(f.initialState);
             const store = mockStore(state);
-            store.dispatch(syncSelectedAccount(f.action as any));
+            store.dispatch(syncSelectedAccountThunk(f.action as any));
             expect(store.getState().wallet.selectedAccount).toMatchObject(f.result as any);
         });
     });

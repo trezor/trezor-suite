@@ -24,7 +24,7 @@ type DisposeMetadataThunkState = MetadataRootState;
 /**
  * dispose metadata from all labelable objects.
  */
-export const disposeMetadata =
+export const disposeMetadataThunk =
     () => (dispatch: Dispatch, getState: () => DisposeMetadataThunkState) => {
         const provider = selectSelectedProviderForLabels(getState());
 
@@ -43,7 +43,7 @@ export const disposeMetadata =
 
 type DisposeMetadataKeysThunkState = MetadataRootState;
 
-export const disposeMetadataKeys =
+export const disposeMetadataKeysThunk =
     () => (dispatch: Dispatch, getState: () => DisposeMetadataKeysThunkState) => {
         const devices = selectDevices(getState());
         const accounts = selectAccounts(getState());
@@ -72,8 +72,8 @@ export const disableMetadata = () => (dispatch: Dispatch) => {
     dispatch(disableMetadataAction());
 
     // dispose metadata values and keys
-    dispatch(disposeMetadata());
-    dispatch(disposeMetadataKeys());
+    dispatch(disposeMetadataThunk());
+    dispatch(disposeMetadataKeysThunk());
 };
 
 type SetMetadataParams = {

@@ -33,7 +33,7 @@ type SolanaSignTransactionThunkState = trezorConnectPopupActions.ConnectPopupCal
 
 type SolanaSignTransactionThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
-const solanaSignTransaction = createThunk<
+const solanaSignTransactionThunk = createThunk<
     { signature: string; transaction: string },
     {
         session: WalletConnectSession;
@@ -142,7 +142,7 @@ const solanaRequestThunk = createThunk<
             const { origin } = event.verifyContext.verified;
 
             const response = await dispatch(
-                solanaSignTransaction({ session, transaction, feePayer, origin, isDevnet }),
+                solanaSignTransactionThunk({ session, transaction, feePayer, origin, isDevnet }),
             ).unwrap();
 
             const signature = base58.encode(Buffer.from(response.signature, 'hex'));
@@ -154,7 +154,7 @@ const solanaRequestThunk = createThunk<
             const { origin } = event.verifyContext.verified;
 
             const signResponse = await dispatch(
-                solanaSignTransaction({ session, transaction, origin, isDevnet }),
+                solanaSignTransactionThunk({ session, transaction, origin, isDevnet }),
             ).unwrap();
 
             const pushResponse = await TrezorConnect.pushTransaction({

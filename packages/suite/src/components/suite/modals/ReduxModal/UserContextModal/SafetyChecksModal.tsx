@@ -14,7 +14,7 @@ import {
     Text,
 } from '@trezor/components';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 
 /**
  * A Modal that allows user to set the `safety_checks` feature of connected Trezor.
@@ -27,7 +27,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
     const [level, setLevel] = useState(device?.features?.safety_checks || undefined);
     const dispatch = useDispatch();
 
-    const confirm = () => dispatch(applySettings({ safety_checks: level }));
+    const confirm = () => dispatch(applySettingsThunk({ safety_checks: level }));
 
     return (
         <Modal

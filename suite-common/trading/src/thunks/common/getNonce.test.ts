@@ -4,7 +4,7 @@ import { deviceInitialState, selectSelectedDevice } from '@suite-common/device';
 import { createTestStore } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect';
 
-import { getNonce } from './getNonce';
+import { getNonceThunk } from './getNonce';
 
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
@@ -52,9 +52,9 @@ describe('getNonce thunk', () => {
             });
 
             const store = createMockStore();
-            const result = await store.dispatch(getNonce());
+            const result = await store.dispatch(getNonceThunk());
 
-            expect(result.type).toBe(getNonce.fulfilled.type);
+            expect(result.type).toBe(getNonceThunk.fulfilled.type);
             expect(result.payload).toBe(expectedNonce);
 
             // Verify TrezorConnect.getNonce was called with correct parameters
@@ -84,8 +84,8 @@ describe('getNonce thunk', () => {
 
             const store = createMockStore();
 
-            const result1 = await store.dispatch(getNonce());
-            const result2 = await store.dispatch(getNonce());
+            const result1 = await store.dispatch(getNonceThunk());
+            const result2 = await store.dispatch(getNonceThunk());
 
             expect(result1.payload).toBe(expectedNonce1);
             expect(result2.payload).toBe(expectedNonce2);
@@ -98,9 +98,9 @@ describe('getNonce thunk', () => {
             (selectSelectedDevice as jest.Mock).mockReturnValue(null);
 
             const store = createMockStore();
-            const result = await store.dispatch(getNonce());
+            const result = await store.dispatch(getNonceThunk());
 
-            expect(result.type).toBe(getNonce.rejected.type);
+            expect(result.type).toBe(getNonceThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -116,9 +116,9 @@ describe('getNonce thunk', () => {
             (selectSelectedDevice as jest.Mock).mockReturnValue(undefined);
 
             const store = createMockStore();
-            const result = await store.dispatch(getNonce());
+            const result = await store.dispatch(getNonceThunk());
 
-            expect(result.type).toBe(getNonce.rejected.type);
+            expect(result.type).toBe(getNonceThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -135,9 +135,9 @@ describe('getNonce thunk', () => {
             });
 
             const store = createMockStore();
-            const result = await store.dispatch(getNonce());
+            const result = await store.dispatch(getNonceThunk());
 
-            expect(result.type).toBe(getNonce.rejected.type);
+            expect(result.type).toBe(getNonceThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -159,9 +159,9 @@ describe('getNonce thunk', () => {
             );
 
             const store = createMockStore();
-            const result = await store.dispatch(getNonce());
+            const result = await store.dispatch(getNonceThunk());
 
-            expect(result.type).toBe(getNonce.rejected.type);
+            expect(result.type).toBe(getNonceThunk.rejected.type);
             // When an async thunk throws an error, it gets rejected
             expect(result.meta.requestStatus).toBe('rejected');
         });
@@ -176,9 +176,9 @@ describe('getNonce thunk', () => {
             });
 
             const store = createMockStore();
-            const result = await store.dispatch(getNonce());
+            const result = await store.dispatch(getNonceThunk());
 
-            expect(result.type).toBe(getNonce.fulfilled.type);
+            expect(result.type).toBe(getNonceThunk.fulfilled.type);
             expect(result.payload).toBe('');
         });
 
@@ -195,9 +195,9 @@ describe('getNonce thunk', () => {
             });
 
             const store = createMockStore();
-            const result = await store.dispatch(getNonce());
+            const result = await store.dispatch(getNonceThunk());
 
-            expect(result.type).toBe(getNonce.fulfilled.type);
+            expect(result.type).toBe(getNonceThunk.fulfilled.type);
             expect(result.payload).toBe('minimal-nonce');
 
             expect(TrezorConnect.getNonce).toHaveBeenCalledWith({
@@ -226,9 +226,9 @@ describe('getNonce thunk', () => {
             });
 
             const store = createMockStore();
-            const result = await store.dispatch(getNonce());
+            const result = await store.dispatch(getNonceThunk());
 
-            expect(result.type).toBe(getNonce.fulfilled.type);
+            expect(result.type).toBe(getNonceThunk.fulfilled.type);
             expect(result.payload).toBe('trezor-one-nonce');
 
             expect(TrezorConnect.getNonce).toHaveBeenCalledWith({
@@ -240,7 +240,7 @@ describe('getNonce thunk', () => {
 
     describe('thunk metadata', () => {
         it('should have correct thunk type prefix', () => {
-            expect(getNonce.typePrefix).toBe('@trading/thunk/getNonce');
+            expect(getNonceThunk.typePrefix).toBe('@trading/thunk/getNonce');
         });
 
         it('should handle pending state correctly', async () => {
@@ -260,16 +260,16 @@ describe('getNonce thunk', () => {
             );
 
             const store = createMockStore();
-            const promise = store.dispatch(getNonce());
+            const promise = store.dispatch(getNonceThunk());
 
             // Check if the action is in pending state
             const actions = store.getActions();
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const firstAction: (typeof actions)[number] = actions[0];
-            expect(firstAction.type).toBe(getNonce.pending.type);
+            expect(firstAction.type).toBe(getNonceThunk.pending.type);
 
             const result = await promise;
-            expect(result.type).toBe(getNonce.fulfilled.type);
+            expect(result.type).toBe(getNonceThunk.fulfilled.type);
         });
     });
 });

@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
-import { switchToDuplicatedWallet } from '@suite-common/wallet-core';
+import { switchToDuplicatedWalletThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
@@ -33,7 +33,7 @@ export const PassphraseDuplicateAlert = ({ children }: { children: React.ReactNo
     const { showAlert } = useAlert();
 
     const handleDuplicateDevicePassphrase = useCallback(() => {
-        dispatch(switchToDuplicatedWallet());
+        dispatch(switchToDuplicatedWalletThunk());
 
         navigation.popTo(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,

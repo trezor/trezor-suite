@@ -4,7 +4,7 @@ import { fromUnixTime, getUnixTime } from 'date-fns';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { type Dispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
+import { fetchTransactionsFromNowUntilTimestampThunk } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
@@ -173,7 +173,7 @@ const getAccountBalanceHistory = async ({
         }
         if (isLocalBalanceHistoryCoin(symbol)) {
             const allTransactions = await dispatch(
-                fetchTransactionsFromNowUntilTimestamp({
+                fetchTransactionsFromNowUntilTimestampThunk({
                     accountKey,
                     timestamp: startOfTimeFrameDateTimestamp,
                 }),

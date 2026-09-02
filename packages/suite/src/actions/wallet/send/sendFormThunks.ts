@@ -227,7 +227,7 @@ const applySendFormMetadataLabelsThunk = createThunk<
                         );
                     } else {
                         return dispatch(
-                            metadataLabelingActions.addAccountMetadata({
+                            metadataLabelingActions.addAccountMetadataThunk({
                                 ...output,
                                 skipSave: !isLast,
                             }),

@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { goto, selectRouter } from '@suite/router';
+import { gotoThunk, selectRouter } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -104,7 +104,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     };
 
     const goToStakingTab = () => {
-        dispatch(goto({ routeName: 'wallet-staking', preserveParams: true }));
+        dispatch(gotoThunk({ routeName: 'wallet-staking', preserveParams: true }));
 
         analytics.report({
             type: events.stakingNavigateEvent.name,

@@ -291,7 +291,7 @@ export const calculateOutputAmount = (
 
 type ComposeTransactionThunkState = SelectedAccountRootState & StakeRootState;
 
-export const composeTransaction =
+export const composeTransactionThunk =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
     async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
         const selectedAccount = selectFullSelectedAccount(getState());
@@ -387,7 +387,7 @@ type SignTransactionThunkState = DeviceRootState & SelectedAccountRootState & St
 
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
-export const signTransaction =
+export const signTransactionThunk =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (
         dispatch: Dispatch<UnknownAction>,

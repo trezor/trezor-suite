@@ -12,7 +12,7 @@ export type SetLastErrorMessageByTradingTypeProps = {
     errorMessage: string | undefined;
 };
 
-export const setLastErrorMessageByTradingType = createThunk<
+export const setLastErrorMessageByTradingTypeThunk = createThunk<
     void,
     SetLastErrorMessageByTradingTypeProps,
     void

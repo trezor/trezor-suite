@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { SettingsAnchor, goto } from '@suite/router';
+import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
@@ -22,7 +22,7 @@ export const TradingNetworkReserveBanner = ({
 
     const onManageClick = () => {
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'settings-index',
                 preserveParams: true,
                 anchor: SettingsAnchor.NetworkReserve,

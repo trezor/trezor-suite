@@ -1,5 +1,5 @@
 import { selectSelectedAccount } from '@suite/account';
-import { stopCoinjoinSession } from '@suite/coinjoin';
+import { stopCoinjoinSessionThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
@@ -30,7 +30,7 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
                 <>
                     <Modal.Button
                         onClick={() => {
-                            dispatch(stopCoinjoinSession(account.key));
+                            dispatch(stopCoinjoinSessionThunk(account.key));
                             onClose();
                         }}
                     >

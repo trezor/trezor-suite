@@ -1,5 +1,5 @@
 import { Translation, useTranslation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 
@@ -17,7 +17,7 @@ export const NoBackup = () => {
             intent="critical"
             rightContent={
                 <Banner.Button
-                    onClick={() => dispatch(goto({ routeName: 'backup-index' }))}
+                    onClick={() => dispatch(gotoThunk({ routeName: 'backup-index' }))}
                     data-testid="@notification/no-backup/button"
                 >
                     <Translation id="TR_CREATE_BACKUP" />

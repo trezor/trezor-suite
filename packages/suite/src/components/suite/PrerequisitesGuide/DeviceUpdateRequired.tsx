@@ -1,7 +1,7 @@
 import { type MouseEventHandler } from 'react';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { ArrowsClockwiseIcon } from '@trezor/icons';
@@ -13,7 +13,7 @@ export const DeviceUpdateRequired = () => {
 
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
-        dispatch(goto({ routeName: 'firmware-index' }));
+        dispatch(gotoThunk({ routeName: 'firmware-index' }));
     };
 
     return (

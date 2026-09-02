@@ -143,7 +143,7 @@ export const removeDraft = (accountKey: AccountKey) => {
 
 type SaveAccountDraftThunkState = SendRootState;
 
-export const saveAccountDraft =
+export const saveAccountDraftThunk =
     (account: Account) =>
     (_: Dispatch<UnknownAction>, getState: () => SaveAccountDraftThunkState) => {
         if (!db.isAccessible()) return;
@@ -156,7 +156,7 @@ export const saveAccountDraft =
 
 type SaveAccountReceiveThunkState = ReceiveRootState;
 
-export const saveAccountReceive =
+export const saveAccountReceiveThunk =
     (accountKey: AccountKey) =>
     (_: Dispatch<UnknownAction>, getState: () => SaveAccountReceiveThunkState) => {
         if (!db.isAccessible()) return;
@@ -174,7 +174,7 @@ const removeAccountDraft = (account: Account) => {
 
 type SaveCoinjoinAccountThunkState = CoinjoinRootState;
 
-export const saveCoinjoinAccount =
+export const saveCoinjoinAccountThunk =
     (accountKey: AccountKey) =>
     (_: Dispatch<UnknownAction>, getState: () => SaveCoinjoinAccountThunkState) => {
         const coinjoinAccount = selectCoinjoinAccountByKey(getState(), accountKey);
@@ -229,7 +229,7 @@ export const removeCoinjoinAccount = async (
 
 type SaveCoinjoinDebugSettingsThunkState = CoinjoinRootState;
 
-export const saveCoinjoinDebugSettings =
+export const saveCoinjoinDebugSettingsThunk =
     () =>
     (_dispatch: Dispatch<UnknownAction>, getState: () => SaveCoinjoinDebugSettingsThunkState) => {
         if (!db.isAccessible()) return;
@@ -239,18 +239,19 @@ export const saveCoinjoinDebugSettings =
 
 type SaveThpCredentialsThunkState = ThpRootState;
 
-export const saveThpCredentials = createThunk<void, void, { state: SaveThpCredentialsThunkState }>(
-    `${STORAGE.MODULE_PREFIX}/saveThpCredentials`,
-    async (_, { getState }) => {
-        if (!db.isAccessible()) return;
-        const { credentials } = selectThp(getState());
-        await db.addItem('thp', { credentials }, 'value', true);
-    },
-);
+export const saveThpCredentialsThunk = createThunk<
+    void,
+    void,
+    { state: SaveThpCredentialsThunkState }
+>(`${STORAGE.MODULE_PREFIX}/saveThpCredentials`, async (_, { getState }) => {
+    if (!db.isAccessible()) return;
+    const { credentials } = selectThp(getState());
+    await db.addItem('thp', { credentials }, 'value', true);
+});
 
 type SaveKnownDevicesThunkState = WithBluetoothState<DesktopBluetoothDevice>;
 
-export const saveKnownDevices = createThunk<void, void, { state: SaveKnownDevicesThunkState }>(
+export const saveKnownDevicesThunk = createThunk<void, void, { state: SaveKnownDevicesThunkState }>(
     `${STORAGE.MODULE_PREFIX}/saveKnownDevices`,
     async (_, { getState }) => {
         if (!db.isAccessible()) return;
@@ -281,7 +282,7 @@ export const saveKnownDevices = createThunk<void, void, { state: SaveKnownDevice
 
 type SaveAccountFormDraftThunkState = FormDraftRootState;
 
-export const saveAccountFormDraft =
+export const saveAccountFormDraftThunk =
     (prefix: FormDraftKeyPrefix, accountKey: string) =>
     (_: Dispatch<UnknownAction>, getState: () => SaveAccountFormDraftThunkState) => {
         if (!db.isAccessible()) return;
@@ -364,7 +365,7 @@ export const removeAccountWithDependencies =
 type ForgetDeviceThunkState = AccountsRootState &
     RemoveAccountWithDependenciesState & { metadata: MetadataState };
 
-export const forgetDevice =
+export const forgetDeviceThunk =
     (device: TrezorDevice) =>
     (_: Dispatch<UnknownAction>, getState: () => ForgetDeviceThunkState) => {
         if (!db.isAccessible()) return;
@@ -440,7 +441,7 @@ export const saveGraph = (graphData: GraphData[]) => {
 
 type SaveAccountHistoricRatesThunkState = TransactionsRootState;
 
-export const saveAccountHistoricRates =
+export const saveAccountHistoricRatesThunk =
     (accountKey: AccountKey, historicRates: RatesByTimestamps) =>
     (_dispatch: Dispatch<UnknownAction>, getState: () => SaveAccountHistoricRatesThunkState) => {
         if (!db.isAccessible()) return Promise.resolve();
@@ -454,7 +455,7 @@ export const saveAccountHistoricRates =
 
 type SaveAccountTransactionsThunkState = TransactionsRootState;
 
-export const saveAccountTransactions =
+export const saveAccountTransactionsThunk =
     (account: Account) =>
     (_dispatch: Dispatch<UnknownAction>, getState: () => SaveAccountTransactionsThunkState) => {
         if (!db.isAccessible()) return Promise.resolve();
@@ -477,7 +478,7 @@ export const saveAccountTransactions =
 
 type SavePhishingMetadataThunkState = PhishingRootState;
 
-export const savePhishingMetadata =
+export const savePhishingMetadataThunk =
     (phishingMetadata: Partial<PhishingState>) =>
     (_dispatch: Dispatch<UnknownAction>, getState: () => SavePhishingMetadataThunkState) => {
         if (!db.isAccessible()) return;
@@ -498,7 +499,7 @@ type RememberDeviceThunkState = AccountsRootState &
         wallet: { graph: GraphState };
     };
 
-export const rememberDevice =
+export const rememberDeviceThunk =
     (device: TrezorDevice) =>
     async (
         dispatch: ThunkDispatch<RememberDeviceThunkState, unknown, UnknownAction>,
@@ -520,14 +521,14 @@ export const rememberDevice =
             (promises, account) =>
                 promises.concat(
                     [
-                        dispatch(saveAccountReceive(account.key)),
-                        dispatch(saveAccountTransactions(account)),
-                        dispatch(saveAccountDraft(account)),
-                        dispatch(saveCoinjoinAccount(account.key)),
-                        dispatch(saveAccountHistoricRates(account.key, historicRates)),
+                        dispatch(saveAccountReceiveThunk(account.key)),
+                        dispatch(saveAccountTransactionsThunk(account)),
+                        dispatch(saveAccountDraftThunk(account)),
+                        dispatch(saveCoinjoinAccountThunk(account.key)),
+                        dispatch(saveAccountHistoricRatesThunk(account.key, historicRates)),
                     ],
                     FormDraftPrefixKeyValues.map(prefix =>
-                        dispatch(saveAccountFormDraft(prefix, account.key)),
+                        dispatch(saveAccountFormDraftThunk(prefix, account.key)),
                     ),
                 ),
             [],
@@ -539,7 +540,7 @@ export const rememberDevice =
                 saveAccounts(accounts),
                 saveGraph(graphData),
                 // eslint-disable-next-line  @typescript-eslint/no-use-before-define
-                dispatch(saveDeviceMetadataError(device)),
+                dispatch(saveDeviceMetadataErrorThunk(device)),
                 ...accountPromises,
             ]);
         } catch (error) {
@@ -549,7 +550,7 @@ export const rememberDevice =
 
 type SaveWalletSettingsThunkState = WalletSettingsRootState;
 
-export const saveWalletSettings =
+export const saveWalletSettingsThunk =
     () =>
     async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveWalletSettingsThunkState) => {
         if (!db.isAccessible()) return;
@@ -565,7 +566,7 @@ export const saveWalletSettings =
 
 type SaveDiscreetModeThunkState = DiscreetModeRootState;
 
-export const saveDiscreetMode =
+export const saveDiscreetModeThunk =
     () =>
     async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveDiscreetModeThunkState) => {
         if (!db.isAccessible()) return;
@@ -574,7 +575,7 @@ export const saveDiscreetMode =
 
 type SaveBackendThunkState = BlockchainRootState;
 
-export const saveBackend =
+export const saveBackendThunk =
     (symbol: NetworkSymbol) =>
     async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveBackendThunkState) => {
         if (!db.isAccessible()) return;
@@ -591,7 +592,7 @@ type SaveSuiteSettingsThunkState = FlagsRootState &
         suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
     };
 
-export const saveSuiteSettings =
+export const saveSuiteSettingsThunk =
     () =>
     (
         _dispatch: Dispatch<UnknownAction>,
@@ -625,7 +626,7 @@ export const saveSuiteSettings =
 
 type SaveDebugSettingsThunkState = DebugRootState;
 
-export const saveDebugSettings =
+export const saveDebugSettingsThunk =
     () =>
     async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveDebugSettingsThunkState) => {
         if (!db.isAccessible()) return;
@@ -634,7 +635,7 @@ export const saveDebugSettings =
 
 type SaveTokenManagementThunkState = TokenDefinitionsRootState;
 
-export const saveTokenManagement =
+export const saveTokenManagementThunk =
     (symbol: NetworkSymbol, type: DefinitionType, status: TokenManagementAction) =>
     async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveTokenManagementThunkState) => {
         if (!db.isAccessible()) return;
@@ -651,7 +652,7 @@ export const saveTokenManagement =
 
 type SaveAnalyticsThunkState = AnalyticsRootState;
 
-export const saveAnalytics =
+export const saveAnalyticsThunk =
     () => (_dispatch: Dispatch<UnknownAction>, getState: () => SaveAnalyticsThunkState) => {
         if (!db.isAccessible()) return;
 
@@ -697,7 +698,7 @@ const saveMetadata = async (metadata: Partial<Pick<MetadataState, MetadataPersis
  */
 type SaveMetadataSettingsThunkState = { metadata: MetadataState };
 
-export const saveMetadataSettings =
+export const saveMetadataSettingsThunk =
     () =>
     async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveMetadataSettingsThunkState) => {
         // for some strage race-condition reason it has to be awaited, so that the getState runs async
@@ -715,7 +716,7 @@ export const saveMetadataSettings =
 
 type SaveSuiteSyncSettingsThunkState = DesktopSuiteSyncRootState;
 
-export const saveSuiteSyncSettings =
+export const saveSuiteSyncSettingsThunk =
     () => (_dispatch: Dispatch<UnknownAction>, getState: () => SaveSuiteSyncSettingsThunkState) => {
         if (!db.isAccessible()) return;
 
@@ -753,7 +754,7 @@ export const saveSuiteSyncOwner =
 
 type SaveSuiteSyncQuotaManagerThunkState = WithSuiteSyncQuotaManagerState;
 
-export const saveSuiteSyncQuotaManager =
+export const saveSuiteSyncQuotaManagerThunk =
     () =>
     (_dispatch: Dispatch<UnknownAction>, getState: () => SaveSuiteSyncQuotaManagerThunkState) => {
         if (!db.isAccessible()) return;
@@ -775,7 +776,7 @@ export const saveSuiteSyncQuotaManager =
 
 type SaveDeviceMetadataErrorThunkState = { metadata: MetadataState };
 
-export const saveDeviceMetadataError =
+export const saveDeviceMetadataErrorThunk =
     (device: TrezorDevice) =>
     async (
         _dispatch: Dispatch<UnknownAction>,
@@ -791,7 +792,7 @@ export const saveDeviceMetadataError =
 
 type SaveMessageSystemThunkState = MessageSystemRootState;
 
-export const saveMessageSystem =
+export const saveMessageSystemThunk =
     () => (_dispatch: Dispatch<UnknownAction>, getState: () => SaveMessageSystemThunkState) => {
         if (!db.isAccessible()) return;
 
@@ -821,7 +822,7 @@ export const saveMessageSystem =
 
 type SavePersistentDeviceDataThunkState = DeviceRootState;
 
-export const savePersistentDeviceData =
+export const savePersistentDeviceDataThunk =
     () =>
     async (
         _dispatch: Dispatch<UnknownAction>,
@@ -835,7 +836,7 @@ export const savePersistentDeviceData =
 
 type SaveConnectSettingsThunkState = ConnectPopupStateRootState & WalletConnectStateRootState;
 
-export const saveConnectSettings =
+export const saveConnectSettingsThunk =
     () => (_dispatch: Dispatch<UnknownAction>, getState: () => SaveConnectSettingsThunkState) => {
         if (!db.isAccessible()) return;
         const permissions = selectConnectAppPermissions(getState());
@@ -854,7 +855,7 @@ export const saveConnectSettings =
 
 type SaveFirmwareSettingsThunkState = FirmwareRootState;
 
-export const saveFirmwareSettings =
+export const saveFirmwareSettingsThunk =
     () => (_dispatch: Dispatch<UnknownAction>, getState: () => SaveFirmwareSettingsThunkState) => {
         if (!db.isAccessible()) return;
         const firmwareChannel = selectFirmwareChannel(getState());
@@ -871,7 +872,7 @@ export const saveFirmwareSettings =
 
 type SaveFeatureFeedbackThunkState = FeatureFeedbackRootState<FeedbackFeatureName>;
 
-export const saveFeatureFeedback =
+export const saveFeatureFeedbackThunk =
     () => (_dispatch: Dispatch<UnknownAction>, getState: () => SaveFeatureFeedbackThunkState) => {
         if (!db.isAccessible()) return;
         const featureFeedback = selectFeatureFeedback(getState());
@@ -881,7 +882,7 @@ export const saveFeatureFeedback =
 
 type RemoveDatabaseThunkState = DeviceRootState;
 
-export const removeDatabase =
+export const removeDatabaseThunk =
     () => async (dispatch: Dispatch<UnknownAction>, getState: () => RemoveDatabaseThunkState) => {
         if (!db.isAccessible()) return;
 

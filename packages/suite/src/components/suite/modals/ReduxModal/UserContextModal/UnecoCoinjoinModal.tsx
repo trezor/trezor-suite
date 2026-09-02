@@ -2,7 +2,7 @@ import { selectSelectedAccount } from '@suite/account';
 import { UNECONOMICAL_COINJOIN_THRESHOLD } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { convertAmountSubunitsToUnits, getAccountDecimals } from '@suite-common/wallet-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
@@ -24,7 +24,7 @@ export const UnecoCoinjoinModal = () => {
 
     const handleContinue = () => {
         dispatch(closeModal());
-        dispatch(goto({ routeName: 'wallet-anonymize', preserveParams: true }));
+        dispatch(gotoThunk({ routeName: 'wallet-anonymize', preserveParams: true }));
     };
 
     const handleCancel = () => {

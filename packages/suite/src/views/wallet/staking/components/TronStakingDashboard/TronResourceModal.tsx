@@ -1,6 +1,6 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
@@ -91,7 +91,7 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-tron-stake',
                 params: {
                     symbol: account.symbol,

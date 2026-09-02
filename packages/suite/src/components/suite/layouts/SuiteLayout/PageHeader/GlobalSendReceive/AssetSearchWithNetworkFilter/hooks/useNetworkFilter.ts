@@ -1,6 +1,6 @@
 import { type RefObject, useEffect, useMemo, useState } from 'react';
 
-import { goto, parseDashboardParams, selectRouterParams } from '@suite/router';
+import { gotoThunk, parseDashboardParams, selectRouterParams } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
@@ -53,7 +53,7 @@ export function useNetworkFilter({ listRef, resetSearch, modal }: UseNetworkFilt
         dispatch(globalSendReceiveFiltersActions.setNetworkSymbol(networkFilter));
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'suite-index',
                 params: {
                     modal,

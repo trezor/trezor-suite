@@ -213,7 +213,7 @@ const onError =
 
 type ShowAddressThunkState = SignVerifyRootState;
 
-export const showAddress =
+export const showAddressThunk =
     (account: Account, address: string, path: string) =>
     (dispatch: Dispatch, getState: () => ShowAddressThunkState) =>
         getStateParams(account, getState)
@@ -225,7 +225,7 @@ type SignThunkState = SignVerifyRootState;
 
 type SignThunkDeps = WithServices<DesktopAnalyticsDep>;
 
-export const sign =
+export const signThunk =
     (
         account: Account,
         path: string | number[],
@@ -292,7 +292,7 @@ type VerifyThunkState = SignVerifyRootState;
 
 type VerifyThunkDeps = WithServices<DesktopAnalyticsDep>;
 
-export const verify =
+export const verifyThunk =
     (account: Account, address: string, message: string, signature: string, hex = false) =>
     async (dispatch: Dispatch, getState: () => VerifyThunkState, extra: VerifyThunkDeps) => {
         const { analytics } = extra.services;

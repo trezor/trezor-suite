@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { useDispatch } from '@suite-common/redux-utils';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
@@ -25,7 +25,7 @@ export const CardanoOutdatedStakingBanner = () => {
             icon
             intent="warning"
             rightContent={
-                <Banner.Button onClick={() => dispatch(goto({ routeName: 'suite-earn' }))}>
+                <Banner.Button onClick={() => dispatch(gotoThunk({ routeName: 'suite-earn' }))}>
                     <Translation id="TR_STAKING_MODAL_OUTDATED_BUTTON" />
                 </Banner.Button>
             }

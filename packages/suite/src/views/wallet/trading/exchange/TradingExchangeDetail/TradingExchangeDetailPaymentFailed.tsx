@@ -1,7 +1,7 @@
 import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
@@ -26,7 +26,7 @@ export const TradingExchangeDetailPaymentFailed = ({
 }: TradingExchangeDetailPaymentFailedProps) => {
     const dispatch = useDispatch();
 
-    const handleClick = () => dispatch(goto({ routeName: 'wallet-trading-exchange' }));
+    const handleClick = () => dispatch(gotoThunk({ routeName: 'wallet-trading-exchange' }));
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>

@@ -1,7 +1,7 @@
 import { type ExchangeTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
-import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
+import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
@@ -76,7 +76,7 @@ export const selectExchangeQuoteThunk = createThunk<
             exchangeThunks.selectQuoteThunk({
                 quote,
                 nextStep: () => {
-                    dispatch(goto({ routeName: 'wallet-trading-exchange-confirm' }));
+                    dispatch(gotoThunk({ routeName: 'wallet-trading-exchange-confirm' }));
                 },
             }),
         );

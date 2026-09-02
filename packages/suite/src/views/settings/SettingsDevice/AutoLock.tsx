@@ -9,7 +9,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 import { useLocales } from 'src/hooks/suite';
 
 // auto lock times in seconds; allowed lock times by device: <1 minute, 6 days>
@@ -49,7 +49,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     const handleChange = (option: { value: number; label: string }) => {
         const value = option.value * 1000;
 
-        dispatch(applySettings({ auto_lock_delay_ms: value }));
+        dispatch(applySettingsThunk({ auto_lock_delay_ms: value }));
         analytics.report({
             type: events.settingsDeviceUpdateAutoLockEvent.name,
             payload: {

@@ -35,9 +35,9 @@ import {
 } from '@suite-common/suite-types/mocks';
 import { createTestStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
-    acquireDevice,
-    forgetDisconnectedDevices,
-    observeSelectedDevice,
+    acquireDeviceThunk,
+    forgetDisconnectedDevicesThunk,
+    observeSelectedDeviceThunk,
 } from '@suite-common/wallet-core';
 import { type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
@@ -205,7 +205,7 @@ describe('Suite Actions', () => {
         it(`forgetDisconnectedDevices: ${f.description}`, () => {
             const state = getInitialState(f.state.suite, f.state.device);
             const store = mockStore(state);
-            store.dispatch(forgetDisconnectedDevices({ device: f.device }));
+            store.dispatch(forgetDisconnectedDevicesThunk({ device: f.device }));
             const actions = filterThunkActionTypes(store.getActions());
             expect(actions.length).toEqual(f.result.length);
             actions.forEach((a, i) => {
@@ -223,7 +223,7 @@ describe('Suite Actions', () => {
         it(`observeSelectedDevice: ${f.description}`, async () => {
             const state = getInitialState(f.state.suite, f.state.device);
             const store = mockStore(state);
-            const observeResult = await store.dispatch(observeSelectedDevice()).unwrap();
+            const observeResult = await store.dispatch(observeSelectedDeviceThunk()).unwrap();
             expect(observeResult).toEqual(f.observeResult);
 
             const actionTypes = filterThunkActionTypes(store.getActions()).map(
@@ -240,7 +240,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(undefined, f.state.device);
             const store = mockStore(state);
             store.dispatch(connectInitThunk()); // trezorConnectActions.connectInitThunk needs to be called in order to wrap "getFeatures" with lockUi action
-            await store.dispatch(acquireDevice({ requestedDevice: f.requestedDevice }));
+            await store.dispatch(acquireDeviceThunk({ requestedDevice: f.requestedDevice }));
             // we are not interested in thunk state here
             const expectedActions = filterThunkActionTypes(
                 discardMockedConnectInitActions(store.getActions()),

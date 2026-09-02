@@ -1,4 +1,4 @@
-import { type GotoThunkDeps, type GotoThunkState, goto } from '@suite/router';
+import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
 import { selectDevices } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import {
@@ -32,13 +32,13 @@ export const setAutoEjectEnabledThunk = createThunk<
     // which means connected device are preserved in local redux.
     const allDevices = selectDevices(getState());
     allDevices.forEach(device => {
-        dispatch(storageActions.forgetDevice(device));
+        dispatch(storageActions.forgetDeviceThunk(device));
     });
 
     const currentDevices = selectDevices(getState());
     const connectedDevices = currentDevices.filter(device => device.connected && device.state);
 
     if (connectedDevices.length === 0) {
-        dispatch(goto({ routeName: 'suite-index' }));
+        dispatch(gotoThunk({ routeName: 'suite-index' }));
     }
 });

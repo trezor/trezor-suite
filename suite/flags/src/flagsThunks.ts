@@ -9,7 +9,7 @@ type InitialRunCompletedParams = {
     isFreshDeviceSetup: boolean;
 };
 
-export const initialRunCompleted = createThunk<void, InitialRunCompletedParams, void>(
+export const initialRunCompletedThunk = createThunk<void, InitialRunCompletedParams, void>(
     `${FLAGS_MODULE_PREFIX}/initialRunCompleted`,
     ({ isFreshDeviceSetup }, { dispatch }) => {
         dispatch(setFlag({ key: 'initialRun', value: false }));

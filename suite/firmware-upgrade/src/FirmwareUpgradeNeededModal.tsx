@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Card, Modal, Paragraph } from '@trezor/components';
@@ -29,7 +29,7 @@ export const FirmwareUpgradeNeededModal = ({
         // Update will disconnect device in the process and our Firmware Update
         // flow won't allow us to navigate back. So we just redirect the user
         // and close the modal.
-        dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
+        dispatch(gotoThunk({ routeName: 'firmware-index', params: { cancelable: true } }));
         onClose();
     };
 

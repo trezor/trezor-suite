@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type IconCircleIntent, type IconComponent } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
@@ -31,7 +31,7 @@ export const EarnException = ({
                     key: 'back-to-earn-dashboard',
                     intent: 'neutral',
                     priority: 'secondary',
-                    onClick: () => dispatch(goto({ routeName: 'suite-earn' })),
+                    onClick: () => dispatch(gotoThunk({ routeName: 'suite-earn' })),
                     children: <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />,
                 },
             ]}

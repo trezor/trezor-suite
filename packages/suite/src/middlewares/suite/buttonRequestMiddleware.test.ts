@@ -20,7 +20,10 @@ import {
     mockSuiteDevice,
 } from '@suite-common/suite-types/mocks';
 import { createTestStore, testMocks } from '@suite-common/test-utils';
-import { defaultTrezorUIEventHandlerThunk, observeSelectedDevice } from '@suite-common/wallet-core';
+import {
+    defaultTrezorUIEventHandlerThunk,
+    observeSelectedDeviceThunk,
+} from '@suite-common/wallet-core';
 import { UI_EVENT, UI_EVENTS, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
 import { noopCreateLogger } from '@trezor/connect-common';
 
@@ -89,7 +92,7 @@ describe('buttonRequest middleware', () => {
         const store = initStore(getInitialState());
         const { dispatch } = store;
         await dispatch(connectInitThunk());
-        const call = dispatch(deviceSettingsActions.changePin({ remove: false }));
+        const call = dispatch(deviceSettingsActions.changePinThunk({ remove: false }));
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
         // fake few ui events, just like when user is changing PIN
         emitTestEvent(UI_EVENT, {
@@ -105,14 +108,14 @@ describe('buttonRequest middleware', () => {
 
         // Not interested in noisy lifecycle actions from reduxJS toolkit
         const unrelatedActionTypes = [
-            observeSelectedDevice.pending.type,
-            observeSelectedDevice.fulfilled.type,
+            observeSelectedDeviceThunk.pending.type,
+            observeSelectedDeviceThunk.fulfilled.type,
         ];
         const actions = store
             .getActions()
             .filter(action => !unrelatedActionTypes.includes(action.type));
 
-        // not interested in the last action (its from changePin mock);
+        // not interested in the last action (its from changePinThunk mock);
         actions.pop();
 
         expect(actions).toMatchObject([

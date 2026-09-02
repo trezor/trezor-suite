@@ -11,7 +11,9 @@ import { selectIsLegacyLabelingVisible } from './selectIsLegacyLabelingVisible';
 
 export const metadataMiddleware = createMiddleware((action, { dispatch, getState, next }) => {
     if (accountsActions.createAccount.match(action)) {
-        action.payload = dispatch(metadataLabelingActions.setAccountMetadataKey(action.payload));
+        action.payload = dispatch(
+            metadataLabelingActions.setAccountMetadataKeyThunk(action.payload),
+        );
     }
 
     if (

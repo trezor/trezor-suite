@@ -2,7 +2,7 @@ import type { BankAccount } from 'invity-api';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { type TranslationKey, useTranslation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
@@ -112,7 +112,7 @@ export const useTradingSellTradeActions = () => {
         if (!account) return false;
 
         const nextStep = () => {
-            dispatch(goto({ routeName: 'wallet-trading-sell-detail' }));
+            dispatch(gotoThunk({ routeName: 'wallet-trading-sell-detail' }));
         };
 
         const signAndPushSendFormTransaction = async ({

@@ -1,4 +1,4 @@
-import { closeModalApp } from '@suite/router';
+import { closeModalAppThunk } from '@suite/router';
 import {
     TurnOnSuiteSyncModals,
     selectShowEnableSuiteSyncModal,
@@ -21,7 +21,7 @@ export const SwitchDeviceLayer = () => {
         <>
             <SwitchDevice
                 cancelable={modal.payload.cancelable}
-                onCancel={() => dispatch(closeModalApp())}
+                onCancel={() => dispatch(closeModalAppThunk())}
             />
             <TurnOnSuiteSyncModals
                 deviceStaticSessionId={deviceStaticSessionId}

@@ -4,7 +4,7 @@ import { coinjoinReducer } from '@suite/coinjoin';
 import { prepareDesktopDeviceReducer } from '@suite/device';
 import {
     NewContentIndicatorId,
-    initialRunCompleted,
+    initialRunCompletedThunk,
     markNewContentIndicatorAsSeen,
     prepareFlagsReducer,
     setNewContentIndicatorSeen,
@@ -21,7 +21,7 @@ import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage'
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestStore, testMocks, wireEnabledNetworksMock } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { changeCoinVisibility, transactionsActions } from '@suite-common/wallet-core';
+import { changeCoinVisibilityThunk, transactionsActions } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -241,7 +241,7 @@ describe('Storage actions', () => {
         const store = mockStore(getInitialState());
 
         // save wallet settings to the db
-        await store.dispatch(storageActions.saveWalletSettings());
+        await store.dispatch(storageActions.saveWalletSettingsThunk());
         // change local currency in the reducer, changes should be synced to the db via storageMiddleware
         await store.dispatch(discoveryActions.setBaseCurrency('czk'));
         const { settings } = store.getState().wallet;
@@ -258,8 +258,8 @@ describe('Storage actions', () => {
         const store = mockStore(getInitialState());
         const f = global.fetch;
         global.fetch = mockFetch({ TR_ID: 'Message' });
-        await store.dispatch(storageActions.saveSuiteSettings());
-        await store.dispatch(initialRunCompleted({ isFreshDeviceSetup: true }));
+        await store.dispatch(storageActions.saveSuiteSettingsThunk());
+        await store.dispatch(initialRunCompletedThunk({ isFreshDeviceSetup: true }));
         await store.dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Activity26_8));
         await store.dispatch(
             setNewContentIndicatorSeen({
@@ -324,9 +324,9 @@ describe('Storage actions', () => {
         store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
 
         // remember devices
-        await store.dispatch(storageActions.rememberDevice(dev1));
-        await store.dispatch(storageActions.rememberDevice(dev2));
-        await store.dispatch(storageActions.rememberDevice(dev2Instance1));
+        await store.dispatch(storageActions.rememberDeviceThunk(dev1));
+        await store.dispatch(storageActions.rememberDeviceThunk(dev2));
+        await store.dispatch(storageActions.rememberDeviceThunk(dev2Instance1));
 
         store.dispatch((await preloadStore())!);
 
@@ -361,7 +361,7 @@ describe('Storage actions', () => {
         expect(load1.wallet.accounts[1]).toEqual(acc2);
 
         // forget dev1
-        await store.dispatch(storageActions.forgetDevice(dev1));
+        await store.dispatch(storageActions.forgetDeviceThunk(dev1));
         store = mockStore(getInitialState());
         store.dispatch((await preloadStore())!);
 
@@ -383,8 +383,8 @@ describe('Storage actions', () => {
         expect(load2.wallet.accounts.length).toEqual(1);
         expect(load2.wallet.accounts[0]?.deviceState).toEqual(dev2.state?.staticSessionId);
         // forget device dev1 along with its instances
-        await store.dispatch(storageActions.forgetDevice(dev2));
-        await store.dispatch(storageActions.forgetDevice(dev2Instance1));
+        await store.dispatch(storageActions.forgetDeviceThunk(dev2));
+        await store.dispatch(storageActions.forgetDeviceThunk(dev2Instance1));
         store.dispatch((await preloadStore())!);
         expect(selectDevicesCount(store.getState())).toEqual(0);
     });
@@ -409,8 +409,8 @@ describe('Storage actions', () => {
         store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
 
         // store in db
-        await store.dispatch(storageActions.rememberDevice(dev1));
-        await store.dispatch(storageActions.rememberDevice(dev2));
+        await store.dispatch(storageActions.rememberDeviceThunk(dev1));
+        await store.dispatch(storageActions.rememberDeviceThunk(dev2));
 
         // remove txs for acc 1
         await storageActions.removeAccountTransactions(acc1);
@@ -426,8 +426,8 @@ describe('Storage actions', () => {
         // acc2 txs are still there
         const acc2Txs = getAccountTransactions(acc2.key, state.wallet.transactions.transactions);
         expect(acc2Txs.length).toEqual(1);
-        await store.dispatch(storageActions.forgetDevice(dev1));
-        await store.dispatch(storageActions.forgetDevice(dev2));
+        await store.dispatch(storageActions.forgetDeviceThunk(dev1));
+        await store.dispatch(storageActions.forgetDeviceThunk(dev2));
     });
 
     it('should update device settings in the db', async () => {
@@ -448,7 +448,7 @@ describe('Storage actions', () => {
         );
 
         // store device in db
-        await store.dispatch(storageActions.rememberDevice(dev1));
+        await store.dispatch(storageActions.rememberDeviceThunk(dev1));
 
         // Change device label inside a reducer. This is a plain action, and storageMiddleware updates the db.
         await store.dispatch(
@@ -504,7 +504,7 @@ describe('Storage actions', () => {
             }),
         );
         // store device in db
-        await store.dispatch(storageActions.rememberDevice(dev1));
+        await store.dispatch(storageActions.rememberDeviceThunk(dev1));
 
         // verify that graph data are stored
         store.dispatch((await preloadStore())!);
@@ -513,8 +513,12 @@ describe('Storage actions', () => {
         // changeCoinVisibility awaits updateConnectSettings; mock it as a no-op success.
         wireEnabledNetworksMock();
         // disable btc network, enable ltc, triggering ACCOUNT.REMOVE
-        await store.dispatch(changeCoinVisibility({ symbol: ltcSymbol, shouldBeVisible: true }));
-        await store.dispatch(changeCoinVisibility({ symbol: btcSymbol, shouldBeVisible: false }));
+        await store.dispatch(
+            changeCoinVisibilityThunk({ symbol: ltcSymbol, shouldBeVisible: true }),
+        );
+        await store.dispatch(
+            changeCoinVisibilityThunk({ symbol: btcSymbol, shouldBeVisible: false }),
+        );
 
         // verify that graph data for acc1 were removed
         store.dispatch((await preloadStore())!);
@@ -538,7 +542,7 @@ describe('Storage actions', () => {
 
         expect(await db.getItemByPK('suiteSyncOwners', deviceStaticId)).toEqual('owner-key');
 
-        await store.dispatch(storageActions.forgetDevice(dev1));
+        await store.dispatch(storageActions.forgetDeviceThunk(dev1));
 
         expect(await db.getItemByPK('suiteSyncOwners', deviceStaticId)).toBeUndefined();
     });
@@ -569,8 +573,8 @@ describe('Storage actions', () => {
             }),
         );
 
-        await store.dispatch(storageActions.saveMetadataSettings());
-        await store.dispatch(storageActions.forgetDevice(forgottenDevice));
+        await store.dispatch(storageActions.saveMetadataSettingsThunk());
+        await store.dispatch(storageActions.forgetDeviceThunk(forgottenDevice));
 
         store = mockStore(getInitialState());
         store.dispatch((await preloadStore())!);

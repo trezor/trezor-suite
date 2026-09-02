@@ -83,8 +83,9 @@ export const initWithOptions = (options: ConnectOptions) => (dispatch: Dispatch)
 
 type OnSubmitInitThunkState = ConnectRootState;
 
-export const onSubmitInit = () => (dispatch: Dispatch, getState: () => OnSubmitInitThunkState) => {
-    const connect = selectConnect(getState());
+export const onSubmitInitThunk =
+    () => (dispatch: Dispatch, getState: () => OnSubmitInitThunkState) => {
+        const connect = selectConnect(getState());
 
-    return dispatch(initWithOptions(connect.options ?? {}));
-};
+        return dispatch(initWithOptions(connect.options ?? {}));
+    };

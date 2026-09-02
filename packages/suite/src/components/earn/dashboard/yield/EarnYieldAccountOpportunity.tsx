@@ -2,7 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -135,7 +135,7 @@ export const EarnYieldAccountOpportunity = ({
         });
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-trading-buy',
                 params: {
                     symbol: networkSymbol,
@@ -225,7 +225,7 @@ export const EarnYieldAccountOpportunity = ({
         });
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-yield-deposit',
                 params: getEarnRouteParams({
                     account: opportunity.account,
@@ -267,7 +267,7 @@ export const EarnYieldAccountOpportunity = ({
         });
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-yield-withdraw',
                 params: getEarnRouteParams({
                     account: opportunity.account,

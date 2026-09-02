@@ -6,10 +6,10 @@ import {
     selectDesktopAnalyticsDep,
 } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
@@ -50,7 +50,7 @@ export const YieldFlowComplete = ({
             },
         });
 
-        dispatch(goto({ routeName: 'suite-earn' }));
+        dispatch(gotoThunk({ routeName: 'suite-earn' }));
     };
 
     const handleRatingSelect = (rating: Rating) => {
@@ -71,7 +71,7 @@ export const YieldFlowComplete = ({
         });
 
         dispatch(
-            sendFeedbackAction({
+            sendFeedbackThunk({
                 type: 'SUGGESTION',
                 payload: {
                     category: 'experimental',

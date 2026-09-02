@@ -7,7 +7,7 @@ import {
     type SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     parseCryptoId,
@@ -134,7 +134,7 @@ export const useTradingRedirect = () => {
         prefilledAccountFromRedirect(params);
         dispatch(tradingBuyActions.saveQuoteRequest(request));
         dispatch(tradingBuyActions.setIsFromRedirect(true));
-        dispatch(goto({ routeName: 'wallet-trading-buy' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
     };
 
     const redirectToSellOffers = (params: SellOfferRedirectParams) => {
@@ -188,7 +188,7 @@ export const useTradingRedirect = () => {
         );
         dispatch(tradingSellActions.saveTransactionId(orderId));
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: orderId ? 'wallet-trading-sell-confirm' : 'wallet-trading-sell',
             }),
         );
@@ -232,7 +232,7 @@ export const useTradingRedirect = () => {
             }),
         );
         dispatch(tradingExchangeActions.saveTransactionId(orderId));
-        dispatch(goto({ routeName: 'wallet-trading-exchange-confirm' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-exchange-confirm' }));
     };
 
     const redirectToBuyDetail = (params: DetailRedirectParams) => {
@@ -240,7 +240,7 @@ export const useTradingRedirect = () => {
 
         prefilledAccountFromRedirect(params);
         dispatch(tradingBuyActions.saveTransactionId(transactionId));
-        dispatch(goto({ routeName: 'wallet-trading-buy-detail' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-buy-detail' }));
     };
 
     return {

@@ -5,7 +5,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
-import { changePin } from 'src/actions/settings/deviceSettingsActions';
+import { changePinThunk } from 'src/actions/settings/deviceSettingsActions';
 
 interface ChangePinProps {
     isDeviceLocked: boolean;
@@ -15,7 +15,7 @@ export const ChangePin = ({ isDeviceLocked }: ChangePinProps) => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const handleClick = () => {
-        dispatch(changePin({ remove: false }));
+        dispatch(changePinThunk({ remove: false }));
         analytics.report({
             type: events.settingsDeviceChangePinEvent.name,
         });

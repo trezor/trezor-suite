@@ -47,7 +47,7 @@ describe('Protocol actions', () => {
     it('saves address, amount and label from Bitcoin URI protocol', () => {
         const { actions, dispatch, getState, extra } = createHandleProtocolRequestDeps();
 
-        protocolActions.handleProtocolRequest('bitcoin:12345abcde?amount=1.02&label=Alice')(
+        protocolActions.handleProtocolRequestThunk('bitcoin:12345abcde?amount=1.02&label=Alice')(
             dispatch,
             getState,
             extra,
@@ -70,7 +70,7 @@ describe('Protocol actions', () => {
     it('saves address from Bitcoin URI protocol', () => {
         const { actions, dispatch, getState, extra } = createHandleProtocolRequestDeps();
 
-        protocolActions.handleProtocolRequest('bitcoin:12345abcde')(dispatch, getState, extra);
+        protocolActions.handleProtocolRequestThunk('bitcoin:12345abcde')(dispatch, getState, extra);
 
         expect(actions).toHaveLength(2);
         expect(actions).toContainEqual(

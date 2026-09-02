@@ -4,7 +4,7 @@ import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/ad
 import { RedactNumericalValue } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
@@ -163,7 +163,7 @@ const NftsRow = ({
                                         dispatch(setTransactionHistoryPrefill(nft.contract || ''));
                                         if (account) {
                                             dispatch(
-                                                goto({
+                                                gotoThunk({
                                                     routeName: 'wallet-index',
                                                     params: {
                                                         symbol: account.symbol,

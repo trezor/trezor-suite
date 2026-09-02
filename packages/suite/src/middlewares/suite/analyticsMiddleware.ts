@@ -19,7 +19,7 @@ import {
 } from '@suite/router';
 import { onSuiteReady } from '@suite/suite-lifecycle';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
-import { firmwareUpdate } from '@suite-common/firmware';
+import { firmwareUpdateThunk } from '@suite-common/firmware';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
@@ -93,7 +93,7 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
         const state = getState();
         const { analytics } = extra.services;
 
-        if (isAnyOf(firmwareUpdate.fulfilled, firmwareUpdate.rejected)(action)) {
+        if (isAnyOf(firmwareUpdateThunk.fulfilled, firmwareUpdateThunk.rejected)(action)) {
             const { device, toBtcOnly, toFwVersion, error = '' } = action.payload ?? {};
 
             if (device?.features) {

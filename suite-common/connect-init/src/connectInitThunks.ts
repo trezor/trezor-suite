@@ -26,7 +26,7 @@ import { type GetThpSettingsDep, type ThpHostNameDep } from '@suite-common/thp';
 import {
     type WalletSettingsRootState,
     defaultTrezorUIEventHandlerThunk,
-    deviceConnectThunks,
+    deviceConnectThunk,
     isScopedCallId,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
@@ -109,7 +109,7 @@ export const connectInitThunk = createThunk<
             // This special case here allows us to "inject" extra data into action's payload
             // and change the type of the action (in this case DeviceEvent type !== Redux Action type)
             const connectedDevices = selectDevices(getState());
-            dispatch(deviceConnectThunks({ type: eventData.type, device: eventData.payload }));
+            dispatch(deviceConnectThunk({ type: eventData.type, device: eventData.payload }));
 
             connectInitHooks.deviceEvent[eventData.type]?.(eventData.payload, connectedDevices);
         } else {

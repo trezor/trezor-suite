@@ -12,7 +12,7 @@ import {
     type Rating,
     buildUserFeedbackData,
     selectPendingFeedbackFeature,
-    sendFeedbackAction,
+    sendFeedbackThunk,
 } from '@suite-common/feedback';
 import { useDispatch } from '@suite-common/redux-utils';
 import { SmileyIcon } from '@trezor/icons';
@@ -48,7 +48,7 @@ export const FeedbackFormManager = () => {
         const userData = buildUserFeedbackData();
 
         dispatch(
-            sendFeedbackAction({
+            sendFeedbackThunk({
                 type: 'SUGGESTION',
                 payload: {
                     category: (experimentalFeedbackFeatureSet as ReadonlySet<string>).has(

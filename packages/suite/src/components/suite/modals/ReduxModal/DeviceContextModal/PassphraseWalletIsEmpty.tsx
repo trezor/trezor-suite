@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { closeModal as closeModalAction } from '@suite/modal';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
@@ -103,7 +103,7 @@ const PassphraseWalletIsEmptyContent = ({
                                     onClick={() => {
                                         onCancel();
                                         dispatch(closeModalAction());
-                                        dispatch(goto({ routeName: 'settings-coins' }));
+                                        dispatch(gotoThunk({ routeName: 'settings-coins' }));
                                     }}
                                 >
                                     <Translation id="TR_ADD" />

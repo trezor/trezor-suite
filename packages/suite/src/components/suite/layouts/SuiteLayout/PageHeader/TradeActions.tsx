@@ -1,6 +1,6 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto, selectIsAccountTabPage, selectRouteName } from '@suite/router';
+import { gotoThunk, selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
@@ -23,7 +23,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const currentRouteName = useSelector(selectRouteName);
 
-    const goToWithAnalytics = (...[payload]: Parameters<typeof goto>) => {
+    const goToWithAnalytics = (...[payload]: Parameters<typeof gotoThunk>) => {
         if (currentRouteName === 'suite-index') {
             analytics.report({
                 type: events.dashboardActionsEvent.name,
@@ -38,7 +38,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
             });
         }
 
-        dispatch(goto(payload));
+        dispatch(gotoThunk(payload));
     };
 
     const navigateToTrading = (type: 'buy' | 'sell') => {

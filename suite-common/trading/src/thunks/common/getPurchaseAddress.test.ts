@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
-import { getPurchaseAddress } from './getPurchaseAddress';
+import { getPurchaseAddressThunk } from './getPurchaseAddress';
 import { accounts } from '../../reducers/__fixtures__/account';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
@@ -92,10 +92,10 @@ describe('getPurchaseAddress thunk', () => {
 
             const store = createMockStore();
             const result = await store.dispatch(
-                getPurchaseAddress({ account: mockAccount, address: mockAddress }),
+                getPurchaseAddressThunk({ account: mockAccount, address: mockAddress }),
             );
 
-            expect(result.type).toBe(getPurchaseAddress.fulfilled.type);
+            expect(result.type).toBe(getPurchaseAddressThunk.fulfilled.type);
             expect(result.payload).toEqual({
                 address: mockAddress,
                 mac: mockMac,
@@ -142,10 +142,10 @@ describe('getPurchaseAddress thunk', () => {
             });
 
             const result = await storeWithNonChunked.dispatch(
-                getPurchaseAddress({ account: mockAccount, address: mockAddress }),
+                getPurchaseAddressThunk({ account: mockAccount, address: mockAddress }),
             );
 
-            expect(result.type).toBe(getPurchaseAddress.fulfilled.type);
+            expect(result.type).toBe(getPurchaseAddressThunk.fulfilled.type);
             expect(confirmAddressOnDeviceThunk).toHaveBeenCalledWith({
                 accountKey: mockAccount.key,
                 addressPath: mockPath,
@@ -159,10 +159,10 @@ describe('getPurchaseAddress thunk', () => {
         it('should reject when address is not in account', async () => {
             const store = createMockStore();
             const result = await store.dispatch(
-                getPurchaseAddress({ account: mockAccount, address: 'non-existent-address' }),
+                getPurchaseAddressThunk({ account: mockAccount, address: 'non-existent-address' }),
             );
 
-            expect(result.type).toBe(getPurchaseAddress.rejected.type);
+            expect(result.type).toBe(getPurchaseAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -184,10 +184,10 @@ describe('getPurchaseAddress thunk', () => {
 
             const store = createMockStore();
             const result = await store.dispatch(
-                getPurchaseAddress({ account: mockAccount, address: mockAddress }),
+                getPurchaseAddressThunk({ account: mockAccount, address: mockAddress }),
             );
 
-            expect(result.type).toBe(getPurchaseAddress.rejected.type);
+            expect(result.type).toBe(getPurchaseAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -209,10 +209,10 @@ describe('getPurchaseAddress thunk', () => {
 
             const store = createMockStore();
             const result = await store.dispatch(
-                getPurchaseAddress({ account: mockAccount, address: mockAddress }),
+                getPurchaseAddressThunk({ account: mockAccount, address: mockAddress }),
             );
 
-            expect(result.type).toBe(getPurchaseAddress.rejected.type);
+            expect(result.type).toBe(getPurchaseAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
                 error: {
@@ -224,7 +224,7 @@ describe('getPurchaseAddress thunk', () => {
 
     describe('thunk metadata', () => {
         it('should have correct thunk type prefix', () => {
-            expect(getPurchaseAddress.typePrefix).toBe('@trading/thunk/getPurchaseAddress');
+            expect(getPurchaseAddressThunk.typePrefix).toBe('@trading/thunk/getPurchaseAddress');
         });
     });
 });

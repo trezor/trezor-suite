@@ -41,7 +41,7 @@ type OnReceiveConfirmationThunkState = {
     };
 };
 
-export const onReceiveConfirmation =
+export const onReceiveConfirmationThunk =
     (confirmation: boolean) =>
     (dispatch: Dispatch, getState: () => OnReceiveConfirmationThunkState) => {
         const requestId = selectModalConfirmationRequestId(getState());

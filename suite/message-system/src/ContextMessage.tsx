@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { getTorUrlIfAvailable } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { type Route, goto } from '@suite/router';
+import { type Route, gotoThunk } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
 import {
@@ -51,7 +51,11 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
             action === 'internal-link'
                 ? () =>
                       dispatch(
-                          goto({ routeName: link as Route['name'], anchor, preserveParams: true }),
+                          gotoThunk({
+                              routeName: link as Route['name'],
+                              anchor,
+                              preserveParams: true,
+                          }),
                       )
                 : () =>
                       window.open(

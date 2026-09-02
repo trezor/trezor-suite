@@ -11,9 +11,9 @@ import TrezorConnect, { type Address, type PROTO } from '@trezor/connect';
 import { validatePath } from '@trezor/connect-common';
 
 import { createPaymentRequestsThunk } from './createPaymentRequestsThunk';
-import { getNonce } from './getNonce';
-import { getPurchaseAddress } from './getPurchaseAddress';
-import { getRefundAddress } from './getRefundAddress';
+import { getNonceThunk } from './getNonce';
+import { getPurchaseAddressThunk } from './getPurchaseAddress';
+import { getRefundAddressThunk } from './getRefundAddress';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { tradeApi } from '../../tradeApi';
@@ -24,15 +24,15 @@ const tradingReducer = prepareTradingReducer({
 
 // Mock internal thunks - this is the key change from the previous approach
 jest.mock('./getNonce', () => ({
-    getNonce: jest.fn(),
+    getNonceThunk: jest.fn(),
 }));
 
 jest.mock('./getRefundAddress', () => ({
-    getRefundAddress: jest.fn(),
+    getRefundAddressThunk: jest.fn(),
 }));
 
 jest.mock('./getPurchaseAddress', () => ({
-    getPurchaseAddress: jest.fn(),
+    getPurchaseAddressThunk: jest.fn(),
 }));
 
 jest.mock('../../utils/signature/signatureUtils', () => {
@@ -181,14 +181,14 @@ describe('createPaymentRequestsThunk', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        (getNonce as unknown as jest.Mock).mockImplementation(
-            createThunk(getNonce.typePrefix, (_, { fulfillWithValue }) =>
+        (getNonceThunk as unknown as jest.Mock).mockImplementation(
+            createThunk(getNonceThunk.typePrefix, (_, { fulfillWithValue }) =>
                 fulfillWithValue(mockNonce),
             ),
         );
 
-        (getRefundAddress as unknown as jest.Mock).mockImplementation(
-            createThunk(getRefundAddress.typePrefix, (_, { fulfillWithValue }) =>
+        (getRefundAddressThunk as unknown as jest.Mock).mockImplementation(
+            createThunk(getRefundAddressThunk.typePrefix, (_, { fulfillWithValue }) =>
                 fulfillWithValue({
                     mac: mockMac,
                     path: "m/44'/0'/0'",
@@ -196,8 +196,8 @@ describe('createPaymentRequestsThunk', () => {
             ),
         );
 
-        (getPurchaseAddress as unknown as jest.Mock).mockImplementation(
-            createThunk(getPurchaseAddress.typePrefix, (_, { fulfillWithValue }) =>
+        (getPurchaseAddressThunk as unknown as jest.Mock).mockImplementation(
+            createThunk(getPurchaseAddressThunk.typePrefix, (_, { fulfillWithValue }) =>
                 fulfillWithValue({
                     mac: mockMac,
                     path: "m/84'/2'/0'",

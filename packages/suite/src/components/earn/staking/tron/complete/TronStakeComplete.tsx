@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Column, IconCircle, Text } from '@trezor/components';
@@ -27,7 +27,7 @@ export const TronStakeComplete = ({
 
     const handleBackToOverview = () =>
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'wallet-staking',
                 params: {
                     symbol: account.symbol,

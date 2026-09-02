@@ -8,7 +8,7 @@ import { createTestStore } from '@suite-common/test-utils';
 import { type StartDiscoveryThunkDeps } from '@suite-common/wallet-core';
 import { type DeepPartial } from '@trezor/type-utils';
 
-import { goToSuite } from 'src/actions/onboarding/onboardingActions';
+import { goToSuiteThunk } from 'src/actions/onboarding/onboardingActions';
 import { type AppState } from 'src/types/suite';
 
 const device = mockSuiteDevice();
@@ -51,11 +51,11 @@ const setup = () => {
     return { store, report };
 };
 
-describe('goToSuite', () => {
+describe('goToSuiteThunk', () => {
     it('reports device-setup-completed by default', () => {
         const { store, report } = setup();
 
-        store.dispatch(goToSuite());
+        store.dispatch(goToSuiteThunk());
 
         expect(report).toHaveBeenCalledTimes(1);
         expect(report.mock.calls[0][0].type).toBe('device-setup-completed');
@@ -64,7 +64,7 @@ describe('goToSuite', () => {
     it('does not report device-setup-completed when the event is skipped', () => {
         const { store, report } = setup();
 
-        store.dispatch(goToSuite({ skipDeviceSetupCompletedEvent: true }));
+        store.dispatch(goToSuiteThunk({ skipDeviceSetupCompletedEvent: true }));
 
         expect(report).not.toHaveBeenCalled();
     });

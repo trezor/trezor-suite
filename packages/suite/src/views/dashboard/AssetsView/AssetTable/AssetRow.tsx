@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -66,7 +66,7 @@ export const AssetRow = memo(
 
         const handleRowClick = () => {
             dispatch(
-                goto({
+                gotoThunk({
                     routeName: 'wallet-index',
                     params: {
                         symbol,

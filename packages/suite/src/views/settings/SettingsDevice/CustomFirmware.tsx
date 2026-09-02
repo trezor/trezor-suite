@@ -1,7 +1,7 @@
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { Anchor, SettingsAnchor, goto } from '@suite/router';
+import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { getFirmwareDowngradeUrl } from '@suite-common/suite-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -14,7 +14,7 @@ export const CustomFirmware = () => {
     const firmwareDowngradeUrl = getFirmwareDowngradeUrl(device);
 
     const openModal = () =>
-        dispatch(goto({ routeName: 'firmware-custom', params: { cancelable: true } }));
+        dispatch(gotoThunk({ routeName: 'firmware-custom', params: { cancelable: true } }));
 
     return (
         <Anchor anchorId={SettingsAnchor.CustomFirmware}>

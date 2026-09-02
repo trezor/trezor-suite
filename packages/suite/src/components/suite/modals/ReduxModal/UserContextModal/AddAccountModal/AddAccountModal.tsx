@@ -18,7 +18,7 @@ import {
 } from '@suite-common/wallet-config';
 import {
     accountsActions,
-    changeCoinVisibility,
+    changeCoinVisibilityThunk,
     reportWalletBalanceThunk,
     selectAccounts,
     selectEnabledNetworks,
@@ -290,7 +290,7 @@ export const AddAccountModal = ({
     );
 
     function enablePinnedNetwork(network: Network) {
-        dispatch(changeCoinVisibility({ symbol: network.symbol, shouldBeVisible: true }));
+        dispatch(changeCoinVisibilityThunk({ symbol: network.symbol, shouldBeVisible: true }));
         closeModalAndNotifyCompletion();
     }
 

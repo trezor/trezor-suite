@@ -6,7 +6,7 @@ import { getFeedbackUrl } from './getFeedbackUrl';
 
 const FEEDBACK_MODULE_PREFIX = '@suite/feedback';
 
-export const sendFeedbackAction = createThunk<void, Feedback, void>(
+export const sendFeedbackThunk = createThunk<void, Feedback, void>(
     `${FEEDBACK_MODULE_PREFIX}/sendFeedback`,
     async ({ type, payload }, { dispatch, rejectWithValue }) => {
         const url = getFeedbackUrl(type);

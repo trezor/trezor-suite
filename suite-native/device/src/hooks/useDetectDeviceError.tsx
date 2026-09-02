@@ -16,7 +16,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
-import { acquireDevice } from '@suite-common/wallet-core';
+import { acquireDeviceThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
@@ -110,7 +110,7 @@ export const useDetectDeviceError = () => {
                 appendix: <UnacquiredDeviceModalAppendix />,
                 onPressPrimaryButton: () => {
                     dispatch(
-                        acquireDevice({
+                        acquireDeviceThunk({
                             startDiscovery: true,
                         }),
                     );

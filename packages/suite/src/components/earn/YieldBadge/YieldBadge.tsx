@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { EarnAnchor, goto } from '@suite/router';
+import { EarnAnchor, gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -80,7 +80,7 @@ export const YieldBadge = ({ apy, variant, account, vaultId, analyticsFrom }: Yi
             ? (getYieldOpportunityAnchor({ account, vaultId }) ?? EarnAnchor.Yield)
             : undefined;
 
-        dispatch(goto({ routeName: 'suite-earn', anchor }));
+        dispatch(gotoThunk({ routeName: 'suite-earn', anchor }));
 
         analytics.report({
             type: sharedEvents.yieldNavigateEvent.name,

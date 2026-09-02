@@ -2,7 +2,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
@@ -63,7 +63,7 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
         }
 
         dispatch(
-            goto({
+            gotoThunk({
                 routeName: 'earn-tron-claim',
                 params: {
                     symbol: account.symbol,

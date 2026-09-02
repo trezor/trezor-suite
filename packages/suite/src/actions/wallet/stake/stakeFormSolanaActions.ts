@@ -27,7 +27,7 @@ const getSolanaUserAgent = () => `Trezor Suite ${getSuiteVersion()}`;
 
 type ComposeTransactionThunkState = BlockchainRootState & SelectedAccountRootState;
 
-export const composeTransaction =
+export const composeTransactionThunk =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
     async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
         const selectedAccount = selectFullSelectedAccount(getState());
@@ -56,7 +56,7 @@ type SignTransactionThunkState = BlockchainRootState &
 
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
-export const signTransaction =
+export const signTransactionThunk =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (
         dispatch: Dispatch<UnknownAction>,

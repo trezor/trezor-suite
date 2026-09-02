@@ -4,7 +4,7 @@ import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-con
 import {
     selectBitcoinAmountUnit,
     setBitcoinAmountUnits,
-    toggleBitcoinAmountUnits,
+    toggleBitcoinAmountUnitsThunk,
 } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 
@@ -16,7 +16,7 @@ export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const dispatch = useDispatch();
 
     const toggleBitcoinAmountUnitsAction = () => {
-        dispatch(toggleBitcoinAmountUnits());
+        dispatch(toggleBitcoinAmountUnitsThunk());
     };
 
     const setBitcoinAmountUnitsAction = (unit: PROTO.AmountUnit) => {

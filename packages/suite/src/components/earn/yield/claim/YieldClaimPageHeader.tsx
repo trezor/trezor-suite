@@ -1,7 +1,7 @@
 import { AccountLabel } from '@suite/account';
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -34,7 +34,7 @@ export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => 
             },
         });
 
-        dispatch(goto({ routeName: 'suite-earn' }));
+        dispatch(gotoThunk({ routeName: 'suite-earn' }));
     };
 
     return (

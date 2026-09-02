@@ -1,6 +1,6 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { type Route, goto } from '@suite/router';
+import { type Route, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type IconComponent, SubTabs } from '@trezor/components';
@@ -43,7 +43,7 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const goToRoute = (route: Route['name']) => () => {
-        dispatch(goto({ routeName: route }));
+        dispatch(gotoThunk({ routeName: route }));
 
         switch (route) {
             case 'wallet-trading-buy':

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { getTorUrlIfAvailable } from '@suite/external-links';
-import { type Route, goto } from '@suite/router';
+import { type Route, gotoThunk } from '@suite/router';
 import { selectLanguage, selectTorOnionLinks } from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
 import { resolveMessageContent } from '@suite-common/message-system';
@@ -27,7 +27,9 @@ export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonPr
     const onClick = () => {
         switch (action) {
             case 'internal-link':
-                dispatch(goto({ routeName: link as Route['name'], anchor, preserveParams: true }));
+                dispatch(
+                    gotoThunk({ routeName: link as Route['name'], anchor, preserveParams: true }),
+                );
                 break;
             case 'external-link':
                 window.open(

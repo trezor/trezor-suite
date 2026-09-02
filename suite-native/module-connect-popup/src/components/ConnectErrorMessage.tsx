@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { connectPopupCallThunkInner, selectConnectPopupCall } from '@suite-common/connect-popup';
+import { connectPopupCallInnerThunk, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Box, Button, Card, PictogramTitleHeader, VStack } from '@suite-native/atoms';
@@ -47,7 +47,7 @@ export const ConnectErrorMessage = () => {
     const onResume = () => {
         if (popupCall?.state === 'call-error')
             dispatch(
-                connectPopupCallThunkInner({
+                connectPopupCallInnerThunk({
                     ...popupCall,
                     payload: {
                         ...popupCall.payload,

@@ -70,11 +70,11 @@ export const composeTransaction =
         }
 
         if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
-            return dispatch(stakeFormSolanaActions.composeTransaction(formValues, formState));
+            return dispatch(stakeFormSolanaActions.composeTransactionThunk(formValues, formState));
         }
 
         if (isSupportedAdaStakingNetworkSymbol(account.symbol)) {
-            return dispatch(stakeFormCardanoActions.composeTransaction(formValues, formState));
+            return dispatch(stakeFormCardanoActions.composeTransactionThunk(formValues, formState));
         }
 
         return Promise.resolve(undefined);
@@ -83,7 +83,7 @@ export const composeTransaction =
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
 type CancelSignTxThunkState = StakeRootState;
 
-export const cancelSignTx =
+export const cancelSignTxThunk =
     (isSuccessTx?: boolean, account?: Account) =>
     (dispatch: Dispatch<UnknownAction>, getState: () => CancelSignTxThunkState) => {
         const { serializedTx, precomposedForm } = selectStake(getState());
@@ -123,7 +123,7 @@ type PushTransactionThunkDeps = WithServices<DesktopAnalyticsDep> &
     SyncAccountsWithBlockchainThunkDeps;
 
 // private, called from signTransaction only
-const pushTransaction =
+const pushTransactionThunk =
     (stakeType: StakeType, cardanoPoolDelegation?: StakingCardanoPoolDelegationPayload) =>
     async (
         dispatch: ThunkDispatch<PushTransactionThunkState, PushTransactionThunkDeps, UnknownAction>,
@@ -273,7 +273,7 @@ const pushTransaction =
             });
         }
 
-        dispatch(cancelSignTx(sentTx.success, account));
+        dispatch(cancelSignTxThunk(sentTx.success, account));
 
         // resolve sign process
         return sentTx;
@@ -290,7 +290,7 @@ type SignTransactionThunkState = DeviceRootState &
 
 type SignTransactionThunkDeps = PushTransactionThunkDeps;
 
-export const signTransaction =
+export const signTransactionThunk =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (
         dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,
@@ -322,20 +322,20 @@ export const signTransaction =
         let serializedTx: undefined | string | Err<SerializedError>;
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
             serializedTx = await dispatch(
-                stakeFormEthereumActions.signTransaction(formValues, enhancedTxInfo),
+                stakeFormEthereumActions.signTransactionThunk(formValues, enhancedTxInfo),
             );
         }
 
         if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
             serializedTx = await dispatch(
-                stakeFormSolanaActions.signTransaction(formValues, enhancedTxInfo),
+                stakeFormSolanaActions.signTransactionThunk(formValues, enhancedTxInfo),
             );
         }
 
         let cardanoPoolDelegation: StakingCardanoPoolDelegationPayload | undefined;
         if (isSupportedAdaStakingNetworkSymbol(account.symbol)) {
             const signResult = await dispatch(
-                stakeFormCardanoActions.signTransaction(formValues, enhancedTxInfo),
+                stakeFormCardanoActions.signTransactionThunk(formValues, enhancedTxInfo),
             );
 
             if (signResult && 'serializedTx' in signResult) {
@@ -377,13 +377,13 @@ export const signTransaction =
         );
 
         if (account?.networkType === 'cardano') {
-            return dispatch(pushTransaction(formValues.stakeType, cardanoPoolDelegation));
+            return dispatch(pushTransactionThunk(formValues.stakeType, cardanoPoolDelegation));
         }
 
         // Open a deferred modal and get the decision
         const decision = await dispatch(openDeferredModal({ type: 'review-transaction' }));
         if (decision) {
             // push tx to the network
-            return dispatch(pushTransaction(formValues.stakeType));
+            return dispatch(pushTransactionThunk(formValues.stakeType));
         }
     };

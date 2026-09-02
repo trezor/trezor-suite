@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-import { createCoinjoinAccount } from '@suite/coinjoin';
+import { createCoinjoinAccountThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { openDeferredModal, openModal } from '@suite/modal';
 import { selectIsTorEnabled } from '@suite/tor';
-import { toggleTor } from '@suite/tor-desktop';
+import { toggleTorThunk } from '@suite/tor-desktop';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
@@ -79,7 +79,7 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
 
     const onCreateCoinjoinAccountClick = async () => {
         const createAccount = async () => {
-            await dispatch(createCoinjoinAccount(network, selectedAccount));
+            await dispatch(createCoinjoinAccountThunk(network, selectedAccount));
             setIsLoading(false);
         };
 
@@ -108,7 +108,7 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
             }
 
             // Triggering Tor process and displaying Tor loading to give user feedback of Tor progress.
-            dispatch(toggleTor(true));
+            dispatch(toggleTorThunk(true));
             const isTorLoaded = await dispatch(openDeferredModal({ type: 'tor-loading' }));
             // When Tor was not loaded it means there was an error or user canceled it, stop the coinjoin account activation.
             if (!isTorLoaded) return;

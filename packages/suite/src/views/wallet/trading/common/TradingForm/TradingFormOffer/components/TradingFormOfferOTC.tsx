@@ -2,7 +2,7 @@ import { type FiatCurrencyCode } from 'invity-api';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -101,7 +101,7 @@ export const TradingFormOfferOTC = () => {
     const isBuy = context.type === 'buy';
 
     const handleConciergeClick = () => {
-        dispatch(goto({ routeName: 'wallet-trading-concierge' }));
+        dispatch(gotoThunk({ routeName: 'wallet-trading-concierge' }));
 
         analytics.report({
             type: events.tradeNavigateEvent.name,

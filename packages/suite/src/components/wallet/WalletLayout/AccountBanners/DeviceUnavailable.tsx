@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 
 export const DeviceUnavailable = () => {
     const dispatch = useDispatch();
@@ -14,7 +14,7 @@ export const DeviceUnavailable = () => {
         return null;
     }
 
-    const handleButtonClick = () => dispatch(applySettings({ use_passphrase: true }));
+    const handleButtonClick = () => dispatch(applySettingsThunk({ use_passphrase: true }));
 
     return (
         <Banner

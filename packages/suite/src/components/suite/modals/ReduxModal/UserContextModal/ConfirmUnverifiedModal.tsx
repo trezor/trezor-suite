@@ -11,7 +11,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 import { ShieldWarningIcon } from '@trezor/icons';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 import { type ShowXpubThunkState } from 'src/actions/wallet/publicKeyActions';
 import { useSelector } from 'src/hooks/suite';
 
@@ -58,7 +58,7 @@ export const ConfirmUnverifiedModal = ({
 
     const enablePassphraseAndContinue = async () => {
         if (!device?.available) {
-            await dispatch(applySettings({ use_passphrase: true }));
+            await dispatch(applySettingsThunk({ use_passphrase: true }));
         }
     };
 

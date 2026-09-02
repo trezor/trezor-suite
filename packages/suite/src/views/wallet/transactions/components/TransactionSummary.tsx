@@ -10,7 +10,7 @@ import { RepeatIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { updateGraphData } from 'src/actions/wallet/graphActions';
+import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector, HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectGraph, selectGraphSelectedRange } from 'src/reducers/wallet/graphReducer';
@@ -83,14 +83,14 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
 
     const onRefresh = (abortSignal?: AbortSignal) =>
         dispatch(
-            updateGraphData({
+            updateGraphDataThunk({
                 accounts: [account],
                 abortSignal,
             }),
         ).unwrap();
     const onSelectedRange = () =>
         dispatch(
-            updateGraphData({
+            updateGraphDataThunk({
                 accounts: [account],
             }),
         );

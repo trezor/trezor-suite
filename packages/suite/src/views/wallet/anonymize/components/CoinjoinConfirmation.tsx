@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import {
     selectCoinjoinClient,
     selectStartCoinjoinSessionArguments,
-    startCoinjoinSession,
+    startCoinjoinSessionThunk,
 } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
@@ -109,7 +109,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     };
     const anonymize = async () => {
         setIsLoading(true);
-        await dispatch(startCoinjoinSession(...startCoinjoinArgs));
+        await dispatch(startCoinjoinSessionThunk(...startCoinjoinArgs));
         setIsLoading(false);
     };
 

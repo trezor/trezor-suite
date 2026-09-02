@@ -66,7 +66,7 @@ type CalculateNewTransactionSizeParams = {
     account: ComposeCancelTransactionPartialAccount;
 };
 
-const calculateNewTransactionSize = createThunk<
+const calculateNewTransactionSizeThunk = createThunk<
     number,
     CalculateNewTransactionSizeParams,
     { rejectValue: string }
@@ -112,7 +112,7 @@ export const composeCancelTransactionThunk = createThunk<
             return rejectWithValue('Transaction vsize is not loaded');
         }
 
-        const response = await dispatch(calculateNewTransactionSize({ account, tx }));
+        const response = await dispatch(calculateNewTransactionSizeThunk({ account, tx }));
 
         if (isRejected(response)) {
             return rejectWithValue(response.error.message ?? 'unknown');

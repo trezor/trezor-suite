@@ -48,32 +48,6 @@ namedContractsRuleTester.run('enforce-thunk-contracts', enforceThunkContractsRul
         {
             filename: namedContractsFilename,
             code: `
-                declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
-
-                type SaveThunkState = { value: string };
-
-                const saveThunks = createThunk<void, void, { state: SaveThunkState }>(
-                    'save',
-                    () => undefined,
-                );
-            `,
-        },
-        {
-            filename: namedContractsFilename,
-            code: `
-                declare const createThunk: <Result, Payload, Config>(name: string, callback: unknown) => unknown;
-
-                type SaveThunkState = { value: string };
-
-                const saveThunkInner = createThunk<void, void, { state: SaveThunkState }>(
-                    'save',
-                    () => undefined,
-                );
-            `,
-        },
-        {
-            filename: namedContractsFilename,
-            code: `
                 type SaveThunkState = { value: string };
 
                 type SaveThunkDeps = { save: () => void };

@@ -5,7 +5,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import type { Deferred } from '@trezor/utils';
 
 import { MetadataProviderSelectionModal } from './MetadataProviderSelectionModal';
-import { connectProvider } from './metadataProviderThunks';
+import { connectProviderThunk } from './metadataProviderThunks';
 
 type MetadataProviderModalProps = {
     onCancel: () => void;
@@ -26,7 +26,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
 
     const connect = async (type: MetadataProviderType) => {
         setIsLoading(type);
-        const result = await dispatch(connectProvider({ type }));
+        const result = await dispatch(connectProviderThunk({ type }));
         // window close indicates user action, user knows what happened, no need to show an error message
         if (result === 'window closed') {
             setIsLoading('');

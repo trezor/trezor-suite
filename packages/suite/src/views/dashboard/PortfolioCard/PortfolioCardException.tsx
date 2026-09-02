@@ -21,7 +21,7 @@ import {
 } from '@trezor/components';
 import { PlusIcon, RepeatIcon, WarningIcon } from '@trezor/icons';
 
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 import { type DiscoveryStatusType } from 'src/types/wallet';
 
 interface CTA {
@@ -197,7 +197,9 @@ export const PortfolioCardException = ({
                     cta={{
                         action: async () => {
                             // enable passphrase
-                            const result = await dispatch(applySettings({ use_passphrase: true }));
+                            const result = await dispatch(
+                                applySettingsThunk({ use_passphrase: true }),
+                            );
                             if (!result?.success) return;
                             // restart discovery
                             dispatch(startOrRestartDiscoveryThunk());

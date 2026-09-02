@@ -4,7 +4,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { type Route, goto, selectRouteName } from '@suite/router';
+import { type Route, gotoThunk, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useDispatch } from '@suite-common/redux-utils';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
@@ -144,7 +144,7 @@ export const TokensNavigation = ({
     };
 
     const goToRoute = (route: Route['name']) => () => {
-        dispatch(goto({ routeName: route, preserveParams: true }));
+        dispatch(gotoThunk({ routeName: route, preserveParams: true }));
     };
 
     useEffect(() => {

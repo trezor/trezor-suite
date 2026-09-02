@@ -1,5 +1,5 @@
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { type Route, goto, selectRouteName, selectSettingsBackRoute } from '@suite/router';
+import { type Route, gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { selectTradingActiveSection } from '@suite-common/trading';
 import { Box, Button, IconButton, Row } from '@trezor/components';
@@ -28,7 +28,7 @@ const TradingPageHeader = ({ title }: TradingPageHeaderProps) => {
     const isTopLevelRoute = isTradingTopLevelRoute(currentRouteName);
 
     const goToRoute = (route: Route['name']) => () => {
-        dispatch(goto({ routeName: route, preserveParams: true }));
+        dispatch(gotoThunk({ routeName: route, preserveParams: true }));
     };
 
     return (

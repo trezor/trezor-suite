@@ -3,7 +3,7 @@ import { type MouseEventHandler } from 'react';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useDispatch } from '@suite-common/redux-utils';
-import { acquireDevice } from '@suite-common/wallet-core';
+import { acquireDeviceThunk } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
 type AcquireButtonProps = {
@@ -18,7 +18,7 @@ export const AcquireDeviceButton = ({ onClick }: AcquireButtonProps) => {
 
     const handleClick: MouseEventHandler = e => {
         onClick?.(e);
-        dispatch(acquireDevice({}));
+        dispatch(acquireDeviceThunk({}));
     };
 
     return (

@@ -1,6 +1,6 @@
 import { type MouseEvent, type ReactNode } from 'react';
 
-import { type Route, goto } from '@suite/router';
+import { type Route, gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -41,7 +41,7 @@ export const AssetActionButton = ({
         switch (routeName) {
             case 'wallet-staking':
                 dispatch(
-                    goto({
+                    gotoThunk({
                         routeName,
                         params: {
                             symbol,
@@ -59,7 +59,7 @@ export const AssetActionButton = ({
                         ),
                     );
                 }
-                dispatch(goto({ routeName }));
+                dispatch(gotoThunk({ routeName }));
                 break;
             default:
                 exhaustive(routeName);

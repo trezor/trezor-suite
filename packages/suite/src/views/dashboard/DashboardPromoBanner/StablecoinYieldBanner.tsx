@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { goto } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useDispatch } from '@suite-common/redux-utils';
 import { Image } from '@trezor/components';
 
@@ -17,7 +17,7 @@ export const StablecoinYieldBanner = ({ onClose, onCTAClick }: StablecoinYieldBa
 
     const handleCTAClick = () => {
         onCTAClick();
-        dispatch(goto({ routeName: 'suite-earn' }));
+        dispatch(gotoThunk({ routeName: 'suite-earn' }));
     };
 
     return (

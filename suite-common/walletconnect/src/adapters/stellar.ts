@@ -43,7 +43,7 @@ type StellarSignXDRThunkState = trezorConnectPopupActions.ConnectPopupCallThunkS
 
 type StellarSignXDRThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
-const stellarSignXDR = createThunk<
+const stellarSignXDRThunk = createThunk<
     { signedXDR: string },
     {
         session: WalletConnectSession;
@@ -129,7 +129,7 @@ const stellarRequestThunk = createThunk<
             const { origin } = event.verifyContext.verified;
 
             const result = await dispatch(
-                stellarSignXDR({ session, xdrBase64: xdr, origin, event }),
+                stellarSignXDRThunk({ session, xdrBase64: xdr, origin, event }),
             ).unwrap();
 
             return { signedXDR: result.signedXDR };
@@ -140,7 +140,7 @@ const stellarRequestThunk = createThunk<
             const context = resolveStellarRequestContext(event);
 
             const result = await dispatch(
-                stellarSignXDR({ session, xdrBase64: xdr, origin, event }),
+                stellarSignXDRThunk({ session, xdrBase64: xdr, origin, event }),
             ).unwrap();
 
             const pushResponse = await TrezorConnect.pushTransaction({

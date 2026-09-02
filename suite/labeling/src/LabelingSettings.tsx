@@ -130,7 +130,7 @@ export const LabelingSettings = () => {
     const handleLegacyOptionSelect = async () => {
         await turnOffSuiteSync();
         if (legacyMetadataState.enabled === false) {
-            dispatch(metadataLabelingActions.init(true));
+            dispatch(metadataLabelingActions.initThunk(true));
         }
     };
 
