@@ -195,8 +195,9 @@ jobs:
           GITHUB_ACTION: true
           CURRENTS_PROJECT_ID: LjEjiV
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+          CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
           CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
-        run: yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=2 --headless
+        run: yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=2 --headless --quarantine
 
       - name: "Store test artifacts"
         if: ${{ !cancelled() }}
