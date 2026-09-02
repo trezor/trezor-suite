@@ -199,12 +199,14 @@ export const messages = {
         },
         searchForm: {
             searchAccountsPlaceholder: 'Search accounts',
+            placeholder: 'Search assets',
         },
     },
     accountList: {
         numberOfTokens: '+{numberOfTokens, plural, one{1 Token} other{# Tokens}}',
         staking: 'Staking',
         stakingDisabled: 'Staking is currently unavailable.',
+        rewardsReduced: 'Rewards reduced',
     },
     assets: {
         dashboard: {
@@ -1484,7 +1486,7 @@ export const messages = {
             mevProtection: {
                 title: 'MEV protection',
                 subtitle:
-                    'Stay safe and secure fair prices by preventing others from interfering with your transactions. Available on {supportedNetworks}.',
+                    'Stay safe and secure fair prices by preventing others from interfering with your transactions.',
             },
             dustPhishing: {
                 title: 'Dust phishing protection',
@@ -2002,7 +2004,9 @@ export const messages = {
                 clearButton: 'Clear filter',
                 showAllButton: 'Show all',
                 accountCount: '{count, plural, one {# account} other {# accounts}}',
+                title: 'Show assets on',
             },
+            title: 'My assets',
         },
         accountAssetsScreen: {
             tab: {
@@ -2124,6 +2128,9 @@ export const messages = {
                 'Connect your Trezor or sync networks to receive to your accounts.',
             searchTitle: 'No results found',
             searchAgain: 'Search again',
+            title: 'No assets',
+            subtitle: 'Connect your Trezor or sync networks to view and track assets.',
+            receiveSubtitle: 'Connect your Trezor or sync networks to view and receive assets.',
         },
         viewOnlyAddAccountAlert: {
             title: 'Connect & unlock your Trezor to add new assets',
@@ -2220,7 +2227,7 @@ export const messages = {
                 confirmButton: 'Cancel transaction',
                 confirmOnDevice:
                     'Follow the instructions on your Trezor to confirm the cancellation.',
-                successToast: 'Cancel transaction sent',
+                successToast: 'Transaction cancellation sent',
                 errorToast: 'Transaction cancellation failed: {error}',
                 errorToastGeneric: 'Transaction cancellation failed. Please try again.',
                 composeErrorMessage: 'Unable to prepare the cancellation transaction.',
@@ -2548,6 +2555,10 @@ export const messages = {
                 removeButton: 'Remove',
                 info: 'Adds 1 {networkDisplaySymbol} to the network fee.',
             },
+            accountActivationFee: 'Activation fee',
+            accountActivationFeeTitle: 'Activation fee',
+            accountActivationFeeDescription:
+                'New TRON accounts require a one-time 1 {networkDisplaySymbol} network fee to activate.',
         },
         fees: {
             recipient: {
@@ -2775,6 +2786,7 @@ export const messages = {
                     stepUnstakedReadyToClaim: 'Unstaked and ready to claim',
                 },
             },
+            solRewardsFrequencyLabel: 'Rewards every ~{value, plural, one {# day} other {# days}}',
         },
         yieldInsufficientBalance: {
             title: "You don't have enough {tokenSymbol}",
@@ -2993,8 +3005,8 @@ export const messages = {
                 networkStaking: '{networkName} staking',
                 stakingPositions: 'Staking positions',
                 defiYieldPositions: 'DeFi Yield positions',
-                availableRewards: 'Available bonus rewards',
-                claimRewardsButton: 'Claim',
+                availableRewards: 'Bonus rewards',
+                claimRewardsButton: 'Claim rewards',
                 rewardsSummary:
                     '{tokenCount, plural, one {<text>in</text><tokenIcons></tokenIcons><text>{tokenSymbol}</text>} other {<text>in</text><tokenIcons></tokenIcons><text># tokens</text>}}{accountCount, plural, one {} other {<text>across</text><accountIcon></accountIcon><text># accounts</text>}}',
                 incompleteFiatTotal: 'Some fiat rates couldn’t load. Total may be incomplete.',
@@ -3002,6 +3014,8 @@ export const messages = {
             activeSheet: {
                 stakingPositionsTitle: 'Staking positions',
                 yieldPositionsTitle: 'Yield positions',
+                stakingTitle: 'Your stakes',
+                stablecoinYieldTitle: 'Your yields',
             },
             stablecoinYieldLoadError: {
                 title: 'Unable to load yield opportunities',
@@ -3040,9 +3054,10 @@ export const messages = {
             },
             adaInfo: 'Your ADA stays fully accessible while earning rewards.',
             claimRewards: {
-                title: 'Bonus rewards to claim',
+                title: 'Claim rewards from an account',
                 subtitle: 'Select an account to claim bonus rewards.',
             },
+            title: 'Earn',
         },
         howStakeWorksScreen: {
             title: 'How {displaySymbol} staking works',
@@ -3078,11 +3093,13 @@ export const messages = {
                     titleEthereum: 'Enter staking pool',
                     titleSolana: 'Enter warm-up period',
                     description: '~{entryPeriod} days',
+                    title: 'Entry period',
                 },
                 third: {
                     titleEthereum: 'Receive weekly rewards',
                     titleSolana: 'Receive rewards every ~{days} days',
                     description: '~{apy}% yearly',
+                    title: 'Receive weekly rewards',
                 },
             },
             unstakeTimelineTitle: 'Unstake',
@@ -3095,13 +3112,14 @@ export const messages = {
                     titleEthereum: 'Leave staking pool',
                     titleSolana: 'Enter cool-down period',
                     description: '~{unstakingPeriod} days',
+                    title: 'Leave staking pool',
                 },
                 third: {
                     title: 'Claim unstaked {symbol}',
                     description: 'Network fee',
                 },
                 fourth: {
-                    title: 'Receive {symbol} in account',
+                    title: 'Receive {symbol} in your account',
                     description: 'Instantly',
                 },
             },
@@ -3129,7 +3147,7 @@ export const messages = {
                     description: 'This is your vault position.',
                 },
                 fourth: {
-                    title: 'You will also earn {bonusRewardTokenName} tokens as rewards.',
+                    title: "You'll earn {bonusRewardTokenName} as rewards.",
                     description: 'These must be claimed separately.',
                 },
                 wrappedNativeVault: {
@@ -3702,6 +3720,20 @@ export const messages = {
             subtitle: 'Minimum amount to stake is {minAmount} {displaySymbol}.',
             getButton: 'Get more {displaySymbol}',
         },
+        stakedAutomatically: 'Staked automatically',
+        fullBalance: 'Full balance',
+        adaStaysFullyAccessuble: 'Your ADA stays fully accessible while earning rewards.',
+        infoBanner: {
+            updateProviderTitle: 'Save your ADA rewards by updating your staking provider',
+            newProviderTitle: 'Earn ~{apy}% APY with our new provider',
+            updateProviderButton: 'Update provider',
+            providerReducingRewards:
+                "You're earning nearly 0% in ADA rewards right now. Switch to Everstake to earn up to {apy}% APY. Your funds and past rewards are safe.",
+            updateToNewProvider:
+                'Update to our new provider, Everstake, and earn ~{apy}% APY. Your {symbol} with our previous provider is safe, and your rewards stay intact, though rates aren’t guaranteed.',
+            rewardsReduced: 'Cardano staking rewards reduced',
+        },
+        goToVault: 'Go to vault',
     },
     moduleTrading: {
         paymentMethods: {
@@ -3772,6 +3804,8 @@ export const messages = {
                     item4: 'How fees are calculated',
                     item5: "Trezor's Terms of Use",
                 },
+                termsOfProvider:
+                    'This service is offered by {companyName}, not Trezor. <link>Terms apply</link>',
             },
             balance: 'Balance:',
             providerOffer: 'Provider offer: {amount}',
@@ -3874,14 +3908,18 @@ export const messages = {
                 activate: 'Activate {network}',
                 viewOnly: {
                     description: 'You need to connect your device to add a new account.',
+                    title: 'Account not found',
                 },
                 networkNotEnabled: {
                     noAccountDescription:
                         'It seems that you don’t have any account matching selected asset.',
+                    title: 'Account not found',
+                    description: 'No account found for selected asset.',
                 },
                 portfolioTracker: {
                     description:
                         "You don't have an account for this asset imported in the Portfolio Tracker.",
+                    title: 'Account not found',
                 },
             },
             addressEmpty: {
@@ -3981,6 +4019,7 @@ export const messages = {
                     button: 'Sell again',
                 },
             },
+            title: 'Sell',
         },
         tradingSellCompletionScreen: {
             finishingTitle: 'Finishing up with {companyName}',
@@ -4320,7 +4359,7 @@ export const messages = {
                 toast: 'No trading pair',
             },
             lowBalance: 'Low balance',
-            nonTradeable: 'Non-tradeable',
+            nonTradeable: 'Non-tradable',
         },
         slippage: {
             title: 'Maximum slippage',
@@ -4353,6 +4392,17 @@ export const messages = {
                 confirm: 'Confirm custom slippage',
                 inputLabel: 'Slippage',
             },
+        },
+        myAssetSheet: {
+            title: 'Your assets',
+            searchInputPlaceholder: 'Search assets',
+            emptyTitle: 'No assets found',
+            emptyDescription: 'No assets available for this operation.',
+            noPair: {
+                note: 'No pair',
+                toast: 'No trading pair',
+            },
+            nonTradeable: '+ {count} non-tradeable {count, plural, one{token} other{tokens}}',
         },
     },
     feedbackForm: {
@@ -4505,8 +4555,7 @@ export const messages = {
         },
         solanaLimitedHistoryBanner: {
             title: 'Transaction history is limited to the last 100 transactions per token',
-            description:
-                'Only the most recent 100 transactions per token are shown. For the full history, view on the blockchain explorer.',
+            description: 'For the full history, view on the blockchain explorer.',
             confirmButton: 'Got it',
         },
         defiYieldPromoBanner: {
@@ -4689,6 +4738,7 @@ export const messages = {
             earn: 'Earn',
             trade: 'Trade',
             settings: 'Settings',
+            accounts: 'My assets',
         },
     },
     tradingAtoms: {
