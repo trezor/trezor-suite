@@ -83,7 +83,7 @@ module.exports = {
                 keepOnlyFailedTestsArtifacts: false,
             },
             video: {
-                enabled: true,
+                enabled: false,
                 keepOnlyFailedTestsArtifacts: false,
             },
             uiHierarchy: {
