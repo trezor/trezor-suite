@@ -50,6 +50,6 @@
     },
     "dependencies": {
         "@trezor/utils": "workspace:*",
-        "xrpl": "4.6.0"
+        "xrpl": "5.0.0"
     }
 }

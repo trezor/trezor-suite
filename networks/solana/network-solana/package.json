@@ -49,15 +49,15 @@
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
     },
     "dependencies": {
-        "@solana-program/compute-budget": "^0.15.0",
-        "@solana-program/memo": "^0.11.1",
-        "@solana-program/stake": "^0.6.1",
-        "@solana-program/system": "^0.12.2",
-        "@solana-program/token": "^0.13.0",
-        "@solana-program/token-2022": "^0.9.0",
-        "@solana/kit": "^6.9.0",
-        "@solana/rpc-api": "^6.9.0",
-        "@solana/rpc-types": "^6.9.0",
+        "@solana-program/compute-budget": "^0.17.0",
+        "@solana-program/memo": "^0.12.0",
+        "@solana-program/stake": "^0.8.0",
+        "@solana-program/system": "^0.13.0",
+        "@solana-program/token": "^0.15.0",
+        "@solana-program/token-2022": "^0.15.0",
+        "@solana/kit": "^7.1.1",
+        "@solana/rpc-api": "^7.1.1",
+        "@solana/rpc-types": "^7.1.1",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     }

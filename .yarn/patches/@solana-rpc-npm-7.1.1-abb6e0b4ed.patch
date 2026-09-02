@@ -1,5 +1,5 @@
 diff --git a/dist/index.browser.cjs b/dist/index.browser.cjs
-index a996c60f9a3ff4f1bb352ea4d9343e458c127ac5..5e98e9aea5fc4cc38151efc39c97dbc4f8b05672 100644
+index 69667b3726bdc002a3ad2ce6f6bd6b2943c60896..fb9cd4c27f6d808c13e762c387c3360461dae650 100644
 --- a/dist/index.browser.cjs
 +++ b/dist/index.browser.cjs
 @@ -101,7 +101,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
@@ -21,7 +21,7 @@ index a996c60f9a3ff4f1bb352ea4d9343e458c127ac5..5e98e9aea5fc4cc38151efc39c97dbc4
          signal.addEventListener("abort", handleAbort);
          responsePromise.then(resolve).catch(reject).finally(() => {
 diff --git a/dist/index.browser.mjs b/dist/index.browser.mjs
-index 30c318ed9ac07f1488d36a264f6f0d60e4b18243..69903ee174a8acabfadaac13350e411ba8595f50 100644
+index d9cc20fbdd9a05fcc029a78e340ebc51470006a0..ae2fdb33ea1788da22c9a477d547159f53c4ffcb 100644
 --- a/dist/index.browser.mjs
 +++ b/dist/index.browser.mjs
 @@ -97,7 +97,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
@@ -43,7 +43,7 @@ index 30c318ed9ac07f1488d36a264f6f0d60e4b18243..69903ee174a8acabfadaac13350e411b
          signal.addEventListener("abort", handleAbort);
          responsePromise.then(resolve).catch(reject).finally(() => {
 diff --git a/dist/index.native.mjs b/dist/index.native.mjs
-index 69900bba74cc8c2b7c34628fe29e63a9d4a24d60..b887f51283c41901b90f6316c0ac60cf5b0772ce 100644
+index 8ced7dfe02a51ee14f946f9d132a8f82bf66505e..75ec23a9e78c118b255343251934612ef3940542 100644
 --- a/dist/index.native.mjs
 +++ b/dist/index.native.mjs
 @@ -97,7 +97,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
@@ -65,7 +65,7 @@ index 69900bba74cc8c2b7c34628fe29e63a9d4a24d60..b887f51283c41901b90f6316c0ac60cf
          signal.addEventListener("abort", handleAbort);
          responsePromise.then(resolve).catch(reject).finally(() => {
 diff --git a/dist/index.node.cjs b/dist/index.node.cjs
-index 747e2dfcd3123458b48c16bc7d575e1813a5677c..13d6c2fbd47c29e74da084df8be8a4d55a9bf4bb 100644
+index f312cf602bbecc3603cb5227ac7cfc49e9653607..aba0d7573f73ced05c70f1dce3c6e0213c8865c2 100644
 --- a/dist/index.node.cjs
 +++ b/dist/index.node.cjs
 @@ -104,7 +104,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {
@@ -87,7 +87,7 @@ index 747e2dfcd3123458b48c16bc7d575e1813a5677c..13d6c2fbd47c29e74da084df8be8a4d5
          signal.addEventListener("abort", handleAbort);
          responsePromise.then(resolve).catch(reject).finally(() => {
 diff --git a/dist/index.node.mjs b/dist/index.node.mjs
-index 269c0b64413153ec600f49224491febddfc70411..006c4ef1148974cb19f8829bf1fd71e89954f03a 100644
+index c94bde7a06fd9e44894faf331b7e8649766240b6..6c2f76d3ecefe9044eda4b0b3d3d2e2d49ea0ba6 100644
 --- a/dist/index.node.mjs
 +++ b/dist/index.node.mjs
 @@ -100,7 +100,7 @@ function getRpcTransportWithRequestCoalescing(transport, getDeduplicationKey) {

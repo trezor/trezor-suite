@@ -7,6 +7,8 @@ export const ripple = {
                 build_version: '1.4.0',
                 complete_ledgers: '32570-8819951',
                 hostid: 'localhost',
+                // xrpl v5 `Client.connect()` throws when `server_info` omits `network_id`.
+                network_id: 0,
                 validated_ledger: {
                     age: 7,
                     base_fee_xrp: 0.00001,
