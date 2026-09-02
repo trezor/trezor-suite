@@ -4,9 +4,14 @@ import { type FlagsRootState } from '@suite/flags';
 import { METADATA } from '@suite/metadata';
 import { type ModalRootState } from '@suite/modal';
 import { recoveryActions } from '@suite/recovery';
-import { type RouterRootState, goto, routerAppChanged } from '@suite/router';
+import { type RouterRootState, goto, routerAppChanged, selectCanSwitchDevice } from '@suite/router';
 import { updateOnlineStatus } from '@suite/suite-lifecycle';
-import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    deviceActions,
+    isTrezorDeviceWithState,
+    selectDevicePath,
+} from '@suite-common/device';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
@@ -17,6 +22,7 @@ import {
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
     observeSelectedDevice,
+    selectDeviceThunk,
     selectIsDeviceAutoEjectEnabled,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
@@ -25,10 +31,11 @@ import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { desktopHandshake, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
 
 type SuiteMiddlewareState = AccountsRootState &
+    DeviceRootState &
+    RouterRootState &
     WalletSettingsRootState & {
         flags: Pick<FlagsRootState['flags'], 'hasSeenDisconnectTooltip'>;
         modal: Pick<ModalRootState['modal'], 'context'>;
-        router: Pick<RouterRootState['router'], 'route'>;
     };
 
 const isActionDeviceRelated = (action: UnknownAction): boolean => {
@@ -141,7 +148,13 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
                 );
             }
         } else if (deviceActions.deviceDisconnect.match(action)) {
-            dispatch(handleDeviceDisconnect(action.payload));
+            const selectedDevicePath = selectDevicePath(getState());
+            const canSwitchDevice = selectCanSwitchDevice(getState());
+            if (selectedDevicePath === action.payload.path && !canSwitchDevice) {
+                dispatch(selectDeviceThunk({ device: undefined }));
+            } else {
+                dispatch(handleDeviceDisconnect(action.payload));
+            }
         } else if (updateOnlineStatus.match(action) && action.payload) {
             // Restart discovery to reconnect to backends when user goes offline -> online.
             dispatch(startOrRestartDiscoveryThunk());
