@@ -11,7 +11,11 @@ import {
     selectAccountUnrecognizedTokens,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { isPositiveBalance, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import {
+    isPositiveBalance,
+    isReadOnlyToken,
+    tryGetAccountIdentity,
+} from '@suite-common/wallet-utils';
 import {
     FeatureFlag,
     type FeatureFlagsRootState,
@@ -82,7 +86,10 @@ export const selectHasAccountOrTokenSpendableBalance = (
     if (tokenContract) {
         const token = selectAccountTokenInfo(state, accountKey, tokenContract);
 
-        return isPositiveBalance(token?.balance ?? '0');
+        // A read-only token cannot be spent, so its balance must not enable the send flow.
+        if (!token || isReadOnlyToken(token)) return false;
+
+        return isPositiveBalance(token.balance ?? '0');
     }
 
     return isPositiveBalance(account.availableBalance);
