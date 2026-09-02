@@ -77,7 +77,7 @@
         "redux-persist": "6.0.0"
     },
     "devDependencies": {
-        "@rozenite/redux-devtools-plugin": "^1.13.0",
+        "@rozenite/redux-devtools-plugin": "^2.1.0",
         "@types/redux-logger": "^3.0.13"
     }
 }
