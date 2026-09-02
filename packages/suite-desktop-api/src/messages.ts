@@ -114,7 +114,6 @@ export type Status = {
 export type BridgeSettings = {
     doNotStartOnStartup: boolean;
     legacy?: boolean;
-    newBridgeRollout?: number;
 };
 
 export type BioAuthSettings = {

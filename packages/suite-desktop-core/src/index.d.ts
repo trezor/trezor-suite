@@ -125,10 +125,6 @@ declare type BridgeSettings = {
      * Should run trezord-go
      */
     legacy?: boolean;
-    /**
-     * Should run the new bridge?
-     */
-    newBridgeRollout?: number;
 };
 
 declare type TraySettings = {
