@@ -1,4 +1,6 @@
 import 'react-native-gesture-handler';
+// Has to stay above './globalPolyfills', see the comment in the module.
+import './rozeniteBootRecording';
 import './globalPolyfills';
 import './reanimatedLoggerFix';
 
