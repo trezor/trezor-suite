@@ -361,22 +361,15 @@ export const expect = baseExpect.extend({
 
     async toHaveLoadedImage(locator: Locator, options?: { timeout?: number }) {
         await baseExpect(locator).toBeVisible({ timeout: options?.timeout });
-        await baseExpect
-            .poll(
-                async () =>
-                    await locator.evaluate(
-                        (img: HTMLImageElement) => img.complete && img.naturalWidth > 0,
-                    ),
-                {
-                    timeout: options?.timeout,
-                    message:
-                        'expected locator to have image loaded but naturalWidth is 0 or complete is false',
-                },
-            )
-            .toBe(true);
+        await baseExpect(locator).toHaveJSProperty('complete', true, {
+            timeout: options?.timeout,
+        });
+        await baseExpect(locator).not.toHaveJSProperty('naturalWidth', 0, {
+            timeout: options?.timeout,
+        });
 
         return {
-            message: () => 'passed',
+            message: () => 'errors are handled in expects above',
             pass: true,
         };
     },

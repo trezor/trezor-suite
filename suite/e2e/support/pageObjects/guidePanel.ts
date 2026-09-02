@@ -1,9 +1,10 @@
-import { Locator, Page, expect } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 import type { FeedbackCategory } from '@suite-common/feedback';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { step } from '../common';
+import { expect } from '../testExtends/customMatchers';
 
 const anyTestIdEndingWithClose = '[data-testid$="close"]';
 
@@ -127,8 +128,7 @@ export class GuidePanel {
 
     @step()
     async openArticleImageModal(locator: Locator) {
-        await expect(locator).toHaveJSProperty('complete', true);
-        await expect(locator).not.toHaveJSProperty('naturalWidth', 0);
+        await expect(locator).toHaveLoadedImage();
         await locator.click();
         await expect(this.articleImageModal).toBeVisible();
     }
