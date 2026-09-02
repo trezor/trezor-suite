@@ -1,8 +1,13 @@
+import { formatMessage } from 'claude-pretty-printer';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
+import { createInterface } from 'node:readline';
 
+import { log } from '../logger';
 import { REPO_ROOT } from './paths';
 import { type ClaudeResult, ClaudeResultSchema } from './schemas';
+
+const MAX_LOG_CHARS = 1000;
 
 export type ClaudeRunResult = {
     output: string;
@@ -47,12 +52,20 @@ export async function runClaude({
     });
 
     child.stdin.end(input);
-    // `{ end: false }` so closing Claude's stdout does not close this process's stderr.
-    child.stdout.pipe(process.stderr, { end: false });
 
     let output = '';
-    child.stdout.on('data', (chunk: Buffer) => {
-        output += chunk.toString('utf-8');
+    createInterface({ input: child.stdout }).on('line', line => {
+        output += `${line}\n`;
+        try {
+            const formatted = formatMessage(JSON.parse(line), false);
+            log(
+                formatted.length > MAX_LOG_CHARS
+                    ? `${formatted.slice(0, MAX_LOG_CHARS)}…`
+                    : formatted,
+            );
+        } catch {
+            log(line);
+        }
     });
 
     const killTimer = setTimeout(() => child.kill('SIGTERM'), timeoutMs);
