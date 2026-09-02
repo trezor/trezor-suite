@@ -1,4 +1,4 @@
-import { Horizon, extractBaseAddress } from '@stellar/stellar-sdk';
+import { Horizon, StrKey, extractBaseAddress } from '@stellar/stellar-sdk';
 
 import { BigNumber } from '@trezor/utils';
 
@@ -52,6 +52,11 @@ const convertMemo = ({ memo, memo_type: memoType }: TransactionRecord): string |
 const isClassicAsset = (assetType: string) =>
     assetType === 'credit_alphanum4' || assetType === 'credit_alphanum12';
 
+// `extractBaseAddress` throws for anything that is not a `G…`/`M…` key, and a balance-change
+// counterparty can be a `C…` contract (any DeFi interaction), so only muxed addresses are unwrapped.
+const toBaseAddress = (address: string): string =>
+    StrKey.isValidMed25519PublicKey(address) ? extractBaseAddress(address) : address;
+
 /**
  * A Stellar Asset Contract reports transfers as balance changes on the host-function
  * operation. `mint` has no `from` and `burn`/`clawback` have no `to`, so the asset issuer
@@ -67,8 +72,8 @@ const identifyBalanceChanges = (changes: BalanceChange[]): TokenTransferInfo[] =
             assetCode: change.asset_code,
             assetIssuer: change.asset_issuer,
             amount: toStroops(change.amount).toString(),
-            fromAddress: extractBaseAddress(change.from ?? change.asset_issuer),
-            toAddress: extractBaseAddress(change.to ?? change.asset_issuer),
+            fromAddress: toBaseAddress(change.from ?? change.asset_issuer),
+            toAddress: toBaseAddress(change.to ?? change.asset_issuer),
         }));
 
 /**
