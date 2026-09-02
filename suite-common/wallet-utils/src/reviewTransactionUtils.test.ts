@@ -532,6 +532,31 @@ describe('constructTransactionReviewOutputs', () => {
         );
     });
 
+    it('treats plain 0x calldata as a regular transfer', () => {
+        const recipient = '0x000000000000000000000000000000000000abcd';
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData: '0x' }),
+            precomposedTx: buildPrecomposedTransaction({ to: recipient }),
+        });
+
+        expect(outputs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'address', value: recipient }),
+            ]),
+        );
+        expect(outputs).not.toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'contract', value: recipient }),
+            ]),
+        );
+        expect(outputs).not.toEqual(
+            expect.arrayContaining([expect.objectContaining({ type: 'data', value: '0x' })]),
+        );
+    });
+
     it('keeps the raw data row for a wrapped native the firmware does not clear-sign (WBNB on BSC)', () => {
         const outputs = constructTransactionReviewOutputs({
             account: buildEthereumAccount({ symbol: bscSymbol }),
