@@ -63,7 +63,7 @@ export const YieldWrapStep = ({
                     <FormattedCryptoAmount
                         value={availableAmount}
                         symbol={nativeSymbol}
-                        isBalance
+                        tokenDecimals={token.decimals}
                     />
                 ),
                 onMaxClick: pendingTransaction ? undefined : onMaxClick,

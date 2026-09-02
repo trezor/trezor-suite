@@ -61,6 +61,7 @@ export function AssetRowToken({
                             token.fiatRate ? asBaseCurrencyAmount(token.fiatValue) : undefined
                         }
                         contractAddress={token.contract}
+                        decimals={token.decimals}
                         amount={token.balance}
                         showNoTradingPairText={showNoTradingPairText}
                         isFiatPrimary={isFiatPrimary}

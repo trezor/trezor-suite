@@ -15,7 +15,7 @@ type WrapInfoRendererProps = Omit<NotificationViewProps, 'messageValues'> &
 
 const withFormattedAmount = (asset: WrapTransactionAsset) => ({
     ...asset,
-    amount: <FormattedCryptoAmount value={asset.amount} isBalance disableHiddenPlaceholder />,
+    amount: <FormattedCryptoAmount value={asset.amount} disableHiddenPlaceholder />,
 });
 
 export const WrapInfoRenderer = ({ render: View, ...props }: WrapInfoRendererProps) => {

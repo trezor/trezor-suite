@@ -21,29 +21,28 @@ export const localizeNumber = (
 
     const { decimalSeparator, thousandsSeparator } = getLocaleSeparators(locale);
 
-    const getDecimalsLength = () => {
-        const originalDecimalsLength = amount.decimalPlaces() ?? 0;
-        if (originalDecimalsLength < minDecimals) {
-            return minDecimals;
-        }
-        if (maxDecimals !== undefined && originalDecimalsLength > maxDecimals) {
-            // Remove trailing zeroes after formatting:
-            return new BigNumber(amount.toFixed(maxDecimals)).decimalPlaces() ?? maxDecimals;
-        }
+    // Truncated, never rounded up: a balance must not read as more than is held.
+    const truncatedAmount =
+        maxDecimals !== undefined
+            ? amount.decimalPlaces(maxDecimals, BigNumber.ROUND_DOWN)
+            : amount;
 
-        return originalDecimalsLength;
+    const getDecimalsLength = () => {
+        const decimalsLength = truncatedAmount.decimalPlaces() ?? 0;
+
+        return decimalsLength < minDecimals ? minDecimals : decimalsLength;
     };
 
     // In some locales (e.g. Spanish), thousands separator may not be used when the number has four digits.
     // Respect the way Intl formats the numbers.
     const groupSize =
-        amount.lt(10000) &&
-        amount.gte(1000) &&
-        !Intl.NumberFormat(locale).format(amount.toNumber()).includes(thousandsSeparator)
+        truncatedAmount.lt(10000) &&
+        truncatedAmount.gte(1000) &&
+        !Intl.NumberFormat(locale).format(truncatedAmount.toNumber()).includes(thousandsSeparator)
             ? 4
             : 3;
 
-    return amount.toFormat(getDecimalsLength(), {
+    return truncatedAmount.toFormat(getDecimalsLength(), {
         decimalSeparator,
         groupSize,
         groupSeparator: thousandsSeparator,
