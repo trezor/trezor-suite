@@ -2,9 +2,12 @@
 
 show_help() {
     cat << EOF
-Usage: $(basename "$0") [PLATFORM]
+Usage: $(basename "$0") PR [PLATFORM]
 
 Generate a Slack-formatted PR message with stats and copy it to clipboard.
+
+PR:
+    GitHub pull request number or URL
 
 PLATFORM options:
     mobile, m       Use mobile icon (:iphone:)
@@ -17,15 +20,14 @@ Environment variables:
     DEFAULT_SLACK_PR_ICON    Override the default icon (e.g., ":rocket:")
 
 Examples:
-    $(basename "$0")              # Uses desktop icon
-    $(basename "$0") mobile       # Uses mobile icon
-    $(basename "$0") m            # Uses mobile icon (short form)
-    DEFAULT_SLACK_PR_ICON=":bug:" $(basename "$0")  # Custom icon
+    $(basename "$0") 12345
+    $(basename "$0") 12345 mobile
+    $(basename "$0") https://github.com/trezor/trezor-suite/pull/12345 m
+    DEFAULT_SLACK_PR_ICON=":bug:" $(basename "$0") 12345
 
 Requirements:
     - GitHub CLI (gh) must be installed and authenticated
-    - Must be run from a feature/PR branch (not develop or main)
-    - A pull request must exist for the current branch
+    - A PR number must be used from within its GitHub repository
 
 EOF
 }
@@ -95,16 +97,6 @@ check_gh_available() {
     fi
 }
 
-check_branch() {
-    CURRENT_BRANCH=$(git branch --show-current)
-    if [[ "$CURRENT_BRANCH" == "develop" || "$CURRENT_BRANCH" == "main" ]]; then
-        echo -e "\033[0;31mError: You are on the '$CURRENT_BRANCH' branch.
-This script should only be run from a feature/PR branch.\033[0m
-Use -h option for more info." >&2
-        exit 1
-    fi
-}
-
 get_platform_icon() {
     local platform="$1"
     local icon=":desktop_computer:"
@@ -133,21 +125,25 @@ if [[ "$1" == "--help" || "$1" == "-h" ]]; then
     exit 0
 fi
 
+if [[ -z "$1" ]]; then
+    echo -e "\033[0;31mError: A PR number or URL is required.\033[0m
+Use -h option for more info." >&2
+    exit 1
+fi
+
 # Input and environment checks
 check_dependencies
 check_gh_available
-check_branch
+
+PR_REFERENCE="$1"
 
 # Determine platform icon
-ICON=$(get_platform_icon "$1")
+ICON=$(get_platform_icon "$2")
 
-# Pass the branch name explicitly. Without it, gh searches for a PR opened from
-# the branch's upstream instead, which is develop for branches created from
-# origin/develop, so no PR is found.
-if ! PR_JSON=$(gh pr view "$CURRENT_BRANCH" --json title,changedFiles,additions,deletions,url 2>&1); then
+if ! PR_JSON=$(gh pr view "$PR_REFERENCE" --json title,changedFiles,additions,deletions,url 2>&1); then
     echo -e "\033[0;31mError: Failed to fetch PR information.
 $PR_JSON
-Make sure you have a PR open for the current branch.\033[0m
+Make sure the PR number or URL is valid.\033[0m
 Use -h option for more info" >&2
     exit 1
 fi
