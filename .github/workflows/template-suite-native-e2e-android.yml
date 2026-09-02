@@ -49,7 +49,7 @@ jobs:
       # `-no-metrics` keeps the emulator non-interactive (the metrics-collection
       # prompt is planned to become blocking in a future release).
       EMULATOR_OPTIONS: >-
-        -no-window -gpu swiftshader -no-snapshot-load -no-snapshot-save
+        -no-window -gpu lavapipe -no-snapshot-load -no-snapshot-save
         -noaudio -no-boot-anim -no-metrics -grpc 8554 -memory 4096
       DIAGNOSTICS_DIR: /tmp/e2e-diagnostics
       RESOURCE_MONITOR_INTERVAL_SECONDS: "2"
