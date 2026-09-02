@@ -1,12 +1,24 @@
 import { useEffect, useState } from 'react';
 
 import { goto, selectRouteName } from '@suite/router';
+import {
+    DefinitionType,
+    TokenManagementAction,
+    tokenDefinitionsActions,
+} from '@suite-common/token-definitions';
+import {
+    fetchAndUpdateAccountThunk,
+    stellarContractTokensActions,
+} from '@suite-common/wallet-core';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
 import { Route } from 'src/components/suite/Route';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-import { StellarTokenInputModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarTokenInputModal';
+import {
+    type StellarTokenInput,
+    StellarTokenInputModal,
+} from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarTokenInputModal';
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -43,10 +55,35 @@ export const Tokens = () => {
         setShowManualInput(true);
     };
 
-    const handleManualTokenSubmit = (assetCode: string, assetIssuer: string) => {
-        const contractAddress = `${assetCode}-${assetIssuer}`;
-        setManualTokenContract(contractAddress);
+    const handleManualTokenSubmit = (token: StellarTokenInput) => {
         setShowManualInput(false);
+
+        if (token.standard === 'STELLAR-CONTRACT') {
+            // A contract token needs no trustline, so there is nothing to sign — it is only
+            // added to the list the account reads balances for, then re-fetched to pick it up.
+            const { key: accountKey, symbol } = selectedAccount.account;
+            dispatch(
+                stellarContractTokensActions.addContractToken({
+                    accountKey,
+                    contract: token.contract,
+                }),
+            );
+            // A contract token is absent from the coin definitions, which would file it under
+            // unverified tokens; the user asked for this one, so show it with the rest.
+            dispatch(
+                tokenDefinitionsActions.setTokenStatus({
+                    symbol,
+                    contractAddress: token.contract,
+                    status: TokenManagementAction.SHOW,
+                    type: DefinitionType.COIN,
+                }),
+            );
+            dispatch(fetchAndUpdateAccountThunk({ accountKey }));
+
+            return;
+        }
+
+        setManualTokenContract(`${token.assetCode}-${token.assetIssuer}`);
     };
 
     const closeManualInput = () => {

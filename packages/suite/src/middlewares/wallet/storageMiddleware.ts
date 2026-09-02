@@ -66,6 +66,7 @@ import {
     setMevProtection,
     setNetworkReserve,
     setSuspiciousTransactionsFilter,
+    stellarContractTokensActions,
     transactionsActions,
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
@@ -438,6 +439,15 @@ export const storageMiddleware = (
 
             if (deviceActions.forgetDevice.match(action)) {
                 api.dispatch(storageActions.forgetDevice(action.payload.device));
+            }
+
+            if (
+                isAnyOf(
+                    stellarContractTokensActions.addContractToken,
+                    stellarContractTokensActions.removeContractToken,
+                )(action)
+            ) {
+                api.dispatch(storageActions.saveStellarContractTokens(action.payload.accountKey));
             }
 
             if (tokenDefinitionsActions.setTokenStatus.match(action)) {

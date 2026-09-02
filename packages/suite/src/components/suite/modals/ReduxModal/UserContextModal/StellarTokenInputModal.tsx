@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
@@ -8,8 +8,13 @@ import {
 } from '@suite-common/wallet-utils';
 import { Button, Column, Input, Modal, Row, Text } from '@trezor/components';
 import stellar from '@trezor/network-stellar/runtime';
+
+export type StellarTokenInput =
+    | { standard: 'STELLAR-CLASSIC'; assetCode: string; assetIssuer: string }
+    | { standard: 'STELLAR-CONTRACT'; contract: string };
+
 type StellarTokenInputModalProps = {
-    onSubmit: (assetCode: string, assetIssuer: string) => void;
+    onSubmit: (token: StellarTokenInput) => void;
     onCancel: () => void;
 };
 
@@ -24,24 +29,29 @@ const resolveContractId = async (contractId: string) =>
 const validateAssetCode = (translate: (id: TranslationKey) => string) => async (value: string) => {
     const { isValidAssetCode, isValidContractId } = await stellar();
 
-    if (!value || isValidAssetCode(value)) return true;
-
-    if (isValidContractId(value)) {
-        return !!(await resolveContractId(value)) || translate('TR_CONTRACT_ID_UNKNOWN');
-    }
-
-    return translate('TR_ASSET_CODE_INVALID');
+    return (
+        !value ||
+        isValidAssetCode(value) ||
+        isValidContractId(value) ||
+        translate('TR_ASSET_CODE_INVALID')
+    );
 };
 
 const validateAssetIssuer =
-    (translate: (id: TranslationKey) => string) => async (value: string) => {
+    (translate: (id: TranslationKey) => string, isContractToken: boolean) =>
+    async (value: string) => {
+        // A contract token is identified by its contract id alone
+        if (isContractToken) return true;
+        if (!value) return false;
+
         const { isValidAddress } = await stellar();
 
-        return !value || isValidAddress(value) || translate('TR_ISSUER_ADDRESS_INVALID');
+        return isValidAddress(value) || translate('TR_ISSUER_ADDRESS_INVALID');
     };
 
 export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInputModalProps) => {
     const { translationString } = useTranslation();
+    const [isContractToken, setIsContractToken] = useState(false);
 
     const {
         register,
@@ -49,6 +59,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
         formState: { errors, isValid },
         control,
         setValue,
+        trigger,
     } = useForm<FormData>({
         mode: 'onChange',
         defaultValues: {
@@ -71,35 +82,53 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
     });
 
     const { ref: assetIssuerRef, ...assetIssuerField } = register('assetIssuer', {
-        required: true,
-        validate: validateAssetIssuer(translationString),
+        validate: validateAssetIssuer(translationString, isContractToken),
     });
 
     // A pasted Stellar Asset Contract id is swapped for the classic asset it wraps, so the rest
-    // of the activation flow keeps working with an asset code and issuer.
+    // of the activation flow keeps working with an asset code and issuer. Anything else that is a
+    // valid contract id is a Soroban contract token, added by its id alone.
     useEffect(() => {
         let isStale = false;
 
-        const fillFromContractId = async () => {
+        const classifyContractId = async () => {
             const { isValidContractId } = await stellar();
-            if (!isValidContractId(assetCode)) return;
+            if (!isValidContractId(assetCode)) {
+                if (!isStale) setIsContractToken(false);
+
+                return;
+            }
 
             const resolved = await resolveContractId(assetCode);
-            if (isStale || !resolved) return;
+            if (isStale) return;
 
-            setValue('assetCode', resolved.assetCode, { shouldValidate: true });
-            setValue('assetIssuer', resolved.assetIssuer, { shouldValidate: true });
+            setIsContractToken(!resolved);
+
+            if (resolved) {
+                setValue('assetCode', resolved.assetCode, { shouldValidate: true });
+                setValue('assetIssuer', resolved.assetIssuer, { shouldValidate: true });
+            }
         };
 
-        fillFromContractId();
+        classifyContractId();
 
         return () => {
             isStale = true;
         };
     }, [assetCode, setValue]);
 
-    const handleContinue = handleSubmit((data: FormData) => {
-        onSubmit(data.assetCode, data.assetIssuer);
+    // The issuer stops being required the moment the input turns into a contract id, so the
+    // already-computed validity has to be recomputed against the new rule.
+    useEffect(() => {
+        trigger('assetIssuer');
+    }, [isContractToken, trigger]);
+
+    const handleContinue = handleSubmit(({ assetCode: code, assetIssuer: issuer }: FormData) => {
+        onSubmit(
+            isContractToken
+                ? { standard: 'STELLAR-CONTRACT', contract: code }
+                : { standard: 'STELLAR-CLASSIC', assetCode: code, assetIssuer: issuer },
+        );
     });
 
     return (
@@ -133,14 +162,20 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
                         bottomText={errors.assetCode?.message || null}
                     />
 
-                    <Input
-                        label={<Translation id="TR_ISSUER_ADDRESS" />}
-                        value={assetIssuer}
-                        innerRef={assetIssuerRef}
-                        {...assetIssuerField}
-                        hasError={!!errors.assetIssuer}
-                        bottomText={errors.assetIssuer?.message || null}
-                    />
+                    {isContractToken ? (
+                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                            <Translation id="TR_STELLAR_CONTRACT_TOKEN_DETECTED" />
+                        </Text>
+                    ) : (
+                        <Input
+                            label={<Translation id="TR_ISSUER_ADDRESS" />}
+                            value={assetIssuer}
+                            innerRef={assetIssuerRef}
+                            {...assetIssuerField}
+                            hasError={!!errors.assetIssuer}
+                            bottomText={errors.assetIssuer?.message || null}
+                        />
+                    )}
                 </Column>
             </Column>
         </Modal>
