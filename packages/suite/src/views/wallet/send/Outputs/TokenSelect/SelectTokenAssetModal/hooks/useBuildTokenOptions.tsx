@@ -75,9 +75,9 @@ export function useBuildTokenOptions({
         );
 
         const sortedTokensWithRates = tokensWithRates
-            // read-only tokens cannot be spent, so they are not offered as a send source
+            // Read-only tokens cannot be spent, so they are not offered as a send source.
             .filter(token => !isReadOnlyToken(token))
-            .sort(sortTokensWithRates);
+            .toSorted(sortTokensWithRates);
 
         return buildTokenOptions(
             account,
