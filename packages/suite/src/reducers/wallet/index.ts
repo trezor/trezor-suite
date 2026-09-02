@@ -28,6 +28,7 @@ import {
     preparePhishingReducer,
     prepareSendFormReducer,
     prepareStakeReducer,
+    prepareStellarContractTokensReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
     tronStakeReducer,
@@ -46,9 +47,9 @@ import { extraDependencies } from 'src/support/extraDependencies';
 import accountSearchReducer, { type AccountSearchState } from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
 import graphReducer, { type GraphState } from './graphReducer';
-import stellarContractTokensReducer from './stellarContractTokensReducer';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
+export const stellarContractTokensReducer = prepareStellarContractTokensReducer(extraDependencies);
 export const phishingReducer = preparePhishingReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
 export const earnOnboardingReducer = prepareEarnOnboardingReducer(extraDependencies);

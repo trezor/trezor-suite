@@ -1,5 +1,10 @@
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createSliceWithExtraDeps,
+} from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 /**
@@ -21,11 +26,14 @@ export type StellarContractTokensRootState = {
 
 export const stellarContractTokensInitialState: StellarContractTokensState = {};
 
-export const STELLAR_CONTRACT_TOKENS = '@stellarContractTokens';
+const STELLAR_CONTRACT_TOKENS = '@common/wallet-core/stellar-contract-tokens';
 
 type ContractTokenPayload = { accountKey: AccountKey; contract: string };
 
-const stellarContractTokensSlice = createSlice({
+type StellarContractTokensDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadStellarContractTokens'>;
+
+const stellarContractTokensSlice = createSliceWithExtraDeps({
     name: STELLAR_CONTRACT_TOKENS,
     initialState: stellarContractTokensInitialState,
     reducers: {
@@ -52,6 +60,12 @@ const stellarContractTokensSlice = createSlice({
             }
         },
     },
+    extraReducers: (builder, extra: StellarContractTokensDeps) => {
+        builder.addCase(
+            extra.actionTypes.storageLoad,
+            extra.reducers.storageLoadStellarContractTokens,
+        );
+    },
 });
 
 export const selectStellarContractTokens = (
@@ -60,8 +74,4 @@ export const selectStellarContractTokens = (
 ): string[] => wallet.stellarContractTokens[accountKey] ?? [];
 
 export const stellarContractTokensActions = stellarContractTokensSlice.actions;
-export const stellarContractTokensReducer = stellarContractTokensSlice.reducer;
-
-export type StellarContractTokensAction = ReturnType<
-    (typeof stellarContractTokensActions)[keyof typeof stellarContractTokensActions]
->;
+export const prepareStellarContractTokensReducer = stellarContractTokensSlice.prepareReducer;

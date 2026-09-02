@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.10.0.2
+
+- add `stellarContractTokens` object store (Soroban contract ids watched per account)
+
 ## 26.10.0
 
 - add `earnOnboarding` store (confirmed earn opportunities per account key)
