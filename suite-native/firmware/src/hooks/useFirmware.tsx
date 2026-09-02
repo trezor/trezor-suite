@@ -73,10 +73,19 @@ export const useFirmware = (params?: { navigationLocation: 'settings' | 'onboard
     }, [progress, status, setMayBeStuckedTimeout, resetMayBeStuckTimeout]);
 
     const firmwareUpdate = useCallback(async () => {
+        // An update has to name the device it is for, so it stays pinned to that one physical
+        // device across the reconnects it causes instead of following whatever is selected.
+        if (!firmwareInstallation.originalDevice) {
+            return undefined;
+        }
+
         if (!isDeviceConnectedViaBluetoothRef.current) {
             setPriorityMode(true);
         }
-        const result = await firmwareUpdateCommon({ ignoreBaseUrl: true })
+        const result = await firmwareUpdateCommon({
+            device: firmwareInstallation.originalDevice,
+            ignoreBaseUrl: true,
+        })
             .unwrap()
             .catch(error => {
                 if ((error as FirmwareUpdateResult)?.connectResponse?.success !== undefined) {
@@ -94,7 +103,7 @@ export const useFirmware = (params?: { navigationLocation: 'settings' | 'onboard
             });
 
         return result;
-    }, [firmwareUpdateCommon, resetMayBeStuckTimeout]);
+    }, [firmwareUpdateCommon, resetMayBeStuckTimeout, firmwareInstallation.originalDevice]);
 
     const confirmOnDevice =
         confirmOnDeviceCommon ||

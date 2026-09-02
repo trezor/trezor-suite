@@ -10,16 +10,26 @@ import { FirmwareModal } from './FirmwareModal';
 export const FirmwareUpdate = () => {
     const {
         firmwareUpdate,
+        originalDevice,
         switchFirmwareType,
         targetFirmwareType,
         showLowBatteryModal,
         toggleLowBatteryModal,
     } = useFirmwareDesktopUpdate();
 
-    const installTargetFirmware = () =>
+    // `originalDevice` is the device as it was before the update: the live one on the first
+    // attempt, the cached pre-update one on a retry, where the device is already in bootloader
+    // mode and no longer reports its id.
+    const installTargetFirmware = () => {
+        if (!originalDevice) {
+            return;
+        }
+
         firmwareUpdate({
+            device: originalDevice,
             firmwareType: targetFirmwareType,
         });
+    };
 
     const heading = switchFirmwareType ? (
         <Translation

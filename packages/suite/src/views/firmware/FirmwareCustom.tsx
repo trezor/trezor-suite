@@ -10,12 +10,12 @@ import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareCustom = () => {
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
-    const { firmwareUpdate, showLowBatteryModal, toggleLowBatteryModal } =
+    const { firmwareUpdate, originalDevice, showLowBatteryModal, toggleLowBatteryModal } =
         useFirmwareDesktopUpdate();
 
     const installCustomFirmware = () => {
-        if (firmwareBinary) {
-            firmwareUpdate({ binary: firmwareBinary });
+        if (firmwareBinary && originalDevice) {
+            firmwareUpdate({ device: originalDevice, binary: firmwareBinary });
         }
     };
 

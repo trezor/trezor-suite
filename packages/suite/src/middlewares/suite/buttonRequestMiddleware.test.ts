@@ -11,7 +11,7 @@ import {
     mockGetDebugSettings,
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
-import { deviceActions } from '@suite-common/device';
+import { createDeviceReceiver, deviceActions } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import {
@@ -61,6 +61,7 @@ const connectInitThunkDeps: ConnectInitThunkDeps = {
     services: {
         analytics: mockDesktopAnalytics(),
         connectInitHooks: mockConnectInitHooks(),
+        deviceReceiver: createDeviceReceiver(),
         connectInitSettings: mockConnectInitSettings(),
         createLogger: noopCreateLogger,
         createTransports: mockCreateTransports(),

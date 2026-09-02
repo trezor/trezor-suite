@@ -5,6 +5,8 @@ import {
     type DeviceRootState,
     type LockDeviceDep,
     deviceActions,
+    getIsDeviceConnectedAndAcquired,
+    selectDeviceByPath,
     selectDevices,
     selectIsPendingTransportEvent,
     selectSelectedDevice,
@@ -19,6 +21,7 @@ import {
 import { createThunk } from '@suite-common/redux-utils';
 import {
     type ConnectInitHooksDeps,
+    type DeviceReceiverDep,
     type GetAllowPrereleaseDep,
     type GetBinFilesBaseUrlDep,
 } from '@suite-common/suite-types';
@@ -67,6 +70,7 @@ export type ConnectInitThunkDeps = {
         analytics: Pick<AnalyticsDep['analytics'], 'report'>;
     } & ConnectInitHooksDeps &
         ConnectInitSettingsDep &
+        DeviceReceiverDep &
         CreateLoggerDep &
         GetAllowPrereleaseDep &
         GetBinFilesBaseUrlDep &
@@ -100,6 +104,7 @@ export const connectInitThunk = createThunk<
             getBinFilesBaseUrl,
             getDebugSettings,
             getThpSettings,
+            deviceReceiver,
         },
     } = extra;
 
@@ -112,9 +117,25 @@ export const connectInitThunk = createThunk<
             dispatch(deviceConnectThunk({ type: eventData.type, device: eventData.payload }));
 
             connectInitHooks.deviceEvent[eventData.type]?.(eventData.payload, connectedDevices);
+
+            // DEVICE.CONNECT is the point where the device is in `state.device.devices` with its
+            // features — for a fresh connection, and again for a device that arrived unacquired,
+            // because `@trezor/connect` re-emits CONNECT once the acquire it triggered lands.
+            // CONNECT_UNACQUIRED adds an entry with no features, which is not yet usable.
+            if (eventData.type === DEVICE.CONNECT) {
+                const connectedDevice = selectDeviceByPath(getState(), eventData.payload.path);
+
+                if (getIsDeviceConnectedAndAcquired(connectedDevice)) {
+                    deviceReceiver.notifyDeviceConnected(connectedDevice);
+                }
+            }
         } else {
             // dispatch event as action
             dispatch({ type: eventData.type, payload: eventData.payload });
+
+            if (eventData.type === DEVICE.DISCONNECT) {
+                deviceReceiver.notifyDeviceDisconnected(eventData.payload);
+            }
 
             if (eventData.type === DEVICE.THP_PAIRING_STATUS_CHANGED) {
                 const { status } = eventData.payload;

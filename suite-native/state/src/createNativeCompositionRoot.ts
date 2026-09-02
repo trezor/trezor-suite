@@ -7,6 +7,7 @@ import { createAddressValidator } from '@suite-common/address';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { asGetter, toGetter } from '@suite-common/dependency-injection';
+import { createDeviceReceiver } from '@suite-common/device';
 import { type CommonServices, notImplementedGetter } from '@suite-common/extra-dependencies';
 import {
     createFindNetworkSymbolForProtocol,
@@ -104,6 +105,8 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
 
     const logger = createLogger('native-transport');
 
+    const deviceReceiver = createDeviceReceiver();
+
     return {
         networkModuleRepository,
         getNetworkConfig,
@@ -114,6 +117,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         ensureDelegatedIdentityKey,
         platformEncryption,
         analytics,
+        deviceReceiver,
         getMMKVStorage: () => deps.mmkvStorage.getMMKV(),
         reportSecurityCheck,
         reloadApp: RNRestart.restart,

@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectSelectedDevice } from '@suite-common/device';
 import { useDispatch } from '@suite-common/redux-utils';
 import {
     type ButtonRequest,
@@ -25,7 +24,11 @@ import {
 import { isArrayMember } from '@trezor/utils';
 
 import { firmwareActions } from '../firmwareActions';
-import { selectFirmware, selectSwitchFirmwareType } from '../firmwareReducer';
+import {
+    selectFirmware,
+    selectFirmwareOriginalDevice,
+    selectSwitchFirmwareType,
+} from '../firmwareReducer';
 import { type FirmwareUpdateProps, firmwareUpdateThunk } from '../firmwareThunks';
 
 /*
@@ -115,7 +118,6 @@ const shouldShowReconnectPrompt = ({
 export const useFirmwareInstallation = () => {
     const dispatch = useDispatch();
     const firmware = useSelector(selectFirmware);
-    const device = useSelector(selectSelectedDevice);
     const thpStep = useSelector(selectThpStep);
     const switchFirmwareType = useSelector(selectSwitchFirmwareType);
 
@@ -137,7 +139,7 @@ export const useFirmwareInstallation = () => {
 
     // Device in its state before installation is cached when installation begins.
     // Until then, access device as normal.
-    const originalDevice = firmware.cachedDevice || device;
+    const originalDevice = useSelector(selectFirmwareOriginalDevice);
 
     // To instruct user to reboot to bootloader manually, UI_EVENTS.FIRMWARE_DISCONNECT event is emitted first,
     // and UI_EVENTS.FIRMWARE_RECONNECT is emitted after the device disconnects.

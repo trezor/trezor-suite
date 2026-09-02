@@ -9,7 +9,7 @@ import {
     mockGetDebugSettings,
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
-import type { DeviceReducerState } from '@suite-common/device';
+import { type DeviceReducerState, createDeviceReceiver } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import {
     mockGetAllowPrerelease,
@@ -25,6 +25,7 @@ const extra: ConnectInitThunkDeps = {
     services: {
         analytics: mockDesktopAnalytics(),
         connectInitHooks: mockConnectInitHooks(),
+        deviceReceiver: createDeviceReceiver(),
         connectInitSettings: mockConnectInitSettings(),
         createLogger: noopCreateLogger,
         createTransports: mockCreateTransports(),

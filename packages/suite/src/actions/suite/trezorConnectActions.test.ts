@@ -11,7 +11,7 @@ import {
     mockGetDebugSettings,
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
-import { deviceReducerInitialState } from '@suite-common/device';
+import { createDeviceReceiver, deviceReducerInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
@@ -39,6 +39,7 @@ const extra: ConnectInitThunkDeps = {
     services: {
         analytics: mockDesktopAnalytics(),
         connectInitHooks: mockConnectInitHooks(),
+        deviceReceiver: createDeviceReceiver(),
         connectInitSettings: mockConnectInitSettings(),
         createLogger: noopCreateLogger,
         createTransports: mockCreateTransports(),

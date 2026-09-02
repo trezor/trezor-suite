@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
-import type { FirmwareChannel, FirmwareType } from '@trezor/connect';
+import type { Device, FirmwareChannel, FirmwareType } from '@trezor/connect';
 
 export const FIRMWARE_MODULE_PREFIX = '@common/wallet-core/firmware';
 
@@ -61,7 +61,29 @@ const setFirmwareChannel = createAction(
     }),
 );
 
+/**
+ * Starts following a specific physical device through the firmware update, so the flow stops
+ * depending on whichever device happens to be globally selected. See `firmwareDeviceTracking`.
+ */
+const armDeviceTracking = createAction(
+    `${FIRMWARE_MODULE_PREFIX}/arm-device-tracking`,
+    (payload: Device | TrezorDevice) => ({ payload }),
+);
+
+const trackedDeviceConnected = createAction(
+    `${FIRMWARE_MODULE_PREFIX}/tracked-device-connected`,
+    (payload: { device: Device; isOnlyCandidate: boolean }) => ({ payload }),
+);
+
+const trackedDeviceDisconnected = createAction(
+    `${FIRMWARE_MODULE_PREFIX}/tracked-device-disconnected`,
+    (payload: Device) => ({ payload }),
+);
+
 export const firmwareActions = {
+    armDeviceTracking,
+    trackedDeviceConnected,
+    trackedDeviceDisconnected,
     setStatus,
     setFirmwareUpdateError,
     setTargetType,

@@ -210,9 +210,9 @@ type AcquireDeviceThunkParams = {
     startDiscovery?: boolean;
 };
 
-type AcquireDeviceThunkState = RunDiscoveryThunkState;
+export type AcquireDeviceThunkState = RunDiscoveryThunkState;
 
-type AcquireDeviceThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
+export type AcquireDeviceThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
     thunks: FetchAndSaveMetadataDep;
 };
 
@@ -370,6 +370,9 @@ export const deviceConnectThunk = createThunk<
             if (getIsThpDevice(device) && !isFwInstallation) {
                 // This needs to be re-selected to convert Device to TrezorDevice.
                 const requestedDevice = selectDevices(getState()).find(d => d.path === device.path);
+                // Deliberately not awaited. `@trezor/connect` re-emits DEVICE.CONNECT once an
+                // unacquired device becomes acquired, so the acquired device arrives as a normal
+                // connect event rather than as the resolution of this call.
                 dispatch(acquireDeviceThunk({ requestedDevice }));
             }
             dispatch(selectNewlyConnectedDeviceThunk({ device }));

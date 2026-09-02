@@ -4,12 +4,13 @@ import {
     Fingerprint,
     getSuiteFirmwareTypeString,
     useFirmwareDesktopUpdate,
+    useFirmwareDeviceTrackingListener,
     useFirmwareInstallationProgressCheck,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { MODAL_CONTEXT_DEVICE, selectModal } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectFirmwareOriginalDevice } from '@suite-common/firmware';
 import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { CircuitryIcon } from '@trezor/icons';
@@ -24,14 +25,24 @@ import { FirmwareInstallationStep } from './FirmwareInstallationStep';
 import { DeviceDisconnectedStep } from '../../UnexpectedState/DeviceDisconnectedStep';
 
 export const FirmwareStep = () => {
-    const device = useSelector(selectSelectedDevice);
+    // Mounting the listener is what keeps the ref following the device across the reboots the
+    // installation forces.
+    useFirmwareDeviceTrackingListener();
+    const firmwareUpdateDevice = useSelector(selectFirmwareOriginalDevice);
     const modal = useSelector(selectModal);
     const { goToNextStep, updateAnalytics } = useOnboarding();
-    const { error, resetReducer, firmwareUpdate, targetType, status } = useFirmwareDesktopUpdate();
+    const { error, originalDevice, resetReducer, firmwareUpdate, targetType, status } =
+        useFirmwareDesktopUpdate();
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =
         useFirmwareInstallationProgressCheck();
 
-    const install = () => firmwareUpdate({ firmwareType: targetType });
+    const install = () => {
+        if (!originalDevice) {
+            return;
+        }
+
+        firmwareUpdate({ device: originalDevice, firmwareType: targetType });
+    };
     const goToNextStepAndResetReducer = useCallback(() => {
         goToNextStep();
         resetReducer();
@@ -41,17 +52,17 @@ export const FirmwareStep = () => {
         modal.context === MODAL_CONTEXT_DEVICE &&
         modal.windowType === 'ButtonRequest_FirmwareCheck';
 
-    if (showFingerprintCheck && device) {
+    if (showFingerprintCheck && firmwareUpdateDevice) {
         // Some old firmwares ask for verifying firmware fingerprint by dispatching ButtonRequest_FirmwareCheck
         return (
             <OnboardingCard
                 icon={CircuitryIcon}
                 heading={<Translation id="TR_CHECK_FINGERPRINT" />}
-                device={device}
+                device={firmwareUpdateDevice}
                 isActionAbortable={false}
                 isConfirmedOnDevice
             >
-                <Fingerprint device={device} />
+                <Fingerprint device={firmwareUpdateDevice} />
             </OnboardingCard>
         );
     }
@@ -83,10 +94,10 @@ export const FirmwareStep = () => {
     // include "custom" firmware to get past this step when testing firmware for new device types etc.
     if (
         !['started', 'thp-pairing', 'done'].includes(status) &&
-        device?.firmware &&
-        ['custom', 'valid'].includes(device.firmware)
+        firmwareUpdateDevice?.firmware &&
+        ['custom', 'valid'].includes(firmwareUpdateDevice.firmware)
     ) {
-        const firmwareType = getSuiteFirmwareTypeString(device.firmwareType);
+        const firmwareType = getSuiteFirmwareTypeString(firmwareUpdateDevice.firmwareType);
 
         return (
             <OnboardingCard
@@ -104,7 +115,7 @@ export const FirmwareStep = () => {
                             ) : (
                                 ''
                             ),
-                            version: getFirmwareVersion(device),
+                            version: getFirmwareVersion(firmwareUpdateDevice),
                         }}
                     />
                 }
@@ -123,7 +134,10 @@ export const FirmwareStep = () => {
         );
     }
 
-    if (['initial', 'done'].includes(status) && (!device?.connected || !device?.features)) {
+    if (
+        ['initial', 'done'].includes(status) &&
+        (!firmwareUpdateDevice?.connected || !firmwareUpdateDevice?.features)
+    ) {
         // Most users won't see this as they should come here with a connected device.
         // This is just for people who want to shoot themselves in the foot and disconnect the device before proceeding with fw update flow
         return <DeviceDisconnectedStep />;
