@@ -58,6 +58,7 @@ import {
     type PhishingRootState,
     type PhishingState,
     type SendRootState,
+    type StellarContractTokensRootState,
     type TransactionsRootState,
     type WalletSettingsRootState,
     selectAccounts,
@@ -68,6 +69,7 @@ import {
     selectPhishing,
     selectPhishingTransactions,
     selectSendFormDrafts,
+    selectStellarContractTokens,
     selectTransactions,
     selectWalletSettings,
 } from '@suite-common/wallet-core';
@@ -365,6 +367,12 @@ export const removeAccountPhishing = (accountKey: AccountKey) => {
     return db.removeItemByPK('phishing', accountKey);
 };
 
+export const removeAccountStellarContractTokens = (accountKey: AccountKey) => {
+    if (!db.isAccessible()) return;
+
+    return db.removeItemByPK('stellarContractTokens', accountKey);
+};
+
 type RemoveAccountWithDependenciesState = FlagsRootState &
     SuiteSettingsRootState & {
         suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
@@ -383,6 +391,7 @@ export const removeAccountWithDependencies =
             removeAccountHistoricRates(account.key),
             removeAccountPhishing(account.key),
             removeEarnOnboarding(account.key),
+            removeAccountStellarContractTokens(account.key),
         ]);
 
 type ForgetDeviceThunkState = AccountsRootState &
@@ -656,6 +665,20 @@ export const saveDebugSettingsThunk =
     async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveDebugSettingsThunkState) => {
         if (!db.isAccessible()) return;
         await db.addItem('debug', selectDebug(getState()), 'debug', true);
+    };
+
+type SaveStellarContractTokensThunkState = StellarContractTokensRootState;
+
+export const saveStellarContractTokensThunk =
+    (accountKey: AccountKey) =>
+    (_dispatch: Dispatch<UnknownAction>, getState: () => SaveStellarContractTokensThunkState) => {
+        if (!db.isAccessible()) return;
+
+        const contracts = selectStellarContractTokens(getState(), accountKey);
+
+        return contracts.length > 0
+            ? db.addItem('stellarContractTokens', contracts, accountKey, true)
+            : db.removeItemByPK('stellarContractTokens', accountKey);
     };
 
 type SaveTokenManagementThunkState = TokenDefinitionsRootState;
