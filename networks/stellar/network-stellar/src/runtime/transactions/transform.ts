@@ -15,6 +15,7 @@ import {
     type xdr,
 } from '@stellar/stellar-sdk';
 
+import { transformInvokeHostFunctionOperation } from './sorobanTransform';
 import { toStroops } from '../../constants';
 
 // The protobuf Soroban enums mirror the Stellar XDR enums, so the XDR discriminant
@@ -293,9 +294,24 @@ const transformTimebounds = (timebounds: Transaction['timeBounds']) => {
 };
 
 /**
+ * Reads the Soroban transaction data (footprint and resource limits) the envelope carries. The
+ * device commits to it through the signed digest, so it has to be passed along with the operation.
+ */
+const readSorobanData = (transaction: Transaction) => {
+    const envelope = transaction.toEnvelope();
+    if (envelope.switch().name !== 'envelopeTypeTx') return undefined;
+
+    const ext = envelope.v1().tx().ext();
+
+    return ext.switch() === 1 ? ext.sorobanData().toXDR('base64') : undefined;
+};
+
+/**
  * Transforms Transaction to TrezorConnect.StellarTransaction
  */
 export const transformTransaction = (transaction: Transaction) => {
+    const sorobanData = readSorobanData(transaction);
+
     const amounts = [
         'amount',
         'sendMax',

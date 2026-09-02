@@ -262,5 +262,27 @@ export const stellarSignTx = async (
 
     const response = await typedCall(type, 'StellarSignedTx', op);
 
-    return response.message;
+    if (response.type !== 'StellarTxExtRequest') {
+        return response.message;
+    }
+
+    // Soroban transactions carry the footprint and resource limits outside the operation, and the
+    // device asks for them once every operation has been confirmed. Only a Soroban operation makes
+    // the device ask, and such a transaction is invalid without them, so signing whatever we have
+    // would only produce an envelope the network rejects.
+    if (!tx.ext?.sorobanData) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            'Stellar transaction is missing the Soroban transaction data the device asked for',
+        );
+    }
+
+    const ext = await typedCall('StellarTxExt', 'StellarSignedTx', {
+        v: tx.ext.v,
+        // protobuf bytes fields travel as hex; handing over the base64 XDR would silently encode
+        // only the leading hex-looking characters, and the device would sign a different digest
+        soroban_data: Buffer.from(tx.ext.sorobanData, 'base64').toString('hex'),
+    });
+
+    return ext.message;
 };
