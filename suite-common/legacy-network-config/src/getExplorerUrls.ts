@@ -50,6 +50,9 @@ export const getExplorerUrls = (
             tx: `${baseUrl}/tx/`,
             address: `${baseUrl}/account/`,
             token: `${baseUrl}/asset/`,
+            // Soroban contract tokens are identified by a `C…` contract id, not a CODE-ISSUER
+            // asset descriptor, so they live under a different explorer path.
+            contract: `${baseUrl}/contract/`,
         },
     };
 
