@@ -244,7 +244,21 @@ export const transformTransaction = (
     // refundable fee for registering staking address (sent to self tx with stake registration cert)
     let deposit: string | undefined;
 
-    const inputs = fullData ? transformInputOutput(blockfrostTxData.txUtxos.inputs) : [];
+    // Blockfrost's `txUtxos.inputs` unconditionally includes collateral inputs alongside regular
+    // ones (its own txs_hash_utxos SQL UNION ALLs them together with no distinguishing flag beyond
+    // `collateral`). Collateral is only actually consumed when script validation fails
+    // (`valid_contract === false`); on a successful transaction it is never spent and must be
+    // excluded here, or it inflates totalInput and can flip a receive into a false "sent".
+    // On a failed transaction, only the collateral inputs represent a real spend — the regular
+    // (non-collateral) inputs/outputs the contract declared never took effect.
+    const scriptValidationFailed = fullData && blockfrostTxData.txData.valid_contract === false;
+    let rawInputs: BlockfrostTransaction['txUtxos']['inputs'] = [];
+    if (fullData) {
+        rawInputs = scriptValidationFailed
+            ? blockfrostTxData.txUtxos.inputs.filter(i => i.collateral)
+            : blockfrostTxData.txUtxos.inputs.filter(i => !i.collateral);
+    }
+    const inputs = transformInputOutput(rawInputs);
     const outputs = fullData ? transformInputOutput(blockfrostTxData.txUtxos.outputs) : [];
     const vinLength = Array.isArray(inputs) ? inputs.length : 0;
     const voutLength = Array.isArray(outputs) ? outputs.length : 0;
