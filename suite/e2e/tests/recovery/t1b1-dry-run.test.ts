@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -25,6 +25,7 @@ test.describe('Recovery T1B1 - dry run', { tag: ['@T1B1'] }, () => {
                     'Verify that a user can successfully perform a standard recovery dry run.',
                 category: TestCategory.Settings,
                 priority: TestPriority.High,
+                stream: TestStream.Growth,
             }),
         },
         async ({ settingsPage, recoveryModal, trezorInput, device, devicePrompt }) => {

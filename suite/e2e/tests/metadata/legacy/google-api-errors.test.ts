@@ -1,3 +1,5 @@
+import { TestStream } from '@trezor/e2e-utils';
+
 import { expect, test } from '../../../support/fixtures';
 import { MetadataProvider } from '../../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
@@ -17,6 +19,7 @@ test.describe('Google API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
         {
             annotation: createTestAnnotation({
                 testCase: 'Suite labeling handles malformed token from Google',
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, onboardingPage, settingsPage, metadataPage, metadataMock }) => {

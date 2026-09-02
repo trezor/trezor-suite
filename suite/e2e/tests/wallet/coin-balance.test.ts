@@ -1,3 +1,5 @@
+import { TestStream } from '@trezor/e2e-utils';
+
 import { getBigNumberFromBalance } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -17,6 +19,7 @@ test.describe('Coin balance', { tag: ['@T3W1', '@T3T1'] }, () => {
         {
             annotation: createTestAnnotation({
                 testCase: 'Verifies that the account balance is increased after receiving BTC.',
+                stream: TestStream.Wallet,
             }),
         },
         async ({ trezorUserEnv, dashboardPage, settingsPage, walletPage }) => {

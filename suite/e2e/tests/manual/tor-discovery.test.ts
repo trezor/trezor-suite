@@ -28,7 +28,7 @@ test.describe.skip('Tor discovery', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Settings,
                 priority: TestPriority.Critical,
-                stream: TestStream.Foundation,
+                stream: TestStream.Connect,
                 osMatrix: [
                     TestOsMatrix.Linux,
                     TestOsMatrix.Windows,

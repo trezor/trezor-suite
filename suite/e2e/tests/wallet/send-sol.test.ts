@@ -37,7 +37,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
                 testCase: 'Send Max functionality verification',
                 category: TestCategory.Solana,
                 priority: TestPriority.High,
-                stream: TestStream.NotDefined,
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, device, walletPage, tradingPage, devicePrompt }) => {

@@ -80,7 +80,7 @@ test.describe('Test suite name', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Security,
                 priority: TestPriority.High,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
                 deviceModel: DeviceModel.T2T1,
                 osMatrix: [TestOsMatrix.Windows, TestOsMatrix.MacOSArm],
             }),

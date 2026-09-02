@@ -1,9 +1,11 @@
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { TestStream } from '@trezor/e2e-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const sendAmount = '0.03';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
@@ -35,86 +37,92 @@ test.describe('Trading - Swap fees', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     );
 
-    test('Swap custom fees for Ethereum', async ({ page, device, tradingPage, devicePrompt }) => {
-        await test.step('Fill in a Swap form', async () => {
-            await tradingPage.fillSwapForm({
-                amount: sendAmount,
-                sellAsset: {
-                    networkSymbol: 'eth',
-                },
-                buyAsset: {
-                    searchFilter: 'Bitcoin',
-                    networkFilter: 'btc',
-                    assetCryptoId: getCryptoId(asNetworkSymbol('btc')),
-                },
-            });
-            await tradingPage.fees.setEthereumCustomFees({
-                gasLimit,
-                maxFeePerGas,
-                maxPriorityFeePerGas,
-            });
-            await tradingPage.fees.waitToBeCalculated();
-        });
-
-        await test.step('Continue Swap flow towards Send section', async () => {
-            await tradingPage.swapBestOfferButton.click();
-            await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
-            await tradingPage.confirmation.openConfirmAndSendModal();
-            await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #1');
-            await devicePrompt.waitForPromptAndClick();
-        });
-
-        const { ethereumMaximumFee, errorMessageMaxCalculation } =
-            tradingPage.fees.calculateEthereumMaxFee({
-                gasLimit,
-                maxFeePerGas,
+    test(
+        'Swap custom fees for Ethereum',
+        { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+        async ({ page, device, tradingPage, devicePrompt }) => {
+            await test.step('Fill in a Swap form', async () => {
+                await tradingPage.fillSwapForm({
+                    amount: sendAmount,
+                    sellAsset: {
+                        networkSymbol: 'eth',
+                    },
+                    buyAsset: {
+                        searchFilter: 'Bitcoin',
+                        networkFilter: 'btc',
+                        assetCryptoId: getCryptoId(asNetworkSymbol('btc')),
+                    },
+                });
+                await tradingPage.fees.setEthereumCustomFees({
+                    gasLimit,
+                    maxFeePerGas,
+                    maxPriorityFeePerGas,
+                });
+                await tradingPage.fees.waitToBeCalculated();
             });
 
-        await test.step('Verify fees on modal and emulator', async () => {
-            await expect(devicePrompt.header.gasLimitValue).toHaveText(gasLimit);
-            await expect(devicePrompt.header.feePerGasValue).toHaveText(`${maxFeePerGasRounded}`);
-            await expect(devicePrompt.header.priorityFeeValue).toHaveText(
-                `${maxPriorityFeePerGasRounded}`,
-            );
-            await expect(
-                devicePrompt.cryptoAmountWithSymbolOf('fee'),
-                errorMessageMaxCalculation,
-            ).toHaveText(`${ethereumMaximumFee} ETH`);
-            await expect(device).toShowOnDisplay({
-                T3W1: {
-                    header: { title: 'Send' },
-                    body: [
-                        ['Amount'],
-                        [formattedSendAmount],
-                        ['Maximum fee'],
-                        device.wrapText(`${ethereumMaximumFee} ETH`, { isAmount: true }),
-                    ],
-                    actions: { right_button: 'Hold to sign' },
-                },
-                T3T1: {
-                    header: { title: 'Summary' },
-                },
+            await test.step('Continue Swap flow towards Send section', async () => {
+                await tradingPage.swapBestOfferButton.click();
+                await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
+                await tradingPage.confirmation.openConfirmAndSendModal();
+                await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #1');
+                await devicePrompt.waitForPromptAndClick();
             });
-        });
 
-        await test.step('Verify Fee Info on emulator', async () => {
-            await device.openFeeInfo();
-            await expect(device).toShowOnDisplay({
-                T3W1: {
-                    header: { title: 'Fee info' },
-                    body: [
-                        ['Gas limit'],
-                        [`${gasLimit} units`],
-                        ['Max fee per gas'],
-                        [`${maxFeePerGas} Gwei`],
-                        ['Max priority fee'],
-                        [`${maxPriorityFeePerGas} Gwei`],
-                    ],
-                },
-                T3T1: {
-                    footer: undefined,
-                },
+            const { ethereumMaximumFee, errorMessageMaxCalculation } =
+                tradingPage.fees.calculateEthereumMaxFee({
+                    gasLimit,
+                    maxFeePerGas,
+                });
+
+            await test.step('Verify fees on modal and emulator', async () => {
+                await expect(devicePrompt.header.gasLimitValue).toHaveText(gasLimit);
+                await expect(devicePrompt.header.feePerGasValue).toHaveText(
+                    `${maxFeePerGasRounded}`,
+                );
+                await expect(devicePrompt.header.priorityFeeValue).toHaveText(
+                    `${maxPriorityFeePerGasRounded}`,
+                );
+                await expect(
+                    devicePrompt.cryptoAmountWithSymbolOf('fee'),
+                    errorMessageMaxCalculation,
+                ).toHaveText(`${ethereumMaximumFee} ETH`);
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [
+                            ['Amount'],
+                            [formattedSendAmount],
+                            ['Maximum fee'],
+                            device.wrapText(`${ethereumMaximumFee} ETH`, { isAmount: true }),
+                        ],
+                        actions: { right_button: 'Hold to sign' },
+                    },
+                    T3T1: {
+                        header: { title: 'Summary' },
+                    },
+                });
             });
-        });
-    });
+
+            await test.step('Verify Fee Info on emulator', async () => {
+                await device.openFeeInfo();
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Fee info' },
+                        body: [
+                            ['Gas limit'],
+                            [`${gasLimit} units`],
+                            ['Max fee per gas'],
+                            [`${maxFeePerGas} Gwei`],
+                            ['Max priority fee'],
+                            [`${maxPriorityFeePerGas} Gwei`],
+                        ],
+                    },
+                    T3T1: {
+                        footer: undefined,
+                    },
+                });
+            });
+        },
+    );
 });

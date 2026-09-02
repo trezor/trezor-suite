@@ -25,7 +25,7 @@ test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@nightlyOnly'
                     testCase: `Verify that the ${EventType.PromoDashboardBanner} event is logged for ${bannerType.toUpperCase()} when navigating from the dashboard promo banner`,
                     category: TestCategory.General,
                     priority: TestPriority.Medium,
-                    stream: TestStream.Foundation,
+                    stream: TestStream.Growth,
                 }),
             },
             async ({ analyticsHelper, dashboardPage, settingsPage, page, target }) => {

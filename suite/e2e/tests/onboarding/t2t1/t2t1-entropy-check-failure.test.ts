@@ -1,5 +1,5 @@
 import { deviceActions } from '@suite-common/device';
-import { TestCategory, TestPriority, createTestAnnotation } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
 
@@ -22,6 +22,7 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
                     'Verify that the proper modal is shown when entropy check fails during wallet creation.',
                 category: TestCategory.Onboarding,
                 priority: TestPriority.High,
+                stream: TestStream.Growth,
             }),
         },
         async ({ page, device, onboardingPage, devicePrompt }) => {
@@ -68,6 +69,7 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
                     'Verify that the proper modal is shown when entropy check gets interrupted by transport error during wallet creation.',
                 category: TestCategory.Onboarding,
                 priority: TestPriority.High,
+                stream: TestStream.Growth,
             }),
         },
         async ({ page, device, onboardingPage, devicePrompt }) => {

@@ -1,8 +1,10 @@
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const tenMinutes = 10 * 60 * 1000;
 const sendAmount = '7.77';
@@ -96,104 +98,110 @@ test.describe(
             });
         });
 
-        test('Swap USDT to SOL via CEX', async ({ tradingPage, page, devicePrompt }) => {
-            await test.step('Fill in a Swap form', async () => {
-                await tradingPage.fillSwapForm({
-                    amount: sendAmount,
-                    sellAsset: {
-                        networkSymbol: 'sol',
-                        tokenSymbol: sendTokenSymbol,
-                        accountIndex: 1,
-                    },
-                    buyAsset: {
-                        searchFilter: receiveAssetName,
-                        assetCryptoId: getCryptoId(asNetworkSymbol('sol')),
-                    },
-                    selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, 'sol');
-                    },
-                });
-            });
-
-            let liveTradeAmounts: ReturnType<typeof tradingPage.waitForLiveTradeAmounts>;
-
-            await test.step('Confirm the Swap trade', async () => {
-                await expect(tradingPage.quotes.bestOfferAmount).toContainText(receiveCoinSymbol);
-                liveTradeAmounts = tradingPage.waitForLiveTradeAmounts();
-                await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
-            });
-
-            await test.step('Initiate send', async () => {
-                await tradingPage.confirmation.initiateSendConfirmation({
-                    confirmAlsoToken: true,
-                });
-                await expect(devicePrompt.header.accountLabel).toHaveText(accountLabel);
-                await expect(devicePrompt.outputValueOf('address')).toHaveValidAddress('sol');
-                await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
-                    formattedSendAmount,
-                );
-                await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
-            });
-
-            await test.step('Send crypto to provider', async () => {
-                const { receiveStringAmount } = await liveTradeAmounts;
-                await devicePrompt.sendButton.click();
-
-                await tradingPage.verifySwapToast({
-                    sendAccount: accountLabel,
-                    receiveAccount: accountLabel,
-                    sendAmount,
-                    receiveAmount: receiveStringAmount,
+        test(
+            'Swap USDT to SOL via CEX',
+            { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+            async ({ tradingPage, page, devicePrompt }) => {
+                await test.step('Fill in a Swap form', async () => {
+                    await tradingPage.fillSwapForm({
+                        amount: sendAmount,
+                        sellAsset: {
+                            networkSymbol: 'sol',
+                            tokenSymbol: sendTokenSymbol,
+                            accountIndex: 1,
+                        },
+                        buyAsset: {
+                            searchFilter: receiveAssetName,
+                            assetCryptoId: getCryptoId(asNetworkSymbol('sol')),
+                        },
+                        selectReceiveAddress: async () => {
+                            await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, 'sol');
+                        },
+                    });
                 });
 
-                await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                    'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
-                    { timeout: tenMinutes },
-                );
-            });
+                let liveTradeAmounts: ReturnType<typeof tradingPage.waitForLiveTradeAmounts>;
 
-            await test.step('Verify swap detail sidebar', async () => {
-                // "You pay" section
-                await expect
-                    .soft(tradingPage.transactionDetailSidebar.sendAccount)
-                    .toContainText(accountLabel);
-                await expect
-                    .soft(tradingPage.transactionDetailSidebar.sendAssetName)
-                    .toHaveText(sendAssetName);
-                await expect
-                    .soft(tradingPage.transactionDetailSidebar.sendNetworkName)
-                    .toHaveText(receiveAssetName);
-                await expect
-                    .soft(tradingPage.transactionDetailSidebar.cryptoAmounts.first())
-                    .toContainText(sendAmount);
-                await expect
-                    .soft(tradingPage.transactionDetailSidebar.cryptoAmounts.first())
-                    .toContainText(sendTokenSymbol);
+                await test.step('Confirm the Swap trade', async () => {
+                    await expect(tradingPage.quotes.bestOfferAmount).toContainText(
+                        receiveCoinSymbol,
+                    );
+                    liveTradeAmounts = tradingPage.waitForLiveTradeAmounts();
+                    await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
+                });
 
-                // "You get" section
-                await expect
-                    .soft(tradingPage.transactionDetailSidebar.receiveAccount)
-                    .toContainText(accountLabel);
-                await expect
-                    .soft(tradingPage.transactionDetailSidebar.receiveAssetName)
-                    .toHaveText(receiveAssetName);
-                await expect
-                    .soft(tradingPage.transactionDetailSidebar.cryptoAmounts.last())
-                    .toContainText(receiveCoinSymbol);
+                await test.step('Initiate send', async () => {
+                    await tradingPage.confirmation.initiateSendConfirmation({
+                        confirmAlsoToken: true,
+                    });
+                    await expect(devicePrompt.header.accountLabel).toHaveText(accountLabel);
+                    await expect(devicePrompt.outputValueOf('address')).toHaveValidAddress('sol');
+                    await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
+                        formattedSendAmount,
+                    );
+                    await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
+                });
 
-                // Provider
-                await expect.soft(tradingPage.confirmation.provider).toBeVisible();
+                await test.step('Send crypto to provider', async () => {
+                    const { receiveStringAmount } = await liveTradeAmounts;
+                    await devicePrompt.sendButton.click();
 
-                // Rate type (can be floating or fixed depending on provider)
-                await expect.soft(tradingPage.confirmation.exchangeType).toBeVisible();
-            });
+                    await tradingPage.verifySwapToast({
+                        sendAccount: accountLabel,
+                        receiveAccount: accountLabel,
+                        sendAmount,
+                        receiveAmount: receiveStringAmount,
+                    });
 
-            await test.step('Return to account swap form', async () => {
-                await tradingPage.backToAccountButton('Swap').click();
-                await expect(
-                    page.getByTestId('@trading/menu/wallet-trading-transactions'),
-                ).toBeVisible();
-            });
-        });
+                    await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                        'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
+                        { timeout: tenMinutes },
+                    );
+                });
+
+                await test.step('Verify swap detail sidebar', async () => {
+                    // "You pay" section
+                    await expect
+                        .soft(tradingPage.transactionDetailSidebar.sendAccount)
+                        .toContainText(accountLabel);
+                    await expect
+                        .soft(tradingPage.transactionDetailSidebar.sendAssetName)
+                        .toHaveText(sendAssetName);
+                    await expect
+                        .soft(tradingPage.transactionDetailSidebar.sendNetworkName)
+                        .toHaveText(receiveAssetName);
+                    await expect
+                        .soft(tradingPage.transactionDetailSidebar.cryptoAmounts.first())
+                        .toContainText(sendAmount);
+                    await expect
+                        .soft(tradingPage.transactionDetailSidebar.cryptoAmounts.first())
+                        .toContainText(sendTokenSymbol);
+
+                    // "You get" section
+                    await expect
+                        .soft(tradingPage.transactionDetailSidebar.receiveAccount)
+                        .toContainText(accountLabel);
+                    await expect
+                        .soft(tradingPage.transactionDetailSidebar.receiveAssetName)
+                        .toHaveText(receiveAssetName);
+                    await expect
+                        .soft(tradingPage.transactionDetailSidebar.cryptoAmounts.last())
+                        .toContainText(receiveCoinSymbol);
+
+                    // Provider
+                    await expect.soft(tradingPage.confirmation.provider).toBeVisible();
+
+                    // Rate type (can be floating or fixed depending on provider)
+                    await expect.soft(tradingPage.confirmation.exchangeType).toBeVisible();
+                });
+
+                await test.step('Return to account swap form', async () => {
+                    await tradingPage.backToAccountButton('Swap').click();
+                    await expect(
+                        page.getByTestId('@trading/menu/wallet-trading-transactions'),
+                    ).toBeVisible();
+                });
+            },
+        );
     },
 );

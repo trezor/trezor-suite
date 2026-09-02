@@ -1,8 +1,10 @@
 // Hack: direct import to prevent some nasty import cascade resulting in error while importing icons
 import * as METADATA_LABELING from '@suite/metadata/src/metadataLabelingConstants';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
 import { MetadataProvider } from '../../../support/mocks/metadataMock';
+import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 const providers = [
     {
@@ -19,42 +21,40 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
 
     providers.forEach(p => {
-        test(`${p.provider} - watches files over time`, async ({
-            page,
-            onboardingPage,
-            metadataPage,
-            metadataMock,
-            settingsPage,
-        }) => {
-            await page.clock.install();
-            await metadataMock.start(p.provider);
-            await metadataMock.setFileContent(
-                p.file,
-                metadataMock.defaultFileContent,
-                metadataMock.defaultAesKey,
-            );
+        test(
+            `${p.provider} - watches files over time`,
+            { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+            async ({ page, onboardingPage, metadataPage, metadataMock, settingsPage }) => {
+                await page.clock.install();
+                await metadataMock.start(p.provider);
+                await metadataMock.setFileContent(
+                    p.file,
+                    metadataMock.defaultFileContent,
+                    metadataMock.defaultAesKey,
+                );
 
-            await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
-            await metadataPage.enableLegacyLabeling(p.provider);
-            await page.getByTestId('@account-menu/btc/normal/0/label').click();
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
-                'already existing label',
-            );
+                await onboardingPage.completeOnboarding();
+                await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+                await metadataPage.enableLegacyLabeling(p.provider);
+                await page.getByTestId('@account-menu/btc/normal/0/label').click();
+                await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
+                    'already existing label',
+                );
 
-            await metadataMock.setFileContent(
-                p.file,
-                {
-                    ...metadataMock.defaultFileContent,
-                    accountLabel: 'label from another window',
-                },
-                metadataMock.defaultAesKey,
-            );
+                await metadataMock.setFileContent(
+                    p.file,
+                    {
+                        ...metadataMock.defaultFileContent,
+                        accountLabel: 'label from another window',
+                    },
+                    metadataMock.defaultAesKey,
+                );
 
-            await page.clock.fastForward(METADATA_LABELING.FETCH_INTERVAL);
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
-                'label from another window',
-            );
-        });
+                await page.clock.fastForward(METADATA_LABELING.FETCH_INTERVAL);
+                await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
+                    'label from another window',
+                );
+            },
+        );
     });
 });

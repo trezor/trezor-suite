@@ -35,7 +35,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can unstake and claim on his Ethereum account.',
                 category: TestCategory.ETH,
                 priority: TestPriority.Critical,
-                stream: TestStream.Trends,
+                stream: TestStream.Earn,
             }),
         },
         async ({ page, device, walletPage, stakingSection, devicePrompt, blockbookMock }) => {

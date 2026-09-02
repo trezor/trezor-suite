@@ -22,7 +22,7 @@ test.describe('Cardano', { tag: ['@nightlyOnly', '@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can successfully discover a Cardano account.',
                 category: TestCategory.ADA,
                 priority: TestPriority.Medium,
-                stream: TestStream.Trends,
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, device, dashboardPage, devicePrompt, settingsPage, walletPage }) => {

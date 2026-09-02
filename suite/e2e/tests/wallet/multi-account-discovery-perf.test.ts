@@ -1,4 +1,7 @@
+import { TestStream } from '@trezor/e2e-utils';
+
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 /**
  * `mnemonic_all` is funded across many coins, so enabling btc + eth + ltc updates many account
@@ -18,18 +21,18 @@ test.describe('Performance', { tag: ['@T3W1', '@T3T1', '@perf'] }, () => {
         await settingsPage.changeNetworks({ enableNetworks: ['btc', 'eth', 'ltc'] });
     });
 
-    test('multi-account discovery stays within its performance limits', async ({
-        dashboardPage,
-        walletPage,
-        perf,
-    }) => {
-        await dashboardPage.openDeviceSwitcher();
-        await dashboardPage.ejectWallet();
+    test(
+        'multi-account discovery stays within its performance limits',
+        { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+        async ({ dashboardPage, walletPage, perf }) => {
+            await dashboardPage.openDeviceSwitcher();
+            await dashboardPage.ejectWallet();
 
-        await perf.measure('multi-account-discovery', async () => {
-            await dashboardPage.addStandardWallet();
-        });
+            await perf.measure('multi-account-discovery', async () => {
+                await dashboardPage.addStandardWallet();
+            });
 
-        await expect(walletPage.balanceOfAccount({ symbol: 'btc', atIndex: 0 })).toBeVisible();
-    });
+            await expect(walletPage.balanceOfAccount({ symbol: 'btc', atIndex: 0 })).toBeVisible();
+        },
+    );
 });

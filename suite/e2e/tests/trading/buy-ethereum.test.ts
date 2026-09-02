@@ -1,10 +1,12 @@
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { TestStream } from '@trezor/e2e-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { buyQuotesEthereum, buyTradeEthereum, tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 // Expected values based on our mocked responses
 const fiatAmount = buyQuotesEthereum[3]?.fiatStringAmount ?? '';
@@ -22,54 +24,57 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
         await dashboardPage.navigateTo();
     });
 
-    test('Enable Ethereum on account by buying it', async ({
-        page,
-        walletPage,
-        tradingPage,
-        tradingMock,
-    }) => {
-        await test.step('Request to buy Ethereum', async () => {
-            await walletPage.openTradingGlobalButton.click();
-            await tradingPage.assetPicker.selectBuyAsset({
-                searchFilter: 'Ethereum',
-                networkFilter: 'eth',
-                assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
+    test(
+        'Enable Ethereum on account by buying it',
+        { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+        async ({ page, walletPage, tradingPage, tradingMock }) => {
+            await test.step('Request to buy Ethereum', async () => {
+                await walletPage.openTradingGlobalButton.click();
+                await tradingPage.assetPicker.selectBuyAsset({
+                    searchFilter: 'Ethereum',
+                    networkFilter: 'eth',
+                    assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
+                });
+                await tradingPage.fillBuyForm({
+                    amount: fiatAmount,
+                    selectReceiveAddress: async () => {
+                        await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0, 'eth');
+                    },
+                });
+                await expect(tradingPage.quotes.bestOfferAmount).toContainText('0.018615 ETH');
             });
-            await tradingPage.fillBuyForm({
-                amount: fiatAmount,
-                selectReceiveAddress: async () => {
-                    await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0, 'eth');
-                },
+
+            await test.step('Continue to preview and confirm the trade', async () => {
+                await tradingMock.routeTrade(tradeEndpoint.buyTrade, buyTradeEthereum);
+
+                await tradingPage.buyBestOfferButton.click();
+
+                await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+                await expect(tradingPage.confirmation.cryptoAmount).toHaveText(
+                    formattedCryptoAmount,
+                );
+                await expect(tradingPage.confirmation.provider).toHaveText(provider);
+
+                await tradingPage.confirmation.buyButton.click();
             });
-            await expect(tradingPage.quotes.bestOfferAmount).toContainText('0.018615 ETH');
-        });
 
-        await test.step('Continue to preview and confirm the trade', async () => {
-            await tradingMock.routeTrade(tradeEndpoint.buyTrade, buyTradeEthereum);
+            await tradingPage.waitForRedirectCompletion();
 
-            await tradingPage.buyBestOfferButton.click();
+            await test.step('Verify transaction detail', async () => {
+                await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                    'TR_BUY_DETAIL_SUCCESS_TITLE',
+                );
+                await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+                await expect(tradingPage.confirmation.cryptoAmount).toHaveText(
+                    formattedCryptoAmount,
+                );
+                await expect(tradingPage.confirmation.provider).toHaveText(provider);
+            });
 
-            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmation.provider).toHaveText(provider);
-
-            await tradingPage.confirmation.buyButton.click();
-        });
-
-        await tradingPage.waitForRedirectCompletion();
-
-        await test.step('Verify transaction detail', async () => {
-            await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                'TR_BUY_DETAIL_SUCCESS_TITLE',
-            );
-            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmation.provider).toHaveText(provider);
-        });
-
-        await test.step('Return to account buy form', async () => {
-            await tradingPage.backToAccountButton('Buy').click();
-            await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy$/);
-        });
-    });
+            await test.step('Return to account buy form', async () => {
+                await tradingPage.backToAccountButton('Buy').click();
+                await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy$/);
+            });
+        },
+    );
 });

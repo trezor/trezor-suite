@@ -2,6 +2,7 @@ import { ElectronApplication, Page } from '@playwright/test';
 
 import { messages } from '@suite/intl';
 import TrezorConnect from '@trezor/connect-web';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { DeviceFixture } from '../../support/device';
 import { expect, test } from '../../support/fixtures';
@@ -69,6 +70,7 @@ test.describe('TrezorConnect silent mode', { tag: ['@T3T1', '@T3W1', '@desktopOn
             annotation: createTestAnnotation({
                 testCase:
                     'Suite Connect: Silent mode prevents Suite from being brought to foreground during ongoing calls.',
+                stream: TestStream.Connect,
             }),
         },
         async ({ settingsPage, connectPermissionsModal, page, device, electronApp }) => {

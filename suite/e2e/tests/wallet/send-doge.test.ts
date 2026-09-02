@@ -1,8 +1,10 @@
 import { messages } from '@suite/intl';
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { formatAddressWithNewlines, replaceTemplatesInTranslation } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const signTxErrorMessage = replaceTemplatesInTranslation(
     messages.TOAST_SIGN_TX_ERROR.defaultMessage,
@@ -34,41 +36,41 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
         });
     });
 
-    test('Cannot send amount exceeding MAX_SAFE_INTEGER', async ({
-        page,
-        device,
-        walletPage,
-        tradingPage,
-        devicePrompt,
-    }) => {
-        await test.step('Open send form for Doge', async () => {
-            await walletPage.openAccount({ symbol: 'doge' });
-            await walletPage.openSendFormButton.click();
-        });
+    test(
+        'Cannot send amount exceeding MAX_SAFE_INTEGER',
+        { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+        async ({ page, device, walletPage, tradingPage, devicePrompt }) => {
+            await test.step('Open send form for Doge', async () => {
+                await walletPage.openAccount({ symbol: 'doge' });
+                await walletPage.openSendFormButton.click();
+            });
 
-        await test.step('Fill amount over MAX_SAFE_INTEGER and send', async () => {
-            await page.getByTestId('@send/header-dropdown').click();
-            await page.getByTestId('@send/header-dropdown/broadcast').click();
-            await tradingPage.sendAddressInput.fill(recipientAddress);
-            await tradingPage.sendAmountInput.fill(sendAmount);
-            await tradingPage.sendButton.click();
-            await devicePrompt.confirmOnDevicePromptIsShown();
-        });
+            await test.step('Fill amount over MAX_SAFE_INTEGER and send', async () => {
+                await page.getByTestId('@send/header-dropdown').click();
+                await page.getByTestId('@send/header-dropdown/broadcast').click();
+                await tradingPage.sendAddressInput.fill(recipientAddress);
+                await tradingPage.sendAmountInput.fill(sendAmount);
+                await tradingPage.sendButton.click();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+            });
 
-        await test.step('Verify info on modals and confirm', async () => {
-            await device.pressYes();
-            await expect(devicePrompt.outputValueOf('amount')).toContainText(
-                `${localizeNumber(sendAmount)} DOGE`,
-            );
-            await expect(devicePrompt.outputValueOf('total')).toContainText(`${totalAmount} DOGE`);
-            await expect(devicePrompt.outputValueOf('fee')).toContainText(`${feeAmount} DOGE`);
-            await expect(devicePrompt.outputValueOf('address')).toHaveText(
-                formatAddressWithNewlines(recipientAddress),
-            );
-            await device.pressYes();
-            await device.pressYes();
-        });
+            await test.step('Verify info on modals and confirm', async () => {
+                await device.pressYes();
+                await expect(devicePrompt.outputValueOf('amount')).toContainText(
+                    `${localizeNumber(sendAmount)} DOGE`,
+                );
+                await expect(devicePrompt.outputValueOf('total')).toContainText(
+                    `${totalAmount} DOGE`,
+                );
+                await expect(devicePrompt.outputValueOf('fee')).toContainText(`${feeAmount} DOGE`);
+                await expect(devicePrompt.outputValueOf('address')).toHaveText(
+                    formatAddressWithNewlines(recipientAddress),
+                );
+                await device.pressYes();
+                await device.pressYes();
+            });
 
-        await expect(page.getByTestId('@toast/sign-tx-error')).toHaveText(signTxErrorMessage);
-    });
+            await expect(page.getByTestId('@toast/sign-tx-error')).toHaveText(signTxErrorMessage);
+        },
+    );
 });

@@ -1,6 +1,9 @@
 import { Page } from '@playwright/test';
 
+import { TestStream } from '@trezor/e2e-utils';
+
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const optionallyDismissFwHashCheckError = (page: Page) => {
     // dismisses the error modal only if it appears (handle it async in parallel, not necessary to block the rest of the flow)
@@ -14,48 +17,47 @@ const optionallyDismissFwHashCheckError = (page: Page) => {
 };
 
 test.describe('Suite initial run', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test('Until user passed through initial run, it will be there after reload', async ({
-        page,
-        device,
-        analyticsSection,
-        onboardingPage,
-        devicePrompt,
-    }) => {
-        // I was not able to debug why the initial start can be handled by onboardingPage.optionallyDismissFwHashCheckError
-        // but follow up reloads need a different approach that is defined here above.
-        await onboardingPage.optionallyDismissFwHashCheckError();
-        await expect(analyticsSection.toggleSwitch).toBeVisible();
+    test(
+        'Until user passed through initial run, it will be there after reload',
+        { annotation: createTestAnnotation({ stream: TestStream.Growth }) },
+        async ({ page, device, analyticsSection, onboardingPage, devicePrompt }) => {
+            // I was not able to debug why the initial start can be handled by onboardingPage.optionallyDismissFwHashCheckError
+            // but follow up reloads need a different approach that is defined here above.
+            await onboardingPage.optionallyDismissFwHashCheckError();
+            await expect(analyticsSection.toggleSwitch).toBeVisible();
 
-        await page.reload();
-        await onboardingPage.verifySuiteIsLoaded();
-        optionallyDismissFwHashCheckError(page);
-        // analytics screen is there until user confirms his choice
-        await expect(analyticsSection.toggleSwitch).toBeVisible();
-        await analyticsSection.continueButton.click();
+            await page.reload();
+            await onboardingPage.verifySuiteIsLoaded();
+            optionallyDismissFwHashCheckError(page);
+            // analytics screen is there until user confirms his choice
+            await expect(analyticsSection.toggleSwitch).toBeVisible();
+            await analyticsSection.continueButton.click();
 
-        if (device.hasTHP) {
-            await devicePrompt.allowConnectToTrezor();
-            await onboardingPage.enterTHPPairingCode();
-        }
+            if (device.hasTHP) {
+                await devicePrompt.allowConnectToTrezor();
+                await onboardingPage.enterTHPPairingCode();
+            }
 
-        await expect(page.getByTestId('@onboarding/complete-onboarding')).toBeVisible();
+            await expect(page.getByTestId('@onboarding/complete-onboarding')).toBeVisible();
 
-        await page.reload();
+            await page.reload();
 
-        await onboardingPage.verifySuiteIsLoaded();
-        optionallyDismissFwHashCheckError(page);
-        await expect(analyticsSection.toggleSwitch).toBeHidden();
-        await expect(onboardingPage.completeOnboardingButton).toBeVisible();
-    });
+            await onboardingPage.verifySuiteIsLoaded();
+            optionallyDismissFwHashCheckError(page);
+            await expect(analyticsSection.toggleSwitch).toBeHidden();
+            await expect(onboardingPage.completeOnboardingButton).toBeVisible();
+        },
+    );
 
-    test('Once user passed trough, skips initial run and shows connect-device modal', async ({
-        page,
-        onboardingPage,
-    }) => {
-        await onboardingPage.completeOnboarding();
-        await page.reload();
-        await expect(page.getByTestId('@deviceStatus-connected').first()).toBeVisible({
-            timeout: 30_000,
-        });
-    });
+    test(
+        'Once user passed trough, skips initial run and shows connect-device modal',
+        { annotation: createTestAnnotation({ stream: TestStream.Growth }) },
+        async ({ page, onboardingPage }) => {
+            await onboardingPage.completeOnboarding();
+            await page.reload();
+            await expect(page.getByTestId('@deviceStatus-connected').first()).toBeVisible({
+                timeout: 30_000,
+            });
+        },
+    );
 });

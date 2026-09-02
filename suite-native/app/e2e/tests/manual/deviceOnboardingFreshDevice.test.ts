@@ -20,7 +20,7 @@ describe.skip('Manual', () => {
             ],
             category: TestCategory.Onboarding,
             priority: TestPriority.Medium,
-            stream: TestStream.Foundation,
+            stream: TestStream.Growth,
         },
         async () => {},
     );

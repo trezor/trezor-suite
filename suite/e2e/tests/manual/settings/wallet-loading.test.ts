@@ -22,7 +22,7 @@ test.describe.skip('Wallet loading', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Settings,
                 priority: TestPriority.Medium,
-                stream: TestStream.Engagement,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},

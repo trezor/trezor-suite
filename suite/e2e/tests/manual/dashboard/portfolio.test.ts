@@ -18,7 +18,7 @@ test.describe.skip('Portfolio', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Dashboard,
                 priority: TestPriority.High,
-                stream: TestStream.Foundation,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},
