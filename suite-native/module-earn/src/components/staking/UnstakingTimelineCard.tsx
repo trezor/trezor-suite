@@ -95,7 +95,13 @@ export const UnstakingTimelineCard = ({ accountKey }: UnstakingTimelineCardProps
                         {
                             id: 'unstake.second',
                             title: (
-                                <Translation id="earn.howStakeWorksScreen.unstakeTimeline.second.title" />
+                                <Translation
+                                    id={
+                                        symbol === 'sol'
+                                            ? 'earn.howStakeWorksScreen.unstakeTimeline.second.titleSolana'
+                                            : 'earn.howStakeWorksScreen.unstakeTimeline.second.titleEthereum'
+                                    }
+                                />
                             ),
                             description:
                                 unstakingPeriodInDays !== undefined ? (

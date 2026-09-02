@@ -25,18 +25,18 @@ export const createHowStakeWorksPreset = ({
             ? 'earn.howStakeWorksScreen.stakingTimeline.second.description'
             : 'earn.notAvailable';
     const stakingPeriodTitleId = isSolana
-        ? 'earn.howStakeWorksScreen.stakingTimeline.second.title.solana'
-        : 'earn.howStakeWorksScreen.stakingTimeline.second.title.ethereum';
+        ? 'earn.howStakeWorksScreen.stakingTimeline.second.titleSolana'
+        : 'earn.howStakeWorksScreen.stakingTimeline.second.titleEthereum';
     const stakingRewardsTitleId = isSolana
-        ? 'earn.howStakeWorksScreen.stakingTimeline.third.title.solana'
-        : 'earn.howStakeWorksScreen.stakingTimeline.third.title.ethereum';
+        ? 'earn.howStakeWorksScreen.stakingTimeline.third.titleSolana'
+        : 'earn.howStakeWorksScreen.stakingTimeline.third.titleEthereum';
     const stakingRewardsDescriptionId =
         apy != null
             ? 'earn.howStakeWorksScreen.stakingTimeline.third.description'
             : 'earn.notAvailableShort';
     const unstakingPeriodTitleId = isSolana
-        ? 'earn.howStakeWorksScreen.unstakeTimeline.second.title.solana'
-        : 'earn.howStakeWorksScreen.unstakeTimeline.second.title.ethereum';
+        ? 'earn.howStakeWorksScreen.unstakeTimeline.second.titleSolana'
+        : 'earn.howStakeWorksScreen.unstakeTimeline.second.titleEthereum';
     const unstakingPeriodDescriptionId =
         unstakingPeriodInDays !== undefined
             ? 'earn.howStakeWorksScreen.unstakeTimeline.second.description'
