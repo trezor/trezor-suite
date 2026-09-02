@@ -376,13 +376,4 @@ export class YieldMock {
             route.fulfill({ json: BLOCKAID_REDEEM_RESPONSE }),
         );
     }
-
-    @step()
-    async stop() {
-        await this.page.unroute(BLOCKAID_API_PATTERN);
-        await this.page.unroute(VAULT_ADDRESS_API_PATTERN);
-        await this.page.unroute(MERKL_API_PATTERN);
-        await this.page.unroute(YIELD_DETAIL_API_PATTERN);
-        await this.page.unroute(YIELD_API_PATTERN);
-    }
 }
