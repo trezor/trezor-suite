@@ -10,7 +10,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { filterAccountsByNetworkSymbol } from '@suite-common/wallet-utils';
+import { filterAccountsByNetworkSymbol, isReadOnlyToken } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
@@ -72,7 +72,8 @@ export function useAccountWithTokensOptions({
         return networkAccounts
             .map(account => {
                 const { shownWithBalance, hiddenWithBalance } = getTokens({
-                    tokens: account.tokens ?? [],
+                    // read-only tokens cannot be spent, so they are not offered as a send source
+                    tokens: (account.tokens ?? []).filter(token => !isReadOnlyToken(token)),
                     symbol: account.symbol,
                     tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
                 });
