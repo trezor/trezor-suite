@@ -16,7 +16,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "7.1.31",
         "@shopify/flash-list": "2.3.0",
-        "@shopify/react-native-skia": "2.6.2",
+        "@shopify/react-native-skia": "2.11.2",
         "@storybook/react-native": "^10.2.1",
         "@suite-common/discreet-mode": "workspace:*",
         "@suite-common/flags": "workspace:*",

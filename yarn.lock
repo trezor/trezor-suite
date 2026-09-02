@@ -9054,29 +9054,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/react-native-skia@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@shopify/react-native-skia@npm:2.6.2"
+"@shopify/react-native-skia@npm:2.11.2":
+  version: 2.11.2
+  resolution: "@shopify/react-native-skia@npm:2.11.2"
   dependencies:
     canvaskit-wasm: "npm:0.41.0"
-    react-native-skia-android: "npm:147.1.0"
-    react-native-skia-apple-ios: "npm:147.1.0"
-    react-native-skia-apple-macos: "npm:147.1.0"
-    react-native-skia-apple-tvos: "npm:147.1.0"
+    react-native-skia-android: "npm:152.0.0"
+    react-native-skia-apple-ios: "npm:152.0.0"
+    react-native-skia-apple-macos: "npm:152.0.0"
+    react-native-skia-apple-tvos: "npm:152.0.0"
     react-reconciler: "npm:0.31.0"
   peerDependencies:
     react: ">=19.0"
     react-native: ">=0.78"
-    react-native-reanimated: ">=3.19.1"
+    react-native-reanimated: ">=4.0.0"
+    react-native-worklets: ">=0.7.0"
   peerDependenciesMeta:
     react-native:
       optional: true
     react-native-reanimated:
       optional: true
+    react-native-worklets:
+      optional: true
   bin:
-    install-skia: scripts/install-libs.js
     setup-skia-web: scripts/setup-canvaskit.js
-  checksum: 10/cdcdb6058ec21d836f874a0a37b385448d06d4faadc8b5b134c1f37826bba04cf6aedbc9dea2d42cb79f0b1bfe7a692571f374c378614dfb84ae120366d1887b
+  checksum: 10/73413c9783a983f8ec83460a30552ee42e7eccd7c8ef6cd41db3b0f2c804c29f21f37be3bbc36312fb4f2555539a26e83ca445c222b79e739e2b866ee7ff01af
   languageName: node
   linkType: hard
 
@@ -11936,7 +11938,7 @@ __metadata:
     "@rozenite/redux-devtools-plugin": "npm:^1.13.0"
     "@sentry/react-native": "npm:8.22.0"
     "@shopify/flash-list": "npm:2.3.0"
-    "@shopify/react-native-skia": "npm:2.6.2"
+    "@shopify/react-native-skia": "npm:2.11.2"
     "@storybook/react-native": "npm:^10.2.1"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -12139,7 +12141,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.31"
     "@shopify/flash-list": "npm:2.3.0"
-    "@shopify/react-native-skia": "npm:2.6.2"
+    "@shopify/react-native-skia": "npm:2.11.2"
     "@storybook/react-native": "npm:^10.2.1"
     "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/flags": "workspace:*"
@@ -12657,7 +12659,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
     "@reduxjs/toolkit": "npm:2.12.0"
-    "@shopify/react-native-skia": "npm:2.6.2"
+    "@shopify/react-native-skia": "npm:2.11.2"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/firmware": "workspace:*"
@@ -12759,7 +12761,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.31"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@sentry/react-native": "npm:8.22.0"
-    "@shopify/react-native-skia": "npm:2.6.2"
+    "@shopify/react-native-skia": "npm:2.11.2"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/discreet-mode": "workspace:*"
@@ -12821,7 +12823,7 @@ __metadata:
   resolution: "@suite-native/icons@workspace:suite-native/icons"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
-    "@shopify/react-native-skia": "npm:2.6.2"
+    "@shopify/react-native-skia": "npm:2.11.2"
     "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -12964,7 +12966,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@shopify/flash-list": "npm:2.3.0"
-    "@shopify/react-native-skia": "npm:2.6.2"
+    "@shopify/react-native-skia": "npm:2.11.2"
     "@suite-common/address": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -13348,7 +13350,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.12.0"
-    "@shopify/react-native-skia": "npm:2.6.2"
+    "@shopify/react-native-skia": "npm:2.11.2"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -13656,7 +13658,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@shopify/flash-list": "npm:2.3.0"
-    "@shopify/react-native-skia": "npm:2.6.2"
+    "@shopify/react-native-skia": "npm:2.11.2"
     "@suite-common/address": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -14113,7 +14115,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/react-native-graph@workspace:suite-native/react-native-graph"
   dependencies:
-    "@shopify/react-native-skia": "npm:2.6.2"
+    "@shopify/react-native-skia": "npm:2.11.2"
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"
@@ -14352,7 +14354,7 @@ __metadata:
     "@react-native-community/slider": "npm:5.2.0"
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
-    "@shopify/react-native-skia": "npm:2.6.2"
+    "@shopify/react-native-skia": "npm:2.11.2"
     "@storybook/addon-ondevice-controls": "npm:^10.2.1"
     "@storybook/react": "npm:^10.3.4"
     "@storybook/react-native": "npm:^10.2.1"
@@ -41165,31 +41167,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-skia-android@npm:147.1.0":
-  version: 147.1.0
-  resolution: "react-native-skia-android@npm:147.1.0"
-  checksum: 10/4e653ff0530fe19cd49e95ebc8906e5336894e529a1bb2c3aac4de2bd2c0f56403a76dbf598f4e3c59dc1a0841f6eae1d7506886bf14b2fdb9182b2de767fb0e
+"react-native-skia-android@npm:152.0.0":
+  version: 152.0.0
+  resolution: "react-native-skia-android@npm:152.0.0"
+  checksum: 10/7d55c6d6252b22fd007c1a498dfdf917b60032c1db852564be637800651d7abd01666823626374c64668453d2811de59a5daab50a14ae3b1e3b44d5ca970c32c
   languageName: node
   linkType: hard
 
-"react-native-skia-apple-ios@npm:147.1.0":
-  version: 147.1.0
-  resolution: "react-native-skia-apple-ios@npm:147.1.0"
-  checksum: 10/642e505a211af3bef79ace6cb95298b0addff05ef8ffb53dd66615026cee3ded14283cef40ae4c823c7d072eb4d6c30730d725901286c77c738703fb050448b7
+"react-native-skia-apple-ios@npm:152.0.0":
+  version: 152.0.0
+  resolution: "react-native-skia-apple-ios@npm:152.0.0"
+  checksum: 10/f9d7fa1464b0a992f0a0a64c4e729167b58bb4ad1ad993371c6abc959b65a3fee8768976bba71ad53d029ce9be0b1af2982023454fd511e9a13ea517444d2379
   languageName: node
   linkType: hard
 
-"react-native-skia-apple-macos@npm:147.1.0":
-  version: 147.1.0
-  resolution: "react-native-skia-apple-macos@npm:147.1.0"
-  checksum: 10/a341b2c82a9a38d11e1dfb492a287989d7f9bd59be77af84b2fbbe86f06592ad31df7e4bddf21a04db34e9313a7bc472e263c0bc5a0539e0eaf56fce99d3ece5
+"react-native-skia-apple-macos@npm:152.0.0":
+  version: 152.0.0
+  resolution: "react-native-skia-apple-macos@npm:152.0.0"
+  checksum: 10/86c50d0e36200c887ef6afaa20cd07f703a7fb521ffe2a8ad694a260a3618314f8d2c56c65b617ab23458b463099aa1fdbf99da1df405d9de1d280ee3c8a1a54
   languageName: node
   linkType: hard
 
-"react-native-skia-apple-tvos@npm:147.1.0":
-  version: 147.1.0
-  resolution: "react-native-skia-apple-tvos@npm:147.1.0"
-  checksum: 10/ce0a58089bcef3ba0faa786db64be39bd8e397c7c5565a3631dd8a21eb913994e9adc7d9c4e47027aa47ce3b1e6d9e3e351e82a7d20c6d1258ddae7ba9ea6d27
+"react-native-skia-apple-tvos@npm:152.0.0":
+  version: 152.0.0
+  resolution: "react-native-skia-apple-tvos@npm:152.0.0"
+  checksum: 10/9ea7a16fcfcd29a95364d06b253dbed850f8efc9394404609c3764e1ca7c560f3e3660d6294657123dc20648f9693d8011b7cdf77306b8677541dfb1f6ab0f9f
   languageName: node
   linkType: hard
 
