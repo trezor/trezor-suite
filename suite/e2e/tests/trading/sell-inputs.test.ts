@@ -1,5 +1,6 @@
 import { messages } from '@suite/intl';
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
 
@@ -91,9 +92,11 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect
                     .soft(async () => {
                         const resultingFee = await tradingPage.fees.maxFee.innerText();
-                        const maxValue = (
-                            parseFloat(bitcoinBalance) - parseFloat(resultingFee)
-                        ).toString();
+                        // Exact satoshi amounts: in float the result lands just under the true
+                        // value, and the eight-decimal cap then truncates it to a different one.
+                        const maxValue = new BigNumber(bitcoinBalance)
+                            .minus(new BigNumber(resultingFee))
+                            .toFixed();
                         await expect(tradingPage.inputs.cryptoAmount).toHaveValue(
                             localizeNumber(maxValue, 'en-US', 0, 8),
                         );
