@@ -17,7 +17,7 @@ export enum RootStackRoutes {
     EarnConsents = 'EarnConsents',
     StakingTransactionDataReview = 'StakingTransactionDataReview',
     StakingTransactionComplete = 'StakingTransactionComplete',
-    ClaimReview = 'ClaimReview',
+    StakingClaimReview = 'StakingClaimReview',
     DevUtils = 'DevUtils',
     MessageSystemManager = 'MessageSystemManager',
     AccountSettings = 'AccountSettings',
