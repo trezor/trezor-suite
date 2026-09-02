@@ -64,6 +64,7 @@ export interface AccountInfoParams {
         seq: number;
     };
     tokenAccountsPubKeys?: string[]; // solana only, token accounts to fetch txids for
+    stellarContractTokens?: string[]; // stellar only, contract ids of SEP-41 tokens the user watches
     protocols?: 'erc4626'[]; // protocols to include in the response (e.g. 'erc4626')
     confirmedNonce?: boolean; // blockbook only (EVM), additionally fetch the confirmed (mined-only) nonce
     privatePending?: PrivatePendingParams; // blockbook only (EVM), wallet's in-flight (locally pending) txs

@@ -33,6 +33,7 @@ import {
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
     stablecoinYieldReducer,
+    stellarContractTokensReducer,
     walletSettingsPersistedWhitelist,
 } from '@suite-common/wallet-core';
 // Suite Native has circular in @suite-native/test-utils -> @suite-native/state -> ... -> @suite-native/test-utils
@@ -280,11 +281,12 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         trading: tradingPersistedReducer,
         settings: walletSettingsPersistedReducer,
         formDrafts: formDraftReducer,
+        stellarContractTokens: stellarContractTokensReducer,
     });
 
     const walletPersistedReducer = preparePersistReducer({
         reducer: walletReducers,
-        persistedKeys: ['accounts', 'transactions'],
+        persistedKeys: ['accounts', 'transactions', 'stellarContractTokens'],
         key: 'wallet',
         version: 4,
         migrations: {

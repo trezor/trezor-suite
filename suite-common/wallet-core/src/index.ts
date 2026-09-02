@@ -100,6 +100,7 @@ export { submitTronWithdrawThunk } from './stake/tron/actions/withdraw/submitWit
 export { composeTronClaimFeeLevelsThunk } from './stake/tron/actions/claim/composeClaim';
 export { submitTronClaimThunk } from './stake/tron/actions/claim/submitClaim';
 export * from './stake/tron/tronStakeTypes';
+export * from './token/stellarContractTokensSlice';
 export * from './token/stellarTokenThunks';
 export * from './tokens/tokenSelectors';
 export * from './tokens/tokenUtils';
