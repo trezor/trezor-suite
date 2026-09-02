@@ -30,10 +30,10 @@ import {
     prepareFiatRatesReducer,
     preparePhishingReducer,
     prepareStakeReducer,
+    prepareStellarContractTokensReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
     stablecoinYieldReducer,
-    stellarContractTokensReducer,
     walletSettingsPersistedWhitelist,
     yieldReducer,
 } from '@suite-common/wallet-core';
@@ -98,6 +98,7 @@ const deviceReducer = prepareDeviceReducer(extraDependencies);
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
+const stellarContractTokensReducer = prepareStellarContractTokensReducer(extraDependencies);
 const tradingReducer = tradingSlice.prepareReducer(extraDependencies);
 const stakeReducer = prepareStakeReducer(extraDependencies);
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
