@@ -132,9 +132,11 @@ export const recomposeAndSignTxThunk = createThunk<
 
         // Token is being used for approval transactions unless on firmware < 2.9.0.
         // Otherwise if transactionData is present, token is not used as details are in the transactionData.
+        // The exception is Solana, where token is needed for fee compose to correctly treat the transfer as token-based (fee-only in native SOL).
         const shouldIncludeToken =
             !transactionData ||
-            (isApprovalFlowSupported(device) && isEvmApprovalTx(transactionData));
+            (isApprovalFlowSupported(device) && isEvmApprovalTx(transactionData)) ||
+            network.networkType === 'solana';
 
         // prepare the fee levels, set custom values from composed
         // WORKAROUND: sendFormEthereumActions and sendFormRippleActions use form outputs instead of composed transaction data
