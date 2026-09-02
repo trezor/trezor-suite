@@ -9,6 +9,7 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest",
         "format": "prettier --write './**/*.ts'",
         "orval": "orval --config ./orval.config.ts",
         "api:generate": "yarn orval",
@@ -23,6 +24,7 @@
         "zod": "4.3.6"
     },
     "devDependencies": {
+        "@suite-common/wallet-config": "workspace:*",
         "orval": "8.19.0",
         "prettier": "^3.9.6"
     }

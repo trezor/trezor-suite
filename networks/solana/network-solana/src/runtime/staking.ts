@@ -93,12 +93,16 @@ export const getSolanaStakingData = async (
                 if (stakingProvider === 'everstake' && !isEverStake) return;
                 if (stakingProvider === 'non-everstake' && isEverStake) return;
 
+                const activationEpoch = fields[1]?.delegation?.activationEpoch;
+
                 return {
                     rentExemptReserve: fields[0]?.rentExemptReserve.toString(),
                     stake: fields[1]?.delegation?.stake.toString(),
                     status: stakeState,
                     isEverStake,
                     voterPubkey,
+                    activationEpoch:
+                        activationEpoch !== undefined ? Number(activationEpoch) : undefined,
                 };
             }
         })

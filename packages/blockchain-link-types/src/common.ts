@@ -10,6 +10,7 @@ export interface SolanaStakingAccount {
     stake?: string;
     rentExemptReserve: string;
     voterPubkey?: string;
+    activationEpoch?: number;
 }
 
 export type TokenStandard =
