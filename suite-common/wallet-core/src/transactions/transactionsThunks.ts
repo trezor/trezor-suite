@@ -60,6 +60,10 @@ import { type FeesRootState, selectRawNetworkFeeInfo } from '../fees/feesReducer
 import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
 import { type SendRootState } from '../send/sendFormReducer';
 import { selectSendSignedTx } from '../send/sendFormSelectors';
+import {
+    type StellarContractTokensRootState,
+    selectStellarContractTokens,
+} from '../token/stellarContractTokensSlice';
 
 /**
  * Replace existing transaction in the reducer (RBF)
@@ -574,6 +578,7 @@ type FetchTransactionsPageThunkParams = {
 
 type FetchTransactionsPageThunkState = AccountsRootState &
     BlockchainRootState &
+    StellarContractTokensRootState &
     TransactionsRootState;
 
 export const fetchTransactionsPageThunk = createThunk<
@@ -618,6 +623,12 @@ export const fetchTransactionsPageThunk = createThunk<
             // if back on first page, the marker is reset
             ...(marker && !isFirstPage ? { marker } : {}),
             suppressBackupWarning: true,
+            // The response replaces account.tokens wholesale, so without the watched contracts
+            // this call would wipe the user's Soroban contract tokens from the account.
+            stellarContractTokens:
+                account.networkType === 'stellar'
+                    ? selectStellarContractTokens(getState(), account.key)
+                    : undefined,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
             gap:
                 account.networkType === 'bitcoin'
