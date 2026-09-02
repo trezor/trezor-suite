@@ -2,12 +2,13 @@
 
 show_help() {
     cat << EOF
-Usage: $(basename "$0") PR [PLATFORM]
+Usage: $(basename "$0") [PR] [PLATFORM]
+       $(basename "$0") [PLATFORM]
 
 Generate a Slack-formatted PR message with stats and copy it to clipboard.
 
 PR:
-    GitHub pull request number or URL
+    GitHub pull request number or URL. Uses the current branch when omitted.
 
 PLATFORM options:
     mobile, m       Use mobile icon (:iphone:)
@@ -20,6 +21,8 @@ Environment variables:
     DEFAULT_SLACK_PR_ICON    Override the default icon (e.g., ":rocket:")
 
 Examples:
+    $(basename "$0")
+    $(basename "$0") mobile
     $(basename "$0") 12345
     $(basename "$0") 12345 mobile
     $(basename "$0") https://github.com/trezor/trezor-suite/pull/12345 m
@@ -28,6 +31,7 @@ Examples:
 Requirements:
     - GitHub CLI (gh) must be installed and authenticated
     - A PR number must be used from within its GitHub repository
+    - When PR is omitted, the current branch must have a pull request
 
 EOF
 }
@@ -125,20 +129,41 @@ if [[ "$1" == "--help" || "$1" == "-h" ]]; then
     exit 0
 fi
 
-if [[ -z "$1" ]]; then
-    echo -e "\033[0;31mError: A PR number or URL is required.\033[0m
-Use -h option for more info." >&2
-    exit 1
-fi
-
 # Input and environment checks
 check_dependencies
 check_gh_available
 
 PR_REFERENCE="$1"
+PLATFORM="$2"
+
+case "$1" in
+    mobile | m | common | c | desktop | d | yanas | y)
+        PR_REFERENCE=""
+        PLATFORM="$1"
+        ;;
+esac
+
+if [[ -z "$PR_REFERENCE" ]]; then
+    CURRENT_BRANCH=$(git branch --show-current 2>/dev/null)
+
+    if [[ -z "$CURRENT_BRANCH" ]]; then
+        echo -e "\033[0;31mError: A PR number or URL is required when no branch is checked out.\033[0m
+Use -h option for more info." >&2
+        exit 1
+    fi
+
+    if [[ "$CURRENT_BRANCH" == "develop" || "$CURRENT_BRANCH" == "main" ]]; then
+        echo -e "\033[0;31mError: You are on the '$CURRENT_BRANCH' branch.
+Provide a PR number or URL, or switch to a feature/PR branch.\033[0m
+Use -h option for more info." >&2
+        exit 1
+    fi
+
+    PR_REFERENCE="$CURRENT_BRANCH"
+fi
 
 # Determine platform icon
-ICON=$(get_platform_icon "$2")
+ICON=$(get_platform_icon "$PLATFORM")
 
 if ! PR_JSON=$(gh pr view "$PR_REFERENCE" --json title,changedFiles,additions,deletions,url 2>&1); then
     echo -e "\033[0;31mError: Failed to fetch PR information.
