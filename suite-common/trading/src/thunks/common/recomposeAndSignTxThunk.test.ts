@@ -1,4 +1,5 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
+import { type ExchangeTrade } from 'invity-api';
 
 import { type DeviceReducerState, prepareDeviceReducer } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
@@ -12,12 +13,14 @@ import {
     composeSendFormTransactionFeeLevelsThunk,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
-import { type Account, type FeesState } from '@suite-common/wallet-types';
+import { type Account, type FeesState, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 
 import { accountBtc } from '../../__fixtures__/utils';
+import { exchangeInitialState } from '../../reducers/exchangeReducer';
 import { type TradingState, initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
+import { reportTradingFundsError } from '../../utils/reportTradingFundsError';
 
 import { tradingThunks } from './index';
 
@@ -93,6 +96,11 @@ const fees: FeesState = {
 
 jest.mock('./createPaymentRequestsThunk', () => ({
     createPaymentRequestsThunk: jest.fn(),
+}));
+
+jest.mock('../../utils/reportTradingFundsError', () => ({
+    ...jest.requireActual('../../utils/reportTradingFundsError'),
+    reportTradingFundsError: jest.fn(),
 }));
 
 const mockedSuiteReducer = createReducer(
@@ -1111,5 +1119,82 @@ describe('recomposeAndSignTxThunk', () => {
             paymentRequests: [],
         });
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+    });
+
+    describe('funds error reporting', () => {
+        const selectedQuote: ExchangeTrade = { exchange: 'lifi' };
+
+        const dispatchWithComposeError = async (composedLevels: PrecomposedLevels) => {
+            const { store, account, tradingFormState, mockSignAndPushSendFormTransaction } =
+                getMocks({
+                    exchange: { ...exchangeInitialState, selectedQuote },
+                });
+
+            (
+                composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock
+            ).mockImplementationOnce(
+                createThunk(
+                    composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                    (_, { fulfillWithValue }) => fulfillWithValue(composedLevels),
+                ),
+            );
+
+            return await store.dispatch(
+                tradingThunks.recomposeAndSignTxThunk({
+                    account,
+                    address: 'address',
+                    amount: '0.1',
+                    tradingFormState,
+                    signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+                }),
+            );
+        };
+
+        it('reports the confirm-time funds error without any confidential value', async () => {
+            const response = await dispatchWithComposeError({
+                normal: {
+                    type: 'error',
+                    error: 'AMOUNT_IS_NOT_ENOUGH',
+                    errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
+                },
+                low: {
+                    type: 'nonfinal',
+                    fee: '1',
+                    feePerByte: '2',
+                    feeLimit: '480000',
+                    max: undefined,
+                    bytes: 0,
+                    totalSpent: '1',
+                    inputs: [],
+                },
+            });
+
+            expect(response.meta.requestStatus).toBe('rejected');
+            expect(reportTradingFundsError).toHaveBeenCalledTimes(1);
+
+            const [report] = jest.mocked(reportTradingFundsError).mock.calls[0]!;
+
+            expect(report).toMatchObject({
+                composeError: 'AMOUNT_IS_NOT_ENOUGH',
+                tradeType: 'exchange',
+                provider: 'lifi',
+                required: { feeLimit: '480000' },
+                reserved: { feeLimit: '1000' },
+            });
+            expect(JSON.stringify(report)).not.toContain(accountBtc.descriptor);
+            expect(JSON.stringify(report)).not.toContain('0.1');
+        });
+
+        it('does not report a compose error that is not about funds', async () => {
+            await dispatchWithComposeError({
+                normal: {
+                    type: 'error',
+                    error: 'AMOUNT_IS_TOO_LOW',
+                    errorMessage: { id: 'AMOUNT_IS_TOO_LOW' },
+                },
+            });
+
+            expect(reportTradingFundsError).toHaveBeenCalledTimes(0);
+        });
     });
 });
