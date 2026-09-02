@@ -12,6 +12,7 @@ import { useDispatch } from '@suite-common/redux-utils';
 import { Modal } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
+import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';
 import { FirmwareInstallationProgressCheck } from 'src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
 import { useSelector } from 'src/hooks/suite';
 
@@ -122,6 +123,7 @@ export const FirmwareModal = ({
 
     return (
         <Modal.Backdrop onClick={isCancelable ? handleClose : undefined}>
+            <ConnectionGlobalModalManager />
             {getContent()}
         </Modal.Backdrop>
     );
