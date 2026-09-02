@@ -52,6 +52,7 @@ export * from './utils/exchange/composeDexTxSimulationAction';
 export * from './utils/exchange/exchangeUtils';
 export * from './utils/exchange/getExchangeIssue';
 export * from './utils/exchange/getSimulatedReceiveAmount';
+export * from './utils/exchange/normalizeDexTransactionData';
 export * from './utils/exchange/receiveAddressCoherence';
 export * from './utils/exchange/resolveExchangeTradeError';
 export * from './utils/exchange/signDataUtils';

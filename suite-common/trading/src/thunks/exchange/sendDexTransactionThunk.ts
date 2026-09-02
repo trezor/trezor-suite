@@ -16,6 +16,7 @@ import {
 } from '../../selectors/tradingSelectors';
 import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
+import { normalizeDexTransactionData } from '../../utils/exchange/normalizeDexTransactionData';
 import { tradingThunks } from '../common';
 import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
 import { type RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
@@ -82,21 +83,19 @@ export const sendDexTransactionThunk = createThunk<
             receiveAccountKey,
         });
 
-        let serializedTx = selectedQuote.dexTx.data;
-        if (account.networkType === 'solana' && serializedTx) {
-            // let's assume data obtained from trading api are always base64
-            // convert from base64 to hex (base16)
-            try {
-                const transactionBuffer = Buffer.from(serializedTx, 'base64');
-                serializedTx = transactionBuffer.toString('hex');
-            } catch (error) {
-                console.error(error);
+        let serializedTx: string;
+        try {
+            serializedTx = normalizeDexTransactionData({
+                data: selectedQuote.dexTx.data,
+                networkType: account.networkType,
+            });
+        } catch (error) {
+            console.error(error);
 
-                return rejectWithValue({
-                    type: 'error',
-                    error: { id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA' },
-                });
-            }
+            return rejectWithValue({
+                type: 'error',
+                error: { id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA' },
+            });
         }
 
         const recomposeInputs = buildRecomposeInputsFromTrade({

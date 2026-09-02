@@ -10,7 +10,9 @@ import {
     getTradingFormState,
     isExchangeTrade,
     isSellFiatTrade,
+    normalizeDexTransactionData,
 } from '@suite-common/trading';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState, type FormStateTrading } from '@suite-common/wallet-types';
 import { QuoteError } from '@suite-native/trading-quote-utils';
@@ -25,6 +27,7 @@ interface CreateFormStateForSendFormParams {
     >;
     extraField?: string;
     isSlip24Active?: boolean;
+    networkType: NetworkType;
     sendAccountKey: AccountKey | undefined;
     receiveAccountKey?: AccountKey | undefined;
 }
@@ -38,6 +41,7 @@ export const createFormStateForSendForm = ({
     feeLevel = { label: 'normal', feePerUnit: '' },
     extraField,
     isSlip24Active = false,
+    networkType,
     sendAccountKey,
     receiveAccountKey,
 }: CreateFormStateForSendFormParams): FormState => {
@@ -69,7 +73,10 @@ export const createFormStateForSendForm = ({
         // DEX quotes carry transaction data for correct fee estimation
         if (exchangeQuote.isDex && exchangeQuote.dexTx) {
             outputAddress = exchangeQuote.dexTx.to;
-            transactionData = exchangeQuote.dexTx.data;
+            transactionData = normalizeDexTransactionData({
+                data: exchangeQuote.dexTx.data,
+                networkType,
+            });
             ethereumAdjustGasLimit = ETHEREUM_ADJUST_GAS_LIMIT;
         }
 
