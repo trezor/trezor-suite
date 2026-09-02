@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
-import { selectLanguage } from '@suite/settings';
-import { isSignValuePositive } from '@suite-common/formatters';
+import { isSignValuePositive, useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
 import {
     type NetworkSymbolExtended,
@@ -10,25 +9,23 @@ import {
     getNetworkOptional,
 } from '@suite-common/wallet-config';
 import { LOW_BALANCE_THRESHOLD } from '@suite-common/wallet-constants';
-import {
-    type AmountUnit,
-    formatCoinBalance,
-    localizeNumber,
-    networkAmountToSmallestUnit,
-} from '@suite-common/wallet-utils';
+import { type AmountUnit } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { Sign } from 'src/components/suite/Sign';
-import { useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
+
+const MAX_TOKEN_DISPLAYED_DECIMALS = 18;
 
 export interface FormattedCryptoAmountProps {
     value?: string | number | AmountUnit; // Todo: remove `string | number`, its for Back Compatibility only
     symbol?: NetworkSymbolExtended;
     contractAddress?: string | null;
-    isBalance?: boolean;
+    /** Compact formatting, for a balance shown next to its fiat value. */
+    isCompact?: boolean;
+    tokenDecimals?: number;
     showApproximation?: boolean;
     signValue?: SignValue;
     signGrayscale?: boolean;
@@ -46,7 +43,8 @@ export const FormattedCryptoAmount = ({
     value, // expects a value in full units (BTC not sats)
     symbol,
     contractAddress, // include contractAddress whenever the symbol is an token
-    isBalance,
+    isCompact = false,
+    tokenDecimals,
     showApproximation = false,
     signValue,
     signGrayscale,
@@ -56,7 +54,7 @@ export const FormattedCryptoAmount = ({
     className,
     'data-testid': dataTest,
 }: FormattedCryptoAmountProps) => {
-    const locale = useSelector(selectLanguage);
+    const { CryptoAmountFormatter } = useFormatters();
 
     const { areSatsDisplayed } = useBitcoinAmountUnit();
 
@@ -72,35 +70,49 @@ export const FormattedCryptoAmount = ({
     }
 
     const lowerCaseSymbol = symbol?.toLowerCase();
+    // A token's ticker can match a network symbol (`pol`, `op`, `arb`), so only the contract
+    // address tells the two apart.
+    const isToken = contractAddress !== undefined && contractAddress !== null;
     const {
         features: networkFeatures,
         testnet: isTestnet,
         symbol: networkSymbol,
-    } = getNetworkOptional(lowerCaseSymbol) ?? {};
+        decimals: networkDecimals,
+    } = (isToken ? undefined : getNetworkOptional(lowerCaseSymbol)) ?? {};
 
     const areSatsSupported = !!networkFeatures?.includes('amount-unit');
 
-    let formattedValue = value;
     let formattedSymbol = symbol && getDisplaySymbol(symbol, contractAddress);
 
     const isSatoshis = areSatsSupported && areSatsDisplayed;
 
-    // convert to satoshis if needed
     if (isSatoshis && networkSymbol) {
-        formattedValue = networkAmountToSmallestUnit(String(value), networkSymbol);
-
         formattedSymbol = isTestnet ? `sat ${formattedSymbol}` : 'sat';
     }
 
-    // format truncation + locale (used for balances) or just locale
-    if (isBalance && !isAmountLow) {
-        formattedValue = formatCoinBalance(String(formattedValue), locale);
-    } else {
-        formattedValue = localizeNumber(formattedValue, locale);
-    }
+    const formatterContext = {
+        symbol: networkSymbol,
+        smallestUnitsOverride: isSatoshis,
+        withSymbol: false,
+        isEllipsisAppended: !isCompact,
+        // Stated token decimals win: the symbol may resolve to an unrelated network.
+        maxDisplayedDecimals: isCompact
+            ? undefined
+            : (tokenDecimals ?? networkDecimals ?? MAX_TOKEN_DISPLAYED_DECIMALS),
+        formatStyle: isCompact ? 'compact-balance' : 'exact',
+        tokenDecimals,
+    } as const;
 
-    // prefix balance with < if it's below threshold
-    formattedValue = isAmountLow ? `< ${LOW_BALANCE_THRESHOLD}` : formattedValue;
+    let formattedValue = CryptoAmountFormatter.format(String(value), formatterContext);
+
+    // Formatted, not hand-built, so the threshold is localized and in the unit shown beside it.
+    if (isAmountLow && !isCompact) {
+        formattedValue = `<${CryptoAmountFormatter.format(LOW_BALANCE_THRESHOLD, {
+            ...formatterContext,
+            maxDisplayedDecimals: undefined,
+            formatStyle: 'exact',
+        })}`;
+    }
 
     // output as a string, mostly for compatibility with graphs
     if (isRawString) {

@@ -60,6 +60,15 @@ describe('localizeNumber', () => {
         );
     });
 
+    it('truncates to maxDecimals instead of rounding up', () => {
+        expect(localizeNumber('1.999', 'en-US', 0, 2)).toStrictEqual('1.99');
+        expect(localizeNumber('0.999999', 'en-US', 0, 5)).toStrictEqual('0.99999');
+        expect(localizeNumber('-1.999', 'en-US', 0, 2)).toStrictEqual('-1.99');
+        expect(localizeNumber('999.9', 'en-US', 0, 0)).toStrictEqual('999');
+        expect(localizeNumber('1.999', 'en-US', 2, 2)).toStrictEqual('1.99');
+        expect(localizeNumber('2.001', 'en-US', 2, 2)).toStrictEqual('2.00');
+    });
+
     it('formats BigNumber decimals', () => {
         expect(localizeNumber(new BigNumber('1112222222222233333333334444444444'))).toStrictEqual(
             '1,112,222,222,222,233,333,333,334,444,444,444',

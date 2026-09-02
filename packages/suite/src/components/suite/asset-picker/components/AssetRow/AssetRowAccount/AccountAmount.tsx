@@ -29,7 +29,7 @@ export function AccountAmount({
             typographyStyle={isFiatPrimary ? 'body-sm' : 'body-md'}
             isDisabled={isDisabled}
         >
-            <FormattedCryptoAmount symbol={account.symbol} value={accountBalance} isBalance />
+            <FormattedCryptoAmount symbol={account.symbol} value={accountBalance} isCompact />
         </Text>
     );
 
