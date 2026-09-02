@@ -7,12 +7,9 @@ import {
 } from '@suite-common/token-definitions';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type StellarTokenInfo } from '@suite-common/wallet-types';
+import { lazyStellarTokenMetadata as lazyTokenMetadata } from '@suite-common/wallet-utils';
 import { type TokenDetailByMint } from '@trezor/blockchain-link-types';
-import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
 import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
-import { createLazy } from '@trezor/utils';
-
-export const lazyTokenMetadata = createLazy(getTokenMetadata);
 
 export const useInactiveStellarTokens = (accountKey?: AccountKey) => {
     const [tokenMetadata, setTokenMetadata] = useState<TokenDetailByMint | null>(
