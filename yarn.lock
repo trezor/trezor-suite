@@ -13945,7 +13945,6 @@ __metadata:
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
-    "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"

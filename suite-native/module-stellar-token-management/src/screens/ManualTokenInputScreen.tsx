@@ -7,7 +7,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { useDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { resolveStellarAssetFromContractId } from '@suite-common/wallet-utils';
+import { resolveStellarContractId } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, Card, Input, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -21,7 +21,6 @@ import {
 } from '@suite-native/navigation';
 import stellar from '@trezor/network-stellar/runtime';
 
-import { lazyTokenMetadata } from '../hooks/useInactiveStellarTokens';
 import { composeStellarTrustlineFeesThunk } from '../thunks';
 
 // A Stellar Asset Contract id is 56 characters, an asset code at most 12
@@ -79,10 +78,7 @@ export const ManualTokenInputScreen = () => {
                 return;
             }
 
-            const resolved = await resolveStellarAssetFromContractId(
-                assetCode,
-                await lazyTokenMetadata.getOrInit(),
-            );
+            const resolved = await resolveStellarContractId(assetCode);
             if (isStale) return;
 
             setIsContractIdUnknown(!resolved);
@@ -92,7 +88,11 @@ export const ManualTokenInputScreen = () => {
             }
         };
 
-        fillFromContractId();
+        // A failed definitions fetch cannot resolve the id, so it surfaces the same way as an
+        // unknown contract instead of dead-ending silently with a disabled button.
+        fillFromContractId().catch(() => {
+            if (!isStale) setIsContractIdUnknown(true);
+        });
 
         return () => {
             isStale = true;
