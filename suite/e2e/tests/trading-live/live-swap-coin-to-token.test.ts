@@ -1,8 +1,10 @@
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const tenMinutes = 10 * 60 * 1000;
 const sendAmount = '0.053329';
@@ -75,75 +77,81 @@ test.describe(
             });
         });
 
-        test('Swap Solana to USDC', async ({ tradingPage, page, devicePrompt }) => {
-            await test.step('Fill in a Swap form', async () => {
-                await tradingPage.fillSwapForm({
-                    amount: sendAmount,
-                    sellAsset: {
-                        searchFilter: 'Solana #1',
-                        networkSymbol: 'sol',
-                    },
-                    buyAsset: {
-                        searchFilter: 'USDC',
-                        networkFilter: 'base',
-                        assetCryptoId: getCryptoId(
-                            asNetworkSymbol('base'),
-                            '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-                        ),
-                    },
+        test(
+            'Swap Solana to USDC',
+            { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+            async ({ tradingPage, page, devicePrompt }) => {
+                await test.step('Fill in a Swap form', async () => {
+                    await tradingPage.fillSwapForm({
+                        amount: sendAmount,
+                        sellAsset: {
+                            searchFilter: 'Solana #1',
+                            networkSymbol: 'sol',
+                        },
+                        buyAsset: {
+                            searchFilter: 'USDC',
+                            networkFilter: 'base',
+                            assetCryptoId: getCryptoId(
+                                asNetworkSymbol('base'),
+                                '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+                            ),
+                        },
 
-                    selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'base');
-                    },
-                });
-            });
-
-            let receiveAmount: string;
-
-            await test.step('Confirm the Swap trade', async () => {
-                await expect(tradingPage.quotes.bestOfferAmount).toHaveText(/^\d+(\.\d+)?\s+USDC$/);
-                const receiveAmountUnformated =
-                    (await tradingPage.quotes.bestOfferAmount.innerText()).split(' ')[0] ?? '';
-                receiveAmount = localizeNumber(receiveAmountUnformated);
-                await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
-            });
-
-            await test.step('Initiate send', async () => {
-                await tradingPage.confirmation.initiateSendConfirmation();
-                await expect(devicePrompt.header.accountLabel).toHaveText(accountLabel);
-                await expect(devicePrompt.outputValueOf('address')).toHaveValidAddress('sol');
-
-                await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
-                    formattedSendAmount,
-                );
-                await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
-            });
-
-            await test.step('Send crypto to provider', async () => {
-                await devicePrompt.sendButton.click();
-
-                await tradingPage.verifySwapToast({
-                    sendAccount: accountLabel,
-                    receiveAccount: 'Base #1',
-                    sendAmount,
-                    receiveAmount,
+                        selectReceiveAddress: async () => {
+                            await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'base');
+                        },
+                    });
                 });
 
-                await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                    'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
-                    { timeout: tenMinutes },
-                );
-                await expect(tradingPage.confirmation.cryptoAmount.first()).toHaveText(
-                    formattedSendAmount,
-                );
-            });
+                let receiveAmount: string;
 
-            await test.step('Return to account swap form', async () => {
-                await tradingPage.backToAccountButton('Swap').click();
-                await expect(
-                    page.getByTestId('@trading/menu/wallet-trading-transactions'),
-                ).toBeVisible();
-            });
-        });
+                await test.step('Confirm the Swap trade', async () => {
+                    await expect(tradingPage.quotes.bestOfferAmount).toHaveText(
+                        /^\d+(\.\d+)?\s+USDC$/,
+                    );
+                    const receiveAmountUnformated =
+                        (await tradingPage.quotes.bestOfferAmount.innerText()).split(' ')[0] ?? '';
+                    receiveAmount = localizeNumber(receiveAmountUnformated);
+                    await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
+                });
+
+                await test.step('Initiate send', async () => {
+                    await tradingPage.confirmation.initiateSendConfirmation();
+                    await expect(devicePrompt.header.accountLabel).toHaveText(accountLabel);
+                    await expect(devicePrompt.outputValueOf('address')).toHaveValidAddress('sol');
+
+                    await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
+                        formattedSendAmount,
+                    );
+                    await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
+                });
+
+                await test.step('Send crypto to provider', async () => {
+                    await devicePrompt.sendButton.click();
+
+                    await tradingPage.verifySwapToast({
+                        sendAccount: accountLabel,
+                        receiveAccount: 'Base #1',
+                        sendAmount,
+                        receiveAmount,
+                    });
+
+                    await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                        'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
+                        { timeout: tenMinutes },
+                    );
+                    await expect(tradingPage.confirmation.cryptoAmount.first()).toHaveText(
+                        formattedSendAmount,
+                    );
+                });
+
+                await test.step('Return to account swap form', async () => {
+                    await tradingPage.backToAccountButton('Swap').click();
+                    await expect(
+                        page.getByTestId('@trading/menu/wallet-trading-transactions'),
+                    ).toBeVisible();
+                });
+            },
+        );
     },
 );

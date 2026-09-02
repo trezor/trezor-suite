@@ -1,6 +1,8 @@
 import TrezorConnect from '@trezor/connect-web';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe(
     'TrezorConnect.ethereumSignTransaction',
@@ -24,37 +26,37 @@ test.describe(
             });
         });
 
-        test('TrezorConnect.ethereumSignTransaction', async ({
-            connectPermissionsModal,
-            device,
-            page,
-        }) => {
-            const res = TrezorConnect.ethereumSignTransaction({
-                path: "m/44'/60'/0'/0/0",
-                transaction: {
-                    nonce: '0x0',
-                    gasPrice: '0x14',
-                    gasLimit: '0x14',
-                    to: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-                    chainId: 1,
-                    value: '0x0',
-                    data: '0xa9059cbb000000000000000000000000D6971aabeDC7f2A8113679199FE374aE1B1Aea96000000000000000000000000000000000000000000000000000000000097f6b2',
-                },
-            });
+        test(
+            'TrezorConnect.ethereumSignTransaction',
+            { annotation: createTestAnnotation({ stream: TestStream.Connect }) },
+            async ({ connectPermissionsModal, device, page }) => {
+                const res = TrezorConnect.ethereumSignTransaction({
+                    path: "m/44'/60'/0'/0/0",
+                    transaction: {
+                        nonce: '0x0',
+                        gasPrice: '0x14',
+                        gasLimit: '0x14',
+                        to: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                        chainId: 1,
+                        value: '0x0',
+                        data: '0xa9059cbb000000000000000000000000D6971aabeDC7f2A8113679199FE374aE1B1Aea96000000000000000000000000000000000000000000000000000000000097f6b2',
+                    },
+                });
 
-            await connectPermissionsModal.confirmButton.click();
+                await connectPermissionsModal.confirmButton.click();
 
-            await page
-                .getByTestId('@prompts/confirm-on-device/step/0/active')
-                .waitFor({ state: 'visible' });
-            await device.pressContinue();
+                await page
+                    .getByTestId('@prompts/confirm-on-device/step/0/active')
+                    .waitFor({ state: 'visible' });
+                await device.pressContinue();
 
-            await page
-                .getByTestId('@prompts/confirm-on-device/step/1/active')
-                .waitFor({ state: 'visible' });
-            await device.pressYes();
+                await page
+                    .getByTestId('@prompts/confirm-on-device/step/1/active')
+                    .waitFor({ state: 'visible' });
+                await device.pressYes();
 
-            expect(await res).toMatchObject({ success: true });
-        });
+                expect(await res).toMatchObject({ success: true });
+            },
+        );
     },
 );

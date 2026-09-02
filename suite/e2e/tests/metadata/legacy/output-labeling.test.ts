@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { OutputLabelId } from '../../../support/enums/outputLabelId';
 import { expect, test } from '../../../support/fixtures';
@@ -21,6 +21,7 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
                 testCase: 'Verify metadata output labeling functionality with Dropbox provider.',
                 category: TestCategory.Settings,
                 priority: TestPriority.High,
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, onboardingPage, metadataPage, settingsPage, walletPage }) => {

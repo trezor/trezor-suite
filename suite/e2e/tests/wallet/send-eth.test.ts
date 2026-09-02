@@ -1,8 +1,10 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { TestStream } from '@trezor/e2e-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const sendAddress = '0xdcaB74E62b9D08a9f8Fa4A3Ccb5c46AE039C9d7C';
@@ -29,95 +31,99 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1'] }, () => {
         await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
     });
 
-    test('User can initiate ethereum sending', async ({
-        device,
-        devicePrompt,
-        walletPage,
-        tradingPage,
-    }) => {
-        await test.step('Fill in a Send form', async () => {
-            await walletPage.openSendFormButton.click();
-            // Race condition 1:5, if input is filled before form completely loads then
-            // input will be cleared and test will fail. As a workaround we wait for fees to be loaded.
-            // Seems to be resolved as fees do not load until form is filled
-            //await tradingPage.fees.expectEthereumFeeCalculated();
-            await tradingPage.sendAddressInput.fill(sendAddress);
-            await tradingPage.sendAmountInput.fill(sendAmount);
-            await tradingPage.fees.setEthereumCustomFees({
-                gasLimit,
-                maxFeePerGas,
-                maxPriorityFeePerGas,
-            });
-        });
-
-        const { ethereumMaximumFee, errorMessageMaxCalculation } =
-            tradingPage.fees.calculateEthereumMaxFee({
-                gasLimit,
-                maxFeePerGas,
+    test(
+        'User can initiate ethereum sending',
+        { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+        async ({ device, devicePrompt, walletPage, tradingPage }) => {
+            await test.step('Fill in a Send form', async () => {
+                await walletPage.openSendFormButton.click();
+                // Race condition 1:5, if input is filled before form completely loads then
+                // input will be cleared and test will fail. As a workaround we wait for fees to be loaded.
+                // Seems to be resolved as fees do not load until form is filled
+                //await tradingPage.fees.expectEthereumFeeCalculated();
+                await tradingPage.sendAddressInput.fill(sendAddress);
+                await tradingPage.sendAmountInput.fill(sendAmount);
+                await tradingPage.fees.setEthereumCustomFees({
+                    gasLimit,
+                    maxFeePerGas,
+                    maxPriorityFeePerGas,
+                });
             });
 
-        await test.step('Verify Recipient address', async () => {
-            await tradingPage.sendButton.click();
-            await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #1');
-            await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
-            await expect(device).toShowOnDisplay({
-                T3W1: {
-                    header: { title: 'Send' },
-                    body: [transformAddress(sendAddress, 'evmTetragrams')],
-                    actions: { right_button: 'Continue' },
-                },
-                T3T1: {
-                    header: { title: 'Address', subtitle: 'Recipient' },
-                    body: [transformAddress(sendAddress, 'evmTetragrams')],
-                },
-            });
-        });
+            const { ethereumMaximumFee, errorMessageMaxCalculation } =
+                tradingPage.fees.calculateEthereumMaxFee({
+                    gasLimit,
+                    maxFeePerGas,
+                });
 
-        await test.step('Verify Total including fee', async () => {
-            await devicePrompt.waitForPromptAndClick();
-            await expect(devicePrompt.header.gasLimitValue).toHaveText(gasLimit);
-            await expect(devicePrompt.header.feePerGasValue).toHaveText(`${maxFeePerGasRounded}`);
-            await expect(devicePrompt.header.priorityFeeValue).toHaveText(
-                `${maxPriorityFeePerGasRounded}`,
-            );
-            await expect(devicePrompt.cryptoAmountOf('amount')).toHaveText(sendAmount);
-            await expect(devicePrompt.cryptoAmountOf('fee'), errorMessageMaxCalculation).toHaveText(
-                ethereumMaximumFee,
-            );
-            const maxFeeWrapped = device.wrapText(`${ethereumMaximumFee} ETH`, {
-                isAmount: true,
+            await test.step('Verify Recipient address', async () => {
+                await tradingPage.sendButton.click();
+                await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #1');
+                await expect(devicePrompt.outputValueOf('address')).toHaveText(
+                    formattedSendAddress,
+                );
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [transformAddress(sendAddress, 'evmTetragrams')],
+                        actions: { right_button: 'Continue' },
+                    },
+                    T3T1: {
+                        header: { title: 'Address', subtitle: 'Recipient' },
+                        body: [transformAddress(sendAddress, 'evmTetragrams')],
+                    },
+                });
             });
-            await expect(device).toShowOnDisplay({
-                T3W1: {
-                    header: { title: 'Send' },
-                    body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
-                    actions: { right_button: 'Hold to sign' },
-                },
-                T3T1: {
-                    header: { title: 'Summary' },
-                    body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
-                },
-            });
-        });
 
-        await test.step('Verify Fee Info on emulator', async () => {
-            await device.openFeeInfo();
-            await expect(device).toShowOnDisplay({
-                T3W1: {
-                    header: { title: 'Fee info' },
-                    body: [
-                        ['Gas limit'],
-                        [`${gasLimit} units`],
-                        ['Max fee per gas'],
-                        [`${maxFeePerGas} Gwei`],
-                        ['Max priority fee'],
-                        [`${maxPriorityFeePerGas} Gwei`],
-                    ],
-                },
-                T3T1: {
-                    footer: undefined,
-                },
+            await test.step('Verify Total including fee', async () => {
+                await devicePrompt.waitForPromptAndClick();
+                await expect(devicePrompt.header.gasLimitValue).toHaveText(gasLimit);
+                await expect(devicePrompt.header.feePerGasValue).toHaveText(
+                    `${maxFeePerGasRounded}`,
+                );
+                await expect(devicePrompt.header.priorityFeeValue).toHaveText(
+                    `${maxPriorityFeePerGasRounded}`,
+                );
+                await expect(devicePrompt.cryptoAmountOf('amount')).toHaveText(sendAmount);
+                await expect(
+                    devicePrompt.cryptoAmountOf('fee'),
+                    errorMessageMaxCalculation,
+                ).toHaveText(ethereumMaximumFee);
+                const maxFeeWrapped = device.wrapText(`${ethereumMaximumFee} ETH`, {
+                    isAmount: true,
+                });
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
+                        actions: { right_button: 'Hold to sign' },
+                    },
+                    T3T1: {
+                        header: { title: 'Summary' },
+                        body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
+                    },
+                });
             });
-        });
-    });
+
+            await test.step('Verify Fee Info on emulator', async () => {
+                await device.openFeeInfo();
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Fee info' },
+                        body: [
+                            ['Gas limit'],
+                            [`${gasLimit} units`],
+                            ['Max fee per gas'],
+                            [`${maxFeePerGas} Gwei`],
+                            ['Max priority fee'],
+                            [`${maxPriorityFeePerGas} Gwei`],
+                        ],
+                    },
+                    T3T1: {
+                        footer: undefined,
+                    },
+                });
+            });
+        },
+    );
 });

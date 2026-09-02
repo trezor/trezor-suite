@@ -1,4 +1,7 @@
+import { TestStream } from '@trezor/e2e-utils';
+
 import { test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('LTC send form with mocked blockbook', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -20,19 +23,18 @@ test.describe('LTC send form with mocked blockbook', { tag: ['@T3W1', '@T3T1'] }
         });
     });
 
-    test('spend output originating from mimble-wimble peg out tx', async ({
-        page,
-        devicePrompt,
-        walletPage,
-        tradingPage,
-    }) => {
-        await walletPage.openAccount({ symbol: 'ltc', type: 'normal', atIndex: 0 });
-        await walletPage.openSendFormButton.click();
-        await page.getByTestId('@send/header-dropdown').click();
-        await page.getByTestId('@send/header-dropdown/broadcast').click();
-        await tradingPage.sendAddressInput.fill('ltc1q0lqwsyygg9frql6ujjfhevfculsxwledvv6yzc');
-        await page.getByTestId('outputs.0.setMax').click();
-        await tradingPage.sendButton.click();
-        await devicePrompt.waitForPromptAndConfirm();
-    });
+    test(
+        'spend output originating from mimble-wimble peg out tx',
+        { annotation: createTestAnnotation({ stream: TestStream.Network }) },
+        async ({ page, devicePrompt, walletPage, tradingPage }) => {
+            await walletPage.openAccount({ symbol: 'ltc', type: 'normal', atIndex: 0 });
+            await walletPage.openSendFormButton.click();
+            await page.getByTestId('@send/header-dropdown').click();
+            await page.getByTestId('@send/header-dropdown/broadcast').click();
+            await tradingPage.sendAddressInput.fill('ltc1q0lqwsyygg9frql6ujjfhevfculsxwledvv6yzc');
+            await page.getByTestId('outputs.0.setMax').click();
+            await tradingPage.sendButton.click();
+            await devicePrompt.waitForPromptAndConfirm();
+        },
+    );
 });

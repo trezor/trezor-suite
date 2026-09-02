@@ -1,3 +1,5 @@
+import { TestStream } from '@trezor/e2e-utils';
+
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 import { MetadataProvider } from '../../../support/mocks/metadataMock';
@@ -20,6 +22,7 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
         {
             annotation: createTestAnnotation({
                 testCase: 'Suite labeling handles malformed token error from Dropbox',
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, onboardingPage, settingsPage, metadataPage, walletPage, metadataMock }) => {
@@ -75,6 +78,7 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
         {
             annotation: createTestAnnotation({
                 testCase: 'Suite labeling handles GET retries from Dropbox',
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, onboardingPage, settingsPage, metadataPage, walletPage, metadataMock }) => {
@@ -141,6 +145,7 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
         {
             annotation: createTestAnnotation({
                 testCase: 'Suite labeling handles incomplete data from Dropbox',
+                stream: TestStream.Wallet,
             }),
         },
         async ({ page, onboardingPage, settingsPage, metadataPage, walletPage, metadataMock }) => {

@@ -31,7 +31,7 @@ test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@nightlyOnly
                 testCase: `Verify that the ${EventType.WalletConnectInit} event is triggered automatically when the application starts`,
                 category: TestCategory.General,
                 priority: TestPriority.Medium,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
             }),
         },
         async ({ analyticsHelper, page }) => {
@@ -58,7 +58,7 @@ test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@nightlyOnly
                 testCase: `Verify that ${EventType.WalletConnectProposalApproved} and related events are logged when the user confirms a WalletConnect proposal`,
                 category: TestCategory.General,
                 priority: TestPriority.Medium,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
             }),
         },
         async ({ settingsPage, analyticsHelper }) => {
@@ -94,7 +94,7 @@ test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@nightlyOnly
                 testCase: `Verify that ${EventType.WalletConnectProposalRejected} is logged when the user cancel a WalletConnect proposal`,
                 category: TestCategory.General,
                 priority: TestPriority.Medium,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
             }),
         },
         async ({ settingsPage, analyticsHelper }) => {

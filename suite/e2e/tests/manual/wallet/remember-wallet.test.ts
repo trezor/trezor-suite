@@ -29,7 +29,7 @@ test.describe.skip('Wallet remembering', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Wallets,
                 priority: TestPriority.High,
-                stream: TestStream.Engagement,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},

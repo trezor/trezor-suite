@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -16,6 +16,7 @@ test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
                 testCase: 'Verifies that a user can change all possible device settings.',
                 category: TestCategory.Settings,
                 priority: TestPriority.Medium,
+                stream: TestStream.Firmware,
             }),
         },
         async ({ page, device, settingsPage, devicePrompt }) => {
@@ -39,13 +40,17 @@ test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
         },
     );
 
-    test('Device Wipe', async ({ page, device }) => {
-        await page.getByTestId('@settings/device/open-wipe-modal-button').click();
-        await page.getByTestId('@wipe/wipe-button').click();
-        await page.getByTestId('@wipe/wipe-button').click();
-        await device.pressYes();
-        //TODO: Any verification?
-    });
+    test(
+        'Device Wipe',
+        { annotation: createTestAnnotation({ stream: TestStream.Firmware }) },
+        async ({ page, device }) => {
+            await page.getByTestId('@settings/device/open-wipe-modal-button').click();
+            await page.getByTestId('@wipe/wipe-button').click();
+            await page.getByTestId('@wipe/wipe-button').click();
+            await device.pressYes();
+            //TODO: Any verification?
+        },
+    );
 
     test(
         'Can change homescreen background in firmware >= 2.5.4',
@@ -55,6 +60,7 @@ test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
                     'Verifies that a user can change homescreen background in firmware >= 2.5.4',
                 category: TestCategory.Settings,
                 priority: TestPriority.Low,
+                stream: TestStream.Firmware,
             }),
         },
         async ({ settingsPage }) => {

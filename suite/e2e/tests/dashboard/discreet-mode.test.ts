@@ -1,7 +1,7 @@
 import { Locator } from '@playwright/test';
 
 import { events } from '@suite/analytics';
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -39,6 +39,7 @@ test.describe('Discreet Mode', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'Verify that enabling discreet mode hides balances across the dashboard and triggers the correct analytics event.',
                 category: TestCategory.Settings,
                 priority: TestPriority.High,
+                stream: TestStream.Growth,
             }),
         },
         async ({ analytics, assetsSection, dashboardPage, walletPage }) => {

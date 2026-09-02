@@ -15,7 +15,7 @@ test.describe.skip('Metadata - labels on non-Linux systems', { tag: ['@group=man
                 steps: ['Define me please.'],
                 category: TestCategory.NotCategorized,
                 priority: TestPriority.Medium,
-                stream: TestStream.Engagement,
+                stream: TestStream.Wallet,
                 osMatrix: [TestOsMatrix.Windows, TestOsMatrix.MacOSArm, TestOsMatrix.MacOSIntel],
             }),
         },

@@ -17,7 +17,7 @@ test.describe.skip('Reset application', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Settings,
                 priority: TestPriority.Medium,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
                 osMatrix: [
                     TestOsMatrix.Linux,
                     TestOsMatrix.Windows,

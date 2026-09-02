@@ -22,7 +22,7 @@ test.describe('Look up a BTC account', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can search for a BTC account.',
                 category: TestCategory.BTC,
                 priority: TestPriority.Medium,
-                stream: TestStream.Foundation,
+                stream: TestStream.Wallet,
             }),
         },
         async ({ dashboardPage, walletPage }) => {

@@ -1,4 +1,4 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
@@ -20,6 +20,7 @@ test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] 
                     'Verify that a user can successfully create a wallet during the onboarding process.',
                 category: TestCategory.Onboarding,
                 priority: TestPriority.Critical,
+                stream: TestStream.Growth,
             }),
         },
         async ({

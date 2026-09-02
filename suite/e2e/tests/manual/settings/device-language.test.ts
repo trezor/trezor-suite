@@ -19,6 +19,7 @@ test.describe.skip('Device language', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Settings,
                 priority: TestPriority.High,
+                stream: TestStream.Firmware,
             }),
         },
         async () => {},

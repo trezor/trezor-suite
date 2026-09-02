@@ -1,7 +1,9 @@
 import { mnemonic12Fixtures } from '@suite-common/e2e-evolu-client';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
+import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 const {
     accountSeed,
@@ -63,128 +65,133 @@ test.describe('Suite Sync - Update and Remove Labels', { tag: ['@T3W1', '@T3T1']
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 
-    test('Update and remove labels syncs correctly to relay', async ({
-        evoluClient,
-        dashboardPage,
-        walletPage,
-        metadataPage,
-    }) => {
-        await test.step('Enable Suite Sync and sync labels from relay', async () => {
-            await metadataPage.enableSuiteSync();
-            await expect
-                .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
-                .toHaveText(accountSeed.label, { timeout: 30_000 });
-        });
-
-        await test.step('Update account label', async () => {
-            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
-            await metadataPage.account.changeLabel({
-                accountId: AccountLabelId.BitcoinDefault1,
-                label: updatedAccountLabel,
+    test(
+        'Update and remove labels syncs correctly to relay',
+        { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+        async ({ evoluClient, dashboardPage, walletPage, metadataPage }) => {
+            await test.step('Enable Suite Sync and sync labels from relay', async () => {
+                await metadataPage.enableSuiteSync();
+                await expect
+                    .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
+                    .toHaveText(accountSeed.label, { timeout: 30_000 });
             });
-            await expect
-                .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
-                .toHaveText(updatedAccountLabel);
-        });
 
-        await test.step('Update wallet label', async () => {
-            await dashboardPage.openDeviceSwitcher();
-            await metadataPage.wallet.changeLabel({
-                index: defaultWalletIndex,
-                label: updatedWalletLabel,
+            await test.step('Update account label', async () => {
+                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await metadataPage.account.changeLabel({
+                    accountId: AccountLabelId.BitcoinDefault1,
+                    label: updatedAccountLabel,
+                });
+                await expect
+                    .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
+                    .toHaveText(updatedAccountLabel);
             });
-            await expect
-                .soft(metadataPage.wallet.walletLabel(defaultWalletIndex))
-                .toHaveText(updatedWalletLabel);
-            await dashboardPage.deviceSwitchingCloseButton.click();
-        });
 
-        await test.step('Update address label', async () => {
-            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
-            await walletPage.receiveButton.click();
-            await metadataPage.address.changeLabel({
-                address: addressSeed.address,
-                label: updatedAddressLabel,
+            await test.step('Update wallet label', async () => {
+                await dashboardPage.openDeviceSwitcher();
+                await metadataPage.wallet.changeLabel({
+                    index: defaultWalletIndex,
+                    label: updatedWalletLabel,
+                });
+                await expect
+                    .soft(metadataPage.wallet.walletLabel(defaultWalletIndex))
+                    .toHaveText(updatedWalletLabel);
+                await dashboardPage.deviceSwitchingCloseButton.click();
             });
-            await expect
-                .soft(metadataPage.address.label(addressSeed.address))
-                .toHaveText(updatedAddressLabel);
-        });
 
-        await test.step('Update output label', async () => {
-            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
-            await metadataPage.output.changeLabel({
-                outputId: outputSeed.txId,
-                txNumber: Number(outputSeed.outputIndex),
-                label: updatedOutputLabel,
+            await test.step('Update address label', async () => {
+                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.receiveButton.click();
+                await metadataPage.address.changeLabel({
+                    address: addressSeed.address,
+                    label: updatedAddressLabel,
+                });
+                await expect
+                    .soft(metadataPage.address.label(addressSeed.address))
+                    .toHaveText(updatedAddressLabel);
             });
-            await expect(
-                metadataPage.output.outputLabel(outputSeed.txId, Number(outputSeed.outputIndex)),
-            ).toHaveText(updatedOutputLabel);
-        });
 
-        await test.step('Verify updated labels are synced to relay', async () => {
-            await evoluClient.init({ ownerSecret: mnemonic12Fixtures.ownerSecret });
-            await evoluClient.expectInTable('account', [expectedUpdatedAccount], {
-                softExpect: true,
+            await test.step('Update output label', async () => {
+                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await metadataPage.output.changeLabel({
+                    outputId: outputSeed.txId,
+                    txNumber: Number(outputSeed.outputIndex),
+                    label: updatedOutputLabel,
+                });
+                await expect(
+                    metadataPage.output.outputLabel(
+                        outputSeed.txId,
+                        Number(outputSeed.outputIndex),
+                    ),
+                ).toHaveText(updatedOutputLabel);
             });
-            await evoluClient.expectInTable('wallet', [expectedUpdatedWallet], {
-                softExpect: true,
+
+            await test.step('Verify updated labels are synced to relay', async () => {
+                await evoluClient.init({ ownerSecret: mnemonic12Fixtures.ownerSecret });
+                await evoluClient.expectInTable('account', [expectedUpdatedAccount], {
+                    softExpect: true,
+                });
+                await evoluClient.expectInTable('wallet', [expectedUpdatedWallet], {
+                    softExpect: true,
+                });
+                await evoluClient.expectInTable('address', [expectedUpdatedAddress], {
+                    softExpect: true,
+                });
+                await evoluClient.expectInTable('output', [expectedUpdatedOutput], {
+                    softExpect: true,
+                });
             });
-            await evoluClient.expectInTable('address', [expectedUpdatedAddress], {
-                softExpect: true,
+
+            await test.step('Remove account label', async () => {
+                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await metadataPage.account.removeLabel({
+                    accountId: AccountLabelId.BitcoinDefault1,
+                });
+                await expect
+                    .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
+                    .toHaveText('Bitcoin #1');
             });
-            await evoluClient.expectInTable('output', [expectedUpdatedOutput], {
-                softExpect: true,
+
+            await test.step('Remove wallet label', async () => {
+                await dashboardPage.openDeviceSwitcher();
+                await metadataPage.wallet.removeLabel({ index: defaultWalletIndex });
+                await expect
+                    .soft(metadataPage.wallet.walletLabel(defaultWalletIndex))
+                    .toHaveText('Standard wallet');
+                await dashboardPage.deviceSwitchingCloseButton.click();
             });
-        });
 
-        await test.step('Remove account label', async () => {
-            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
-            await metadataPage.account.removeLabel({
-                accountId: AccountLabelId.BitcoinDefault1,
+            await test.step('Remove address label', async () => {
+                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.receiveButton.click();
+                await metadataPage.address.removeLabel({ address: addressSeed.address });
+                await expect
+                    .soft(metadataPage.address.addressHoverContainer(addressSeed.address))
+                    .toHaveText('bc1q kkr2 ... qfxy fa');
             });
-            await expect
-                .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
-                .toHaveText('Bitcoin #1');
-        });
 
-        await test.step('Remove wallet label', async () => {
-            await dashboardPage.openDeviceSwitcher();
-            await metadataPage.wallet.removeLabel({ index: defaultWalletIndex });
-            await expect
-                .soft(metadataPage.wallet.walletLabel(defaultWalletIndex))
-                .toHaveText('Standard wallet');
-            await dashboardPage.deviceSwitchingCloseButton.click();
-        });
-
-        await test.step('Remove address label', async () => {
-            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
-            await walletPage.receiveButton.click();
-            await metadataPage.address.removeLabel({ address: addressSeed.address });
-            await expect
-                .soft(metadataPage.address.addressHoverContainer(addressSeed.address))
-                .toHaveText('bc1q kkr2 ... qfxy fa');
-        });
-
-        await test.step('Remove output label', async () => {
-            await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
-            await metadataPage.output.removeLabel({
-                outputId: outputSeed.txId,
-                txNumber: Number(outputSeed.outputIndex),
+            await test.step('Remove output label', async () => {
+                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await metadataPage.output.removeLabel({
+                    outputId: outputSeed.txId,
+                    txNumber: Number(outputSeed.outputIndex),
+                });
+                await expect(
+                    metadataPage.output.outputLabel(
+                        outputSeed.txId,
+                        Number(outputSeed.outputIndex),
+                    ),
+                ).toHaveText('bc1q lzk7 ... ntm5 xq');
             });
-            await expect(
-                metadataPage.output.outputLabel(outputSeed.txId, Number(outputSeed.outputIndex)),
-            ).toHaveText('bc1q lzk7 ... ntm5 xq');
-        });
 
-        await test.step('Verify labels are removed in relay (label is null)', async () => {
-            await evoluClient.init({ ownerSecret: mnemonic12Fixtures.ownerSecret });
+            await test.step('Verify labels are removed in relay (label is null)', async () => {
+                await evoluClient.init({ ownerSecret: mnemonic12Fixtures.ownerSecret });
 
-            await evoluClient.expectInTable('account', [expectedAccount], { softExpect: true });
-            await evoluClient.expectInTable('wallet', [expectedWallet], { softExpect: true });
-            await evoluClient.expectInTable('address', [expectedAddress], { softExpect: true });
-            await evoluClient.expectInTable('output', [expectedOutput], { softExpect: true });
-        });
-    });
+                await evoluClient.expectInTable('account', [expectedAccount], { softExpect: true });
+                await evoluClient.expectInTable('wallet', [expectedWallet], { softExpect: true });
+                await evoluClient.expectInTable('address', [expectedAddress], { softExpect: true });
+                await evoluClient.expectInTable('output', [expectedOutput], { softExpect: true });
+            });
+        },
+    );
 });

@@ -21,7 +21,7 @@ test.describe.skip('Address scan', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Wallets,
                 priority: TestPriority.Critical,
-                stream: TestStream.Foundation,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},

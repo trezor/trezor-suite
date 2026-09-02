@@ -1,7 +1,9 @@
 import { messages } from '@suite/intl';
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const solanaBalanceAddress = '41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw';
 const customFeeRate = 1;
@@ -30,104 +32,108 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
         });
     });
 
-    test('Sell form % inputs and limits', async ({ page, walletPage, tradingPage }) => {
-        await test.step('Find out btc and sol balances', async () => {
-            await walletPage.openAccount({ symbol: 'btc' });
-            await expect(walletPage.topPanelBalance).toHaveText(/\d/);
-            bitcoinBalance = await walletPage.topPanelBalance.innerText();
-            await walletPage.openAccount({ symbol: 'sol' });
-            await expect(walletPage.topPanelBalance).toHaveText(/\d/);
-            solanaBalance = await walletPage.topPanelBalance.innerText();
-            await walletPage.openTrading();
-            await tradingPage.sellTabButton.click();
-            const worldwideOption = messages['TR_TRADING_COUNTRY_WORLD'].defaultMessage;
-            await expect(tradingPage.inputs.countryValue).not.toHaveText(worldwideOption);
-        });
+    test(
+        'Sell form % inputs and limits',
+        { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+        async ({ page, walletPage, tradingPage }) => {
+            await test.step('Find out btc and sol balances', async () => {
+                await walletPage.openAccount({ symbol: 'btc' });
+                await expect(walletPage.topPanelBalance).toHaveText(/\d/);
+                bitcoinBalance = await walletPage.topPanelBalance.innerText();
+                await walletPage.openAccount({ symbol: 'sol' });
+                await expect(walletPage.topPanelBalance).toHaveText(/\d/);
+                solanaBalance = await walletPage.topPanelBalance.innerText();
+                await walletPage.openTrading();
+                await tradingPage.sellTabButton.click();
+                const worldwideOption = messages['TR_TRADING_COUNTRY_WORLD'].defaultMessage;
+                await expect(tradingPage.inputs.countryValue).not.toHaveText(worldwideOption);
+            });
 
-        await test.step('Check limits for BTC input', async () => {
-            await test.step('Too many decimal digits', async () => {
-                await tradingPage.inputs.cryptoAmount.fill('0.000000001');
-                await expect
-                    .soft(tradingPage.inputs.bottomText)
-                    .toHaveTranslation('AMOUNT_IS_NOT_IN_RANGE_DECIMALS', {
-                        values: { decimals: '8' },
-                        timeout: 15_000,
+            await test.step('Check limits for BTC input', async () => {
+                await test.step('Too many decimal digits', async () => {
+                    await tradingPage.inputs.cryptoAmount.fill('0.000000001');
+                    await expect
+                        .soft(tradingPage.inputs.bottomText)
+                        .toHaveTranslation('AMOUNT_IS_NOT_IN_RANGE_DECIMALS', {
+                            values: { decimals: '8' },
+                            timeout: 15_000,
+                        });
+                });
+
+                await test.step('Not enough funds', async () => {
+                    await tradingPage.inputs.cryptoAmount.fill('10');
+                    await expect
+                        .soft(tradingPage.inputs.bottomText)
+                        .toHaveTranslation('AMOUNT_IS_NOT_ENOUGH', { timeout: 15_000 });
+                });
+
+                await tradingPage.inputs.cryptoAmount.clear();
+                await expect.soft(tradingPage.inputs.bottomText).toBeHidden();
+            });
+
+            await test.step('Try all % inputs for Bitcoin', async () => {
+                await tradingPage.inputs.selectFiatCurrency('eur');
+                for (const percentage of [10, 25, 50]) {
+                    await test.step(`${percentage}% of BTC balance`, async () => {
+                        await tradingPage.inputs.fractionButtons
+                            .getByRole('button', { name: percentage + '%' })
+                            .click();
+                        await tradingPage.inputs.expectInputToBe({
+                            percentage,
+                            balance: bitcoinBalance,
+                            symbol: 'btc',
+                        });
                     });
-            });
+                }
+                await tradingPage.quotes.waitForSync();
+                await tradingPage.fees.switchToCustom();
+                await tradingPage.fees.customInput.fill(customFeeRate.toString());
 
-            await test.step('Not enough funds', async () => {
-                await tradingPage.inputs.cryptoAmount.fill('10');
-                await expect
-                    .soft(tradingPage.inputs.bottomText)
-                    .toHaveTranslation('AMOUNT_IS_NOT_ENOUGH', { timeout: 15_000 });
-            });
-
-            await tradingPage.inputs.cryptoAmount.clear();
-            await expect.soft(tradingPage.inputs.bottomText).toBeHidden();
-        });
-
-        await test.step('Try all % inputs for Bitcoin', async () => {
-            await tradingPage.inputs.selectFiatCurrency('eur');
-            for (const percentage of [10, 25, 50]) {
-                await test.step(`${percentage}% of BTC balance`, async () => {
+                await test.step('Max of BTC balance', async () => {
                     await tradingPage.inputs.fractionButtons
-                        .getByRole('button', { name: percentage + '%' })
+                        .getByRole('button', { name: 'Max' })
                         .click();
-                    await tradingPage.inputs.expectInputToBe({
-                        percentage,
-                        balance: bitcoinBalance,
-                        symbol: 'btc',
-                    });
+                    await expect
+                        .soft(async () => {
+                            const resultingFee = await tradingPage.fees.maxFee.innerText();
+                            const maxValue = (
+                                parseFloat(bitcoinBalance) - parseFloat(resultingFee)
+                            ).toString();
+                            await expect(tradingPage.inputs.cryptoAmount).toHaveValue(
+                                localizeNumber(maxValue, 'en-US', 0, 8),
+                            );
+                        })
+                        .toPass({ timeout: 15_000 });
                 });
-            }
-            await tradingPage.quotes.waitForSync();
-            await tradingPage.fees.switchToCustom();
-            await tradingPage.fees.customInput.fill(customFeeRate.toString());
-
-            await test.step('Max of BTC balance', async () => {
-                await tradingPage.inputs.fractionButtons
-                    .getByRole('button', { name: 'Max' })
-                    .click();
-                await expect
-                    .soft(async () => {
-                        const resultingFee = await tradingPage.fees.maxFee.innerText();
-                        const maxValue = (
-                            parseFloat(bitcoinBalance) - parseFloat(resultingFee)
-                        ).toString();
-                        await expect(tradingPage.inputs.cryptoAmount).toHaveValue(
-                            localizeNumber(maxValue, 'en-US', 0, 8),
-                        );
-                    })
-                    .toPass({ timeout: 15_000 });
             });
-        });
 
-        await test.step('Try all % inputs on Solana', async () => {
-            await walletPage.openAccount({ symbol: 'sol', atIndex: 0 });
-            await tradingPage.sellTabButton.click();
-            await expect(tradingPage.inputs.swapAmountCurrencyTicker).toHaveText('SOL');
-            await tradingPage.inputs.selectFiatCurrency('eur');
+            await test.step('Try all % inputs on Solana', async () => {
+                await walletPage.openAccount({ symbol: 'sol', atIndex: 0 });
+                await tradingPage.sellTabButton.click();
+                await expect(tradingPage.inputs.swapAmountCurrencyTicker).toHaveText('SOL');
+                await tradingPage.inputs.selectFiatCurrency('eur');
 
-            for (const percentage of [10, 25, 50]) {
-                await test.step(`${percentage}% of Solana balance`, async () => {
-                    await page.getByRole('button', { name: percentage + '%' }).click();
-                    await tradingPage.inputs.expectInputToBe({
-                        percentage,
-                        balance: solanaBalance,
-                        symbol: 'sol',
+                for (const percentage of [10, 25, 50]) {
+                    await test.step(`${percentage}% of Solana balance`, async () => {
+                        await page.getByRole('button', { name: percentage + '%' }).click();
+                        await tradingPage.inputs.expectInputToBe({
+                            percentage,
+                            balance: solanaBalance,
+                            symbol: 'sol',
+                        });
                     });
-                });
-            }
+                }
 
-            //TODO: Bug in production
-            // await test.step('Max of Solana balance', async () => {
-            //     await page.getByRole('button', { name: 'Max' }).click();
-            //     const resultingFee = await tradingPage.fees.getSolanaFee();
-            //     const maxValue = (parseFloat(solanaBalance!) - resultingFee).toString();
-            //     await expect
-            //         .soft(tradingPage.inputs.cryptoAmount)
-            //         .toHaveValue(localizeNumber(maxValue, 'en-US', 0, 9));
-            // });
-        });
-    });
+                //TODO: Bug in production
+                // await test.step('Max of Solana balance', async () => {
+                //     await page.getByRole('button', { name: 'Max' }).click();
+                //     const resultingFee = await tradingPage.fees.getSolanaFee();
+                //     const maxValue = (parseFloat(solanaBalance!) - resultingFee).toString();
+                //     await expect
+                //         .soft(tradingPage.inputs.cryptoAmount)
+                //         .toHaveValue(localizeNumber(maxValue, 'en-US', 0, 9));
+                // });
+            });
+        },
+    );
 });

@@ -1,5 +1,5 @@
 import { events } from '@suite/analytics';
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -24,6 +24,7 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'Verify that a user can successfully add and switch between hidden wallets, and confirm passphrase.',
                 category: TestCategory.Wallets,
                 priority: TestPriority.High,
+                stream: TestStream.Wallet,
             }),
         },
         async ({
@@ -114,70 +115,74 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     );
 
-    test('Errors to confirm passphrase and retry', async ({ dashboardPage, devicePrompt }) => {
-        await test.step('Initiate adding passphrase wallet', async () => {
-            await dashboardPage.openDeviceSwitcher();
-            await dashboardPage.addHiddenWallet('abc', { skipDiscovery: true });
+    test(
+        'Errors to confirm passphrase and retry',
+        { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+        async ({ dashboardPage, devicePrompt }) => {
+            await test.step('Initiate adding passphrase wallet', async () => {
+                await dashboardPage.openDeviceSwitcher();
+                await dashboardPage.addHiddenWallet('abc', { skipDiscovery: true });
 
-            await dashboardPage.openUnusedWalletButton1.click();
-            await dashboardPage.openUnusedWalletButton2.click();
-        });
+                await dashboardPage.openUnusedWalletButton1.click();
+                await dashboardPage.openUnusedWalletButton2.click();
+            });
 
-        await test.step('Confirm wrong passphrase', async () => {
-            await dashboardPage.passphraseInput.fill('cba');
+            await test.step('Confirm wrong passphrase', async () => {
+                await dashboardPage.passphraseInput.fill('cba');
 
-            await test.step('Toggle passphrase visibility', async () => {
-                await expect(dashboardPage.passphraseInput).toHaveCSS(
-                    '-webkit-text-security',
-                    'disc',
+                await test.step('Toggle passphrase visibility', async () => {
+                    await expect(dashboardPage.passphraseInput).toHaveCSS(
+                        '-webkit-text-security',
+                        'disc',
+                    );
+                    await dashboardPage.passphraseShowButton.click();
+                    await expect(dashboardPage.passphraseInput).not.toHaveCSS(
+                        '-webkit-text-security',
+                        'disc',
+                    );
+                    await dashboardPage.passphraseShowButton.click();
+                    await expect(dashboardPage.passphraseInput).toHaveCSS(
+                        '-webkit-text-security',
+                        'disc',
+                    );
+                });
+
+                await dashboardPage.passphraseSubmitButton.click();
+                await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
+                await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
+                await expect(dashboardPage.passphraseMismatchHeader).toContainTranslation(
+                    'TR_PASSPHRASE_MISMATCH',
                 );
-                await dashboardPage.passphraseShowButton.click();
-                await expect(dashboardPage.passphraseInput).not.toHaveCSS(
-                    '-webkit-text-security',
-                    'disc',
-                );
-                await dashboardPage.passphraseShowButton.click();
-                await expect(dashboardPage.passphraseInput).toHaveCSS(
-                    '-webkit-text-security',
-                    'disc',
+                await expect(dashboardPage.passphraseMismatchDesc).toContainTranslation(
+                    'TR_PASSPHRASE_MISMATCH_DESCRIPTION',
                 );
             });
 
-            await dashboardPage.passphraseSubmitButton.click();
-            await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
-            await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
-            await expect(dashboardPage.passphraseMismatchHeader).toContainTranslation(
-                'TR_PASSPHRASE_MISMATCH',
-            );
-            await expect(dashboardPage.passphraseMismatchDesc).toContainTranslation(
-                'TR_PASSPHRASE_MISMATCH_DESCRIPTION',
-            );
-        });
+            await test.step('Retry passphrase confirmation', async () => {
+                await dashboardPage.passphraseMismatchStartOverButton.click();
+                await dashboardPage.passphraseInput.fill('abc');
+                await dashboardPage.passphraseSubmitButton.click();
+                await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
+                await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
+                await dashboardPage.openUnusedWalletButton1.click();
+                await dashboardPage.openUnusedWalletButton2.click();
+            });
 
-        await test.step('Retry passphrase confirmation', async () => {
-            await dashboardPage.passphraseMismatchStartOverButton.click();
-            await dashboardPage.passphraseInput.fill('abc');
-            await dashboardPage.passphraseSubmitButton.click();
-            await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
-            await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
-            await dashboardPage.openUnusedWalletButton1.click();
-            await dashboardPage.openUnusedWalletButton2.click();
-        });
+            await test.step('Confirm correct passphrase', async () => {
+                await dashboardPage.passphraseInput.fill('abc');
+                await dashboardPage.passphraseSubmitButton.click();
+                await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
+                await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
 
-        await test.step('Confirm correct passphrase', async () => {
-            await dashboardPage.passphraseInput.fill('abc');
-            await dashboardPage.passphraseSubmitButton.click();
-            await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
-            await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
-
-            await dashboardPage.modal.waitFor({ state: 'detached' });
-            await dashboardPage.openDeviceSwitcher();
-            await expect(dashboardPage.walletAtIndex(1)).toContainTranslation(
-                'TR_PASSPHRASE_WALLET',
-                {
-                    values: { id: '1' },
-                },
-            );
-        });
-    });
+                await dashboardPage.modal.waitFor({ state: 'detached' });
+                await dashboardPage.openDeviceSwitcher();
+                await expect(dashboardPage.walletAtIndex(1)).toContainTranslation(
+                    'TR_PASSPHRASE_WALLET',
+                    {
+                        values: { id: '1' },
+                    },
+                );
+            });
+        },
+    );
 });

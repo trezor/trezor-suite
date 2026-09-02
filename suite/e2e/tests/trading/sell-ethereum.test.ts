@@ -1,3 +1,4 @@
+import { TestStream } from '@trezor/e2e-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {
@@ -9,6 +10,7 @@ import {
 } from '../../fixtures/trading';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 
 // Expected values based on our mocked responses
 const fiatAmount = sellQuotesEthereum[0]?.fiatStringAmount ?? '';
@@ -69,47 +71,54 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
         },
     );
 
-    test('Sell Ethereum', async ({ tradingPage, devicePrompt }) => {
-        await test.step('Fill in a sell request', async () => {
-            await tradingPage.fillSellForm({
-                cryptoAmount,
-                networkSymbolOrTokenId: 'eth',
+    test(
+        'Sell Ethereum',
+        { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+        async ({ tradingPage, devicePrompt }) => {
+            await test.step('Fill in a sell request', async () => {
+                await tradingPage.fillSellForm({
+                    cryptoAmount,
+                    networkSymbolOrTokenId: 'eth',
+                });
+                await tradingPage.fees.setEthereumCustomFees({
+                    gasLimit,
+                    maxFeePerGas,
+                    maxPriorityFeePerGas,
+                });
+                await expect(tradingPage.quotes.bestOfferAmount).toHaveText(fiatAmount);
+                await expect(tradingPage.quotes.provider).toHaveText(
+                    capitalizeFirstLetter(provider),
+                );
             });
-            await tradingPage.fees.setEthereumCustomFees({
-                gasLimit,
-                maxFeePerGas,
-                maxPriorityFeePerGas,
+
+            await test.step('Confirm sell', async () => {
+                await tradingPage.sellBestOfferButton.click();
             });
-            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(fiatAmount);
-            await expect(tradingPage.quotes.provider).toHaveText(capitalizeFirstLetter(provider));
-        });
 
-        await test.step('Confirm sell', async () => {
-            await tradingPage.sellBestOfferButton.click();
-        });
+            await tradingPage.waitForRedirectCompletion();
 
-        await tradingPage.waitForRedirectCompletion();
+            await test.step('Verify all confirmation values', async () => {
+                await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
+                await expect(tradingPage.confirmation.cryptoAmount).toHaveText(
+                    formattedCryptoAmount,
+                );
+                await expect(tradingPage.confirmation.provider).toHaveText(provider);
+                await expect(tradingPage.confirmation.paymentMethod).toHaveText(paymentMethodName);
+                await expect(tradingPage.confirmation.address).toHaveText(providerAddress);
+                await expect(tradingPage.confirmation.account).toHaveText('Ethereum #1');
+            });
 
-        await test.step('Verify all confirmation values', async () => {
-            await expect(tradingPage.confirmation.fiatAmount).toHaveText(formattedFiatAmount);
-            await expect(tradingPage.confirmation.cryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(tradingPage.confirmation.provider).toHaveText(provider);
-            await expect(tradingPage.confirmation.paymentMethod).toHaveText(paymentMethodName);
-            await expect(tradingPage.confirmation.address).toHaveText(providerAddress);
-            await expect(tradingPage.confirmation.account).toHaveText('Ethereum #1');
-        });
+            await test.step('Initiate send', async () => {
+                await tradingPage.confirmation.openConfirmAndSendModal();
+                await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #1');
+                await devicePrompt.waitForPromptAndClick();
+                await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
+                    formattedCryptoAmount,
+                );
+            });
 
-        await test.step('Initiate send', async () => {
-            await tradingPage.confirmation.openConfirmAndSendModal();
-            await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #1');
-            await devicePrompt.waitForPromptAndClick();
-            await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
-            await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
-                formattedCryptoAmount,
-            );
-        });
-
-        /*TODO: Uncomment once bug #19186 is resolved
+            /*TODO: Uncomment once bug #19186 is resolved
         const { ethereumMaximumFee, errorMessageMaxCalculation } =
             tradingPage.fees.calculateEthereumMaxFee({
                 gasLimit,
@@ -161,6 +170,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
         });
         */
 
-        // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
-    });
+            // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
+        },
+    );
 });

@@ -19,7 +19,7 @@ test.describe.skip('Application log', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Settings,
                 priority: TestPriority.Medium,
-                stream: TestStream.Foundation,
+                stream: TestStream.Growth,
             }),
         },
         async () => {},

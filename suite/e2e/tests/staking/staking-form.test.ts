@@ -36,7 +36,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that a user can use staking form functions.',
                 category: TestCategory.ETH,
                 priority: TestPriority.Medium,
-                stream: TestStream.Trends,
+                stream: TestStream.Earn,
             }),
         },
         async ({ walletPage, stakingSection }) => {

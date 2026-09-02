@@ -1,10 +1,12 @@
 import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { getCompanyNameFromList } from '../../fixtures/trading';
 import { swapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const sendAmount = '0.01';
@@ -30,110 +32,123 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     );
 
-    test('Swap ETH to SOL', async ({ tradingPage, page, device, devicePrompt, tradingMockNew }) => {
-        await test.step('Fill in a Swap form', async () => {
-            await tradingPage.fillSwapForm({
-                amount: sendAmount,
-                sellAsset: {
-                    networkSymbol: 'eth',
-                },
-                buyAsset: {
-                    searchFilter: 'Solana',
-                    assetCryptoId: getCryptoId('sol'),
-                },
-                selectReceiveAddress: async () => {
-                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'sol');
-                },
+    test(
+        'Swap ETH to SOL',
+        { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
+        async ({ tradingPage, page, device, devicePrompt, tradingMockNew }) => {
+            await test.step('Fill in a Swap form', async () => {
+                await tradingPage.fillSwapForm({
+                    amount: sendAmount,
+                    sellAsset: {
+                        networkSymbol: 'eth',
+                    },
+                    buyAsset: {
+                        searchFilter: 'Solana',
+                        assetCryptoId: getCryptoId('sol'),
+                    },
+                    selectReceiveAddress: async () => {
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'sol');
+                    },
+                });
             });
-        });
 
-        let receiveAmount: string;
-        let providerName: string;
-        let liveTradePromise: ReturnType<typeof tradingMockNew.waitForLiveTrade>;
+            let receiveAmount: string;
+            let providerName: string;
+            let liveTradePromise: ReturnType<typeof tradingMockNew.waitForLiveTrade>;
 
-        await test.step('Confirm the Swap trade', async () => {
-            receiveAmount = await tradingPage.quotes.getBestOfferAmount();
-            await expect(tradingPage.fees.maximumFeeAmountToBeCalculated).toBeHidden();
-            liveTradePromise = tradingMockNew.waitForLiveTrade();
-            await tradingPage.swapBestOfferButton.click();
-        });
-
-        await test.step('Open modal and verify recipient on prompt and device', async () => {
-            await tradingPage.confirmation.openConfirmAndSendModal();
-            await liveTradePromise;
-            providerName = getCompanyNameFromList(tradingMockNew.liveTrade.exchange, 'swapList');
-
-            await expect(devicePrompt.header.accountLabel).toHaveText(sendAccountLabel);
-            await expect(devicePrompt.outputValueOf('address')).toHaveText(
-                formatAddressWithNewlines(tradingMockNew.liveTrade.sendAddress),
-            );
-            await expect(device).toShowOnDisplay({
-                T3W1: {
-                    header: { title: 'Send' },
-                    body: [transformAddress(tradingMockNew.liveTrade.sendAddress, 'evmTetragrams')],
-                    actions: { right_button: 'Continue' },
-                },
-                T3T1: {
-                    header: { title: 'Address', subtitle: 'Recipient' },
-                    body: [transformAddress(tradingMockNew.liveTrade.sendAddress, 'evmTetragrams')],
-                },
+            await test.step('Confirm the Swap trade', async () => {
+                receiveAmount = await tradingPage.quotes.getBestOfferAmount();
+                await expect(tradingPage.fees.maximumFeeAmountToBeCalculated).toBeHidden();
+                liveTradePromise = tradingMockNew.waitForLiveTrade();
+                await tradingPage.swapBestOfferButton.click();
             });
-            await devicePrompt.waitForPromptAndConfirm();
-        });
 
-        await test.step('Verify amount and fee on prompt and device', async () => {
-            await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
-                formattedSendAmount,
-            );
-            // The EVM max fee is live; we just crosscheck modal and device.
-            const reviewFee = await devicePrompt.cryptoAmountOf('fee').innerText();
-            const maxFeeWrapped = device.wrapText(`${reviewFee} ETH`, { isAmount: true });
-            await expect(device).toShowOnDisplay({
-                T3W1: {
-                    header: { title: 'Send' },
-                    body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
-                    actions: { right_button: 'Hold to sign' },
-                },
-                T3T1: {
-                    header: { title: 'Summary' },
-                    body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
-                },
-            });
-            await devicePrompt.waitForFinalPromptAndConfirm();
-            await expect(devicePrompt.sendButton).toBeEnabled();
-        });
-
-        await test.step('Send crypto to provider (broadcast blocked by mock)', async () => {
-            await tradingMockNew.setStatus('SENDING');
-            await page.clock.install();
-            await devicePrompt.sendButton.click();
-
-            await tradingPage.verifySwapToast({
-                sendAccount: sendAccountLabel,
-                receiveAccount: receiveAccountLabel,
-                // The toast echoes the provider's formatting of the amount, not the one we typed.
-                sendAmount: tradingMockNew.liveTrade.sendStringAmount,
-                receiveAmount,
-            });
-        });
-
-        for (const step of swapStatusFlow) {
-            await test.step(`Wait for status change to ${step.status}`, async () => {
-                await tradingMockNew.advanceStatus(step.status);
-                const values = step.translationValues?.(providerName);
-                await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                    step.translationKey,
-                    { values },
+            await test.step('Open modal and verify recipient on prompt and device', async () => {
+                await tradingPage.confirmation.openConfirmAndSendModal();
+                await liveTradePromise;
+                providerName = getCompanyNameFromList(
+                    tradingMockNew.liveTrade.exchange,
+                    'swapList',
                 );
-            });
-        }
 
-        await test.step('Verify transaction detail values', async () => {
-            await expect(tradingPage.confirmation.sendCryptoAmount).toHaveText(formattedSendAmount);
-            await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
-                `${receiveAmount} SOL`,
-            );
-            await expect(tradingPage.confirmation.provider).toHaveText(providerName);
-        });
-    });
+                await expect(devicePrompt.header.accountLabel).toHaveText(sendAccountLabel);
+                await expect(devicePrompt.outputValueOf('address')).toHaveText(
+                    formatAddressWithNewlines(tradingMockNew.liveTrade.sendAddress),
+                );
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [
+                            transformAddress(tradingMockNew.liveTrade.sendAddress, 'evmTetragrams'),
+                        ],
+                        actions: { right_button: 'Continue' },
+                    },
+                    T3T1: {
+                        header: { title: 'Address', subtitle: 'Recipient' },
+                        body: [
+                            transformAddress(tradingMockNew.liveTrade.sendAddress, 'evmTetragrams'),
+                        ],
+                    },
+                });
+                await devicePrompt.waitForPromptAndConfirm();
+            });
+
+            await test.step('Verify amount and fee on prompt and device', async () => {
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
+                    formattedSendAmount,
+                );
+                // The EVM max fee is live; we just crosscheck modal and device.
+                const reviewFee = await devicePrompt.cryptoAmountOf('fee').innerText();
+                const maxFeeWrapped = device.wrapText(`${reviewFee} ETH`, { isAmount: true });
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
+                        actions: { right_button: 'Hold to sign' },
+                    },
+                    T3T1: {
+                        header: { title: 'Summary' },
+                        body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
+                    },
+                });
+                await devicePrompt.waitForFinalPromptAndConfirm();
+                await expect(devicePrompt.sendButton).toBeEnabled();
+            });
+
+            await test.step('Send crypto to provider (broadcast blocked by mock)', async () => {
+                await tradingMockNew.setStatus('SENDING');
+                await page.clock.install();
+                await devicePrompt.sendButton.click();
+
+                await tradingPage.verifySwapToast({
+                    sendAccount: sendAccountLabel,
+                    receiveAccount: receiveAccountLabel,
+                    // The toast echoes the provider's formatting of the amount, not the one we typed.
+                    sendAmount: tradingMockNew.liveTrade.sendStringAmount,
+                    receiveAmount,
+                });
+            });
+
+            for (const step of swapStatusFlow) {
+                await test.step(`Wait for status change to ${step.status}`, async () => {
+                    await tradingMockNew.advanceStatus(step.status);
+                    const values = step.translationValues?.(providerName);
+                    await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                        step.translationKey,
+                        { values },
+                    );
+                });
+            }
+
+            await test.step('Verify transaction detail values', async () => {
+                await expect(tradingPage.confirmation.sendCryptoAmount).toHaveText(
+                    formattedSendAmount,
+                );
+                await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
+                    `${receiveAmount} SOL`,
+                );
+                await expect(tradingPage.confirmation.provider).toHaveText(providerName);
+            });
+        },
+    );
 });

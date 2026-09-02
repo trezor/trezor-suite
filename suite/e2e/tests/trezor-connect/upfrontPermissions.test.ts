@@ -1,4 +1,5 @@
 import TrezorConnect from '@trezor/connect-web';
+import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -39,6 +40,7 @@ test.describe(
                 annotation: createTestAnnotation({
                     testCase:
                         'Suite Connect: permissions declared at init are shown in the first consent and cover later calls.',
+                    stream: TestStream.Connect,
                 }),
             },
             async ({ connectPermissionsModal, page }) => {
