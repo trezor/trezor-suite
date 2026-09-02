@@ -112,6 +112,7 @@ export * from './staking/tron/tronStakingReducer';
 export * from './staking/tron/tronStakingSelectors';
 export * from './staking/tron/tronStakingTypes';
 export * from './staking/tron/tronStakingUtils';
+export * from './token/stellarContractTokensSlice';
 export * from './token/stellarTokenThunks';
 export * from './tokens/tokenSelectors';
 export * from './tokens/tokenUtils';
