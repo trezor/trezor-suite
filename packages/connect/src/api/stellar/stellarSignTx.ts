@@ -279,8 +279,8 @@ export const stellarSignTx = async (
 
     const ext = await typedCall('StellarTxExt', 'StellarSignedTx', {
         v: tx.ext.v,
-        // protobuf bytes fields travel as hex; handing over the base64 XDR would silently encode
-        // only the leading hex-looking characters, and the device would sign a different digest
+        // Protobuf bytes fields travel as hex; handing over the base64 XDR would silently encode
+        // only the leading hex-looking characters, and the device would sign a different digest.
         soroban_data: Buffer.from(tx.ext.sorobanData, 'base64').toString('hex'),
     });
 

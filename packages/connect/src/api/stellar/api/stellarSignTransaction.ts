@@ -79,7 +79,7 @@ export default class StellarSignTransaction extends AbstractMethod<
     // Stellar allows a Soroban operation only as the sole operation of a transaction, and the
     // device asks for the transaction extension right after it, which would cut a longer list short.
     private _ensureSorobanIsTheOnlyOperation(operations: StellarOperation[] = []) {
-        const hasSoroban = operations.some(o => o.type === 'invokeHostFunction');
+        const hasSoroban = operations.some(operation => operation.type === 'invokeHostFunction');
 
         if (hasSoroban && operations.length > 1) {
             throw ERRORS.TypedError(
