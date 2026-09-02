@@ -713,7 +713,7 @@ const constructNewFlow = ({
                     outputs.push(tokenOutput);
                     outputs.push({ type: 'address', value: o.address });
                 } else if (
-                    !isTron &&
+                    networkType === 'ethereum' &&
                     ((precomposedForm.transactionData && !isEvmApproval) ||
                         (isEvmApproval && !isApprovalFlowSupported))
                 ) {
